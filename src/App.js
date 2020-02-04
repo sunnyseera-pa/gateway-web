@@ -3,6 +3,22 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
+var baseURL = window.location.href;
+
+if (!baseURL.includes('localhost')) {
+    var rx = /^([http|https]+\:\/\/[a-z]+)(.*)/;
+    var arr = rx.exec(baseURL);
+    if (arr.length > 0) {
+        //add -api to the sub domain for API requests
+        baseURL = arr[1]+'-api'+arr[2]
+    }
+
+} else {
+    baseURL = 'http://localhost:3001'
+}
+
+console.log('baseURL is '+baseURL);
+
 class App extends Component {
   // initialize our state
   state = {
@@ -54,13 +70,13 @@ class App extends Component {
   // our first get method that uses our backend api to
   // fetch data from our data base
   getDataFromDb = () => {
-    fetch('http://localhost:3001/api/getData')
+    fetch(baseURL+'/api/getData')
       .then((data) => data.json())
       .then((res) => this.setState({ data: res.data }));
   };
 
   getDataSearchFromDb = (search) => {
-    axios.post('http://localhost:3001/api/getDataSearch', {search: search})
+    axios.post(baseURL+'/api/getDataSearch', {search: search})
       .then((res) => {
         this.setState({ data: res.data.data });
       })
@@ -77,7 +93,7 @@ class App extends Component {
       ++idToBeAdded;
     }
 
-    axios.post('http://localhost:3001/api/putData', {
+    axios.post(baseURL+'/api/putData', {
       id: idToBeAdded,
       type: type,
       name: name,
@@ -103,7 +119,7 @@ class App extends Component {
       }
     });
 
-    axios.delete('http://localhost:3001/api/deleteData', {
+    axios.delete(baseURL+'/api/deleteData', {
       data: {
         id: objIdToDelete,
       },
@@ -121,7 +137,7 @@ class App extends Component {
       }
     });
 
-    axios.post('http://localhost:3001/api/updateData', {
+    axios.post(baseURL+'/api/updateData', {
       id: objIdToUpdate,
       update: { message: updateToApply },
     });
