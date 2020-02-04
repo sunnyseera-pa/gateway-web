@@ -1,9 +1,9 @@
-FROM node:12-slim as build
+FROM node:12 as build
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json /app/package.json
 RUN npm install --silent
-RUN npm install react-scripts@3.0.1 -g --silent
+#RUN npm install react-scripts@3.0.1 -g --silent
 COPY . /app
 RUN npm run build
 
@@ -11,4 +11,4 @@ RUN npm run build
 FROM nginx:latest
 COPY --from=build /app/build /usr/share/nginx/html
 EXPOSE 8080
-CMD ["sed", "'s/80/8080/g'", "-i", "/etc/nginx/sites-available/*;", "nginx", "-g", "daemon off;"]
+CMD ["sed", "'s/80/8080/'", "-i", "/etc/nginx/sites-available/*;", "nginx", "-g", "daemon off;"]
