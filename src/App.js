@@ -2,6 +2,8 @@
 // /client/App.js
 import React, { Component } from 'react';
 import axios from 'axios';
+import Alert from 'react-bootstrap/Alert';
+import Button from 'react-bootstrap/Button';
 
 var baseURL = window.location.href;
 
@@ -165,8 +167,6 @@ class App extends Component {
                 </li>
               ))}
         </ul>
-        
-
 
         {/* Adding */}
         
@@ -274,5 +274,6 @@ class App extends Component {
     );
   }
 }
+
 
 export default App;

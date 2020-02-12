@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 62 (91390) - https://sketch.com -->
+    <title>icon/tool</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M14.8554416,5.82520191 L12.1601058,3.13664718 L14.8554416,0.448092455 C14.2939133,0.112023114 13.6200794,0 12.9462454,0 C10.138604,0 7.89249089,2.24046227 7.89249089,5.04104012 C7.89249089,5.60115568 8.00479655,6.04924814 8.1171022,6.60936371 L0.704928853,12.0984963 C-0.193516401,12.770635 -0.193516401,14.0028892 0.48031754,14.787051 L3.06334765,17.4756057 C3.84948724,18.2597675 5.08484947,18.1477444 5.75868341,17.2515595 L11.2616606,9.858034 C11.8231889,9.97005712 12.3847172,10.0820802 12.9462454,10.0820802 C15.7538869,10.0820802 18,7.84161796 18,5.04104012 C18,4.36890143 17.8876943,3.69676275 17.663083,3.13664718 L14.8554416,5.82520191 Z" id="path-1"></path>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard" transform="translate(-214.000000, -999.000000)">
+            <g id="icon/tool" transform="translate(214.000000, 999.000000)">
+                <g id="single-content-02">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <use id="Path" fill="#111111" fill-rule="nonzero" xlink:href="#path-1"></use>
+                    <!-- <use id="Path" fill="#3db28c" fill-rule="nonzero" xlink:href="#path-1"></use> -->
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

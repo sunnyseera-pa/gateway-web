@@ -1,0 +1,14 @@
+#searchInputHolder{
+    height: 48px;
+    /* width: 800px; */
+    min-width: 800px;
+    width: 100%;
+}
+
+#searchInput{
+    width: 97%;
+}
+
+#searchIcon{
+    width:3%
+}
