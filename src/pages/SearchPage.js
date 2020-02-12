@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {SearchBar} from './searchBar';
-import {ResultsProject} from './resultsProject';
-import {ResultsTool} from './resultsTool';
-import {ResultsPerson} from './resultsPerson';
+import {SearchBar} from './components/searchBar';
+import {ResultsProject} from './components/resultsProject';
+import {ResultsTool} from './components/resultsTool';
+import {ResultsPerson} from './components/resultsPerson';
 
-class Search extends React.Component{
+class SearchPage extends React.Component{
     render(){
         return(
             <div>
@@ -19,4 +19,4 @@ class Search extends React.Component{
     }
 }
 
-export {Search};
+export default SearchPage;

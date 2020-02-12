@@ -3,8 +3,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Badge from 'react-bootstrap/Badge';
 import Card from 'react-bootstrap/Card';
-import {ReactComponent as ToolIcon} from '../images/tool.svg';
-import '../css/hdruk.css';
+import {ReactComponent as ToolIcon} from '../../images/tool.svg';
+import '../../css/hdruk.css';
 
 class ResultsPerson extends React.Component{
     render(){

@@ -5,6 +5,8 @@ import {BrowserRouter as Router,Switch,Route,Link,useParams} from "react-router-
 import ToolPage from './pages/ToolPage';
 import PersonPage from './pages/PersonPage';
 import ProjectPage from './pages/ProjectPage';
+import LandingPage from './pages/LandingPage';
+import SearchPage from './pages/SearchPage';
 
 class HDRRouter extends Component {
   // initialize our state
@@ -25,6 +27,9 @@ class HDRRouter extends Component {
           <ul>
             <li>
               <Link to="/">Landing</Link>
+            </li>
+            <li>
+              <Link to="/search">Search</Link>
             </li>
             <li></li>
             <li>
@@ -56,7 +61,7 @@ class HDRRouter extends Component {
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Switch>
-          <Route path="/results" component={Results}/>
+          <Route path="/search" component={SearchPage}/>
           
           <Route path="/tool/:toolID" component={ToolPage}/>
 
@@ -64,21 +69,12 @@ class HDRRouter extends Component {
 
           <Route path="/person/:personID" component={PersonPage}/>
 
-          <Route path="/" component={Landing}/>
+          <Route path="/" component={LandingPage}/>
         </Switch>
       </div>
     </Router>
     );
   }
 }
-
-const Landing = () => {
-  return <h2>Landing</h2>;
-};
-
-const Results = () => {
-  return <h2>Results</h2>;
-};
-
 
 export default HDRRouter;

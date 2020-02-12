@@ -6,8 +6,8 @@ import Col from 'react-bootstrap/Col';
 import Badge from 'react-bootstrap/Badge';
 import Card from 'react-bootstrap/Card';
 // import {ReactComponent as ProjectIcon} from '../images/project.svg';
-import SVGIcon from "../images/SVGIcon"
-import '../css/hdruk.css';
+import SVGIcon from "../../images/SVGIcon"
+import '../../css/hdruk.css';
 
 class ResultsProject extends React.Component{
     render(){

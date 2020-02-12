@@ -8,8 +8,8 @@ import Col from 'react-bootstrap/Col';
 // import {ReactComponent as SearchIcon} from '../images/search.svg';
 import FormGroup from 'react-bootstrap/FormGroup';
 import Container from 'react-bootstrap/Container';
-import '../css/searchBar.css';
-import SVGIcon from "../images/SVGIcon"
+import '../../css/searchBar.css';
+import SVGIcon from "../../images/SVGIcon"
 
 class SearchBar extends React.Component{
     render(){
