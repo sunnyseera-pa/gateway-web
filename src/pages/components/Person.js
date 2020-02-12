@@ -6,7 +6,7 @@ import Card from 'react-bootstrap/Card';
 import {ReactComponent as ToolIcon} from '../../images/tool.svg';
 import '../../css/hdruk.css';
 
-class ResultsPerson extends React.Component{
+class Person extends React.Component{
     render(){
         return(
              <Row className="mt-2">
@@ -47,4 +47,4 @@ class ResultsPerson extends React.Component{
     }
 }
 
-export {ResultsPerson};
+export default Person;

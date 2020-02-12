@@ -7,7 +7,7 @@ import SVGIcon from "../../images/SVGIcon"
 // import {ReactComponent as ToolIcon} from '../images/tool.svg';
 import '../../css/hdruk.css';
 
-class ResultsTool extends React.Component{
+class Tool extends React.Component{
     render(){
         return(
             // <div>
@@ -57,4 +57,4 @@ class ResultsTool extends React.Component{
     }
 }
 
-export {ResultsTool};
+export default Tool;

@@ -6,7 +6,7 @@ import Title from './components/Title';
 import Tags from './components/Tags';
 import Reviews from './components/Reviews';
 import Creators from './components/Creators';
-import Projects from './components/Projects';
+import Project from './components/Project';
 import ToolsUsed from './components/ToolsUsed';
 import ToolsCreated from './components/ToolsCreated';
 
@@ -85,7 +85,7 @@ class ToolDetail extends Component {
         <Tags />
         <Reviews />
         <Creators />
-        <Projects />
+        <Project />
         <ToolsUsed />
         <ToolsCreated />
       </div>

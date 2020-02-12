@@ -9,7 +9,7 @@ import Card from 'react-bootstrap/Card';
 import SVGIcon from "../../images/SVGIcon"
 import '../../css/hdruk.css';
 
-class ResultsProject extends React.Component{
+class Project extends React.Component{
     render(){
         return(
             // <div>
@@ -64,4 +64,4 @@ class ResultsProject extends React.Component{
     }   
 }
 
-export {ResultsProject};
+export default Project;
