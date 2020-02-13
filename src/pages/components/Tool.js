@@ -22,26 +22,26 @@ class Tool extends React.Component{
                                 {/* <Col sm={1}> <ToolIcon /> </Col> */}
                                 {/* <Col sm={1}> <ToolIcon style={{fill:'#3db28c'}}></ToolIcon> </Col> */}
                                 <Col sm={1}> <SVGIcon name="toolicon" width={18} height={18} fill={'#3db28c'} /> </Col>
-                                <Col sm={7} className="text-left " style={{color:'#2d2d2d'}}>Tool Name</Col>
-                                <Col sm={4} className="text-right" style={{color:'#53575a'}}>Date Updated</Col>
+                                <Col sm={9} className="text-left " className="Black-16px">Tool Name</Col>
+                                <Col sm={2} className="text-right" className="Gray700-13px">Date Updated</Col>
                             </Row>
                             <Row>
                                 <Col sm={1}> </Col>
-                                <Col sm={11} className="text-left" style={{color:'#53575a'}}>Person</Col>
+                                <Col sm={11} className="text-left" className="Gray800-14px">Person</Col>
                             </Row>
                             <Row> 
                                 <Col sm={1}> </Col>
-                                <Col sm={11} className="text-left" style={{color:'#3c3c3b'}}> x projects using it </Col>
+                                <Col sm={11} className="text-left" className="Gray800-14px"> x projects using it </Col>
                             </Row>
                             <Row className="mb-3"> 
                                 <Col sm={1}> </Col>
-                                <Col sm={11} className="text-left" style={{color:'#3c3c3b'}}> x reviews </Col>
+                                <Col sm={11} className="text-left" className="Gray800-14px"> x reviews, x comments </Col>
                             </Row>
                             <Row>
                                 <Col>
-                                    <Badge pill variant="light" className="mr-2"> Tag1 </Badge>
-                                    <Badge pill variant="light" className="mr-2"> Tag2 </Badge>
-                                    <Badge pill variant="light" className="mr-2"> Tag3 </Badge>
+                                    <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag1 </Badge>
+                                    <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag2 </Badge>
+                                    <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag3 </Badge>
                                 </Col>
                             </Row>    
                             

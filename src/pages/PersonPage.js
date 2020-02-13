@@ -2,7 +2,8 @@
 // /ShowObjects.js
 import React, { Component } from 'react';
 import axios from 'axios';
-import Title from './components/Title';
+import PersonTitle from './components/PersonTitle';
+// import ToolTitle from './components/ToolTitle';
 import Tags from './components/Tags';
 import Reviews from './components/Reviews';
 import Creators from './components/Creators';
@@ -81,7 +82,7 @@ class ToolDetail extends Component {
     
     return (
       <div>
-        <Title id={id} type={type} name={name} description={description} rating={rating} link={link} />
+        <PersonTitle id={id} type={type} name={name} description={description} rating={rating} link={link} />
         <Tags />
         <Reviews />
         <Creators />

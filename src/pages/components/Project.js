@@ -25,18 +25,18 @@ class Project extends React.Component{
                             <Row className="mb-1">
                                 {/* <Col sm={1}> <ProjectIcon /> </Col> */}
                                 <Col sm={1}> <SVGIcon name="projecticon" width={20} height={24} fill={'#3db28c'} /> </Col>
-                                <Col sm={7} className="text-left " style={{color:'#2d2d2d'}}>Project Title</Col>
-                                <Col sm={4} className="text-right" style={{color:'#53575a'}}>Date Updated</Col>
+                                <Col sm={9} className="text-left " className="Black-16px" >Project Title</Col>
+                                <Col sm={2} className="text-right" className="Gray700-13px">Date Updated</Col>
                                 {/* <Col sm={4} style="text-align: right">Date Updated</Col> */}
                             </Row>
                             <Row>
                                 <Col sm={1}> </Col>
-                                <Col sm={11} className="text-left" style={{color:'#53575a'}}>Person1, person2</Col>
+                                <Col sm={11} className="text-left" className="Gray800-14px">Person1, person2</Col>
                             </Row>
                             <Row  className="mb-3">
                                 <Col sm={1}> </Col>
-                                <Col sm={2} style={{color:'#3c3c3b'}}>xx tools used:</Col> 
-                                <Col sm={9} className="text-left" style={{color:'#475da7'}}> tool1link, tool2link, tool3link
+                                <Col sm={2} className="Gray800-14px">xx tools used:</Col> 
+                                <Col sm={9} className="text-left" className="Purple-14px"> tool1link, tool2link, tool3link
                                     {/* <ListGroup horizontal>
                                         <ListGroup.Item> tool1 </ListGroup.Item>
                                         <ListGroup.Item> tool2 </ListGroup.Item>
@@ -46,9 +46,9 @@ class Project extends React.Component{
                             </Row>
                             <Row>
                                 <Col>
-                                    <Badge pill variant="light" className="mr-2" > Tag1 </Badge>
-                                    <Badge pill variant="light" className="mr-2"> Tag2 </Badge>
-                                    <Badge pill variant="light" className="mr-2"> Tag3 </Badge>
+                                    <Badge pill variant="light" className="mr-2 Gray800-14px Pill" > Tag1 </Badge>
+                                    <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag2 </Badge>
+                                    <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag3 </Badge>
                                 </Col>
                             </Row>    
                             
