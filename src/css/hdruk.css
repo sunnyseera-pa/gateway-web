@@ -4,3 +4,42 @@
     box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
     background-color: hsl(0, 0%, 100%);
   }
+
+.LandingBackground {
+  width: 1444px;
+  height: 539px;
+  background-image: linear-gradient(110deg, #50b996, #485ea7 100%);
+}
+
+#landingPageCard{
+  width: 720px;
+  height: 80px;
+  font-family: MuseoSansRounded;
+  font-size: 32px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  color: #ffffff;
+}
+
+#landingPageEmptyRow{
+  min-height: 240px;
+}
+
+#searchInputHolder{
+  height: 48px;
+  /* width: 800px; */
+  min-width: 800px;
+  width: 100%;
+}
+
+#searchInput{
+  width: 97%;
+}
+
+#searchIcon{
+  width:3%
+}
