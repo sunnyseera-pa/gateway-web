@@ -6,18 +6,28 @@ import Tool from './components/Tool';
 import Person from './components/Person';
 import queryString from 'query-string';
 
-var baseURL = 'http://localhost:3001'; // need to be moved
+var baseURL = window.location.href;
+
+if (!baseURL.includes('localhost')) {
+    var rx = /^([http|https]+\:\/\/[a-z]+)(.*)/;
+    var arr = rx.exec(baseURL);
+    if (arr.length > 0) {
+        //add -api to the sub domain for API requests
+        baseURL = arr[1]+'-api'+arr[2]
+    }
+
+} else {
+    baseURL = 'http://localhost:3001'
+}
 
 class SearchPage extends React.Component{
 
     state = {
         searchString: null,
-        data: [],
-        firstLoad: false
+        data: []
     }
 
     componentDidMount() { //fires on first time in or page is refreshed/url loaded
-        debugger
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
             this.doSearchCall(values.search);
@@ -26,7 +36,6 @@ class SearchPage extends React.Component{
     }
 
     componentWillReceiveProps() {
-        debugger
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
             if (values.search != this.state.searchString) {
@@ -41,7 +50,6 @@ class SearchPage extends React.Component{
 
     doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
-            debugger
             if (!!this.state.searchString) {
                 this.props.history.push(window.location.pathname+'?search='+this.state.searchString)
                 this.doSearchCall(this.state.searchString);
@@ -57,26 +65,24 @@ class SearchPage extends React.Component{
     }
 
     updateSearchString = (searchString) => {
-        debugger
         this.setState({ searchString: searchString});
     }
 
     render(){
-        debugger
         const { searchString, data } = this.state;
         return(
             <div>
-                <SearchBar searchString={this.state.searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} />
+                <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} />
                 
                 {data.length <= 0 ? 'NO DB ENTRIES YET': data.map((dat) => {
                     if (dat.type == 'tool') {
                         return <Tool data={dat} />
                     } 
                     else if (dat.type == 'project') {
-                        return <Project />
+                        return <Project  />
                     }
                     else if (dat.type == 'person') {
-                        return <Person />
+                        return <Person  />
                     }
                     else {
                         return null

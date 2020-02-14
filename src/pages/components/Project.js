@@ -1,16 +1,23 @@
 import React from 'react';
-import ListGroup from 'react-bootstrap/ListGroup';
-import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Badge from 'react-bootstrap/Badge';
 import Card from 'react-bootstrap/Card';
-// import {ReactComponent as ProjectIcon} from '../images/project.svg';
 import SVGIcon from "../../images/SVGIcon"
-import '../../css/hdruk.css';
 
 class Project extends React.Component{
+    constructor(props) {
+        super(props)
+        this.state.data = props.data;
+    }
+
+    // initialize our state
+    state = {
+        data: []
+    };
+
     render(){
+        const { data } = this.state;
         return(
             // <div>
             // <Container style={{width: 800}}>
@@ -25,7 +32,7 @@ class Project extends React.Component{
                             <Row className="mb-1">
                                 {/* <Col sm={1}> <ProjectIcon /> </Col> */}
                                 <Col sm={1}> <SVGIcon name="projecticon" width={20} height={24} fill={'#3db28c'} /> </Col>
-                                <Col sm={9} className="text-left " className="Black-16px" >Project Title</Col>
+                                <Col sm={9} className="text-left " className="Black-16px" >Project Name</Col>
                                 <Col sm={2} className="text-right" className="Gray700-13px">Date Updated</Col>
                                 {/* <Col sm={4} style="text-align: right">Date Updated</Col> */}
                             </Row>

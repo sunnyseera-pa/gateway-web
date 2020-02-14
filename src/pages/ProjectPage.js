@@ -10,19 +10,19 @@ import Project from './components/Project';
 import ToolsUsed from './components/ToolsUsed';
 import ToolsCreated from './components/ToolsCreated';
 
-/* 
-{"success":true,"data":[
-  {"tags":["Host","Repository"],
-  "_id":"5e3beea31c9d440000e8d49a",
-  "id":17383930,
-  "type":"tool",
-  "name":"Github GISTs",
-  "description":"Development platform to host and review code, and to manage projects to build software, as well as to share code, notes and snippets across a community developers.",
-  "rating":4,
-  "link":"https://gist.github.com/discover",
-  "_v":0}]
+var baseURL = window.location.href;
+
+if (!baseURL.includes('localhost')) {
+    var rx = /^([http|https]+\:\/\/[a-z]+)(.*)/;
+    var arr = rx.exec(baseURL);
+    if (arr.length > 0) {
+        //add -api to the sub domain for API requests
+        baseURL = arr[1]+'-api'+arr[2]
+    }
+
+} else {
+    baseURL = 'http://localhost:3001'
 }
-*/
 
 class ToolDetail extends Component {
 
@@ -57,7 +57,7 @@ class ToolDetail extends Component {
   getDataSearchFromDb = () => {
     //need to handle error if no id is found
     this.setState({ isLoading: true });
-    axios.get('http://localhost:3001/api/tool/'+this.props.match.params.toolID)
+    axios.get(baseURL+'/api/tool/'+this.props.match.params.toolID)
     .then((res) => {
       this.setState({ 
         data: res.data.data, 

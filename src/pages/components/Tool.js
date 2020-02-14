@@ -4,7 +4,6 @@ import Col from 'react-bootstrap/Col';
 import Badge from 'react-bootstrap/Badge';
 import Card from 'react-bootstrap/Card';
 import SVGIcon from "../../images/SVGIcon"
-import '../../css/hdruk.css';
 
 class Tool extends React.Component{
 
@@ -21,9 +20,8 @@ class Tool extends React.Component{
     render(){
         const { data } = this.state;
         return(
-            // <div>
             <Row className="mt-2">
-                <Col></Col>
+                <Col />
                 <Col>
                     {/* <Card bg="#ffffff" style={{ height: 196, width: 800}}> */}
                     <a style={{ cursor: 'pointer' }} href={'/tool/'+data.id} >
@@ -62,10 +60,8 @@ class Tool extends React.Component{
                     </Card>
                     </a>
             </Col>
-            <Col></Col>
+            <Col />
             </Row>
-            // </div> 
-            
         );
     }
 }
