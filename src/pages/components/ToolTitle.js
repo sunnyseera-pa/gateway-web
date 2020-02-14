@@ -1,15 +1,11 @@
 
 // /ShowObjects/Title.js
 import React, { Component } from 'react';
-import axios from 'axios';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Badge from 'react-bootstrap/Badge';
 import Card from 'react-bootstrap/Card';
 import Image from 'react-bootstrap/Image';
-import SVGIcon from "../../images/SVGIcon"
-import '../../css/hdruk.css';
-// import logo from "../../images/tableau.jpg";
 
 class ToolTitle extends Component {
 

@@ -4,11 +4,21 @@ import Col from 'react-bootstrap/Col';
 import Badge from 'react-bootstrap/Badge';
 import Card from 'react-bootstrap/Card';
 import Image from 'react-bootstrap/Image';
-import {ReactComponent as ToolIcon} from '../../images/tool.svg';
-import '../../css/hdruk.css';
+
 
 class Person extends React.Component{
+    constructor(props) {
+        super(props)
+        this.state.data = props.data;
+    }
+
+    // initialize our state
+    state = {
+        data: []
+    };
+
     render(){
+        const { data } = this.state;
         return(
              <Row className="mt-2">
              <Col></Col>
@@ -18,7 +28,7 @@ class Person extends React.Component{
                      <Card.Body>   
                          <Row className="mb-1">
                              <Col sm={1}> <Image src={require("../../images/bob.jpg")} id="Picture" roundedCircle /> </Col>
-                             <Col sm={11} className="text-left " className="Black-16px">Name</Col>
+                             <Col sm={11} className="text-left " className="Black-16px">{data.name}</Col>
                          </Row>
                          <Row>
                              <Col sm={1}> </Col>
