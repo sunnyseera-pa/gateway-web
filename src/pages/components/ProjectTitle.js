@@ -48,21 +48,18 @@ class ProjectTitle extends Component {
                 <Col>
                     <Card className="Rectangle">
                         <Card.Body>   
-                        {/* <Container> */}
                             <Row className="mb-2">
-                                <Col sm={9} className="text-left " className="Black-20px">Tool Name</Col>
-                                {/* <Col sm={2}> <Image src="../../images/tableau.jpg/152x32" /> </Col> */}
-                                {/* <Col sm={2}> <Image src={logo} /> </Col> */}
-                                <Col sm={3}> <Image src={require("../../images/tableau.jpg")} id="Logo" /> </Col>
+                                <Col sm={12} className="text-left " className="Black-20px">{name}</Col>
                             </Row>
                             <Row>
                                 <Col sm={12}>
-                                    <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag1 </Badge>
-                                    <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag2 </Badge>
+                                    <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Category? </Badge>
                                 </Col>
                             </Row>    
-                            
-                        {/* </Container> */}
+                            <Row id="projectTitleEmptyRow"></Row>
+                            <Row>
+                                <Col sm={12} className="Gray800-14px"> {description} </Col>
+                            </Row>
                         </Card.Body>
                     </Card>
                 </Col>
@@ -97,7 +94,7 @@ class ProjectTitle extends Component {
                       <Card.Body>   
                       {/* <Container> */}
                           <Row className="mb-1">
-                              <Col sm={12} className="text-left " className="Purple-14px">link goes here</Col>
+                              <Col sm={12} className="text-left " className="Purple-14px"> {link} </Col>
                           </Row>
                       {/* </Container> */}
                       </Card.Body>

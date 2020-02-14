@@ -5,10 +5,17 @@
     background-color: #ffffff;
   }
 
+.SmallCard{
+  width: 392px;
+  min-height: 72px;
+  box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
+  background-color: #ffffff;
+}
+
 .Black-16px{
-  /* width: 602px;
-  height: 19px; */
-  font-family: MuseoSansRounded;
+  /* width: 602px; */
+  /* height: 19px; */
+  font-family: Museo Sans Rounded;
   font-size: 16px;
   font-weight: bold;
   font-stretch: normal;
@@ -21,7 +28,7 @@
 .Black-20px{
   /* width: 73px;
   height: 24px; */
-  font-family: MuseoSansRounded;
+  font-family: Museo Sans Rounded;
   font-size: 20px;
   font-weight: 500;
   font-stretch: normal;
@@ -34,57 +41,57 @@
 .Gray800-14px{
   /* width: 752px;
   height: 20px; */
-  font-family: MuseoSansRounded;
+  font-family: Museo Sans Rounded;
   font-size: 14px;
   font-weight: 500;
   font-stretch: normal;
   font-style: normal;
   line-height: 1.43;
   letter-spacing: normal;
-  color: var(--gray-800);
-  /* color: #3c3c3b; */
+  /* color: var(--gray-800); */
+  color: #3c3c3b;
 }
 
 .Gray700-13px{
   /* width: 93px;
   height: 15px; */
-  font-family: MuseoSansRounded;
+  font-family: Museo Sans Rounded;
   font-size: 13px;
   font-weight: 500;
   font-stretch: normal;
   font-style: normal;
   line-height: normal;
   letter-spacing: normal;
-  color: var(--gray-700);
-  /* color: #53575a; */
+  /* color: var(--gray-700); */
+  color: #53575a;
 }
 
 .Purple-13px{
   /* width: 69px;
   height: 15px; */
-  font-family: MuseoSansRounded;
+  font-family: Museo Sans Rounded;
   font-size: 13px;
   font-weight: 500;
   font-stretch: normal;
   font-style: normal;
   line-height: normal;
   letter-spacing: normal;
-  color: var(--purple);
-  /* color: #475da7; */
+  /* color: var(--purple); */
+  color: #475da7;
 }
 
 .Purple-14px{
   /* width: 319px;
   height: 17px; */
-  font-family: MuseoSansRounded;
+  font-family: Museo Sans Rounded;
   font-size: 14px;
   font-weight: 500;
   font-stretch: normal;
   font-style: normal;
   line-height: normal;
   letter-spacing: normal;
-  color: var(--purple);
-  /* color: #475da7; */
+  /* color: var(--purple); */
+  color: #475da7;
 }
 
 .LandingBackground {
@@ -97,6 +104,25 @@
   /* width: 104px; */
   height: 25px;
   border-radius: 16px;
+}
+
+.SearchBarInput{
+  border: 0;
+  /* flex: 0.97; */
+  width: 100%;
+}
+
+.DropdownLocation{
+  /* width: 40%; */
+  /* justify-content: flex-end; */
+  /* align-content: flex-end; */
+  /* align-items: flex-end; */
+  /* right: auto; */
+  align-items: right;
+}
+
+#TagItem{
+  list-style-type: none;
 }
 
 #Logo{
@@ -117,7 +143,7 @@
 #landingPageCard{
   width: 720px;
   height: 80px;
-  font-family: MuseoSansRounded;
+  font-family: Museo Sans Rounded;
   font-size: 32px;
   font-weight: 500;
   font-stretch: normal;
@@ -132,6 +158,10 @@
   min-height: 240px;
 }
 
+#projectTitleEmptyRow{
+  min-height: 24px;
+}
+
 #searchInputHolder{
   height: 48px;
   /* width: 800px; */
@@ -139,9 +169,9 @@
   width: 100%;
 }
 
-#searchInput{
+/* #searchInput{
   width: 97%;
-}
+} */
 
 #searchIcon{
   width:3%

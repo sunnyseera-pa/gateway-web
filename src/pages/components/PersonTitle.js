@@ -16,9 +16,9 @@ class PersonTitle extends Component {
     super(props)
     this.state.id = props.id;
     this.state.type = props.type;
-    this.state.name = props.name;
-    this.state.description = props.description;
-    this.state.rating = props.rating;
+    // this.state.name = props.name;
+    // this.state.description = props.description;
+    // this.state.rating = props.rating;
     this.state.link = props.link;
   }
 
@@ -26,9 +26,9 @@ class PersonTitle extends Component {
   state = {
     id: '',
     type: '',
-    name: '',
-    description: '',
-    rating: '',
+    // name: '',
+    // description: '',
+    // rating: '',
     link: ''
   };
 
@@ -51,12 +51,12 @@ class PersonTitle extends Component {
                             <Row className="mb-2">
                                 <Col sm={10} className="text-left ">
                                    <p className="Black-20px"> Name </p> 
-                                   <p className="Gray800-14px"> Role/Qualification </p>
+                                   <p className="Gray800-14px"> Company </p>
                                 </Col>
                                 <Col sm={2}> <Image src={require("../../images/bob.jpg")} id="BigPicture" roundedCircle /> </Col>
                             </Row> 
                             <Row>
-                            <Col sm={12} className="text-left" className="Purple-14px">Link1</Col>
+                            <Col sm={12} className="text-left" className="Purple-14px">link1</Col>
                             </Row> 
                             <Row>
                             <Col sm={12} className="text-left" className="Purple-14px">Link2</Col>
@@ -67,44 +67,6 @@ class PersonTitle extends Component {
                 </Col>
                 <Col></Col>
            </Row>
-
-          <Row className="mt-0.5">
-                <Col></Col>
-                <Col>
-                  <Card className="Rectangle">
-                      <Card.Body>   
-                      {/* <Container> */}
-                          <Row>
-                              <Col sm={12}>
-                                  <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag1 </Badge>
-                                  <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag2 </Badge>
-                                  <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag3 </Badge>
-                                  <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag4 </Badge>
-                              </Col>
-                          </Row>    
-                      {/* </Container> */}
-                      </Card.Body>
-                  </Card>
-              </Col>
-             <Col></Col>
-          </Row>
-
-          <Row className="mt-0.5">
-                <Col></Col>
-                <Col>
-                  <Card className="Rectangle">
-                      <Card.Body>   
-                      {/* <Container> */}
-                          <Row className="mb-1">
-                              <Col sm={12} className="text-left " className="Purple-14px">link goes here</Col>
-                          </Row>
-                      {/* </Container> */}
-                      </Card.Body>
-                  </Card>
-              </Col>
-             <Col></Col>
-          </Row>
-
       </div>
 
     );

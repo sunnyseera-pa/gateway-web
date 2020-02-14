@@ -81,7 +81,7 @@ class ToolDetail extends Component {
     }
     
     return (
-      <div>
+      <div> 
         <PersonTitle id={id} type={type} name={name} description={description} rating={rating} link={link} />
         <Tags />
         <Reviews />

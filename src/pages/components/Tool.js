@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Badge from 'react-bootstrap/Badge';
@@ -8,7 +8,29 @@ import SVGIcon from "../../images/SVGIcon"
 import '../../css/hdruk.css';
 
 class Tool extends React.Component{
+
+    constructor(props) {
+        super(props)
+        this.state.id = props.id;
+        this.state.type = props.type;
+        this.state.name = props.name;
+        this.state.description = props.description;
+        this.state.rating = props.rating;
+        this.state.link = props.link;
+      }
+    
+      // initialize our state
+      state = {
+        id: '',
+        type: '',
+        name: '',
+        description: '',
+        rating: '',
+        link: ''
+      };
+
     render(){
+        const { id, type, name, description, rating, link } = this.state;
         return(
             // <div>
             <Row className="mt-2">
@@ -22,7 +44,7 @@ class Tool extends React.Component{
                                 {/* <Col sm={1}> <ToolIcon /> </Col> */}
                                 {/* <Col sm={1}> <ToolIcon style={{fill:'#3db28c'}}></ToolIcon> </Col> */}
                                 <Col sm={1}> <SVGIcon name="toolicon" width={18} height={18} fill={'#3db28c'} /> </Col>
-                                <Col sm={9} className="text-left " className="Black-16px">Tool Name</Col>
+                                <Col sm={9} className="text-left " className="Black-16px">Tool Name {name} </Col>
                                 <Col sm={2} className="text-right" className="Gray700-13px">Date Updated</Col>
                             </Row>
                             <Row>
