@@ -24,11 +24,12 @@ class Tool extends React.Component{
         name: '',
         description: '',
         rating: '',
-        link: ''
+        link: '',
+        data: []
       };
 
     render(){
-        const { id, type, name, description, rating, link } = this.state;
+        const { data, id, type, name, description, rating, link } = this.state;
         return(
             <Row className="mt-2">
                 <Col />
