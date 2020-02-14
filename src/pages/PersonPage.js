@@ -49,7 +49,7 @@ class ToolDetail extends Component {
 
   // on loading of tool detail page were id is different
   componentDidUpdate() {
-    if (this.props.match.params.toolID != this.state.id && this.state.id != '' && !this.state.isLoading) {
+    if (this.props.match.params.personID != this.state.id && this.state.id != '' && !this.state.isLoading) {
       this.getDataSearchFromDb();
     }
   }
@@ -57,7 +57,7 @@ class ToolDetail extends Component {
   getDataSearchFromDb = () => {
     //need to handle error if no id is found
     this.setState({ isLoading: true });
-    axios.get('http://localhost:3001/api/tool/'+this.props.match.params.toolID)
+    axios.get('http://localhost:3001/api/tool/'+this.props.match.params.personID)
     .then((res) => {
       this.setState({ 
         data: res.data.data, 

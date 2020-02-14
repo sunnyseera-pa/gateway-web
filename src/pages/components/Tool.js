@@ -4,17 +4,29 @@ import Col from 'react-bootstrap/Col';
 import Badge from 'react-bootstrap/Badge';
 import Card from 'react-bootstrap/Card';
 import SVGIcon from "../../images/SVGIcon"
-// import {ReactComponent as ToolIcon} from '../images/tool.svg';
 import '../../css/hdruk.css';
 
 class Tool extends React.Component{
+
+    constructor(props) {
+        super(props)
+        this.state.data = props.data;
+    }
+
+    // initialize our state
+    state = {
+        data: []
+    };
+
     render(){
+        const { data } = this.state;
         return(
             // <div>
             <Row className="mt-2">
                 <Col></Col>
                 <Col>
                     {/* <Card bg="#ffffff" style={{ height: 196, width: 800}}> */}
+                    <a style={{ cursor: 'pointer' }} href={'/tool/'+data.id} >
                     <Card className="Rectangle">
                         <Card.Body>   
                         {/* <Container> */}
@@ -22,7 +34,7 @@ class Tool extends React.Component{
                                 {/* <Col sm={1}> <ToolIcon /> </Col> */}
                                 {/* <Col sm={1}> <ToolIcon style={{fill:'#3db28c'}}></ToolIcon> </Col> */}
                                 <Col sm={1}> <SVGIcon name="toolicon" width={18} height={18} fill={'#3db28c'} /> </Col>
-                                <Col sm={7} className="text-left " style={{color:'#2d2d2d'}}>Tool Name</Col>
+                                <Col sm={7} className="text-left " style={{color:'#2d2d2d'}}>{data.name}</Col>
                                 <Col sm={4} className="text-right" style={{color:'#53575a'}}>Date Updated</Col>
                             </Row>
                             <Row>
@@ -48,6 +60,7 @@ class Tool extends React.Component{
                         {/* </Container> */}
                         </Card.Body>
                     </Card>
+                    </a>
             </Col>
             <Col></Col>
             </Row>

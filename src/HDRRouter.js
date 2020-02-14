@@ -31,7 +31,7 @@ class HDRRouter extends Component {
             <li>
               <Link to="/search">Search</Link>
             </li>
-            <li></li>
+            {/* <li></li>
             <li>
               <Link to="/tool/82673012">Tool</Link>
             </li>
@@ -51,7 +51,7 @@ class HDRRouter extends Component {
             </li>
             <li>
               <Link to="/person/66792833">Person</Link>
-            </li>
+            </li> */}
           </ul>
         </nav>
 
