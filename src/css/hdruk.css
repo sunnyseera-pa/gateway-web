@@ -2,13 +2,116 @@
     width: 800px;
     /* height: 181px; */
     box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
-    background-color: hsl(0, 0%, 100%);
+    background-color: #ffffff;
   }
+
+.Black-16px{
+  /* width: 602px;
+  height: 19px; */
+  font-family: MuseoSansRounded;
+  font-size: 16px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #2d2d2d;
+}
+
+.Black-20px{
+  /* width: 73px;
+  height: 24px; */
+  font-family: MuseoSansRounded;
+  font-size: 20px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #2d2d2d;
+}
+
+.Gray800-14px{
+  /* width: 752px;
+  height: 20px; */
+  font-family: MuseoSansRounded;
+  font-size: 14px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.43;
+  letter-spacing: normal;
+  color: var(--gray-800);
+  /* color: #3c3c3b; */
+}
+
+.Gray700-13px{
+  /* width: 93px;
+  height: 15px; */
+  font-family: MuseoSansRounded;
+  font-size: 13px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: var(--gray-700);
+  /* color: #53575a; */
+}
+
+.Purple-13px{
+  /* width: 69px;
+  height: 15px; */
+  font-family: MuseoSansRounded;
+  font-size: 13px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: var(--purple);
+  /* color: #475da7; */
+}
+
+.Purple-14px{
+  /* width: 319px;
+  height: 17px; */
+  font-family: MuseoSansRounded;
+  font-size: 14px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: var(--purple);
+  /* color: #475da7; */
+}
 
 .LandingBackground {
   width: 1444px;
   height: 539px;
   background-image: linear-gradient(110deg, #50b996, #485ea7 100%);
+}
+
+.Pill{
+  /* width: 104px; */
+  height: 25px;
+  border-radius: 16px;
+}
+
+#Logo{
+  width: 152px;
+  height: 32px;
+}
+
+#Picture{
+  width: 24px;
+  height: 24px;
+}
+
+#BigPicture{
+  width: 56px;
+  height: 56px;
 }
 
 #landingPageCard{
