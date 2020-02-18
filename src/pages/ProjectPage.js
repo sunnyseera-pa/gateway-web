@@ -18,7 +18,7 @@ import Col from 'react-bootstrap/Col';
 var baseURL = window.location.href;
 
 if (!baseURL.includes('localhost')) {
-    var rx = /^([http|https]+\:\/\/[a-z]+)(.*)/;
+    var rx = /^([http|https]+\:\/\/[a-z]+)([^/]*)/;
     var arr = rx.exec(baseURL);
     if (arr.length > 0) {
         //add -api to the sub domain for API requests
