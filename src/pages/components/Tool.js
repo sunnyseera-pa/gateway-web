@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Badge from 'react-bootstrap/Badge';
-import Card from 'react-bootstrap/Card';
 import SVGIcon from "../../images/SVGIcon"
-// import { ReactComponent as ToolIconSvg } from '../../images/tool.svg';
 
 class Tool extends React.Component{
 
@@ -36,51 +33,42 @@ class Tool extends React.Component{
         const { data, id, type, name, description, rating, link, tags } = this.state;
         return(
             <Row className="mt-2">
-                <Col />
-                <Col>
-                    {/* <Card bg="#ffffff" style={{ height: 196, width: 800}}> */}
-        
-                    <a style={{ cursor: 'pointer' }} href={'/tool/'+data.id} >
-                    <Card className="Rectangle">
-                        <Card.Body>   
-                        {/* <Container> */}
-                            <Row className="mb-1">
-                                {/* <Col sm={1}> <ToolIcon /> </Col> */}
-                                {/* <Col sm={1}> <ToolIcon style={{fill:'#3db28c'}}></ToolIcon> </Col> */}
-
-                                                
-                                {/* <Col sm={1}>  <ToolIconSvg /> </Col> */}
-                                <Col sm={1}> <SVGIcon name="toolicon" width={18} height={18} fill={'#3db28c'} /> </Col>
-                                <Col sm={9} className="text-left " className="Black-16px"> {name} </Col>
-                                <Col sm={2} className="text-right" className="Gray700-13px">Date Updated</Col>
-
-                            </Row>
+                <Col sm={1} lg={1} />
+                <Col sm={10} lg={10}>
+                    <a className="searchHolder" href={'/tool/' + data.id} >
+                        <div className="Rectangle">
                             <Row>
-                                <Col sm={1}> </Col>
-                                <Col sm={11} className="text-left" className="Gray800-14px">Person</Col>
-                            </Row>
-                            <Row> 
-                                <Col sm={1}> </Col>
-                                <Col sm={11} className="text-left" className="Gray800-14px"> x projects using it </Col>
-                            </Row>
-                            <Row className="mb-3"> 
-                                <Col sm={1}> </Col>
-                                <Col sm={11} className="text-left" className="Gray800-14px"> x reviews </Col>
-                            </Row>
-                            <Row>
-                                <Col>
-                                {tags.length <= 0 ? 'NO SEARCH RESULT': tags.map((tag) => {
-                                    return <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> {tag} </Badge>
-                                })}
+                                <Col xs={2} md={1} className="iconHolder">
+                                    <SVGIcon name="toolicon" width={18} height={18} fill={'#3db28c'} />
                                 </Col>
-                            </Row>    
+                                <Col xs={10} md={8}>
+                                    <p>
+                                        <span className="Black-16px">{name}</span>
+                                        <br />
+                                        <span className="Gray800-14px">Laure Santos</span>
+                                    </p>
+                                    <p className="Gray800-14px">
+                                       12 projects using it
+                                       <br />
+                                       117 reviews, 5 comments
+                                    </p>
+                                </Col>
+                                <Col xs={{span:12,order:1}} md={{span:3,order:0}} className="dateHolder mt-2">
+                                    <span className="Gray700-13px">
+                                        Updated Aug 2018
+                                    </span>
+                                </Col>
                             
-                        {/* </Container> */}
-                        </Card.Body>
-                    </Card>
+                                <Col xs={{span:12,order:0}} md={{span:12,order:1}}>
+                                    {tags.length <= 0 ? 'NO SEARCH RESULT' : tags.map((tag) => {
+                                        return <div className="mr-2 Gray800-14px tagBadges mb-2">{tag}</div>
+                                    })}
+                                </Col>
+                            </Row>
+                        </div>
                     </a>
-            </Col>
-            <Col />
+                </Col>
+                <Col sm={1} lg={10}/>
             </Row>
         );
     }

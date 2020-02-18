@@ -1,9 +1,18 @@
+body {
+  background-color: #f6f7f8;
+}
+
 .Rectangle {
-    width: 800px;
-    /* height: 181px; */
+    /* max-width: 800px; */
     box-shadow: 1px 1px 3px 0 #00000017;
     background-color: #ffffff;
-  }
+    padding: 20px;
+}
+
+.searchHolder {
+  text-decoration-line: none;
+  cursor: 'pointer';
+}
 
 .SmallCard{
   width: 392px;
@@ -24,9 +33,33 @@
   background-color: #ffffff;
 }
 
+.tagBadges {
+  display: inline-block;
+  background-color: #f3f3f3;
+  padding: 5px 10px;
+  border-radius: 16px;
+}
+
+.iconHolder {
+  text-align: right;
+  padding-top: 10px;
+}
+
+.dateHolder {
+  text-align: right;
+  padding-right: 25px;
+}
+
+.reviewStarsGap {
+  margin-left:20px
+}
+
+.reviewTitleGap {
+  margin-left:10px;
+  margin-right:10px
+}
+
 .Black-16px{
-  /* width: 602px; */
-  /* height: 19px; */
   font-family: Museo Sans Rounded;
   font-size: 16px;
   font-weight: bold;
@@ -37,9 +70,18 @@
   color: #2d2d2d;
 }
 
+.Black500-16px{
+  font-family: Museo Sans Rounded;
+  font-size: 16px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #2d2d2d;
+}
+
 .Black-20px{
-  /* width: 73px;
-  height: 24px; */
   font-family: Museo Sans Rounded;
   font-size: 20px;
   font-weight: 500;
@@ -51,8 +93,6 @@
 }
 
 .Gray800-14px{
-  /* width: 752px;
-  height: 20px; */
   font-family: Museo Sans Rounded;
   font-size: 14px;
   font-weight: 500;
@@ -60,13 +100,10 @@
   font-style: normal;
   line-height: 1.43;
   letter-spacing: normal;
-  /* color: var(--gray-800); */
   color: #3c3c3b;
 }
 
 .Gray700-13px{
-  /* width: 93px;
-  height: 15px; */
   font-family: Museo Sans Rounded;
   font-size: 13px;
   font-weight: 500;
@@ -74,7 +111,17 @@
   font-style: normal;
   line-height: normal;
   letter-spacing: normal;
-  /* color: var(--gray-700); */
+  color: #53575a;
+}
+
+.Gray500-13px{
+  font-family: Museo Sans Rounded;
+  font-size: 13px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
   color: #53575a;
 }
 
@@ -141,7 +188,6 @@
 
 #Logo{
   width: 152px;
-  height: 32px;
 }
 
 #Picture{

@@ -2,22 +2,16 @@
 // /ShowObjects.js
 import React, { Component } from 'react';
 import axios from 'axios';
-// import PersonTitle from './components/PersonTitle';
-// import ProjectTitle from './components/ProjectTitle';
-// import Tool from './components/Tool';
-// import Person from './components/Person';
-import Tags from './components/Tags';
 import Reviews from './components/Reviews';
-import Creators from './components/Creators';
 import Project from './components/Project';
-import ToolsUsed from './components/ToolsUsed';
-import ToolsCreated from './components/ToolsCreated';
 import ToolTitle from './components/ToolTitle';
 import SearchBar from './components/SearchBar';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
+import Rating from 'react-rating';
+import { ReactComponent as EmptyStarIconSvg} from '../images/starempty.svg';
+import { ReactComponent as FullStarIconSvg} from '../images/star.svg';
 
 var baseURL = window.location.href;
 
@@ -84,42 +78,42 @@ class ToolDetail extends Component {
   };
 
   render() {
-    const {id, type, name, description, rating, link, tags, isLoading } = this.state;
+    const {data, id, type, name, description, rating, link, tags, isLoading } = this.state;
     
     if (isLoading) {
       return <p>Loading ...</p>;
     }
     
     return (
-      <Container style={{width: 800}}>
+      <Container>
         <SearchBar />
         <ToolTitle id={id} type={type} name={name} description={description} rating={rating} link={link} tags={tags} />
-        {/* <Tags /> */}
-
-        {/* <div> */}
-        <Row className="mt-5">
-          {/* <Col>
-            <Card> */}
-              <Col sm={12}>
-              <span className="Black-16px">Reviews</span>
-              <span className="Gray700-13px">  ·  x reviews  ·  x average</span>
-              </Col>
-            {/* </Card>
-          </Col> */}
+        
+        <Row className="mt-4">
+          <Col sm={1} lg={1} />
+          <Col sm={10} lg={10}>
+            <span className="Black500-16px">Reviews</span>
+            <span className="Gray500-13px">
+              <span className="reviewTitleGap">·</span>
+              150 reviews
+              <span className="reviewTitleGap">·</span>
+              4.2 average</span>
+            <span className="reviewStarsGap"></span>
+            <Rating emptySymbol={<EmptyStarIconSvg />} fullSymbol={<FullStarIconSvg />} placeholderSymbol={<FullStarIconSvg />} placeholderRating={4.3} />
+          </Col>
+          <Col sm={1} lg={10} />
         </Row>
-
         <Reviews />
-        {/* </div> */}
-
-        {/* <Creators /> */}
-
-        <Row className="mt-5">
-              <Col sm={12} className="Black-16px"> Research projects using it (x) </Col>
+        
+        <Row className="mt-4">
+          <Col sm={1} lg={1} />
+          <Col sm={10} lg={10}>
+            <span className="Black500-16px">Research projects using it (5)</span>
+          </Col>
+          <Col sm={1} lg={10} />
         </Row>
-
-        <Project id={id} type={type} name={name} description={description} rating={rating} link={link} tags={tags}  />
-        {/* <ToolsUsed /> */}
-        {/* <ToolsCreated /> */}
+        <Project data={data} id={id} type={type} name={name} description={description} rating={rating} link={link} tags={tags}  />
+        
       </Container>
     );
   }

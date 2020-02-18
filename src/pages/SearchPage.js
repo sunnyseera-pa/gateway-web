@@ -12,7 +12,7 @@ import Row from 'react-bootstrap/Row';
 var baseURL = window.location.href;
 
 if (!baseURL.includes('localhost')) {
-    var rx = /^([http|https]+\:\/\/[a-z]+)(.*)/;
+    var rx = /^([http|https]+\:\/\/[a-z]+)([^/]*)/;
     var arr = rx.exec(baseURL);
     if (arr.length > 0) {
         //add -api to the sub domain for API requests
@@ -101,7 +101,7 @@ class SearchPage extends React.Component{
                         return <Project data={dat} id={dat.id} type={dat.type} name={dat.name} description={dat.description} rating={dat.rating} link={dat.link} tags={dat.tags} />
                     }
                     else if (dat.type == 'person') {
-                        return <Person  />
+                        return <Person data={dat} id={dat.id} type={dat.type} name={dat.name} description={dat.description} rating={dat.rating} link={dat.link} tags={dat.tags} />
                     }
                     else {
                         return null

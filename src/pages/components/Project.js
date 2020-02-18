@@ -1,8 +1,6 @@
 import React from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Badge from 'react-bootstrap/Badge';
-import Card from 'react-bootstrap/Card';
 import SVGIcon from "../../images/SVGIcon"
 
 class Project extends React.Component{
@@ -33,47 +31,45 @@ class Project extends React.Component{
     render(){
         const { data, id, type, name, description, rating, link, tags } = this.state;
         return(
-            // <div>
-            // <Container style={{width: 800}}>
             <Row className="mt-2">
-                <Col></Col>
-                <Col>
-                    <Card className="Rectangle">
-                        <Card.Body>   
-                        {/* <Container> */}
-                            <Row className="mb-1">
-                                <Col sm={1}> <SVGIcon name="projecticon" width={20} height={24} fill={'#3db28c'} /> </Col>
-                                <Col sm={9} className="text-left " className="Black-16px" >{name}</Col>
-                                <Col sm={2} className="text-right" className="Gray700-13px">Date Updated</Col>
-                            </Row>
+                <Col sm={1} lg={1} />
+                <Col sm={10} lg={10}>
+                    <a style={{ cursor: 'pointer' }} href={'/project/' + data.id} >
+                        <div className="Rectangle">
                             <Row>
-                                <Col sm={1}> </Col>
-                                <Col sm={11} className="text-left" className="Gray800-14px">Person1, person2</Col>
-                            </Row>
-                            <Row  className="mb-3">
-                                <Col sm={1}> </Col>
-
-                                <Col sm={11}>
-                                  <span className="Gray800-14px">xx tools used: </span>
-                                  <span className="text-left Purple-13px">tool1link, tool2link, tool3link </span>
+                                <Col xs={2} md={1} className="iconHolder">
+                                    <SVGIcon name="projecticon" width={20} height={24} fill={'#3db28c'} />
                                 </Col>
-                            </Row>
-                            <Row>
-                                <Col>
-                                {tags.length <= 0 ? 'NO SEARCH RESULT': tags.map((tag) => {
-                                    return <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> {tag} </Badge>
-                                })}
+                                <Col xs={10} md={8}>
+                                    <p>
+                                        <span className="Black-16px">{name}</span>
+                                        <br />
+                                        <span className="Gray800-14px">Suvasini Sharma, Manjari Tripathi</span>
+                                    </p>
+                                    <p className="Gray800-14px">
+                                        4 tools used 
+                                        <span className="Purple-13px ml-2">
+                                            Tableau, Alpha data parser, Panda R library, Sareen
+                                        </span>
+                                    </p>
                                 </Col>
-                            </Row>    
+                                <Col xs={{span:12,order:1}} md={{span:3,order:0}} className="dateHolder mt-2">
+                                    <span className="Gray700-13px">
+                                        Updated Aug 2018
+                                    </span>
+                                </Col>
                             
-                        {/* </Container> */}
-                        </Card.Body>
-                    </Card>
-            </Col>
-            <Col></Col>
+                                <Col xs={{span:12,order:0}} md={{span:12,order:1}}>
+                                    {tags.length <= 0 ? 'NO SEARCH RESULT' : tags.map((tag) => {
+                                        return <div className="mr-2 Gray800-14px tagBadges mb-2">{tag}</div>
+                                    })}
+                                </Col>
+                            </Row>
+                        </div>
+                    </a>
+                </Col>
+                <Col sm={1} lg={10}/>
             </Row>
-            // </Container>
-            // </div> 
         );
     }   
 }

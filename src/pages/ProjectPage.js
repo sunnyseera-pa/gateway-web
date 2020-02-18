@@ -79,7 +79,7 @@ class ProjectDetail extends Component {
   };
 
   render() {
-    const {id, type, name, description, rating, link, tags, isLoading } = this.state;
+    const {data, id, type, name, description, rating, link, tags, isLoading } = this.state;
     
     if (isLoading) {
       return <p>Loading ...</p>;
@@ -87,24 +87,35 @@ class ProjectDetail extends Component {
     
     return (
       // <div>
-      <Container style={{width: 800}}>
+      <Container>
         <SearchBar />
         <ProjectTitle id={id} type={type} name={name} description={description} rating={rating} link={link} tags={tags} />
         {/* <Tags /> */}
         {/* <Reviews /> */}
 
-        <Row className="mt-5">
-              <Col sm={12} className="Black-16px"> Authors (x) </Col>
+        <Row className="mt-4">
+          <Col sm={1} lg={1} />
+          <Col sm={10} lg={10}>
+            <span className="Black500-16px">Authors (2)</span>
+          </Col>
+          <Col sm={1} lg={10} />
         </Row>
         <Creators />
         {/* <Project /> */}
-        <Row className="mt-5">
-              <Col sm={12} className="Black-16px"> Tools created as part of this research project (x) </Col>
+        <Row className="mt-4">
+          <Col sm={1} lg={1} />
+          <Col sm={10} lg={10}>
+            <span className="Black500-16px">Tools created as part of this research project (2)</span>
+          </Col>
+          <Col sm={1} lg={10} />
         </Row>
-        <Tool />
-
-        <Row className="mt-5">
-              <Col sm={12} className="Black-16px"> Tools used (x) </Col>
+        <Tool data={data} id={id} type={type} name={name} description={description} rating={rating} link={link} tags={tags}   />
+        <Row className="mt-4">
+          <Col sm={1} lg={1} />
+          <Col sm={10} lg={10}>
+            <span className="Black500-16px">Tools used (2)</span>
+          </Col>
+          <Col sm={1} lg={10} />
         </Row>
         <ToolsUsed />
         {/* <ToolsCreated /> */}
