@@ -48,6 +48,9 @@ class SearchPage extends React.Component{
             this.doSearchCall(values.search);
             this.setState({ searchString: values.search});
         }
+        else {
+            this.doSearchCall("");
+        }
     }
 
     componentWillReceiveProps() {
@@ -60,6 +63,7 @@ class SearchPage extends React.Component{
         }
         else {
             this.setState({ data: [], searchString: '',   id: '', type: '', name: '', description: '', rating: '', link: '', tags: [], isLoading: true});
+            this.doSearchCall("");
         }
     }
 

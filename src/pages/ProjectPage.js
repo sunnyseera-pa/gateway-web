@@ -109,7 +109,7 @@ class ProjectDetail extends Component {
           </Col>
           <Col sm={1} lg={10} />
         </Row>
-        <Tool data={data} id={id} type={type} name={name} description={description} rating={rating} link={link} tags={tags}   />
+        <Tool data={data} id={id} type={type} name={name} description={description} rating={rating} link={link} tags={tags} />
         <Row className="mt-4">
           <Col sm={1} lg={1} />
           <Col sm={10} lg={10}>
@@ -117,7 +117,7 @@ class ProjectDetail extends Component {
           </Col>
           <Col sm={1} lg={10} />
         </Row>
-        <ToolsUsed />
+        <ToolsUsed data={data} id={id} type={type} name={name} description={description} rating={rating} link={link} tags={tags} />
         {/* <ToolsCreated /> */}
       </Container>
       // </div>
