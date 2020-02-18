@@ -9,32 +9,42 @@ class Project extends React.Component{
     constructor(props) {
         super(props)
         this.state.data = props.data;
+        this.state.id = props.id;
+        this.state.type = props.type;
+        this.state.name = props.name;
+        this.state.description = props.description;
+        this.state.rating = props.rating;
+        this.state.link = props.link;
+        this.state.tags = props.tags;
     }
 
     // initialize our state
     state = {
-        data: []
-    };
+        data: [],
+        id: '',
+        type: '',
+        name: '',
+        description: '',
+        rating: '',
+        link: '',
+        tags: []
+      };
 
     render(){
-        const { data } = this.state;
+        const { data, id, type, name, description, rating, link, tags } = this.state;
         return(
             // <div>
             // <Container style={{width: 800}}>
             <Row className="mt-2">
                 <Col></Col>
                 <Col>
-                    {/* <Card bg="#ffffff" style={{ height: 196, width: 800}}> */}
-                    {/* <Card class="Rectangle" bg="#ffffff" style={{minHeight: 196, width: 800}}> */}
                     <Card className="Rectangle">
                         <Card.Body>   
                         {/* <Container> */}
                             <Row className="mb-1">
-                                {/* <Col sm={1}> <ProjectIcon /> </Col> */}
                                 <Col sm={1}> <SVGIcon name="projecticon" width={20} height={24} fill={'#3db28c'} /> </Col>
-                                <Col sm={9} className="text-left " className="Black-16px" >Project Name</Col>
+                                <Col sm={9} className="text-left " className="Black-16px" >{name}</Col>
                                 <Col sm={2} className="text-right" className="Gray700-13px">Date Updated</Col>
-                                {/* <Col sm={4} style="text-align: right">Date Updated</Col> */}
                             </Row>
                             <Row>
                                 <Col sm={1}> </Col>
@@ -42,20 +52,17 @@ class Project extends React.Component{
                             </Row>
                             <Row  className="mb-3">
                                 <Col sm={1}> </Col>
-                                <Col sm={2} className="Gray800-14px">xx tools used:</Col> 
-                                <Col sm={9} className="text-left" className="Purple-14px"> tool1link, tool2link, tool3link
-                                    {/* <ListGroup horizontal>
-                                        <ListGroup.Item> tool1 </ListGroup.Item>
-                                        <ListGroup.Item> tool2 </ListGroup.Item>
-                                        <ListGroup.Item> tool3 </ListGroup.Item>
-                                    </ListGroup> */}
+
+                                <Col sm={11}>
+                                  <span className="Gray800-14px">xx tools used: </span>
+                                  <span className="text-left Purple-13px">tool1link, tool2link, tool3link </span>
                                 </Col>
                             </Row>
                             <Row>
                                 <Col>
-                                    <Badge pill variant="light" className="mr-2 Gray800-14px Pill" > Tag1 </Badge>
-                                    <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag2 </Badge>
-                                    <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag3 </Badge>
+                                {tags.length <= 0 ? 'NO SEARCH RESULT': tags.map((tag) => {
+                                    return <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> {tag} </Badge>
+                                })}
                                 </Col>
                             </Row>    
                             

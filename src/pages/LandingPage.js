@@ -6,6 +6,7 @@ import Card from 'react-bootstrap/Card';
 import SVGIcon from '../images/SVGIcon';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
+import { ReactComponent as WhiteLogoSvg } from '../../src/images/white.svg';
 
 class LandingPage extends React.Component{
     
@@ -31,7 +32,12 @@ class LandingPage extends React.Component{
 
     render(){
         return(
+    
         <Container className="LandingBackground">
+        {/* <Row style={{height: 10}}></Row> */}
+        <Row className="pt-4 pl-4">  
+        <Col sm={12}> <WhiteLogoSvg /> </Col>  
+        </Row>
         <Row id="landingPageEmptyRow"></Row>
         <Row>
             <Col sm={2}></Col>
@@ -53,38 +59,24 @@ class LandingPage extends React.Component{
                         <div id="searchInputHolder" className="form-control mr-md-2"> 
                         <Row>
 
-                        {/* <Col>
-                        <div id="searchInputHolder" class="form-control mr-md-2"> 
-                        <SVGIcon name="searchicon" width={17} height={17} fill={'#2c8267'} stroke='none' type="submit"/>
-                        <input id="searchInput" type="text" onChange={this.changeText} onKeyDown={this.doSearch} placeholder=" Search" value={this.state.searchString} style={{border: 0, flex: 0.97}}> 
-                        </ input>
-                        </div>
-                        </Col> */}
-
                         <Col sm={1}> <SVGIcon name="searchicon" width={17} height={17} fill={'#2c8267'} stroke='none' type="submit"/> </Col>
                         
-                        {/* <SVGIcon name="searchicon" width={17} height={17} fill={'#2c8267'} stroke='none' type="submit"/> */}
 
-                        {/* <input id="searchInput" type="text" placeholder=" Search" style={{border: 0, flex: 0.97}}> 
-                        </ input> */}
-
-                        <Col sm={9}>
-                        <input id="searchInput" type="text" placeholder=" Search" className="SearchBarInput"> 
+                        <Col sm={11}>
+                        <span id="SearchInputSpan">
+                        <input type="text" placeholder=" Search" className="SearchBarInput"> 
                         </ input>
-                        </Col>
-
-                        <Col sm={2} style={{float: "right"}}>
-                        {/* <Dropdown>
-                        <Dropdown.Toggle variant="white" id="dropdown-basic"> Everything </Dropdown.Toggle>
-                        <Dropdown.Menu> */}
-                        <DropdownButton id="dropdown-basic-button" variant="white" size="sm" title="Everything">
+                        </span>
+                        <span id="DropDownSpan">
+        
+                        <DropdownButton id="dropdown-basic-button" variant="light" size="sm" title="Everything">
                             <Dropdown.Item href="#/action-1"> Everything </Dropdown.Item>
                             <Dropdown.Item href="#/action-2"> Tools </Dropdown.Item>
                             <Dropdown.Item href="#/action-3"> Research Projects </Dropdown.Item>
                             <Dropdown.Item href="#/action-4"> People </Dropdown.Item>
                         </DropdownButton>
-                        {/* </Dropdown.Menu>
-                        </Dropdown> */}
+                       
+                        </span>
                         </Col>
 
                         </Row>

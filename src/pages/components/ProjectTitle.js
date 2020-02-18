@@ -17,6 +17,7 @@ class ProjectTitle extends Component {
     this.state.description = props.description;
     this.state.rating = props.rating;
     this.state.link = props.link;
+    this.state.tags = props.tags;
   }
 
   // initialize our state
@@ -26,7 +27,8 @@ class ProjectTitle extends Component {
     name: '',
     description: '',
     rating: '',
-    link: ''
+    link: '',
+    tags: []
   };
 
 
@@ -34,10 +36,8 @@ class ProjectTitle extends Component {
   // it is easy to understand their functions when you
   // see them render into our screen
   render() {
-    const { id, type, name, description, rating, link } = this.state;
+    const { id, type, name, description, rating, link, tags } = this.state;
     return (
-      // <div className="Rectangle">
-      //   <p>Title = {id} = {type}</p>
       <div>
           <Row className="mt-1">
                 <Col></Col>
@@ -49,7 +49,7 @@ class ProjectTitle extends Component {
                             </Row>
                             <Row>
                                 <Col sm={12}>
-                                    <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Category? </Badge>
+                                    <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Category </Badge>
                                 </Col>
                             </Row>    
                             <Row id="projectTitleEmptyRow"></Row>
@@ -70,10 +70,9 @@ class ProjectTitle extends Component {
                       {/* <Container> */}
                           <Row>
                               <Col sm={12}>
-                                  <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag1 </Badge>
-                                  <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag2 </Badge>
-                                  <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag3 </Badge>
-                                  <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag4 </Badge>
+                                    {tags.length <= 0 ? 'NO SEARCH RESULT': tags.map((tag) => {
+                                            return <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> {tag} </Badge>
+                                    })}
                               </Col>
                           </Row>    
                       {/* </Container> */}

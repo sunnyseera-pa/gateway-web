@@ -4,6 +4,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 // import PersonTitle from './components/PersonTitle';
 // import ProjectTitle from './components/ProjectTitle';
+// import Tool from './components/Tool';
+// import Person from './components/Person';
 import Tags from './components/Tags';
 import Reviews from './components/Reviews';
 import Creators from './components/Creators';
@@ -11,6 +13,11 @@ import Project from './components/Project';
 import ToolsUsed from './components/ToolsUsed';
 import ToolsCreated from './components/ToolsCreated';
 import ToolTitle from './components/ToolTitle';
+import SearchBar from './components/SearchBar';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Card from 'react-bootstrap/Card';
+import Container from 'react-bootstrap/Container';
 
 var baseURL = window.location.href;
 
@@ -84,15 +91,36 @@ class ToolDetail extends Component {
     }
     
     return (
-      <div>
+      <Container style={{width: 800}}>
+        <SearchBar />
         <ToolTitle id={id} type={type} name={name} description={description} rating={rating} link={link} tags={tags} />
-        <Tags />
+        {/* <Tags /> */}
+
+        {/* <div> */}
+        <Row className="mt-5">
+          {/* <Col>
+            <Card> */}
+              <Col sm={12}>
+              <span className="Black-16px">Reviews</span>
+              <span className="Gray700-13px">  ·  x reviews  ·  x average</span>
+              </Col>
+            {/* </Card>
+          </Col> */}
+        </Row>
+
         <Reviews />
-        <Creators />
-        <Project />
-        <ToolsUsed />
-        <ToolsCreated />
-      </div>
+        {/* </div> */}
+
+        {/* <Creators /> */}
+
+        <Row className="mt-5">
+              <Col sm={12} className="Black-16px"> Research projects using it (x) </Col>
+        </Row>
+
+        <Project id={id} type={type} name={name} description={description} rating={rating} link={link} tags={tags}  />
+        {/* <ToolsUsed /> */}
+        {/* <ToolsCreated /> */}
+      </Container>
     );
   }
 }

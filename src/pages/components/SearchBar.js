@@ -1,5 +1,8 @@
 import React from 'react';
-import SVGIcon from "../../images/SVGIcon"
+import SVGIcon from "../../images/SVGIcon";
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import { ReactComponent as ColourLogoSvg } from '../../images/colour.svg';
 
 class SearchBar extends React.Component{
     
@@ -27,20 +30,22 @@ class SearchBar extends React.Component{
 
     render(){
         return(
+            <Row>
+            <Col sm={4} className="mt-2 ml-2"> <ColourLogoSvg /> </Col>
+            <Col sm={5}>
             <nav class="navbar navbar-expand-md bg-white justify-content-center">
                 <div>
                     <div id="searchInputHolder" class="form-control"> 
                         
-                        
                         <SVGIcon name="searchicon" width={17} height={17} fill={'#2c8267'} stroke='none' type="submit"/>
-                        <input id="searchInput" onChange={this.changeText} onKeyDown={this.props.doSearchMethod} type="text" placeholder=" Search" value={this.props.searchString} style={{border: 0, flex: 0.97}} />
-                    
-                    
-                    
-                    
+                        <input className="SearchBarInput" onChange={this.changeText} onKeyDown={this.props.doSearchMethod} type="text" placeholder=" Search" value={this.props.searchString} style={{border: 0, flex: 0.97}} />
+                
                     </div>
                 </div>
             </nav>
+            </Col>
+            <Col sm={3}></Col>
+            </Row>
         );
     } 
 }

@@ -9,6 +9,11 @@ import Creators from './components/Creators';
 import Project from './components/Project';
 import ToolsUsed from './components/ToolsUsed';
 import ToolsCreated from './components/ToolsCreated';
+import Container from 'react-bootstrap/Container';
+import SearchBar from './components/SearchBar';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Tool from './components/Tool';
 
 var baseURL = window.location.href;
 
@@ -38,11 +43,12 @@ if (!baseURL.includes('localhost')) {
 }
 */
 
-class ToolDetail extends Component {
+class PersonDetail extends Component {
 
   // initialize our state
   state = {
     data: [],
+    tags: [],
     id: '',
     type: '',
     name: '',
@@ -71,7 +77,7 @@ class ToolDetail extends Component {
   getDataSearchFromDb = () => {
     //need to handle error if no id is found
     this.setState({ isLoading: true });
-    axios.get(baseURL+'/api/tool/'+this.props.match.params.personID)
+    axios.get(baseURL+'/api/person/'+this.props.match.params.personID)
     .then((res) => {
       this.setState({ 
         data: res.data.data, 
@@ -81,30 +87,46 @@ class ToolDetail extends Component {
         description: res.data.data[0].description,
         rating: res.data.data[0].rating,
         link: res.data.data[0].link,
+        tags: res.data.data[0].tags,
         isLoading: false 
       });
     })
   };
 
   render() {
-    const {id, type, name, description, rating, link, isLoading } = this.state;
+    const {id, type, name, description, rating, link, tags, isLoading } = this.state;
     
     if (isLoading) {
       return <p>Loading ...</p>;
     }
     
     return (
-      <div> 
+      <Container style={{width: 800}}>
+        <SearchBar />
         <PersonTitle id={id} type={type} name={name} description={description} rating={rating} link={link} />
-        <Tags />
-        <Reviews />
-        <Creators />
-        <Project />
+        {/* <Tags /> */}
+        {/* <Reviews /> */}
+        {/* <Creators /> */}
+
+        <Row className="mt-5">
+              <Col sm={12} className="Black-16px"> Tools created (x) </Col>
+        </Row>
+        <Tool />
+
+        <Row className="mt-5">
+              <Col sm={12} className="Black-16px"> Tools reviewed (x) </Col>
+        </Row>
         <ToolsUsed />
-        <ToolsCreated />
-      </div>
+        {/* <ToolsCreated /> */}
+
+        <Row className="mt-5">
+              <Col sm={12} className="Black-16px"> Research projects (x) </Col>
+        </Row>
+        <Project />
+
+     </ Container>
     );
   }
 }
 
-export default ToolDetail;
+export default PersonDetail;

@@ -60,26 +60,16 @@ class ToolTitle extends Component {
 
                             <Row>
                                 <Col sm={12}>
-                                <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> {tag} </Badge>
-                                <Badge> {tags.length} </Badge>
+                                {/* <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> {tag} {tags.length}  </Badge> */}
 
-                                {/* {2<4 ? 
-                                    (<Badge pill variant="light" className="mr-2 Gray800-14px Pill"> {tag} </Badge>) :
-                                    (<Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag2 </Badge>)
-                                } */}
+                                {tags.length <= 0 ? 'NO SEARCH RESULT': tags.map((tag) => {
+                                    return <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> {tag} </Badge>
+                                })}
 
-
-                                    {/* <ul>
-                                        {this.state.tags.map(tag => (
-                                        <li key={tag}> {tag} </li>
-                                        ))}
-                                    </ul> */}
-                            
-                                    {/* <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag2 </Badge> */}
                                 </Col>
                             </Row>    
 
-                            <Row>
+                            <Row className="mt-3">
                                 <Col className="Gray800-14px"> {description} </Col>
                             </Row>
                             
@@ -98,7 +88,12 @@ class ToolTitle extends Component {
                       {/* <Container> */}
                           <Row>
                               <Col sm={12}>
-                                  <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> {tag} </Badge>
+                              {tags.length <= 0 ? 'NO SEARCH RESULT': tags.map((tag) => {
+                                    return <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> {tag} </Badge>
+                                })}
+
+                                  {/* <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> {tag} </Badge> */}
+
                                   {/* <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag2 </Badge>
                                   <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag3 </Badge>
                                   <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag4 </Badge> */}

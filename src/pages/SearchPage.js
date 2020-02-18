@@ -5,6 +5,9 @@ import Project from './components/Project';
 import Tool from './components/Tool';
 import Person from './components/Person';
 import queryString from 'query-string';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+// import ToolTitle from './components/ToolTitle';
 
 var baseURL = window.location.href;
 
@@ -24,8 +27,20 @@ class SearchPage extends React.Component{
 
     state = {
         searchString: null,
-        data: []
+        data: [],
+        id: '',
+        type: '',
+        name: '',
+        description: '',
+        rating: '',
+        link: '',
+        tags: [],
+        isLoading: true
     }
+
+    constructor(props) {
+        super(props);
+      }
 
     componentDidMount() { //fires on first time in or page is refreshed/url loaded
         if (!!window.location.search) {
@@ -44,7 +59,7 @@ class SearchPage extends React.Component{
             }
         }
         else {
-            this.setState({ data: [], searchString: ''});
+            this.setState({ data: [], searchString: '',   id: '', type: '', name: '', description: '', rating: '', link: '', tags: [], isLoading: true});
         }
     }
 
@@ -69,17 +84,21 @@ class SearchPage extends React.Component{
     }
 
     render(){
-        const { searchString, data } = this.state;
+        const { searchString, data, id, type, name, description, rating, link, tags, isLoading} = this.state;
+
         return(
-            <div>
+            <Container className="BackgroundColour">
+                <Row className="WhiteBackground">
+        
                 <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} />
-                
+                </Row>
+
                 {data.length <= 0 ? 'NO DB ENTRIES YET': data.map((dat) => {
                     if (dat.type == 'tool') {
-                        return <Tool data={dat} />
+                        return <Tool data={dat} id={dat.id} type={dat.type} name={dat.name} description={dat.description} rating={dat.rating} link={dat.link} tags={dat.tags} />
                     } 
                     else if (dat.type == 'project') {
-                        return <Project  />
+                        return <Project data={dat} id={dat.id} type={dat.type} name={dat.name} description={dat.description} rating={dat.rating} link={dat.link} tags={dat.tags} />
                     }
                     else if (dat.type == 'person') {
                         return <Person  />
@@ -89,7 +108,7 @@ class SearchPage extends React.Component{
                     }
                 })}
 
-            </div>
+            </Container>
         );
     }
 }

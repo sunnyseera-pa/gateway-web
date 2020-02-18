@@ -48,7 +48,7 @@ class Creators extends Component {
                 <Col>
                     <Card className="SmallCard">
                         <Card.Body>   
-                            <Row className="mb-2">
+                            <Row>
                                 <Col sm={2}> <Image src={require("../../images/bob.jpg")} id="Picture" roundedCircle /> </Col>
                                 <Col sm={10} className="text-left "> 
                                     <p className="Black-16px"> name </p>

@@ -23,12 +23,11 @@ class Person extends React.Component{
              <Row className="mt-2">
              <Col></Col>
              <Col>
-                 {/* <Card bg="#ffffff" style={{ height: 196, width: 800}}> */}
                  <Card className="Rectangle">
                      <Card.Body>   
                          <Row className="mb-1">
                              <Col sm={1}> <Image src={require("../../images/bob.jpg")} id="Picture" roundedCircle /> </Col>
-                             <Col sm={11} className="text-left " className="Black-16px">{data.name}</Col>
+                             <Col sm={11} className="text-left " className="Black-16px">Name</Col>
                          </Row>
                          <Row>
                              <Col sm={1}> </Col>

@@ -9,6 +9,11 @@ import Creators from './components/Creators';
 import Project from './components/Project';
 import ToolsUsed from './components/ToolsUsed';
 import ToolsCreated from './components/ToolsCreated';
+import Container from 'react-bootstrap/Container';
+import SearchBar from './components/SearchBar';
+import Tool from './components/Tool';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 var baseURL = window.location.href;
 
@@ -24,7 +29,7 @@ if (!baseURL.includes('localhost')) {
     baseURL = 'http://localhost:3001'
 }
 
-class ToolDetail extends Component {
+class ProjectDetail extends Component {
 
   // initialize our state
   state = {
@@ -49,7 +54,7 @@ class ToolDetail extends Component {
 
   // on loading of tool detail page were id is different
   componentDidUpdate() {
-    if (this.props.match.params.toolID != this.state.id && this.state.id != '' && !this.state.isLoading) {
+    if (this.props.match.params.projectID != this.state.id && this.state.id != '' && !this.state.isLoading) {
       this.getDataSearchFromDb();
     }
   }
@@ -57,7 +62,7 @@ class ToolDetail extends Component {
   getDataSearchFromDb = () => {
     //need to handle error if no id is found
     this.setState({ isLoading: true });
-    axios.get(baseURL+'/api/tool/'+this.props.match.params.toolID)
+    axios.get(baseURL+'/api/project/'+this.props.match.params.projectID)
     .then((res) => {
       this.setState({ 
         data: res.data.data, 
@@ -67,30 +72,46 @@ class ToolDetail extends Component {
         description: res.data.data[0].description,
         rating: res.data.data[0].rating,
         link: res.data.data[0].link,
+        tags: res.data.data[0].tags,
         isLoading: false 
       });
     })
   };
 
   render() {
-    const {id, type, name, description, rating, link, isLoading } = this.state;
+    const {id, type, name, description, rating, link, tags, isLoading } = this.state;
     
     if (isLoading) {
       return <p>Loading ...</p>;
     }
     
     return (
-      <div>
-        <ProjectTitle id={id} type={type} name={name} description={description} rating={rating} link={link} />
-        <Tags />
-        <Reviews />
+      // <div>
+      <Container style={{width: 800}}>
+        <SearchBar />
+        <ProjectTitle id={id} type={type} name={name} description={description} rating={rating} link={link} tags={tags} />
+        {/* <Tags /> */}
+        {/* <Reviews /> */}
+
+        <Row className="mt-5">
+              <Col sm={12} className="Black-16px"> Authors (x) </Col>
+        </Row>
         <Creators />
-        <Project />
+        {/* <Project /> */}
+        <Row className="mt-5">
+              <Col sm={12} className="Black-16px"> Tools created as part of this research project (x) </Col>
+        </Row>
+        <Tool />
+
+        <Row className="mt-5">
+              <Col sm={12} className="Black-16px"> Tools used (x) </Col>
+        </Row>
         <ToolsUsed />
-        <ToolsCreated />
-      </div>
+        {/* <ToolsCreated /> */}
+      </Container>
+      // </div>
     );
   }
 }
 
-export default ToolDetail;
+export default ProjectDetail;

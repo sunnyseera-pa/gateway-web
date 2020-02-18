@@ -22,7 +22,8 @@ class HDRRouter extends Component {
       <Router>
       <div>
         
-        <nav> {/* Quick links */}
+        {/* Quick links */}
+        <nav> 
               <Link to="/">Landing</Link>
                - 
               <Link to="/search">Search</Link>
