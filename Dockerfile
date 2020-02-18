@@ -11,6 +11,6 @@ RUN npm run build
 FROM nginx:latest
 COPY --from=build /app/build /usr/share/nginx/html
 RUN sed 's/80/8080/g' -i /etc/nginx/conf.d/*
-RUN sed -i 's/try_files.*/try_files $uri \/index.html;/g' /etc/nginx/conf.d/*
+RUN sed -i 's/try_files.*/try_files $uri \/index.html;/g' /etc/nginx/sites-available/default
 EXPOSE 8080
 CMD [ "nginx", "-g", "daemon off;"]
