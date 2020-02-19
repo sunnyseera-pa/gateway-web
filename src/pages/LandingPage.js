@@ -2,10 +2,7 @@ import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Row  from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Card from 'react-bootstrap/Card';
 import SVGIcon from '../images/SVGIcon';
-import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
 import { ReactComponent as WhiteLogoSvg } from '../../src/images/white.svg';
 
 class LandingPage extends React.Component{
@@ -38,7 +35,6 @@ class LandingPage extends React.Component{
                     <Col sm={12}> <WhiteLogoSvg /> </Col>
                 </Row>
                 <Container>
-                
                     <Row id="landingPageEmptyRow"></Row>
                     <Row>
                         <Col sm={2} />

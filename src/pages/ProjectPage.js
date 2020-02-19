@@ -3,12 +3,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import ProjectTitle from './components/ProjectTitle';
-import Tags from './components/Tags';
-import Reviews from './components/Reviews';
 import Creators from './components/Creators';
-import Project from './components/Project';
 import ToolsUsed from './components/ToolsUsed';
-import ToolsCreated from './components/ToolsCreated';
 import Container from 'react-bootstrap/Container';
 import SearchBar from './components/SearchBar';
 import Tool from './components/Tool';
@@ -30,7 +26,6 @@ if (!baseURL.includes('localhost')) {
 }
 
 class ProjectDetail extends Component {
-
   // initialize our state
   state = {
     id: '',
@@ -75,41 +70,36 @@ class ProjectDetail extends Component {
     }
     
     return (
-      // <div>
-      <Container>
+      <div>
         <SearchBar />
-        <ProjectTitle data={data} />
-        {/* <Tags /> */}
-        {/* <Reviews /> */}
-
-        <Row className="mt-4">
-          <Col sm={1} lg={1} />
-          <Col sm={10} lg={10}>
-            <span className="Black500-16px">Authors (2)</span>
-          </Col>
-          <Col sm={1} lg={10} />
-        </Row>
-        <Creators />
-        {/* <Project /> */}
-        <Row className="mt-4">
-          <Col sm={1} lg={1} />
-          <Col sm={10} lg={10}>
-            <span className="Black500-16px">Tools created as part of this research project (2)</span>
-          </Col>
-          <Col sm={1} lg={10} />
-        </Row>
-        <Tool data={data} />
-        <Row className="mt-4">
-          <Col sm={1} lg={1} />
-          <Col sm={10} lg={10}>
-            <span className="Black500-16px">Tools used (2)</span>
-          </Col>
-          <Col sm={1} lg={10} />
-        </Row>
-        <ToolsUsed data={data} />
-        {/* <ToolsCreated /> */}
-      </Container>
-      // </div>
+        <Container className="mb-5">
+          <ProjectTitle data={data} />
+          <Row className="mt-4">
+            <Col sm={1} lg={1} />
+            <Col sm={10} lg={10}>
+              <span className="Black500-16px">Authors (2)</span>
+            </Col>
+            <Col sm={1} lg={10} />
+          </Row>
+          <Creators data={data} />
+          <Row className="mt-4">
+            <Col sm={1} lg={1} />
+            <Col sm={10} lg={10}>
+              <span className="Black500-16px">Tools created as part of this research project (2)</span>
+            </Col>
+            <Col sm={1} lg={10} />
+          </Row>
+          <Tool data={data} />
+          <Row className="mt-4">
+            <Col sm={1} lg={1} />
+            <Col sm={10} lg={10}>
+              <span className="Black500-16px">Tools used (2)</span>
+            </Col>
+            <Col sm={1} lg={10} />
+          </Row>
+          <ToolsUsed data={data} />
+        </Container>
+      </div>
     );
   }
 }

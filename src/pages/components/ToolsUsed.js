@@ -12,23 +12,12 @@ class ToolsUsed extends Component {
 
   constructor(props) {
     super(props)
-    this.state.id = props.id;
-    this.state.type = props.type;
-    this.state.name = props.name;
-    this.state.description = props.description;
-    this.state.rating = props.rating;
-    this.state.link = props.link;
+    this.state.data = props.data;
   }
 
   // initialize our state
   state = {
-       id: '',
-        type: '',
-        name: '',
-        description: '',
-        rating: '',
-        link: '',
-        data: []
+    data: []
   };
 
 
@@ -36,7 +25,10 @@ class ToolsUsed extends Component {
   // it is easy to understand their functions when you
   // see them render into our screen
   render() {
-    const { data, id, type, name, description, rating, link } = this.state;
+    const { data } = this.state;
+
+    var shortName = data.name.replace(/(.{50})..+/, "$1…");
+
     return (
       <Row className="mt-2">
         <Col sm={1} lg={1} />
@@ -49,7 +41,13 @@ class ToolsUsed extends Component {
                         </Col>
                         <Col xs={10} md={11}>
                             <p>
-                                <span className="Black-16px">{name}</span>
+                                <span className="Black-16px">{shortName}</span>
+                                <span className="Gray500-13px">
+                                  <span className="reviewTitleGap">·</span>
+                                  150 reviews
+                                  <span className="reviewTitleGap">·</span>
+                                  4.2 average
+                                </span>
                             </p>
                             
                         </Col>

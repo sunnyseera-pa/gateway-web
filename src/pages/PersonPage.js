@@ -91,7 +91,7 @@ class PersonDetail extends Component {
       <div>
       {/* <Container style={{width: 800}}> */}
         <SearchBar />
-        <Container style={{width: 800}}>
+        <Container className="mb-5">
         <PersonTitle data={data} />
         {/* <Tags /> */}
         {/* <Reviews /> */}
@@ -105,7 +105,7 @@ class PersonDetail extends Component {
         <Row className="mt-5">
               <Col sm={12} className="Black-16px"> Tools reviewed (x) </Col>
         </Row>
-        <ToolsUsed />
+        <ToolsUsed data={data} />
         {/* <ToolsCreated /> */}
 
         <Row className="mt-5">

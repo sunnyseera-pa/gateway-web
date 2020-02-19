@@ -35,12 +35,12 @@ class ProjectTitle extends Component {
                                 </p>
                                 
                                 {data.tags.length <= 0 ? 'NO SEARCH RESULT' : data.tags.map((tag) => {
-                                    return <div className="mr-2 Gray800-14px tagBadges mb-3 mt-2">{tag}</div>
+                                    return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{tag}</div>
                                 })}
                             </Col>
-                            <Col xs={12} md={12} className="mb-3">
+                            <Col xs={12} md={12} className="mb-2 mt-2">
                                 <span className="Gray800-14px">
-                                The ketogenic diet is a medically supervised high-fat, low-carbohydrate diet that has been found useful in patients with refractory epilepsy. It has been shown to be effective in treating multiple seizure types and epilepsy syndromes. In this paper, we review the use of the ketogenic diet in epileptic encephalopathies such as Ohtahara syndrome, West syndrome, Dravet syndrome, epilepsy with myoclonic atonic seizures, and Lennox-Gastaut syndrome.
+                                {data.description}
                                 </span>
                             </Col>
                         </Row>    
@@ -55,7 +55,7 @@ class ProjectTitle extends Component {
                         <Row>
                             <Col xs={12} md={12}>
                                 {data.tags.length <= 0 ? 'NO SEARCH RESULT' : data.tags.map((tag) => {
-                                    return <div className="mr-2 Gray800-14px tagBadges">{tag}</div>
+                                    return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{tag}</div>
                                 })}
                             </Col>
                         </Row>

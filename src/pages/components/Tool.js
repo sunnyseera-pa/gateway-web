@@ -47,7 +47,7 @@ class Tool extends React.Component{
                             
                                 <Col xs={{span:12,order:0}} md={{span:12,order:1}}>
                                     { data.tags.length <= 0 ? 'NO SEARCH RESULT' :  data.tags.map((tag) => {
-                                        return <div className="mr-2 Gray800-14px tagBadges mb-2">{tag}</div>
+                                        return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{tag}</div>
                                     })}
                                 </Col>
                             </Row>

@@ -72,36 +72,39 @@ class ToolDetail extends Component {
     }
     
     return (
-      <Container>
+      <div>
         <SearchBar />
-        <ToolTitle data={data} />
-        
-        <Row className="mt-4">
-          <Col sm={1} lg={1} />
-          <Col sm={10} lg={10}>
-            <span className="Black500-16px">Reviews</span>
-            <span className="Gray500-13px">
-              <span className="reviewTitleGap">·</span>
-              150 reviews
-              <span className="reviewTitleGap">·</span>
-              4.2 average</span>
-            <span className="reviewStarsGap"></span>
-            <Rating emptySymbol={<EmptyStarIconSvg />} fullSymbol={<FullStarIconSvg />} placeholderSymbol={<FullStarIconSvg />} placeholderRating={4.3} />
-          </Col>
-          <Col sm={1} lg={10} />
-        </Row>
-        <Reviews />
-        
-        <Row className="mt-4">
-          <Col sm={1} lg={1} />
-          <Col sm={10} lg={10}>
-            <span className="Black500-16px">Research projects using it (5)</span>
-          </Col>
-          <Col sm={1} lg={10} />
-        </Row>
-        <Project data={data}  />
-        
-      </Container>
+        <Container className="mb-5">
+          <ToolTitle data={data} />
+          
+          <Row className="mt-4">
+            <Col sm={1} lg={1} />
+            <Col sm={10} lg={10}>
+              <span className="Black500-16px">Reviews</span>
+              <span className="Gray500-13px">
+                <span className="reviewTitleGap">·</span>
+                150 reviews
+                <span className="reviewTitleGap">·</span>
+                4.2 average
+              </span>
+              <span className="reviewStarsGap"></span>
+              <Rating emptySymbol={<EmptyStarIconSvg />} fullSymbol={<FullStarIconSvg />} placeholderSymbol={<FullStarIconSvg />} placeholderRating={4.3} />
+            </Col>
+            <Col sm={1} lg={10} />
+          </Row>
+          <Reviews />
+          
+          <Row className="mt-4">
+            <Col sm={1} lg={1} />
+            <Col sm={10} lg={10}>
+              <span className="Black500-16px">Research projects using it (5)</span>
+            </Col>
+            <Col sm={1} lg={10} />
+          </Row>
+          <Project data={data}  />
+          
+        </Container>
+      </div>
     );
   }
 }

@@ -96,29 +96,26 @@ class SearchPage extends React.Component{
 
         return(
             <div>
-            <Container className="BackgroundColour">
-                <Row className="WhiteBackground">
-        
                 <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} />
-                </Row>
 
-                {data.length <= 0 ? 'NO DB ENTRIES YET': data.map((dat) => {
-                    if (dat.type == 'tool') {
-                        return <Tool data={dat} />
-                    } 
-                    else if (dat.type == 'project') {
-                        return <Project data={dat} />
-                    }
-                    else if (dat.type == 'person') {
-                        return <Person data={dat} />
-                    }
-                    else {
-                        return null
-                    }
-                })}
+                <Container>
+                    {data.length <= 0 ? 'NO DB ENTRIES YET': data.map((dat) => {
+                        if (dat.type == 'tool') {
+                            return <Tool data={dat} />
+                        } 
+                        else if (dat.type == 'project') {
+                            return <Project data={dat} />
+                        }
+                        else if (dat.type == 'person') {
+                            return <Person data={dat} />
+                        }
+                        else {
+                            return null
+                        }
+                    })}
 
-            </Container>
-            <FilterButtons doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString}/>
+                </Container>
+                <FilterButtons doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString}/>
             </div>
         );
     }
