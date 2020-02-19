@@ -31,14 +31,8 @@ class ToolDetail extends Component {
 
   // initialize our state
   state = {
-    data: [],
     id: '',
-    type: '',
-    name: '',
-    description: '',
-    rating: '',
-    link: '',
-    tags: [],
+    data: [],
     isLoading: true
   };
 
@@ -64,21 +58,14 @@ class ToolDetail extends Component {
     axios.get(baseURL+'/api/tool/'+this.props.match.params.toolID)
     .then((res) => {
       this.setState({ 
-        data: res.data.data, 
-        id: res.data.data[0].id, 
-        type: res.data.data[0].type,
-        name: res.data.data[0].name,
-        description: res.data.data[0].description,
-        rating: res.data.data[0].rating,
-        link: res.data.data[0].link,
-        tags: res.data.data[0].tags,
+        data: res.data.data[0],
         isLoading: false 
       });
     })
   };
 
   render() {
-    const {data, id, type, name, description, rating, link, tags, isLoading } = this.state;
+    const {data, isLoading } = this.state;
     
     if (isLoading) {
       return <p>Loading ...</p>;
@@ -87,7 +74,7 @@ class ToolDetail extends Component {
     return (
       <Container>
         <SearchBar />
-        <ToolTitle id={id} type={type} name={name} description={description} rating={rating} link={link} tags={tags} />
+        <ToolTitle data={data} />
         
         <Row className="mt-4">
           <Col sm={1} lg={1} />
@@ -112,7 +99,7 @@ class ToolDetail extends Component {
           </Col>
           <Col sm={1} lg={10} />
         </Row>
-        <Project data={data} id={id} type={type} name={name} description={description} rating={rating} link={link} tags={tags}  />
+        <Project data={data}  />
         
       </Container>
     );

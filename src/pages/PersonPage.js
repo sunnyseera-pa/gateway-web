@@ -47,14 +47,8 @@ class PersonDetail extends Component {
 
   // initialize our state
   state = {
-    data: [],
-    tags: [],
     id: '',
-    type: '',
-    name: '',
-    description: '',
-    rating: '',
-    link: '',
+    data: [],
     isLoading: true
   };
 
@@ -65,8 +59,6 @@ class PersonDetail extends Component {
   // on loading of tool detail page
   componentDidMount() {
     this.getDataSearchFromDb();
-
-    document.body.style.backgroundColor = "#f6f7f8";
   }
 
   // on loading of tool detail page were id is different
@@ -82,21 +74,14 @@ class PersonDetail extends Component {
     axios.get(baseURL+'/api/person/'+this.props.match.params.personID)
     .then((res) => {
       this.setState({ 
-        data: res.data.data, 
-        id: res.data.data[0].id, 
-        type: res.data.data[0].type,
-        name: res.data.data[0].name,
-        description: res.data.data[0].description,
-        rating: res.data.data[0].rating,
-        link: res.data.data[0].link,
-        tags: res.data.data[0].tags,
+        data: res.data.data[0],
         isLoading: false 
       });
     })
   };
 
   render() {
-    const {id, type, name, description, rating, link, tags, isLoading } = this.state;
+    const {data, isLoading } = this.state;
     
     if (isLoading) {
       return <p>Loading ...</p>;
@@ -107,7 +92,7 @@ class PersonDetail extends Component {
       {/* <Container style={{width: 800}}> */}
         <SearchBar />
         <Container style={{width: 800}}>
-        <PersonTitle id={id} type={type} name={name} description={description} rating={rating} link={link} />
+        <PersonTitle data={data} />
         {/* <Tags /> */}
         {/* <Reviews /> */}
         {/* <Creators /> */}
@@ -115,7 +100,7 @@ class PersonDetail extends Component {
         <Row className="mt-5">
               <Col sm={12} className="Black-16px"> Tools created (x) </Col>
         </Row>
-        <Tool />
+        <Tool data={data} />
 
         <Row className="mt-5">
               <Col sm={12} className="Black-16px"> Tools reviewed (x) </Col>
@@ -126,7 +111,7 @@ class PersonDetail extends Component {
         <Row className="mt-5">
               <Col sm={12} className="Black-16px"> Research projects (x) </Col>
         </Row>
-        <Project />
+        <Project data={data} />
 
      </ Container>
      </div>
