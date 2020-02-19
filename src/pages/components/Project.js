@@ -40,7 +40,7 @@ class Project extends React.Component{
                                 <Col xs={2} md={1} className="iconHolder">
                                     <SVGIcon name="projecticon" width={20} height={24} fill={'#3db28c'} />
                                 </Col>
-                                <Col xs={10} md={8}>
+                                <Col xs={10} md={9}>
                                     <p>
                                         <span className="Black-16px">{name}</span>
                                         <br />
@@ -53,7 +53,7 @@ class Project extends React.Component{
                                         </span>
                                     </p>
                                 </Col>
-                                <Col xs={{span:12,order:1}} md={{span:3,order:0}} className="dateHolder mt-2">
+                                <Col xs={{span:12,order:1}} md={{span:2,order:0}} className="dateHolder mt-2">
                                     <span className="Gray700-13px">
                                         Updated Aug 2018
                                     </span>
