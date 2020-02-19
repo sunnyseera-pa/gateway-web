@@ -29,13 +29,6 @@ class SearchPage extends React.Component{
     state = {
         searchString: null,
         data: [],
-        id: '',
-        type: '',
-        name: '',
-        description: '',
-        rating: '',
-        link: '',
-        tags: [],
         isLoading: true
     }
 
@@ -99,7 +92,7 @@ class SearchPage extends React.Component{
 
 
     render(){
-        const { searchString, data, id, type, name, description, rating, link, tags, isLoading} = this.state;
+        const { searchString, data} = this.state;
 
         return(
             <div>
@@ -111,13 +104,13 @@ class SearchPage extends React.Component{
 
                 {data.length <= 0 ? 'NO DB ENTRIES YET': data.map((dat) => {
                     if (dat.type == 'tool') {
-                        return <Tool data={dat} id={dat.id} type={dat.type} name={dat.name} description={dat.description} rating={dat.rating} link={dat.link} tags={dat.tags} />
+                        return <Tool data={dat} />
                     } 
                     else if (dat.type == 'project') {
-                        return <Project data={dat} id={dat.id} type={dat.type} name={dat.name} description={dat.description} rating={dat.rating} link={dat.link} tags={dat.tags} />
+                        return <Project data={dat} />
                     }
                     else if (dat.type == 'person') {
-                        return <Person data={dat} id={dat.id} type={dat.type} name={dat.name} description={dat.description} rating={dat.rating} link={dat.link} tags={dat.tags} />
+                        return <Person data={dat} />
                     }
                     else {
                         return null
