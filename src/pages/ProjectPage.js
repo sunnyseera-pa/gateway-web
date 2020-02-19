@@ -50,6 +50,8 @@ class ProjectDetail extends Component {
   // on loading of tool detail page
   componentDidMount() {
     this.getDataSearchFromDb();
+
+    document.body.style.backgroundColor = "#f6f7f8";
   }
 
   // on loading of tool detail page were id is different
@@ -86,9 +88,10 @@ class ProjectDetail extends Component {
     }
     
     return (
-      // <div>
-      <Container style={{width: 800}}>
+      <div>
+      {/* <Container style={{width: 800}}> */}
         <SearchBar />
+        <Container style={{width: 800}}>
         <ProjectTitle id={id} type={type} name={name} description={description} rating={rating} link={link} tags={tags} />
         {/* <Tags /> */}
         {/* <Reviews /> */}
@@ -109,7 +112,7 @@ class ProjectDetail extends Component {
         <ToolsUsed />
         {/* <ToolsCreated /> */}
       </Container>
-      // </div>
+     </div>
     );
   }
 }

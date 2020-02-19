@@ -55,6 +55,8 @@ class ToolDetail extends Component {
   // on loading of tool detail page
   componentDidMount() {
     this.getDataSearchFromDb();
+
+    document.body.style.backgroundColor = "#f6f7f8";
   }
 
   // on loading of tool detail page were id is different
@@ -91,8 +93,10 @@ class ToolDetail extends Component {
     }
     
     return (
-      <Container style={{width: 800}}>
+      <div>
+      {/* <Container style={{width: 800}}> */}
         <SearchBar />
+        <Container style={{width: 800}}>
         <ToolTitle id={id} type={type} name={name} description={description} rating={rating} link={link} tags={tags} />
         {/* <Tags /> */}
 
@@ -121,6 +125,7 @@ class ToolDetail extends Component {
         {/* <ToolsUsed /> */}
         {/* <ToolsCreated /> */}
       </Container>
+      </div>
     );
   }
 }
