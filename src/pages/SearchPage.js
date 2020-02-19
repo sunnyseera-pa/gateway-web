@@ -8,6 +8,7 @@ import queryString from 'query-string';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 // import ToolTitle from './components/ToolTitle';
+import FilterButtons from './components/FilterButtons';
 
 var baseURL = window.location.href;
 
@@ -71,13 +72,18 @@ class SearchPage extends React.Component{
         if (e.key === 'Enter') {
             if (!!this.state.searchString) {
                 this.props.history.push(window.location.pathname+'?search='+this.state.searchString)
-                this.doSearchCall(this.state.searchString);
+                this.doSearchCall(this.state.searchString, this.state.typeString);
             }
         }
     }
     
-    doSearchCall(searchString) {
-        axios.get(baseURL+'/api/search?search='+searchString)
+    callTypeString = (typeString) =>{ 
+        this.doSearchCall(this.state.searchString, typeString);
+    }
+
+    doSearchCall(searchString, typeString) {
+        axios.get(baseURL+'/api/search?search='+searchString + '&type='+ typeString)
+
         .then((res) => {
             this.setState({ data: res.data.data });
         });
@@ -87,10 +93,16 @@ class SearchPage extends React.Component{
         this.setState({ searchString: searchString});
     }
 
+    updateTypeString = (typeString) =>{
+        this.setState({ typeString: typeString});
+    }
+
+
     render(){
         const { searchString, data, id, type, name, description, rating, link, tags, isLoading} = this.state;
 
         return(
+            <div>
             <Container className="BackgroundColour">
                 <Row className="WhiteBackground">
         
@@ -113,6 +125,8 @@ class SearchPage extends React.Component{
                 })}
 
             </Container>
+            <FilterButtons doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString}/>
+            </div>
         );
     }
 }

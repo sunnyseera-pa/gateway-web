@@ -16,6 +16,8 @@ class LandingPage extends React.Component{
 
     componentDidMount() {
         this.setState({ searchString: ''});
+
+        // document.body.style.backgroundImage="linear-gradient(110deg, #50b996, #485ea7 100%)";
     }
 
     doSearch = (e) => { //fires on enter on searchbar
@@ -32,8 +34,9 @@ class LandingPage extends React.Component{
 
     render(){
         return(
-    
+        // <div id="LandingWholePage">
         <Container className="LandingBackground">
+         {/* <Container> */}
         {/* <Row style={{height: 10}}></Row> */}
         <Row className="pt-4 pl-4">  
         <Col sm={12}> <WhiteLogoSvg /> </Col>  
@@ -54,20 +57,23 @@ class LandingPage extends React.Component{
 
 
         {/* <Row> */}
+
             <Col sm={12}>
                     <div>
                         <div id="searchInputHolder" className="form-control mr-md-2"> 
                         <Row>
 
-                        <Col sm={1}> <SVGIcon name="searchicon" width={17} height={17} fill={'#2c8267'} stroke='none' type="submit"/> </Col>
+                        <Col sm={12}> 
+                        <SVGIcon name="searchicon" width={17} height={17} fill={'#2c8267'} stroke='none' type="submit" className="ml-1 mr-1 mt-1"/>
+                         {/* </Col> */}
                         
 
-                        <Col sm={11}>
-                        <span id="SearchInputSpan">
-                        <input type="text" placeholder=" Search" className="SearchBarInput"> 
+                        {/* <Col sm={11}> */}
+                        <span>
+                        <input type="text" placeholder=" Search" className="SearchBarInput" id="SearchInputSpan"> 
                         </ input>
                         </span>
-                        <span id="DropDownSpan">
+                        {/* <span id="DropDownSpan">
         
                         <DropdownButton id="dropdown-basic-button" variant="light" size="sm" title="Everything">
                             <Dropdown.Item href="#/action-1"> Everything </Dropdown.Item>
@@ -76,7 +82,7 @@ class LandingPage extends React.Component{
                             <Dropdown.Item href="#/action-4"> People </Dropdown.Item>
                         </DropdownButton>
                        
-                        </span>
+                        </span> */}
                         </Col>
 
                         </Row>
@@ -85,8 +91,10 @@ class LandingPage extends React.Component{
                         </div>
                     
                 </Col>
+
         {/* </Row> */}
         </Container>
+        // </div>
 
        
         );

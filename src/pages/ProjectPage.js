@@ -50,6 +50,7 @@ class ProjectDetail extends Component {
   // on loading of tool detail page
   componentDidMount() {
     this.getDataSearchFromDb();
+    
   }
 
   // on loading of tool detail page were id is different

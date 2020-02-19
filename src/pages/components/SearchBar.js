@@ -3,9 +3,13 @@ import SVGIcon from "../../images/SVGIcon";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { ReactComponent as ColourLogoSvg } from '../../images/colour.svg';
+import {ReactComponent as ClearButtonSvg} from '../../images/clear.svg';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Tool from '../components/Tool';
 
 class SearchBar extends React.Component{
-    
+
     state = {
         textValue : ''
     }
@@ -30,22 +34,34 @@ class SearchBar extends React.Component{
 
     render(){
         return(
-            <Row>
-            <Col sm={4} className="mt-2 ml-2"> <ColourLogoSvg /> </Col>
-            <Col sm={5}>
-            <nav class="navbar navbar-expand-md bg-white justify-content-center">
-                <div>
-                    <div id="searchInputHolder" class="form-control"> 
+            // <nav className="navbar bg-white pt-3 pb-2">
+                <Row className="WhiteBackground">
+                    <Col sm={4} className="mt-2 ml-4"> <ColourLogoSvg /> </Col>
+                    <Col sm={7} >
+                        <div>
+                            <div id="searchInputHolder" className="form-control"> 
+                                <Row>
+                                    <Col sm={1}> 
+                                        <SVGIcon name="searchicon" width={17} height={17} fill={'#2c8267'} stroke='none' type="submit" className="ml-1 mr-1 mt-2" /> 
+                                    </Col>
                         
-                        <SVGIcon name="searchicon" width={17} height={17} fill={'#2c8267'} stroke='none' type="submit"/>
-                        <input className="SearchBarInput" onChange={this.changeText} onKeyDown={this.props.doSearchMethod} type="text" placeholder=" Search" value={this.props.searchString} style={{border: 0, flex: 0.97}} />
-                
-                    </div>
-                </div>
-            </nav>
-            </Col>
-            <Col sm={3}></Col>
-            </Row>
+                                    <Col sm={10}>
+                                        <span>
+                                            <input type="text" placeholder=" Search" className="SearchBarInput" id="NavSearchInputSpan" onChange={this.changeText} onKeyDown={this.props.doSearchMethod} value={this.props.searchString}> 
+                                            </ input>
+                                        </span>
+                                    </Col>
+
+                                    <Col sm={1} className="mt-2"> 
+                                        <ClearButtonSvg />
+                                    </Col>
+
+                                </Row>
+                            </div>
+                        </div>
+                    </Col>
+                </Row>
+            // </nav>
         );
     } 
 }

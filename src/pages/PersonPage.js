@@ -65,6 +65,8 @@ class PersonDetail extends Component {
   // on loading of tool detail page
   componentDidMount() {
     this.getDataSearchFromDb();
+
+    document.body.style.backgroundColor = "#f6f7f8";
   }
 
   // on loading of tool detail page were id is different
@@ -101,8 +103,10 @@ class PersonDetail extends Component {
     }
     
     return (
-      <Container style={{width: 800}}>
+      <div>
+      {/* <Container style={{width: 800}}> */}
         <SearchBar />
+        <Container style={{width: 800}}>
         <PersonTitle id={id} type={type} name={name} description={description} rating={rating} link={link} />
         {/* <Tags /> */}
         {/* <Reviews /> */}
@@ -125,6 +129,7 @@ class PersonDetail extends Component {
         <Project />
 
      </ Container>
+     </div>
     );
   }
 }
