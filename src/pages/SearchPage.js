@@ -7,6 +7,7 @@ import Person from './components/Person';
 import queryString from 'query-string';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col'; 
 // import ToolTitle from './components/ToolTitle';
 import FilterButtons from './components/FilterButtons';
 
@@ -28,6 +29,7 @@ class SearchPage extends React.Component{
 
     state = {
         searchString: null,
+        typeString: null,
         data: [],
         isLoading: true
     }
@@ -63,14 +65,19 @@ class SearchPage extends React.Component{
 
     doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
-            if (!!this.state.searchString) {
-                this.props.history.push(window.location.pathname+'?search='+this.state.searchString)
+            if (!!this.state.searchString && !!this.state.typeString) {
+                this.props.history.push(window.location.pathname+'?search='+this.state.searchString + '&type='+ this.state.typeString)
                 this.doSearchCall(this.state.searchString, this.state.typeString);
+            }
+            else if(!!this.state.searchString && !this.state.typeString){
+                this.props.history.push(window.location.pathname+'?search='+this.state.searchString + '&type=')
+                this.doSearchCall(this.state.searchString, "");
             }
         }
     }
     
     callTypeString = (typeString) =>{ 
+        this.props.history.push(window.location.pathname+'?search='+this.state.searchString + '&type='+ typeString)
         this.doSearchCall(this.state.searchString, typeString);
     }
 
@@ -92,34 +99,40 @@ class SearchPage extends React.Component{
 
 
     render(){
-        const { searchString, data} = this.state;
+        const { searchString, typeString, data} = this.state;
 
         return(
-            <div>
             <Container className="BackgroundColour">
                 <Row className="WhiteBackground">
-        
-                <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} />
+                    <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} />
                 </Row>
 
-                {data.length <= 0 ? 'NO DB ENTRIES YET': data.map((dat) => {
-                    if (dat.type == 'tool') {
-                        return <Tool data={dat} />
-                    } 
-                    else if (dat.type == 'project') {
-                        return <Project data={dat} />
-                    }
-                    else if (dat.type == 'person') {
-                        return <Person data={dat} />
-                    }
-                    else {
-                        return null
-                    }
-                })}
+                <Row className="mt-3"></Row>
+
+                <Row>
+                    <Col sm={4}>
+                        <FilterButtons doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString} />
+                    </Col>
+
+                    <Col sm={8}>
+                        {data.length <= 0 ? 'NO DB ENTRIES YET' : data.map((dat) => {
+                            if (dat.type == 'tool') {
+                                return <Tool data={dat} />
+                            }
+                            else if (dat.type == 'project') {
+                                return <Project data={dat} />
+                            }
+                            else if (dat.type == 'person') {
+                                return <Person data={dat} />
+                            }
+                            else {
+                                return null
+                            }
+                        })}
+                    </Col>
+                </Row>
 
             </Container>
-            <FilterButtons doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString}/>
-            </div>
         );
     }
 }
