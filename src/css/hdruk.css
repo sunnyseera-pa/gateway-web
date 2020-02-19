@@ -154,9 +154,8 @@ body {
 }
 
 .LandingBackground {
-  /* min-width: 1444px; */
   width: 100%;
-  min-height: 539px;
+  min-height: 640px;
   height: 100%;
   background-image: linear-gradient(110deg, #50b996, #485ea7 100%);
 }
@@ -171,14 +170,6 @@ body {
   /* width: 104px; */
   height: 25px;
   border-radius: 16px;
-}
-
-.SearchBarInput{
-  border: 0;
-  padding-left: 5px;
-  /* flex: 0.97; */
-  /* width: 95%; */
-  background-color: #f6f7f8;
 }
 
 .DropdownLocation{
@@ -215,8 +206,6 @@ body {
 }
 
 #landingPageCard{
-  width: 720px;
-  height: 80px;
   font-family: Museo Sans Rounded;
   font-size: 32px;
   font-weight: 500;
@@ -229,7 +218,7 @@ body {
 }
 
 #landingPageEmptyRow{
-  min-height: 180px;
+  min-height: 120px;
 }
 
 #projectTitleEmptyRow{
@@ -255,12 +244,23 @@ body {
   width: 5%;
 } */
 
+.SearchBarInput{
+  border: 0;
+  padding-left: 5px;
+  background-color: #ffffff;
+  display: block;
+  height: 56px;
+  border-radius: 4px;
+}
+
 #SearchInputSpan{
   display: inline-block;
-  /* min-width: 800px; */
-  width: 97%;
-  min-height: 48px;
-  height: 100%;
+  width: 90%;
+  height: 40px;
+  outline: none;
+  border: 0;
+  font-size: 20px;
+  color: #3c3c3b;
 }
 
 #SearchInputSpan:focus{

@@ -9,31 +9,19 @@ class ToolTitle extends Component {
 
   constructor(props) {
     super(props)
-    this.state.id = props.id;
-    this.state.type = props.type;
-    this.state.name = props.name;
-    this.state.description = props.description;
-    this.state.rating = props.rating;
-    this.state.link = props.link;
-    this.state.tags = props.tags;
+    this.state.data = props.data;
   }
 
   // initialize our state
   state = {
-    id: '',
-    type: '',
-    name: '',
-    description: '',
-    rating: '',
-    link: '',
-    tags: []
+    data: []
   };
 
   // here is our UI
   // it is easy to understand their functions when you
   // see them render into our screen
   render() {
-    const { id, type, name, description, rating, link, tags} = this.state;
+    const { data } = this.state;
 
     return (
         <div>
@@ -44,12 +32,12 @@ class ToolTitle extends Component {
                         <Row>
                             <Col xs={7} md={8}>
                                 <p>
-                                    <span className="Black-16px">{name}</span>
+                                    <span className="Black-16px">{data.name}</span>
                                     <br />
                                     <span className="Gray800-14px">Laure Santos</span>
                                 </p>
                                 
-                                {tags.length <= 0 ? 'NO SEARCH RESULT' : tags.map((tag) => {
+                                {data.tags.length <= 0 ? 'NO SEARCH RESULT' : data.tags.map((tag) => {
                                     return <div className="mr-2 Gray800-14px tagBadges mb-3 mt-2">{tag}</div>
                                 })}
                             </Col>
@@ -72,7 +60,7 @@ class ToolTitle extends Component {
                     <div className="Rectangle">
                         <Row>
                             <Col xs={12} md={12}>
-                                {tags.length <= 0 ? 'NO SEARCH RESULT' : tags.map((tag) => {
+                                {data.tags.length <= 0 ? 'NO SEARCH RESULT' : data.tags.map((tag) => {
                                     return <div className="mr-2 Gray800-14px tagBadges">{tag}</div>
                                 })}
                             </Col>
@@ -87,8 +75,8 @@ class ToolTitle extends Component {
                     <div className="Rectangle">
                         <Row>
                             <Col>
-                                <a href={link} className="Purple-14px"> 
-                                    {link}
+                                <a href={data.link} className="Purple-14px"> 
+                                    {data.link}
                                 </a>
                             </Col>
                         </Row>
