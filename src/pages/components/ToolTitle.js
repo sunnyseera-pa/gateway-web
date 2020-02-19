@@ -3,8 +3,6 @@
 import React, { Component } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Badge from 'react-bootstrap/Badge';
-import Card from 'react-bootstrap/Card';
 import Image from 'react-bootstrap/Image';
 
 class ToolTitle extends Component {
@@ -36,97 +34,71 @@ class ToolTitle extends Component {
   // see them render into our screen
   render() {
     const { id, type, name, description, rating, link, tags} = this.state;
-    // const tag = this.state.tags.map((tag) => tag);
-    const tag = this.state.tags.map((tag) =>   
-    <li id="TagItem"> {tag} </li>
-    );
 
     return (
-      // <div className="Rectangle">
-      //   <p>Title = {id} = {type}</p>
-      <div>
-          <Row className="mt-1">
-                <Col></Col>
-                <Col>
-                    <Card className="Rectangle">
-                        <Card.Body>   
-                        {/* <Container> */}
-                            <Row className="mb-2">
-                                <Col sm={9} className="text-left " className="Black-20px"> {name}</Col>
-                                {/* <Col sm={2}> <Image src="../../images/tableau.jpg/152x32" /> </Col> */}
-                                {/* <Col sm={2}> <Image src={logo} /> </Col> */}
-                                <Col sm={3}> <Image src={require("../../images/tableau.jpg")} id="Logo" /> </Col>
-                            </Row>
-
-                            <Row>
-                                <Col sm={12}>
-                                {/* <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> {tag} {tags.length}  </Badge> */}
-
-                                {tags.length <= 0 ? 'NO SEARCH RESULT': tags.map((tag) => {
-                                    return <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> {tag} </Badge>
+        <div>
+            <Row className="mt-2">
+                <Col sm={1} lg={1} />
+                <Col sm={10} lg={10}>
+                    <div className="Rectangle">
+                        <Row>
+                            <Col xs={7} md={8}>
+                                <p>
+                                    <span className="Black-16px">{name}</span>
+                                    <br />
+                                    <span className="Gray800-14px">Laure Santos</span>
+                                </p>
+                                
+                                {tags.length <= 0 ? 'NO SEARCH RESULT' : tags.map((tag) => {
+                                    return <div className="mr-2 Gray800-14px tagBadges mb-3 mt-2">{tag}</div>
                                 })}
-
-                                </Col>
-                            </Row>    
-
-                            <Row className="mt-3">
-                                <Col className="Gray800-14px"> {description} </Col>
-                            </Row>
-                            
-                        {/* </Container> */}
-                        </Card.Body>
-                    </Card>
+                            </Col>
+                            <Col xs={5} md={4} className="iconHolder">
+                                <Image src={require("../../images/tableau.jpg")} id="Logo" />
+                            </Col>
+                            <Col xs={12} md={12} className="mb-3">
+                                <span className="Gray800-14px">
+                                    Software to analyse data and with powerful graphics to create interactive visualisations - focused on business intelligence. Including data access to data prep to get data ready for analysis, to data analytics and discovery.
+                                </span>
+                            </Col>
+                        </Row>    
+                    </div>
                 </Col>
-                <Col></Col>
-           </Row>
-
-          <Row className="mt-0.5">
-                <Col></Col>
-                <Col>
-                  <Card className="Rectangle">
-                      <Card.Body>   
-                      {/* <Container> */}
-                          <Row>
-                              <Col sm={12}>
-                              {tags.length <= 0 ? 'NO SEARCH RESULT': tags.map((tag) => {
-                                    return <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> {tag} </Badge>
+                <Col sm={1} lg={10}/>
+            </Row>
+            <Row>
+                <Col sm={1} lg={1} />
+                <Col sm={10} lg={10}>
+                    <div className="Rectangle">
+                        <Row>
+                            <Col xs={12} md={12}>
+                                {tags.length <= 0 ? 'NO SEARCH RESULT' : tags.map((tag) => {
+                                    return <div className="mr-2 Gray800-14px tagBadges">{tag}</div>
                                 })}
-
-                                  {/* <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> {tag} </Badge> */}
-
-                                  {/* <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag2 </Badge>
-                                  <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag3 </Badge>
-                                  <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag4 </Badge> */}
-                              </Col>
-                          </Row>    
-                      {/* </Container> */}
-                      </Card.Body>
-                  </Card>
-              </Col>
-             <Col></Col>
-          </Row>
-
-          <Row className="mt-0.5">
-                <Col></Col>
-                <Col>
-                  <Card className="Rectangle">
-                      <Card.Body>   
-                      {/* <Container> */}
-                          <Row className="mb-1">
-                              <Col sm={6} className="text-left " className="Purple-14px"> {link} </Col>
-                          </Row>
-                      {/* </Container> */}
-                      </Card.Body>
-                  </Card>
-              </Col>
-             <Col></Col>
-          </Row>
-
-      </div>
-
+                            </Col>
+                        </Row>
+                    </div>
+                </Col>
+                <Col sm={1} lg={10}/>
+            </Row>
+            <Row>
+                <Col sm={1} lg={1} />
+                <Col sm={10} lg={10}>
+                    <div className="Rectangle">
+                        <Row>
+                            <Col>
+                                <a href={link} className="Purple-14px"> 
+                                    {link}
+                                </a>
+                            </Col>
+                        </Row>
+                    </div>
+                </Col>
+                <Col sm={1} lg={10}/>
+            </Row>
+        </div>
     );
   }
 }
-
 
 export default ToolTitle;

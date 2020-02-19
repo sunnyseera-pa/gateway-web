@@ -18,7 +18,7 @@ import Col from 'react-bootstrap/Col';
 var baseURL = window.location.href;
 
 if (!baseURL.includes('localhost')) {
-    var rx = /^([http|https]+\:\/\/[a-z]+)(.*)/;
+    var rx = /^([http|https]+\:\/\/[a-z]+)([^/]*)/;
     var arr = rx.exec(baseURL);
     if (arr.length > 0) {
         //add -api to the sub domain for API requests
@@ -50,8 +50,7 @@ class ProjectDetail extends Component {
   // on loading of tool detail page
   componentDidMount() {
     this.getDataSearchFromDb();
-
-    document.body.style.backgroundColor = "#f6f7f8";
+    
   }
 
   // on loading of tool detail page were id is different
@@ -81,38 +80,48 @@ class ProjectDetail extends Component {
   };
 
   render() {
-    const {id, type, name, description, rating, link, tags, isLoading } = this.state;
+    const {data, id, type, name, description, rating, link, tags, isLoading } = this.state;
     
     if (isLoading) {
       return <p>Loading ...</p>;
     }
     
     return (
-      <div>
-      {/* <Container style={{width: 800}}> */}
+      // <div>
+      <Container>
         <SearchBar />
-        <Container style={{width: 800}}>
         <ProjectTitle id={id} type={type} name={name} description={description} rating={rating} link={link} tags={tags} />
         {/* <Tags /> */}
         {/* <Reviews /> */}
 
-        <Row className="mt-5">
-              <Col sm={12} className="Black-16px"> Authors (x) </Col>
+        <Row className="mt-4">
+          <Col sm={1} lg={1} />
+          <Col sm={10} lg={10}>
+            <span className="Black500-16px">Authors (2)</span>
+          </Col>
+          <Col sm={1} lg={10} />
         </Row>
         <Creators />
         {/* <Project /> */}
-        <Row className="mt-5">
-              <Col sm={12} className="Black-16px"> Tools created as part of this research project (x) </Col>
+        <Row className="mt-4">
+          <Col sm={1} lg={1} />
+          <Col sm={10} lg={10}>
+            <span className="Black500-16px">Tools created as part of this research project (2)</span>
+          </Col>
+          <Col sm={1} lg={10} />
         </Row>
-        <Tool />
-
-        <Row className="mt-5">
-              <Col sm={12} className="Black-16px"> Tools used (x) </Col>
+        <Tool data={data} id={id} type={type} name={name} description={description} rating={rating} link={link} tags={tags} />
+        <Row className="mt-4">
+          <Col sm={1} lg={1} />
+          <Col sm={10} lg={10}>
+            <span className="Black500-16px">Tools used (2)</span>
+          </Col>
+          <Col sm={1} lg={10} />
         </Row>
-        <ToolsUsed />
+        <ToolsUsed data={data} id={id} type={type} name={name} description={description} rating={rating} link={link} tags={tags} />
         {/* <ToolsCreated /> */}
       </Container>
-     </div>
+      // </div>
     );
   }
 }

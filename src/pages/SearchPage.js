@@ -8,12 +8,11 @@ import queryString from 'query-string';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 // import ToolTitle from './components/ToolTitle';
-import FilterButtons from './components/FilterButtons';
 
 var baseURL = window.location.href;
 
 if (!baseURL.includes('localhost')) {
-    var rx = /^([http|https]+\:\/\/[a-z]+)(.*)/;
+    var rx = /^([http|https]+\:\/\/[a-z]+)([^/]*)/;
     var arr = rx.exec(baseURL);
     if (arr.length > 0) {
         //add -api to the sub domain for API requests
@@ -27,8 +26,7 @@ if (!baseURL.includes('localhost')) {
 class SearchPage extends React.Component{
 
     state = {
-        searchString: "",
-        typeString: "",
+        searchString: null,
         data: [],
         id: '',
         type: '',
@@ -50,8 +48,9 @@ class SearchPage extends React.Component{
             this.doSearchCall(values.search);
             this.setState({ searchString: values.search});
         }
-
-        document.body.style.backgroundColor = "#f6f7f8";
+        else {
+            this.doSearchCall("");
+        }
     }
 
     componentWillReceiveProps() {
@@ -64,6 +63,7 @@ class SearchPage extends React.Component{
         }
         else {
             this.setState({ data: [], searchString: '',   id: '', type: '', name: '', description: '', rating: '', link: '', tags: [], isLoading: true});
+            this.doSearchCall("");
         }
     }
 
@@ -71,17 +71,13 @@ class SearchPage extends React.Component{
         if (e.key === 'Enter') {
             if (!!this.state.searchString) {
                 this.props.history.push(window.location.pathname+'?search='+this.state.searchString)
-                this.doSearchCall(this.state.searchString, this.state.typeString);
+                this.doSearchCall(this.state.searchString);
             }
         }
     }
     
-    callTypeString = (typeString) =>{ 
-        this.doSearchCall(this.state.searchString, typeString);
-    }
-
-    doSearchCall(searchString, typeString) {
-        axios.get(baseURL+'/api/search?search='+searchString + '&type='+ typeString)
+    doSearchCall(searchString) {
+        axios.get(baseURL+'/api/search?search='+searchString)
         .then((res) => {
             this.setState({ data: res.data.data });
         });
@@ -91,17 +87,11 @@ class SearchPage extends React.Component{
         this.setState({ searchString: searchString});
     }
 
-    updateTypeString = (typeString) =>{
-        this.setState({ typeString: typeString});
-    }
-
     render(){
         const { searchString, data, id, type, name, description, rating, link, tags, isLoading} = this.state;
 
         return(
-            /* <body style={{backgroundColor:"#2d2d2d"}}> */
-             <div> 
-             {/* <Container className="BackgroundColour"> */}
+            <Container className="BackgroundColour">
                 <Row className="WhiteBackground">
         
                 <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} />
@@ -115,19 +105,14 @@ class SearchPage extends React.Component{
                         return <Project data={dat} id={dat.id} type={dat.type} name={dat.name} description={dat.description} rating={dat.rating} link={dat.link} tags={dat.tags} />
                     }
                     else if (dat.type == 'person') {
-                        return <Person  />
+                        return <Person data={dat} id={dat.id} type={dat.type} name={dat.name} description={dat.description} rating={dat.rating} link={dat.link} tags={dat.tags} />
                     }
                     else {
                         return null
                     }
                 })}
 
-            {/* </Container> */}
-
-            <FilterButtons doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString}/>
-            </div> 
-            /*  </body> */
-
+            </Container>
         );
     }
 }

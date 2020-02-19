@@ -1,58 +1,69 @@
 import React from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Badge from 'react-bootstrap/Badge';
-import Card from 'react-bootstrap/Card';
 import Image from 'react-bootstrap/Image';
-
 
 class Person extends React.Component{
     constructor(props) {
         super(props)
         this.state.data = props.data;
+        this.state.id = props.id;
+        this.state.type = props.type;
+        this.state.name = props.name;
+        this.state.description = props.description;
+        this.state.rating = props.rating;
+        this.state.link = props.link;
+        this.state.tags = props.tags;
     }
 
     // initialize our state
     state = {
-        data: []
-    };
+        data: [],
+        id: '',
+        type: '',
+        name: '',
+        description: '',
+        rating: '',
+        link: '',
+        tags: []
+      };
 
     render(){
-        const { data } = this.state;
+        const { data, id, type, name, description, rating, link, tags } = this.state;
         return(
-             <Row className="mt-2">
-             <Col></Col>
-             <Col>
-                 <Card className="Rectangle">
-                     <Card.Body>   
-                         <Row className="mb-1">
-                             <Col sm={1}> <Image src={require("../../images/bob.jpg")} id="Picture" roundedCircle /> </Col>
-                             <Col sm={11} className="text-left " className="Black-16px">Name</Col>
-                         </Row>
-                         <Row>
-                             <Col sm={1}> </Col>
-                             <Col sm={11} className="text-left" className="Gray800-14px">Role/Qualification</Col>
-                         </Row>
-                         <Row> 
-                             <Col sm={1}> </Col>
-                             <Col sm={11} className="text-left" className="Gray800-14px"> x projects created </Col>
-                         </Row>
-                         <Row className="mb-3"> 
-                             <Col sm={1}> </Col>
-                             <Col sm={11} className="text-left" className="Gray800-14px"> x tools created, x tools reviewed </Col>
-                         </Row>
-                         <Row>
-                             <Col>
-                                 <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag1 </Badge>
-                                 <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag2 </Badge>
-                                 <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Tag3 </Badge>
-                             </Col>
-                         </Row>    
-                     </Card.Body>
-                 </Card>
-         </Col>
-         <Col></Col>
-         </Row>
+            <Row className="mt-2">
+            <Col sm={1} lg={1} />
+            <Col sm={10} lg={10}>
+                <a style={{ cursor: 'pointer' }} href={'/tool/' + data.id} >
+                    <div className="Rectangle">
+                        <Row>
+                            <Col xs={2} md={1} className="iconHolder">
+                                <Image src={require("../../images/bob.jpg")} id="Picture" roundedCircle />
+                            </Col>
+                            <Col xs={10} md={11}>
+                                <p>
+                                    <span className="Black-16px">{name}</span>
+                                    <br />
+                                    <span className="Gray800-14px">University of Naples Federico II | UNINA // Department of Economics and Statistics</span>
+                                </p>
+                                <p className="Gray800-14px">
+                                    5 projects created
+                                    <br />
+                                    2 tools created, 17 reviewed
+                                </p>
+                            </Col>
+                        
+                            <Col xs={12} md={12}>
+                                {tags.length <= 0 ? 'NO SEARCH RESULT' : tags.map((tag) => {
+                                    return <div className="mr-2 Gray800-14px tagBadges mb-2">{tag}</div>
+                                })}
+                            </Col>
+                        </Row>
+                    </div>
+                </a>
+            </Col>
+            <Col sm={1} lg={10}/>
+        </Row>
         );
     }
 }

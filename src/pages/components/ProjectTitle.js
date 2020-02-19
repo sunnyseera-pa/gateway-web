@@ -3,9 +3,6 @@
 import React, { Component } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Badge from 'react-bootstrap/Badge';
-import Card from 'react-bootstrap/Card';
-import Image from 'react-bootstrap/Image';
 
 class ProjectTitle extends Component {
 
@@ -38,68 +35,62 @@ class ProjectTitle extends Component {
   render() {
     const { id, type, name, description, rating, link, tags } = this.state;
     return (
-      <div>
-          <Row className="mt-1">
-                <Col></Col>
-                <Col>
-                    <Card className="Rectangle">
-                        <Card.Body>   
-                            <Row className="mb-2">
-                                <Col sm={12} className="text-left " className="Black-20px">{name}</Col>
-                            </Row>
-                            <Row>
-                                <Col sm={12}>
-                                    <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> Category </Badge>
-                                </Col>
-                            </Row>    
-                            <Row id="projectTitleEmptyRow"></Row>
-                            <Row>
-                                <Col sm={12} className="Gray800-14px"> {description} </Col>
-                            </Row>
-                        </Card.Body>
-                    </Card>
+        <div>
+            <Row className="mt-2">
+                <Col sm={1} lg={1} />
+                <Col sm={10} lg={10}>
+                    <div className="Rectangle">
+                        <Row>
+                            <Col xs={12} md={12}>
+                                <p>
+                                    <span className="Black-20px">{name}</span>
+                                </p>
+                                
+                                {tags.length <= 0 ? 'NO SEARCH RESULT' : tags.map((tag) => {
+                                    return <div className="mr-2 Gray800-14px tagBadges mb-3 mt-2">{tag}</div>
+                                })}
+                            </Col>
+                            <Col xs={12} md={12} className="mb-3">
+                                <span className="Gray800-14px">
+                                The ketogenic diet is a medically supervised high-fat, low-carbohydrate diet that has been found useful in patients with refractory epilepsy. It has been shown to be effective in treating multiple seizure types and epilepsy syndromes. In this paper, we review the use of the ketogenic diet in epileptic encephalopathies such as Ohtahara syndrome, West syndrome, Dravet syndrome, epilepsy with myoclonic atonic seizures, and Lennox-Gastaut syndrome.
+                                </span>
+                            </Col>
+                        </Row>    
+                    </div>
                 </Col>
-                <Col></Col>
-           </Row>
-
-          <Row className="mt-0.5">
-                <Col></Col>
-                <Col>
-                  <Card className="Rectangle">
-                      <Card.Body>   
-                      {/* <Container> */}
-                          <Row>
-                              <Col sm={12}>
-                                    {tags.length <= 0 ? 'NO SEARCH RESULT': tags.map((tag) => {
-                                            return <Badge pill variant="light" className="mr-2 Gray800-14px Pill"> {tag} </Badge>
-                                    })}
-                              </Col>
-                          </Row>    
-                      {/* </Container> */}
-                      </Card.Body>
-                  </Card>
-              </Col>
-             <Col></Col>
-          </Row>
-
-          <Row className="mt-0.5">
-                <Col></Col>
-                <Col>
-                  <Card className="Rectangle">
-                      <Card.Body>   
-                      {/* <Container> */}
-                          <Row className="mb-1">
-                              <Col sm={12} className="text-left " className="Purple-14px"> {link} </Col>
-                          </Row>
-                      {/* </Container> */}
-                      </Card.Body>
-                  </Card>
-              </Col>
-             <Col></Col>
-          </Row>
-
-      </div>
-
+                <Col sm={1} lg={10}/>
+            </Row>
+            <Row>
+                <Col sm={1} lg={1} />
+                <Col sm={10} lg={10}>
+                    <div className="Rectangle">
+                        <Row>
+                            <Col xs={12} md={12}>
+                                {tags.length <= 0 ? 'NO SEARCH RESULT' : tags.map((tag) => {
+                                    return <div className="mr-2 Gray800-14px tagBadges">{tag}</div>
+                                })}
+                            </Col>
+                        </Row>
+                    </div>
+                </Col>
+                <Col sm={1} lg={10}/>
+            </Row>
+            <Row>
+                <Col sm={1} lg={1} />
+                <Col sm={10} lg={10}>
+                    <div className="Rectangle">
+                        <Row>
+                            <Col>
+                                <a href={link} className="Purple-14px"> 
+                                    {link}
+                                </a>
+                            </Col>
+                        </Row>
+                    </div>
+                </Col>
+                <Col sm={1} lg={10}/>
+            </Row>
+        </div>
     );
   }
 }
