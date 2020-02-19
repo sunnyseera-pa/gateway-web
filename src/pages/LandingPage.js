@@ -16,14 +16,12 @@ class LandingPage extends React.Component{
 
     componentDidMount() {
         this.setState({ searchString: ''});
-
-        // document.body.style.backgroundImage="linear-gradient(110deg, #50b996, #485ea7 100%)";
     }
 
     doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
             if (!!this.state.searchString) {
-                window.location.href = window.location.search+"/search?search="+this.state.searchString;
+                window.location.href = window.location.search+"/search?search="+this.state.searchString + '&type=';
             }
         }
     }
@@ -34,67 +32,36 @@ class LandingPage extends React.Component{
 
     render(){
         return(
-        // <div id="LandingWholePage">
-        <Container className="LandingBackground">
-         {/* <Container> */}
-        {/* <Row style={{height: 10}}></Row> */}
-        <Row className="pt-4 pl-4">  
-        <Col sm={12}> <WhiteLogoSvg /> </Col>  
-        </Row>
-        <Row id="landingPageEmptyRow"></Row>
-        <Row>
-            <Col sm={2}></Col>
-            <Col sm={8}>
-            <Card id="landingPageCard" className="bg-transparent mb-2" border="0" >
-                <Card.Text>
-                Explore tools, resources and code used in health
-                 research across the UK
-                </Card.Text>
-            </Card>
-            </Col>
-            <Col sm={2}></Col>
-        </Row>
-
-
-        {/* <Row> */}
-
-            <Col sm={12}>
-                    <div>
-                        <div id="searchInputHolder" className="form-control mr-md-2"> 
-                        <Row>
-
-                        <Col sm={12}> 
-                        <SVGIcon name="searchicon" width={17} height={17} fill={'#2c8267'} stroke='none' type="submit" className="ml-1 mr-1 mt-1"/>
-                         {/* </Col> */}
-                        
-
-                        {/* <Col sm={11}> */}
-                        <span>
-                        <input type="text" placeholder=" Search" className="SearchBarInput" id="SearchInputSpan"> 
-                        </ input>
-                        </span>
-                        {/* <span id="DropDownSpan">
         
-                        <DropdownButton id="dropdown-basic-button" variant="light" size="sm" title="Everything">
-                            <Dropdown.Item href="#/action-1"> Everything </Dropdown.Item>
-                            <Dropdown.Item href="#/action-2"> Tools </Dropdown.Item>
-                            <Dropdown.Item href="#/action-3"> Research Projects </Dropdown.Item>
-                            <Dropdown.Item href="#/action-4"> People </Dropdown.Item>
-                        </DropdownButton>
-                       
-                        </span> */}
+            <div className="LandingBackground">
+                <Row className="pt-5 pl-5">
+                    <Col sm={12}> <WhiteLogoSvg /> </Col>
+                </Row>
+                <Container>
+                
+                    <Row id="landingPageEmptyRow"></Row>
+                    <Row>
+                        <Col sm={2} />
+                        <Col sm={8}>
+                            <div id="landingPageCard" className="bg-transparent mb-2" border="0" >
+                                Explore tools, resources and code used in health research across the UK
+                            </div>
                         </Col>
+                        <Col sm={2} />
+                    </Row>
+                    <Row className="mt-5">
+                    <Col sm={1} />
+                        <Col sm={10}>     
+                            <span className="SearchBarInput">
+                                <SVGIcon name="searchicon" width={20} height={20} fill={'#2c8267'} stroke='none' type="submit" className="ml-2 mr-3 mt-3" />
+                                <input type="text" placeholder="Search" className="" id="SearchInputSpan" onChange={this.changeText} onKeyDown={this.doSearch} /> 
+                            </span>        
+                        </Col>
+                        <Col sm={1} />
+                    </Row>
+                </Container>
+            </div>
 
-                        </Row>
-
-                        </div>
-                        </div>
-                    
-                </Col>
-
-        {/* </Row> */}
-        </Container>
-        // </div>
 
        
         );
