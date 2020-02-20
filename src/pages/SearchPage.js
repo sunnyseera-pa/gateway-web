@@ -47,6 +47,7 @@ class SearchPage extends React.Component{
             this.setState({ typeString: values.type});
         }
         else {
+            this.setState({ data: [], searchString: '', typeString: 'all', isLoading: true});
             this.doSearchCall("","all");
         }
     }
@@ -62,7 +63,7 @@ class SearchPage extends React.Component{
             }
         }
         else {
-            this.setState({ data: [], searchString: '', typeString: '', isLoading: true});
+            this.setState({ data: [], searchString: '', typeString: 'all', isLoading: true});
             this.doSearchCall("","all");
         }
     }
@@ -139,41 +140,5 @@ class SearchPage extends React.Component{
         );
     }
 }
-
-/* 
-
-<Container className="BackgroundColour">
-                <Row className="WhiteBackground">
-                    <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} />
-                </Row>
-
-                <Row className="mt-3"></Row>
-
-                <Row>
-                    <Col sm={4}>
-                        <FilterButtons doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString} />
-                    </Col>
-
-                    <Col sm={8}>
-                        {data.length <= 0 ? 'NO DB ENTRIES YET' : data.map((dat) => {
-                            if (dat.type == 'tool') {
-                                return <Tool data={dat} />
-                            }
-                            else if (dat.type == 'project') {
-                                return <Project data={dat} />
-                            }
-                            else if (dat.type == 'person') {
-                                return <Person data={dat} />
-                            }
-                            else {
-                                return null
-                            }
-                        })}
-                    </Col>
-                </Row>
-
-            </Container>
-
-*/
 
 export default SearchPage;
