@@ -18,8 +18,7 @@ class Person extends React.Component{
         const { data } = this.state;
         return(
             <Row className="mt-2">
-            <Col sm={1} lg={1} />
-            <Col sm={10} lg={10}>
+            <Col>
                 <a style={{ cursor: 'pointer' }} href={'/person/' + data.id} >
                     <div className="Rectangle">
                         <Row>
@@ -62,7 +61,6 @@ class Person extends React.Component{
                     </div>
                 </a>
             </Col>
-            <Col sm={1} lg={10}/>
         </Row>
         );
     }
