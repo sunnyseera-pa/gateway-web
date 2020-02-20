@@ -24,68 +24,62 @@ class FilterButtons extends Component {
   // it is easy to understand their functions when you
   // see them render into our screen
   render() {
-    const { typeString} = this.state;
-
     return (
-    <Card className="FilterCard">
-        <Form className="Gray800-14px">
-            <Form.Group>
+    <div className="FilterCard mt-2 Gray800-14px">
+       
+        <Row className="mt-2">
+            <Col xs={1}></Col>
+            <Col xs={7}>
+                <span>Filter</span>
+            </Col>
+            <Col xs={2}>
+                <span className="Purple-14px">Hide</span>
+            </Col>
+        </Row>
+        <Row className="mt-3">
+            <Col xs={2}></Col>
+            <Col xs={10}>
+                <Form.Check
+                    type="radio"
+                    label="Everything"
+                    name="formHorizontalRadios"
+                    id="formHorizontalRadios1"
+                    checked={this.props.typeString === 'all' ? true: false}
+                    value="all"
+                    onClick={this.changeFilter}
+                />
+                <Form.Check
+                    type="radio"
+                    label="Tools and resources"
+                    name="formHorizontalRadios"
+                    id="formHorizontalRadios2"
+                    checked={this.props.typeString === 'tool' ? true: false}
+                    value="tool"
+                    onClick={this.changeFilter}
+                />
+                <Form.Check
+                    type="radio"
+                    label="Research projects"
+                    name="formHorizontalRadios"
+                    id="formHorizontalRadios3"
+                    checked={this.props.typeString === 'project' ? true: false}
+                    value="project"
+                    onClick={this.changeFilter}
+                />
+                <Form.Check
+                    type="radio"
+                    label="People"
+                    name="formHorizontalRadios"
+                    id="formHorizontalRadios4"
+                    checked={this.props.typeString === 'person' ? true: false}
+                    value="person"
+                    onClick={this.changeFilter}
 
-                <Row className="mt-3">
-                    <Col sm={1}></Col>
-                    <Col sm={8}>
-                        <Form.Label >
-                            Filter
-                        </Form.Label>
-                    </Col>
-                    <Col sm={2}>
-                        <Form.Label className="Purple-14px">
-                            Hide
-                        </Form.Label>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col sm={2}></Col>
-                    <Col sm={10}>
-                        <Form.Check
-                            type="radio"
-                            label="Everything"
-                            name="formHorizontalRadios"
-                            id="formHorizontalRadios1"
-                            defaultChecked="checked"
-                            value=""
-                            onClick={this.changeFilter}
-                        />
-                        <Form.Check
-                            type="radio"
-                            label="Tools and resources"
-                            name="formHorizontalRadios"
-                            id="formHorizontalRadios2"
-                            value="tool"
-                            onClick={this.changeFilter}
-                        />
-                        <Form.Check
-                            type="radio"
-                            label="Research projects"
-                            name="formHorizontalRadios"
-                            id="formHorizontalRadios3"
-                            value="project"
-                            onClick={this.changeFilter}
-                        />
-                        <Form.Check
-                            type="radio"
-                            label="People"
-                            name="formHorizontalRadios"
-                            id="formHorizontalRadios4"
-                            value="person"
-                            onClick={this.changeFilter}
+                />
+            </Col>
+        </Row>
 
-                        />
-                    </Col>
-                </Row>
-            </Form.Group>
-        </Form>
-      </Card>
+      </div>
     );
   }
 }

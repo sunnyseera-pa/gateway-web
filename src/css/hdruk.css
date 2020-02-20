@@ -22,9 +22,10 @@ body {
 }
 
 .WhiteBackground{
-  /* min-width: 1440px;
-  height: 72px; */
+  /* min-width: 1440px;*/
+  min-height: 80px;
   background-color: #ffffff;
+  box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
 }
 
 .tagBadges {
@@ -152,6 +153,12 @@ body {
   background-color: #ffffff;
 }
 
+.signLink {
+  text-align: right;
+  margin-top: 28px;
+  margin-right: 32px;
+}
+
 .LandingBackground {
   width: 100%;
   height: 100vh;
@@ -180,9 +187,9 @@ body {
 }
 
 .FilterCard{
-  width: 320px;
-  height: 183px;
+  box-shadow: 1px 1px 3px 0 #00000017;
   background-color: #ffffff;
+  padding: 10px;
 }
 
 #TagItem{
@@ -241,10 +248,6 @@ body {
   width: 5%;
 } */
 
-.temp {
-  width: 100%
-}
-
 .SearchBarInput{
   border: 0;
   padding-left: 5px;
@@ -254,13 +257,29 @@ body {
   border-radius: 4px;
 }
 
-.SearchBarInputGrey{
-  border: 0;
-  padding-left: 5px;
-  background-color: #f6f7f8;
-  display: block;
-  height: 30px;
-  border-radius: 4px;
+@media (min-width: 992px) {
+  .SearchBarInputGrey{
+    border: 0;
+    background-color: #f6f7f8;
+    display: inline-block;
+    border-radius: 4px;
+    margin-top:15px;
+    padding: 5px;
+    width:100%;
+  }
+}
+
+@media (max-width: 991px) {
+  .SearchBarInputGrey{
+    border: 0;
+    background-color: #f6f7f8;
+    display: inline-block;
+    border-radius: 4px;
+    margin-top: 7px;
+    margin-bottom: 7px;
+    padding: 5px;
+    width:100%;
+  }
 }
 
 #SearchInputSpan{
@@ -275,13 +294,24 @@ body {
 
 #SearchInputSpanGrey{
   display: inline-block;
-  width: 90%;
-  height: 30px;
+  width: 80%;
   outline: none;
   border: 0;
   font-size: 16px;
+  background-color: #f6f7f8;
   color: #3c3c3b;
-  background-color: red; 
+  padding-top:5px;
+}
+
+.SearchInputIconGrey {
+  float: left;
+  min-width: 40px;
+  padding: 8px 0px 0px 10px;
+}
+
+.SearchInputClearGrey {
+  float: right;
+  padding: 5px 10px 0px 0px;
 }
 
 #SearchInputSpan:focus{
@@ -290,7 +320,6 @@ body {
 
 #NavSearchInputSpan{
   display: inline-block;
-  /* min-width: 800px; */
   width: 97%;
   min-height: 48px;
   height: 100%;
@@ -304,8 +333,8 @@ input[type='radio']:after {
   width: 23px;
   height: 23px;
   border-radius: 23px;
-  top: -3px;
-  left: -1px;
+  top: -4px;
+  left: -2px;
   position: relative;
   background-color: #ffffff;
   content: '';
@@ -318,11 +347,10 @@ input[type='radio']:checked:after {
   width: 23px;
   height: 23px;
   border-radius: 23px;
-  top: -3px;
-  left: -1px;
+  top: -4px;
+  left: -2px;
   position: relative;
-  background-color: #ffffff;
-  content: url(../images/star.svg) ;
+  background-color: #2c8267;
   display: inline-block;
   visibility: visible;
   border: solid 2px #d6d6d6;
