@@ -28,6 +28,7 @@ if (!baseURL.includes('localhost')) {
 class ProjectDetail extends Component {
   // initialize our state
   state = {
+    searchString: null,
     id: '',
     data: [],
     isLoading: true
@@ -62,8 +63,20 @@ class ProjectDetail extends Component {
     })
   };
 
+  doSearch = (e) => { //fires on enter on searchbar
+    if (e.key === 'Enter') {
+        if (!!this.state.searchString) {
+            window.location.href = window.location.search+"/search?search="+this.state.searchString + '&type=all';
+        }
+    }
+  }
+
+  updateSearchString = (searchString) => {
+    this.setState({ searchString: searchString});
+  }
+
   render() {
-    const {data, isLoading } = this.state;
+    const {searchString, data, isLoading } = this.state;
     
     if (isLoading) {
       return <p>Loading ...</p>;
@@ -71,7 +84,7 @@ class ProjectDetail extends Component {
     
     return (
       <div>
-        <SearchBar />
+        <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} />
         <Container className="mb-5">
           <ProjectTitle data={data} />
           <Row className="mt-4">
