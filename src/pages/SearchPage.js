@@ -47,6 +47,7 @@ class SearchPage extends React.Component{
             this.setState({ typeString: values.type});
         }
         else {
+            this.setState({ data: [], searchString: '', typeString: 'all', isLoading: true});
             this.doSearchCall("","all");
         }
     }
@@ -62,7 +63,7 @@ class SearchPage extends React.Component{
             }
         }
         else {
-            this.setState({ data: [], searchString: '', typeString: '', isLoading: true});
+            this.setState({ data: [], searchString: '', typeString: 'all', isLoading: true});
             this.doSearchCall("","all");
         }
     }
