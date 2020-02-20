@@ -101,8 +101,13 @@ class ToolDetail extends Component {
             </Col>
             <Col sm={1} lg={10} />
           </Row>
-          <Project data={data}  />
-          
+          <Row>
+            <Col sm={1} lg={1} />
+            <Col sm={10} lg={10}>
+              <Project data={data}  />
+            </Col>
+            <Col sm={1} lg={1} />
+          </Row>
         </Container>
       </div>
     );

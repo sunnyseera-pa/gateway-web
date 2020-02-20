@@ -89,7 +89,13 @@ class ProjectDetail extends Component {
             </Col>
             <Col sm={1} lg={10} />
           </Row>
-          <Tool data={data} />
+          <Row>
+            <Col sm={1} lg={1} />
+            <Col sm={10} lg={10}>
+              <Tool data={data} />
+            </Col>
+            <Col sm={1} lg={1} />
+          </Row>
           <Row className="mt-4">
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
