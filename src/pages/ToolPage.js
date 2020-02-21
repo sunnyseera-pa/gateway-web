@@ -99,35 +99,6 @@ class ToolDetail extends Component {
           <ToolTitle data={data} />
           <PersonTitle data={data} />
 
-            {/* <Row className="mt-3">
-
-              <Col sm={1} lg={1} />
-              <Col sm={10} lg={10}>
-                <div>
-                  
-                  <Tabs selectedItem={this.state.selectedItem} onChange={selectedItem => this.setState({ selectedItem })}
-                  activeKey={this.state.key}
-                  onSelect={key => this.setState({ key })}>
-                    <TabList className="TabsBackground Gray700-13px">
-                    <Tab item='tab-1' id="TabDesign">
-                      Reviews
-                    </Tab>
-                    <Tab item='tab-2'>
-                      Research Projects
-                    </Tab>
-                    </TabList>
-                    <TabPanel item='tab-1'>
-                      <Reviews />
-                    </TabPanel>
-                    <TabPanel item='tab-2'>
-                      <Project data={data} />
-                    </TabPanel>
-                  </Tabs>
-                </div>
-              </Col>
-              <Col sm={1} lg={1} />
-            </Row> */}
-
             
             <Row  className="mt-3">
 
@@ -149,35 +120,6 @@ class ToolDetail extends Component {
             </Col>
             <Col sm={1} lg={1} />
             </Row>
-                         
-          
-
-          {/* <Row className="mt-4">
-            <Col sm={1} lg={1} />
-            <Col sm={10} lg={10}>
-              <span className="Black500-16px">Reviews</span>
-              <span className="Gray500-13px">
-                <span className="reviewTitleGap">·</span>
-                150 reviews
-                <span className="reviewTitleGap">·</span>
-                4.2 average
-              </span>
-              <span className="reviewStarsGap"></span>
-              <Rating emptySymbol={<EmptyStarIconSvg />} fullSymbol={<FullStarIconSvg />} placeholderSymbol={<FullStarIconSvg />} placeholderRating={4.3} />
-            </Col>
-            <Col sm={1} lg={10} />
-          </Row>
-          <Reviews />
-          
-          <Row className="mt-4">
-            <Col sm={1} lg={1} />
-            <Col sm={10} lg={10}>
-              <span className="Black500-16px">Research projects using it (5)</span>
-            </Col>
-            <Col sm={1} lg={10} />
-          </Row>
-          <Project data={data}  /> */}
-          
         </Container>
       </div>
     );
