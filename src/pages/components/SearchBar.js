@@ -21,29 +21,39 @@ class SearchBar extends React.Component{
         return(
             <div className="searchBarBackground">
                 <Row className="WhiteBackground">
-                    <div> 
-                        <ColourLogoSvg className="ml-4" />  
-                    </div>
-                    <div className="temp">
-                        <Container> 
-                            <Row>
-                                <Col sm={1} />
-                                <Col sm={10}>
-                                    <span className="SearchBarInputGrey">
-                                        <SVGIcon name="searchicon" width={20} height={20} fill={'#2c8267'} stroke='none' type="submit" className="ml-2 mr-3 mt-3" />
-                                        <span>
-                                            <input type="text" placeholder="Search" className="" id="SearchInputSpanGrey" onChange={this.changeText} onKeyDown={this.props.doSearchMethod} value={this.props.searchString} />
+                    <Col xs={{span:6,order:1}} lg={{span:2,order:1}}>
+                        <div> 
+                            <a style={{ cursor: 'pointer' }} href={'/'} >
+                                <ColourLogoSvg className="ml-4 mt-3" />  
+                            </a>
+                        </div>
+                    </Col>
+                    <Col xs={{span:12,order:3}} lg={{span:8,order:2}}>
+                        <div>
+                            <Container> 
+                                <Row>
+                                    <Col>
+                                        <span className="SearchBarInputGrey">
+                                            <span className="SearchInputIconGrey">
+                                                <SVGIcon name="searchicon" width={20} height={20} fill={'#2c8267'} stroke='none' type="submit" />
+                                            </span>
+                                            <span>
+                                                <input type="text" placeholder="Search" id="SearchInputSpanGrey" onChange={this.changeText} onKeyDown={this.props.doSearchMethod} value={this.props.searchString} />
+                                            </span>
+                                            <span className="SearchInputClearGrey">
+                                                <ClearButtonSvg />
+                                            </span>
                                         </span>
-                                        <ClearButtonSvg />
-                                    </span>
-                                </Col>
-                                <Col sm={1} />
-                            </Row>
-                        </Container>
-                    </div>
-                    <div>
-                        <span className="Purple-14px mr-4">Sign in | Sign up</span>
-                    </div>
+                                    </Col>
+                                </Row>
+                            </Container>
+                        </div>
+                    </Col>
+                    <Col xs={{span:6,order:2}} lg={{span:2,order:3}}>
+                        <div className="signLink">
+                            <span className="Purple-14px">Sign in</span>
+                        </div>
+                    </Col>
                 </Row>
                 </div>
         );

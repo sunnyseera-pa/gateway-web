@@ -19,15 +19,14 @@ class Tool extends React.Component{
         const { data} = this.state;
         return(
             <Row className="mt-2">
-                <Col sm={1} lg={1} />
-                <Col sm={10} lg={10}>
+                <Col>
                     <a className="searchHolder" href={'/tool/' + data.id} >
                         <div className="Rectangle">
                             <Row>
-                                <Col xs={2} md={1} className="iconHolder">
+                                <Col xs={2} lg={1} className="iconHolder">
                                     <SVGIcon name="toolicon" width={18} height={18} fill={'#3db28c'} />
                                 </Col>
-                                <Col xs={10} md={9}>
+                                <Col xs={10} lg={8}>
                                     <p>
                                         <span className="Black-16px">{ data.name}</span>
                                         <span className="Gray500-13px">
@@ -55,13 +54,13 @@ class Tool extends React.Component{
                                     </p>
                                    
                                 </Col>
-                                <Col xs={{span:12,order:1}} md={{span:2,order:0}} className="dateHolder mt-2">
+                                <Col xs={{span:12,order:1}} lg={{span:3,order:0}} className="dateHolder mt-2">
                                     <span className="Gray700-13px">
                                         Updated Aug 2018
                                     </span>
                                 </Col>
                             
-                                <Col xs={{span:12,order:0}} md={{span:12,order:1}}>
+                                <Col xs={{span:12,order:0}} lg={{span:12,order:1}}>
                                     { data.tags.length <= 0 ? 'NO SEARCH RESULT' :  data.tags.map((tag) => {
                                         return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{tag}</div>
                                     })}
@@ -70,7 +69,6 @@ class Tool extends React.Component{
                         </div>
                     </a>
                 </Col>
-                <Col sm={1} lg={10}/>
             </Row>
         );
     }

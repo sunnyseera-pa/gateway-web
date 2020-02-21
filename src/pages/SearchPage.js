@@ -4,6 +4,7 @@ import SearchBar from './components/SearchBar';
 import Project from './components/Project';
 import Tool from './components/Tool';
 import Person from './components/Person';
+import SearchNotFound from './components/SearchNotFound'
 import queryString from 'query-string';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -41,25 +42,28 @@ class SearchPage extends React.Component{
     componentDidMount() { //fires on first time in or page is refreshed/url loaded
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
-            this.doSearchCall(values.search);
+            this.doSearchCall(values.search, values.type);
             this.setState({ searchString: values.search});
+            this.setState({ typeString: values.type});
         }
         else {
-            this.doSearchCall("");
+            this.doSearchCall("","all");
         }
     }
 
     componentWillReceiveProps() {
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
-            if (values.search != this.state.searchString) {
-                this.doSearchCall(values.search);
-                this.setState({ searchString: values.search});
+            if (values.search != this.state.searchString 
+                || values.type != this.state.typeString) {
+                this.doSearchCall(values.search, values.type);
+                this.state.searchString = values.search;
+                this.state.typeString = values.type;
             }
         }
         else {
-            this.setState({ data: [], searchString: '',   id: '', type: '', name: '', description: '', rating: '', link: '', tags: [], isLoading: true});
-            this.doSearchCall("");
+            this.setState({ data: [], searchString: '', typeString: '', isLoading: true});
+            this.doSearchCall("","all");
         }
     }
 
@@ -70,7 +74,7 @@ class SearchPage extends React.Component{
                 this.doSearchCall(this.state.searchString, this.state.typeString);
             }
             else if(!!this.state.searchString && !this.state.typeString){
-                this.props.history.push(window.location.pathname+'?search='+this.state.searchString + '&type=')
+                this.props.history.push(window.location.pathname+'?search='+this.state.searchString + '&type=all')
                 this.doSearchCall(this.state.searchString, "");
             }
         }
@@ -83,7 +87,6 @@ class SearchPage extends React.Component{
 
     doSearchCall(searchString, typeString) {
         axios.get(baseURL+'/api/search?search='+searchString + '&type='+ typeString)
-
         .then((res) => {
             this.setState({ data: res.data.data });
         });
@@ -103,65 +106,34 @@ class SearchPage extends React.Component{
 
         return(
 
-            // <div>
-            //     <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} />
+            <div>
+                 <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} />
                 
-            //     <FilterButtons doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString} />
+                <Container>
+                    <Row>
+                        <Col sm={12} md={12} lg={3}>
+                            <FilterButtons typeString={typeString} doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString} />
+                        </Col>
+                        <Col sm={12} md={12} lg={9}>
+                            {data.length <= 0 ? <SearchNotFound />: data.map((dat) => {
+                                if (dat.type == 'tool') {
+                                    return <Tool data={dat} />
+                                } 
+                                else if (dat.type == 'project') {
+                                    return <Project data={dat} />
+                                }
+                                else if (dat.type == 'person') {
+                                    return <Person data={dat} />
+                                }
+                                else {
+                                    return null
+                                }
+                            })}
+                        </Col>
+                    </Row>
+                </Container>
+            </div>
 
-            //     <Container>
-            //         {data.length <= 0 ? 'NO DB ENTRIES YET': data.map((dat) => {
-            //             if (dat.type == 'tool') {
-            //                 return <Tool data={dat} />
-            //             } 
-            //             else if (dat.type == 'project') {
-            //                 return <Project data={dat} />
-            //             }
-            //             else if (dat.type == 'person') {
-            //                 return <Person data={dat} />
-            //             }
-            //             else {
-            //                 return null
-            //             }
-            //         })}
-
-            //     </Container>
-            //     <FilterButtons doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString}/>
-            // </div>
-
-
-                         
-
-                <Container className="BackgroundColour">
-                                <Row className="WhiteBackground">
-                                    <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} />
-                                </Row>
-
-                                <Row className="mt-3"></Row>
-
-                                <Row>
-                                    <Col sm={4}>
-                                        <FilterButtons doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString} />
-                                    </Col>
-
-                                    <Col sm={8}>
-                                        {data.length <= 0 ? 'NO DB ENTRIES YET' : data.map((dat) => {
-                                            if (dat.type == 'tool') {
-                                                return <Tool data={dat} />
-                                            }
-                                            else if (dat.type == 'project') {
-                                                return <Project data={dat} />
-                                            }
-                                            else if (dat.type == 'person') {
-                                                return <Person data={dat} />
-                                            }
-                                            else {
-                                                return null
-                                            }
-                                        })}
-                                    </Col>
-                                </Row>
-
-                            </Container>
 
             
             
