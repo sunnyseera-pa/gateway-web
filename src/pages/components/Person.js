@@ -28,15 +28,29 @@ class Person extends React.Component{
                             </Col>
                             <Col xs={10} md={11}>
                                 <p>
-                                    <span className="Black-16px">{data.firstname} {data.surname}</span>
+                                    <span className="Black-16px">{data.firstname} {data.surname} name</span>
                                     <br />
                                     <span className="Gray800-14px">University of Naples Federico II | UNINA // Department of Economics and Statistics</span>
                                 </p>
+
                                 <p className="Gray800-14px">
-                                    5 projects created
-                                    <br />
-                                    2 tools created, 17 reviewed
+                                        1 dataset 
+                                        <span className="Purple-14px ml-2">
+                                            NIHR HIC Locality : Critical Care
+                                        </span>
                                 </p>
+                                <p className="Gray800-14px">
+                                        4 tools
+                                        <span className="Purple-14px ml-2">
+                                            Tableau, Alpha data parser, Panda R library, Sareen
+                                        </span>
+                                </p>
+                                <p className="Gray800-14px">
+                                        5 projects 
+                                        <span className="Purple-14px ml-2">
+                                        Novel somatic alterations underlie Chinese papillary thyroid carcinoma, Human THO mai…
+                                        </span>
+                                    </p>
                             </Col>
                         
                             <Col xs={12} md={12}>

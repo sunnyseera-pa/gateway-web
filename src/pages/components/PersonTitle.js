@@ -47,7 +47,12 @@ class PersonTitle extends Component {
                             <Row>
                             <Col sm={12} className="text-left" className="Purple-14px">Link2</Col>
                             </Row>     */}
-
+                            <Row>
+                              <Col xs={12} md={12}>
+                                <span className='Gray800-14px'> ORCID </span>
+                                <span className='Purple-14px'> 0000-0147-7283-0199 </span>
+                              </Col>
+                            </Row>
                 {/* UPDATE THE BELOW TO RETURN FROM LINKS ARRAY */}
                             <Row>
                               <Col sm={12}>

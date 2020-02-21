@@ -97,6 +97,19 @@ body {
   color: #3c3c3b;
 }
 
+.Gray700-16px{
+  width: 88px;
+  height: 19px;
+  font-family: MuseoSansRounded;
+  font-size: 16px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #53575a;
+}
+
 .Gray700-13px{
   font-family: Museo Sans Rounded;
   font-size: 13px;
@@ -318,13 +331,56 @@ input[type='radio']:checked:after {
   width: 23px;
   height: 23px;
   border-radius: 23px;
+  padding-left: 3px;
   top: -3px;
   left: -1px;
   position: relative;
   background-color: #ffffff;
-  content: url(../images/star.svg) ;
+  content: url(../images/radio.svg) ;
   display: inline-block;
   visibility: visible;
   border: solid 2px #d6d6d6;
 }
+
+/* .react-tabs[role=tab] {
+  background-color: green;
+}
+
+.react-tabs[role=tab]:focus:after {
+  background-color: green;
+} */
+
+.TabsBackground{
+  background-color: #ffffff;
+  border: none;
+  outline: none;
+  outline-color: none;
+  border-top: none ;
+  border-left: none ;
+  border-right: none;
+  border-bottom: none;
+  border-bottom: 5px solid darkblue;
+  align-items: center;
+  justify-content: center;
+}
+
+.TabsBackground:active{
+  color: blue;
+  background-color: #ffffff;
+  border: none;
+  outline: none;
+  outline-color: none;
+  border-top: none ;
+  border-left: none ;
+  border-right: none;
+  border-bottom: none;
+  border-bottom:  5px solid green;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+} 
+
+/* #TabDesign:focus{
+  border-bottom: 2px solid darkblue !important;
+} */
 

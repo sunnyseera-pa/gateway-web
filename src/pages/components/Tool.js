@@ -30,14 +30,30 @@ class Tool extends React.Component{
                                 <Col xs={10} md={9}>
                                     <p>
                                         <span className="Black-16px">{ data.name}</span>
+                                        <span className="Gray500-13px">
+                                            <span className="reviewTitleGap">·</span>
+                                            150 reviews
+                                            <span className="reviewTitleGap">·</span>
+                                            4.2 average
+                                        </span>
                                         <br />
                                         <span className="Gray800-14px">Laure Santos</span>
                                     </p>
+
                                     <p className="Gray800-14px">
-                                       12 projects using it
-                                       <br />
-                                       117 reviews, 5 comments
+                                        1 dataset 
+                                        <span className="Purple-14px ml-2">
+                                            NIHR HIC Locality : Critical Care
+                                        </span>
                                     </p>
+
+                                    <p className="Gray800-14px">
+                                        4 tools 
+                                        <span className="Purple-14px ml-2">
+                                        Tableau, Alpha data parser, Panda R library, Sareen
+                                        </span>
+                                    </p>
+                                   
                                 </Col>
                                 <Col xs={{span:12,order:1}} md={{span:2,order:0}} className="dateHolder mt-2">
                                     <span className="Gray700-13px">

@@ -14,6 +14,9 @@ import SearchBar from './components/SearchBar';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Tool from './components/Tool';
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
+import DataSet from '../pages/components/DataSet';
 
 var baseURL = window.location.href;
 
@@ -89,32 +92,53 @@ class PersonDetail extends Component {
     
     return (
       <div>
-      {/* <Container style={{width: 800}}> */}
+        {/* <Container style={{width: 800}}> */}
         <SearchBar />
         <Container className="mb-5">
-        <PersonTitle data={data} />
-        {/* <Tags /> */}
-        {/* <Reviews /> */}
-        {/* <Creators /> */}
 
-        <Row className="mt-5">
-              <Col sm={12} className="Black-16px"> Tools created (x) </Col>
-        </Row>
-        <Tool data={data} />
+          <PersonTitle data={data} />
 
-        <Row className="mt-5">
-              <Col sm={12} className="Black-16px"> Tools reviewed (x) </Col>
-        </Row>
-        <ToolsUsed data={data} />
-        {/* <ToolsCreated /> */}
+            <Row className="mt-3">
 
-        <Row className="mt-5">
-              <Col sm={12} className="Black-16px"> Research projects (x) </Col>
-        </Row>
-        <Project data={data} />
+              <Col sm={1} lg={1} />
+              <Col sm={10} lg={10}>
+                <div>
+                  <Tabs className='TabsBackground Gray700-13px'>
+                    <Tab eventKey="Tools" title="Tools (2)">
+                      <Tool data={data} />
+                    </Tab>
+                    <Tab eventKey="Reviews" title="Reviews (5)">
+                      <ToolsUsed data={data} />
+                    </Tab>
+                    <Tab eventKey="Data sets" title="Data sets (1)">
+                      <DataSet />
+                    </Tab>
+                    <Tab eventKey="Projects" title="Projects (1)">
+                      <Project data={data} />
+                    </Tab>
+                  </Tabs>
+                </div>
+              </Col>
+              <Col sm={1} lg={1} />
+            </Row>
 
-     </ Container>
-     </div>
+         {/*  <Row className="mt-5">
+            <Col sm={12} className="Black-16px"> Tools created (x) </Col>
+          </Row>
+          <Tool data={data} />
+
+          <Row className="mt-5">
+            <Col sm={12} className="Black-16px"> Tools reviewed (x) </Col>
+          </Row>
+          <ToolsUsed data={data} />
+
+          <Row className="mt-5">
+            <Col sm={12} className="Black-16px"> Research projects (x) </Col>
+          </Row>
+          <Project data={data} /> */}
+
+        </ Container>
+      </div>
     );
   }
 }

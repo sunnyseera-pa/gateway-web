@@ -12,6 +12,23 @@ import Container from 'react-bootstrap/Container';
 import Rating from 'react-rating';
 import { ReactComponent as EmptyStarIconSvg} from '../images/starempty.svg';
 import { ReactComponent as FullStarIconSvg} from '../images/star.svg';
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
+import TabContent from 'react-bootstrap/TabContent';
+import TabPane from 'react-bootstrap/TabPane';
+// import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import Form from 'react-bootstrap/Form';
+import FormControl from 'react-bootstrap/FormControl';
+import Button from 'react-bootstrap/Button';
+import NavItem from 'react-bootstrap/NavItem';
+import NavLink from 'react-bootstrap/NavLink';
+import DataSet from '../pages/components/DataSet';
+import PersonTitle from '../pages/components/PersonTitle';
+import ToolsUsed from './components/ToolsUsed';
+
 
 var baseURL = window.location.href;
 
@@ -33,6 +50,9 @@ class ToolDetail extends Component {
   state = {
     id: '',
     data: [],
+    key:'Reviews',
+    activeKey: false,
+    selectedItem: 'tab-1',
     isLoading: true
   };
 
@@ -44,6 +64,7 @@ class ToolDetail extends Component {
   componentDidMount() {
     this.getDataSearchFromDb();
   }
+
 
   // on loading of tool detail page were id is different
   componentDidUpdate() {
@@ -76,8 +97,62 @@ class ToolDetail extends Component {
         <SearchBar />
         <Container className="mb-5">
           <ToolTitle data={data} />
+          <PersonTitle data={data} />
+
+            {/* <Row className="mt-3">
+
+              <Col sm={1} lg={1} />
+              <Col sm={10} lg={10}>
+                <div>
+                  
+                  <Tabs selectedItem={this.state.selectedItem} onChange={selectedItem => this.setState({ selectedItem })}
+                  activeKey={this.state.key}
+                  onSelect={key => this.setState({ key })}>
+                    <TabList className="TabsBackground Gray700-13px">
+                    <Tab item='tab-1' id="TabDesign">
+                      Reviews
+                    </Tab>
+                    <Tab item='tab-2'>
+                      Research Projects
+                    </Tab>
+                    </TabList>
+                    <TabPanel item='tab-1'>
+                      <Reviews />
+                    </TabPanel>
+                    <TabPanel item='tab-2'>
+                      <Project data={data} />
+                    </TabPanel>
+                  </Tabs>
+                </div>
+              </Col>
+              <Col sm={1} lg={1} />
+            </Row> */}
+
+            
+            <Row  className="mt-3">
+
+            <Col sm={1} lg={1} />
+            <Col sm={10} lg={10}>
+              <div>
+                <Tabs className='TabsBackground Gray700-13px'>
+                  <Tab eventKey="Reviews" title="Reviews (54)">
+                    <Reviews />
+                  </Tab>
+                  <Tab eventKey="Data sets" title="Data sets (1)">
+                      <DataSet />
+                  </Tab>
+                  <Tab eventKey="Projects" title="Projects (2)">
+                    <Project data={data} />
+                  </Tab>
+                </Tabs>
+              </div>
+            </Col>
+            <Col sm={1} lg={1} />
+            </Row>
+                         
           
-          <Row className="mt-4">
+
+          {/* <Row className="mt-4">
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
               <span className="Black500-16px">Reviews</span>
@@ -101,7 +176,7 @@ class ToolDetail extends Component {
             </Col>
             <Col sm={1} lg={10} />
           </Row>
-          <Project data={data}  />
+          <Project data={data}  /> */}
           
         </Container>
       </div>

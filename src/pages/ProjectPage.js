@@ -10,6 +10,9 @@ import SearchBar from './components/SearchBar';
 import Tool from './components/Tool';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
+import DataSet from '../pages/components/DataSet';
 
 var baseURL = window.location.href;
 
@@ -74,7 +77,45 @@ class ProjectDetail extends Component {
         <SearchBar />
         <Container className="mb-5">
           <ProjectTitle data={data} />
+
           <Row className="mt-4">
+            <Col sm={1} lg={1} />
+            <Col sm={10} lg={10}>
+              <span className="Black500-16px">Authors (2)</span>
+            </Col>
+            <Col sm={1} lg={10} />
+          </Row>
+          <Row>
+            <Col sm={1} lg={1} />
+            <Col sm={5} lg={5}>
+              <Creators data={data} />
+            </Col>
+            <Col sm={5} lg={5}>
+              <Creators data={data} />
+            </Col>
+            <Col sm={1} lg={10} />
+          </Row>
+
+            <Row  className="mt-3">
+
+              <Col sm={1} lg={1} />
+              <Col sm={10} lg={10}>
+                <div>
+                  <Tabs className='TabsBackground Gray700-13px'>
+                    <Tab eventKey="Tools" title="Tools (3)">
+                      <Tool data={data} />
+                      {/* <ToolsUsed data={data} /> */}
+                    </Tab>
+                    <Tab eventKey="Data sets" title="Data sets (1)">
+                      <DataSet />
+                    </Tab>
+                  </Tabs>
+                </div>
+              </Col>
+              <Col sm={1} lg={1} />
+            </Row>
+
+          {/* <Row className="mt-4">
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
               <span className="Black500-16px">Authors (2)</span>
@@ -97,7 +138,8 @@ class ProjectDetail extends Component {
             </Col>
             <Col sm={1} lg={10} />
           </Row>
-          <ToolsUsed data={data} />
+          <ToolsUsed data={data} /> */}
+
         </Container>
       </div>
     );

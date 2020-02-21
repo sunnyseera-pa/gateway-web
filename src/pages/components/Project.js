@@ -33,8 +33,15 @@ class Project extends React.Component{
                                         <span className="Gray800-14px">Suvasini Sharma, Manjari Tripathi</span>
                                     </p>
                                     <p className="Gray800-14px">
+                                        1 dataset 
+                                        <span className="Purple-14px ml-2">
+                                            NIHR HIC Locality : Critical Care
+                                        </span>
+                                    </p>
+
+                                    <p className="Gray800-14px">
                                         4 tools used 
-                                        <span className="Purple-13px ml-2">
+                                        <span className="Purple-14px ml-2">
                                             Tableau, Alpha data parser, Panda R library, Sareen
                                         </span>
                                     </p>

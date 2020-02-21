@@ -103,71 +103,70 @@ class SearchPage extends React.Component{
 
         return(
 
-            <div>
-                <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} />
+            // <div>
+            //     <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} />
                 
-                <FilterButtons doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString} />
+            //     <FilterButtons doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString} />
 
-                <Container>
-                    {data.length <= 0 ? 'NO DB ENTRIES YET': data.map((dat) => {
-                        if (dat.type == 'tool') {
-                            return <Tool data={dat} />
-                        } 
-                        else if (dat.type == 'project') {
-                            return <Project data={dat} />
-                        }
-                        else if (dat.type == 'person') {
-                            return <Person data={dat} />
-                        }
-                        else {
-                            return null
-                        }
-                    })}
+            //     <Container>
+            //         {data.length <= 0 ? 'NO DB ENTRIES YET': data.map((dat) => {
+            //             if (dat.type == 'tool') {
+            //                 return <Tool data={dat} />
+            //             } 
+            //             else if (dat.type == 'project') {
+            //                 return <Project data={dat} />
+            //             }
+            //             else if (dat.type == 'person') {
+            //                 return <Person data={dat} />
+            //             }
+            //             else {
+            //                 return null
+            //             }
+            //         })}
 
-                </Container>
-                <FilterButtons doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString}/>
-            </div>
+            //     </Container>
+            //     <FilterButtons doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString}/>
+            // </div>
 
 
+                         
+
+                <Container className="BackgroundColour">
+                                <Row className="WhiteBackground">
+                                    <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} />
+                                </Row>
+
+                                <Row className="mt-3"></Row>
+
+                                <Row>
+                                    <Col sm={4}>
+                                        <FilterButtons doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString} />
+                                    </Col>
+
+                                    <Col sm={8}>
+                                        {data.length <= 0 ? 'NO DB ENTRIES YET' : data.map((dat) => {
+                                            if (dat.type == 'tool') {
+                                                return <Tool data={dat} />
+                                            }
+                                            else if (dat.type == 'project') {
+                                                return <Project data={dat} />
+                                            }
+                                            else if (dat.type == 'person') {
+                                                return <Person data={dat} />
+                                            }
+                                            else {
+                                                return null
+                                            }
+                                        })}
+                                    </Col>
+                                </Row>
+
+                            </Container>
+
+            
             
         );
     }
 }
-
-/* 
-
-<Container className="BackgroundColour">
-                <Row className="WhiteBackground">
-                    <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} />
-                </Row>
-
-                <Row className="mt-3"></Row>
-
-                <Row>
-                    <Col sm={4}>
-                        <FilterButtons doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString} />
-                    </Col>
-
-                    <Col sm={8}>
-                        {data.length <= 0 ? 'NO DB ENTRIES YET' : data.map((dat) => {
-                            if (dat.type == 'tool') {
-                                return <Tool data={dat} />
-                            }
-                            else if (dat.type == 'project') {
-                                return <Project data={dat} />
-                            }
-                            else if (dat.type == 'person') {
-                                return <Person data={dat} />
-                            }
-                            else {
-                                return null
-                            }
-                        })}
-                    </Col>
-                </Row>
-
-            </Container>
-
-*/
 
 export default SearchPage;

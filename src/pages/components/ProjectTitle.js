@@ -27,52 +27,62 @@ class ProjectTitle extends Component {
             <Row className="mt-2">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
-                    <div className="Rectangle">
+
+                <div className="Rectangle">
                         <Row>
-                            <Col xs={12} md={12}>
+                            <Col xs={7} md={8}>
                                 <p>
-                                    <span className="Black-20px">{data.name}</span>
+                                    <span className="Black-16px">{data.name}</span>
+                                    <br />
+                                    <span >
+                                        <a href={data.link} className="Purple-14px"> 
+                                            {data.link}
+                                        </a>
+                                    </span>
                                 </p>
-                                
-                                {data.tags.length <= 0 ? 'NO SEARCH RESULT' : data.tags.map((tag) => {
-                                    return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{tag}</div>
-                                })}
                             </Col>
-                            <Col xs={12} md={12} className="mb-2 mt-2">
-                                <span className="Gray800-14px">
-                                {data.description}
+                            <Col xs={5} md={4} className="iconHolder">
+                                <p>
+                                <span className="Gray700-13px">
+                                    Updated Aug 2018
                                 </span>
+                                </p>
+                                <p>
+
+                                </p>
                             </Col>
-                        </Row>    
-                    </div>
-                </Col>
-                <Col sm={1} lg={10}/>
-            </Row>
-            <Row>
-                <Col sm={1} lg={1} />
-                <Col sm={10} lg={10}>
-                    <div className="Rectangle">
+                        </Row>
+                        
                         <Row>
-                            <Col xs={12} md={12}>
+                            <Col xs={12} md={12} className="mb-3">
                                 {data.tags.length <= 0 ? 'NO SEARCH RESULT' : data.tags.map((tag) => {
-                                    return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{tag}</div>
+                                    return <div className="mr-2 Gray800-14px tagBadges">{tag}</div>
                                 })}
                             </Col>
                         </Row>
-                    </div>
+                        </div>
                 </Col>
                 <Col sm={1} lg={10}/>
             </Row>
             <Row>
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
+
                     <div className="Rectangle">
                         <Row>
-                            <Col>
-                                <a href={data.link} className="Purple-14px"> 
-                                    {data.link}
-                                </a>
+                            <Col xs={12} md={12} className="mb-3">
+                                {data.tags.length <= 0 ? 'NO SEARCH RESULT' : data.tags.map((tag) => {
+                                    return <div className="mr-2 Gray800-14px tagBadges">{tag}</div>
+                                })}
                             </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12} md={12} className="mb-3">
+                                <span className="Gray800-14px">
+                                    {data.description}
+                                    {/* Software to analyse data and with powerful graphics to create interactive visualisations - focused on business intelligence. Including data access to data prep to get data ready for analysis, to data analytics and discovery. */}
+                                </span>
+                            </Col> 
                         </Row>
                     </div>
                 </Col>
