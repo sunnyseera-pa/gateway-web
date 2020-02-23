@@ -109,11 +109,15 @@ class ToolDetail extends Component {
         <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} />
         <Container className="mb-5">
           <ToolTitle data={data} />
-          <PersonTitle data={data} />
-
-            
-            <Row  className="mt-3">
-
+          
+          <Row className="mt-4">
+            <Col sm={1} lg={1} />
+            <Col sm={10} lg={10}>
+              <span className="Black500-16px">Research projects using it (5)</span>
+            </Col>
+            <Col sm={1} lg={10} />
+          </Row>
+          <Row>
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
               <div>

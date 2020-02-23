@@ -46,7 +46,7 @@ class FilterButtons extends Component {
                     id="formHorizontalRadios1"
                     checked={this.props.typeString === 'all' ? true: false}
                     value="all"
-                    onClick={this.changeFilter}
+                    onChange={this.changeFilter}
                 />
                 <Form.Check
                     type="radio"
@@ -55,7 +55,7 @@ class FilterButtons extends Component {
                     id="formHorizontalRadios2"
                     checked={this.props.typeString === 'tool' ? true: false}
                     value="tool"
-                    onClick={this.changeFilter}
+                    onChange={this.changeFilter}
                 />
                 <Form.Check
                     type="radio"
@@ -64,7 +64,7 @@ class FilterButtons extends Component {
                     id="formHorizontalRadios3"
                     checked={this.props.typeString === 'project' ? true: false}
                     value="project"
-                    onClick={this.changeFilter}
+                    onChange={this.changeFilter}
                 />
                 <Form.Check
                     type="radio"
@@ -73,8 +73,7 @@ class FilterButtons extends Component {
                     id="formHorizontalRadios4"
                     checked={this.props.typeString === 'person' ? true: false}
                     value="person"
-                    onClick={this.changeFilter}
-
+                    onChange={this.changeFilter}
                 />
             </Col>
         </Row>

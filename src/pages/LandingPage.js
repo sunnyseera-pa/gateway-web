@@ -13,6 +13,7 @@ class LandingPage extends React.Component{
 
     componentDidMount() {
         this.setState({ searchString: ''});
+        document.getElementById("SearchInputSpan").focus();
     }
 
     doSearch = (e) => { //fires on enter on searchbar
