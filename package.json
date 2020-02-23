@@ -38,17 +38,6 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@babel/preset-env": "^7.8.4",
-    "@babel/preset-react": "^7.8.3",
-    "babel-jest": "^25.1.0",
-    "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.2",
-    "jest": "^25.1.0",
-    "react-addons-test-utils": "^15.6.2"
-  },
   "jest":{
     "moduleNameMapper":{
          "\\.(css|less|sass|scss)$": "<rootDir>/test/mocks/styleMock.js",
