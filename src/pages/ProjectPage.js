@@ -128,37 +128,6 @@ class ProjectDetail extends Component {
               <Col sm={1} lg={1} />
             </Row>
 
-          {/* <Row className="mt-4">
-            <Col sm={1} lg={1} />
-            <Col sm={10} lg={10}>
-              <span className="Black500-16px">Authors (2)</span>
-            </Col>
-            <Col sm={1} lg={10} />
-          </Row>
-          <Creators data={data} />
-          <Row className="mt-4">
-            <Col sm={1} lg={1} />
-            <Col sm={10} lg={10}>
-              <span className="Black500-16px">Tools created as part of this research project (2)</span>
-            </Col>
-            <Col sm={1} lg={10} />
-          </Row>
-          <Row>
-            <Col sm={1} lg={1} />
-            <Col sm={10} lg={10}>
-              <Tool data={data} />
-            </Col>
-            <Col sm={1} lg={1} />
-          </Row>
-          <Row className="mt-4">
-            <Col sm={1} lg={1} />
-            <Col sm={10} lg={10}>
-              <span className="Black500-16px">Tools used (2)</span>
-            </Col>
-            <Col sm={1} lg={10} />
-          </Row>
-          <ToolsUsed data={data} /> */}
-
         </Container>
       </div>
     );
