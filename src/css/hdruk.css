@@ -298,7 +298,7 @@ body {
 
 #SearchInputSpan{
   display: inline-block;
-  width: 90%;
+  width: 75%;
   height: 40px;
   outline: none;
   border: 0;
@@ -308,7 +308,7 @@ body {
 
 #SearchInputSpanGrey{
   display: inline-block;
-  width: 80%;
+  width: 70%;
   outline: none;
   border: 0;
   font-size: 16px;

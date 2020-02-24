@@ -27,8 +27,10 @@ class ToolsUsed extends Component {
   render() {
     const { data } = this.state;
 
-    /* GIVING REPLACE ERROR HERE TOO */
-    // var shortName = data.name.replace(/(.{50})..+/, "$1…");
+    var shortName = "";
+    if (data.name){     
+      shortName = data.name.replace(/(.{50})..+/, "$1…");
+    }
 
     return (
       <Row className="mt-2">
@@ -67,7 +69,7 @@ class ToolsUsed extends Component {
                           <span className="text-left Purple-13px">Effects of a ketogenic diet for epilept...</span>
                         </Col>
                         <Col xs={12} md={4} className="mb-1 text-right">
-                          <Rating emptySymbol={<EmptyStarIconSvg />} fullSymbol={<FullStarIconSvg />} placeholderSymbol={<FullStarIconSvg />} placeholderRating={4.3} />
+                          <Rating emptySymbol={<EmptyStarIconSvg />} fullSymbol={<FullStarIconSvg />} placeholderSymbol={<FullStarIconSvg />} placeholderRating={4.3} readonly={true} />
                         </Col>
                     </Row>
                 </div>

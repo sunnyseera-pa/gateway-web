@@ -21,8 +21,7 @@ class Reviews extends Component {
     // const Rating = require('react-rating');
     return (
         <Row className="mt-2">
-          <Col sm={1} lg={1} />
-          <Col sm={10} lg={10}>
+          <Col>
             <div className="Rectangle">
               <Row>
                 <Col xs={12} md={12}>
@@ -34,12 +33,11 @@ class Reviews extends Component {
                   <span className="text-left Gray500-13px">  on 12 Jun 2018</span>
                 </Col>
                 <Col xs={6} md={6} className="mb-1 text-right">
-                  <Rating emptySymbol={<EmptyStarIconSvg />} fullSymbol={<FullStarIconSvg />} placeholderSymbol={<FullStarIconSvg />} placeholderRating={4.3} />
+                  <Rating emptySymbol={<EmptyStarIconSvg />} fullSymbol={<FullStarIconSvg />} placeholderSymbol={<FullStarIconSvg />} placeholderRating={4.3} readonly={true} />
                 </Col>
               </Row>
             </div>
           </Col>
-          <Col sm={1} lg={10} />
         </Row>
     );
   }

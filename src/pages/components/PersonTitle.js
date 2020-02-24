@@ -29,8 +29,8 @@ class PersonTitle extends Component {
       //   <p>Title = {id} = {type}</p>
       <div>
           <Row className="mt-1">
-                <Col></Col>
-                <Col>
+              <Col sm={1} lg={1} />
+                <Col sm={10} lg={10}>
                     <Card className="Rectangle">
                         <Card.Body>   
                         {/* <Container> */}
@@ -66,7 +66,7 @@ class PersonTitle extends Component {
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col></Col>
+                <Col sm={1} lg={1} />
            </Row>
       </div>
 
