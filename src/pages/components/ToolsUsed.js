@@ -27,7 +27,8 @@ class ToolsUsed extends Component {
   render() {
     const { data } = this.state;
 
-    var shortName = data.name.replace(/(.{50})..+/, "$1…");
+    /* GIVING REPLACE ERROR HERE TOO */
+    // var shortName = data.name.replace(/(.{50})..+/, "$1…");
 
     return (
       <Row className="mt-2">
@@ -41,7 +42,9 @@ class ToolsUsed extends Component {
                         </Col>
                         <Col xs={10} md={11}>
                             <p>
-                                <span className="Black-16px">{shortName}</span>
+                                <span className="Black-16px">{data.name}
+                                {/* {shortName} */}
+                                </span>
                                 <span className="Gray500-13px">
                                   <span className="reviewTitleGap">·</span>
                                   150 reviews

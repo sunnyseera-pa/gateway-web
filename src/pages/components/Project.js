@@ -16,6 +16,10 @@ class Project extends React.Component{
 
     render(){
         const { data } = this.state;
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var updatedDate = new Date(data.updatedon);
+        var updatedOnDate = monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
+
         return(
             <Row className="mt-2">
                 <Col>
@@ -39,15 +43,43 @@ class Project extends React.Component{
                                     </p>
 
                                     <p className="Gray800-14px">
-                                        4 tools used 
+                                    <span> 4 tools</span>
+                                    {/* <span className="mr-1">
+                                            {data.toolids.length}
+                                        </span>
+                                        <span>
+                                            {data.toolids.length > 1 ? "tools" : "tool"}
+                                        </span> */}
+
                                         <span className="Purple-14px ml-2">
                                             Tableau, Alpha data parser, Panda R library, Sareen
                                         </span>
+
+                                        {/* DISPLAYS TOOL IDS ATTACHED TO PROJECT */}
+                                        {/* <span className="Purple-14px ml-2">
+                                            { data.toolids.length <= 0 ? 'NO SEARCH RESULT' :  data.toolids.map((toolid) => {
+                                                if(!!toolid){
+                                                    return <span className="Purple-14px ml-1"> {toolid} </span>
+                                                }
+                                            })}
+                                        </span> */}
+
+
+                                        {/* <span className="Purple-14px ml-2">
+                                            { data.toolids.length <= 0 ? 'NO SEARCH RESULT' :  data.toolids.map((toolid) => {
+                                                if(!!toolid){
+                                                    return <span className="Purple-14px ml-1"> {data.name} </span>
+                                                }
+                                            })}
+                                        </span> */}
                                     </p>
                                 </Col>
                                 <Col xs={{span:12,order:1}} lg={{span:3,order:0}} className="dateHolder mt-2">
-                                    <span className="Gray700-13px">
-                                        Updated Aug 2018
+                                    <span className="Gray700-13px pr-1">
+                                        Updated
+                                    </span>
+                                    <span className="Gray700-13px pr-1"> 
+                                        {updatedOnDate}
                                     </span>
                                 </Col>
                             

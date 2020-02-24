@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import SVGIcon from "../../images/SVGIcon"
+import SVGIcon from "../../images/SVGIcon";
+import {format} from 'date-fns';
 
 class Tool extends React.Component{
 
@@ -17,6 +18,10 @@ class Tool extends React.Component{
 
     render(){
         const { data} = this.state;
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var updatedDate = new Date(data.updatedon);
+        var updatedOnDate = monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
+
         return(
             <Row className="mt-2">
                 <Col>
@@ -47,16 +52,44 @@ class Tool extends React.Component{
                                     </p>
 
                                     <p className="Gray800-14px">
-                                        4 tools 
-                                        <span className="Purple-14px ml-2">
-                                        Tableau, Alpha data parser, Panda R library, Sareen
+                                        <span>4 projects</span>
+                                        {/* <span className="mr-1">
+                                            {data.projectids.length}
                                         </span>
+                                        <span>
+                                            {data.projectids > 1 ? "projects" : "project"}
+                                        </span> */}
+                                        
+                                        <span className="Purple-14px ml-2">
+                                        Novel somatic alterations underlie Chinese papillary thyroid carcinoma, Human THO mai…
+                                        </span>
+
+                                        {/* DISPLAYS PROJECT IDS ATTACHED TO TOOL */}
+                                        {/* <span className="Purple-14px ml-2">
+                                            { data.projectids.length <= 0 ? 'NO SEARCH RESULT' :  data.projectids.map((projectid) => {
+                                                if(!!projectid){
+                                                    return <span className="Purple-14px ml-1"> {projectid} </span>
+                                                }
+                                            })}
+                                        </span> */}
+
+
+                                        {/* <span className="Purple-14px ml-2">
+                                            { data.projectids.length <= 0 ? 'NO SEARCH RESULT' :  data.projectids.map((projectid) => {
+                                                if(!!projectid){
+                                                    return <span className="Purple-14px ml-1"> {data.name} </span>
+                                                }
+                                            })}
+                                        </span> */}
                                     </p>
                                    
                                 </Col>
                                 <Col xs={{span:12,order:1}} lg={{span:3,order:0}} className="dateHolder mt-2">
-                                    <span className="Gray700-13px">
-                                        Updated Aug 2018
+                                    <span className="Gray700-13px pr-1">
+                                        Updated
+                                    </span>
+                                    <span className="Gray700-13px pr-1"> 
+                                        {updatedOnDate}
                                     </span>
                                 </Col>
                             

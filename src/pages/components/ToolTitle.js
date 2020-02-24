@@ -25,6 +25,9 @@ class ToolTitle extends Component {
   // see them render into our screen
   render() {
     const { data } = this.state;
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    var updatedDate = new Date(data.updatedon);
+    var updatedOnDate = monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
 
     return (
         <div>
@@ -46,8 +49,11 @@ class ToolTitle extends Component {
                             </Col>
                             <Col xs={5} md={4} className="iconHolder">
                                 <p>
-                                <span className="Gray700-13px">
-                                    Updated Aug 2018
+                                <span className="Gray700-13px pr-1">
+                                    Updated
+                                </span>
+                                <span className="Gray700-13px pr-1"> 
+                                    {updatedOnDate}
                                 </span>
                                 </p>
                                 <p>
@@ -58,37 +64,21 @@ class ToolTitle extends Component {
                         
                         <Row>
                             <Col xs={6} md={6} className="mb-3">
-                                {data.tags.length <= 0 ? 'NO SEARCH RESULT' : data.tags.map((tag) => {
-                                    return <div className="mr-2 Gray800-14px tagBadges">{tag}</div>
+                                {data.categories.length <= 0 ? 'NO SEARCH RESULT' : data.categories.map((category) => {
+                                    return <div className="mr-2 Gray800-14px tagBadges">{category}</div>
                                 })}
                             </Col>
-                            <Col xs={3} md={3} className="mb-3">
+                            <Col xs={3} md={3} className="mb-3 pl-5">
                             <span className="Gray500-13px">
                                             150 reviews
                                             <span className="reviewTitleGap">·</span>
                                             4.2 average
                             </span>
                             </Col>
-                            <Col xs={3} md={3} className="mb-1 text-right">
+                            <Col xs={3} md={3} className="mb-1 pr-5 text-right">
                                 <Rating emptySymbol={<EmptyStarIconSvg />} fullSymbol={<FullStarIconSvg />} placeholderSymbol={<FullStarIconSvg />} placeholderRating={4.3} />
                             </Col>
                         </Row>
-
-
-                
-
-                            {/* <Col xs={{ span: 12, order: 1 }} md={{ span: 2, order: 0 }} className="dateHolder mt-2">
-                                <span className="Gray700-13px">
-                                    Updated Aug 2018
-                                        </span>
-                            </Col> */}
-
-                            {/* <Col xs={12} md={12} className="mb-3">
-                                <span className="Gray800-14px">
-                                    Software to analyse data and with powerful graphics to create interactive visualisations - focused on business intelligence. Including data access to data prep to get data ready for analysis, to data analytics and discovery.
-                                </span>
-                            </Col> */}
-                        {/* </Row>     */}
                     </div>
                 </Col>
                 <Col sm={1} lg={10}/>

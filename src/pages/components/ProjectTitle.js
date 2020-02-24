@@ -22,6 +22,10 @@ class ProjectTitle extends Component {
   // see them render into our screen
   render() {
     const { data } = this.state;
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    var updatedDate = new Date(data.updatedon);
+    var updatedOnDate = monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
+
     return (
         <div>
             <Row className="mt-2">
@@ -43,8 +47,11 @@ class ProjectTitle extends Component {
                             </Col>
                             <Col xs={5} md={4} className="iconHolder">
                                 <p>
-                                <span className="Gray700-13px">
-                                    Updated Aug 2018
+                                <span className="Gray700-13px pr-1">
+                                    Updated
+                                </span>
+                                <span className="Gray700-13px pr-1"> 
+                                    {updatedOnDate}
                                 </span>
                                 </p>
                                 <p>
@@ -55,8 +62,8 @@ class ProjectTitle extends Component {
                         
                         <Row>
                             <Col xs={12} md={12} className="mb-3">
-                                {data.tags.length <= 0 ? 'NO SEARCH RESULT' : data.tags.map((tag) => {
-                                    return <div className="mr-2 Gray800-14px tagBadges">{tag}</div>
+                                {data.categories.length <= 0 ? 'NO SEARCH RESULT' : data.categories.map((category) => {
+                                    return <div className="mr-2 Gray800-14px tagBadges">{category}</div>
                                 })}
                             </Col>
                         </Row>

@@ -37,7 +37,7 @@ class PersonTitle extends Component {
                             <Row className="mb-2">
                                 <Col sm={10} className="text-left ">
                                    <p className="Black-20px"> {data.firstname} {data.surname} </p> 
-                                   <p className="Gray800-14px"> Company </p>
+                                   <p className="Gray800-14px"> {data.company} </p>
                                 </Col>
                                 <Col sm={2}> <Image src={require("../../images/bob.jpg")} id="BigPicture" roundedCircle /> </Col>
                             </Row> 

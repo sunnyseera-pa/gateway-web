@@ -28,6 +28,7 @@ import NavLink from 'react-bootstrap/NavLink';
 import DataSet from '../pages/components/DataSet';
 import PersonTitle from '../pages/components/PersonTitle';
 import ToolsUsed from './components/ToolsUsed';
+import Creators from '../pages/components/Creators';
 
 
 var baseURL = window.location.href;
@@ -109,7 +110,25 @@ class ToolDetail extends Component {
         <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} />
         <Container className="mb-5">
           <ToolTitle data={data} />
-          <PersonTitle data={data} />
+          {/* <PersonTitle data={data} /> */}
+
+          {/* <Row className="mt-4">
+            <Col sm={1} lg={1} />
+            <Col sm={10} lg={10}>
+              <span className="Black500-16px">Authors (2)</span>
+            </Col>
+            <Col sm={1} lg={10} />
+          </Row>
+          <Row>
+            <Col sm={1} lg={1} />
+            <Col sm={5} lg={5}>
+              <Creators data={data} />
+            </Col>
+            <Col sm={5} lg={5}>
+              <Creators data={data} />
+            </Col>
+            <Col sm={1} lg={10} />
+          </Row> */}
 
             
             <Row  className="mt-3">
