@@ -9,22 +9,9 @@ import SearchBar from './components/SearchBar';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
-import Rating from 'react-rating';
-import { ReactComponent as EmptyStarIconSvg} from '../images/starempty.svg';
-import { ReactComponent as FullStarIconSvg} from '../images/star.svg';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
-import TabContent from 'react-bootstrap/TabContent';
-import TabPane from 'react-bootstrap/TabPane';
-// import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import Form from 'react-bootstrap/Form';
-import FormControl from 'react-bootstrap/FormControl';
-import Button from 'react-bootstrap/Button';
-import NavItem from 'react-bootstrap/NavItem';
-import NavLink from 'react-bootstrap/NavLink';
 import DataSet from '../pages/components/DataSet';
 import PersonTitle from '../pages/components/PersonTitle';
 import ToolsUsed from './components/ToolsUsed';
@@ -32,20 +19,7 @@ import Creators from '../pages/components/Creators';
 // import AddProjectPage from './AddProjectPage';
 import AddToolPage from './AddToolPage';
 
-
-var baseURL = window.location.href;
-
-if (!baseURL.includes('localhost')) {
-    var rx = /^([http|https]+\:\/\/[a-z]+)([^/]*)/;
-    var arr = rx.exec(baseURL);
-    if (arr.length > 0) {
-        //add -api to the sub domain for API requests
-        baseURL = arr[1]+'-api'+arr[2]
-    }
-
-} else {
-    baseURL = 'http://localhost:3001'
-}
+var baseURL = require('./../BaseURL').getURL();
 
 class ToolDetail extends Component {
 

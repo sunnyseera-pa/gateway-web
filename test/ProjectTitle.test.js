@@ -21,7 +21,8 @@ describe('ProjectTitle', () => {
             "link": "https://en.wikipedia.org/wiki/Leukemia",
             "toolids":[89522470,999999],
             "creator":[89522471,69522471],
-            "_v": 0
+            "_v": 0,
+            "categories": []
           };
         const wrapper = mount(<ProjectTitle data={dataProject}/>);
     });
