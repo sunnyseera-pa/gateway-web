@@ -94,9 +94,15 @@ class Tool extends React.Component{
                                 </Col>
                             
                                 <Col xs={{span:12,order:0}} lg={{span:12,order:1}}>
-                                    { data.tags.length <= 0 ? 'NO SEARCH RESULT' :  data.tags.map((tag) => {
-                                        return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{tag}</div>
-                                    })}
+
+                                    {!data.tags.features || data.tags.features.length <= 0 ? '' :  data.tags.features.map((feature) => {
+                                        return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{feature}</div>
+                                    })} 
+
+                                    {!data.tags.topics || data.tags.topics.length <= 0 ? '' :  data.tags.topics.map((topic) => {
+                                        return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{topic}</div>
+                                    })} 
+
                                 </Col>
                             </Row>
                         </div>

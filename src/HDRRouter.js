@@ -7,6 +7,10 @@ import PersonPage from './pages/PersonPage';
 import ProjectPage from './pages/ProjectPage';
 import LandingPage from './pages/LandingPage';
 import SearchPage from './pages/SearchPage';
+import AddToolPage from './pages/AddToolPage';
+import AddProjectPage from './pages/AddProjectPage';
+import Account from './pages/Account';
+import EditToolPage from './pages/EditToolPage';
 
 class HDRRouter extends Component {
   // initialize our state
@@ -43,7 +47,16 @@ class HDRRouter extends Component {
 
           <Route path="/person/:personID" component={PersonPage}/>
 
-          <Route path="/" component={LandingPage}/>
+          <Route path="/addtool" component={AddToolPage}/>
+
+          <Route path="/edittool/:toolID" component={EditToolPage}/>
+
+          <Route path="/addproject" component={AddProjectPage}/>
+
+          <Route path="/account" component={Account}/>
+
+          <Route path="/" component={LandingPage}/>   
+
         </Switch>
       </div>
     </Router>

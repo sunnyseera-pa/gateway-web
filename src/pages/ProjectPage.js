@@ -91,7 +91,7 @@ class ProjectDetail extends Component {
         <Container className="mb-5">
           <ProjectTitle data={data} />
 
-          {/* <Row className="mt-4">
+          <Row className="mt-4">
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
               <span className="Black500-16px">Authors (2)</span>
@@ -107,7 +107,7 @@ class ProjectDetail extends Component {
               <Creators data={data} />
             </Col>
             <Col sm={1} lg={10} />
-          </Row> */}
+          </Row>
 
             <Row  className="mt-3">
 
