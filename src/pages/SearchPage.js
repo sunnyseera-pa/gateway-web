@@ -12,19 +12,7 @@ import Col from 'react-bootstrap/Col';
 // import ToolTitle from './components/ToolTitle';
 import FilterButtons from './components/FilterButtons';
 
-var baseURL = window.location.href;
-
-if (!baseURL.includes('localhost')) {
-    var rx = /^([http|https]+\:\/\/[a-z]+)([^/]*)/;
-    var arr = rx.exec(baseURL);
-    if (arr.length > 0) {
-        //add -api to the sub domain for API requests
-        baseURL = arr[1]+'-api'+arr[2]
-    }
-
-} else {
-    baseURL = 'http://localhost:3001'
-}
+var baseURL = require('./../BaseURL').getURL();
 
 class SearchPage extends React.Component{
 

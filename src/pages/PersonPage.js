@@ -18,19 +18,7 @@ import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import DataSet from '../pages/components/DataSet';
 
-var baseURL = window.location.href;
-
-if (!baseURL.includes('localhost')) {
-    var rx = /^([http|https]+\:\/\/[a-z]+)([^/]*)/;
-    var arr = rx.exec(baseURL);
-    if (arr.length > 0) {
-        //add -api to the sub domain for API requests
-        baseURL = arr[1]+'-api'+arr[2]
-    }
-
-} else {
-    baseURL = 'http://localhost:3001'
-}
+var baseURL = require('./../BaseURL').getURL();
 
 /* 
 {"success":true,"data":[
