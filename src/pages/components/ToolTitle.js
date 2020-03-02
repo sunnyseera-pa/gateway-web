@@ -85,7 +85,7 @@ class ToolTitle extends Component {
                             </span>
                             </Col>
                             <Col xs={3} md={3} className="mb-1 pr-5 text-right">
-                                <Rating emptySymbol={<EmptyStarIconSvg />} fullSymbol={<FullStarIconSvg />} placeholderSymbol={<FullStarIconSvg />} placeholderRating={4.3} />
+                                <Rating emptySymbol={<EmptyStarIconSvg />} fullSymbol={<FullStarIconSvg />} placeholderSymbol={<FullStarIconSvg />} placeholderRating={data.rating} />
                             </Col>
                         </Row>
                     </div>

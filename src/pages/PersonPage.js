@@ -107,7 +107,7 @@ class PersonDetail extends Component {
                   <Tabs className='TabsBackground Gray700-13px'>
                     <Tab eventKey="Tools" title="Tools (2)">
                       <Tool data={data} />
-                    </Tab>
+                    </Tab> 
                     <Tab eventKey="Reviews" title="Reviews (5)">
                       <Reviews data={data} />
                     </Tab>

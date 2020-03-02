@@ -11,6 +11,7 @@ import AddToolPage from './pages/AddToolPage';
 import AddProjectPage from './pages/AddProjectPage';
 import Account from './pages/Account';
 import EditToolPage from './pages/EditToolPage';
+import AddReviewPage from './pages/AddReviewPage';
 
 class HDRRouter extends Component {
   // initialize our state
@@ -48,6 +49,8 @@ class HDRRouter extends Component {
           <Route path="/person/:personID" component={PersonPage}/>
 
           <Route path="/addtool" component={AddToolPage}/>
+
+          <Route path="/addreview" component={AddReviewPage}/>
 
           <Route path="/edittool/:toolID" component={EditToolPage}/>
 
