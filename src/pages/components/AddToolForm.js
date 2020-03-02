@@ -12,20 +12,7 @@ import Autosuggest from 'react-autosuggest';
 // import Elasticsearch, {SearchBox, Facet, Results, MyCardItem} from 'react-elasticsearch';
 // import ToolElasticSearch from '../components/ToolElasticSearch';
 
-
-var baseURL = window.location.href;
-
-if (!baseURL.includes('localhost')) {
-    var rx = /^([http|https]+\:\/\/[a-z]+)([^/]*)/;
-    var arr = rx.exec(baseURL);
-    if (arr.length > 0) {
-        //add -api to the sub domain for API requests
-        baseURL = arr[1]+'-api'+arr[2]
-    }
-
-} else {
-    baseURL = 'http://localhost:3001'
-}
+var baseURL = require('./../../BaseURL').getURL();
 
 /* const validate = values => {
     const errors = {};
