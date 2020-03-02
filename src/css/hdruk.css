@@ -207,8 +207,9 @@ body {
 
 .LandingBackground {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   background-image: linear-gradient(110deg, #50b996, #485ea7 100%);
+  padding-bottom: 50px;
 }
 
 /* #LandingWholePage{
