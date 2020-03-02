@@ -8,10 +8,10 @@ module.exports = {
       var arr = rx.exec(baseURL);
       if (arr.length > 0) {
           //add -api to the sub domain for API requests
-          return baseURL = arr[1]+'-api'+arr[2]
+          return arr[1]+'-api'+arr[2]
       }
     } else {
-      return baseURL = 'http://localhost:3001'
+      return 'http://localhost:3001'
     }
   }
 } 
