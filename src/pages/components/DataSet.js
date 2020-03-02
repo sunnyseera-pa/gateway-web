@@ -1,24 +1,43 @@
 
 import React, { Component } from 'react';
+import axios from 'axios';
+import { async } from 'q';
 
-class DataSet extends Component {
-  // initialize our state
-  state = {
-    
-  };
+var baseURL = require('./../../BaseURL').getURL();
 
+export default class DataSet extends React.Component {
 
-  // here is our UI
-  // it is easy to understand their functions when you
-  // see them render into our screen
-  render() {
-    // const Rating = require('react-rating');
-    return (
-        <div>
-            Data Set Placeholder
-        </div>
-    );
-  }
+    state = {
+        label: '',
+        description: ''
+    }
+    // on loading of tool detail page
+    componentDidMount() {
+        this.getDataSearchFromDb();
+        
+    }
+
+    getDataSearchFromDb = () => {
+        //need to handle error if no id is found
+        this.setState({ isLoading: true });
+        axios.get(baseURL+'/api/dataset/'+this.props.datasetid)
+        .then((res) => {
+            this.setState({ 
+                label: res.data.data.label, 
+                description: res.data.data.description,
+                isLoading: false 
+            });
+        })
+    }
+
+    render() {
+        return (
+            <div className="Rectangle">
+                <h2>{this.state.label}</h2>
+                <h3>{this.state.description}</h3>
+            </div>
+
+        )
+
+    }
 }
-
-export default DataSet;
