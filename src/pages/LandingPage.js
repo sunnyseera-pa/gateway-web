@@ -1,20 +1,43 @@
 import React from 'react';
+import axios from 'axios';
 import Container from 'react-bootstrap/Container';
 import Row  from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import SVGIcon from '../images/SVGIcon';
 import { ReactComponent as WhiteLogoSvg } from '../../src/images/white.svg';
 
+var baseURL = require('./../BaseURL').getURL();
+
 class LandingPage extends React.Component{
     
     state = {
         searchString: null,
+        data:[],
+        isLoading: false
     }
 
     componentDidMount() {
         this.setState({ searchString: ''});
+        this.getDataSearchFromDb();
         document.getElementById("SearchInputSpan").focus();
+        
     }
+
+    getDataSearchFromDb = () => {
+        this.setState({ isLoading: true });
+        axios.get(baseURL+'/api/stats')
+        .then((res) => {
+        this.setState({ 
+            data: {
+                'project':res.data.data.typecounts.project,
+                'tool':res.data.data.typecounts.tool,
+                'account':res.data.data.typecounts.person,
+                'searches':res.data.data.daycounts.week
+            },
+            isLoading: false 
+        });
+        })
+    };
 
     doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
@@ -29,6 +52,8 @@ class LandingPage extends React.Component{
     }
 
     render(){
+        const {searchString, data, isLoading } = this.state;
+
         return(
         
             <div className="LandingBackground">
@@ -55,6 +80,26 @@ class LandingPage extends React.Component{
                             </span>        
                         </Col>
                         <Col sm={1} />
+                    </Row>
+                    <Row className="mt-5"/>
+                    <Row>
+                        <Col sm={2} />
+                        <Col sm={2}>
+                            <div className="landingPageInformationNumber">{data.account}</div>
+                            <div className="landingPageInformationDetail">accounts created</div>
+                        </Col>
+                        <Col sm={2}>
+                            <div className="landingPageInformationNumber">{data.tool}</div>
+                            <div className="landingPageInformationDetail">projects added</div>
+                        </Col>
+                        <Col sm={2}>
+                            <div className="landingPageInformationNumber">{data.project}</div>
+                            <div className="landingPageInformationDetail">tools added</div>
+                        </Col>
+                        <Col sm={2}>
+                            <div className="landingPageInformationNumber">{data.searches}</div>
+                            <div className="landingPageInformationDetail">searches in last week</div>
+                        </Col>
                     </Row>
                 </Container>
             </div>
