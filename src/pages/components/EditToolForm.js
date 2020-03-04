@@ -8,7 +8,8 @@ import { ErrorMessage } from 'formik';
 import { Dropdown } from 'semantic-ui-react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import Autosuggest from 'react-autosuggest';
+import {Typeahead} from 'react-bootstrap-typeahead';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 
 var baseURL = window.location.href;
@@ -26,12 +27,15 @@ if (!baseURL.includes('localhost')) {
 }
 
 const EditToolForm = (props) => { 
+        // {console.log('props.data: ' + props.data.categories.category)}
 
+        // const {values, handleReset} = props;
         // Pass the useFormik() hook initial form values and a submit function that will
         // be called when the form is submitted
         const formik = useFormik({
           initialValues: {
             // data: [],
+
             id: props.data.id,
             type: 'tool',
             name: props.data.name,
@@ -47,7 +51,10 @@ const EditToolForm = (props) => {
             tags: {
                 features: props.data.tags.features,
                 topics: props.data.tags.topics
-            }
+            },
+
+            // options: [{option: 'java'}, {option: 'python'}, {option:'r'}],
+            // options: props.data.tags.topics,
           },
           
 
@@ -68,6 +75,7 @@ const EditToolForm = (props) => {
             authors: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.string()) : Yup.string())),
             features: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.string()) : Yup.string())),
             topics: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.string()) : Yup.string())),
+            // options: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.string()) : Yup.string())),
           }),
 
         //   validate,
@@ -79,7 +87,6 @@ const EditToolForm = (props) => {
             axios.put(baseURL + '/api/mytools/edit', values) 
             }
         });
-
         
         return (
             <div>
@@ -100,7 +107,7 @@ const EditToolForm = (props) => {
                             <Form onSubmit={formik.handleSubmit}>
                                 <div className="Rectangle">
 
-                                {console.log('id is:' + props.data.id)}
+                                {/* {console.log('id is:' + props.data.id)} */}
 
                                 <Form.Group className="pb-2">
                                     <Form.Label className="Gray800-14px">Name</Form.Label>
@@ -108,8 +115,8 @@ const EditToolForm = (props) => {
                                     {formik.touched.name && formik.errors.name ? <div className="ErrorMessages">{formik.errors.name}</div> : null}
                                 </Form.Group>
 
-                                {console.log("name:" + formik.values.name)}
-                                {console.log("length of name:" + formik.values.name.length)}
+                                {/* {console.log("name:" + formik.values.name)}
+                                {console.log("length of name:" + formik.values.name.length)} */}
 
                                 <Form.Group className="pb-2">
                                     <Form.Label className="Gray800-14px">Link</Form.Label>
@@ -117,7 +124,7 @@ const EditToolForm = (props) => {
                                     {formik.touched.link && formik.errors.link ? <div className="ErrorMessages">{formik.errors.link}</div> : null}
                                 </Form.Group>
 
-                                {console.log("link:" + formik.values.link)}
+                                {/* {console.log("link:" + formik.values.link)} */}
 
                                 <Form.Group className="pb-2">
                                     <Form.Label className="Gray800-14px">Description</Form.Label>
@@ -129,47 +136,75 @@ const EditToolForm = (props) => {
                                    {formik.touched.description && formik.errors.description ? <div className="ErrorMessages">{formik.errors.description}</div> : null}
                                 </Form.Group>
 
-                                {console.log("description:" + formik.values.description)}
+                                {/* {console.log("description:" + formik.values.description)} */}
 
                                   <Form.Group className="pb-2">
                                     <Form.Label className="Gray800-14px">Category</Form.Label>
                                     <Form.Text className="Gray700-13px">
                                         Select from existing or enter a new one.
                                     </Form.Text>
-                                    <Form.Control id="categories.category" name="categories.category" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.categories.category} onBlur={formik.handleBlur}/>
+                                    {console.log('props.data2: ' + props.data.categories.category)}
+                                    {/* <Form.Control id="categories.category" name="categories.category" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.categories.category} onBlur={formik.handleBlur}/> */}
+                                    <Typeahead
+                                        clearButton
+                                        labelKey="categories.category"
+                                        allowNew
+                                        multiple
+                                        defaultSelected={[props.data.categories.category]}
+                                        options={props.combinedCategories}
+                                    />
                                 </Form.Group>   
 
-                                {console.log("cat: category:" + formik.values.categories.category)}
+                                {/* {console.log("cat: category:" + formik.values.categories.category)} */}
 
                                 <Form.Group className="pb-2">
                                     <Form.Label className="Gray800-14px">Programming language</Form.Label>
                                     <Form.Text className="Gray700-13px">
                                         Select from existing or enter a new one. As many as you like.
                                     </Form.Text>
-                                    <Form.Control id="categories.programmingLanguage" name="categories.programmingLanguage" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.categories.programmingLanguage} onBlur={formik.handleBlur} />
+                                    {console.log('props.data3: ' + props.data.categories.programmingLanguage)}
+                                    {/* <Form.Control id="categories.programmingLanguage" name="categories.programmingLanguage" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.categories.programmingLanguage} onBlur={formik.handleBlur} /> */}
+                                    <Typeahead
+                                        clearButton
+                                        labelKey="categories.programmingLanguage"
+                                        allowNew
+                                        multiple
+                                        defaultSelected={props.data.categories.programmingLanguage}
+                                        options={props.combinedLanguages}
+                                    />
                                 </Form.Group> 
 
-                                {console.log("cat: programmingLanguage:" + formik.values.categories.programmingLanguage)}
+                                {/* {console.log("cat: programmingLanguage:" + formik.values.categories.programmingLanguage)} */}
 
-                                   <Form.Group className="pb-2">
-                                    <Form.Label className="Gray800-14px">Programming language version</Form.Label>
-                                    <Form.Text className="Gray700-13px">
-                                    i.e. 3.6.1
-                                    </Form.Text>
-                                    <Form.Control id="categories.programmingLanguageVersion" name="categories.programmingLanguageVersion" type="text" className="SmallFormInput AddFormInput" onChange={formik.handleChange} value={formik.values.categories.programmingLanguageVersion} onBlur={formik.handleBlur}/>
-                                </Form.Group>
+                                {/* {formik.values.categories.programmingLanguage.length <= 0 || formik.values.categories.programmingLanguage == "Code-free"  ? '' :    */}
+                                        <Form.Group className="pb-2">
+                                            <Form.Label className="Gray800-14px">Programming language version</Form.Label>
+                                            <Form.Text className="Gray700-13px">
+                                            i.e. 3.6.1
+                                            </Form.Text>
+                                            <Form.Control id="categories.programmingLanguageVersion" name="categories.programmingLanguageVersion" type="text" className="SmallFormInput AddFormInput" onChange={formik.handleChange} value={formik.values.categories.programmingLanguageVersion} onBlur={formik.handleBlur}/>
+                                        </Form.Group>
+                                {/* } */}
 
-                                {console.log("cat: programmingLanguageVersion:" + formik.values.categories.programmingLanguageVersion)}
+                                {/* {console.log("cat: programmingLanguageVersion:" + formik.values.categories.programmingLanguageVersion)} */}
 
                                   <Form.Group className="pb-2">
                                     <Form.Label className="Gray800-14px">License</Form.Label>
                                     <Form.Text className="Gray700-13px">
                                     Select from existing or enter a new one 
                                     </Form.Text>
-                                    <Form.Control id="license" name="license" type="text" className="SmallFormInput AddFormInput" onChange={formik.handleChange} value={formik.values.license} onBlur={formik.handleBlur}/>
+                                    {/* <Form.Control id="license" name="license" type="text" className="SmallFormInput AddFormInput" onChange={formik.handleChange} value={formik.values.license} onBlur={formik.handleBlur}/> */}
+                                    <Typeahead
+                                        clearButton
+                                        labelKey="license"
+                                        allowNew
+                                        multiple
+                                        defaultSelected={[props.data.license]}
+                                        options={props.combinedLicenses}
+                                    />
                                 </Form.Group>
 
-                                {console.log("license:" + formik.values.license)}
+                                {/* {console.log("license:" + formik.values.license)} */}
 
                                 <Form.Group className="pb-2">
                                     <Form.Label className="Gray800-14px">Who created this tool or resource?</Form.Label>
@@ -179,27 +214,58 @@ const EditToolForm = (props) => {
                                     <Form.Control id="authors" name="authors" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.authors} onBlur={formik.handleBlur}/>
                                 </Form.Group>
 
-                                {console.log("authors:" + formik.values.authors)}
+                                {/* {console.log("authors:" + formik.values.authors)} */}
 
                                 <Form.Group className="pb-2">
                                     <Form.Label className="Gray800-14px">Features</Form.Label>
                                     <Form.Text className="Gray700-13px">
                                     Keywords that help people identify what this resource does. As many as you like. For instance: data analysis, random forest
                                     </Form.Text>
-                                    <Form.Control id="tags.features" name="tags.features" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.tags.features} onBlur={formik.handleBlur}/>
+                                    {/* <Form.Control id="tags.features" name="tags.features" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.tags.features} onBlur={formik.handleBlur}/> */}
+                                    <Typeahead
+                                        clearButton
+                                        labelKey="tags.features"
+                                        allowNew
+                                        multiple
+                                        defaultSelected={props.data.tags.features}
+                                        options={props.combinedFeatures}
+                                    />
                                 </Form.Group>
 
-                                {console.log("t: features:" + formik.values.tags.features)}
+                                {/* {console.log("t: features:" + formik.values.tags.features)} */}
 
+                                {/* <div className="pb-2"> */}
                                 <Form.Group className="pb-2">
                                     <Form.Label className="Gray800-14px">Topics</Form.Label>
                                     <Form.Text className="Gray700-13px">
                                     Keywords that help people identify any related fields. As many as you like. For instance: Biogenomics, Nutrition
                                     </Form.Text>
-                                    <Form.Control id="tags.topics" name="tags.topics" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.tags.topics} onBlur={formik.handleBlur}/>
-                                </Form.Group>  
+                                    {/* <Form.Control id="tags.topics" name="tags.topics" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.tags.topics} onBlur={formik.handleBlur}/> */}
 
-                                {console.log("t: topics:" + formik.values.topics)}
+                                    {/* {console.log('props.data: ' + props.data)} */}
+                                    <Typeahead
+                                        clearButton
+                                        id="tags.topics" 
+                                        name="tags.topics"
+                                        // className="AddFormInput" 
+                                        // id="TypeaheadInput"
+                                        labelKey="tags.topics"
+                                        allowNew
+                                        multiple
+                                        defaultSelected={props.data.tags.topics}
+                                        // options={formik.values.topics}
+                                        // options={options}
+                                        options={props.combinedTopic}
+                                        // onInputChange={formik.handleChange} 
+                                        onChange={(selected) => formik.handleChange}
+                                        value={formik.values.tags.topics} 
+                                        onBlur={formik.handleBlur}
+                                        // placeholder="Choose some topics..."
+                                    />
+                                </Form.Group>  
+                                {/* </div> */}
+
+                                {/* {console.log("t: topics:" + formik.values.tags.topics)} */}
                                 </div>
 
 

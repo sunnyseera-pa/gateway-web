@@ -18,6 +18,7 @@ import ToolsUsed from './components/ToolsUsed';
 import Creators from '../pages/components/Creators';
 // import AddProjectPage from './AddProjectPage';
 import AddToolPage from './AddToolPage';
+import ToolInfoReviewForm from './components/ToolInfoReviewForm';
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -90,6 +91,7 @@ class ToolDetail extends Component {
         {/* <AddToolPage /> */}
 
           <ToolTitle data={data} />
+          {/* <ToolInfoReviewForm data={data} /> */}
 
           <Row className="mt-4">
             <Col sm={1} lg={1} />
@@ -117,7 +119,7 @@ class ToolDetail extends Component {
               <div>
                 <Tabs className='TabsBackground Gray700-13px'>
                   <Tab eventKey="Reviews" title="Reviews (54)">
-                    <Reviews />
+                    <Reviews data={data}/>
                   </Tab>
                   <Tab eventKey="Data sets" title="Data sets (1)">
                       <DataSet />

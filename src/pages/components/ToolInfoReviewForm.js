@@ -1,4 +1,3 @@
-
 // /ShowObjects/Title.js
 import React, { Component } from 'react';
 import Row from 'react-bootstrap/Row';
@@ -8,7 +7,7 @@ import Rating from 'react-rating';
 import { ReactComponent as EmptyStarIconSvg} from '../../images/starempty.svg';
 import { ReactComponent as FullStarIconSvg} from '../../images/star.svg';
 
-class ToolTitle extends Component {
+class ToolInfoReviewForm extends Component {
 
   constructor(props) {
     super(props)
@@ -25,9 +24,6 @@ class ToolTitle extends Component {
   // see them render into our screen
   render() {
     const { data } = this.state;
-    const ratingsTotal = (!!data.ratings && data.ratings.length > 0) ? data.ratings.reduce((a,b) => a + b, 0) : '';
-    const ratingsCount = (!!data.ratings ? data.ratings.length : 0);
-    const avgRating = (!!data.ratings && data.ratings.length > 0) ? (ratingsTotal / ratingsCount) : '';
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     var updatedDate = new Date(data.updatedon);
     var updatedOnDate = monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
@@ -75,55 +71,7 @@ class ToolTitle extends Component {
                                 })}
 
                                 {!data.categories.programmingLanguageVersion ? '' : <div className="mr-2 Gray800-14px tagBadges">{data.categories.programmingLanguageVersion}</div> }
-
-
-
-
                             </Col>
-                            <Col xs={3} md={3} className="mb-3 pl-5">
-                            <span className="Gray500-13px">
-                                {!!ratingsTotal && ratingsCount == 1 ? ratingsCount + ' review' : ratingsCount +' reviews'}
-                            <span className="reviewTitleGap">·</span>
-                                {avgRating == 0 ? 'No average rating' : avgRating + ' average' }
-
-                            </span>
-                            </Col>
-                            <Col xs={3} md={3} className="mb-1 pr-5 text-right">
-                                <Rating emptySymbol={<EmptyStarIconSvg />} fullSymbol={<FullStarIconSvg />} placeholderSymbol={<FullStarIconSvg />} placeholderRating={avgRating} />
-                            </Col>
-                        </Row>
-                    </div>
-                </Col>
-                <Col sm={1} lg={10}/>
-            </Row>
-            <Row>
-                <Col sm={1} lg={1} />
-                <Col sm={10} lg={10}>
-                    <div className="Rectangle">
-                        <Row>
-                            <Col xs={12} md={12} className="mb-3">
-
-                                {!data.tags.features || data.tags.features.length <= 0 ? '' :  data.tags.features.map((feature) => {
-                                    return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{feature}</div>
-                                })} 
-
-                                {!data.tags.topics || data.tags.topics.length <= 0 ? '' :  data.tags.topics.map((topic) => {
-                                    return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{topic}</div>
-                                })} 
-
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12} md={12} className="mb-3">
-                                <span className="Gray800-14px">
-                                    {data.description}
-                                    {/* Software to analyse data and with powerful graphics to create interactive visualisations - focused on business intelligence. Including data access to data prep to get data ready for analysis, to data analytics and discovery. */}
-                                </span>
-                            </Col> 
-                        </Row>
-                        <Row>
-                            <span className="Gray800-14px ml-3"> License </span>
-                            <span className='Purple-14px ml-2'> Apache License 2.0</span>
                         </Row>
                     </div>
                 </Col>
@@ -134,4 +82,4 @@ class ToolTitle extends Component {
   }
 }
 
-export default ToolTitle;
+export default ToolInfoReviewForm;

@@ -99,7 +99,7 @@ class Account extends Component {
                     <Col sm={1} lg={1} />
                 </Row>
             </Container>
-            </div>
+            </div> 
         );
     } 
 }

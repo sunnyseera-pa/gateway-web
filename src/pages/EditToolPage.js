@@ -33,12 +33,22 @@ class EditToolPage extends React.Component {
       // initialize our state
     state = {
         data: [],
+        combinedTopic: [],
+        combinedFeatures:[],
+        combinedLanguages:[],
+        combinedCategories:[],
+        combinedLicenses:[],
         isLoading: true
     };
 
  // on loading of tool detail page
  componentDidMount() {
     this.getDataSearchFromDb();
+    this.doGetTopicsCall();
+    this.doGetFeaturesCall();
+    this.doGetLanguagesCall();
+    this.doGetCategoriesCall();
+    this.doGetLicensesCall();
   }
 
 
@@ -58,11 +68,63 @@ class EditToolPage extends React.Component {
         data: res.data.data[0],
         isLoading: false 
       });
-    })
+    });
+
+    // axios.get(baseURL+'/api/getAllTopics/tool')
+    // .then((res) =>{
+    //     this.setState({combinedTopic: res.data.data});
+    //     this.setState({isLoading: false}); 
+    //     console.log("test1: " + JSON.stringify(res.data.data));
+    // });
   };
 
+    doGetTopicsCall() {
+        axios.get(baseURL+'/api/getAllTopics/tool')
+        .then((res) =>{
+            this.setState({combinedTopic: res.data.data});
+            this.setState({isLoading: false}); 
+            console.log("test1: " + JSON.stringify(res.data.data));
+        });
+    }
+
+    doGetFeaturesCall(){
+      axios.get(baseURL+'/api/getAllFeatures/tool')
+      .then((res) =>{
+          this.setState({combinedFeatures: res.data.data});
+          this.setState({isLoading: false}); 
+          console.log("test2: " + JSON.stringify(res.data.data));
+      });
+    }
+
+    doGetLanguagesCall(){
+      axios.get(baseURL+'/api/getAllLanguages/tool')
+      .then((res) =>{
+          this.setState({combinedLanguages: res.data.data});
+          this.setState({isLoading: false}); 
+          console.log("test3: " + JSON.stringify(res.data.data));
+      });
+  }
+
+  doGetCategoriesCall(){
+    axios.get(baseURL+'/api/getAllCategories/tool')
+    .then((res) =>{
+        this.setState({combinedCategories: res.data.data});
+        this.setState({isLoading: false}); 
+        console.log("test3: " + JSON.stringify(res.data.data));
+    });
+}
+
+doGetLicensesCall(){
+  axios.get(baseURL+'/api/getAllLicenses/tool')
+  .then((res) =>{
+      this.setState({combinedLicenses: res.data.data});
+      this.setState({isLoading: false}); 
+      console.log("test3: " + JSON.stringify(res.data.data));
+  });
+}
+
     render() {
-        const {data, isLoading } = this.state;
+        const {data, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, isLoading } = this.state;
     
         if (isLoading) {
           return <p>Loading ...</p>;
@@ -71,11 +133,11 @@ class EditToolPage extends React.Component {
         return (
             <div>
             <Header />
-            <EditToolForm data={data} />
+            <EditToolForm data={data} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} />
             </div>
         );
     } 
-
+ 
 }
 
 export default EditToolPage;

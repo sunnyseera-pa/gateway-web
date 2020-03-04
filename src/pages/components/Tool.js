@@ -18,6 +18,9 @@ class Tool extends React.Component{
 
     render(){
         const { data} = this.state;
+        const ratingsTotal = (!!data.ratings && data.ratings.length > 0) ? data.ratings.reduce((a,b) => a + b, 0) : '';
+        const ratingsCount = (!!data.ratings ? data.ratings.length : 0);
+        const avgRating = (!!data.ratings && data.ratings.length > 0) ? (ratingsTotal / ratingsCount) : '';
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         var updatedDate = new Date(data.updatedon);
         var updatedOnDate = monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
@@ -36,9 +39,13 @@ class Tool extends React.Component{
                                         <span className="Black-16px">{ data.name}</span>
                                         <span className="Gray500-13px">
                                             <span className="reviewTitleGap">·</span>
-                                            150 reviews
+                                         {!!ratingsTotal && ratingsCount == 1 ? ratingsCount + ' review' : ratingsCount +' reviews'}
+                                     
+                                            
+                            
                                             <span className="reviewTitleGap">·</span>
-                                            4.2 average
+                                            {avgRating == 0 ? 'No average rating' : avgRating + ' average' }
+                                           
                                         </span>
                                         <br />
                                         <span className="Gray800-14px">Laure Santos</span>

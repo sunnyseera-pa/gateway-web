@@ -8,10 +8,8 @@ import { ErrorMessage } from 'formik';
 import { Dropdown } from 'semantic-ui-react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import Autosuggest from 'react-autosuggest';
-// import Elasticsearch, {SearchBox, Facet, Results, MyCardItem} from 'react-elasticsearch';
-// import ToolElasticSearch from '../components/ToolElasticSearch';
-
+import {Typeahead} from 'react-bootstrap-typeahead';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 var baseURL = window.location.href;
 
@@ -49,28 +47,13 @@ if (!baseURL.includes('localhost')) {
       return errors;
     }; */
 
-    // const PLSearchComponent = () => (
-    //     <Elasticsearch url="http://example.org/search">
-    //       <SearchBox id="mainSearch" />
-    //       <Facet id="actors" fields={["actors"]} />
-    //       <Facet id="releasedYear" fields={["releasedYear"]} />
-    //       <Results
-    //         id="results"
-    //         items={data =>
-    //           // Map on result hits and display whatever you want.
-    //           data.map(item => <MyCardItem key={item._id} source={item._source} />)
-    //         }
-    //       />
-    //     </Elasticsearch>
-    //   );
 
-
-    const AddToolForm = () => { 
+    const AddToolForm = (props) => { 
         // Pass the useFormik() hook initial form values and a submit function that will
         // be called when the form is submitted
         const formik = useFormik({
           initialValues: {
-            // data: [],
+            data: props.data,
             type: 'tool',
             name: '',
             link: '',
@@ -118,17 +101,8 @@ if (!baseURL.includes('localhost')) {
             }
         });
 
-/*        const onHideBob = (e) => {
-            if(e.target.value.length < 3){
-                document.getElementById('hideBob').show
-            } else {
-                document.getElementById('hideBob').show
-            } 
-            var test = formik.values.name;
-            console.log('hey');
-        }   */
-
         return (
+            
             <div>
                 <Row className="mt-2">
                     <Col sm={1} lg={1} />
@@ -153,6 +127,7 @@ if (!baseURL.includes('localhost')) {
                                 </Form.Group>
 
                                 {console.log("name:" + formik.values.name)}
+                                {console.log('props.data: ' + props.data)}
                                 {console.log("length of name:" + formik.values.name.length)}
 
                                 <Form.Group className="pb-2">
@@ -180,28 +155,48 @@ if (!baseURL.includes('localhost')) {
                                     <Form.Text className="Gray700-13px">
                                         Select from existing or enter a new one.
                                     </Form.Text>
-                                    <Form.Control id="categories.category" name="categories.category" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.categories.category} onBlur={formik.handleBlur}/>
+                                    {/* <Form.Control id="categories.category" name="categories.category" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.categories.category} onBlur={formik.handleBlur}/> */}
+                                    <Typeahead
+                                        clearButton
+                                        labelKey="categories.category"
+                                        allowNew
+                                        multiple
+                                        options={props.combinedCategories}
+                                    />
                                 </Form.Group>   
 
                                 {console.log("cat: category:" + formik.values.categories.category)}
+                                {console.log('at start: ' + formik.values.categories.programmingLanguage)}
 
                                 <Form.Group className="pb-2">
                                     <Form.Label className="Gray800-14px">Programming language</Form.Label>
                                     <Form.Text className="Gray700-13px">
                                         Select from existing or enter a new one. As many as you like.
                                     </Form.Text>
-                                    <Form.Control id="categories.programmingLanguage" name="categories.programmingLanguage" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.categories.programmingLanguage} onBlur={formik.handleBlur} />
+                                    {/* <Form.Control id="categories.programmingLanguage" name="categories.programmingLanguage" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.categories.programmingLanguage} onBlur={formik.handleBlur} /> */}
+                                    <Typeahead
+                                        clearButton
+                                        labelKey="categories.programmingLanguage"
+                                        allowNew
+                                        multiple
+                                        options={props.combinedLanguages}
+                                        value={formik.values.categories.programmingLanguage}
+                                        // value = {selected}
+                                        onChange={formik.handleChange}
+                                    />
                                 </Form.Group> 
-
+                                {console.log('after: ' + formik.values.categories.programmingLanguage)}
                                 {console.log("cat: programmingLanguage:" + formik.values.categories.programmingLanguage)}
 
-                                   <Form.Group className="pb-2">
-                                    <Form.Label className="Gray800-14px">Programming language version</Form.Label>
-                                    <Form.Text className="Gray700-13px">
-                                    i.e. 3.6.1
-                                    </Form.Text>
-                                    <Form.Control id="categories.programmingLanguageVersion" name="categories.programmingLanguageVersion" type="text" className="SmallFormInput AddFormInput" onChange={formik.handleChange} value={formik.values.categories.programmingLanguageVersion} onBlur={formik.handleBlur}/>
-                                </Form.Group>
+                                {/* {formik.values.categories.programmingLanguage.length <= 0 || formik.values.categories.programmingLanguage == "Code-free"  ? '' : */}
+                                    <Form.Group className="pb-2">
+                                        <Form.Label className="Gray800-14px">Programming language version</Form.Label>
+                                        <Form.Text className="Gray700-13px">
+                                        i.e. 3.6.1
+                                        </Form.Text>
+                                        <Form.Control id="categories.programmingLanguageVersion" name="categories.programmingLanguageVersion" type="text" className="SmallFormInput AddFormInput" onChange={formik.handleChange} value={formik.values.categories.programmingLanguageVersion} onBlur={formik.handleBlur}/>
+                                    </Form.Group>
+                                {/* } */}
 
                                 {console.log("cat: programmingLanguageVersion:" + formik.values.categories.programmingLanguageVersion)}
 
@@ -210,7 +205,14 @@ if (!baseURL.includes('localhost')) {
                                     <Form.Text className="Gray700-13px">
                                     Select from existing or enter a new one 
                                     </Form.Text>
-                                    <Form.Control id="license" name="license" type="text" className="SmallFormInput AddFormInput" onChange={formik.handleChange} value={formik.values.license} onBlur={formik.handleBlur}/>
+                                    {/* <Form.Control id="license" name="license" type="text" className="SmallFormInput AddFormInput" onChange={formik.handleChange} value={formik.values.license} onBlur={formik.handleBlur}/> */}
+                                    <Typeahead
+                                        clearButton
+                                        labelKey="license"
+                                        allowNew
+                                        multiple
+                                        options={props.combinedLicenses}
+                                    />
                                 </Form.Group>
 
                                 {console.log("license:" + formik.values.license)}
@@ -220,9 +222,16 @@ if (!baseURL.includes('localhost')) {
                                     <Form.Text className="Gray700-13px">
                                     Add any authors, including yourself if that's the case. Can be their username or website if you don't know the name.
                                     </Form.Text>
-                                    <Form.Control id="authors" name="authors" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.authors} onBlur={formik.handleBlur}/>
+                                    {/* <Form.Control id="authors" name="authors" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.authors} onBlur={formik.handleBlur}/> */}
+                                    <Typeahead
+                                        clearButton
+                                        labelKey="authors"
+                                        allowNew
+                                        multiple
+                                        options={props.combinedUsers}
+                                    />
                                 </Form.Group>
-
+                                {console.log("props.combinedUsers: " + props.combinedUsers)}
                                 {console.log("authors:" + formik.values.authors)}
 
                                 <Form.Group className="pb-2">
@@ -230,21 +239,65 @@ if (!baseURL.includes('localhost')) {
                                     <Form.Text className="Gray700-13px">
                                     Keywords that help people identify what this resource does. As many as you like. For instance: data analysis, random forest
                                     </Form.Text>
-                                    <Form.Control id="tags.features" name="tags.features" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.tags.features} onBlur={formik.handleBlur}/>
+                                    {/* <Form.Control id="tags.features" name="tags.features" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.tags.features} onBlur={formik.handleBlur}/> */}
+                                    <Typeahead
+                                        clearButton
+                                        labelKey="tags.features"
+                                        allowNew
+                                        multiple
+                                        options={props.combinedFeatures}
+                                    />
                                 </Form.Group>
+                                
 
                                 {console.log("t: features:" + formik.values.tags.features)}
+                                {console.log("props.combinedFeatures" + props.combinedFeatures)}
+
 
                                 <Form.Group className="pb-2">
                                     <Form.Label className="Gray800-14px">Topics</Form.Label>
                                     <Form.Text className="Gray700-13px">
                                     Keywords that help people identify any related fields. As many as you like. For instance: Biogenomics, Nutrition
                                     </Form.Text>
-                                    <Form.Control id="tags.topics" name="tags.topics" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.tags.topics} onBlur={formik.handleBlur}/>
-                                </Form.Group>  
+                                    {/* <Form.Control id="tags.topics" name="tags.topics" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.tags.topics} onBlur={formik.handleBlur}/> */}
+                                
+                                    {/* {props.data.length <= 0 ? '' : props.data.map((dat) => { 
+                                    return( */}
+                                    <Typeahead
+                                        clearButton
+                                        labelKey="tags.topics"
+                                        allowNew
+                                        multiple
+                                        // options={formik.values.topics}
+
+                                        // options={props.data.length <=0 ? '' : props.data.map((dat) => {
+                                        //     return (dat.tags.topics)
+                                        // })}
+
+                                        // options= {props.data.map((dat) => {
+                                            //return (dat.tags.topics);
+                                            // {console.log('help: ' + dat)}
+                                        // })}
+                                        // options={options}
+                                            options={props.combinedTopic}
+                                        // placeholder="Choose some topics..."
+                                    />
+                                       {/* )
+                                     })}   */}
+                                </Form.Group>
 
                                 {console.log("t: topics:" + formik.values.topics)}
+                                {console.log("props.combinedTopic" + props.combinedTopic)}
                                 </div>
+
+                                {/* <Typeahead
+                                    clearButton
+                                    defaultSelected={options.slice(0, 5)}
+                                    labelKey="tags.topics"
+                                    multiple
+                                    options={options}
+                                    placeholder="Choose some topics..."
+                                /> */}
 
 
                                 <Row className="mt-3">

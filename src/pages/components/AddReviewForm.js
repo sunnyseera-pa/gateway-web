@@ -26,7 +26,7 @@ if (!baseURL.includes('localhost')) {
     baseURL = 'http://localhost:3001'
 }
 
-const AddReviewForm = () => { 
+const AddReviewForm = (props) => { 
     // Pass the useFormik() hook initial form values and a submit function that will
     // be called when the form is submitted
     const formik = useFormik({
@@ -34,24 +34,22 @@ const AddReviewForm = () => {
         // data: [],
         id: null, //passed in like in edit tool
         type: 'tool',
-        updatedon: null, //passed in like in edit tool
-        name: '', //passed in like in edit tool
-        link: '',   //passed in like in edit tool
-        categories: {       //passed in like in edit tool
-            category: '',
-            programmingLanguage: [],
-            programmingLanguageVersion: ''
-        },
-        rating: null,
-        realtedToProject: false,
-        projectName: '',
-        review: ''
+        reviews: [
+            {
+              reviewID: null,
+              reviewerID: null,
+              rating: null,
+              project: false,
+              projectName: '',
+              review: '',
+            }
+          ],
       },
 
-      validationSchema: Yup.object({
-        projectName: Yup.string(),
-        review: Yup.string()
-      }),
+    //   validationSchema: Yup.object({
+    //     projectName: Yup.string(),
+    //     review: Yup.string()
+    //   }),
 
     //   validate,
 
@@ -84,7 +82,7 @@ const AddReviewForm = () => {
 
                         <Form.Label className="Gray800-14px">Your score</Form.Label>
                         <Form.Group className="mb-2">
-                            <Rating emptySymbol={<EmptyStarIconSvg />} fullSymbol={<FullStarIconSvg />} placeholderSymbol={<FullStarIconSvg />} placeholderRating={4.3} />    
+                            <Rating emptySymbol={<EmptyStarIconSvg />} fullSymbol={<FullStarIconSvg />} placeholderSymbol={<FullStarIconSvg />} placeholderRating={0} />    
                         </Form.Group>
 
                         <Form.Label className="Gray800-14px">Is this review related to a specific project?</Form.Label>
@@ -119,22 +117,24 @@ const AddReviewForm = () => {
 
                             <Form.Group className="pb-2">
                                 <Form.Label className="Gray800-14px">Project name</Form.Label>
-                                <Form.Control id="projectName" name="projectName" type="text" className={formik.touched.projectName && formik.errors.projectName ? "EmptyFormInput AddFormInput" : "AddFormInput" } onChange={formik.handleChange} value={formik.values.projectName} onBlur={formik.handleBlur}/>
-                                {formik.touched.projectName && formik.errors.projectName ? <div className="ErrorMessages">{formik.errors.projectName}</div> : null}
+                                {/* <Form.Control id="reviews.projectName" name="reviews.projectName" type="text" className={formik.touched.reviews.projectName && formik.errors.reviews.projectName ? "EmptyFormInput AddFormInput" : "AddFormInput" } onChange={formik.handleChange} value={formik.values.reviews.projectName} onBlur={formik.handleBlur}/> */}
+                                {/* {formik.touched.reviews.projectName && formik.errors.reviews.projectName ? <div className="ErrorMessages">{formik.errors.reviews.projectName}</div> : null} */}
                             </Form.Group>
 
-                            {console.log("projectName:" + formik.values.projectName)}
+                            {console.log("projectName:" + formik.values.reviews[0].projectName)}
+                            {console.log("projectNameHere:" + props.data.reviews[0].projectName)}
 
                             <Form.Group className="pb-2">
                                 <Form.Label className="Gray800-14px">Your review</Form.Label>
                                 <Form.Text className="Gray700-13px">
                                 What worked or didn't work for you? What was the context? Is there anything you wish you knew before you tried it?
                                 </Form.Text>
-                               <Form.Control as="textarea" id="review" name="review" type="text" className={formik.touched.review && formik.errors.review ? "EmptyFormInput AddFormInput DescriptionInput" : "AddFormInput DescriptionInput" } onChange={formik.handleChange} value={formik.values.review} onBlur={formik.handleBlur}/>
-                               {formik.touched.review && formik.errors.review ? <div className="ErrorMessages">{formik.errors.review}</div> : null}
+                               {/* <Form.Control as="textarea" id="reviews.review" name="reviews.review" type="text" className={formik.touched.reviews.review && formik.errors.reviews.review ? "EmptyFormInput AddFormInput DescriptionInput" : "AddFormInput DescriptionInput" } onChange={formik.handleChange} value={formik.values.reviews.review} onBlur={formik.handleBlur}/> */}
+                               {/* {formik.touched.reviews.review && formik.errors.reviews.review ? <div className="ErrorMessages">{formik.errors.reviews.review}</div> : null} */}
                             </Form.Group>
 
-                            {console.log("review:" + formik.values.review)}
+                            {console.log("review:" + formik.values.reviews[0].review)}
+                            {console.log("reviewHere:" + props.data.reviews[0].review)}
                             </div>
 
                             <Row className="mt-3">

@@ -6,11 +6,19 @@ import Col from 'react-bootstrap/Col';
 import Rating from 'react-rating';
 import { ReactComponent as EmptyStarIconSvg} from '../../images/starempty.svg';
 import { ReactComponent as FullStarIconSvg} from '../../images/star.svg';
+import Button from 'react-bootstrap/Button';
 
 class Reviews extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state.data = props.data;
+  }
+
   // initialize our state
   state = {
-    
+    data: [],
+    // isLoading: true 
   };
 
 
@@ -18,12 +26,24 @@ class Reviews extends Component {
   // it is easy to understand their functions when you
   // see them render into our screen
   render() {
+    const {data } = this.state;
     // const Rating = require('react-rating');
     return (
+      <div>
+        <Row className="mt-4 mb-3">
+          <Col xs={12} md={12}>
+          <Button variant="light" href={'/addreview/' + data.id} id="AddReviewButton">
+           {/* <Button variant="light" href='/addreview' id="AddReviewButton"> */}
+              + Add a review
+              {/* {data.id} */}
+            </Button>
+          </Col>
+        </Row>
+
         <Row className="mt-2">
           <Col>
             <div className="Rectangle">
-              <Row>
+        <Row>
                 <Col xs={12} md={12}>
                   <span className="Gray800-14px">“Bloody brilliant”</span>
                 </Col>
@@ -39,6 +59,7 @@ class Reviews extends Component {
             </div>
           </Col>
         </Row>
+        </div>
     );
   }
 }

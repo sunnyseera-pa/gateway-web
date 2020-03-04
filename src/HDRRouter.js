@@ -50,7 +50,9 @@ class HDRRouter extends Component {
 
           <Route path="/addtool" component={AddToolPage}/>
 
-          <Route path="/addreview" component={AddReviewPage}/>
+          <Route path="/addreview/:toolID" component={AddReviewPage}/>
+
+          {/* <Route path="/addreview" component={AddReviewPage}/> */}
 
           <Route path="/edittool/:toolID" component={EditToolPage}/>
 

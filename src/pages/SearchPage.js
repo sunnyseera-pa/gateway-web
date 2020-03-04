@@ -72,7 +72,7 @@ class SearchPage extends React.Component{
     callTypeString = (typeString) =>{ 
         this.props.history.push(window.location.pathname+'?search='+this.state.searchString + '&type='+ typeString)
         this.doSearchCall(this.state.searchString, typeString);
-    }
+    } 
 
     doSearchCall(searchString, typeString) {
         axios.get(baseURL+'/api/search?search='+searchString + '&type='+ typeString)

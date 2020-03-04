@@ -90,7 +90,7 @@ class AccountTools extends React.Component{
                     
                     <ToolsHeader />
 
-                    <ActiveTool />
+                    <ActiveTool /> 
 
                     <Row className="mt-3">
                         <Col xs={1} lg={1}></Col>
