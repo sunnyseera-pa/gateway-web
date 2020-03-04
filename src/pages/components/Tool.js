@@ -101,7 +101,7 @@ class Tool extends React.Component {
 
                                         {/* DISPLAYS PROJECT IDS ATTACHED TO TOOL */}
                                         <span className="Purple-14px ml-2">
-                                            {data.projectids.length <= 0 ? 'NO SEARCH RESULT' : data.projectids.map((projectid) => {
+                                            {!data.projectids ||data.projectids.length <= 0 ? 'NO SEARCH RESULT' : data.projectids.map((projectid) => {
                                                 if (!!projectid) {
                                                     return <span className="Purple-14px ml-1"> {projectid} </span>
                                                 }
