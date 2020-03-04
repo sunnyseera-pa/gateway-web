@@ -57,11 +57,9 @@ class AccountTools extends React.Component{
                     </Row>
 
                     <Row className="mt-3">
-                        <Col xs={1} lg={1}></Col>
-                        <Col xs={10} lg={10}>
+                        <Col>
                             <span className="Black-16px ml-2">Pending approval</span>
                         </Col>
-                        <Col xs={1} lg={10}></Col>
                     </Row>
 
                     <ToolsHeader />
@@ -69,11 +67,9 @@ class AccountTools extends React.Component{
                     <PendingTools />
 
                     <Row className="mt-3">
-                        <Col xs={1} lg={1}></Col>
-                        <Col xs={10} lg={10}>
+                        <Col>
                             <span className="Black-16px ml-2">Active</span>
                         </Col>
-                        <Col xs={1} lg={10}></Col>
                     </Row>
                     
                     <ToolsHeader />
@@ -81,11 +77,9 @@ class AccountTools extends React.Component{
                     <ActiveTool /> 
 
                     <Row className="mt-3">
-                        <Col xs={1} lg={1}></Col>
-                        <Col xs={10} lg={10}>
+                        <Col>
                             <span className="Black-16px ml-2">Archived</span>
                         </Col>
-                        <Col xs={1} lg={10}></Col>
                     </Row>
 
                     <ToolsHeader />

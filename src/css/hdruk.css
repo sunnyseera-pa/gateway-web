@@ -3,7 +3,6 @@ body {
 }
 
 .Rectangle {
-    /*min-width: 800px;*/
     width: 100%;
     box-shadow: 1px 1px 3px 0 #00000017;
     background-color: #ffffff;
@@ -11,7 +10,6 @@ body {
 }
 
 .ToolsHeader{
-  min-width: 800px;
   width: 100%;
   height: 40px;
   box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
@@ -406,47 +404,13 @@ input[type='radio']:checked:after {
   border: solid 2px #d6d6d6;
 }
 
-/* .react-tabs[role=tab] {
-  background-color: green;
-}
-
-.react-tabs[role=tab]:focus:after {
-  background-color: green;
-} */
-
 .TabsBackground{
   background-color: #ffffff;
-  border: none;
-  outline: none;
-  outline-color: none;
-  border-top: none ;
-  border-left: none ;
-  border-right: none;
-  border-bottom: none;
-  border-bottom: 5px solid darkblue;
   align-items: center;
   justify-content: center;
+  padding-bottom: 2px;
+  box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
 }
-
-.TabsBackground:active{
-  color: blue;
-  background-color: #ffffff;
-  border: none;
-  outline: none;
-  outline-color: none;
-  border-top: none ;
-  border-left: none ;
-  border-right: none;
-  border-bottom: none;
-  border-bottom:  5px solid green;
-  align-items: center;
-  justify-content: center;
-  outline: none;
-} 
-
-/* #TabDesign:focus{
-  border-bottom: 2px solid darkblue !important;
-} */
 
 .AddButton{
   width: 152px;
@@ -577,4 +541,29 @@ input[type='radio']:checked:after {
   letter-spacing: normal;
   text-align: center;
   color: #ffffff;
+}
+
+.accountDropDownGap {
+    margin-left:20px
+}
+
+@media screen and (max-width: 768px) {
+  .nav {
+      padding-left:2px;
+      padding-right:2px;
+  }
+  .nav a {
+      display:block !important;
+      width:100%;
+      margin:0px;
+  }
+  .nav a.active {
+      border:1px solid #3db28c!important;
+      border-radius: 0px;
+      margin: 0px;
+  }
+}
+
+.activeToolsButtons {
+  text-align: center
 }

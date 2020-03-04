@@ -13,7 +13,18 @@ class LandingPage extends React.Component{
     state = {
         searchString: null,
         data:[],
-        isLoading: false
+        isLoading: false,
+        userState: [{
+            loggedIn: false,
+            role: "Reader",
+            id: null,
+            name: null
+        }]
+    }
+
+    constructor(props) {
+        super(props);
+        this.state.userState = props.userState;
     }
 
     componentDidMount() {
@@ -52,10 +63,13 @@ class LandingPage extends React.Component{
     }
 
     render(){
-        const {searchString, data, isLoading } = this.state;
+        const {searchString, data, userState, isLoading } = this.state;
+
+        if (isLoading) {
+            return <p>Loading ...</p>;
+        }
 
         return(
-        
             <div className="LandingBackground">
                 <Row className="pt-5 pl-5">
                     <Col sm={12}> <WhiteLogoSvg /> </Col>
