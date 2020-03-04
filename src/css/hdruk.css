@@ -3,7 +3,7 @@ body {
 }
 
 .Rectangle {
-    min-width: 800px;
+    /*min-width: 800px;*/
     width: 100%;
     box-shadow: 1px 1px 3px 0 #00000017;
     background-color: #ffffff;
@@ -207,8 +207,9 @@ body {
 
 .LandingBackground {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   background-image: linear-gradient(110deg, #50b996, #485ea7 100%);
+  padding-bottom: 50px;
 }
 
 /* #LandingWholePage{
@@ -548,4 +549,32 @@ input[type='radio']:checked:after {
 .AccountButtons{
   border: 2px solid #3db28c !important;
   border-radius: 4px !important;
+}
+
+.landingPageInformationBox{
+
+}
+
+.landingPageInformationNumber{
+  font-family: Museo Sans Rounded;
+  font-size: 40px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  color: #ffffff;
+}
+
+.landingPageInformationDetail{
+  font-family: Museo Sans Rounded;
+  font-size: 16px;
+  font-weight: 300;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  color: #ffffff;
 }

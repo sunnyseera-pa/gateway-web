@@ -72,6 +72,18 @@ class ProjectDetail extends Component {
     if (isLoading) {
       return <p>Loading ...</p>;
     }
+
+    if (typeof data.toolids === 'undefined') {
+        data.toolids = [];
+    }
+
+    if (typeof data.datasetids === 'undefined') {
+        data.datasetids = [];
+    }
+
+    if (typeof data.personids === 'undefined') {
+        data.personids = [];
+    }
     
     return (
       <div>
@@ -103,12 +115,12 @@ class ProjectDetail extends Component {
               <Col sm={10} lg={10}>
                 <div>
                   <Tabs className='TabsBackground Gray700-13px'>
-                    <Tab eventKey="Tools" title="Tools (3)">
+                    <Tab eventKey="Tools" title={'Tools ('+data.toolids.length+')'}>
                       <Tool data={data} />
                       {/* <ToolsUsed data={data} /> */}
                     </Tab>
-                    <Tab eventKey="Data sets" title="Data sets (1)">
-                      <DataSet />
+                    <Tab eventKey="Data sets" title={'Data sets ('+data.datasetids.length+')'}>
+                    { data.datasetids.map(id => <DataSet datasetid={id} />) }
                     </Tab>
                   </Tabs>
                 </div>

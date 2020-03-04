@@ -2,6 +2,8 @@ import React from "react";
 
 const getViewBox = name => {
   switch (name) {
+    case "dataseticon":
+      return "0 0 20 26";
     case "projecticon":
       return "0 0 20 24";
     case "searchicon":
@@ -22,6 +24,13 @@ const getViewBox = name => {
 
 const getPath = (name, props) => {
   switch (name) {
+    case "dataseticon":
+      return (
+        <path
+          {...props}
+          d="m 18 15.7 l 0 3.3 c 0 2.025 -3.9 3 -7.5 3 c -3.6 0 -7.5 -0.975 -7.5 -3 l 0 0 l 0 -3.3 c 1.725 1.275 4.65 1.8 7.5 1.8 c 2.85 0 5.775 -0.525 7.5 -1.8 l 0 0 Z m 0 -6 l 0 3.3 c 0 2.025 -3.9 3 -7.5 3 c -3.6 0 -7.5 -0.975 -7.5 -3 l 0 0 l 0 -3.3 c 1.725 1.275 4.65 1.8 7.5 1.8 c 2.85 0 5.775 -0.525 7.5 -1.8 l 0 0 Z m -7.5 -5.7 c 3.6 0 7.5 0.975 7.5 3 c 0 2.025 -3.9 3 -7.5 3 c -3.6 0 -7.5 -0.975 -7.5 -3 c 0 -2.025 3.9 -3 7.5 -1 Z"
+          />
+      );
     case "projecticon":
       return (
         <path

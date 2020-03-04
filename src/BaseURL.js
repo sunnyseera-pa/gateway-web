@@ -3,7 +3,10 @@ var thisBaseURL = window.location.href;
 
 module.exports = {
   getURL: function() {
-    if (!thisBaseURL.includes('localhost')) {
+      if (thisBaseURL.includes('appspot.com')) {
+    return 'https://latest-api.healthresearch.tools'
+
+} else if (!thisBaseURL.includes('localhost')) {
       var rx = /^([http|https]+\:\/\/[a-z]+)([^/]*)/;
       var arr = rx.exec(thisBaseURL);
       if (arr.length > 0) {

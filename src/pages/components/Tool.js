@@ -114,8 +114,9 @@ class Tool extends React.Component{
                             </Row>
                         </div>
                     </a>
-                </Col>
+                </Col>                
             </Row>
+            
         );
     }
 }
