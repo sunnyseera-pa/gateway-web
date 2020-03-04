@@ -8,8 +8,7 @@ class ArchivedTool extends React.Component{
     render(){
         return(
         <Row className="mt-2">
-            <Col sm={1} lg={1} />
-            <Col sm={10} lg={10}>
+            <Col>
                 <div className="Rectangle">
                      <Row>
                         <Col xs={4} lg={4} className="ml-2 mt-2 Gray800-14px-bold"> ToolName </Col>
@@ -22,7 +21,6 @@ class ArchivedTool extends React.Component{
                     </Row>
                 </div>
             </Col>
-            <Col sm={1} lg={1} />
         </Row>
         );
     }

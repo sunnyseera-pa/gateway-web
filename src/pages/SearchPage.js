@@ -8,42 +8,49 @@ import SearchNotFound from './components/SearchNotFound'
 import queryString from 'query-string';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col'; 
+import Col from 'react-bootstrap/Col';
 // import ToolTitle from './components/ToolTitle';
 import FilterButtons from './components/FilterButtons';
 
 var baseURL = require('./../BaseURL').getURL();
 
-class SearchPage extends React.Component{
+class SearchPage extends React.Component {
 
     state = {
         searchString: null,
         typeString: null,
         data: [],
-        isLoading: true
+        isLoading: true,
+        userState: [{
+            loggedIn: false,
+            role: "Reader",
+            id: null,
+            name: null
+        }]
     }
 
     constructor(props) {
         super(props);
-      }
+        this.state.userState = props.userState;
+    }
 
     componentDidMount() { //fires on first time in or page is refreshed/url loaded
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
             this.doSearchCall(values.search, values.type);
-            this.setState({ searchString: values.search});
-            this.setState({ typeString: values.type});
+            this.setState({ searchString: values.search });
+            this.setState({ typeString: values.type });
         }
         else {
-            this.setState({ data: [], searchString: '', typeString: 'all', isLoading: true});
-            this.doSearchCall("","all");
+            this.setState({ data: [], searchString: '', typeString: 'all', isLoading: true });
+            this.doSearchCall("", "all");
         }
     }
 
     componentWillReceiveProps() {
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
-            if (values.search != this.state.searchString 
+            if (values.search != this.state.searchString
                 || values.type != this.state.typeString) {
                 this.doSearchCall(values.search, values.type);
                 this.state.searchString = values.search;
@@ -51,63 +58,63 @@ class SearchPage extends React.Component{
             }
         }
         else {
-            this.setState({ data: [], searchString: '', typeString: 'all', isLoading: true});
-            this.doSearchCall("","all");
+            this.setState({ data: [], searchString: '', typeString: 'all', isLoading: true });
+            this.doSearchCall("", "all");
         }
     }
 
     doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
             if (!!this.state.searchString && !!this.state.typeString) {
-                this.props.history.push(window.location.pathname+'?search='+this.state.searchString + '&type='+ this.state.typeString)
+                this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString)
                 this.doSearchCall(this.state.searchString, this.state.typeString);
             }
-            else if(!!this.state.searchString && !this.state.typeString){
-                this.props.history.push(window.location.pathname+'?search='+this.state.searchString + '&type=all')
+            else if (!!this.state.searchString && !this.state.typeString) {
+                this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=all')
                 this.doSearchCall(this.state.searchString, "");
             }
         }
     }
-    
-    callTypeString = (typeString) =>{ 
-        this.props.history.push(window.location.pathname+'?search='+this.state.searchString + '&type='+ typeString)
+
+    callTypeString = (typeString) => {
+        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + typeString)
         this.doSearchCall(this.state.searchString, typeString);
     } 
 
     doSearchCall(searchString, typeString) {
-        axios.get(baseURL+'/api/search?search='+searchString + '&type='+ typeString)
-        .then((res) => {
-            this.setState({ data: res.data.data });
-        });
+        axios.get(baseURL + '/api/search?search=' + searchString + '&type=' + typeString)
+            .then((res) => {
+                this.setState({ data: res.data.data });
+            });
     }
 
     updateSearchString = (searchString) => {
-        this.setState({ searchString: searchString});
+        this.setState({ searchString: searchString });
     }
 
-    updateTypeString = (typeString) =>{
-        this.setState({ typeString: typeString});
+    updateTypeString = (typeString) => {
+        this.setState({ typeString: typeString });
     }
 
 
-    render(){
-        const { searchString, typeString, data} = this.state;
+    render() {
+        const { searchString, typeString, data, userState } = this.state;
 
-        return(
+        return (
 
             <div>
-                 <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} />
-                
+                <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
+
                 <Container>
                     <Row>
                         <Col sm={12} md={12} lg={3}>
                             <FilterButtons typeString={typeString} doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString} />
                         </Col>
                         <Col sm={12} md={12} lg={9}>
-                            {data.length <= 0 ? <SearchNotFound />: data.map((dat) => {
+                            {data.length <= 0 ? <SearchNotFound /> : data.map((dat) => {
                                 if (dat.type == 'tool') {
                                     return <Tool data={dat} />
-                                } 
+                                }
                                 else if (dat.type == 'project') {
                                     return <Project data={dat} />
                                 }
@@ -124,8 +131,8 @@ class SearchPage extends React.Component{
             </div>
 
 
-            
-            
+
+
         );
     }
 }

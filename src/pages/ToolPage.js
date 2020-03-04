@@ -28,14 +28,21 @@ class ToolDetail extends Component {
   state = {
     id: '',
     data: [],
-    key:'Reviews',
+    key: 'Reviews',
     activeKey: false,
     selectedItem: 'tab-1',
-    isLoading: true
+    isLoading: true,
+    userState: [{
+      loggedIn: false,
+      role: "Reader",
+      id: null,
+      name: null
+    }]
   };
 
   constructor(props) {
     super(props);
+    this.state.userState = props.userState;
   }
 
   // on loading of tool detail page
@@ -54,41 +61,50 @@ class ToolDetail extends Component {
   getDataSearchFromDb = () => {
     //need to handle error if no id is found
     this.setState({ isLoading: true });
-    axios.get(baseURL+'/api/tool/'+this.props.match.params.toolID)
-    .then((res) => {
-      this.setState({ 
-        data: res.data.data[0],
-        isLoading: false 
-      });
-    })
+    axios.get(baseURL + '/api/tool/' + this.props.match.params.toolID)
+      .then((res) => {
+        debugger
+        this.setState({
+          data: res.data.data[0],
+          isLoading: false
+        });
+      })
   };
- 
+
   doSearch = (e) => { //fires on enter on searchbar
     if (e.key === 'Enter') {
-        if (!!this.state.searchString) {
-            window.location.href = window.location.search+"/search?search="+this.state.searchString + '&type=all';
-        }
+      if (!!this.state.searchString) {
+        window.location.href = window.location.search + "/search?search=" + this.state.searchString + '&type=all';
+      }
     }
   }
 
   updateSearchString = (searchString) => {
-    this.setState({ searchString: searchString});
+    this.setState({ searchString: searchString });
   }
 
   render() {
-    const {searchString, data, isLoading } = this.state;
-    
+    const { searchString, data, isLoading, userState } = this.state;
+
+    if (typeof data.datasetids === 'undefined') {
+      data.datasetids = [];
+    }
+
+    if (typeof data.projectids === 'undefined') {
+      data.projectids = [];
+    }
+
     if (isLoading) {
       return <p>Loading ...</p>;
     }
-     
+    debugger
     return (
       <div>
-        <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} />
+        <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
         <Container className="mb-5">
 
-        {/* <AddProjectPage /> */}
-        {/* <AddToolPage /> */}
+          {/* <AddProjectPage /> */}
+          {/* <AddToolPage /> */}
 
           <ToolTitle data={data} />
           {/* <ToolInfoReviewForm data={data} /> */}
@@ -111,8 +127,8 @@ class ToolDetail extends Component {
             <Col sm={1} lg={10} />
           </Row>
 
-            
-            <Row  className="mt-3">
+
+          <Row className="mt-3">
 
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
@@ -121,18 +137,17 @@ class ToolDetail extends Component {
                   <Tab eventKey="Reviews" title="Reviews (54)">
                     <Reviews data={data}/>
                   </Tab>
-                  <Tab eventKey="Data sets" title="Data sets (1)">
-                      <DataSet />
+                  <Tab eventKey="Data sets" title={'Data sets (' + data.datasetids.length + ')'}>
+                    {data.datasetids.map(id => <DataSet id={id} />)}
                   </Tab>
-                  <Tab eventKey="Projects" title="Projects (2)">
-                    <Project data={data} />
-
+                  <Tab eventKey="Projects" title={'Projects (' + data.projectids.length + ')'}>
+                    {data.projectids.map(id => <Project id={id} />)}
                   </Tab>
                 </Tabs>
               </div>
             </Col>
             <Col sm={1} lg={1} />
-            </Row>
+          </Row>
         </Container>
       </div>
     );

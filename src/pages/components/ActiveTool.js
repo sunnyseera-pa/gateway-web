@@ -25,7 +25,7 @@ class ActiveTool extends React.Component{
     }
 
     doSearchCall() {
-        axios.get('http://localhost:3001/api/search?search=&type=tool')
+        axios.get(baseURL+'/api/search?search=&type=tool')
         .then((res) => {
             this.setState({ data: res.data.data });
             // this.isLoading = false;
@@ -42,15 +42,14 @@ class ActiveTool extends React.Component{
         // }
 
         return(
-        <Row className="mt-2">
-            <Col sm={1} lg={1} />
-            <Col sm={10} lg={10}>
+        <Row className="mt-1">
+            <Col>
             {data.length <= 0 ? <SearchNotFound />: data.map((dat) => {
-                return (<div className="Rectangle">
+                return (<div className="Rectangle mt-1">
                      <Row>
-                        <Col xs={4} lg={4} className="ml-2 mt-2 Gray800-14px-bold"> {dat.name} </Col>
-                        <Col xs={4} lg={4} className="ml-2 mt-2 Gray800-14px-bold"> Author </Col>
-                        <Col xs={3} lg={3} className="ml-5">
+                        <Col sm={12} lg={6} className="pl-2 pt-2 Gray800-14px-bold"> {dat.name} </Col>
+                        <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold"> Author </Col>
+                        <Col sm={12} lg={4} className="pl-5 activeToolsButtons">
                             <Button variant="light" id="ArchiveButton" className="mr-2">
                                 Archive
                             </Button>
@@ -63,7 +62,6 @@ class ActiveTool extends React.Component{
             })}
 
             </Col>
-            <Col sm={1} lg={1} />
         </Row>
         );
     }

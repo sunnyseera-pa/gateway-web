@@ -27,7 +27,7 @@ class Person extends React.Component{
                             </Col>
                             <Col xs={10} md={11}>
                                 <p>
-                                    <span className="Black-16px">{data.firstname} {data.surname}</span>
+                                    <span className="Black-16px">{data.firstname} {data.lastname}</span>
                                     <br />
                                     <span className="Gray800-14px">{data.company}</span>
                                 </p>
@@ -100,12 +100,6 @@ class Person extends React.Component{
                                             })}
                                         </span> */}
                                     </p>
-                            </Col>
-                        
-                            <Col xs={12} md={12}>
-                                {data.tags.length <= 0 ? 'NO SEARCH RESULT' : data.tags.map((tag) => {
-                                    return <div className="mr-2 Gray800-14px tagBadges mb-2">{tag}</div>
-                                })}
                             </Col>
                         </Row>
                     </div>

@@ -5,19 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import SearchNotFound from '../components/SearchNotFound';
 
-var baseURL = window.location.href;
-
-if (!baseURL.includes('localhost')) {
-    var rx = /^([http|https]+\:\/\/[a-z]+)([^/]*)/;
-    var arr = rx.exec(baseURL);
-    if (arr.length > 0) {
-        //add -api to the sub domain for API requests
-        baseURL = arr[1]+'-api'+arr[2]
-    }
-
-} else {
-    baseURL = 'http://localhost:3001'
-}
+var baseURL = require('./../../BaseURL').getURL();
 
 class PendingTools extends React.Component{
     constructor(props) {
@@ -36,7 +24,7 @@ class PendingTools extends React.Component{
     }
 
     doSearchCall() {
-        axios.get('http://localhost:3001/api/search?search=&type=tool')
+        axios.get(baseURL+'/api/search?search=&type=tool')
         .then((res) => {
             this.setState({ data: res.data.data });
             // this.isLoading = false;
@@ -72,7 +60,6 @@ class PendingTools extends React.Component{
                 </div>)
                 })}
             </Col>
-            <Col sm={1} lg={1} />
         </Row>
         );
     }

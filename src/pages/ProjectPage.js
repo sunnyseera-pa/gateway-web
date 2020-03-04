@@ -22,17 +22,24 @@ class ProjectDetail extends Component {
     searchString: null,
     id: '',
     data: [],
-    isLoading: true
+    isLoading: true,
+    userState: [{
+      loggedIn: false,
+      role: "Reader",
+      id: null,
+      name: null
+    }]
   };
 
   constructor(props) {
     super(props);
+    this.state.userState = props.userState;
   }
 
   // on loading of tool detail page
   componentDidMount() {
     this.getDataSearchFromDb();
-    
+
   }
 
   // on loading of tool detail page were id is different
@@ -45,49 +52,49 @@ class ProjectDetail extends Component {
   getDataSearchFromDb = () => {
     //need to handle error if no id is found
     this.setState({ isLoading: true });
-    axios.get(baseURL+'/api/project/'+this.props.match.params.projectID)
-    .then((res) => {
-      this.setState({ 
-        data: res.data.data[0], 
-        isLoading: false 
-      });
-    })
+    axios.get(baseURL + '/api/project/' + this.props.match.params.projectID)
+      .then((res) => {
+        this.setState({
+          data: res.data.data[0],
+          isLoading: false
+        });
+      })
   };
 
   doSearch = (e) => { //fires on enter on searchbar
     if (e.key === 'Enter') {
-        if (!!this.state.searchString) {
-            window.location.href = window.location.search+"/search?search="+this.state.searchString + '&type=all';
-        }
+      if (!!this.state.searchString) {
+        window.location.href = window.location.search + "/search?search=" + this.state.searchString + '&type=all';
+      }
     }
   }
 
   updateSearchString = (searchString) => {
-    this.setState({ searchString: searchString});
+    this.setState({ searchString: searchString });
   }
 
   render() {
-    const {searchString, data, isLoading } = this.state;
-    
+    const { searchString, data, isLoading, userState } = this.state;
+
     if (isLoading) {
       return <p>Loading ...</p>;
     }
 
     if (typeof data.toolids === 'undefined') {
-        data.toolids = [];
+      data.toolids = [];
     }
 
     if (typeof data.datasetids === 'undefined') {
-        data.datasetids = [];
+      data.datasetids = [];
     }
 
     if (typeof data.personids === 'undefined') {
-        data.personids = [];
+      data.personids = [];
     }
-    
+
     return (
       <div>
-        <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} />
+        <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
         <Container className="mb-5">
           <ProjectTitle data={data} />
 
@@ -98,6 +105,7 @@ class ProjectDetail extends Component {
             </Col>
             <Col sm={1} lg={10} />
           </Row>
+          
           <Row>
             <Col sm={1} lg={1} />
             <Col sm={5} lg={5}>
@@ -109,24 +117,25 @@ class ProjectDetail extends Component {
             <Col sm={1} lg={10} />
           </Row>
 
-            <Row  className="mt-3">
+          <Row className="mt-3">
 
-              <Col sm={1} lg={1} />
-              <Col sm={10} lg={10}>
-                <div>
-                  <Tabs className='TabsBackground Gray700-13px'>
-                    <Tab eventKey="Tools" title={'Tools ('+data.toolids.length+')'}>
-                      <Tool data={data} />
-                      {/* <ToolsUsed data={data} /> */}
-                    </Tab>
-                    <Tab eventKey="Data sets" title={'Data sets ('+data.datasetids.length+')'}>
-                    { data.datasetids.map(id => <DataSet datasetid={id} />) }
-                    </Tab>
-                  </Tabs>
-                </div>
-              </Col>
-              <Col sm={1} lg={1} />
-            </Row>
+            <Col sm={1} lg={1} />
+            <Col sm={10} lg={10}>
+              <div>
+                <Tabs className='TabsBackground Gray700-13px'>
+                  <Tab eventKey="Tools" title={'Tools (' + data.toolids.length + ')'}>
+                    {data.toolids.length <= 0 ? <span>Test</span> : data.toolids.map((id) => {
+                      return <Tool id={id} />
+                    })}  
+                  </Tab>
+                  <Tab eventKey="Data sets" title={'Data sets (' + data.datasetids.length + ')'}>
+                    {data.datasetids.map(id => <DataSet id={id} />)}
+                  </Tab>
+                </Tabs>
+              </div>
+            </Col>
+            <Col sm={1} lg={1} />
+          </Row>
 
         </Container>
       </div>
