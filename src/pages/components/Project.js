@@ -2,23 +2,52 @@ import React from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import SVGIcon from "../../images/SVGIcon"
+import axios from 'axios';
+
+var baseURL = require('./../../BaseURL').getURL();
 
 class Project extends React.Component{
-    constructor(props) {
-        super(props)
-        this.state.data = props.data;
-    }
-
     // initialize our state
     state = {
-        data: []
-      };
+        data: [],
+        isLoading: true
+    };
+
+    constructor(props) {
+        super(props)
+        if (props.data) {
+            this.state.data = props.data;
+            this.state.isLoading = false;
+        }
+        else if (props.id) {
+            this.state.id = props.id;
+            this.getDataSearchFromDb()
+        }
+    }
+
+    getDataSearchFromDb = () => {
+        //need to handle error if no id is found
+        this.setState({ isLoading: true });
+        axios.get(baseURL + '/api/project/' + this.state.id)
+        .then((res) => {
+            this.setState({
+                data: res.data.data[0],
+                isLoading: false
+            });
+        })
+    };
+
+    
 
     render(){
-        const { data } = this.state;
+        const { data, isLoading } = this.state;
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         var updatedDate = new Date(data.updatedon);
         var updatedOnDate = monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
+        
+        if (isLoading) {
+            return <p>Loading ...</p>;
+        }
 
         return(
             <Row className="mt-2">

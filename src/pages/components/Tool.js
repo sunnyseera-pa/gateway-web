@@ -31,19 +31,27 @@ class Tool extends React.Component {
         //need to handle error if no id is found
         this.setState({ isLoading: true });
         axios.get(baseURL + '/api/tool/' + this.state.id)
-        .then((res) => {
-            this.setState({
-                data: res.data.data[0],
-                isLoading: false
-            });
-        })
+            .then((res) => {
+                this.setState({
+                    data: res.data.data[0],
+                    isLoading: false
+                });
+            })
     };
 
     render() {
         const { data, isLoading } = this.state;
-        const ratingsTotal = (!!data.ratings && data.ratings.length > 0) ? data.ratings.reduce((a,b) => a + b, 0) : '';
+        const ratingsTotal = (!!data.ratings && data.ratings.length > 0) ? data.ratings.reduce((a, b) => a + b, 0) : '';
         const ratingsCount = (!!data.ratings ? data.ratings.length : 0);
         const avgRating = (!!data.ratings && data.ratings.length > 0) ? (ratingsTotal / ratingsCount) : '';
+
+        if (typeof data.datasetids === 'undefined') {
+            data.datasetids = [];
+        }
+
+        if (typeof data.projectids === 'undefined') {
+            data.projectids = [];
+        }
 
         if (isLoading) {
             return <p>Loading ...</p>;
@@ -67,13 +75,13 @@ class Tool extends React.Component {
                                         <span className="Black-16px">{data.name}</span>
                                         <span className="Gray500-13px">
                                             <span className="reviewTitleGap">·</span>
-                                         {!!ratingsTotal && ratingsCount == 1 ? ratingsCount + ' review' : ratingsCount +' reviews'}
-                                     
-                                            
-                            
+                                            {!!ratingsTotal && ratingsCount == 1 ? ratingsCount + ' review' : ratingsCount + ' reviews'}
+
+
+
                                             <span className="reviewTitleGap">·</span>
-                                            {avgRating == 0 ? 'No average rating' : avgRating + ' average' }
-                                           
+                                            {avgRating == 0 ? 'No average rating' : avgRating + ' average'}
+
                                         </span>
                                         <br />
                                         <span className="Gray800-14px">Laure Santos</span>
@@ -86,38 +94,38 @@ class Tool extends React.Component {
                                         </span>
                                     </p>
                                     {!data.projectids ? '' :
-                                    <p className="Gray800-14px">
-                                        <span className="mr-1">
-                                            {!data.projectids.length ? '' : data.projectids.length }
-                                            
-                                        </span>
-                                        <span>
-                                            {data.projectids === 1 ? "projects" : "project"}
-                                        </span>
+                                        <p className="Gray800-14px">
+                                            <span className="mr-1">
+                                                {!data.projectids.length ? '' : data.projectids.length}
 
-                                        {/*  <span className="Purple-14px ml-2">
+                                            </span>
+                                            <span>
+                                                {data.projectids === 1 ? "projects" : "project"}
+                                            </span>
+
+                                            {/*  <span className="Purple-14px ml-2">
                                             Novel somatic alterations underlie Chinese papillary thyroid carcinoma, Human THO mai…
                                         </span> */}
 
-                                        {/* DISPLAYS PROJECT IDS ATTACHED TO TOOL */}
-                                        <span className="Purple-14px ml-2">
-                                            {!data.projectids ||data.projectids.length <= 0 ? 'NO SEARCH RESULT' : data.projectids.map((projectid) => {
-                                                if (!!projectid) {
-                                                    return <span className="Purple-14px ml-1"> {projectid} </span>
-                                                }
-                                            })}
-                                        </span>
+                                            {/* DISPLAYS PROJECT IDS ATTACHED TO TOOL */}
+                                            <span className="Purple-14px ml-2">
+                                                {!data.projectids || data.projectids.length <= 0 ? 'NO SEARCH RESULT' : data.projectids.map((projectid) => {
+                                                    if (!!projectid) {
+                                                        return <span className="Purple-14px ml-1"> {projectid} </span>
+                                                    }
+                                                })}
+                                            </span>
 
 
-                                        {/* <span className="Purple-14px ml-2">
+                                            {/* <span className="Purple-14px ml-2">
                                             { data.projectids.length <= 0 ? 'NO SEARCH RESULT' :  data.projectids.map((projectid) => {
                                                 if(!!projectid){
                                                     return <span className="Purple-14px ml-1"> {data.name} </span>
                                                 }
                                             })}
                                         </span> */}
-                                    </p>
-                                }
+                                        </p>
+                                    }
 
                                 </Col>
                                 <Col xs={{ span: 12, order: 1 }} lg={{ span: 3, order: 0 }} className="dateHolder mt-2">
@@ -143,9 +151,9 @@ class Tool extends React.Component {
                             </Row>
                         </div>
                     </a>
-                </Col>                
+                </Col>
             </Row>
-            
+
         );
     }
 }

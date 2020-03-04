@@ -86,6 +86,14 @@ class ToolDetail extends Component {
   render() {
     const { searchString, data, isLoading, userState } = this.state;
 
+    if (typeof data.datasetids === 'undefined') {
+      data.datasetids = [];
+    }
+
+    if (typeof data.projectids === 'undefined') {
+      data.projectids = [];
+    }
+
     if (isLoading) {
       return <p>Loading ...</p>;
     }
@@ -129,12 +137,11 @@ class ToolDetail extends Component {
                   <Tab eventKey="Reviews" title="Reviews (54)">
                     <Reviews data={data}/>
                   </Tab>
-                  <Tab eventKey="Data sets" title="Data sets (1)">
-                    <DataSet />
+                  <Tab eventKey="Data sets" title={'Data sets (' + data.datasetids.length + ')'}>
+                    {data.datasetids.map(id => <DataSet id={id} />)}
                   </Tab>
-                  <Tab eventKey="Projects" title="Projects (2)">
-                    <Project data={data} />
-
+                  <Tab eventKey="Projects" title={'Projects (' + data.projectids.length + ')'}>
+                    {data.projectids.map(id => <Project id={id} />)}
                   </Tab>
                 </Tabs>
               </div>

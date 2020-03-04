@@ -23,7 +23,7 @@ export default class DataSet extends React.Component {
     getDataSearchFromDb = () => {
         //need to handle error if no id is found
         this.setState({ isLoading: true });
-        axios.get(baseURL+'/api/dataset/'+this.props.datasetid)
+        axios.get(baseURL+'/api/dataset/'+this.props.id)
         .then((res) => {
             this.setState({
                 data: {

@@ -129,7 +129,7 @@ class ProjectDetail extends Component {
                     })}  
                   </Tab>
                   <Tab eventKey="Data sets" title={'Data sets (' + data.datasetids.length + ')'}>
-                    {data.datasetids.map(id => <DataSet datasetid={id} />)}
+                    {data.datasetids.map(id => <DataSet id={id} />)}
                   </Tab>
                 </Tabs>
               </div>
