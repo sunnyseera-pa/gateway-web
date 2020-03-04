@@ -85,10 +85,11 @@ class Tool extends React.Component {
                                             NIHR HIC Locality : Critical Care
                                         </span>
                                     </p>
-
+                                    {!data.projectids ? '' :
                                     <p className="Gray800-14px">
                                         <span className="mr-1">
-                                            {data.projectids.length}
+                                            {!data.projectids.length ? '' : data.projectids.length }
+                                            
                                         </span>
                                         <span>
                                             {data.projectids === 1 ? "projects" : "project"}
@@ -116,6 +117,7 @@ class Tool extends React.Component {
                                             })}
                                         </span> */}
                                     </p>
+                                }
 
                                 </Col>
                                 <Col xs={{ span: 12, order: 1 }} lg={{ span: 3, order: 0 }} className="dateHolder mt-2">

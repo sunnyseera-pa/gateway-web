@@ -5,7 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import SearchNotFound from '../components/SearchNotFound';
 
-var baseURL = require('./../BaseURL').getURL();
+var baseURL = require('./../../BaseURL').getURL();
 
 class PendingTools extends React.Component{
     constructor(props) {
