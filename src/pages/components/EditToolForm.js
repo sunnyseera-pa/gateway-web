@@ -133,7 +133,7 @@ const EditToolForm = (props) => {
                                     {console.log('props.data2: ' + props.data.categories.category)}
                                     {/* <Form.Control id="categories.category" name="categories.category" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.categories.category} onBlur={formik.handleBlur}/> */}
                                     <Typeahead
-                                        clearButton
+                                        // clearButton
                                         labelKey="categories.category"
                                         allowNew
                                         multiple
@@ -152,7 +152,7 @@ const EditToolForm = (props) => {
                                     {console.log('props.data3: ' + props.data.categories.programmingLanguage)}
                                     {/* <Form.Control id="categories.programmingLanguage" name="categories.programmingLanguage" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.categories.programmingLanguage} onBlur={formik.handleBlur} /> */}
                                     <Typeahead
-                                        clearButton
+                                        // clearButton
                                         labelKey="categories.programmingLanguage"
                                         allowNew
                                         multiple
@@ -182,12 +182,13 @@ const EditToolForm = (props) => {
                                     </Form.Text>
                                     {/* <Form.Control id="license" name="license" type="text" className="SmallFormInput AddFormInput" onChange={formik.handleChange} value={formik.values.license} onBlur={formik.handleBlur}/> */}
                                     <Typeahead
-                                        clearButton
+                                        // clearButton
                                         labelKey="license"
                                         allowNew
                                         multiple
                                         defaultSelected={[props.data.license]}
                                         options={props.combinedLicenses}
+                                        className="SmallFormInput"
                                     />
                                 </Form.Group>
 
@@ -210,7 +211,7 @@ const EditToolForm = (props) => {
                                     </Form.Text>
                                     {/* <Form.Control id="tags.features" name="tags.features" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.tags.features} onBlur={formik.handleBlur}/> */}
                                     <Typeahead
-                                        clearButton
+                                        // clearButton
                                         labelKey="tags.features"
                                         allowNew
                                         multiple
@@ -231,7 +232,7 @@ const EditToolForm = (props) => {
 
                                     {/* {console.log('props.data: ' + props.data)} */}
                                     <Typeahead
-                                        clearButton
+                                        // clearButton
                                         id="tags.topics" 
                                         name="tags.topics"
                                         // className="AddFormInput" 

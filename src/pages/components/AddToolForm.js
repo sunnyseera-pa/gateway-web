@@ -115,6 +115,7 @@ var baseURL = require('./../../BaseURL').getURL();
                                 </Form.Group>
 
                                 {console.log("name:" + formik.values.name)}
+                                {console.log("nameAgain:" + props.data.name)}
                                 {console.log('props.data: ' + props.data)}
                                 {console.log("length of name:" + formik.values.name.length)}
 
@@ -145,16 +146,23 @@ var baseURL = require('./../../BaseURL').getURL();
                                     </Form.Text>
                                     {/* <Form.Control id="categories.category" name="categories.category" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.categories.category} onBlur={formik.handleBlur}/> */}
                                     <Typeahead
-                                        clearButton
+                                        // clearButton
                                         labelKey="categories.category"
                                         allowNew
                                         multiple
                                         options={props.combinedCategories}
+
+                                        // onChange={(selected) => {
+                                        //     // formik.values.license = selected;
+                                        //     console.log("selected category: " + selected);
+                                        //     formik.values.categories.category = selected;
+                                        //     formik.handleChange()
+                                        // }}
+
                                     />
                                 </Form.Group>   
 
                                 {console.log("cat: category:" + formik.values.categories.category)}
-                                {console.log('at start: ' + formik.values.categories.programmingLanguage)}
 
                                 <Form.Group className="pb-2">
                                     <Form.Label className="Gray800-14px">Programming language</Form.Label>
@@ -163,20 +171,28 @@ var baseURL = require('./../../BaseURL').getURL();
                                     </Form.Text>
                                     {/* <Form.Control id="categories.programmingLanguage" name="categories.programmingLanguage" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.categories.programmingLanguage} onBlur={formik.handleBlur} /> */}
                                     <Typeahead
-                                        clearButton
+                                        // clearButton
                                         labelKey="categories.programmingLanguage"
                                         allowNew
                                         multiple
                                         options={props.combinedLanguages}
-                                        value={formik.values.categories.programmingLanguage}
+                                        // value={formik.values.categories.programmingLanguage}
                                         // value = {selected}
-                                        onChange={formik.handleChange}
+                                        // onChange={formik.handleChange}
+
+                                        onChange={(selected) => {
+                                            // formik.values.license = selected;
+                                            console.log("selected language: " + selected);
+                                            formik.values.categories.programmingLanguage = selected;
+                                        }}
+
+                                        // onBlur={formik.handleBlur}
                                     />
                                 </Form.Group> 
-                                {console.log('after: ' + formik.values.categories.programmingLanguage)}
                                 {console.log("cat: programmingLanguage:" + formik.values.categories.programmingLanguage)}
+                                {console.log("length of programmingLanguage:" + formik.values.categories.programmingLanguage.length)}
 
-                                {/* {formik.values.categories.programmingLanguage.length <= 0 || formik.values.categories.programmingLanguage == "Code-free"  ? '' : */}
+                                {formik.values.categories.programmingLanguage.length <= 0 || formik.values.categories.programmingLanguage == "Code-free"  ? '' :
                                     <Form.Group className="pb-2">
                                         <Form.Label className="Gray800-14px">Programming language version</Form.Label>
                                         <Form.Text className="Gray700-13px">
@@ -184,7 +200,7 @@ var baseURL = require('./../../BaseURL').getURL();
                                         </Form.Text>
                                         <Form.Control id="categories.programmingLanguageVersion" name="categories.programmingLanguageVersion" type="text" className="SmallFormInput AddFormInput" onChange={formik.handleChange} value={formik.values.categories.programmingLanguageVersion} onBlur={formik.handleBlur}/>
                                     </Form.Group>
-                                {/* } */}
+                                 } 
 
                                 {console.log("cat: programmingLanguageVersion:" + formik.values.categories.programmingLanguageVersion)}
 
@@ -194,16 +210,32 @@ var baseURL = require('./../../BaseURL').getURL();
                                     Select from existing or enter a new one 
                                     </Form.Text>
                                     {/* <Form.Control id="license" name="license" type="text" className="SmallFormInput AddFormInput" onChange={formik.handleChange} value={formik.values.license} onBlur={formik.handleBlur}/> */}
+                                    {/* <div className="SmallFormInput AddFormInput" > */}
                                     <Typeahead
-                                        clearButton
+                                        // clearButton
+                                        id="license"
+                                        // name="license"
+                                        // type="text"
                                         labelKey="license"
                                         allowNew
                                         multiple
                                         options={props.combinedLicenses}
+                                        // onChange={formik.handleChange}
+                                        className="SmallFormInput"  
+                                        
+                                        onChange={(selected) => {
+                                            // formik.values.license = selected;
+                                            console.log("selected license: " + selected);
+                                            formik.values.license = selected;
+                                            // formik.handleChange()
+                                        }}
+
                                     />
+                                    {/* </div> */}
                                 </Form.Group>
 
-                                {console.log("license:" + formik.values.license)}
+
+                                {console.log("license here:" + formik.values.license)}
 
                                 <Form.Group className="pb-2">
                                     <Form.Label className="Gray800-14px">Who created this tool or resource?</Form.Label>
@@ -212,11 +244,18 @@ var baseURL = require('./../../BaseURL').getURL();
                                     </Form.Text>
                                     {/* <Form.Control id="authors" name="authors" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.authors} onBlur={formik.handleBlur}/> */}
                                     <Typeahead
-                                        clearButton
+                                        // clearButton
                                         labelKey="authors"
                                         allowNew
                                         multiple
                                         options={props.combinedUsers}
+
+                                        // onChange={(selected) => {
+                                        //     // formik.values.license = selected;
+                                        //     console.log("selected category: " + selected);
+                                        //     formik.values.authors = selected;
+                                        //     formik.handleChange()
+                                        // }}
                                     />
                                 </Form.Group>
                                 {console.log("props.combinedUsers: " + props.combinedUsers)}
@@ -229,11 +268,17 @@ var baseURL = require('./../../BaseURL').getURL();
                                     </Form.Text>
                                     {/* <Form.Control id="tags.features" name="tags.features" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.tags.features} onBlur={formik.handleBlur}/> */}
                                     <Typeahead
-                                        clearButton
+                                        // clearButton
                                         labelKey="tags.features"
                                         allowNew
                                         multiple
                                         options={props.combinedFeatures}
+
+                                        onChange={(selected) => {
+                                            // formik.values.license = selected;
+                                            console.log("selected features: " + selected);
+                                            formik.values.tags.features = selected;
+                                        }}
                                     />
                                 </Form.Group>
                                 
@@ -252,23 +297,19 @@ var baseURL = require('./../../BaseURL').getURL();
                                     {/* {props.data.length <= 0 ? '' : props.data.map((dat) => { 
                                     return( */}
                                     <Typeahead
-                                        clearButton
+                                        // clearButton
                                         labelKey="tags.topics"
                                         allowNew
                                         multiple
-                                        // options={formik.values.topics}
+                                        options={props.combinedTopic}
 
-                                        // options={props.data.length <=0 ? '' : props.data.map((dat) => {
-                                        //     return (dat.tags.topics)
-                                        // })}
-
-                                        // options= {props.data.map((dat) => {
-                                            //return (dat.tags.topics);
-                                            // {console.log('help: ' + dat)}
-                                        // })}
-                                        // options={options}
-                                            options={props.combinedTopic}
-                                        // placeholder="Choose some topics..."
+                                        onChange={(selected) => {
+                                            // formik.values.license = selected;
+                                            console.log("selected topics: " + selected);
+                                            formik.values.tags.topics = selected;
+                                            // formik.handleChange()
+                                        }}
+                                        
                                     />
                                        {/* )
                                      })}   */}
