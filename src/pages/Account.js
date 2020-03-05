@@ -9,12 +9,16 @@ import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import TabContent from 'react-bootstrap/TabContent';
 import TabPane from 'react-bootstrap/TabPane';
+import Form, { FormRow } from 'react-bootstrap/Form';
 // import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import Button from 'react-bootstrap/Button';
 import AccountTools from './components/AccountTools';
 import Reviews from './components/Reviews';
 import DataSet from './components/DataSet';
+import YourAccount from './components/YourAccount';
+import queryString from 'query-string';
+import Alert from 'react-bootstrap/Alert'
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -30,7 +34,11 @@ class Account extends Component {
             role: "Reader",
             id: null,
             name: null
-        }]
+        }],
+        key: "youraccount",
+        isDeleted: false,
+        isApproved: false,
+        isRejected: false
     };
 
     constructor(props) {
@@ -38,10 +46,34 @@ class Account extends Component {
         this.state.userState = props.userState;
     }
 
+    componentDidMount() {
+        if (!!window.location.search) {
+            var values = queryString.parse(window.location.search);
+            if (values.tab != this.state.key) {
+                this.setState({ key: values.tab });
+                this.setState({ isDeleted: values.toolDeleted });
+                this.setState({ isApproved: values.toolApproved });
+                this.setState({ isRejected: values.toolRejected });
+            }
+        }
+    }
+
+    componentWillReceiveProps() {
+        if (!!window.location.search) {
+            var values = queryString.parse(window.location.search);
+            if (values.tab != this.state.key) {
+                this.setState({ key: values.tab });
+                this.setState({ isDeleted: values.accountDeleted });
+                this.setState({ isApproved: values.toolApproved });
+                this.setState({ isRejected: values.toolRejected });
+            }
+        }
+    }
+
     doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
             if (!!this.state.searchString) {
-                window.location.href = window.location.search + "/search?search=" + this.state.searchString + '&type=all';
+                window.location.href = "/search?search=" + this.state.searchString + '&type=all';
             }
         }
     }
@@ -50,36 +82,82 @@ class Account extends Component {
         this.setState({ searchString: searchString });
     }
 
-    render() {
-        const { searchString, data, userState } = this.state;
+    handleSelect = (key) => {
+        this.setState({ key: key });
+        this.props.history.push(window.location.pathname + '?tab=' + key);
+    }
 
-        //  if (isLoading) {
-        //     return <p>Loading ...</p>;
-        //   }
+    render() {
+        const { searchString, data, userState, isDeleted, isApproved, isRejected } = this.state;
+
+        if (typeof data.datasetids === 'undefined') {
+            data.datasetids = [];
+        }
+
+        /* if (isLoading) {
+           return <p>Loading ...</p>;
+         } */
+
+
 
         return (
             <div>
                 <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
 
                 <Container className="mb-5">
+
+                    {isDeleted ?
+                        <Row className="">
+                            <Col sm={1} lg={1} />
+                            <Col sm={10} lg={10}>
+                                <Alert variant="success" className="mt-3">Done! The tool has been deleted</Alert>
+                            </Col>
+                            <Col sm={1} lg={10} />
+                        </Row>
+                        : ""}
+
+                    {isApproved ?
+                        <Row className="">
+                            <Col sm={1} lg={1} />
+                            <Col sm={10} lg={10}>
+                                <Alert variant="success" className="mt-3">Done! The tool has been approved and is now live.</Alert>
+                            </Col>
+                            <Col sm={1} lg={10} />
+                        </Row>
+                        : ""}
+
+                    {isRejected ?
+                        <Row className="">
+                            <Col sm={1} lg={1} />
+                            <Col sm={10} lg={10}>
+                                <Alert variant="success" className="mt-3">Done! This tool has been rejected and is now deleted</Alert>
+                            </Col>
+                            <Col sm={1} lg={10} />
+                        </Row>
+                        : ""}
+
+
+
+
+
                     <Row className="mt-3">
                         <Col sm={1} lg={1} />
                         <Col sm={10} lg={10}>
                             <div>
-                                <Tabs className='TabsBackground Gray700-13px'>
-                                    <Tab eventKey="YourAccount" title="Your account">
+                                <Tabs className='TabsBackground Gray700-13px' activeKey={this.state.key} onSelect={this.handleSelect}>
+                                    <Tab eventKey="youraccount" title="Your account">
+                                        <YourAccount userState={userState} />
+                                    </Tab>
+                                    <Tab eventKey="datasets" title="Data sets (1)">
+                                        {data.datasetids.map(id => <DataSet id={id} />)}
+                                    </Tab>
+                                    <Tab eventKey="projects" title="Projects (2)">
                                         Placeholder
                                     </Tab>
-                                    <Tab eventKey="Data sets" title="Data sets (1)">
-                                        <DataSet />
+                                    <Tab eventKey="tools" title="Tools (2)">
+                                        <AccountTools userState={userState} />
                                     </Tab>
-                                    <Tab eventKey="Projects" title="Projects (2)">
-                                        Placeholder
-                                    </Tab>
-                                    <Tab eventKey="Tools" title="Tools (2)">
-                                        <AccountTools />
-                                    </Tab>
-                                    <Tab eventKey="Reviews" title="Reviews (2)">
+                                    <Tab eventKey="reviews" title="Reviews (2)">
                                         Placeholder
                                     </Tab>
                                 </Tabs>

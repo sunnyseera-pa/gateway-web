@@ -52,7 +52,7 @@ var baseURL = require('./../../BaseURL').getURL();
                 programmingLanguageVersion: ''
             },
             license: '',
-            authors: [],
+            authors: [props.userState[0].id],
             tags: {
                 features: [],
                 topics: [],
@@ -86,9 +86,12 @@ var baseURL = require('./../../BaseURL').getURL();
             alert("Form submitted");
             console.log('submitting', values); 
             axios.post(baseURL + '/api/mytools/add', values)
+            .then((res) => {
+                window.location.href = window.location.search+'/tool/'+res.data.id+'/?toolAdded=true';
+            });
             }
         });
-
+        
         return (
             
             <div>
@@ -249,7 +252,7 @@ var baseURL = require('./../../BaseURL').getURL();
                                         allowNew
                                         multiple
                                         options={props.combinedUsers}
-
+                                        
                                         // onChange={(selected) => {
                                         //     // formik.values.license = selected;
                                         //     console.log("selected category: " + selected);

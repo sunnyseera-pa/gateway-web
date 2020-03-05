@@ -6,6 +6,7 @@ import SignupForm from '../pages/components/Try';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import SearchBar from './components/SearchBar';
 import axios from 'axios';
 
 var baseURL = require('./../BaseURL').getURL();
@@ -14,6 +15,7 @@ class AddToolPage extends React.Component {
 
     constructor(props) {
         super(props)
+        this.state.userState = props.userState;
       }
   
       // initialize our state
@@ -25,7 +27,8 @@ class AddToolPage extends React.Component {
         combinedCategories:[],
         combinedLicenses:[],
         combinedUsers:[],
-        isLoading: true
+        isLoading: true,
+        userState: []
     };
 
     componentDidMount() {
@@ -110,19 +113,33 @@ class AddToolPage extends React.Component {
         });
       }
 
+      doSearch = (e) => { //fires on enter on searchbar
+        if (e.key === 'Enter') {
+            if (!!this.state.searchString) {
+                window.location.href = window.location.search + "/search?search=" + this.state.searchString + '&type=all';
+            }
+        }
+    }
+
+    updateSearchString = (searchString) => {
+        this.setState({ searchString: searchString });
+    }
+
     render() {
-        const {data, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, combinedUsers, isLoading } = this.state;
+        const {data, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, combinedUsers, isLoading, userState } = this.state;
 
         if (isLoading) {
             return <p>Loading ...</p>;
         }
-
+        
         return (
             <div>
-            <Header />
+            <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
+            <Container>
             {console.log('Users: ' + combinedUsers)}
             {console.log('Topics: ' + combinedTopic)}
-            <AddToolForm data={data} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} />
+            <AddToolForm data={data} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} userState={userState} />
+            </Container>
             </div>
         );
     } 
