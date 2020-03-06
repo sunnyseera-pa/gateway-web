@@ -5,6 +5,7 @@ import * as serviceWorker from './serviceWorker';
 
 import './css/custom-css-bootstrap-magic-2020-02-10.css';
 import './css/hdruk.css';
+import './css/otd1mmd.css';
 
 ReactDOM.render(<HDRRouter />, document.getElementById('root'));
 
