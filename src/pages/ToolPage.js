@@ -40,7 +40,8 @@ class ToolDetail extends Component {
       id: null,
       name: null
     }],
-    toolAdded: false
+    toolAdded: false,
+    reviewAdded: false
   };
 
   constructor(props) {
@@ -53,6 +54,7 @@ class ToolDetail extends Component {
     if (!!window.location.search) {
       var values = queryString.parse(window.location.search);
       this.setState({ toolAdded: values.toolAdded });
+      this.setState({ reviewAdded: values.reviewAdded });
   }
     this.getDataSearchFromDb();
   }
@@ -90,7 +92,7 @@ class ToolDetail extends Component {
   }
 
   render() {
-    const { searchString, data, isLoading, userState, toolAdded } = this.state;
+    const { searchString, data, isLoading, userState, toolAdded, reviewAdded } = this.state;
 
     if (typeof data.datasetids === 'undefined') {
       data.datasetids = [];
@@ -129,6 +131,16 @@ class ToolDetail extends Component {
           </Row>
           : ""}
 
+          {reviewAdded ? 
+          <Row className="">
+          <Col sm={1} lg={1} />
+          <Col sm={10} lg={10}>
+          <Alert variant="success" className="mt-3">Done! Your review has been added.</Alert> 
+          </Col>
+            <Col sm={1} lg={10} />
+          </Row>
+          : ""}
+
           {/* <AddProjectPage /> */}
           {/* <AddToolPage /> */}
 
@@ -160,8 +172,8 @@ class ToolDetail extends Component {
             <Col sm={10} lg={10}>
               <div>
                 <Tabs className='TabsBackground Gray700-13px'>
-                  <Tab eventKey="Reviews" title="Reviews (54)">
-                    <Reviews data={data}/>
+                  <Tab eventKey="Reviews" title={'Reviews (' + data.reviews.length + ')'}>
+                    <Reviews data={data} userState={userState} />
                   </Tab>
                   <Tab eventKey="Data sets" title={'Data sets (' + data.datasetids.length + ')'}>
                     {data.datasetids.map(id => <DataSet id={id} />)}

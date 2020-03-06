@@ -25,11 +25,17 @@ class ToolTitle extends Component {
   // see them render into our screen
   render() {
     const { data } = this.state;
-    const ratingsTotal = (!!data.ratings && data.ratings.length > 0) ? data.ratings.reduce((a,b) => a + b, 0) : '';
-    const ratingsCount = (!!data.ratings ? data.ratings.length : 0);
-    const avgRating = (!!data.ratings && data.ratings.length > 0) ? (ratingsTotal / ratingsCount) : '';
+    var ratingsTotal = 0;//(!!data.reviews && data.reviews.length > 0) ? data.ratings.reduce((a,b) => a + b, 0) : '';
+    if (data.reviews && data.reviews.length > 0) {
+        data.reviews.forEach(review => {
+            ratingsTotal = ratingsTotal+review.rating;
+        });
+    }
+    
+    const ratingsCount = (!!data.reviews ? data.reviews.length : 0);
+    const avgRating = (!!data.reviews && data.reviews.length > 0) ? (ratingsTotal / ratingsCount) : '';
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    var updatedDate = new Date(data.updatedon);
+    var updatedDate = new Date(data.updatedAt);
     var updatedOnDate = monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
 
     return (
@@ -76,15 +82,12 @@ class ToolTitle extends Component {
 
                                 {!data.categories.programmingLanguageVersion ? '' : <div className="mr-2 Gray800-14px tagBadges">{data.categories.programmingLanguageVersion}</div> }
 
-
-
-
                             </Col>
                             <Col xs={3} md={3} className="mb-3 pl-5">
                             <span className="Gray500-13px">
                                 {!!ratingsTotal && ratingsCount == 1 ? ratingsCount + ' review' : ratingsCount +' reviews'}
                             <span className="reviewTitleGap">·</span>
-                                {avgRating == 0 ? 'No average rating' : avgRating + ' average' }
+                                {avgRating == 0 ? 'No average rating' : (Math.round(avgRating * 10) / 10) + ' average' }
 
                             </span>
                             </Col>
