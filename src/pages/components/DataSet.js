@@ -27,10 +27,10 @@ export default class DataSet extends React.Component {
         .then((res) => {
             this.setState({
                 data: {
-                'label':res.data.data.label,
-                'description':res.data.data.description,
-                'id':res.data.data.id,
-                'updatedon':res.data.data.lastUpdated
+                // 'label':res.data.data.label,
+                // 'description':res.data.data.description,
+                // 'id':res.data.data.id,
+                // 'updatedon':res.data.data.lastUpdated
                 },
                 isLoading: false 
             })

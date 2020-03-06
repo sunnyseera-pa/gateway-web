@@ -460,6 +460,11 @@ input[type='radio']:checked:after {
   box-shadow: none !important;
 }
 
+.rbt-input-multi.after.focus{
+  border-color: #dc3645 !important;
+  box-shadow: none !important;
+}
+
 .rbt-token{
   background-color: #f3f3f3 !important;
   color: #3c3c3b !important;

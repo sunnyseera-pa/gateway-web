@@ -13,35 +13,12 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 var baseURL = require('./../../BaseURL').getURL();
 
-/* const validate = values => {
-    const errors = {};
-    if (!values.name) {
-      errors.name = 'This cannot be empty';
-    //   e.target.classList.add("EmptyFormInput");
-    } else {
-        // e.target.classList.remove("EmptyFormInput"); 
-    }
-  
-    if (!values.link) {
-      errors.link = 'This cannot be empty';
-    } 
-
-    if (!values.description) {
-        errors.description = 'This cannot be empty';
-      } else if (values.description.length > 5) {
-        errors.description = 'Maximum of 5,000 characters';
-      }
-    
-      return errors;
-    }; */
-
-
     const AddToolForm = (props) => { 
         // Pass the useFormik() hook initial form values and a submit function that will
         // be called when the form is submitted
         const formik = useFormik({
           initialValues: {
-            data: props.data,
+            // data: props.data,
             type: 'tool',
             name: '',
             link: '',
@@ -69,23 +46,31 @@ var baseURL = require('./../../BaseURL').getURL();
               .required('This cannot be empty'), 
             categories: Yup.object().shape({
                             category: Yup.string(),
-                            // programmingLanguage: Yup.array().of(Yup.string()),
+                                        // .required('This cannot be empty'),
+                                        // .max(2, 'Only pick 2'),
+                            // category: Yup.lazy(val => (Array.isArray(val) ? Yup.array().max(1,'Max of 1').of(Yup.string()) : Yup.string())),
+                            // Yup.array().of(Yup.string()) 
+                                        // .max(1),
                             programmingLanguage: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.string()) : Yup.string())),
                             programmingLanguageVersion: Yup.string()
             }), 
-            license: Yup.string(),
-            authors: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.string()) : Yup.string())),
+            license: Yup.string()
+                 .required('This cannot be empty'),
+            // authors: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.string()) : Yup.string())),
+            authors: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.number()) : Yup.number())),
             features: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.string()) : Yup.string())),
             topics: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.string()) : Yup.string())),
           }),
-
-        //   validate,
 
           onSubmit: values => {
             alert(JSON.stringify(values, null, 2));
             alert("Form submitted");
             console.log('submitting', values); 
             axios.post(baseURL + '/api/mytools/add', values)
+            // .catch((error) => {
+            //     alert("Check form, fix and submit again");
+            // })
+
             }
         });
 
@@ -139,58 +124,127 @@ var baseURL = require('./../../BaseURL').getURL();
 
                                 {console.log("description:" + formik.values.description)}
 
+                                {/* THIS IS WHAT WORKS FOR SELECTION FOR CATEGORY 
                                   <Form.Group className="pb-2">
+                                    <Form.Label className="Gray800-14px">Category</Form.Label>
+                                    <Form.Text className="Gray700-13px">
+                                        Select from existing or enter a new one.
+                                    </Form.Text>
+                                    <Form.Control id="categories.category" name="categories.category" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.categories.category} onBlur={formik.handleBlur}/>
+                                    <Typeahead
+  
+                                        id="categories.category"
+                                        labelKey="categories.category"
+                                        allowNew
+                                        multiple
+                                        options={props.combinedCategories}
+
+                                        onChange={(selected) => {
+                                            console.log("selected category: " + selected);
+                                            formik.values.categories.category = selected[0];
+                                        }}
+
+                                    />
+                                    {formik.touched.categories.category && formik.errors.categories.category ? <div className="ErrorMessages">{formik.errors.categories.category}</div> : null}
+                                </Form.Group>    */}
+
+                                
+                                {/* TRY TO GET THIS TO WORK FOR SELECTION AND NEW FOR CATEGORY */}
+                                <Form.Group className="pb-2">
                                     <Form.Label className="Gray800-14px">Category</Form.Label>
                                     <Form.Text className="Gray700-13px">
                                         Select from existing or enter a new one.
                                     </Form.Text>
                                     {/* <Form.Control id="categories.category" name="categories.category" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.categories.category} onBlur={formik.handleBlur}/> */}
                                     <Typeahead
-                                        // clearButton
-                                        labelKey="categories.category"
+  
+                                        id="categories.category"
+                                        labelKey="category"
                                         allowNew
                                         multiple
                                         options={props.combinedCategories}
 
-                                        // onChange={(selected) => {
-                                        //     // formik.values.license = selected;
-                                        //     console.log("selected category: " + selected);
-                                        //     formik.values.categories.category = selected;
-                                        //     formik.handleChange()
-                                        // }}
+                                        onChange = {(selected) => {
+                                            var tempSelected = [];
+                                            
+                                            selected.map((selectedItem) => {
+                                                selectedItem.customOption == true ? tempSelected.push(selectedItem.category) : tempSelected.push(selectedItem);
+                                                console.log(selectedItem);
+                                                
+                                            } )
+                                           
+                                            formik.values.categories.category = tempSelected[0]; 
+                                        }} 
 
                                     />
-                                </Form.Group>   
+                                </Form.Group> 
+                                
+
 
                                 {console.log("cat: category:" + formik.values.categories.category)}
 
+{/*                                 THIS IS WHAT WORKS FOR SELECTION FOR LANGAUGES
                                 <Form.Group className="pb-2">
                                     <Form.Label className="Gray800-14px">Programming language</Form.Label>
                                     <Form.Text className="Gray700-13px">
                                         Select from existing or enter a new one. As many as you like.
                                     </Form.Text>
-                                    {/* <Form.Control id="categories.programmingLanguage" name="categories.programmingLanguage" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.categories.programmingLanguage} onBlur={formik.handleBlur} /> */}
-                                    <Typeahead
+                                     <Typeahead
                                         // clearButton
+                                        id="categories.programmingLanguage"
                                         labelKey="categories.programmingLanguage"
                                         allowNew
                                         multiple
                                         options={props.combinedLanguages}
-                                        // value={formik.values.categories.programmingLanguage}
-                                        // value = {selected}
-                                        // onChange={formik.handleChange}
 
-                                        onChange={(selected) => {
-                                            // formik.values.license = selected;
-                                            console.log("selected language: " + selected);
+                                        onChange = {(selected) => {
+                                            console.log("selected language: " + JSON.stringify(selected));
                                             formik.values.categories.programmingLanguage = selected;
-                                        }}
 
-                                        // onBlur={formik.handleBlur}
+                                            
+                                        }}
                                     />
-                                </Form.Group> 
+                                </Form.Group>  */}
+
+
+
+                                {/* TRY TO GET THIS TO WORK FOR SELECTION AND NEW FOR LANGAUGES */}
+                                <Form.Group className="pb-2">
+                                    <Form.Label className="Gray800-14px">Programming language</Form.Label>
+                                    <Form.Text className="Gray700-13px">
+                                        Select from existing or enter a new one. As many as you like.
+                                    </Form.Text>
+                                     <Typeahead
+                                        // clearButton
+                                        id="categories.programmingLanguage"
+                                        labelKey="programmingLanguage"
+                                        allowNew
+                                        multiple
+                                        options={props.combinedLanguages}
+
+                                        onChange = {(selected) => {
+                                            var tempSelected = [];
+                                            
+                                            selected.map((selectedItem) => {
+                                                console.log('tempSelected' + tempSelected);
+                                                console.log("selectedItem is: " + JSON.stringify(selectedItem));
+                                                console.log("selected language: " + JSON.stringify(selectedItem.customOption));
+                                                console.log("selected language: " + JSON.stringify(selectedItem.programmingLanguage));
+                                                selectedItem.customOption == true ? tempSelected.push(selectedItem.programmingLanguage) : tempSelected.push(selectedItem);
+                                                
+                                            } )
+                                           
+                                            formik.values.categories.programmingLanguage = tempSelected; 
+                                        }} 
+
+                                    />
+                                </Form.Group>  
+
+                                
+
                                 {console.log("cat: programmingLanguage:" + formik.values.categories.programmingLanguage)}
-                                {console.log("length of programmingLanguage:" + formik.values.categories.programmingLanguage.length)}
+                                {console.log("type: cat: programmingLanguage:" + typeof(formik.values.categories.programmingLanguage))}
+                            
 
                                 {formik.values.categories.programmingLanguage.length <= 0 || formik.values.categories.programmingLanguage == "Code-free"  ? '' :
                                     <Form.Group className="pb-2">
@@ -204,39 +258,86 @@ var baseURL = require('./../../BaseURL').getURL();
 
                                 {console.log("cat: programmingLanguageVersion:" + formik.values.categories.programmingLanguageVersion)}
 
+                                {/* THIS IS WHAT WORKS FOR SELECTION FOR LICENSE
                                   <Form.Group className="pb-2">
                                     <Form.Label className="Gray800-14px">License</Form.Label>
                                     <Form.Text className="Gray700-13px">
                                     Select from existing or enter a new one 
                                     </Form.Text>
-                                    {/* <Form.Control id="license" name="license" type="text" className="SmallFormInput AddFormInput" onChange={formik.handleChange} value={formik.values.license} onBlur={formik.handleBlur}/> */}
-                                    {/* <div className="SmallFormInput AddFormInput" > */}
+                                    <Form.Control id="license" name="license" type="text" className="SmallFormInput AddFormInput" onChange={formik.handleChange} value={formik.values.license} onBlur={formik.handleBlur}/>
                                     <Typeahead
-                                        // clearButton
                                         id="license"
-                                        // name="license"
-                                        // type="text"
                                         labelKey="license"
                                         allowNew
                                         multiple
                                         options={props.combinedLicenses}
-                                        // onChange={formik.handleChange}
                                         className="SmallFormInput"  
                                         
                                         onChange={(selected) => {
-                                            // formik.values.license = selected;
                                             console.log("selected license: " + selected);
-                                            formik.values.license = selected;
-                                            // formik.handleChange()
+                                            formik.values.license = selected[0];
                                         }}
 
                                     />
-                                    {/* </div> */}
-                                </Form.Group>
+                                </Form.Group> */}
 
+                                
+                                {/* TRY TO GET THIS TO WORK FOR SELECTION AND NEW FOR LICENSE */}
+                                <Form.Group className="pb-2">
+                                    <Form.Label className="Gray800-14px">License</Form.Label>
+                                    <Form.Text className="Gray700-13px">
+                                    Select from existing or enter a new one 
+                                    </Form.Text>
+                                    {/* <Form.Control id="license" name="license" type="text" className="SmallFormInput AddFormInput" onChange={formik.handleChange} value={formik.values.license} onBlur={formik.handleBlur}/> */}
+                                    <Typeahead
+                                        id="license"
+                                        labelKey="license"
+                                        allowNew
+                                        multiple
+                                        options={props.combinedLicenses}
+                                        className="SmallFormInput"
+
+                                        onChange = {(selected) => {
+                                            var tempSelected = [];
+                                            
+                                            selected.map((selectedItem) => {
+                                                selectedItem.customOption == true ? tempSelected.push(selectedItem.license) : tempSelected.push(selectedItem);
+                                                console.log(selectedItem);
+                                                
+                                            } )
+                                           
+                                            formik.values.license = tempSelected[0]; 
+                                        }} 
+
+                                    />
+                                </Form.Group> 
 
                                 {console.log("license here:" + formik.values.license)}
 
+{/*                                 THIS IS WHAT WORKS FOR SELECTION FOR AUTHORS
+                                <Form.Group className="pb-2">
+                                    <Form.Label className="Gray800-14px">Who created this tool or resource?</Form.Label>
+                                    <Form.Text className="Gray700-13px">
+                                    Add any authors, including yourself if that's the case. Can be their username or website if you don't know the name.
+                                    </Form.Text>
+                                    <Form.Control id="authors" name="authors" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.authors} onBlur={formik.handleBlur}/>
+                                    <Typeahead
+                                        id="authors"
+                                        labelKey="authors"
+                                        allowNew
+                                        multiple
+                                        options={props.combinedUsers}
+
+                                        onChange={(selected) => {
+                                           
+                                            console.log("selected author: " + selected);
+                                            formik.values.authors = selected;
+                                        }}
+                                    />
+                                </Form.Group> */}
+
+
+                                {/* TRY TO GET THIS TO WORK FOR SELECTION AND NEW FOR AUTHORS */}
                                 <Form.Group className="pb-2">
                                     <Form.Label className="Gray800-14px">Who created this tool or resource?</Form.Label>
                                     <Form.Text className="Gray700-13px">
@@ -244,23 +345,58 @@ var baseURL = require('./../../BaseURL').getURL();
                                     </Form.Text>
                                     {/* <Form.Control id="authors" name="authors" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.authors} onBlur={formik.handleBlur}/> */}
                                     <Typeahead
-                                        // clearButton
+                                        id="authors"
                                         labelKey="authors"
                                         allowNew
                                         multiple
                                         options={props.combinedUsers}
 
-                                        // onChange={(selected) => {
-                                        //     // formik.values.license = selected;
-                                        //     console.log("selected category: " + selected);
-                                        //     formik.values.authors = selected;
-                                        //     formik.handleChange()
-                                        // }}
+                                        onChange = {(selected) => {
+                                            var tempSelected = [];
+                                            
+                                            selected.map((selectedItem) => {
+                                                console.log('tempSelected' + tempSelected);
+                                                console.log("selectedItem is: " + JSON.stringify(selectedItem));
+                                                console.log("selected language: " + JSON.stringify(selectedItem.customOption));
+                                                console.log("selected language: " + JSON.stringify(selectedItem.authors));
+                                                selectedItem.customOption == true ? tempSelected.push(selectedItem.authors) : tempSelected.push(selectedItem);
+                                                
+                                            } )
+                                           
+                                            formik.values.authors = tempSelected; 
+                                        }} 
+
                                     />
-                                </Form.Group>
+                                </Form.Group> 
+
+
+
                                 {console.log("props.combinedUsers: " + props.combinedUsers)}
                                 {console.log("authors:" + formik.values.authors)}
 
+
+                                {/* THIS IS WHAT WORKS FOR SELECTION FOR FEATURES
+                                <Form.Group className="pb-2">
+                                    <Form.Label className="Gray800-14px">Features</Form.Label>
+                                    <Form.Text className="Gray700-13px">
+                                    Keywords that help people identify what this resource does. As many as you like. For instance: data analysis, random forest
+                                    </Form.Text>
+                                    <Form.Control id="tags.features" name="tags.features" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.tags.features} onBlur={formik.handleBlur}/>
+                                    <Typeahead
+                                        id="tags.features"
+                                        labelKey="tags.features"
+                                        allowNew
+                                        multiple
+                                        options={props.combinedFeatures}
+
+                                        onChange={(selected) => {
+                                            console.log("selected features: " + selected);
+                                            formik.values.tags.features = selected;
+                                        }}
+                                    />
+                                </Form.Group> */}
+
+                                {/* TRY TO GET THIS TO WORK FOR SELECTION AND NEW FOR FEATURES */}
                                 <Form.Group className="pb-2">
                                     <Form.Label className="Gray800-14px">Features</Form.Label>
                                     <Form.Text className="Gray700-13px">
@@ -268,66 +404,94 @@ var baseURL = require('./../../BaseURL').getURL();
                                     </Form.Text>
                                     {/* <Form.Control id="tags.features" name="tags.features" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.tags.features} onBlur={formik.handleBlur}/> */}
                                     <Typeahead
-                                        // clearButton
-                                        labelKey="tags.features"
+                                        id="tags.features"
+                                        labelKey="features"
                                         allowNew
                                         multiple
                                         options={props.combinedFeatures}
 
-                                        onChange={(selected) => {
-                                            // formik.values.license = selected;
-                                            console.log("selected features: " + selected);
-                                            formik.values.tags.features = selected;
-                                        }}
+                                        onChange = {(selected) => {
+                                            var tempSelected = [];
+                                            
+                                            selected.map((selectedItem) => {
+                                                console.log('tempSelected' + tempSelected);
+                                                console.log("selectedItem is: " + JSON.stringify(selectedItem));
+                                                console.log("selected language: " + JSON.stringify(selectedItem.customOption));
+                                                console.log("selected language: " + JSON.stringify(selectedItem.features));
+                                                selectedItem.customOption == true ? tempSelected.push(selectedItem.features) : tempSelected.push(selectedItem);
+                                                
+                                            } )
+                                           
+                                            formik.values.tags.features = tempSelected; 
+                                        }} 
+
                                     />
-                                </Form.Group>
+                                </Form.Group>  
                                 
 
                                 {console.log("t: features:" + formik.values.tags.features)}
                                 {console.log("props.combinedFeatures" + props.combinedFeatures)}
 
-
+{/*                                 THIS IS WHAT WORKS FOR SELECTION FOR TOPICS
                                 <Form.Group className="pb-2">
                                     <Form.Label className="Gray800-14px">Topics</Form.Label>
                                     <Form.Text className="Gray700-13px">
                                     Keywords that help people identify any related fields. As many as you like. For instance: Biogenomics, Nutrition
                                     </Form.Text>
-                                    {/* <Form.Control id="tags.topics" name="tags.topics" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.tags.topics} onBlur={formik.handleBlur}/> */}
-                                
-                                    {/* {props.data.length <= 0 ? '' : props.data.map((dat) => { 
-                                    return( */}
+                                    <Form.Control id="tags.topics" name="tags.topics" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.tags.topics} onBlur={formik.handleBlur}/>
+                            
                                     <Typeahead
-                                        // clearButton
+                                        id="tags.topics"
                                         labelKey="tags.topics"
                                         allowNew
                                         multiple
                                         options={props.combinedTopic}
 
                                         onChange={(selected) => {
-                                            // formik.values.license = selected;
                                             console.log("selected topics: " + selected);
                                             formik.values.tags.topics = selected;
-                                            // formik.handleChange()
                                         }}
                                         
                                     />
-                                       {/* )
-                                     })}   */}
-                                </Form.Group>
+                                </Form.Group> */}
 
-                                {console.log("t: topics:" + formik.values.topics)}
+
+                                {/* TRY TO GET THIS TO WORK FOR SELECTION AND NEW FOR TOPICS */}
+                                <Form.Group className="pb-2">
+                                    <Form.Label className="Gray800-14px">Topics</Form.Label>
+                                    <Form.Text className="Gray700-13px">
+                                    Keywords that help people identify any related fields. As many as you like. For instance: Biogenomics, Nutrition
+                                    </Form.Text>
+                                    {/* <Form.Control id="tags.topics" name="tags.topics" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.tags.topics} onBlur={formik.handleBlur}/> */}
+                            
+                                    <Typeahead
+                                        id="tags.topics"
+                                        labelKey="topics"
+                                        allowNew
+                                        multiple
+                                        options={props.combinedTopic}
+
+                                        onChange = {(selected) => {
+                                            var tempSelected = [];
+                                            
+                                            selected.map((selectedItem) => {
+                                                console.log('tempSelected' + tempSelected);
+                                                console.log("selectedItem is: " + JSON.stringify(selectedItem));
+                                                console.log("selected language: " + JSON.stringify(selectedItem.customOption));
+                                                console.log("selected language: " + JSON.stringify(selectedItem.topics));
+                                                selectedItem.customOption == true ? tempSelected.push(selectedItem.topics) : tempSelected.push(selectedItem);
+                                                
+                                            } )
+                                           
+                                            formik.values.tags.topics = tempSelected; 
+                                        }} 
+
+                                    />
+                                </Form.Group>  
+
+                                {console.log("t: topics:" + formik.values.tags.topics)}
                                 {console.log("props.combinedTopic" + props.combinedTopic)}
                                 </div>
-
-                                {/* <Typeahead
-                                    clearButton
-                                    defaultSelected={options.slice(0, 5)}
-                                    labelKey="tags.topics"
-                                    multiple
-                                    options={options}
-                                    placeholder="Choose some topics..."
-                                /> */}
-
 
                                 <Row className="mt-3">
                                     <Col sm={11} lg={11}>

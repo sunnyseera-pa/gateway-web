@@ -24,6 +24,7 @@ class EditToolPage extends React.Component {
         combinedLanguages:[],
         combinedCategories:[],
         combinedLicenses:[],
+        combinedUsers:[],
         isLoading: true
     };
 
@@ -35,6 +36,7 @@ class EditToolPage extends React.Component {
     this.doGetLanguagesCall();
     this.doGetCategoriesCall();
     this.doGetLicensesCall();
+    this.doGetUsersCall();
   }
 
 
@@ -109,8 +111,17 @@ doGetLicensesCall(){
   });
 }
 
+doGetUsersCall(){
+  axios.get(baseURL+'/api/getAllUsers/tool')
+  .then((res) =>{
+      this.setState({combinedUsers: res.data.data});
+      this.setState({isLoading: false}); 
+      console.log("test7: " + JSON.stringify(res.data.data));
+  });
+}
+
     render() {
-        const {data, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, isLoading } = this.state;
+        const {data, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, combinedUsers, isLoading } = this.state;
     
         if (isLoading) {
           return <p>Loading ...</p>;
@@ -119,7 +130,7 @@ doGetLicensesCall(){
         return (
             <div>
             <Header />
-            <EditToolForm data={data} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} />
+            <EditToolForm data={data} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} />
             </div>
         );
     } 

@@ -102,7 +102,7 @@ class AddToolPage extends React.Component {
       }
 
     doGetUsersCall(){
-        axios.get(baseURL+'/api/getAllUsers/person')
+        axios.get(baseURL+'/api/getAllUsers/tool')
         .then((res) =>{
             this.setState({combinedUsers: res.data.data});
             this.setState({isLoading: false}); 
