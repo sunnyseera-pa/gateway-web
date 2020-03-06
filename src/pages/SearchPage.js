@@ -82,9 +82,10 @@ class SearchPage extends React.Component {
     } 
 
     doSearchCall(searchString, typeString) {
+        this.setState({ isLoading: true });
         axios.get(baseURL + '/api/search?search=' + searchString + '&type=' + typeString)
             .then((res) => {
-                this.setState({ data: res.data.data });
+                this.setState({ data: res.data.data, isLoading: false });
             });
     }
 
@@ -98,7 +99,11 @@ class SearchPage extends React.Component {
 
 
     render() {
-        const { searchString, typeString, data, userState } = this.state;
+        const { searchString, typeString, data, userState, isLoading } = this.state;
+        
+        if (isLoading) {
+            return <p>Loading ...</p>;
+          }
 
         return (
 

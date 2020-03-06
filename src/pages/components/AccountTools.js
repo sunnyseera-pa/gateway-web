@@ -14,35 +14,18 @@ var baseURL = require('./../../BaseURL').getURL();
 
 class AccountTools extends React.Component{
 
-    // constructor(props) {
-    //     super(props)
-    //     // this.state.data = props.data;
-    //   }
+     constructor(props) {
+         super(props)
+         this.state.userState = props.userState;
+       }
     
-    //   // initialize our state
-    //   state = {
-    //     data: [],
-    //     isLoading: true 
-    //   };
-
-    // componentDidMount() {
-    //     this.doSearchCall();
-    // }
-
-    // doSearchCall() {
-    //     axios.get(baseURL+'/api/search?search=&type=tool')
-    //     .then((res) => {
-    //         this.setState({ data: res.data.data });
-    //         this.isLoading = false;
-    //     });
-    // }
+       // initialize our state
+       state = {
+         userState: []
+       };
 
     render(){
-        // const {data, isLoading} = this.state;
-
-        // if (isLoading) {
-        //     return <p>Loading ...</p>;
-        // }
+         const { userState } = this.state;
 
         return(
             <div>
@@ -64,7 +47,7 @@ class AccountTools extends React.Component{
 
                     <ToolsHeader />
 
-                    <PendingTools />
+                    <PendingTools userState={userState} /> 
 
                     <Row className="mt-3">
                         <Col>
@@ -74,17 +57,7 @@ class AccountTools extends React.Component{
                     
                     <ToolsHeader />
 
-                    <ActiveTool /> 
-
-                    <Row className="mt-3">
-                        <Col>
-                            <span className="Black-16px ml-2">Archived</span>
-                        </Col>
-                    </Row>
-
-                    <ToolsHeader />
-
-                    <ArchivedTool />
+                    <ActiveTool userState={userState} /> 
             </div>
         );
     }

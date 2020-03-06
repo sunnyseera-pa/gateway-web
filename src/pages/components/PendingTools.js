@@ -7,60 +7,95 @@ import SearchNotFound from '../components/SearchNotFound';
 
 var baseURL = require('./../../BaseURL').getURL();
 
-class PendingTools extends React.Component{
+class PendingTools extends React.Component {
     constructor(props) {
         super(props)
-        // this.state.data = props.data;
-      }
+        this.state.userState = props.userState;
+    }
 
     // initialize our state
     state = {
         data: [],
-        // isLoading: true 
-      };
-      
-      componentDidMount() {
+        userState: [],
+        isLoading: true
+    };
+
+    componentDidMount() {
         this.doSearchCall();
     }
 
     doSearchCall() {
-        axios.get(baseURL+'/api/search?search=&type=tool')
-        .then((res) => {
-            this.setState({ data: res.data.data });
-            // this.isLoading = false;
-        });
-
+        if (this.state.userState[0].role === "Admin") {
+            axios.get(baseURL + '/api/accountsearchadmin?type=tool&toolState=review')
+                .then((res) => {
+                    this.setState({ data: res.data.data, isLoading: false });
+                });
+        }
+        else {
+            axios.get(baseURL + '/api/accountsearch?type=tool&id=' + this.state.userState[0].id + '&toolState=review')
+                .then((res) => {
+                    this.setState({ data: res.data.data, isLoading: false });
+                });
+        }
     }
 
-    render(){
+    rejectTool = (id) => {
+        axios.delete(baseURL + '/api/accountdelete', {
+            data: {
+                id: id
+            },
+        })
+            .then((res) => {
+                window.location.href = '/account?tab=tools&toolRejected=true';
+            });
+    }
 
-        const {data, isLoading} = this.state;
+    approveTool = (id) => {
+        axios.post(baseURL + '/api/accountstatusupdate', {
+            id: id,
+            activeflag: "active"
+        })
+            .then((res) => {
+                window.location.href = '/account?tab=tools&toolApproved=true';
+            });
+    }
 
-        return(
-        <Row className="mt-2">
-            <Col sm={1} lg={1} />
-            <Col sm={10} lg={10}>
-            {data.length <= 0 ? <SearchNotFound />: data.map((dat) => {
-                return(<div className="Rectangle">
-                     <Row>
-                        <Col xs={4} lg={4} className="ml-2 mt-2 Gray800-14px-bold"> {dat.name} </Col>
-                        <Col xs={3} lg={3} className="ml-2 mt-2 Gray800-14px-bold"> ToolAuthor </Col>
-                        <Col xs={4} lg={4} className="ml-5">
-                            <Button variant='white' href={'/edittool/' + dat.id} className="AccountButtons mr-2">
-                                Edit
+
+    render() {
+        const { data, isLoading, userState } = this.state;
+
+        if (isLoading) {
+            return <p>Loading ...</p>;
+        }
+        return (
+            <Row>
+                <Col>
+                    {data.length <= 0 ? <SearchNotFound /> : data.map((dat) => {
+                        return (<a /* href={'/tool/'+dat.id} */>
+                        <div className="Rectangle mt-1">
+                            <Row>
+                                <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"> {dat.name} </Col>
+                                <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold"> Author </Col>
+                                <Col sm={12} lg={5} className="pl-5 toolsButtons">
+                                    {userState[0].role === 'Admin' ?
+                                        <div>
+                                            <Button variant='white' href={'/edittool/' + dat.id} className="AccountButtons mr-2">
+                                                Edit
                             </Button>
-                            <Button variant='white' className="AccountButtons mr-2">
-                                Reject
+                                            <Button variant='white' onClick={() => this.rejectTool(dat.id)} className="AccountButtons mr-2">
+                                                Reject
                             </Button>
-                            <Button variant='white' className="AccountButtons ">
-                                Approve
+                                            <Button variant='white' onClick={() => this.approveTool(dat.id)} className="AccountButtons ">
+                                                Approve
                             </Button>
-                        </Col>
-                    </Row>
-                </div>)
-                })}
-            </Col>
-        </Row>
+                                        </div> : ""}
+                                </Col>
+                            </Row>
+                        </div>
+                        </a>)
+                    })}
+                </Col>
+            </Row>
         );
     }
 }

@@ -29,7 +29,7 @@ var baseURL = require('./../../BaseURL').getURL();
                 programmingLanguageVersion: ''
             },
             license: '',
-            authors: [],
+            authors: [props.userState[0].id],
             tags: {
                 features: [],
                 topics: [],
@@ -71,9 +71,12 @@ var baseURL = require('./../../BaseURL').getURL();
             //     alert("Check form, fix and submit again");
             // })
 
+            .then((res) => {
+                window.location.href = window.location.search+'/tool/'+res.data.id+'/?toolAdded=true';
+            });
             }
         });
-
+        
         return (
             
             <div>

@@ -19,6 +19,8 @@ import Creators from '../pages/components/Creators';
 // import AddProjectPage from './AddProjectPage';
 import AddToolPage from './AddToolPage';
 import ToolInfoReviewForm from './components/ToolInfoReviewForm';
+import queryString from 'query-string';
+import Alert from 'react-bootstrap/Alert'
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -37,7 +39,8 @@ class ToolDetail extends Component {
       role: "Reader",
       id: null,
       name: null
-    }]
+    }],
+    toolAdded: false
   };
 
   constructor(props) {
@@ -47,6 +50,10 @@ class ToolDetail extends Component {
 
   // on loading of tool detail page
   componentDidMount() {
+    if (!!window.location.search) {
+      var values = queryString.parse(window.location.search);
+      this.setState({ toolAdded: values.toolAdded });
+  }
     this.getDataSearchFromDb();
   }
 
@@ -63,7 +70,6 @@ class ToolDetail extends Component {
     this.setState({ isLoading: true });
     axios.get(baseURL + '/api/tool/' + this.props.match.params.toolID)
       .then((res) => {
-        debugger
         this.setState({
           data: res.data.data[0],
           isLoading: false
@@ -74,7 +80,7 @@ class ToolDetail extends Component {
   doSearch = (e) => { //fires on enter on searchbar
     if (e.key === 'Enter') {
       if (!!this.state.searchString) {
-        window.location.href = window.location.search + "/search?search=" + this.state.searchString + '&type=all';
+        window.location.href = "/search?search=" + this.state.searchString + '&type=all';
       }
     }
   }
@@ -84,7 +90,7 @@ class ToolDetail extends Component {
   }
 
   render() {
-    const { searchString, data, isLoading, userState } = this.state;
+    const { searchString, data, isLoading, userState, toolAdded } = this.state;
 
     if (typeof data.datasetids === 'undefined') {
       data.datasetids = [];
@@ -97,11 +103,31 @@ class ToolDetail extends Component {
     if (isLoading) {
       return <p>Loading ...</p>;
     }
-    debugger
+
     return (
       <div>
         <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
         <Container className="mb-5">
+
+          {toolAdded ? 
+          <Row className="">
+          <Col sm={1} lg={1} />
+          <Col sm={10} lg={10}>
+          <Alert variant="success" className="mt-3">Done! Someone will review your tool and let you know when it goes live</Alert> 
+          </Col>
+            <Col sm={1} lg={10} />
+          </Row>
+          : ""}
+
+          {data.activeflag === "review" ? 
+          <Row className="">
+          <Col sm={1} lg={1} />
+          <Col sm={10} lg={10}>
+          <Alert variant="warning" className="mt-3">Your tool is pending review. Only you can see this page.</Alert> 
+          </Col>
+            <Col sm={1} lg={10} />
+          </Row>
+          : ""}
 
           {/* <AddProjectPage /> */}
           {/* <AddToolPage /> */}

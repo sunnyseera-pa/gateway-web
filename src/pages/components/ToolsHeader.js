@@ -10,9 +10,9 @@ class ToolsHeader extends React.Component{
             <Col lg={12}>
                 <div className="ToolsHeader">
                      <Row>
-                        <Col xs={4} lg={4} className="pl-3 pt-2 Gray800-14px-bold"> Name </Col>
-                        <Col xs={4} lg={4} className="pl-3 pt-2 Gray800-14px-bold"> Author </Col>
-                        <Col xs={4} lg={4}></Col>
+                        <Col xs={4} lg={5} className="pl-4 pt-2 Gray800-14px-bold">Name</Col>
+                        <Col xs={4} lg={2} className="pl-1 pt-2 Gray800-14px-bold">Author</Col>
+                        <Col xs={4} lg={5}></Col>
                     </Row>
                 </div>
             </Col>
