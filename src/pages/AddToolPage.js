@@ -53,14 +53,7 @@ class AddToolPage extends React.Component {
     //   };
 
     doGetTopicsCall() {
-        // this.setState({ isLoading: true });
-        // axios.get(baseURL+'/api/search?search=&type=tool')
-        // .then((res) => {
-        //     this.setState({ data: res.data.data });
-        //     this.setState({isLoading: false}); 
-        // });
-
-        axios.get(baseURL+'/api/getAllTopics/tool')
+     axios.get(baseURL+'/api/getAllTopics/tool')
         .then((res) =>{
             this.setState({combinedTopic: res.data.data});
             this.setState({isLoading: false}); 

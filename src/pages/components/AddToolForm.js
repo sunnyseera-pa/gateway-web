@@ -46,6 +46,7 @@ var baseURL = require('./../../BaseURL').getURL();
               .required('This cannot be empty'), 
             categories: Yup.object().shape({
                             category: Yup.string(),
+                            // category: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.string()) : Yup.string())),
                                         // .required('This cannot be empty'),
                                         // .max(2, 'Only pick 2'),
                             // category: Yup.lazy(val => (Array.isArray(val) ? Yup.array().max(1,'Max of 1').of(Yup.string()) : Yup.string())),
@@ -177,8 +178,7 @@ var baseURL = require('./../../BaseURL').getURL();
                                             } )
                                            
                                             formik.values.categories.category = tempSelected[0]; 
-                                        }} 
-
+                                        }}    
                                     />
                                 </Form.Group> 
                                 
