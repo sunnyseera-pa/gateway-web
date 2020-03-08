@@ -25,7 +25,7 @@ class SearchSummary extends React.Component{
                                 <Col>
                                     <div className="Rectangle">
                                         <div className="Gray800-14px" style={{textAlign: 'center'}}>
-                                            Showing {data.map(summ => summ[1]+' '+summ[0]+(summ[0] > 1 ? 's' : '')).join(", ")} ({total} total)
+                                            Showing {data.map(summ => summ[1]+' '+summ[0]+(summ[1] > 1 ? 's' : '')).join(", ")} ({total} total)
                                         </div>
                                     </div>
                                 </Col>
