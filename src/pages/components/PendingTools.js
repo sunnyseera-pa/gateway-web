@@ -70,7 +70,7 @@ class PendingTools extends React.Component {
         return (
             <Row>
                 <Col>
-                    {data.length <= 0 ? <NotFound /> : data.map((dat) => {
+                    {data.length <= 0 ? <NotFound word='tools' /> : data.map((dat) => {
                         return (<a /* href={'/tool/'+dat.id} */>
                         <div className="Rectangle mt-1">
                             <Row>

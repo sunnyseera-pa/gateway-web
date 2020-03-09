@@ -60,7 +60,7 @@ const YourAccountForm = (props) => {
                             </Form.Group>
 
                             <Form.Group className="pb-2">
-                                <Form.Label className="Gray800-14px">Surname</Form.Label>
+                                <Form.Label className="Gray800-14px">Last Name</Form.Label>
                                 <Form.Control id="name" name="name" type="text" className="AddFormInput" value={formik.values.lastname} disabled />
                             </Form.Group>
 

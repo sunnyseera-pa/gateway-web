@@ -41,19 +41,23 @@ class Tool extends React.Component {
 
     render() {
         const { data, isLoading } = this.state;
-/*         const ratingsTotal = (!!data.ratings && data.ratings.length > 0) ? data.ratings.reduce((a, b) => a + b, 0) : '';
-        const ratingsCount = (!!data.ratings ? data.ratings.length : 0);
-        const avgRating = (!!data.ratings && data.ratings.length > 0) ? (ratingsTotal / ratingsCount) : ''; */
+        /*         const ratingsTotal = (!!data.ratings && data.ratings.length > 0) ? data.ratings.reduce((a, b) => a + b, 0) : '';
+                const ratingsCount = (!!data.ratings ? data.ratings.length : 0);
+                const avgRating = (!!data.ratings && data.ratings.length > 0) ? (ratingsTotal / ratingsCount) : ''; */
 
+        if (isLoading) {
+            return <p>Loading ...</p>;
+        }
+        
         var ratingsTotal = 0;
-    if (data.reviews && data.reviews.length > 0) {
-        data.reviews.forEach(review => {
-            ratingsTotal = ratingsTotal+review.rating;
-        });
-    }
-    
-    const ratingsCount = (!!data.reviews ? data.reviews.length : 0);
-    const avgRating = (!!data.reviews && data.reviews.length > 0) ? (ratingsTotal / ratingsCount) : '';
+        if (data.reviews && data.reviews.length > 0) {
+            data.reviews.forEach(review => {
+                ratingsTotal = ratingsTotal + review.rating;
+            });
+        }
+
+        const ratingsCount = (!!data.reviews ? data.reviews.length : 0);
+        const avgRating = (!!data.reviews && data.reviews.length > 0) ? (ratingsTotal / ratingsCount) : '';
 
 
         if (typeof data.datasetids === 'undefined') {
@@ -66,10 +70,6 @@ class Tool extends React.Component {
 
         if (typeof data.authors === 'undefined') {
             data.authors = [];
-        }
-
-        if (isLoading) {
-            return <p>Loading ...</p>;
         }
 
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -87,23 +87,13 @@ class Tool extends React.Component {
                                 </Col>
                                 <Col xs={10} lg={8}>
                                     <p>
-                                        <span className="Black-16px">{data.name}</span>
+                                        <span className="Black-16px">{data.name.substr(0, 75) + (data.name.length > 75 ? '...' : '')}</span>
                                         <span className="Gray500-13px">
-   {/*                                          <span className="reviewTitleGap">·</span>
-                                            {!!ratingsTotal && ratingsCount == 1 ? ratingsCount + ' review' : ratingsCount + ' reviews'}
-
-
-
-                                            <span className="reviewTitleGap">·</span>
-                                            {avgRating == 0 ? 'No average rating' : avgRating + ' average'} */}
-
-                            <span className="Gray500-13px ml-3">
-                                {!!ratingsTotal && ratingsCount == 1 ? ratingsCount + ' review' : ratingsCount +' reviews'}
-                            <span className="reviewTitleGap">·</span>
-                                {avgRating == 0 ? 'No average rating' : (Math.round(avgRating * 10) / 10) + ' average' }
-
-                            </span>
-
+                                            <span className="Gray500-13px ml-3">
+                                                {!!ratingsTotal && ratingsCount == 1 ? ratingsCount + ' review' : ratingsCount + ' reviews'}
+                                                <span className="reviewTitleGap">·</span>
+                                                {avgRating == 0 ? 'No average rating' : (Math.round(avgRating * 10) / 10) + ' average'}
+                                            </span>
                                         </span>
                                         <br />
                                         <span className="Gray800-14px"> 
@@ -114,49 +104,8 @@ class Tool extends React.Component {
                                                 })}
                                         </span>
                                     </p>
-
-                                    <p className="Gray800-14px">
-                                        1 dataset
-                                        <span className="Purple-14px ml-2">
-                                            NIHR HIC Locality : Critical Care
-                                        </span>
-                                    </p>
-                                    {!data.projectids ? '' :
-                                        <p className="Gray800-14px">
-                                            <span className="mr-1">
-                                                {!data.projectids.length ? '' : data.projectids.length}
-
-                                            </span>
-                                            <span>
-                                                {data.projectids === 1 ? "projects" : "project"}
-                                            </span>
-
-                                            {/*  <span className="Purple-14px ml-2">
-                                            Novel somatic alterations underlie Chinese papillary thyroid carcinoma, Human THO mai…
-                                        </span> */}
-
-                                            {/* DISPLAYS PROJECT IDS ATTACHED TO TOOL */}
-                                            <span className="Purple-14px ml-2">
-                                                {!data.projectids || data.projectids.length <= 0 ? 'NO SEARCH RESULT' : data.projectids.map((projectid) => {
-                                                    if (!!projectid) {
-                                                        return <span className="Purple-14px ml-1"> {projectid} </span>
-                                                    }
-                                                })}
-                                            </span>
-
-
-                                            {/* <span className="Purple-14px ml-2">
-                                            { data.projectids.length <= 0 ? 'NO SEARCH RESULT' :  data.projectids.map((projectid) => {
-                                                if(!!projectid){
-                                                    return <span className="Purple-14px ml-1"> {data.name} </span>
-                                                }
-                                            })}
-                                        </span> */}
-                                        </p>
-                                    }
-
                                 </Col>
-                                <Col xs={{ span: 12, order: 1 }} lg={{ span: 3, order: 0 }} className="dateHolder mt-2">
+                                <Col xs={{ span: 12, order: 3 }} lg={{ span: 3, order: 1 }} className="dateHolder mt-2">
                                     <span className="Gray700-13px pr-1">
                                         Updated
                                     </span>
@@ -165,7 +114,38 @@ class Tool extends React.Component {
                                     </span>
                                 </Col>
 
-                                <Col xs={{ span: 12, order: 0 }} lg={{ span: 12, order: 1 }}>
+                                <Col xs={{ span: 2, order: 0 }} lg={{ span: 1, order: 2 }}></Col>
+                                <Col xs={{ span: 10, order: 0 }} lg={{ span: 11, order: 2 }} >
+                                    <p className="Gray800-14px">
+                                        {!data.projectids.length ? '' :
+                                            <span className="mr-1">
+                                                <b>
+                                                    {!data.projectids.length ? '' : data.projectids.length}
+                                                    {data.projectids.length === 1 ? " project" : " projects"}
+                                                </b>
+                                            </span>
+                                        }
+
+                                        {!data.datasetids.length ? '' :
+                                            <span className="mr-1">
+                                                {data.projectids.length ? ', ' : ''}
+                                                <b>
+                                                    {!data.datasetids.length ? '' : data.datasetids.length}
+                                                    {data.datasetids.length === 1 ? " data set" : " data sets"}
+                                                </b>
+                                            </span>
+                                        }
+
+                                        {data.projectids.length || data.datasetids.length ?
+                                            <span className="reviewTitleGap">·</span>
+                                            : ''
+                                        }
+
+                                        {data.description.substr(0, 150) + (data.description.length > 150 ? '...' : '')}
+                                    </p>
+                                </Col>
+
+                                <Col xs={{ span: 12, order: 1 }} lg={{ span: 12, order: 3 }}>
 
                                     {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
                                         return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{feature}</div>

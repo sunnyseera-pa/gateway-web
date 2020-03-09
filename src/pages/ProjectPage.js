@@ -13,6 +13,7 @@ import Col from 'react-bootstrap/Col';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import DataSet from '../pages/components/DataSet';
+import NotFound from './components/NotFound';
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -136,12 +137,12 @@ class ProjectDetail extends Component {
               <div>
                 <Tabs className='TabsBackground Gray700-13px'>
                   <Tab eventKey="Tools" title={'Tools (' + data.toolids.length + ')'}>
-                    {data.toolids.length <= 0 ? <span>Test</span> : data.toolids.map((id) => {
+                    {data.toolids.length <= 0 ? <NotFound word="tools" /> : data.toolids.map((id) => {
                       return <Tool id={id} />
                     })}  
                   </Tab>
                   <Tab eventKey="Data sets" title={'Data sets (' + data.datasetids.length + ')'}>
-                    {data.datasetids.map(id => <DataSet id={id} />)}
+                    {data.datasetids.length <= 0 ? <NotFound word="data sets" /> : data.datasetids.map(id => <DataSet id={id} />)}
                   </Tab>
                 </Tabs>
               </div>

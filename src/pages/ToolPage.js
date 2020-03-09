@@ -207,11 +207,9 @@ class ToolDetail extends Component {
                   </Tab>
                   <Tab eventKey="Data sets" title={'Data sets (' + data.datasetids.length + ')'}>
                   {data.datasetids.length <= 0 ? <NotFound word="data sets" /> : data.datasetids.map(id => <DataSet id={id} />)}
-                    {/* {data.datasetids.map(id => <DataSet id={id} />)} */}
                   </Tab>
                   <Tab eventKey="Projects" title={'Projects (' + data.projectids.length + ')'}>
                   {data.projectids.length <= 0 ? <NotFound word="projects" /> : data.projectids.map(id => <Project id={id} />)}
-                    {/* {data.projectids.map(id => <Project id={id} />)} */}
                   </Tab>
                 </Tabs>
               </div>
