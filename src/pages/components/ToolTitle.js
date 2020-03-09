@@ -70,29 +70,25 @@ class ToolTitle extends Component {
                                 </p>
                             </Col>
                         </Row>
-                        
-                        <Row>
-                            <Col xs={6} md={6} className="mb-3">
 
-                                {!data.categories.category ? '' : <div className="mr-2 Gray800-14px tagBadges">{data.categories.category}</div> }
+                        <Row>
+                            <Col md={12} lg={6} className="mb-3">
+                                {!data.categories.category ? '' : <div className="mr-2 Gray800-14px tagBadges"><a href={'/search?search='+data.categories.category+'&type=all'}>{data.categories.category}</a></div> }
 
                                 {!data.categories.programmingLanguage || data.categories.programmingLanguage <= 0 ? '' : data.categories.programmingLanguage.map((language) => {
-                                    return <div className="mr-2 Gray800-14px tagBadges">{language}</div>
+                                    return <div className="mr-2 Gray800-14px tagBadges"><a href={'/search?search='+language+'&type=all'}>{language}</a></div>
                                 })}
 
-                                {!data.categories.programmingLanguageVersion ? '' : <div className="mr-2 Gray800-14px tagBadges">{data.categories.programmingLanguageVersion}</div> }
-
+                                {!data.categories.programmingLanguageVersion ? '' : <div className="mr-2 Gray800-14px tagBadges"><a href={'/search?search='+data.categories.programmingLanguageVersion+'&type=all'}>{data.categories.programmingLanguageVersion}</a></div> }
                             </Col>
-                            <Col xs={3} md={3} className="mb-3 pl-5">
-                            <span className="Gray500-13px">
-                                {!!ratingsTotal && ratingsCount == 1 ? ratingsCount + ' review' : ratingsCount +' reviews'}
-                            <span className="reviewTitleGap">·</span>
-                                {avgRating == 0 ? 'No average rating' : (Math.round(avgRating * 10) / 10) + ' average' }
-
-                            </span>
-                            </Col>
-                            <Col xs={3} md={3} className="mb-1 pr-5 text-right">
-                                <Rating emptySymbol={<EmptyStarIconSvg />} fullSymbol={<FullStarIconSvg />} placeholderSymbol={<FullStarIconSvg />} placeholderRating={avgRating} />
+                            <Col md={12} lg={6} className="mb-1 pr-3 text-right">
+                                <div className="Gray500-13px">
+                                    {!!ratingsTotal && ratingsCount == 1 ? ratingsCount + ' review' : ratingsCount +' reviews'}
+                                    <span className="reviewTitleGap">·</span>
+                                    {avgRating == 0 ? 'No average rating' : (Math.round(avgRating * 10) / 10) + ' average' }
+                                    <span className="reviewTitleGap">·</span>
+                                    <Rating emptySymbol={<EmptyStarIconSvg />} fullSymbol={<FullStarIconSvg />} placeholderSymbol={<FullStarIconSvg />} placeholderRating={avgRating} />
+                                </div>
                             </Col>
                         </Row>
                     </div>
@@ -107,11 +103,11 @@ class ToolTitle extends Component {
                             <Col xs={12} md={12} className="mb-3">
 
                                 {!data.tags.features || data.tags.features.length <= 0 ? '' :  data.tags.features.map((feature) => {
-                                    return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{feature}</div>
+                                    return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2"><a href={'/search?search='+feature+'&type=all'}>{feature}</a></div>
                                 })} 
 
                                 {!data.tags.topics || data.tags.topics.length <= 0 ? '' :  data.tags.topics.map((topic) => {
-                                    return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{topic}</div>
+                                    return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2"><a href={'/search?search='+topic+'&type=all'}>{topic}</a></div>
                                 })} 
 
                             </Col>
@@ -124,10 +120,11 @@ class ToolTitle extends Component {
                                 </span>
                             </Col> 
                         </Row>
+                        {!data.license ? '' : 
                         <Row>
                             <span className="Gray800-14px ml-3"> License </span>
-                            <span className='Purple-14px ml-2'> Apache License 2.0</span>
-                        </Row>
+                            <span className='Purple-14px ml-2'> {data.license}</span>
+                        </Row> }
                     </div>
                 </Col>
                 <Col sm={1} lg={10}/>
