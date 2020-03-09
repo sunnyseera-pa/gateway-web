@@ -65,7 +65,7 @@ const AddReviewForm = (props) => {
             <Row className="mt-2">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
-                        <Form onSubmit={formik.handleSubmit}>
+                        <Form onSubmit={formik.handleSubmit} autocomplete='off'>
                             <div className="Rectangle">
 
                         <Form.Label className="Gray800-14px">Your score</Form.Label>

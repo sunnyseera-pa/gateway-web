@@ -20,7 +20,7 @@ import Creators from '../pages/components/Creators';
 import AddToolPage from './AddToolPage';
 import ToolInfoReviewForm from './components/ToolInfoReviewForm';
 import queryString from 'query-string';
-import Alert from 'react-bootstrap/Alert'
+import Alert from 'react-bootstrap/Alert';
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -163,32 +163,36 @@ class ToolDetail extends Component {
           <Row className="mt-4">
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
-              <span className="Black500-16px">Authors</span>
+              <span className="Black500-16px">Authors ( {data.authors.length} )</span>
             </Col>
             <Col sm={1} lg={10} />
           </Row>
-
+  
+          {data.authors.map(author => 
           <Row>
           <Col sm={1} lg={1} />
-          {/* <span>{data.authors}</span> */}
           <Col sm={5} lg={5}>
-          {data.authors.length <= 0 ? 'No authors listed' : data.authors.map((author) => (
-            <span>  <Creators data={data} /> </span>
-          ))}
+          
+              <Creators id={author} />
+         
           </Col>
            <Col sm={1} lg={1} />
           </Row>
-
-          {/* <Row>
-            <Col sm={1} lg={1} />
-            <Col sm={5} lg={5}>
-              <Creators data={data} />
-            </Col>
-            <Col sm={5} lg={5}>
-              <Creators data={data} />
-            </Col>
-            <Col sm={1} lg={10} />
-          </Row> */}
+         )}
+       
+       
+       {/* {data.authors.map(author => 
+          <Row>
+          <Col sm={1} lg={1} />
+          <Col sm={5} lg={5}>
+              <Creators id={author} />
+          </Col>
+          <Col sm={5} lg={5}>
+              <Creators id={author} />
+          </Col>
+           <Col sm={1} lg={1} />
+          </Row>
+         )} */}
 
 
           <Row className="mt-3">

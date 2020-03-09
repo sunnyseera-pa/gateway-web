@@ -23,7 +23,7 @@ class Tool extends React.Component {
         }
         else if (props.id) {
             this.state.id = props.id;
-            this.getDataSearchFromDb()
+            this.getDataSearchFromDb();
         }
     }
 
@@ -64,6 +64,10 @@ class Tool extends React.Component {
             data.projectids = [];
         }
 
+        if (typeof data.authors === 'undefined') {
+            data.authors = [];
+        }
+
         if (isLoading) {
             return <p>Loading ...</p>;
         }
@@ -102,7 +106,13 @@ class Tool extends React.Component {
 
                                         </span>
                                         <br />
-                                        <span className="Gray800-14px">Laure Santos</span>
+                                        <span className="Gray800-14px"> Author
+                                                {!data.authors || data.authors.length <= 0 ? 'NO SEARCH RESULT' : data.authors.map((author) => {
+                                                    if (!!author) {
+                                                        return <span className="Purple-14px ml-1"> {author} </span>
+                                                    }
+                                                })}
+                                        </span>
                                     </p>
 
                                     <p className="Gray800-14px">
