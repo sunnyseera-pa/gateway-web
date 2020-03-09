@@ -70,7 +70,7 @@ class Creators extends Component {
                                 </Col>
                                 <Col sm={10} className="text-left "> 
                                     {/* <p className="Black-16px"> {data.authors} </p> */}
-                                    <p className="Black-16px"> {data.firstname} {data.surname} </p>
+                                    <p className="Black-16px"> {data.firstname} {data.lastname} </p>
                                     <p className="Gray700-13px"> {data.company} </p>
                                 </Col>
                                 <Col sm={2} />

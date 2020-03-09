@@ -42,9 +42,9 @@ const AddReviewForm = (props) => {
     //   validate,
 
       onSubmit: values => {
-        alert(JSON.stringify(values, null, 2));
-        alert("Form submitted");
-        console.log('submitting', values); 
+        // alert(JSON.stringify(values, null, 2));
+        // alert("Form submitted");
+        // console.log('submitting', values); 
         axios.post(baseURL + '/api/mytools/add', values)
         }
     });

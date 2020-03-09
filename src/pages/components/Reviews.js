@@ -117,8 +117,10 @@ const AddReviewForm = (props) => {
     },
     
     validationSchema: Yup.object({
-      projectName: Yup.string().required('This cannot be empty'),
-      review: Yup.string().required('This cannot be empty')
+      projectName: Yup.string(),
+      // .required('This cannot be empty')
+      review: Yup.string()
+      .required('This cannot be empty')
     }),
 
     //   validate,
@@ -185,6 +187,7 @@ const AddReviewForm = (props) => {
                 </Col>
               </Row>
             </Form.Group>
+
 
             <Form.Group className="pb-2">
                 <Form.Label className="Gray800-14px">Project name</Form.Label>

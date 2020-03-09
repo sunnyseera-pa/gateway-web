@@ -37,7 +37,7 @@ class PersonTitle extends Component {
                         {/* <Container> */}
                             <Row className="mb-2">
                                 <Col sm={10} className="text-left ">
-                                   <p className="Black-20px"> {data.firstname} {data.surname} </p> 
+                                   <p className="Black-20px"> {data.firstname} {data.lastname} </p> 
                                    <p className="Gray800-14px"> {data.company} </p>
                                 </Col>
                                 <Col sm={2}> 

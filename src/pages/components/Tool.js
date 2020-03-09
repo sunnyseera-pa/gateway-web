@@ -106,8 +106,8 @@ class Tool extends React.Component {
 
                                         </span>
                                         <br />
-                                        <span className="Gray800-14px"> Author
-                                                {!data.authors || data.authors.length <= 0 ? 'NO SEARCH RESULT' : data.authors.map((author) => {
+                                        <span className="Gray800-14px"> 
+                                                {!data.authors || data.authors.length <= 0 ? 'Author not listed' : data.authors.map((author) => {
                                                     if (!!author) {
                                                         return <span className="Purple-14px ml-1"> {author} </span>
                                                     }

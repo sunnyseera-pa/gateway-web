@@ -69,10 +69,15 @@ const EditToolForm = (props) => {
         //   validate,
 
           onSubmit: values => {
-            alert(JSON.stringify(values, null, 2));
-            alert("Form submitted");
-            console.log('submitting', values); 
+            // alert(JSON.stringify(values, null, 2));
+            // alert("Form submitted");
+            // console.log('submitting', values); 
             axios.put(baseURL + '/api/mytools/edit', values) 
+
+            // .then((values) => {
+            //     window.location.href = window.location.search+'/tool/'+values.data.id;
+            //     {console.log(values.data.id)};
+            // });
             }
         });
         

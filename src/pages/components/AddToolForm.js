@@ -50,8 +50,8 @@ var baseURL = require('./../../BaseURL').getURL();
                             programmingLanguage: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.string()) : Yup.string())),
                             programmingLanguageVersion: Yup.string()
             }), 
-            license: Yup.string()
-                 .required('This cannot be empty'),
+            license: Yup.string(),
+                //  .required('This cannot be empty'),
             // authors: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.string()) : Yup.string())),
             authors: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.number()) : Yup.number())),
             features: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.string()) : Yup.string())),
@@ -59,9 +59,9 @@ var baseURL = require('./../../BaseURL').getURL();
           }),
 
           onSubmit: values => {
-            alert(JSON.stringify(values, null, 2));
-            alert("Form submitted");
-            console.log('submitting', values); 
+            // alert(JSON.stringify(values, null, 2));
+            // alert("Form submitted");
+            // console.log('submitting', values); 
             axios.post(baseURL + '/api/mytools/add', values)
             // .catch((error) => {
             //     alert("Check form, fix and submit again");
