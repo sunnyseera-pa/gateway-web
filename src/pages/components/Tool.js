@@ -41,9 +41,20 @@ class Tool extends React.Component {
 
     render() {
         const { data, isLoading } = this.state;
-        const ratingsTotal = (!!data.ratings && data.ratings.length > 0) ? data.ratings.reduce((a, b) => a + b, 0) : '';
+/*         const ratingsTotal = (!!data.ratings && data.ratings.length > 0) ? data.ratings.reduce((a, b) => a + b, 0) : '';
         const ratingsCount = (!!data.ratings ? data.ratings.length : 0);
-        const avgRating = (!!data.ratings && data.ratings.length > 0) ? (ratingsTotal / ratingsCount) : '';
+        const avgRating = (!!data.ratings && data.ratings.length > 0) ? (ratingsTotal / ratingsCount) : ''; */
+
+        var ratingsTotal = 0;
+    if (data.reviews && data.reviews.length > 0) {
+        data.reviews.forEach(review => {
+            ratingsTotal = ratingsTotal+review.rating;
+        });
+    }
+    
+    const ratingsCount = (!!data.reviews ? data.reviews.length : 0);
+    const avgRating = (!!data.reviews && data.reviews.length > 0) ? (ratingsTotal / ratingsCount) : '';
+
 
         if (typeof data.datasetids === 'undefined') {
             data.datasetids = [];
@@ -74,13 +85,20 @@ class Tool extends React.Component {
                                     <p>
                                         <span className="Black-16px">{data.name}</span>
                                         <span className="Gray500-13px">
-                                            <span className="reviewTitleGap">·</span>
+   {/*                                          <span className="reviewTitleGap">·</span>
                                             {!!ratingsTotal && ratingsCount == 1 ? ratingsCount + ' review' : ratingsCount + ' reviews'}
 
 
 
                                             <span className="reviewTitleGap">·</span>
-                                            {avgRating == 0 ? 'No average rating' : avgRating + ' average'}
+                                            {avgRating == 0 ? 'No average rating' : avgRating + ' average'} */}
+
+                            <span className="Gray500-13px ml-3">
+                                {!!ratingsTotal && ratingsCount == 1 ? ratingsCount + ' review' : ratingsCount +' reviews'}
+                            <span className="reviewTitleGap">·</span>
+                                {avgRating == 0 ? 'No average rating' : (Math.round(avgRating * 10) / 10) + ' average' }
+
+                            </span>
 
                                         </span>
                                         <br />
