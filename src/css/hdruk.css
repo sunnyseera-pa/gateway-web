@@ -70,7 +70,7 @@ body {
 }
 
 .Black-16px{
-  font-family: Museo Sans Rounded;
+  font-family: museo-sans-rounded;
   font-size: 16px;
   font-weight: bold;
   font-stretch: normal;
@@ -81,7 +81,7 @@ body {
 }
 
 .Black500-16px{
-  font-family: Museo Sans Rounded;
+  font-family: museo-sans-rounded;
   font-size: 16px;
   font-weight: 500;
   font-stretch: normal;
@@ -92,7 +92,7 @@ body {
 }
 
 .Black-20px{
-  font-family: Museo Sans Rounded;
+  font-family: museo-sans-rounded;
   font-size: 20px;
   font-weight: 500;
   font-stretch: normal;
@@ -103,7 +103,7 @@ body {
 }
 
 .Gray800-14px{
-  font-family: Museo Sans Rounded;
+  font-family: museo-sans-rounded;
   font-size: 14px;
   font-weight: 500;
   font-stretch: normal;
@@ -114,7 +114,7 @@ body {
 }
 
 .Gray800-14px-bold{
-  font-family: Museo Sans Rounded;
+  font-family: museo-sans-rounded;
   font-size: 14px;
   font-weight: bold;
   font-stretch: normal;
@@ -138,7 +138,7 @@ body {
 }
 
 .Gray700-13px{
-  font-family: Museo Sans Rounded;
+  font-family: museo-sans-rounded;
   font-size: 13px;
   font-weight: 500;
   font-stretch: normal;
@@ -149,7 +149,7 @@ body {
 }
 
 .Gray500-13px{
-  font-family: Museo Sans Rounded;
+  font-family: museo-sans-rounded;
   font-size: 13px;
   font-weight: 500;
   font-stretch: normal;
@@ -162,7 +162,7 @@ body {
 .Purple-13px{
   /* width: 69px;
   height: 15px; */
-  font-family: Museo Sans Rounded;
+  font-family: museo-sans-rounded;
   font-size: 13px;
   font-weight: 500;
   font-stretch: normal;
@@ -176,7 +176,7 @@ body {
 .Purple-14px{
   /* width: 319px;
   height: 17px; */
-  font-family: Museo Sans Rounded;
+  font-family: museo-sans-rounded;
   font-size: 14px;
   font-weight: 500;
   font-stretch: normal;
@@ -251,7 +251,7 @@ body {
 }
 
 #landingPageCard{
-  font-family: Museo Sans Rounded;
+  font-family: museo-sans-rounded;
   font-size: 32px;
   font-weight: 500;
   font-stretch: normal;
@@ -524,7 +524,7 @@ input[type='radio']:checked:after {
 }
 
 .landingPageInformationNumber{
-  font-family: Museo Sans Rounded;
+  font-family: museo-sans-rounded;
   font-size: 40px;
   font-weight: 500;
   font-stretch: normal;
@@ -536,7 +536,7 @@ input[type='radio']:checked:after {
 }
 
 .landingPageInformationDetail{
-  font-family: Museo Sans Rounded;
+  font-family: museo-sans-rounded;
   font-size: 16px;
   font-weight: 300;
   font-stretch: normal;

@@ -98,6 +98,18 @@ class PersonDetail extends Component {
       return <p>Loading ...</p>;
     }
 
+    if (typeof data.toolids === 'undefined') {
+      data.toolids = [];
+    }
+
+    if (typeof data.datasetids === 'undefined') {
+      data.datasetids = [];
+    }
+
+    if (typeof data.personids === 'undefined') {
+      data.personids = [];
+    }
+
     return (
       <div>
         <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
@@ -111,17 +123,17 @@ class PersonDetail extends Component {
             <Col sm={10} lg={10}>
               <div>
                 <Tabs className='TabsBackground Gray700-13px'>
-                  <Tab eventKey="Tools" title="Tools (2)">
+                  <Tab eventKey="Tools" title={'Tools (' + data.toolids.length + ')'}>
                     <Tool data={data} />
                   </Tab>
                   <Tab eventKey="Reviews" title="Reviews (5)">
                     <Reviews data={data} />
                   </Tab>
-                  <Tab eventKey="Data sets" title="Data sets (1)">
-                    <DataSet />
+                  <Tab eventKey="Data sets" title={'Data Sets (' + data.datasetids.length + ')'}>
+                    {data.datasetids.map(id => <DataSet id={id} />)}
                   </Tab>
-                  <Tab eventKey="Projects" title="Projects (1)">
-                    <Project data={data} />
+                  <Tab eventKey="Projects" title={'Projects (' + data.projectids.length + ')'}>
+                    {data.projectids.map(id => <Project id={id} />)}
                   </Tab>
                 </Tabs>
               </div>

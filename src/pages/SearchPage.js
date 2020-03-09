@@ -5,6 +5,7 @@ import Project from './components/Project';
 import Tool from './components/Tool';
 import Person from './components/Person';
 import SearchNotFound from './components/SearchNotFound'
+import SearchSummary from './components/SearchSummary'
 import queryString from 'query-string';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -20,6 +21,7 @@ class SearchPage extends React.Component {
         searchString: null,
         typeString: null,
         data: [],
+        summary: [],
         isLoading: true,
         userState: [{
             loggedIn: false,
@@ -85,7 +87,7 @@ class SearchPage extends React.Component {
         this.setState({ isLoading: true });
         axios.get(baseURL + '/api/search?search=' + searchString + '&type=' + typeString)
             .then((res) => {
-                this.setState({ data: res.data.data, isLoading: false });
+                this.setState({ data: res.data.data, summary: Object.entries(res.data.summary), isLoading: false });
             });
     }
 
@@ -99,11 +101,11 @@ class SearchPage extends React.Component {
 
 
     render() {
-        const { searchString, typeString, data, userState, isLoading } = this.state;
+        const { searchString, typeString, data, summary, userState, isLoading } = this.state;
         
         if (isLoading) {
             return <p>Loading ...</p>;
-          }
+        }
 
         return (
 
@@ -115,8 +117,11 @@ class SearchPage extends React.Component {
                         <Col sm={12} md={12} lg={3}>
                             <FilterButtons typeString={typeString} doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString} />
                         </Col>
+                        
                         <Col sm={12} md={12} lg={9}>
-                            {data.length <= 0 ? <SearchNotFound /> : data.map((dat) => {
+                            {summary.length > 0 ? <SearchSummary data={summary} /> :''}
+
+                            {data.length <= 0 ? <SearchNotFound /> : data.map((dat) => {                            
                                 if (dat.type == 'tool') {
                                     return <Tool data={dat} />
                                 }
