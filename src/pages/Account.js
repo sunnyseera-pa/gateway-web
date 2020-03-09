@@ -148,16 +148,16 @@ class Account extends Component {
                                     <Tab eventKey="youraccount" title="Your account">
                                         <YourAccount userState={userState} />
                                     </Tab>
-                                    <Tab eventKey="datasets" title="Data sets (1)">
+                                    <Tab eventKey="datasets" title="Data sets">
                                         {data.datasetids.map(id => <DataSet id={id} />)}
                                     </Tab>
-                                    <Tab eventKey="projects" title="Projects (2)">
+                                    <Tab eventKey="projects" title="Projects">
                                         Placeholder
                                     </Tab>
-                                    <Tab eventKey="tools" title="Tools (2)">
+                                    <Tab eventKey="tools" title="Tools">
                                         <AccountTools userState={userState} />
                                     </Tab>
-                                    <Tab eventKey="reviews" title="Reviews (2)">
+                                    <Tab eventKey="reviews" title="Reviews">
                                         Placeholder
                                     </Tab>
                                 </Tabs>

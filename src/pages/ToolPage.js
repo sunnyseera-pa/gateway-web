@@ -135,14 +135,39 @@ class ToolDetail extends Component {
           <ToolTitle data={data} />
           {/* <ToolInfoReviewForm data={data} /> */}
 
+
+          {/* <ul>
+          {data.length <= 0
+            ? 'NO DB ENTRIES YET'
+            : data.map((dat) => (
+                <li style={{ padding: '10px' }} key={data.message}>
+                  <span style={{ color: 'gray' }}> id: </span> {dat.id} <br />
+                </li>
+              ))}
+        </ul> */}
+
+
+          
           <Row className="mt-4">
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
-              <span className="Black500-16px">Authors (2)</span>
+              <span className="Black500-16px">Authors</span>
             </Col>
             <Col sm={1} lg={10} />
           </Row>
+
           <Row>
+          <Col sm={1} lg={1} />
+          {/* <span>{data.authors}</span> */}
+          <Col sm={5} lg={5}>
+          {data.authors.length <= 0 ? 'No authors listed' : data.authors.map((author) => (
+            <span>  <Creators data={data} /> </span>
+          ))}
+          </Col>
+           <Col sm={1} lg={1} />
+          </Row>
+
+          {/* <Row>
             <Col sm={1} lg={1} />
             <Col sm={5} lg={5}>
               <Creators data={data} />
@@ -151,7 +176,7 @@ class ToolDetail extends Component {
               <Creators data={data} />
             </Col>
             <Col sm={1} lg={10} />
-          </Row>
+          </Row> */}
 
 
           <Row className="mt-3">

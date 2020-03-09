@@ -7,6 +7,7 @@ import Card from 'react-bootstrap/Card';
 import Image from 'react-bootstrap/Image';
 import '../../css/hdruk.css';
 // import logo from "../../images/tableau.jpg";
+import { ReactComponent as PersonPlaceholderSvg } from '../../images/person-placeholder.svg';
 
 class Creators extends Component {
 
@@ -24,7 +25,7 @@ class Creators extends Component {
   // it is easy to understand their functions when you
   // see them render into our screen
   render() {
-    const { data } = this.state;
+    const { data } = this.state; 
     return (
       <Row className="mt-2">
                 <Col sm={1} lg={1} />
@@ -34,9 +35,11 @@ class Creators extends Component {
            
                             <Row>
                                 <Col sm={2}> 
-                                  <Image src={require("../../images/bob.jpg")} id="Picture" roundedCircle />
+                                <PersonPlaceholderSvg />
+                                  {/* <Image src={require("../../images/bob.jpg")} id="Picture" roundedCircle /> */}
                                 </Col>
                                 <Col sm={10} className="text-left "> 
+                                    {/* <p className="Black-16px"> {data.authors} </p> */}
                                     <p className="Black-16px"> name </p>
                                     <p className="Gray700-13px"> company </p>
                                 </Col>

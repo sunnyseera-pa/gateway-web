@@ -5,6 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Badge from 'react-bootstrap/Badge';
 import Card from 'react-bootstrap/Card';
 import Image from 'react-bootstrap/Image';
+import { ReactComponent as PersonPlaceholderSvg } from '../../images/person-placeholder.svg';
 
 class PersonTitle extends Component {
 
@@ -39,7 +40,10 @@ class PersonTitle extends Component {
                                    <p className="Black-20px"> {data.firstname} {data.surname} </p> 
                                    <p className="Gray800-14px"> {data.company} </p>
                                 </Col>
-                                <Col sm={2}> <Image src={require("../../images/bob.jpg")} id="BigPicture" roundedCircle /> </Col>
+                                <Col sm={2}> 
+                                <PersonPlaceholderSvg /> 
+                                {/* <Image src={require("../../images/bob.jpg")} id="BigPicture" roundedCircle />  */}
+                                </Col>
                             </Row> 
                             {/* <Row>
                             <Col sm={12} className="text-left" className="Purple-14px">link1</Col>

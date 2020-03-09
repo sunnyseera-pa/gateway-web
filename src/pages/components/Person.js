@@ -2,6 +2,7 @@ import React from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
+import { ReactComponent as PersonPlaceholderSvg } from '../../images/person-placeholder.svg';
 
 class Person extends React.Component{
     constructor(props) {
@@ -23,7 +24,8 @@ class Person extends React.Component{
                     <div className="Rectangle">
                         <Row>
                             <Col xs={2} md={1} className="iconHolder">
-                                <Image src={require("../../images/bob.jpg")} id="Picture" roundedCircle />
+                                <PersonPlaceholderSvg /> 
+                                {/* <Image src={require("../../images/bob.jpg")} id="Picture" roundedCircle /> */}
                             </Col>
                             <Col xs={10} md={11}>
                                 <p>

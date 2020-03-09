@@ -92,7 +92,7 @@ const EditToolForm = (props) => {
                 <Row className="mt-2">
                     <Col sm={1} lg={1} />
                     <Col sm={10} lg={10}>
-                            <Form onSubmit={formik.handleSubmit}>
+                            <Form onSubmit={formik.handleSubmit} autocomplete='off'>
                                 <div className="Rectangle">
 
                                 {/* {console.log('id is:' + props.data.id)} */}
@@ -490,7 +490,7 @@ const EditToolForm = (props) => {
 
 
                                 <Row className="mt-3">
-                                    <Col sm={11} lg={11}>
+                                    <Col sm={9} lg={9}>
                                         <div className="ButtonHolder">
                                             <a style={{ cursor: 'pointer' }} href={'/'} >
                                                 <Button variant="medium" className="CancelButton" >
@@ -499,7 +499,7 @@ const EditToolForm = (props) => {
                                             </a>
                                         </div>
                                     </Col>
-                                    <Col sm={1} lg={1}>
+                                    <Col sm={2} lg={2} className="ml-5">
                                         <Button variant="primary" type="submit" className="AddButton">
                                             Edit this tool
                                         </Button>

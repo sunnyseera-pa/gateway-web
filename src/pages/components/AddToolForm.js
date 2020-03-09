@@ -33,7 +33,8 @@ var baseURL = require('./../../BaseURL').getURL();
             tags: {
                 features: [],
                 topics: [],
-            }
+            },
+            // languageError: '',
           },
 
           validationSchema: Yup.object({
@@ -46,12 +47,6 @@ var baseURL = require('./../../BaseURL').getURL();
               .required('This cannot be empty'), 
             categories: Yup.object().shape({
                             category: Yup.string(),
-                            // category: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.string()) : Yup.string())),
-                                        // .required('This cannot be empty'),
-                                        // .max(2, 'Only pick 2'),
-                            // category: Yup.lazy(val => (Array.isArray(val) ? Yup.array().max(1,'Max of 1').of(Yup.string()) : Yup.string())),
-                            // Yup.array().of(Yup.string()) 
-                                        // .max(1),
                             programmingLanguage: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.string()) : Yup.string())),
                             programmingLanguageVersion: Yup.string()
             }), 
@@ -95,7 +90,7 @@ var baseURL = require('./../../BaseURL').getURL();
                 <Row className="mt-2">
                     <Col sm={1} lg={1} />
                     <Col sm={10} lg={10}>
-                            <Form onSubmit={formik.handleSubmit}>
+                            <Form onSubmit={formik.handleSubmit} onBlur={formik.handleBlur} autocomplete='off'>
                                 <div className="Rectangle">
                                 <Form.Group className="pb-2">
                                     <Form.Label className="Gray800-14px">Name</Form.Label>
@@ -182,8 +177,6 @@ var baseURL = require('./../../BaseURL').getURL();
                                     />
                                 </Form.Group> 
                                 
-
-
                                 {console.log("cat: category:" + formik.values.categories.category)}
 
 {/*                                 THIS IS WHAT WORKS FOR SELECTION FOR LANGAUGES
@@ -239,12 +232,10 @@ var baseURL = require('./../../BaseURL').getURL();
                                            
                                             formik.values.categories.programmingLanguage = tempSelected; 
                                         }} 
-
                                     />
                                 </Form.Group>  
-
                                 
-
+                                {console.log("count of programmingLanguage:" + formik.values.categories.programmingLanguage.length)}
                                 {console.log("cat: programmingLanguage:" + formik.values.categories.programmingLanguage)}
                                 {console.log("type: cat: programmingLanguage:" + typeof(formik.values.categories.programmingLanguage))}
                             
@@ -311,7 +302,6 @@ var baseURL = require('./../../BaseURL').getURL();
                                            
                                             formik.values.license = tempSelected[0]; 
                                         }} 
-
                                     />
                                 </Form.Group> 
 
@@ -497,7 +487,7 @@ var baseURL = require('./../../BaseURL').getURL();
                                 </div>
 
                                 <Row className="mt-3">
-                                    <Col sm={11} lg={11}>
+                                    <Col sm={9} lg={9}>
                                         <div className="ButtonHolder">
                                             <a style={{ cursor: 'pointer' }} href={'/'} >
                                                 <Button variant="medium" className="CancelButton" >
@@ -506,7 +496,7 @@ var baseURL = require('./../../BaseURL').getURL();
                                             </a>
                                         </div>
                                     </Col>
-                                    <Col sm={1} lg={1}>
+                                    <Col sm={2} lg={2} className="ml-5">
                                         <Button variant="primary" type="submit" className="AddButton">
                                             Add this tool
                                         </Button>
