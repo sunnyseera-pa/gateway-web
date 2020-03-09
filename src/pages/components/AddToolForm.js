@@ -29,7 +29,7 @@ var baseURL = require('./../../BaseURL').getURL();
                 programmingLanguageVersion: ''
             },
             license: '',
-            authors: [props.userState[0].id],
+            authors: [],
             tags: {
                 features: [],
                 topics: [],
@@ -339,23 +339,22 @@ var baseURL = require('./../../BaseURL').getURL();
                                     {/* <Form.Control id="authors" name="authors" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.authors} onBlur={formik.handleBlur}/> */}
                                     <Typeahead
                                         id="authors"
-                                        labelKey="authors"
-                                        allowNew
+                                        labelKey={authors => `${authors.name}`}
+                                        defaultSelected={[{ id: props.userState[0].id, name: props.userState[0].name }]}
                                         multiple
                                         options={props.combinedUsers}
-
                                         onChange = {(selected) => {
                                             var tempSelected = [];
                                             
                                             selected.map((selectedItem) => {
-                                                console.log('tempSelected' + tempSelected);
-                                                console.log("selectedItem is: " + JSON.stringify(selectedItem));
-                                                console.log("selected language: " + JSON.stringify(selectedItem.customOption));
-                                                console.log("selected language: " + JSON.stringify(selectedItem.authors));
-                                                selectedItem.customOption == true ? tempSelected.push(selectedItem.authors) : tempSelected.push(selectedItem);
+                                                
+                                                console.log("Here selectedItem is: " + JSON.stringify(selectedItem));
+                                                console.log("Here selected language: " + JSON.stringify(selectedItem.customOption));
+                                                console.log("Here selected language: " + JSON.stringify(selectedItem.authors));
+                                                tempSelected.push(selectedItem.id);
                                                 
                                             } )
-                                           
+                                            console.log('Here tempSelected ' + tempSelected);
                                             formik.values.authors = tempSelected; 
                                         }} 
 

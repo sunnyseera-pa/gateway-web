@@ -87,7 +87,7 @@ class ToolTitle extends Component {
                                     <span className="reviewTitleGap">·</span>
                                     {avgRating == 0 ? 'No average rating' : (Math.round(avgRating * 10) / 10) + ' average' }
                                     <span className="reviewTitleGap">·</span>
-                                    <Rating emptySymbol={<EmptyStarIconSvg />} fullSymbol={<FullStarIconSvg />} placeholderSymbol={<FullStarIconSvg />} placeholderRating={avgRating} />
+                                    <Rating emptySymbol={<EmptyStarIconSvg />} fullSymbol={<FullStarIconSvg />} placeholderSymbol={<FullStarIconSvg />} placeholderRating={avgRating} readonly={true} />
                                 </div>
                             </Col>
                         </Row>
