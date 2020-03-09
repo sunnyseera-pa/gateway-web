@@ -27,10 +27,18 @@ class ActiveTool extends React.Component {
     }
 
     doSearchCall() {
-        axios.get(baseURL + '/api/accountsearch?type=tool&id=' + this.state.userState[0].id + '&toolState=active')
-            .then((res) => {
-                this.setState({ data: res.data.data, isLoading: false });
-            });
+        if (this.state.userState[0].role === "Admin") {
+            axios.get(baseURL + '/api/accountsearchadmin?type=tool&toolState=active')
+                .then((res) => {
+                    this.setState({ data: res.data.data, isLoading: false });
+                });
+        }
+        else {
+            axios.get(baseURL + '/api/accountsearch?type=tool&id=' + this.state.userState[0].id + '&toolState=active')
+                .then((res) => {
+                    this.setState({ data: res.data.data, isLoading: false });
+                });
+        }
 
     }
 
@@ -87,9 +95,9 @@ function DeleteButton(props) {
                 id: props.id
             },
         })
-        .then((res) => {
-            window.location.href = '/account?tab=tools&toolDeleted=true';
-        });
+            .then((res) => {
+                window.location.href = '/account?tab=tools&toolDeleted=true';
+            });
     }
 
     return (

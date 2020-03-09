@@ -1,12 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import Container from 'react-bootstrap/Container';
 import Row  from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import SVGIcon from '../images/SVGIcon';
 import { ReactComponent as WhiteLogoSvg } from '../../src/images/white.svg';
+import { ReactComponent as ArrowDownSvg } from '../images/arrowDownWhite.svg';
+import Dropdown from 'react-bootstrap/Dropdown';
 
 var baseURL = require('./../BaseURL').getURL();
+
+const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+    <a href="" className="landingPageAccountText" ref={ref} onClick={e => { e.preventDefault(); onClick(e); }} >
+        {children}
+        <span className="accountDropDownGap"></span>< ArrowDownSvg />
+    </a>
+));
+
+const CustomMenu = React.forwardRef(
+    ({ children, style, className, 'aria-labelledby': labeledBy }, ref) => {
+        const [value] = useState('');
+
+        return (
+            <div ref={ref} style={style} className={className} aria-labelledby={labeledBy}>
+                <ul className="list-unstyled">
+                    {React.Children.toArray(children).filter(
+                        child =>
+                            !value || child.props.children.toLowerCase().startsWith(value),
+                    )}
+                </ul>
+            </div>
+        );
+    },
+);
 
 class LandingPage extends React.Component{
     
@@ -62,6 +88,13 @@ class LandingPage extends React.Component{
         this.setState({searchString : e.target.value});
     }
 
+    logout = (e) => {
+        axios.get(baseURL + '/api/logout')
+            .then((res) => {
+                window.location.href = "/";
+            });
+    }
+
     render(){
         const {searchString, data, userState, isLoading } = this.state;
 
@@ -72,7 +105,35 @@ class LandingPage extends React.Component{
         return(
             <div className="LandingBackground">
                 <Row className="pt-5 pl-5">
-                    <Col sm={12}> <WhiteLogoSvg /> </Col>
+                    <Col xs={{ span: 6, order: 1 }} lg={{ span: 6, order: 1 }}> <WhiteLogoSvg /> </Col>
+                    <Col xs={{ span: 6, order: 2 }} lg={{ span: 6, order: 2 }}>
+                        <div className="signLinkLanding">
+                            {(() => {
+                                if (userState[0].loggedIn === true) {
+                                    return (
+                                        <Dropdown>
+                                            <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
+                                                {userState[0].name}
+                                            </Dropdown.Toggle>
+
+                                            <Dropdown.Menu as={CustomMenu}>
+                                                <Dropdown.Item href="/account?tab=youraccount">Your Account</Dropdown.Item>
+                                                <Dropdown.Item onClick={this.logout}>Logout</Dropdown.Item>
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                    )
+                                }
+                                else {
+                                    return (
+                                        <a href={baseURL + '/auth/google'}>
+                                            <span className="landingPageAccountText">Sign in</span>
+                                        </a>
+                                    )
+                                }
+                            })()}
+
+                        </div>
+                    </Col>
                 </Row>
                 <Container>
                     <Row id="landingPageEmptyRow"></Row>
