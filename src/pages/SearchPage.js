@@ -121,7 +121,7 @@ class SearchPage extends React.Component {
                         <Col sm={12} md={12} lg={9}>
                             {summary.length > 0 ? <SearchSummary data={summary} /> :''}
 
-                            {data.length <= 0 ? <NotFound word={results}/> : data.map((dat) => {                            
+                            {data.length <= 0 ? <NotFound word='results' /> : data.map((dat) => {                            
                                 if (dat.type == 'tool') {
                                     return <Tool data={dat} />
                                 }
