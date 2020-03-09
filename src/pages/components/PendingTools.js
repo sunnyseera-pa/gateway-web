@@ -3,7 +3,7 @@ import axios from 'axios';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import SearchNotFound from '../components/SearchNotFound';
+import NotFound from './NotFound';
 
 var baseURL = require('./../../BaseURL').getURL();
 
@@ -70,11 +70,11 @@ class PendingTools extends React.Component {
         return (
             <Row>
                 <Col>
-                    {data.length <= 0 ? <SearchNotFound /> : data.map((dat) => {
+                    {data.length <= 0 ? <NotFound /> : data.map((dat) => {
                         return (<a /* href={'/tool/'+dat.id} */>
                         <div className="Rectangle mt-1">
                             <Row>
-                                <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"> {dat.name} </Col>
+                                <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/tool/'+dat.id} >{dat.name}</a></Col>
                                 <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold"> Author </Col>
                                 <Col sm={12} lg={5} className="pl-5 toolsButtons">
                                     {userState[0].role === 'Admin' ?
