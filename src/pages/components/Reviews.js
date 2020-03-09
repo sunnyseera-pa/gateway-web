@@ -12,6 +12,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal'
 import Form from 'react-bootstrap/Form';
 import * as Yup from 'yup';
+import NotFound from './NotFound';
 
 var baseURL = require('./../../BaseURL').getURL();
 
@@ -48,7 +49,7 @@ class Reviews extends Component {
           </Col>
         </Row>
 
-        {data.reviews.length <= 0 ? 'NO SEARCH RESULT' : data.reviews.map((review) => {
+        {data.reviews.length <= 0 ? <NotFound word="reviews" /> : data.reviews.map((review) => {
           var updatedDate = new Date(review.date);;
           var updatedOnDate = updatedDate.getDay()+" "+monthNames[updatedDate.getMonth()]+" "+updatedDate.getFullYear();
           return <Row className="mt-2">

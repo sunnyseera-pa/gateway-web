@@ -21,6 +21,7 @@ import AddToolPage from './AddToolPage';
 import ToolInfoReviewForm from './components/ToolInfoReviewForm';
 import queryString from 'query-string';
 import Alert from 'react-bootstrap/Alert'
+import NotFound from './components/NotFound';
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -201,10 +202,10 @@ class ToolDetail extends Component {
                     <Reviews data={data} userState={userState} />
                   </Tab>
                   <Tab eventKey="Data sets" title={'Data sets (' + data.datasetids.length + ')'}>
-                    {data.datasetids.map(id => <DataSet id={id} />)}
+                    {data.datasetids.length <= 0 ? <NotFound word="data sets" /> : data.datasetids.map(id => <DataSet id={id} />)}
                   </Tab>
                   <Tab eventKey="Projects" title={'Projects (' + data.projectids.length + ')'}>
-                    {data.projectids.map(id => <Project id={id} />)}
+                    {data.projectids.length <= 0 ? <NotFound word="projects" /> : data.projectids.map(id => <Project id={id} />)}
                   </Tab>
                 </Tabs>
               </div>

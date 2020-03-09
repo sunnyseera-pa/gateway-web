@@ -4,7 +4,7 @@ import SearchBar from './components/SearchBar';
 import Project from './components/Project';
 import Tool from './components/Tool';
 import Person from './components/Person';
-import SearchNotFound from './components/SearchNotFound'
+import NotFound from './components/NotFound'
 import SearchSummary from './components/SearchSummary'
 import queryString from 'query-string';
 import Container from 'react-bootstrap/Container';
@@ -121,7 +121,7 @@ class SearchPage extends React.Component {
                         <Col sm={12} md={12} lg={9}>
                             {summary.length > 0 ? <SearchSummary data={summary} /> :''}
 
-                            {data.length <= 0 ? <SearchNotFound /> : data.map((dat) => {                            
+                            {data.length <= 0 ? <NotFound /> : data.map((dat) => {                            
                                 if (dat.type == 'tool') {
                                     return <Tool data={dat} />
                                 }
