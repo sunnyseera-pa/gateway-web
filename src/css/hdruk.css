@@ -198,6 +198,11 @@ body {
   margin-right: 32px;
 }
 
+.signLinkLanding {
+  text-align: right;
+  margin-right: 32px;
+}
+
 .LandingBackground {
   width: 100%;
   min-height: 100vh;
@@ -264,6 +269,14 @@ body {
 
 #landingPageEmptyRow{
   min-height: 120px;
+}
+
+.landingPageAccountText {
+  color: #ffffff;
+}
+
+.landingPageAccountText:hover {
+  color: #ffffff;
 }
 
 #projectTitleEmptyRow{
