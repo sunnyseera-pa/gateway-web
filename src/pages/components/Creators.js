@@ -54,7 +54,12 @@ class Creators extends Component {
   // it is easy to understand their functions when you
   // see them render into our screen
   render() {
-    const { data } = this.state; 
+    const { data, isLoading } = this.state; 
+
+    if (isLoading) {
+      return <p>Loading ...</p>;
+    }
+
     return (
       <span>
       <Row className="mt-2">

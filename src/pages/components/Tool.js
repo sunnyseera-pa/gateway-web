@@ -45,6 +45,10 @@ class Tool extends React.Component {
                 const ratingsCount = (!!data.ratings ? data.ratings.length : 0);
                 const avgRating = (!!data.ratings && data.ratings.length > 0) ? (ratingsTotal / ratingsCount) : ''; */
 
+        if (isLoading) {
+            return <p>Loading ...</p>;
+        }
+        
         var ratingsTotal = 0;
         if (data.reviews && data.reviews.length > 0) {
             data.reviews.forEach(review => {
@@ -66,10 +70,6 @@ class Tool extends React.Component {
 
         if (typeof data.authors === 'undefined') {
             data.authors = [];
-        }
-
-        if (isLoading) {
-            return <p>Loading ...</p>;
         }
 
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
