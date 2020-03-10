@@ -334,7 +334,7 @@ var baseURL = require('./../../BaseURL').getURL();
                                 <Form.Group className="pb-2">
                                     <Form.Label className="Gray800-14px">Who created this tool or resource?</Form.Label>
                                     <Form.Text className="Gray700-13px">
-                                    Add any authors, including yourself if that's the case. Can be their username or website if you don't know the name.
+                                    Add any authors, including yourself if that's the case. {/* Can be their username or website if you don't know the name. */}
                                     </Form.Text>
                                     {/* <Form.Control id="authors" name="authors" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.authors} onBlur={formik.handleBlur}/> */}
                                     <Typeahead
