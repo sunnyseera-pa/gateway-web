@@ -58,13 +58,13 @@ class PersonTitle extends Component {
                               </Col>
                             </Row>
                 {/* UPDATE THE BELOW TO RETURN FROM LINKS ARRAY */}
-                            <Row>
+                            {/* <Row>
                               <Col sm={12}>
                                       {data.tags.length <= 0 ? 'NO SEARCH RESULT': data.tags.map((tag) => {
                                               return  <p className="text-left" className="Purple-14px"> {tag} </p>
                                       })}
                               </Col>
-                            </Row>
+                            </Row> */}
 
                         {/* </Container> */}
                         </Card.Body>

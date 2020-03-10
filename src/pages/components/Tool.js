@@ -99,7 +99,7 @@ class Tool extends React.Component {
                                         <span className="Gray800-14px"> 
                                                 {!data.authors || data.authors.length <= 0 ? 'Author not listed' : data.authors.map((author) => {
                                                     if (!!author) {
-                                                        return <span className="Purple-14px ml-1"> {author} </span>
+                                                        return <span className="Purple-14px ml-1">{author}</span>
                                                     }
                                                 })}
                                         </span>

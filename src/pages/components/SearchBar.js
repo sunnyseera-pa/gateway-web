@@ -111,6 +111,7 @@ class SearchBar extends React.Component {
 
                                             <Dropdown.Menu as={CustomMenu}>
                                                 <Dropdown.Item href="/account?tab=youraccount">Your Account</Dropdown.Item>
+                                                <Dropdown.Item href="/account?tab=tools">Tools</Dropdown.Item>
                                                 <Dropdown.Item onClick={this.logout}>Logout</Dropdown.Item>
                                             </Dropdown.Menu>
                                         </Dropdown>
