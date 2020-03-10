@@ -65,7 +65,7 @@ class Creators extends Component {
       <Row className="mt-2">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
-                    <a className="searchHolder" href={'/tool/' + data.id} >
+                    <a className="searchHolder" href={'/person/' + data.id} >
                         <div className="Rectangle">
                           
                             <Row>

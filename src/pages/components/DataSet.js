@@ -23,20 +23,32 @@ export default class DataSet extends React.Component {
     getDataSearchFromDb = () => {
         //need to handle error if no id is found
         this.setState({ isLoading: true });
-        axios.get(baseURL+'/api/dataset/'+this.props.id)
-        .then((res) => {
+        if (this.props.id == 9999999999) {
             this.setState({
-                data: {
-                 'label':res.data.data.label,
-                 'description':res.data.data.description,
-                 'id':res.data.data.id,
-                 'updatedon':res.data.data.lastUpdated
-                },
-                isLoading: false 
-            })
-        });
-    }
+                    data: {
+                    'label':'Open Data - Medical appointment "no shows" - 2016 Brazil',
+                    'description':'Data shared by Joni Hoppen - Data Scientist at Aquarela Advanced Analytics Florianópolis, State of Santa Catarina, Brazil - available under the <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0 Llcense</a></br></br><a href="https://tre.healthresearch.tools" target="_blank">Deploy Matplotlib with this dataset</a>',
+                    'id':999999999,
+                    'updatedon':"2020-02-07T12:14:03.134Z"
+                    },
+                    isLoading: false 
+            });
 
+        } else {
+            axios.get(baseURL+'/api/dataset/'+this.props.id)
+            .then((res) => {
+                this.setState({
+                    data: {
+                    'label':res.data.data.label,
+                    'description':res.data.data.description,
+                    'id':res.data.data.id,
+                    'updatedon':res.data.data.lastUpdated
+                    },
+                    isLoading: false 
+                })
+            });
+        }
+    }
 
     render() {
         const {searchString, data, isLoading } = this.state;
@@ -44,6 +56,15 @@ export default class DataSet extends React.Component {
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         var updatedDate = new Date(data.updatedon);
         var updatedOnDate = monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
+        
+        let description;
+
+        if (data.id == 999999999) {
+            description = <p className="Gray800-14px" dangerouslySetInnerHTML={{__html: data.description}} />
+
+        } else {
+            description = <p className="Gray800-14px">{data.description}</p>
+        }
 
         return(
             <Row className="mt-2">
@@ -58,9 +79,7 @@ export default class DataSet extends React.Component {
                                     <p>
                                         <span className="Black-16px">{data.label}</span>
                                     </p>
-                                    <p className="Gray800-14px">
-                                        {data.description}  
-                                    </p>
+                                    {description}
                                    
                                 </Col>
                                 <Col xs={{span:12,order:1}} lg={{span:3,order:0}} className="dateHolder mt-2">

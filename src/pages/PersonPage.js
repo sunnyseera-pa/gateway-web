@@ -106,8 +106,12 @@ class PersonDetail extends Component {
       data.datasetids = [];
     }
 
-    if (typeof data.personids === 'undefined') {
-      data.personids = [];
+    if (typeof data.projectids === 'undefined') {
+      data.projectids = [];
+    }
+
+    if (typeof data.reviews === 'undefined') {
+      data.reviews = [];
     }
 
     return (
@@ -124,10 +128,10 @@ class PersonDetail extends Component {
               <div>
                 <Tabs className='TabsBackground Gray700-13px'>
                   <Tab eventKey="Tools" title={'Tools (' + data.toolids.length + ')'}>
-                    <Tool data={data} />
+                    {data.toolids.map(id => <Tool id={id} />)}
                   </Tab>
-                  <Tab eventKey="Reviews" title="Reviews (5)">
-                    <Reviews data={data} />
+                  <Tab eventKey="Reviews" title={'Reviews (' + data.reviews.length + ')'}>
+                    <Reviews data={data} userState={userState}/>
                   </Tab>
                   <Tab eventKey="Data sets" title={'Data Sets (' + data.datasetids.length + ')'}>
                     {data.datasetids.map(id => <DataSet id={id} />)}
