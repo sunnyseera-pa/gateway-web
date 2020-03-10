@@ -22,6 +22,9 @@ import ToolInfoReviewForm from './components/ToolInfoReviewForm';
 import queryString from 'query-string';
 import Alert from 'react-bootstrap/Alert';
 import NotFound from './components/NotFound';
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
+import NavItem from 'react-bootstrap/NavItem';
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -203,6 +206,36 @@ class ToolDetail extends Component {
             <Col sm={1} lg={1} />
           </Row>
         </Container>
+
+          {/* <Navbar sticky="bottom">  */}
+
+          <Navbar fixed="bottom" className="mr-5 mb-5" > 
+            <Nav className="ml-auto">
+              <Row>
+              <p>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeY13LesZ_oMAH_qFdb2cS6b3s7wSf3DQJdwdxGdBcn_gxrfw/viewform" target="_blank" className="Purple-14px" id="UnderlinedLink"> 
+                  Send feedback
+                </a>
+              </p>
+              </Row>
+            </Nav>
+          </Navbar>
+  
+          <Navbar fixed="bottom" className="mr-5 mb-2" > 
+            <Nav className="ml-auto">
+              <Row>
+              <p>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSfadX38bzD5qId2GARODJ7Mv4qHktYoEWY0fL7DcAFmbUuyxw/viewform" target="_blank" className="Purple-14px" id="UnderlinedLink"> 
+                 Report a problem
+                </a>
+              </p>
+              </Row>
+            </Nav>
+          </Navbar>
+
+          <Row className='AuthorCard'/>
+
+
       </div>
     );
   }

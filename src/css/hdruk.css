@@ -573,3 +573,7 @@ input[type='radio']:checked:after {
 .AuthorCard{
   height: 80px;
 }
+
+#UnderlinedLink{
+  text-decoration-line: underline;
+}

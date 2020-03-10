@@ -488,7 +488,7 @@ var baseURL = require('./../../BaseURL').getURL();
                                 <Row className="mt-3">
                                     <Col sm={9} lg={9}>
                                         <div className="ButtonHolder">
-                                            <a style={{ cursor: 'pointer' }} href={'/'} >
+                                            <a style={{ cursor: 'pointer' }} href={'/account?tab=tools'} >
                                                 <Button variant="medium" className="CancelButton" >
                                                     Cancel
                                                 </Button>
