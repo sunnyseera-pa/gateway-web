@@ -35,7 +35,7 @@ class ToolTitle extends Component {
     const ratingsCount = (!!data.reviews ? data.reviews.length : 0);
     const avgRating = (!!data.reviews && data.reviews.length > 0) ? (ratingsTotal / ratingsCount) : '';
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    var updatedDate = new Date(data.updatedAt);
+    var updatedDate = new Date(data.updatedon);
     var updatedOnDate = monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
 
     return (
