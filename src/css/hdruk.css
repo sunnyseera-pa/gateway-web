@@ -569,3 +569,7 @@ input[type='radio']:checked:after {
 .toolsButtons {
   text-align: center
 }
+
+.AuthorCard{
+  height: 80px;
+}

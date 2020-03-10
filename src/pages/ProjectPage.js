@@ -99,36 +99,27 @@ class ProjectDetail extends Component {
         <Container className="mb-5">
           <ProjectTitle data={data} />
 
-          <Row className="mt-4">
-            <Col sm={1} lg={1} />
-            <Col sm={10} lg={10}>
-              <span className="Black500-16px">Authors ({data.authors.length})</span>
-            </Col>
-            <Col sm={1} lg={10} />
-          </Row>
-
-          {data.authors.map(author => 
           <Row>
           <Col sm={1} lg={1} />
-          <Col sm={5} lg={5}>
-          
-              <Creators id={author} />
-         
-          </Col>
-           <Col sm={1} lg={1} />
+          <Col sm={10} lg={10}>
+
+          <Row className="mt-4">
+            <Col sm={10} lg={10}>
+              <span className="Black500-16px">Authors ( {data.authors.length} )</span>
+            </Col>
           </Row>
+  
+          <Row>
+          {data.authors.map(author => 
+          <Col sm={6} lg={6}>         
+              <Creators id={author} />      
+          </Col>        
          )}
-          
-          {/* <Row>
-            <Col sm={1} lg={1} />
-            <Col sm={5} lg={5}>
-              <Creators data={data} />
-            </Col>
-            <Col sm={5} lg={5}>
-              <Creators data={data} />
-            </Col>
-            <Col sm={1} lg={10} />
-          </Row> */}
+          </Row>
+
+          </Col>
+          <Col sm={1} lg={1} />
+          </Row>
 
           <Row className="mt-3">
 

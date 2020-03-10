@@ -45,8 +45,8 @@ const YourAccountForm = (props) => {
             <Row className="mt-2">
                 <Col>
                     <div className="Rectangle">
-                        <p className="Black-20px">Add a new tool or resource</p>
-                        <p className="Gray800-14px">Tools can be anything you or someone else created or used during a research project</p>
+                        <p className="Black-20px">Add or edit your account details</p>
+                        <p className="Gray800-14px">Your details are visible to other users, with the exception of your email address</p>
                     </div>
                 </Col>
             </Row>

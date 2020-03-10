@@ -160,40 +160,27 @@ class ToolDetail extends Component {
         </ul> */}
 
 
-          
+          <Row>
+          <Col sm={1} lg={1} />
+          <Col sm={10} lg={10}>
+
           <Row className="mt-4">
-            <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
               <span className="Black500-16px">Authors ( {data.authors.length} )</span>
             </Col>
-            <Col sm={1} lg={10} />
           </Row>
   
+          <Row>
           {data.authors.map(author => 
-          <Row>
-          <Col sm={1} lg={1} />
-          <Col sm={5} lg={5}>
-          
-              <Creators id={author} />
-         
-          </Col>
-           <Col sm={1} lg={1} />
-          </Row>
+          <Col sm={6} lg={6}>         
+              <Creators id={author} />      
+          </Col>        
          )}
-       
-       
-       {/* {data.authors.map(author => 
-          <Row>
-          <Col sm={1} lg={1} />
-          <Col sm={5} lg={5}>
-              <Creators id={author} />
-          </Col>
-          <Col sm={5} lg={5}>
-              <Creators id={author} />
-          </Col>
-           <Col sm={1} lg={1} />
           </Row>
-         )} */}
+
+          </Col>
+          <Col sm={1} lg={1} />
+          </Row>
 
 
           <Row className="mt-3">

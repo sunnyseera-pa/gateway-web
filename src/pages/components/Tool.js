@@ -146,6 +146,11 @@ class Tool extends React.Component {
                                 </Col>
 
                                 <Col xs={{ span: 12, order: 1 }} lg={{ span: 12, order: 3 }}>
+                                    {!data.categories.category ? '' : <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{data.categories.category}</div>}
+
+                                    {!data.categories.programmingLanguage || data.categories.programmingLanguage.length <= 0 ? '' : data.categories.programmingLanguage.map((language) => {
+                                        return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{language}</div>
+                                    })}
 
                                     {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
                                         return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{feature}</div>
