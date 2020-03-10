@@ -169,7 +169,6 @@ class ToolDetail extends Component {
               <span className="Black500-16px">Authors ( {data.authors.length} )</span>
             </Col>
           </Row>
-  
           <Row>
           {data.authors.map(author => 
           <Col sm={6} lg={6}>         
@@ -177,7 +176,7 @@ class ToolDetail extends Component {
           </Col>        
          )}
           </Row>
-
+          
           </Col>
           <Col sm={1} lg={1} />
           </Row>

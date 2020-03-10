@@ -21,27 +21,34 @@ const YourAccountForm = (props) => {
     // be called when the form is submitted
     const formik = useFormik({
         initialValues: {
+            id: props.data.id,
+            type: 'person',
             firstname: props.data.firstname,
             lastname: props.data.lastname,
-            email: props.data.email,
+            email: props.userdata.email,
             bio: props.data.bio,
             link: props.data.link,
             orcid: props.data.orcid,
         },
 
         onSubmit: values => {
-            //axios.post(baseURL + '/api/mytools/add', values) // Add API to update
-            window.location.href = '/account?tab=youraccount&accountUpdated=true';
+            // alert(JSON.stringify(values, null, 2));
+            // alert("Form submitted");
+            // console.log('submitting', values); 
+            axios.post(baseURL + '/api/person/edit', values) 
+
+            .then((res) => {
+                window.location.href = '/account?tab=youraccount&accountUpdated=true';
+            });
         }
     });
 
-    
 
     return (
-
+        
         <div>
             {props.isUpdated ? <Alert variant="success" className="mt-3">Done! Your account details have been updated</Alert> : ""}
-                
+            {console.log("id: " + props.data.id)}
             <Row className="mt-2">
                 <Col>
                     <div className="Rectangle">
@@ -56,39 +63,46 @@ const YourAccountForm = (props) => {
                         <div className="Rectangle">
                             <Form.Group className="pb-2">
                                 <Form.Label className="Gray800-14px">First Name</Form.Label>
-                                <Form.Control id="name" name="name" type="text" className="AddFormInput" value={formik.values.firstname} disabled />
+                                <Form.Control id="firstname" name="firstname" type="text" className="AddFormInput" value={formik.values.firstname} disabled />
                             </Form.Group>
 
                             <Form.Group className="pb-2">
                                 <Form.Label className="Gray800-14px">Last Name</Form.Label>
-                                <Form.Control id="name" name="name" type="text" className="AddFormInput" value={formik.values.lastname} disabled />
+                                <Form.Control id="lastname" name="lastname" type="text" className="AddFormInput" value={formik.values.lastname} disabled />
                             </Form.Group>
 
                             <Form.Group className="pb-2">
                                 <Form.Label className="Gray800-14px">Email</Form.Label>
-                                <Form.Control id="name" name="name" type="text" className="AddFormInput" value={formik.values.email} disabled />
+                                <Form.Control id="email" name="email" type="text" className="AddFormInput" value={formik.values.email} disabled />
                             </Form.Group>
 
                             <Form.Group className="pb-2">
                                 <span className="Gray800-14px">Bio (optional)</span>
                                 <br />
                                 <span className="Gray700-13px">This can be the name of your institution or a short description of who you are</span>
-                                <Form.Control id="name" name="name" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.bio} onBlur={formik.handleBlur} />
+                                <Form.Control id="bio" name="bio" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.bio} onBlur={formik.handleBlur} />
                             </Form.Group>
+
+                            {console.log("bio: " + formik.values.bio)}
 
                             <Form.Group className="pb-2">
                                 <span className="Gray800-14px">Link (optional)</span>
                                 <br />
                                 <span className="Gray700-13px">Social media, research gate, anywhere that people can go to find out more about you</span>
-                                <Form.Control id="name" name="name" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.link} onBlur={formik.handleBlur} />
+                                <Form.Control id="link" name="link" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.link} onBlur={formik.handleBlur} />
                             </Form.Group>
+
+                            {console.log("link: " + formik.values.link)}
 
                             <Form.Group className="pb-2">
                                 <span className="Gray800-14px">ORCID (optional)</span>
                                 <br />
                                 <span className="Gray700-13px">Your unique ORCID identifier</span>
-                                <Form.Control id="name" name="name" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.orcid} onBlur={formik.handleBlur} />
+                                <Form.Control id="orcid" name="orcid" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.orcid} onBlur={formik.handleBlur} />
                             </Form.Group>
+
+                            {console.log("orcid: " + formik.values.orcid)}
+
                         </div>
                     </Col>
                 </Row>

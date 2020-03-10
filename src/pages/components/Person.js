@@ -31,7 +31,7 @@ class Person extends React.Component{
                                 <p>
                                     <span className="Black-16px">{data.firstname} {data.lastname}</span>
                                     <br />
-                                    <span className="Gray800-14px">{data.company}</span>
+                                    <span className="Gray800-14px">{data.bio}</span>
                                 </p>
 
                                 <p className="Gray800-14px">

@@ -38,7 +38,7 @@ class PersonTitle extends Component {
                             <Row className="mb-2">
                                 <Col sm={10} className="text-left ">
                                    <p className="Black-20px"> {data.firstname} {data.lastname} </p> 
-                                   <p className="Gray800-14px"> {data.company} </p>
+                                   {!data.bio ? '' : <p className='Gray800-14px'> {data.bio} </p>}
                                 </Col>
                                 <Col sm={2}> 
                                 <PersonPlaceholderSvg /> 
@@ -51,20 +51,45 @@ class PersonTitle extends Component {
                             <Row>
                             <Col sm={12} className="text-left" className="Purple-14px">Link2</Col>
                             </Row>     */}
-                            <Row>
+
+                            {/* <Row>
+                            {!data.bio ? '' :
                               <Col xs={12} md={12}>
-                                <span className='Gray800-14px'> ORCID </span>
-                                <span className='Purple-14px'> 0000-0147-7283-0199 </span>
+                                <span className='Gray800-14px'> {data.bio} </span>
                               </Col>
-                            </Row>
-                {/* UPDATE THE BELOW TO RETURN FROM LINKS ARRAY */}
+                              }
+                            </Row>                                 */}
+                            
                             <Row>
+                            {!data.orcid ? '' :
+                              <Col xs={12} md={12}>
+                              
+                                <span className='Gray800-14px'> ORCID </span>
+                                <span className='Purple-14px'> {data.orcid} </span>
+                              </Col>
+                              }
+                            </Row>
+
+                            <Row>
+                            {!data.link ? '' :
+                              <Col xs={12} md={12}>
+                              <span>
+                              <a href={data.link} className="Purple-14px"> 
+                                  {data.link}
+                              </a>
+                              </span>
+                              </Col>
+                              }
+                            </Row>  
+
+                {/* UPDATE THE BELOW TO RETURN FROM LINKS ARRAY */}
+                            {/* <Row>
                               <Col sm={12}>
                                       {data.tags.length <= 0 ? 'NO SEARCH RESULT': data.tags.map((tag) => {
                                               return  <p className="text-left" className="Purple-14px"> {tag} </p>
                                       })}
                               </Col>
-                            </Row>
+                            </Row> */}
 
                         {/* </Container> */}
                         </Card.Body>

@@ -15,6 +15,7 @@ class YourAccount extends React.Component {
     // initialize our state
     state = {
         data: [],
+        userdata: [],
         userState: [],
         isLoading: true,
         isUpdated: false,
@@ -25,11 +26,26 @@ class YourAccount extends React.Component {
             var values = queryString.parse(window.location.search);
             this.setState({ isUpdated: values.accountUpdated });
         }
+        this.doUserCall();
         this.doYourAccountCall();
     }
 
+    doUserCall() {
+        // axios.get(baseURL + 'api/user/' + this.state.userState[0].id )
+        axios.get(baseURL + '/api/user/12426406323356432')
+
+        .then((res) => {
+            this.setState({
+                userdata: res.data.userdata[0],
+                // isLoading: false
+            });
+        })
+    }
+
     doYourAccountCall() {
-        axios.get(baseURL + '/api/person/' + this.state.userState[0].id)
+        // axios.get(baseURL + '/api/person/' + this.state.userState[0].id)
+        axios.get(baseURL + '/api/person/12426406323356432')
+
             .then((res) => {
                 this.setState({
                     data: res.data.data[0],
@@ -39,7 +55,12 @@ class YourAccount extends React.Component {
     }
 
     render() {
-        const { data, isLoading, isUpdated } = this.state;
+        const { data, isLoading, isUpdated, userdata } = this.state;
+        {console.log('userdata: ' + JSON.stringify(userdata))}
+        {console.log('data: ' + JSON.stringify(data))}
+
+
+        
         
         if (isLoading) {
             return <p>Loading ...</p>;
@@ -47,7 +68,7 @@ class YourAccount extends React.Component {
 
         return (
             <div>
-                <YourAccountForm data={data} isUpdated={isUpdated} />
+                <YourAccountForm data={data} userdata={userdata} isUpdated={isUpdated} />
             </div>
         );
     }
