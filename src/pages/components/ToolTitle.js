@@ -13,27 +13,31 @@ class ToolTitle extends Component {
   constructor(props) {
     super(props)
     this.state.data = props.data;
+    this.state.reviewData = props.reviewData;
+    console.log(props.reviewData)
   }
 
   // initialize our state
   state = {
-    data: []
+    data: [],
+    reviewData: []
   };
 
   // here is our UI
   // it is easy to understand their functions when you
   // see them render into our screen
   render() {
-    const { data } = this.state;
+    const { data, reviewData } = this.state;
     var ratingsTotal = 0;//(!!data.reviews && data.reviews.length > 0) ? data.ratings.reduce((a,b) => a + b, 0) : '';
-    if (data.reviews && data.reviews.length > 0) {
-        data.reviews.forEach(review => {
+    
+    if (reviewData.length > 0) {
+        reviewData.forEach(review => {
             ratingsTotal = ratingsTotal+review.rating;
         });
     }
     
-    const ratingsCount = (!!data.reviews ? data.reviews.length : 0);
-    const avgRating = (!!data.reviews && data.reviews.length > 0) ? (ratingsTotal / ratingsCount) : '';
+    const ratingsCount = (reviewData ? reviewData.length : 0);
+    const avgRating = (reviewData.length > 0) ? (ratingsTotal / ratingsCount) : '';
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     var updatedDate = new Date(data.updatedon);
     var updatedOnDate = monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();

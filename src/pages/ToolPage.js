@@ -13,12 +13,7 @@ import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import 'react-tabs/style/react-tabs.css';
 import DataSet from '../pages/components/DataSet';
-import PersonTitle from '../pages/components/PersonTitle';
-import ToolsUsed from './components/ToolsUsed';
 import Creators from '../pages/components/Creators';
-// import AddProjectPage from './AddProjectPage';
-import AddToolPage from './AddToolPage';
-import ToolInfoReviewForm from './components/ToolInfoReviewForm';
 import queryString from 'query-string';
 import Alert from 'react-bootstrap/Alert';
 import NotFound from './components/NotFound';
@@ -34,6 +29,7 @@ class ToolDetail extends Component {
   state = {
     id: '',
     data: [],
+    reviewData: [],
     key: 'Reviews',
     activeKey: false,
     selectedItem: 'tab-1',
@@ -59,7 +55,7 @@ class ToolDetail extends Component {
       var values = queryString.parse(window.location.search);
       this.setState({ toolAdded: values.toolAdded });
       this.setState({ reviewAdded: values.reviewAdded });
-  }
+    }
     this.getDataSearchFromDb();
   }
 
@@ -78,6 +74,7 @@ class ToolDetail extends Component {
       .then((res) => {
         this.setState({
           data: res.data.data[0],
+          reviewData: res.data.reviewData,
           isLoading: false
         });
       })
@@ -96,7 +93,11 @@ class ToolDetail extends Component {
   }
 
   render() {
-    const { searchString, data, isLoading, userState, toolAdded, reviewAdded } = this.state;
+    const { searchString, data, isLoading, userState, toolAdded, reviewAdded, reviewData } = this.state;
+
+    if (isLoading) {
+      return <p>Loading ...</p>;
+    }
 
     if (typeof data.datasetids === 'undefined') {
       data.datasetids = [];
@@ -106,84 +107,64 @@ class ToolDetail extends Component {
       data.projectids = [];
     }
 
-    if (isLoading) {
-      return <p>Loading ...</p>;
-    }
-
     return (
       <div>
         <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
         <Container className="mb-5">
 
-          {toolAdded ? 
-          <Row className="">
-          <Col sm={1} lg={1} />
-          <Col sm={10} lg={10}>
-          <Alert variant="success" className="mt-3">Done! Someone will review your tool and let you know when it goes live</Alert> 
-          </Col>
-            <Col sm={1} lg={10} />
-          </Row>
-          : ""}
+          {toolAdded ?
+            <Row className="">
+              <Col sm={1} lg={1} />
+              <Col sm={10} lg={10}>
+                <Alert variant="success" className="mt-3">Done! Someone will review your tool and let you know when it goes live</Alert>
+              </Col>
+              <Col sm={1} lg={10} />
+            </Row>
+            : ""}
 
-          {data.activeflag === "review" ? 
-          <Row className="">
-          <Col sm={1} lg={1} />
-          <Col sm={10} lg={10}>
-          <Alert variant="warning" className="mt-3">Your tool is pending review. Only you can see this page.</Alert> 
-          </Col>
-            <Col sm={1} lg={10} />
-          </Row>
-          : ""}
+          {data.activeflag === "review" ?
+            <Row className="">
+              <Col sm={1} lg={1} />
+              <Col sm={10} lg={10}>
+                <Alert variant="warning" className="mt-3">Your tool is pending review. Only you can see this page.</Alert>
+              </Col>
+              <Col sm={1} lg={10} />
+            </Row>
+            : ""}
 
-          {reviewAdded ? 
-          <Row className="">
-          <Col sm={1} lg={1} />
-          <Col sm={10} lg={10}>
-          <Alert variant="success" className="mt-3">Done! Your review has been added.</Alert> 
-          </Col>
-            <Col sm={1} lg={10} />
-          </Row>
-          : ""}
+          {reviewAdded ?
+            <Row className="">
+              <Col sm={1} lg={1} />
+              <Col sm={10} lg={10}>
+                <Alert variant="success" className="mt-3">Done! Your review has been added.</Alert>
+              </Col>
+              <Col sm={1} lg={10} />
+            </Row>
+            : ""}
 
-          {/* <AddProjectPage /> */}
-          {/* <AddToolPage /> */}
-
-          <ToolTitle data={data} />
-          {/* <ToolInfoReviewForm data={data} /> */}
-
-
-          {/* <ul>
-          {data.length <= 0
-            ? 'NO DB ENTRIES YET'
-            : data.map((dat) => (
-                <li style={{ padding: '10px' }} key={data.message}>
-                  <span style={{ color: 'gray' }}> id: </span> {dat.id} <br />
-                </li>
-              ))}
-        </ul> */}
-
+          <ToolTitle data={data} reviewData={reviewData} />
 
           <Row>
-          <Col sm={1} lg={1} />
-          <Col sm={10} lg={10}>
-
-          <Row className="mt-4">
+            <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
-              <span className="Black500-16px">Authors ( {data.authors.length} )</span>
-            </Col>
-          </Row>
-          <Row>
-          {data.authors.map(author => 
-          <Col sm={6} lg={6}>         
-              <Creators id={author} />      
-          </Col>        
-         )}
-          </Row>
-          
-          </Col>
-          <Col sm={1} lg={1} />
-          </Row>
 
+              <Row className="mt-4">
+                <Col sm={10} lg={10}>
+                  <span className="Black500-16px">Authors ( {data.authors.length} )</span>
+                </Col>
+              </Row>
+
+              <Row>
+                {data.persons.map(author =>
+                  <Col sm={6} lg={6}>
+                    <Creators author={author} />
+                  </Col>
+                )}
+              </Row>
+
+            </Col>
+            <Col sm={1} lg={1} />
+          </Row>
 
           <Row className="mt-3">
 
@@ -191,14 +172,14 @@ class ToolDetail extends Component {
             <Col sm={10} lg={10}>
               <div>
                 <Tabs className='TabsBackground Gray700-13px'>
-                  <Tab eventKey="Reviews" title={'Reviews (' + data.reviews.length + ')'}>
-                    <Reviews data={data} userState={userState} />
+                  <Tab eventKey="Reviews" title={'Reviews (' + reviewData.length + ')'}>
+                    <Reviews data={data} userState={userState} reviewData={reviewData} />
                   </Tab>
                   <Tab eventKey="Data sets" title={'Data sets (' + data.datasetids.length + ')'}>
-                  {data.datasetids.length <= 0 ? <NotFound word="data sets" /> : data.datasetids.map(id => <DataSet id={id} />)}
+                    {data.datasetids.length <= 0 ? <NotFound word="data sets" /> : data.datasetids.map(id => <DataSet id={id} />)}
                   </Tab>
                   <Tab eventKey="Projects" title={'Projects (' + data.projectids.length + ')'}>
-                  {data.projectids.length <= 0 ? <NotFound word="projects" /> : data.projectids.map(id => <Project id={id} />)}
+                    {data.projectids.length <= 0 ? <NotFound word="projects" /> : data.projectids.map(id => <Project id={id} />)}
                   </Tab>
                 </Tabs>
               </div>

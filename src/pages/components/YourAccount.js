@@ -31,8 +31,8 @@ class YourAccount extends React.Component {
     }
 
     doUserCall() {
-        // axios.get(baseURL + 'api/user/' + this.state.userState[0].id )
-        axios.get(baseURL + '/api/user/12426406323356432')
+         axios.get(baseURL + 'api/user/' + this.state.userState[0].id )
+        //axios.get(baseURL + '/api/user/12426406323356432')
 
         .then((res) => {
             this.setState({
@@ -43,8 +43,8 @@ class YourAccount extends React.Component {
     }
 
     doYourAccountCall() {
-        // axios.get(baseURL + '/api/person/' + this.state.userState[0].id)
-        axios.get(baseURL + '/api/person/12426406323356432')
+         axios.get(baseURL + '/api/person/' + this.state.userState[0].id)
+        //axios.get(baseURL + '/api/person/12426406323356432')
 
             .then((res) => {
                 this.setState({
