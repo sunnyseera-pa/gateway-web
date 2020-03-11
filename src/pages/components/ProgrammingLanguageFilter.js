@@ -16,8 +16,7 @@ class ProgrammingLanguageFilter extends Component {
   state = {
     languages: [],
     languageSelected: [],
-    combinedLanguages: [],
-    checked: false
+    combinedLanguages: []
   };
 
     constructor(props) {
@@ -28,13 +27,14 @@ class ProgrammingLanguageFilter extends Component {
 
     changeFilter = (e) => {
       this.setState({languageSelected : e.target.value});
+      this.setState({languageSelected : e.target.value});
       
 
       // this.setState(languages.push(languageSelected));
       console.log('here: ' + typeof(e.target.value));
       console.log('this ' + this.state.languageSelected);
       console.log('this is: ' + typeof(this.state.languageSelected));
-      this.tryChange();
+      // this.tryChange();
 
       // this.setState(languageSelected.push(e.target.value));
 
@@ -53,7 +53,7 @@ class ProgrammingLanguageFilter extends Component {
   // see them render into our screen
   render() {
 
-    const { combinedLanguages, languageSelected, selectedItems, items, checked } = this.state;
+    const { combinedLanguages, languageSelected, selectedItems, items } = this.state;
     console.log('help ' + items)
 
     return (
@@ -78,7 +78,7 @@ class ProgrammingLanguageFilter extends Component {
           {combinedLanguages.map((language) => {
               return <InputGroup className="mb-3">
                     <InputGroup.Prepend>
-                      <InputGroup.Checkbox aria-label="Checkbox for following text input" checked={true} value={language} onChange={this.changeFilter} />
+                      <InputGroup.Checkbox aria-label="Checkbox for following text input" value={language} onChange={this.changeFilter} />
                     </InputGroup.Prepend>
                     <FormText className="ml-2 pb-4">{language}</FormText>
                    </InputGroup>
