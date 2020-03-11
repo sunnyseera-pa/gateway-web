@@ -121,6 +121,9 @@ class SearchPage extends React.Component {
         this.setState({ typeString: typeString });
     }
 
+    updateCombinedLanguages = (combinedLanguages) => {
+        this.setState({combinedLanguages});
+    }
 
     render() {
         const { searchString, typeString, data, summary, userState, isLoading, combinedLanguages } = this.state;
@@ -138,7 +141,9 @@ class SearchPage extends React.Component {
                     <Row>
                         <Col sm={12} md={12} lg={3}>
                             <FilterButtons typeString={typeString} doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString} />
+                            {/* <ProgrammingLanguageFilter combinedLanguages={combinedLanguages} doUpdateCombinedLanguages={this.updateCombinedLanguages} doCallTypeString={this.callTypeString}/> */}
                             <ProgrammingLanguageFilter combinedLanguages={combinedLanguages} />
+
                         </Col>
                         
                         <Col sm={12} md={12} lg={9}>
