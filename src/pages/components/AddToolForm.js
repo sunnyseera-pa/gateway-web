@@ -474,7 +474,7 @@ var baseURL = require('./../../BaseURL').getURL();
                                                 selectedItem.customOption == true ? tempSelected.push(selectedItem.topics) : tempSelected.push(selectedItem);
                                                 
                                             } )
-                                           
+                                        
                                             formik.values.tags.topics = tempSelected; 
                                         }} 
 

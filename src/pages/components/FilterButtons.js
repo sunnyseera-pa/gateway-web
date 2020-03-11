@@ -32,9 +32,9 @@ class FilterButtons extends Component {
             <Col xs={7}>
                 <span>Filter</span>
             </Col>
-            <Col xs={2}>
+            {/* <Col xs={2}>
                 <span className="Purple-14px">Hide</span>
-            </Col>
+            </Col> */}
         </Row>
         <Row className="mt-3">
             <Col xs={2}></Col>

@@ -33,14 +33,6 @@ class EditToolPage extends React.Component {
 
  // on loading of tool detail page
  async componentDidMount() {
-  // componentDidMount() {
-  //   this.getDataSearchFromDb();
-  //   this.doGetTopicsCall();
-  //   this.doGetFeaturesCall();
-  //   this.doGetLanguagesCall();
-  //   this.doGetCategoriesCall();
-  //   this.doGetLicensesCall();
-  //   this.doGetUsersCall();
 
   await Promise.all([
     this.doGetTopicsCall(), 

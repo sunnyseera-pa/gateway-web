@@ -12,6 +12,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 // import ToolTitle from './components/ToolTitle';
 import FilterButtons from './components/FilterButtons';
+import ProgrammingLanguageFilter from './components/ProgrammingLanguageFilter';
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -22,6 +23,7 @@ class SearchPage extends React.Component {
         typeString: null,
         data: [],
         summary: [],
+        combinedLanguages:[],
         isLoading: true,
         userState: [{
             loggedIn: false,
@@ -40,12 +42,14 @@ class SearchPage extends React.Component {
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
             this.doSearchCall(values.search, values.type);
+            this.doGetLanguagesCall();
             this.setState({ searchString: values.search });
             this.setState({ typeString: values.type });
         }
         else {
             this.setState({ data: [], searchString: '', typeString: 'all', isLoading: true });
             this.doSearchCall("", "all");
+            this.doGetLanguagesCall();
         }
     }
 
@@ -84,11 +88,29 @@ class SearchPage extends React.Component {
     } 
 
     doSearchCall(searchString, typeString) {
+        //var searchURL - build url here? loop through langauge array and append any (&programmingLanguage=languageValue) if they exist?
+        var searchURL = baseURL + '/api/search?search=' + searchString + '&type=' + typeString;
+        //UPDATE TO COMBINED LANGUAGES ARRAY ONCE MULTISELECT WORKS
+  /*       var tempCombinedLanguages = ['Java', 'Python'];
+        tempCombinedLanguages.map(language => {
+            searchURL += '&programmingLanguage=' + language;
+        }); */
         this.setState({ isLoading: true });
-        axios.get(baseURL + '/api/search?search=' + searchString + '&type=' + typeString)
+        // axios.get(baseURL + '/api/search?search=' + searchString + '&type=' + typeString)
+        axios.get(searchURL)
             .then((res) => {
                 this.setState({ data: res.data.data, summary: Object.entries(res.data.summary), isLoading: false });
             });
+    }
+
+    
+    doGetLanguagesCall(){
+        axios.get(baseURL+'/api/getAllLanguages/tool')
+        .then((res) =>{
+            this.setState({combinedLanguages: res.data.data});
+            this.setState({isLoading: false}); 
+            console.log("test3: " + JSON.stringify(res.data.data));
+        });
     }
 
     updateSearchString = (searchString) => {
@@ -101,7 +123,7 @@ class SearchPage extends React.Component {
 
 
     render() {
-        const { searchString, typeString, data, summary, userState, isLoading } = this.state;
+        const { searchString, typeString, data, summary, userState, isLoading, combinedLanguages } = this.state;
         
         if (isLoading) {
             return <p>Loading ...</p>;
@@ -116,6 +138,7 @@ class SearchPage extends React.Component {
                     <Row>
                         <Col sm={12} md={12} lg={3}>
                             <FilterButtons typeString={typeString} doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString} />
+                            <ProgrammingLanguageFilter combinedLanguages={combinedLanguages} />
                         </Col>
                         
                         <Col sm={12} md={12} lg={9}>
