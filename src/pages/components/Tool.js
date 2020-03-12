@@ -79,26 +79,29 @@ class Tool extends React.Component {
         return (
             <Row className="mt-2">
                 <Col>
-                    <a className="searchHolder" href={'/tool/' + data.id} >
+                    
                         <div className="Rectangle">
                             <Row>
+                               
                                 <Col xs={2} lg={1} className="iconHolder">
                                     <SVGIcon name="toolicon" width={18} height={18} fill={'#3db28c'} />
                                 </Col>
                                 <Col xs={10} lg={8}>
                                     <p>
-                                        <span className="Black-16px">{data.name.substr(0, 75) + (data.name.length > 75 ? '...' : '')}</span>
+                                        <span className="Black-16px"> <a className="searchHolder" href={'/tool/' + data.id} >{data.name.substr(0, 75) + (data.name.length > 75 ? '...' : '')}</a></span>
+                                        <br />
                                         <span className="Gray500-13px">
-                                            <span className="Gray500-13px ml-3">
+                                            <span className="Gray500-13px">
                                                 {!!ratingsTotal && ratingsCount == 1 ? ratingsCount + ' review' : ratingsCount + ' reviews'}
                                                 <span className="reviewTitleGap">·</span>
                                                 {avgRating == 0 ? 'No average rating' : (Math.round(avgRating * 10) / 10) + ' average'}
                                             </span>
                                         </span>
                                         <br />
+                                        <br />
                                         <span className="Gray800-14px"> 
                                             {data.persons <= 0 ? 'Author not listed': data.persons.map((person) => {
-                                                return  <span className="Purple-14px">{person.firstname} {person.lastname} </span>
+                                                return  <span className="Purple-14px"><a href={'/person/'+person.id}>{person.firstname} {person.lastname} </a></span>
                                             })}
                                         </span>
                                     </p>
@@ -144,24 +147,24 @@ class Tool extends React.Component {
                                 </Col>
 
                                 <Col xs={{ span: 12, order: 1 }} lg={{ span: 12, order: 3 }}>
-                                    {!data.categories.category ? '' : <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{data.categories.category}</div>}
+                                    {!data.categories.category ? '' : <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2"><a href={'/search?search='+data.categories.category+'&type=all'}>{data.categories.category}</a></div>}
 
                                     {!data.categories.programmingLanguage || data.categories.programmingLanguage.length <= 0 ? '' : data.categories.programmingLanguage.map((language) => {
-                                        return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{language}</div>
+                                        return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2"><a href={'/search?search='+language+'&type=all'}>{language}</a></div>
                                     })}
 
                                     {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
-                                        return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{feature}</div>
+                                        return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2"><a href={'/search?search='+feature+'&type=all'}>{feature}</a></div>
                                     })}
 
                                     {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
-                                        return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{topic}</div>
+                                        return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2"><a href={'/search?search='+topic+'&type=all'}>{topic}</a></div>
                                     })}
 
                                 </Col>
                             </Row>
                         </div>
-                    </a>
+                    
                 </Col>
             </Row>
 
