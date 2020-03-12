@@ -1,18 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import axios from 'axios';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import SVGIcon from "../../images/SVGIcon";
 import Button from 'react-bootstrap/Button';
-import ToolsHeader from './ToolsHeader';
-import ActiveTool from './ActiveTool';
-import ArchivedTool from './ArchivedTool';
-import PendingTools from './PendingTools';
-import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert'
-import Form, { FormRow } from 'react-bootstrap/Form';
+import Form from 'react-bootstrap/Form';
 import { useFormik } from 'formik';
-import * as Yup from 'yup';
 
 var baseURL = require('./../../BaseURL').getURL();
 
@@ -32,23 +25,18 @@ const YourAccountForm = (props) => {
         },
 
         onSubmit: values => {
-            // alert(JSON.stringify(values, null, 2));
-            // alert("Form submitted");
-            // console.log('submitting', values); 
-            axios.post(baseURL + '/api/person/edit', values) 
-
-            .then((res) => {
-                window.location.href = '/account?tab=youraccount&accountUpdated=true';
-            });
+            axios.post(baseURL + '/api/person/edit', values)
+                .then((res) => {
+                    window.location.href = '/account?tab=youraccount&accountUpdated=true';
+                });
         }
     });
 
 
     return (
-        
+
         <div>
             {props.isUpdated ? <Alert variant="success" className="mt-3">Done! Your account details have been updated</Alert> : ""}
-            {console.log("id: " + props.data.id)}
             <Row className="mt-2">
                 <Col>
                     <div className="Rectangle">
@@ -83,8 +71,6 @@ const YourAccountForm = (props) => {
                                 <Form.Control id="bio" name="bio" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.bio} onBlur={formik.handleBlur} />
                             </Form.Group>
 
-                            {console.log("bio: " + formik.values.bio)}
-
                             <Form.Group className="pb-2">
                                 <span className="Gray800-14px">Link (optional)</span>
                                 <br />
@@ -92,16 +78,12 @@ const YourAccountForm = (props) => {
                                 <Form.Control id="link" name="link" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.link} onBlur={formik.handleBlur} />
                             </Form.Group>
 
-                            {console.log("link: " + formik.values.link)}
-
                             <Form.Group className="pb-2">
                                 <span className="Gray800-14px">ORCID (optional)</span>
                                 <br />
                                 <span className="Gray700-13px">Your unique ORCID identifier</span>
                                 <Form.Control id="orcid" name="orcid" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.orcid} onBlur={formik.handleBlur} />
                             </Form.Group>
-
-                            {console.log("orcid: " + formik.values.orcid)}
 
                         </div>
                     </Col>

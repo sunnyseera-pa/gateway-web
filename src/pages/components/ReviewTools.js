@@ -5,10 +5,6 @@ import Col from 'react-bootstrap/Col';
 import SVGIcon from "../../images/SVGIcon";
 import Button from 'react-bootstrap/Button';
 import ToolsHeader from './ToolsHeader';
-import ActiveTool from './ActiveTool';
-import ArchivedTool from './ArchivedTool';
-import PendingTools from './PendingTools';
-import Container from 'react-bootstrap/Container';
 import NotFound from './NotFound';
 import Collapse from 'react-bootstrap/Collapse'
 
@@ -89,8 +85,7 @@ class ReviewTools extends React.Component {
                 <Row>
                     <Col>
                         {data.length <= 0 ? <NotFound word='reviews' /> : data.map((dat) => {
-                            return (<a /* href={'/tool/'+dat.id} */>
-
+                            return (<a href="#">
                                 <ReviewReview dat={dat} userState={userState[0]} />
                             </a>)
                         })}

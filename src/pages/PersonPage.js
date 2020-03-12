@@ -3,12 +3,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import PersonTitle from './components/PersonTitle';
-import Tags from './components/Tags';
-import Reviews from './components/Reviews';
-import Creators from './components/Creators';
 import Project from './components/Project';
-import ToolsUsed from './components/ToolsUsed';
-import ToolsCreated from './components/ToolsCreated';
 import Container from 'react-bootstrap/Container';
 import SearchBar from './components/SearchBar';
 import Row from 'react-bootstrap/Row';
@@ -19,20 +14,6 @@ import Tab from 'react-bootstrap/Tab';
 import DataSet from '../pages/components/DataSet';
 
 var baseURL = require('./../BaseURL').getURL();
-
-/* 
-{"success":true,"data":[
-  {"tags":["Host","Repository"],
-  "_id":"5e3beea31c9d440000e8d49a",
-  "id":17383930,
-  "type":"tool",
-  "name":"Github GISTs",
-  "description":"Development platform to host and review code, and to manage projects to build software, as well as to share code, notes and snippets across a community developers.",
-  "rating":4,
-  "link":"https://gist.github.com/discover",
-  "_v":0}]
-}
-*/
 
 class PersonDetail extends Component {
 
@@ -62,7 +43,7 @@ class PersonDetail extends Component {
 
   // on loading of tool detail page were id is different
   componentDidUpdate() {
-    if (this.props.match.params.personID != this.state.id && this.state.id != '' && !this.state.isLoading) {
+    if (this.props.match.params.personID !== this.state.id && this.state.id !== '' && !this.state.isLoading) {
       this.getDataSearchFromDb();
     }
   }

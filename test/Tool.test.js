@@ -8,20 +8,8 @@ Enzyme.configure({ adapter: new Adapter() });
 
 describe('Tool', () => {
     it('renders without crashing', () => {
-        var dataTool = {
-          "tags": [
-            "Programming language", "Software/Package"
-          ],
-          "_id": "5e3bf4231c9d440000e8d4a8",
-          "id": 89522470,
-          "type": "tool",
-          "name": "Homebrew",
-          "description": "Provision of packages that you need but not available on your operating system (e.g. Apple MacOS or Linux system).",
-          "rating": 5,
-          "link": "https://homebrew.link",
-          "creator": [89522471],
-          "_v": 0
-        };
+        var dataTool = {"_id":{"$oid":"5e67aeba61033f6b1afd1a3f"},"categories":{"programmingLanguage":[""],"category":"","programmingLanguageVersion":""},"tags":{"features":[""],"topics":[""]},"authors":[{"$numberLong":"7445336375688558"}],"reviews":[""],"id":{"$numberDouble":"255199130616951"},"type":"tool","name":"testing123","link":"testing123","description":"testing123","license":"","activeflag":"active","updatedon":{"$date":{"$numberLong":"1583853242073"}},"createdAt":{"$date":{"$numberLong":"1583853242076"}},"updatedAt":{"$date":{"$numberLong":"1583853278278"}},"__v":{"$numberInt":"0"},"persons":[]};
         const wrapper = mount(<Tool data={dataTool}/>);
     });
 });
+

@@ -11,7 +11,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 var baseURL = require('./../BaseURL').getURL();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-    <a href="" className="landingPageAccountText" ref={ref} onClick={e => { e.preventDefault(); onClick(e); }} >
+    <a href="#" className="landingPageAccountText" ref={ref} onClick={e => { e.preventDefault(); onClick(e); }} >
         {children}
         <span className="accountDropDownGap"></span>< ArrowDownSvg />
     </a>
@@ -96,7 +96,7 @@ class LandingPage extends React.Component{
     }
 
     render(){
-        const {searchString, data, userState, isLoading } = this.state;
+        const {data, userState, isLoading } = this.state;
 
         if (isLoading) {
             return <p>Loading ...</p>;

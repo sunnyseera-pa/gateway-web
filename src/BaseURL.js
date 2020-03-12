@@ -7,7 +7,7 @@ module.exports = {
             return window.location.origin;
 
         } else if (!thisBaseURL.includes('localhost')) {
-        var rx = /^([http|https]+\:\/\/[a-z]+)([^/]*)/;
+        var rx = /^([http|https]+:\/\/[a-z]+)([^/]*)/;
         var arr = rx.exec(thisBaseURL);
         if (arr.length > 0) {
             //add -api to the sub domain for API requests

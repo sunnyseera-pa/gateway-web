@@ -7,7 +7,6 @@ class NotFound extends React.Component{
     constructor(props) {
         super(props)
         this.state.word = props.word;
-        {console.log('word is: ' + props.word)}
     }
 
     state = {

@@ -1,27 +1,18 @@
 // /ShowObjects.js
 import React, { Component } from 'react';
-import axios from 'axios';
 import SearchBar from './components/SearchBar';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
-import TabContent from 'react-bootstrap/TabContent';
-import TabPane from 'react-bootstrap/TabPane';
-import Form, { FormRow } from 'react-bootstrap/Form';
-// import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
-import Button from 'react-bootstrap/Button';
 import AccountTools from './components/AccountTools';
 import ReviewTools from './components/ReviewTools';
-import Reviews from './components/Reviews';
 import DataSet from './components/DataSet';
 import YourAccount from './components/YourAccount';
 import queryString from 'query-string';
 import Alert from 'react-bootstrap/Alert'
-
-var baseURL = require('./../BaseURL').getURL();
 
 class Account extends Component {
 
@@ -50,7 +41,7 @@ class Account extends Component {
     componentDidMount() {
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
-            if (values.tab != this.state.key) {
+            if (values.tab !== this.state.key) {
                 this.setState({ key: values.tab });
                 this.setState({ isDeleted: values.toolDeleted });
                 this.setState({ isApproved: values.toolApproved });
@@ -64,7 +55,7 @@ class Account extends Component {
     componentWillReceiveProps() {
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
-            if (values.tab != this.state.key) {
+            if (values.tab !== this.state.key) {
                 this.setState({ key: values.tab });
                 this.setState({ isDeleted: values.accountDeleted });
                 this.setState({ isApproved: values.toolApproved });
