@@ -227,6 +227,24 @@ body {
   padding: 10px;
 }
 
+/* #AdFilters{
+  max-height: 228px;
+  overflow-y: scroll;
+} */
+
+#StickyTitle{
+  /* position: sticky; */
+  position: fixed;
+}
+
+.AdFilters{
+  box-shadow: 1px 1px 3px 0 #00000017;
+  background-color: #ffffff;
+  padding: 10px;
+  max-height: 228px;
+  overflow-y: scroll;
+}
+
 #TagItem{
   list-style-type: none;
 }

@@ -8,13 +8,14 @@ import Card from 'react-bootstrap/Card';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 import FormText from 'react-bootstrap/FormText';
+// import { Sticky } from 'semantic-ui-react';
 // import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes';
 // import MultiSelect from "@kenshooui/react-multi-select";
 
 class ProgrammingLanguageFilter extends Component {
   // initialize our state
   state = {
-    languages: [],
+    // languages: [],
     languageSelected: [],
     combinedLanguages: []
   };
@@ -22,30 +23,39 @@ class ProgrammingLanguageFilter extends Component {
     constructor(props) {
         super(props);
         this.state.combinedLanguages = props.combinedLanguages;
-        this.state.items = props.combinedLanguages;
+        this.state.languageSelected = props.languageSelected;
     }
 
     changeFilter = (e) => {
-      this.setState({languageSelected : e.target.value});
-      this.setState({languageSelected : e.target.value});
-      
-
+      // this.setState({languageSelected : e.target.value});
       // this.setState(languages.push(languageSelected));
-      console.log('here: ' + typeof(e.target.value));
-      console.log('this ' + this.state.languageSelected);
-      console.log('this is: ' + typeof(this.state.languageSelected));
-      // this.tryChange();
+     // this.setState(languageSelected.push(e.target.value));
 
-      // this.setState(languageSelected.push(e.target.value));
+      // current array of options
+      const languageSelected = this.state.languageSelected
+      let index
 
-      // this.props.doUpdateCombinedLanguages(e.target.value);
+      // check if the check box is checked or unchecked
+      if (e.target.checked) {
+        // add the numerical value of the checkbox to options array
+        languageSelected.push(e.target.value)
+      } else {
+        // or remove the value from the unchecked checkbox from the array
+        index = languageSelected.indexOf(e.target.value)
+        languageSelected.splice(index, 1)
+      }
+
+      // update the state with the new array of options
+      this.setState({ languageSelected: languageSelected })
+      
+      console.log('languageSelected = ' + this.state.languageSelected);
+      this.props.doUpdateCombinedLanguages(languageSelected);
       // this.props.doCallTypeString(e.target.value);
   }
 
-  tryChange = (languages, languageSelected) => {
-    console.log('languages are: ' + languages);
-    // this.setState(languages.push(languageSelected));
-  }
+  // handleSubmit = () => {
+
+  // }
 
   
   // here is our UI
@@ -53,53 +63,39 @@ class ProgrammingLanguageFilter extends Component {
   // see them render into our screen
   render() {
 
-    const { combinedLanguages, languageSelected, selectedItems, items } = this.state;
-    console.log('help ' + items)
+    const { combinedLanguages, languageSelected } = this.state;
 
     return (
-    <div className="FilterCard mt-2 Gray800-14px">
+    <div className="AdFilters mt-2 Gray800-14px">
        {console.log('combinedLanguages are: ' + combinedLanguages)}
 
        {combinedLanguages.map((language) => {
             console.log('language: ' + language)
         })}
-      
-      <Row className="mt-2">
+    
+      <Row className="mt-2 mb-5"  >
             <Col xs={1}></Col>
             <Col xs={9}>
-                <span>Programming Language</span>
+                <span id="StickyTitle">Programming Language</span>
             </Col>
         </Row>
       
       <Row className="mt-3">
           <Col xs={2}></Col>
           <Col xs={10}>  
+          {/* <Form onSubmit={this.handleSubmit}> */}
 
           {combinedLanguages.map((language) => {
               return <InputGroup className="mb-3">
                     <InputGroup.Prepend>
-                      <InputGroup.Checkbox aria-label="Checkbox for following text input" value={language} onChange={this.changeFilter} />
+                      <InputGroup.Checkbox aria-label="Checkbox for following text input" name="programmingLanguage" checked={languageSelected.indexOf(language)!=-1 ? "true": ""} value={language} onChange={this.changeFilter} />
                     </InputGroup.Prepend>
                     <FormText className="ml-2 pb-4">{language}</FormText>
                    </InputGroup>
           })}
         
+        {/* </Form> */}
 
-
-
-{/*               {combinedLanguages.map((language) => {
-                    return  <Form.Check
-                      type="radio"
-                      label={language}
-                      name="formLanguageRadios"
-                      id="formLanguageRadios"
-                      select multiple = {true}
-                      // checked={this.props.languageSelected === {language} ? true: false}
-                      value={language}
-                      // value={languageSelected.push(language)}
-                      onChange={this.changeFilter}
-                    />  
-                })} */}
                 {console.log('language Selected: ' + languageSelected)}
             </Col>
         </Row> 

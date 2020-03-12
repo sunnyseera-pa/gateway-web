@@ -13,6 +13,7 @@ import Col from 'react-bootstrap/Col';
 // import ToolTitle from './components/ToolTitle';
 import FilterButtons from './components/FilterButtons';
 import ProgrammingLanguageFilter from './components/ProgrammingLanguageFilter';
+import CategoryFilter from './components/CategoryFilter';
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -24,6 +25,8 @@ class SearchPage extends React.Component {
         data: [],
         summary: [],
         combinedLanguages:[],
+        combinedCategories:[],
+        languageSelected: [],
         isLoading: true,
         userState: [{
             loggedIn: false,
@@ -41,15 +44,17 @@ class SearchPage extends React.Component {
     componentDidMount() { //fires on first time in or page is refreshed/url loaded
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
-            this.doSearchCall(values.search, values.type);
+            this.doSearchCall(values.search, values.type, this.state.languageSelected);
             this.doGetLanguagesCall();
+            this.doGetCategoriesCall();
             this.setState({ searchString: values.search });
             this.setState({ typeString: values.type });
         }
         else {
             this.setState({ data: [], searchString: '', typeString: 'all', isLoading: true });
-            this.doSearchCall("", "all");
+            this.doSearchCall("", "all", []);
             this.doGetLanguagesCall();
+            this.doGetCategoriesCall();
         }
     }
 
@@ -58,14 +63,14 @@ class SearchPage extends React.Component {
             var values = queryString.parse(window.location.search);
             if (values.search != this.state.searchString
                 || values.type != this.state.typeString) {
-                this.doSearchCall(values.search, values.type);
+                this.doSearchCall(values.search, values.type, this.state.languageSelected);
                 this.state.searchString = values.search;
                 this.state.typeString = values.type;
             }
         }
         else {
             this.setState({ data: [], searchString: '', typeString: 'all', isLoading: true });
-            this.doSearchCall("", "all");
+            this.doSearchCall("", "all", []);
         }
     }
 
@@ -73,28 +78,30 @@ class SearchPage extends React.Component {
         if (e.key === 'Enter') {
             if (!!this.state.searchString && !!this.state.typeString) {
                 this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString)
-                this.doSearchCall(this.state.searchString, this.state.typeString);
+                this.doSearchCall(this.state.searchString, this.state.typeString, this.state.languageSelected);
             }
             else if (!!this.state.searchString && !this.state.typeString) {
                 this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=all')
-                this.doSearchCall(this.state.searchString, "");
+                this.doSearchCall(this.state.searchString, "", this.state.languageSelected);
             }
         }
     }
 
     callTypeString = (typeString) => {
         this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + typeString)
-        this.doSearchCall(this.state.searchString, typeString);
+        this.doSearchCall(this.state.searchString, typeString, this.state.languageSelected);
     } 
 
-    doSearchCall(searchString, typeString) {
+    doSearchCall(searchString, typeString, languageSelected) {
         //var searchURL - build url here? loop through langauge array and append any (&programmingLanguage=languageValue) if they exist?
         var searchURL = baseURL + '/api/search?search=' + searchString + '&type=' + typeString;
         //UPDATE TO COMBINED LANGUAGES ARRAY ONCE MULTISELECT WORKS
-  /*       var tempCombinedLanguages = ['Java', 'Python'];
-        tempCombinedLanguages.map(language => {
+        // var tempCombinedLanguages = languageSelected;
+        // tempCombinedLanguages.map(language => {
+            languageSelected.map(language => {
+        
             searchURL += '&programmingLanguage=' + language;
-        }); */
+        });
         this.setState({ isLoading: true });
         // axios.get(baseURL + '/api/search?search=' + searchString + '&type=' + typeString)
         axios.get(searchURL)
@@ -113,6 +120,15 @@ class SearchPage extends React.Component {
         });
     }
 
+    doGetCategoriesCall(){
+        axios.get(baseURL+'/api/getAllCategories/tool')
+        .then((res) =>{
+            this.setState({combinedCategories: res.data.data});
+            this.setState({isLoading: false}); 
+            console.log("test5: " + JSON.stringify(res.data.data));
+        });
+    }
+
     updateSearchString = (searchString) => {
         this.setState({ searchString: searchString });
     }
@@ -121,12 +137,13 @@ class SearchPage extends React.Component {
         this.setState({ typeString: typeString });
     }
 
-    updateCombinedLanguages = (combinedLanguages) => {
-        this.setState({combinedLanguages});
+    updateCombinedLanguages = (languageSelected) => {
+        this.setState({languageSelected: languageSelected});
+        this.doSearchCall(this.state.searchString, this.state.typeString,  languageSelected);
     }
 
     render() {
-        const { searchString, typeString, data, summary, userState, isLoading, combinedLanguages } = this.state;
+        const { searchString, typeString, data, summary, userState, isLoading, combinedLanguages, languageSelected, combinedCategories } = this.state;
         
         if (isLoading) {
             return <p>Loading ...</p>;
@@ -141,9 +158,9 @@ class SearchPage extends React.Component {
                     <Row>
                         <Col sm={12} md={12} lg={3}>
                             <FilterButtons typeString={typeString} doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString} />
-                            {/* <ProgrammingLanguageFilter combinedLanguages={combinedLanguages} doUpdateCombinedLanguages={this.updateCombinedLanguages} doCallTypeString={this.callTypeString}/> */}
-                            <ProgrammingLanguageFilter combinedLanguages={combinedLanguages} />
-
+                            <ProgrammingLanguageFilter combinedLanguages={combinedLanguages} doUpdateCombinedLanguages={this.updateCombinedLanguages} doCallTypeString={this.callTypeString} languageSelected={languageSelected}/>
+                            {/* <ProgrammingLanguageFilter combinedLanguages={combinedLanguages} /> */}
+                            {/* <CategoryFilter combinedCategories={combinedCategories} /> */}
                         </Col>
                         
                         <Col sm={12} md={12} lg={9}>
