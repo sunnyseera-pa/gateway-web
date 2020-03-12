@@ -106,6 +106,7 @@ class SearchPage extends React.Component {
         // axios.get(baseURL + '/api/search?search=' + searchString + '&type=' + typeString)
         axios.get(searchURL)
             .then((res) => {
+                console.log(res.data.data)
                 this.setState({ data: res.data.data, summary: Object.entries(res.data.summary), isLoading: false });
             });
     }

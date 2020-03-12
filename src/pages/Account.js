@@ -14,6 +14,7 @@ import Form, { FormRow } from 'react-bootstrap/Form';
 import 'react-tabs/style/react-tabs.css';
 import Button from 'react-bootstrap/Button';
 import AccountTools from './components/AccountTools';
+import ReviewTools from './components/ReviewTools';
 import Reviews from './components/Reviews';
 import DataSet from './components/DataSet';
 import YourAccount from './components/YourAccount';
@@ -54,6 +55,8 @@ class Account extends Component {
                 this.setState({ isDeleted: values.toolDeleted });
                 this.setState({ isApproved: values.toolApproved });
                 this.setState({ isRejected: values.toolRejected });
+                this.setState({ isReviewApproved: values.reviewApproved });
+                this.setState({ isReviewRejected: values.reviewRejected });
             }
         }
     }
@@ -66,6 +69,8 @@ class Account extends Component {
                 this.setState({ isDeleted: values.accountDeleted });
                 this.setState({ isApproved: values.toolApproved });
                 this.setState({ isRejected: values.toolRejected });
+                this.setState({ isReviewApproved: values.reviewApproved });
+                this.setState({ isReviewRejected: values.reviewRejected });
             }
         }
     }
@@ -88,7 +93,7 @@ class Account extends Component {
     }
 
     render() {
-        const { searchString, data, userState, isDeleted, isApproved, isRejected } = this.state;
+        const { searchString, data, userState, isDeleted, isApproved, isRejected, isReviewApproved, isReviewRejected } = this.state;
 
         if (typeof data.datasetids === 'undefined') {
             data.datasetids = [];
@@ -136,6 +141,26 @@ class Account extends Component {
                         </Row>
                         : ""}
 
+                    {isReviewApproved ?
+                        <Row className="">
+                            <Col sm={1} lg={1} />
+                            <Col sm={10} lg={10}>
+                                <Alert variant="success" className="mt-3">Done! The review has been approved and is now live.</Alert>
+                            </Col>
+                            <Col sm={1} lg={10} />
+                        </Row>
+                        : ""}
+
+                    {isReviewRejected ?
+                        <Row className="">
+                            <Col sm={1} lg={1} />
+                            <Col sm={10} lg={10}>
+                                <Alert variant="success" className="mt-3">Done! This review has been rejected and is now deleted</Alert>
+                            </Col>
+                            <Col sm={1} lg={10} />
+                        </Row>
+                        : ""}
+
 
 
 
@@ -158,7 +183,7 @@ class Account extends Component {
                                         <AccountTools userState={userState} />
                                     </Tab>
                                     <Tab eventKey="reviews" title="Reviews">
-                                        Placeholder
+                                        <ReviewTools userState={userState} />
                                     </Tab>
                                 </Tabs>
                             </div>

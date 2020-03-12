@@ -55,6 +55,7 @@ class ProjectDetail extends Component {
     this.setState({ isLoading: true });
     axios.get(baseURL + '/api/project/' + this.props.match.params.projectID)
       .then((res) => {
+        console.log(res.data.data[0])
         this.setState({
           data: res.data.data[0],
           isLoading: false
@@ -109,12 +110,12 @@ class ProjectDetail extends Component {
             </Col>
           </Row>
           <Row>
-          {data.authors.map(author => 
-          <Col sm={6} lg={6}>         
-              <Creators id={author} />      
-          </Col>        
-         )}
-          </Row>
+                {data.persons.map(author =>
+                  <Col sm={6} lg={6}>
+                    <Creators author={author} />
+                  </Col>
+                )}
+              </Row>
           </Col>
           <Col sm={1} lg={1} />
           </Row>

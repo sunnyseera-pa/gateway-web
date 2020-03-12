@@ -28,6 +28,7 @@ class PendingTools extends React.Component {
         if (this.state.userState[0].role === "Admin") {
             axios.get(baseURL + '/api/accountsearchadmin?type=tool&toolState=review')
                 .then((res) => {
+                    console.log(res.data.data)
                     this.setState({ data: res.data.data, isLoading: false });
                 });
         }
@@ -63,7 +64,7 @@ class PendingTools extends React.Component {
 
     render() {
         const { data, isLoading, userState } = this.state;
-
+        
         if (isLoading) {
             return <p>Loading ...</p>;
         }
@@ -75,7 +76,11 @@ class PendingTools extends React.Component {
                         <div className="Rectangle mt-1">
                             <Row>
                                 <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/tool/'+dat.id} >{dat.name}</a></Col>
-                                <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold"> Author </Col>
+                                <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold"> 
+                                {dat.persons <= 0 ? 'Author not listed': dat.persons.map((person) => {
+                                    return  <span>{person.firstname} {person.lastname} <br /></span>
+                                })}
+                                </Col>
                                 <Col sm={12} lg={5} className="pl-5 toolsButtons">
                                     {userState[0].role === 'Admin' ?
                                         <div>

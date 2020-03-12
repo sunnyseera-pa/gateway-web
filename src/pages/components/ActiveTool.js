@@ -57,10 +57,16 @@ class ActiveTool extends React.Component {
             <Row className="mt-1">
                 <Col>
                     {data.length <= 0 ? <NotFound word="tools" /> : data.map((dat) => {
-                        return (<div className="Rectangle mt-1">
+                            return (<div className="Rectangle mt-1">
                             <Row>
                                 <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/tool/'+dat.id} >{dat.name}</a></Col>
-                                <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold"> Author </Col>
+                                <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold">
+                                {dat.persons <= 0 ? 'Author not listed': dat.persons.map((person) => {
+                                    return  <span>{person.firstname} {person.lastname} <br /></span>
+                                })}
+                                </Col>
+                                
+                                
                                 <Col sm={12} lg={5} className="pl-5 toolsButtons">
                                     <DeleteButton id={dat.id} />
                                     <Button variant='white' href={'/edittool/' + dat.id} className="AccountButtons" >
