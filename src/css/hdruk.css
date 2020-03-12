@@ -233,8 +233,8 @@ body {
 } */
 
 #StickyTitle{
-  /* position: sticky; */
-  position: fixed;
+  position: sticky;
+  /* position: fixed; */
 }
 
 .AdFilters{

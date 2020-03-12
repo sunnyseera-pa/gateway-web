@@ -13,7 +13,7 @@ import Col from 'react-bootstrap/Col';
 // import ToolTitle from './components/ToolTitle';
 import FilterButtons from './components/FilterButtons';
 import ProgrammingLanguageFilter from './components/ProgrammingLanguageFilter';
-import CategoryFilter from './components/CategoryFilter';
+// import CategoryFilter from './components/CategoryFilter';
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -25,7 +25,7 @@ class SearchPage extends React.Component {
         data: [],
         summary: [],
         combinedLanguages:[],
-        combinedCategories:[],
+        // combinedCategories:[],
         languageSelected: [],
         isLoading: true,
         userState: [{
@@ -46,7 +46,7 @@ class SearchPage extends React.Component {
             var values = queryString.parse(window.location.search);
             this.doSearchCall(values.search, values.type, this.state.languageSelected);
             this.doGetLanguagesCall();
-            this.doGetCategoriesCall();
+            // this.doGetCategoriesCall();
             this.setState({ searchString: values.search });
             this.setState({ typeString: values.type });
         }
@@ -54,7 +54,7 @@ class SearchPage extends React.Component {
             this.setState({ data: [], searchString: '', typeString: 'all', isLoading: true });
             this.doSearchCall("", "all", []);
             this.doGetLanguagesCall();
-            this.doGetCategoriesCall();
+            // this.doGetCategoriesCall();
         }
     }
 
@@ -96,8 +96,7 @@ class SearchPage extends React.Component {
         //var searchURL - build url here? loop through langauge array and append any (&programmingLanguage=languageValue) if they exist?
         var searchURL = baseURL + '/api/search?search=' + searchString + '&type=' + typeString;
         //UPDATE TO COMBINED LANGUAGES ARRAY ONCE MULTISELECT WORKS
-        // var tempCombinedLanguages = languageSelected;
-        // tempCombinedLanguages.map(language => {
+
             languageSelected.map(language => {
         
             searchURL += '&programmingLanguage=' + language;
@@ -106,8 +105,12 @@ class SearchPage extends React.Component {
         // axios.get(baseURL + '/api/search?search=' + searchString + '&type=' + typeString)
         axios.get(searchURL)
             .then((res) => {
-                console.log(res.data.data)
-                this.setState({ data: res.data.data, summary: Object.entries(res.data.summary), isLoading: false });
+                console.log('data' + res.data.data)
+                console.log('summary' + res.data.summary)
+                // this.setState({ data: res.data.data, summary: Object.entries(res.data.summary), isLoading: false });
+                // !res.data.summary ? '' : this.setState({ data: res.data.data, summary: Object.entries(res.data.summary), isLoading: false });
+              this.setState({ data: !res.data.data ? '' : res.data.data, summary: !res.data.summary ? '' : Object.entries(res.data.summary), isLoading: false }); 
+
             });
     }
 
@@ -121,14 +124,14 @@ class SearchPage extends React.Component {
         });
     }
 
-    doGetCategoriesCall(){
-        axios.get(baseURL+'/api/getAllCategories/tool')
-        .then((res) =>{
-            this.setState({combinedCategories: res.data.data});
-            this.setState({isLoading: false}); 
-            console.log("test5: " + JSON.stringify(res.data.data));
-        });
-    }
+    // doGetCategoriesCall(){
+    //     axios.get(baseURL+'/api/getAllCategories/tool')
+    //     .then((res) =>{
+    //         this.setState({combinedCategories: res.data.data});
+    //         this.setState({isLoading: false}); 
+    //         console.log("test5: " + JSON.stringify(res.data.data));
+    //     });
+    // }
 
     updateSearchString = (searchString) => {
         this.setState({ searchString: searchString });
@@ -144,7 +147,7 @@ class SearchPage extends React.Component {
     }
 
     render() {
-        const { searchString, typeString, data, summary, userState, isLoading, combinedLanguages, languageSelected, combinedCategories } = this.state;
+        const { searchString, typeString, data, summary, userState, isLoading, combinedLanguages, languageSelected } = this.state;
         
         if (isLoading) {
             return <p>Loading ...</p>;
