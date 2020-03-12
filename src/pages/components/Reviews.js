@@ -40,25 +40,26 @@ class Reviews extends Component {
   render() {
     const { data, userState, reviewData } = this.state;
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
-
+    console.log(reviewData)
     return (
       <div>
-        
+
         <Row className="mt-4 mb-3">
           <Col xs={12} md={12}>
-            <ReviewButton id={data.id} userState={userState} />
+            <ReviewButton data={data} userState={userState} />
           </Col>
         </Row>
 
         {reviewData.length <= 0 ? <NotFound word="reviews" /> : reviewData.map((review) => {
-            var updatedDate = new Date(review.date);;
-            var updatedOnDate = updatedDate.getDay() + " " + monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
-            return <Row className="mt-2">
+          var updatedDate = new Date(review.date);;
+          var updatedOnDate = updatedDate.getDay() + " " + monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
+          return <div>
+            <Row className="mt-2">
               <Col>
                 <div className="Rectangle">
                   <Row>
                     <Col xs={12} md={12}>
-                      <span className="Gray800-14px">{review.review}</span>
+                      <span className="Gray800-14px">"{review.review}"</span>
                     </Col>
 
                     <Col xs={6} md={6} className="mt-2">
@@ -68,10 +69,35 @@ class Reviews extends Component {
                     <Col xs={6} md={6} className="mb-1 text-right">
                       <Rating emptySymbol={<EmptyStarIconSvg />} fullSymbol={<FullStarIconSvg />} placeholderSymbol={<FullStarIconSvg />} placeholderRating={review.rating} readonly={true} />
                     </Col>
+                    <Col xs={12} md={12} className="text-right">
+                      <ReplyButton data={data} userState={userState} review={review} />
+                    </Col>
                   </Row>
                 </div>
               </Col>
             </Row>
+
+            {review.reply ?
+              <Row className="mt-2">
+                <Col md={2}></Col>
+                <Col md={10}>
+                  <div className="Rectangle">
+                    <Row>
+                      <Col xs={12} md={12}>
+                        <span className="Gray800-14px">"{review.reply}"</span>
+                      </Col>
+
+                      <Col xs={12} md={12} className="mt-2">
+                        <span className="text-left Purple-13px">{review.owner[0].firstname} {review.owner[0].lastname}</span>
+                        <span className="text-left Gray500-13px">  on {updatedOnDate}</span>
+                      </Col>
+                    </Row>
+                  </div>
+                </Col>
+              </Row>
+              : <></>
+            }
+          </div>
         })}
       </div>
     );
@@ -83,28 +109,39 @@ const ReviewButton = (props) => {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
+  console.log(props.data)
   return (
     <>
-    { 
-      props.userState[0].loggedIn === true ? 
-      <Button variant="light" id="AddReviewButton" onClick={handleShow}>
-        + Add a review
+      {
+        props.userState[0].loggedIn === true ?
+          <>
+            {props.data.authors.includes(props.userState[0].id) ? '' :
+              <Button variant="light" id="AddReviewButton" className="mb-1" onClick={handleShow}>
+                + Add a review
       </Button>
-      :
-      <Button variant="light" id="AddReviewButton" onClick={() => { window.location.href = baseURL + '/auth/google' }}>
-        + Add a review
+            }
+          </>
+          :
+          <Button variant="light" id="AddReviewButton" className="mb-1" onClick={() => { window.location.href = baseURL + '/auth/google' }}>
+            + Add a review
       </Button>
-    }
-      
+      }
+
 
       <Modal size="lg" show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Add a review</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Reviews help others understand if this tool could be useful to them..
+        <Modal.Body>
+          <Row>
+            <Col sm={1} lg={1} />
+            <Col sm={10} lg={10} >
+              <span class="Gray800-14px">Reviews help others understand if this tool could be useful to them..</span>
+            </Col>
+            <Col sm={1} lg={1} />
+          </Row>
 
-        <AddReviewForm id={props.id} userState={props.userState} handleClose={handleClose} />
+          <AddReviewForm data={props.data} userState={props.userState} handleClose={handleClose} />
 
         </Modal.Body>
       </Modal>
@@ -117,7 +154,7 @@ const AddReviewForm = (props) => {
   // be called when the form is submitted
   const formik = useFormik({
     initialValues: {
-      toolID: props.id,
+      toolID: props.data.id,
       reviewerID: props.userState[0].id,
       rating: 0,
       projectName: '',
@@ -137,7 +174,7 @@ const AddReviewForm = (props) => {
       //alert(JSON.stringify(values, null, 2));
       axios.post(baseURL + '/api/tool/review/add', values)
         .then((res) => {
-          window.location.href = '/tool/' + props.id + '/?reviewAdded=true';
+          window.location.href = '/tool/' + props.data.id + '/?reviewAdded=true';
         });
     }
   });
@@ -226,6 +263,100 @@ const AddReviewForm = (props) => {
     </div>
   );
 
+}
+
+const ReplyButton = (props) => {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  return (
+    <>
+      {
+        props.userState[0].loggedIn === true && props.data.authors.includes(props.userState[0].id) && !props.review.reply ?
+          <Button variant="light" id="" onClick={handleShow}>
+            Reply to review
+      </Button>
+          :
+          <></>
+      }
+
+      <Modal size="lg" show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Add a reply to review</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Row>
+            <Col sm={1} lg={1} />
+            <Col sm={10} lg={10} >
+              <span className="Gray800-14px">The review</span>
+              <br />
+              <span className="Gray800-14px">"{props.review.review}"</span>
+            </Col>
+            <Col sm={1} lg={1} />
+          </Row>
+
+          <ReplyReviewForm data={props.data} userState={props.userState} handleClose={handleClose} review={props.review} />
+
+        </Modal.Body>
+      </Modal>
+    </>
+  );
+}
+
+const ReplyReviewForm = (props) => {
+  // Pass the useFormik() hook initial form values and a submit function that will
+  // be called when the form is submitted
+  const formik = useFormik({
+    initialValues: {
+      reviewID: props.review.reviewID,
+      replierID: props.userState[0].id,
+      reply: ''
+    },
+
+    validationSchema: Yup.object({
+      reply: Yup.string()
+        .required('This cannot be empty')
+    }),
+
+    //   validate,
+
+    onSubmit: values => {
+      //alert(JSON.stringify(values, null, 2));
+      axios.post(baseURL + '/api/tool/reply', values)
+        .then((res) => {
+          window.location.href = '/tool/' + props.data.id + '/?replyAdded=true';
+        });
+    }
+  });
+
+  return (
+    <div>
+      <Row className="mt-3">
+        <Col sm={1} lg={1} />
+        <Col sm={10} lg={10} >
+          <Form onSubmit={formik.handleSubmit}>
+            <Form.Group className="pb-2">
+              <Form.Text className="Gray700-13px">Your reply to the review</Form.Text>
+              <Form.Control as="textarea" id="reply" name="reply" type="text" className={formik.touched.reply && formik.errors.reply ? "EmptyFormInput AddFormInput DescriptionInput" : "AddFormInput DescriptionInput"} value={formik.values.reply} onChange={formik.handleChange} onBlur={formik.handleBlur} />
+              {formik.touched.reply && formik.errors.reply ? <div className="ErrorMessages">{formik.errors.reply}</div> : null}
+            </Form.Group>
+
+            <Row className="mt-3">
+              <Col className="text-left">
+                <Button variant="medium" className="CancelButton" onClick={props.handleClose}>Cancel</Button>
+              </Col>
+              <Col className="text-right">
+                <Button variant="primary" type="submit" className="AddButton">Add this reply</Button>
+              </Col>
+            </Row>
+          </Form>
+        </Col>
+        <Col sm={1} lg={1} />
+      </Row>
+    </div>
+  );
 }
 
 export default Reviews;

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -10,6 +10,7 @@ import ArchivedTool from './ArchivedTool';
 import PendingTools from './PendingTools';
 import Container from 'react-bootstrap/Container';
 import NotFound from './NotFound';
+import Collapse from 'react-bootstrap/Collapse'
 
 var baseURL = require('../../BaseURL').getURL();
 
@@ -34,15 +35,16 @@ class ReviewTools extends React.Component {
     doSearchCall() {
         if (this.state.userState[0].role === "Admin") {
             axios.get(baseURL + '/api/pendingreviewsadmin')
-                .then((res) => {
-                    this.setState({ data: res.data.data, isLoading: false });
-                });
+            .then((res) => {
+                console.log(res.data.data)
+                this.setState({ data: res.data.data, isLoading: false });
+            });
         }
         else {
             axios.get(baseURL + '/api/pendingreviews?type=tool&id=' + this.state.userState[0].id)
-                .then((res) => {
-                    this.setState({ data: res.data.data, isLoading: false });
-                });
+            .then((res) => {
+                this.setState({ data: res.data.data, isLoading: false });
+            });
         }
     }
 
@@ -52,9 +54,9 @@ class ReviewTools extends React.Component {
                 id: id
             },
         })
-            .then((res) => {
-                window.location.href = '/account?tab=reviews&reviewRejected=true';
-            });
+        .then((res) => {
+            window.location.href = '/account?tab=reviews&reviewRejected=true';
+        });
     }
 
     approveReview = (id) => {
@@ -62,14 +64,14 @@ class ReviewTools extends React.Component {
             id: id,
             activeflag: "active"
         })
-            .then((res) => {
-                window.location.href = '/account?tab=reviews&reviewApproved=true';
-            });
+        .then((res) => {
+            window.location.href = '/account?tab=reviews&reviewApproved=true';
+        });
     }
 
     render() {
         const { data, isLoading, userState } = this.state;
-console.log(data)
+        console.log(data)
         if (isLoading) {
             return <p>Loading ...</p>;
         }
@@ -89,24 +91,7 @@ console.log(data)
                         {data.length <= 0 ? <NotFound word='reviews' /> : data.map((dat) => {
                             return (<a /* href={'/tool/'+dat.id} */>
 
-                                <div className="Rectangle mt-1">
-                                    <Row>
-                                        <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/tool/' + dat.id} >{dat.review}</a></Col>
-                                        <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold"> {dat.person[0].firstname} {dat.person[0].lastname} </Col>
-                                        <Col sm={12} lg={5} className="pl-5 toolsButtons">
-                                            {userState[0].role === 'Admin' ?
-                                                <div>
-                                                    <Button variant='white' onClick={() => this.rejectReview(dat.reviewID)} className="AccountButtons mr-2">
-                                                        Reject
-                            </Button>
-                                                    <Button variant='white' onClick={() => this.approveReview(dat.reviewID)} className="AccountButtons ">
-                                                        Approve
-                            </Button>
-                                                </div> : ""}
-                                        </Col>
-                                    </Row>
-                                </div>
-
+                                <ReviewReview dat={dat} userState={userState[0]} />
                             </a>)
                         })}
                     </Col>
@@ -114,6 +99,60 @@ console.log(data)
             </div>
         );
     }
+}
+
+
+const ReviewReview = (props) => {
+    const [open, setOpen] = useState(false);
+
+    return (
+        <>
+            <div className="Rectangle mt-1">
+                <Row>
+                    <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href="#" onClick={() => setOpen(!open)} aria-controls="collapse-review" aria-expanded={open} >{props.dat.review}</a></Col>
+                    <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold"> {props.dat.person[0].firstname} {props.dat.person[0].lastname} </Col>
+                    <Col sm={12} lg={5} className="pl-5 toolsButtons">
+
+                        {props.userState.role === 'Admin' ?
+                            <div>
+                                <Button variant='white' onClick={() => this.rejectReview(props.dat.reviewID)} className="AccountButtons mr-2">
+                                    Reject
+                                </Button>
+                                <Button variant='white' onClick={() => this.approveReview(props.dat.reviewID)} className="AccountButtons ">
+                                    Approve
+                                </Button>
+                            </div> : ""}
+                    </Col>
+                    <Col sm={12}>
+                        <Collapse in={open}>
+                            <div id="collapse-review">
+                                <div className="reviewReviewHolder">
+                                    <Row>
+                                        <Col xs={2} lg={1} className="iconHolder">
+                                            <SVGIcon name="toolicon" width={18} height={18} fill={'#3db28c'} />
+                                        </Col>
+                                        <Col xs={10} lg={8}>
+                                            <p>
+                                                <span className="Black-16px"> {props.dat.tool[0].name.substr(0, 75) + (props.dat.tool[0].name.length > 75 ? '...' : '')}</span>
+                                            </p>
+                                        </Col>
+                                        <Col xs={12} lg={12}>
+                                            <p>
+                                                <span className="Gray800-14px">"{props.dat.tool[0].description}"</span>
+                                            </p>
+                                        </Col>
+                                        <Col xs={12} lg={12}>
+                                            <span className="Purple-13px">{props.dat.person[0].firstname} {props.dat.person[0].lastname}</span><span className="Gray700-13px"> on {props.dat.date}</span>
+                                        </Col>
+                                    </Row>
+                                </div>
+                            </div>
+                        </Collapse>
+                    </Col>
+                </Row>
+            </div>
+        </>
+    );
 }
 
 export default ReviewTools;

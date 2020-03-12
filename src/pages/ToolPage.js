@@ -20,6 +20,7 @@ import NotFound from './components/NotFound';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavItem from 'react-bootstrap/NavItem';
+import { validateYupSchema } from 'formik';
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -41,7 +42,8 @@ class ToolDetail extends Component {
       name: null
     }],
     toolAdded: false,
-    reviewAdded: false
+    reviewAdded: false,
+    replyAdded: false
   };
 
   constructor(props) {
@@ -55,6 +57,7 @@ class ToolDetail extends Component {
       var values = queryString.parse(window.location.search);
       this.setState({ toolAdded: values.toolAdded });
       this.setState({ reviewAdded: values.reviewAdded });
+      this.setState({ replyAdded: values.replyAdded })
     }
     this.getDataSearchFromDb();
   }
@@ -93,7 +96,7 @@ class ToolDetail extends Component {
   }
 
   render() {
-    const { searchString, data, isLoading, userState, toolAdded, reviewAdded, reviewData } = this.state;
+    const { searchString, data, isLoading, userState, toolAdded, reviewAdded, replyAdded, reviewData } = this.state;
 
     if (isLoading) {
       return <p>Loading ...</p>;
@@ -137,6 +140,16 @@ class ToolDetail extends Component {
               <Col sm={1} lg={1} />
               <Col sm={10} lg={10}>
                 <Alert variant="success" className="mt-3">Done! Your review has been added.</Alert>
+              </Col>
+              <Col sm={1} lg={10} />
+            </Row>
+            : ""}
+          
+          {replyAdded ?
+            <Row className="">
+              <Col sm={1} lg={1} />
+              <Col sm={10} lg={10}>
+                <Alert variant="success" className="mt-3">Done! Your reply has been added.</Alert>
               </Col>
               <Col sm={1} lg={10} />
             </Row>

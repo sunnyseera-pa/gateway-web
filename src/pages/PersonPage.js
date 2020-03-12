@@ -131,7 +131,7 @@ class PersonDetail extends Component {
                     {data.toolids.map(id => <Tool id={id} />)}
                   </Tab>
                   <Tab eventKey="Reviews" title={'Reviews (' + data.reviews.length + ')'}>
-                    <Reviews data={data} userState={userState}/>
+                    {/* <Reviews data={data} userState={userState}/> */}
                   </Tab>
                   <Tab eventKey="Data sets" title={'Data Sets (' + data.datasetids.length + ')'}>
                     {data.datasetids.map(id => <DataSet id={id} />)}

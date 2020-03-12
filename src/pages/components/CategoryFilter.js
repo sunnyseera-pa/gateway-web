@@ -67,7 +67,7 @@ class CategoryFilter extends Component {
                     <InputGroup.Prepend>
                       <InputGroup.Checkbox aria-label="Checkbox for following text input" name="toolCategory" checked={categoriesSelected.indexOf(category)!=-1 ? "true": ""} value={category} onChange={this.changeFilter} />
                     </InputGroup.Prepend>
-                    <FormText className="ml-2 pb-4">{category}</FormText>
+                    <FormText className="ml-2">{category}</FormText>
                    </InputGroup>
           })}
 
