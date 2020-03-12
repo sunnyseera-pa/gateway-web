@@ -103,9 +103,11 @@ class SearchPage extends React.Component {
             searchURL += '&programmingLanguage=' + language;
         });
 
+        console.log('categories selected in search page: ' + categoriesSelected)
+
         categoriesSelected.map(category => {
         
-            searchURL += '&toolCategory=' + category;
+            searchURL += '&category=' + category;
         });
 
         this.setState({ isLoading: true });
