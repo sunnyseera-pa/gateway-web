@@ -86,19 +86,36 @@ class SearchPage extends React.Component {
 
     doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
-            if (!!this.state.searchString && !!this.state.typeString) {
-                this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString)
+/*             if (!!this.state.searchString && !!this.state.typeString && !!this.state.categoriesSelected) {
+                this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&toolcategory=' + this.state.categoriesSelected)
                 this.doSearchCall(this.state.searchString, this.state.typeString, this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
             }
-            else if (!!this.state.searchString && !this.state.typeString) {
-                this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=all')
+            else if (!!this.state.searchString && !this.state.typeString && !!this.state.categoriesSelected) {
+                this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=all' + '&toolcategory=' + this.state.categoriesSelected)
+                this.doSearchCall(this.state.searchString, "", this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
+            }
+            else if (!this.state.searchString && !!this.state.typeString && !this.state.categoriesSelected) {
+                this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=all' + '&toolcategory=all')
+                this.doSearchCall(this.state.searchString, "", this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
+            }
+            else if (!!this.state.searchString && !this.state.typeString && !this.state.categoriesSelected) {
+                this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=all' + '&toolcategory=all')
+                this.doSearchCall(this.state.searchString, "", this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
+            } */
+
+            if (!!this.state.searchString && !!this.state.typeString ) {
+                this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&toolCategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected)
+                this.doSearchCall(this.state.searchString, this.state.typeString, this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
+            }
+            else if (!!this.state.searchString && !this.state.typeString ) {
+                this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=all' + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected)
                 this.doSearchCall(this.state.searchString, "", this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
             }
         }
     }
 
     callTypeString = (typeString) => {
-        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + typeString)
+        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + typeString + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected)
         this.doSearchCall(this.state.searchString, typeString, this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
     } 
 
@@ -194,21 +211,25 @@ class SearchPage extends React.Component {
 
     updateCombinedLanguages = (languageSelected) => {
         this.setState({languageSelected: languageSelected});
+        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected)
         this.doSearchCall(this.state.searchString, this.state.typeString,  languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
     }
 
     updateCombinedCategories = (categoriesSelected) => {
         this.setState({categoriesSelected: categoriesSelected});
+        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&toolcategory=' + categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected)
         this.doSearchCall(this.state.searchString, this.state.typeString,  this.state.languageSelected, categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
     }
 
     updateCombinedFeatures = (featuresSelected) => {
         this.setState({featuresSelected: featuresSelected});
+        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + featuresSelected + '&topics=' + this.state.topicsSelected)
         this.doSearchCall(this.state.searchString, this.state.typeString,  this.state.languageSelected, this.state.categoriesSelected, featuresSelected, this.state.topicsSelected);
     }
 
     updateCombinedTopics = (topicsSelected) => {
         this.setState({topicsSelected: topicsSelected});
+        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + topicsSelected)
         this.doSearchCall(this.state.searchString, this.state.typeString,  this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, topicsSelected);
     }
 
@@ -228,11 +249,10 @@ class SearchPage extends React.Component {
                     <Row>
                         <Col sm={12} md={12} lg={3}>
                             <FilterButtons typeString={typeString} doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString} />
-                            <CategoryFilter combinedCategories={combinedCategories} doUpdateCombinedCategories={this.updateCombinedCategories} doCallTypeString={this.callTypeString} categoriesSelected={categoriesSelected} />
-                            <ProgrammingLanguageFilter combinedLanguages={combinedLanguages} doUpdateCombinedLanguages={this.updateCombinedLanguages} doCallTypeString={this.callTypeString} languageSelected={languageSelected}/>
-                            {/* <ProgrammingLanguageFilter combinedLanguages={combinedLanguages} /> */}
-                            <FeaturesFilter combinedFeatures={combinedFeatures} doUpdateCombinedFeatures={this.updateCombinedFeatures} doCallTypeString={this.callTypeString} featuresSelected={featuresSelected}/>
-                            <TopicsFilter combinedTopic={combinedTopic} doUpdateCombinedTopics={this.updateCombinedTopics} doCallTypeString={this.callTypeString} topicsSelected={topicsSelected}/>
+                            <CategoryFilter combinedCategories={combinedCategories} doUpdateCombinedCategories={this.updateCombinedCategories} categoriesSelected={categoriesSelected} />
+                            <ProgrammingLanguageFilter combinedLanguages={combinedLanguages} doUpdateCombinedLanguages={this.updateCombinedLanguages} languageSelected={languageSelected}/>
+                            <FeaturesFilter combinedFeatures={combinedFeatures} doUpdateCombinedFeatures={this.updateCombinedFeatures} featuresSelected={featuresSelected}/>
+                            <TopicsFilter combinedTopic={combinedTopic} doUpdateCombinedTopics={this.updateCombinedTopics} topicsSelected={topicsSelected}/>
                         </Col>
                         
                         <Col sm={12} md={12} lg={9}>
