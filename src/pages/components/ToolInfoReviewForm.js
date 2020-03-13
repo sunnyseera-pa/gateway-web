@@ -2,10 +2,6 @@
 import React, { Component } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Image from 'react-bootstrap/Image';
-import Rating from 'react-rating';
-import { ReactComponent as EmptyStarIconSvg} from '../../images/starempty.svg';
-import { ReactComponent as FullStarIconSvg} from '../../images/star.svg';
 
 class ToolInfoReviewForm extends Component {
 

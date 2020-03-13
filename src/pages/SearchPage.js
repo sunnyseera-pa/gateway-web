@@ -10,7 +10,6 @@ import queryString from 'query-string';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-// import ToolTitle from './components/ToolTitle';
 import FilterButtons from './components/FilterButtons';
 import ProgrammingLanguageFilter from './components/ProgrammingLanguageFilter';
 import CategoryFilter from './components/CategoryFilter';
@@ -75,8 +74,8 @@ class SearchPage extends React.Component {
             if (values.search != this.state.searchString
                 || values.type != this.state.typeString) {
                 this.doSearchCall(values.search, values.type, this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
-                this.state.searchString = values.search;
-                this.state.typeString = values.type;
+                this.setState({searchString: values.search});
+                this.setState({typeString: values.type});
             }
         }
         else {
@@ -240,13 +239,13 @@ class SearchPage extends React.Component {
                             {summary.length > 0 ? <SearchSummary data={summary} /> :''}
 
                             {data.length <= 0 ? <NotFound word='results' /> : data.map((dat) => {                            
-                                if (dat.type == 'tool') {
+                                if (dat.type === 'tool') {
                                     return <Tool data={dat} />
                                 }
-                                else if (dat.type == 'project') {
+                                else if (dat.type === 'project') {
                                     return <Project data={dat} />
                                 }
-                                else if (dat.type == 'person') {
+                                else if (dat.type === 'person') {
                                     return <Person data={dat} />
                                 }
                                 else {

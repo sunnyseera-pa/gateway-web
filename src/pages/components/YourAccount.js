@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import axios from 'axios';
 import YourAccountForm from './YourAccountForm';
 import queryString from 'query-string';
@@ -31,36 +31,26 @@ class YourAccount extends React.Component {
     }
 
     doUserCall() {
-         axios.get(baseURL + 'api/user/' + this.state.userState[0].id )
-        //axios.get(baseURL + '/api/user/12426406323356432')
-
+        axios.get(baseURL + '/api/user/' + this.state.userState[0].id )
         .then((res) => {
             this.setState({
-                userdata: res.data.userdata[0],
-                // isLoading: false
+                userdata: res.data.userdata[0]
             });
         })
     }
 
     doYourAccountCall() {
          axios.get(baseURL + '/api/person/' + this.state.userState[0].id)
-        //axios.get(baseURL + '/api/person/12426406323356432')
-
-            .then((res) => {
-                this.setState({
-                    data: res.data.data[0],
-                    isLoading: false
-                });
-            })
+        .then((res) => {
+            this.setState({
+                data: res.data.data[0],
+                isLoading: false
+            });
+        })
     }
 
     render() {
         const { data, isLoading, isUpdated, userdata } = this.state;
-        {console.log('userdata: ' + JSON.stringify(userdata))}
-        {console.log('data: ' + JSON.stringify(data))}
-
-
-        
         
         if (isLoading) {
             return <p>Loading ...</p>;

@@ -1,12 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import axios from 'axios';
-import Header from './components/Header';
 import EditToolForm from '../pages/components/EditToolForm';
-// import NewAddToolForm from '../pages/components/NewAddToolForm';
-import SignupForm from '../pages/components/Try';
 import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import SearchBar from './components/SearchBar';
 
 var baseURL = require('./../BaseURL').getURL();

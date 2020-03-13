@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Image from 'react-bootstrap/Image';
 import Rating from 'react-rating';
 import { ReactComponent as EmptyStarIconSvg} from '../../images/starempty.svg';
 import { ReactComponent as FullStarIconSvg} from '../../images/star.svg';
@@ -87,9 +86,9 @@ class ToolTitle extends Component {
                             </Col>
                             <Col md={12} lg={6} className="mb-1 pr-3 text-right">
                                 <div className="Gray500-13px">
-                                    {!!ratingsTotal && ratingsCount == 1 ? ratingsCount + ' review' : ratingsCount +' reviews'}
+                                    {!!ratingsTotal && ratingsCount === 1 ? ratingsCount + ' review' : ratingsCount +' reviews'}
                                     <span className="reviewTitleGap">·</span>
-                                    {avgRating == 0 ? 'No average rating' : (Math.round(avgRating * 10) / 10) + ' average' }
+                                    {avgRating === 0 ? 'No average rating' : (Math.round(avgRating * 10) / 10) + ' average' }
                                     <span className="reviewTitleGap">·</span>
                                     <Rating emptySymbol={<EmptyStarIconSvg />} fullSymbol={<FullStarIconSvg />}
                                      placeholderSymbol={<FullStarIconSvg />} 

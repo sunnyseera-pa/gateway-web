@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import ProjectTitle from './components/ProjectTitle';
 import Creators from './components/Creators';
-import ToolsUsed from './components/ToolsUsed';
 import Container from 'react-bootstrap/Container';
 import SearchBar from './components/SearchBar';
 import Tool from './components/Tool';
@@ -45,7 +44,7 @@ class ProjectDetail extends Component {
 
   // on loading of tool detail page were id is different
   componentDidUpdate() {
-    if (this.props.match.params.projectID != this.state.id && this.state.id != '' && !this.state.isLoading) {
+    if (this.props.match.params.projectID !== this.state.id && this.state.id !== '' && !this.state.isLoading) {
       this.getDataSearchFromDb();
     }
   }
@@ -101,23 +100,23 @@ class ProjectDetail extends Component {
           <ProjectTitle data={data} />
 
           <Row>
-          <Col sm={1} lg={1} />
-          <Col sm={10} lg={10}>
-
-          <Row className="mt-4">
+            <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
-              <span className="Black500-16px">Authors ( {data.authors.length} )</span>
-            </Col>
-          </Row>
-          <Row>
+
+              <Row className="mt-4">
+                <Col sm={10} lg={10}>
+                  <span className="Black500-16px">Authors ( {data.authors.length} )</span>
+                </Col>
+              </Row>
+              <Row>
                 {data.persons.map(author =>
                   <Col sm={6} lg={6}>
                     <Creators author={author} />
                   </Col>
                 )}
               </Row>
-          </Col>
-          <Col sm={1} lg={1} />
+            </Col>
+            <Col sm={1} lg={1} />
           </Row>
 
           <Row className="mt-3">
@@ -129,7 +128,7 @@ class ProjectDetail extends Component {
                   <Tab eventKey="Tools" title={'Tools (' + data.toolids.length + ')'}>
                     {data.toolids.length <= 0 ? <NotFound word="tools" /> : data.toolids.map((id) => {
                       return <Tool id={id} />
-                    })}  
+                    })}
                   </Tab>
                   <Tab eventKey="Data sets" title={'Data sets (' + data.datasetids.length + ')'}>
                     {data.datasetids.length <= 0 ? <NotFound word="data sets" /> : data.datasetids.map(id => <DataSet id={id} />)}

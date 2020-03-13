@@ -11,7 +11,6 @@ import AddToolPage from './pages/AddToolPage';
 import AddProjectPage from './pages/AddProjectPage';
 import Account from './pages/Account';
 import EditToolPage from './pages/EditToolPage';
-import AddReviewPage from './pages/AddReviewPage';
 import axios from 'axios';
 
 var baseURL = require('./BaseURL').getURL();
@@ -82,9 +81,6 @@ class HDRRouter extends Component {
             {userState[0].loggedIn ? (<Route path='/addtool' render={(props) => <AddToolPage {...props} userState={userState} />} />)
             :(<Route path='/' render={(props) => <LandingPage {...props} userState={userState} />} />)}
             
-            {userState[0].loggedIn ? (<Route path='/addreview/:toolID' render={(props) => <AddReviewPage {...props} userState={userState} />} />)
-            :(<Route path='/' render={(props) => <LandingPage {...props} userState={userState} />} />)}
-
             {userState[0].loggedIn ? (<Route path='/edittool/:toolID' render={(props) => <EditToolPage {...props} userState={userState} />} />)
             :(<Route path='/' render={(props) => <LandingPage {...props} userState={userState} />} />)}
 

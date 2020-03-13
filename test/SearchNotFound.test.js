@@ -9,6 +9,6 @@ Enzyme.configure({ adapter: new Adapter() });
 describe('NotFound', () => {
     it('renders without crashing', () => {
         var data = {data:[{id:"test"}]};
-        const wrapper = mount(<NotFound />);
+        const wrapper = mount(<NotFound words="test" />);
     });
 });

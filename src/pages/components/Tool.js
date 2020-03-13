@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import SVGIcon from "../../images/SVGIcon";
-import { format } from 'date-fns';
 import axios from 'axios';
 
 var baseURL = require('./../../BaseURL').getURL();
@@ -41,10 +40,7 @@ class Tool extends React.Component {
 
     render() {
         const { data, isLoading } = this.state;
-        /*         const ratingsTotal = (!!data.ratings && data.ratings.length > 0) ? data.ratings.reduce((a, b) => a + b, 0) : '';
-                const ratingsCount = (!!data.ratings ? data.ratings.length : 0);
-                const avgRating = (!!data.ratings && data.ratings.length > 0) ? (ratingsTotal / ratingsCount) : ''; */
-
+       
         if (isLoading) {
             return <p>Loading ...</p>;
         }
@@ -92,9 +88,9 @@ class Tool extends React.Component {
                                         <br />
                                         <span className="Gray500-13px">
                                             <span className="Gray500-13px">
-                                                {!!ratingsTotal && ratingsCount == 1 ? ratingsCount + ' review' : ratingsCount + ' reviews'}
+                                                {!!ratingsTotal && ratingsCount === 1 ? ratingsCount + ' review' : ratingsCount + ' reviews'}
                                                 <span className="reviewTitleGap">·</span>
-                                                {avgRating == 0 ? 'No average rating' : (Math.round(avgRating * 10) / 10) + ' average'}
+                                                {avgRating === 0 ? 'No average rating' : (Math.round(avgRating * 10) / 10) + ' average'}
                                             </span>
                                         </span>
                                         <br />

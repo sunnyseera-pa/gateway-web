@@ -6,15 +6,6 @@ import Col from 'react-bootstrap/Col';
 
 class AddProjectForm extends Component {
 
-    constructor(props) {
-      super(props)
-    }
-
-    // initialize our state
-    state = {
-    
-    };
-
     render() {
         return (
             <div>

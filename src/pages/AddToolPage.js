@@ -1,11 +1,6 @@
-import React, { Component } from 'react';
-import Header from './components/Header';
+import React from 'react';
 import AddToolForm from '../pages/components/AddToolForm';
-// import NewAddToolForm from '../pages/components/NewAddToolForm';
-import SignupForm from '../pages/components/Try';
 import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import SearchBar from './components/SearchBar';
 import axios from 'axios';
 
@@ -40,24 +35,11 @@ class AddToolPage extends React.Component {
         this.doGetUsersCall();
     }
 
-    // getDataSearchFromDb = () => {
-    //     //need to handle error if no id is found
-    //     this.setState({ isLoading: true });
-    //     axios.get(baseURL+'/api/tool/'+this.props.match.params.toolID)
-    //     .then((res) => {
-    //       this.setState({ 
-    //         data: res.data.data[0],
-    //         isLoading: false 
-    //       });
-    //     })
-    //   };
-
     doGetTopicsCall() {
      axios.get(baseURL+'/api/getAllTopics/tool')
         .then((res) =>{
             this.setState({combinedTopic: res.data.data});
             this.setState({isLoading: false}); 
-            console.log("test1: " + JSON.stringify(res.data.data));
         });
     }
 
@@ -66,7 +48,6 @@ class AddToolPage extends React.Component {
         .then((res) =>{
             this.setState({combinedFeatures: res.data.data});
             this.setState({isLoading: false}); 
-            console.log("test2: " + JSON.stringify(res.data.data));
         });
     }
 
@@ -75,7 +56,6 @@ class AddToolPage extends React.Component {
         .then((res) =>{
             this.setState({combinedLanguages: res.data.data});
             this.setState({isLoading: false}); 
-            console.log("test4: " + JSON.stringify(res.data.data));
         });
     }
 
@@ -84,7 +64,6 @@ class AddToolPage extends React.Component {
         .then((res) =>{
             this.setState({combinedCategories: res.data.data});
             this.setState({isLoading: false}); 
-            console.log("test5: " + JSON.stringify(res.data.data));
         });
     }
 
@@ -93,7 +72,6 @@ class AddToolPage extends React.Component {
         .then((res) =>{
             this.setState({combinedLicenses: res.data.data});
             this.setState({isLoading: false}); 
-            console.log("test6: " + JSON.stringify(res.data.data));
         });
       }
 
@@ -102,7 +80,6 @@ class AddToolPage extends React.Component {
         .then((res) =>{
             this.setState({combinedUsers: res.data.data});
             this.setState({isLoading: false}); 
-            console.log("test7: " + JSON.stringify(res.data.data));
         });
       }
 
@@ -129,8 +106,6 @@ class AddToolPage extends React.Component {
             <div>
             <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
             <Container>
-            {console.log('Users: ' + combinedUsers)}
-            {console.log('Topics: ' + combinedTopic)}
             <AddToolForm data={data} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} userState={userState} />
             </Container>
             </div>
