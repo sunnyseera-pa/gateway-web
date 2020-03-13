@@ -85,9 +85,7 @@ class ReviewTools extends React.Component {
                 <Row>
                     <Col>
                         {data.length <= 0 ? <NotFound word='reviews' /> : data.map((dat) => {
-                            return (<a href="#">
-                                <ReviewReview dat={dat} userState={userState[0]} />
-                            </a>)
+                            return (<ReviewReview dat={dat} userState={userState[0]} />)
                         })}
                     </Col>
                 </Row>
@@ -99,7 +97,9 @@ class ReviewTools extends React.Component {
 
 const ReviewReview = (props) => {
     const [open, setOpen] = useState(false);
-
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
+    var updatedDate = new Date(props.dat.date);;
+    var updatedOnDate = updatedDate.getDate() + " " + monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
     return (
         <>
             <div className="Rectangle mt-1">
@@ -128,7 +128,7 @@ const ReviewReview = (props) => {
                                         </Col>
                                         <Col xs={10} lg={8}>
                                             <p>
-                                                <span className="Black-16px"> {props.dat.tool[0].name.substr(0, 75) + (props.dat.tool[0].name.length > 75 ? '...' : '')}</span>
+                                                <span className="Black-16px"><a className="searchHolder" href={'/tool/' + props.dat.tool[0].id} >{props.dat.tool[0].name.substr(0, 75) + (props.dat.tool[0].name.length > 75 ? '...' : '')}</a></span>
                                             </p>
                                         </Col>
                                         <Col xs={12} lg={12}>
@@ -137,7 +137,8 @@ const ReviewReview = (props) => {
                                             </p>
                                         </Col>
                                         <Col xs={12} lg={12}>
-                                            <span className="Purple-13px">{props.dat.person[0].firstname} {props.dat.person[0].lastname}</span><span className="Gray700-13px"> on {props.dat.date}</span>
+                                            <span className="Purple-13px">{props.dat.person[0].firstname} {props.dat.person[0].lastname}</span><span className="Gray700-13px"> on {updatedOnDate}</span>
+                                            {!props.dat.projectName? '' : <><span className="reviewTitleGap">·</span><span className="Gray700-13px"> in relation to project </span><span className="Purple-13px">{props.dat.projectName}</span></>}
                                         </Col>
                                     </Row>
                                 </div>

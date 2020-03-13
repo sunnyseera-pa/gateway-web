@@ -168,7 +168,7 @@ class ToolDetail extends Component {
               <Row>
                 {data.persons.map(author =>
                   <Col sm={6} lg={6}>
-                    <Creators author={author} />
+                    <Creators key={author.id} author={author} />
                   </Col>
                 )}
               </Row>

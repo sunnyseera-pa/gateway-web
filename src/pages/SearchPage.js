@@ -51,18 +51,18 @@ class SearchPage extends React.Component {
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
             this.doSearchCall(values.search, values.type, this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
-            this.doGetLanguagesCall();
-            this.doGetCategoriesCall();
-            this.doGetFeaturesCall();
-            this.doGetTopicsCall();
+            //this.doGetLanguagesCall();
+            //this.doGetCategoriesCall();
+            //this.doGetFeaturesCall();
+            //this.doGetTopicsCall();
             this.setState({ searchString: values.search });
             this.setState({ typeString: values.type });
         }
         else {
-            this.doGetLanguagesCall();
-            this.doGetCategoriesCall();
-            this.doGetFeaturesCall();
-            this.doGetTopicsCall();
+            //this.doGetLanguagesCall();
+            //this.doGetCategoriesCall();
+            //this.doGetFeaturesCall();
+            //this.doGetTopicsCall();
             this.setState({ data: [], searchString: '', typeString: 'all', isLoading: true });
             this.doSearchCall("", "all", [], [], [], []);
         }
@@ -152,15 +152,47 @@ class SearchPage extends React.Component {
         });
 
         this.setState({ isLoading: true });
-        // axios.get(baseURL + '/api/search?search=' + searchString + '&type=' + typeString)
         axios.get(searchURL)
             .then((res) => {
-                console.log('data' + res.data.data)
-                console.log('summary' + res.data.summary)
-                // this.setState({ data: res.data.data, summary: Object.entries(res.data.summary), isLoading: false });
-                // !res.data.summary ? '' : this.setState({ data: res.data.data, summary: Object.entries(res.data.summary), isLoading: false });
-              this.setState({ data: !res.data.data ? '' : res.data.data, summary: !res.data.summary ? '' : Object.entries(res.data.summary), isLoading: false }); 
+                if (res.data.data.length > 0) {
+                    var tempCategoriesArray = [];
+                    var tempProgrammingLanguageArray = [];
+                    var tempFeaturesArray = [];
+                    var tempTopicsArray = [];
+                    
+                    res.data.data.map((dat) => { 
+                        if (dat.categories && dat.categories.category && dat.categories.category !== '' && !tempCategoriesArray.includes(dat.categories.category)) {
+                            tempCategoriesArray.push(dat.categories.category);
+                        }
+                        
+                        if (dat.categories &&  dat.categories.programmingLanguage && dat.categories.programmingLanguage.length > 0) {
+                            dat.categories.programmingLanguage.map((pl) => { 
+                                if (!tempProgrammingLanguageArray.includes(pl) && pl !== '') {
+                                    tempProgrammingLanguageArray.push(pl);
+                                }
+                            });
+                        }
 
+                        if (dat.tags.features && dat.tags.features.length > 0) {
+                            dat.tags.features.map((fe) => { 
+                                if (!tempFeaturesArray.includes(fe) && fe !== '') {
+                                    tempFeaturesArray.push(fe);
+                                }
+                            });
+                        }
+                        
+                        if (dat.tags.topics && dat.tags.topics.length > 0) {
+                            dat.tags.topics.map((to) => { 
+                                if (!tempTopicsArray.includes(to) && to !== '') {
+                                    tempTopicsArray.push(to);
+                                }
+                            });
+                        }
+                    });
+                }
+                
+                this.setState({combinedCategories: tempCategoriesArray, combinedLanguages: tempProgrammingLanguageArray, combinedFeatures: tempFeaturesArray, combinedTopic:tempTopicsArray});
+                this.setState({ data: !res.data.data ? '' : res.data.data, summary: !res.data.summary ? '' : Object.entries(res.data.summary), isLoading: false }); 
             });
     }
 
@@ -177,7 +209,7 @@ class SearchPage extends React.Component {
     doGetCategoriesCall(){
         axios.get(baseURL+'/api/getAllCategories/tool')
         .then((res) =>{
-            this.setState({combinedCategories: res.data.data});
+            //this.setState({combinedCategories: res.data.data});
             // this.setState({isLoading: false}); 
             console.log("test5: " + JSON.stringify(res.data.data));
         });
@@ -260,13 +292,13 @@ class SearchPage extends React.Component {
 
                             {data.length <= 0 ? <NotFound word='results' /> : data.map((dat) => {                            
                                 if (dat.type === 'tool') {
-                                    return <Tool data={dat} />
+                                    return <Tool key={dat.id} data={dat} />
                                 }
                                 else if (dat.type === 'project') {
-                                    return <Project data={dat} />
+                                    return <Project key={dat.id} data={dat} />
                                 }
                                 else if (dat.type === 'person') {
-                                    return <Person data={dat} />
+                                    return <Person key={dat.id} data={dat} />
                                 }
                                 else {
                                     return null
