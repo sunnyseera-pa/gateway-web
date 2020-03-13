@@ -240,13 +240,13 @@ class SearchPage extends React.Component {
 
                             {data.length <= 0 ? <NotFound word='results' /> : data.map((dat) => {                            
                                 if (dat.type === 'tool') {
-                                    return <Tool data={dat} />
+                                    return <Tool key={dat.id} data={dat} />
                                 }
                                 else if (dat.type === 'project') {
-                                    return <Project data={dat} />
+                                    return <Project key={dat.id} data={dat} />
                                 }
                                 else if (dat.type === 'person') {
-                                    return <Person data={dat} />
+                                    return <Person key={dat.id} data={dat} />
                                 }
                                 else {
                                     return null

@@ -13,6 +13,7 @@ import Modal from 'react-bootstrap/Modal'
 import Form from 'react-bootstrap/Form';
 import * as Yup from 'yup';
 import NotFound from './NotFound';
+import Collapse from 'react-bootstrap/Collapse'
 
 var baseURL = require('./../../BaseURL').getURL();
 
@@ -52,7 +53,7 @@ class Reviews extends Component {
 
         {reviewData.length <= 0 ? <NotFound word="reviews" /> : reviewData.map((review) => {
           var updatedDate = new Date(review.date);;
-          var updatedOnDate = updatedDate.getDay() + " " + monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
+          var updatedOnDate = updatedDate.getDate() + " " + monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
           return <div>
             <Row className="mt-2">
               <Col>
@@ -158,11 +159,13 @@ const AddReviewForm = (props) => {
       reviewerID: props.userState[0].id,
       rating: 0,
       projectName: '',
+      showproject: false,
       review: ''
     },
 
     validationSchema: Yup.object({
       projectName: Yup.string(),
+      //.when("showproject", {is: true, then: Yup.string().required('This cannot be empty')}),
       // .required('This cannot be empty')
       review: Yup.string()
         .required('This cannot be empty')
@@ -173,9 +176,9 @@ const AddReviewForm = (props) => {
     onSubmit: values => {
       //alert(JSON.stringify(values, null, 2));
       axios.post(baseURL + '/api/tool/review/add', values)
-        .then((res) => {
-          window.location.href = '/tool/' + props.data.id + '/?reviewAdded=true';
-        });
+      .then((res) => {
+        window.location.href = '/tool/' + props.data.id + '/?reviewAdded=true';
+      });
     }
   });
 
@@ -183,9 +186,19 @@ const AddReviewForm = (props) => {
     formik.values.rating = rating;
   }
 
+  const showProjectInput = (showOrHide) => {
+    if (showOrHide === "show") {
+      setOpen(true)
+    }
+    else if (showOrHide === "hide") {
+      setOpen(false)
+    }
+  }
+
+  const [open, setOpen] = useState(false);
+
   return (
     <div>
-
       <Row className="mt-3">
         <Col sm={1} lg={1} />
         <Col sm={10} lg={10} >
@@ -198,9 +211,8 @@ const AddReviewForm = (props) => {
                 name="rating"
                 emptySymbol={<EmptyStarIconSvg />}
                 fullSymbol={<FullStarIconSvg />}
-
                 initialRating={formik.values.rating}
-                onChange={handleRatingChange} />
+                onChange={handleRatingChange("show")} />
             </Form.Group>
 
             <Form.Label className="Gray800-14px">Is this review related to a specific project?</Form.Label>
@@ -211,11 +223,10 @@ const AddReviewForm = (props) => {
                     type="radio"
                     label="Yes"
                     className="ml-5"
-                    name="project"
-                    id="true"
-                  // checked={this.props.typeString === 'all' ? true: false}
-                  // value="all"
-                  // onChange={this.changeFilter}
+                    name="showproject"
+                    id="showproject"
+                    value="true"
+                    onChange={() => showProjectInput("show")}
                   />
                 </Col>
                 <Col className="ml-5">
@@ -223,23 +234,22 @@ const AddReviewForm = (props) => {
                     type="radio"
                     label="No"
                     className="ml-2"
-                    name="project"
-                    id="false"
-                  // checked={this.props.typeString === 'all' ? true: false}
-                  // value="all"
-                  // onChange={this.changeFilter}
+                    name="showproject"
+                    id="showproject"
+                    value="false"
+                    onChange={() => showProjectInput("hide")}
                   />
                 </Col>
               </Row>
             </Form.Group>
 
-
-            <Form.Group className="pb-2">
-              <Form.Label className="Gray800-14px">Project name</Form.Label>
-              <Form.Control id="projectName" name="projectName" type="text" className={formik.touched.projectName && formik.errors.projectName ? "EmptyFormInput AddFormInput" : "AddFormInput"} value={formik.values.projectName} onChange={formik.handleChange} onBlur={formik.handleBlur} />
-              {formik.touched.projectName && formik.errors.projectName ? <div className="ErrorMessages">{formik.errors.projectName}</div> : null}
-            </Form.Group>
-
+            <Collapse in={open}>
+              <Form.Group className="pb-2">
+                <Form.Label className="Gray800-14px">Project name</Form.Label>
+                <Form.Control id="projectName" name="projectName" type="text" className={formik.touched.projectName && formik.errors.projectName ? "EmptyFormInput AddFormInput" : "AddFormInput"} value={formik.values.projectName} onChange={formik.handleChange} onBlur={formik.handleBlur} />
+                {formik.touched.projectName && formik.errors.projectName ? <div className="ErrorMessages">{formik.errors.projectName}</div> : null}
+              </Form.Group>
+            </Collapse>
 
             <Form.Group className="pb-2">
               <Form.Label className="Gray800-14px">Your review</Form.Label>
