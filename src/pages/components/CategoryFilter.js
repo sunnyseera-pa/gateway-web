@@ -37,43 +37,61 @@ class CategoryFilter extends Component {
       console.log('categoriesSelected = ' + this.state.categoriesSelected);
       this.props.doUpdateCombinedCategories(categoriesSelected);
   }
+
+  clearFilter = () => {
+      const categoriesSelected = [];
+      this.setState({categoriesSelected: categoriesSelected})
+      console.log('clear categories are: ' + categoriesSelected);
+      this.props.doUpdateCombinedCategories(categoriesSelected);
+  }
   
   render() {
 
     const { combinedCategories, categoriesSelected } = this.state;
 
     return (
-    <div className="AdFilters mt-2 Gray800-14px">
+    <div>
+    <div className="FilterCard mt-2">
+        <Row className="mt-2"  >
+            <Col xs={1}></Col>
+            <Col xs={11} className="ml-3">
+                <span className="Gray800-14px-bold pr-3">Tool Category</span>
+   
+                <span className="ml-3"/>
+                <span>
+                    <button className="ClearButtons Purple-14px pl-5" onClick={() => this.clearFilter()}>
+                        Clear
+                    </button>
+                </span>
+            </Col>
+        
+        </Row>
+    </div>
+    <div className="AdFilters Gray800-14px">
        {console.log('combinedCategories are: ' + combinedCategories)}
 
        {combinedCategories.map((category) => {
             console.log('category: ' + category)
         })}
-    
-      <Row className="mt-2 mb-5"  >
-            <Col xs={1}></Col>
-            <Col xs={9}>
-                <span id="StickyTitle">Tool Category</span>
-            </Col>
-        </Row>
       
-      <Row className="mt-3">
-          <Col xs={2}></Col>
-          <Col xs={10}>  
+      <Row className="mb-3">
+          <Col xs={1}></Col>
+          <Col xs={11} className="ml-4">  
 
         {console.log('combinedCategories: ' + combinedCategories )}
           {combinedCategories.map((category) => {
-              return <InputGroup className="mb-3">
+              return <InputGroup >
                     <InputGroup.Prepend>
-                      <InputGroup.Checkbox aria-label="Checkbox for following text input" name="toolCategory" checked={categoriesSelected.indexOf(category)!=-1 ? "true": ""} value={category} onChange={this.changeFilter} />
+                      <InputGroup.Checkbox  aria-label="Checkbox for following text input" name="toolCategory" checked={categoriesSelected.indexOf(category)!=-1 ? "true": ""} value={category} onChange={this.changeFilter} />
                     </InputGroup.Prepend>
-                    <FormText className="ml-2 pb-4">{category}</FormText>
+                    <FormText className="Gray800-14px ml-4 mt-2 mb-2 pb-1" >{category}</FormText>
                    </InputGroup>
           })}
 
                 {console.log('categoriesSelected: ' + categoriesSelected)}
             </Col>
         </Row> 
+    </div>
     </div>
     );
   }

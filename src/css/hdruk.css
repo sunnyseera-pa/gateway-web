@@ -232,16 +232,11 @@ body {
   overflow-y: scroll;
 } */
 
-#StickyTitle{
-  position: sticky;
-  /* position: fixed; */
-}
-
 .AdFilters{
   box-shadow: 1px 1px 3px 0 #00000017;
   background-color: #ffffff;
   padding: 10px;
-  max-height: 228px;
+  max-height: 164px;
   overflow-y: scroll;
 }
 
@@ -389,6 +384,32 @@ body {
   outline: none;
 }
 
+input[type='checkbox']:after {
+
+  width: 24px;
+  height: 24px;
+  border: solid 2px #d6d6d6;
+  background-color: #ffffff;
+  content: '';
+  display: inline-block;
+  visibility: visible;
+  border: solid 2px #d6d6d6;
+}
+
+input[type='checkbox']:checked:after {
+  width: 24px;
+  height: 24px;
+  border: solid 2px #d6d6d6;
+  background-color: #ffffff;
+  position: relative;
+  padding-left: 4px;
+  padding-top: 1px;
+  content: url(../images/radio.svg);
+  display: inline-block;
+  visibility: visible;
+  border: solid 2px #d6d6d6;
+}
+
 input[type='radio']:after {
   width: 23px;
   height: 23px;
@@ -408,8 +429,6 @@ input[type='radio']:checked:after {
   height: 23px;
   border-radius: 23px;
   padding-left: 3px;
-  top: -3px;
-  left: -1px;
   position: relative;
   background-color: #ffffff;
   content: url(../images/radio.svg) ;
@@ -535,10 +554,12 @@ input[type='radio']:checked:after {
 .AccountButtons{
   border: 2px solid #3db28c !important;
   border-radius: 4px !important;
+  
 }
 
-.landingPageInformationBox{
-
+.ClearButtons{
+  border: none !important;
+  border-radius: none !important;
 }
 
 .landingPageInformationNumber{

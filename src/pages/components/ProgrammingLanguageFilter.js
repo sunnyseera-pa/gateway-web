@@ -27,9 +27,6 @@ class ProgrammingLanguageFilter extends Component {
     }
 
     changeFilter = (e) => {
-      // this.setState({languageSelected : e.target.value});
-      // this.setState(languages.push(languageSelected));
-     // this.setState(languageSelected.push(e.target.value));
 
       // current array of options
       const languageSelected = this.state.languageSelected
@@ -50,47 +47,60 @@ class ProgrammingLanguageFilter extends Component {
       
       console.log('languageSelected = ' + this.state.languageSelected);
       this.props.doUpdateCombinedLanguages(languageSelected);
-      // this.props.doCallTypeString(e.target.value);
   }
 
-  // handleSubmit = () => {
+  clearFilter = () => {
+    const languageSelected = [];
+    this.setState({languageSelected: languageSelected})
+    console.log('clear languages are: ' + languageSelected);
+    this.props.doUpdateCombinedLanguages(languageSelected);
+}
 
-  // }
-
-  
-  // here is our UI
-  // it is easy to understand their functions when you
-  // see them render into our screen
   render() {
 
     const { combinedLanguages, languageSelected } = this.state;
 
     return (
-    <div className="AdFilters mt-2 Gray800-14px">
+    <div>
+     <div className="FilterCard mt-2">
+        <Row className="mt-2"  >
+            <Col xs={1}></Col>
+            <Col xs={11} className="ml-3">
+                <span className="Gray800-14px-bold">Programming Language</span>
+            
+                <span>
+                  <button className="ClearButtons Purple-14px pl-3" onClick={() => this.clearFilter()}>
+                    Clear
+                  </button>
+                </span>
+            </Col>
+        </Row>
+      </div>
+    <div className="AdFilters Gray800-14px">
        {console.log('combinedLanguages are: ' + combinedLanguages)}
 
        {combinedLanguages.map((language) => {
             console.log('language: ' + language)
         })}
     
-      <Row className="mt-2 mb-5"  >
-            <Col xs={1}></Col>
-            <Col xs={9}>
-                <span id="StickyTitle">Programming Language</span>
+      {/* <Row className="mt-2 mb-2"  >
+            <Col xs={2}></Col>
+            <Col xs={10}>
+                <span id="StickyTitle" className="Gray800-14px-bold">Programming Language</span>
             </Col>
-        </Row>
+        </Row> */}
       
-      <Row className="mt-3">
-          <Col xs={2}></Col>
-          <Col xs={10}>  
+      <Row className="mb-3">
+          <Col xs={1}></Col>
+          <Col xs={11} className="ml-4">  
           {/* <Form onSubmit={this.handleSubmit}> */}
 
           {combinedLanguages.map((language) => {
-              return <InputGroup className="mb-3">
+              return <InputGroup >
                     <InputGroup.Prepend>
                       <InputGroup.Checkbox aria-label="Checkbox for following text input" name="programmingLanguage" checked={languageSelected.indexOf(language)!=-1 ? "true": ""} value={language} onChange={this.changeFilter} />
                     </InputGroup.Prepend>
-                    <FormText className="ml-2 pb-4">{language}</FormText>
+                    <FormText className="Gray800-14px ml-4 mt-2 mb-2 pb-1">{language}</FormText>
                    </InputGroup>
           })}
         
@@ -99,6 +109,7 @@ class ProgrammingLanguageFilter extends Component {
                 {console.log('language Selected: ' + languageSelected)}
             </Col>
         </Row> 
+    </div>
     </div>
     );
   }

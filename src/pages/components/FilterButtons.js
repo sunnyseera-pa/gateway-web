@@ -29,12 +29,9 @@ class FilterButtons extends Component {
        
         <Row className="mt-2">
             <Col xs={1}></Col>
-            <Col xs={7}>
-                <span>Filter</span>
+            <Col xs={11} className="ml-3">
+                <span className="Gray800-14px-bold">Filter</span>
             </Col>
-            {/* <Col xs={2}>
-                <span className="Purple-14px">Hide</span>
-            </Col> */}
         </Row>
         <Row className="mt-3">
             <Col xs={2}></Col>
