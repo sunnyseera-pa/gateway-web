@@ -26,7 +26,8 @@ const AddToolForm = (props) => {
                 programmingLanguageVersion: ''
             },
             license: '',
-            authors: [],
+            // authors: [],
+            authors: [props.userState[0].id],
             tags: {
                 features: [],
                 topics: [],
@@ -53,6 +54,7 @@ const AddToolForm = (props) => {
         }),
 
         onSubmit: values => {
+            console.log('values tool: ' + values)
             axios.post(baseURL + '/api/mytools/add', values)
                 .then((res) => {
                     window.location.href = window.location.search + '/tool/' + res.data.id + '/?toolAdded=true';

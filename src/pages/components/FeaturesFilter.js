@@ -53,12 +53,20 @@ class FeaturesFilter extends Component {
     <div>
      <div className="FilterCard mt-2">
         <Row className="mt-2"  >
-            <Col xs={1}></Col>
-            <Col xs={11} className="ml-3">
+            {/* <Col xs={1}></Col> */}
+            <Col xs={7} className="ml-3">
                <span className="Gray800-14px-bold">Features</span>
-                <span className="mr-5 ml-3"/> 
-               <span>
+               <span> <div className="White-12px BubbleCounts"> {combinedFeatures.length} </div> </span>
+                <span className="mr-4 ml-1"/> 
+               {/* <span>
                   <button className="ClearButtons Purple-14px pl-5" onClick={() => this.clearFilter()}>
+                    Clear
+                  </button>
+                </span> */}
+            </Col>
+            <Col xs={3}>
+                <span>
+                  <button className="ClearButtons Purple-14px" onClick={() => this.clearFilter()}>
                     Clear
                   </button>
                 </span>

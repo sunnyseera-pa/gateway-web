@@ -186,11 +186,11 @@ class ToolDetail extends Component {
                   <Tab eventKey="Reviews" title={'Reviews (' + reviewData.length + ')'}>
                     <Reviews data={data} userState={userState} reviewData={reviewData} />
                   </Tab>
-                  <Tab eventKey="Data sets" title={'Data sets (' + data.datasetids.length + ')'}>
-                    {data.datasetids.length <= 0 ? <NotFound word="data sets" /> : data.datasetids.map(id => <DataSet id={id} />)}
-                  </Tab>
-                  <Tab eventKey="Projects" title={'Projects (' + data.projectids.length + ')'}>
+                  <Tab eventKey="Projects" title={'Projects using this (' + data.projectids.length + ')'}>
                     {data.projectids.length <= 0 ? <NotFound word="projects" /> : data.projectids.map(id => <Project id={id} />)}
+                  </Tab>
+                  <Tab eventKey="Data sets" title={'Data sets in the same projects (' + data.datasetids.length + ')'}>
+                    {data.datasetids.length <= 0 ? <NotFound word="data sets" /> : data.datasetids.map(id => <DataSet id={id} />)}
                   </Tab>
                 </Tabs>
               </div>

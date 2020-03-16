@@ -51,15 +51,29 @@ class CategoryFilter extends Component {
 
     return (
     <div>
+      {console.log('cats are: ' + JSON.stringify(categoriesSelected))}
+      {console.log('cats length is: ' + categoriesSelected.length)}
+      {console.log('state cats are: ' + this.state.categoriesSelected)}
+      {console.log('state cats length is: ' + this.state.categoriesSelected.length)}
+      {console.log('comb are: ' + JSON.stringify(combinedCategories))}
+      {console.log('comb length are: ' + combinedCategories.length)}
+
+
     <div className="FilterCard mt-2">
         <Row className="mt-2"  >
-            <Col xs={1}></Col>
-            <Col xs={11} className="ml-3">
-                <span className="Gray800-14px-bold pr-3">Tool Category</span>
-   
-                <span className="ml-3"/>
-                <span>
+            {/* <Col xs={1}></Col> */}
+            <Col xs={7} className="ml-3">
+                <span className="Gray800-14px-bold">Tool Category </span>
+                <span> <div className="White-12px BubbleCounts"> {combinedCategories.length} </div> </span>
+                {/* <span>
                     <button className="ClearButtons Purple-14px pl-5" onClick={() => this.clearFilter()}>
+                        Clear
+                    </button>
+                </span> */}
+            </Col>
+            <Col xs={3}>
+            <span>
+                    <button className="ClearButtons Purple-14px" onClick={() => this.clearFilter()}>
                         Clear
                     </button>
                 </span>

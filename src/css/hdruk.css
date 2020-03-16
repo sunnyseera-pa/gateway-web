@@ -50,6 +50,21 @@ body {
   border-radius: 16px;
 }
 
+.BubbleCounts {
+  width: 24px;
+  height: 24px;
+  background-color: #475da7;
+  border-radius: 16px;
+  display: inline-block;
+  padding: 6px ;
+  text-align: center;
+  /* padding: 5px 10px; */
+  /* display: inline-block;
+  background-color: #f3f3f3;
+  padding: 5px 10px;
+  border-radius: 16px; */
+}
+
 .iconHolder {
   text-align: right;
   padding-top: 5px;
@@ -177,6 +192,18 @@ body {
   color: #475da7;
 }
 
+.White-12px{
+  font-family: MuseoSansRounded;
+  font-size: 12px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  color: #ffffff;
+}
+
 .searchBarBackground {
   width: 100%;
   background-color: #ffffff;
@@ -225,12 +252,8 @@ body {
   box-shadow: 1px 1px 3px 0 #00000017;
   background-color: #ffffff;
   padding: 10px;
+  /* width: 280px; */
 }
-
-/* #AdFilters{
-  max-height: 228px;
-  overflow-y: scroll;
-} */
 
 .AdFilters{
   box-shadow: 1px 1px 3px 0 #00000017;
@@ -404,7 +427,7 @@ input[type='checkbox']:checked:after {
   position: relative;
   padding-left: 4px;
   padding-top: 1px;
-  content: url(../images/radio.svg);
+  content: url(../images/wee-square.svg);
   display: inline-block;
   visibility: visible;
   border: solid 2px #d6d6d6;
@@ -447,7 +470,7 @@ input[type='radio']:checked:after {
 }
 
 .AddButton{
-  width: 152px;
+  width: 172px;
   height: 40px;
 }
 
@@ -561,7 +584,7 @@ input[type='radio']:checked:after {
 .AccountButtons{
   border: 2px solid #3db28c !important;
   border-radius: 4px !important;
-  
+
 }
 
 .ClearButtons{

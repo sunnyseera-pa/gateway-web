@@ -11,22 +11,22 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 var baseURL = require('./../../BaseURL').getURL();
 
-const AddProjectForm = (props) => {
+const EditProjectForm = (props) => {
     // Pass the useFormik() hook initial form values and a submit function that will
     // be called when the form is submitted
     const formik = useFormik({
         initialValues: {
+            id: props.data.id,
             type: 'project',
-            name: '',
-            link: '',
-            description: '',
-            // authors: [],
-            authors: [props.userState[0].id],
+            name: props.data.name,
+            link: props.data.link,
+            description: props.data.description,
+            authors: props.data.authors,
             categories: {
-                category: ''
+                category: props.data.categories.category
             },
             tags: {
-                topics: [],
+                topics: props.data.tags.topics
             },
         },
 
@@ -46,9 +46,8 @@ const AddProjectForm = (props) => {
         }),
 
         onSubmit: values => {
-            console.log('values project: ' + values)
             //add via same post as add tool form - type set as 'project'
-            axios.post(baseURL + '/api/mytools/add', values)
+            axios.post(baseURL + '/api/mytools/edit', values)
                 .then((res) => {
                     window.location.href = window.location.search + '/project/' + res.data.id + '/?projectAdded=true';
                 });
@@ -62,8 +61,7 @@ const AddProjectForm = (props) => {
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                     <div className="Rectangle">
-                        <p className="Black-20px">Add a new research project</p>
-                        <p className="Gray800-14px">Projects help others understand the context in which a tool or resource was used</p>
+                        <p className="Black-20px">Edit a research project</p>
                     </div>
                 </Col>
                 <Col sm={1} lg={10} />
@@ -96,28 +94,31 @@ const AddProjectForm = (props) => {
                             </Form.Group>
                             {console.log('description: ' + formik.values.description)}
 
-
                             <Form.Group className="pb-2">
                                 <Form.Label className="Gray800-14px">Authors</Form.Label>
                                 <Form.Text className="Gray700-13px">
                                 Add any authors or collaborators {/* Can be their username or website if you don't know the name. */}
                                 </Form.Text>
                                 <Typeahead
-                                    id="authors"
-                                    labelKey={authors => `${authors.name}`}
-                                    defaultSelected={[{ id: props.userState[0].id, name: props.userState[0].name }]}
+                                    labelKey="authors"
+                                    // id="authors"
+                                    // labelKey={authors => `${authors.name}`}
+                                    allowNew
                                     multiple
+                                    // defaultSelected={[{ id: props.userState[0].id, name: props.userState[0].name }]}
+                                    defaultSelected={props.data.authors}
                                     options={props.combinedUsers}
                                     onChange={(selected) => {
                                         var tempSelected = [];
                                         selected.map((selectedItem) => {
-                                            tempSelected.push(selectedItem.id);
+                                            // tempSelected.push(selectedItem.id);
+                                            selectedItem.customOption === true ? tempSelected.push(selectedItem.authors) : tempSelected.push(selectedItem);
                                         })
                                         formik.values.authors = tempSelected;
                                     }}
                                 />
                             </Form.Group>
-                            {console.log('description: ' + formik.values.authors)}
+                            {console.log('authors: ' + formik.values.authors)}
 
 
                             <Form.Group className="pb-2">
@@ -130,6 +131,7 @@ const AddProjectForm = (props) => {
                                     labelKey="category"
                                     allowNew
                                     multiple
+                                    defaultSelected={[props.data.categories.category]}
                                     options={props.combinedCategories}
                                     onChange={(selected) => {
                                         var tempSelected = [];
@@ -140,6 +142,8 @@ const AddProjectForm = (props) => {
                                     }}
                                 />
                             </Form.Group>
+                            {console.log('category: ' + formik.values.categories.category)}
+
 
 
                             <Form.Group className="pb-2">
@@ -153,6 +157,7 @@ const AddProjectForm = (props) => {
                                     labelKey="topics"
                                     allowNew
                                     multiple
+                                    defaultSelected={props.data.tags.topics}
                                     options={props.combinedTopic}
                                     onChange={(selected) => {
                                         var tempSelected = [];
@@ -192,4 +197,4 @@ const AddProjectForm = (props) => {
 }
 
 
-export default AddProjectForm;
+export default EditProjectForm;

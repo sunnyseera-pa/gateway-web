@@ -8,11 +8,12 @@ import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import 'react-tabs/style/react-tabs.css';
 import AccountTools from './components/AccountTools';
+import AccountProjects from './components/AccountProjects';
 import ReviewTools from './components/ReviewTools';
 import DataSet from './components/DataSet';
 import YourAccount from './components/YourAccount';
 import queryString from 'query-string';
-import Alert from 'react-bootstrap/Alert'
+import Alert from 'react-bootstrap/Alert';
 
 class Account extends Component {
 
@@ -168,7 +169,8 @@ class Account extends Component {
                                         {data.datasetids.map(id => <DataSet id={id} />)}
                                     </Tab>
                                     <Tab eventKey="projects" title="Projects">
-                                        Placeholder
+                                        {/* Placeholder */}
+                                        <AccountProjects userState={userState} />
                                     </Tab>
                                     <Tab eventKey="tools" title="Tools">
                                         <AccountTools userState={userState} />
