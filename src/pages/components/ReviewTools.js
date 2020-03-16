@@ -98,7 +98,7 @@ class ReviewTools extends React.Component {
 const ReviewReview = (props) => {
     const [open, setOpen] = useState(false);
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
-    var updatedDate = new Date(props.dat.date);;
+    var updatedDate = new Date(props.dat.date);
     var updatedOnDate = updatedDate.getDate() + " " + monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
     return (
         <>
