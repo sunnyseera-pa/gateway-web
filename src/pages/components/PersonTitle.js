@@ -34,8 +34,10 @@ class PersonTitle extends Component {
                     <p className="Black-20px"> {data.firstname} {data.lastname} </p>
                     {!data.bio ? '' : <p className='Gray800-14px'> {data.bio} </p>}
                   </Col>
-                  <Col sm={2}>
-                    <PersonPlaceholderSvg />
+                  <Col sm={2} className="text-right">
+                    <div class="avatar-circle">
+                        <span class="initials">{data.firstname.charAt(0).toUpperCase()}{data.lastname.charAt(0).toUpperCase()}</span>
+                    </div>
                   </Col>
                 </Row>
 

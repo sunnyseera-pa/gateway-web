@@ -12,6 +12,8 @@ import Tool from './components/Tool';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import DataSet from '../pages/components/DataSet';
+import NotFound from './components/NotFound';
+import ReviewsTitle from './components/ReviewTitle';
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -107,20 +109,31 @@ class PersonDetail extends Component {
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
               <div>
-                <Tabs className='TabsBackground Gray700-13px'>
-                  <Tab eventKey="Tools" title={'Tools (' + data.toolids.length + ')'}>
-                    {data.toolids.map(id => <Tool id={id} />)}
+              <Tabs className='TabsBackground Gray700-13px'>
+                  <Tab eventKey="Tools" title={'Tools (' + data.tools.length + ')'}>
+                    {data.tools.length <= 0 ? <NotFound word="tools" /> : data.tools.map((tool) => {
+                      return <Tool id={tool.id} />
+                    })}
                   </Tab>
                   <Tab eventKey="Reviews" title={'Reviews (' + data.reviews.length + ')'}>
-                    {/* <Reviews data={data} userState={userState}/> */}
+                    {data.reviews.length <= 0 ? <NotFound word="reviews" /> : data.reviews.map((review) => {
+                      return <ReviewsTitle id={review.reviewID} />
+                    })}
+                    
                   </Tab>
-                  <Tab eventKey="Data sets" title={'Data Sets (' + data.datasetids.length + ')'}>
-                    {data.datasetids.map(id => <DataSet id={id} />)}
+                  <Tab eventKey="Data sets" title={'Data sets (' + data.datasetids.length + ')'}>
+                    {data.datasetids.length <= 0 ? <NotFound word="data sets" /> : data.datasetids.map(id => <DataSet id={id} />)}
                   </Tab>
-                  <Tab eventKey="Projects" title={'Projects (' + data.projectids.length + ')'}>
-                    {data.projectids.map(id => <Project id={id} />)}
+                  <Tab eventKey="Projects" title={'Projects (' + data.toolids.length + ')'}>
+                    {data.toolids.length <= 0 ? <NotFound word="projects" /> : data.toolids.map((id) => {
+                      return <Project id={id} />
+                    })}
                   </Tab>
                 </Tabs>
+                
+                
+                
+                
               </div>
             </Col>
             <Col sm={1} lg={1} />
