@@ -67,7 +67,7 @@ class ProgrammingLanguageFilter extends Component {
             {/* <Col xs={1}></Col> */}
             <Col xs={7} className="ml-3">
                 <span className="Gray800-14px-bold">Programming</span>
-                <span> <div className="White-12px BubbleCounts"> {combinedLanguages.length} </div> </span>
+                <span> <div className="White-12px BubbleCounts"> {!combinedLanguages ? '0' : combinedLanguages.length} </div> </span>
                 {/* <span>
                   <button className="ClearButtons Purple-14px pl-5" onClick={() => this.clearFilter()}>
                     Clear
@@ -86,11 +86,11 @@ class ProgrammingLanguageFilter extends Component {
         </Row>
       </div>
     <div className="AdFilters Gray800-14px">
-       {console.log('combinedLanguages are: ' + combinedLanguages)}
+       {/* {console.log('combinedLanguages are: ' + combinedLanguages)}
 
        {combinedLanguages.map((language) => {
             console.log('language: ' + language)
-        })}
+        })} */}
     
       {/* <Row className="mt-2 mb-2"  >
             <Col xs={2}></Col>
@@ -104,7 +104,7 @@ class ProgrammingLanguageFilter extends Component {
           <Col xs={11} className="ml-4">  
           {/* <Form onSubmit={this.handleSubmit}> */}
 
-          {combinedLanguages.map((language) => {
+          {!combinedLanguages ? '' : combinedLanguages.map((language) => {
               return <InputGroup >
                     <InputGroup.Prepend>
                       <InputGroup.Checkbox aria-label="Checkbox for following text input" name="programmingLanguage" checked={languageSelected.indexOf(language)!=-1 ? "true": ""} value={language} onChange={this.changeFilter} />

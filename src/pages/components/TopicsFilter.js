@@ -56,7 +56,7 @@ class TopicsFilter extends Component {
             {/* <Col xs={1}></Col> */}
             <Col xs={7} className="ml-3">
                <span className="Gray800-14px-bold">Topics</span>
-               <span> <div className="White-12px BubbleCounts"> {combinedTopic.length} </div> </span>
+               <span> <div className="White-12px BubbleCounts"> {!combinedTopic ? '0' : combinedTopic.length} </div> </span>
                <span className="mr-5"/> 
                {/* <span>
                   <button className="ClearButtons Purple-14px pl-5" onClick={() => this.clearFilter()}>
@@ -76,7 +76,7 @@ class TopicsFilter extends Component {
     <div className="AdFilters Gray800-14px">
        {console.log('combinedFeatures are: ' + combinedTopic)}
 
-       {combinedTopic.map((topics) => {
+       {!combinedTopic ? '' : combinedTopic.map((topics) => {
             console.log('topics: ' + topics)
         })}
       
@@ -85,7 +85,7 @@ class TopicsFilter extends Component {
           <Col xs={11} className="ml-4">  
 
         {console.log('combinedTopic: ' + combinedTopic )}
-          {combinedTopic.map((topics) => {
+          {!combinedTopic ? '' : combinedTopic.map((topics) => {
               return <InputGroup >
                     <InputGroup.Prepend>
                       <InputGroup.Checkbox aria-label="Checkbox for following text input" name="topics" checked={topicsSelected.indexOf(topics)!=-1 ? "true": ""} value={topics} onChange={this.changeFilter} />
