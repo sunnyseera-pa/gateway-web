@@ -4,24 +4,64 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import { ReactComponent as PersonPlaceholderSvg } from '../../images/person-placeholder.svg';
+import axios from 'axios';
+import { number } from 'prop-types';
+
+var baseURL = require('./../../BaseURL').getURL();
 
 class PersonTitle extends Component {
 
   constructor(props) {
     super(props)
     this.state.data = props.data;
+    console.log('person id' + props.data.id)
   }
 
   // initialize our state
   state = {
-    data: []
+    data: [],
+    id: this.props.data.id,
+    //pass in props and if doesnt exist set to 0 in the state
+    // counter: 1 < 2 ? 10 : 5
+    // counter: this.props.data.counter === undefined ? 0 : this.props.data.counter
+    counter: this.props.data.counter 
+
   };
+
+  componentDidMount(props){
+    // let counter = !this.state.counter ? 1 : this.state.counter++;
+    console.log('this.props.data.counter: ' + this.props.data.counter);
+    console.log('this.props.data.counter type: ' + typeof(this.props.data.counter));
+
+    let counter = !this.props.data.counter ? 1 : this.props.data.counter + 1;
+    // let counter = typeof(this.props.data.counter) !== undefined ? this.props.data.counter + 1 : 1;
+    // let counter = typeof(this.props.data.counter) !== undefined ? this.props.data.counter + 1 : 1;
+
+
+
+    console.log('counter: ' + counter);
+    // this.setState({counter: counter++});
+    // console.log('counter after: ' + counter);
+    // console.log('this.state.counter after: ' + this.state.counter);
+    
+    this.UpdateCounter(this.props.data.id, counter);
+  }
+
+  UpdateCounter = (id, counter) => {
+      console.log('counter in update is: ' + counter);
+      console.log('id in update is: ' + id);
+
+      // axios.put(baseURL + '/api/mytools/edit', id, counter)
+      axios.post(baseURL + '/api/counter/update', {id: id, counter: counter});
+  }
 
   // here is our UI
   // it is easy to understand their functions when you
   // see them render into our screen
   render() {
     const { data } = this.state;
+    console.log('person data: ' + JSON.stringify(data))
+
     return (
       <div>
         <Row className="mt-1">
@@ -61,6 +101,15 @@ class PersonTitle extends Component {
                       </span>
                     </Col>
                   }
+                </Row>
+
+                <Row>
+                  <Col>
+                    <span className='Gray800-14px'>
+                    {data.counter == undefined ? 1 : data.counter+1}
+                    {data.counter==undefined ? ' view' : ' views'}
+                    </span>
+                  </Col>
                 </Row>
               </Card.Body>
             </Card>
