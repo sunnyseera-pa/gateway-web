@@ -53,7 +53,7 @@ class ToolTitle extends Component {
                                     <span className="Black-16px">{data.name}</span>
                                     <br />
                                     <span >
-                                        <a href={data.link} className="Purple-14px"> 
+                                        <a href={data.link} target="_blank" className="Purple-14px"> 
                                             {data.link}
                                         </a>
                                     </span>
