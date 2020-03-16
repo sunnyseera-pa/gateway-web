@@ -47,11 +47,21 @@ const EditProjectForm = (props) => {
 
         onSubmit: values => {
             //add via same post as add tool form - type set as 'project'
-            axios.post(baseURL + '/api/mytools/edit', values)
+            //alert(JSON.stringify(values, null, 2));
+            axios.put(baseURL + '/api/mytools/edit', values)
                 .then((res) => {
-                    window.location.href = window.location.search + '/project/' + res.data.id + '/?projectAdded=true';
+                    window.location.href = window.location.search + '/project/' + props.data.id + '/?projectEdited=true';
                 });
         }
+    });
+
+    var listOfAuthors = [];
+    props.data.authors.map((author) => { 
+        props.combinedUsers.map((user) => { 
+            if (user.id === author) {
+                listOfAuthors.push({ id: user.id, name: user.name })
+            }    
+        });
     });
 
     return (
@@ -100,19 +110,14 @@ const EditProjectForm = (props) => {
                                 Add any authors or collaborators {/* Can be their username or website if you don't know the name. */}
                                 </Form.Text>
                                 <Typeahead
-                                    labelKey="authors"
-                                    // id="authors"
-                                    // labelKey={authors => `${authors.name}`}
-                                    allowNew
+                                    labelKey={authors => `${authors.name}`}
+                                    defaultSelected={listOfAuthors}
                                     multiple
-                                    // defaultSelected={[{ id: props.userState[0].id, name: props.userState[0].name }]}
-                                    defaultSelected={props.data.authors}
                                     options={props.combinedUsers}
                                     onChange={(selected) => {
                                         var tempSelected = [];
                                         selected.map((selectedItem) => {
-                                            // tempSelected.push(selectedItem.id);
-                                            selectedItem.customOption === true ? tempSelected.push(selectedItem.authors) : tempSelected.push(selectedItem);
+                                            tempSelected.push(selectedItem.id);
                                         })
                                         formik.values.authors = tempSelected;
                                     }}

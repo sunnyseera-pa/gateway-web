@@ -13,6 +13,8 @@ import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import DataSet from '../pages/components/DataSet';
 import NotFound from './components/NotFound';
+import Alert from 'react-bootstrap/Alert';
+import queryString from 'query-string';
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -28,7 +30,9 @@ class ProjectDetail extends Component {
       role: "Reader",
       id: null,
       name: null
-    }]
+    }],
+    projectAdded: false,
+    projectEdited: false
   };
 
   constructor(props) {
@@ -38,8 +42,12 @@ class ProjectDetail extends Component {
 
   // on loading of tool detail page
   componentDidMount() {
+    if (!!window.location.search) {
+      var values = queryString.parse(window.location.search);
+      this.setState({ projectAdded: values.projectAdded });
+      this.setState({ projectEdited: values.projectEdited });
+    }
     this.getDataSearchFromDb();
-
   }
 
   // on loading of tool detail page were id is different
@@ -75,7 +83,7 @@ class ProjectDetail extends Component {
   }
 
   render() {
-    const { searchString, data, isLoading, userState } = this.state;
+    const { searchString, data, isLoading, projectAdded, projectEdited, userState } = this.state;
 
     if (isLoading) {
       return <p>Loading ...</p>;
@@ -97,6 +105,38 @@ class ProjectDetail extends Component {
       <div>
         <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
         <Container className="mb-5">
+
+        {projectAdded ?
+            <Row className="">
+              <Col sm={1} lg={1} />
+              <Col sm={10} lg={10}>
+                <Alert variant="success" className="mt-3">Done! Someone will review your project and let you know when it goes live</Alert>
+              </Col>
+              <Col sm={1} lg={10} />
+            </Row>
+            : ""}
+          
+          {projectEdited ?
+            <Row className="">
+              <Col sm={1} lg={1} />
+              <Col sm={10} lg={10}>
+                <Alert variant="success" className="mt-3">Done! Your project has been updated</Alert>
+              </Col>
+              <Col sm={1} lg={10} />
+            </Row>
+            : ""}
+
+          {data.activeflag === "review" ?
+            <Row className="">
+              <Col sm={1} lg={1} />
+              <Col sm={10} lg={10}>
+                <Alert variant="warning" className="mt-3">Your project is pending review. Only you can see this page.</Alert>
+              </Col>
+              <Col sm={1} lg={10} />
+            </Row>
+            : ""}
+
+
           <ProjectTitle data={data} />
 
           <Row>

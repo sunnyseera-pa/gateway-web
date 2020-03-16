@@ -40,6 +40,7 @@ class ToolDetail extends Component {
       name: null
     }],
     toolAdded: false,
+    toolEdited: false,
     reviewAdded: false,
     replyAdded: false
   };
@@ -54,6 +55,7 @@ class ToolDetail extends Component {
     if (!!window.location.search) {
       var values = queryString.parse(window.location.search);
       this.setState({ toolAdded: values.toolAdded });
+      this.setState({ toolEdited: values.toolEdited });
       this.setState({ reviewAdded: values.reviewAdded });
       this.setState({ replyAdded: values.replyAdded })
     }
@@ -94,7 +96,7 @@ class ToolDetail extends Component {
   }
 
   render() {
-    const { searchString, data, isLoading, userState, toolAdded, reviewAdded, replyAdded, reviewData } = this.state;
+    const { searchString, data, isLoading, userState, toolAdded, toolEdited, reviewAdded, replyAdded, reviewData } = this.state;
 
     if (isLoading) {
       return <p>Loading ...</p>;
@@ -118,6 +120,16 @@ class ToolDetail extends Component {
               <Col sm={1} lg={1} />
               <Col sm={10} lg={10}>
                 <Alert variant="success" className="mt-3">Done! Someone will review your tool and let you know when it goes live</Alert>
+              </Col>
+              <Col sm={1} lg={10} />
+            </Row>
+            : ""}
+
+          {toolEdited ?
+            <Row className="">
+              <Col sm={1} lg={1} />
+              <Col sm={10} lg={10}>
+                <Alert variant="success" className="mt-3">Done! Your tool has been updated</Alert>
               </Col>
               <Col sm={1} lg={10} />
             </Row>

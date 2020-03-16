@@ -54,8 +54,21 @@ const EditToolForm = (props) => {
         }),
 
         onSubmit: values => {
+            //alert(JSON.stringify(values, null, 2));
             axios.put(baseURL + '/api/mytools/edit', values)
+            .then((res) => {
+                window.location.href = window.location.search + '/tool/' + props.data.id + '/?toolEditted=true';
+            });
         }
+    });
+
+    var listOfAuthors = [];
+    props.data.authors.map((author) => { 
+        props.combinedUsers.map((user) => { 
+            if (user.id === author) {
+                listOfAuthors.push({ id: user.id, name: user.name })
+            }    
+        });
     });
 
     return (
@@ -175,20 +188,18 @@ const EditToolForm = (props) => {
                                     Add any authors, including yourself if that's the case. Can be their username or website if you don't know the name.
                                 </Form.Text>
                                 <Typeahead
-                                    labelKey="authors"
-                                    allowNew
+                                    labelKey={authors => `${authors.name}`}
+                                    defaultSelected={listOfAuthors}
                                     multiple
-                                    defaultSelected={props.data.authors}
                                     options={props.combinedUsers}
                                     onChange={(selected) => {
                                         var tempSelected = [];
                                         selected.map((selectedItem) => {
-                                            selectedItem.customOption === true ? tempSelected.push(selectedItem.authors) : tempSelected.push(selectedItem);
-
+                                            tempSelected.push(selectedItem.id);
                                         })
                                         formik.values.authors = tempSelected;
                                     }}
-                                />
+                            />
                             </Form.Group>
 
                             <Form.Group className="pb-2">
