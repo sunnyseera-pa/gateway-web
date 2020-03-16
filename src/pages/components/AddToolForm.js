@@ -110,7 +110,7 @@ const AddToolForm = (props) => {
                                     id="categories.category"
                                     labelKey="category"
                                     allowNew
-                                    multiple
+                                    // multiple
                                     options={props.combinedCategories}
                                     onChange={(selected) => {
                                         var tempSelected = [];

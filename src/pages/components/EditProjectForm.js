@@ -135,7 +135,7 @@ const EditProjectForm = (props) => {
                                     id="categories.category"
                                     labelKey="category"
                                     allowNew
-                                    multiple
+                                    // multiple
                                     defaultSelected={[props.data.categories.category]}
                                     options={props.combinedCategories}
                                     onChange={(selected) => {

@@ -117,7 +117,7 @@ const EditToolForm = (props) => {
                                 <Typeahead
                                     labelKey="category"
                                     allowNew
-                                    multiple
+                                    // multiple
                                     defaultSelected={[props.data.categories.category]}
                                     options={props.combinedCategories}
                                     onChange={(selected) => {
