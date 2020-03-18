@@ -86,22 +86,6 @@ class SearchPage extends React.Component {
 
     doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
-/*             if (!!this.state.searchString && !!this.state.typeString && !!this.state.categoriesSelected) {
-                this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&toolcategory=' + this.state.categoriesSelected)
-                this.doSearchCall(this.state.searchString, this.state.typeString, this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
-            }
-            else if (!!this.state.searchString && !this.state.typeString && !!this.state.categoriesSelected) {
-                this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=all' + '&toolcategory=' + this.state.categoriesSelected)
-                this.doSearchCall(this.state.searchString, "", this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
-            }
-            else if (!this.state.searchString && !!this.state.typeString && !this.state.categoriesSelected) {
-                this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=all' + '&toolcategory=all')
-                this.doSearchCall(this.state.searchString, "", this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
-            }
-            else if (!!this.state.searchString && !this.state.typeString && !this.state.categoriesSelected) {
-                this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=all' + '&toolcategory=all')
-                this.doSearchCall(this.state.searchString, "", this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
-            } */
 
             if (!!this.state.searchString && !!this.state.typeString ) {
                 this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&toolCategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected)
@@ -120,10 +104,9 @@ class SearchPage extends React.Component {
     } 
 
     doSearchCall(searchString, typeString, languageSelected, categoriesSelected, featuresSelected, topicsSelected) {
-        //var searchURL - build url here? loop through langauge array and append any (&programmingLanguage=languageValue) if they exist?
+        
         var searchURL = baseURL + '/api/search?search=' + searchString + '&type=' + typeString;
-        //UPDATE TO COMBINED LANGUAGES ARRAY ONCE MULTISELECT WORKS
-
+        
         languageSelected.map(language => {
         
             searchURL += '&programmingLanguage=' + language;
@@ -201,7 +184,6 @@ class SearchPage extends React.Component {
         axios.get(baseURL+'/api/getAllLanguages/tool')
         .then((res) =>{
             this.setState({combinedLanguages: res.data.data});
-            // this.setState({isLoading: false}); 
             console.log("test3: " + JSON.stringify(res.data.data));
         });
     }
@@ -210,7 +192,6 @@ class SearchPage extends React.Component {
         axios.get(baseURL+'/api/getAllCategories/tool')
         .then((res) =>{
             //this.setState({combinedCategories: res.data.data});
-            // this.setState({isLoading: false}); 
             console.log("test5: " + JSON.stringify(res.data.data));
         });
     }
@@ -219,7 +200,6 @@ class SearchPage extends React.Component {
         axios.get(baseURL+'/api/getAllFeatures/tool')
         .then((res) =>{
             this.setState({combinedFeatures: res.data.data});
-            // this.setState({isLoading: false}); 
             console.log("test2: " + JSON.stringify(res.data.data));
         });
       }
@@ -227,8 +207,7 @@ class SearchPage extends React.Component {
       doGetTopicsCall() {
         axios.get(baseURL+'/api/getAllTopics/tool')
         .then((res) =>{
-            this.setState({combinedTopic: res.data.data});
-            // this.setState({isLoading: false}); 
+            this.setState({combinedTopic: res.data.data}); 
             console.log("test1: " + JSON.stringify(res.data.data));
         });
     }

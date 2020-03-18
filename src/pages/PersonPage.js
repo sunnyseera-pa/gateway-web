@@ -139,20 +139,7 @@ class PersonDetail extends Component {
             <Col sm={1} lg={1} />
           </Row>
 
-          {/*  <Row className="mt-5">
-            <Col sm={12} className="Black-16px"> Tools created (x) </Col>
-          </Row>
-          <Tool data={data} />
-
-          <Row className="mt-5">
-            <Col sm={12} className="Black-16px"> Tools reviewed (x) </Col>
-          </Row>
-          <ToolsUsed data={data} />
-
-          <Row className="mt-5">
-            <Col sm={12} className="Black-16px"> Research projects (x) </Col>
-          </Row>
-          <Project data={data} /> */}
+ 
 
         </ Container>
       </div>

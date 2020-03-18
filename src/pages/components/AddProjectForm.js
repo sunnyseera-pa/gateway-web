@@ -169,11 +169,11 @@ const AddProjectForm = (props) => {
                         <Row className="mt-3">
                             <Col sm={9} lg={9}>
                                 <div className="ButtonHolder">
-                                    {/* <a style={{ cursor: 'pointer' }} href={'/account?tab=tools'} > */}
+                                    <a style={{ cursor: 'pointer' }} href={'/account?tab=projects'} >
                                         <Button variant="medium" className="CancelButton" >
                                             Cancel
                                         </Button>
-                                    {/* </a> */}
+                                    </a>
                                 </div>
                             </Col>
                             <Col sm={2} lg={2} className="ml-5">

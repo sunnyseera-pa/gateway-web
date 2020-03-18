@@ -53,15 +53,11 @@ class CategoryFilter extends Component {
     <div>
     <div className="FilterCard mt-2">
         <Row className="mt-2"  >
-            {/* <Col xs={1}></Col> */}
+           
             <Col xs={7} className="ml-3">
                 <span className="Gray800-14px-bold">Tool Category </span>
                 <span> <div className="White-12px BubbleCounts"> {!combinedCategories ? '0' : combinedCategories.length} </div> </span>
-                {/* <span>
-                    <button className="ClearButtons Purple-14px pl-5" onClick={() => this.clearFilter()}>
-                        Clear
-                    </button>
-                </span> */}
+
             </Col>
             <Col xs={3}>
             <span>
@@ -74,11 +70,7 @@ class CategoryFilter extends Component {
         </Row>
     </div>
     <div className="AdFilters Gray800-14px">
-       {/* {console.log('combinedCategories are: ' + combinedCategories)}
 
-       {combinedCategories.map((category) => {
-            console.log('category: ' + category)
-        })} */}
       
       <Row className="mb-3">
           <Col xs={1}></Col>

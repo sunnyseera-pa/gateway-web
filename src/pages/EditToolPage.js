@@ -58,7 +58,6 @@ class EditToolPage extends React.Component {
         axios.get(baseURL+'/api/getAllTopics/tool')
         .then((res) =>{
             this.setState({combinedTopic: res.data.data});
-            // this.setState({isLoading: false}); 
             console.log("test1: " + JSON.stringify(res.data.data));
         });
     }
@@ -67,7 +66,6 @@ class EditToolPage extends React.Component {
       axios.get(baseURL+'/api/getAllFeatures/tool')
       .then((res) =>{
           this.setState({combinedFeatures: res.data.data});
-          // this.setState({isLoading: false}); 
           console.log("test2: " + JSON.stringify(res.data.data));
       });
     }
@@ -76,7 +74,6 @@ class EditToolPage extends React.Component {
       axios.get(baseURL+'/api/getAllLanguages/tool')
       .then((res) =>{
           this.setState({combinedLanguages: res.data.data});
-          // this.setState({isLoading: false}); 
           console.log("test3: " + JSON.stringify(res.data.data));
       });
   }
@@ -85,7 +82,6 @@ class EditToolPage extends React.Component {
     axios.get(baseURL+'/api/getAllCategories/tool')
     .then((res) =>{
         this.setState({combinedCategories: res.data.data});
-        // this.setState({isLoading: false}); 
         console.log("test3: " + JSON.stringify(res.data.data));
     });
 }
@@ -94,7 +90,6 @@ doGetLicensesCall(){
   axios.get(baseURL+'/api/getAllLicenses/tool')
   .then((res) =>{
       this.setState({combinedLicenses: res.data.data});
-      // this.setState({isLoading: false}); 
       console.log("test3: " + JSON.stringify(res.data.data));
   });
 }
@@ -103,7 +98,6 @@ doGetUsersCall(){
   axios.get(baseURL+'/api/getAllUsers')
   .then((res) =>{
       this.setState({combinedUsers: res.data.data});
-      // this.setState({isLoading: false}); 
       console.log("test7: " + JSON.stringify(res.data.data));
   });
 }
@@ -129,7 +123,6 @@ updateSearchString = (searchString) => {
 
         return (
             <div>
-            {/* <Header /> */}
             <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
             <Container>
             <EditToolForm data={data} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} userState={userState} />

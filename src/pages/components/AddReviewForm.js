@@ -34,17 +34,7 @@ const AddReviewForm = (props) => {
           ],
       },
 
-    //   validationSchema: Yup.object({
-    //     projectName: Yup.string(),
-    //     review: Yup.string()
-    //   }),
-
-    //   validate,
-
       onSubmit: values => {
-        // alert(JSON.stringify(values, null, 2));
-        // alert("Form submitted");
-        // console.log('submitting', values); 
         axios.post(baseURL + '/api/mytools/add', values)
         }
     });

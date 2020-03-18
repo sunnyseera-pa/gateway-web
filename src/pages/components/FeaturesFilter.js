@@ -53,16 +53,12 @@ class FeaturesFilter extends Component {
     <div>
      <div className="FilterCard mt-2">
         <Row className="mt-2"  >
-            {/* <Col xs={1}></Col> */}
+           
             <Col xs={7} className="ml-3">
                <span className="Gray800-14px-bold">Features</span>
                <span> <div className="White-12px BubbleCounts"> {!combinedFeatures ? '0' : combinedFeatures.length} </div> </span>
                 <span className="mr-4 ml-1"/> 
-               {/* <span>
-                  <button className="ClearButtons Purple-14px pl-5" onClick={() => this.clearFilter()}>
-                    Clear
-                  </button>
-                </span> */}
+  
             </Col>
             <Col xs={3}>
                 <span>
@@ -74,11 +70,7 @@ class FeaturesFilter extends Component {
         </Row>
     </div>
     <div className="AdFilters Gray800-14px">
-       {/* {console.log('combinedFeatures are: ' + combinedFeatures)}
 
-       {combinedFeatures.map((features) => {
-            console.log('features: ' + features)
-        })} */}
       
       <Row className="mb-3">
           <Col xs={1}></Col>

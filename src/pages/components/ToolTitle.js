@@ -155,7 +155,7 @@ class ToolTitle extends Component {
                             <Col xs={12} md={12} className="mb-3">
                                 <span className="Gray800-14px">
                                     {data.description}
-                                    {/* Software to analyse data and with powerful graphics to create interactive visualisations - focused on business intelligence. Including data access to data prep to get data ready for analysis, to data analytics and discovery. */}
+                                    
                                 </span>
                             </Col> 
                         </Row>
