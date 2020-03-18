@@ -212,7 +212,7 @@ const AddReviewForm = (props) => {
                 emptySymbol={<EmptyStarIconSvg />}
                 fullSymbol={<FullStarIconSvg />}
                 initialRating={formik.values.rating}
-                onChange={handleRatingChange("show")} />
+                onChange={handleRatingChange} />
             </Form.Group>
 
             <Form.Label className="Gray800-14px">Is this review related to a specific project?</Form.Label>

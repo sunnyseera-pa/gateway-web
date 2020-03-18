@@ -3,6 +3,7 @@ import AddToolForm from '../pages/components/AddToolForm';
 import Container from 'react-bootstrap/Container';
 import SearchBar from './components/SearchBar';
 import axios from 'axios';
+import Loading from './components/Loading'
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -99,7 +100,7 @@ class AddToolPage extends React.Component {
         const {data, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, combinedUsers, isLoading, userState } = this.state;
 
         if (isLoading) {
-            return <p>Loading ...</p>;
+            return <Loading />;
         }
         
         return (

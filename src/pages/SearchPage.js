@@ -15,6 +15,7 @@ import ProgrammingLanguageFilter from './components/ProgrammingLanguageFilter';
 import CategoryFilter from './components/CategoryFilter';
 import FeaturesFilter from './components/FeaturesFilter';
 import TopicsFilter from './components/TopicsFilter';
+import Loading from './components/Loading'
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -248,7 +249,7 @@ class SearchPage extends React.Component {
         const { searchString, typeString, data, summary, userState, isLoading, combinedLanguages, languageSelected, combinedCategories, categoriesSelected, combinedFeatures, featuresSelected, combinedTopic, topicsSelected } = this.state;
         
         if (isLoading) {
-            return <p>Loading ...</p>;
+            return <Loading />;
         }
 
         return (

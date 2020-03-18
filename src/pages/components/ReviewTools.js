@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import ToolsHeader from './ToolsHeader';
 import NotFound from './NotFound';
 import Collapse from 'react-bootstrap/Collapse'
+import Loading from './Loading'
 
 var baseURL = require('../../BaseURL').getURL();
 
@@ -44,32 +45,11 @@ class ReviewTools extends React.Component {
         }
     }
 
-    rejectReview = (id) => {
-        axios.delete(baseURL + '/api/tool/review/reject', {
-            data: {
-                id: id
-            },
-        })
-        .then((res) => {
-            window.location.href = '/account?tab=reviews&reviewRejected=true';
-        });
-    }
-
-    approveReview = (id) => {
-        axios.post(baseURL + '/api/tool/review/approve', {
-            id: id,
-            activeflag: "active"
-        })
-        .then((res) => {
-            window.location.href = '/account?tab=reviews&reviewApproved=true';
-        });
-    }
-
     render() {
         const { data, isLoading, userState } = this.state;
         console.log(data)
         if (isLoading) {
-            return <p>Loading ...</p>;
+            return <Loading />;
         }
 
         return (
@@ -100,6 +80,28 @@ const ReviewReview = (props) => {
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
     var updatedDate = new Date(props.dat.date);
     var updatedOnDate = updatedDate.getDate() + " " + monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
+    
+    const rejectReview = (id) => {
+        axios.delete(baseURL + '/api/tool/review/reject', {
+            data: {
+                id: id
+            },
+        })
+        .then((res) => {
+            window.location.href = '/account?tab=reviews&reviewRejected=true';
+        });
+    }
+
+    const approveReview = (id) => {
+        axios.post(baseURL + '/api/tool/review/approve', {
+            id: id,
+            activeflag: "active"
+        })
+        .then((res) => {
+            window.location.href = '/account?tab=reviews&reviewApproved=true';
+        });
+    }
+
     return (
         <>
             <div className="Rectangle mt-1">
@@ -110,10 +112,10 @@ const ReviewReview = (props) => {
 
                         {props.userState.role === 'Admin' ?
                             <div>
-                                <Button variant='white' onClick={() => this.rejectReview(props.dat.reviewID)} className="AccountButtons mr-2">
+                                <Button variant='white' onClick={() => rejectReview(props.dat.reviewID)} className="AccountButtons mr-2">
                                     Reject
                                 </Button>
-                                <Button variant='white' onClick={() => this.approveReview(props.dat.reviewID)} className="AccountButtons ">
+                                <Button variant='white' onClick={() => approveReview(props.dat.reviewID)} className="AccountButtons ">
                                     Approve
                                 </Button>
                             </div> : ""}

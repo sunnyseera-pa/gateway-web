@@ -7,6 +7,7 @@ import SVGIcon from '../images/SVGIcon';
 import { ReactComponent as WhiteLogoSvg } from '../../src/images/white.svg';
 import { ReactComponent as ArrowDownSvg } from '../images/arrowDownWhite.svg';
 import Dropdown from 'react-bootstrap/Dropdown';
+import Loading from './components/Loading'
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -99,7 +100,7 @@ class LandingPage extends React.Component{
         const {data, userState, isLoading } = this.state;
 
         if (isLoading) {
-            return <p>Loading ...</p>;
+            return <Loading />;
         }
 
         return(
@@ -118,6 +119,7 @@ class LandingPage extends React.Component{
 
                                             <Dropdown.Menu as={CustomMenu}>
                                                 <Dropdown.Item href="/account?tab=youraccount">Your Account</Dropdown.Item>
+                                                <Dropdown.Item href="/account?tab=messages">Notifications</Dropdown.Item>
                                                 <Dropdown.Item href="/account?tab=projects">Project</Dropdown.Item>
                                                 <Dropdown.Item href="/account?tab=tools">Tools</Dropdown.Item>
                                                 <Dropdown.Item href="/account?tab=reviews">Reviews</Dropdown.Item>

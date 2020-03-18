@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import ToolsHeader from './ToolsHeader';
 import NotFound from './NotFound';
 import Collapse from 'react-bootstrap/Collapse'
+import Loading from './Loading'
 
 var baseURL = require('../../BaseURL').getURL();
 
@@ -41,7 +42,7 @@ class ReviewTitle extends React.Component {
         const { data, isLoading } = this.state;
         
         if (isLoading) {
-            return <p>Loading ...</p>;
+            return <Loading />;
         }
 
         const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];

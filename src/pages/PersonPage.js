@@ -14,6 +14,7 @@ import Tab from 'react-bootstrap/Tab';
 import DataSet from '../pages/components/DataSet';
 import NotFound from './components/NotFound';
 import ReviewsTitle from './components/ReviewTitle';
+import Loading from './components/Loading'
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -78,7 +79,7 @@ class PersonDetail extends Component {
     const { searchString, data, isLoading, userState } = this.state;
 
     if (isLoading) {
-      return <p>Loading ...</p>;
+      return <Loading />;
     }
 
     if (typeof data.toolids === 'undefined') {
