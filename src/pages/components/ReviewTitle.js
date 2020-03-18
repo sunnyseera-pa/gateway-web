@@ -47,6 +47,10 @@ class ReviewTitle extends React.Component {
         var updatedDate = new Date(data.date);
         var updatedOnDate = updatedDate.getDate() + " " + monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
 
+        if (!dat.tool[0]) {
+            return (<></>);
+        }
+
         return (
             <Row className="mt-2">
                 <Col>

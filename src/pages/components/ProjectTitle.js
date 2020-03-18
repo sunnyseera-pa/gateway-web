@@ -97,10 +97,10 @@ class ProjectTitle extends Component {
                                 </Row>
 
                                 {!data.categories.programmingLanguage || data.categories.programmingLanguage <= 0 ? '' : data.categories.programmingLanguage.map((language) => {
-                                    return <div className="mr-2 Gray800-14px tagBadges">{language}</div>
+                                    return <div className="mr-2 Gray800-14px tagBadges"><a href={'/search?search='+language+'&type=all'}>{language}</a></div>
                                 })}
 
-                                {!data.categories.programmingLanguageVersion ? '' : <div className="mr-2 Gray800-14px tagBadges">{data.categories.programmingLanguageVersion}</div> }
+                                {!data.categories.programmingLanguageVersion ? '' : <div className="mr-2 Gray800-14px tagBadges"><a href={'/search?search='+data.categories.programmingLanguageVersion+'&type=all'}>{data.categories.programmingLanguageVersion}</a></div> }
                             </Col>
                         </Row>
                         </div>
@@ -116,11 +116,11 @@ class ProjectTitle extends Component {
                             <Col xs={12} md={12} className="mb-3">
 
                                 {!data.tags.features || data.tags.features.length <= 0 ? '' :  data.tags.features.map((feature) => {
-                                    return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{feature}</div>
+                                    return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2"><a href={'/search?search='+feature+'&type=all'}>{feature}</a></div>
                                 })} 
 
                                 {!data.tags.topics || data.tags.topics.length <= 0 ? '' :  data.tags.topics.map((topic) => {
-                                    return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{topic}</div>
+                                    return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2"><a href={'/search?search='+topic+'&type=all'}>{topic}</a></div>
                                 })} 
                                 
                             </Col>

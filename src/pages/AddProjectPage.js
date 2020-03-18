@@ -81,7 +81,7 @@ class AddProjectPage extends React.Component {
         const {data, combinedTopic, combinedCategories, combinedUsers, combinedTools, isLoading, userState } = this.state;
 
         if (isLoading) {
-            return <Loading />;
+            return <Container><Loading /></Container>;
         }
         console.log(combinedTools)
         return (

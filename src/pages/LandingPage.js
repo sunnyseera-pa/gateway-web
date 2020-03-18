@@ -100,7 +100,7 @@ class LandingPage extends React.Component{
         const {data, userState, isLoading } = this.state;
 
         if (isLoading) {
-            return <Loading />;
+            return <Container><Loading /></Container>;
         }
 
         return(

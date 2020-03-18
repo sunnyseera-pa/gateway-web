@@ -79,7 +79,7 @@ class PersonDetail extends Component {
     const { searchString, data, isLoading, userState } = this.state;
 
     if (isLoading) {
-      return <Loading />;
+      return <Container><Loading /></Container>;
     }
 
     if (typeof data.toolids === 'undefined') {
