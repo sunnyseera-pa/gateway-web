@@ -17,6 +17,17 @@ class Person extends React.Component {
     render() {
         const { data } = this.state;
 
+        var countOfProjects = 0;
+        var countOfTools = 0;
+        data.objects.map((object) => { 
+            if (object.type === 'project') {
+                countOfProjects++;
+            }    
+            else if (object.type === 'tool') {
+                countOfTools++;
+            }
+        });
+
         return (
             <Row className="mt-2">
                 <Col>
@@ -35,8 +46,33 @@ class Person extends React.Component {
                                 </p>
 
                                 <p className="Gray800-14px">
-                                    
-                                    <b>5 projects, 3 tools, 6 data sets</b>
+                                    <b>
+                                        {(() => {
+                                            if (countOfProjects === 0) {
+                                                return <></>
+                                            }
+                                            else if (countOfProjects === 1) {
+                                                return <>1 Project</>
+                                            }
+                                            else {
+                                                return <>{countOfProjects} Projects</>
+                                            }
+                                        })()}
+                                        
+                                        {countOfProjects > 0 && countOfTools !== 0 ? ', ' : ''}
+
+                                        {(() => {
+                                            if (countOfTools === 0) {
+                                                return <></>
+                                            }
+                                            else if (countOfTools === 1) {
+                                                return <>1 Tool</>
+                                            }
+                                            else {
+                                                return <>{countOfTools} Tools</>
+                                            }
+                                        })()}
+                                    </b>
                                 </p>
                             </Col>
                         </Row>

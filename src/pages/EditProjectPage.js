@@ -20,6 +20,7 @@ class EditProjectPage extends React.Component {
         combinedTopic: [],
         combinedCategories:[],
         combinedUsers:[],
+        combinedTools:[],
         isLoading: true,
         userState: []
     };
@@ -30,7 +31,8 @@ class EditProjectPage extends React.Component {
   await Promise.all([
     this.doGetTopicsCall(), 
     this.doGetCategoriesCall(),
-    this.doGetUsersCall()
+    this.doGetUsersCall(),
+    this.doGetToolsCall()
   ]);
 
    await this.getDataSearchFromDb();
@@ -74,6 +76,13 @@ doGetUsersCall(){
   });
 }
 
+doGetToolsCall(){
+  axios.get(baseURL+'/api/getAllTools')
+  .then((res) =>{
+      this.setState({combinedTools: res.data.data});
+  });
+}
+
 doSearch = (e) => { //fires on enter on searchbar
   if (e.key === 'Enter') {
       if (!!this.state.searchString) {
@@ -87,7 +96,7 @@ updateSearchString = (searchString) => {
 }
 
     render() {
-        const {data, combinedTopic, combinedCategories, combinedUsers, isLoading, userState } = this.state;
+        const {data, combinedTopic, combinedCategories, combinedUsers, combinedTools, isLoading, userState } = this.state;
     
         if (isLoading) {
           return <Loading />;
@@ -97,7 +106,7 @@ updateSearchString = (searchString) => {
             <div>
             <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
             <Container>
-            <EditProjectForm data={data} combinedTopic={combinedTopic} combinedCategories={combinedCategories} combinedUsers={combinedUsers} userState={userState} />
+            <EditProjectForm data={data} combinedTopic={combinedTopic} combinedCategories={combinedCategories} combinedUsers={combinedUsers} userState={userState} combinedTools={combinedTools} />
             </Container>
             </div>
         );
