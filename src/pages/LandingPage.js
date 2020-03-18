@@ -118,6 +118,7 @@ class LandingPage extends React.Component{
 
                                             <Dropdown.Menu as={CustomMenu}>
                                                 <Dropdown.Item href="/account?tab=youraccount">Your Account</Dropdown.Item>
+                                                <Dropdown.Item href="/account?tab=messages">Notifications</Dropdown.Item>
                                                 <Dropdown.Item href="/account?tab=projects">Project</Dropdown.Item>
                                                 <Dropdown.Item href="/account?tab=tools">Tools</Dropdown.Item>
                                                 <Dropdown.Item href="/account?tab=reviews">Reviews</Dropdown.Item>

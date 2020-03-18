@@ -12,6 +12,7 @@ import AccountProjects from './components/AccountProjects';
 import ReviewTools from './components/ReviewTools';
 import DataSet from './components/DataSet';
 import YourAccount from './components/YourAccount';
+import Messages from './components/Messages';
 import queryString from 'query-string';
 import Alert from 'react-bootstrap/Alert';
 
@@ -91,12 +92,6 @@ class Account extends Component {
             data.datasetids = [];
         }
 
-        /* if (isLoading) {
-           return <p>Loading ...</p>;
-         } */
-
-
-
         return (
             <div>
                 <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
@@ -165,8 +160,20 @@ class Account extends Component {
                                     <Tab eventKey="youraccount" title="Your account">
                                         <YourAccount userState={userState} />
                                     </Tab>
+                                    <Tab eventKey="messages" title="Notifications">
+                                        <Messages userState={userState} />
+                                    </Tab>
                                     <Tab eventKey="datasets" title="Data sets">
-                                        {data.datasetids.map(id => <DataSet id={id} />)}
+                                    <Row className="mt-2">
+                                        <Col>
+                                            <div className="Rectangle">
+                                                <div className="Gray800-14px" style={{textAlign: 'center'}}>
+                                                    Data sets placeholder
+                                                </div>
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                        {/* {data.datasetids.map(id => <DataSet id={id} />)} */}
                                     </Tab>
                                     <Tab eventKey="projects" title="Projects">
                                         {/* Placeholder */}
