@@ -62,6 +62,10 @@ class YourAccount extends React.Component {
                 <Row>
                     <Col>
                         {newData.length <= 0 ? <NotFound word='notifications' /> : newData.map((dat) => {
+                            if (!dat.tool[0]) {
+                                return (<></>);
+                            }
+
                             return (
                             <div className="Rectangle mt-1">
                                 <Row>
