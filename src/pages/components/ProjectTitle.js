@@ -1,5 +1,4 @@
 
-// /ShowObjects/Title.js
 import React, { Component } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -39,9 +38,6 @@ class ProjectTitle extends Component {
       axios.post(baseURL + '/api/counter/update', {id: id, counter: counter});
   }
 
-  // here is our UI
-  // it is easy to understand their functions when you
-  // see them render into our screen
   render() {
     const { data } = this.state;
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -129,7 +125,6 @@ class ProjectTitle extends Component {
                             <Col xs={12} md={12} className="mb-3">
                                 <span className="Gray800-14px">
                                     {data.description}
-                                    {/* Software to analyse data and with powerful graphics to create interactive visualisations - focused on business intelligence. Including data access to data prep to get data ready for analysis, to data analytics and discovery. */}
                                 </span>
                             </Col> 
                         </Row>

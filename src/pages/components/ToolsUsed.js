@@ -1,5 +1,3 @@
-
-// /ShowObjects/ToolsUsed.js
 import React, { Component } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -15,15 +13,10 @@ class ToolsUsed extends Component {
     this.state.data = props.data;
   }
 
-  // initialize our state
   state = {
     data: []
   };
 
-
-  // here is our UI
-  // it is easy to understand their functions when you
-  // see them render into our screen
   render() {
     const { data } = this.state;
 

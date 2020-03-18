@@ -1,12 +1,7 @@
-// /ShowObjects/ToolsCreated.js
 import React, { Component } from 'react';
-import axios from 'axios';
-import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col'; 
-import Card from 'react-bootstrap/Card';
 import InputGroup from 'react-bootstrap/InputGroup';
-import FormControl from 'react-bootstrap/FormControl';
 import FormText from 'react-bootstrap/FormText';
 
 class TopicsFilter extends Component {
@@ -60,7 +55,6 @@ class TopicsFilter extends Component {
                <span> <div className="White-12px BubbleCounts"> {topicsSelected.length} </div> </span>
 
                }
-               {/* <span> <div className="White-12px BubbleCounts"> {!topicsSelected ? '0' : topicsSelected.length} </div> </span> */}
                <span className="mr-5"/> 
      
             </Col>

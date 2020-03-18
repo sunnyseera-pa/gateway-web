@@ -15,9 +15,6 @@ class ToolInfoReviewForm extends Component {
     data: []
   };
 
-  // here is our UI
-  // it is easy to understand their functions when you
-  // see them render into our screen
   render() {
     const { data } = this.state;
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];

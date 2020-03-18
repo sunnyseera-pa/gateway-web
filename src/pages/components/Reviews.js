@@ -171,8 +171,6 @@ const AddReviewForm = (props) => {
         .required('This cannot be empty')
     }),
 
-    //   validate,
-
     onSubmit: values => {
       //alert(JSON.stringify(values, null, 2));
       axios.post(baseURL + '/api/tool/review/add', values)
@@ -329,8 +327,6 @@ const ReplyReviewForm = (props) => {
       reply: Yup.string()
         .required('This cannot be empty')
     }),
-
-    //   validate,
 
     onSubmit: values => {
       //alert(JSON.stringify(values, null, 2));

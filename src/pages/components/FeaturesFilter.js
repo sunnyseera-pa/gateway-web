@@ -1,12 +1,7 @@
-// /ShowObjects/ToolsCreated.js
 import React, { Component } from 'react';
-import axios from 'axios';
-import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col'; 
-import Card from 'react-bootstrap/Card';
 import InputGroup from 'react-bootstrap/InputGroup';
-import FormControl from 'react-bootstrap/FormControl';
 import FormText from 'react-bootstrap/FormText';
 
 class FeaturesFilter extends Component {

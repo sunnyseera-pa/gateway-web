@@ -1,5 +1,3 @@
-
-// /ShowObjects/Title.js
 import React, { Component } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -45,9 +43,6 @@ class ToolTitle extends Component {
       axios.post(baseURL + '/api/counter/update', {id: id, counter: counter});
   }
 
-  // here is our UI
-  // it is easy to understand their functions when you
-  // see them render into our screen
   render() {
     const { data, reviewData } = this.state;
     var ratingsTotal = 0;//(!!data.reviews && data.reviews.length > 0) ? data.ratings.reduce((a,b) => a + b, 0) : '';

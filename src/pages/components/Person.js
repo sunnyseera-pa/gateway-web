@@ -16,6 +16,7 @@ class Person extends React.Component {
 
     render() {
         const { data } = this.state;
+
         return (
             <Row className="mt-2">
                 <Col>
@@ -34,6 +35,7 @@ class Person extends React.Component {
                                 </p>
 
                                 <p className="Gray800-14px">
+                                    
                                     <b>5 projects, 3 tools, 6 data sets</b>
                                 </p>
                             </Col>

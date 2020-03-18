@@ -3,10 +3,6 @@ import axios from 'axios';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import SVGIcon from "../../images/SVGIcon";
-import Button from 'react-bootstrap/Button';
-import ToolsHeader from './ToolsHeader';
-import NotFound from './NotFound';
-import Collapse from 'react-bootstrap/Collapse'
 import Loading from './Loading'
 
 var baseURL = require('../../BaseURL').getURL();
