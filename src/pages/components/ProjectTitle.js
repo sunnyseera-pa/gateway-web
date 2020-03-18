@@ -3,6 +3,9 @@
 import React, { Component } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import axios from 'axios';
+
+var baseURL = require('./../../BaseURL').getURL();
 
 class ProjectTitle extends Component {
 
@@ -13,9 +16,28 @@ class ProjectTitle extends Component {
 
   // initialize our state
   state = {
-    data: []
+    data: [],
+    id: this.props.data.id,
+    counter: this.props.data.counter
   };
 
+  componentDidMount(props){
+    console.log('this.props.data.counter: ' + this.props.data.counter);
+    console.log('this.props.data.counter type: ' + typeof(this.props.data.counter));
+
+    let counter = !this.props.data.counter ? 1 : this.props.data.counter + 1;
+   
+    console.log('counter: ' + counter);
+    
+    this.UpdateCounter(this.props.data.id, counter);
+  }
+
+  UpdateCounter = (id, counter) => {
+      console.log('counter in update is: ' + counter);
+      console.log('id in update is: ' + id);
+
+      axios.post(baseURL + '/api/counter/update', {id: id, counter: counter});
+  }
 
   // here is our UI
   // it is easy to understand their functions when you
@@ -61,9 +83,18 @@ class ProjectTitle extends Component {
                         </Row>
                         
                         <Row>
-                            <Col xs={12} md={12} className="mb-3">
+                            <Col xs={12} md={12} >
 
                                 {!data.categories.category ? '' : <div className="mr-2 Gray800-14px tagBadges">{data.categories.category}</div> }
+
+                                <Row>
+                                    <Col className="mt-3">
+                                        <span className='Gray800-14px'>
+                                        {data.counter == undefined ? 1 : data.counter+1}
+                                        {data.counter==undefined ? ' view' : ' views'}
+                                        </span>
+                                    </Col>
+                                </Row>
 
                                 {!data.categories.programmingLanguage || data.categories.programmingLanguage <= 0 ? '' : data.categories.programmingLanguage.map((language) => {
                                     return <div className="mr-2 Gray800-14px tagBadges">{language}</div>

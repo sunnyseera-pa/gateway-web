@@ -6,6 +6,9 @@ import Col from 'react-bootstrap/Col';
 import Rating from 'react-rating';
 import { ReactComponent as EmptyStarIconSvg} from '../../images/starempty.svg';
 import { ReactComponent as FullStarIconSvg} from '../../images/star.svg';
+import axios from 'axios';
+
+var baseURL = require('./../../BaseURL').getURL();
 
 class ToolTitle extends Component {
 
@@ -19,8 +22,28 @@ class ToolTitle extends Component {
   // initialize our state
   state = {
     data: [],
+    id: this.props.data.id,
+    counter: this.props.data.counter,
     reviewData: []
   };
+
+  componentDidMount(props){
+    console.log('this.props.data.counter: ' + this.props.data.counter);
+    console.log('this.props.data.counter type: ' + typeof(this.props.data.counter));
+
+    let counter = !this.props.data.counter ? 1 : this.props.data.counter + 1;
+   
+    console.log('counter: ' + counter);
+    
+    this.UpdateCounter(this.props.data.id, counter);
+  }
+
+  UpdateCounter = (id, counter) => {
+      console.log('counter in update is: ' + counter);
+      console.log('id in update is: ' + id);
+
+      axios.post(baseURL + '/api/counter/update', {id: id, counter: counter});
+  }
 
   // here is our UI
   // it is easy to understand their functions when you
@@ -98,6 +121,14 @@ class ToolTitle extends Component {
                                       />
                                 </div>
                             </Col>
+                            <Row>
+                                <Col className="ml-3">
+                                    <span className='Gray800-14px'>
+                                    {data.counter == undefined ? 1 : data.counter+1}
+                                    {data.counter==undefined ? ' view' : ' views'}
+                                    </span>
+                                </Col>
+                            </Row>
                         </Row>
                     </div>
                 </Col>

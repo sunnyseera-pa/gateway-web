@@ -104,7 +104,7 @@ class PersonTitle extends Component {
                 </Row>
 
                 <Row>
-                  <Col>
+                  <Col className="mt-2">
                     <span className='Gray800-14px'>
                     {data.counter == undefined ? 1 : data.counter+1}
                     {data.counter==undefined ? ' view' : ' views'}
