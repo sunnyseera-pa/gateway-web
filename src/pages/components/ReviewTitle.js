@@ -32,8 +32,6 @@ class ReviewTitle extends React.Component {
     doSearchCall() {
         axios.get(baseURL + '/api/reviews?id=' + this.state.id)
         .then((res) => {
-            console.log(this.state.id)
-            console.log(res.data.data[0])
             this.setState({ data: res.data.data[0], isLoading: false });
         });
     }

@@ -28,6 +28,7 @@ const EditProjectForm = (props) => {
             tags: {
                 topics: props.data.tags.topics
             },
+            toolids: props.data.toolids
         },
 
         validationSchema: Yup.object({
@@ -47,7 +48,7 @@ const EditProjectForm = (props) => {
 
         onSubmit: values => {
             //add via same post as add tool form - type set as 'project'
-            //alert(JSON.stringify(values, null, 2));
+            alert(JSON.stringify(values, null, 2));
             axios.put(baseURL + '/api/mytools/edit', values)
                 .then((res) => {
                     window.location.href = window.location.search + '/project/' + props.data.id + '/?projectEdited=true';
@@ -60,6 +61,15 @@ const EditProjectForm = (props) => {
         props.combinedUsers.map((user) => { 
             if (user.id === author) {
                 listOfAuthors.push({ id: user.id, name: user.name })
+            }    
+        });
+    });
+
+    var listOfTools = [];
+    props.data.toolids.map((tools) => { 
+        props.combinedTools.map((tool) => { 
+            if (tool.id === tools) {
+                listOfTools.push({ id: tool.id, name: tool.name })
             }    
         });
     });
@@ -171,6 +181,26 @@ const EditProjectForm = (props) => {
 
                                         })
                                         formik.values.tags.topics = tempSelected;
+                                    }}
+                                />
+                            </Form.Group>
+
+                            <Form.Group className="pb-2">
+                                <Form.Label className="Gray800-14px">Tools used in this project</Form.Label>
+                                <Form.Text className="Gray700-13px">
+                                Tools must be added to our portal first
+                                </Form.Text>
+                                <Typeahead
+                                    labelKey={tools => `${tools.name}`}
+                                    defaultSelected={listOfTools}
+                                    multiple
+                                    options={props.combinedTools}
+                                    onChange={(selected) => {
+                                        var tempSelected = [];
+                                        selected.map((selectedItem) => {
+                                            tempSelected.push(selectedItem.id);
+                                        })
+                                        formik.values.toolids = tempSelected;
                                     }}
                                 />
                             </Form.Group>

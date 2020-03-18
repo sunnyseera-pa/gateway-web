@@ -20,6 +20,7 @@ class AddProjectPage extends React.Component {
         combinedTopic:[],
         combinedCategories:[],
         combinedUsers:[],
+        combinedTools:[],
         isLoading: true,
         userState: []
     };
@@ -28,6 +29,7 @@ class AddProjectPage extends React.Component {
         this.doGetTopicsCall();
         this.doGetCategoriesCall();
         this.doGetUsersCall();
+        this.doGetToolsCall();
     }
 
     doGetTopicsCall() {
@@ -54,6 +56,14 @@ class AddProjectPage extends React.Component {
             this.setState({isLoading: false}); 
         });
       }
+    
+      doGetToolsCall(){
+        axios.get(baseURL+'/api/getAllTools')
+        .then((res) =>{
+            this.setState({combinedTools: res.data.data});
+            this.setState({isLoading: false}); 
+        });
+      }
 
       doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
@@ -68,17 +78,17 @@ class AddProjectPage extends React.Component {
     }
 
     render() {
-        const {data, combinedTopic, combinedCategories, combinedUsers, isLoading, userState } = this.state;
+        const {data, combinedTopic, combinedCategories, combinedUsers, combinedTools, isLoading, userState } = this.state;
 
         if (isLoading) {
             return <Loading />;
         }
-        
+        console.log(combinedTools)
         return (
             <div>
             <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
             <Container>
-            <AddProjectForm data={data} combinedTopic={combinedTopic} combinedCategories={combinedCategories} combinedUsers={combinedUsers} userState={userState} />
+            <AddProjectForm data={data} combinedTopic={combinedTopic} combinedCategories={combinedCategories} combinedUsers={combinedUsers} combinedTools={combinedTools} userState={userState} />
             </Container>
             </div>
         );
