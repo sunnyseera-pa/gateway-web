@@ -150,7 +150,7 @@ class ToolDetail extends Component {
             <Row className="">
               <Col sm={1} lg={1} />
               <Col sm={10} lg={10}>
-                <Alert variant="success" className="mt-3">Done! Your review has been added.</Alert>
+                <Alert variant="warning" className="mt-3">Done! Your review is pending review.</Alert>
               </Col>
               <Col sm={1} lg={10} />
             </Row>
