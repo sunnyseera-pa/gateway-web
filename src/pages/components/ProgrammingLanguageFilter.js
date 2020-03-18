@@ -63,8 +63,10 @@ class ProgrammingLanguageFilter extends Component {
             
             <Col xs={7} className="ml-3">
                 <span className="Gray800-14px-bold">Programming</span>
-                <span> <div className="White-12px BubbleCounts"> {!combinedLanguages ? '0' : combinedLanguages.length} </div> </span>
-        
+                {languageSelected.length == 0 ? <span /> : 
+                <span> <div className="White-12px BubbleCounts"> {languageSelected.length} </div> </span>
+
+                }
                 <br />
                 <span>Language</span>
             </Col>

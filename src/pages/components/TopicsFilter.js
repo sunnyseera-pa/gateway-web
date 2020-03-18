@@ -56,7 +56,11 @@ class TopicsFilter extends Component {
            
             <Col xs={7} className="ml-3">
                <span className="Gray800-14px-bold">Topics</span>
-               <span> <div className="White-12px BubbleCounts"> {!combinedTopic ? '0' : combinedTopic.length} </div> </span>
+               {topicsSelected.length == 0 ? <span /> :
+               <span> <div className="White-12px BubbleCounts"> {topicsSelected.length} </div> </span>
+
+               }
+               {/* <span> <div className="White-12px BubbleCounts"> {!topicsSelected ? '0' : topicsSelected.length} </div> </span> */}
                <span className="mr-5"/> 
      
             </Col>

@@ -56,7 +56,10 @@ class FeaturesFilter extends Component {
            
             <Col xs={7} className="ml-3">
                <span className="Gray800-14px-bold">Features</span>
-               <span> <div className="White-12px BubbleCounts"> {!combinedFeatures ? '0' : combinedFeatures.length} </div> </span>
+              {featuresSelected.length == 0 ? <span /> :
+               <span> <div className="White-12px BubbleCounts"> {featuresSelected.length} </div> </span>
+              }
+
                 <span className="mr-4 ml-1"/> 
   
             </Col>
