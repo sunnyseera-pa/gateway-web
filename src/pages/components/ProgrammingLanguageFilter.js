@@ -51,6 +51,10 @@ class ProgrammingLanguageFilter extends Component {
 
     const { combinedLanguages, languageSelected } = this.state;
 
+    if (combinedLanguages.length === 0) {
+      return (<></>);
+    }
+
     return (
     <div>
      <div className="FilterCard mt-2">

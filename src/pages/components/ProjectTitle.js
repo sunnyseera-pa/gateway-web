@@ -81,7 +81,7 @@ class ProjectTitle extends Component {
                         <Row>
                             <Col xs={12} md={12} >
 
-                                {!data.categories.category ? '' : <div className="mr-2 Gray800-14px tagBadges">{data.categories.category}</div> }
+                                {!data.categories.category ? '' : <div className="mr-2 Gray800-14px tagBadges"><a href={'/search?search='+data.categories.category+'&type=all'}>{data.categories.category}</a></div> }
 
                                 <Row>
                                     <Col className="mt-3">

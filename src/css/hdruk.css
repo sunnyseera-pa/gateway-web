@@ -193,7 +193,7 @@ body {
 }
 
 .White-12px{
-  font-family: MuseoSansRounded;
+  font-family: museo-sans-rounded;
   font-size: 12px;
   font-weight: bold;
   font-stretch: normal;
@@ -259,7 +259,7 @@ body {
   box-shadow: 1px 1px 3px 0 #00000017;
   background-color: #ffffff;
   padding: 10px;
-  max-height: 164px;
+  max-height: 180px;
   overflow-y: scroll;
 }
 
