@@ -4,6 +4,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import NotFound from './NotFound';
+import Loading from './Loading'
 
 var baseURL = require('./../../BaseURL').getURL();
 
@@ -66,7 +67,7 @@ class PendingTools extends React.Component {
         const { data, isLoading, userState } = this.state;
         
         if (isLoading) {
-            return <p>Loading ...</p>;
+            return <Loading />;
         }
         return (
             <Row>

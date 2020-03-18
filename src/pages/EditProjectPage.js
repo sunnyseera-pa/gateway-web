@@ -3,6 +3,7 @@ import axios from 'axios';
 import EditProjectForm from '../pages/components/EditProjectForm';
 import Container from 'react-bootstrap/Container';
 import SearchBar from './components/SearchBar';
+import Loading from './components/Loading'
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -92,7 +93,7 @@ updateSearchString = (searchString) => {
         const {data, combinedTopic, combinedCategories, combinedUsers, isLoading, userState } = this.state;
     
         if (isLoading) {
-          return <p>Loading ...</p>;
+          return <Loading />;
         }
 
         return (

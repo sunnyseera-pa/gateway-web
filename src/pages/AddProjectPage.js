@@ -3,6 +3,7 @@ import AddProjectForm from '../pages/components/AddProjectForm';
 import Container from 'react-bootstrap/Container';
 import SearchBar from './components/SearchBar';
 import axios from 'axios';
+import Loading from './components/Loading'
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -70,7 +71,7 @@ class AddProjectPage extends React.Component {
         const {data, combinedTopic, combinedCategories, combinedUsers, isLoading, userState } = this.state;
 
         if (isLoading) {
-            return <p>Loading ...</p>;
+            return <Loading />;
         }
         
         return (

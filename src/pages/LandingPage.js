@@ -7,6 +7,7 @@ import SVGIcon from '../images/SVGIcon';
 import { ReactComponent as WhiteLogoSvg } from '../../src/images/white.svg';
 import { ReactComponent as ArrowDownSvg } from '../images/arrowDownWhite.svg';
 import Dropdown from 'react-bootstrap/Dropdown';
+import Loading from './components/Loading'
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -99,7 +100,7 @@ class LandingPage extends React.Component{
         const {data, userState, isLoading } = this.state;
 
         if (isLoading) {
-            return <p>Loading ...</p>;
+            return <Loading />;
         }
 
         return(

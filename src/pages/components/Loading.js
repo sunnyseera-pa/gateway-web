@@ -14,6 +14,9 @@ class Loading extends React.Component{
                         <div className="Gray800-14px" style={{textAlign: 'center'}}>
                             <Image src={require("../../images/Loader.gif")} />
                         </div>
+                        <div className="Gray800-14px" style={{textAlign: 'center'}}>
+                            Loading...
+                        </div>
                     </div>
                 </Col>
             </Row>

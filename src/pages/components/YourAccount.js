@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import YourAccountForm from './YourAccountForm';
 import queryString from 'query-string';
+import Loading from './Loading'
 
 var baseURL = require('./../../BaseURL').getURL();
 
@@ -47,7 +48,7 @@ class YourAccount extends React.Component {
         const { data, isLoading, isUpdated, userdata } = this.state;
         
         if (isLoading) {
-            return <p>Loading ...</p>;
+            return <Loading />;
         }
 
         return (

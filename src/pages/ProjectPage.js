@@ -15,6 +15,7 @@ import DataSet from '../pages/components/DataSet';
 import NotFound from './components/NotFound';
 import Alert from 'react-bootstrap/Alert';
 import queryString from 'query-string';
+import Loading from './components/Loading'
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -86,7 +87,7 @@ class ProjectDetail extends Component {
     const { searchString, data, isLoading, projectAdded, projectEdited, userState } = this.state;
 
     if (isLoading) {
-      return <p>Loading ...</p>;
+      return <Loading />;
     }
 
     if (typeof data.toolids === 'undefined') {

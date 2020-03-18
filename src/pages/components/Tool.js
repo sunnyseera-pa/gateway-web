@@ -3,6 +3,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import SVGIcon from "../../images/SVGIcon";
 import axios from 'axios';
+import Loading from './Loading'
 
 var baseURL = require('./../../BaseURL').getURL();
 
@@ -45,7 +46,7 @@ class Tool extends React.Component {
         const { data, isLoading, reviewData } = this.state;
        
         if (isLoading) {
-            return <p>Loading ...</p>;
+            return <Loading />;
         }
         
         var ratingsTotal = 0;

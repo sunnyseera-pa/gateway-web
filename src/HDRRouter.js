@@ -13,6 +13,8 @@ import Account from './pages/Account';
 import EditToolPage from './pages/EditToolPage';
 import EditProjectPage from './pages/EditProjectPage';
 import axios from 'axios';
+import Loading from './pages/components/Loading'
+import Container from 'react-bootstrap/Container';
 
 var baseURL = require('./BaseURL').getURL();
 
@@ -59,7 +61,7 @@ class HDRRouter extends Component {
     const { isLoading, userState } = this.state;
 
     if (isLoading) {
-      return <p>Loading ...</p>;
+      return <Container><Loading /></Container>;
     }
     
     return (

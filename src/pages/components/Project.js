@@ -3,6 +3,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import SVGIcon from "../../images/SVGIcon"
 import axios from 'axios';
+import Loading from './Loading'
 
 var baseURL = require('./../../BaseURL').getURL();
 
@@ -52,7 +53,7 @@ class Project extends React.Component {
         }
 
         if (isLoading) {
-            return <p>Loading ...</p>;
+            return <Loading />;
         }
 
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];

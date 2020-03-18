@@ -19,6 +19,7 @@ import Alert from 'react-bootstrap/Alert';
 import NotFound from './components/NotFound';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
+import Loading from './components/Loading'
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -99,7 +100,7 @@ class ToolDetail extends Component {
     const { searchString, data, isLoading, userState, toolAdded, toolEdited, reviewAdded, replyAdded, reviewData } = this.state;
 
     if (isLoading) {
-      return <p>Loading ...</p>;
+      return <Loading />;
     }
 
     if (typeof data.datasetids === 'undefined') {

@@ -5,6 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import NotFound from './NotFound';
 import Modal from 'react-bootstrap/Modal'
+import Loading from './Loading'
 
 var baseURL = require('./../../BaseURL').getURL();
 
@@ -50,7 +51,7 @@ class ActiveTool extends React.Component {
 
 
         if (isLoading) {
-            return <p>Loading ...</p>;
+            return <Loading />;
         }
 
         return (
