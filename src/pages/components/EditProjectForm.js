@@ -12,8 +12,6 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 var baseURL = require('./../../BaseURL').getURL();
 
 const EditProjectForm = (props) => {
-    // Pass the useFormik() hook initial form values and a submit function that will
-    // be called when the form is submitted
     const formik = useFormik({
         initialValues: {
             id: props.data.id,
@@ -46,9 +44,7 @@ const EditProjectForm = (props) => {
             topics: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.string()) : Yup.string())),
         }),
 
-        onSubmit: values => {
-            //add via same post as add tool form - type set as 'project'
-            alert(JSON.stringify(values, null, 2));
+        onSubmit: values => {           
             axios.put(baseURL + '/api/mytools/edit', values)
                 .then((res) => {
                     window.location.href = window.location.search + '/project/' + props.data.id + '/?projectEdited=true';

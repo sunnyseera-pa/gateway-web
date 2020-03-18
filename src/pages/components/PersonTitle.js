@@ -1,11 +1,8 @@
-// /ShowObjects/Title.js
 import React, { Component } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
-import { ReactComponent as PersonPlaceholderSvg } from '../../images/person-placeholder.svg';
 import axios from 'axios';
-import { number } from 'prop-types';
 
 var baseURL = require('./../../BaseURL').getURL();
 

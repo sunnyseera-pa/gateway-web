@@ -1,4 +1,3 @@
-// /ShowObjects.js
 import React, { Component } from 'react';
 import SearchBar from './components/SearchBar';
 import Row from 'react-bootstrap/Row';
