@@ -11,25 +11,29 @@ body {
 
 .TitleLandingBox{
   width: 480px;
-  /* height: 1060px; */
   height: 40px;
   border-radius: 4px;
   background-color: #ffffff;
-  /* overflow-y: scroll; */
 }
 
 .LandingBox{
   width: 480px;
-  /* height: 1060px; */
-  height: 440px;
+  height: 480px;
+  /* height: 440px; */
   border-radius: 4px;
   background-color: #ffffff;
   overflow-y: scroll;
 }
 
+/* #StatsTitle{
+  scroll-margin-top: 40px;
+  position: sticky;
+  top: 0;
+} */
+
 .GreyStrip {
     width: 432px;
-    height: 1px;
+    height: 2px;
     background-color: #e2e2e2;
 }
 

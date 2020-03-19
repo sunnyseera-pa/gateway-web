@@ -26,7 +26,7 @@ class UnmetDemand extends React.Component {
         return (
             <Row className="mt-2">
                 <Col>
-                        <div className="TitleLandingBox">
+                        {/* <div className="TitleLandingBox">
                         <Row >
                                 <Col sm={1} lg={1}/>
                                 <Col sm={10} lg={10} className="mt-3 mb-1">
@@ -40,9 +40,9 @@ class UnmetDemand extends React.Component {
                                 <Col sm={10} lg={10} className="GreyStrip"/>
                                 <Col sm={1} lg={1}/>
                             </Row>
-                        </div>
+                        </div> */}
                         <div className="LandingBox">
-                            {/* <Row >
+                            <Row>
                                 <Col sm={1} lg={1}/>
                                 <Col sm={10} lg={10} className="mt-3 mb-1">
                                 <span className="Black-16px"> Unmet Demand </span>
@@ -54,7 +54,7 @@ class UnmetDemand extends React.Component {
                                 <Col sm={1} lg={1} />
                                 <Col sm={10} lg={10} className="GreyStrip"/>
                                 <Col sm={1} lg={1}/>
-                            </Row> */}
+                            </Row>
 
                             {unmetData.map((unmetDat) => {
                                 console.log('unmet: ' + unmetDat._id)
