@@ -7,7 +7,9 @@ import SVGIcon from '../images/SVGIcon';
 import { ReactComponent as WhiteLogoSvg } from '../../src/images/white.svg';
 import { ReactComponent as ArrowDownSvg } from '../images/arrowDownWhite.svg';
 import Dropdown from 'react-bootstrap/Dropdown';
-import Loading from './components/Loading'
+import Loading from './components/Loading';
+import RecentSearches from './components/RecentSearches';
+import UnmetDemand from './components/UnmetDemand';
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -46,7 +48,9 @@ class LandingPage extends React.Component{
             role: "Reader",
             id: null,
             name: null
-        }]
+        }],
+        searchData: [],
+        unmetData: []
     }
 
     constructor(props) {
@@ -58,6 +62,8 @@ class LandingPage extends React.Component{
         this.setState({ searchString: ''});
         this.getDataSearchFromDb();
         document.getElementById("SearchInputSpan").focus();
+        this.getRecentSearches();
+        this.getUnmetData();
         
     }
 
@@ -75,6 +81,28 @@ class LandingPage extends React.Component{
             isLoading: false 
         });
         })
+    };
+
+    getRecentSearches = () => {
+        axios.get(baseURL + '/api/stats/recent')
+        .then((res) => {
+            this.setState({
+            searchData: res.data.data
+            });
+            console.log('recent all search: ' + JSON.stringify(res.data.data))
+            console.log('recent search: ' + JSON.stringify(res.data.data[0]))
+        });
+    };
+
+    getUnmetData = () => {
+        axios.get(baseURL + '/api/stats/unmet')
+        .then((res) => {
+            this.setState({
+                unmetData: res.data.data
+            });
+            console.log('recent all search: ' + JSON.stringify(res.data.data))
+            console.log('recent search: ' + JSON.stringify(res.data.data[0]))
+        });
     };
 
     doSearch = (e) => { //fires on enter on searchbar
@@ -97,7 +125,7 @@ class LandingPage extends React.Component{
     }
 
     render(){
-        const {data, userState, isLoading } = this.state;
+        const {data, userState, isLoading, searchData, unmetData } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -181,6 +209,17 @@ class LandingPage extends React.Component{
                             <div className="landingPageInformationDetail">searches in last week</div>
                         </Col>
                     </Row>
+                </Container>
+                <Container className = "mt-5 mb-5" />
+                <Container>
+                    <Row>
+                        <Col sm={6} lg={6}>
+                            <RecentSearches searchData={searchData} /> 
+                        </Col>  
+                        <Col sm={6} lg={6}>
+                            <UnmetDemand unmetData={unmetData} />
+                        </Col>
+                    </Row>        
                 </Container>
             </div>
 

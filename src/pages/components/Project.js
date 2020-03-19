@@ -16,7 +16,7 @@ class Project extends React.Component {
 
     constructor(props) {
         super(props)
-        console.log(props.data)
+        console.log('data: ' + props.data)
         if (props.data) {
             this.state.data = props.data;
             this.state.isLoading = false;
