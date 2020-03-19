@@ -50,7 +50,7 @@ class CategoryFilter extends Component {
         <Row className="mt-2"  >
            
             <Col xs={7} className="ml-3">
-                <span className="Gray800-14px-bold">Tool Category </span>
+                <span className="Gray800-14px-bold"> Category </span>
                 {categoriesSelected.length == 0 ? <span /> : 
                 <span> <div className="White-12px BubbleCounts"> {categoriesSelected.length} </div> </span>
                 }          
