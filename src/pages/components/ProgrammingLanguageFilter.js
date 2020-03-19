@@ -51,7 +51,7 @@ class ProgrammingLanguageFilter extends Component {
 
     const { combinedLanguages, languageSelected } = this.state;
 
-    if (combinedLanguages.length === 0) {
+    if (!combinedLanguages || combinedLanguages.length === 0) {
       return (<></>);
     }
 

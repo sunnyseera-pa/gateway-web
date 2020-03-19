@@ -44,7 +44,7 @@ class CategoryFilter extends Component {
 
     const { combinedCategories, categoriesSelected } = this.state;
 
-    if (combinedCategories.length === 0) {
+    if (!combinedCategories || combinedCategories.length === 0) {
       return (<></>);
     }
 

@@ -44,7 +44,7 @@ class TopicsFilter extends Component {
 
     const { combinedTopic, topicsSelected } = this.state;
 
-    if (combinedTopic.length === 0) {
+    if (!combinedTopic || combinedTopic.length === 0) {
       return (<></>);
     }
 

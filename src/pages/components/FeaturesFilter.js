@@ -44,7 +44,7 @@ class FeaturesFilter extends Component {
 
     const { combinedFeatures, featuresSelected } = this.state;
 
-    if (combinedFeatures.length === 0) {
+    if (!combinedFeatures || combinedFeatures.length === 0) {
       return (<></>);
     }
 
