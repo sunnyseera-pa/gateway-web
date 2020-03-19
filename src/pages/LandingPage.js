@@ -100,7 +100,7 @@ class LandingPage extends React.Component{
         const {data, userState, isLoading } = this.state;
 
         if (isLoading) {
-            return <Loading />;
+            return <Container><Loading /></Container>;
         }
 
         return(
@@ -169,11 +169,11 @@ class LandingPage extends React.Component{
                             <div className="landingPageInformationDetail">accounts created</div>
                         </Col>
                         <Col sm={2}>
-                            <div className="landingPageInformationNumber">{data.tool}</div>
+                            <div className="landingPageInformationNumber">{data.project}</div>
                             <div className="landingPageInformationDetail">projects added</div>
                         </Col>
                         <Col sm={2}>
-                            <div className="landingPageInformationNumber">{data.project}</div>
+                            <div className="landingPageInformationNumber">{data.tool}</div>
                             <div className="landingPageInformationDetail">tools added</div>
                         </Col>
                         <Col sm={2}>

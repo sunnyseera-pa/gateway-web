@@ -249,7 +249,7 @@ class SearchPage extends React.Component {
         const { searchString, typeString, data, summary, userState, isLoading, combinedLanguages, languageSelected, combinedCategories, categoriesSelected, combinedFeatures, featuresSelected, combinedTopic, topicsSelected } = this.state;
         
         if (isLoading) {
-            return <Loading />;
+            return <Container><Loading /></Container>;
         }
 
         return (

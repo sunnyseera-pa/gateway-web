@@ -100,7 +100,7 @@ class ToolDetail extends Component {
     const { searchString, data, isLoading, userState, toolAdded, toolEdited, reviewAdded, replyAdded, reviewData } = this.state;
 
     if (isLoading) {
-      return <Loading />;
+      return <Container><Loading /></Container>;
     }
 
     if (typeof data.datasetids === 'undefined') {

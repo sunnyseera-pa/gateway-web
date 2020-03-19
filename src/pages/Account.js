@@ -31,7 +31,9 @@ class Account extends Component {
         key: "youraccount",
         isDeleted: false,
         isApproved: false,
-        isRejected: false
+        isRejected: false,
+        isProjectDeleted: false,
+        isProjectApproved: false
     };
 
     constructor(props) {
@@ -47,6 +49,8 @@ class Account extends Component {
                 this.setState({ isDeleted: values.toolDeleted });
                 this.setState({ isApproved: values.toolApproved });
                 this.setState({ isRejected: values.toolRejected });
+                this.setState({ isApproved: values.projectApproved });
+                this.setState({ isRejected: values.projectRejected });
                 this.setState({ isReviewApproved: values.reviewApproved });
                 this.setState({ isReviewRejected: values.reviewRejected });
             }
@@ -61,6 +65,8 @@ class Account extends Component {
                 this.setState({ isDeleted: values.accountDeleted });
                 this.setState({ isApproved: values.toolApproved });
                 this.setState({ isRejected: values.toolRejected });
+                this.setState({ isProjectApproved: values.projectApproved });
+                this.setState({ isProjectRejected: values.projectRejected });
                 this.setState({ isReviewApproved: values.reviewApproved });
                 this.setState({ isReviewRejected: values.reviewRejected });
             }
@@ -85,7 +91,7 @@ class Account extends Component {
     }
 
     render() {
-        const { searchString, data, userState, isDeleted, isApproved, isRejected, isReviewApproved, isReviewRejected } = this.state;
+        const { searchString, data, userState, isDeleted, isApproved, isRejected, isProjectApproved, isProjectRejected, isReviewApproved, isReviewRejected } = this.state;
 
         if (typeof data.datasetids === 'undefined') {
             data.datasetids = [];
@@ -122,6 +128,26 @@ class Account extends Component {
                             <Col sm={1} lg={1} />
                             <Col sm={10} lg={10}>
                                 <Alert variant="success" className="mt-3">Done! This tool has been rejected and is now deleted</Alert>
+                            </Col>
+                            <Col sm={1} lg={10} />
+                        </Row>
+                        : ""}
+
+                    {isProjectApproved ?
+                        <Row className="">
+                            <Col sm={1} lg={1} />
+                            <Col sm={10} lg={10}>
+                                <Alert variant="success" className="mt-3">Done! The project has been approved and is now live.</Alert>
+                            </Col>
+                            <Col sm={1} lg={10} />
+                        </Row>
+                        : ""}
+
+                    {isProjectRejected ?
+                        <Row className="">
+                            <Col sm={1} lg={1} />
+                            <Col sm={10} lg={10}>
+                                <Alert variant="success" className="mt-3">Done! This project has been rejected and is now deleted</Alert>
                             </Col>
                             <Col sm={1} lg={10} />
                         </Row>

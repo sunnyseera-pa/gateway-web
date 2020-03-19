@@ -87,7 +87,7 @@ class ProjectDetail extends Component {
     const { searchString, data, isLoading, projectAdded, projectEdited, userState } = this.state;
 
     if (isLoading) {
-      return <Loading />;
+      return <Container><Loading /></Container>;
     }
 
     if (typeof data.toolids === 'undefined') {

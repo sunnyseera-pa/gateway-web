@@ -44,6 +44,10 @@ class FeaturesFilter extends Component {
 
     const { combinedFeatures, featuresSelected } = this.state;
 
+    if (!combinedFeatures || combinedFeatures.length === 0) {
+      return (<></>);
+    }
+
     return (
     <div>
      <div className="FilterCard mt-2">

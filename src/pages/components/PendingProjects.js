@@ -76,7 +76,7 @@ class PendingProjects extends React.Component {
                         return (<a /* href={'/tool/'+dat.id} */>
                         <div className="Rectangle mt-1">
                             <Row>
-                                <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/tool/'+dat.id} >{dat.name}</a></Col>
+                                <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/project/'+dat.id} >{dat.name}</a></Col>
                                 <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold"> 
                                 {dat.persons <= 0 ? 'Author not listed': dat.persons.map((person) => {
                                     return  <span>{person.firstname} {person.lastname} <br /></span>

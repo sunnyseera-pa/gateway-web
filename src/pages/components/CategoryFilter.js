@@ -44,6 +44,10 @@ class CategoryFilter extends Component {
 
     const { combinedCategories, categoriesSelected } = this.state;
 
+    if (!combinedCategories || combinedCategories.length === 0) {
+      return (<></>);
+    }
+
     return (
     <div>
     <div className="FilterCard mt-2">

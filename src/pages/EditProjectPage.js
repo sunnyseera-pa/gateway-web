@@ -99,7 +99,7 @@ updateSearchString = (searchString) => {
         const {data, combinedTopic, combinedCategories, combinedUsers, combinedTools, isLoading, userState } = this.state;
     
         if (isLoading) {
-          return <Loading />;
+          return <Container><Loading /></Container>;
         }
 
         return (

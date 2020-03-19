@@ -44,6 +44,10 @@ class TopicsFilter extends Component {
 
     const { combinedTopic, topicsSelected } = this.state;
 
+    if (!combinedTopic || combinedTopic.length === 0) {
+      return (<></>);
+    }
+
     return (   
     <div>
     <div className="FilterCard mt-2">
