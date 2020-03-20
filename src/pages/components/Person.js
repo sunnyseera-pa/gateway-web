@@ -35,12 +35,12 @@ class Person extends React.Component {
                         <Row>
                             <Col xs={2} md={1} className="iconHolder">
                                 <div class="avatar-circle">
-                                    <span class="initials">{data.firstname.charAt(0).toUpperCase()}{data.lastname.charAt(0).toUpperCase()}</span>
+                                    <span class="initials"> {data.firstname.charAt(0).toUpperCase()}{data.lastname.charAt(0).toUpperCase()}</span>
                                 </div>
                             </Col>
                             <Col xs={10} md={11}>
                                 <p>
-                                    <span className="Black-16px"><a style={{ cursor: 'pointer' }} href={'/person/' + data.id} >{data.firstname} {data.lastname}</a></span>
+                                    <span className="Black-16px"><a className="Dark-16px" style={{ cursor: 'pointer' }} href={'/person/' + data.id} >{data.firstname} {data.lastname}</a></span>
                                     <br />
                                     <span className="Gray800-14px">{data.bio}</span>
                                 </p>

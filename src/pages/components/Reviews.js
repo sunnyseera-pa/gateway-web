@@ -130,14 +130,33 @@ const ReviewButton = (props) => {
 
 
       <Modal size="lg" show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Add a review</Modal.Title>
-        </Modal.Header>
+        {/* <Modal.Header closeButton>
+          <Modal.Title>
+            <Row>
+              <Col xs={1} md={1} className="ml-5"/>
+                <Col xs={11} md={11}>
+                <span className="ml-3"/>
+                <span className="Black-20px ml-5">Add a review</span>
+                </Col>
+            </Row>
+          </Modal.Title>
+        </Modal.Header> */}
+
+
         <Modal.Body>
+
+        <Row>
+              <Col xs={1} md={1} className="ml-5"/>
+                <Col xs={11} md={11}>
+                <span className="ml-3"/>
+                <span className="Black-20px ml-5">Add a review</span>
+                </Col>
+            </Row>
+
           <Row>
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10} >
-              <span class="Gray800-14px">Reviews help others understand if this tool could be useful to them..</span>
+              <span class="Gray800-14px"> Reviews help others understand if this tool could be useful to them..</span>
             </Col>
             <Col sm={1} lg={1} />
           </Row>
@@ -220,7 +239,7 @@ const AddReviewForm = (props) => {
                   <Form.Check
                     type="radio"
                     label="Yes"
-                    className="ml-5"
+                    className="ml-4"
                     name="showproject"
                     id="showproject"
                     value="true"
@@ -231,7 +250,7 @@ const AddReviewForm = (props) => {
                   <Form.Check
                     type="radio"
                     label="No"
-                    className="ml-2"
+                    className="ml-1"
                     name="showproject"
                     id="showproject"
                     value="false"
@@ -251,22 +270,25 @@ const AddReviewForm = (props) => {
 
             <Form.Group className="pb-2">
               <Form.Label className="Gray800-14px">Your review</Form.Label>
-              <Form.Text className="Gray700-13px">What worked or didn't work for you? What was the context? Is there anything you wish you knew before you tried it?</Form.Text>
+              <Form.Text className="Gray700-13px mb-2">What worked or didn't work for you? What was the context? Is there anything you wish you knew before you tried it?</Form.Text>
               <Form.Control as="textarea" id="review" name="review" type="text" className={formik.touched.review && formik.errors.review ? "EmptyFormInput AddFormInput DescriptionInput" : "AddFormInput DescriptionInput"} value={formik.values.review} onChange={formik.handleChange} onBlur={formik.handleBlur} />
               {formik.touched.review && formik.errors.review ? <div className="ErrorMessages">{formik.errors.review}</div> : null}
             </Form.Group>
 
             <Row className="mt-3">
-              <Col className="text-left">
-                <Button variant="medium" className="CancelButton" onClick={props.handleClose}>Cancel</Button>
+              <Col xs={7} lg={7}/>
+              <Col xs={1} lg={1} className="text-left pr-5">
+                <Button variant="medium" className="GreyCancelButton" onClick={props.handleClose}>Cancel</Button>
               </Col>
-              <Col className="text-right">
-                <Button variant="primary" type="submit" className="AddButton">Add this review</Button>
+              <Col xs={3} lg={3} className="text-right pl-5">
+                <Button variant="primary" type="submit" className="SmallAddButton">Add this review</Button>
               </Col>
+              <Col xs={1} lg={1}/>
+
             </Row>
           </Form>
         </Col>
-        <Col sm={1} lg={1} />
+        {/* <Col sm={1} lg={1} /> */}
       </Row>
     </div>
   );
@@ -291,10 +313,19 @@ const ReplyButton = (props) => {
       }
 
       <Modal size="lg" show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
+        {/* <Modal.Header closeButton>
           <Modal.Title>Add a reply to review</Modal.Title>
-        </Modal.Header>
+        </Modal.Header> */}
         <Modal.Body>
+
+        <Row>
+              <Col xs={1} md={1} className="ml-5"/>
+                <Col xs={11} md={11}>
+                <span className="ml-3"/>
+                <span className="Black-20px ml-5">Add a reply to review</span>
+                </Col>
+            </Row>
+
           <Row>
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10} >
@@ -350,13 +381,16 @@ const ReplyReviewForm = (props) => {
             </Form.Group>
 
             <Row className="mt-3">
-              <Col className="text-left">
-                <Button variant="medium" className="CancelButton" onClick={props.handleClose}>Cancel</Button>
+              <Col xs={7} lg={7}/>
+              <Col xs={1} lg={1} className="text-left pr-5">
+                <Button variant="medium" className="GreyCancelButton" onClick={props.handleClose}>Cancel</Button>
               </Col>
-              <Col className="text-right">
-                <Button variant="primary" type="submit" className="AddButton">Add this reply</Button>
+              <Col xs={3} lg={3} className="text-right pl-5">
+                <Button variant="primary" type="submit" className="SmallAddButton">Add this review</Button>
               </Col>
+              <Col xs={1} lg={1}/>
             </Row>
+
           </Form>
         </Col>
         <Col sm={1} lg={1} />
