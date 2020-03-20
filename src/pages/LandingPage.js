@@ -10,6 +10,8 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Loading from './components/Loading';
 import RecentSearches from './components/RecentSearches';
 import UnmetDemand from './components/UnmetDemand';
+import Popular from './components/Popular';
+import Updates from './components/Updates';
 
 var baseURL = require('./../BaseURL').getURL();
 
@@ -50,7 +52,9 @@ class LandingPage extends React.Component{
             name: null
         }],
         searchData: [],
-        unmetData: []
+        unmetData: [],
+        popularData: [],
+        updatesData: []
     }
 
     constructor(props) {
@@ -64,7 +68,8 @@ class LandingPage extends React.Component{
         document.getElementById("SearchInputSpan").focus();
         this.getRecentSearches();
         this.getUnmetData();
-        
+        this.getPopularData();
+        this.getUpdatesData();
     }
 
     getDataSearchFromDb = () => {
@@ -105,6 +110,24 @@ class LandingPage extends React.Component{
         });
     };
 
+    getPopularData = () => {
+        axios.get(baseURL + '/api/stats/popular')
+        .then((res) => {
+            this.setState({
+                popularData: res.data.data
+            });
+        });
+    };
+
+    getUpdatesData = () => {
+        axios.get(baseURL + '/api/stats/updates')
+        .then((res) => {
+            this.setState({
+                updatesData: res.data.data
+            });
+        });
+    };
+
     doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
             if (!!this.state.searchString) {
@@ -125,7 +148,7 @@ class LandingPage extends React.Component{
     }
 
     render(){
-        const {data, userState, isLoading, searchData, unmetData } = this.state;
+        const {data, userState, isLoading, searchData, unmetData, popularData, updatesData } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -213,11 +236,17 @@ class LandingPage extends React.Component{
                 <Container className = "mt-5 mb-5" />
                 <Container>
                     <Row>
-                        <Col sm={6} lg={6}>
+                        <Col sm={12} lg={6}>
                             <RecentSearches searchData={searchData} /> 
                         </Col>  
-                        <Col sm={6} lg={6}>
-                            <UnmetDemand unmetData={unmetData} />
+                        <Col sm={12} lg={6}>
+                            <Popular popularData={popularData} />
+                        </Col>
+                        <Col sm={12} lg={6}>
+                            <UnmetDemand unmetData={unmetData} /> 
+                        </Col>  
+                        <Col sm={12} lg={6}>
+                            <Updates updatesData={updatesData} />
                         </Col>
                     </Row>        
                 </Container>

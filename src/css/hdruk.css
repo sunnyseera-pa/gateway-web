@@ -17,9 +17,8 @@ body {
 }
 
 .LandingBox{
-  width: 480px;
-  height: 480px;
-  /* height: 440px; */
+  margin-top:20px;
+  max-height: 506px;
   border-radius: 4px;
   background-color: #ffffff;
   overflow-y: scroll;
