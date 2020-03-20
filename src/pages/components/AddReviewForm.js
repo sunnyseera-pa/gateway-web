@@ -46,7 +46,7 @@ const AddReviewForm = (props) => {
                 <Col sm={10} lg={10}>
                     <div className="Rectangle">
                         <p className="Black-20px">Add a review</p>
-                        <p className="Gray800-14px">Reviews help others understand if this tool could be useful to them.</p>
+                        <p className="Gray800-14px"> Reviews help others understand if this tool could be useful to them.</p>
                     </div>
                 </Col>
                 <Col sm={1} lg={10} />

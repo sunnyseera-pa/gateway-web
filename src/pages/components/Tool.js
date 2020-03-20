@@ -88,7 +88,7 @@ class Tool extends React.Component {
                                 </Col>
                                 <Col xs={10} lg={8}>
                                     <p>
-                                        <span className="Black-16px"> <a className="searchHolder" href={'/tool/' + data.id} >{data.name.substr(0, 75) + (data.name.length > 75 ? '...' : '')}</a></span>
+                                        <span > <a className="searchHolder Dark-16px" href={'/tool/' + data.id} >{data.name.substr(0, 75) + (data.name.length > 75 ? '...' : '')}</a></span>
                                         <br />
                                         <span className="Gray500-13px">
                                             <span className="Gray500-13px">
@@ -99,13 +99,13 @@ class Tool extends React.Component {
                                         </span>
                                         <br />
                                         <br />
-                                        <span className="Gray800-14px"> 
+                                        <span className="Dark-14px"> 
                                             {data.persons <= 0 ? 'Author not listed': data.persons.map((person, index) => {
                                                 if (index > 0) {
-                                                    return  <span className="Purple-14px"><span className="reviewTitleGap">·</span><a href={'/person/'+person.id}>{person.firstname} {person.lastname}</a></span>
+                                                    return  <span><span className="reviewTitleGap">·</span><a className="Dark-14px" href={'/person/'+person.id}>{person.firstname} {person.lastname}</a></span>
                                                 }
                                                 else {
-                                                    return  <span className="Purple-14px"><a href={'/person/'+person.id}>{person.firstname} {person.lastname}</a></span>
+                                                    return  <span><a className="Dark-14px" href={'/person/'+person.id}>{person.firstname} {person.lastname}</a></span>
                                                 }
                                             })}
                                         </span>
