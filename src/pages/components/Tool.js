@@ -44,11 +44,11 @@ class Tool extends React.Component {
 
     render() {
         const { data, isLoading, reviewData } = this.state;
-       
+
         if (isLoading) {
             return <Loading />;
         }
-        
+
         var ratingsTotal = 0;
         if (reviewData && reviewData.length > 0) {
             reviewData.forEach(review => {
@@ -58,7 +58,6 @@ class Tool extends React.Component {
 
         const ratingsCount = (!!reviewData ? reviewData.length : 0);
         const avgRating = (!!reviewData && reviewData.length > 0) ? (ratingsTotal / ratingsCount) : '';
-
 
         if (typeof data.datasetids === 'undefined') {
             data.datasetids = [];
@@ -79,100 +78,96 @@ class Tool extends React.Component {
         return (
             <Row className="mt-2">
                 <Col>
-                    
-                        <div className="Rectangle">
-                            <Row>
-                               
-                                <Col xs={2} lg={1} className="iconHolder">
-                                    <SVGIcon name="toolicon" width={18} height={18} fill={'#3db28c'} />
-                                </Col>
-                                <Col xs={10} lg={8}>
-                                    <p>
-                                        <span > <a className="searchHolder Dark-16px" href={'/tool/' + data.id} >{data.name.substr(0, 75) + (data.name.length > 75 ? '...' : '')}</a></span>
-                                        <br />
+                    <div className="Rectangle">
+                        <Row>
+                            <Col xs={2} lg={1} className="iconHolder">
+                                <SVGIcon name="toolicon" width={18} height={18} fill={'#3db28c'} />
+                            </Col>
+                            <Col xs={10} lg={8}>
+                                <p>
+                                    <span > <a className="searchHolder Dark-16px" href={'/tool/' + data.id} >{data.name.substr(0, 75) + (data.name.length > 75 ? '...' : '')}</a></span>
+                                    <br />
+                                    <span className="Gray500-13px">
                                         <span className="Gray500-13px">
-                                            <span className="Gray500-13px">
-                                                {!!ratingsTotal && ratingsCount === 1 ? ratingsCount + ' review' : ratingsCount + ' reviews'}
-                                                <span className="reviewTitleGap">·</span>
-                                                {avgRating === 0 ? 'No average rating' : (Math.round(avgRating * 10) / 10) + ' average rating'}
-                                            </span>
-                                        </span>
-                                        <br />
-                                        <br />
-                                        <span className="Dark-14px"> 
-                                            {data.persons <= 0 ? 'Author not listed': data.persons.map((person, index) => {
-                                                if (index > 0) {
-                                                    return  <span><span className="reviewTitleGap">·</span><a className="Dark-14px" href={'/person/'+person.id}>{person.firstname} {person.lastname}</a></span>
-                                                }
-                                                else {
-                                                    return  <span><a className="Dark-14px" href={'/person/'+person.id}>{person.firstname} {person.lastname}</a></span>
-                                                }
-                                            })}
-                                        </span>
-                                    </p>
-                                </Col>
-                                <Col xs={{ span: 12, order: 3 }} lg={{ span: 3, order: 1 }} className="dateHolder mt-2">
-                                    <span className="Gray700-13px pr-1">
-                                        Updated
-                                    </span>
-                                    <span className="Gray700-13px pr-1">
-                                        {updatedOnDate}
-                                    </span>
-                                </Col>
-
-                                <Col xs={{ span: 2, order: 0 }} lg={{ span: 1, order: 2 }}></Col>
-                                <Col xs={{ span: 10, order: 0 }} lg={{ span: 11, order: 2 }} >
-                                    <p className="Gray800-14px">
-                                        {!data.projectids.length ? '' :
-                                            <span className="mr-1">
-                                                <b>
-                                                    {!data.projectids.length ? '' : data.projectids.length}
-                                                    {data.projectids.length === 1 ? " project" : " projects"}
-                                                </b>
-                                            </span>
-                                        }
-
-                                        {!data.datasetids.length ? '' :
-                                            <span className="mr-1">
-                                                {data.projectids.length ? ', ' : ''}
-                                                <b>
-                                                    {!data.datasetids.length ? '' : data.datasetids.length}
-                                                    {data.datasetids.length === 1 ? " data set" : " data sets"}
-                                                </b>
-                                            </span>
-                                        }
-
-                                        {data.projectids.length || data.datasetids.length ?
+                                            {!!ratingsTotal && ratingsCount === 1 ? ratingsCount + ' review' : ratingsCount + ' reviews'}
                                             <span className="reviewTitleGap">·</span>
-                                            : ''
-                                        }
+                                            {avgRating === 0 ? 'No average rating' : (Math.round(avgRating * 10) / 10) + ' average rating'}
+                                        </span>
+                                    </span>
+                                    <br />
+                                    <br />
+                                    <span className="Dark-14px">
+                                        {data.persons <= 0 ? 'Author not listed' : data.persons.map((person, index) => {
+                                            if (index > 0) {
+                                                return <span><span className="reviewTitleGap">·</span><a className="Dark-14px" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a></span>
+                                            }
+                                            else {
+                                                return <span><a className="Dark-14px" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a></span>
+                                            }
+                                        })}
+                                    </span>
+                                </p>
+                            </Col>
+                            <Col xs={{ span: 12, order: 3 }} lg={{ span: 3, order: 1 }} className="dateHolder mt-2">
+                                <span className="Gray700-13px pr-1">
+                                    Updated
+                                    </span>
+                                <span className="Gray700-13px pr-1">
+                                    {updatedOnDate}
+                                </span>
+                            </Col>
 
-                                        {data.description.substr(0, 150) + (data.description.length > 150 ? '...' : '')}
-                                    </p>
-                                </Col>
+                            <Col xs={{ span: 2, order: 0 }} lg={{ span: 1, order: 2 }}></Col>
+                            <Col xs={{ span: 10, order: 0 }} lg={{ span: 11, order: 2 }} >
+                                <p className="Gray800-14px">
+                                    {!data.projectids.length ? '' :
+                                        <span className="mr-1">
+                                            <b>
+                                                {!data.projectids.length ? '' : data.projectids.length}
+                                                {data.projectids.length === 1 ? " project" : " projects"}
+                                            </b>
+                                        </span>
+                                    }
 
-                                <Col xs={{ span: 12, order: 1 }} lg={{ span: 12, order: 3 }}>
-                                    {!data.categories.category ? '' : <a href={'/search?search='+data.categories.category+'&type=all'}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{data.categories.category}</div></a>}
+                                    {!data.datasetids.length ? '' :
+                                        <span className="mr-1">
+                                            {data.projectids.length ? ', ' : ''}
+                                            <b>
+                                                {!data.datasetids.length ? '' : data.datasetids.length}
+                                                {data.datasetids.length === 1 ? " data set" : " data sets"}
+                                            </b>
+                                        </span>
+                                    }
 
-                                    {!data.categories.programmingLanguage || data.categories.programmingLanguage.length <= 0 ? '' : data.categories.programmingLanguage.map((language) => {
-                                        return <a href={'/search?search='+language+'&type=all'}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{language}</div></a>
-                                    })}
+                                    {data.projectids.length || data.datasetids.length ?
+                                        <span className="reviewTitleGap">·</span>
+                                        : ''
+                                    }
 
-                                    {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
-                                        return <a href={'/search?search='+feature+'&type=all'}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{feature}</div></a>
-                                    })}
+                                    {data.description.substr(0, 150) + (data.description.length > 150 ? '...' : '')}
+                                </p>
+                            </Col>
 
-                                    {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
-                                        return <a href={'/search?search='+topic+'&type=all'}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{topic}</div></a>
-                                    })}
+                            <Col xs={{ span: 12, order: 1 }} lg={{ span: 12, order: 3 }}>
+                                {!data.categories.category ? '' : <a href={'/search?search=' + data.categories.category + '&type=all'}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{data.categories.category}</div></a>}
 
-                                </Col>
-                            </Row>
-                        </div>
-                    
+                                {!data.categories.programmingLanguage || data.categories.programmingLanguage.length <= 0 ? '' : data.categories.programmingLanguage.map((language) => {
+                                    return <a href={'/search?search=' + language + '&type=all'}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{language}</div></a>
+                                })}
+
+                                {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
+                                    return <a href={'/search?search=' + feature + '&type=all'}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{feature}</div></a>
+                                })}
+
+                                {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
+                                    return <a href={'/search?search=' + topic + '&type=all'}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{topic}</div></a>
+                                })}
+
+                            </Col>
+                        </Row>
+                    </div>
                 </Col>
             </Row>
-
         );
     }
 }

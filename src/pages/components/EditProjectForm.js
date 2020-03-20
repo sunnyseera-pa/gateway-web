@@ -44,7 +44,7 @@ const EditProjectForm = (props) => {
             topics: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.string()) : Yup.string())),
         }),
 
-        onSubmit: values => {           
+        onSubmit: values => {
             axios.put(baseURL + '/api/mytools/edit', values)
                 .then((res) => {
                     window.location.href = window.location.search + '/project/' + props.data.id + '/?projectEdited=true';
@@ -53,20 +53,20 @@ const EditProjectForm = (props) => {
     });
 
     var listOfAuthors = [];
-    props.data.authors.map((author) => { 
-        props.combinedUsers.map((user) => { 
+    props.data.authors.map((author) => {
+        props.combinedUsers.map((user) => {
             if (user.id === author) {
                 listOfAuthors.push({ id: user.id, name: user.name })
-            }    
+            }
         });
     });
 
     var listOfTools = [];
-    props.data.toolids.map((tools) => { 
-        props.combinedTools.map((tool) => { 
+    props.data.toolids.map((tools) => {
+        props.combinedTools.map((tool) => {
             if (tool.id === tools) {
                 listOfTools.push({ id: tool.id, name: tool.name })
-            }    
+            }
         });
     });
 
@@ -108,12 +108,11 @@ const EditProjectForm = (props) => {
                                 <Form.Control as="textarea" id="description" name="description" type="text" className={formik.touched.description && formik.errors.description ? "EmptyFormInput AddFormInput DescriptionInput" : "AddFormInput DescriptionInput"} onChange={formik.handleChange} value={formik.values.description} onBlur={formik.handleBlur} />
                                 {formik.touched.description && formik.errors.description ? <div className="ErrorMessages">{formik.errors.description}</div> : null}
                             </Form.Group>
-                            {console.log('description: ' + formik.values.description)}
 
                             <Form.Group className="pb-2">
                                 <Form.Label className="Gray800-14px">Authors</Form.Label>
                                 <Form.Text className="Gray700-13px">
-                                Add any authors or collaborators {/* Can be their username or website if you don't know the name. */}
+                                    Add any authors or collaborators {/* Can be their username or website if you don't know the name. */}
                                 </Form.Text>
                                 <Typeahead
                                     labelKey={authors => `${authors.name}`}
@@ -129,8 +128,6 @@ const EditProjectForm = (props) => {
                                     }}
                                 />
                             </Form.Group>
-                            {console.log('authors: ' + formik.values.authors)}
-
 
                             <Form.Group className="pb-2">
                                 <Form.Label className="Gray800-14px">Category</Form.Label>
@@ -141,7 +138,6 @@ const EditProjectForm = (props) => {
                                     id="categories.category"
                                     labelKey="category"
                                     allowNew
-                                    // multiple
                                     defaultSelected={[props.data.categories.category]}
                                     options={props.combinedCategories}
                                     onChange={(selected) => {
@@ -153,14 +149,11 @@ const EditProjectForm = (props) => {
                                     }}
                                 />
                             </Form.Group>
-                            {console.log('category: ' + formik.values.categories.category)}
-
-
 
                             <Form.Group className="pb-2">
                                 <Form.Label className="Gray800-14px">Keywords</Form.Label>
                                 <Form.Text className="Gray700-13px">
-                                Words that help people identify any related fields or key concepts. As many as you like. 
+                                    Words that help people identify any related fields or key concepts. As many as you like.
                                     </Form.Text>
 
                                 <Typeahead
@@ -174,7 +167,6 @@ const EditProjectForm = (props) => {
                                         var tempSelected = [];
                                         selected.map((selectedItem) => {
                                             selectedItem.customOption === true ? tempSelected.push(selectedItem.topics) : tempSelected.push(selectedItem);
-
                                         })
                                         formik.values.tags.topics = tempSelected;
                                     }}
@@ -184,7 +176,7 @@ const EditProjectForm = (props) => {
                             <Form.Group className="pb-2">
                                 <Form.Label className="Gray800-14px">Tools used in this project</Form.Label>
                                 <Form.Text className="Gray700-13px">
-                                Tools must be added to our portal first
+                                    Tools must be added to our portal first
                                 </Form.Text>
                                 <Typeahead
                                     labelKey={tools => `${tools.name}`}
@@ -224,8 +216,6 @@ const EditProjectForm = (props) => {
             </Row>
         </div>
     );
-
 }
-
 
 export default EditProjectForm;

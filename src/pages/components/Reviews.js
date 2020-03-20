@@ -34,17 +34,14 @@ class Reviews extends Component {
     // isLoading: true 
   };
 
-
   // here is our UI
   // it is easy to understand their functions when you
   // see them render into our screen
   render() {
     const { data, userState, reviewData } = this.state;
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
-    console.log(reviewData)
     return (
       <div>
-
         <Row className="mt-4 mb-3">
           <Col xs={12} md={12}>
             <ReviewButton data={data} userState={userState} />
@@ -62,7 +59,6 @@ class Reviews extends Component {
                     <Col xs={12} md={12}>
                       <span className="Gray800-14px">"{review.review}"</span>
                     </Col>
-
                     <Col xs={6} md={6} className="mt-2">
                       <span className="text-left Purple-13px">{review.person[0].firstname} {review.person[0].lastname}</span>
                       <span className="text-left Gray500-13px">  on {updatedOnDate}</span>
@@ -87,7 +83,6 @@ class Reviews extends Component {
                       <Col xs={12} md={12}>
                         <span className="Gray800-14px">"{review.reply}"</span>
                       </Col>
-
                       <Col xs={12} md={12} className="mt-2">
                         <span className="text-left Purple-13px">{review.owner[0].firstname} {review.owner[0].lastname}</span>
                         <span className="text-left Gray500-13px">  on {updatedOnDate}</span>
@@ -110,7 +105,6 @@ const ReviewButton = (props) => {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  console.log(props.data)
   return (
     <>
       {
@@ -128,30 +122,16 @@ const ReviewButton = (props) => {
       </Button>
       }
 
-
       <Modal size="lg" show={show} onHide={handleClose}>
-        {/* <Modal.Header closeButton>
-          <Modal.Title>
-            <Row>
-              <Col xs={1} md={1} className="ml-5"/>
-                <Col xs={11} md={11}>
-                <span className="ml-3"/>
-                <span className="Black-20px ml-5">Add a review</span>
-                </Col>
-            </Row>
-          </Modal.Title>
-        </Modal.Header> */}
-
-
         <Modal.Body>
 
-        <Row>
-              <Col xs={1} md={1} className="ml-5"/>
-                <Col xs={11} md={11}>
-                <span className="ml-3"/>
-                <span className="Black-20px ml-5">Add a review</span>
-                </Col>
-            </Row>
+          <Row>
+            <Col xs={1} md={1} className="ml-5" />
+            <Col xs={11} md={11}>
+              <span className="ml-3" />
+              <span className="Black-20px ml-5">Add a review</span>
+            </Col>
+          </Row>
 
           <Row>
             <Col sm={1} lg={1} />
@@ -184,18 +164,15 @@ const AddReviewForm = (props) => {
 
     validationSchema: Yup.object({
       projectName: Yup.string(),
-      //.when("showproject", {is: true, then: Yup.string().required('This cannot be empty')}),
-      // .required('This cannot be empty')
       review: Yup.string()
         .required('This cannot be empty')
     }),
 
     onSubmit: values => {
-      //alert(JSON.stringify(values, null, 2));
       axios.post(baseURL + '/api/tool/review/add', values)
-      .then((res) => {
-        window.location.href = '/tool/' + props.data.id + '/?reviewAdded=true';
-      });
+        .then((res) => {
+          window.location.href = '/tool/' + props.data.id + '/?reviewAdded=true';
+        });
     }
   });
 
@@ -220,7 +197,6 @@ const AddReviewForm = (props) => {
         <Col sm={1} lg={1} />
         <Col sm={10} lg={10} >
           <Form onSubmit={formik.handleSubmit}>
-
             <Form.Label className="Gray800-14px">Your score</Form.Label>
             <Form.Group className="mb-2">
               <Rating
@@ -276,19 +252,18 @@ const AddReviewForm = (props) => {
             </Form.Group>
 
             <Row className="mt-3">
-              <Col xs={7} lg={7}/>
+              <Col xs={7} lg={7} />
               <Col xs={1} lg={1} className="text-left pr-5">
                 <Button variant="medium" className="GreyCancelButton" onClick={props.handleClose}>Cancel</Button>
               </Col>
               <Col xs={3} lg={3} className="text-right pl-5">
                 <Button variant="primary" type="submit" className="SmallAddButton">Add this review</Button>
               </Col>
-              <Col xs={1} lg={1}/>
+              <Col xs={1} lg={1} />
 
             </Row>
           </Form>
         </Col>
-        {/* <Col sm={1} lg={1} /> */}
       </Row>
     </div>
   );
@@ -313,18 +288,15 @@ const ReplyButton = (props) => {
       }
 
       <Modal size="lg" show={show} onHide={handleClose}>
-        {/* <Modal.Header closeButton>
-          <Modal.Title>Add a reply to review</Modal.Title>
-        </Modal.Header> */}
         <Modal.Body>
 
-        <Row>
-              <Col xs={1} md={1} className="ml-5"/>
-                <Col xs={11} md={11}>
-                <span className="ml-3"/>
-                <span className="Black-20px ml-5">Add a reply to review</span>
-                </Col>
-            </Row>
+          <Row>
+            <Col xs={1} md={1} className="ml-5" />
+            <Col xs={11} md={11}>
+              <span className="ml-3" />
+              <span className="Black-20px ml-5">Add a reply to review</span>
+            </Col>
+          </Row>
 
           <Row>
             <Col sm={1} lg={1} />
@@ -360,7 +332,6 @@ const ReplyReviewForm = (props) => {
     }),
 
     onSubmit: values => {
-      //alert(JSON.stringify(values, null, 2));
       axios.post(baseURL + '/api/tool/reply', values)
         .then((res) => {
           window.location.href = '/tool/' + props.data.id + '/?replyAdded=true';
@@ -381,14 +352,14 @@ const ReplyReviewForm = (props) => {
             </Form.Group>
 
             <Row className="mt-3">
-              <Col xs={7} lg={7}/>
+              <Col xs={7} lg={7} />
               <Col xs={1} lg={1} className="text-left pr-5">
                 <Button variant="medium" className="GreyCancelButton" onClick={props.handleClose}>Cancel</Button>
               </Col>
               <Col xs={3} lg={3} className="text-right pl-5">
                 <Button variant="primary" type="submit" className="SmallAddButton">Add this review</Button>
               </Col>
-              <Col xs={1} lg={1}/>
+              <Col xs={1} lg={1} />
             </Row>
 
           </Form>

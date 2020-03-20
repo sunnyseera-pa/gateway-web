@@ -53,11 +53,10 @@ const AddToolForm = (props) => {
         }),
 
         onSubmit: values => {
-            console.log('values tool: ' + values)
             axios.post(baseURL + '/api/mytools/add', values)
-            .then((res) => {
-                window.location.href = window.location.search + '/tool/' + res.data.id + '/?toolAdded=true';
-            });
+                .then((res) => {
+                    window.location.href = window.location.search + '/tool/' + res.data.id + '/?toolAdded=true';
+                });
         }
     });
 
@@ -110,7 +109,6 @@ const AddToolForm = (props) => {
                                     id="categories.category"
                                     labelKey="category"
                                     allowNew
-                                    // multiple
                                     options={props.combinedCategories}
                                     onChange={(selected) => {
                                         var tempSelected = [];
@@ -216,7 +214,6 @@ const AddToolForm = (props) => {
                                         })
                                         formik.values.tags.features = tempSelected;
                                     }}
-
                                 />
                             </Form.Group>
 
@@ -236,7 +233,6 @@ const AddToolForm = (props) => {
                                         var tempSelected = [];
                                         selected.map((selectedItem) => {
                                             selectedItem.customOption === true ? tempSelected.push(selectedItem.topics) : tempSelected.push(selectedItem);
-
                                         })
                                         formik.values.tags.topics = tempSelected;
                                     }}
@@ -266,8 +262,6 @@ const AddToolForm = (props) => {
             </Row>
         </div>
     );
-
 }
-
 
 export default AddToolForm;

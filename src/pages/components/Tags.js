@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 class Tags extends Component {
   // initialize our state
   state = {
-    
+
   };
 
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import axios from 'axios';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -27,14 +27,14 @@ class ReviewTitle extends React.Component {
 
     doSearchCall() {
         axios.get(baseURL + '/api/reviews?id=' + this.state.id)
-        .then((res) => {
-            this.setState({ data: res.data.data[0], isLoading: false });
-        });
+            .then((res) => {
+                this.setState({ data: res.data.data[0], isLoading: false });
+            });
     }
 
     render() {
         const { data, isLoading } = this.state;
-        
+
         if (isLoading) {
             return <Loading />;
         }
@@ -51,7 +51,7 @@ class ReviewTitle extends React.Component {
             <Row className="mt-2">
                 <Col>
                     <div className="Rectangle">
-                        <Row>  
+                        <Row>
                             <Col xs={2} lg={1} className="iconHolder">
                                 <SVGIcon name="toolicon" width={18} height={18} fill={'#3db28c'} />
                             </Col>
@@ -67,13 +67,13 @@ class ReviewTitle extends React.Component {
                             </Col>
                             <Col xs={12} lg={12}>
                                 <span className="Purple-13px">{data.person[0].firstname} {data.person[0].lastname}</span><span className="Gray700-13px"> on {updatedOnDate}</span>
-                                {!data.projectName? '' : <><span className="reviewTitleGap">·</span><span className="Gray700-13px"> in relation to project </span><span className="Purple-13px">{data.projectName}</span></>}
+                                {!data.projectName ? '' : <><span className="reviewTitleGap">·</span><span className="Gray700-13px"> in relation to project </span><span className="Purple-13px">{data.projectName}</span></>}
                             </Col>
                         </Row>
                     </div>
                 </Col>
             </Row>
-    );
+        );
     }
 }
 

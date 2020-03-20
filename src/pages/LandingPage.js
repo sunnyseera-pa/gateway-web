@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Container from 'react-bootstrap/Container';
-import Row  from 'react-bootstrap/Row';
+import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import SVGIcon from '../images/SVGIcon';
 import { ReactComponent as WhiteLogoSvg } from '../../src/images/white.svg';
@@ -39,11 +39,11 @@ const CustomMenu = React.forwardRef(
     },
 );
 
-class LandingPage extends React.Component{
-    
+class LandingPage extends React.Component {
+
     state = {
         searchString: null,
-        data:[],
+        data: [],
         isLoading: false,
         userState: [{
             loggedIn: false,
@@ -63,7 +63,7 @@ class LandingPage extends React.Component{
     }
 
     componentDidMount() {
-        this.setState({ searchString: ''});
+        this.setState({ searchString: '' });
         document.getElementById("SearchInputSpan").focus();
         this.getRecentSearches();
         this.getUnmetData();
@@ -74,66 +74,66 @@ class LandingPage extends React.Component{
 
     getDataSearchFromDb = () => {
         this.setState({ isLoading: true });
-        axios.get(baseURL+'/api/stats')
-        .then((res) => {
-        this.setState({ 
-            data: {
-                'project':res.data.data.typecounts.project,
-                'tool':res.data.data.typecounts.tool,
-                'account':res.data.data.typecounts.person,
-                'searches':res.data.data.daycounts.week
-            },
-            isLoading: false 
-        });
-        })
+        axios.get(baseURL + '/api/stats')
+            .then((res) => {
+                this.setState({
+                    data: {
+                        'project': res.data.data.typecounts.project,
+                        'tool': res.data.data.typecounts.tool,
+                        'account': res.data.data.typecounts.person,
+                        'searches': res.data.data.daycounts.week
+                    },
+                    isLoading: false
+                });
+            })
     };
 
     getRecentSearches = () => {
         axios.get(baseURL + '/api/stats/recent')
-        .then((res) => {
-            this.setState({
-            searchData: res.data.data
+            .then((res) => {
+                this.setState({
+                    searchData: res.data.data
+                });
             });
-        });
     };
 
     getUnmetData = () => {
         axios.get(baseURL + '/api/stats/unmet')
-        .then((res) => {
-            this.setState({
-                unmetData: res.data.data
+            .then((res) => {
+                this.setState({
+                    unmetData: res.data.data
+                });
             });
-        });
     };
 
     getPopularData = () => {
         axios.get(baseURL + '/api/stats/popular')
-        .then((res) => {
-            this.setState({
-                popularData: res.data.data
+            .then((res) => {
+                this.setState({
+                    popularData: res.data.data
+                });
             });
-        });
     };
 
     getUpdatesData = () => {
         axios.get(baseURL + '/api/stats/updates')
-        .then((res) => {
-            this.setState({
-                updatesData: res.data.data
+            .then((res) => {
+                this.setState({
+                    updatesData: res.data.data
+                });
             });
-        });
     };
 
     doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
             if (!!this.state.searchString) {
-                window.location.href = window.location.search+"/search?search="+this.state.searchString + '&type=all&toolcategory=&programminglanguage=&features=&topics=';
+                window.location.href = window.location.search + "/search?search=" + this.state.searchString + '&type=all&toolcategory=&programminglanguage=&features=&topics=';
             }
         }
     }
 
     changeText = (e) => {
-        this.setState({searchString : e.target.value});
+        this.setState({ searchString: e.target.value });
     }
 
     logout = (e) => {
@@ -143,14 +143,14 @@ class LandingPage extends React.Component{
             });
     }
 
-    render(){
-        const {data, userState, isLoading, searchData, unmetData, popularData, updatesData } = this.state;
+    render() {
+        const { data, userState, isLoading, searchData, unmetData, popularData, updatesData } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
         }
 
-        return(
+        return (
             <div className="LandingBackground">
                 <Row className="pt-5 pl-5">
                     <Col xs={{ span: 6, order: 1 }} lg={{ span: 6, order: 1 }}> <WhiteLogoSvg /> </Col>
@@ -199,16 +199,16 @@ class LandingPage extends React.Component{
                         <Col sm={2} />
                     </Row>
                     <Row className="mt-5">
-                    <Col sm={1} />
-                        <Col sm={10}>     
+                        <Col sm={1} />
+                        <Col sm={10}>
                             <span className="SearchBarInput">
                                 <SVGIcon name="searchicon" width={20} height={20} fill={'#2c8267'} stroke='none' type="submit" className="ml-2 mr-3 mt-3" />
-                                <input type="text" placeholder="Search" className="" id="SearchInputSpan" onChange={this.changeText} onKeyDown={this.doSearch} /> 
-                            </span>        
+                                <input type="text" placeholder="Search" className="" id="SearchInputSpan" onChange={this.changeText} onKeyDown={this.doSearch} />
+                            </span>
                         </Col>
                         <Col sm={1} />
                     </Row>
-                    <Row className="mt-5"/>
+                    <Row className="mt-5" />
                     <Row>
                         <Col sm={2} />
                         <Col sm={2}>
@@ -229,27 +229,24 @@ class LandingPage extends React.Component{
                         </Col>
                     </Row>
                 </Container>
-                <Container className = "mt-5 mb-5" />
+                <Container className="mt-5 mb-5" />
                 <Container>
                     <Row>
                         <Col sm={12} lg={6}>
-                            <RecentSearches searchData={searchData} /> 
-                        </Col>  
+                            <RecentSearches searchData={searchData} />
+                        </Col>
                         <Col sm={12} lg={6}>
                             <Popular popularData={popularData} />
                         </Col>
                         <Col sm={12} lg={6}>
-                            <UnmetDemand unmetData={unmetData} /> 
-                        </Col>  
+                            <UnmetDemand unmetData={unmetData} />
+                        </Col>
                         <Col sm={12} lg={6}>
                             <Updates updatesData={updatesData} />
                         </Col>
-                    </Row>        
+                    </Row>
                 </Container>
             </div>
-
-
-       
         );
     }
 }

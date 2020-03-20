@@ -56,18 +56,18 @@ const EditToolForm = (props) => {
         onSubmit: values => {
             //alert(JSON.stringify(values, null, 2));
             axios.put(baseURL + '/api/mytools/edit', values)
-            .then((res) => {
-                window.location.href = window.location.search + '/tool/' + props.data.id + '/?toolEditted=true';
-            });
+                .then((res) => {
+                    window.location.href = window.location.search + '/tool/' + props.data.id + '/?toolEditted=true';
+                });
         }
     });
 
     var listOfAuthors = [];
-    props.data.authors.map((author) => { 
-        props.combinedUsers.map((user) => { 
+    props.data.authors.map((author) => {
+        props.combinedUsers.map((user) => {
             if (user.id === author) {
                 listOfAuthors.push({ id: user.id, name: user.name })
-            }    
+            }
         });
     });
 
@@ -117,7 +117,6 @@ const EditToolForm = (props) => {
                                 <Typeahead
                                     labelKey="category"
                                     allowNew
-                                    // multiple
                                     defaultSelected={[props.data.categories.category]}
                                     options={props.combinedCategories}
                                     onChange={(selected) => {
@@ -159,7 +158,6 @@ const EditToolForm = (props) => {
                                 <Form.Control id="categories.programmingLanguageVersion" name="categories.programmingLanguageVersion" type="text" className="SmallFormInput AddFormInput" onChange={formik.handleChange} value={formik.values.categories.programmingLanguageVersion} onBlur={formik.handleBlur} />
                             </Form.Group>
 
-
                             <Form.Group className="pb-2">
                                 <Form.Label className="Gray800-14px">License</Form.Label>
                                 <Form.Text className="Gray700-13px">
@@ -199,7 +197,7 @@ const EditToolForm = (props) => {
                                         })
                                         formik.values.authors = tempSelected;
                                     }}
-                            />
+                                />
                             </Form.Group>
 
                             <Form.Group className="pb-2">
@@ -268,9 +266,6 @@ const EditToolForm = (props) => {
             </Row>
         </div>
     );
-
-
 }
-
 
 export default EditToolForm;

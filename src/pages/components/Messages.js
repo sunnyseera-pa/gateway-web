@@ -28,31 +28,29 @@ class YourAccount extends React.Component {
     }
 
     doMessagesCall() {
-        var apiToCall = '/api/messages/'+this.state.userState[0].id;
+        var apiToCall = '/api/messages/' + this.state.userState[0].id;
         if (this.state.userState[0].role === "Admin") {
-            apiToCall = '/api/messagesadmin/'+this.state.userState[0].id;
+            apiToCall = '/api/messagesadmin/' + this.state.userState[0].id;
         }
 
         axios.get(baseURL + apiToCall)
-        .then((res) => {
-            this.setState({
-                newData: res.data.newData,
-                isLoading: false
-            });
-        })
+            .then((res) => {
+                this.setState({
+                    newData: res.data.newData,
+                    isLoading: false
+                });
+            })
     }
 
     render() {
         const { newData, oldData, isLoading } = this.state;
-        
+
         if (isLoading) {
             return <Loading />;
         }
 
-        console.log(newData)
-
         return (
-            <>  
+            <>
                 <Row className="mt-3">
                     <Col>
                         <span className="Black-16px ml-2">New notifications</span>
@@ -67,44 +65,44 @@ class YourAccount extends React.Component {
                             }
 
                             return (
-                            <div className="Rectangle mt-1">
-                                <Row>
-                                    <Col xs={2} lg={1} className="iconHolder">
-                                        {(() => {
-                                            if (dat.tool[0].type==='tool') {
-                                                return <SVGIcon name="toolicon" width={18} height={18} fill={'#3db28c'} />
-                                            }
-                                            else {
-                                                return <SVGIcon name="projecticon" width={20} height={24} fill={'#3db28c'} />
-                                            }
-                                        })()}
-                                    </Col>
-                                    
-                                    <Col xs={10} lg={11} className="pl-2 pt-2 Gray800-14px-bold">
-                                        {(() => {
-                                            if (dat.messageType==='add') {
-                                                return <>The {dat.tool[0].type} <a href={'/'+dat.tool[0].type+'/'+dat.tool[0].id} >{dat.tool[0].name}</a> is now available for review.</>
-                                            }
-                                            else if (dat.messageType==='approved') {
-                                                if (dat.messageTo===0) {
-                                                    return <>The {dat.tool[0].type} <a href={'/'+dat.tool[0].type+'/'+dat.tool[0].id} >{dat.tool[0].name}</a> has been approved.</>
+                                <div className="Rectangle mt-1">
+                                    <Row>
+                                        <Col xs={2} lg={1} className="iconHolder">
+                                            {(() => {
+                                                if (dat.tool[0].type === 'tool') {
+                                                    return <SVGIcon name="toolicon" width={18} height={18} fill={'#3db28c'} />
                                                 }
                                                 else {
-                                                    return <>Your {dat.tool[0].type} <a href={'/'+dat.tool[0].type+'/'+dat.tool[0].id} >{dat.tool[0].name}</a> has been approved.</>
+                                                    return <SVGIcon name="projecticon" width={20} height={24} fill={'#3db28c'} />
                                                 }
-                                            }
-                                            else if (dat.messageType==='rejected') {
-                                                if (dat.messageTo===0) {
-                                                    return <>The {dat.tool[0].type} <a href={'/'+dat.tool[0].type+'/'+dat.tool[0].id} >{dat.tool[0].name}</a> has been rejected.</>
+                                            })()}
+                                        </Col>
+
+                                        <Col xs={10} lg={11} className="pl-2 pt-2 Gray800-14px-bold">
+                                            {(() => {
+                                                if (dat.messageType === 'add') {
+                                                    return <>The {dat.tool[0].type} <a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} >{dat.tool[0].name}</a> is now available for review.</>
                                                 }
-                                                else {
-                                                    return <>Your {dat.tool[0].type} <a href={'/'+dat.tool[0].type+'/'+dat.tool[0].id} >{dat.tool[0].name}</a> has been rejected.</>
+                                                else if (dat.messageType === 'approved') {
+                                                    if (dat.messageTo === 0) {
+                                                        return <>The {dat.tool[0].type} <a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} >{dat.tool[0].name}</a> has been approved.</>
+                                                    }
+                                                    else {
+                                                        return <>Your {dat.tool[0].type} <a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} >{dat.tool[0].name}</a> has been approved.</>
+                                                    }
                                                 }
-                                            }
-                                        })()}  
-                                    </Col> 
-                                </Row>
-                            </div>)
+                                                else if (dat.messageType === 'rejected') {
+                                                    if (dat.messageTo === 0) {
+                                                        return <>The {dat.tool[0].type} <a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} >{dat.tool[0].name}</a> has been rejected.</>
+                                                    }
+                                                    else {
+                                                        return <>Your {dat.tool[0].type} <a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} >{dat.tool[0].name}</a> has been rejected.</>
+                                                    }
+                                                }
+                                            })()}
+                                        </Col>
+                                    </Row>
+                                </div>)
                         })}
                     </Col>
                 </Row>
@@ -119,34 +117,31 @@ class YourAccount extends React.Component {
                     <Col>
                         {oldData.length <= 0 ? <NotFound word='notifications' /> : oldData.map((dat) => {
                             return (
-                            <div className="Rectangle mt-1">
-                                <Row>
-                                    <Col xs={2} lg={1} className="iconHolder">
-                                        {(() => {
-                                            if (dat.tool[0].type==='tool') {
-                                                return <SVGIcon name="toolicon" width={18} height={18} fill={'#3db28c'} />
-                                            }
-                                            else {
-                                                return <SVGIcon name="projecticon" width={20} height={24} fill={'#3db28c'} />
-                                            }
-                                        })()}
-                                    </Col>
-                                    
-                                    <Col xs={10} lg={11} className="pl-2 pt-2 Gray800-14px-bold">
-                                        {(() => {
-                                            if (dat.messageType==='add') {
-                                                return <>The {dat.tool[0].type} <a href={'/'+dat.tool[0].type+'/'+dat.tool[0].id} >{dat.tool[0].name}</a> is now available for review.</>
-                                            }
-                                            else {
-                                                return <><a href={'/'+dat.tool[0].type+'/'+dat.tool[0].id} >{dat.tool[0].name}</a></>
-                                            }
-                                        })()}
+                                <div className="Rectangle mt-1">
+                                    <Row>
+                                        <Col xs={2} lg={1} className="iconHolder">
+                                            {(() => {
+                                                if (dat.tool[0].type === 'tool') {
+                                                    return <SVGIcon name="toolicon" width={18} height={18} fill={'#3db28c'} />
+                                                }
+                                                else {
+                                                    return <SVGIcon name="projecticon" width={20} height={24} fill={'#3db28c'} />
+                                                }
+                                            })()}
+                                        </Col>
 
-
-                                        
-                                    </Col> 
-                                </Row>
-                            </div>)
+                                        <Col xs={10} lg={11} className="pl-2 pt-2 Gray800-14px-bold">
+                                            {(() => {
+                                                if (dat.messageType === 'add') {
+                                                    return <>The {dat.tool[0].type} <a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} >{dat.tool[0].name}</a> is now available for review.</>
+                                                }
+                                                else {
+                                                    return <><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} >{dat.tool[0].name}</a></>
+                                                }
+                                            })()}
+                                        </Col>
+                                    </Row>
+                                </div>)
                         })}
                     </Col>
                 </Row>

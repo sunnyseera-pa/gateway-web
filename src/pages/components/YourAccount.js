@@ -31,22 +31,22 @@ class YourAccount extends React.Component {
     }
 
     doYourAccountCall() {
-         axios.get(baseURL + '/api/person/' + this.state.userState[0].id)
-        .then((res) => {
-            axios.get(baseURL + '/api/user/' + this.state.userState[0].id )
-            .then((resUser) => {
-                this.setState({
-                    userdata: resUser.data.userdata[0],
-                    data: res.data.data[0],
-                    isLoading: false
-                });
+        axios.get(baseURL + '/api/person/' + this.state.userState[0].id)
+            .then((res) => {
+                axios.get(baseURL + '/api/user/' + this.state.userState[0].id)
+                    .then((resUser) => {
+                        this.setState({
+                            userdata: resUser.data.userdata[0],
+                            data: res.data.data[0],
+                            isLoading: false
+                        });
+                    })
             })
-        })
     }
 
     render() {
         const { data, isLoading, isUpdated, userdata } = this.state;
-        
+
         if (isLoading) {
             return <Loading />;
         }

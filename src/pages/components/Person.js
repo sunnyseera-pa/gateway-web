@@ -1,7 +1,6 @@
 import React from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { ReactComponent as PersonPlaceholderSvg } from '../../images/person-placeholder.svg';
 
 class Person extends React.Component {
     constructor(props) {
@@ -19,10 +18,10 @@ class Person extends React.Component {
 
         var countOfProjects = 0;
         var countOfTools = 0;
-        data.objects.map((object) => { 
+        data.objects.map((object) => {
             if (object.type === 'project') {
                 countOfProjects++;
-            }    
+            }
             else if (object.type === 'tool') {
                 countOfTools++;
             }
@@ -58,7 +57,7 @@ class Person extends React.Component {
                                                 return <>{countOfProjects} Projects</>
                                             }
                                         })()}
-                                        
+
                                         {countOfProjects > 0 && countOfTools !== 0 ? ', ' : ''}
 
                                         {(() => {

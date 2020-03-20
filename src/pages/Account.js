@@ -9,7 +9,6 @@ import 'react-tabs/style/react-tabs.css';
 import AccountTools from './components/AccountTools';
 import AccountProjects from './components/AccountProjects';
 import ReviewTools from './components/ReviewTools';
-import DataSet from './components/DataSet';
 import YourAccount from './components/YourAccount';
 import Messages from './components/Messages';
 import queryString from 'query-string';
@@ -173,10 +172,6 @@ class Account extends Component {
                         </Row>
                         : ""}
 
-
-
-
-
                     <Row className="mt-3">
                         <Col sm={1} lg={1} />
                         <Col sm={10} lg={10}>
@@ -189,19 +184,17 @@ class Account extends Component {
                                         <Messages userState={userState} />
                                     </Tab>
                                     <Tab eventKey="datasets" title="Data sets">
-                                    <Row className="mt-2">
-                                        <Col>
-                                            <div className="Rectangle">
-                                                <div className="Gray800-14px" style={{textAlign: 'center'}}>
-                                                    Data sets placeholder
+                                        <Row className="mt-2">
+                                            <Col>
+                                                <div className="Rectangle">
+                                                    <div className="Gray800-14px" style={{ textAlign: 'center' }}>
+                                                        Data sets placeholder
                                                 </div>
-                                            </div>
-                                        </Col>
-                                    </Row>
-                                        {/* {data.datasetids.map(id => <DataSet id={id} />)} */}
+                                                </div>
+                                            </Col>
+                                        </Row>
                                     </Tab>
                                     <Tab eventKey="projects" title="Projects">
-                                        {/* Placeholder */}
                                         <AccountProjects userState={userState} />
                                     </Tab>
                                     <Tab eventKey="tools" title="Tools">

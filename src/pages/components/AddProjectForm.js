@@ -47,7 +47,6 @@ const AddProjectForm = (props) => {
         }),
 
         onSubmit: values => {
-            
             //add via same post as add tool form - type set as 'project'
             axios.post(baseURL + '/api/mytools/add', values)
                 .then((res) => {
@@ -95,13 +94,11 @@ const AddProjectForm = (props) => {
                                 <Form.Control as="textarea" id="description" name="description" type="text" className={formik.touched.description && formik.errors.description ? "EmptyFormInput AddFormInput DescriptionInput" : "AddFormInput DescriptionInput"} onChange={formik.handleChange} value={formik.values.description} onBlur={formik.handleBlur} />
                                 {formik.touched.description && formik.errors.description ? <div className="ErrorMessages">{formik.errors.description}</div> : null}
                             </Form.Group>
-                            {console.log('description: ' + formik.values.description)}
-
 
                             <Form.Group className="pb-2">
                                 <Form.Label className="Gray800-14px">Authors</Form.Label>
                                 <Form.Text className="Gray700-13px">
-                                Add any authors or collaborators {/* Can be their username or website if you don't know the name. */}
+                                    Add any authors or collaborators {/* Can be their username or website if you don't know the name. */}
                                 </Form.Text>
                                 <Typeahead
                                     id="authors"
@@ -118,8 +115,6 @@ const AddProjectForm = (props) => {
                                     }}
                                 />
                             </Form.Group>
-                            {console.log('description: ' + formik.values.authors)}
-
 
                             <Form.Group className="pb-2">
                                 <Form.Label className="Gray800-14px">Category</Form.Label>
@@ -142,11 +137,10 @@ const AddProjectForm = (props) => {
                                 />
                             </Form.Group>
 
-
                             <Form.Group className="pb-2">
                                 <Form.Label className="Gray800-14px">Keywords</Form.Label>
                                 <Form.Text className="Gray700-13px">
-                                Words that help people identify any related fields or key concepts. As many as you like. 
+                                    Words that help people identify any related fields or key concepts. As many as you like.
                                     </Form.Text>
 
                                 <Typeahead
@@ -169,7 +163,7 @@ const AddProjectForm = (props) => {
                             <Form.Group className="pb-2">
                                 <Form.Label className="Gray800-14px">Tools used in this project</Form.Label>
                                 <Form.Text className="Gray700-13px">
-                                Tools must be added to our portal first 
+                                    Tools must be added to our portal first
                                     </Form.Text>
 
                                 <Typeahead
@@ -210,8 +204,6 @@ const AddProjectForm = (props) => {
             </Row>
         </div>
     );
-
 }
-
 
 export default AddProjectForm;

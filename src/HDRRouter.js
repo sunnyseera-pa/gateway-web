@@ -63,13 +63,13 @@ class HDRRouter extends Component {
     if (isLoading) {
       return <Container><Loading /></Container>;
     }
-    
+
     return (
       <Router>
         <div>
           <Switch>
             <Route path='/search' render={(props) => <SearchPage {...props} userState={userState} />} />
-            
+
             <Route path='/tool/:toolID' render={(props) => <ToolPage {...props} userState={userState} />} />
 
             <Route path='/project/:projectID' render={(props) => <ProjectPage {...props} userState={userState} />} />
@@ -79,20 +79,19 @@ class HDRRouter extends Component {
             {/* Paths below require the user to be logged in */}
 
             {userState[0].loggedIn ? (<Route path='/account' render={(props) => <Account {...props} userState={userState} />} />)
-            :(<Route path='/' render={(props) => <LandingPage {...props} userState={userState} />} />)}
+              : (<Route path='/' render={(props) => <LandingPage {...props} userState={userState} />} />)}
 
             {userState[0].loggedIn ? (<Route path='/addtool' render={(props) => <AddToolPage {...props} userState={userState} />} />)
-            :(<Route path='/' render={(props) => <LandingPage {...props} userState={userState} />} />)}
+              : (<Route path='/' render={(props) => <LandingPage {...props} userState={userState} />} />)}
 
             {userState[0].loggedIn ? (<Route path='/addproject' render={(props) => <AddProjectPage {...props} userState={userState} />} />)
-            :(<Route path='/' render={(props) => <LandingPage {...props} userState={userState} />} />)}
-            
-            
+              : (<Route path='/' render={(props) => <LandingPage {...props} userState={userState} />} />)}
+
             {userState[0].loggedIn ? (<Route path='/edittool/:toolID' render={(props) => <EditToolPage {...props} userState={userState} />} />)
-            :(<Route path='/' render={(props) => <LandingPage {...props} userState={userState} />} />)}
+              : (<Route path='/' render={(props) => <LandingPage {...props} userState={userState} />} />)}
 
             {userState[0].loggedIn ? (<Route path='/editproject/:projectID' render={(props) => <EditProjectPage {...props} userState={userState} />} />)
-            :(<Route path='/' render={(props) => <LandingPage {...props} userState={userState} />} />)}
+              : (<Route path='/' render={(props) => <LandingPage {...props} userState={userState} />} />)}
 
             {/* Catch all path */}
             <Route path='/' render={(props) => <LandingPage {...props} userState={userState} />} />

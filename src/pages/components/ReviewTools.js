@@ -33,7 +33,6 @@ class ReviewTools extends React.Component {
         if (this.state.userState[0].role === "Admin") {
             axios.get(baseURL + '/api/pendingreviewsadmin')
             .then((res) => {
-                console.log(res.data.data)
                 this.setState({ data: res.data.data, isLoading: false });
             });
         }
@@ -47,7 +46,6 @@ class ReviewTools extends React.Component {
 
     render() {
         const { data, isLoading, userState } = this.state;
-        console.log(data)
         if (isLoading) {
             return <Loading />;
         }

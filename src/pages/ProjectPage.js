@@ -63,7 +63,6 @@ class ProjectDetail extends Component {
     this.setState({ isLoading: true });
     axios.get(baseURL + '/api/project/' + this.props.match.params.projectID)
       .then((res) => {
-        console.log(res.data.data[0])
         this.setState({
           data: res.data.data[0],
           isLoading: false
@@ -107,7 +106,7 @@ class ProjectDetail extends Component {
         <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
         <Container className="mb-5">
 
-        {projectAdded ?
+          {projectAdded ?
             <Row className="">
               <Col sm={1} lg={1} />
               <Col sm={10} lg={10}>
@@ -116,7 +115,7 @@ class ProjectDetail extends Component {
               <Col sm={1} lg={10} />
             </Row>
             : ""}
-          
+
           {projectEdited ?
             <Row className="">
               <Col sm={1} lg={1} />
@@ -161,7 +160,6 @@ class ProjectDetail extends Component {
           </Row>
 
           <Row className="mt-3">
-
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
               <div>

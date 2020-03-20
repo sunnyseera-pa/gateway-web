@@ -26,11 +26,11 @@ class SearchPage extends React.Component {
         typeString: null,
         data: [],
         summary: [],
-        combinedLanguages:[],
+        combinedLanguages: [],
         languageSelected: [],
-        combinedCategories:[],
+        combinedCategories: [],
         categoriesSelected: [],
-        combinedFeatures:[],
+        combinedFeatures: [],
         featuresSelected: [],
         combinedTopic: [],
         topicsSelected: [],
@@ -52,18 +52,10 @@ class SearchPage extends React.Component {
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
             this.doSearchCall(values.search, values.type, this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
-            //this.doGetLanguagesCall();
-            //this.doGetCategoriesCall();
-            //this.doGetFeaturesCall();
-            //this.doGetTopicsCall();
             this.setState({ searchString: values.search });
             this.setState({ typeString: values.type });
         }
         else {
-            //this.doGetLanguagesCall();
-            //this.doGetCategoriesCall();
-            //this.doGetFeaturesCall();
-            //this.doGetTopicsCall();
             this.setState({ data: [], searchString: '', typeString: 'all', isLoading: true });
             this.doSearchCall("", "all", [], [], [], []);
         }
@@ -72,11 +64,11 @@ class SearchPage extends React.Component {
     componentWillReceiveProps() {
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
-            if (values.search != this.state.searchString
-                || values.type != this.state.typeString) {
+            if (values.search !== this.state.searchString
+                || values.type !== this.state.typeString) {
                 this.doSearchCall(values.search, values.type, this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
-                this.setState({searchString: values.search});
-                this.setState({typeString: values.type});
+                this.setState({ searchString: values.search });
+                this.setState({ typeString: values.type });
             }
         }
         else {
@@ -88,11 +80,11 @@ class SearchPage extends React.Component {
     doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
 
-            if (!!this.state.searchString && !!this.state.typeString ) {
+            if (!!this.state.searchString && !!this.state.typeString) {
                 this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&toolCategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected)
                 this.doSearchCall(this.state.searchString, this.state.typeString, this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
             }
-            else if (!!this.state.searchString && !this.state.typeString ) {
+            else if (!!this.state.searchString && !this.state.typeString) {
                 this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=all' + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected)
                 this.doSearchCall(this.state.searchString, "", this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
             }
@@ -102,36 +94,28 @@ class SearchPage extends React.Component {
     callTypeString = (typeString) => {
         this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + typeString + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected)
         this.doSearchCall(this.state.searchString, typeString, this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
-    } 
+    }
 
     doSearchCall(searchString, typeString, languageSelected, categoriesSelected, featuresSelected, topicsSelected) {
-        
+
         var searchURL = baseURL + '/api/search?search=' + searchString + '&type=' + typeString;
-        
+
         languageSelected.map(language => {
-        
             searchURL += '&programmingLanguage=' + language;
         });
 
-        console.log('categories selected in search page: ' + categoriesSelected)
-
         categoriesSelected.map(category => {
-        
+
             searchURL += '&category=' + category;
         });
 
-        console.log('features selected in search page: ' + featuresSelected)
-
         featuresSelected.map(features => {
-        
+
             searchURL += '&features=' + features;
         });
 
-        
-        console.log('topicss selected in search page: ' + topicsSelected)
-
         topicsSelected.map(topics => {
-        
+
             searchURL += '&topics=' + topics;
         });
 
@@ -143,14 +127,14 @@ class SearchPage extends React.Component {
                     var tempProgrammingLanguageArray = [];
                     var tempFeaturesArray = [];
                     var tempTopicsArray = [];
-                    
-                    res.data.data.map((dat) => { 
+
+                    res.data.data.map((dat) => {
                         if (dat.categories && dat.categories.category && dat.categories.category !== '' && !tempCategoriesArray.includes(dat.categories.category)) {
                             tempCategoriesArray.push(dat.categories.category);
                         }
-                        
-                        if (dat.categories &&  dat.categories.programmingLanguage && dat.categories.programmingLanguage.length > 0) {
-                            dat.categories.programmingLanguage.map((pl) => { 
+
+                        if (dat.categories && dat.categories.programmingLanguage && dat.categories.programmingLanguage.length > 0) {
+                            dat.categories.programmingLanguage.map((pl) => {
                                 if (!tempProgrammingLanguageArray.includes(pl) && pl !== '') {
                                     tempProgrammingLanguageArray.push(pl);
                                 }
@@ -158,15 +142,15 @@ class SearchPage extends React.Component {
                         }
 
                         if (dat.tags.features && dat.tags.features.length > 0) {
-                            dat.tags.features.map((fe) => { 
+                            dat.tags.features.map((fe) => {
                                 if (!tempFeaturesArray.includes(fe) && fe !== '') {
                                     tempFeaturesArray.push(fe);
                                 }
                             });
                         }
-                        
+
                         if (dat.tags.topics && dat.tags.topics.length > 0) {
-                            dat.tags.topics.map((to) => { 
+                            dat.tags.topics.map((to) => {
                                 if (!tempTopicsArray.includes(to) && to !== '') {
                                     tempTopicsArray.push(to);
                                 }
@@ -174,43 +158,10 @@ class SearchPage extends React.Component {
                         }
                     });
                 }
-                
-                this.setState({combinedCategories: tempCategoriesArray, combinedLanguages: tempProgrammingLanguageArray, combinedFeatures: tempFeaturesArray, combinedTopic:tempTopicsArray});
-                this.setState({ data: !res.data.data ? '' : res.data.data, summary: !res.data.summary ? '' : Object.entries(res.data.summary), isLoading: false }); 
+
+                this.setState({ combinedCategories: tempCategoriesArray, combinedLanguages: tempProgrammingLanguageArray, combinedFeatures: tempFeaturesArray, combinedTopic: tempTopicsArray });
+                this.setState({ data: !res.data.data ? '' : res.data.data, summary: !res.data.summary ? '' : Object.entries(res.data.summary), isLoading: false });
             });
-    }
-
-    
-    doGetLanguagesCall(){
-        axios.get(baseURL+'/api/getAllLanguages/tool')
-        .then((res) =>{
-            this.setState({combinedLanguages: res.data.data});
-            console.log("test3: " + JSON.stringify(res.data.data));
-        });
-    }
-
-    doGetCategoriesCall(){
-        axios.get(baseURL+'/api/getAllCategories/tool')
-        .then((res) =>{
-            //this.setState({combinedCategories: res.data.data});
-            console.log("test5: " + JSON.stringify(res.data.data));
-        });
-    }
-
-    doGetFeaturesCall(){
-        axios.get(baseURL+'/api/getAllFeatures/tool')
-        .then((res) =>{
-            this.setState({combinedFeatures: res.data.data});
-            console.log("test2: " + JSON.stringify(res.data.data));
-        });
-      }
-
-      doGetTopicsCall() {
-        axios.get(baseURL+'/api/getAllTopics/tool')
-        .then((res) =>{
-            this.setState({combinedTopic: res.data.data}); 
-            console.log("test1: " + JSON.stringify(res.data.data));
-        });
     }
 
     updateSearchString = (searchString) => {
@@ -222,32 +173,32 @@ class SearchPage extends React.Component {
     }
 
     updateCombinedLanguages = (languageSelected) => {
-        this.setState({languageSelected: languageSelected});
+        this.setState({ languageSelected: languageSelected });
         this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected)
-        this.doSearchCall(this.state.searchString, this.state.typeString,  languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
+        this.doSearchCall(this.state.searchString, this.state.typeString, languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
     }
 
     updateCombinedCategories = (categoriesSelected) => {
-        this.setState({categoriesSelected: categoriesSelected});
+        this.setState({ categoriesSelected: categoriesSelected });
         this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&toolcategory=' + categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected)
-        this.doSearchCall(this.state.searchString, this.state.typeString,  this.state.languageSelected, categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
+        this.doSearchCall(this.state.searchString, this.state.typeString, this.state.languageSelected, categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
     }
 
     updateCombinedFeatures = (featuresSelected) => {
-        this.setState({featuresSelected: featuresSelected});
+        this.setState({ featuresSelected: featuresSelected });
         this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + featuresSelected + '&topics=' + this.state.topicsSelected)
-        this.doSearchCall(this.state.searchString, this.state.typeString,  this.state.languageSelected, this.state.categoriesSelected, featuresSelected, this.state.topicsSelected);
+        this.doSearchCall(this.state.searchString, this.state.typeString, this.state.languageSelected, this.state.categoriesSelected, featuresSelected, this.state.topicsSelected);
     }
 
     updateCombinedTopics = (topicsSelected) => {
-        this.setState({topicsSelected: topicsSelected});
+        this.setState({ topicsSelected: topicsSelected });
         this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + topicsSelected)
-        this.doSearchCall(this.state.searchString, this.state.typeString,  this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, topicsSelected);
+        this.doSearchCall(this.state.searchString, this.state.typeString, this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, topicsSelected);
     }
 
     render() {
         const { searchString, typeString, data, summary, userState, isLoading, combinedLanguages, languageSelected, combinedCategories, categoriesSelected, combinedFeatures, featuresSelected, combinedTopic, topicsSelected } = this.state;
-        
+
         if (isLoading) {
             return <Container><Loading /></Container>;
         }
@@ -262,15 +213,15 @@ class SearchPage extends React.Component {
                         <Col sm={12} md={12} lg={3}>
                             <FilterButtons typeString={typeString} doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString} />
                             <CategoryFilter combinedCategories={combinedCategories} doUpdateCombinedCategories={this.updateCombinedCategories} categoriesSelected={categoriesSelected} />
-                            <ProgrammingLanguageFilter combinedLanguages={combinedLanguages} doUpdateCombinedLanguages={this.updateCombinedLanguages} languageSelected={languageSelected}/>
-                            <FeaturesFilter combinedFeatures={combinedFeatures} doUpdateCombinedFeatures={this.updateCombinedFeatures} featuresSelected={featuresSelected}/>
-                            <TopicsFilter combinedTopic={combinedTopic} doUpdateCombinedTopics={this.updateCombinedTopics} topicsSelected={topicsSelected}/>
+                            <ProgrammingLanguageFilter combinedLanguages={combinedLanguages} doUpdateCombinedLanguages={this.updateCombinedLanguages} languageSelected={languageSelected} />
+                            <FeaturesFilter combinedFeatures={combinedFeatures} doUpdateCombinedFeatures={this.updateCombinedFeatures} featuresSelected={featuresSelected} />
+                            <TopicsFilter combinedTopic={combinedTopic} doUpdateCombinedTopics={this.updateCombinedTopics} topicsSelected={topicsSelected} />
                         </Col>
-                        
-                        <Col sm={12} md={12} lg={9}>
-                            {summary.length > 0 ? <SearchSummary data={summary} /> :''}
 
-                            {data.length <= 0 ? <NotFound word='results' /> : data.map((dat) => {                            
+                        <Col sm={12} md={12} lg={9}>
+                            {summary.length > 0 ? <SearchSummary data={summary} /> : ''}
+
+                            {data.length <= 0 ? <NotFound word='results' /> : data.map((dat) => {
                                 if (dat.type === 'tool') {
                                     return <Tool key={dat.id} data={dat} />
                                 }
@@ -288,10 +239,6 @@ class SearchPage extends React.Component {
                     </Row>
                 </Container>
             </div>
-
-
-
-
         );
     }
 }

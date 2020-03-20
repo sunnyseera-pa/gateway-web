@@ -41,7 +41,6 @@ class ActiveProjects extends React.Component {
                     this.setState({ data: res.data.data, isLoading: false });
                 });
         }
-
     }
 
     render() {
@@ -56,16 +55,16 @@ class ActiveProjects extends React.Component {
             <Row className="mt-1">
                 <Col>
                     {data.length <= 0 ? <NotFound word="projects" /> : data.map((dat) => {
-                            return (<div className="Rectangle mt-1">
+                        return (<div className="Rectangle mt-1">
                             <Row>
-                                <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/project/'+dat.id} >{dat.name}</a></Col>
+                                <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/project/' + dat.id} >{dat.name}</a></Col>
                                 <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold">
-                                {dat.persons <= 0 ? 'Author not listed': dat.persons.map((person) => {
-                                    return  <span>{person.firstname} {person.lastname} <br /></span>
-                                })}
+                                    {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
+                                        return <span>{person.firstname} {person.lastname} <br /></span>
+                                    })}
                                 </Col>
-                                
-                                
+
+
                                 <Col sm={12} lg={5} className="pl-5 toolsButtons">
                                     <DeleteButton id={dat.id} />
                                     <Button variant='white' href={'/editproject/' + dat.id} className="AccountButtons" >
@@ -75,18 +74,10 @@ class ActiveProjects extends React.Component {
                             </Row>
                         </div>)
                     })}
-
-
-
-
-
-
                 </Col>
             </Row>
         );
     }
-
-
 }
 
 function DeleteButton(props) {

@@ -108,7 +108,7 @@ class PersonDetail extends Component {
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
               <div>
-              <Tabs className='TabsBackground Gray700-13px'>
+                <Tabs className='TabsBackground Gray700-13px'>
                   <Tab eventKey="Tools" title={'Tools (' + data.tools.length + ')'}>
                     {data.tools.length <= 0 ? <NotFound word="tools" /> : data.tools.map((tool) => {
                       return <Tool id={tool.id} />
@@ -118,7 +118,7 @@ class PersonDetail extends Component {
                     {data.reviews.length <= 0 ? <NotFound word="reviews" /> : data.reviews.map((review) => {
                       return <ReviewsTitle id={review.reviewID} />
                     })}
-                    
+
                   </Tab>
                   <Tab eventKey="Data sets" title={'Data sets (' + data.datasetids.length + ')'}>
                     {data.datasetids.length <= 0 ? <NotFound word="data sets" /> : data.datasetids.map(id => <DataSet id={id} />)}
@@ -129,17 +129,10 @@ class PersonDetail extends Component {
                     })}
                   </Tab>
                 </Tabs>
-                
-                
-                
-                
               </div>
             </Col>
             <Col sm={1} lg={1} />
           </Row>
-
- 
-
         </ Container>
       </div>
     );

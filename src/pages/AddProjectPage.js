@@ -12,15 +12,15 @@ class AddProjectPage extends React.Component {
     constructor(props) {
         super(props)
         this.state.userState = props.userState;
-      }
-  
-      // initialize our state
+    }
+
+    // initialize our state
     state = {
         data: [],
-        combinedTopic:[],
-        combinedCategories:[],
-        combinedUsers:[],
-        combinedTools:[],
+        combinedTopic: [],
+        combinedCategories: [],
+        combinedUsers: [],
+        combinedTools: [],
         isLoading: true,
         userState: []
     };
@@ -33,39 +33,39 @@ class AddProjectPage extends React.Component {
     }
 
     doGetTopicsCall() {
-     axios.get(baseURL+'/api/getAllTopics/project')
-        .then((res) =>{
-            this.setState({combinedTopic: res.data.data});
-            this.setState({isLoading: false}); 
-        });
+        axios.get(baseURL + '/api/getAllTopics/project')
+            .then((res) => {
+                this.setState({ combinedTopic: res.data.data });
+                this.setState({ isLoading: false });
+            });
     }
 
 
-    doGetCategoriesCall(){
-        axios.get(baseURL+'/api/getAllCategories/project')
-        .then((res) =>{
-            this.setState({combinedCategories: res.data.data});
-            this.setState({isLoading: false}); 
-        });
+    doGetCategoriesCall() {
+        axios.get(baseURL + '/api/getAllCategories/project')
+            .then((res) => {
+                this.setState({ combinedCategories: res.data.data });
+                this.setState({ isLoading: false });
+            });
     }
 
-    doGetUsersCall(){
-        axios.get(baseURL+'/api/getAllUsers')
-        .then((res) =>{
-            this.setState({combinedUsers: res.data.data});
-            this.setState({isLoading: false}); 
-        });
-      }
-    
-      doGetToolsCall(){
-        axios.get(baseURL+'/api/getAllTools')
-        .then((res) =>{
-            this.setState({combinedTools: res.data.data});
-            this.setState({isLoading: false}); 
-        });
-      }
+    doGetUsersCall() {
+        axios.get(baseURL + '/api/getAllUsers')
+            .then((res) => {
+                this.setState({ combinedUsers: res.data.data });
+                this.setState({ isLoading: false });
+            });
+    }
 
-      doSearch = (e) => { //fires on enter on searchbar
+    doGetToolsCall() {
+        axios.get(baseURL + '/api/getAllTools')
+            .then((res) => {
+                this.setState({ combinedTools: res.data.data });
+                this.setState({ isLoading: false });
+            });
+    }
+
+    doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
             if (!!this.state.searchString) {
                 window.location.href = window.location.search + "/search?search=" + this.state.searchString + '&type=all';
@@ -78,21 +78,20 @@ class AddProjectPage extends React.Component {
     }
 
     render() {
-        const {data, combinedTopic, combinedCategories, combinedUsers, combinedTools, isLoading, userState } = this.state;
+        const { data, combinedTopic, combinedCategories, combinedUsers, combinedTools, isLoading, userState } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
         }
-        console.log(combinedTools)
         return (
             <div>
-            <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
-            <Container>
-            <AddProjectForm data={data} combinedTopic={combinedTopic} combinedCategories={combinedCategories} combinedUsers={combinedUsers} combinedTools={combinedTools} userState={userState} />
-            </Container>
+                <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
+                <Container>
+                    <AddProjectForm data={data} combinedTopic={combinedTopic} combinedCategories={combinedCategories} combinedUsers={combinedUsers} combinedTools={combinedTools} userState={userState} />
+                </Container>
             </div>
         );
-    } 
+    }
 
 }
 

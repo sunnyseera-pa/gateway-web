@@ -11,35 +11,22 @@ class PersonTitle extends Component {
   constructor(props) {
     super(props)
     this.state.data = props.data;
-    console.log('person id' + props.data.id)
   }
 
   // initialize our state
   state = {
     data: [],
     id: this.props.data.id,
-
-    counter: this.props.data.counter 
-
+    counter: this.props.data.counter
   };
 
-  componentDidMount(props){
-  
-    console.log('this.props.data.counter: ' + this.props.data.counter);
-    console.log('this.props.data.counter type: ' + typeof(this.props.data.counter));
-
+  componentDidMount(props) {
     let counter = !this.props.data.counter ? 1 : this.props.data.counter + 1;
-  
-    console.log('counter: ' + counter);
-
     this.UpdateCounter(this.props.data.id, counter);
   }
 
   UpdateCounter = (id, counter) => {
-      console.log('counter in update is: ' + counter);
-      console.log('id in update is: ' + id);
-
-      axios.post(baseURL + '/api/counter/update', {id: id, counter: counter});
+    axios.post(baseURL + '/api/counter/update', { id: id, counter: counter });
   }
 
   // here is our UI
@@ -47,7 +34,6 @@ class PersonTitle extends Component {
   // see them render into our screen
   render() {
     const { data } = this.state;
-    console.log('person data: ' + JSON.stringify(data))
 
     return (
       <div>
@@ -63,7 +49,7 @@ class PersonTitle extends Component {
                   </Col>
                   <Col sm={2} className="text-right">
                     <div class="avatar-circle">
-                        <span class="initials">{data.firstname.charAt(0).toUpperCase()}{data.lastname.charAt(0).toUpperCase()}</span>
+                      <span class="initials">{data.firstname.charAt(0).toUpperCase()}{data.lastname.charAt(0).toUpperCase()}</span>
                     </div>
                   </Col>
                 </Row>
@@ -71,7 +57,6 @@ class PersonTitle extends Component {
                 <Row>
                   {!data.orcid ? '' :
                     <Col xs={12} md={12}>
-
                       <span className='Gray800-14px'> ORCID </span>
                       <span className='Purple-14px'> {data.orcid} </span>
                     </Col>
@@ -93,8 +78,8 @@ class PersonTitle extends Component {
                 <Row>
                   <Col className="mt-2">
                     <span className='Gray800-14px'>
-                    {data.counter == undefined ? 1 : data.counter+1}
-                    {data.counter==undefined ? ' view' : ' views'}
+                      {data.counter === undefined ? 1 : data.counter + 1}
+                      {data.counter === undefined ? ' view' : ' views'}
                     </span>
                   </Col>
                 </Row>
@@ -104,7 +89,6 @@ class PersonTitle extends Component {
           <Col sm={1} lg={1} />
         </Row>
       </div>
-
     );
   }
 }

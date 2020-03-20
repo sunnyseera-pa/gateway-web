@@ -32,7 +32,6 @@ const YourAccountForm = (props) => {
         }
     });
 
-
     return (
 
         <div>
@@ -99,7 +98,6 @@ const YourAccountForm = (props) => {
             </Form>
         </div>
     );
-
 }
 
 

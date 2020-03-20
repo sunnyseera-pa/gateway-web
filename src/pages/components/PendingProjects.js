@@ -29,7 +29,6 @@ class PendingProjects extends React.Component {
         if (this.state.userState[0].role === "Admin") {
             axios.get(baseURL + '/api/accountsearchadmin?type=project&toolState=review')
                 .then((res) => {
-                    console.log(res.data.data)
                     this.setState({ data: res.data.data, isLoading: false });
                 });
         }
@@ -65,7 +64,7 @@ class PendingProjects extends React.Component {
 
     render() {
         const { data, isLoading, userState } = this.state;
-        
+
         if (isLoading) {
             return <Loading />;
         }
@@ -74,30 +73,30 @@ class PendingProjects extends React.Component {
                 <Col>
                     {data.length <= 0 ? <NotFound word='projects' /> : data.map((dat) => {
                         return (<a /* href={'/tool/'+dat.id} */>
-                        <div className="Rectangle mt-1">
-                            <Row>
-                                <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/project/'+dat.id} >{dat.name}</a></Col>
-                                <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold"> 
-                                {dat.persons <= 0 ? 'Author not listed': dat.persons.map((person) => {
-                                    return  <span>{person.firstname} {person.lastname} <br /></span>
-                                })}
-                                </Col>
-                                <Col sm={12} lg={5} className="pl-5 toolsButtons">
-                                    {userState[0].role === 'Admin' ?
-                                        <div>
-                                            <Button variant='white' href={'/editproject/' + dat.id} className="AccountButtons mr-2">
-                                                Edit
+                            <div className="Rectangle mt-1">
+                                <Row>
+                                    <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/project/' + dat.id} >{dat.name}</a></Col>
+                                    <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold">
+                                        {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
+                                            return <span>{person.firstname} {person.lastname} <br /></span>
+                                        })}
+                                    </Col>
+                                    <Col sm={12} lg={5} className="pl-5 toolsButtons">
+                                        {userState[0].role === 'Admin' ?
+                                            <div>
+                                                <Button variant='white' href={'/editproject/' + dat.id} className="AccountButtons mr-2">
+                                                    Edit
                             </Button>
-                                            <Button variant='white' onClick={() => this.rejectTool(dat.id)} className="AccountButtons mr-2">
-                                                Reject
+                                                <Button variant='white' onClick={() => this.rejectTool(dat.id)} className="AccountButtons mr-2">
+                                                    Reject
                             </Button>
-                                            <Button variant='white' onClick={() => this.approveTool(dat.id)} className="AccountButtons ">
-                                                Approve
+                                                <Button variant='white' onClick={() => this.approveTool(dat.id)} className="AccountButtons ">
+                                                    Approve
                             </Button>
-                                        </div> : ""}
-                                </Col>
-                            </Row>
-                        </div>
+                                            </div> : ""}
+                                    </Col>
+                                </Row>
+                            </div>
                         </a>)
                     })}
                 </Col>

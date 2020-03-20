@@ -4,9 +4,9 @@ import Col from 'react-bootstrap/Col';
 import { ReactComponent as ColourLogoSvg } from '../../images/colour.svg';
 import { ReactComponent as ArrowDownSvg } from '../../images/stock.svg';
 
-class Header extends React.Component{
-    render(){
-        return(
+class Header extends React.Component {
+    render() {
+        return (
             <div className="searchBarBackground">
                 <Row className="WhiteBackground">
                     <Col xs={10} lg={10}>
@@ -20,7 +20,6 @@ class Header extends React.Component{
                         <span className="Gray800-14px">User Name</span>
                         <span> <ArrowDownSvg /> </span>
                     </Col>
-
                 </Row>
             </div>
         );
