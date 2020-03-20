@@ -64,7 +64,7 @@ class UnmetDemand extends React.Component {
                                             <Row >
                                                 <Col sm={1} lg={1} />
                                                 <Col sm={10} lg={10} className="mt-2 mb-2">
-                                                    <span className="Purple-14px"> {unmetDat._id} </span>
+                                                <a className="Purple-14px" style={{ cursor: 'pointer' }} href={'/search?search=' + unmetDat._id + '&type=all&toolcategory=&programminglanguage=&features=&topics='}> {unmetDat._id} </a>
                                                     <br />
                                                     <span className="Gray800-14px"> {unmetDat.count} {unmetDat.count == 1 ? 'search' : 'searches'} but no result</span>
                                                 </Col>

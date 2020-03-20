@@ -48,16 +48,17 @@ class Popular extends React.Component {
                                         <Row >
                                             <Col sm={1} lg={1} />
                                             <Col sm={10} lg={10} className="mt-2 mb-2">
-                                                <span className="Purple-14px"> 
                                                     {(() => {
                                                         if (popular.type === "person") {
-                                                            return <>{popular.firstname} {popular.lastname} </>
+                                                            return <><a className="Purple-14px" style={{ cursor: 'pointer' }} href={'/person/' + popular.id} >{popular.firstname} {popular.lastname}</a></>
                                                         }
-                                                        else {
-                                                            return <>{popular.name} </>
+                                                        else if (popular.type === "tool") {
+                                                            return <><a className="Purple-14px" style={{ cursor: 'pointer' }} href={'/tool/' + popular.id} >{popular.name}</a></>
+                                                        }
+                                                        else if (popular.type === "project") {
+                                                            return <><a className="Purple-14px" style={{ cursor: 'pointer' }} href={'/person/' + popular.id} >{popular.name}</a></>
                                                         }
                                                     })()}
-                                                </span>
                                                 <br />
                                                 <span className="Gray800-14px"> 
                                                     {(() => {

@@ -67,9 +67,32 @@ class RecentSearches extends React.Component {
                                     <Row >
                                         <Col sm={1} lg={1}/>
                                         <Col sm={10} lg={10} className="mt-2 mb-2">
-                                        <span className="Purple-14px"> {searchDat._id} </span>
+                                        <a className="Purple-14px" style={{ cursor: 'pointer' }} href={'/search?search=' + searchDat._id + '&type=all&toolcategory=&programminglanguage=&features=&topics='}> {searchDat._id} </a>
                                         <br />
-                                        <span className="Gray800-14px"> {!searchDat.returned.tool ? 0 : searchDat.returned.tool} tools, {!searchDat.returned.project ? 0 : searchDat.returned.project} projects, {!searchDat.returned.person ? 0 :searchDat.returned.person} people</span>
+                                        <span className="Gray800-14px"> 
+                                           {!searchDat.returned.tool ? '' :
+                                                <>
+                                                    {searchDat.returned.tool}
+                                                    {searchDat.returned.tool === 1 ? " tool" : " tools"}
+                                                </>
+                                            }
+
+                                            {!searchDat.returned.project ? '' :
+                                                <>
+                                                    {searchDat.returned.tool ? ', ' : ' '}
+                                                    {searchDat.returned.project}
+                                                    {searchDat.returned.project === 1 ? " project" : " projects"}
+                                                </>
+                                            }
+                                            
+                                            {!searchDat.returned.person ? '' :
+                                                <>
+                                                    {searchDat.returned.project ? ', ' : ' '}
+                                                    {searchDat.returned.person}
+                                                    {searchDat.returned.person === 1 ? " person" : " persons"}
+                                                </>
+                                            }
+                                        </span>
                                         </Col>
                                         <Col sm={1} lg={1}/>
                                     </Row> 

@@ -51,10 +51,13 @@ class Updates extends React.Component {
                                                 <span className="Purple-14px"> 
                                                     {(() => {
                                                         if (updates.type === "person") {
-                                                            return <>{updates.firstname} {updates.lastname} </>
+                                                            return <><a className="Purple-14px" style={{ cursor: 'pointer' }} href={'/person/' + updates.id} >{updates.firstname} {updates.lastname}</a></>
                                                         }
-                                                        else {
-                                                            return <>{updates.name} </>
+                                                        else if (updates.type === "tool") {
+                                                            return <><a className="Purple-14px" style={{ cursor: 'pointer' }} href={'/tool/' + updates.id} >{updates.name}</a></>
+                                                        }
+                                                        else if (updates.type === "project") {
+                                                            return <><a className="Purple-14px" style={{ cursor: 'pointer' }} href={'/person/' + updates.id} >{updates.name}</a></>
                                                         }
                                                     })()}
                                                 </span>
