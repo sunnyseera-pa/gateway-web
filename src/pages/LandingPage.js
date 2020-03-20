@@ -64,12 +64,12 @@ class LandingPage extends React.Component{
 
     componentDidMount() {
         this.setState({ searchString: ''});
-        this.getDataSearchFromDb();
         document.getElementById("SearchInputSpan").focus();
         this.getRecentSearches();
         this.getUnmetData();
         this.getPopularData();
         this.getUpdatesData();
+        this.getDataSearchFromDb();
     }
 
     getDataSearchFromDb = () => {
@@ -94,8 +94,6 @@ class LandingPage extends React.Component{
             this.setState({
             searchData: res.data.data
             });
-            console.log('recent all search: ' + JSON.stringify(res.data.data))
-            console.log('recent search: ' + JSON.stringify(res.data.data[0]))
         });
     };
 
@@ -105,8 +103,6 @@ class LandingPage extends React.Component{
             this.setState({
                 unmetData: res.data.data
             });
-            console.log('recent all search: ' + JSON.stringify(res.data.data))
-            console.log('recent search: ' + JSON.stringify(res.data.data[0]))
         });
     };
 
