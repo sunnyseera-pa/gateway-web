@@ -50,7 +50,7 @@ class Popular extends React.Component {
                                                         return <><a className="Purple-14px" style={{ cursor: 'pointer' }} href={'/tool/' + popular.id} >{popular.name}</a></>
                                                     }
                                                     else if (popular.type === "project") {
-                                                        return <><a className="Purple-14px" style={{ cursor: 'pointer' }} href={'/person/' + popular.id} >{popular.name}</a></>
+                                                        return <><a className="Purple-14px" style={{ cursor: 'pointer' }} href={'/project/' + popular.id} >{popular.name}</a></>
                                                     }
                                                 })()}
                                                 <br />
