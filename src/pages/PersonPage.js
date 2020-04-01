@@ -80,20 +80,22 @@ class PersonDetail extends Component {
       return <Container><Loading /></Container>;
     }
 
-    if (typeof data.toolids === 'undefined') {
-      data.toolids = [];
-    }
-
     if (typeof data.datasetids === 'undefined') {
       data.datasetids = [];
     }
 
-    if (typeof data.projectids === 'undefined') {
-      data.projectids = [];
-    }
+    var tools = []
+    var projects = []
 
-    if (typeof data.reviews === 'undefined') {
-      data.reviews = [];
+    if (data.tools.length > 0) {
+        data.tools.forEach(object => {
+          if (object.type === 'tool') {
+            tools.push(object);
+          } 
+          else if (object.type === 'project') {
+            projects.push(object)
+          }
+        });
     }
 
     return (
@@ -109,8 +111,8 @@ class PersonDetail extends Component {
             <Col sm={10} lg={10}>
               <div>
                 <Tabs className='TabsBackground Gray700-13px'>
-                  <Tab eventKey="Tools" title={'Tools (' + data.tools.length + ')'}>
-                    {data.tools.length <= 0 ? <NotFound word="tools" /> : data.tools.map((tool) => {
+                  <Tab eventKey="Tools" title={'Tools (' + tools.length + ')'}>
+                    {tools.length <= 0 ? <NotFound word="tools" /> : tools.map((tool) => {
                       return <Tool id={tool.id} />
                     })}
                   </Tab>
@@ -123,9 +125,9 @@ class PersonDetail extends Component {
                   <Tab eventKey="Data sets" title={'Data sets (' + data.datasetids.length + ')'}>
                     {data.datasetids.length <= 0 ? <NotFound word="data sets" /> : data.datasetids.map(id => <DataSet id={id} />)}
                   </Tab>
-                  <Tab eventKey="Projects" title={'Projects (' + data.toolids.length + ')'}>
-                    {data.toolids.length <= 0 ? <NotFound word="projects" /> : data.toolids.map((id) => {
-                      return <Project id={id} />
+                  <Tab eventKey="Projects" title={'Projects (' + projects.length + ')'}>
+                    {projects.length <= 0 ? <NotFound word="projects" /> : projects.map((project) => {
+                      return <Project id={project.id} />
                     })}
                   </Tab>
                 </Tabs>
