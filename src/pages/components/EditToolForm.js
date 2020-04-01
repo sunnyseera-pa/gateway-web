@@ -264,6 +264,9 @@ const EditToolForm = (props) => {
                 </Col>
                 <Col sm={1} lg={10} />
             </Row>
+            <Row>
+                <span className="formBottomGap"></span>
+            </Row>
         </div>
     );
 }

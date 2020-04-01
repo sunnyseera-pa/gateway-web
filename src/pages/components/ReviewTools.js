@@ -21,6 +21,7 @@ class ReviewTools extends React.Component {
     // initialize our state
     state = {
         data: [],
+        allReviews: [],
         userState: [],
         isLoading: true
     };
@@ -33,19 +34,19 @@ class ReviewTools extends React.Component {
         if (this.state.userState[0].role === "Admin") {
             axios.get(baseURL + '/api/pendingreviewsadmin')
             .then((res) => {
-                this.setState({ data: res.data.data, isLoading: false });
+                this.setState({ data: res.data.data, allReviews: res.data.allReviews, isLoading: false });
             });
         }
         else {
             axios.get(baseURL + '/api/pendingreviews?type=tool&id=' + this.state.userState[0].id)
             .then((res) => {
-                this.setState({ data: res.data.data, isLoading: false });
+                this.setState({ data: res.data.data, allReviews: res.data.allReviews, isLoading: false });
             });
         }
     }
 
     render() {
-        const { data, isLoading, userState } = this.state;
+        const { data, allReviews, isLoading, userState } = this.state;
         if (isLoading) {
             return <Loading />;
         }
@@ -64,6 +65,22 @@ class ReviewTools extends React.Component {
                     <Col>
                         {data.length <= 0 ? <NotFound word='reviews' /> : data.map((dat) => {
                             return (<ReviewReview dat={dat} userState={userState[0]} />)
+                        })}
+                    </Col>
+                </Row>
+
+                <Row className="mt-3">
+                    <Col>
+                        <span className="Black-16px ml-2">Active</span>
+                    </Col>
+                </Row>
+
+                <ToolsHeader />
+
+                <Row>
+                    <Col>
+                        {allReviews.length <= 0 ? <NotFound word='reviews' /> : allReviews.map((dat) => {
+                            return (<ReviewReviewActive dat={dat} userState={userState[0]} />)
                         })}
                     </Col>
                 </Row>
@@ -118,6 +135,52 @@ const ReviewReview = (props) => {
                                 </Button>
                             </div> : ""}
                     </Col>
+                    <Col sm={12}>
+                        <Collapse in={open}>
+                            <div id="collapse-review">
+                                <div className="reviewReviewHolder">
+                                    <Row>
+                                        <Col xs={2} lg={1} className="iconHolder">
+                                            <SVGIcon name="toolicon" width={18} height={18} fill={'#3db28c'} />
+                                        </Col>
+                                        <Col xs={10} lg={8}>
+                                            <p>
+                                                <span className="Black-16px"><a className="searchHolder" href={'/tool/' + props.dat.tool[0].id} >{props.dat.tool[0].name.substr(0, 75) + (props.dat.tool[0].name.length > 75 ? '...' : '')}</a></span>
+                                            </p>
+                                        </Col>
+                                        <Col xs={12} lg={12}>
+                                            <p>
+                                                <span className="Gray800-14px">"{props.dat.tool[0].description}"</span>
+                                            </p>
+                                        </Col>
+                                        <Col xs={12} lg={12}>
+                                            <span className="Purple-13px">{props.dat.person[0].firstname} {props.dat.person[0].lastname}</span><span className="Gray700-13px"> on {updatedOnDate}</span>
+                                            {!props.dat.projectName? '' : <><span className="reviewTitleGap">·</span><span className="Gray700-13px"> in relation to project </span><span className="Purple-13px">{props.dat.projectName}</span></>}
+                                        </Col>
+                                    </Row>
+                                </div>
+                            </div>
+                        </Collapse>
+                    </Col>
+                </Row>
+            </div>
+        </>
+    );
+}
+
+const ReviewReviewActive = (props) => {
+    const [open, setOpen] = useState(false);
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
+    var updatedDate = new Date(props.dat.date);
+    var updatedOnDate = updatedDate.getDate() + " " + monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
+
+    return (
+        <>
+            <div className="Rectangle mt-1">
+                <Row>
+                    <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href="#" onClick={() => setOpen(!open)} aria-controls="collapse-review" aria-expanded={open} >{props.dat.review}</a></Col>
+                    <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold"> {props.dat.person[0].firstname} {props.dat.person[0].lastname} </Col>
+                    <Col sm={12} lg={5} className="pl-5 toolsButtons"></Col>
                     <Col sm={12}>
                         <Collapse in={open}>
                             <div id="collapse-review">
