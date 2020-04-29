@@ -11,14 +11,14 @@ import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Alert from 'react-bootstrap/Alert';
 
-import DataSet from '../pages/components/DataSet';
-import NotFound from './components/NotFound';
-import SearchBar from './components/SearchBar';
-import Tool from './components/Tool';
-import Loading from './components/Loading'
-import Creators from './components/Creators';
+import DataSet from '../commonComponents/DataSet';
+import NotFound from '../commonComponents/NotFound';
+import SearchBar from '../commonComponents/SearchBar';
+import Tool from '../commonComponents/Tool';
+import Loading from '../commonComponents/Loading'
+import Creators from '../commonComponents/Creators';
 
-var baseURL = require('./../BaseURL').getURL();
+var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class ProjectDetail extends Component {
   // initialize our state

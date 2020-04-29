@@ -7,9 +7,9 @@ import Alert from 'react-bootstrap/Alert'
 import Form from 'react-bootstrap/Form';
 import { useFormik } from 'formik';
 import queryString from 'query-string';
-import Loading from './Loading'
+import Loading from '../commonComponents/Loading'
 
-var baseURL = require('./../../BaseURL').getURL();
+var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class YourAccount extends React.Component {
 

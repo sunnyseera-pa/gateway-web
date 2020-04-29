@@ -5,7 +5,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import SVGIcon from "../../images/SVGIcon";
 
-var baseURL = require('./../../BaseURL').getURL();
+var baseURL = require('./BaseURL').getURL();
 
 export default class DataSet extends React.Component {
 

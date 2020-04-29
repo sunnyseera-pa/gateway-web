@@ -9,7 +9,7 @@ import { ReactComponent as ClearButtonSvg } from '../../images/clear.svg';
 import { ReactComponent as ArrowDownSvg } from '../../images/stock.svg';
 import Dropdown from 'react-bootstrap/Dropdown';
 
-var baseURL = require('../../BaseURL').getURL();
+var baseURL = require('./BaseURL').getURL();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <a href="" ref={ref} onClick={e => { e.preventDefault(); onClick(e); }} >

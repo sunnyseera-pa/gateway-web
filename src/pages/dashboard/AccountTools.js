@@ -4,14 +4,14 @@ import axios from 'axios';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import Modal from 'react-bootstrap/Modal'
 
-import NotFound from './NotFound';
-import Loading from './Loading'
+import NotFound from '../commonComponents/NotFound';
+import Loading from '../commonComponents/Loading'
 
-var baseURL = require('./../../BaseURL').getURL();
+var baseURL = require('../commonComponents/BaseURL').getURL();
 
-class AccountProjects extends React.Component {
+class AccountTools extends React.Component {
 
     constructor(props) {
         super(props)
@@ -31,8 +31,8 @@ class AccountProjects extends React.Component {
                 <Row className="mt-3">
                     <Col xs={5} lg={5}></Col>
                     <Col xs={2} lg={2} style={{ textAlign: "center" }}>
-                        <Button variant="primary" href="/addproject" className="AddButton">
-                            + Add a new project
+                        <Button variant="primary" href="/addtool" className="AddButton">
+                            + Add a new tool
                             </Button>
                     </Col>
                     <Col xs={5} lg={5}></Col>
@@ -56,7 +56,7 @@ class AccountProjects extends React.Component {
                     </Col>
                 </Row>
 
-                <PendingProjects userState={userState} />
+                <PendingTools userState={userState} />
 
                 <Row className="mt-3">
                     <Col>
@@ -76,13 +76,13 @@ class AccountProjects extends React.Component {
                     </Col>
                 </Row>
 
-                <ActiveProjects userState={userState} />
+                <ActiveTool userState={userState} />
             </div>
         );
     }
 }
 
-class PendingProjects extends React.Component {
+class PendingTools extends React.Component {
     constructor(props) {
         super(props)
         this.state.userState = props.userState;
@@ -101,13 +101,13 @@ class PendingProjects extends React.Component {
 
     doSearchCall() {
         if (this.state.userState[0].role === "Admin") {
-            axios.get(baseURL + '/api/accountsearchadmin?type=project&toolState=review')
+            axios.get(baseURL + '/api/accountsearchadmin?type=tool&toolState=review')
                 .then((res) => {
                     this.setState({ data: res.data.data, isLoading: false });
                 });
         }
         else {
-            axios.get(baseURL + '/api/accountsearch?type=project&id=' + this.state.userState[0].id + '&toolState=review')
+            axios.get(baseURL + '/api/accountsearch?type=tool&id=' + this.state.userState[0].id + '&toolState=review')
                 .then((res) => {
                     this.setState({ data: res.data.data, isLoading: false });
                 });
@@ -121,7 +121,7 @@ class PendingProjects extends React.Component {
             },
         })
             .then((res) => {
-                window.location.href = '/account?tab=projects&projectRejected=true';
+                window.location.href = '/account?tab=tools&toolRejected=true';
             });
     }
 
@@ -131,7 +131,7 @@ class PendingProjects extends React.Component {
             activeflag: "active"
         })
             .then((res) => {
-                window.location.href = '/account?tab=projects&projectApproved=true';
+                window.location.href = '/account?tab=tools&toolApproved=true';
             });
     }
 
@@ -145,11 +145,11 @@ class PendingProjects extends React.Component {
         return (
             <Row>
                 <Col>
-                    {data.length <= 0 ? <NotFound word='projects' /> : data.map((dat) => {
+                    {data.length <= 0 ? <NotFound word='tools' /> : data.map((dat) => {
                         return (<a /* href={'/tool/'+dat.id} */>
                             <div className="Rectangle mt-1">
                                 <Row>
-                                    <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/project/' + dat.id} >{dat.name}</a></Col>
+                                    <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/tool/' + dat.id} >{dat.name}</a></Col>
                                     <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold">
                                         {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
                                             return <span>{person.firstname} {person.lastname} <br /></span>
@@ -158,7 +158,7 @@ class PendingProjects extends React.Component {
                                     <Col sm={12} lg={5} className="pl-5 toolsButtons">
                                         {userState[0].role === 'Admin' ?
                                             <div>
-                                                <Button variant='white' href={'/editproject/' + dat.id} className="AccountButtons mr-2">
+                                                <Button variant='white' href={'/edittool/' + dat.id} className="AccountButtons mr-2">
                                                     Edit
                             </Button>
                                                 <Button variant='white' onClick={() => this.rejectTool(dat.id)} className="AccountButtons mr-2">
@@ -179,7 +179,7 @@ class PendingProjects extends React.Component {
     }
 }
 
-class ActiveProjects extends React.Component {
+class ActiveTool extends React.Component {
 
     constructor(props) {
         super(props)
@@ -198,15 +198,14 @@ class ActiveProjects extends React.Component {
     }
 
     doSearchCall() {
-
         if (this.state.userState[0].role === "Admin") {
-            axios.get(baseURL + '/api/accountsearchadmin?type=project&toolState=active')
+            axios.get(baseURL + '/api/accountsearchadmin?type=tool&toolState=active')
                 .then((res) => {
                     this.setState({ data: res.data.data, isLoading: false });
                 });
         }
         else {
-            axios.get(baseURL + '/api/accountsearch?type=project&id=' + this.state.userState[0].id + '&toolState=active')
+            axios.get(baseURL + '/api/accountsearch?type=tool&id=' + this.state.userState[0].id + '&toolState=active')
                 .then((res) => {
                     this.setState({ data: res.data.data, isLoading: false });
                 });
@@ -216,7 +215,6 @@ class ActiveProjects extends React.Component {
     render() {
         const { data, isLoading } = this.state;
 
-
         if (isLoading) {
             return <Loading />;
         }
@@ -224,20 +222,19 @@ class ActiveProjects extends React.Component {
         return (
             <Row className="mt-1">
                 <Col>
-                    {data.length <= 0 ? <NotFound word="projects" /> : data.map((dat) => {
+                    {data.length <= 0 ? <NotFound word="tools" /> : data.map((dat) => {
                         return (<div className="Rectangle mt-1">
                             <Row>
-                                <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/project/' + dat.id} >{dat.name}</a></Col>
+                                <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/tool/' + dat.id} >{dat.name}</a></Col>
                                 <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold">
                                     {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
                                         return <span>{person.firstname} {person.lastname} <br /></span>
                                     })}
                                 </Col>
 
-
                                 <Col sm={12} lg={5} className="pl-5 toolsButtons">
                                     <DeleteButton id={dat.id} />
-                                    <Button variant='white' href={'/editproject/' + dat.id} className="AccountButtons" >
+                                    <Button variant='white' href={'/edittool/' + dat.id} className="AccountButtons" >
                                         Edit
                             </Button>
                                 </Col>
@@ -248,6 +245,8 @@ class ActiveProjects extends React.Component {
             </Row>
         );
     }
+
+
 }
 
 function DeleteButton(props) {
@@ -262,7 +261,7 @@ function DeleteButton(props) {
             },
         })
             .then((res) => {
-                window.location.href = '/account?tab=projects&projectDeleted=true';
+                window.location.href = '/account?tab=tools&toolDeleted=true';
             });
     }
 
@@ -274,9 +273,9 @@ function DeleteButton(props) {
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Delete this project?</Modal.Title>
+                    <Modal.Title>Delete this tool?</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>This project will be completely removed from the directory and cannot be retrieved.</Modal.Body>
+                <Modal.Body>This tool will be completely removed from the directory and cannot be retrieved.</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>No, nevermind</Button>
                     <Button variant="primary" onClick={deleteObject}>Yes, delete</Button>
@@ -286,7 +285,4 @@ function DeleteButton(props) {
     );
 }
 
-
-
-
-export default AccountProjects;
+export default AccountTools;

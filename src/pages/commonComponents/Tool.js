@@ -5,7 +5,7 @@ import SVGIcon from "../../images/SVGIcon";
 import axios from 'axios';
 import Loading from './Loading'
 
-var baseURL = require('./../../BaseURL').getURL();
+var baseURL = require('./BaseURL').getURL();
 
 class Tool extends React.Component {
 

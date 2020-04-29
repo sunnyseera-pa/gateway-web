@@ -15,7 +15,7 @@ import * as Yup from 'yup';
 import NotFound from './NotFound';
 import Collapse from 'react-bootstrap/Collapse'
 
-var baseURL = require('./../../BaseURL').getURL();
+var baseURL = require('./BaseURL').getURL();
 
 class Reviews extends Component {
 

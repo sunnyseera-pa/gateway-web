@@ -4,11 +4,11 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import SVGIcon from "../../images/SVGIcon";
 import Button from 'react-bootstrap/Button';
-import NotFound from './NotFound';
+import NotFound from '../commonComponents/NotFound';
 import Collapse from 'react-bootstrap/Collapse'
-import Loading from './Loading'
+import Loading from '../commonComponents/Loading'
 
-var baseURL = require('../../BaseURL').getURL();
+var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class ReviewTools extends React.Component {
 

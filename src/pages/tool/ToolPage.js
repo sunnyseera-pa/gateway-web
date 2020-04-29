@@ -14,19 +14,19 @@ import Alert from 'react-bootstrap/Alert';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 
-import NotFound from './components/NotFound';
-import DataSet from '../pages/components/DataSet';
-import Creators from '../pages/components/Creators';
-import Loading from './components/Loading'
-import Reviews from './components/Reviews';
-import Project from './components/Project';
-import SearchBar from './components/SearchBar';
+import NotFound from '../commonComponents/NotFound';
+import DataSet from '../commonComponents/DataSet';
+import Creators from '../commonComponents/Creators';
+import Loading from '../commonComponents/Loading'
+import Reviews from '../commonComponents/Reviews';
+import Project from '../commonComponents/Project';
+import SearchBar from '../commonComponents/SearchBar';
 
-import { ReactComponent as EmptyStarIconSvg } from '../images/starempty.svg'
-import { ReactComponent as FullStarIconSvg } from '../images/star.svg';
+import { ReactComponent as EmptyStarIconSvg } from '../../images/starempty.svg'
+import { ReactComponent as FullStarIconSvg } from '../../images/star.svg';
 import 'react-tabs/style/react-tabs.css';
 
-var baseURL = require('./../BaseURL').getURL();
+var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class ToolDetail extends Component {
 

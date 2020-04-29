@@ -10,12 +10,12 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-import SearchBar from './components/SearchBar';
-import Loading from './components/Loading'
+import SearchBar from '../commonComponents/SearchBar';
+import Loading from '../commonComponents/Loading'
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
-var baseURL = require('./../BaseURL').getURL();
+var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class AddProjectPage extends React.Component {
 

@@ -5,7 +5,7 @@ import Col from 'react-bootstrap/Col';
 import SVGIcon from "../../images/SVGIcon";
 import Loading from './Loading'
 
-var baseURL = require('../../BaseURL').getURL();
+var baseURL = require('./BaseURL').getURL();
 
 class ReviewTitle extends React.Component {
 

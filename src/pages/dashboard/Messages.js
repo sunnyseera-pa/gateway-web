@@ -1,12 +1,12 @@
 import React from 'react';
 import axios from 'axios';
-import Loading from './Loading'
+import Loading from '../commonComponents/Loading'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import NotFound from './NotFound';
+import NotFound from '../commonComponents/NotFound';
 import SVGIcon from "../../images/SVGIcon";
 
-var baseURL = require('../../BaseURL').getURL();
+var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class YourAccount extends React.Component {
 

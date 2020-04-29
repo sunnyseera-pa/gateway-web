@@ -6,13 +6,13 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Dropdown from 'react-bootstrap/Dropdown';
 
-import Loading from './components/Loading';
+import Loading from '../commonComponents/Loading';
 
-import SVGIcon from '../images/SVGIcon';
-import { ReactComponent as WhiteLogoSvg } from '../../src/images/white.svg';
-import { ReactComponent as ArrowDownSvg } from '../images/arrowDownWhite.svg';
+import SVGIcon from '../../images/SVGIcon';
+import { ReactComponent as WhiteLogoSvg } from '../../../src/images/white.svg';
+import { ReactComponent as ArrowDownSvg } from '../../images/arrowDownWhite.svg';
 
-var baseURL = require('./../BaseURL').getURL();
+var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <a href="#" className="landingPageAccountText" ref={ref} onClick={e => { e.preventDefault(); onClick(e); }} >

@@ -1,22 +1,24 @@
 
 // /ShowObjects.js
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import ToolPage from './pages/ToolPage';
-import PersonPage from './pages/PersonPage';
-import ProjectPage from './pages/ProjectPage';
-import LandingPage from './pages/LandingPage';
-import SearchPage from './pages/SearchPage';
-import AddToolPage from './pages/AddToolPage';
-import AddProjectPage from './pages/AddProjectPage';
-import Account from './pages/Account';
-import EditToolPage from './pages/EditToolPage';
-import EditProjectPage from './pages/EditProjectPage';
 import axios from 'axios';
-import Loading from './pages/components/Loading'
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
 import Container from 'react-bootstrap/Container';
 
-var baseURL = require('./BaseURL').getURL();
+import ToolPage from './pages/tool/ToolPage';
+import PersonPage from './pages/person/PersonPage';
+import ProjectPage from './pages/project/ProjectPage';
+import LandingPage from './pages/landing/LandingPage';
+import SearchPage from './pages/search/SearchPage';
+import AddToolPage from './pages/tool/AddToolPage';
+import AddProjectPage from './pages/project/AddProjectPage';
+import Account from './pages/dashboard/Account';
+import EditToolPage from './pages/tool/EditToolPage';
+import EditProjectPage from './pages/project/EditProjectPage';
+import Loading from './pages/commonComponents/Loading'
+
+var baseURL = require('./pages/commonComponents/BaseURL').getURL();
 
 class HDRRouter extends Component {
 

@@ -1,22 +1,24 @@
 import React from 'react';
 import axios from 'axios';
-import SearchBar from './components/SearchBar';
-import Project from './components/Project';
-import Tool from './components/Tool';
-import Person from './components/Person';
-import NotFound from './components/NotFound'
 import queryString from 'query-string';
+
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import FilterButtons from './components/FilterButtons';
-import ProgrammingLanguageFilter from './components/ProgrammingLanguageFilter';
-import CategoryFilter from './components/CategoryFilter';
-import FeaturesFilter from './components/FeaturesFilter';
-import TopicsFilter from './components/TopicsFilter';
-import Loading from './components/Loading'
 
-var baseURL = require('./../BaseURL').getURL();
+import SearchBar from '../commonComponents/SearchBar';
+import Project from '../commonComponents/Project';
+import Tool from '../commonComponents/Tool';
+import Person from '../commonComponents/Person';
+import NotFound from '../commonComponents/NotFound'
+import Loading from '../commonComponents/Loading'
+import FilterButtons from './FilterButtons';
+import ProgrammingLanguageFilter from './ProgrammingLanguageFilter';
+import CategoryFilter from './CategoryFilter';
+import FeaturesFilter from './FeaturesFilter';
+import TopicsFilter from './TopicsFilter';
+
+var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class SearchPage extends React.Component {
 

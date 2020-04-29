@@ -8,12 +8,12 @@ import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Alert from 'react-bootstrap/Alert';
 
-import SearchBar from './components/SearchBar';
-import AccountTools from './components/AccountTools';
-import AccountProjects from './components/AccountProjects';
-import ReviewTools from './components/ReviewTools';
-import YourAccount from './components/YourAccount';
-import Messages from './components/Messages';
+import SearchBar from '../commonComponents/SearchBar';
+import AccountTools from './AccountTools';
+import AccountProjects from './AccountProjects';
+import ReviewTools from './ReviewTools';
+import YourAccount from './YourAccount';
+import Messages from './Messages';
 
 import 'react-tabs/style/react-tabs.css';
 

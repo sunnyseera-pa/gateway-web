@@ -11,12 +11,12 @@ import Col from 'react-bootstrap/Col';
 
 import Container from 'react-bootstrap/Container';
 
-import SearchBar from './components/SearchBar';
-import Loading from './components/Loading'
+import SearchBar from '../commonComponents/SearchBar';
+import Loading from '../commonComponents/Loading'
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
-var baseURL = require('./../BaseURL').getURL();
+var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class AddToolPage extends React.Component {
 
