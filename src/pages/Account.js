@@ -1,18 +1,21 @@
 import React, { Component } from 'react';
-import SearchBar from './components/SearchBar';
+import queryString from 'query-string';
+
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
-import 'react-tabs/style/react-tabs.css';
+import Alert from 'react-bootstrap/Alert';
+
+import SearchBar from './components/SearchBar';
 import AccountTools from './components/AccountTools';
 import AccountProjects from './components/AccountProjects';
 import ReviewTools from './components/ReviewTools';
 import YourAccount from './components/YourAccount';
 import Messages from './components/Messages';
-import queryString from 'query-string';
-import Alert from 'react-bootstrap/Alert';
+
+import 'react-tabs/style/react-tabs.css';
 
 class Account extends Component {
 

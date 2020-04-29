@@ -4,7 +4,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import SVGIcon from "../../images/SVGIcon";
 import Button from 'react-bootstrap/Button';
-import ToolsHeader from './ToolsHeader';
 import NotFound from './NotFound';
 import Collapse from 'react-bootstrap/Collapse'
 import Loading from './Loading'
@@ -59,7 +58,17 @@ class ReviewTools extends React.Component {
                     </Col>
                 </Row>
 
-                <ToolsHeader />
+                <Row className="mt-1">
+                    <Col lg={12}>
+                        <div className="ToolsHeader">
+                            <Row>
+                                <Col xs={4} lg={5} className="pl-4 pt-2 Gray800-14px-bold">Name</Col>
+                                <Col xs={4} lg={2} className="pl-1 pt-2 Gray800-14px-bold">Author</Col>
+                                <Col xs={4} lg={5}></Col>
+                            </Row>
+                        </div>
+                    </Col>
+                </Row>
 
                 <Row>
                     <Col>
@@ -75,7 +84,17 @@ class ReviewTools extends React.Component {
                     </Col>
                 </Row>
 
-                <ToolsHeader />
+                <Row className="mt-1">
+                    <Col lg={12}>
+                        <div className="ToolsHeader">
+                            <Row>
+                                <Col xs={4} lg={5} className="pl-4 pt-2 Gray800-14px-bold">Name</Col>
+                                <Col xs={4} lg={2} className="pl-1 pt-2 Gray800-14px-bold">Author</Col>
+                                <Col xs={4} lg={5}></Col>
+                            </Row>
+                        </div>
+                    </Col>
+                </Row>
 
                 <Row>
                     <Col>
