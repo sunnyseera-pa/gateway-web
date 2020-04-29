@@ -85,7 +85,7 @@ class SearchPage extends React.Component {
                 this.doSearchCall(this.state.searchString, this.state.typeString, this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
             }
             else if (!!this.state.searchString && !this.state.typeString) {
-                this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=all' + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected)
+                this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=all&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected)
                 this.doSearchCall(this.state.searchString, "", this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
             }
         }
@@ -100,21 +100,21 @@ class SearchPage extends React.Component {
 
         var searchURL = baseURL + '/api/search?search=' + searchString + '&type=' + typeString;
 
-        languageSelected.map(language => {
+        languageSelected.forEach(language => {
             searchURL += '&programmingLanguage=' + language;
         });
 
-        categoriesSelected.map(category => {
+        categoriesSelected.forEach(category => {
 
             searchURL += '&category=' + category;
         });
 
-        featuresSelected.map(features => {
+        featuresSelected.forEach(features => {
 
             searchURL += '&features=' + features;
         });
 
-        topicsSelected.map(topics => {
+        topicsSelected.forEach(topics => {
 
             searchURL += '&topics=' + topics;
         });
@@ -128,13 +128,13 @@ class SearchPage extends React.Component {
                     var tempFeaturesArray = [];
                     var tempTopicsArray = [];
 
-                    res.data.data.map((dat) => {
+                    res.data.data.forEach((dat) => {
                         if (dat.categories && dat.categories.category && dat.categories.category !== '' && !tempCategoriesArray.includes(dat.categories.category)) {
                             tempCategoriesArray.push(dat.categories.category);
                         }
 
                         if (dat.categories && dat.categories.programmingLanguage && dat.categories.programmingLanguage.length > 0) {
-                            dat.categories.programmingLanguage.map((pl) => {
+                            dat.categories.programmingLanguage.forEach((pl) => {
                                 if (!tempProgrammingLanguageArray.includes(pl) && pl !== '') {
                                     tempProgrammingLanguageArray.push(pl);
                                 }
@@ -142,7 +142,7 @@ class SearchPage extends React.Component {
                         }
 
                         if (dat.tags.features && dat.tags.features.length > 0) {
-                            dat.tags.features.map((fe) => {
+                            dat.tags.features.forEach((fe) => {
                                 if (!tempFeaturesArray.includes(fe) && fe !== '') {
                                     tempFeaturesArray.push(fe);
                                 }
@@ -150,7 +150,7 @@ class SearchPage extends React.Component {
                         }
 
                         if (dat.tags.topics && dat.tags.topics.length > 0) {
-                            dat.tags.topics.map((to) => {
+                            dat.tags.topics.forEach((to) => {
                                 if (!tempTopicsArray.includes(to) && to !== '') {
                                     tempTopicsArray.push(to);
                                 }

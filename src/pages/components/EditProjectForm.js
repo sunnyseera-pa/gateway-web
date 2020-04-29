@@ -53,8 +53,8 @@ const EditProjectForm = (props) => {
     });
 
     var listOfAuthors = [];
-    props.data.authors.map((author) => {
-        props.combinedUsers.map((user) => {
+    props.data.authors.forEach((author) => {
+        props.combinedUsers.forEach((user) => {
             if (user.id === author) {
                 listOfAuthors.push({ id: user.id, name: user.name })
             }
@@ -62,8 +62,8 @@ const EditProjectForm = (props) => {
     });
 
     var listOfTools = [];
-    props.data.toolids.map((tools) => {
-        props.combinedTools.map((tool) => {
+    props.data.toolids.forEach((tools) => {
+        props.combinedTools.forEach((tool) => {
             if (tool.id === tools) {
                 listOfTools.push({ id: tool.id, name: tool.name })
             }
@@ -121,7 +121,7 @@ const EditProjectForm = (props) => {
                                     options={props.combinedUsers}
                                     onChange={(selected) => {
                                         var tempSelected = [];
-                                        selected.map((selectedItem) => {
+                                        selected.forEach((selectedItem) => {
                                             tempSelected.push(selectedItem.id);
                                         })
                                         formik.values.authors = tempSelected;
@@ -142,7 +142,7 @@ const EditProjectForm = (props) => {
                                     options={props.combinedCategories}
                                     onChange={(selected) => {
                                         var tempSelected = [];
-                                        selected.map((selectedItem) => {
+                                        selected.forEach((selectedItem) => {
                                             selectedItem.customOption === true ? tempSelected.push(selectedItem.category) : tempSelected.push(selectedItem);
                                         })
                                         formik.values.categories.category = tempSelected[0];
@@ -165,7 +165,7 @@ const EditProjectForm = (props) => {
                                     options={props.combinedTopic}
                                     onChange={(selected) => {
                                         var tempSelected = [];
-                                        selected.map((selectedItem) => {
+                                        selected.forEach((selectedItem) => {
                                             selectedItem.customOption === true ? tempSelected.push(selectedItem.topics) : tempSelected.push(selectedItem);
                                         })
                                         formik.values.tags.topics = tempSelected;
@@ -185,7 +185,7 @@ const EditProjectForm = (props) => {
                                     options={props.combinedTools}
                                     onChange={(selected) => {
                                         var tempSelected = [];
-                                        selected.map((selectedItem) => {
+                                        selected.forEach((selectedItem) => {
                                             tempSelected.push(selectedItem.id);
                                         })
                                         formik.values.toolids = tempSelected;

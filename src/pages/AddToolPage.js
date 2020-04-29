@@ -41,7 +41,7 @@ class AddToolPage extends React.Component {
         .then((res) =>{
             var tempTopicArray = ["Blood","Cancer and neoplasms","Cardiovascular","Congenital disorders","Ear","Eye","Infection","Inflammatory and immune system","Injuries and accidents","Mental health","Metabolic and Endocrine","Musculoskeletal","Neurological","Oral and Gastrointestinal","Renal and Urogenital","Reproductive health and childbirth","Respiratory","Skin","Stroke"]
             
-            res.data.data.map((to) => { 
+            res.data.data.forEach((to) => { 
                 if (!tempTopicArray.includes(to) && to !== '') {
                     tempTopicArray.push(to);
                 }
@@ -57,7 +57,7 @@ class AddToolPage extends React.Component {
         .then((res) =>{
             var tempFeaturesArray = ["Arbitrage","Association Rules","Attribution Modeling","Bayesian Statistics","Clustering","Collaborative Filtering","Confidence Interval","Cross-Validation","Decision Trees","Deep Learning","Density Estimation","Ensembles","Experimental Design","Feature Selection","Game Theory","Geospatial Modeling","Graphs","Imputation","Indexation / Cataloguing","Jackknife Regression","Lift Modeling","Linear Regression","Linkage Analysis","Logistic Regression","Model Fitting","Monte-Carlo Simulation","Naive Bayes","Nearest Neighbors - (k-NN)","Neural Networks","Pattern Recognition","Predictive Modeling","Principal Component Analysis - (PCA)","Random Numbers","Recommendation Engine","Relevancy Algorithm","Rule System","Scoring Engine","Search Engine","Segmentation","Supervised Learning","Support Vector Machine - (SVM)","Survival Analysis","Test of Hypotheses","Time Series","Yield Optimization"]
             
-            res.data.data.map((fe) => { 
+            res.data.data.forEach((fe) => { 
                 if (!tempFeaturesArray.includes(fe) && fe !== '') {
                     tempFeaturesArray.push(fe);
                 }
@@ -73,7 +73,7 @@ class AddToolPage extends React.Component {
         .then((res) =>{
             var tempLanguagesArray = ["No coding required",".net","AJAX","ASP.NET","C","C#","C++","CSS","Django","HTML","Java","Javascript","jQuery","JSON","Matlab","MySQL","Node.js","Objective C","PHP","Python","R","React JS","Regex","Ruby","Ruby on Rails","SQL","SQL server","Swift","XML"]
 
-            res.data.data.map((la) => { 
+            res.data.data.forEach((la) => { 
                 if (!tempLanguagesArray.includes(la) && la !== '') {
                     tempLanguagesArray.push(la);
                 }
@@ -89,7 +89,7 @@ class AddToolPage extends React.Component {
         .then((res) =>{
             var tempCategoriesArray = ["API","Code snippet","Container image","Dashboard","Developer stack","Directory","Docker app","Kubernetes app","Library","Notebook","Package","Platform","Repository","Service","Software","Virtual machine","Web application"]
 
-            res.data.data.map((ca) => { 
+            res.data.data.forEach((ca) => { 
                 if (!tempCategoriesArray.includes(ca) && ca !== '') {
                     tempCategoriesArray.push(ca);
                 }
@@ -105,7 +105,7 @@ class AddToolPage extends React.Component {
         .then((res) =>{
             var tempLicensesArray = ["Apache License 2.0","BSD 3-Clause \"New\" or \"Revised\" license","BSD 2-Clause \"Simplified\" or \"FreeBSD\" license","GNU General Public License (GPL)","GNU Library or \"Lesser\" General Public License (LGPL)","MIT license","Mozilla Public License 2.0","Common Development and Distribution License","Eclipse Public License version 2.0"]
 
-            res.data.data.map((li) => { 
+            res.data.data.forEach((li) => { 
                 if (!tempLicensesArray.includes(li) && li !== '') {
                     tempLicensesArray.push(li);
                 }

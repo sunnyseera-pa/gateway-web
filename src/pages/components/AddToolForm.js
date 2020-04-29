@@ -112,7 +112,7 @@ const AddToolForm = (props) => {
                                     options={props.combinedCategories}
                                     onChange={(selected) => {
                                         var tempSelected = [];
-                                        selected.map((selectedItem) => {
+                                        selected.forEach((selectedItem) => {
                                             selectedItem.customOption === true ? tempSelected.push(selectedItem.category) : tempSelected.push(selectedItem);
                                         })
                                         formik.values.categories.category = tempSelected[0];
@@ -133,7 +133,7 @@ const AddToolForm = (props) => {
                                     options={props.combinedLanguages}
                                     onChange={(selected) => {
                                         var tempSelected = [];
-                                        selected.map((selectedItem) => {
+                                        selected.forEach((selectedItem) => {
                                             selectedItem.customOption === true ? tempSelected.push(selectedItem.programmingLanguage) : tempSelected.push(selectedItem);
 
                                         })
@@ -166,7 +166,7 @@ const AddToolForm = (props) => {
                                     className="SmallFormInput"
                                     onChange={(selected) => {
                                         var tempSelected = [];
-                                        selected.map((selectedItem) => {
+                                        selected.forEach((selectedItem) => {
                                             selectedItem.customOption === true ? tempSelected.push(selectedItem.license) : tempSelected.push(selectedItem);
                                         })
                                         formik.values.license = tempSelected[0];
@@ -187,7 +187,7 @@ const AddToolForm = (props) => {
                                     options={props.combinedUsers}
                                     onChange={(selected) => {
                                         var tempSelected = [];
-                                        selected.map((selectedItem) => {
+                                        selected.forEach((selectedItem) => {
                                             tempSelected.push(selectedItem.id);
                                         })
                                         formik.values.authors = tempSelected;
@@ -208,7 +208,7 @@ const AddToolForm = (props) => {
                                     options={props.combinedFeatures}
                                     onChange={(selected) => {
                                         var tempSelected = [];
-                                        selected.map((selectedItem) => {
+                                        selected.forEach((selectedItem) => {
                                             selectedItem.customOption === true ? tempSelected.push(selectedItem.features) : tempSelected.push(selectedItem);
 
                                         })
@@ -231,7 +231,7 @@ const AddToolForm = (props) => {
                                     options={props.combinedTopic}
                                     onChange={(selected) => {
                                         var tempSelected = [];
-                                        selected.map((selectedItem) => {
+                                        selected.forEach((selectedItem) => {
                                             selectedItem.customOption === true ? tempSelected.push(selectedItem.topics) : tempSelected.push(selectedItem);
                                         })
                                         formik.values.tags.topics = tempSelected;

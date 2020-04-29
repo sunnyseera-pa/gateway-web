@@ -18,7 +18,7 @@ class Person extends React.Component {
 
         var countOfProjects = 0;
         var countOfTools = 0;
-        data.objects.map((object) => {
+        data.objects.forEach((object) => {
             if (object.type === 'project') {
                 countOfProjects++;
             }

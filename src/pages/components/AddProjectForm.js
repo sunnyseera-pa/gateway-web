@@ -108,7 +108,7 @@ const AddProjectForm = (props) => {
                                     options={props.combinedUsers}
                                     onChange={(selected) => {
                                         var tempSelected = [];
-                                        selected.map((selectedItem) => {
+                                        selected.forEach((selectedItem) => {
                                             tempSelected.push(selectedItem.id);
                                         })
                                         formik.values.authors = tempSelected;
@@ -129,7 +129,7 @@ const AddProjectForm = (props) => {
                                     options={props.combinedCategories}
                                     onChange={(selected) => {
                                         var tempSelected = [];
-                                        selected.map((selectedItem) => {
+                                        selected.forEach((selectedItem) => {
                                             selectedItem.customOption === true ? tempSelected.push(selectedItem.category) : tempSelected.push(selectedItem);
                                         })
                                         formik.values.categories.category = tempSelected[0];
@@ -151,7 +151,7 @@ const AddProjectForm = (props) => {
                                     options={props.combinedTopic}
                                     onChange={(selected) => {
                                         var tempSelected = [];
-                                        selected.map((selectedItem) => {
+                                        selected.forEach((selectedItem) => {
                                             selectedItem.customOption === true ? tempSelected.push(selectedItem.topics) : tempSelected.push(selectedItem);
 
                                         })
@@ -173,7 +173,7 @@ const AddProjectForm = (props) => {
                                     options={props.combinedTools}
                                     onChange={(selected) => {
                                         var tempSelected = [];
-                                        selected.map((selectedItem) => {
+                                        selected.forEach((selectedItem) => {
                                             tempSelected.push(selectedItem.id);
                                         })
                                         formik.values.toolids = tempSelected;
