@@ -37,7 +37,7 @@ class ReviewTools extends React.Component {
             });
         }
         else {
-            axios.get(baseURL + '//api/v1/reviews/pending?type=tool&id=' + this.state.userState[0].id)
+            axios.get(baseURL + '/api/v1/reviews/pending?type=tool&id=' + this.state.userState[0].id)
             .then((res) => {
                 this.setState({ data: res.data.data, allReviews: res.data.allReviews, isLoading: false });
             });
