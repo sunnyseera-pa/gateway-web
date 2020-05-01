@@ -76,7 +76,7 @@ class EditProjectPage extends React.Component {
   }
 
   doGetUsersCall() {
-    axios.get(baseURL + '/api/getAllUsers')
+    axios.get(baseURL + '/api/v1/users')
       .then((res) => {
         this.setState({ combinedUsers: res.data.data });
       });

@@ -38,7 +38,7 @@ class YourAccount extends React.Component {
     doYourAccountCall() {
         axios.get(baseURL + '/api/person/' + this.state.userState[0].id)
             .then((res) => {
-                axios.get(baseURL + '/api/user/' + this.state.userState[0].id)
+                axios.get(baseURL + '/api/v1/users/' + this.state.userState[0].id)
                     .then((resUser) => {
                         this.setState({
                             userdata: resUser.data.userdata[0],
