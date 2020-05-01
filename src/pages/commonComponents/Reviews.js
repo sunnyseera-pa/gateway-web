@@ -169,7 +169,7 @@ const AddReviewForm = (props) => {
     }),
 
     onSubmit: values => {
-      axios.post(baseURL + '/api/tool/review/add', values)
+      axios.post(baseURL + '/api/v1/tools/review/add', values)
         .then((res) => {
           window.location.href = '/tool/' + props.data.id + '/?reviewAdded=true';
         });
@@ -332,7 +332,7 @@ const ReplyReviewForm = (props) => {
     }),
 
     onSubmit: values => {
-      axios.post(baseURL + '/api/tool/reply', values)
+      axios.post(baseURL + '/api/v1/tools/reply', values)
         .then((res) => {
           window.location.href = '/tool/' + props.data.id + '/?replyAdded=true';
         });

@@ -116,7 +116,7 @@ const ReviewReview = (props) => {
     var updatedOnDate = updatedDate.getDate() + " " + monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
     
     const rejectReview = (id) => {
-        axios.delete(baseURL + '/api/tool/review/reject', {
+        axios.delete(baseURL + '/api/v1/tools/review/reject', {
             data: {
                 id: id
             },
@@ -127,7 +127,7 @@ const ReviewReview = (props) => {
     }
 
     const approveReview = (id) => {
-        axios.post(baseURL + '/api/tool/review/approve', {
+        axios.post(baseURL + '/api/v1/tools/review/approve', {
             id: id,
             activeflag: "active"
         })

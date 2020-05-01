@@ -56,7 +56,7 @@ class EditToolPage extends React.Component {
   getDataSearchFromDb = () => {
     //need to handle error if no id is found
     this.setState({ isLoading: true });
-    axios.get(baseURL + '/api/tool/' + this.props.match.params.toolID)
+    axios.get(baseURL + '/api/v1/tools/' + this.props.match.params.toolID)
       .then((res) => {
         this.setState({
           data: res.data.data[0],

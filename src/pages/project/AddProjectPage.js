@@ -68,7 +68,7 @@ class AddProjectPage extends React.Component {
     }
 
     doGetToolsCall() {
-        axios.get(baseURL + '/api/getAllTools')
+        axios.get(baseURL + '/api/v1/tools')
             .then((res) => {
                 this.setState({ combinedTools: res.data.data });
                 this.setState({ isLoading: false });
