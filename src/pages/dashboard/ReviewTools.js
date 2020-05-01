@@ -31,13 +31,13 @@ class ReviewTools extends React.Component {
 
     doSearchCall() {
         if (this.state.userState[0].role === "Admin") {
-            axios.get(baseURL + '/api/pendingreviewsadmin')
+            axios.get(baseURL + '/api/v1/reviews/admin/pending')
             .then((res) => {
                 this.setState({ data: res.data.data, allReviews: res.data.allReviews, isLoading: false });
             });
         }
         else {
-            axios.get(baseURL + '/api/pendingreviews?type=tool&id=' + this.state.userState[0].id)
+            axios.get(baseURL + '//api/v1/reviews/pending?type=tool&id=' + this.state.userState[0].id)
             .then((res) => {
                 this.setState({ data: res.data.data, allReviews: res.data.allReviews, isLoading: false });
             });
