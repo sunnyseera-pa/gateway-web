@@ -28,9 +28,9 @@ class YourAccount extends React.Component {
     }
 
     doMessagesCall() {
-        var apiToCall = '/api/messages/' + this.state.userState[0].id;
+        var apiToCall = '/api/v1/messages/' + this.state.userState[0].id;
         if (this.state.userState[0].role === "Admin") {
-            apiToCall = '/api/messagesadmin/' + this.state.userState[0].id;
+            apiToCall = '/api/v1/messages/admin/' + this.state.userState[0].id;
         }
 
         axios.get(baseURL + apiToCall)
