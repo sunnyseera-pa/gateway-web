@@ -101,13 +101,13 @@ class PendingProjects extends React.Component {
 
     doSearchCall() {
         if (this.state.userState[0].role === "Admin") {
-            axios.get(baseURL + '/api/accountsearchadmin?type=project&toolState=review')
+            axios.get(baseURL + '/api/v1/accounts/admin?type=project&toolState=review')
                 .then((res) => {
                     this.setState({ data: res.data.data, isLoading: false });
                 });
         }
         else {
-            axios.get(baseURL + '/api/accountsearch?type=project&id=' + this.state.userState[0].id + '&toolState=review')
+            axios.get(baseURL + '/api/v1/accounts?type=project&id=' + this.state.userState[0].id + '&toolState=review')
                 .then((res) => {
                     this.setState({ data: res.data.data, isLoading: false });
                 });
@@ -115,7 +115,7 @@ class PendingProjects extends React.Component {
     }
 
     rejectTool = (id) => {
-        axios.delete(baseURL + '/api/accountdelete', {
+        axios.delete(baseURL + '/api/v1/accounts', {
             data: {
                 id: id
             },
@@ -126,7 +126,7 @@ class PendingProjects extends React.Component {
     }
 
     approveTool = (id) => {
-        axios.post(baseURL + '/api/accountstatusupdate', {
+        axios.put(baseURL + '/api/v1/accounts/status', {
             id: id,
             activeflag: "active"
         })
@@ -200,13 +200,13 @@ class ActiveProjects extends React.Component {
     doSearchCall() {
 
         if (this.state.userState[0].role === "Admin") {
-            axios.get(baseURL + '/api/accountsearchadmin?type=project&toolState=active')
+            axios.get(baseURL + '/api/v1/accounts/admin?type=project&toolState=active')
                 .then((res) => {
                     this.setState({ data: res.data.data, isLoading: false });
                 });
         }
         else {
-            axios.get(baseURL + '/api/accountsearch?type=project&id=' + this.state.userState[0].id + '&toolState=active')
+            axios.get(baseURL + '/api/v1/accounts?type=project&id=' + this.state.userState[0].id + '&toolState=active')
                 .then((res) => {
                     this.setState({ data: res.data.data, isLoading: false });
                 });
@@ -256,7 +256,7 @@ function DeleteButton(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const deleteObject = () => {
-        axios.delete(baseURL + '/api/accountdelete', {
+        axios.delete(baseURL + '/api/v1/accounts', {
             data: {
                 id: props.id
             },
