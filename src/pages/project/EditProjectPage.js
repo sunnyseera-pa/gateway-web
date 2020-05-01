@@ -62,14 +62,14 @@ class EditProjectPage extends React.Component {
   };
 
   doGetTopicsCall() {
-    axios.get(baseURL + '/api/getAllTopics/tool')
+    axios.get(baseURL + '/api/v1/search/filter/topic/tool')
       .then((res) => {
         this.setState({ combinedTopic: res.data.data });
       });
   }
 
   doGetCategoriesCall() {
-    axios.get(baseURL + '/api/getAllCategories/tool')
+    axios.get(baseURL + '/api/v1/search/filter/category/tool')
       .then((res) => {
         this.setState({ combinedCategories: res.data.data });
       });

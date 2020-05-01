@@ -43,7 +43,7 @@ class AddProjectPage extends React.Component {
     }
 
     doGetTopicsCall() {
-        axios.get(baseURL + '/api/getAllTopics/project')
+        axios.get(baseURL + '/api/v1/search/filter/topic/project')
             .then((res) => {
                 this.setState({ combinedTopic: res.data.data });
                 this.setState({ isLoading: false });
@@ -52,7 +52,7 @@ class AddProjectPage extends React.Component {
 
 
     doGetCategoriesCall() {
-        axios.get(baseURL + '/api/getAllCategories/project')
+        axios.get(baseURL + '/api/v1/search/filter/category/project')
             .then((res) => {
                 this.setState({ combinedCategories: res.data.data });
                 this.setState({ isLoading: false });
