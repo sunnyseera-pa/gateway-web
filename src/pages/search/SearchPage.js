@@ -10,6 +10,7 @@ import SearchBar from '../commonComponents/SearchBar';
 import Project from '../commonComponents/Project';
 import Tool from '../commonComponents/Tool';
 import Person from '../commonComponents/Person';
+import DataSet from '../commonComponents/DataSet';
 import NotFound from '../commonComponents/NotFound'
 import Loading from '../commonComponents/Loading'
 import FilterButtons from './FilterButtons';
@@ -17,6 +18,7 @@ import ProgrammingLanguageFilter from './ProgrammingLanguageFilter';
 import CategoryFilter from './CategoryFilter';
 import FeaturesFilter from './FeaturesFilter';
 import TopicsFilter from './TopicsFilter';
+import { stat } from 'fs';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -26,6 +28,9 @@ class SearchPage extends React.Component {
         searchString: null,
         typeString: null,
         data: [],
+
+        datasetData: [],
+
         summary: [],
         combinedLanguages: [],
         languageSelected: [],
@@ -161,8 +166,37 @@ class SearchPage extends React.Component {
                 }
 
                 this.setState({ combinedCategories: tempCategoriesArray, combinedLanguages: tempProgrammingLanguageArray, combinedFeatures: tempFeaturesArray, combinedTopic: tempTopicsArray });
-                this.setState({ data: !res.data.data ? '' : res.data.data, summary: !res.data.summary ? '' : Object.entries(res.data.summary), isLoading: false });
-            });
+                this.setState({ data: !res.data.data ? '' : res.data.data, summary: !res.data.summary ? '' : Object.entries(res.data.summary ) });
+
+                axios.get(baseURL + '/api/datasets/search?search=' + this.state.searchString)
+                .then((res) => {
+                    var TempDataSetData = res.data.data.items;
+
+                    if(!!res.data.data.items){
+                            TempDataSetData.forEach((dat) => {
+                            this.state.data.push(dat)
+                        })
+                    }
+
+                    this.setState({ datasetData: !res.data.data.items ? '' : res.data.data.items , isLoading: false });
+                })
+            })
+    }
+
+    doDatasetSearch(searchString) { 
+        axios.get(baseURL + '/api/datasets/search?search=' + this.state.searchString)
+            .then((res) => {
+                var TempDataSetData = res.data.data.items;
+
+                if (!!res.data.data.items) {
+                    TempDataSetData.forEach((dat) => {
+                        this.state.data.push(dat)
+                    })
+                }
+
+                this.setState({datasetData: !res.data.data.items ? '' : res.data.data.items , isLoading: false
+                });
+            })
     }
 
     updateSearchString = (searchString) => {
@@ -198,7 +232,7 @@ class SearchPage extends React.Component {
     }
 
     render() {
-        const { searchString, typeString, data, summary, userState, isLoading, combinedLanguages, languageSelected, combinedCategories, categoriesSelected, combinedFeatures, featuresSelected, combinedTopic, topicsSelected } = this.state;
+        const { searchString, typeString, data, summary, userState, isLoading, combinedLanguages, languageSelected, combinedCategories, categoriesSelected, combinedFeatures, featuresSelected, combinedTopic, topicsSelected, datasetData } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -220,7 +254,7 @@ class SearchPage extends React.Component {
                         </Col>
 
                         <Col sm={12} md={12} lg={9}>
-                            {summary.length > 0 ? <SearchSummary data={summary} /> : ''}
+                            {summary.length > 0 || datasetData.length > 0? <SearchSummary data={summary} datasetData={datasetData} /> : ''}
 
                             {data.length <= 0 ? <NotFound word='results' /> : data.map((dat) => {
                                 if (dat.type === 'tool') {
@@ -231,6 +265,9 @@ class SearchPage extends React.Component {
                                 }
                                 else if (dat.type === 'person') {
                                     return <Person key={dat.id} data={dat} />
+                                }
+                                else if(dat.domainType === 'DataModel') {
+                                    return <DataSet key={dat.id} data={dat} />
                                 }
                                 else {
                                     return null
@@ -248,26 +285,30 @@ class SearchSummary extends React.Component {
     constructor(props) {
         super(props)
         this.state.data = props.data;
+        this.state.datasetData = props.datasetData;
+
     }
 
     // initialize our state
     state = {
         data: [],
+        datasetData: []
     };
 
     render() {
-        const { data } = this.state;
+        const { data, datasetData } = this.state;
 
         var total = 0;
         data.map(summ => total += summ[1]);
-
+        total += datasetData.length;
+    
         return (
             <Row className="mt-2">
                 <Col>
                     <div className="Rectangle">
                         <div className="Gray800-14px" style={{ textAlign: 'center' }}>
-                            Showing {data.map(summ => summ[1] + ' ' + summ[0] + (summ[1] > 1 ? 's' : '')).join(", ")} ({total} total)
-                                        </div>
+                            Showing {data.map(summ => summ[1] + ' ' + summ[0] + (summ[1] > 1 ? 's' : '')).join(", ")} {data.length == 0 ? '' : ', '} {!datasetData ? '' : datasetData.length == 1 ? datasetData.length + ' dataset ' : datasetData.length + ' datasets '} ({total} total)
+                        </div>
                     </div>
                 </Col>
             </Row>

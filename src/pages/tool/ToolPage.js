@@ -15,7 +15,8 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 
 import NotFound from '../commonComponents/NotFound';
-import DataSet from '../commonComponents/DataSet';
+import DataSet from '../commonComponents/DataSetOld';
+
 import Creators from '../commonComponents/Creators';
 import Loading from '../commonComponents/Loading'
 import Reviews from '../commonComponents/Reviews';
@@ -66,6 +67,7 @@ class ToolDetail extends Component {
       this.setState({ replyAdded: values.replyAdded })
     }
     this.getDataSearchFromDb();
+    console.log('HERE: ' + this.props.match.params.toolID)
   }
 
 
@@ -266,6 +268,8 @@ class ToolTitle extends Component {
   };
 
   componentDidMount(props) {
+    console.log('props : ' + JSON.stringify(this.props.data))
+    console.log('state : ' + JSON.stringify(this.state.data))
       let counter = !this.props.data.counter ? 1 : this.props.data.counter + 1;
       this.UpdateCounter(this.props.data.id, counter);
   }
@@ -276,6 +280,7 @@ class ToolTitle extends Component {
 
   render() {
       const { data, reviewData } = this.state;
+      console.log('data here: ' + JSON.stringify(data))
       var ratingsTotal = 0;
 
       if (reviewData.length > 0) {

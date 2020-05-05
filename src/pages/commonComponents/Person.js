@@ -39,7 +39,7 @@ class Person extends React.Component {
                             </Col>
                             <Col xs={10} md={11}>
                                 <p>
-                                    <span className="Black-16px"><a className="Dark-16px" style={{ cursor: 'pointer' }} href={'/person/' + data.id} >{data.firstname} {data.lastname}</a></span>
+                                    <span className="Black-16px"><a className="Black-16px" style={{ cursor: 'pointer' }} href={'/person/' + data.id} >{data.firstname} {data.lastname}</a></span>
                                     <br />
                                     <span className="Gray800-14px">{data.bio}</span>
                                 </p>
