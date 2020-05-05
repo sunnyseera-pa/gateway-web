@@ -67,16 +67,16 @@ class Project extends React.Component {
                             </Col>
                             <Col xs={10} lg={8}>
                                 <p>
-                                    <span ><a className="Dark-16px" style={{ cursor: 'pointer' }} href={'/project/' + data.id} >{data.name.substr(0, 75) + (data.name.length > 75 ? '...' : '')}</a></span>
+                                    <span ><a className="Black-16px" style={{ cursor: 'pointer' }} href={'/project/' + data.id} >{data.name.substr(0, 75) + (data.name.length > 75 ? '...' : '')}</a></span>
                                     <br />
                                     <br />
-                                    <span className="Dark-14px">
+                                    <span className="Gray800-14px">
                                         {data.persons <= 0 ? 'Author not listed' : data.persons.map((person, index) => {
                                             if (index > 0) {
-                                                return <span><span className="reviewTitleGap Dark-14px">·</span><a className="Dark-14px" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a></span>
+                                                return <span><span className="reviewTitleGap Gray800-14px">·</span><a className="Gray800-14px" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a></span>
                                             }
                                             else {
-                                                return <span><a className="Dark-14px" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a></span>
+                                                return <span><a className="Gray800-14px" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a></span>
                                             }
                                         })}
                                     </span>

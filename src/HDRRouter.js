@@ -9,6 +9,7 @@ import Container from 'react-bootstrap/Container';
 import ToolPage from './pages/tool/ToolPage';
 import PersonPage from './pages/person/PersonPage';
 import ProjectPage from './pages/project/ProjectPage';
+import DatasetPage from './pages/dataset/DatasetPage';
 import LandingPage from './pages/landing/LandingPage';
 import SearchPage from './pages/search/SearchPage';
 import AddToolPage from './pages/tool/AddToolPage';
@@ -77,6 +78,8 @@ class HDRRouter extends Component {
             <Route path='/project/:projectID' render={(props) => <ProjectPage {...props} userState={userState} />} />
 
             <Route path='/person/:personID' render={(props) => <PersonPage {...props} userState={userState} />} />
+
+            <Route path='/dataset/:datasetID' render={(props) => <DatasetPage {...props} userState={userState} />} />
 
             {/* Paths below require the user to be logged in */}
 
