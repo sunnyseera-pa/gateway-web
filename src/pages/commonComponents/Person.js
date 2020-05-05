@@ -34,7 +34,7 @@ class Person extends React.Component {
                         <Row>
                             <Col xs={2} md={1} className="iconHolder">
                                 <div class="avatar-circle">
-                                    <span class="initials"> {data.firstname.charAt(0).toUpperCase()}{data.lastname.charAt(0).toUpperCase()}</span>
+                                    <span class="initials"> {data.firstname.length > 0 && data.firstname.charAt(0).toUpperCase()}{data.lastname.length > 0 && data.lastname.charAt(0).toUpperCase()}</span>
                                 </div>
                             </Col>
                             <Col xs={10} md={11}>
