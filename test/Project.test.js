@@ -1,6 +1,6 @@
 
 import React from 'react';
-import Project from '../src/pages/components/Project';
+import Project from '../src/pages/commonComponents/Project';
 import Enzyme, { mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
