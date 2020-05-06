@@ -206,6 +206,15 @@ class ToolDetail extends Component {
                   <Tab eventKey="Reviews" title={'Reviews (' + reviewData.length + ')'}>
                     <Reviews data={data} userState={userState} reviewData={reviewData} />
                   </Tab>
+                  <Tab eventKey="Collaboration" title={'Collaboration'}>
+                    <Row className="mt-2">
+                      <Col>
+                        <div className="Rectangle">
+                          <div id='discourse-comments'></div>
+                        </div>
+                      </Col>
+                    </Row>
+                  </Tab>
                   <Tab eventKey="Projects" title={'Projects using this (' + data.projectids.length + ')'}>
                     {data.projectids.length <= 0 ? <NotFound word="projects" /> : data.projectids.map(id => <Project id={id} />)}
                   </Tab>
@@ -218,7 +227,6 @@ class ToolDetail extends Component {
             <Col sm={1} lg={1} />
           </Row>
         </Container>
-
         <Navbar fixed="bottom" className="mr-5 mb-5" >
           <Nav className="ml-auto">
             <Row>
@@ -267,12 +275,29 @@ class ToolTitle extends Component {
       reviewData: []
   };
 
+  componentWillMount() {
+    window.DiscourseEmbed = {
+      // TODO: Move to ENV vars.
+      discourseUrl: 'https://discourse-dev.healthresearch.tools/',
+      discourseEmbedUrl: `${window.location.href}`,
+    };
+  }
+
   componentDidMount(props) {
     console.log('props : ' + JSON.stringify(this.props.data))
     console.log('state : ' + JSON.stringify(this.state.data))
-      let counter = !this.props.data.counter ? 1 : this.props.data.counter + 1;
-      this.UpdateCounter(this.props.data.id, counter);
+    let counter = !this.props.data.counter ? 1 : this.props.data.counter + 1;
+    this.UpdateCounter(this.props.data.id, counter);
+    this.injectDiscourseScript();
   }
+
+  injectDiscourseScript = () => {
+    setTimeout(() => {
+      var d = document.createElement('script'); d.type = 'text/javascript'; d.async = true;
+      d.src = window.DiscourseEmbed.discourseUrl + 'javascripts/embed.js';
+      (document.getElementsByTagName('body')[0]).appendChild(d);
+    }, 100);
+  };
 
   UpdateCounter = (id, counter) => {
       axios.post(baseURL + '/api/counter/update', { id: id, counter: counter });
