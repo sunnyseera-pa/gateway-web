@@ -67,6 +67,7 @@ class ToolDetail extends Component {
       this.setState({ replyAdded: values.replyAdded })
     }
     this.getDataSearchFromDb();
+    
     console.log('HERE: ' + this.props.match.params.toolID)
   }
 
@@ -88,6 +89,7 @@ class ToolDetail extends Component {
           reviewData: res.data.reviewData,
           isLoading: false
         });
+        document.title = res.data.data[0].name.trim();
       })
   };
 
