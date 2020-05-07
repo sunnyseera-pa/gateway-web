@@ -576,6 +576,14 @@ input[type='radio']:checked:after {
   /* background-color: black; */
 }
 
+.is-invalid ~ .invalid-feedback {
+    display: block;
+  }
+
+  textarea:focus {
+    border: solid 2px #3db28c !important;
+  }
+
 .form-group .AddFormInput {
   width: 100%;
   height: 40px;
@@ -598,6 +606,39 @@ input[type='radio']:checked:after {
 .SmallFormInput {
   width: 100%;
   max-width: 480px;
+}
+
+.hdfeedback {
+  margin-top: .25rem;
+  font-size: .875rem;
+  color:#dc3545;
+}
+
+.react-datepicker-wrapper,
+.react-datepicker__input-container {
+    display: block;
+    width: 100%;
+}
+
+.react-datepicker__input-container input {
+  padding: 0.5rem 0.75rem;
+  max-width: 480px;
+  font-size: 1rem;
+  line-height: 1.25;
+  width: 100%;
+  color:
+  #53575a;
+  background-color:
+  #fff;
+  background-image: none;
+  background-clip: padding-box;
+  border: 2px solid
+  rgba(0, 0, 0, 0.15);
+  border-radius: 0.25rem;
+}
+
+.react-datepicker__input-container input:focus {
+  border: solid 2px #3db28c;
 }
 
 /* RBTS ARE THE STYLES FOR TYPEAHEAD INPUTS */
