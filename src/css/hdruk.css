@@ -3,21 +3,21 @@ body {
 }
 
 .Rectangle {
-    width: 100%;
-    box-shadow: 1px 1px 3px 0 #00000017;
-    background-color: #ffffff;
-    padding: 20px;
+  width: 100%;
+  box-shadow: 1px 1px 3px 0 #00000017;
+  background-color: #ffffff;
+  padding: 20px;
 }
 
-.TitleLandingBox{
+.TitleLandingBox {
   width: 480px;
   height: 40px;
   border-radius: 4px;
   background-color: #ffffff;
 }
 
-.LandingBox{
-  margin-top:20px;
+.LandingBox {
+  margin-top: 20px;
   max-height: 506px;
   border-radius: 4px;
   background-color: #ffffff;
@@ -30,25 +30,29 @@ body {
   top: 0;
 } */
 
-.GreyStrip {
-    width: 432px;
-    height: 2px;
-    background-color: #e2e2e2;
+.mb-xs {
+  margin-bottom: 0.15rem;
 }
 
-.ToolsHeader{
+.GreyStrip {
+  width: 432px;
+  height: 2px;
+  background-color: #e2e2e2;
+}
+
+.ToolsHeader {
   width: 100%;
   height: 40px;
   box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
   background-color: #ffffff;
 }
 
-.ButtonHolder{
+.ButtonHolder {
   min-width: 800px;
-    width: 100%;
-    /* box-shadow: 1px 1px 3px 0 #00000017; */
-    /* background-color: #f6f7f8; */
-    /* padding: 20px; */
+  width: 100%;
+  /* box-shadow: 1px 1px 3px 0 #00000017; */
+  /* background-color: #f6f7f8; */
+  /* padding: 20px; */
 }
 
 .searchHolder {
@@ -56,14 +60,14 @@ body {
   /* cursor: 'pointer'; */
 }
 
-.SmallCard{
+.SmallCard {
   width: 392px;
   min-height: 72px;
   box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
   background-color: #ffffff;
 }
 
-.WhiteBackground{
+.WhiteBackground {
   /* min-width: 1440px;*/
   min-height: 80px;
   background-color: #ffffff;
@@ -83,7 +87,7 @@ body {
   background-color: #475da7;
   border-radius: 16px;
   display: inline-block;
-  padding: 6px ;
+  padding: 6px;
   text-align: center;
 }
 
@@ -98,35 +102,35 @@ body {
 }
 
 .reviewStarsGap {
-  margin-left:20px
+  margin-left: 20px;
 }
 
 .reviewTitleGap {
-  margin-left:10px;
-  margin-right:10px
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
-.Dark-16px{
+.Dark-16px {
   font-family: museo-sans-rounded;
   font-size: 16px;
   font-weight: bold;
   font-stretch: normal;
   font-style: normal;
   letter-spacing: normal;
-  color: #29235C;
+  color: #29235c;
 }
 
-.Dark-14px{
+.Dark-14px {
   font-family: museo-sans-rounded;
   font-size: 14px;
   font-weight: 500;
   font-stretch: normal;
   font-style: normal;
   letter-spacing: normal;
-  color: #29235C;
+  color: #29235c;
 }
 
-.Black-16px{
+.Black-16px {
   font-family: museo-sans-rounded;
   font-size: 16px;
   font-weight: bold;
@@ -136,7 +140,7 @@ body {
   color: #2d2d2d;
 }
 
-.Black500-16px{
+.Black500-16px {
   font-family: museo-sans-rounded;
   font-size: 16px;
   font-weight: 500;
@@ -146,7 +150,7 @@ body {
   color: #2d2d2d;
 }
 
-.Black-20px{
+.Black-20px {
   font-family: museo-sans-rounded;
   font-size: 20px;
   font-weight: 500;
@@ -156,7 +160,7 @@ body {
   color: #2d2d2d;
 }
 
-.Gray800-14px{
+.Gray800-14px {
   font-family: museo-sans-rounded;
   font-size: 14px;
   font-weight: 500;
@@ -166,7 +170,7 @@ body {
   color: #3c3c3b;
 }
 
-.Gray800-14px-Opacity{
+.Gray800-14px-Opacity {
   opacity: 0.7;
   font-family: museo-sans-rounded;
   font-size: 14px;
@@ -177,7 +181,7 @@ body {
   color: #3c3c3b;
 }
 
-.Gray800-14px-bold{
+.Gray800-14px-bold {
   font-family: museo-sans-rounded;
   font-size: 14px;
   font-weight: bold;
@@ -187,7 +191,7 @@ body {
   color: #3c3c3b;
 }
 
-.Gray700-16px{
+.Gray700-16px {
   width: 88px;
   height: 19px;
   font-family: museo-sans-rounded;
@@ -199,7 +203,7 @@ body {
   color: #53575a;
 }
 
-.Gray700-13px{
+.Gray700-13px {
   font-family: museo-sans-rounded;
   font-size: 13px;
   font-weight: 500;
@@ -209,7 +213,12 @@ body {
   color: #53575a;
 }
 
-.Gray500-13px{
+.Gray100-14px {
+  font-size: 14px;
+  color: #f6f7f8;
+}
+
+.Gray500-13px {
   font-family: museo-sans-rounded;
   font-size: 13px;
   font-weight: 500;
@@ -219,7 +228,7 @@ body {
   color: #53575a;
 }
 
-.Purple-13px{
+.Purple-13px {
   font-family: museo-sans-rounded;
   font-size: 13px;
   font-weight: 500;
@@ -229,7 +238,7 @@ body {
   color: #475da7;
 }
 
-.Purple-14px{
+.Purple-14px {
   font-family: museo-sans-rounded;
   font-size: 14px;
   font-weight: 500;
@@ -239,7 +248,7 @@ body {
   color: #475da7;
 }
 
-.White-12px{
+.White-12px {
   font-family: museo-sans-rounded;
   font-size: 12px;
   font-weight: bold;
@@ -251,7 +260,7 @@ body {
   color: #ffffff;
 }
 
-.White-14px{
+.White-14px {
   font-family: museo-sans-rounded !important;
   font-size: 14px !important;
   font-weight: 500 !important;
@@ -285,20 +294,20 @@ body {
   padding-bottom: 50px;
 }
 
-.Pill{
+.Pill {
   /* width: 104px; */
   height: 25px;
   border-radius: 16px;
 }
 
-.FilterCard{
+.FilterCard {
   box-shadow: 1px 1px 3px 0 #00000017;
   background-color: #ffffff;
   padding: 10px;
   /* width: 280px; */
 }
 
-.AdFilters{
+.AdFilters {
   box-shadow: 1px 1px 3px 0 #00000017;
   background-color: #ffffff;
   padding: 10px;
@@ -306,25 +315,25 @@ body {
   overflow-y: scroll;
 }
 
-#TagItem{
+#TagItem {
   list-style-type: none;
 }
 
-#Logo{
+#Logo {
   width: 152px;
 }
 
-#Picture{
+#Picture {
   width: 24px;
   height: 24px;
 }
 
-#BigPicture{
+#BigPicture {
   width: 56px;
   height: 56px;
 }
 
-#landingPageCard{
+#landingPageCard {
   font-family: museo-sans-rounded;
   font-size: 32px;
   font-weight: 500;
@@ -335,7 +344,7 @@ body {
   color: #ffffff;
 }
 
-#landingPageEmptyRow{
+#landingPageEmptyRow {
   min-height: 120px;
 }
 
@@ -347,11 +356,11 @@ body {
   color: #ffffff;
 }
 
-#projectTitleEmptyRow{
+#projectTitleEmptyRow {
   min-height: 24px;
 }
 
-#searchInputHolder{
+#searchInputHolder {
   min-height: 48px;
   /* width: 800px; */
   width: 100%;
@@ -361,17 +370,17 @@ body {
 }
 
 input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
-input:-webkit-autofill:active  {
-    -webkit-box-shadow: 0 0 0 30px #f6f7f8 inset !important;
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #f6f7f8 inset !important;
 }
 
-#searchIcon{
-  width:3%
+#searchIcon {
+  width: 3%;
 }
 
-.SearchBarInput{
+.SearchBarInput {
   border: 0;
   padding-left: 5px;
   background-color: #ffffff;
@@ -381,19 +390,19 @@ input:-webkit-autofill:active  {
 }
 
 @media (min-width: 992px) {
-  .SearchBarInputGrey{
+  .SearchBarInputGrey {
     border: 0;
     background-color: #f6f7f8;
     display: inline-block;
     border-radius: 4px;
-    margin-top:15px;
+    margin-top: 15px;
     padding: 5px;
-    width:100%;
+    width: 100%;
   }
 }
 
 @media (max-width: 991px) {
-  .SearchBarInputGrey{
+  .SearchBarInputGrey {
     border: 0;
     background-color: #f6f7f8;
     display: inline-block;
@@ -401,11 +410,11 @@ input:-webkit-autofill:active  {
     margin-top: 7px;
     margin-bottom: 7px;
     padding: 5px;
-    width:100%;
+    width: 100%;
   }
 }
 
-#SearchInputSpan{
+#SearchInputSpan {
   display: inline-block;
   width: 75%;
   height: 40px;
@@ -415,7 +424,7 @@ input:-webkit-autofill:active  {
   color: #3c3c3b;
 }
 
-#SearchInputSpanGrey{
+#SearchInputSpanGrey {
   display: inline-block;
   width: 70%;
   outline: none;
@@ -423,7 +432,7 @@ input:-webkit-autofill:active  {
   font-size: 16px;
   background-color: #f6f7f8;
   color: #3c3c3b;
-  padding-top:5px;
+  padding-top: 5px;
 }
 
 .SearchInputIconGrey {
@@ -437,23 +446,22 @@ input:-webkit-autofill:active  {
   padding: 5px 10px 0px 0px;
 }
 
-#SearchInputSpan:focus{
+#SearchInputSpan:focus {
   outline: none;
 }
 
-#NavSearchInputSpan{
+#NavSearchInputSpan {
   display: inline-block;
   width: 97%;
   min-height: 48px;
   height: 100%;
 }
 
-#NavSearchInputSpan:focus{
+#NavSearchInputSpan:focus {
   outline: none;
 }
 
 input[type='checkbox']:after {
-
   width: 24px;
   height: 24px;
   border: solid 2px #d6d6d6;
@@ -499,9 +507,9 @@ input[type='radio']:checked:after {
   padding-left: 3px;
   padding-top: 1px;
   position: relative;
-  
+
   background-color: #ffffff;
-  content: url(../images/radio.svg) ;
+  content: url(../images/radio.svg);
 
   display: inline-block;
   visibility: visible;
@@ -530,15 +538,15 @@ input[type='radio']:checked:after {
   /* padding-top: -5px; */
   padding-bottom: 20px;
   position: relative;
-  
+
   background-color: #ffffff;
-  content: url(../images/radio.svg) ;
+  content: url(../images/radio.svg);
   display: inline-block;
   visibility: visible;
   border: solid 2px #d6d6d6;
 }
 
-.TabsBackground{
+.TabsBackground {
   background-color: #ffffff;
   align-items: center;
   justify-content: center;
@@ -546,30 +554,29 @@ input[type='radio']:checked:after {
   box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
 }
 
-.AddButton{
+.AddButton {
   width: 172px;
   height: 40px;
 }
 
-.SmallAddButton{
+.SmallAddButton {
   width: 156px;
   height: 40px;
 }
 
-.CancelButton{
+.CancelButton {
   width: 83px;
   height: 40px;
 }
 
-.GreyCancelButton{
+.GreyCancelButton {
   width: 83px;
   height: 40px;
   background-color: #eeeeee;
   /* background-color: black; */
-
 }
 
-.form-group .AddFormInput{
+.form-group .AddFormInput {
   width: 100%;
   height: 40px;
   border-radius: 4px;
@@ -577,23 +584,24 @@ input[type='radio']:checked:after {
   background-color: #ffffff;
 }
 
- .form-group .AddFormInput:focus{
+.form-group .AddFormInput:focus {
   border-radius: 4px;
   border: solid 2px #3db28c;
 }
 
-.form-group .EmptyFormInput, .form-group .EmptyFormInput:focus{
+.form-group .EmptyFormInput,
+.form-group .EmptyFormInput:focus {
   border-radius: 4px;
   border: solid 2px #dc3645;
 }
 
-.SmallFormInput{
-  width: 100%; 
+.SmallFormInput {
+  width: 100%;
   max-width: 480px;
 }
 
 /* RBTS ARE THE STYLES FOR TYPEAHEAD INPUTS */
-.rbt-input-multi{
+.rbt-input-multi {
   width: 100% !important;
   height: 40px !important;
   border-radius: 4px !important;
@@ -601,17 +609,17 @@ input[type='radio']:checked:after {
   background-color: #ffffff !important;
 }
 
-.rbt-input-multi.focus{
+.rbt-input-multi.focus {
   border-color: #3db28c !important;
   box-shadow: none !important;
 }
 
-.rbt-input-multi.after.focus{
+.rbt-input-multi.after.focus {
   border-color: #dc3645 !important;
   box-shadow: none !important;
 }
 
-.rbt-token{
+.rbt-token {
   background-color: #f3f3f3 !important;
   color: #3c3c3b !important;
 }
@@ -620,7 +628,7 @@ input[type='radio']:checked:after {
   height: 186px !important;
 }
 
-.ErrorMessages{
+.ErrorMessages {
   font-family: museo-sans-rounded;
   font-size: 14px;
   font-weight: 500;
@@ -630,30 +638,29 @@ input[type='radio']:checked:after {
   color: #dc3645;
 }
 
-#ArchiveButton{
+#ArchiveButton {
   background-color: #eeeeee;
   /* width: 85px; */
 }
 
-#AddReviewButton{
+#AddReviewButton {
   width: 100%;
   background-color: #eeeeee;
 }
 
 .reviewReviewHolder {
-  margin-top:20px;
+  margin-top: 20px;
   border: 1px solid #e2e2e2;
   border-radius: 4px;
-  padding:20px 10px
+  padding: 20px 10px;
 }
 
-.AccountButtons{
+.AccountButtons {
   border: 2px solid #3db28c !important;
   border-radius: 4px !important;
-
 }
 
-.TechDetailButton{
+.TechDetailButton {
   border: 2px solid #3db28c !important;
   border-radius: 4px !important;
   background-color: #ffffff;
@@ -667,12 +674,12 @@ input[type='radio']:checked:after {
   color: #29235c;
 }
 
-.ClearButtons{
+.ClearButtons {
   border: none !important;
   border-radius: none !important;
 }
 
-.landingPageInformationNumber{
+.landingPageInformationNumber {
   font-family: museo-sans-rounded;
   font-size: 40px;
   font-weight: 500;
@@ -683,7 +690,7 @@ input[type='radio']:checked:after {
   color: #ffffff;
 }
 
-.landingPageInformationDetail{
+.landingPageInformationDetail {
   font-family: museo-sans-rounded;
   font-size: 16px;
   font-weight: 300;
@@ -695,35 +702,35 @@ input[type='radio']:checked:after {
 }
 
 .accountDropDownGap {
-    margin-left:20px
+  margin-left: 20px;
 }
 
 @media screen and (max-width: 768px) {
   .nav {
-      padding-left:2px;
-      padding-right:2px;
+    padding-left: 2px;
+    padding-right: 2px;
   }
   .nav a {
-      display:block !important;
-      width:100%;
-      margin:0px;
+    display: block !important;
+    width: 100%;
+    margin: 0px;
   }
   .nav a.active {
-      border:1px solid #3db28c!important;
-      border-radius: 0px;
-      margin: 0px;
+    border: 1px solid #3db28c !important;
+    border-radius: 0px;
+    margin: 0px;
   }
 }
 
 .toolsButtons {
-  text-align: center
+  text-align: center;
 }
 
-.AuthorCard{
+.AuthorCard {
   height: 80px;
 }
 
-#UnderlinedLink{
+#UnderlinedLink {
   text-decoration-line: underline;
 }
 
