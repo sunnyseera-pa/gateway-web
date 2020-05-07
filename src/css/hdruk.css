@@ -580,9 +580,9 @@ input[type='radio']:checked:after {
     display: block;
   }
 
-  textarea:focus {
-    border: solid 2px #3db28c !important;
-  }
+textarea:focus {
+  border: solid 2px #3db28c !important;
+}
 
 .form-group .AddFormInput {
   width: 100%;
