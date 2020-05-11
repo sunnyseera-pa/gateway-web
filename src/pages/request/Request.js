@@ -63,7 +63,7 @@ const Request = (props) => {
         },
         validationSchema,
         onSubmit: values => {
-            const vals = {...values, title, userId: user.id};
+            const vals = {...values, title, userId: user.id, dataSetId};
             if(vals.linkedDataSets === 'false')
                 vals.namesOfDataSets = '';
             
