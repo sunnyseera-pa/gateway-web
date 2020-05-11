@@ -751,6 +751,11 @@ input[type='radio']:checked:after {
   height: 240px;
 }
 
+iframe#discourse-embed-frame {
+  min-height: 500px;
+  height: 100%;
+  overflow-y: scroll;
+}
       
 /* The Modal (background) */
 .modal {
