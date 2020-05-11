@@ -212,7 +212,7 @@ class DatasetTitle extends Component {
 
                           <Row>
                                 <Col sm={2} lg={2} >
-                                    <Button variant='white' href={'https://metadata-catalogue.org/hdruk/#/catalogue/dataModel/' + data.id} target="_blank" className="TechDetailButton mr-2" >
+                                    <Button variant='white' href={'https://metadata-catalogue.org/hdruk/#/catalogue/dataModel/' + data.id} target="_blank" className="TechDetailButton Indigo-14px mr-2" >
                                         Technical details
                                     </Button>
                                 </Col>

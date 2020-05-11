@@ -6,8 +6,19 @@ var baseURL = require('./BaseURL').getURL();
 
 class NoResultsTool extends React.Component {
 
+    state = {
+        searchString: ''
+    }
+
+    constructor(props) {
+        super(props)
+        if (props.searchString) {
+            this.state.searchString = props.searchString;
+        }
+    }
+
     render() {
-        // const { data, detailsData } = this.state;
+        const { searchString } = this.state;
 
         return (
             <div>
@@ -15,7 +26,7 @@ class NoResultsTool extends React.Component {
                 <Row>
                     <Col xs={3} lg={3} />
                     <Col xs={6} lg={6} className="Gray800-14px ml-5 pl-3 mr-5 pr-3">
-                        <span> We couldn’t find any tools matching the search terms ‘epilepsy’ </span>
+                        <span> We couldn’t find any tools matching the search terms ‘{searchString}’ </span>
                     </Col>
                     <Col xs={3} lg={3} />
                 </Row>
@@ -29,7 +40,7 @@ class NoResultsTool extends React.Component {
                 <Row className="mt-3">
                     <Col xs={3} lg={3} />
                     <Col xs={6} lg={6} className="Gray800-14px ml-5 pl-3 ">
-                        <span> Try searching for ‘COVID-19’ if you want to see examples of tools </span>
+                        <span> Try searching for ‘<a href={'/search?search=' + 'COVID-19' + '&type=all'} className="Purple-14px">COVID-19</a>’ if you want to see examples of tools </span>
                     </Col>
                     <Col xs={3} lg={3} />
                 </Row>

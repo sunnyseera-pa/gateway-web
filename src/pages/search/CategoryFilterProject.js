@@ -4,7 +4,7 @@ import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormText from 'react-bootstrap/FormText';
 
-class CategoryFilter extends Component {
+class CategoryFilterProject extends Component {
   state = {
     categoriesSelected: [],
     combinedCategories: []
@@ -12,7 +12,7 @@ class CategoryFilter extends Component {
 
   constructor(props) {
     super(props);
-    this.state.combinedCategories = props.combinedCategories;
+    this.state.combinedCategories = props.combinedProjectCategories;
     this.state.categoriesSelected = props.categoriesSelected;
   }
 
@@ -85,4 +85,4 @@ class CategoryFilter extends Component {
   }
 }
 
-export default CategoryFilter;
+export default CategoryFilterProject;
