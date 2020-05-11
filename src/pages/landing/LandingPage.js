@@ -4,39 +4,14 @@ import axios from 'axios';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Dropdown from 'react-bootstrap/Dropdown';
+import UserMenu from '../commonComponents/UserMenu';
 
 import Loading from '../commonComponents/Loading';
 
 import SVGIcon from '../../images/SVGIcon';
 import { ReactComponent as WhiteLogoSvg } from '../../../src/images/white.svg';
-import { ReactComponent as ArrowDownSvg } from '../../images/arrowDownWhite.svg';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
-
-const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-    <a href="#" className="landingPageAccountText" ref={ref} onClick={e => { e.preventDefault(); onClick(e); }} >
-        {children}
-        <span className="accountDropDownGap"></span>< ArrowDownSvg />
-    </a>
-));
-
-const CustomMenu = React.forwardRef(
-    ({ children, style, className, 'aria-labelledby': labeledBy }, ref) => {
-        const [value] = useState('');
-
-        return (
-            <div ref={ref} style={style} className={className} aria-labelledby={labeledBy}>
-                <ul className="list-unstyled">
-                    {React.Children.toArray(children).filter(
-                        child =>
-                            !value || child.props.children.toLowerCase().startsWith(value),
-                    )}
-                </ul>
-            </div>
-        );
-    },
-);
 
 class LandingPage extends React.Component {
 
@@ -126,7 +101,8 @@ class LandingPage extends React.Component {
     doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
             if (!!this.state.searchString) {
-                window.location.href = window.location.search + "/search?search=" + this.state.searchString + '&type=all&toolcategory=&programminglanguage=&features=&topics=';
+                debugger
+                window.location.href = window.location.pathname + "search?search=" + this.state.searchString + '&type=all&toolcategory=&programminglanguage=&features=&topics=';
             }
         }
     }
@@ -155,34 +131,7 @@ class LandingPage extends React.Component {
                     <Col xs={{ span: 6, order: 1 }} lg={{ span: 6, order: 1 }}> <WhiteLogoSvg /> </Col>
                     <Col xs={{ span: 6, order: 2 }} lg={{ span: 6, order: 2 }}>
                         <div className="signLinkLanding">
-                            {(() => {
-                                if (userState[0].loggedIn === true) {
-                                    return (
-                                        <Dropdown>
-                                            <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                                                {userState[0].name}
-                                            </Dropdown.Toggle>
-
-                                            <Dropdown.Menu as={CustomMenu}>
-                                                <Dropdown.Item href="/account?tab=youraccount">Your Account</Dropdown.Item>
-                                                <Dropdown.Item href="/account?tab=messages">Notifications</Dropdown.Item>
-                                                <Dropdown.Item href="/account?tab=projects">Project</Dropdown.Item>
-                                                <Dropdown.Item href="/account?tab=tools">Tools</Dropdown.Item>
-                                                <Dropdown.Item href="/account?tab=reviews">Reviews</Dropdown.Item>
-                                                <Dropdown.Item onClick={this.logout}>Logout</Dropdown.Item>
-                                            </Dropdown.Menu>
-                                        </Dropdown>
-                                    )
-                                }
-                                else {
-                                    return (
-                                        <a href={baseURL + '/auth/google'}>
-                                            <span className="landingPageAccountText">Sign in</span>
-                                        </a>
-                                    )
-                                }
-                            })()}
-
+                            <UserMenu userState={userState} isLanding="true" />
                         </div>
                     </Col>
                 </Row>

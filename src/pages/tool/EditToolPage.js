@@ -222,7 +222,7 @@ const EditToolForm = (props) => {
           //alert(JSON.stringify(values, null, 2));
           axios.put(baseURL + '/api/mytools/edit', values)
               .then((res) => {
-                  window.location.href = window.location.search + '/tool/' + props.data.id + '/?toolEditted=true';
+                  window.location.href = window.location.search + '/tool/' + props.data.id + '/?toolEdited=true';
               });
       }
   });

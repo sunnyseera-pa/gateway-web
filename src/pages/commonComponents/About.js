@@ -4,6 +4,7 @@ import Col from 'react-bootstrap/Col';
 import SVGIcon from "../../images/SVGIcon"
 import axios from 'axios';
 import Loading from './Loading'
+import Linkify from "react-linkify";
 
 var baseURL = require('./BaseURL').getURL();
 
@@ -68,7 +69,14 @@ class About extends React.Component {
                                 <Col sm={2} lg={2} className="Gray800-14px" >
                                     Access rights
                                 </Col>
-                                {data.accessRights ? <Col sm={8} lg={8} className="Gray800-14px">{data.accessRights}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col> }
+                                {data.accessRights ? <Col sm={8} lg={8} className="Gray800-14px">
+                                    {/* {data.accessRights} */}
+                                    {/* <a href={data.accessRights} target="_blank"> {data.accessRights} </a> */}
+                                    <Linkify 
+                                    properties={{ target: '_blank' }}
+                                    // target="_blank"
+                                    >{data.accessRights}</Linkify>
+                                    </Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col> }
                         </Row>
                     </div>
                   </Col>

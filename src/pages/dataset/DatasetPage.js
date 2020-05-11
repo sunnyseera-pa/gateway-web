@@ -174,7 +174,14 @@ class DatasetTitle extends Component {
       alert: null
   };
 
-
+  showLoginModal = () => {
+    document.getElementById(`myModal`).style.display = `block`;
+    window.onclick = function(event) {
+      if (event.target == document.getElementById(`myModal`)) {
+        document.getElementById(`myModal`).style.display = `none`;
+      }
+    }
+  };
 
   /**
    * [render request access]
@@ -183,11 +190,11 @@ class DatasetTitle extends Component {
    */
   renderRequestAccess = () => {
     const {user: {loggedIn}, data: {title, id}, alert=null} = this.state;
-    const hasAccess = true;
+    const hasRequestedAccess = false;
     if(!loggedIn) {
-      return <Button variant="primary" className="AddButton">Request Access</Button>;
-    } else if (alert || hasAccess) {
-      return <Button variant="primary" className="AddButton" disabled>+ Request Access</Button>
+      return <Button variant="primary" className="AddButton" onClick={this.showLoginModal}>Request Access</Button>;
+    } else if (alert || hasRequestedAccess) {
+      return <Button variant="primary" className="AddButton" disabled>Request Access</Button>
     } else {
       return <Link className="btn btn-primary AddButton" to={{pathname: '/request-access', state: {title, dataSetId: id}}}>Request Access</Link>
     }

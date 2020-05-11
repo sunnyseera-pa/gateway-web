@@ -17,7 +17,8 @@ import Account from './pages/dashboard/Account';
 import EditToolPage from './pages/tool/EditToolPage';
 import EditProjectPage from './pages/project/EditProjectPage';
 import Request from './pages/request/Request';
-import Loading from './pages/commonComponents/Loading';
+import Loading from './pages/commonComponents/Loading'
+import CompleteRegistration from './pages/registration/CompleteRegistration'
 
 var baseURL = require('./pages/commonComponents/BaseURL').getURL();
 
@@ -82,45 +83,14 @@ class HDRRouter extends Component {
       <Router>
         <div>
           <Switch>
-            <Route
-              path='/search'
-              render={(props) => (
-                <SearchPage {...props} userState={userState} />
-              )}
-            />
-
-            <Route
-              path='/tool/:toolID'
-              render={(props) => <ToolPage {...props} userState={userState} />}
-            />
-
-            <Route
-              path='/project/:projectID'
-              render={(props) => (
-                <ProjectPage {...props} userState={userState} />
-              )}
-            />
-
-            <Route
-              path='/person/:personID'
-              render={(props) => (
-                <PersonPage {...props} userState={userState} />
-              )}
-            />
-
-            <Route
-              path='/dataset/:datasetID'
-              render={(props) => (
-                <DatasetPage {...props} userState={userState} />
-              )}
-            />
-
-            <Route
-              path='/request-access'
-              render={(props) => <Request {...props} userState={userState} />}
-            />
-
-            {/* Paths below require the user to be logged in */}
+          
+            <Route path='/request-access' render={(props) => <Request {...props} userState={userState} />} />
+            <Route path='/search' render={(props) => <SearchPage {...props} userState={userState} />} />
+            <Route path='/tool/:toolID' render={(props) => <ToolPage {...props} userState={userState} />} />
+            <Route path='/project/:projectID' render={(props) => <ProjectPage {...props} userState={userState} />} />
+            <Route path='/person/:personID' render={(props) => <PersonPage {...props} userState={userState} />} />
+            <Route path='/dataset/:datasetID' render={(props) => <DatasetPage {...props} userState={userState} />} />
+            <Route path='/completeRegistration/:personID' render={(props) => <CompleteRegistration {...props} userState={userState} />} />
 
             {userState[0].loggedIn ? (
               <Route

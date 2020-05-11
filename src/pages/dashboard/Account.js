@@ -51,8 +51,8 @@ class Account extends Component {
                 this.setState({ isDeleted: values.toolDeleted });
                 this.setState({ isApproved: values.toolApproved });
                 this.setState({ isRejected: values.toolRejected });
-                this.setState({ isApproved: values.projectApproved });
-                this.setState({ isRejected: values.projectRejected });
+                this.setState({ isProjectApproved: values.projectApproved });
+                this.setState({ isProjectRejected: values.projectRejected });
                 this.setState({ isReviewApproved: values.reviewApproved });
                 this.setState({ isReviewRejected: values.reviewRejected });
             }
@@ -109,7 +109,7 @@ class Account extends Component {
                         <Row className="">
                             <Col sm={1} lg={1} />
                             <Col sm={10} lg={10}>
-                                <Alert variant="success" className="mt-3">Done! The tool has been deleted</Alert>
+                                <Alert variant="success" className="mt-3">Done! The tool has been archived</Alert>
                             </Col>
                             <Col sm={1} lg={10} />
                         </Row>
@@ -129,7 +129,7 @@ class Account extends Component {
                         <Row className="">
                             <Col sm={1} lg={1} />
                             <Col sm={10} lg={10}>
-                                <Alert variant="success" className="mt-3">Done! This tool has been rejected and is now deleted</Alert>
+                                <Alert variant="success" className="mt-3">Done! This tool has been rejected and is now archived</Alert>
                             </Col>
                             <Col sm={1} lg={10} />
                         </Row>
@@ -149,7 +149,7 @@ class Account extends Component {
                         <Row className="">
                             <Col sm={1} lg={1} />
                             <Col sm={10} lg={10}>
-                                <Alert variant="success" className="mt-3">Done! This project has been rejected and is now deleted</Alert>
+                                <Alert variant="success" className="mt-3">Done! This project has been rejected and is now archived</Alert>
                             </Col>
                             <Col sm={1} lg={10} />
                         </Row>
