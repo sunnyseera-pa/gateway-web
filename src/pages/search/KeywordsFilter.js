@@ -4,7 +4,7 @@ import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormText from 'react-bootstrap/FormText';
 
-class TopicsFilter extends Component {
+class KeywordsFilter extends Component {
   state = {
     topicsSelected: [],
     combinedTopic: []
@@ -12,7 +12,7 @@ class TopicsFilter extends Component {
 
   constructor(props) {
     super(props);
-    this.state.combinedTopic = props.combinedToolTopic;
+    this.state.combinedTopic = props.combinedProjectTopic;
     this.state.topicsSelected = props.topicsSelected;
   }
 
@@ -51,7 +51,7 @@ class TopicsFilter extends Component {
           <Row className="mt-2"  >
 
             <Col xs={7} className="ml-3">
-              <span className="Gray800-14px-bold">Topics</span>
+              <span className="Gray800-14px-bold">Keywords</span>
               {topicsSelected.length === 0 ? <span /> :
                 <span> <div className="White-12px BubbleCounts"> {topicsSelected.length} </div> </span>
               }
@@ -86,4 +86,4 @@ class TopicsFilter extends Component {
   }
 }
 
-export default TopicsFilter;
+export default KeywordsFilter;

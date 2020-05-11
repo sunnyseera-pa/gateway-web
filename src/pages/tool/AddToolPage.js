@@ -150,6 +150,7 @@ class AddToolPage extends React.Component {
     render() {
         const {data, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, combinedUsers, isLoading, userState } = this.state;
 
+
         if (isLoading) {
             return <Container><Loading /></Container>;
         }

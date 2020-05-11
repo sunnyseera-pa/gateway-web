@@ -16,8 +16,10 @@ import DataSet from '../commonComponents/DataSet';
 import NotFound from '../commonComponents/NotFound'
 import Loading from '../commonComponents/Loading'
 import FilterButtons from './FilterButtons';
+import KeywordsFilter from './KeywordsFilter';
 import ProgrammingLanguageFilter from './ProgrammingLanguageFilter';
-import CategoryFilter from './CategoryFilter';
+import CategoryFilterTool from './CategoryFilterTool';
+import CategoryFilterProject from './CategoryFilterProject';
 import FeaturesFilter from './FeaturesFilter';
 import TopicsFilter from './TopicsFilter';
 import DatasetFilterPublisher from './DatasetFilterPublisher';
@@ -31,9 +33,6 @@ import NoResultsProjects from '../commonComponents/NoResultsProjects';
 import NoResultsPeople from '../commonComponents/NoResultsPeople';
 import NoResultsDatasets from '../commonComponents/NoResultsDatasets';
 import { stat } from 'fs';
-
-import About from '../commonComponents/About';
-import SearchPageTools from './SearchPageTools';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -57,11 +56,17 @@ class SearchPage extends React.Component {
         summary: [],
         combinedLanguages: [],
         languageSelected: [],
-        combinedCategories: [],
+        // combinedCategories: [],
+        combinedToolCategories: [],
+        combinedProjectCategories: [],
+
         categoriesSelected: [],
         combinedFeatures: [],
         featuresSelected: [],
-        combinedTopic: [],
+        // combinedTopic: [],
+        combinedToolTopic: [],
+        combinedProjectTopic: [],
+
         topicsSelected: [],
         publishersSelected: [],
         publishersFilter: '',
@@ -144,12 +149,12 @@ class SearchPage extends React.Component {
         if (e.key === 'Enter') {
 
             if (!!this.state.searchString && !!this.state.typeString) {
-                this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolCategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected)
+                this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolCategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected + '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
                 this.doSearchCall(this.state.searchString, this.state.typeString, this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
                 this.getDatasetFilters(this.state.searchString);
             }
             else if (!!this.state.searchString && !this.state.typeString) {
-                this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=all' + '&tab=' + this.state.key +'&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected)
+                this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=all' + '&tab=' + this.state.key +'&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
                 this.doSearchCall(this.state.searchString, "", this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
                 this.getDatasetFilters(this.state.searchString);
             }
@@ -157,7 +162,7 @@ class SearchPage extends React.Component {
     }
 
     callTypeString = (typeString) => {
-        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected)
+        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
         this.doSearchCall(this.state.searchString, typeString, this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
     }
 
@@ -188,14 +193,20 @@ class SearchPage extends React.Component {
         axios.get(searchURL)
             .then((res) => {
                 if (res.data.data.length > 0) {
-                    var tempCategoriesArray = [];
+                    var tempCategoriesToolArray = [];
+                    var tempCategoriesProjectArray = [];
+
                     var tempProgrammingLanguageArray = [];
                     var tempFeaturesArray = [];
-                    var tempTopicsArray = [];
+                    var tempToolTopicsArray = [];
+                    var tempProjectTopicsArray = [];
 
                     res.data.data.forEach((dat) => {
-                        if (dat.categories && dat.categories.category && dat.categories.category !== '' && !tempCategoriesArray.includes(dat.categories.category)) {
-                            tempCategoriesArray.push(dat.categories.category);
+                        if (dat.categories && dat.categories.category && dat.categories.category !== '' && !tempCategoriesToolArray.includes(dat.categories.category) && dat.type === 'tool') {
+                            tempCategoriesToolArray.push(dat.categories.category);
+                        }
+                        if (dat.categories && dat.categories.category && dat.categories.category !== '' && !tempCategoriesProjectArray.includes(dat.categories.category) && dat.type === 'project') {
+                            tempCategoriesProjectArray.push(dat.categories.category);
                         }
 
                         if (dat.categories && dat.categories.programmingLanguage && dat.categories.programmingLanguage.length > 0) {
@@ -214,17 +225,24 @@ class SearchPage extends React.Component {
                             });
                         }
 
-                        if (dat.tags.topics && dat.tags.topics.length > 0) {
+                        if (dat.tags.topics && dat.tags.topics.length > 0 && dat.type === 'tool') {
                             dat.tags.topics.forEach((to) => {
-                                if (!tempTopicsArray.includes(to) && to !== '') {
-                                    tempTopicsArray.push(to);
+                                if (!tempToolTopicsArray.includes(to) && to !== '') {
+                                    tempToolTopicsArray.push(to);
+                                }
+                            });
+                        }
+                        if (dat.tags.topics && dat.tags.topics.length > 0 && dat.type === 'project') {
+                            dat.tags.topics.forEach((to) => {
+                                if (!tempProjectTopicsArray.includes(to) && to !== '') {
+                                    tempProjectTopicsArray.push(to);
                                 }
                             });
                         }
                     });
                 }
 
-                this.setState({ combinedCategories: tempCategoriesArray, combinedLanguages: tempProgrammingLanguageArray, combinedFeatures: tempFeaturesArray, combinedTopic: tempTopicsArray });
+                this.setState({ combinedToolCategories: tempCategoriesToolArray, combinedProjectCategories: tempCategoriesProjectArray, combinedLanguages: tempProgrammingLanguageArray, combinedFeatures: tempFeaturesArray, combinedToolTopic: tempToolTopicsArray, combinedProjectTopic: tempProjectTopicsArray });
                 this.setState({ data: !res.data.data ? '' : res.data.data, summary: !res.data.summary ? '' : Object.entries(res.data.summary ) });
 
                 axios.get(baseURL + '/api/datasets/filteredsearch?search=' + this.state.searchString + this.state.publishersFilter + this.state.licensesFilter + this.state.geoCoverageFilter + this.state.sampleAvailabilityFilter + this.state.keywordsFilter + this.state.ageBandsFilter)
@@ -241,22 +259,6 @@ class SearchPage extends React.Component {
             })
     }
 
-    // doDatasetSearch(searchString) { 
-    //     axios.get(baseURL + '/api/datasets/search?search=' + this.state.searchString)
-    //         .then((res) => {
-    //             var TempDataSetData = res.data.data.items;
-
-    //             if (!!res.data.data.items) {
-    //                 TempDataSetData.forEach((dat) => {
-    //                     this.state.data.push(dat)
-    //                 })
-    //             }
-
-    //             this.setState({datasetData: !res.data.data.items ? '' : res.data.data.items , isLoading: false
-    //             });
-    //         })
-    // }
-
     updateSearchString = (searchString) => {
         this.setState({ searchString: searchString });
     }
@@ -267,68 +269,65 @@ class SearchPage extends React.Component {
 
     updateCombinedLanguages = (languageSelected) => {
         this.setState({ languageSelected: languageSelected });
-        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected)
+        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
         this.doSearchCall(this.state.searchString, this.state.typeString, languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
     }
 
     updateCombinedCategories = (categoriesSelected) => {
         this.setState({ categoriesSelected: categoriesSelected });
-        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected)
+        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
         this.doSearchCall(this.state.searchString, this.state.typeString, this.state.languageSelected, categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
     }
 
     updateCombinedFeatures = (featuresSelected) => {
         this.setState({ featuresSelected: featuresSelected });
-        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + featuresSelected + '&topics=' + this.state.topicsSelected)
+        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
         this.doSearchCall(this.state.searchString, this.state.typeString, this.state.languageSelected, this.state.categoriesSelected, featuresSelected, this.state.topicsSelected);
     }
 
     updateCombinedTopics = (topicsSelected) => {
         this.setState({ topicsSelected: topicsSelected });
-        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + topicsSelected)
+        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
         this.doSearchCall(this.state.searchString, this.state.typeString, this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, topicsSelected);
     }
 
     updatePublisher = (publishersSelected) => {
         this.setState({publishersSelected: publishersSelected})
-
+        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
         this.filteredSearch(this.state.searchString, publishersSelected, this.state.licensesSelected, this.state.geoCoverageSelected, this.state.sampleAvailabilitySelected, this.state.keywordsSelected, this.state.ageBandsSelected);
 
     }
     updateLicenses = (licensesSelected) => {
         this.setState({licensesSelected: licensesSelected})
-
+        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
         this.filteredSearch(this.state.searchString, this.state.publishersSelected, licensesSelected, this.state.geoCoverageSelected, this.state.sampleAvailabilitySelected, this.state.keywordsSelected, this.state.ageBandsSelected);
 
     }
     updateGeoCoverage = (geoCoverageSelected) => {
         this.setState({geoCoverageSelected: geoCoverageSelected})
-
+        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + geoCoverageSelected)
         this.filteredSearch(this.state.searchString, this.state.publishersSelected, this.state.licensesSelected, geoCoverageSelected, this.state.sampleAvailabilitySelected, this.state.keywordsSelected, this.state.ageBandsSelected);
     }
 
     updateSampleAvailability = (sampleAvailabilitySelected) => {
         this.setState({sampleAvailabilitySelected: sampleAvailabilitySelected})
-
+        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
         this.filteredSearch(this.state.searchString, this.state.publishersSelected, this.state.licensesSelected, this.state.geoCoverageSelected, sampleAvailabilitySelected, this.state.keywordsSelected, this.state.ageBandsSelected);
     }
 
     updateKeywords = (keywordsSelected) => {
         this.setState({keywordsSelected: keywordsSelected})
-
+        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
         this.filteredSearch(this.state.searchString, this.state.publishersSelected, this.state.licensesSelected, this.state.geoCoverageSelected, this.state.sampleAvailabilitySelected, keywordsSelected, this.state.ageBandsSelected);
     }
 
     updateAgeBands = (ageBandsSelected) => {
         this.setState({ageBandsSelected: ageBandsSelected})
-
+        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
         this.filteredSearch(this.state.searchString, this.state.publishersSelected, this.state.licensesSelected, this.state.geoCoverageSelected, this.state.sampleAvailabilitySelected, this.state.keywordsSelected, ageBandsSelected);
     }
 
     filteredSearch = (searchString, publishersSelected, licensesSelected, geoCoverageSelected, sampleAvailabilitySelected, keywordsSelected, ageBandsSelected) => {
-    
-        // this.setState({publishersSelected: publishersSelected})
-        // this.setState({licensesSelected: licensesSelected})
 
         var publishersFilter = "";
         var licensesFilter = "";
@@ -373,21 +372,15 @@ class SearchPage extends React.Component {
 
     handleSelect = (key) => {
         this.setState({ key: key });
-        // this.props.history.push(window.location.pathname + '?tab=' + key);
+        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
     }
 
     render() {
-        const { searchString, typeString, data, key, summary, userState, isLoading, combinedLanguages, languageSelected, combinedCategories, categoriesSelected, combinedFeatures, featuresSelected, combinedTopic, topicsSelected, datasetData, publishersSelected, licensesSelected, geoCoverageSelected, sampleAvailabilitySelected, keywordsSelected, ageBandsSelected, publisherData, licenseData, geographicCoverageData, ageBandData, physicalSampleAvailabilityData, keywordsData } = this.state;
+        const { searchString, typeString, data, key, summary, userState, isLoading, combinedLanguages, languageSelected, combinedToolCategories, combinedProjectCategories, categoriesSelected, combinedFeatures, featuresSelected, combinedToolTopic, combinedProjectTopic, topicsSelected, datasetData, publishersSelected, licensesSelected, geoCoverageSelected, sampleAvailabilitySelected, keywordsSelected, ageBandsSelected, publisherData, licenseData, geographicCoverageData, ageBandData, physicalSampleAvailabilityData, keywordsData } = this.state;
 
         var toolCount = 0;
         var projectCount = 0;
         var personCount = 0;
-
-
-
-        // if (!combinedCategories || combinedCategories.length === 0) {
-        //     return (<></>);
-        // }
 
         if (!!data && (data.length-datasetData.length) > 0) {
             data.map((dat) => {
@@ -422,45 +415,32 @@ class SearchPage extends React.Component {
                                 <Tabs className='TabsBackground Gray700-13px' activeKey={this.state.key} onSelect={this.handleSelect}>
 
                                     <Tab eventKey="Datasets" title={'Datasets (' + datasetData.length + ')'}>
-                                        {/* <About data={data} /> */}
-                                        
+                                        {data && key === 'Datasets' && datasetData.length <= 0 ? <NoResultsDatasets searchString={searchString} /> : ''}
                                     </Tab>
-{/* TODO */}
-                                    <Tab eventKey="Tools" title={'Tools (' + toolCount + ')'}>
-                                      {/* {data.projectids.length <= 0 ? <NotFound word="projects" /> : data.projectids.map(id => <Project id={id} />)} */}
+                                    <Tab eventKey="Tools" title={'Tools (' + toolCount + ')'}> 
+                                        {data && key === 'Tools' && toolCount <= 0 ? <NoResultsTool searchString={searchString} /> : ''}
                                     </Tab>
-
                                     <Tab eventKey="Projects" title={'Projects (' + projectCount + ')'}>
-                                        {/* {data.toolids.length <= 0 ? <NotFound word="tools" /> : data.toolids.map(id => <Tool id={id} />)} */}
+                                        {data && key === 'Projects' && projectCount <= 0 ? <NoResultsProjects searchString={searchString} /> : ''}
                                     </Tab>
-
-                                    <Tab eventKey="People" title={'People (' + personCount + ')'}>
-                                        {/* <About data={data} /> */}
-                                        
+                                    <Tab eventKey="People" title={'People (' + personCount + ')'}> 
+                                        {data && key === 'People' && personCount <= 0 ? <NoResultsPeople searchString={searchString} /> : ''}
                                     </Tab>
-
                                 </Tabs>
                             </div>
                         </Col>
                     </Row> 
 
                     <Row>
-                        <Col>
-                            {data && key === 'Tools' && toolCount <= 0 ? <NoResultsTool data={data} /> : ''}
-                            {data && key === 'Projects' && projectCount <= 0 ? <NoResultsProjects /> : ''}
-                            {data && key === 'People' && personCount <= 0 ? <NoResultsPeople /> : ''}
-                            {data && key === 'Datasets' && datasetData.length <= 0 ? <NoResultsDatasets /> : ''}
-                        </Col>
-                    </Row>
 
-
-                    <Row>
+                        {key === 'Tools' || key === 'Projects' || key === 'Datasets' ?
                         <Col sm={12} md={12} lg={3}>
-                            {/* <FilterButtons typeString={typeString} doUpdateTypeString={this.updateTypeString} doCallTypeString={this.callTypeString} /> */}
-                            {key === 'Tools' || key === 'Projects' ? <CategoryFilter combinedCategories={combinedCategories} doUpdateCombinedCategories={this.updateCombinedCategories} categoriesSelected={categoriesSelected} /> : ''}
+                            {key === 'Tools' ? <CategoryFilterTool combinedToolCategories={combinedToolCategories} doUpdateCombinedCategories={this.updateCombinedCategories} categoriesSelected={categoriesSelected} /> : ''}
+                            {key === 'Projects' ? <CategoryFilterProject combinedProjectCategories={combinedProjectCategories} doUpdateCombinedCategories={this.updateCombinedCategories} categoriesSelected={categoriesSelected} /> : ''}
                             {key === 'Tools' ? <ProgrammingLanguageFilter combinedLanguages={combinedLanguages} doUpdateCombinedLanguages={this.updateCombinedLanguages} languageSelected={languageSelected} /> : ''}
                             {key === 'Tools' ? <FeaturesFilter combinedFeatures={combinedFeatures} doUpdateCombinedFeatures={this.updateCombinedFeatures} featuresSelected={featuresSelected} /> : ''}
-                            {key === 'Tools' ? <TopicsFilter combinedTopic={combinedTopic} doUpdateCombinedTopics={this.updateCombinedTopics} topicsSelected={topicsSelected} /> : ''}
+                            {key === 'Tools' ? <TopicsFilter combinedToolTopic={combinedToolTopic} doUpdateCombinedTopics={this.updateCombinedTopics} topicsSelected={topicsSelected} /> : ''}
+                            {key === 'Projects' ? <KeywordsFilter combinedProjectTopic={combinedProjectTopic} doUpdateCombinedTopics={this.updateCombinedTopics} topicsSelected={topicsSelected} /> : ''}
                             {key === 'Datasets' ? <DatasetFilterLicense searchString={searchString} licenseData={licenseData} doFilteredSearch={this.updateLicenses} licensesSelected={licensesSelected}/> : ''}
                             {key === 'Datasets' ? <DatasetFilterSampleAvailability searchString={searchString} physicalSampleAvailabilityData={physicalSampleAvailabilityData} doFilteredSearch={this.updateSampleAvailability} sampleAvailabilitySelected={sampleAvailabilitySelected} /> : ''}
                             {key === 'Datasets' ? <DatasetFilterKeywords searchString={searchString} keywordsData={keywordsData} doFilteredSearch={this.updateKeywords} keywordsSelected={keywordsSelected} /> : ''}
@@ -468,19 +448,11 @@ class SearchPage extends React.Component {
                             {key === 'Datasets' ? <DatasetFilterAgeBand searchString={searchString} ageBandData={ageBandData} doFilteredSearch={this.updateAgeBands} ageBandsSelected={ageBandsSelected} /> : ''}
                             {key === 'Datasets' ? <DatasetFilterGeoCoverage searchString={searchString} geographicCoverageData={geographicCoverageData} doFilteredSearch={this.updateGeoCoverage} geoCoverageSelected={geoCoverageSelected} /> : ''}
                         </Col>
+                        : <Col sm={1} md={1} lg={1} />}
+
 
                         <Col sm={12} md={12} lg={9}>
-                            {/* {summary.length > 0 || datasetData.length > 0? <SearchSummary data={summary} datasetData={datasetData} /> : ''} */}
-
-                            {/* {data && key === 'Tools' && toolCount <= 0 ? <NoResultsTool /> : ''}
-                            {data && key === 'Projects' && projectCount <= 0 ? <NoResultsProjects /> : ''}
-                            {data && key === 'People' && personCount <= 0 ? <NoResultsPeople /> : ''}
-                            {data && key === 'Datasets' && datasetData.length <= 0 ? <NoResultsDatasets /> : ''} */}
-
-
-                            {data.length <= 0 ?  ''
-                            // <NotFound word='results' /> 
-                            :        
+                            {data.length <= 0 ?  '' :        
                             data.map((dat) => {
                                 if (dat.type === 'tool' && key === 'Tools' && toolCount >= 1) {
                                     return <Tool key={dat.id} data={dat} />
@@ -489,7 +461,14 @@ class SearchPage extends React.Component {
                                     return <Project key={dat.id} data={dat} />
                                 }
                                 else if (dat.type === 'person' && key === 'People') {
-                                    return <Person key={dat.id} data={dat} />
+                                     return <div> 
+                                                <Row>
+                                                    <Col sm={2} lg={2} />
+                                                    <Col sm={10} lg={10}>
+                                                        <Person key={dat.id} data={dat} /> 
+                                                    </Col>
+                                                </Row>
+                                            </div>                                  
                                 }
                                 else if (dat.type === undefined && key === 'Datasets')
                                 {
