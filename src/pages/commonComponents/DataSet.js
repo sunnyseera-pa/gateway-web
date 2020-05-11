@@ -50,15 +50,15 @@ class DataSet extends React.Component {
                             </Col>
                             <Col xs={10} lg={11}>
                                 <p>
-                                    <span ><a className="Black-16px" style={{ cursor: 'pointer' }} href={'/dataset/' + data.id} >{data.label.substr(0, 75) + (data.label.length > 75 ? '...' : '')}</a></span>
+                                    <span ><a className="Black-16px" style={{ cursor: 'pointer' }} href={'/dataset/' + data.id} > {data.title ? data.title.substr(0, 75) + (data.title.length > 75 ? '...' : '') : ''} </a></span>
                                     <br/>
-                                    <span className="Gray800-14px">{detailsData.publisher}</span>
-
+                                    <span className="Gray800-14px">{detailsData ? detailsData.publisher ? detailsData.publisher : '' : ''}
+                                    </span>
                                 </p>
                                 <p>
                                 </p>
                                 <p className="Gray800-14px">
-                                    {data.description ? (data.description.substr(0, 125) + (data.description.length > 125 ? '...' : '' )) : (detailsData.abstract ? (detailsData.abstract.substr(0,125) + (detailsData.abstract.length > 125 ? '...' : '') ) : "")}    
+                                    {data && data.description ? (data.description.substr(0, 125) + (data.description.length > 125 ? '...' : '' )) : (detailsData && detailsData.abstract ? (detailsData.abstract.substr(0,125) + (detailsData.abstract.length > 125 ? '...' : '') ) : "")}    
                                 </p>
 
                             </Col>

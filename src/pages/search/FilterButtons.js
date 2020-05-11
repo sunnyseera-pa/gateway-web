@@ -69,6 +69,15 @@ class FilterButtons extends Component {
               value="person"
               onChange={this.changeFilter}
             />
+            <Form.Check
+              type="radio"
+              label="DataSets"
+              name="formHorizontalRadios"
+              id="formHorizontalRadios5"
+              checked={this.props.typeString === undefined ? true : false}
+              value="dataset"
+              onChange={this.changeFilter}
+            />
           </Col>
         </Row>
       </div>
