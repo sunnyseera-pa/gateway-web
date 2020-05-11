@@ -198,14 +198,27 @@ class DatasetTitle extends Component {
       alert: null
   };
 
-  
-  
+
+
+  /**
+   * [renderButton]
+   * @desc Sets the correct display option for the user
+   * @return  {[type]}  null : button
+   */
+  renderButton = () => {
+    const {user: {loggedIn}, data, alert} = this.state;
+    if(!loggedIn) 
+      return null;
+
+    
+
+    return <Link className="btn btn-primary AddButton" to={{pathname: '/request-access', state: {title: data.title, dataSetId: data.id}}}>Request Access</Link>
+  }
 
   render() {
-      const { data, user, alert } = this.state;
+      const { data, alert } = this.state;
   
       var keywords = (data.keywords ? data.keywords.split(",") : '');
-
       const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
       var releaseDate = new Date(data.releaseDate);
       var releasedOnDate = (data.releaseDate ? releaseDate.getDate() + " " + monthNames[releaseDate.getMonth()] + " " + releaseDate.getFullYear() : "");
@@ -231,18 +244,14 @@ class DatasetTitle extends Component {
                           </Row>
 
                           <Row>
-                                <Col sm={2} lg={2} >
-                                    <Button variant='white' href={'https://metadata-catalogue.org/hdruk/#/catalogue/dataModel/' + data.id} target="_blank" className="TechDetailButton mr-2" >
-                                        Technical details
-                                    </Button>
-                                </Col>
-
-                                <Col xs={8} lg={8} >
-                                  { user.loggedIn ? 
-                                    <Fragment>
-                                      <Link className="btn btn-primary AddButton" to={{pathname: '/request-access', state: {title: data.title, dataSetId: data.id}}}>Request Access</Link>
-                                    </Fragment> : null }
-                                </Col>
+                            <Col sm={2} lg={2}>
+                                <Button variant='white' href={'https://metadata-catalogue.org/hdruk/#/catalogue/dataModel/' + data.id} target="_blank" className="TechDetailButton mr-2" >
+                                    Technical details
+                                </Button>
+                            </Col>
+                            <Col xs={8} lg={8} >
+                              {this.renderButton()}
+                            </Col>
                           </Row>
 
                           <Row className="mt-5">
