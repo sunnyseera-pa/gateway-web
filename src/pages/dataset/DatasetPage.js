@@ -55,7 +55,6 @@ class DatasetDetail extends Component {
   }
 
   checkAlerts = () => {
-    debugger;
     const {state} = this.props.location;
     if(typeof state !== "undefined" && typeof state.alert !== 'undefined') {
       const {alert}= state;
@@ -94,10 +93,6 @@ class DatasetDetail extends Component {
       return <Container><Loading /></Container>;
     }
 
-    // if (typeof data.datasetids === 'undefined') {
-    //   data.datasetids = [];
-    // }
-
     if (typeof data.toolids === 'undefined') {
         data.toolids = [];
       }
@@ -110,42 +105,27 @@ class DatasetDetail extends Component {
       <div>
         <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
         <Container className="mb-5">
-        
           <DatasetTitle data={data} userState={userState} alert={alert} />
-
-        
           <Row className="mt-1">
-
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
               <div>
                 <Tabs className='TabsBackground Gray700-13px'>
-                  
                   <Tab eventKey="About" title={'About'}>
                     <About data={data}/>
-                  </Tab>
-
+                  </Tab>  
                    <Tab eventKey="Projects" title={'Projects using this (' + data.projectids.length + ')'}>
                     {data.projectids.length <= 0 ? <NotFound word="projects" /> : data.projectids.map(id => <Project id={id} />)}
                   </Tab>
-{/* 
-                  <Tab eventKey="Tools" title={'Tools used in this (' + data.toolids.length + ')'}>
-                    {data.toolids.length <= 0 ? <NotFound word="tools" /> : data.toolids.map((id) => {
-                      return <Tool id={id} />
-                    })}
-                  </Tab> */}
-
                   <Tab eventKey="Tools" title={'Tools used in the same projects (' + data.toolids.length  + ')'}>
                     {data.toolids.length <= 0 ? <NotFound word="tools" /> : data.toolids.map(id => <Tool id={id} />)}
                   </Tab> 
-
                 </Tabs>
               </div>
             </Col>
             <Col sm={1} lg={1} />
           </Row> 
         </Container>
-
         <Navbar fixed="bottom" className="mr-5 mb-5" >
           <Nav className="ml-auto">
             <Row>
@@ -157,7 +137,6 @@ class DatasetDetail extends Component {
             </Row>
           </Nav>
         </Navbar>
-
         <Navbar fixed="bottom" className="mr-5 mb-2" >
           <Nav className="ml-auto">
             <Row>
@@ -169,10 +148,7 @@ class DatasetDetail extends Component {
             </Row>
           </Nav>
         </Navbar>
-
         <Row className='AuthorCard' />
-
-
       </div>
     );
   }
@@ -201,23 +177,24 @@ class DatasetTitle extends Component {
 
 
   /**
-   * [renderButton]
-   * @desc Sets the correct display option for the user
+   * [render request access]
+   * @desc Sets the correct Request Access button for the user
    * @return  {[type]}  null : button
    */
-  renderButton = () => {
-    const {user: {loggedIn}, data, alert} = this.state;
-    if(!loggedIn) 
-      return null;
-
-    
-
-    return <Link className="btn btn-primary AddButton" to={{pathname: '/request-access', state: {title: data.title, dataSetId: data.id}}}>Request Access</Link>
+  renderRequestAccess = () => {
+    const {user: {loggedIn}, data: {title, id}, alert=null} = this.state;
+    const hasAccess = true;
+    if(!loggedIn) {
+      return <Button variant="primary" className="AddButton">Request Access</Button>;
+    } else if (alert || hasAccess) {
+      return <Button variant="primary" className="AddButton" disabled>+ Request Access</Button>
+    } else {
+      return <Link className="btn btn-primary AddButton" to={{pathname: '/request-access', state: {title, dataSetId: id}}}>Request Access</Link>
+    }
   }
 
   render() {
       const { data, alert } = this.state;
-  
       var keywords = (data.keywords ? data.keywords.split(",") : '');
       const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
       var releaseDate = new Date(data.releaseDate);
@@ -228,12 +205,7 @@ class DatasetTitle extends Component {
               <Row className="mt-2">
                   <Col sm={1} lg={1} />
                   <Col sm={10} lg={10}>
-                    { alert ? 
-                        <Alert variant={alert.type}>
-                          {alert.message}
-                        </Alert>
-                         : null
-                    }
+                    { alert ? <Alert variant={alert.type}>{alert.message}</Alert> : null }
                       <div className="Rectangle">
                           <Row>
                               <Col xs={7} md={8}>
@@ -250,7 +222,7 @@ class DatasetTitle extends Component {
                                 </Button>
                             </Col>
                             <Col xs={8} lg={8} >
-                              {this.renderButton()}
+                              {this.renderRequestAccess()}
                             </Col>
                           </Row>
 

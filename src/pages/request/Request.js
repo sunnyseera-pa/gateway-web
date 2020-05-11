@@ -70,7 +70,6 @@ const Request = (props) => {
             if(vals.dataRequirements === 'false')
                 vals.dataSetParts = '';
             
-            debugger;
             // post to API
             if(dataSetId) {
                 let message = { type: 'error', message: 'Something went wrong!'};
