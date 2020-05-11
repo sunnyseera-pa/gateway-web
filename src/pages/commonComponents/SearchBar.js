@@ -10,6 +10,7 @@ import { ReactComponent as ArrowDownSvg } from '../../images/stock.svg';
 import Dropdown from 'react-bootstrap/Dropdown';
 
 var baseURL = require('./BaseURL').getURL();
+var cmsURL = require('./BaseURL').getCMSURL();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <a href="" ref={ref} onClick={e => { e.preventDefault(); onClick(e); }} >
@@ -71,7 +72,7 @@ class SearchBar extends React.Component {
                 <Row className="WhiteBackground">
                     <Col xs={{ span: 6, order: 1 }} lg={{ span: 2, order: 1 }}>
                         <div>
-                            <a style={{ cursor: 'pointer' }} href={'/'} >
+                            <a style={{ cursor: 'pointer' }} href={cmsURL} >
                                 <ColourLogoSvg className="ml-4 mt-3" />
                             </a>
                         </div>
