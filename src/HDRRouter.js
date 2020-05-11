@@ -18,6 +18,7 @@ import Account from './pages/dashboard/Account';
 import EditToolPage from './pages/tool/EditToolPage';
 import EditProjectPage from './pages/project/EditProjectPage';
 import Loading from './pages/commonComponents/Loading'
+import CompleteRegistration from './pages/registration/CompleteRegistration'
 
 var baseURL = require('./pages/commonComponents/BaseURL').getURL();
 
@@ -80,6 +81,8 @@ class HDRRouter extends Component {
             <Route path='/person/:personID' render={(props) => <PersonPage {...props} userState={userState} />} />
 
             <Route path='/dataset/:datasetID' render={(props) => <DatasetPage {...props} userState={userState} />} />
+            
+            <Route path='/completeRegistration/:personID' render={(props) => <CompleteRegistration {...props} userState={userState} />} />
 
             {/* Paths below require the user to be logged in */}
 
