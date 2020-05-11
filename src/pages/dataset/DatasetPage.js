@@ -1,19 +1,11 @@
 
 // /ShowObjects.js
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
-
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Container from 'react-bootstrap/Container';
-import Tabs from 'react-bootstrap/Tabs';
-import Tab from 'react-bootstrap/Tab';
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
-import Button from 'react-bootstrap/Button';
-
+import { Redirect } from 'react-router-dom';
+import { Row, Col, Container, Tabs, Tab, Navbar, Nav, Button, Alert} from 'react-bootstrap/';
 import NotFound from '../commonComponents/NotFound';
-
 import Loading from '../commonComponents/Loading'
 import About from '../commonComponents/About';
 import Project from '../commonComponents/Project';
@@ -39,7 +31,8 @@ class DatasetDetail extends Component {
       role: "Reader",
       id: null,
       name: null
-    }]
+    }],
+    alert: null
   };
 
   constructor(props) {
@@ -50,6 +43,7 @@ class DatasetDetail extends Component {
   // on loading of tool detail page
   componentDidMount() {
     this.getDetailsSearchFromMDC();
+    this.checkAlerts();
   }
 
 
@@ -57,6 +51,15 @@ class DatasetDetail extends Component {
   componentDidUpdate() {
     if (this.props.match.params.datasetID !== this.state.id && this.state.id !== '' && !this.state.isLoading) {
       this.getDetailsSearchFromMDC();
+    }
+  }
+
+  checkAlerts = () => {
+    debugger;
+    const {state} = this.props.location;
+    if(typeof state !== "undefined" && typeof state.alert !== 'undefined') {
+      const {alert}= state;
+      this.setState({alert});
     }
   }
 
@@ -83,8 +86,9 @@ class DatasetDetail extends Component {
     this.setState({ searchString: searchString });
   }
 
+  
   render() {
-    const { searchString, data, isLoading, userState } = this.state;
+    const { searchString, data, isLoading, userState, alert } = this.state;
 
     if (isLoading) {
       return <Container><Loading /></Container>;
@@ -107,7 +111,7 @@ class DatasetDetail extends Component {
         <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
         <Container className="mb-5">
         
-          <DatasetTitle data={data}/>
+          <DatasetTitle data={data} userState={userState} alert={alert} />
 
         
           <Row className="mt-1">
@@ -177,35 +181,51 @@ class DatasetDetail extends Component {
 class DatasetTitle extends Component {
 
   constructor(props) {
-      super(props)
-      this.state.data = props.data;
+      super(props);
+      const { data, userState: [user, ...rest], alert} = this.props;
+      this.state = {
+        data,
+        user,
+        alert
+      };
   }
 
   // initialize our state
   state = {
       data: [],
-      id: this.props.data.id
+      user: {},
+      id: this.props.data.id,
+      alert: null
   };
 
-  render() {
-      const { data } = this.state;
+  
+  
 
+  render() {
+      const { data, user, alert } = this.state;
+  
       var keywords = (data.keywords ? data.keywords.split(",") : '');
 
       const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
       var releaseDate = new Date(data.releaseDate);
       var releasedOnDate = (data.releaseDate ? releaseDate.getDate() + " " + monthNames[releaseDate.getMonth()] + " " + releaseDate.getFullYear() : "");
-
+     
       return (
           <div>
               <Row className="mt-2">
                   <Col sm={1} lg={1} />
                   <Col sm={10} lg={10}>
+                    { alert ? 
+                        <Alert variant={alert.type}>
+                          {alert.message}
+                        </Alert>
+                         : null
+                    }
                       <div className="Rectangle">
                           <Row>
                               <Col xs={7} md={8}>
                                   <p>
-                                      <span classname="Black-20px"> {data.title} </span>
+                                    <span className="Black-20px">{data.title} </span>
                                   </p>
                               </Col>
                           </Row>
@@ -218,9 +238,10 @@ class DatasetTitle extends Component {
                                 </Col>
 
                                 <Col xs={8} lg={8} >
-                                    <Button variant="primary" className="White-14px AddButton">
-                                        Request access
-                                    </Button>
+                                  { user.loggedIn ? 
+                                    <Fragment>
+                                      <Link className="btn btn-primary AddButton" to={{pathname: '/request-access', state: {title: data.title, dataSetId: data.id}}}>Request Access</Link>
+                                    </Fragment> : null }
                                 </Col>
                           </Row>
 

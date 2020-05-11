@@ -1,11 +1,13 @@
 import React, { Fragment, useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import {Row, Container, Col, Button, Form } from 'react-bootstrap';
+import axios from 'axios';
 import Loading from '../commonComponents/Loading';
 import SearchBar from '../commonComponents/SearchBar';
 import DatePicker from "react-datepicker";
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
+var baseURL = require('../commonComponents/BaseURL').getURL();
 
 /**
  * [ValidationSchema]
@@ -34,7 +36,8 @@ const validationSchema = Yup.object({
     });
  
 const Request = (props) => {
-    const {searchString = '', userState} = props;
+    const {searchString = '', userState, location: {state:{title, dataSetId}}} = props;
+    let history = useHistory();
     const [reqState, setDefaultState] = useState({
         userState,
         searchString
@@ -60,15 +63,33 @@ const Request = (props) => {
         },
         validationSchema,
         onSubmit: values => {
-            const vals = {...values};
+            const vals = {...values, title, userId: user.id};
             if(vals.linkedDataSets === 'false')
                 vals.namesOfDataSets = '';
             
             if(vals.dataRequirements === 'false')
                 vals.dataSetParts = '';
             
-            alert('Success Post... check console for values');
-            console.log((JSON.stringify(vals, null, 2)));
+            debugger;
+            // post to API
+            if(dataSetId) {
+                let message = { type: 'error', message: 'Something went wrong!'};
+                const config = {
+                   headers: {
+                       'Content-Type': 'application/json'
+                   }
+                }
+                axios.post(baseURL + '/api/dataset/sendgrid', JSON.stringify(vals), config)
+                    .then(response => {
+                        message = response.data.message;
+                    })
+                    .catch(err => {
+                        message = err.response.data.message;
+                    })
+                    .finally(() => {
+                        history.push({pathname: `/dataset/${dataSetId}`, state: {alert: {...message}}});
+                    });
+            }
         }
       });
     
@@ -109,7 +130,7 @@ const Request = (props) => {
                 <Row>
                     <Col>
                         <h1 className='Black-20px'>Request access for</h1>
-                        <p className='Gray800-14px'>Epilepsy 12 - National organisational audit (service descriptor questionnaire) and Trust profile</p>
+                        <p className='Gray800-14px'>{title}</p>
                     </Col>
                 </Row>
             </div>
@@ -232,10 +253,8 @@ const Request = (props) => {
                                 dateFormat="dd/MM/yyyy"
                                 onChange={date => onDateChange(date, setFieldValue)}
                                 placeholderText="dd/mm/yyyy"
-
                                 />
                             </div>
-                            
                         </Form.Group>
 
                         {/* ICO Reg */}
@@ -268,21 +287,19 @@ const Request = (props) => {
                             <Form.Label className='Gray800-14px'>Contact number (optional)</Form.Label>
                             <Form.Control id='contactNumber' onChange={handleChange} value={values.contactNumber} isInvalid={!!errors.contactNumber} name="contactNumber" type='text' className='AddFormInput' style={{ maxWidth: '480px' }} />
                             <Form.Control.Feedback type="invalid">{errors.contactNumber}</Form.Control.Feedback>
-
                         </Form.Group>
                     </Col>
               </Row>
           </div>
-
-                {/* BUTTONS */}
-                <Row className='mt-3'>
-                    <Col className='text-left'>
-                        <Button variant='tertiary' onClick={onCancel} type='button'>Cancel</Button>
-                    </Col>
-                    <Col className='text-right'>
-                        <Button variant='primary' type='submit' className='Gray100-14px'>Send enquiry</Button>
-                    </Col>
-                </Row>
+            {/* BUTTONS */}
+            <Row className='mt-3'>
+                <Col className='text-left'>
+                    <Button variant='tertiary' onClick={onCancel} type='button'>Cancel</Button>
+                </Col>
+                <Col className='text-right'>
+                    <Button variant='primary' type='submit' className='Gray100-14px'>Send enquiry</Button>
+                </Col>
+            </Row>
             </Form>
         </Container>
       </div>
