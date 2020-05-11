@@ -1,11 +1,9 @@
 import React, { Component, useState } from 'react';
 import axios from 'axios';
-
-import Modal from 'react-bootstrap/Modal'
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import Dropdown from 'react-bootstrap/Dropdown';
-import Image from 'react-bootstrap/Image';
+
+
+import LoginModal from '../commonComponents/LoginModal';
 
 import { ReactComponent as ArrowDownSvg } from '../../images/stock.svg';
 import { ReactComponent as ArrowDownSvgWhite } from '../../images/arrowDownWhite.svg';
@@ -106,102 +104,6 @@ class UserMenu extends Component {
       </>
     );
     }
-}
-
-const LoginModal = (props) => {
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  const showLoginModal = () => {
-    document.getElementById("myModal").style.display = "block";
-
-    window.onclick = function(event) {
-      if (event.target == document.getElementById("myModal")) {
-        document.getElementById("myModal").style.display = "none";
-      }
-    }
-  };
-
-  const hideLoginModal = () => {
-    document.getElementById("myModal").style.display = "none";
-  };
-
-  return (
-    <>
-      <a href="" onClick={e => { e.preventDefault();}}>
-      {props.isLanding ?
-        <span className="landingPageAccountText" id="myBtn" onClick={showLoginModal}>Sign in | Sign up</span>
-        :
-        <span className="Purple-14px" id="myBtn" onClick={showLoginModal}>Sign in | Sign up</span>
-      }
-      </a>
-
-<div id="myModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-body">
-      <Row className="mt-3">
-            <Col xs={1} md={1} />
-            <Col xs={10} md={10}>
-              <span className="Black-20px">Sign in or create a new account</span>
-            </Col>
-            <Col xs={1} md={1}>
-              <span class="close" onClick={hideLoginModal}>&times;</span>
-            </Col>
-          </Row>
-
-          <Row className="mt-2">
-            <Col sm={1} lg={1} />
-            <Col sm={10} lg={10} >
-              <span class="Gray800-14px">You can sign in or create a new account using your existing Linkedin, Google or OpenAthens account.</span>
-            </Col>
-            <Col sm={1} lg={1} />
-          </Row>
-
-          <Row className="mt-3">
-            <Col sm={1} lg={1} />
-            <Col sm={10} lg={10} >
-              <div className="Gray800-14px" style={{ textAlign: 'center' }}>
-                <a href={baseURL + '/auth/linkedin'}>
-                  <Image style={{width: '200px'}} src={require("../../images/Linkedin-default.png")} />
-                </a> 
-              </div>
-            </Col>
-            <Col sm={1} lg={1} />
-          </Row>
-
-          <Row className="mt-2">
-            <Col sm={1} lg={1} />
-            <Col sm={10} lg={10} >
-              <div className="Gray800-14px" style={{ textAlign: 'center' }}>
-                <a href={baseURL + '/auth/google'}>
-                  <Image style={{width: '200px'}} src={require("../../images/Google-default.png")} /> 
-                </a>
-              </div>
-            </Col>
-            <Col sm={1} lg={1} />
-          </Row>
-
-          <Row className="mt-3 mb-3">
-            <Col sm={1} lg={1} />
-            <Col sm={10} lg={10} >
-              <div className="Gray800-14px" style={{ textAlign: 'center' }}>
-                <a href={baseURL + '/auth/oidc'} className="openAthensButton">
-                  Sign in with OpenAthens
-                </a>
-                
-                {/* <div id="wayfinder">Loading...</div> */}
-              </div>
-            </Col>
-            <Col sm={1} lg={1} />
-          </Row>
-    </div>
-    
-  </div>
-</div>
-    </>
-  );
 }
 
 export default UserMenu;

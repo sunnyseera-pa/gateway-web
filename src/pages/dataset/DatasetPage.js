@@ -11,6 +11,7 @@ import About from '../commonComponents/About';
 import Project from '../commonComponents/Project';
 import Tool from '../commonComponents/Tool';
 import SearchBar from '../commonComponents/SearchBar';
+import LoginModal from '../commonComponents/LoginModal'
 
 import 'react-tabs/style/react-tabs.css';
 
@@ -22,6 +23,7 @@ class DatasetDetail extends Component {
   state = {
     id: '',
     data: [],
+    datarequest: [],
     DBData: [],
     activeKey: false,
     selectedItem: 'tab-1',
@@ -64,10 +66,11 @@ class DatasetDetail extends Component {
 
   getDetailsSearchFromMDC = () => {
     this.setState({ isLoading: true });
-    axios.get(baseURL + '/api/datasets/detail/' + this.props.match.params.datasetID)
+    axios.get(baseURL + '/api/datasets/detail/' + this.props.match.params.datasetID+'?&id=' + this.state.userState[0].id)
       .then((res) => {
         this.setState({
           data: res.data.data,
+          datarequest: res.data.datarequest,
           isLoading: false
         });
       })
@@ -87,12 +90,12 @@ class DatasetDetail extends Component {
 
   
   render() {
-    const { searchString, data, isLoading, userState, alert } = this.state;
+    const { searchString, data, datarequest, isLoading, userState, alert } = this.state;
 
     if (isLoading) {
       return <Container><Loading /></Container>;
     }
-
+    
     if (typeof data.toolids === 'undefined') {
         data.toolids = [];
       }
@@ -105,7 +108,7 @@ class DatasetDetail extends Component {
       <div>
         <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
         <Container className="mb-5">
-          <DatasetTitle data={data} userState={userState} alert={alert} />
+          <DatasetTitle data={data} userState={userState} alert={alert} datarequest={datarequest} />
           <Row className="mt-1">
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
@@ -158,9 +161,10 @@ class DatasetTitle extends Component {
 
   constructor(props) {
       super(props);
-      const { data, userState: [user, ...rest], alert} = this.props;
+      const { data, datarequest, userState: [user, ...rest], alert} = this.props;
       this.state = {
         data,
+        datarequest,
         user,
         alert
       };
@@ -169,18 +173,10 @@ class DatasetTitle extends Component {
   // initialize our state
   state = {
       data: [],
+      datarequest: [],
       user: {},
       id: this.props.data.id,
       alert: null
-  };
-
-  showLoginModal = () => {
-    document.getElementById(`myModal`).style.display = `block`;
-    window.onclick = function(event) {
-      if (event.target == document.getElementById(`myModal`)) {
-        document.getElementById(`myModal`).style.display = `none`;
-      }
-    }
   };
 
   /**
@@ -189,10 +185,12 @@ class DatasetTitle extends Component {
    * @return  {[type]}  null : button
    */
   renderRequestAccess = () => {
-    const {user: {loggedIn}, data: {title, id}, alert=null} = this.state;
-    const hasRequestedAccess = false;
+    const {user: {loggedIn}, data: {title, id, contactPoint}, alert=null, datarequest} = this.state;
+    debugger
+    const hasRequestedAccess = (datarequest.length === 1 ? true : false);
     if(!loggedIn) {
-      return <Button variant="primary" className="AddButton" onClick={this.showLoginModal}>Request Access</Button>;
+      var isRequest=true;
+      return <LoginModal isRequest={isRequest} requestDetails={title} requestContact={contactPoint} />;
     } else if (alert || hasRequestedAccess) {
       return <Button variant="primary" className="AddButton" disabled>Request Access</Button>
     } else {
