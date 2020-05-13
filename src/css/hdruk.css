@@ -699,6 +699,11 @@ textarea:focus {
   background-color: #eeeeee;
 }
 
+.discourse-button {
+  width: 100%;
+  background-color: #eeeeee;
+}
+
 .reviewReviewHolder {
   margin-top: 20px;
   border: 1px solid #e2e2e2;
