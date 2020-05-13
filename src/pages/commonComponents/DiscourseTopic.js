@@ -10,25 +10,27 @@ class DiscourseTopic extends Component {
     super(props);
     this.state.topic = props.topic;
     this.state.toolId = props.toolId;
+    this.state.userState = props.userState;
   }
 
   // initialize our state
   state = {
     topic: null,
     toolId: null,
+    userState: [],
   };
 
   render() {
-    const { topic, toolId } = this.state;
+    const { topic, toolId, userState } = this.state;
     return (
       <div>
         <Row className='mt-4 mb-3'>
           <Col xs={12} md={12}>
-            <DiscourseAddPost topicLink={topic && topic.link} toolId={toolId} />
+            <DiscourseAddPost topicLink={topic && topic.link} toolId={toolId} userState={userState} />
           </Col>
         </Row>
         {topic && topic.posts && topic.posts.length ? (
-          topic.posts.map((post) => <DiscoursePost post={post} />)
+          topic.posts.map((post) => <DiscoursePost key={post.id} post={post} />)
         ) : (
           <NotFound word='comments' />
         )}

@@ -8,11 +8,13 @@ class DiscourseAddPost extends Component {
   constructor(props) {
     super(props);
     this.state.topicLink = props.topicLink;
+    this.state.userState = props.userState;
     this.state.toolId = props.toolId;
   }
 
   // initialize our state
   state = {
+    userState: [],
     topicLink: null,
     toolId: null
   };
@@ -28,14 +30,11 @@ class DiscourseAddPost extends Component {
   }
 
   render() {
-    const { topicLink, toolId } = this.state;
-    return (
-      topicLink ? 
-      <Button variant='light' id='discourse-add-comment' className='discourse-button mb-1' onClick={() => { window.open(topicLink) }}> 
-        + Add a comment
-      </Button>
-      :
-      <Button variant='light' id='discourse-add-comment' className='discourse-button mb-1' onClick={this.createTopicAndRedirecToDiscourse(toolId)}> 
+    const { topicLink, toolId, userState } = this.state;
+    return (userState[0].loggedIn === true &&
+      <Button variant='light' id='discourse-add-comment' className='discourse-button mb-1' onClick={() => {
+        topicLink ? window.open(topicLink) : this.createTopicAndRedirecToDiscourse(toolId)
+      }}>
         + Add a comment
       </Button>
     );
