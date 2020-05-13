@@ -210,7 +210,7 @@ class ToolDetail extends Component {
                     <Reviews data={data} userState={userState} reviewData={reviewData} />
                   </Tab>
                   <Tab eventKey="Collaboration" title={`Collaboration (${discourseTopic && discourseTopic.posts ? discourseTopic.posts.length : 0})`}>
-                    <DiscourseTopic topic={discourseTopic} />
+                    <DiscourseTopic topic={discourseTopic} toolId={data.id} />
                   </Tab>
                   <Tab eventKey="Projects" title={'Projects using this (' + data.projectids.length + ')'}>
                     {data.projectids.length <= 0 ? <NotFound word="projects" /> : data.projectids.map(id => <Project id={id} />)}
