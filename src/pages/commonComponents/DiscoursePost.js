@@ -1,8 +1,9 @@
-import React, { Component, useState } from 'react';
+import React from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Moment from 'react-moment';
 
-class DiscoursePost extends Component {
+class DiscoursePost extends React.Component {
   constructor(props) {
     super(props);
     this.state.post = props.post;
@@ -25,7 +26,7 @@ class DiscoursePost extends Component {
               </Col>
               <Col xs={6} md={6} className="mt-2">
                 <span className="text-left Purple-13px">{post.username}</span>
-                <span className="text-left Gray500-13px">  on {post.created_at}</span>
+                <span className="text-left Gray500-13px"> on <Moment format="DD MMM YYYY">{post.created_at}</Moment></span>
               </Col>
               <Col xs={6} md={6} className="mb-1 text-right">
                 {/* <Rating emptySymbol={<EmptyStarIconSvg />} fullSymbol={<FullStarIconSvg />} placeholderSymbol={<FullStarIconSvg />} placeholderRating={review.rating} readonly={true} /> */}
