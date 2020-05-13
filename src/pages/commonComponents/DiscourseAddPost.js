@@ -16,6 +16,16 @@ class DiscourseAddPost extends Component {
     topicLink: null,
     toolId: null
   };
+  
+  createTopicAndRedirecToDiscourse = async (toolId) => {
+  
+    if (!toolId) {
+      return;
+    }
+    const res = await axios.put(baseURL + `/api/v1/discourse/topic/tool/${toolId}`);
+    this.setState({ topicLink: res.data.data.link });
+    window.open(res.data.data.link);
+  }
 
   render() {
     const { topicLink, toolId } = this.state;
@@ -25,20 +35,12 @@ class DiscourseAddPost extends Component {
         + Add a comment
       </Button>
       :
-      <Button variant='light' id='discourse-add-comment' className='discourse-button mb-1' onClick={() => { createTopicAndRedirecToDiscourse(toolId) }}> 
+      <Button variant='light' id='discourse-add-comment' className='discourse-button mb-1' onClick={this.createTopicAndRedirecToDiscourse(toolId)}> 
         + Add a comment
       </Button>
     );
   }
 }
 
-const createTopicAndRedirecToDiscourse = async (toolId) => {
-
-  if (!toolId) {
-    return;
-  }
-  const res = await axios.put(baseURL + `/api/v1/discourse/topic/tool/${toolId}`);
-  window.open(res.data.data.link);
-}
 
 export default DiscourseAddPost;
