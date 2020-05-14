@@ -27,6 +27,9 @@ import { ReactComponent as EmptyStarIconSvg } from '../../images/starempty.svg'
 import { ReactComponent as FullStarIconSvg } from '../../images/star.svg';
 import 'react-tabs/style/react-tabs.css';
 
+// import ReactGA from 'react-ga'; 
+import {PageView, initGA} from '../../tracking';
+
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class ToolDetail extends Component {
@@ -67,8 +70,8 @@ class ToolDetail extends Component {
       this.setState({ replyAdded: values.replyAdded })
     }
     this.getDataSearchFromDb();
-    
-    console.log('HERE: ' + this.props.match.params.toolID)
+    initGA('UA-166025838-1');
+    PageView();
   }
 
 

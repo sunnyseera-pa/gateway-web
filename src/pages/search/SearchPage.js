@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import ReactGA from 'react-ga';
+// import ReactGA from 'react-ga';
 import {PageView, initGA} from '../../tracking';
 
 
@@ -105,16 +105,16 @@ class SearchPage extends React.Component {
             this.setState({ searchString: values.search });
             this.setState({ typeString: values.type });
             this.getDatasetFilters(values.search);
-            // initGA('UA-166025838-1');
-            // PageView();
+            initGA('UA-166025838-1');
+            PageView();
 
         }
         else {
             this.setState({ data: [], searchString: '', typeString: 'all', isLoading: true });
             this.doSearchCall("", "all", [], [], [], []);
             this.getDatasetFilters(values.search);
-            // initGA('UA-166025838-1');
-            // PageView();
+            initGA('UA-166025838-1');
+            PageView();
         }
 
     }

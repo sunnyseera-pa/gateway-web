@@ -12,8 +12,9 @@ import Project from '../commonComponents/Project';
 import Tool from '../commonComponents/Tool';
 import SearchBar from '../commonComponents/SearchBar';
 import LoginModal from '../commonComponents/LoginModal';
-import ReactGA from 'react-ga'; 
+// import ReactGA from 'react-ga'; 
 import {PageView, initGA} from '../../tracking';
+import { Event } from '../../tracking';
 
 
 import 'react-tabs/style/react-tabs.css';
@@ -49,8 +50,8 @@ class DatasetDetail extends Component {
   componentDidMount() {
     this.getDetailsSearchFromMDC();
     this.checkAlerts();
-    // initGA('UA-166025838-1');
-    // PageView();
+    initGA('UA-166025838-1');
+    PageView();
   }
 
 
@@ -199,7 +200,7 @@ class DatasetTitle extends Component {
     } else if (alert || hasRequestedAccess) {
       return <Button variant="primary" className="AddButton" disabled>Request Access</Button>
     } else {
-      return <Link className="btn btn-primary AddButton" to={{pathname: '/request-access', state: {title, dataSetId: id}}}>Request Access</Link>
+      return <Link className="btn btn-primary AddButton" to={{pathname: '/request-access', state: {title, dataSetId: id}}} onClick={() => Event("Buttons", "Click", "Request Access")}>Request Access</Link>
     }
   }
 
