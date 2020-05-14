@@ -11,7 +11,7 @@ module.exports = {
         var arr = rx.exec(thisBaseURL);
         if (arr.length > 0) {
             //add -api to the sub domain for API requests
-            return arr[1]+'-api'+arr[2]
+            return 'api'+arr[2]
         }
         } else {
         return 'http://localhost:3001'
@@ -27,7 +27,7 @@ module.exports = {
         var arr = rx.exec(thisBaseURL);
         if (arr.length > 0) {
             //add -api to the sub domain for API requests
-            return arr[1]+'-cms'+arr[2]
+            return arr[2]
         }
         } else {
         return 'http://localhost:3001'
