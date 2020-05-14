@@ -32,7 +32,7 @@ class DiscourseAddPost extends Component {
   render() {
     const { topicLink, toolId, userState } = this.state;
     return (userState[0].loggedIn === true &&
-      <Button variant='light' id='discourse-add-comment' className='discourse-button mb-1' onClick={() => {
+      <Button variant='light' id='discourse-add-comment' className='mb-1' onClick={() => {
         topicLink ? window.open(topicLink) : this.createTopicAndRedirecToDiscourse(toolId)
       }}>
         + Add a comment

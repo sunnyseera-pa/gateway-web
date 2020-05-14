@@ -209,7 +209,7 @@ class ToolDetail extends Component {
                   <Tab eventKey="Reviews" title={'Reviews (' + reviewData.length + ')'}>
                     <Reviews data={data} userState={userState} reviewData={reviewData} />
                   </Tab>
-                  <Tab eventKey="Collaboration" title={`Collaboration (${discourseTopic && discourseTopic.posts ? discourseTopic.posts.length : 0})`}>
+                  <Tab eventKey="Collaboration" title={`Discussion (${discourseTopic && discourseTopic.posts ? discourseTopic.posts.length : 0})`}>
                     <DiscourseTopic topic={discourseTopic} toolId={data.id} userState={userState} />
                   </Tab>
                   <Tab eventKey="Projects" title={'Projects using this (' + data.projectids.length + ')'}>

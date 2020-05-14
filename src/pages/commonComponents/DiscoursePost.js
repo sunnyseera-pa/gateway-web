@@ -1,6 +1,5 @@
 import React from 'react';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import { Row, Col, Image } from 'react-bootstrap';
 import Moment from 'react-moment';
 
 class DiscoursePost extends React.Component {
@@ -17,25 +16,23 @@ class DiscoursePost extends React.Component {
   render() {
     const { post } = this.state;
     return (
-      <Row className="mt-2">
-        <Col>
-          <div className="Rectangle">
-            <Row>
-              <Col xs={12} md={12}>
-                <span className="Gray800-14px"><div dangerouslySetInnerHTML={ {__html: post.cooked} } /></span>
-              </Col>
-              <Col xs={6} md={6} className="mt-2">
-                <span className="text-left Purple-13px">{post.username}</span>
-                <span className="text-left Gray500-13px"> on <Moment format="DD MMM YYYY">{post.created_at}</Moment></span>
-              </Col>
-              <Col xs={6} md={6} className="mb-1 text-right">
-                {/* <Rating emptySymbol={<EmptyStarIconSvg />} fullSymbol={<FullStarIconSvg />} placeholderSymbol={<FullStarIconSvg />} placeholderRating={review.rating} readonly={true} /> */}
-              </Col>
-              <Col xs={12} md={12} className="text-right">
-                {/* <ReplyButton data={data} userState={userState} review={review} /> */}
-              </Col>
-            </Row>
-          </div>
+      <Row className='mt-2'>
+        <Col md={1} className='text-center'>
+          {' '}
+          <Image src={post.avatar_template} roundedCircle={true} />
+        </Col>
+        <Col md={11}>
+          <Row className='mb-2'>
+            <Col md={8}>
+              <span className='discousion-username'>{post.username}</span>
+            </Col>
+            <Col md={4} className='text-right'>
+              <span className='discousion-date'><Moment format="MMM 'YY">{post.created_at}</Moment></span>
+            </Col>
+          </Row>
+          <Row>
+            <div className='ml-3 mr-4 Gray800-15px' dangerouslySetInnerHTML={{ __html: post.cooked }} />
+          </Row>
         </Col>
       </Row>
     );
