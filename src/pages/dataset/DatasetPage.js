@@ -11,7 +11,10 @@ import About from '../commonComponents/About';
 import Project from '../commonComponents/Project';
 import Tool from '../commonComponents/Tool';
 import SearchBar from '../commonComponents/SearchBar';
-import LoginModal from '../commonComponents/LoginModal'
+import LoginModal from '../commonComponents/LoginModal';
+import ReactGA from 'react-ga'; 
+import {PageView, initGA} from '../../tracking';
+
 
 import 'react-tabs/style/react-tabs.css';
 
@@ -46,6 +49,8 @@ class DatasetDetail extends Component {
   componentDidMount() {
     this.getDetailsSearchFromMDC();
     this.checkAlerts();
+    // initGA('UA-166025838-1');
+    // PageView();
   }
 
 
