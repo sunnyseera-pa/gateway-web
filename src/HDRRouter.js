@@ -55,7 +55,6 @@ class HDRRouter extends Component {
         });
       })
       .catch((error) => {
-        console.log(error);
         this.setState({
           userState: [
             {
