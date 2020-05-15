@@ -33,7 +33,7 @@ class Login extends React.Component {
           <Col sm={1} lg={1} />
         </Row>
 
-        <Row className='mt-3'>
+        <Row className='mt-2'>
           <Col sm={1} lg={1} />
           <Col sm={10} lg={10}>
             <div className='Gray800-14px' style={{ textAlign: 'center' }}>
