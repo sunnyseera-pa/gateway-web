@@ -192,7 +192,6 @@ class DatasetTitle extends Component {
    */
   renderRequestAccess = () => {
     const {user: {loggedIn}, data: {title, id, contactPoint}, alert=null, datarequest} = this.state;
-    debugger
     const hasRequestedAccess = (datarequest.length === 1 ? true : false);
     if(!loggedIn) {
       var isRequest=true;

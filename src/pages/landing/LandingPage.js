@@ -104,7 +104,6 @@ class LandingPage extends React.Component {
     doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
             if (!!this.state.searchString) {
-                debugger
                 window.location.href = window.location.pathname + "search?search=" + this.state.searchString + '&type=all&toolcategory=&programminglanguage=&features=&topics=';
             }
         }
