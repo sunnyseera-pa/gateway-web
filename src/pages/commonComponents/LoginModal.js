@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 
 import { Row, Col, Image, Button} from 'react-bootstrap';
-
-var baseURL = require('./BaseURL').getURL();
+import Login from './Login';
 
 const LoginModal = (props) => {
     const [show, setShow] = useState(false);
@@ -12,7 +11,6 @@ const LoginModal = (props) => {
 
     const showLoginModal = () => {
         var modalID="myModal"
-        debugger
         if (props.isRequest) {
             modalID="myModalRequest";
         }
@@ -51,7 +49,7 @@ const LoginModal = (props) => {
                     !props.isRequest ?
             <div id="myModal" class="modal">
                 <div class="modal-content">
-                    <div class="modal-body">
+                    <div class="modal-body mb-4">
                         <Row className="mt-3">
                             <Col xs={1} md={1} />
                             <Col xs={10} md={10}>
@@ -62,51 +60,7 @@ const LoginModal = (props) => {
                             </Col>
                         </Row>
 
-                        <Row className="mt-2">
-                            <Col sm={1} lg={1} />
-                            <Col sm={10} lg={10} >
-                                <span class="Gray800-14px">You can sign in or create a new account using your existing Linkedin, Google or OpenAthens account.</span>
-                            </Col>
-                            <Col sm={1} lg={1} />
-                        </Row>
-
-                        <Row className="mt-3">
-                            <Col sm={1} lg={1} />
-                            <Col sm={10} lg={10} >
-                                <div className="Gray800-14px" style={{ textAlign: 'center' }}>
-                                    <a href={baseURL + '/auth/linkedin'}>
-                                        <Image style={{ width: '200px' }} src={require("../../images/Linkedin-default.png")} />
-                                    </a>
-                                </div>
-                            </Col>
-                            <Col sm={1} lg={1} />
-                        </Row>
-
-                        <Row className="mt-2">
-                            <Col sm={1} lg={1} />
-                            <Col sm={10} lg={10} >
-                                <div className="Gray800-14px" style={{ textAlign: 'center' }}>
-                                    <a href={baseURL + '/auth/google'}>
-                                        <Image style={{ width: '200px' }} src={require("../../images/Google-default.png")} />
-                                    </a>
-                                </div>
-                            </Col>
-                            <Col sm={1} lg={1} />
-                        </Row>
-
-                        <Row className="mt-3 mb-3">
-                            <Col sm={1} lg={1} />
-                            <Col sm={10} lg={10} >
-                                <div className="Gray800-14px" style={{ textAlign: 'center' }}>
-                                    <a href={baseURL + '/auth/oidc'} className="openAthensButton">
-                                        Sign in with OpenAthens
-                  </a>
-
-                                    {/* <div id="wayfinder">Loading...</div> */}
-                                </div>
-                            </Col>
-                            <Col sm={1} lg={1} />
-                        </Row>
+                        <Login />
                     </div>
 
                 </div>
@@ -114,7 +68,7 @@ const LoginModal = (props) => {
             :
             <div id="myModalRequest" class="modal">
                 <div class="modal-content">
-                    <div class="modal-body">
+                    <div class="modal-body mb-4">
                         <Row className="mt-3">
                             <Col xs={1} md={1} />
                             <Col xs={10} md={10}>
@@ -125,52 +79,8 @@ const LoginModal = (props) => {
                             </Col>
                         </Row>
 
-                        <Row className="mt-2">
-                            <Col sm={1} lg={1} />
-                            <Col sm={10} lg={10} >
-                                <span class="Gray800-14px">You can sign in or create a new account using your existing Linkedin, Google or OpenAthens account.</span>
-                            </Col>
-                            <Col sm={1} lg={1} />
-                        </Row>
-
-                        <Row className="mt-3">
-                            <Col sm={1} lg={1} />
-                            <Col sm={10} lg={10} >
-                                <div className="Gray800-14px" style={{ textAlign: 'center' }}>
-                                    <a href={baseURL + '/auth/linkedin'}>
-                                        <Image style={{ width: '200px' }} src={require("../../images/Linkedin-default.png")} />
-                                    </a>
-                                </div>
-                            </Col>
-                            <Col sm={1} lg={1} />
-                        </Row>
-
-                        <Row className="mt-2">
-                            <Col sm={1} lg={1} />
-                            <Col sm={10} lg={10} >
-                                <div className="Gray800-14px" style={{ textAlign: 'center' }}>
-                                    <a href={baseURL + '/auth/google'}>
-                                        <Image style={{ width: '200px' }} src={require("../../images/Google-default.png")} />
-                                    </a>
-                                </div>
-                            </Col>
-                            <Col sm={1} lg={1} />
-                        </Row>
-
-                        <Row className="mt-3 mb-3">
-                            <Col sm={1} lg={1} />
-                            <Col sm={10} lg={10} >
-                                <div className="Gray800-14px" style={{ textAlign: 'center' }}>
-                                    <a href={baseURL + '/auth/oidc'} className="openAthensButton">
-                                        Sign in with OpenAthens
-                  </a>
-
-                                    {/* <div id="wayfinder">Loading...</div> */}
-                                </div>
-                            </Col>
-                            <Col sm={1} lg={1} />
-                        </Row>
-
+                        <Login />
+                    
                         <Row className="mt-4 mb-3">
                             <Col sm={1} lg={1} />
                             <Col sm={10} lg={10} >

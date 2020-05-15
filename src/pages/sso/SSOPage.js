@@ -1,64 +1,60 @@
 import React, { Component } from 'react';
-import { Row, Col, Image } from 'react-bootstrap';
-
-var baseURL = require('../commonComponents/BaseURL').getURL();
+import { Row, Col, Container } from 'react-bootstrap';
+import { ReactComponent as WhiteLogoSvg } from '../../../src/images/white.svg';
+import Login from '../commonComponents/Login';
 
 class SSOPage extends Component {
+  state = {
+    userState: [
+      {
+        loggedIn: false,
+        role: 'Reader',
+        id: null,
+        name: null,
+      },
+    ],
+    isLoading: true,
+  };
+
+  constructor(props) {
+    super(props);
+    if (props.data) {
+      this.state.userState = props.userState;
+      this.state.isLoading = false;
+    }
+  }
+
+  componentDidMount() {
+    console.log(this.state);
+    if (this.state.userState) {
+      console.log(this.state.userState);
+    }
+  }
+
   render() {
     return (
-      <div>
-        <Row className='mt-2'>
-          <Col sm={1} lg={1} />
-          <Col sm={10} lg={10}>
-            <span className='Gray800-14px'>
-              You can sign in or create a new account using your existing
-              Linkedin, Google or OpenAthens account.
-            </span>
+      <div className='LandingBackground'>
+        <Row className='pt-5 pl-5'>
+          <Col xs={{ span: 6, order: 1 }} lg={{ span: 6, order: 1 }}>
+            {' '}
+            <WhiteLogoSvg />{' '}
           </Col>
-          <Col sm={1} lg={1} />
         </Row>
-
-        <Row className='mt-3'>
-          <Col sm={1} lg={1} />
-          <Col sm={10} lg={10}>
-            <div className='Gray800-14px' style={{ textAlign: 'center' }}>
-              <a href={baseURL + '/auth/linkedin'}>
-                <Image
-                  style={{ width: '200px' }}
-                  src={require('../../images/Linkedin-default.png')}
-                />
-              </a>
+        <Container>
+          <div class='login-content mt-4'>
+            <div class='login-body mb-4'>
+              <Row className='mt-3'>
+                <Col xs={1} md={1} />
+                <Col xs={10} md={10}>
+                <span className="Black-20px">Sign in or create a new account</span>
+                </Col>
+                <Col xs={1} md={1}>
+                </Col>
+              </Row>
+                <Login />
             </div>
-          </Col>
-          <Col sm={1} lg={1} />
-        </Row>
-
-        <Row className='mt-2'>
-          <Col sm={1} lg={1} />
-          <Col sm={10} lg={10}>
-            <div className='Gray800-14px' style={{ textAlign: 'center' }}>
-              <a href={baseURL + '/auth/google'}>
-                <Image
-                  style={{ width: '200px' }}
-                  src={require('../../images/Google-default.png')}
-                />
-              </a>
-            </div>
-          </Col>
-          <Col sm={1} lg={1} />
-        </Row>
-
-        <Row className='mt-3 mb-3'>
-          <Col sm={1} lg={1} />
-          <Col sm={10} lg={10}>
-            <div className='Gray800-14px' style={{ textAlign: 'center' }}>
-              <a href={baseURL + '/auth/oidc'} className='openAthensButton'>
-                Sign in with OpenAthens
-              </a>
-            </div>
-          </Col>
-          <Col sm={1} lg={1} />
-        </Row>
+          </div>
+        </Container>
       </div>
     );
   }
