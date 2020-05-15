@@ -1,9 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import queryString from 'query-string';
 
 import { Row, Col, Image, Button} from 'react-bootstrap';
 import Login from './Login';
 
 const LoginModal = (props) => {
+
+    useEffect(() => {
+        var values = queryString.parse(window.location.search);
+        if(!!values.showLogin) {
+            showLoginModal()
+        }
+
+    });
+
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
