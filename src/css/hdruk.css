@@ -929,3 +929,17 @@ iframe#discourse-embed-frame {
 .btn-light {
   background-color: #e7e9ed !important;
 }
+
+.login-content {
+  position: relative;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0;
+  border: 1px solid #888;
+  max-width: 600px;
+}
+
+.login-body {
+  text-align: left;
+  padding: 2px 16px
+}
