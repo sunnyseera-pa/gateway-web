@@ -31,10 +31,29 @@ class DiscourseAddPost extends Component {
 
   render() {
     const { topicLink, toolId, userState } = this.state;
-    return (userState[0].loggedIn === true &&
+
+    const showLoginModal = (props) => {
+      var modalID="myModal"
+      if (props.isRequest) {
+          modalID="myModalRequest";
+      }
+      document.getElementById(modalID).style.display = "block";
+      
+      window.onclick = function (event) {
+          if (event.target === document.getElementById(modalID)) {
+              document.getElementById(modalID).style.display = "none";
+          }
+      }
+    };
+
+    return userState[0].loggedIn === true ? (
       <Button variant='light' id='discourse-add-comment' className='mb-1' onClick={() => {
         topicLink ? window.open(topicLink) : this.createTopicAndRedirecToDiscourse(toolId)
       }}>
+        + Add a comment
+      </Button>
+    ) : (
+      <Button variant='light' id='discourse-add-comment' className='mb-1' onClick={showLoginModal}>
         + Add a comment
       </Button>
     );
