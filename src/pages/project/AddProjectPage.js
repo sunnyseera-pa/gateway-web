@@ -33,49 +33,72 @@ class AddProjectPage extends React.Component {
         combinedCategories: [],
         combinedUsers: [],
         combinedTools: [],
+        combinedDatasets: [],
         isLoading: true,
         userState: []
     };
 
-    componentDidMount() {
+    async componentDidMount() {
         initGA('UA-166025838-1');
-        this.doGetTopicsCall();
-        this.doGetCategoriesCall();
-        this.doGetUsersCall();
-        this.doGetToolsCall();
+        await Promise.all([
+            this.doGetTopicsCall(),
+            this.doGetCategoriesCall(),
+            this.doGetUsersCall(),
+            this.doGetToolsCall(),
+            this.doGetDatasetsCall()
+        ])
+        this.setState({ isLoading: false });
     }
 
     doGetTopicsCall() {
-        axios.get(baseURL + '/api/v1/search/filter/topic/project')
-            .then((res) => {
-                this.setState({ combinedTopic: res.data.data });
-                this.setState({ isLoading: false });
-            });
+        return new Promise((resolve, reject) => {
+            axios.get(baseURL + '/api/v1/search/filter/topic/project')
+                .then((res) => {
+                    this.setState({ combinedTopic: res.data.data });
+                    resolve();
+                });
+        });
     }
 
 
     doGetCategoriesCall() {
-        axios.get(baseURL + '/api/v1/search/filter/category/project')
-            .then((res) => {
-                this.setState({ combinedCategories: res.data.data });
-                this.setState({ isLoading: false });
-            });
+        return new Promise((resolve, reject) => {
+            axios.get(baseURL + '/api/v1/search/filter/category/project')
+                .then((res) => {
+                    this.setState({ combinedCategories: res.data.data });
+                    resolve();
+                });
+        });
     }
 
     doGetUsersCall() {
-        axios.get(baseURL + '/api/v1/users')
-            .then((res) => {
-                this.setState({ combinedUsers: res.data.data });
-                this.setState({ isLoading: false });
-            });
+        return new Promise((resolve, reject) => {
+            axios.get(baseURL + '/api/v1/users')
+                .then((res) => {
+                    this.setState({ combinedUsers: res.data.data });
+                    resolve();
+                });
+        });
     }
 
     doGetToolsCall() {
-        axios.get(baseURL + '/api/v1/tools')
-            .then((res) => {
-                this.setState({ combinedTools: res.data.data });
-                this.setState({ isLoading: false });
-            });
+        return new Promise((resolve, reject) => {
+            axios.get(baseURL + '/api/v1/tools')
+                .then((res) => {
+                    this.setState({ combinedTools: res.data.data });
+                    resolve();
+                });
+        });
+    }
+
+    doGetDatasetsCall() {
+        return new Promise((resolve, reject) => {
+            axios.get(baseURL + '/api/v1/datasets/filteredsearch?search=')
+                .then((res) => {
+                    this.setState({ combinedDatasets: res.data.data.results });
+                    resolve();
+                });
+        });
     }
 
     doSearch = (e) => { //fires on enter on searchbar
@@ -91,7 +114,7 @@ class AddProjectPage extends React.Component {
     }
 
     render() {
-        const { data, combinedTopic, combinedCategories, combinedUsers, combinedTools, isLoading, userState } = this.state;
+        const { data, combinedTopic, combinedCategories, combinedUsers, combinedTools, combinedDatasets, isLoading, userState } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -100,7 +123,7 @@ class AddProjectPage extends React.Component {
             <div>
                 <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Container>
-                    <AddProjectForm data={data} combinedTopic={combinedTopic} combinedCategories={combinedCategories} combinedUsers={combinedUsers} combinedTools={combinedTools} userState={userState} />
+                    <AddProjectForm data={data} combinedTopic={combinedTopic} combinedCategories={combinedCategories} combinedUsers={combinedUsers} combinedTools={combinedTools} combinedDatasets={combinedDatasets} userState={userState} />
                 </Container>
             </div>
         );
@@ -125,13 +148,12 @@ const AddProjectForm = (props) => {
             tags: {
                 topics: [],
             },
-            toolids: []
+            toolids: [],
+            datasetids: []
         },
 
         validationSchema: Yup.object({
             name: Yup.string()
-                .required('This cannot be empty'),
-            link: Yup.string()
                 .required('This cannot be empty'),
             description: Yup.string()
                 .max(5000, 'Maximum of 5,000 characters')
@@ -149,6 +171,17 @@ const AddProjectForm = (props) => {
                 .then((res) => {
                     window.location.href = window.location.search + '/project/' + res.data.id + '/?projectAdded=true';
                 });
+        }
+    });
+
+    var listOfAuthors = [];
+
+    props.combinedUsers.forEach((user) => {
+        if (user.id === props.userState[0].id) {
+            listOfAuthors.push({ id: user.id, name: user.name + " (You)" })
+            if (!user.name.includes('(You)')) {
+                user.name = user.name + " (You)";
+            }
         }
     });
 
@@ -171,36 +204,38 @@ const AddProjectForm = (props) => {
                 <Col sm={10} lg={10}>
                     <Form onSubmit={formik.handleSubmit} onBlur={formik.handleBlur} autoComplete='off'>
                         <div className="Rectangle">
-                            <Form.Group className="pb-2">
-                                <Form.Label className="Gray800-14px">Project name</Form.Label>
+                            <Form.Group>
+                                <span className="Gray800-14px">Project name</span>
                                 <Form.Control id="name" name="name" type="text" className={formik.touched.name && formik.errors.name ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.name} onBlur={formik.handleBlur} />
                                 {formik.touched.name && formik.errors.name ? <div className="ErrorMessages">{formik.errors.name}</div> : null}
                             </Form.Group>
 
-                            <Form.Group className="pb-2">
-                                <Form.Label className="Gray800-14px">Link</Form.Label>
+                            <Form.Group>
+                                <span className="Gray800-14px">Link</span>
                                 <Form.Control id="link" name="link" type="text" className={formik.touched.link && formik.errors.link ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.link} onBlur={formik.handleBlur} />
                                 {formik.touched.link && formik.errors.link ? <div className="ErrorMessages">{formik.errors.link}</div> : null}
                             </Form.Group>
 
-                            <Form.Group className="pb-2">
-                                <Form.Label className="Gray800-14px">Description</Form.Label>
-                                <Form.Text className="Gray700-13px">
+                            <Form.Group>
+                                <span className="Gray800-14px">Description</span>
+                                <br />
+                                <span className="Gray700-13px">
                                     Up to 5,000 characters
-                                    </Form.Text>
+                                </span>
                                 <Form.Control as="textarea" id="description" name="description" type="text" className={formik.touched.description && formik.errors.description ? "EmptyFormInput AddFormInput DescriptionInput" : "AddFormInput DescriptionInput"} onChange={formik.handleChange} value={formik.values.description} onBlur={formik.handleBlur} />
                                 {formik.touched.description && formik.errors.description ? <div className="ErrorMessages">{formik.errors.description}</div> : null}
                             </Form.Group>
 
-                            <Form.Group className="pb-2">
-                                <Form.Label className="Gray800-14px">Authors</Form.Label>
-                                <Form.Text className="Gray700-13px">
-                                    Add any authors or collaborators {/* Can be their username or website if you don't know the name. */}
-                                </Form.Text>
+                            <Form.Group>
+                                <span className="Gray800-14px">Uploaded by</span>
+                                <br />
+                                <span className="Gray700-13px">
+                                    Add any authors or collaborators who have an account on this site
+                                </span>
                                 <Typeahead
                                     id="authors"
                                     labelKey={authors => `${authors.name}`}
-                                    defaultSelected={[{ id: props.userState[0].id, name: props.userState[0].name }]}
+                                    defaultSelected={listOfAuthors}
                                     multiple
                                     options={props.combinedUsers}
                                     onChange={(selected) => {
@@ -213,11 +248,12 @@ const AddProjectForm = (props) => {
                                 />
                             </Form.Group>
 
-                            <Form.Group className="pb-2">
-                                <Form.Label className="Gray800-14px">Category</Form.Label>
-                                <Form.Text className="Gray700-13px">
+                            <Form.Group>
+                                <span className="Gray800-14px">Category</span>
+                                <br />
+                                <span className="Gray700-13px">
                                     Select from existing or enter a new one.
-                                    </Form.Text>
+                                </span>
                                 <Typeahead
                                     id="categories.category"
                                     labelKey="category"
@@ -234,11 +270,12 @@ const AddProjectForm = (props) => {
                                 />
                             </Form.Group>
 
-                            <Form.Group className="pb-2">
-                                <Form.Label className="Gray800-14px">Keywords</Form.Label>
-                                <Form.Text className="Gray700-13px">
+                            <Form.Group>
+                                <span className="Gray800-14px">Keywords</span>
+                                <br />
+                                <span className="Gray700-13px">
                                     Words that help people identify any related fields or key concepts. As many as you like.
-                                    </Form.Text>
+                                </span>
 
                                 <Typeahead
                                     id="tags.topics"
@@ -257,11 +294,12 @@ const AddProjectForm = (props) => {
                                 />
                             </Form.Group>
 
-                            <Form.Group className="pb-2">
-                                <Form.Label className="Gray800-14px">Tools used in this project</Form.Label>
-                                <Form.Text className="Gray700-13px">
+                            <Form.Group>
+                                <span className="Gray800-14px">Tools used in this project</span>
+                                <br />
+                                <span className="Gray700-13px">
                                     Tools must be added to our portal first
-                                    </Form.Text>
+                                </span>
 
                                 <Typeahead
                                     id="tools"
@@ -277,10 +315,32 @@ const AddProjectForm = (props) => {
                                     }}
                                 />
                             </Form.Group>
+
+                            <Form.Group>
+                                <span className="Gray800-14px">Datasets used in this project</span>
+                                <br />
+                                <span className="Gray700-13px">
+                                    Datasets must be added to our portal first
+                                </span>
+
+                                <Typeahead
+                                    id="datasets"
+                                    labelKey={datasets => `${datasets.title}`}
+                                    multiple
+                                    options={props.combinedDatasets}
+                                    onChange={(selected) => {
+                                        var tempSelected = [];
+                                        selected.forEach((selectedItem) => {
+                                            tempSelected.push(selectedItem.id);
+                                        })
+                                        formik.values.datasetids = tempSelected;
+                                    }}
+                                />
+                            </Form.Group>
                         </div>
 
                         <Row className="mt-3">
-                            <Col sm={9} lg={9}>
+                            <Col xs={5} lg={9}>
                                 <div className="ButtonHolder">
                                     <a style={{ cursor: 'pointer' }} href={'/account?tab=projects'} >
                                         <Button variant="medium" className="CancelButton" >
@@ -289,7 +349,7 @@ const AddProjectForm = (props) => {
                                     </a>
                                 </div>
                             </Col>
-                            <Col sm={2} lg={2} className="ml-5">
+                            <Col xs={7} lg={3} className="text-right">
                                 <Button variant="primary" type="submit" className="AddButton" onClick={() => Event("Buttons", "Click", "Add project form submitted")}>
                                     Add this project
                                 </Button>
