@@ -125,7 +125,6 @@ class SearchPage extends React.Component {
      * @return  {[object]}  [{}]
      */
     getDatasetFilters = (searchString) => {
-        debugger;
         axios.get(baseURL + '/api/v1/datasets/filters?search=' + searchString)
             .then((response) => {
                 const {data: { success, data, error}} = response;
@@ -264,7 +263,7 @@ class SearchPage extends React.Component {
                     });
                 }
 
-                this.setState({ combinedToolCategories: tempCategoriesToolArray, combinedProjectCategories: tempCategoriesProjectArray, combinedLanguages: tempProgrammingLanguageArray, combinedFeatures: tempFeaturesArray, combinedToolTopic: tempToolTopicsArray, combinedProjectTopic: tempProjectTopicsArray });
+                this.setState({ combinedToolCategories: tempCategoriesToolArray.sort(), combinedProjectCategories: tempCategoriesProjectArray.sort(), combinedLanguages: tempProgrammingLanguageArray.sort(), combinedFeatures: tempFeaturesArray.sort(), combinedToolTopic: tempToolTopicsArray.sort(), combinedProjectTopic: tempProjectTopicsArray.sort() });
                 this.setState({ data: !res.data.data ? '' : res.data.data, summary: !res.data.summary ? '' : Object.entries(res.data.summary ) });
                 // datasets 
                 axios.get(baseURL + '/api/v1/datasets/filteredsearch?search=' + this.state.searchString + this.state.publishersFilter + this.state.licensesFilter + this.state.geoCoverageFilter + this.state.sampleAvailabilityFilter + this.state.keywordsFilter + this.state.ageBandsFilter)

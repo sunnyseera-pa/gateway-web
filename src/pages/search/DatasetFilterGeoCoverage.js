@@ -20,7 +20,7 @@ class DatasetFilterGeoCoverage extends Component {
         super(props);
         this.state.searchString = props.searchString;
         this.state.geoCoverageSelected = props.geoCoverageSelected;
-        this.state.data = props.geographicCoverageData;
+        this.state.data = props.geographicCoverageData.sort(function(a, b) {return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0;});
       }
 
       changeFilter = (e) => {

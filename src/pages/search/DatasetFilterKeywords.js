@@ -20,7 +20,7 @@ class DatasetFilterKeywords extends Component {
         super(props);
         this.state.searchString = props.searchString;
         this.state.keywordsSelected = props.keywordsSelected;
-        this.state.data = props.keywordsData;
+        this.state.data = props.keywordsData.sort(function(a, b) {return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0;});
       }
 
       changeFilter = (e) => {

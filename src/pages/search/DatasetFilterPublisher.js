@@ -20,7 +20,7 @@ class DatasetFilterPublisher extends Component {
         super(props);
         this.state.searchString = props.searchString;
         this.state.publishersSelected = props.publishersSelected;
-        this.state.data = props.publisherData;
+        this.state.data = props.publisherData.sort(function(a, b) {return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0;});
       }
 
       changeFilter = (e) => {

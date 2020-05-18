@@ -20,7 +20,7 @@ class DatasetFilterLicense extends Component {
         super(props);
         this.state.searchString = props.searchString;
         this.state.licensesSelected = props.licensesSelected;
-        this.state.data = props.licenseData;
+        this.state.data = props.licenseData.sort(function(a, b) {return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0;});
       }
 
       changeFilter = (e) => {

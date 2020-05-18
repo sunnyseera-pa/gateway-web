@@ -42,12 +42,27 @@ class YourAccount extends React.Component {
             })
     }
 
+    dateSuffix(day){
+        switch (day % 10){
+            case 1:
+                return (day % 100 === 11) ? "th" : "st";
+            case 2:
+                return (day % 100 === 12) ? "th" : "nd";
+            case 3:
+                return (day % 100 === 13) ? "th" : "rd";
+            default:
+                return "th";
+        }
+    };
+
     render() {
         const { newData, oldData, isLoading } = this.state;
 
         if (isLoading) {
             return <Loading />;
         }
+
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
         return (
             <>
@@ -78,65 +93,32 @@ class YourAccount extends React.Component {
                                             })()}
                                         </Col>
 
-                                        <Col xs={10} lg={11} className="pl-2 pt-2 Gray800-14px-bold">
+                                        <Col xs={10} lg={11} className="pl-2 pt-1 Gray800-14px-bold">
                                             {(() => {
+                                                var messageDate = new Date(dat.messageSent);
+                                                
+
+
+                                                var messageDateString = messageDate.getDate()+this.dateSuffix(messageDate.getDate())+" "+monthNames[messageDate.getMonth()]+" "+messageDate.getFullYear()+" at "+messageDate.getHours()+":"+messageDate.getMinutes();
+
                                                 if (dat.messageType === 'add') {
-                                                    return <>The {dat.tool[0].type} <a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} >{dat.tool[0].name}</a> is now available for review.</>
+                                                    return <>{messageDateString} - The {dat.tool[0].type} <a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} >{dat.tool[0].name}</a> is now available for review.</>
                                                 }
                                                 else if (dat.messageType === 'approved') {
                                                     if (dat.messageTo === 0) {
-                                                        return <>The {dat.tool[0].type} <a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} >{dat.tool[0].name}</a> has been approved.</>
+                                                        return <>{messageDateString} - The {dat.tool[0].type} <a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} >{dat.tool[0].name}</a> has been approved.</>
                                                     }
                                                     else {
-                                                        return <>Your {dat.tool[0].type} <a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} >{dat.tool[0].name}</a> has been approved.</>
+                                                        return <>{messageDateString} - Your {dat.tool[0].type} <a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} >{dat.tool[0].name}</a> has been approved.</>
                                                     }
                                                 }
                                                 else if (dat.messageType === 'rejected') {
                                                     if (dat.messageTo === 0) {
-                                                        return <>The {dat.tool[0].type} <a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} >{dat.tool[0].name}</a> has been rejected.</>
+                                                        return <>{messageDateString} - The {dat.tool[0].type} <a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} >{dat.tool[0].name}</a> has been rejected.</>
                                                     }
                                                     else {
-                                                        return <>Your {dat.tool[0].type} <a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} >{dat.tool[0].name}</a> has been rejected.</>
+                                                        return <>{messageDateString} - Your {dat.tool[0].type} <a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} >{dat.tool[0].name}</a> has been rejected.</>
                                                     }
-                                                }
-                                            })()}
-                                        </Col>
-                                    </Row>
-                                </div>)
-                        })}
-                    </Col>
-                </Row>
-
-                <Row className="mt-3">
-                    <Col>
-                        <span className="Black-16px ml-2">Notifications older than 7 days</span>
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col>
-                        {oldData.length <= 0 ? <NotFound word='notifications' /> : oldData.map((dat) => {
-                            return (
-                                <div className="Rectangle mt-1">
-                                    <Row>
-                                        <Col xs={2} lg={1} className="iconHolder">
-                                            {(() => {
-                                                if (dat.tool[0].type === 'tool') {
-                                                    return <SVGIcon name="toolicon" width={18} height={18} fill={'#3db28c'} />
-                                                }
-                                                else {
-                                                    return <SVGIcon name="projecticon" width={20} height={24} fill={'#3db28c'} />
-                                                }
-                                            })()}
-                                        </Col>
-
-                                        <Col xs={10} lg={11} className="pl-2 pt-2 Gray800-14px-bold">
-                                            {(() => {
-                                                if (dat.messageType === 'add') {
-                                                    return <>The {dat.tool[0].type} <a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} >{dat.tool[0].name}</a> is now available for review.</>
-                                                }
-                                                else {
-                                                    return <><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} >{dat.tool[0].name}</a></>
                                                 }
                                             })()}
                                         </Col>

@@ -186,7 +186,7 @@ class Account extends Component {
                                     <Tab eventKey="messages" title="Notifications">
                                         <Messages userState={userState} />
                                     </Tab>
-                                    <Tab eventKey="datasets" title="Data sets">
+                                    {/* <Tab eventKey="datasets" title="Data sets">
                                         <Row className="mt-2">
                                             <Col>
                                                 <div className="Rectangle">
@@ -196,7 +196,7 @@ class Account extends Component {
                                                 </div>
                                             </Col>
                                         </Row>
-                                    </Tab>
+                                    </Tab> */}
                                     <Tab eventKey="projects" title="Projects">
                                         <AccountProjects userState={userState} />
                                     </Tab>

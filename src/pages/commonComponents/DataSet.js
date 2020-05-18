@@ -24,19 +24,6 @@ class DataSet extends React.Component {
         }
     }
 
-    componentDidMount() {
-        this.getDetailsSearchFromMDC();
-      }
-
-      getDetailsSearchFromMDC = () => {
-        axios.get(baseURL + '/api/v1/datasets/detail/' + this.state.data.id)
-            .then((res) => {
-                this.setState({
-                    detailsData: res.data.data
-                });
-            })
-      };
-
     render() {
         const { data, detailsData } = this.state;
 
@@ -52,7 +39,7 @@ class DataSet extends React.Component {
                                 <p>
                                     <span ><a className="Black-16px" style={{ cursor: 'pointer' }} href={'/dataset/' + data.id} > {data.title ? data.title.substr(0, 75) + (data.title.length > 75 ? '...' : '') : ''} </a></span>
                                     <br/>
-                                    <span className="Gray800-14px">{detailsData ? detailsData.publisher ? detailsData.publisher : '' : ''}
+                                    <span className="Gray800-14px">{data.publisher ? data.publisher : ''}
                                     </span>
                                 </p>
                                 <p>

@@ -20,7 +20,7 @@ class DatasetFilterAgeBand extends Component {
         super(props);
         this.state.searchString = props.searchString;
         this.state.ageBandsSelected = props.ageBandsSelected;
-        this.state.data = props.ageBandData;
+        this.state.data = props.ageBandData.sort(function(a, b) {return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0;});
       }
 
       changeFilter = (e) => {

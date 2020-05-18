@@ -20,7 +20,7 @@ class DatasetFilterSampleAvailability extends Component {
         super(props);
         this.state.searchString = props.searchString;
         this.state.sampleAvailabilitySelected = props.sampleAvailabilitySelected;
-        this.state.data = props.physicalSampleAvailabilityData;
+        this.state.data = props.physicalSampleAvailabilityData.sort(function(a, b) {return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0;});
       }
 
       changeFilter = (e) => {
