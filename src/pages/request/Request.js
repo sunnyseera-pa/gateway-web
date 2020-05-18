@@ -7,7 +7,12 @@ import SearchBar from '../commonComponents/SearchBar';
 import DatePicker from "react-datepicker";
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
+import { Event, initGA } from '../../tracking';
+import ReactGA from 'react-ga';
+
 var baseURL = require('../commonComponents/BaseURL').getURL();
+
+ReactGA.initialize('UA-166025838-1');
 
 /**
  * [ValidationSchema]
@@ -36,6 +41,7 @@ const validationSchema = Yup.object({
     });
  
 const Request = (props) => {
+
     const {searchString = '', userState, location: {state:{title, dataSetId}}} = props;
     let history = useHistory();
     const [reqState, setDefaultState] = useState({
@@ -78,7 +84,7 @@ const Request = (props) => {
                        'Content-Type': 'application/json'
                    }
                 }
-                axios.post(baseURL + '/api/dataset/sendgrid', JSON.stringify(vals), config)
+                axios.post(baseURL + '/api/v1/datasets/access/request', JSON.stringify(vals), config)
                     .then(response => {
                         message = response.data.message;
                     })
@@ -111,7 +117,6 @@ const Request = (props) => {
 
     const onCancel = (e) => {
         e.preventDefault();
-        console.log('back');
     }
 
      //redirect if !logged in
@@ -296,7 +301,7 @@ const Request = (props) => {
                     <Button variant='tertiary' onClick={onCancel} type='button'>Cancel</Button>
                 </Col>
                 <Col className='text-right'>
-                    <Button variant='primary' type='submit' className='Gray100-14px'>Send enquiry</Button>
+                    <Button variant='primary' type='submit' className='Gray100-14px' onClick={() => Event("Buttons", "Click", "Access request - send enquiry")}>Send enquiry</Button>
                 </Col>
             </Row>
             </Form>

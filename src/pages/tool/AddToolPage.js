@@ -16,6 +16,8 @@ import Loading from '../commonComponents/Loading'
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
+import { Event, initGA } from '../../tracking';
+
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class AddToolPage extends React.Component {
@@ -39,6 +41,7 @@ class AddToolPage extends React.Component {
     };
 
     componentDidMount() {
+        initGA('UA-166025838-1');
         this.doGetTopicsCall();
         this.doGetFeaturesCall();
         this.doGetLanguagesCall();
@@ -209,7 +212,7 @@ const AddToolForm = (props) => {
         }),
 
         onSubmit: values => {
-            axios.post(baseURL + '/api/mytools/add', values)
+            axios.post(baseURL + '/api/v1/mytools/add', values)
                 .then((res) => {
                     window.location.href = window.location.search + '/tool/' + res.data.id + '/?toolAdded=true';
                 });
@@ -407,7 +410,7 @@ const AddToolForm = (props) => {
                                 </div>
                             </Col>
                             <Col sm={2} lg={2} className="ml-5">
-                                <Button variant="primary" type="submit" className="AddButton">
+                                <Button variant="primary" type="submit" className="AddButton" onClick={() => Event("Buttons", "Click", "Add tool form submitted")}>
                                     Add this tool
                                 </Button>
                             </Col>
