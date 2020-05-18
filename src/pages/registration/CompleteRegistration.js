@@ -3,12 +3,7 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Container from 'react-bootstrap/Container';
-import Alert from 'react-bootstrap/Alert'
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
+import { Row, Col, Container, Button, Alert, Form } from 'react-bootstrap';
 
 import SearchBar from '../commonComponents/SearchBar';
 import Loading from '../commonComponents/Loading';
@@ -157,7 +152,7 @@ const YourAccountForm = (props) => {
                             </Form.Group>
 
                             <Form.Group className="pb-2">
-                                <span className="Gray800-14px">Intistution</span>
+                                <span className="Gray800-14px">Institution</span>
                                 <br />
                                 <span className="Gray700-13px">If you aren't part of an institution, please provide a short description of who you are</span>
                                 <Form.Control id="bio" name="bio" type="text" className={formik.touched.bio && formik.errors.bio ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.bio} onBlur={formik.handleBlur} />
