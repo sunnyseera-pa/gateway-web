@@ -1,6 +1,6 @@
 
 import React from 'react';
-import Creators from '../src/pages/components/Creators';
+import Creators from '../src/pages/commonComponents/Creators';
 import Enzyme, { mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
