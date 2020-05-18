@@ -434,32 +434,30 @@ class SearchPage extends React.Component {
             <div>
 
                 <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
+                
+                <Row className="SearchTabsHolder">
+                    <Col>
+                        <div>
+                            <Tabs className='TabsBackground Gray700-13px' activeKey={this.state.key} onSelect={this.handleSelect}>
 
+                                <Tab eventKey="Datasets" title={'Datasets (' + datasetData.length + ')'}>
+                                    {data && key === 'Datasets' && datasetData.length <= 0 ? <NoResultsDatasets searchString={searchString} /> : ''}
+                                </Tab>
+                                <Tab eventKey="Tools" title={'Tools (' + toolCount + ')'}> 
+                                    {data && key === 'Tools' && toolCount <= 0 ? <NoResultsTool searchString={searchString} /> : ''}
+                                </Tab>
+                                <Tab eventKey="Projects" title={'Projects (' + projectCount + ')'}>
+                                    {data && key === 'Projects' && projectCount <= 0 ? <NoResultsProjects searchString={searchString} /> : ''}
+                                </Tab>
+                                <Tab eventKey="People" title={'People (' + personCount + ')'}> 
+                                    {data && key === 'People' && personCount <= 0 ? <NoResultsPeople searchString={searchString} /> : ''}
+                                </Tab>
+                            </Tabs>
+                        </div>
+                    </Col>
+                </Row>
                 <Container>
-                    <Row className="mt-1">
-                        <Col sm={12} lg={12}>
-                            <div>
-                                <Tabs className='TabsBackground Gray700-13px' activeKey={this.state.key} onSelect={this.handleSelect}>
-
-                                    <Tab eventKey="Datasets" title={'Datasets (' + datasetData.length + ')'}>
-                                        {data && key === 'Datasets' && datasetData.length <= 0 ? <NoResultsDatasets searchString={searchString} /> : ''}
-                                    </Tab>
-                                    <Tab eventKey="Tools" title={'Tools (' + toolCount + ')'}> 
-                                        {data && key === 'Tools' && toolCount <= 0 ? <NoResultsTool searchString={searchString} /> : ''}
-                                    </Tab>
-                                    <Tab eventKey="Projects" title={'Projects (' + projectCount + ')'}>
-                                        {data && key === 'Projects' && projectCount <= 0 ? <NoResultsProjects searchString={searchString} /> : ''}
-                                    </Tab>
-                                    <Tab eventKey="People" title={'People (' + personCount + ')'}> 
-                                        {data && key === 'People' && personCount <= 0 ? <NoResultsPeople searchString={searchString} /> : ''}
-                                    </Tab>
-                                </Tabs>
-                            </div>
-                        </Col>
-                    </Row> 
-
                     <Row>
-
                         {key === 'Tools' || key === 'Projects' || key === 'Datasets' ?
                         <Col sm={12} md={12} lg={3}>
                             {key === 'Tools' ? <CategoryFilterTool combinedToolCategories={combinedToolCategories} doUpdateCombinedCategories={this.updateCombinedCategories} categoriesSelected={categoriesSelected} /> : ''}

@@ -946,3 +946,7 @@ iframe#discourse-embed-frame {
 .descriptionWhiteSpace {
   white-space: pre-wrap;
 }
+
+.SearchTabsHolder {
+  margin-top: 2px;
+}
