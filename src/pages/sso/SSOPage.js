@@ -57,7 +57,7 @@ class SSOPage extends Component {
           <Container>
             <div className='login-content mt-4'>
               <div className='login-body mb-4'>
-                <Row className='mt-3'>
+                <Row className='mt-4'>
                   <Col xs={1} md={1} />
                   <Col xs={10} md={10}>
                     <span className='Black-20px'>
