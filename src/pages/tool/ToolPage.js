@@ -279,8 +279,6 @@ class ToolTitle extends Component {
   };
 
   componentDidMount(props) {
-    console.log('props : ' + JSON.stringify(this.props.data))
-    console.log('state : ' + JSON.stringify(this.state.data))
     let counter = !this.props.data.counter ? 1 : this.props.data.counter + 1;
     this.UpdateCounter(this.props.data.id, counter);
   }
