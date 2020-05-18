@@ -829,7 +829,7 @@ iframe#discourse-embed-frame {
   margin: auto;
   padding: 0;
   border: 1px solid #888;
-  max-width: 600px;
+  max-width: 540px;
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
   -webkit-animation-name: animatetop;
   -webkit-animation-duration: 0.4s;
@@ -868,20 +868,20 @@ iframe#discourse-embed-frame {
 }
 
 .openAthensButton {
-  width:440px;
+  width:200px;
   background:#475da7;
   color:white;
-  padding : 10px 22px 10px 22px; 
-  border-radius: 2px
+  padding: 8px 20px;
+  border-radius: 2px;
+  display: block;
+  margin: 0 auto;
+  position: relative;
 }
 
 .openAthensButton:hover {
   text-decoration:none;
-  width:440px;
   background:#475da7;
   color:white;
-  padding : 10px 22px 10px 22px; 
-  border-radius: 2px
 }
 
 .discousion-username {
@@ -936,7 +936,7 @@ iframe#discourse-embed-frame {
   margin: auto;
   padding: 0;
   border: 1px solid #888;
-  max-width: 600px;
+  max-width: 540px;
 }
 
 .login-body {
