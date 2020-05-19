@@ -12,6 +12,7 @@ import Col from 'react-bootstrap/Col';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 
+import Paginator from '../commonComponents/Paginator';
 import SearchBar from '../commonComponents/SearchBar';
 import Project from '../commonComponents/Project';
 import Tool from '../commonComponents/Tool';
@@ -477,6 +478,7 @@ class SearchPage extends React.Component {
 
 
                         <Col sm={12} md={12} lg={9}>
+                            <Paginator />
                             {data.length <= 0 ?  '' :        
                             data.map((dat) => {
                                 if (dat.type === 'tool' && key === 'Tools' && toolCount >= 1) {
