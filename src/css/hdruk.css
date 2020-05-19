@@ -654,7 +654,6 @@ textarea:focus {
 /* RBTS ARE THE STYLES FOR TYPEAHEAD INPUTS */
 .rbt-input-multi {
   width: 100% !important;
-  height: 40px !important;
   border-radius: 4px !important;
   border: solid 2px #d0d3d4 !important;
   background-color: #ffffff !important;
@@ -942,4 +941,12 @@ iframe#discourse-embed-frame {
 .login-body {
   text-align: left;
   padding: 2px 16px
+}
+
+.descriptionWhiteSpace {
+  white-space: pre-wrap;
+}
+
+.SearchTabsHolder {
+  margin-top: 2px;
 }

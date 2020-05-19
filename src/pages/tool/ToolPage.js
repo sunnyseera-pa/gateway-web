@@ -121,10 +121,10 @@ class ToolDetail extends Component {
       return <Container><Loading /></Container>;
     }
 
-    if (typeof data.datasetids === 'undefined') {
+    if (data.datasetids === null || typeof data.datasetids === 'undefined') {
       data.datasetids = [];
     }
-
+    
     if (typeof data.projectids === 'undefined') {
       data.projectids = [];
     }
@@ -192,7 +192,7 @@ class ToolDetail extends Component {
 
               <Row className="mt-4">
                 <Col sm={10} lg={10}>
-                  <span className="Black500-16px">Authors ( {data.authors.length} )</span>
+                  <span className="Black500-16px">Uploaded by ( {data.authors.length} )</span>
                 </Col>
               </Row>
 
@@ -390,7 +390,7 @@ class ToolTitle extends Component {
                           </Row>
                           <Row>
                               <Col xs={12} md={12} className="mb-3">
-                                  <span className="Gray800-14px">
+                                  <span className="Gray800-14px descriptionWhiteSpace">
                                       {data.description}
                                   </span>
                               </Col>

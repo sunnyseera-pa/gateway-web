@@ -35,13 +35,11 @@ class AccountTools extends React.Component {
         return (
             <div>
                 <Row className="mt-3">
-                    <Col xs={5} lg={5}></Col>
-                    <Col xs={2} lg={2} style={{ textAlign: "center" }}>
+                    <Col style={{ textAlign: "center" }}>
                         <Button variant="primary" href="/addtool" className="AddButton" onClick={() => Event("Buttons", "Click", "Add a new tool")}>
                             + Add a new tool
-                            </Button>
+                        </Button>
                     </Col>
-                    <Col xs={5} lg={5}></Col>
                 </Row>
 
                 <Row className="mt-3">

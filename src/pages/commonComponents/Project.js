@@ -118,7 +118,7 @@ class Project extends React.Component {
                                         : ''
                                     }
 
-                                    {data.description.substr(0, 150) + (data.description.length > 150 ? '...' : '')}
+                                    {data.description.substr(0, 160) + (data.description.length > 160 ? '...' : '')}
                                 </p>
                             </Col>
 

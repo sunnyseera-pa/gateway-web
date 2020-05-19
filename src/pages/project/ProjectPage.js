@@ -153,7 +153,7 @@ class ProjectDetail extends Component {
 
               <Row className="mt-4">
                 <Col sm={10} lg={10}>
-                  <span className="Black500-16px">Authors ( {data.authors.length} )</span>
+                  <span className="Black500-16px">Uploaded by ( {data.authors.length} )</span>
                 </Col>
               </Row>
               <Row>
@@ -298,7 +298,7 @@ class ProjectTitle extends Component {
                           </Row>
                           <Row>
                               <Col xs={12} md={12} className="mb-3">
-                                  <span className="Gray800-14px">
+                                  <span className="Gray800-14px descriptionWhiteSpace">
                                       {data.description}
                                   </span>
                               </Col>
