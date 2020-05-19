@@ -199,7 +199,7 @@ class DatasetTitle extends Component {
     } else if (alert || hasRequestedAccess) {
       return <Button variant="primary" className="AddButton" disabled>Request Access</Button>
     } else {
-      return <Link className="btn btn-primary AddButton" to={{pathname: '/request-access', state: {title, dataSetId: id}}} onClick={() => Event("Buttons", "Click", "Request Access")}>Request Access</Link>
+      return <Link className="btn btn-primary AddButton" to={{pathname: '/request-access', state: {title, dataSetId: id, custodianEmail: contactPoint}}} onClick={() => Event("Buttons", "Click", "Request Access")}>Request Access</Link>
     }
   }
 
