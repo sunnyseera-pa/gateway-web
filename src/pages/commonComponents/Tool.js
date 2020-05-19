@@ -4,6 +4,7 @@ import Col from 'react-bootstrap/Col';
 import SVGIcon from "../../images/SVGIcon";
 import axios from 'axios';
 import Loading from './Loading'
+import ReactMarkdown from 'react-markdown';
 
 var baseURL = require('./BaseURL').getURL();
 
@@ -120,16 +121,19 @@ class Tool extends React.Component {
                             <Col xs={{ span: 2, order: 0 }} lg={{ span: 1, order: 2 }}></Col>
                             <Col xs={{ span: 10, order: 0 }} lg={{ span: 11, order: 2 }} >
                                 <p className="Gray800-14px">
-                                    {!data.projectids.length ? '' :
+
+                                    {data.projectids && data.projectids.length ? 
                                         <span className="mr-1">
                                             <b>
                                                 {!data.projectids.length ? '' : data.projectids.length}
                                                 {data.projectids.length === 1 ? " project" : " projects"}
                                             </b>
                                         </span>
+                                    : ""
                                     }
 
-                                    {!data.datasetids.length ? '' :
+
+                                    {data.datasetids && data.datasetids.length ?
                                         <span className="mr-1">
                                             {data.projectids.length ? ', ' : ''}
                                             <b>
@@ -137,14 +141,17 @@ class Tool extends React.Component {
                                                 {data.datasetids.length === 1 ? " data set" : " data sets"}
                                             </b>
                                         </span>
+                                    : ""
                                     }
 
-                                    {data.projectids.length || data.datasetids.length ?
+                                    {data.projectids && data.projectids.length || data.datasetids && data.datasetids.length ?
                                         <span className="reviewTitleGap">·</span>
                                         : ''
                                     }
-
-                                    {data.description.substr(0, 160) + (data.description.length > 160 ? '...' : '')}
+                                   
+                                    <ReactMarkdown source={data.description.substr(0, 160) + (data.description.length > 160 ? '...' : '')} />
+                                   
+                                    {/* {data.description.substr(0, 160) + (data.description.length > 160 ? '...' : '')} */}
                                 </p>
                             </Col>
 

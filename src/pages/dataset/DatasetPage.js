@@ -268,7 +268,7 @@ class DatasetTitle extends Component {
                                 <Col sm={2} lg={2} className="Gray800-14px" >
                                     Standard
                                 </Col>
-                                {data.conformsTo ? <Col sm={8} lg={8} className="Gray800-14px">{data.conformsTo}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col> }
+                                {data.conformsTo ? <Col sm={8} lg={8} className="Gray800-14px" >{data.conformsTo}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col> }
                             </Row>
 
                             <Row className="mt-3">

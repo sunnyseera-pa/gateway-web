@@ -1,6 +1,7 @@
 
 // /ShowObjects.js
 import React, { Component } from 'react';
+import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
 import Rating from 'react-rating';
 import queryString from 'query-string';
@@ -391,7 +392,7 @@ class ToolTitle extends Component {
                           <Row>
                               <Col xs={12} md={12} className="mb-3">
                                   <span className="Gray800-14px descriptionWhiteSpace">
-                                      {data.description}
+                                      <ReactMarkdown source={data.description} />
                                   </span>
                               </Col>
                           </Row>
