@@ -980,3 +980,7 @@ iframe#discourse-embed-frame {
 .SearchTabsHolder {
   margin-top: 2px;
 }
+
+.overflowWrap{
+  overflow-wrap: break-word;
+}
