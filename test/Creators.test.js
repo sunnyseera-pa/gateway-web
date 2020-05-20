@@ -9,7 +9,7 @@ Enzyme.configure({ adapter: new Adapter() });
 describe('Creators', () => {
     it('renders without crashing', () => {
         var data = {data:[{id:"test"}]};
-        //const wrapper = mount(<Creators data={data}/>);
+        const wrapper = mount(<Creators data={data}/>);
         
         
         

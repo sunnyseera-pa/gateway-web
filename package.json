@@ -6,7 +6,6 @@
   "dependencies": {
     "@kenshooui/react-multi-select": "^1.1.6",
     "@semantic-ui-react/event-stack": "^3.1.1",
-    "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.19.2",
@@ -37,7 +36,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "jest",
+    "test": "jest --env=jsdom --coverage --config=jest.config.json",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -55,16 +54,14 @@
       "last 1 safari version"
     ]
   },
-  "jest": {
-    "moduleNameMapper": {
-      "\\.(css|less|sass|scss)$": "<rootDir>/test/mocks/styleMock.js",
-      "\\.(gif|ttf|eot|jpg)$": "<rootDir>/test/mocks/fileMock.js",
-      "\\.(svg)": "<rootDir>/test/mocks/svgrMock.js"
-    }
-  },
+  "jest": {},
   "devDependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react-app": "^7.0.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
-    "jest": "24.9.0"
+    "jest": "24.9.0",
+    "jest-cli": "^26.0.1"
   }
 }

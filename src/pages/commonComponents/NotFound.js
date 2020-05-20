@@ -20,7 +20,7 @@ class NotFound extends React.Component {
             <Row className="mt-2">
                 <Col>
                     <div className="Rectangle">
-                        <div className="Gray800-14px" style={{ textAlign: 'center' }}>
+                        <div className="Gray800-14px" style={{ textAlign: 'center' }} data-testid="notFound">
                             No {word} found
                         </div>
                     </div>

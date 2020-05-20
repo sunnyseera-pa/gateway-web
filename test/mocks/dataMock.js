@@ -1,63 +1,45 @@
-const __statsData = {
-    project: 2,
-    tool: 2,
-    account: 12,
-    searches: 1
+
+const __toolTitle = {
+  "_id":"5ebd61076ae705656c47a89e",
+  "categories":{
+      "programmingLanguage":["Javascript"],
+      "category":"API","programmingLanguageVersion":"0.0.0"
+  },
+  "tags": {"features":["Arbitrage"],"topics":["Epilepsy"]},
+  "authors":[4495285946631793],"id":6061998693684476,
+  "type":"tool",
+  "name":"Epilepsy data research",
+  "link":"http://epilepsy.org",
+  "description":"Epilespy data research description",
+  "activeflag":"active","updatedon":"2020-05-14T15:17:27.383Z",
+  "createdAt":"2020-05-14T15:17:27.384Z",
+  "updatedAt":"2020-05-20T13:23:48.125Z",
+  "__v":0,
+  "counter":57,
+  "persons":[{
+      "_id":"5ebd513057ab64258f217ed6",
+      "categories":{"programmingLanguage":[]},
+      "tags":{"features":[],"topics":[]},
+      "authors":[],
+      "toolids":[],
+      "id":4495285946631793,
+      "type":"person",
+      "firstname":"Kris",
+      "lastname":"Marks",
+      "bio":"Developer",
+      "link":"http://localhost:8080",
+      "orcid":"",
+      "activeflag":"active",
+      "createdAt":"2020-05-14T14:09:52.022Z",
+      "updatedAt":"2020-05-15T12:02:45.511Z","__v":0
+  }],
+  "datasetids":[],
+  "projectids":[]
   };
-  const __statsRecent = [
-    {
-      _id: 'string',
-      count: 1,
-      returned: {
-        person: 1
-      }
-    }
-  ];
-  const __unMetData = [
-    {
-      _id: 'string',
-      count: 1
-    }
-  ];
-  const __toolTitle = {
-    "_id":"5ebd61076ae705656c47a89e",
-    "categories":{
-        "programmingLanguage":["Javascript"],
-        "category":"API","programmingLanguageVersion":"0.0.0"
-    },
-    "tags": {"features":["Arbitrage"],"topics":["Epilepsy"]},
-    "authors":[4495285946631793],"id":6061998693684476,
-    "type":"tool",
-    "name":"Epilepsy data research",
-    "link":"http://epilepsy.org",
-    "description":"Epilespy data research description",
-    "activeflag":"active","updatedon":"2020-05-14T15:17:27.383Z",
-    "createdAt":"2020-05-14T15:17:27.384Z",
-    "updatedAt":"2020-05-20T13:23:48.125Z",
-    "__v":0,
-    "counter":57,
-    "persons":[{
-        "_id":"5ebd513057ab64258f217ed6",
-        "categories":{"programmingLanguage":[]},
-        "tags":{"features":[],"topics":[]},
-        "authors":[],
-        "toolids":[],
-        "id":4495285946631793,
-        "type":"person",
-        "firstname":"Kris",
-        "lastname":"Marks",
-        "bio":"Developer",
-        "link":"http://localhost:8080",
-        "orcid":"",
-        "activeflag":"active",
-        "createdAt":"2020-05-14T14:09:52.022Z",
-        "updatedAt":"2020-05-15T12:02:45.511Z","__v":0
-    }],
-    "datasetids":[],
-    "projectids":[]
-  };
-  const __toolReview = [];
-  const __project = {
+
+const __toolReview = [];
+
+const __project = {
       "tags": 
           { "topics": ["Adult", "Epilepsy", "Focal epilepsy", "Generalized epilepsy", "Ketogenic diet"] },
       "id": "900000002",
@@ -100,6 +82,7 @@ const __statsData = {
       }
     ]
 };
+
 const __projectTitle = {
     "id": 900000003,
     "name": "Confusion in the nomenclature of ketogenic diets blurs evidence",
@@ -110,49 +93,52 @@ const __projectTitle = {
     "tags":
          {topics: ["Classification", "Nomenclature", "Ketogenic diet"]},
       "updatedon": "2020-01-13T00:00:00.000Z"
-  };
-  const __person = {
-      "bio": "Jefferson Comprehensive Epilepsy Center, Philadelphia",
-      "firstname": "Michael",
-      "lastname": "Sperling",
-      "id": 900000014,
-      "objects": [
-          {
-          "_id": "5ebd4cecd67943702f091d54",
-          "categories": {
-              "category": "Code snippet", "programmingLanguage": ["Matlab"],
-              "programmingLanguageVersion": ""
-          },
-          "tags": {
-              "features": ["Bayesian Statistics", "Clustering"],
-              "topics": ["Cardiovascular", "Ear"]
-          },
-          "authors": [947228017269611, 900000015, 900000014],
-          "id": 21722367105393390,
-          "type": "tool",
-          "name": "test editing",
-          "link": "test",
-          "description": "test",
-          "license": "Common Development and Distribution License",
-          "activeflag": "review",
-          "updatedon": "2020-05-14T13:51:40.453Z",
-          "createdAt": "2020-05-14T13:51:40.456Z",
-          "updatedAt": "2020-05-20T08:43:42.131Z",
-          "__v": 0,
-          "counter": 2,
-          "datasetids": null,
-          "toolids": null
-      }
-    ]     
-  };
+};
+
+const __person = {
+    "bio": "Jefferson Comprehensive Epilepsy Center, Philadelphia",
+    "firstname": "Michael",
+    "lastname": "Sperling",
+    "id": 900000014,
+    "objects": [
+        {
+        "_id": "5ebd4cecd67943702f091d54",
+        "categories": {
+            "category": "Code snippet", "programmingLanguage": ["Matlab"],
+            "programmingLanguageVersion": ""
+        },
+        "tags": {
+            "features": ["Bayesian Statistics", "Clustering"],
+            "topics": ["Cardiovascular", "Ear"]
+        },
+        "authors": [947228017269611, 900000015, 900000014],
+        "id": 21722367105393390,
+        "type": "tool",
+        "name": "test editing",
+        "link": "test",
+        "description": "test",
+        "license": "Common Development and Distribution License",
+        "activeflag": "review",
+        "updatedon": "2020-05-14T13:51:40.453Z",
+        "createdAt": "2020-05-14T13:51:40.456Z",
+        "updatedAt": "2020-05-20T08:43:42.131Z",
+        "__v": 0,
+        "counter": 2,
+        "datasetids": null,
+        "toolids": null
+    }
+  ]     
+};
+
 const __personTitle = {
-    "bio" : "Jefferson Comprehensive Epilepsy Center, Philadelphia",
-    "firstname" : "Michael",
-    "lastname" : "Sperling",
-    "id" : 900000014,
-    "orcid" : "https://orcid.org/0000-0003-2446-4558",
-    "link" : "https://orcid.org/0000-0001-5022-5265"
-  };
+  "bio" : "Jefferson Comprehensive Epilepsy Center, Philadelphia",
+  "firstname" : "Michael",
+  "lastname" : "Sperling",
+  "id" : 900000014,
+  "orcid" : "https://orcid.org/0000-0003-2446-4558",
+  "link" : "https://orcid.org/0000-0001-5022-5265"
+};
+
 const __tool = {
     "categories": 
         { "programmingLanguage": ["Python"], 
@@ -208,9 +194,11 @@ const __tool = {
         }
     ]
 };
+
 const __notFound = {
   "word" : "reviews"
 };
+
 const __reviews = {
     reviewData : [{
       "review":"very good review",
@@ -268,10 +256,35 @@ const __reviews = {
   }]
 };
 
+const __searchBarState = {
+    "textValue": "",
+    "displayClearButton": true,
+    "userState": [
+      "{ id: null, loggedIn: false, name: null, role: 'Reader' }"
+    ]
+}
+
+const __dataSetState = {
+  data: {
+    "identifier": "Epilepsy 12 - organisational audit",
+    "keywords": "Audit, Epilepsy 12, National organisational, Paediatric, Survey",
+    "contactPoint": "DataSharing@hqip.org.uk",
+    "jurisdiction": "GB-GBN",
+    "publisher": "ALLIANCE > HQIP",
+    "description": "A dataset comprising a yearly survey of Trusts' paediatric epilepsy services. The dataset covers England and Wales and includes information on 10 areas of the provision and organisation of services: Workforce, Epilepsy clinic configuration, Tertiary provision, Investigations, Service contact, Young people and transition, Mental health provision, Neurodevelopmental support, Care planning, and the use of a Patient database/register.",
+    "language": "en",
+    "abstract": "A dataset comprising a yearly survey of Trusts' paediatric epilepsy services.",
+    "accessRights": "https://www.hqip.org.uk/national-programmes/accessing-ncapop-data",
+    "id": "7f125091-12ba-464d-af7d-9a88179b0b95",
+    "title": "Epilepsy 12 - National organisational audit (service descriptor questionnaire) and Trust profile",
+    "group": "National Clinical Audit and Patient Outcomes Programme (NCAPOP)"
+  },
+  isLoading: false,
+  detailsData: []
+}
+
+  
   module.exports = {
-    statsData: __statsData,
-    statsRecent: __statsRecent,
-    unMetData: __unMetData,
     toolTitle: __toolTitle,
     toolReview: __toolReview,
     projectData: __project,
@@ -280,5 +293,7 @@ const __reviews = {
     personTitleData: __personTitle,
     toolData: __tool,
     notFoundData: __notFound,
-    reviewsData: __reviews
+    reviewsData: __reviews,
+    searchBarState: __searchBarState,
+    dataSetState: __dataSetState
   };

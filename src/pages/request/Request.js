@@ -7,10 +7,11 @@ import SearchBar from '../commonComponents/SearchBar';
 import DatePicker from "react-datepicker";
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
+import { regExpConfig } from '../../configs/regex.config';
+import { baseURL } from '../../configs/url.config';
 import { Event } from '../../tracking';
 import ReactGA from 'react-ga';
 
-var baseURL = require('../commonComponents/BaseURL').getURL();
 
 ReactGA.initialize('UA-166025838-1');
 
@@ -35,9 +36,9 @@ const validationSchema = Yup.object({
             otherwise: Yup.string().default('').notRequired()
         }),
         icoRegistration: Yup.string()
-            .matches(/^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/, "This is not a valid ICO registration"),
+            .matches(regExpConfig.alphaNumeric, "This is not a valid ICO registration"),
         contactNumber: Yup.string()
-            .matches(/^[0-9]*$/, 'This is not a valid number')
+            .matches(regExpConfig.number, 'This is not a valid number')
     });
  
 const Request = (props) => {
