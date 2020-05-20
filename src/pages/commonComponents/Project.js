@@ -113,15 +113,9 @@ class Project extends React.Component {
                                             </b>
                                         </span>
                                     }
-
-                                    {data.toolids.length || data.datasetids.length ?
-                                        <span className="reviewTitleGap">·</span>
-                                        : ''
-                                    }
                                     
                                     <ReactMarkdown source={data.description.substr(0, 160) + (data.description.length > 160 ? '...' : '')} />
                     
-                                    {/* {data.description.substr(0, 160) + (data.description.length > 160 ? '...' : '')} */}
                                 </p>
                             </Col>
 
