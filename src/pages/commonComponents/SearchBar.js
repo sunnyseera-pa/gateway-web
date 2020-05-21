@@ -38,6 +38,7 @@ class SearchBar extends React.Component {
 
     render() {
         const { userState } = this.state;
+        
         return (
             <>
                 <div className="searchBarBackground">
