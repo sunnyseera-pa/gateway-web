@@ -143,15 +143,9 @@ class Tool extends React.Component {
                                         </span>
                                     : ""
                                     }
-
-                                    {data.projectids && data.projectids.length || data.datasetids && data.datasetids.length ?
-                                        <span className="reviewTitleGap">·</span>
-                                        : ''
-                                    }
                                    
                                     <ReactMarkdown source={data.description.substr(0, 160) + (data.description.length > 160 ? '...' : '')} />
                                    
-                                    {/* {data.description.substr(0, 160) + (data.description.length > 160 ? '...' : '')} */}
                                 </p>
                             </Col>
 
