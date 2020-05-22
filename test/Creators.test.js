@@ -23,12 +23,6 @@ describe('<Creators /> rendering', () => {
 
     it('will contain correct href link', () => {
         wrapper = shallow(<Creators author={creatorsData} />);
-
-        expect(wrapper.find('a').simulate('click'));
         expect(wrapper.find('[data-testid="href"]').props().href).toEqual('/person/900000014');
     });
-});
-
-describe('<Creators /> interactions', () => {
-
 });
