@@ -262,7 +262,7 @@ const __searchBarState = {
     "userState": [
       "{ id: null, loggedIn: false, name: null, role: 'Reader' }"
     ]
-}
+};
 
 const __dataSetState = {
   data: {
@@ -281,19 +281,21 @@ const __dataSetState = {
   },
   isLoading: false,
   detailsData: []
-}
+};
 
-  
-  module.exports = {
-    toolTitle: __toolTitle,
-    toolReview: __toolReview,
-    projectData: __project,
-    projectTitleData: __projectTitle,
-    personData: __person,
-    personTitleData: __personTitle,
-    toolData: __tool,
-    notFoundData: __notFound,
-    reviewsData: __reviews,
-    searchBarState: __searchBarState,
-    dataSetState: __dataSetState
-  };
+const __creatorsData = { id: 900000014, firstname: 'Michael', lastname: 'Sperling', bio: 'Jefferson Comprehensive Epilepsy Center, Philadelphia' };
+
+module.exports = {
+  toolTitle: __toolTitle,
+  toolReview: __toolReview,
+  projectData: __project,
+  projectTitleData: __projectTitle,
+  personData: __person,
+  personTitleData: __personTitle,
+  toolData: __tool,
+  notFoundData: __notFound,
+  reviewsData: __reviews,
+  searchBarState: __searchBarState,
+  dataSetState: __dataSetState,
+  creatorsData: __creatorsData
+};

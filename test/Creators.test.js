@@ -1,26 +1,24 @@
-
 import React from 'react';
-import Creators from '../src/pages/commonComponents/Creators';
-import Enzyme, { mount } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-
-Enzyme.configure({ adapter: new Adapter() });
-
-describe('Creators', () => {
+import Creators from '../src/pages/commonComponents/Creators.js';
+import { creatorsData } from './mocks/dataMock';
+let wrapper;
+describe('<Creators /> rendering', () => {
     it('renders without crashing', () => {
-        // var data = {data:[{id:"test"}]};
-        // const wrapper = mount(<Creators data={data}/>);
-        expect(1+1).toEqual(2);
-        
-        
-        /* expect(wrapper.find('.foo')).to.have.lengthOf(1);
-        expect(wrapper.find('.bar')).to.have.lengthOf(0);
-        wrapper.setState({ data: {} });
-        expect(wrapper.find('.foo')).to.have.lengthOf(0);
-        expect(wrapper.find('.bar')).to.have.lengthOf(1);
-        const div = document.createElement('div');
-        var test = mount(<Creators/ >);
-        expect(test.state()).toEqual({ test: 'tgreg' }); */
-        
+        wrapper = shallow(<Creators author={creatorsData} />);
+    });
+
+    it('will render with "Michael Sperling"', () => {
+        wrapper = shallow(<Creators author={creatorsData} />);
+        expect(wrapper.find('[data-testid="name"]').text().trim()).toEqual('Michael Sperling');
+    });
+
+    it('will render with "Jefferson Comprehensive Epilepsy Center, Philadelphia"', () => {
+        wrapper = shallow(<Creators author={creatorsData} />);
+        expect(wrapper.find('[data-testid="bio"]').text().trim()).toEqual('Jefferson Comprehensive Epilepsy Center, Philadelphia');
+    });
+
+    it('will contain correct href link', () => {
+        wrapper = shallow(<Creators author={creatorsData} />);
+        expect(wrapper.find('[data-testid="href"]').props().href).toEqual('/person/900000014');
     });
 });

@@ -16,13 +16,12 @@ class  Creators extends Component {
   // it is easy to understand their functions when you
   // see them render into our screen
   render() {
-    const { author } = this.props.author;
-
+    const { author } = this.state;
     return (
       <span>
         <Row className="mt-2">
           <Col sm={12} lg={12}>
-            <a className="searchHolder" href={'/person/' + author.id} >
+            <a className="searchHolder" data-testid="href" href={'/person/' + author.id} >
               <div className="Rectangle">
 
                 <Row className="AuthorCard">
@@ -30,8 +29,8 @@ class  Creators extends Component {
                     <PersonPlaceholderSvg />
                   </Col>
                   <Col sm={10} className="text-left ">
-                    <p className="Black-16px"> {author.firstname} {author.lastname} </p>
-                    <p className="Gray700-13px"> {author.bio} </p>
+                    <p className="Black-16px" data-testid="name"> {author.firstname} {author.lastname} </p>
+                    <p className="Gray700-13px" data-testid="bio"> {author.bio} </p>
                   </Col>
                   <Col sm={2} />
                 </Row>
