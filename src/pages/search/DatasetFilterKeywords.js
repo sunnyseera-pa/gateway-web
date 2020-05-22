@@ -1,33 +1,21 @@
 import React, { Component } from 'react';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import InputGroup from 'react-bootstrap/InputGroup';
-import FormText from 'react-bootstrap/FormText';
-import axios from 'axios';
-
-var baseURL = require('../commonComponents/BaseURL').getURL();
+import { Row, Col, InputGroup, FormText } from 'react-bootstrap';
 
 class DatasetFilterKeywords extends Component {
 
     state = {
-        searchString: '',
-        data: [],
-        isLoading: false,
-        keywordsSelected: []
+        keywordsSelected: [],
+        keywordsData: []
     }
 
     constructor(props) {
         super(props);
-        this.state.searchString = props.searchString;
+        this.state.keywordsData = props.keywordsData;
         this.state.keywordsSelected = props.keywordsSelected;
-        if (props.keywordsData) {
-            this.state.data = props.keywordsData.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; });
-        }
     }
 
     changeFilter = (e) => {
         const keywordsSelected = this.state.keywordsSelected
-        const searchString = this.state.searchString;
         let index
 
         if (e.target.checked) {
@@ -38,21 +26,19 @@ class DatasetFilterKeywords extends Component {
         }
 
         this.setState({ keywordsSelected: keywordsSelected })
-        this.props.doFilteredSearch(keywordsSelected);
+        this.props.updateOnFilter();
     }
 
     clearFilter = () => {
         const keywordsSelected = [];
-        const searchString = this.state.searchString;
         this.setState({ keywordsSelected: keywordsSelected })
-        this.props.doFilteredSearch(keywordsSelected);
+        this.props.updateOnFilter();
     }
 
     render() {
+        const { keywordsData, keywordsSelected } = this.state;
 
-        const { data, searchString, keywordsSelected } = this.state;
-
-        if (!data || data.length === 0) {
+        if (!keywordsData || keywordsData.length === 0) {
             return (<></>);
         }
 
@@ -84,7 +70,7 @@ class DatasetFilterKeywords extends Component {
                         <Col xs={1}></Col>
                         <Col xs={11} className="ml-4">
 
-                            {!data ? '' : data.map((dat) => {
+                            {!keywordsData ? '' : keywordsData.map((dat) => {
                                 return <InputGroup >
                                     <InputGroup.Prepend>
                                         <InputGroup.Checkbox aria-label="Checkbox for following text input" name="keywords" checked={keywordsSelected.indexOf(dat) !== -1 ? "true" : ""} value={dat} onChange={this.changeFilter} />

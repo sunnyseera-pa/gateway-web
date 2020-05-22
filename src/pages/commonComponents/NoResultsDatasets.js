@@ -29,7 +29,7 @@ class NoResultsDatasets extends React.Component {
                 </Row>
                 <Row className="mt-3">
                     <Col className="Gray800-14px text-center">
-                        <span> Try searching for ‘<a href={'/search?search=' + 'COVID-19' + '&type=all'} className="Purple-14px">COVID-19</a>’ if you want to see examples of datasets </span>
+                        <span> Try searching for ‘<a href={'/search?search=' + 'COVID-19'} className="Purple-14px">COVID-19</a>’ if you want to see examples of datasets </span>
                     </Col>
                 </Row>
 

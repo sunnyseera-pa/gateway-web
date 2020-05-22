@@ -1,33 +1,21 @@
 import React, { Component } from 'react';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import InputGroup from 'react-bootstrap/InputGroup';
-import FormText from 'react-bootstrap/FormText';
-import axios from 'axios';
-
-var baseURL = require('../commonComponents/BaseURL').getURL();
+import { Row, Col, InputGroup, FormText } from 'react-bootstrap';
 
 class DatasetFilterSampleAvailability extends Component {
 
     state = {
-        searchString: '',
-        data: [],
-        isLoading: false,
-        sampleAvailabilitySelected: []
+        sampleAvailabilitySelected: [],
+        physicalSampleAvailabilityData: []
     }
 
     constructor(props) {
         super(props);
-        this.state.searchString = props.searchString;
+        this.state.physicalSampleAvailabilityData = props.physicalSampleAvailabilityData;
         this.state.sampleAvailabilitySelected = props.sampleAvailabilitySelected;
-        if (props.physicalSampleAvailabilityData) {
-            this.state.data = props.physicalSampleAvailabilityData.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; });
-        }
     }
 
     changeFilter = (e) => {
         const sampleAvailabilitySelected = this.state.sampleAvailabilitySelected
-        const searchString = this.state.searchString;
         let index
 
         if (e.target.checked) {
@@ -38,24 +26,21 @@ class DatasetFilterSampleAvailability extends Component {
         }
 
         this.setState({ sampleAvailabilitySelected: sampleAvailabilitySelected })
-        this.props.doFilteredSearch(sampleAvailabilitySelected);
+        this.props.updateOnFilter();
     }
 
     clearFilter = () => {
         const sampleAvailabilitySelected = [];
-        const searchString = this.state.searchString;
         this.setState({ sampleAvailabilitySelected: sampleAvailabilitySelected })
-        this.props.doFilteredSearch(sampleAvailabilitySelected);
+        this.props.updateOnFilter();
     }
 
     render() {
+        const { physicalSampleAvailabilityData, sampleAvailabilitySelected } = this.state;
 
-        const { data, searchString, sampleAvailabilitySelected } = this.state;
-
-        if (!data || data.length === 0) {
+        if (!physicalSampleAvailabilityData || physicalSampleAvailabilityData.length === 0) {
             return (<></>);
         }
-
 
         return (
             <div>
@@ -84,8 +69,7 @@ class DatasetFilterSampleAvailability extends Component {
                     <Row className="mb-3">
                         <Col xs={1}></Col>
                         <Col xs={11} className="ml-4">
-
-                            {!data ? '' : data.map((dat) => {
+                            {!physicalSampleAvailabilityData ? '' : physicalSampleAvailabilityData.map((dat) => {
                                 return <InputGroup >
                                     <InputGroup.Prepend>
                                         <InputGroup.Checkbox aria-label="Checkbox for following text input" name="physicalSampleAvailability" checked={sampleAvailabilitySelected.indexOf(dat) !== -1 ? "true" : ""} value={dat} onChange={this.changeFilter} />

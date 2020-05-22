@@ -1,33 +1,21 @@
 import React, { Component } from 'react';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import InputGroup from 'react-bootstrap/InputGroup';
-import FormText from 'react-bootstrap/FormText';
-import axios from 'axios';
-
-var baseURL = require('../commonComponents/BaseURL').getURL();
+import { Row, Col, InputGroup, FormText } from 'react-bootstrap';
 
 class DatasetFilterGeoCoverage extends Component {
 
     state = {
-        searchString: '',
-        data: [],
-        isLoading: false,
-        geoCoverageSelected: []
+        geoCoverageSelected: [],
+        geographicCoverageData: []
     }
 
     constructor(props) {
         super(props);
-        this.state.searchString = props.searchString;
+        this.state.geographicCoverageData = props.geographicCoverageData;
         this.state.geoCoverageSelected = props.geoCoverageSelected;
-        if (props.geographicCoverageData) {
-            this.state.data = props.geographicCoverageData.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; });
-        }
     }
 
     changeFilter = (e) => {
         const geoCoverageSelected = this.state.geoCoverageSelected;
-        const searchString = this.state.searchString;
         let index
 
         if (e.target.checked) {
@@ -38,21 +26,20 @@ class DatasetFilterGeoCoverage extends Component {
         }
 
         this.setState({ geoCoverageSelected: geoCoverageSelected })
-        this.props.doFilteredSearch(geoCoverageSelected);
+        this.props.updateOnFilter();
     }
 
     clearFilter = () => {
         const geoCoverageSelected = [];
-        const searchString = this.state.searchString;
         this.setState({ geoCoverageSelected: geoCoverageSelected })
-        this.props.doFilteredSearch(geoCoverageSelected);
+        this.props.updateOnFilter();
     }
 
     render() {
 
-        const { data, searchString, geoCoverageSelected } = this.state;
+        const { geographicCoverageData, geoCoverageSelected } = this.state;
 
-        if (!data || data.length === 0) {
+        if (!geographicCoverageData || geographicCoverageData.length === 0) {
             return (<></>);
         }
 
@@ -84,7 +71,7 @@ class DatasetFilterGeoCoverage extends Component {
                         <Col xs={1}></Col>
                         <Col xs={11} className="ml-4">
 
-                            {!data ? '' : data.map((dat) => {
+                            {!geographicCoverageData ? '' : geographicCoverageData.map((dat) => {
                                 return <InputGroup >
                                     <InputGroup.Prepend>
                                         <InputGroup.Checkbox aria-label="Checkbox for following text input" name="geographicCoverage" checked={geoCoverageSelected.indexOf(dat) !== -1 ? "true" : ""} value={dat} onChange={this.changeFilter} />

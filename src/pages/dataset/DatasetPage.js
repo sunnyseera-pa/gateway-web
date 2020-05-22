@@ -85,7 +85,7 @@ class DatasetDetail extends Component {
   doSearch = (e) => { //fires on enter on searchbar
     if (e.key === 'Enter') {
       if (!!this.state.searchString) {
-        window.location.href = "/search?search=" + this.state.searchString + '&type=all';
+        window.location.href = "/search?search=" + this.state.searchString;
       }
     }
   }
@@ -276,7 +276,7 @@ class DatasetTitle extends Component {
                                     Keywords
                                 </Col>
                                 <Col sm={10} lg={10}>
-                                    {!keywords || keywords.length <= 0 ? <span className="Gray800-14px-Opacity">Not specified</span> : keywords.map((keyword) => {return <div className="mr-2 Gray800-14px tagBadges mb-2"> <a href={'/search?search=' + keyword + '&type=all'}> {keyword} </a> </div> })}                                
+                                    {!keywords || keywords.length <= 0 ? <span className="Gray800-14px-Opacity">Not specified</span> : keywords.map((keyword) => {return <div className="mr-2 Gray800-14px tagBadges mb-2"> <a href={'/search?search=' + keyword}> {keyword} </a> </div> })}                                
                                 </Col>
                             </Row>
                       </div>

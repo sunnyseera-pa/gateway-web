@@ -105,7 +105,7 @@ class LandingPage extends React.Component {
     doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
             if (!!this.state.searchString) {
-                window.location.href = window.location.pathname + "search?search=" + this.state.searchString + '&type=all';
+                window.location.href = window.location.pathname + "search?search=" + this.state.searchString;
             }
         }
     }
@@ -248,7 +248,7 @@ class RecentSearches extends React.Component {
                                         <Row >
                                             <Col sm={1} lg={1} />
                                             <Col sm={10} lg={10} className="mt-2 mb-2">
-                                                <a className="Purple-14px" style={{ cursor: 'pointer' }} href={'/search?search=' + searchDat._id + '&type=all&toolcategory=&programminglanguage=&features=&topics='}> {searchDat._id} </a>
+                                                <a className="Purple-14px" style={{ cursor: 'pointer' }} href={'/search?search=' + searchDat._id}> {searchDat._id} </a>
                                                 <br />
                                                 <span className="Gray800-14px">
                                                     {!searchDat.returned.tool ? '' :
@@ -426,7 +426,7 @@ class UnmetDemand extends React.Component {
                                         <Row >
                                             <Col sm={1} lg={1} />
                                             <Col sm={10} lg={10} className="mt-2 mb-2">
-                                                <a className="Purple-14px" style={{ cursor: 'pointer' }} href={'/search?search=' + unmetDat._id + '&type=all&toolcategory=&programminglanguage=&features=&topics='}> {unmetDat._id} </a>
+                                                <a className="Purple-14px" style={{ cursor: 'pointer' }} href={'/search?search=' + unmetDat._id}> {unmetDat._id} </a>
                                                 <br />
                                                 <span className="Gray800-14px"> {unmetDat.count} {unmetDat.count === 1 ? 'search' : 'searches'} but no result</span>
                                             </Col>

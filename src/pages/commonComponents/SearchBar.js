@@ -63,7 +63,7 @@ class SearchBar extends React.Component {
                                                 </span>
                                                 {(this.props.searchString != '' && this.props.searchString != undefined) ?
                                                     <span className="SearchInputClearGrey">
-                                                        <a style={{ cursor: 'pointer' }} href={'/search?search=&type=all&toolcategory=&programminglanguage=&features=&topics='} >
+                                                        <a style={{ cursor: 'pointer' }} href={'/search?search='} >
                                                             <ClearButtonSvg />
                                                         </a>
                                                     </span> : null}

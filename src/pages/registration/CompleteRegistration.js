@@ -30,7 +30,7 @@ class CompleteRegistration extends Component {
     doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
             if (!!this.state.searchString) {
-                window.location.href = "/search?search=" + this.state.searchString + '&type=all';
+                window.location.href = "/search?search=" + this.state.searchString;
             }
         }
     }

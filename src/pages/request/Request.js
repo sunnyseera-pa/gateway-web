@@ -105,7 +105,7 @@ const Request = (props) => {
     const doSearch = (e) => {
         if (e.key === 'Enter') {
             if (!!reqState.searchString) 
-                window.location.href = `/search?search=${reqState.searchString}&type=all`;
+                window.location.href = `/search?search=${reqState.searchString}`;
             
         }
     };

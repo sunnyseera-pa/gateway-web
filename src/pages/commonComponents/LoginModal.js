@@ -66,7 +66,7 @@ const LoginModal = (props) => {
                             <span className="Black-20px">Sign in or create a new account</span>
                             </Col>
                             <Col xs={1} md={1}>
-                                <span class="close" onClick={hideLoginModal}>&times;</span>
+                                <span className="close" onClick={hideLoginModal}>&times;</span>
                             </Col>
                         </Row>
 
