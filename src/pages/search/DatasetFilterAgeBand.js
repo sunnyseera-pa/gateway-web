@@ -1,33 +1,21 @@
 import React, { Component } from 'react';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import InputGroup from 'react-bootstrap/InputGroup';
-import FormText from 'react-bootstrap/FormText';
-import axios from 'axios';
-
-var baseURL = require('../commonComponents/BaseURL').getURL();
+import { Row, Col, InputGroup, FormText } from 'react-bootstrap';
 
 class DatasetFilterAgeBand extends Component {
 
     state = {
-        searchString: '',
-        data: [],
-        isLoading: false,
-        ageBandsSelected: []
+        ageBandsSelected: [],
+        ageBandData: []
     }
 
     constructor(props) {
         super(props);
-        this.state.searchString = props.searchString;
+        this.state.ageBandData = props.ageBandData;
         this.state.ageBandsSelected = props.ageBandsSelected;
-        if (props.ageBandData) {
-            this.state.data = props.ageBandData.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; });
-        }
     }
 
     changeFilter = (e) => {
         const ageBandsSelected = this.state.ageBandsSelected
-        const searchString = this.state.searchString;
         let index
 
         if (e.target.checked) {
@@ -38,21 +26,20 @@ class DatasetFilterAgeBand extends Component {
         }
 
         this.setState({ ageBandsSelected: ageBandsSelected })
-        this.props.doFilteredSearch(ageBandsSelected);
+        this.props.updateOnFilter();
     }
 
     clearFilter = () => {
         const ageBandsSelected = [];
-        const searchString = this.state.searchString;
         this.setState({ ageBandsSelected: ageBandsSelected })
-        this.props.doFilteredSearch(ageBandsSelected);
+        this.props.updateOnFilter();
     }
 
     render() {
 
-        const { data, searchString, ageBandsSelected } = this.state;
+        const { ageBandData, ageBandsSelected } = this.state;
 
-        if (!data || data.length === 0) {
+        if (!ageBandData || ageBandData.length === 0) {
             return (<></>);
         }
 
@@ -83,7 +70,7 @@ class DatasetFilterAgeBand extends Component {
                         <Col xs={1}></Col>
                         <Col xs={11} className="ml-4">
 
-                            {!data ? '' : data.map((dat) => {
+                            {!ageBandData ? '' : ageBandData.map((dat) => {
                                 return <InputGroup >
                                     <InputGroup.Prepend>
                                         <InputGroup.Checkbox aria-label="Checkbox for following text input" name="ageBand" checked={ageBandsSelected.indexOf(dat.replace("+", "%2B")) !== -1 ? "true" : ""} value={dat.replace("+", "%2B")} onChange={this.changeFilter} />

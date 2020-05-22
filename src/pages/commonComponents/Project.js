@@ -123,14 +123,14 @@ class Project extends React.Component {
                             </Col>
 
                             <Col xs={{ span: 12, order: 1 }} lg={{ span: 12, order: 3 }}>
-                                {!data.categories.category ? '' : <a href={'/search?search=' + data.categories.category + '&type=all'}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{data.categories.category}</div></a>}
+                                {!data.categories.category ? '' : <a href={'/search?search=' + data.categories.category}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{data.categories.category}</div></a>}
 
                                 {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
-                                    return <a href={'/search?search=' + feature + '&type=all'}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{feature}</div></a>
+                                    return <a href={'/search?search=' + feature}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{feature}</div></a>
                                 })}
 
                                 {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
-                                    return <a href={'/search?search=' + topic + '&type=all'}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{topic}</div></a>
+                                    return <a href={'/search?search=' + topic}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{topic}</div></a>
                                 })}
                             </Col>
                         </Row>

@@ -156,7 +156,7 @@ class AddToolPage extends React.Component {
     doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
             if (!!this.state.searchString) {
-                window.location.href = window.location.search + "/search?search=" + this.state.searchString + '&type=all';
+                window.location.href = window.location.search + "/search?search=" + this.state.searchString;
             }
         }
     }

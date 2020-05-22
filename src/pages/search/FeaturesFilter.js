@@ -1,18 +1,15 @@
 import React, { Component } from 'react';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import InputGroup from 'react-bootstrap/InputGroup';
-import FormText from 'react-bootstrap/FormText';
+import { Row, Col, InputGroup, FormText } from 'react-bootstrap';
 
 class FeaturesFilter extends Component {
   state = {
     featuresSelected: [],
-    combinedFeatures: []
+    featuresData: []
   };
 
   constructor(props) {
     super(props);
-    this.state.combinedFeatures = props.combinedFeatures;
+    this.state.featuresData = props.featuresData;
     this.state.featuresSelected = props.featuresSelected;
   }
 
@@ -28,20 +25,20 @@ class FeaturesFilter extends Component {
     }
 
     this.setState({ featuresSelected: featuresSelected })
-    this.props.doUpdateCombinedFeatures(featuresSelected);
+    this.props.updateOnFilter();
   }
 
   clearFilter = () => {
-    const featuresSelected = [];
-    this.setState({ featuresSelected: featuresSelected })
-    this.props.doUpdateCombinedFeatures(featuresSelected);
+    const featuresSelected = this.state.featuresSelected;
+    while (featuresSelected.length) { featuresSelected.pop(); }
+    this.props.updateOnFilter();
   }
 
   render() {
 
-    const { combinedFeatures, featuresSelected } = this.state;
+    const { featuresData, featuresSelected } = this.state;
 
-    if (!combinedFeatures || combinedFeatures.length === 0) {
+    if (!featuresData || featuresData.length === 0) {
       return (<></>);
     }
 
@@ -72,7 +69,7 @@ class FeaturesFilter extends Component {
             <Col xs={1}></Col>
             <Col xs={11} className="ml-4">
 
-              {!combinedFeatures ? '' : combinedFeatures.map((features) => {
+              {!featuresData ? '' : featuresData.map((features) => {
                 return <InputGroup >
                   <InputGroup.Prepend>
                     <InputGroup.Checkbox aria-label="Checkbox for following text input" name="features" checked={featuresSelected.indexOf(features) !== -1 ? "true" : ""} value={features} onChange={this.changeFilter} />
