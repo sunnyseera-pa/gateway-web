@@ -1,6 +1,7 @@
 
 // /ShowObjects.js
 import React, { Component } from 'react';
+import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
 import Rating from 'react-rating';
 import queryString from 'query-string';
@@ -27,6 +28,9 @@ import DiscourseTopic from '../commonComponents/DiscourseTopic';
 import { ReactComponent as EmptyStarIconSvg } from '../../images/starempty.svg'
 import { ReactComponent as FullStarIconSvg } from '../../images/star.svg';
 import 'react-tabs/style/react-tabs.css';
+
+// import ReactGA from 'react-ga'; 
+import {PageView, initGA} from '../../tracking';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -68,6 +72,10 @@ class ToolDetail extends Component {
       this.setState({ reviewAdded: values.reviewAdded });
       this.setState({ replyAdded: values.replyAdded })
     }
+
+    initGA('UA-166025838-1');
+    PageView();
+    
     this.getDataSearchFromDb(); 
   }
 
@@ -97,7 +105,7 @@ class ToolDetail extends Component {
   doSearch = (e) => { //fires on enter on searchbar
     if (e.key === 'Enter') {
       if (!!this.state.searchString) {
-        window.location.href = "/search?search=" + this.state.searchString + '&type=all';
+        window.location.href = "/search?search=" + this.state.searchString;
       }
     }
   }
@@ -113,10 +121,10 @@ class ToolDetail extends Component {
       return <Container><Loading /></Container>;
     }
 
-    if (typeof data.datasetids === 'undefined') {
+    if (data.datasetids === null || typeof data.datasetids === 'undefined') {
       data.datasetids = [];
     }
-
+    
     if (typeof data.projectids === 'undefined') {
       data.projectids = [];
     }
@@ -184,7 +192,7 @@ class ToolDetail extends Component {
 
               <Row className="mt-4">
                 <Col sm={10} lg={10}>
-                  <span className="Black500-16px">Authors ( {data.authors.length} )</span>
+                  <span className="Black500-16px">Uploaded by ( {data.authors.length} )</span>
                 </Col>
               </Row>
 
@@ -271,14 +279,12 @@ class ToolTitle extends Component {
   };
 
   componentDidMount(props) {
-    console.log('props : ' + JSON.stringify(this.props.data))
-    console.log('state : ' + JSON.stringify(this.state.data))
     let counter = !this.props.data.counter ? 1 : this.props.data.counter + 1;
     this.UpdateCounter(this.props.data.id, counter);
   }
 
   UpdateCounter = (id, counter) => {
-      axios.post(baseURL + '/api/counter/update', { id: id, counter: counter });
+      axios.post(baseURL + '/api/v1/counter/update', { id: id, counter: counter });
   }
 
   render() {
@@ -331,13 +337,13 @@ class ToolTitle extends Component {
 
                           <Row>
                               <Col md={12} lg={6} className="mb-3">
-                                  {!data.categories.category ? '' : <div className="mr-2 Gray800-14px tagBadges"><a href={'/search?search=' + data.categories.category + '&type=all'}>{data.categories.category}</a></div>}
+                                  {!data.categories.category ? '' : <div className="mr-2 Gray800-14px tagBadges"><a href={'/search?search=' + data.categories.category}>{data.categories.category}</a></div>}
 
                                   {!data.categories.programmingLanguage || data.categories.programmingLanguage <= 0 ? '' : data.categories.programmingLanguage.map((language) => {
-                                      return <div className="mr-2 Gray800-14px tagBadges"><a href={'/search?search=' + language + '&type=all'}>{language}</a></div>
+                                      return <div className="mr-2 Gray800-14px tagBadges"><a href={'/search?search=' + language}>{language}</a></div>
                                   })}
 
-                                  {!data.categories.programmingLanguageVersion ? '' : <div className="mr-2 Gray800-14px tagBadges"><a href={'/search?search=' + data.categories.programmingLanguageVersion + '&type=all'}>{data.categories.programmingLanguageVersion}</a></div>}
+                                  {!data.categories.programmingLanguageVersion ? '' : <div className="mr-2 Gray800-14px tagBadges"><a href={'/search?search=' + data.categories.programmingLanguageVersion}>{data.categories.programmingLanguageVersion}</a></div>}
                               </Col>
                               <Col md={12} lg={6} className="mb-1 pr-3 text-right">
                                   <div className="Gray500-13px">
@@ -373,19 +379,19 @@ class ToolTitle extends Component {
                               <Col xs={12} md={12} className="mb-3">
 
                                   {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
-                                      return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2"><a href={'/search?search=' + feature + '&type=all'}>{feature}</a></div>
+                                      return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2"><a href={'/search?search=' + feature}>{feature}</a></div>
                                   })}
 
                                   {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
-                                      return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2"><a href={'/search?search=' + topic + '&type=all'}>{topic}</a></div>
+                                      return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2"><a href={'/search?search=' + topic}>{topic}</a></div>
                                   })}
 
                               </Col>
                           </Row>
                           <Row>
                               <Col xs={12} md={12} className="mb-3">
-                                  <span className="Gray800-14px">
-                                      {data.description}
+                                  <span className="Gray800-14px descriptionWhiteSpace">
+                                      <ReactMarkdown source={data.description} />
                                   </span>
                               </Col>
                           </Row>

@@ -1,47 +1,44 @@
 import React, { Component } from 'react';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import InputGroup from 'react-bootstrap/InputGroup';
-import FormText from 'react-bootstrap/FormText';
+import { Row, Col, InputGroup, FormText } from 'react-bootstrap';
 
 class TopicsFilter extends Component {
   state = {
-    topicsSelected: [],
-    combinedTopic: []
+    toolTopicsSelected: [],
+    toolTopicData: []
   };
 
   constructor(props) {
     super(props);
-    this.state.combinedTopic = props.combinedToolTopic;
-    this.state.topicsSelected = props.topicsSelected;
+    this.state.toolTopicData = props.toolTopicData;
+    this.state.toolTopicsSelected = props.toolTopicsSelected;
   }
 
   changeFilter = (e) => {
-    const topicsSelected = this.state.topicsSelected
+    const toolTopicsSelected = this.state.toolTopicsSelected
     let index
 
     if (e.target.checked) {
-      topicsSelected.push(e.target.value)
+        toolTopicsSelected.push(e.target.value)
     } else {
-      index = topicsSelected.indexOf(e.target.value)
-      topicsSelected.splice(index, 1)
+      index = toolTopicsSelected.indexOf(e.target.value)
+      toolTopicsSelected.splice(index, 1)
     }
 
-    this.setState({ topicsSelected: topicsSelected })
-    this.props.doUpdateCombinedTopics(topicsSelected);
+    this.setState({ toolTopicsSelected: toolTopicsSelected })
+    this.props.updateOnFilter();
   }
 
   clearFilter = () => {
-    const topicsSelected = [];
-    this.setState({ topicsSelected: topicsSelected })
-    this.props.doUpdateCombinedTopics(topicsSelected);
+    const toolTopicsSelected = this.state.toolTopicsSelected;
+    while (toolTopicsSelected.length) { toolTopicsSelected.pop(); }
+    this.props.updateOnFilter();
   }
 
   render() {
 
-    const { combinedTopic, topicsSelected } = this.state;
+    const { toolTopicData, toolTopicsSelected } = this.state;
 
-    if (!combinedTopic || combinedTopic.length === 0) {
+    if (!toolTopicData || toolTopicData.length === 0) {
       return (<></>);
     }
 
@@ -52,17 +49,19 @@ class TopicsFilter extends Component {
 
             <Col xs={7} className="ml-3">
               <span className="Gray800-14px-bold">Topics</span>
-              {topicsSelected.length === 0 ? <span /> :
-                <span> <div className="White-12px BubbleCounts"> {topicsSelected.length} </div> </span>
+              {toolTopicsSelected.length === 0 ? <span /> :
+                <span> <div className="White-12px BubbleCounts"> {toolTopicsSelected.length} </div> </span>
               }
               <span className="mr-5" />
             </Col>
             <Col xs={3}>
-              <span>
-                <button className="ClearButtons Purple-14px" onClick={() => this.clearFilter()}>
-                  Clear
+              {this.state.toolTopicsSelected.length > 0 ?
+                <span>
+
+                  <button className="ClearButtons Purple-14px" onClick={() => this.clearFilter()}>
+                    Clear
                   </button>
-              </span>
+                </span> : null}
             </Col>
           </Row>
         </div>
@@ -70,10 +69,10 @@ class TopicsFilter extends Component {
           <Row className="mb-3">
             <Col xs={1}></Col>
             <Col xs={11} className="ml-4">
-              {!combinedTopic ? '' : combinedTopic.map((topics) => {
+              {!toolTopicData ? '' : toolTopicData.map((topics) => {
                 return <InputGroup >
                   <InputGroup.Prepend>
-                    <InputGroup.Checkbox aria-label="Checkbox for following text input" name="topics" checked={topicsSelected.indexOf(topics) !== -1 ? "true" : ""} value={topics} onChange={this.changeFilter} />
+                    <InputGroup.Checkbox aria-label="Checkbox for following text input" name="topics" checked={toolTopicsSelected.indexOf(topics) !== -1 ? "true" : ""} value={topics} onChange={this.changeFilter} />
                   </InputGroup.Prepend>
                   <FormText className="Gray800-14px ml-4 mt-2 mb-2 pb-1" >{topics}</FormText>
                 </InputGroup>

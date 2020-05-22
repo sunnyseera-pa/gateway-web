@@ -11,7 +11,11 @@ import About from '../commonComponents/About';
 import Project from '../commonComponents/Project';
 import Tool from '../commonComponents/Tool';
 import SearchBar from '../commonComponents/SearchBar';
-import LoginModal from '../commonComponents/LoginModal'
+import LoginModal from '../commonComponents/LoginModal';
+// import ReactGA from 'react-ga'; 
+import {PageView, initGA} from '../../tracking';
+import { Event } from '../../tracking';
+
 
 import 'react-tabs/style/react-tabs.css';
 
@@ -46,6 +50,8 @@ class DatasetDetail extends Component {
   componentDidMount() {
     this.getDetailsSearchFromMDC();
     this.checkAlerts();
+    initGA('UA-166025838-1');
+    PageView();
   }
 
 
@@ -66,7 +72,7 @@ class DatasetDetail extends Component {
 
   getDetailsSearchFromMDC = () => {
     this.setState({ isLoading: true });
-    axios.get(baseURL + '/api/datasets/detail/' + this.props.match.params.datasetID+'?&id=' + this.state.userState[0].id)
+    axios.get(baseURL + '/api/v1/datasets/detail/' + this.props.match.params.datasetID+'?&id=' + this.state.userState[0].id)
       .then((res) => {
         this.setState({
           data: res.data.data,
@@ -79,7 +85,7 @@ class DatasetDetail extends Component {
   doSearch = (e) => { //fires on enter on searchbar
     if (e.key === 'Enter') {
       if (!!this.state.searchString) {
-        window.location.href = "/search?search=" + this.state.searchString + '&type=all';
+        window.location.href = "/search?search=" + this.state.searchString;
       }
     }
   }
@@ -186,7 +192,6 @@ class DatasetTitle extends Component {
    */
   renderRequestAccess = () => {
     const {user: {loggedIn}, data: {title, id, contactPoint}, alert=null, datarequest} = this.state;
-    debugger
     const hasRequestedAccess = (datarequest.length === 1 ? true : false);
     if(!loggedIn) {
       var isRequest=true;
@@ -194,7 +199,7 @@ class DatasetTitle extends Component {
     } else if (alert || hasRequestedAccess) {
       return <Button variant="primary" className="AddButton" disabled>Request Access</Button>
     } else {
-      return <Link className="btn btn-primary AddButton" to={{pathname: '/request-access', state: {title, dataSetId: id}}}>Request Access</Link>
+      return <Link className="btn btn-primary AddButton" to={{pathname: '/request-access', state: {title, dataSetId: id, custodianEmail: contactPoint}}} onClick={() => Event("Buttons", "Click", "Request Access")}>Request Access</Link>
     }
   }
 
@@ -263,7 +268,7 @@ class DatasetTitle extends Component {
                                 <Col sm={2} lg={2} className="Gray800-14px" >
                                     Standard
                                 </Col>
-                                {data.conformsTo ? <Col sm={8} lg={8} className="Gray800-14px">{data.conformsTo}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col> }
+                                {data.conformsTo ? <Col sm={8} lg={8} className="Gray800-14px overflowWrap">{data.conformsTo}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col> }
                             </Row>
 
                             <Row className="mt-3">
@@ -271,7 +276,7 @@ class DatasetTitle extends Component {
                                     Keywords
                                 </Col>
                                 <Col sm={10} lg={10}>
-                                    {!keywords || keywords.length <= 0 ? <span className="Gray800-14px-Opacity">Not specified</span> : keywords.map((keyword) => {return <div className="mr-2 Gray800-14px tagBadges mb-2"> <a href={'/search?search=' + keyword + '&type=all'}> {keyword} </a> </div> })}                                
+                                    {!keywords || keywords.length <= 0 ? <span className="Gray800-14px-Opacity">Not specified</span> : keywords.map((keyword) => {return <div className="mr-2 Gray800-14px tagBadges mb-2"> <a href={'/search?search=' + keyword}> {keyword} </a> </div> })}                                
                                 </Col>
                             </Row>
                       </div>

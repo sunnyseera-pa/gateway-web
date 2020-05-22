@@ -22,7 +22,9 @@
     "react-datepicker": "^2.15.0",
     "react-dom": "^16.12.0",
     "react-elasticsearch": "^2.0.0",
+    "react-ga": "^2.7.0",
     "react-linkify": "^1.0.0-alpha",
+    "react-markdown": "^4.3.1",
     "react-moment": "^0.9.7",
     "react-multiselect-checkboxes": "^0.1.1",
     "react-rating": "^2.0.4",
@@ -56,7 +58,8 @@
   "jest": {
     "moduleNameMapper": {
       "\\.(css|less|sass|scss)$": "<rootDir>/test/mocks/styleMock.js",
-      "\\.(gif|ttf|eot|svg|jpg)$": "<rootDir>/test/mocks/fileMock.js"
+      "\\.(gif|ttf|eot|jpg)$": "<rootDir>/test/mocks/fileMock.js",
+      "\\.(svg)": "<rootDir>/test/mocks/svgrMock.js"
     }
   },
   "devDependencies": {

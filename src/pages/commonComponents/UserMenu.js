@@ -9,6 +9,7 @@ import { ReactComponent as ArrowDownSvg } from '../../images/stock.svg';
 import { ReactComponent as ArrowDownSvgWhite } from '../../images/arrowDownWhite.svg';
 
 var baseURL = require('./BaseURL').getURL();
+var cmsURL = require('./BaseURL').getCMSURL();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
   <a href="" ref={ref} onClick={e => { e.preventDefault(); onClick(e); }} >
@@ -56,9 +57,9 @@ class UserMenu extends Component {
   }
 
   logout = (e) => {
-    axios.get(baseURL + '/api/auth/logout')
+    axios.get(baseURL + '/api/v1/auth/logout')
         .then((res) => {
-            window.location.href = "/";
+            window.location.href = cmsURL;  
         });
   }
 

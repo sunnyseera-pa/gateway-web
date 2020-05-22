@@ -2,12 +2,17 @@ import React, { Fragment, useState } from 'react';
 import { Redirect, useHistory } from 'react-router-dom';
 import {Row, Container, Col, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
-import Loading from '../commonComponents/Loading';
+import moment from 'moment';
 import SearchBar from '../commonComponents/SearchBar';
 import DatePicker from "react-datepicker";
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
+import { Event } from '../../tracking';
+import ReactGA from 'react-ga';
+
 var baseURL = require('../commonComponents/BaseURL').getURL();
+
+ReactGA.initialize('UA-166025838-1');
 
 /**
  * [ValidationSchema]
@@ -36,7 +41,8 @@ const validationSchema = Yup.object({
     });
  
 const Request = (props) => {
-    const {searchString = '', userState, location: {state:{title, dataSetId}}} = props;
+
+    const {searchString = '', userState, location: {state:{title, dataSetId, custodianEmail}}} = props;
     let history = useHistory();
     const [reqState, setDefaultState] = useState({
         userState,
@@ -63,7 +69,11 @@ const Request = (props) => {
         },
         validationSchema,
         onSubmit: values => {
-            const vals = {...values, title, userId: user.id, dataSetId};
+            let vals = {...values, title, userId: user.id, dataSetId, custodianEmail};
+
+            if(vals.startDate) 
+                vals.startDate = moment(vals.startDate).format('DD/MM/YYYY');
+
             if(vals.linkedDataSets === 'false')
                 vals.namesOfDataSets = '';
             
@@ -78,7 +88,7 @@ const Request = (props) => {
                        'Content-Type': 'application/json'
                    }
                 }
-                axios.post(baseURL + '/api/dataset/sendgrid', JSON.stringify(vals), config)
+                axios.post(baseURL + '/api/v1/datasets/access/request', JSON.stringify(vals), config)
                     .then(response => {
                         message = response.data.message;
                     })
@@ -95,7 +105,7 @@ const Request = (props) => {
     const doSearch = (e) => {
         if (e.key === 'Enter') {
             if (!!reqState.searchString) 
-                window.location.href = `/search?search=${reqState.searchString}&type=all`;
+                window.location.href = `/search?search=${reqState.searchString}`;
             
         }
     };
@@ -111,7 +121,6 @@ const Request = (props) => {
 
     const onCancel = (e) => {
         e.preventDefault();
-        console.log('back');
     }
 
      //redirect if !logged in
@@ -186,10 +195,12 @@ const Request = (props) => {
                                 }
                             { /* HIDE SHOW */}
                             {   values.linkedDataSets && values.linkedDataSets !== 'false' ?
-                                <Fragment className='pb-2'>
-                                    <Form.Label className='Gray700-13px'>Please identify the names of the datasets.</Form.Label>
-                                    <Form.Control onChange={handleChange} onBlur={handleBlur} isInvalid={values.linkedDataSets === 'true' && touched.namesOfDataSets && values.namesOfDataSets === ''} value={values.namesOfDataSets} name="namesOfDataSets" as='textarea' rows='3' />
-                                    <Form.Control.Feedback type="invalid">{errors.namesOfDataSets}</Form.Control.Feedback>
+                                <Fragment>
+                                    <div className='pb-2'>
+                                        <Form.Label className='Gray700-13px'>Please identify the names of the datasets.</Form.Label>
+                                        <Form.Control onChange={handleChange} onBlur={handleBlur} isInvalid={values.linkedDataSets === 'true' && touched.namesOfDataSets && values.namesOfDataSets === ''} value={values.namesOfDataSets} name="namesOfDataSets" as='textarea' rows='3' />
+                                        <Form.Control.Feedback type="invalid">{errors.namesOfDataSets}</Form.Control.Feedback>
+                                    </div>
                                 </Fragment> : null
                             }                       
                         </Form.Group>
@@ -233,11 +244,12 @@ const Request = (props) => {
                             <Row>
                             </Row>
                                 {values.dataRequirements && values.dataRequirements !== 'false' ?
-                                    <Fragment className='pb-2'>
-                                        <Form.Label className='Gray700-13px'>Please explain which parts of the dataset.</Form.Label>
-                                        <Form.Control onChange={handleChange} onBlur={handleBlur} isInvalid={values.dataRequirements === 'true' && touched.dataSetParts && values.dataSetParts === ''} value={values.dataSetParts}  name="dataSetParts" as='textarea' rows='3' />
-                                        <Form.Control.Feedback type="invalid">{errors.dataSetParts}</Form.Control.Feedback>
-
+                                    <Fragment>
+                                        <div className='pb-2'>
+                                            <Form.Label className='Gray700-13px'>Please explain which parts of the dataset.</Form.Label>
+                                            <Form.Control onChange={handleChange} onBlur={handleBlur} isInvalid={values.dataRequirements === 'true' && touched.dataSetParts && values.dataSetParts === ''} value={values.dataSetParts}  name="dataSetParts" as='textarea' rows='3' />
+                                            <Form.Control.Feedback type="invalid">{errors.dataSetParts}</Form.Control.Feedback>
+                                        </div>
                                     </Fragment> : null
                                 }    
                         </Form.Group>
@@ -296,7 +308,7 @@ const Request = (props) => {
                     <Button variant='tertiary' onClick={onCancel} type='button'>Cancel</Button>
                 </Col>
                 <Col className='text-right'>
-                    <Button variant='primary' type='submit' className='Gray100-14px'>Send enquiry</Button>
+                    <Button variant='primary' type='submit' className='Gray100-14px' onClick={() => Event("Buttons", "Click", "Access request - send enquiry")}>Send enquiry</Button>
                 </Col>
             </Row>
             </Form>

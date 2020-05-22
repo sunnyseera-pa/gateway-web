@@ -4,6 +4,7 @@ import Col from 'react-bootstrap/Col';
 import SVGIcon from "../../images/SVGIcon";
 import axios from 'axios';
 import Loading from './Loading'
+import ReactMarkdown from 'react-markdown';
 
 var baseURL = require('./BaseURL').getURL();
 
@@ -74,7 +75,9 @@ class Tool extends React.Component {
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         var updatedDate = new Date(data.updatedon);
         var updatedOnDate = monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
-
+        
+        
+            
         return (
             <Row className="mt-2">
                 <Col>
@@ -120,47 +123,34 @@ class Tool extends React.Component {
                             <Col xs={{ span: 2, order: 0 }} lg={{ span: 1, order: 2 }}></Col>
                             <Col xs={{ span: 10, order: 0 }} lg={{ span: 11, order: 2 }} >
                                 <p className="Gray800-14px">
-                                    {!data.projectids.length ? '' :
+
+                                    {data.projectids && data.projectids.length ? 
                                         <span className="mr-1">
                                             <b>
                                                 {!data.projectids.length ? '' : data.projectids.length}
                                                 {data.projectids.length === 1 ? " project" : " projects"}
                                             </b>
                                         </span>
+                                    : ""
                                     }
-
-                                    {!data.datasetids.length ? '' :
-                                        <span className="mr-1">
-                                            {data.projectids.length ? ', ' : ''}
-                                            <b>
-                                                {!data.datasetids.length ? '' : data.datasetids.length}
-                                                {data.datasetids.length === 1 ? " data set" : " data sets"}
-                                            </b>
-                                        </span>
-                                    }
-
-                                    {data.projectids.length || data.datasetids.length ?
-                                        <span className="reviewTitleGap">·</span>
-                                        : ''
-                                    }
-
-                                    {data.description.substr(0, 150) + (data.description.length > 150 ? '...' : '')}
+                                    
+                                    <ReactMarkdown source={data.description.substr(0, 160) + (data.description.length > 160 ? '...' : '')} />
                                 </p>
                             </Col>
 
                             <Col xs={{ span: 12, order: 1 }} lg={{ span: 12, order: 3 }}>
-                                {!data.categories.category ? '' : <a href={'/search?search=' + data.categories.category + '&type=all'}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{data.categories.category}</div></a>}
+                                {!data.categories.category ? '' : <a href={'/search?search=' + data.categories.category}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{data.categories.category}</div></a>}
 
                                 {!data.categories.programmingLanguage || data.categories.programmingLanguage.length <= 0 ? '' : data.categories.programmingLanguage.map((language) => {
-                                    return <a href={'/search?search=' + language + '&type=all'}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{language}</div></a>
+                                    return <a href={'/search?search=' + language}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{language}</div></a>
                                 })}
 
                                 {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
-                                    return <a href={'/search?search=' + feature + '&type=all'}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{feature}</div></a>
+                                    return <a href={'/search?search=' + feature}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{feature}</div></a>
                                 })}
 
                                 {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
-                                    return <a href={'/search?search=' + topic + '&type=all'}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{topic}</div></a>
+                                    return <a href={'/search?search=' + topic}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{topic}</div></a>
                                 })}
 
                             </Col>

@@ -4,6 +4,7 @@ import Col from 'react-bootstrap/Col';
 import SVGIcon from "../../images/SVGIcon"
 import axios from 'axios';
 import Loading from './Loading'
+import ReactMarkdown from 'react-markdown';
 
 var baseURL = require('./BaseURL').getURL();
 
@@ -29,7 +30,7 @@ class Project extends React.Component {
     getDataSearchFromDb = () => {
         //need to handle error if no id is found
         this.setState({ isLoading: true });
-        axios.get(baseURL + '/api/project/' + this.state.id)
+        axios.get(baseURL + '/api/v1/project/' + this.state.id)
             .then((res) => {
                 this.setState({
                     data: res.data.data[0],
@@ -112,25 +113,21 @@ class Project extends React.Component {
                                             </b>
                                         </span>
                                     }
-
-                                    {data.toolids.length || data.datasetids.length ?
-                                        <span className="reviewTitleGap">·</span>
-                                        : ''
-                                    }
-
-                                    {data.description.substr(0, 150) + (data.description.length > 150 ? '...' : '')}
+                                    
+                                    <ReactMarkdown source={data.description.substr(0, 160) + (data.description.length > 160 ? '...' : '')} />
+                    
                                 </p>
                             </Col>
 
                             <Col xs={{ span: 12, order: 1 }} lg={{ span: 12, order: 3 }}>
-                                {!data.categories.category ? '' : <a href={'/search?search=' + data.categories.category + '&type=all'}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{data.categories.category}</div></a>}
+                                {!data.categories.category ? '' : <a href={'/search?search=' + data.categories.category}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{data.categories.category}</div></a>}
 
                                 {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
-                                    return <a href={'/search?search=' + feature + '&type=all'}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{feature}</div></a>
+                                    return <a href={'/search?search=' + feature}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{feature}</div></a>
                                 })}
 
                                 {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
-                                    return <a href={'/search?search=' + topic + '&type=all'}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{topic}</div></a>
+                                    return <a href={'/search?search=' + topic}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{topic}</div></a>
                                 })}
                             </Col>
                         </Row>

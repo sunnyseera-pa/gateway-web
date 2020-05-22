@@ -1,3 +1,8 @@
+:root {
+    --purple: #475da7;
+    --gray-700: #53575a;
+  }  
+
 body {
   background-color: #f6f7f8;
 }
@@ -168,6 +173,36 @@ body {
   font-style: normal;
   letter-spacing: normal;
   color: #3c3c3b;
+}
+
+h4, h5, h6 {
+  font-family: museo-sans-rounded !important;
+  font-size: 14px !important;
+  font-weight: bold !important;
+  font-stretch: normal !important;
+  font-style: normal !important;
+  letter-spacing: normal !important;
+  color: #3c3c3b !important;
+}
+
+h2, h3 {
+  font-family: museo-sans-rounded !important;
+  font-size: 16px !important;
+  font-weight: bold !important;
+  font-stretch: normal !important;
+  font-style: normal !important;
+  letter-spacing: normal !important;
+  color: #3c3c3b !important;
+}
+
+h1 {
+  font-family: museo-sans-rounded !important;
+  font-size: 18px !important;
+  font-weight: bold !important;
+  font-stretch: normal !important;
+  font-style: normal !important;
+  letter-spacing: normal !important;
+  color: #3c3c3b !important;
 }
 
 .Gray800-14px-Opacity {
@@ -654,7 +689,6 @@ textarea:focus {
 /* RBTS ARE THE STYLES FOR TYPEAHEAD INPUTS */
 .rbt-input-multi {
   width: 100% !important;
-  height: 40px !important;
   border-radius: 4px !important;
   border: solid 2px #d0d3d4 !important;
   background-color: #ffffff !important;
@@ -829,7 +863,7 @@ iframe#discourse-embed-frame {
   margin: auto;
   padding: 0;
   border: 1px solid #888;
-  max-width: 600px;
+  max-width: 540px;
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
   -webkit-animation-name: animatetop;
   -webkit-animation-duration: 0.4s;
@@ -868,20 +902,20 @@ iframe#discourse-embed-frame {
 }
 
 .openAthensButton {
-  width:440px;
+  width:200px;
   background:#475da7;
   color:white;
-  padding : 10px 22px 10px 22px; 
-  border-radius: 2px
+  padding: 8px 20px;
+  border-radius: 2px;
+  display: block;
+  margin: 0 auto;
+  position: relative;
 }
 
 .openAthensButton:hover {
   text-decoration:none;
-  width:440px;
   background:#475da7;
   color:white;
-  padding : 10px 22px 10px 22px; 
-  border-radius: 2px
 }
 
 .discousion-username {
@@ -929,3 +963,89 @@ iframe#discourse-embed-frame {
 .btn-light {
   background-color: #e7e9ed !important;
 }
+
+.login-content {
+  position: relative;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0;
+  border: 1px solid #888;
+  max-width: 540px;
+}
+
+.login-body {
+  text-align: left;
+  padding: 2px 16px
+}
+
+.descriptionWhiteSpace {
+  white-space: pre-wrap;
+}
+
+.SearchTabsHolder {
+  margin-top: 2px;
+}
+
+.pagination {
+    margin-top: 20px;
+  }
+  
+  .page-item.active .page-link,
+  .page-item.active .page-link:hover { 
+    background-color: var(--purple);
+    color: #ffffff !important;
+  }
+  
+  .page-link {
+    font-family: museo-sans-rounded !important;
+    font-size: 14px;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal !important;
+    letter-spacing: normal;
+    color: var(--gray-700) !important;
+    display: block !important;
+    border: 0px !important;
+    box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09) !important;
+    padding: 12px 10px !important;
+  }
+  
+  .page-link:focus {
+    background-color: #ffffff !important;
+  }
+  
+  .page-item {
+    margin: 0px 1px !important;
+    width: 32px !important;
+    text-align: center;
+  }
+  
+  .page-item.active .page-link:hover {
+    background-color:rgba(71, 93, 167) !important; 
+    color: #ffffff !important;
+  }
+  
+  .page-link:hover {
+    background-color: rgba(71, 93, 167, 0.3) !important;
+   }
+  
+  .page-item:last-child .page-link {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+  }
+  
+  .page-item:first-child .page-link {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+  }
+  
+  .page-item:last-child,
+  .page-item:first-child {
+    width: auto !important;
+  }
+ 
+  .overflowWrap{
+    overflow-wrap: break-word;
+  }
+

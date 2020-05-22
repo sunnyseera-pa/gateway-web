@@ -16,6 +16,8 @@ import NotFound from '../commonComponents/NotFound';
 import ReviewsTitle from '../commonComponents/ReviewTitle';
 import Loading from '../commonComponents/Loading'
 import Project from '../commonComponents/Project';
+// import ReactGA from 'react-ga'; 
+import {PageView, initGA} from '../../tracking';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -43,6 +45,8 @@ class PersonDetail extends Component {
   // on loading of tool detail page
   componentDidMount() {
     this.getDataSearchFromDb();
+    initGA('UA-166025838-1');
+    PageView();
   }
 
   // on loading of tool detail page were id is different
@@ -55,7 +59,7 @@ class PersonDetail extends Component {
   getDataSearchFromDb = () => {
     //need to handle error if no id is found
     this.setState({ isLoading: true });
-    axios.get(baseURL + '/api/person/' + this.props.match.params.personID)
+    axios.get(baseURL + '/api/v1/person/' + this.props.match.params.personID)
       .then((res) => {
         this.setState({
           data: res.data.data[0],
@@ -67,7 +71,7 @@ class PersonDetail extends Component {
   doSearch = (e) => { //fires on enter on searchbar
     if (e.key === 'Enter') {
       if (!!this.state.searchString) {
-        window.location.href = "/search?search=" + this.state.searchString + '&type=all';
+        window.location.href = "/search?search=" + this.state.searchString;
       }
     }
   }
@@ -164,7 +168,7 @@ class PersonTitle extends Component {
   }
 
   UpdateCounter = (id, counter) => {
-    axios.post(baseURL + '/api/counter/update', { id: id, counter: counter });
+    axios.post(baseURL + '/api/v1/counter/update', { id: id, counter: counter });
   }
 
   // here is our UI

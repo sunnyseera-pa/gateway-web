@@ -22,13 +22,10 @@ class NoResultsPeople extends React.Component {
 
         return (
             <div>
-                <Row style={{height: "30px"}} />
-                <Row>
-                    <Col xs={3} lg={3} />
-                    <Col xs={6} lg={6} className="Gray800-14px ml-5 pl-4 mr-5 pr-4">
+                <Row className="mt-4">
+                    <Col className="Gray800-14px text-center">
                         <span> We couldn't find any profiles matching the search terms '{searchString}' </span>
                     </Col>
-                    <Col xs={3} lg={3} />
                 </Row>
             </div>
 

@@ -1,21 +1,16 @@
 import React from 'react';
 import axios from 'axios';
+import { PageView, initGA } from '../../tracking';
 import queryString from 'query-string';
 
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Tabs from 'react-bootstrap/Tabs';
-import Tab from 'react-bootstrap/Tab';
+import { Container, Row, Col, Tabs, Tab, Pagination } from 'react-bootstrap';
 
 import SearchBar from '../commonComponents/SearchBar';
 import Project from '../commonComponents/Project';
 import Tool from '../commonComponents/Tool';
 import Person from '../commonComponents/Person';
 import DataSet from '../commonComponents/DataSet';
-import NotFound from '../commonComponents/NotFound'
 import Loading from '../commonComponents/Loading'
-import FilterButtons from './FilterButtons';
 import KeywordsFilter from './KeywordsFilter';
 import ProgrammingLanguageFilter from './ProgrammingLanguageFilter';
 import CategoryFilterTool from './CategoryFilterTool';
@@ -32,7 +27,6 @@ import NoResultsTool from '../commonComponents/NoResultsTools';
 import NoResultsProjects from '../commonComponents/NoResultsProjects';
 import NoResultsPeople from '../commonComponents/NoResultsPeople';
 import NoResultsDatasets from '../commonComponents/NoResultsDatasets';
-import { stat } from 'fs';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -40,46 +34,29 @@ class SearchPage extends React.Component {
 
     state = {
         searchString: null,
-        typeString: null,
-        data: [],
-
+        datasetIndex: 0,
+        toolIndex: 0,
+        projectIndex: 0,
+        personIndex: 0,
         datasetData: [],
-        key: "Datasets",
-
-        publisherData: [],
-        licenseData: [],
-        geographicCoverageData: [],
-        ageBandData: [],
-        physicalSampleAvailabilityData: [],
-        keywordsData:[],
-
-        summary: [],
-        combinedLanguages: [],
-        languageSelected: [],
-        // combinedCategories: [],
-        combinedToolCategories: [],
-        combinedProjectCategories: [],
-
-        categoriesSelected: [],
-        combinedFeatures: [],
-        featuresSelected: [],
-        // combinedTopic: [],
-        combinedToolTopic: [],
-        combinedProjectTopic: [],
-
-        topicsSelected: [],
-        publishersSelected: [],
-        publishersFilter: '',
+        toolData: [],
+        projectData: [],
+        personData: [],
+        filterOptions: [],
         licensesSelected: [],
-        licensesFilter: '',
-        geoCoverageSelected: [],
-        geoCoverageFilter: '',
         sampleAvailabilitySelected: [],
-        sampleAvailabilityFilter: '',
         keywordsSelected: [],
-        keywordsFilter: '',
+        publishersSelected: [],
         ageBandsSelected: [],
-        ageBandsFilter: '',
+        geoCoverageSelected: [],
+        toolCategoriesSelected: [],
+        languageSelected: [],
+        featuresSelected: [],
+        toolTopicsSelected: [],
+        projectCategoriesSelected: [],
+        projectTopicsSelected: [],
+        summary: [],
+        key: '',
         isLoading: true,
         userState: [{
             loggedIn: false,
@@ -94,313 +71,262 @@ class SearchPage extends React.Component {
         this.state.userState = props.userState;
     }
 
-    componentDidMount() { //fires on first time in or page is refreshed/url loaded
+    async componentDidMount() { //fires on first time in or page is refreshed/url loaded
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
-            this.doSearchCall(values.search, values.type, this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
-            this.setState({ searchString: values.search });
-            this.setState({ typeString: values.type });
-            this.getDatasetFilters(values.search);
+
+            await Promise.all([
+                this.updateFilterStates(values)
+            ])
+
+            this.doSearchCall();
+            initGA('UA-166025838-1');
+            PageView();
         }
         else {
-            this.setState({ data: [], searchString: '', typeString: 'all', isLoading: true });
-            this.doSearchCall("", "all", [], [], [], []);
-            this.getDatasetFilters(values.search);
+            this.setState({ data: [], searchString: '', isLoading: true });
+            this.doSearchCall();
+            initGA('UA-166025838-1');
+            PageView();
         }
-
     }
 
-    getDatasetFilters = (searchString) => {
+    async componentWillReceiveProps() {
+        if (!!window.location.search) {
+            var values = queryString.parse(window.location.search);
 
-        axios.get(baseURL + '/api/datasetfilters?search=' + searchString)
+            if (values.search !== this.state.searchString
+                || ((typeof values.license === "undefined" && this.state.licensesSelected.length !== 0) || (typeof values.license !== "undefined" && this.state.licensesSelected.length === 0)) && !this.state.licensesSelected.includes(values.license)
+                || ((typeof values.sampleavailability === "undefined" && this.state.sampleAvailabilitySelected.length !== 0) || (typeof values.sampleavailability !== "undefined" && this.state.sampleAvailabilitySelected.length === 0)) && !this.state.sampleAvailabilitySelected.includes(values.sampleavailability)
+                || ((typeof values.keywords === "undefined" && this.state.keywordsSelected.length !== 0) || (typeof values.keywords !== "undefined" && this.state.keywordsSelected.length === 0)) && !this.state.keywordsSelected.includes(values.keywords)
+                || ((typeof values.publisher === "undefined" && this.state.publishersSelected.length !== 0) || (typeof values.publisher !== "undefined" && this.state.publishersSelected.length === 0)) && !this.state.publishersSelected.includes(values.publisher)
+                || ((typeof values.ageband === "undefined" && this.state.ageBandsSelected.length !== 0) || (typeof values.ageband !== "undefined" && this.state.ageBandsSelected.length === 0)) && !this.state.ageBandsSelected.includes(values.ageband)
+                || ((typeof values.geographiccover === "undefined" && this.state.geoCoverageSelected.length !== 0) || (typeof values.geographiccover !== "undefined" && this.state.geoCoverageSelected.length === 0)) && !this.state.geoCoverageSelected.includes(values.geographiccover)
+                || ((typeof values.toolcategories === "undefined" && this.state.toolCategoriesSelected.length !== 0) || (typeof values.toolcategories !== "undefined" && this.state.toolCategoriesSelected.length === 0)) && !this.state.toolCategoriesSelected.includes(values.toolcategories)
+                || ((typeof values.programmingLanguage === "undefined" && this.state.languageSelected.length !== 0) || (typeof values.programmingLanguage !== "undefined" && this.state.languageSelected.length === 0)) && !this.state.languageSelected.includes(values.programmingLanguage)
+                || ((typeof values.features === "undefined" && this.state.featuresSelected.length !== 0) || (typeof values.features !== "undefined" && this.state.featuresSelected.length === 0)) && !this.state.featuresSelected.includes(values.features)
+                || ((typeof values.tooltopics === "undefined" && this.state.toolTopicsSelected.length !== 0) || (typeof values.tooltopics !== "undefined" && this.state.toolTopicsSelected.length === 0)) && !this.state.toolTopicsSelected.includes(values.tooltopics)
+                || ((typeof values.projectcategories === "undefined" && this.state.projectCategoriesSelected.length !== 0) || (typeof values.projectcategories !== "undefined" && this.state.projectCategoriesSelected.length === 0)) && !this.state.projectCategoriesSelected.includes(values.projectcategories)
+                || ((typeof values.projecttopics === "undefined" && this.state.projectTopicsSelected.length !== 0) || (typeof values.projecttopics !== "undefined" && this.state.projectTopicsSelected.length === 0)) && !this.state.projectTopicsSelected.includes(values.projecttopics)
+                || ((typeof values.datasetIndex === "undefined" && this.state.datasetIndex !== 0) || (typeof values.datasetIndex !== "undefined" && this.state.datasetIndex === 0)) && this.state.datasetIndex !== values.datasetIndex
+                || ((typeof values.toolIndex === "undefined" && this.state.toolIndex !== 0) || (typeof values.toolIndex !== "undefined" && this.state.toolIndex === 0)) && this.state.toolIndex !== values.toolIndex
+                || ((typeof values.projectIndex === "undefined" && this.state.projectIndex !== 0) || (typeof values.projectIndex !== "undefined" && this.state.projectIndex === 0)) && this.state.projectIndex !== values.projectIndex
+                || ((typeof values.personIndex === "undefined" && this.state.personIndex !== 0) || (typeof values.personIndex !== "undefined" && this.state.personIndex === 0)) && this.state.personIndex !== values.personIndex
+            ) {
+                await Promise.all([
+                    this.updateFilterStates(values)
+                ])
+                this.doSearchCall(true);
+            }
+            else if (this.state.key !== values.tab) {
+                this.setState({ key: values.tab });
+            }
+        }
+        else {
+            this.setState({ data: [], searchString: '', isLoading: true });
+            this.doSearchCall();
+        }
+    }
+
+    doSearch = async (e) => { //fires on enter on searchbar
+        if (e.key === 'Enter') {
+            await Promise.all([
+                this.clearFilterStates()
+            ])
+
+            if (!!this.state.searchString) {
+                this.doSearchCall();
+            }
+        }
+    }
+
+    updateFilterStates(values) {
+        values.search ? this.setState({ searchString: values.search }) : this.setState({ searchString: '' })
+        values.license ? this.setState({ licensesSelected: [values.license] }) : this.setState({ licensesSelected: [] })
+        values.sampleavailability ? this.setState({ sampleAvailabilitySelected: [values.sampleavailability] }) : this.setState({ sampleAvailabilitySelected: [] })
+        values.keywords ? this.setState({ keywordsSelected: [values.keywords] }) : this.setState({ keywordsSelected: [] })
+        values.publisher ? this.setState({ publishersSelected: [values.publisher] }) : this.setState({ publishersSelected: [] })
+        values.ageband ? this.setState({ ageBandsSelected: [values.ageband] }) : this.setState({ ageBandsSelected: [] })
+        values.geographiccover ? this.setState({ geoCoverageSelected: [values.geographiccover] }) : this.setState({ geoCoverageSelected: [] })
+
+        values.toolcategories ? this.setState({ toolCategoriesSelected: [values.toolcategories] }) : this.setState({ toolCategoriesSelected: [] })
+        values.programmingLanguage ? this.setState({ languageSelected: [values.programmingLanguage] }) : this.setState({ languageSelected: [] })
+        values.features ? this.setState({ featuresSelected: [values.features] }) : this.setState({ featuresSelected: [] })
+        values.tooltopics ? this.setState({ toolTopicsSelected: [values.tooltopics] }) : this.setState({ toolTopicsSelected: [] })
+
+        values.projectcategories ? this.setState({ projectCategoriesSelected: [values.projectcategories] }) : this.setState({ projectCategoriesSelected: [] })
+        values.projecttopics ? this.setState({ projectTopicsSelected: [values.projecttopics] }) : this.setState({ projectTopicsSelected: [] })
+
+        values.tab ? this.setState({ key: values.tab }) : this.setState({ key: '' })
+        values.datasetIndex ? this.setState({ datasetIndex: values.datasetIndex }) : this.setState({ datasetIndex: 0 })
+        values.toolIndex ? this.setState({ toolIndex: values.toolIndex }) : this.setState({ toolIndex: 0 })
+        values.projectIndex ? this.setState({ projectIndex: values.projectIndex }) : this.setState({ projectIndex: 0 })
+        values.personIndex ? this.setState({ personIndex: values.personIndex }) : this.setState({ personIndex: 0 })
+    }
+
+    clearFilterStates() {
+        this.setState({ licensesSelected: [] })
+        this.setState({ sampleAvailabilitySelected: [] })
+        this.setState({ keywordsSelected: [] })
+        this.setState({ publishersSelected: [] })
+        this.setState({ ageBandsSelected: [] })
+        this.setState({ geoCoverageSelected: [] })
+
+        this.setState({ toolCategoriesSelected: [] })
+        this.setState({ languageSelected: [] })
+        this.setState({ featuresSelected: [] })
+        this.setState({ toolTopicsSelected: [] })
+
+        this.setState({ projectCategoriesSelected: [] })
+        this.setState({ projectTopicsSelected: [] })
+
+        this.setState({ key: "" })
+        this.setState({ datasetIndex: 0 })
+        this.setState({ toolIndex: 0 })
+        this.setState({ projectIndex: 0 })
+        this.setState({ personIndex: 0 })
+    }
+
+    updateOnFilter = () => {
+        this.doSearchCall();
+    }
+
+    doSearchCall(skipHistory) {
+        var searchURL = '';
+
+        if (this.state.licensesSelected.length > 0) searchURL += '&license=' + this.state.licensesSelected;
+        if (this.state.sampleAvailabilitySelected.length > 0) searchURL += '&sampleavailability=' + this.state.sampleAvailabilitySelected;
+        if (this.state.keywordsSelected.length > 0) searchURL += '&keywords=' + this.state.keywordsSelected;
+        if (this.state.publishersSelected.length > 0) searchURL += '&publisher=' + this.state.publishersSelected;
+        if (this.state.ageBandsSelected.length > 0) searchURL += '&ageband=' + this.state.ageBandsSelected;
+        if (this.state.geoCoverageSelected.length > 0) searchURL += '&geographiccover=' + this.state.geoCoverageSelected;
+
+        if (this.state.toolCategoriesSelected.length > 0) searchURL += '&toolcategories=' + this.state.toolCategoriesSelected;
+        if (this.state.languageSelected.length > 0) searchURL += '&programmingLanguage=' + this.state.languageSelected;
+        if (this.state.featuresSelected.length > 0) searchURL += '&features=' + this.state.featuresSelected;
+        if (this.state.toolTopicsSelected.length > 0) searchURL += '&tooltopics=' + this.state.toolTopicsSelected;
+
+        if (this.state.projectCategoriesSelected.length > 0) searchURL += '&projectcategories=' + this.state.projectCategoriesSelected;
+        if (this.state.projectTopicsSelected.length > 0) searchURL += '&projecttopics=' + this.state.projectTopicsSelected;
+
+        if (this.state.datasetIndex > 0) searchURL += '&datasetIndex=' + this.state.datasetIndex;
+        if (this.state.toolIndex > 0) searchURL += '&toolIndex=' + this.state.toolIndex;
+        if (this.state.projectIndex > 0) searchURL += '&projectIndex=' + this.state.projectIndex;
+        if (this.state.personIndex > 0) searchURL += '&personIndex=' + this.state.personIndex;
+
+        if (!skipHistory) {
+            if (this.state.key) {
+                this.props.history.push(`${window.location.pathname}?search=${this.state.searchString}&tab=${this.state.key}` + searchURL);
+            }
+            else {
+                this.props.history.push(`${window.location.pathname}?search=${this.state.searchString}` + searchURL);
+            }
+        }
+        
+        this.setState({ isLoading: true });
+        axios.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL)
             .then((res) => {
                 this.setState({
-                    publisherData: res.data.data.publisher,
-                    licenseData: res.data.data.license,
-                    geographicCoverageData: res.data.data.geographicCoverage,
-                    ageBandData: res.data.data.ageBand,
-                    physicalSampleAvailabilityData: res.data.data.physicalSampleAvailability,
-                    keywordsData: res.data.data.keywords
+                    datasetData: res.data.datasetResults || [],
+                    toolData: res.data.toolResults || [],
+                    projectData: res.data.projectResults || [],
+                    personData: res.data.personResults || [],
+                    summary: res.data.summary || [],
+                    filterOptions: res.data.filterOptions || [],
+                    isLoading: false
                 });
-            })
-      };
-
-    componentWillReceiveProps() {
-        if (!!window.location.search) {
-            var values = queryString.parse(window.location.search);
-            if (values.search !== this.state.searchString
-                || values.type !== this.state.typeString) {
-                this.doSearchCall(values.search, values.type, this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
-                this.setState({ searchString: values.search });
-                this.setState({ typeString: values.type });
-                this.getDatasetFilters(values.search);
-
-            }
-        }
-        else {
-            this.setState({ data: [], searchString: '', typeString: 'all', isLoading: true });
-            this.doSearchCall("", "all", [], [], [], []);
-            this.getDatasetFilters(this.state.searchString);
-
-        }
-    }
-
-    doSearch = (e) => { //fires on enter on searchbar
-        if (e.key === 'Enter') {
-
-            if (!!this.state.searchString && !!this.state.typeString) {
-                this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolCategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected + '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
-                this.doSearchCall(this.state.searchString, this.state.typeString, this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
-                this.getDatasetFilters(this.state.searchString);
-            }
-            else if (!!this.state.searchString && !this.state.typeString) {
-                this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=all' + '&tab=' + this.state.key +'&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
-                this.doSearchCall(this.state.searchString, "", this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
-                this.getDatasetFilters(this.state.searchString);
-            }
-        }
-    }
-
-    callTypeString = (typeString) => {
-        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
-        this.doSearchCall(this.state.searchString, typeString, this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
-    }
-
-    doSearchCall(searchString, typeString, languageSelected, categoriesSelected, featuresSelected, topicsSelected) {
-
-        var searchURL = baseURL + '/api/search?search=' + searchString + '&type=' + typeString;
-
-        languageSelected.forEach(language => {
-            searchURL += '&programmingLanguage=' + language;
-        });
-
-        categoriesSelected.forEach(category => {
-
-            searchURL += '&category=' + category;
-        });
-
-        featuresSelected.forEach(features => {
-
-            searchURL += '&features=' + features;
-        });
-
-        topicsSelected.forEach(topics => {
-
-            searchURL += '&topics=' + topics;
-        });
-
-        this.setState({ isLoading: true });
-        axios.get(searchURL)
-            .then((res) => {
-                if (res.data.data.length > 0) {
-                    var tempCategoriesToolArray = [];
-                    var tempCategoriesProjectArray = [];
-
-                    var tempProgrammingLanguageArray = [];
-                    var tempFeaturesArray = [];
-                    var tempToolTopicsArray = [];
-                    var tempProjectTopicsArray = [];
-
-                    res.data.data.forEach((dat) => {
-                        if (dat.categories && dat.categories.category && dat.categories.category !== '' && !tempCategoriesToolArray.includes(dat.categories.category) && dat.type === 'tool') {
-                            tempCategoriesToolArray.push(dat.categories.category);
-                        }
-                        if (dat.categories && dat.categories.category && dat.categories.category !== '' && !tempCategoriesProjectArray.includes(dat.categories.category) && dat.type === 'project') {
-                            tempCategoriesProjectArray.push(dat.categories.category);
-                        }
-
-                        if (dat.categories && dat.categories.programmingLanguage && dat.categories.programmingLanguage.length > 0) {
-                            dat.categories.programmingLanguage.forEach((pl) => {
-                                if (!tempProgrammingLanguageArray.includes(pl) && pl !== '') {
-                                    tempProgrammingLanguageArray.push(pl);
-                                }
-                            });
-                        }
-
-                        if (dat.tags.features && dat.tags.features.length > 0) {
-                            dat.tags.features.forEach((fe) => {
-                                if (!tempFeaturesArray.includes(fe) && fe !== '') {
-                                    tempFeaturesArray.push(fe);
-                                }
-                            });
-                        }
-
-                        if (dat.tags.topics && dat.tags.topics.length > 0 && dat.type === 'tool') {
-                            dat.tags.topics.forEach((to) => {
-                                if (!tempToolTopicsArray.includes(to) && to !== '') {
-                                    tempToolTopicsArray.push(to);
-                                }
-                            });
-                        }
-                        if (dat.tags.topics && dat.tags.topics.length > 0 && dat.type === 'project') {
-                            dat.tags.topics.forEach((to) => {
-                                if (!tempProjectTopicsArray.includes(to) && to !== '') {
-                                    tempProjectTopicsArray.push(to);
-                                }
-                            });
-                        }
-                    });
-                }
-
-                this.setState({ combinedToolCategories: tempCategoriesToolArray, combinedProjectCategories: tempCategoriesProjectArray, combinedLanguages: tempProgrammingLanguageArray, combinedFeatures: tempFeaturesArray, combinedToolTopic: tempToolTopicsArray, combinedProjectTopic: tempProjectTopicsArray });
-                this.setState({ data: !res.data.data ? '' : res.data.data, summary: !res.data.summary ? '' : Object.entries(res.data.summary ) });
-
-                axios.get(baseURL + '/api/datasets/filteredsearch?search=' + this.state.searchString + this.state.publishersFilter + this.state.licensesFilter + this.state.geoCoverageFilter + this.state.sampleAvailabilityFilter + this.state.keywordsFilter + this.state.ageBandsFilter)
-                .then((res) => {
-                    var TempDataSetData = res.data.data.results;
-                    
-                    if(!!res.data.data.results){
-                            TempDataSetData.forEach((dat) => {
-                            this.state.data.push(dat)
-                        })
-                    }
-                    this.setState({ datasetData: !res.data.data.results ? '' : res.data.data.results , isLoading: false });
-                })
             })
     }
 
     updateSearchString = (searchString) => {
-        this.setState({ searchString: searchString });
+        this.setState({ searchString });
     }
-
-    updateTypeString = (typeString) => {
-        this.setState({ typeString: typeString });
-    }
-
-    updateCombinedLanguages = (languageSelected) => {
-        this.setState({ languageSelected: languageSelected });
-        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
-        this.doSearchCall(this.state.searchString, this.state.typeString, languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
-    }
-
-    updateCombinedCategories = (categoriesSelected) => {
-        this.setState({ categoriesSelected: categoriesSelected });
-        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
-        this.doSearchCall(this.state.searchString, this.state.typeString, this.state.languageSelected, categoriesSelected, this.state.featuresSelected, this.state.topicsSelected);
-    }
-
-    updateCombinedFeatures = (featuresSelected) => {
-        this.setState({ featuresSelected: featuresSelected });
-        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
-        this.doSearchCall(this.state.searchString, this.state.typeString, this.state.languageSelected, this.state.categoriesSelected, featuresSelected, this.state.topicsSelected);
-    }
-
-    updateCombinedTopics = (topicsSelected) => {
-        this.setState({ topicsSelected: topicsSelected });
-        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
-        this.doSearchCall(this.state.searchString, this.state.typeString, this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, topicsSelected);
-    }
-
-    updatePublisher = (publishersSelected) => {
-        this.setState({publishersSelected: publishersSelected})
-        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
-        this.filteredSearch(this.state.searchString, publishersSelected, this.state.licensesSelected, this.state.geoCoverageSelected, this.state.sampleAvailabilitySelected, this.state.keywordsSelected, this.state.ageBandsSelected);
-
-    }
-    updateLicenses = (licensesSelected) => {
-        this.setState({licensesSelected: licensesSelected})
-        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
-        this.filteredSearch(this.state.searchString, this.state.publishersSelected, licensesSelected, this.state.geoCoverageSelected, this.state.sampleAvailabilitySelected, this.state.keywordsSelected, this.state.ageBandsSelected);
-
-    }
-    updateGeoCoverage = (geoCoverageSelected) => {
-        this.setState({geoCoverageSelected: geoCoverageSelected})
-        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + geoCoverageSelected)
-        this.filteredSearch(this.state.searchString, this.state.publishersSelected, this.state.licensesSelected, geoCoverageSelected, this.state.sampleAvailabilitySelected, this.state.keywordsSelected, this.state.ageBandsSelected);
-    }
-
-    updateSampleAvailability = (sampleAvailabilitySelected) => {
-        this.setState({sampleAvailabilitySelected: sampleAvailabilitySelected})
-        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
-        this.filteredSearch(this.state.searchString, this.state.publishersSelected, this.state.licensesSelected, this.state.geoCoverageSelected, sampleAvailabilitySelected, this.state.keywordsSelected, this.state.ageBandsSelected);
-    }
-
-    updateKeywords = (keywordsSelected) => {
-        this.setState({keywordsSelected: keywordsSelected})
-        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
-        this.filteredSearch(this.state.searchString, this.state.publishersSelected, this.state.licensesSelected, this.state.geoCoverageSelected, this.state.sampleAvailabilitySelected, keywordsSelected, this.state.ageBandsSelected);
-    }
-
-    updateAgeBands = (ageBandsSelected) => {
-        this.setState({ageBandsSelected: ageBandsSelected})
-        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + this.state.key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
-        this.filteredSearch(this.state.searchString, this.state.publishersSelected, this.state.licensesSelected, this.state.geoCoverageSelected, this.state.sampleAvailabilitySelected, this.state.keywordsSelected, ageBandsSelected);
-    }
-
-    filteredSearch = (searchString, publishersSelected, licensesSelected, geoCoverageSelected, sampleAvailabilitySelected, keywordsSelected, ageBandsSelected) => {
-
-        var publishersFilter = "";
-        var licensesFilter = "";
-        var geoCoverageFilter = "";
-        var sampleAvailabilityFilter = "";
-        var keywordsFilter = "";
-        var ageBandsFilter = "";
-
-        publishersSelected.map((pub) => {
-                publishersFilter = publishersFilter + '&publisher=' + pub;
-        })
-
-        licensesSelected.map((lic) => {
-            licensesFilter = licensesFilter + '&license=' + lic;
-         })
-
-         geoCoverageSelected.map((geo) => {
-            geoCoverageFilter = geoCoverageFilter + '&geographicCoverage=' + geo;
-         })
-
-         sampleAvailabilitySelected.map((samp) => {
-            sampleAvailabilityFilter = sampleAvailabilityFilter + '&physicalSampleAvailability=' + samp;
-         })
-
-         keywordsSelected.map((key) => {
-            keywordsFilter = keywordsFilter + '&keywords=' + key;
-         })
-
-         ageBandsSelected.map((age) => {
-            ageBandsFilter = ageBandsFilter + '&ageBand=' + age;
-         })
-
-        this.setState({publishersFilter: publishersFilter})
-        this.setState({licensesFilter: licensesFilter})
-        this.setState({geoCoverageFilter: geoCoverageFilter})
-        this.setState({sampleAvailabilityFilter: sampleAvailabilityFilter})
-        this.setState({keywordsFilter: keywordsFilter})
-        this.setState({ageBandsFilter: ageBandsFilter})
-
-        this.doSearchCall(this.state.searchString, this.state.typeString, this.state.languageSelected, this.state.categoriesSelected, this.state.featuresSelected, this.state.topicsSelected, publishersFilter, licensesFilter, geoCoverageFilter, sampleAvailabilityFilter, keywordsFilter, ageBandsFilter);
-  }
 
     handleSelect = (key) => {
         this.setState({ key: key });
-        this.props.history.push(window.location.pathname + '?search=' + this.state.searchString + '&type=' + this.state.typeString + '&tab=' + key + '&toolcategory=' + this.state.categoriesSelected + '&programminglanguage=' + this.state.languageSelected + '&features=' + this.state.featuresSelected + '&topics=' + this.state.topicsSelected+ '&license=' + this.state.licensesSelected + '&sampleavailability=' + this.state.sampleAvailabilitySelected + '&keywords=' + this.state.keywordsSelected + '&publisher=' + this.state.publishersSelected + '&ageband=' + this.state.ageBandsSelected + '&geographiccover=' + this.state.geoCoverageSelected)
+        var values = queryString.parse(window.location.search);
+        values.tab = key;
+        this.props.history.push(window.location.pathname + '?' + queryString.stringify(values))
+    }
+
+    handlePagination = async (type, page) => {
+        if (type === 'dataset') {
+            await Promise.all([
+                this.setState({ datasetIndex: page })
+            ])
+        }
+        else if (type === 'tool') {
+            await Promise.all([
+                this.setState({ toolIndex: page })
+            ])
+        }
+        else if (type === 'project') {
+            await Promise.all([
+                this.setState({ projectIndex: page })
+            ])
+        }
+        else if (type === 'person') {
+            await Promise.all([
+                this.setState({ personIndex: page })
+            ])
+        }
+        this.doSearchCall()
     }
 
     render() {
-        const { searchString, typeString, data, key, summary, userState, isLoading, combinedLanguages, languageSelected, combinedToolCategories, combinedProjectCategories, categoriesSelected, combinedFeatures, featuresSelected, combinedToolTopic, combinedProjectTopic, topicsSelected, datasetData, publishersSelected, licensesSelected, geoCoverageSelected, sampleAvailabilitySelected, keywordsSelected, ageBandsSelected, publisherData, licenseData, geographicCoverageData, ageBandData, physicalSampleAvailabilityData, keywordsData } = this.state;
-
-        var toolCount = 0;
-        var projectCount = 0;
-        var personCount = 0;
-
-        if (!!data && (data.length-datasetData.length) > 0) {
-            data.map((dat) => {
-                if (data && dat.type === 'tool') {
-                    toolCount++
-                }
-                else if (data && dat.type === 'project') {
-                    projectCount+=1
-
-                }
-                else if (data && dat.type === 'person') {
-                    personCount++
-
-                }
-            })
-        }
-
-
+        const { summary, searchString, datasetData, toolData, projectData, personData, filterOptions, userState, isLoading, languageSelected, toolTopicsSelected, toolCategoriesSelected, featuresSelected, projectTopicsSelected, projectCategoriesSelected, publishersSelected, licensesSelected, geoCoverageSelected, sampleAvailabilitySelected, keywordsSelected, ageBandsSelected, datasetIndex, toolIndex, projectIndex, personIndex } = this.state;
+        var { key } = this.state;
         if (isLoading) {
             return <Container><Loading /></Container>;
+        }
+
+        var datasetCount = summary.datasets || 0;
+        var toolCount = summary.tools || 0;
+        var projectCount = summary.projects || 0;
+        var personCount = summary.persons || 0;
+
+        if (key === '' || typeof key === "undefined") {
+            if (datasetCount > 0) {
+                key = 'Datasets'
+            }
+            else if (toolCount > 0) {
+                key = 'Tools'
+            }
+            else if (projectCount > 0) {
+                key = 'Projects'
+            }
+            else if (personCount > 0) {
+                key = 'People'
+            }
+            else {
+                key = 'Datasets'
+            }
+        }
+
+        let datasetPaginationItems = [];
+        let toolPaginationItems = [];
+        let projectPaginationItems = [];
+        let personPaginationItems = [];
+        var maxResult = 40;
+        for (let i = 1; i <= Math.ceil(datasetCount / maxResult); i++) {
+            datasetPaginationItems.push(
+                <Pagination.Item key={i} active={i === (datasetIndex/maxResult)+1} onClick={() => this.handlePagination("dataset", ((i-1)*(maxResult)))}>{i}</Pagination.Item>,
+            );
+        }
+        for (let i = 1; i <= Math.ceil(toolCount / maxResult); i++) {
+            toolPaginationItems.push(
+                <Pagination.Item key={i} active={i === (toolIndex/maxResult)+1} onClick={() => this.handlePagination("tool", ((i-1)*(maxResult)))}>{i}</Pagination.Item>,
+            );
+        }
+        for (let i = 1; i <= Math.ceil(projectCount / maxResult); i++) {
+            projectPaginationItems.push(
+                <Pagination.Item key={i} active={i === (projectIndex/maxResult)+1} onClick={() => this.handlePagination("project", ((i-1)*(maxResult)))}>{i}</Pagination.Item>,
+            );
+        }
+        for (let i = 1; i <= Math.ceil(personCount / maxResult); i++) {
+            personPaginationItems.push(
+                <Pagination.Item key={i} active={i === (personIndex/maxResult)+1} onClick={() => this.handlePagination("person", ((i-1)*(maxResult)))}>{i}</Pagination.Item>,
+            );
         }
 
         return (
@@ -408,73 +334,98 @@ class SearchPage extends React.Component {
 
                 <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
 
+                <Row className="SearchTabsHolder">
+                    <Col>
+                        <div>
+                            <Tabs className='TabsBackground Gray700-13px' activeKey={key} onSelect={this.handleSelect}>
+                                <Tab eventKey="Datasets" title={'Datasets (' + datasetCount + ')'}>
+                                    {datasetCount <= 0 ? <NoResultsDatasets searchString={searchString} /> : ''}
+                                </Tab>
+                                <Tab eventKey="Tools" title={'Tools (' + toolCount + ')'}>
+                                    {toolCount <= 0 ? <NoResultsTool searchString={searchString} /> : ''}
+                                </Tab>
+                                <Tab eventKey="Projects" title={'Projects (' + projectCount + ')'}>
+                                    {projectCount <= 0 ? <NoResultsProjects searchString={searchString} /> : ''}
+                                </Tab>
+                                <Tab eventKey="People" title={'People (' + personCount + ')'}>
+                                    {personCount <= 0 ? <NoResultsPeople searchString={searchString} /> : ''}
+                                </Tab>
+                            </Tabs>
+                        </div>
+                    </Col>
+                </Row>
+
                 <Container>
-                    <Row className="mt-1">
-                        <Col sm={12} lg={12}>
-                            <div>
-                                <Tabs className='TabsBackground Gray700-13px' activeKey={this.state.key} onSelect={this.handleSelect}>
-
-                                    <Tab eventKey="Datasets" title={'Datasets (' + datasetData.length + ')'}>
-                                        {data && key === 'Datasets' && datasetData.length <= 0 ? <NoResultsDatasets searchString={searchString} /> : ''}
-                                    </Tab>
-                                    <Tab eventKey="Tools" title={'Tools (' + toolCount + ')'}> 
-                                        {data && key === 'Tools' && toolCount <= 0 ? <NoResultsTool searchString={searchString} /> : ''}
-                                    </Tab>
-                                    <Tab eventKey="Projects" title={'Projects (' + projectCount + ')'}>
-                                        {data && key === 'Projects' && projectCount <= 0 ? <NoResultsProjects searchString={searchString} /> : ''}
-                                    </Tab>
-                                    <Tab eventKey="People" title={'People (' + personCount + ')'}> 
-                                        {data && key === 'People' && personCount <= 0 ? <NoResultsPeople searchString={searchString} /> : ''}
-                                    </Tab>
-                                </Tabs>
-                            </div>
-                        </Col>
-                    </Row> 
-
                     <Row>
-
                         {key === 'Tools' || key === 'Projects' || key === 'Datasets' ?
-                        <Col sm={12} md={12} lg={3}>
-                            {key === 'Tools' ? <CategoryFilterTool combinedToolCategories={combinedToolCategories} doUpdateCombinedCategories={this.updateCombinedCategories} categoriesSelected={categoriesSelected} /> : ''}
-                            {key === 'Projects' ? <CategoryFilterProject combinedProjectCategories={combinedProjectCategories} doUpdateCombinedCategories={this.updateCombinedCategories} categoriesSelected={categoriesSelected} /> : ''}
-                            {key === 'Tools' ? <ProgrammingLanguageFilter combinedLanguages={combinedLanguages} doUpdateCombinedLanguages={this.updateCombinedLanguages} languageSelected={languageSelected} /> : ''}
-                            {key === 'Tools' ? <FeaturesFilter combinedFeatures={combinedFeatures} doUpdateCombinedFeatures={this.updateCombinedFeatures} featuresSelected={featuresSelected} /> : ''}
-                            {key === 'Tools' ? <TopicsFilter combinedToolTopic={combinedToolTopic} doUpdateCombinedTopics={this.updateCombinedTopics} topicsSelected={topicsSelected} /> : ''}
-                            {key === 'Projects' ? <KeywordsFilter combinedProjectTopic={combinedProjectTopic} doUpdateCombinedTopics={this.updateCombinedTopics} topicsSelected={topicsSelected} /> : ''}
-                            {key === 'Datasets' ? <DatasetFilterLicense searchString={searchString} licenseData={licenseData} doFilteredSearch={this.updateLicenses} licensesSelected={licensesSelected}/> : ''}
-                            {key === 'Datasets' ? <DatasetFilterSampleAvailability searchString={searchString} physicalSampleAvailabilityData={physicalSampleAvailabilityData} doFilteredSearch={this.updateSampleAvailability} sampleAvailabilitySelected={sampleAvailabilitySelected} /> : ''}
-                            {key === 'Datasets' ? <DatasetFilterKeywords searchString={searchString} keywordsData={keywordsData} doFilteredSearch={this.updateKeywords} keywordsSelected={keywordsSelected} /> : ''}
-                            {key === 'Datasets' ? <DatasetFilterPublisher searchString={searchString} publisherData={publisherData} doFilteredSearch={this.updatePublisher} publishersSelected={publishersSelected} /> : ''}
-                            {key === 'Datasets' ? <DatasetFilterAgeBand searchString={searchString} ageBandData={ageBandData} doFilteredSearch={this.updateAgeBands} ageBandsSelected={ageBandsSelected} /> : ''}
-                            {key === 'Datasets' ? <DatasetFilterGeoCoverage searchString={searchString} geographicCoverageData={geographicCoverageData} doFilteredSearch={this.updateGeoCoverage} geoCoverageSelected={geoCoverageSelected} /> : ''}
-                        </Col>
-                        : <Col sm={1} md={1} lg={1} />}
+                            <Col sm={12} md={12} lg={3}>
+                                {key === 'Datasets' ? <DatasetFilterLicense licenseData={filterOptions.licenseFilterOptions} updateOnFilter={this.updateOnFilter} licensesSelected={licensesSelected} /> : ''}
+                                {key === 'Datasets' ? <DatasetFilterSampleAvailability physicalSampleAvailabilityData={filterOptions.sampleFilterOptions} updateOnFilter={this.updateOnFilter} sampleAvailabilitySelected={sampleAvailabilitySelected} /> : ''}
+                                {key === 'Datasets' ? <DatasetFilterKeywords keywordsData={filterOptions.keywordsFilterOptions} updateOnFilter={this.updateOnFilter} keywordsSelected={keywordsSelected} /> : ''}
+                                {key === 'Datasets' ? <DatasetFilterPublisher publisherData={filterOptions.publisherFilterOptions} updateOnFilter={this.updateOnFilter} publishersSelected={publishersSelected} /> : ''}
+                                {key === 'Datasets' ? <DatasetFilterAgeBand ageBandData={filterOptions.ageBandFilterOptions} updateOnFilter={this.updateOnFilter} ageBandsSelected={ageBandsSelected} /> : ''}
+                                {key === 'Datasets' ? <DatasetFilterGeoCoverage geographicCoverageData={filterOptions.geographicCoverageFilterOptions} updateOnFilter={this.updateOnFilter} geoCoverageSelected={geoCoverageSelected} /> : ''}
 
+                                {key === 'Tools' ? <CategoryFilterTool toolCategoriesData={filterOptions.toolCategoriesFilterOptions} updateOnFilter={this.updateOnFilter} toolCategoriesSelected={toolCategoriesSelected} /> : ''}
+                                {key === 'Tools' ? <ProgrammingLanguageFilter languagesData={filterOptions.programmingLanguageFilterOptions} updateOnFilter={this.updateOnFilter} languageSelected={languageSelected} /> : ''}
+                                {key === 'Tools' ? <FeaturesFilter featuresData={filterOptions.featuresFilterOptions} updateOnFilter={this.updateOnFilter} featuresSelected={featuresSelected} /> : ''}
+                                {key === 'Tools' ? <TopicsFilter toolTopicData={filterOptions.toolTopicsFilterOptions} updateOnFilter={this.updateOnFilter} toolTopicsSelected={toolTopicsSelected} /> : ''}
+
+                                {key === 'Projects' ? <CategoryFilterProject projectCategoriesData={filterOptions.projectCategoriesFilterOptions} updateOnFilter={this.updateOnFilter} projectCategoriesSelected={projectCategoriesSelected} /> : ''}
+                                {key === 'Projects' ? <KeywordsFilter projectTopicData={filterOptions.projectTopicsFilterOptions} updateOnFilter={this.updateOnFilter} projectTopicsSelected={projectTopicsSelected} /> : ''}
+                            </Col>
+                            : <Col sm={1} md={1} lg={1} />}
 
                         <Col sm={12} md={12} lg={9}>
-                            {data.length <= 0 ?  '' :        
-                            data.map((dat) => {
-                                if (dat.type === 'tool' && key === 'Tools' && toolCount >= 1) {
-                                    return <Tool key={dat.id} data={dat} />
-                                }
-                                else if (dat.type === 'project' && key === 'Projects') {
-                                    return <Project key={dat.id} data={dat} />
-                                }
-                                else if (dat.type === 'person' && key === 'People') {
-                                     return <div> 
-                                                <Row>
-                                                    <Col sm={2} lg={2} />
-                                                    <Col sm={10} lg={10}>
-                                                        <Person key={dat.id} data={dat} /> 
-                                                    </Col>
-                                                </Row>
-                                            </div>                                  
-                                }
-                                else if (dat.type === undefined && key === 'Datasets')
-                                {
-                                    return <DataSet key={dat.id} data={dat} />
-                                }
-                            })}
+                            {key === 'Datasets' ?
+                                datasetData.map((dataset) => {
+                                    return <DataSet key={dataset.id} data={dataset} />
+                                })
+                                : ''}
+
+                            {key === 'Tools' ?
+                                toolData.map((tool) => {
+                                    return <Tool key={tool.id} data={tool} />
+                                })
+                                : ''}
+
+                            {key === 'Projects' ?
+                                projectData.map((project) => {
+                                    return <Project key={project.id} data={project} />
+                                })
+                                : ''}
+
+                            {key === 'People' ?
+                                personData.map((person) => {
+                                    return <Person key={person.id} data={person} />
+                                })
+                                : ''}
+
+                            <div className='text-center'>
+                            {key === 'Datasets' && datasetCount > maxResult ?
+                                <Pagination>
+                                    {datasetPaginationItems}
+                                </Pagination>
+                                : ''}
+
+                            {key === 'Tools' && toolCount > maxResult ?
+                                <Pagination>
+                                    {toolPaginationItems}
+                                </Pagination>
+                                : ''}
+
+                            {key === 'Projects' && projectCount > maxResult ?
+                                <Pagination>
+                                    {projectPaginationItems}
+                                </Pagination>
+                                : ''}
+
+                            {key === 'People' && personCount > maxResult ?
+                                <Pagination>
+                                    {personPaginationItems}
+                                </Pagination>
+                                : ''}
+                                </div>
                         </Col>
                     </Row>
                 </Container>
@@ -482,40 +433,5 @@ class SearchPage extends React.Component {
         );
     }
 }
-
-// class SearchSummary extends React.Component {
-//     constructor(props) {
-//         super(props)
-//         this.state.data = props.data;
-//         this.state.datasetData = props.datasetData;
-
-//     }
-
-//     // initialize our state
-//     state = {
-//         data: [],
-//         datasetData: []
-//     };
-
-//     render() {
-//         const { data, datasetData } = this.state;
-
-//         var total = 0;
-//         data.map(summ => total += summ[1]);
-//         total += datasetData.length;
-    
-//         return (
-//             <Row className="mt-2">
-//                 <Col>
-//                     <div className="Rectangle">
-//                         <div className="Gray800-14px" style={{ textAlign: 'center' }}>
-//                             Showing {data.map(summ => summ[1] + ' ' + summ[0] + (summ[1] > 1 ? 's' : '')).join(", ")} {data.length == 0 ? '' : ', '} {!datasetData ? '' : datasetData.length == 1 ? datasetData.length + ' dataset ' : datasetData.length + ' datasets '} ({total} total)
-//                         </div>
-//                     </div>
-//                 </Col>
-//             </Row>
-//         )
-//     }
-// }
 
 export default SearchPage;

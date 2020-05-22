@@ -1,10 +1,9 @@
 import React from 'react';
 import axios from 'axios';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
-import Alert from 'react-bootstrap/Alert'
-import Form from 'react-bootstrap/Form';
+import * as Yup from 'yup';
+
+import { Row, Col, Button, Alert, Form } from 'react-bootstrap';
+
 import { useFormik } from 'formik';
 import queryString from 'query-string';
 import Loading from '../commonComponents/Loading'
@@ -36,7 +35,7 @@ class YourAccount extends React.Component {
     }
 
     doYourAccountCall() {
-        axios.get(baseURL + '/api/person/' + this.state.userState[0].id)
+        axios.get(baseURL + '/api/v1/person/' + this.state.userState[0].id)
             .then((res) => {
                 axios.get(baseURL + '/api/v1/users/' + this.state.userState[0].id)
                     .then((resUser) => {
@@ -81,8 +80,20 @@ const YourAccountForm = (props) => {
             orcid: props.data.orcid,
         },
 
+        validationSchema: Yup.object({
+            firstname: Yup.string()
+                .required('This cannot be empty'),
+            lastname: Yup.string()
+                .required('This cannot be empty'),
+            email: Yup.string()
+                .email('This must be a valid email')
+                .required('This cannot be empty'),
+            bio: Yup.string()
+                .required('This cannot be empty')
+        }),
+
         onSubmit: values => {
-            axios.post(baseURL + '/api/person/edit', values)
+            axios.post(baseURL + '/api/v1/person/edit', values)
                 .then((res) => {
                     window.location.href = '/account?tab=youraccount&accountUpdated=true';
                 });
@@ -106,25 +117,29 @@ const YourAccountForm = (props) => {
                     <Col>
                         <div className="Rectangle">
                             <Form.Group className="pb-2">
-                                <Form.Label className="Gray800-14px">First Name</Form.Label>
-                                <Form.Control id="firstname" name="firstname" type="text" className="AddFormInput" value={formik.values.firstname} disabled />
+                                <Form.Label className="Gray800-14px">First name</Form.Label>
+                                <Form.Control id="firstname" name="firstname" type="text" className={formik.touched.firstname && formik.errors.firstname ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.firstname} onBlur={formik.handleBlur} />
+                                {formik.touched.firstname && formik.errors.firstname ? <div className="ErrorMessages">{formik.errors.firstname}</div> : null}
                             </Form.Group>
 
                             <Form.Group className="pb-2">
-                                <Form.Label className="Gray800-14px">Last Name</Form.Label>
-                                <Form.Control id="lastname" name="lastname" type="text" className="AddFormInput" value={formik.values.lastname} disabled />
+                                <Form.Label className="Gray800-14px">Last name</Form.Label>
+                                <Form.Control id="lastname" name="lastname" type="text" className={formik.touched.lastname && formik.errors.lastname ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.lastname} onBlur={formik.handleBlur} />
+                                {formik.touched.lastname && formik.errors.lastname ? <div className="ErrorMessages">{formik.errors.lastname}</div> : null}
                             </Form.Group>
 
                             <Form.Group className="pb-2">
                                 <Form.Label className="Gray800-14px">Email</Form.Label>
-                                <Form.Control id="email" name="email" type="text" className="AddFormInput" value={formik.values.email} disabled />
+                                <Form.Control id="email" name="email" type="text" className={formik.touched.email && formik.errors.email ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.email} onBlur={formik.handleBlur} />
+                                {formik.touched.email && formik.errors.email ? <div className="ErrorMessages">{formik.errors.email}</div> : null}
                             </Form.Group>
 
                             <Form.Group className="pb-2">
-                                <span className="Gray800-14px">Bio (optional)</span>
+                                <span className="Gray800-14px">Institution</span>
                                 <br />
-                                <span className="Gray700-13px">This can be the name of your institution or a short description of who you are</span>
-                                <Form.Control id="bio" name="bio" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.bio} onBlur={formik.handleBlur} />
+                                <span className="Gray700-13px">If you aren't part of an institution, please provide a short description of who you are</span>
+                                <Form.Control id="bio" name="bio" type="text" className={formik.touched.bio && formik.errors.bio ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.bio} onBlur={formik.handleBlur} />
+                                {formik.touched.bio && formik.errors.bio ? <div className="ErrorMessages">{formik.errors.bio}</div> : null}
                             </Form.Group>
 
                             <Form.Group className="pb-2">

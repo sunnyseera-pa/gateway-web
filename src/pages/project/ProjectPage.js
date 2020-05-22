@@ -1,6 +1,7 @@
 
 // /ShowObjects.js
 import React, { Component } from 'react';
+import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
 import queryString from 'query-string';
 
@@ -19,6 +20,9 @@ import SearchBar from '../commonComponents/SearchBar';
 import Tool from '../commonComponents/Tool';
 import Loading from '../commonComponents/Loading'
 import Creators from '../commonComponents/Creators';
+
+// import ReactGA from 'react-ga'; 
+import {PageView, initGA} from '../../tracking';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -52,6 +56,8 @@ class ProjectDetail extends Component {
       this.setState({ projectEdited: values.projectEdited });
     }
     this.getDataSearchFromDb();
+    initGA('UA-166025838-1');
+    PageView();
   }
 
   // on loading of tool detail page were id is different
@@ -64,7 +70,7 @@ class ProjectDetail extends Component {
   getDataSearchFromDb = () => {
     //need to handle error if no id is found
     this.setState({ isLoading: true });
-    axios.get(baseURL + '/api/project/' + this.props.match.params.projectID)
+    axios.get(baseURL + '/api/v1/project/' + this.props.match.params.projectID)
       .then((res) => {
         this.setState({
           data: res.data.data[0],
@@ -76,7 +82,7 @@ class ProjectDetail extends Component {
   doSearch = (e) => { //fires on enter on searchbar
     if (e.key === 'Enter') {
       if (!!this.state.searchString) {
-        window.location.href = "/search?search=" + this.state.searchString + '&type=all';
+        window.location.href = "/search?search=" + this.state.searchString;
       }
     }
   }
@@ -148,7 +154,7 @@ class ProjectDetail extends Component {
 
               <Row className="mt-4">
                 <Col sm={10} lg={10}>
-                  <span className="Black500-16px">Authors ( {data.authors.length} )</span>
+                  <span className="Black500-16px">Uploaded by ( {data.authors.length} )</span>
                 </Col>
               </Row>
               <Row>
@@ -207,7 +213,7 @@ class ProjectTitle extends Component {
   }
 
   UpdateCounter = (id, counter) => {
-      axios.post(baseURL + '/api/counter/update', { id: id, counter: counter });
+      axios.post(baseURL + '/api/v1/counter/update', { id: id, counter: counter });
   }
 
   render() {
@@ -251,7 +257,7 @@ class ProjectTitle extends Component {
 
                           <Row>
                               <Col xs={12} md={12} >
-                                  {!data.categories.category ? '' : <div className="mr-2 Gray800-14px tagBadges"><a href={'/search?search=' + data.categories.category + '&type=all'}>{data.categories.category}</a></div>}
+                                  {!data.categories.category ? '' : <div className="mr-2 Gray800-14px tagBadges"><a href={'/search?search=' + data.categories.category}>{data.categories.category}</a></div>}
 
                                   <Row>
                                       <Col className="mt-3">
@@ -263,10 +269,10 @@ class ProjectTitle extends Component {
                                   </Row>
 
                                   {!data.categories.programmingLanguage || data.categories.programmingLanguage <= 0 ? '' : data.categories.programmingLanguage.map((language) => {
-                                      return <div className="mr-2 Gray800-14px tagBadges"><a href={'/search?search=' + language + '&type=all'}>{language}</a></div>
+                                      return <div className="mr-2 Gray800-14px tagBadges"><a href={'/search?search=' + language}>{language}</a></div>
                                   })}
 
-                                  {!data.categories.programmingLanguageVersion ? '' : <div className="mr-2 Gray800-14px tagBadges"><a href={'/search?search=' + data.categories.programmingLanguageVersion + '&type=all'}>{data.categories.programmingLanguageVersion}</a></div>}
+                                  {!data.categories.programmingLanguageVersion ? '' : <div className="mr-2 Gray800-14px tagBadges"><a href={'/search?search=' + data.categories.programmingLanguageVersion}>{data.categories.programmingLanguageVersion}</a></div>}
                               </Col>
                           </Row>
                       </div>
@@ -282,19 +288,19 @@ class ProjectTitle extends Component {
                               <Col xs={12} md={12} className="mb-3">
 
                                   {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
-                                      return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2"><a href={'/search?search=' + feature + '&type=all'}>{feature}</a></div>
+                                      return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2"><a href={'/search?search=' + feature}>{feature}</a></div>
                                   })}
 
                                   {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
-                                      return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2"><a href={'/search?search=' + topic + '&type=all'}>{topic}</a></div>
+                                      return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2"><a href={'/search?search=' + topic}>{topic}</a></div>
                                   })}
 
                               </Col>
                           </Row>
                           <Row>
                               <Col xs={12} md={12} className="mb-3">
-                                  <span className="Gray800-14px">
-                                      {data.description}
+                                  <span className="Gray800-14px descriptionWhiteSpace">
+                                      <ReactMarkdown source={data.description} />
                                   </span>
                               </Col>
                           </Row>

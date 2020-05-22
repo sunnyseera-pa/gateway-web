@@ -3,12 +3,7 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Container from 'react-bootstrap/Container';
-import Alert from 'react-bootstrap/Alert'
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
+import { Row, Col, Container, Button, Alert, Form } from 'react-bootstrap';
 
 import SearchBar from '../commonComponents/SearchBar';
 import Loading from '../commonComponents/Loading';
@@ -35,7 +30,7 @@ class CompleteRegistration extends Component {
     doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
             if (!!this.state.searchString) {
-                window.location.href = "/search?search=" + this.state.searchString + '&type=all';
+                window.location.href = "/search?search=" + this.state.searchString;
             }
         }
     }
@@ -46,7 +41,7 @@ class CompleteRegistration extends Component {
 
     componentDidMount() {
         this.setState({ isLoading: true });
-        axios.get(baseURL + '/api/auth/register/' + this.props.match.params.personID)
+        axios.get(baseURL + '/api/v1/auth/register/' + this.props.match.params.personID)
             .then((res) => {
             this.setState({
                 userdata: res.data.data,
@@ -114,9 +109,10 @@ const YourAccountForm = (props) => {
         
         onSubmit: values => {
             //alert(JSON.stringify(values, null, 2));
-            axios.post(baseURL + '/api/auth/register', values)
+            axios.post(baseURL + '/api/v1/auth/register', values)
             .then((res) => {
-                window.location.href = window.location.search + res.data.data + '?registrationCompleted=true';
+                const url = `${window.location.search}${res.data.data}`;
+                window.location.href = `${url}${url.includes('?') ? '&': '?' }registrationCompleted=true`;
             });
         }
     });
@@ -156,7 +152,7 @@ const YourAccountForm = (props) => {
                             </Form.Group>
 
                             <Form.Group className="pb-2">
-                                <span className="Gray800-14px">Intistution</span>
+                                <span className="Gray800-14px">Institution</span>
                                 <br />
                                 <span className="Gray700-13px">If you aren't part of an institution, please provide a short description of who you are</span>
                                 <Form.Control id="bio" name="bio" type="text" className={formik.touched.bio && formik.errors.bio ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.bio} onBlur={formik.handleBlur} />
