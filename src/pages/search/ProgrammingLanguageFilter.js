@@ -66,11 +66,12 @@ class ProgrammingLanguageFilter extends Component {
               <span>Language</span>
             </Col>
             <Col xs={3}>
-              <span>
-                <button className="ClearButtons Purple-14px" onClick={() => this.clearFilter()}>
-                  Clear
+              {this.state.languageSelected.length > 0 ?
+                <span>
+                  <button className="ClearButtons Purple-14px" onClick={() => this.clearFilter()}>
+                    Clear
                   </button>
-              </span>
+                </span> : null}
             </Col>
           </Row>
         </div>
