@@ -56,7 +56,7 @@ class TopicsFilter extends Component {
             </Col>
             <Col xs={3}>
               {this.state.topicsSelected.length > 0 ?
-                <span>
+                <span> 
                   <button className="ClearButtons Purple-14px" onClick={() => this.clearFilter()}>
                     Clear
                   </button>
