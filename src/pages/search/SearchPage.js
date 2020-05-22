@@ -414,7 +414,7 @@ class SearchPage extends React.Component {
                                 </Pagination>
                                 : ''}
 
-                            {key === 'Project' && projectCount > maxResult ?
+                            {key === 'Projects' && projectCount > maxResult ?
                                 <Pagination>
                                     {projectPaginationItems}
                                 </Pagination>
