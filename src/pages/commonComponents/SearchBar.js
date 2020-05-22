@@ -18,7 +18,6 @@ class SearchBar extends React.Component {
 
     state = {
         textValue: '',
-        displayClearButton: true,
         userState: [{
             loggedIn: false,
             role: "Reader",
@@ -33,7 +32,7 @@ class SearchBar extends React.Component {
     }
 
     changeText = (e) => {
-        this.setState({ textValue: e.target.value, displayClearButton: e.target.value != '' });
+        this.setState({ textValue: e.target.value });
         this.props.doUpdateSearchString(e.target.value);
     }
 
@@ -62,7 +61,7 @@ class SearchBar extends React.Component {
                                                 <span>
                                                     <input type="text" placeholder="Search" id="SearchInputSpanGrey" onChange={this.changeText} onKeyDown={this.props.doSearchMethod} value={this.props.searchString} />
                                                 </span>
-                                                {this.state.displayClearButton ?
+                                                {(this.props.searchString != '' && this.props.searchString != undefined) ?
                                                     <span className="SearchInputClearGrey">
                                                         <a style={{ cursor: 'pointer' }} href={'/search?search=&type=all&toolcategory=&programminglanguage=&features=&topics='} >
                                                             <ClearButtonSvg />
