@@ -55,11 +55,12 @@ class DatasetFilterLicense extends Component {
 
                         </Col>
                         <Col xs={3}>
-                            <span>
-                                <button className="ClearButtons Purple-14px" onClick={() => this.clearFilter()}>
-                                    Clear
+                            {this.state.licensesSelected.length > 0 ?
+                                <span>
+                                    <button className="ClearButtons Purple-14px" onClick={() => this.clearFilter()}>
+                                        Clear
                                     </button>
-                            </span>
+                                </span> : null}
                         </Col>
                     </Row>
                 </div>

@@ -61,7 +61,7 @@ class SearchBar extends React.Component {
                                                 <span>
                                                     <input type="text" placeholder="Search" id="SearchInputSpanGrey" onChange={this.changeText} onKeyDown={this.props.doSearchMethod} value={this.props.searchString} />
                                                 </span>
-                                                {this.state.displayClearButton ?
+                                                {(this.props.searchString != '' && this.props.searchString != undefined) ?
                                                     <span className="SearchInputClearGrey">
                                                         <a style={{ cursor: 'pointer' }} href={'/search?search='} >
                                                             <ClearButtonSvg />

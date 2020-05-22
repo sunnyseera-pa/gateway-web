@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import SVGIcon from "../../images/SVGIcon"
@@ -50,7 +51,10 @@ class About extends React.Component {
                             </Col>
                         </Row>
                         <Row className="mt-3">
-                            {data.abstract ? <Col sm={12} lg={12} className="Gray800-14px">{data.abstract}</Col> : <Col sm={12} lg={12} className="Gray800-14px-Opacity">Not specified</Col> }
+
+                            {/* {data.abstract ? <Col sm={12} lg={12} className="Gray800-14px">{data.abstract}</Col> : <Col sm={12} lg={12} className="Gray800-14px-Opacity">Not specified</Col> } */}
+                            {data.abstract ? <Col sm={12} lg={12} className="Gray800-14px"> <ReactMarkdown source={data.abstract} /> </Col> : <Col sm={12} lg={12} className="Gray800-14px-Opacity">Not specified</Col> }
+
                         </Row>
                     </div>
                   </Col>

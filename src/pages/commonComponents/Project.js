@@ -4,6 +4,7 @@ import Col from 'react-bootstrap/Col';
 import SVGIcon from "../../images/SVGIcon"
 import axios from 'axios';
 import Loading from './Loading'
+import ReactMarkdown from 'react-markdown';
 
 var baseURL = require('./BaseURL').getURL();
 
@@ -112,13 +113,9 @@ class Project extends React.Component {
                                             </b>
                                         </span>
                                     }
-
-                                    {data.toolids.length || data.datasetids.length ?
-                                        <span className="reviewTitleGap">·</span>
-                                        : ''
-                                    }
-
-                                    {data.description.substr(0, 160) + (data.description.length > 160 ? '...' : '')}
+                                    
+                                    <ReactMarkdown source={data.description.substr(0, 160) + (data.description.length > 160 ? '...' : '')} />
+                    
                                 </p>
                             </Col>
 

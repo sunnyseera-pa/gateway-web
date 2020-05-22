@@ -46,7 +46,6 @@ class ProgrammingLanguageFilter extends Component {
             <div>
                 <div className="FilterCard mt-2">
                     <Row className="mt-2"  >
-
                         <Col xs={7} className="ml-3">
                             <span className="Gray800-14px-bold">Programming</span>
                             {languageSelected.length === 0 ? <span /> :
