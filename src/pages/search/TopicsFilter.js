@@ -55,7 +55,7 @@ class TopicsFilter extends Component {
               <span className="mr-5" />
             </Col>
             <Col xs={3}>
-              {this.state.topicsSelected.length > 0 ?
+              {this.state.toolTopicsSelected.length > 0 ?
                 <span> 
                   <button className="ClearButtons Purple-14px" onClick={() => this.clearFilter()}>
                     Clear
