@@ -1,10 +1,11 @@
 
 import React from 'react';
 import Tool from '../src/pages/commonComponents/Tool';
+import { toolData } from './mocks/dataMock';
 
-describe('Tool', () => {
+describe('<Tool /> rendering', () => {
     it('renders without crashing', () => {
-        const wrapper = mount(<Tool data={toolData}/>);
+        const wrapper = shallow(<Tool data={toolData}/>);
     });
 });
 

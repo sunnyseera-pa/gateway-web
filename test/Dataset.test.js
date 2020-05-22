@@ -2,7 +2,6 @@
 import React from 'react';
 import DataSet from '../src/pages/commonComponents/DataSet';
 import { dataSetState } from './mocks/dataMock';
-import { getByTestId } from '@testing-library/react';
 
 let wrapper, props;
 

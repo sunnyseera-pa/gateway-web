@@ -1,19 +1,17 @@
 
 import React from 'react';
 import NotFound from '../src/pages/commonComponents/NotFound';
-import { notFound } from './mocks/dataMock';
+import { notFoundData } from './mocks/dataMock';
 
 let wrapper, props;
 
 beforeEach(() => {
-  props = notFound;
+  props = notFoundData
 });
 
-
 describe('<NotFound /> rendering', () => {
-    it('renders NotFound component with "No results found"', () => {
+    it('renders NotFound component with "No reviews found"', () => {
         wrapper = shallow(<NotFound {...props} /> );
-        expect(wrapper.find('[data-testid="notFound"]').text()).toEqual('results');
+        expect(wrapper.find('[data-testid="notFound"]').text()).toEqual('No reviews found');
     });
-
 });

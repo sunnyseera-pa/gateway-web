@@ -196,7 +196,7 @@ const __tool = {
 };
 
 const __notFound = {
-  "word" : "reviews"
+  word : "reviews"
 };
 
 const __reviews = {
