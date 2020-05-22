@@ -31,7 +31,6 @@ class DiscourseAddPost extends Component {
 
   render() {
     const { topicLink, toolId, userState } = this.state;
-
     const showLoginModal = (props) => {
       var modalID="myModal"
       if (props.isRequest) {

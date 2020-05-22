@@ -1045,7 +1045,7 @@ iframe#discourse-embed-frame {
     width: auto !important;
   }
  
-.overflowWrap{
-  overflow-wrap: break-word;
-}
+  .overflowWrap{
+    overflow-wrap: break-word;
+  }
 

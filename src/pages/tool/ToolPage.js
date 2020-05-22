@@ -73,7 +73,6 @@ class ToolDetail extends Component {
       this.setState({ replyAdded: values.replyAdded })
     }
 
-    this.getDataSearchFromDb();
     initGA('UA-166025838-1');
     PageView();
     
