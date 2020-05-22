@@ -175,6 +175,36 @@ body {
   color: #3c3c3b;
 }
 
+h4, h5, h6 {
+  font-family: museo-sans-rounded !important;
+  font-size: 14px !important;
+  font-weight: bold !important;
+  font-stretch: normal !important;
+  font-style: normal !important;
+  letter-spacing: normal !important;
+  color: #3c3c3b !important;
+}
+
+h2, h3 {
+  font-family: museo-sans-rounded !important;
+  font-size: 16px !important;
+  font-weight: bold !important;
+  font-stretch: normal !important;
+  font-style: normal !important;
+  letter-spacing: normal !important;
+  color: #3c3c3b !important;
+}
+
+h1 {
+  font-family: museo-sans-rounded !important;
+  font-size: 18px !important;
+  font-weight: bold !important;
+  font-stretch: normal !important;
+  font-style: normal !important;
+  letter-spacing: normal !important;
+  color: #3c3c3b !important;
+}
+
 .Gray800-14px-Opacity {
   opacity: 0.7;
   font-family: museo-sans-rounded;
@@ -956,7 +986,6 @@ iframe#discourse-embed-frame {
   margin-top: 2px;
 }
 
-
 .pagination {
     margin-top: 20px;
   }
@@ -1015,4 +1044,8 @@ iframe#discourse-embed-frame {
   .page-item:first-child {
     width: auto !important;
   }
-  
+ 
+.overflowWrap{
+  overflow-wrap: break-word;
+}
+

@@ -18,6 +18,7 @@ class SearchBar extends React.Component {
 
     state = {
         textValue: '',
+        displayClearButton: true,
         userState: [{
             loggedIn: false,
             role: "Reader",
@@ -32,7 +33,7 @@ class SearchBar extends React.Component {
     }
 
     changeText = (e) => {
-        this.setState({ textValue: e.target.value });
+        this.setState({ textValue: e.target.value, displayClearButton: e.target.value != '' });
         this.props.doUpdateSearchString(e.target.value);
     }
 

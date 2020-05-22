@@ -12,6 +12,7 @@ import SVGIcon from '../../images/SVGIcon';
 import { ReactComponent as WhiteLogoSvg } from '../../../src/images/white.svg';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
+var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
 
 class LandingPage extends React.Component {
 
@@ -116,7 +117,7 @@ class LandingPage extends React.Component {
     logout = (e) => {
         axios.get(baseURL + '/api/v1/auth/logout')
             .then((res) => {
-                window.location.href = "/";
+                window.location.href = cmsURL;
             });
     }
 

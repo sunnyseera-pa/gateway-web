@@ -199,7 +199,7 @@ class DatasetTitle extends Component {
     } else if (alert || hasRequestedAccess) {
       return <Button variant="primary" className="AddButton" disabled>Request Access</Button>
     } else {
-      return <Link className="btn btn-primary AddButton" to={{pathname: '/request-access', state: {title, dataSetId: id}}} onClick={() => Event("Buttons", "Click", "Request Access")}>Request Access</Link>
+      return <Link className="btn btn-primary AddButton" to={{pathname: '/request-access', state: {title, dataSetId: id, custodianEmail: contactPoint}}} onClick={() => Event("Buttons", "Click", "Request Access")}>Request Access</Link>
     }
   }
 
@@ -268,7 +268,7 @@ class DatasetTitle extends Component {
                                 <Col sm={2} lg={2} className="Gray800-14px" >
                                     Standard
                                 </Col>
-                                {data.conformsTo ? <Col sm={8} lg={8} className="Gray800-14px">{data.conformsTo}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col> }
+                                {data.conformsTo ? <Col sm={8} lg={8} className="Gray800-14px overflowWrap">{data.conformsTo}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col> }
                             </Row>
 
                             <Row className="mt-3">

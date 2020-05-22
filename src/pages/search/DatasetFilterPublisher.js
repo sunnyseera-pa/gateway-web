@@ -53,13 +53,12 @@ class DatasetFilterPublisher extends Component {
                             <span className="mr-4 ml-1" />
                         </Col>
                         <Col xs={3}>
-                            {publishersSelected.length > 0 ?
+                            {this.state.publishersSelected.length > 0 ?
                                 <span>
                                     <button className="ClearButtons Purple-14px" onClick={() => this.clearFilter()}>
                                         Clear
                                     </button>
-                            </span>
-                            : ''}
+                                </span> : null}
                         </Col>
                     </Row>
                 </div>
