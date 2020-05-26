@@ -214,6 +214,10 @@ class SearchPage extends React.Component {
         if (this.state.projectIndex > 0) searchURL += '&projectIndex=' + this.state.projectIndex;
         if (this.state.personIndex > 0) searchURL += '&personIndex=' + this.state.personIndex;
 
+        if (queryString.parse(window.location.search).showLogin) {
+            searchURL += '&showLoginOnce=true';
+        }
+
         if (!skipHistory) {
             if (this.state.key) {
                 this.props.history.push(`${window.location.pathname}?search=${this.state.searchString}&tab=${this.state.key}` + searchURL);
@@ -245,6 +249,7 @@ class SearchPage extends React.Component {
     handleSelect = (key) => {
         this.setState({ key: key });
         var values = queryString.parse(window.location.search);
+        if(!!values.showLoginOnce) values.showLoginOnce = false 
         values.tab = key;
         this.props.history.push(window.location.pathname + '?' + queryString.stringify(values))
     }
