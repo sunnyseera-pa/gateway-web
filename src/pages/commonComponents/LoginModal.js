@@ -8,8 +8,9 @@ const LoginModal = (props) => {
 
     useEffect(() => {
         var values = queryString.parse(window.location.search);
-        if(!!values.showLogin) {
+        if(!!values.showLoginOnce && values.showLoginOnce === 'true') {
             showLoginModal()
+
         }
 
     });
