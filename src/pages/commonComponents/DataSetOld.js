@@ -52,8 +52,6 @@ export default class DataSet extends React.Component {
     render() {
         const { data } = this.state;
 
-        console.log('dataset id: ' + data.id)
-
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         var updatedDate = new Date(data.updatedon);
         var updatedOnDate = monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
