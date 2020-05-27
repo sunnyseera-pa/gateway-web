@@ -109,13 +109,11 @@ class DatasetDetail extends Component {
   render() {
     const { searchString, data, projectsData, datarequest, isLoading, userState, alert } = this.state;
 
+    var projectsCount = 0;
     var toolsCount = 0;
 
-    projectsData.map(projectData =>
-      projectData.toolids.map(toolid =>
-          toolsCount++
-      )  
-    )
+    projectsData.map(projectData => projectData.activeflag === "active" ? projectsCount++ : '' ) 
+    projectsData.map(projectData => projectData.activeflag === "active" ? projectData.toolids.map(toolid => toolsCount++ ) : '')
 
     if (isLoading) {
       return <Container><Loading /></Container>;
@@ -134,11 +132,11 @@ class DatasetDetail extends Component {
                   <Tab eventKey="About" title={'About'}>
                     <About data={data}/>
                   </Tab>  
-                   <Tab eventKey="Projects" title={'Projects using this (' + projectsData.length + ')'}>
-                     {projectsData.length <=0 ? <NotFound word="projects" />  : projectsData.map(projectData => <Project id={projectData.id} />)}
+                   <Tab eventKey="Projects" title={'Projects using this (' + projectsCount + ')'}>
+                     {projectsCount <=0 ? <NotFound word="projects" />  : projectsData.map(projectData => projectData.activeflag === "active" ? <Project id={projectData.id} /> : '')}
                   </Tab>
                   <Tab eventKey="Tools" title={'Tools used in the same projects (' + toolsCount + ')'}>
-                    {toolsCount <= 0 ? <NotFound word="tools" /> : projectsData.map(projectData => projectData.toolids.map(toolid => <Tool id={toolid} />))}
+                    {toolsCount <= 0 ? <NotFound word="tools" /> : projectsData.map(projectData => projectData.activeflag === "active" ? projectData.toolids.map(toolid => <Tool id={toolid} />) : '')}
 
                   </Tab> 
                 </Tabs>
