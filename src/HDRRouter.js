@@ -18,6 +18,8 @@ import Account from './pages/dashboard/Account';
 import EditToolPage from './pages/tool/EditToolPage';
 import EditProjectPage from './pages/project/EditProjectPage';
 import Request from './pages/request/Request';
+import DataAccessRequest from './pages/DataAccessRequest/DataAccessRequest';
+import DataAccessRequestPOC from './pages/DataAccessRequestPOC/DataAccessRequestPOC';
 import Loading from './pages/commonComponents/Loading'
 import CompleteRegistration from './pages/registration/CompleteRegistration'
 
@@ -93,6 +95,8 @@ class HDRRouter extends Component {
             <Route path='/dataset/:datasetID' render={(props) => <DatasetPage {...props} userState={userState} />} />
             <Route path='/completeRegistration/:personID' render={(props) => <CompleteRegistration {...props} userState={userState} />} />
             <Route path='/sso' render={(props) => <SSOPage {...props} userState={userState} />} />
+            <Route exact path='/dar' component={DataAccessRequest} />
+            <Route exact path='/darpoc' component={DataAccessRequestPOC} />
 
             {userState[0].loggedIn ? (
               <Route
