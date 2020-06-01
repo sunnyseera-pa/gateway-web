@@ -27,6 +27,7 @@
     "react-markdown": "^4.3.1",
     "react-moment": "^0.9.7",
     "react-multiselect-checkboxes": "^0.1.1",
+    "react-notification-badge": "^1.5.1",
     "react-rating": "^2.0.4",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
