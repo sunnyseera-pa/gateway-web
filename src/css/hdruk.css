@@ -592,11 +592,36 @@ input[type='radio']:checked:after {
 }
 
 .TabsBackground {
-  background-color: #ffffff;
+  background-color: #ffffff !important;
   align-items: center;
   justify-content: center;
   padding-bottom: 2px;
   box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
+}
+
+.VerticalTabsBackground {
+  background-color: #ffffff !important;
+  align-items: center;
+  justify-content: center;
+  text-align: left;
+  padding-bottom: 2px;
+  width: 240px;
+  height: 48px;
+  /* box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09); */
+}
+
+.TabList {
+  background-color: #ffffff;
+  height: 100vh;
+}
+
+svg:not(:root) {
+  overflow: visible !important;
+}
+
+.AccountSvgs{
+  width: 18px;
+  height: 18px;
 }
 
 .AddButton {
@@ -797,6 +822,32 @@ textarea:focus {
     border-radius: 0px;
     margin: 0px;
   }
+}
+
+.rwt__tab {
+  color: #3c3c3b !important;
+  background-color: #fff !important;
+  border: 0 !important;
+  font-family: museo-sans-rounded !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  font-stretch: normal !important;
+  font-style: normal !important;
+  letter-spacing: normal !important;
+  padding: 1rem 2rem !important;
+}
+
+.rwt__tab[aria-selected="true"]:after {
+  right: -1px;
+  top: 0;
+  height: 100%;
+  border-right: 4px solid #3db28c !important;
+  background-color: #f6f7f8 !important;
+  background: solid !important;
+}
+
+.rwt__tab:focus {
+  background-color: #f6f7f8 !important;
 }
 
 .toolsButtons {

@@ -3,9 +3,6 @@ import queryString from 'query-string';
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Container from 'react-bootstrap/Container';
-import Tabs from 'react-bootstrap/Tabs';
-import Tab from 'react-bootstrap/Tab';
 import Alert from 'react-bootstrap/Alert';
 
 import SearchBar from '../commonComponents/SearchBar';
@@ -13,9 +10,11 @@ import AccountTools from './AccountTools';
 import AccountProjects from './AccountProjects';
 import ReviewTools from './ReviewTools';
 import YourAccount from './YourAccount';
-import Messages from './Messages';
 
-import 'react-tabs/style/react-tabs.css';
+import 'react-web-tabs/dist/react-web-tabs.css';
+import { Tabs, Tab, TabPanel, TabList } from 'react-web-tabs';
+import SVGIcon from "../../images/SVGIcon";
+
 
 class Account extends Component {
 
@@ -103,8 +102,6 @@ class Account extends Component {
             <div>
                 <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
 
-                <Container className="mb-5">
-
                     {isDeleted ?
                         <Row className="">
                             <Col sm={1} lg={1} />
@@ -175,43 +172,100 @@ class Account extends Component {
                         </Row>
                         : ""}
 
-                    <Row className="mt-3">
-                        <Col sm={1} lg={1} />
-                        <Col sm={10} lg={10}>
-                            <div>
-                                <Tabs className='TabsBackground Gray700-13px' activeKey={this.state.key} onSelect={this.handleSelect}>
-                                    <Tab eventKey="youraccount" title="Your account">
-                                        <YourAccount userState={userState} />
-                                    </Tab>
-                                    <Tab eventKey="messages" title="Notifications">
-                                        <Messages userState={userState} />
-                                    </Tab>
-                                    {/* <Tab eventKey="datasets" title="Data sets">
-                                        <Row className="mt-2">
-                                            <Col>
-                                                <div className="Rectangle">
-                                                    <div className="Gray800-14px" style={{ textAlign: 'center' }}>
-                                                        Data sets placeholder
-                                                </div>
-                                                </div>
-                                            </Col>
-                                        </Row>
-                                    </Tab> */}
-                                    <Tab eventKey="projects" title="Projects">
-                                        <AccountProjects userState={userState} />
-                                    </Tab>
-                                    <Tab eventKey="tools" title="Tools">
-                                        <AccountTools userState={userState} />
-                                    </Tab>
-                                    <Tab eventKey="reviews" title="Reviews">
-                                        <ReviewTools userState={userState} />
-                                    </Tab>
-                                </Tabs>
-                            </div>
+                    <Row className="mt-1">
+                        <Col sm={12} lg={12}>
+                       
+                            <Tabs defaultTab="Your account" vertical className="vertical-tabs" style={{'background-colour' : '#dc3645'}}>
+                                    <TabList className="TabList" activeKey={this.state.key} onSelect={this.handleSelect}>
+                                        <Tab tabFor="Your account" eventKey="youraccount" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                            <Row >
+                                                <Col sm={2} lg={2}>
+                                                    <SVGIcon name="accounticon" fill={'#b3b8bd'} className="AccountSvgs" />
+                                                </Col>                                             
+                                                <Col sm={10} lg={10} className="pl-4">
+                                                    Your account
+                                                </Col>
+                                            </Row>
+                                        </Tab>
+                                        <Tab tabFor="Tools" eventKey="tools" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                            <Row>
+                                                <Col sm={2} lg={2}>
+                                                    <SVGIcon name="newtoolicon" fill={'#b3b8bd'} className="AccountSvgs" />
+                                                </Col>
+                                                <Col sm={10} lg={10} className="pl-4">
+                                                    Tools
+                                                </Col>
+                                            </Row>
+                                        </Tab>
+                                        <Tab tabFor="Reviews" eventKey="reviews" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                            <Row>
+                                                <Col sm={2} lg={2}>
+                                                    <SVGIcon name="reviewsicon" fill={'#b3b8bd'} className="AccountSvgs" />
+                                                </Col>
+                                                <Col sm={10} lg={10} className="pl-4">
+                                                    Reviews
+                                                </Col>
+                                            </Row>
+                                        </Tab>
+                                        <Tab tabFor="Projects" eventKey="projects" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                            <Row>
+                                                <Col sm={2} lg={2}>
+                                                    <SVGIcon name="newprojecticon" fill={'#b3b8bd'} className="AccountSvgs"/>
+                                                </Col>
+                                                <Col sm={10} lg={10} className="pl-4">
+                                                    Projects    
+                                                </Col>
+                                            </Row>
+                                        </Tab>
+                                        <Tab tabFor="Data access requests" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                            <Row>
+                                                <Col sm={2} lg={2}>
+                                                    <SVGIcon name="dataaccessicon" fill={'#b3b8bd'} className="AccountSvgs" />
+                                                </Col>
+                                                <Col sm={10} lg={10} className="pl-4">
+                                                    Data access requests
+                                                </Col>
+                                            </Row>
+                                        </Tab>
+                                        <Tab tabFor="Users and roles" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                            <Row>
+                                                <Col sm={2} lg={2}>
+                                                    <SVGIcon name="rolesicon" fill={'#b3b8bd'} className="AccountSvgs" />
+                                                </Col>
+                                                <Col sm={10} lg={10} className="pl-4">
+                                                    Users and roles
+                                                </Col>
+                                            </Row>
+                                        </Tab>
+                                    </TabList>
+                                   
+                                <TabPanel tabId="Your account">
+                                    <YourAccount userState={userState} />
+                                </TabPanel>
+
+                                <TabPanel tabId="Tools">
+                                    <AccountTools userState={userState} />
+                                </TabPanel>
+
+                                <TabPanel tabId="Reviews">
+                                    <ReviewTools userState={userState} />
+                                </TabPanel>
+
+                                <TabPanel tabId="Projects">
+                                    <AccountProjects userState={userState} />
+                                </TabPanel>
+
+                                <TabPanel tabId="Data access requests">
+                                    <p>Data access requests</p>
+                                </TabPanel>
+
+                                <TabPanel tabId="Users and roles">
+                                    <p>Users and roles</p>
+                                </TabPanel>
+                            </Tabs>
+                          
                         </Col>
-                        <Col sm={1} lg={1} />
                     </Row>
-                </Container>
             </div>
         );
     }
