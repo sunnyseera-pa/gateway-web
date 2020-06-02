@@ -5,6 +5,8 @@ import Winterfell from 'winterfell';
 import { Container, Row, Col } from 'react-bootstrap';
 import TypeaheadCustom from './components/TypeaheadCustom'
 import DatePickerCustom from './components/DatepickerCustom';
+import {isEmpty} from 'lodash';
+import {formSchema} from './formSchema';
 
  class DataAccessRequestPOC extends Component {
     constructor(props) {
@@ -14,279 +16,14 @@ import DatePickerCustom from './components/DatepickerCustom';
         this.onFormSubmit = this.onFormSubmit.bind(this);
 
         this.state ={
-            form: {
-                "classes": {
-                    "form": "login-form",
-                    "select": "form-control",
-                    "typeaheadCustom": "form-control",
-                    "datePickerCustom": "form-control",
-                    "question": "form-group",
-                    "input": "form-control",
-                    "radioListItem": "radio",
-                    "radioList": "clean-list list-inline",
-                    "checkboxInput": "checkbox",
-                    "checkboxListItem": "checkbox",
-                    "checkboxList": "clean-list",
-                    "controlButton": "btn btn-primary pull-right",
-                    "backButton": "btn btn-default pull-left",
-                    "errorMessage": "alert alert-danger",
-                    "buttonBar": "button-bar"
-                },
-                "pages": [
-                    {
-                        index: 1,
-                        "pageId": "safePeople",
-                        "title": 'Safe People',
-                        'description': 'Please identify any persons or organisations who will have access to the data',
-                        "active": true
-                    },
-                    {
-                        index: 2,
-                        pageId: "safeProject",
-                        "title": "Safe Project",
-                        description: 'Something else...',
-                        "active": false
-                    },
-                    {
-                        index: 3,
-                        pageId: "safeData",
-                        "title": "Safe Data",
-                        description: 'Something else...',
-                        "active": false
-                    },
-                    {
-                        index: 4,
-                        pageId: "safeSettings",
-                        "title": "Safe Settings",
-                        description: 'Something else...',
-                        "active": false
-                    },
-                ],
-                "formPanels": [
-                    {
-                        "index": 1,
-                        "panelId": "applicant",
-                        "pageId": 'safePeople'
-                    },
-                    {
-                        "index": 2,
-                        "panelId": "principleInvestigator",
-                        "pageId": 'safePeople'
-
-                    },
-                    {
-                        "index": 3,
-                        "panelId": "safeProject",
-                        "pageId": 'safeProject'
-                    }
-                ],
-                "questionPanels": [
-                    {
-                        "panelId": "applicant",
-                        "panelHeader": "Applicant",
-                        "pageId": "safePeople",
-                        "active": true,
-                        "action": {
-                            "default": {
-                                "action": "GOTO",
-                                "target": "principleInvestigator"
-                            }
-                        },
-                        "button": {
-                            "text": "Next",
-                            "disabled": false
-                        },
-                        "questionSets": [
-                            {
-                                "index": 1,
-                                "questionSetId": "applicant"
-                            }
-                        ]
-                    },
-                    {
-                        "panelId": "principleInvestigator",
-                        "panelHeader": "Principle Investigator",
-                        "pageId": "safePeople",
-                        "active": false,
-                        "action": {
-                            "default": {
-                                "action": "GOTO",
-                                "target": "safeProject"
-                            }
-                        },
-                        "button": {
-                            "text": "Next",
-                            "disabled": false
-                        },
-                        "questionSets": [
-                            {
-                                "index": 2,
-                                "questionSetId": "principleInvestigator"
-                            }
-                        ]
-                    },
-                    {
-                        "panelId": "safeProject",
-                        "panelHeader": "Safe Project",
-                        "pageId": "safeProject",
-                        "active": false,
-                        "action": {
-                            "default": {
-                                "action": "SUBMIT"
-                            }
-                        },
-                        "button": {
-                            "text": "Submit"
-                        },
-                        "questionSets": [
-                            {
-                                "index": 1,
-                                "questionSetId": "safeProject"
-                            }
-                        ]
-                    },
-                ],
-                "questionSets": [
-                    {
-                        "questionSetId": "applicant",
-                        "questionSetHeader": "Applicant details",
-                        "questions": [
-                            {
-                                "questionId": "applicantName",
-                                "question": "Applicant name",
-                                "input": {
-                                    "type": "textInput"
-                                },
-                                "validations" : [{
-                                    "type" : "isLength",
-                                    "params" : [1,90]
-                                }]
-                            },
-                            {
-                                "questionId": "passportNumber",
-                                "question": "Passport number",
-                                "input": {
-                                    "type": "textInput"
-                                },
-                                "validations": [{
-                                    "type": "isLength",
-                                    "params": [
-                                        18
-                                    ]}
-                                ]
-                            },
-                            {
-                                "questionId": "principleInvestigator",
-                                "question": "Are you the principe investigator?",
-                                "input": {
-                                    "type": "radioOptionsInput",
-                                    "options": [
-                                        {
-                                            "text": "Yes",
-                                            "value": "true"
-                                        },
-                                        {
-                                            "text": "No",
-                                            "value": "false",
-                                            "conditionalQuestions": [
-                                                {
-                                                    "questionId": "principleInvestigatorReason",
-                                                    "question": "Reason for requesting data?",
-                                                    "input": {
-                                                        "type": "textareaInput"
-                                                    },
-                                                    "validations": [
-                                                        {
-                                                            "type": "isLength",
-                                                            "params": [
-                                                                18
-                                                            ]
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                },
-                            },
-                            {
-                                "questionId": "optionsSelect",
-                                "question": "Select multi options",
-                                "input": {
-                                    "type": "typeaheadCustom",
-                                    "placeholder": "Please select",
-                                    "options": ['Form1', 'Form2'],
-                                    "value": ['Form1']
-                                },
-                            },
-                            {
-                                "questionId" : "startDate",
-                                "question" : "Date",
-                                "input" : {
-                                "type" : "textInput",
-                                "placeholder" : "MM/DD/YYYY"
-                                },
-                                // Make sure date is entered
-                                "validations" : [{
-                                    "type" : "isDate",
-                                    "matches" : "('mm/dd/yyyy')"
-                                }]
-                            },
-                            {
-                                "questionId" : "startDateNew",
-                                "question" : "Date picker component",
-                                "input" : {
-                                    "type" : "datePickerCustom",
-                                    "value": '02/02/2020'
-                                },
-                                // Make sure date is entered
-                                "validations" : [{
-                                    "type" : "isDate",
-                                    "matches" : "('mm/dd/yyyy')"
-                                }]
-                            }
-                        ]
-                    }, 
-                    {
-                        "questionSetId": "principleInvestigator",
-                        "questionSetHeader": "Principle Investigator details",
-                        "questions": [
-                            {
-                                "questionId": "regICONumber",
-                                "question": "ICO number",
-                                "input": {
-                                    "type": "textInput"
-                                },
-                                "validations": [{
-                                    "type": "isLength",
-                                    "params": [
-                                        1,
-                                        8
-                                    ]}
-                                ]
-                            },
-                        ]
-                    },
-                    {
-                        "questionSetId": "safeProject",
-                        "questionSetHeader": "SafeProject",
-                        "questions": [{
-                            "questionId": "firstName",
-                            "question": "First name",
-                            "input": {
-                                "type": "textInput"
-                            }
-                        }]
-                    }
-                ]
-            },
-            questionAnswers: {applicantName: 'Bob', passportNumber: "GBADAD9878AD876876678F"},
-            activePanelId: 'applicant',
+            form: {},
+            questionAnswers: {},
+            activePanelId: '',
         }
     }
 
-    componentDidUpdate() {
-        console.log('did update');
+    componentWillMount() {
+        this.setState({form: {...formSchema}, activePanelId: 'applicant'});
     }
 
     onFormRender() {
@@ -305,16 +42,17 @@ import DatePickerCustom from './components/DatepickerCustom';
         console.log('submit', questionAnswers);
     }
 
-    onParentNavClick(item, index) {
-        const formState = [...this.state.form.pages].map((item) => {
-            return {...item, active: false}
-        });
-        formState[index] = {...item, active: true};
-        this.setState({ form: {...this.state.form, pages: formState}});
+    onParentNavClick(item) {
+        this.updateNavigation(item);
     }
 
-    renderQuestionSets = (parentForm, questionPanels) => {
-        if(questionPanels) {
+    onSwitchedPanel = (newForm) => {
+        this.updateNavigation(newForm);
+    }
+
+    renderQuestionSets = (parentForm) => {
+        let questionPanels = [...this.state.form.questionPanels];
+        if(!isEmpty(questionPanels)) {
             return questionPanels.map((item, index) =>{
                 if (parentForm.pageId === item.pageId) {
                     return  (
@@ -325,11 +63,29 @@ import DatePickerCustom from './components/DatepickerCustom';
         }
     }
 
-    onSwitchedPanel = (form) => {
-        const pages = [...this.state.form.pages];
-        const index = pages.findIndex(page => page.pageId === form.pageId);
-        const newPageItem = pages[index];
-        console.log(`${JSON.stringify(newPageItem, null, 2)}`);
+   
+
+    updateNavigation = (newForm) => {
+        const currentActivePage = [...this.state.form.pages].find(p => p.active === true);
+        if(currentActivePage.pageId !== newForm.pageId) {
+            // copy state pages
+            const pages = [...this.state.form.pages];
+            // get the index of new form
+            const newPageindex = pages.findIndex(page => page.pageId === newForm.pageId);
+            // reset the current state of active to false for all pages
+            const newFormState = [...this.state.form.pages].map((item) => {
+                return {...item, active: false}
+            });
+            // update actual object model with propert of active true
+            newFormState[newPageindex] = {...pages[newPageindex], active: true};
+            // get the activepanel and panelId Property
+            const { panelId = '' } = [...this.state.form.formPanels].find(p => p.pageId === newFormState[newPageindex].pageId);
+            if (!isEmpty(panelId) || typeof panel != undefined) {
+                this.setState({ form: {...this.state.form, pages: newFormState}, activePanelId: panelId});
+            } else {
+                this.setState({ form: {...this.state.form, pages: newFormState}});
+            }
+        }
     }
     
     render() {
@@ -341,13 +97,13 @@ import DatePickerCustom from './components/DatepickerCustom';
                     <Row className="mt-3">
                     <Col md={3}>
                          <div className="mb-3">Pre-submission</div>   
-                         {this.state.form.pages.map((item, idx) => (
+                         {[...this.state.form.pages].map((item, idx) => (
                              <div key={item.index} className={`${item.active ? "active-border" : ""}`}>
                                 <div>    
-                                    <h1 className="Black-16px mb-3" onClick={() => {this.onParentNavClick(item, idx)}}>{item.title}</h1>
+                                    <h1 className="Black-16px mb-3" onClick={() => {this.onParentNavClick(item)}}>{item.title}</h1>
                                         {item.active &&
                                             <ul className="list-unstyled ml-2 pl-2 active-grey-border">
-                                                { this.renderQuestionSets(item, this.state.form.questionPanels) }
+                                                { this.renderQuestionSets(item) }
                                             </ul>
                                         }
                                 </div>
