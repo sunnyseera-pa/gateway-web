@@ -506,6 +506,18 @@ input:-webkit-autofill:active {
   outline: none;
 }
 
+.active-border {
+  border-left: 4px solid #3db28c;
+}
+
+.active-border  > div {
+  margin-left: 5px;
+}
+
+.active-grey-border {
+  border-left: 1px solid #d0d3d4;
+}
+
 input[type='checkbox']:after {
   width: 24px;
   height: 24px;

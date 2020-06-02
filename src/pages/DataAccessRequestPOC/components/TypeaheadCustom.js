@@ -9,14 +9,9 @@ class TypaheadCustom extends React.Component {
       value: this.props.value || '',
     };
     this.handleChange = this.handleChange.bind(this);
-
-
-
   }
 
   handleChange(e) {
-    // console.log(e);
-
     this.setState({
       value: e,
     }, this.props.onChange.bind(null, e));
@@ -36,6 +31,7 @@ class TypaheadCustom extends React.Component {
 }
 
 TypaheadCustom.defaultProps = {
+  id: '',
   options: [],
   onChange: () => {},
 };

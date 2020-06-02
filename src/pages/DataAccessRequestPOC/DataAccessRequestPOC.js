@@ -23,7 +23,7 @@ import DatePickerCustom from './components/DatepickerCustom';
                     "question": "form-group",
                     "input": "form-control",
                     "radioListItem": "radio",
-                    "radioList": "clean-list",
+                    "radioList": "clean-list list-inline",
                     "checkboxInput": "checkbox",
                     "checkboxListItem": "checkbox",
                     "checkboxList": "clean-list",
@@ -66,14 +66,18 @@ import DatePickerCustom from './components/DatepickerCustom';
                     {
                         "index": 1,
                         "panelId": "applicant",
-                        "pageId": 'safePeople',
-                        "title": "Applicant details"
+                        "pageId": 'safePeople'
                     },
                     {
                         "index": 2,
                         "panelId": "principleInvestigator",
-                        "pageId": 'safePeople',
-                        "title": "Principle Investigator"
+                        "pageId": 'safePeople'
+
+                    },
+                    {
+                        "index": 3,
+                        "panelId": "safeProject",
+                        "pageId": 'safeProject'
                     }
                 ],
                 "questionPanels": [
@@ -84,11 +88,13 @@ import DatePickerCustom from './components/DatepickerCustom';
                         "active": true,
                         "action": {
                             "default": {
-                                "action": "SUBMIT"
+                                "action": "GOTO",
+                                "target": "principleInvestigator"
                             }
                         },
                         "button": {
-                            "text": "Submit"
+                            "text": "Next",
+                            "disabled": false
                         },
                         "questionSets": [
                             {
@@ -104,6 +110,28 @@ import DatePickerCustom from './components/DatepickerCustom';
                         "active": false,
                         "action": {
                             "default": {
+                                "action": "GOTO",
+                                "target": "safeProject"
+                            }
+                        },
+                        "button": {
+                            "text": "Next",
+                            "disabled": false
+                        },
+                        "questionSets": [
+                            {
+                                "index": 2,
+                                "questionSetId": "principleInvestigator"
+                            }
+                        ]
+                    },
+                    {
+                        "panelId": "safeProject",
+                        "panelHeader": "Safe Project",
+                        "pageId": "safeProject",
+                        "active": false,
+                        "action": {
+                            "default": {
                                 "action": "SUBMIT"
                             }
                         },
@@ -112,11 +140,11 @@ import DatePickerCustom from './components/DatepickerCustom';
                         },
                         "questionSets": [
                             {
-                                "index": 2,
-                                "questionSetId": "principleInvestigator"
+                                "index": 1,
+                                "questionSetId": "safeProject"
                             }
                         ]
-                    }
+                    },
                 ],
                 "questionSets": [
                     {
@@ -222,88 +250,120 @@ import DatePickerCustom from './components/DatepickerCustom';
                     {
                         "questionSetId": "principleInvestigator",
                         "questionSetHeader": "Principle Investigator details",
-                        "questions": []
+                        "questions": [
+                            {
+                                "questionId": "regICONumber",
+                                "question": "ICO number",
+                                "input": {
+                                    "type": "textInput"
+                                },
+                                "validations": [{
+                                    "type": "isLength",
+                                    "params": [
+                                        1,
+                                        8
+                                    ]}
+                                ]
+                            },
+                        ]
+                    },
+                    {
+                        "questionSetId": "safeProject",
+                        "questionSetHeader": "SafeProject",
+                        "questions": [{
+                            "questionId": "firstName",
+                            "question": "First name",
+                            "input": {
+                                "type": "textInput"
+                            }
+                        }]
                     }
                 ]
             },
-            questionAnswers: {},
+            questionAnswers: {applicantName: 'Bob', passportNumber: "GBADAD9878AD876876678F"},
             activePanelId: 'applicant',
         }
     }
 
     componentDidUpdate() {
         console.log('did update');
-        // console.log(this.state);
-
     }
 
-    shouldComponentUpdate() {
-        return true;
+    onFormRender() {
+        console.log('form render');
     }
     
     onFormUpdate(questionAnswers) {
-        // set a schema default value as undefined to clear it from the json payload on submit
         console.log('update', questionAnswers);
     }
 
     onFormSwitchPanel(panelId) {
-        // true ? this.setState({ activePanelId: panelId }) : this.setState({ activePanelId: '' })
         this.setState({ activePanelId: panelId});
-        console.log(this.state);
     }
 
     onFormSubmit(questionAnswers, target) {
         console.log('submit', questionAnswers);
     }
 
-    onParentNavClick() {
-        console.log('ParentNavClick');
+    onParentNavClick(item, index) {
+        const formState = [...this.state.form.pages].map((item) => {
+            return {...item, active: false}
+        });
+        formState[index] = {...item, active: true};
+        this.setState({ form: {...this.state.form, pages: formState}});
     }
-
 
     renderQuestionSets = (parentForm, questionPanels) => {
-      if(questionPanels) {
-          return questionPanels.map((item, index) =>{
-            if (parentForm.pageId === item.pageId) {
-                return  (
-                    <li style={{cursor: 'pointer'}} key={index} onClick={e => this.onFormSwitchPanel(item.panelId)}>{item.panelHeader}</li> 
-                )
-            }
-          });
-      }
+        if(questionPanels) {
+            return questionPanels.map((item, index) =>{
+                if (parentForm.pageId === item.pageId) {
+                    return  (
+                        <li className="Gray800-14px" style={{cursor: 'pointer'}} key={index} onClick={e => this.onFormSwitchPanel(item.panelId)}>{item.panelHeader}</li> 
+                    )
+                }
+            });
+        }
+    }
+
+    onSwitchedPanel = (form) => {
+        const pages = [...this.state.form.pages];
+        const index = pages.findIndex(page => page.pageId === form.pageId);
+        const newPageItem = pages[index];
+        console.log(`${JSON.stringify(newPageItem, null, 2)}`);
     }
     
-  
     render() {
         Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
         Winterfell.addInputType('datePickerCustom', DatePickerCustom);
-        console.log(this.state.activePanelId);
-        const {activePanelId} = this.state;
         return (
             <div>
                 <Container>
-                    <Row>
+                    <Row className="mt-3">
                     <Col md={3}>
-                         <div>Pre-submission</div>   
+                         <div className="mb-3">Pre-submission</div>   
                          {this.state.form.pages.map((item, idx) => (
-                             <div key={item.index}>
-                                 <h1 onClick={() => {this.onParentNavClick(item)}}>{item.title}</h1>
-                                 {item.active &&
-                                     <ul>
-                                         { this.renderQuestionSets(item, this.state.form.questionPanels) }
-                                     </ul>
-                                 }
+                             <div key={item.index} className={`${item.active ? "active-border" : ""}`}>
+                                <div>    
+                                    <h1 className="Black-16px mb-3" onClick={() => {this.onParentNavClick(item, idx)}}>{item.title}</h1>
+                                        {item.active &&
+                                            <ul className="list-unstyled ml-2 pl-2 active-grey-border">
+                                                { this.renderQuestionSets(item, this.state.form.questionPanels) }
+                                            </ul>
+                                        }
+                                </div>
                              </div>
                          ))}          
                      </Col>
                         <Col md={7}>
                             <Winterfell 
                                 schema={this.state.form}
-                                panelId={activePanelId}
+                                questionAnswers={this.state.questionAnswers}
+                                panelId={this.state.activePanelId}
                                 disableSubmit={true}
                                 onUpdate={this.onFormUpdate}
+                                onSwitchPanel={this.onSwitchedPanel}
                                 onSubmit={this.onFormSubmit}
-                                onSwitchPanel={this.onFormSwitchPanel} />
+                                onRender={this.onFormRender} />
                         </Col>
                     </Row>
                 </Container>
