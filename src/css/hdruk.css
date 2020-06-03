@@ -52,6 +52,49 @@ body {
   background-color: #ffffff;
 }
 
+.AccountHeader {
+  /* min-width: 940px; */
+  /* height: 80px; */
+  box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
+  background-color: #ffffff;
+  width: 100%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 20px;
+}
+
+.SubHeader {
+  /* box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09); */
+  background-color: #ffffff;
+  width: 100%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.DARDiv {
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.FloatRight {
+  float: right;
+}
+
+.DataAccessTabs {
+  align-items: center;
+  justify-content: center;
+}
+
+a.nav-item.nav-link {
+  color: #53575a !important;
+}
+
+a.nav-item.nav-link.active {
+  color: #2d2d2d !important;
+  font-weight: bold !important;
+}
+
+
 .ButtonHolder {
   min-width: 800px;
   width: 100%;
@@ -583,7 +626,6 @@ input[type='radio']:checked:after {
   /* padding-top: -5px; */
   padding-bottom: 20px;
   position: relative;
-
   background-color: #ffffff;
   content: url(../images/radio.svg);
   display: inline-block;
@@ -592,9 +634,10 @@ input[type='radio']:checked:after {
 }
 
 .TabsBackground {
+  width: 100%;
   background-color: #ffffff !important;
-  align-items: center;
-  justify-content: center;
+  align-items: center !important;
+  justify-content: center !important;
   padding-bottom: 2px;
   box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
 }
@@ -769,6 +812,37 @@ textarea:focus {
   border: 2px solid #3db28c !important;
   border-radius: 4px !important;
 }
+
+/* .DashboardDropdown {
+  color: #3c3c3b !important;
+  background-color: #ffffff !important;
+  border-color: #d0d3d4 !important;
+  border: 2px solid #d0d3d4 !important;
+} */
+
+.btn-outline-secondary {
+  color: #3c3c3b !important;
+  background-color: #ffffff !important;
+  background-image: none;
+  border-color: #d0d3d4 !important;
+}
+
+.btn-outline-secondary:active, .btn-outline-secondary.active, .show > .btn-outline-secondary.dropdown-toggle {
+  color: #3c3c3b !important;
+  background-color: #ffffff !important;
+  background-image: none;
+  border-color: #d0d3d4 !important;
+}
+
+.btn-outline-secondary:focus, .btn-outline-secondary.focus {
+  box-shadow: 0 0 0 0px !important;
+}
+
+/* .btn-primary {
+  color: #fff !important;
+  background-color: #475da7 !important;
+  border-color: #475da7 !important;
+} */
 
 .TechDetailButton {
   border: 2px solid #3db28c !important;

@@ -10,6 +10,7 @@ import AccountTools from './AccountTools';
 import AccountProjects from './AccountProjects';
 import ReviewTools from './ReviewTools';
 import YourAccount from './YourAccount';
+import DataAccessRequests from './DataAccessRequests';
 
 import 'react-web-tabs/dist/react-web-tabs.css';
 import { Tabs, Tab, TabPanel, TabList } from 'react-web-tabs';
@@ -29,7 +30,9 @@ class Account extends Component {
             id: null,
             name: null
         }],
-        key: "youraccount",
+        // key: "youraccount",
+        // tabId: "youraccount",
+        tabId: "",
         isDeleted: false,
         isApproved: false,
         isRejected: false,
@@ -42,11 +45,26 @@ class Account extends Component {
         this.state.userState = props.userState;
     }
 
+    componentWillMount() {
+        if (!!window.location.search) {
+            var values = queryString.parse(window.location.search);
+            console.log('values: ' + JSON.stringify(values.tab))
+            console.log('tab: ' + this.state.tabId)
+            if (values.tab !== this.state.tabId) {
+                this.setState({ tabId: values.tab });
+                this.handleChange(values.tab);
+            }
+        }
+    }  
+
     componentDidMount() {
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
-            if (values.tab !== this.state.key) {
-                this.setState({ key: values.tab });
+            console.log('values: ' + JSON.stringify(values.tab))
+            console.log('tab: ' + this.state.tabId)
+            if (values.tab !== this.state.tabId) {
+                this.setState({ tabId: values.tab });
+                this.handleChange(values.tab);
                 this.setState({ isDeleted: values.toolDeleted });
                 this.setState({ isApproved: values.toolApproved });
                 this.setState({ isRejected: values.toolRejected });
@@ -61,8 +79,10 @@ class Account extends Component {
     componentWillReceiveProps() {
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
-            if (values.tab !== this.state.key) {
-                this.setState({ key: values.tab });
+            console.log('props values: ' + JSON.stringify(values.tab))
+            console.log('props tab: ' + this.state.tabId)
+            if (values.tab !== this.state.tabId) {
+                this.setState({ tabId: values.tab });
                 this.setState({ isDeleted: values.accountDeleted });
                 this.setState({ isApproved: values.toolApproved });
                 this.setState({ isRejected: values.toolRejected });
@@ -76,6 +96,7 @@ class Account extends Component {
 
     doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
+        
             if (!!this.state.searchString) {
                 window.location.href = "/search?search=" + this.state.searchString;
             }
@@ -86,17 +107,22 @@ class Account extends Component {
         this.setState({ searchString: searchString });
     }
 
-    handleSelect = (key) => {
-        this.setState({ key: key });
-        this.props.history.push(window.location.pathname + '?tab=' + key);
+    handleChange = (tabId) => {
+        console.log('tab changed to ' + tabId)
+        this.setState({ tabId: tabId });
+        // console.log('state tab is ' + this.state.tabId)
+        this.props.history.push(window.location.pathname + '?tab=' + tabId);
     }
 
     render() {
-        const { searchString, data, userState, isDeleted, isApproved, isRejected, isProjectApproved, isProjectRejected, isReviewApproved, isReviewRejected } = this.state;
-
+        const { searchString, data, userState, isDeleted, isApproved, isRejected, isProjectApproved, isProjectRejected, isReviewApproved, isReviewRejected, tabId } = this.state;
         if (typeof data.datasetids === 'undefined') {
             data.datasetids = [];
         }
+        
+        console.log('state tab is ' + this.state.tabId)
+        console.log('plain old tab is ' + tabId)
+        // const defaultTab = this.state.tabId;
 
         return (
             <div>
@@ -172,12 +198,24 @@ class Account extends Component {
                         </Row>
                         : ""}
 
+                        {console.log('WHAT?! ' + this.state.tabId)}
+                        {console.log('WHAT?! tab ' + tabId)}
+
                     <Row className="mt-1">
                         <Col sm={12} lg={12}>
-                       
-                            <Tabs defaultTab="Your account" vertical className="vertical-tabs" style={{'background-colour' : '#dc3645'}}>
-                                    <TabList className="TabList" activeKey={this.state.key} onSelect={this.handleSelect}>
-                                        <Tab tabFor="Your account" eventKey="youraccount" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                            <Tabs vertical 
+                            // activeKey={this.state.tabId}
+                            // defaultTab="youraccount"
+                            // defaultTab="dataaccessrequests"
+                            defaultTab={this.state.tabId}
+                            // defaultTab={defaultTab}
+                            onChange={this.handleChange}
+                             >
+                            {/* {console.log('in tabs: ' + defaultTab)} */}
+                                    <TabList className="TabList" >
+
+                                    
+                                        <Tab tabFor="youraccount" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
                                             <Row >
                                                 <Col sm={2} lg={2}>
                                                     <SVGIcon name="accounticon" fill={'#b3b8bd'} className="AccountSvgs" />
@@ -187,7 +225,7 @@ class Account extends Component {
                                                 </Col>
                                             </Row>
                                         </Tab>
-                                        <Tab tabFor="Tools" eventKey="tools" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                        <Tab tabFor="tools" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
                                             <Row>
                                                 <Col sm={2} lg={2}>
                                                     <SVGIcon name="newtoolicon" fill={'#b3b8bd'} className="AccountSvgs" />
@@ -197,7 +235,17 @@ class Account extends Component {
                                                 </Col>
                                             </Row>
                                         </Tab>
-                                        <Tab tabFor="Reviews" eventKey="reviews" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                        {/* <Tab tabFor="youraccount" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                            <Row >
+                                                <Col sm={2} lg={2}>
+                                                    <SVGIcon name="accounticon" fill={'#b3b8bd'} className="AccountSvgs" />
+                                                </Col>                                             
+                                                <Col sm={10} lg={10} className="pl-4">
+                                                    Your account
+                                                </Col>
+                                            </Row>
+                                        </Tab> */}
+                                        <Tab tabFor="reviews" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
                                             <Row>
                                                 <Col sm={2} lg={2}>
                                                     <SVGIcon name="reviewsicon" fill={'#b3b8bd'} className="AccountSvgs" />
@@ -207,7 +255,7 @@ class Account extends Component {
                                                 </Col>
                                             </Row>
                                         </Tab>
-                                        <Tab tabFor="Projects" eventKey="projects" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                        <Tab tabFor="projects" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
                                             <Row>
                                                 <Col sm={2} lg={2}>
                                                     <SVGIcon name="newprojecticon" fill={'#b3b8bd'} className="AccountSvgs"/>
@@ -217,7 +265,7 @@ class Account extends Component {
                                                 </Col>
                                             </Row>
                                         </Tab>
-                                        <Tab tabFor="Data access requests" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                        <Tab tabFor="dataaccessrequests" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
                                             <Row>
                                                 <Col sm={2} lg={2}>
                                                     <SVGIcon name="dataaccessicon" fill={'#b3b8bd'} className="AccountSvgs" />
@@ -227,7 +275,7 @@ class Account extends Component {
                                                 </Col>
                                             </Row>
                                         </Tab>
-                                        <Tab tabFor="Users and roles" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                        <Tab tabFor="usersroles" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
                                             <Row>
                                                 <Col sm={2} lg={2}>
                                                     <SVGIcon name="rolesicon" fill={'#b3b8bd'} className="AccountSvgs" />
@@ -238,30 +286,67 @@ class Account extends Component {
                                             </Row>
                                         </Tab>
                                     </TabList>
-                                   
-                                <TabPanel tabId="Your account">
-                                    <YourAccount userState={userState} />
-                                </TabPanel>
 
-                                <TabPanel tabId="Tools">
-                                    <AccountTools userState={userState} />
-                                </TabPanel>
+                                <Row>
+                                    <Col sm={1} lg={1} />
+                                    <Col sm={10} lg={10}>
+                                        <TabPanel tabId="youraccount">
+                                            <YourAccount userState={userState} />
+                                        </TabPanel>
+                                    </Col>
+                                    <Col sm={1} lg={1} />
+                                </Row>
 
-                                <TabPanel tabId="Reviews">
-                                    <ReviewTools userState={userState} />
-                                </TabPanel>
+                                <Row>
+                                    <Col sm={1} lg={1} />
+                                    <Col sm={10} lg={10}>
+                                        <TabPanel tabId="tools">
+                                            <AccountTools userState={userState} />
+                                        </TabPanel>
+                                    </Col>
+                                    <Col sm={1} lg={1} />
+                                </Row>
 
-                                <TabPanel tabId="Projects">
-                                    <AccountProjects userState={userState} />
-                                </TabPanel>
+                                <Row>
+                                    <Col sm={1} lg={1} />
+                                    <Col sm={10} lg={10}>
+                                        <TabPanel tabId="reviews">
+                                            <ReviewTools userState={userState} />
+                                        </TabPanel>
+                                    </Col>
+                                    <Col sm={1} lg={1} />
+                                </Row>
 
-                                <TabPanel tabId="Data access requests">
-                                    <p>Data access requests</p>
-                                </TabPanel>
+                                <Row>
+                                    <Col sm={1} lg={1} />
+                                    <Col sm={10} lg={10}>
+                                        <TabPanel tabId="projects">
+                                            <AccountProjects userState={userState} />
+                                        </TabPanel>
+                                    </Col>
+                                    <Col sm={1} lg={1} />
+                                </Row>
 
-                                <TabPanel tabId="Users and roles">
-                                    <p>Users and roles</p>
-                                </TabPanel>
+                                <Row>
+                                    {/* <Col sm={1} lg={1} /> */}
+                                    {/* <Col sm={10} lg={10}> */}
+                                    <Col sm={12} lg={12}>
+                                        <TabPanel tabId="dataaccessrequests">
+                                            <DataAccessRequests userState={userState} />
+                                        </TabPanel>
+                                    </Col>
+                                    {/* <Col sm={1} lg={1} /> */}
+                                </Row>
+
+                                <Row>
+                                    <Col sm={1} lg={1} />
+                                    <Col sm={10} lg={10}>
+                                        <TabPanel tabId="usersroles">
+                                            <p>Users and roles</p>
+                                        </TabPanel>
+                                    </Col>
+                                    <Col sm={1} lg={1} />
+                                </Row>
                             </Tabs>
                           
                         </Col>

@@ -86,10 +86,16 @@ class UserMenu extends Component {
 
                         <Dropdown.Menu as={CustomMenu}>
                             <Dropdown.Item href="/account?tab=youraccount">Your Account</Dropdown.Item>
-                            <Dropdown.Item href="/account?tab=messages">Notifications</Dropdown.Item>
+                            {/* <Dropdown.Item href="/account?tab=messages">Notifications</Dropdown.Item>
                             <Dropdown.Item href="/account?tab=projects">Project</Dropdown.Item>
                             <Dropdown.Item href="/account?tab=tools">Tools</Dropdown.Item>
+                            <Dropdown.Item href="/account?tab=reviews">Reviews</Dropdown.Item> */}
+                            {/* <Dropdown.Item href="/account?tab=tools">Tools</Dropdown.Item> */}
+                            <Dropdown.Item href="/account?tab=tools">Tools</Dropdown.Item>
                             <Dropdown.Item href="/account?tab=reviews">Reviews</Dropdown.Item>
+                            <Dropdown.Item href="/account?tab=projects">Projects</Dropdown.Item>
+                            <Dropdown.Item href="/account?tab=dataaccessrequests">Data access requests</Dropdown.Item>
+                            <Dropdown.Item href="/account?tab=usersroles">Users and roles</Dropdown.Item>
                             <Dropdown.Item onClick={this.logout}>Logout</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
