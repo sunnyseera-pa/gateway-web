@@ -435,7 +435,7 @@ input:-webkit-autofill:active {
 }
 
 @media (min-width: 992px) {
-  .SearchBarInputGrey {
+  .searchBarInputGrey {
     border: 0;
     background-color: #f6f7f8;
     display: inline-block;
@@ -447,7 +447,7 @@ input:-webkit-autofill:active {
 }
 
 @media (max-width: 991px) {
-  .SearchBarInputGrey {
+  .searchBarInputGrey {
     border: 0;
     background-color: #f6f7f8;
     display: inline-block;
@@ -469,7 +469,7 @@ input:-webkit-autofill:active {
   color: #3c3c3b;
 }
 
-#SearchInputSpanGrey {
+#searchInputSpanGrey {
   display: inline-block;
   width: 70%;
   outline: none;
@@ -480,13 +480,13 @@ input:-webkit-autofill:active {
   padding-top: 5px;
 }
 
-.SearchInputIconGrey {
+.searchInputIconGrey {
   float: left;
   min-width: 40px;
   padding: 8px 0px 0px 10px;
 }
 
-.SearchInputClearGrey {
+.searchInputClearGrey {
   float: right;
   padding: 5px 10px 0px 0px;
 }

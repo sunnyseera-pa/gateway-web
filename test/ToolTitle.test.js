@@ -1,27 +1,15 @@
-
 import React from 'react';
-import ToolTitle from '../src/pages/components/ToolTitle';
-import Enzyme, { mount } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import ToolTitle from '../src/pages/tool/components/ToolTitle';
+import { toolTitle, toolReview} from './mocks/dataMock';
 
-Enzyme.configure({ adapter: new Adapter() });
+let wrapper;
 
-describe('ToolTitle', () => {
-    it('renders without crashing', () => {
-        var dataTool = {
-          "tags": [
-            "Programming language", "Software/Package"
-          ],
-          "_id": "5e3bf4231c9d440000e8d4a8",
-          "id": 89522470,
-          "type": "tool",
-          "name": "Homebrew",
-          "description": "Provision of packages that you need but not available on your operating system (e.g. Apple MacOS or Linux system).",
-          "rating": 5,
-          "link": "https://homebrew.link",
-          "creator": [89522471],
-          "_v": 0
-        };
-        //const wrapper = mount(<ToolTitle data={dataTool}/>);
-    });
+beforeEach(() => {
+  wrapper = shallow(<ToolTitle data={toolTitle} reviewData={toolReview} /> );
+});
+
+describe('<ToolTitle /> Rendering', () => {
+    it('should render a title with `Epilepsy data research`', () => {
+      expect(wrapper.find('[data-testid="title"]').text()).toEqual('Epilepsy data research');
+  });
 });
