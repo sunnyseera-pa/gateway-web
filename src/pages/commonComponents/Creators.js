@@ -3,19 +3,13 @@
 import React, { Component } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import '../../css/hdruk.css';
 import { ReactComponent as PersonPlaceholderSvg } from '../../images/person-placeholder.svg';
+import '../../css/hdruk.css';
 
-class Creators extends Component {
-
-  // initialize our state
-  state = {
-    author: []
-  };
+class  Creators extends Component {
 
   constructor(props) {
     super(props)
-    this.state.author = props.author;
   }
 
   // here is our UI

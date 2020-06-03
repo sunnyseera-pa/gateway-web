@@ -27,6 +27,7 @@ class DatasetDetail extends Component {
   state = {
     id: '',
     data: [],
+    projectsData: [],
     datarequest: [],
     DBData: [],
     activeKey: false,
@@ -49,6 +50,7 @@ class DatasetDetail extends Component {
   // on loading of tool detail page
   componentDidMount() {
     this.getDetailsSearchFromMDC();
+    this.getRelatedProjects();
     this.checkAlerts();
     initGA('UA-166025838-1');
     PageView();
@@ -82,6 +84,15 @@ class DatasetDetail extends Component {
       })
   };
 
+  getRelatedProjects = () => {
+    axios.get(baseURL + '/api/v1/datasets/relatedobjects/' + this.props.match.params.datasetID)
+      .then((res) => {
+        this.setState({
+          projectsData: res.data.data
+        })
+      })
+  };
+
   doSearch = (e) => { //fires on enter on searchbar
     if (e.key === 'Enter') {
       if (!!this.state.searchString) {
@@ -96,18 +107,16 @@ class DatasetDetail extends Component {
 
   
   render() {
-    const { searchString, data, datarequest, isLoading, userState, alert } = this.state;
+    const { searchString, data, projectsData, datarequest, isLoading, userState, alert } = this.state;
+
+    var projectsCount = 0;
+    var toolsCount = 0;
+
+    projectsData.map(projectData => projectData.activeflag === "active" ? projectsCount++ : '' ) 
+    projectsData.map(projectData => projectData.activeflag === "active" ? projectData.toolids.map(toolid => toolsCount++ ) : '')
 
     if (isLoading) {
       return <Container><Loading /></Container>;
-    }
-    
-    if (typeof data.toolids === 'undefined') {
-        data.toolids = [];
-      }
-
-    if (typeof data.projectids === 'undefined') {
-      data.projectids = [];
     }
 
     return (
@@ -123,11 +132,12 @@ class DatasetDetail extends Component {
                   <Tab eventKey="About" title={'About'}>
                     <About data={data}/>
                   </Tab>  
-                   <Tab eventKey="Projects" title={'Projects using this (' + data.projectids.length + ')'}>
-                    {data.projectids.length <= 0 ? <NotFound word="projects" /> : data.projectids.map(id => <Project id={id} />)}
+                   <Tab eventKey="Projects" title={'Projects using this (' + projectsCount + ')'}>
+                     {projectsCount <=0 ? <NotFound word="projects" />  : projectsData.map(projectData => projectData.activeflag === "active" ? <Project id={projectData.id} /> : '')}
                   </Tab>
-                  <Tab eventKey="Tools" title={'Tools used in the same projects (' + data.toolids.length  + ')'}>
-                    {data.toolids.length <= 0 ? <NotFound word="tools" /> : data.toolids.map(id => <Tool id={id} />)}
+                  <Tab eventKey="Tools" title={'Tools used in the same projects (' + toolsCount + ')'}>
+                    {toolsCount <= 0 ? <NotFound word="tools" /> : projectsData.map(projectData => projectData.activeflag === "active" ? projectData.toolids.map(toolid => <Tool id={toolid} />) : '')}
+
                   </Tab> 
                 </Tabs>
               </div>

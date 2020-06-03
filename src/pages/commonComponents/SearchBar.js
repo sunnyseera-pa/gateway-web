@@ -15,7 +15,6 @@ import Messages from '../dashboard/NotificationMessages';
 import UserMenu from './UserMenu';
 import { cmsURL } from '../../configs/url.config';
 
-
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <a href="" ref={ref} onClick={e => { e.preventDefault(); onClick(e); console.log('toggle was clicked'); }} style={{ float: "right", right: "700px" }}>
         {children}
