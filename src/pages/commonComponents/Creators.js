@@ -1,22 +1,13 @@
 
 // /ShowObjects/Title.js
 import React, { Component } from 'react';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import { Row, Col } from 'react-bootstrap';
 import { ReactComponent as PersonPlaceholderSvg } from '../../images/person-placeholder.svg';
 import '../../css/hdruk.css';
 
 class  Creators extends Component {
-
-  constructor(props) {
-    super(props)
-  }
-
-  // here is our UI
-  // it is easy to understand their functions when you
-  // see them render into our screen
   render() {
-    const { author } = this.state;
+    const { author } = this.props;
     return (
       <span>
         <Row className="mt-2">
