@@ -501,7 +501,9 @@ input:-webkit-autofill:active {
 }
 
 .NotificationDate{
-  height: 15px;
+  padding-top: 10px;
+  padding-bottom: 20px;
+  height: 16px;
   font:url(//db.onlinewebfonts.com/c/470ad2519927fa4eedb66fdcd82af115?family=Museo+Sans+Rounded+500);
   font-size: 13px;
   font-weight: 500;
@@ -547,23 +549,21 @@ input:-webkit-autofill:active {
   
 }
 
+ .NoNotifications{
+  width: 100%;
+  box-shadow: 1px 1px 3px 0 #00000017;
+  background-color: #ffffff;
+  padding-top: 40%;
+  padding-right: 20px;
+  padding-bottom: 40%;
+  padding-left: 20px;
+} 
 
 .UnreadNotification{
-
-  width: 4px;
-  height: 15px;
-  border-radius: 24px;
-  padding-left: 400px;
-  padding-right: 50px;
-  /* padding-bottom: 20px; */
-  /* position: relative; */
-  float:right;
-  background-color: #2c8267;
-  content: url(../images/radio.svg);
-  /* display: inline-block; */
-  visibility: visible;
-
+  background-color: #f6f7f8
 }
+
+
 #NavSearchInputSpan {
   display: inline-block;
   width: 97%;

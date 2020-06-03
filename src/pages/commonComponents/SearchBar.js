@@ -14,10 +14,8 @@ import { ReactComponent as NotificationsBellSvg } from '../../images/bell.svg';
 import Messages from '../dashboard/NotificationMessages';
 import UserMenu from './UserMenu';
 
-let toggleOn = false;
-
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-    <a href="" ref={ref} onClick={e => { e.preventDefault(); onClick(e); }} style={{ float: "right" }}>
+    <a href="" ref={ref} onClick={e => { e.preventDefault(); onClick(e); console.log('toggle was clicked'); }} style={{ float: "right", right: "700px" }}>
         {children}
 
     </a>
@@ -130,27 +128,21 @@ class SearchBar extends React.Component {
                                                     </span> : null}
                                             </span>
                                         </Col>
-
-
-
                                         <Col >{
                                             this.state.userState[0].loggedIn ?
-                                                <Dropdown ref={node => this.node = node} isOpen={this.state.dropdownOpen} onClick={this.toggle} style={{ paddingTop: "26px", left: "100px" }}>
-                                                    <Dropdown.Toggle as={CustomToggle} variant="Success" id="NotificationsBell" style={{ float: "right" }} >
+                                                <Dropdown ref={node => this.node = node} isOpen={this.state.dropdownOpen} onClick={this.toggle} style={{ paddingTop: "26px", left: "70px" }}>
+                                                    <Dropdown.Toggle as={CustomToggle} variant="Success" id="NotificationsBell" style={{ left: "70px" }} >
                                                         {/* <span className="landingPageAccountText">{userState[0].name}</span> */}
 
                                                         <span className="accountDropDownGap"></span>
-                                                        < NotificationsBellSvg width={50} height={50} id="NotificationsBell" className={this.state.dropdownOpen ? "NotificationsBell" : null} />
+                                                        < NotificationsBellSvg width={50} height={50} id="NotificationsBell" className={this.state.dropdownOpen ? "NotificationsBell" : null} style={{ cursor: 'pointer' }} />
 
                                                         <div >
                                                             <NotificationBadge count={this.state.count} effect={Effect.SCALE} style={{ backgroundColor: '#29235c', top: '-50px', left: '44px', bottom: '', right: '' }} />
                                                         </div>
                                                     </Dropdown.Toggle>
-
                                                     <Dropdown.Menu as={CustomMenu} style={{ overflowY: 'scroll', overflowX: "hidden", maxHeight: "432px", maxWidth: "400px" }}>
                                                         <Messages userState={userState} />
-
-
                                                     </Dropdown.Menu>
                                                 </Dropdown> : null
                                         }
@@ -159,12 +151,13 @@ class SearchBar extends React.Component {
                                 </Container>
                             </div>
                         </Col>
-                        <Col xs={{ span: 6, order: 2 }} lg={{ span: 2, order: 3 }}>
-                            <div className="signLink">
+                        <Col xs={{ span: 6, order: 2 }} lg={{ span: 2, order: 3 }} style={{ backgroundColor: "", width: "10px" }}>
+                            <div style={{ backgroundColor: "", width: "" }} className="signLink">
                                 <UserMenu userState={userState} />
                             </div>
                         </Col>
                     </Row>
+
                 </div>
             </>
         );

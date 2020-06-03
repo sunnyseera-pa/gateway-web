@@ -3,11 +3,9 @@ import axios from 'axios';
 import Loading from '../commonComponents/Loading'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import NotFound from '../commonComponents/NotFound';
+import NoNotificationsFound from '../commonComponents/NoNotificationsFound';
 import SVGIcon from "../../images/SVGIcon";
 import Dropdown from 'react-bootstrap/Dropdown';
-import { ReactComponent as RadioSVG } from '../../images/radio.svg';
-
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -24,11 +22,10 @@ class YourAccount extends React.Component {
         oldData: [],
         userState: [],
         isLoading: true,
-        isRead: false
     };
 
-    componentDidMount() {
-        this.doMessagesCall();
+    async componentDidMount() {
+        await this.doMessagesCall();
     }
 
     doMessagesCall() {
@@ -41,12 +38,22 @@ class YourAccount extends React.Component {
             .then((res) => {
                 this.setState({
                     newData: res.data.newData,
-                    isLoading: false
+                    isLoading: false,
+                    isRead: res.data.isRead
                 });
             })
+    };
+
+    setNotificationsAsRead() {
+        const messageIds = [];
+        this.state.newData.forEach((data) => {
+            messageIds.push(data.messageID);
+        })
+        // console.log('messageIds are ', messageIds);
+        axios.post(baseURL + '/api/v1/messages/markasread',
+            messageIds
+        );
     }
-
-
 
     render() {
         const { newData, oldData, isLoading } = this.state;
@@ -59,27 +66,23 @@ class YourAccount extends React.Component {
 
         return (
             <>
-
                 <Row>
-                    <Col>
-                        {newData.length <= 0 ? <NotFound word='No notficiations yet' /> : newData.slice(0, 48).map((dat) => {
+                    <Col style={{ height: "360px" }}>
+                        {newData.length <= 0 ? <NoNotificationsFound /> : newData.slice(0, 48).map((dat) => {
                             if (!dat.tool[0]) {
                                 return (<></>);
                             }
-
                             return (
                                 <div >
-                                    {/* <div className="Rectangle mt-1"> */}
-                                    {/* <Dropdown.Item href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} style={{ display: "inline-block", wordBreak: "break-word", maxWidth: "180px" }}> */}
                                     <Dropdown.Item href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} style={{ width: "372px", paddingLeft: "0px", paddingRight: "0px", paddingTop: "0px", paddingBottom: "0px" }}>
-                                        <Col style={{ width: "360px" }}>
+                                        <Col className={!dat.isRead ? 'UnreadNotification' : ''} style={{ height: "95px", borderBottom: "1px solid #e2e2e2" }}>
                                             {(() => {
                                                 let messageDate = new Date(dat.messageSent);
                                                 let messageDateString = messageDate.getDate() + " " + monthNames[messageDate.getMonth()] + " " + messageDate.getFullYear() + " " + messageDate.getHours() + ":" + messageDate.getMinutes();
 
                                                 if (dat.messageType === 'add') {
                                                     return <><Row ><Col className="NotificationDate">{messageDateString + '\n'} </Col>
-                                                        <Col >{!this.state.isRead ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#2c8267", paddingRight: "0px" }} fill={"#2c8267"} stroke='none' /> : null}
+                                                        <Col >{dat.isRead === 'false' ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#2c8267", paddingRight: "0px" }} fill={"#2c8267"} stroke='none' /> : null}
                                                         </Col> </Row>
                                                         <Row width="100px"><Col width="100px" >
                                                             <a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id}
@@ -90,14 +93,14 @@ class YourAccount extends React.Component {
                                                 else if (dat.messageType === 'approved') {
                                                     if (dat.messageTo === 0) {
                                                         return <><Row><Col className="NotificationDate">{messageDateString + '\n'}</Col>
-                                                            <Col >{!this.state.isRead ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#2c8267", paddingRight: "0px" }} fill={"#2c8267"} stroke='none' /> : null}
+                                                            <Col >{dat.isRead === 'false' ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#2c8267", paddingRight: "0px" }} fill={"#2c8267"} stroke='none' /> : null}
                                                             </Col></Row>
                                                             <Row ><Col><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} style={{ display: "block", overflow: "hidden", textOverflow: "ellipsis", width: "310px" }} class="NotificationInfo">The {dat.tool[0].type} {dat.tool[0].name} has been approved.</a>
                                                             </Col></Row></>
                                                     }
                                                     else {
                                                         return <><Row><Col className="NotificationDate">{messageDateString + '\n'}</Col>
-                                                            <Col >{!this.state.isRead ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#2c8267", paddingRight: "0px" }} fill={"#2c8267"} stroke='none' /> : null}
+                                                            <Col >{dat.isRead === 'false' ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#2c8267", paddingRight: "0px" }} fill={"#2c8267"} stroke='none' /> : null}
                                                             </Col></Row>
                                                             <Row ><Col><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} style={{ display: "block", overflow: "hidden", textOverflow: "ellipsis", width: "310px" }} class="NotificationInfo">Your {dat.tool[0].type} {dat.tool[0].name} has been approved.</a>
                                                             </Col><Col></Col></Row></>
@@ -106,14 +109,14 @@ class YourAccount extends React.Component {
                                                 else if (dat.messageType === 'rejected') {
                                                     if (dat.messageTo === 0) {
                                                         return <><Row><Col className="NotificationDate">{messageDateString + '\n'}</Col>
-                                                            <Col >{!this.state.isRead ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#2c8267", paddingRight: "0px" }} fill={"#2c8267"} stroke='none' /> : null}
+                                                            <Col >{dat.isRead === 'false' ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#2c8267", paddingRight: "0px" }} fill={"#2c8267"} stroke='none' /> : null}
                                                             </Col></Row>
                                                             <Row ><Col><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} style={{ display: "block", overflow: "hidden", textOverflow: "ellipsis", width: "310px" }} class="NotificationInfo">The {dat.tool[0].type} {dat.tool[0].name} has been rejected.</a>
                                                             </Col><Col></Col></Row></>
                                                     }
                                                     else {
                                                         return <><Row><Col className="NotificationDate">{messageDateString + '\n'}</Col>
-                                                            <Col >{!this.state.isRead ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#2c8267", paddingRight: "0px" }} fill={"#2c8267"} stroke='none' /> : null}
+                                                            <Col >{dat.isRead === 'false' ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#2c8267", paddingRight: "0px" }} fill={"#2c8267"} stroke='none' /> : null}
                                                             </Col></Row>
                                                             <Row ><Col><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} style={{ display: "block", overflow: "hidden", textOverflow: "ellipsis", width: "310px" }} class="NotificationInfo">Your {dat.tool[0].type} {dat.tool[0].name} has been rejected.</a>
                                                             </Col><Col></Col></Row></>
@@ -126,6 +129,7 @@ class YourAccount extends React.Component {
                         })}
                     </Col>
                 </Row>
+                {this.setNotificationsAsRead()}
             </>
         );
     }
