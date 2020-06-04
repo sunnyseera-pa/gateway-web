@@ -18,6 +18,8 @@ import { cmsURL } from '../../configs/url.config';
 
 
 var baseURL = require('./BaseURL').getURL();
+let hasBeenOpen = false;
+
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <a href="" ref={ref} onClick={e => { e.preventDefault(); onClick(e); hasBeenOpen = true; }} >
