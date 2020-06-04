@@ -57,7 +57,7 @@ class ReviewTitle extends React.Component {
                             </Col>
                             <Col xs={10} lg={8}>
                                 <p>
-                                    <span className="Black-16px"><a className="searchHolder" href={'/tool/' + data.tool[0].id} >{data.tool[0].name.substr(0, 75) + (data.tool[0].name.length > 75 ? '...' : '')}</a></span>
+                                    <span className="Black-16px"><a href={'/tool/' + data.tool[0].id} >{data.tool[0].name.substr(0, 75) + (data.tool[0].name.length > 75 ? '...' : '')}</a></span>
                                 </p>
                             </Col>
                             <Col xs={12} lg={12}>
