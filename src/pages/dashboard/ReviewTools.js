@@ -164,7 +164,7 @@ const ReviewReview = (props) => {
                                         </Col>
                                         <Col xs={10} lg={8}>
                                             <p>
-                                                <span className="Black-16px"><a className="searchHolder" href={'/tool/' + props.dat.tool[0].id} >{props.dat.tool[0].name.substr(0, 75) + (props.dat.tool[0].name.length > 75 ? '...' : '')}</a></span>
+                                                <span className="Black-16px"><a href={'/tool/' + props.dat.tool[0].id} >{props.dat.tool[0].name.substr(0, 75) + (props.dat.tool[0].name.length > 75 ? '...' : '')}</a></span>
                                             </p>
                                         </Col>
                                         <Col xs={12} lg={12}>
@@ -210,7 +210,7 @@ const ReviewReviewActive = (props) => {
                                         </Col>
                                         <Col xs={10} lg={8}>
                                             <p>
-                                                <span className="Black-16px"><a className="searchHolder" href={'/tool/' + props.dat.tool[0].id} >{props.dat.tool[0].name.substr(0, 75) + (props.dat.tool[0].name.length > 75 ? '...' : '')}</a></span>
+                                                <span className="Black-16px"><a href={'/tool/' + props.dat.tool[0].id} >{props.dat.tool[0].name.substr(0, 75) + (props.dat.tool[0].name.length > 75 ? '...' : '')}</a></span>
                                             </p>
                                         </Col>
                                         <Col xs={12} lg={12}>

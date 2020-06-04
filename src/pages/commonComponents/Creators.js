@@ -21,7 +21,7 @@ class  Creators extends Component {
       <span>
         <Row className="mt-2">
           <Col sm={12} lg={12}>
-            <a className="searchHolder" data-testid="href" href={'/person/' + author.id} >
+            <a data-testid="href" href={'/person/' + author.id} >
               <div className="Rectangle">
 
                 <Row className="AuthorCard">

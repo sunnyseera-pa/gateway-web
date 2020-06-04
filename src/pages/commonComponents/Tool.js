@@ -88,7 +88,7 @@ class Tool extends React.Component {
                             </Col>
                             <Col xs={10} lg={8}>
                                 <p>
-                                    <span > <a className="searchHolder Black-16px" href={'/tool/' + data.id} >{data.name.substr(0, 75) + (data.name.length > 75 ? '...' : '')}</a></span>
+                                    <span > <a className="Black-16px" href={'/tool/' + data.id} >{data.name.substr(0, 75) + (data.name.length > 75 ? '...' : '')}</a></span>
                                     <br />
                                     <span className="Gray500-13px">
                                         <span className="Gray500-13px">
