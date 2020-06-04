@@ -16,10 +16,11 @@ import { ReactComponent as WhiteArrowDownSvg } from '../../images/arrowDownWhite
 import Messages from '../dashboard/NotificationMessages';
 import { cmsURL } from '../../configs/url.config';
 
+
 var baseURL = require('./BaseURL').getURL();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-    <a href="" ref={ref} onClick={e => { e.preventDefault(); onClick(e); }} >
+    <a href="" ref={ref} onClick={e => { e.preventDefault(); onClick(e); hasBeenOpen = true; }} >
         {children}
     </a>
 ));
@@ -61,6 +62,8 @@ class SearchBar extends React.Component {
         super(props);
         this.state.userState = props.userState;
         this.toggle = this.toggle.bind(this);
+        this.getNumberOfUnreadNotificiations();
+
     }
 
     componentDidMount() {
@@ -103,9 +106,23 @@ class SearchBar extends React.Component {
     }
 
     toggle(e) {
-        this.setState(prevState => ({
-            dropdownOpen: !prevState.dropdownOpen
+        this.setState(({
+            dropdownOpen: !this.state.dropdownOpen
         }));
+    }
+
+
+    getNumberOfUnreadNotificiations() {
+        let apiToCall = '/api/v1/messages/numberofunread/' + this.state.userState[0].id;
+        if (this.state.userState[0].role === "Admin") {
+            apiToCall = '/api/v1/messages/numberofunread/admin/' + this.state.userState[0].id;
+        }
+        axios.get(baseURL + apiToCall)
+            .then((res) => {
+                console.log(res);
+                this.setState({ count: res.data.countUnreadMessages });
+            }
+            );
     }
 
     handleClick = (e) => {
@@ -400,7 +417,11 @@ export default SearchBar;
 
 /*
 
-
+<div style={{ display: "none", visibility: "hidden" }}> {!this.state.dropdownOpen && hasBeenOpen ? this.state.count = 0 : this.state.count = this.state.count}</div>
+                                                    < NotificationsBellSvg width={50} height={50} id="NotificationsBell" className={this.state.dropdownOpen ? "NotificationsBell" : null} style={{ cursor: 'pointer' }} />
+                                                    <div >
+                                                        <NotificationBadge count={this.state.count} effect={Effect.SCALE} style={{ backgroundColor: '#29235c', top: '-50px', left: '44px', bottom: '', right: '' }} />
+                                                    </div>
 
 
     <Col >{

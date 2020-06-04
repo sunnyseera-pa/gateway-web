@@ -408,7 +408,6 @@ input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px #f6f7f8 inset !important;
 }
 
-
 input[type='checkbox']:after {
   width: 24px;
   height: 24px;
