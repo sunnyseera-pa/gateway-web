@@ -5,6 +5,8 @@ import Col from 'react-bootstrap/Col';
 import Dropdown from 'react-bootstrap/Dropdown';
 import NotificationBadge from 'react-notification-badge';
 import { Effect } from 'react-notification-badge';
+import axios from 'axios';
+
 
 import SVGIcon from "../../images/SVGIcon";
 import { ReactComponent as ColourLogoSvg } from '../../images/colour.svg';
@@ -15,10 +17,15 @@ import Messages from '../dashboard/NotificationMessages';
 import UserMenu from './UserMenu';
 import { cmsURL } from '../../configs/url.config';
 
-const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-    <a href="" ref={ref} onClick={e => { e.preventDefault(); onClick(e); console.log('toggle was clicked'); }} style={{ float: "right", right: "700px" }}>
-        {children}
+let hasBeenOpen = false;
 
+const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+    <a href="" ref={ref} onClick={e => {
+        e.preventDefault();
+        onClick(e);
+        hasBeenOpen = true;
+    }} style={{ float: "right", right: "700px" }}>
+        {children}
     </a>
 ));
 
@@ -39,6 +46,7 @@ const CustomMenu = React.forwardRef(
     },
 );
 
+// var baseURL = require('./BaseURL').getURL();
 var baseURL = require('./BaseURL').getURL();
 
 class SearchBar extends React.Component {
@@ -59,6 +67,8 @@ class SearchBar extends React.Component {
         super(props);
         this.state.userState = props.userState;
         this.toggle = this.toggle.bind(this);
+        this.getNumberOfUnreadNotificiations();
+
     }
 
     onSearch = (e) => {
@@ -67,9 +77,22 @@ class SearchBar extends React.Component {
     }
 
     toggle(e) {
-        this.setState(prevState => ({
-            dropdownOpen: !prevState.dropdownOpen
+        this.setState(({
+            dropdownOpen: !this.state.dropdownOpen
         }));
+    }
+
+    getNumberOfUnreadNotificiations() {
+        let apiToCall = '/api/v1/messages/numberofunread/' + this.state.userState[0].id;
+        if (this.state.userState[0].role === "Admin") {
+            apiToCall = '/api/v1/messages/numberofunread/admin/' + this.state.userState[0].id;
+        }
+        axios.get(baseURL + apiToCall)
+            .then((res) => {
+                console.log(res);
+                this.setState({ count: res.data.countUnreadMessages });
+            }
+            );
     }
 
     componentWillMount() {
@@ -131,11 +154,9 @@ class SearchBar extends React.Component {
                                         this.state.userState[0].loggedIn ?
                                             <Dropdown ref={node => this.node = node} isOpen={this.state.dropdownOpen} onClick={this.toggle} style={{ paddingTop: "26px", left: "70px" }}>
                                                 <Dropdown.Toggle as={CustomToggle} variant="Success" id="NotificationsBell" style={{ left: "70px" }} >
-                                                    {/* <span className="landingPageAccountText">{userState[0].name}</span> */}
-
                                                     <span className="accountDropDownGap"></span>
+                                                    <div style={{ display: "none", visibility: "hidden" }}> {!this.state.dropdownOpen && hasBeenOpen ? this.state.count = 0 : this.state.count = this.state.count}</div>
                                                     < NotificationsBellSvg width={50} height={50} id="NotificationsBell" className={this.state.dropdownOpen ? "NotificationsBell" : null} style={{ cursor: 'pointer' }} />
-
                                                     <div >
                                                         <NotificationBadge count={this.state.count} effect={Effect.SCALE} style={{ backgroundColor: '#29235c', top: '-50px', left: '44px', bottom: '', right: '' }} />
                                                     </div>
