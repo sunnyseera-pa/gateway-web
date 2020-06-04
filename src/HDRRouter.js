@@ -97,40 +97,16 @@ class HDRRouter extends Component {
 
                         {userState[0].loggedIn ? (
                             <>
-                                <Route
-                                    path='/account'
-                                    render={(props) => <Account {...props} userState={userState} />}
-                                />
-
-                                <Route
-                                    path='/addtool'
-                                    render={(props) => (
-                                        <AddToolPage {...props} userState={userState} />
-                                    )}
-                                />
-
-                                <Route
-                                    path='/addproject'
-                                    render={(props) => (
-                                        <AddProjectPage {...props} userState={userState} />
-                                    )}
-                                />
-
-                                <Route
-                                    path='/edittool/:toolID'
-                                    render={(props) => (
-                                        <EditToolPage {...props} userState={userState} />
-                                    )}
-                                />
-
-                                <Route
-                                    path='/editproject/:projectID'
-                                    render={(props) => (
-                                        <EditProjectPage {...props} userState={userState} />
-                                    )}
-                                />
+                                <Route path='/account' render={(props) => <Account {...props} userState={userState} />} />
+                                <Route path='/addtool' render={(props) => <AddToolPage {...props} userState={userState} /> } />
+                                <Route path='/addproject' render={(props) => <AddProjectPage {...props} userState={userState} /> } />
+                                <Route path='/edittool/:toolID' render={(props) => <EditToolPage {...props} userState={userState} /> } />
+                                <Route path='/editproject/:projectID' render={(props) => <EditProjectPage {...props} userState={userState} /> } />
+                                
+                                {/* Catch all path for logged in */}
+                                <Redirect to="/search?search=" />
                             </>
-                        ) : (<Redirect to="/search?search=" />)}
+                        ) : ''}
 
                         {/* Catch all path */}
                         <Redirect to="/search?search=" />
