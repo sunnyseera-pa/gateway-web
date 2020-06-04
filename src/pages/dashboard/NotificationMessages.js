@@ -75,7 +75,7 @@ class YourAccount extends React.Component {
                             return (
                                 <div >
                                     <Dropdown.Item href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} style={{ width: "372px", paddingLeft: "0px", paddingRight: "0px", paddingTop: "0px", paddingBottom: "0px" }}>
-                                        <Col className={!dat.isRead ? 'UnreadNotification' : ''} style={{ height: "95px", borderBottom: "1px solid #e2e2e2" }}>
+                                        <Col className={dat.isRead === 'false' ? 'UnreadNotification' : 'ReadNotification'} style={{ height: "95px", borderBottom: "1px solid #e2e2e2" }}>
                                             {(() => {
                                                 let messageDate = new Date(dat.messageSent);
                                                 let messageDateString = messageDate.getDate() + " " + monthNames[messageDate.getMonth()] + " " + messageDate.getFullYear() + " " + messageDate.getHours() + ":" + messageDate.getMinutes();

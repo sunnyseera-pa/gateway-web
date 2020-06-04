@@ -559,8 +559,12 @@ input:-webkit-autofill:active {
   padding-left: 20px;
 } 
 
+.ReadNotification{
+  background-color: #f6f7f8;
+}
+
 .UnreadNotification{
-  background-color: #f6f7f8
+  background-color: #ffffff;
 }
 
 
