@@ -17,6 +17,7 @@ import Account from './pages/dashboard/Account';
 import EditToolPage from './pages/tool/EditToolPage';
 import EditProjectPage from './pages/project/EditProjectPage';
 import Request from './pages/request/Request';
+import DataAccessRequest from './pages/DataAccessRequest/DataAccessRequest';
 import Loading from './pages/commonComponents/Loading'
 import CompleteRegistration from './pages/registration/CompleteRegistration'
 import LoginModal from './pages/commonComponents/LoginModal';
@@ -94,6 +95,7 @@ class HDRRouter extends Component {
                         <Route path='/dataset/:datasetID' render={(props) => <DatasetPage {...props} userState={userState} />} />
                         <Route path='/completeRegistration/:personID' render={(props) => <CompleteRegistration {...props} userState={userState} />} />
                         <Route path='/sso' render={(props) => <SSOPage {...props} userState={userState} />} />
+                        <Route exact path='/darpoc' component={DataAccessRequest} />
 
                         {userState[0].loggedIn ? (
                             <>
