@@ -1378,6 +1378,38 @@ NAVBAR CSS BELOW
   background-color: #f6f7f8
 }
 
+.MetadataQuality{
+  padding-left:12px;
+  padding-right:12px;
+  height: 25px;
+  line-height: 25px;
+  border-radius: 4px;
+  display: inline-block;
+  color:white;
+  font-size: 14px;
+}
+
+.NotRatedBackground {
+  background-image: linear-gradient(to left, #f8f8f8, #ffffff 50%);
+  color: #3c3c3b;
+}
+
+.RatingSilverBackground {
+  background-image: linear-gradient(to left, #cbcbcb, #9b9b9b 50%);
+}
+
+.RatingBronzeBackground {
+  background-image: linear-gradient(to left, #d9a466, #b16a36 50%);
+}
+
+.RatingPlatinumBackground {
+  background-image: linear-gradient(to left, #cbcbcb, #9b9b9b 50%);
+}
+
+.RatingGoldBackground {
+  background-image: linear-gradient(to left, #dfca5d, #bb9a30 50%);
+}
+
 
 
 
