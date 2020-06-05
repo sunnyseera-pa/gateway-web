@@ -174,6 +174,7 @@ class DatasetTitle extends Component {
         user,
         alert
       };
+      console.log('dataset detail is: ' + JSON.stringify(props))
   }
 
   // initialize our state
@@ -191,7 +192,7 @@ class DatasetTitle extends Component {
    * @return  {[type]}  null : button
    */
   renderRequestAccess = () => {
-    const {user: {loggedIn}, data: {title, id, contactPoint}, alert=null, datarequest} = this.state;
+    const {user: {loggedIn}, data: {title, id, contactPoint, publisher}, alert=null, datarequest} = this.state;
     const hasRequestedAccess = (datarequest.length === 1 ? true : false);
     if(!loggedIn) {
       var isRequest=true;
@@ -199,12 +200,16 @@ class DatasetTitle extends Component {
     } else if (alert || hasRequestedAccess) {
       return <Button variant="primary" className="AddButton" disabled>Request Access</Button>
     } else {
-      return <Link className="btn btn-primary AddButton" to={{pathname: '/request-access', state: {title, dataSetId: id, custodianEmail: contactPoint}}} onClick={() => Event("Buttons", "Click", "Request Access")}>Request Access</Link>
+      return <Link className="btn btn-primary AddButton" to={{pathname: 
+        // '/request-access'
+        '/darpoc'
+        , state: {title, dataSetId: id, custodianEmail: contactPoint, publisher: publisher }}} onClick={() => Event("Buttons", "Click", "Request Access")}>Request Access</Link>
     }
   }
 
   render() {
       const { data, alert } = this.state;
+      console.log('data is: ' + JSON.stringify(data))
       var keywords = (data.keywords ? data.keywords.split(",") : '');
       const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
       var releaseDate = new Date(data.releaseDate);

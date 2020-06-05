@@ -96,7 +96,9 @@ class HDRRouter extends Component {
             <Route path='/completeRegistration/:personID' render={(props) => <CompleteRegistration {...props} userState={userState} />} />
             <Route path='/sso' render={(props) => <SSOPage {...props} userState={userState} />} />
             <Route exact path='/dar' component={DataAccessRequest} />
-            <Route exact path='/darpoc' component={DataAccessRequestPOC} />
+            {/* <Route exact path='/darpoc' component={DataAccessRequestPOC} /> */}
+            <Route path='/darpoc' render={(props) => <DataAccessRequestPOC {...props} userState={userState} />} />
+
 
             {userState[0].loggedIn ? (
               <Route
