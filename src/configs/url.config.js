@@ -15,7 +15,7 @@ const _buildUrl = (urlType) => {
     else if (!href.includes('localhost')) {
         let regArray = _getRegexURL(urlType, href);
         if (regArray) {
-            let [first, ...rest, url] = regArray
+            let [one, two, url] = regArray
             //add -api to the sub domain for API requests
             switch(urlType) {
                 case 'cms':
