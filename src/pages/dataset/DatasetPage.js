@@ -116,14 +116,19 @@ class DatasetDetail extends Component {
     var projectsCount = 0;
     var toolsCount = 0;
 
+    if (isLoading) {
+      return <Container><Loading /></Container>;
+    }
+
     projectsData.map(projectData => projectData.activeflag === "active" ? projectsCount++ : '' ) 
     projectsData.map(projectData => projectData.activeflag === "active" ? projectData.toolids.map(toolid => toolsCount++ ) : '')
 
     return (
+      
       <div>
         <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
         <Container className="mb-5">
-          <DatasetTitle data={data} userState={userState} alert={alert} datarequest={datarequest} />
+          <DatasetTitle data={data} datarequest={datarequest} userState={userState} alert={alert} />
           <Row className="mt-1">
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
@@ -232,11 +237,37 @@ class DatasetTitle extends Component {
 
     render() {
         const { data, alert } = this.state;
+
         var keywords = (data.keywords ? data.keywords.split(",") : '');
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         var releaseDate = new Date(data.releaseDate);
         var releasedOnDate = (data.releaseDate ? releaseDate.getDate() + " " + monthNames[releaseDate.getMonth()] + " " + releaseDate.getFullYear() : "");
 
+        var metadataQuality         = "";
+        var metadataQualityClass    = "MetadataQuality ";
+
+        if (data.quality) {
+            if (data.quality.quality_score <= 50) {
+                metadataQuality      = "Not rated";
+                metadataQualityClass = "Gray800-14px-Opacity";
+
+            } else if (data.quality.quality_score <= 70) {
+                metadataQuality      = "Bronze";
+                metadataQualityClass += "RatingBronzeBackground";
+
+            } else if (data.quality.quality_score <= 80) {
+                metadataQuality      = "Silver";
+                metadataQualityClass += "RatingSilverBackground";
+
+            } else if (data.quality.quality_score <= 90) {
+                metadataQuality      = "Gold";
+                metadataQualityClass += "RatingGoldBackground";
+
+            } else if (data.quality.quality_score > 90) {
+                metadataQuality      = "Platinum";
+                metadataQualityClass += "RatingPlatinumBackground";
+            }
+        }
         return (
             <div>
                 <Row className="mt-2">
@@ -306,6 +337,16 @@ class DatasetTitle extends Component {
                                     {!keywords || keywords.length <= 0 ? <span className="Gray800-14px-Opacity">Not specified</span> : keywords.map((keyword) => { return <div className="mr-2 Gray800-14px tagBadges mb-2"> <a href={'/search?search=' + keyword}> {keyword} </a> </div> })}
                                 </Col>
                             </Row>
+
+                            <Row className="mt-3">
+                                <Col sm={2} lg={2} className="Gray800-14px" >
+                                    Meta-data quality
+                                </Col>
+                                <Col sm={10} lg={10}>
+                                    {data.quality ? <div><div className={metadataQualityClass}> {metadataQuality} </div> <a href="https://github.com/HDRUK/datasets#about-the-reports" className="ml-2" target="_blank">How is this calculated? </a></div> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col>}
+                                </Col>
+                            </Row>
+                            
                         </div>
                     </Col>
                     <Col sm={1} lg={10} />
