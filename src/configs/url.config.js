@@ -17,7 +17,12 @@ const _buildUrl = (urlType) => {
         if (regArray) {
             let [first, url] = regArray;
             //add -api to the sub domain for API requests
-            return `https://api${url}`;
+            switch(urlType) {
+                case 'cms':
+                    return `https://${url}`;
+                default :
+                    return `https://api${url}`;
+            }  
         }
     } else {
         return 'http://localhost:3001'
