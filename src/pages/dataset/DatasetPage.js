@@ -112,8 +112,6 @@ class DatasetDetail extends Component {
   
   render() {
     const { searchString, data, projectsData, datarequest, isLoading, userState, alert } = this.state;
-    console.log('data here: ' + JSON.stringify(data) )
-    console.log('data request here: ' + JSON.stringify(datarequest) )
 
     if (isLoading) {
       return <Container><Loading /></Container>;
