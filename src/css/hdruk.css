@@ -1392,6 +1392,8 @@ NAVBAR CSS BELOW
 .NotRatedBackground {
   background-image: linear-gradient(to left, #f8f8f8, #ffffff 50%);
   color: #3c3c3b;
+  font-weight: 500;
+  opacity: 0.7;
 }
 
 .RatingSilverBackground {
