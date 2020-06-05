@@ -122,7 +122,7 @@ class DatasetDetail extends Component {
 
     projectsData.map(projectData => projectData.activeflag === "active" ? projectsCount++ : '' ) 
     projectsData.map(projectData => projectData.activeflag === "active" ? projectData.toolids.map(toolid => toolsCount++ ) : '')
-
+    
     return (
       
       <div>
