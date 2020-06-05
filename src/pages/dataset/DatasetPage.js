@@ -116,9 +116,13 @@ class DatasetDetail extends Component {
     var projectsCount = 0;
     var toolsCount = 0;
 
+    if (isLoading) {
+        return <Container><Loading /></Container>;
+      }
+
     projectsData.map(projectData => projectData.activeflag === "active" ? projectsCount++ : '' ) 
     projectsData.map(projectData => projectData.activeflag === "active" ? projectData.toolids.map(toolid => toolsCount++ ) : '')
-
+    
     return (
       <div>
         <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
