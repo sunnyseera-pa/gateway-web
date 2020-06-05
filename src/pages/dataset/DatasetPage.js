@@ -249,7 +249,7 @@ class DatasetTitle extends Component {
         if (data.quality) {
             if (data.quality.quality_score <= 50) {
                 metadataQuality      = "Not rated";
-                metadataQualityClass = "Gray800-14px-Opacity";
+                metadataQualityClass += "NotRatedBackground";
 
             } else if (data.quality.quality_score <= 70) {
                 metadataQuality      = "Bronze";
@@ -343,7 +343,7 @@ class DatasetTitle extends Component {
                                     Meta-data quality
                                 </Col>
                                 <Col sm={10} lg={10}>
-                                    {data.quality ? <div><div className={metadataQualityClass}> {metadataQuality} </div> <a href="https://github.com/HDRUK/datasets#about-the-reports" className="ml-2" target="_blank">How is this calculated? </a></div> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col>}
+                                    {data.quality ? <div><div className={metadataQualityClass}> {metadataQuality} </div> <a href="https://github.com/HDRUK/datasets#about-the-reports" className="ml-2 Purple-14px" target="_blank">How is this calculated? </a></div> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col>}
                                 </Col>
                             </Row>
                             
