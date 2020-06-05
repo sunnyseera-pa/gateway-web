@@ -1,21 +1,35 @@
 import ReactGA from "react-ga";
 
-export const initGA = (trackingID) => {           
-    ReactGA.initialize(trackingID); 
+var disableGA = false;
+
+export const initGA = (trackingID) => {   
+  // Disable tracking if the opt-out cookie exists.
+var disableStr = 'ga-disable-UA-166025838-1';
+if (document.cookie.indexOf(disableStr + '=true') > -1) {
+  window[disableStr] = true;
+  disableGA = true;
+}
+  if (disableGA === false) {
+    ReactGA.initialize(trackingID)
+  }
  }
 
-//  'UA-163688296-1'
+//'UA-166025838-1'
 
  export const PageView = () => {  
+   if (disableGA === false) {
     ReactGA.pageview(window.location.pathname +  
                      window.location.search); 
+    }
 }
 
 //Can also add a numerical value to an event...
 export const Event = (category, action, label) => {
+  if (disableGA === false) {
     ReactGA.event({
       category: category,
       action: action,
       label: label
     });
+  }
   };

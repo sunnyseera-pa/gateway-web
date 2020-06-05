@@ -4,7 +4,7 @@ import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
-import { Row, Col, Container, Tabs, Tab, Navbar, Nav, Button, Alert} from 'react-bootstrap/';
+import { Row, Col, Container, Tabs, Tab, Navbar, Nav, Button, Alert } from 'react-bootstrap/';
 import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading'
 import About from '../commonComponents/About';
@@ -13,7 +13,7 @@ import Tool from '../commonComponents/Tool';
 import SearchBar from '../commonComponents/SearchBar';
 import LoginModal from '../commonComponents/LoginModal';
 // import ReactGA from 'react-ga'; 
-import {PageView, initGA} from '../../tracking';
+import { PageView, initGA } from '../../tracking';
 import { Event } from '../../tracking';
 
 
@@ -27,6 +27,7 @@ class DatasetDetail extends Component {
   state = {
     id: '',
     data: [],
+    projectsData: [],
     datarequest: [],
     DBData: [],
     activeKey: false,
@@ -49,6 +50,7 @@ class DatasetDetail extends Component {
   // on loading of tool detail page
   componentDidMount() {
     this.getDetailsSearchFromMDC();
+    this.getRelatedProjects();
     this.checkAlerts();
     initGA('UA-166025838-1');
     PageView();
@@ -60,15 +62,15 @@ class DatasetDetail extends Component {
     if (this.props.match.params.datasetID !== this.state.id && this.state.id !== '' && !this.state.isLoading) {
       this.getDetailsSearchFromMDC();
     }
-  }
-
-  checkAlerts = () => {
-    const {state} = this.props.location;
-    if(typeof state !== "undefined" && typeof state.alert !== 'undefined') {
-      const {alert}= state;
-      this.setState({alert});
     }
-  }
+
+    // on loading of tool detail page
+    componentDidMount() {
+        this.getDetailsSearchFromMDC();
+        this.checkAlerts();
+        initGA('UA-166025838-1');
+        PageView();
+    }
 
   getDetailsSearchFromMDC = () => {
     this.setState({ isLoading: true });
@@ -82,33 +84,40 @@ class DatasetDetail extends Component {
       })
   };
 
+  getRelatedProjects = () => {
+    axios.get(baseURL + '/api/v1/datasets/relatedobjects/' + this.props.match.params.datasetID)
+      .then((res) => {
+        this.setState({
+          projectsData: res.data.data
+        })
+      })
+  };
+
   doSearch = (e) => { //fires on enter on searchbar
     if (e.key === 'Enter') {
       if (!!this.state.searchString) {
         window.location.href = "/search?search=" + this.state.searchString;
       }
     }
-  }
+}
 
-  updateSearchString = (searchString) => {
-    this.setState({ searchString: searchString });
-  }
+    checkAlerts = () => {
+        const { state } = this.props.location;
+        if (typeof state !== "undefined" && typeof state.alert !== 'undefined') {
+            const { alert } = state;
+            this.setState({ alert });
+        }
+    }
 
   
   render() {
-    const { searchString, data, datarequest, isLoading, userState, alert } = this.state;
+    const { searchString, data, projectsData, datarequest, isLoading, userState, alert } = this.state;
 
-    if (isLoading) {
-      return <Container><Loading /></Container>;
-    }
-    
-    if (typeof data.toolids === 'undefined') {
-        data.toolids = [];
-      }
+    var projectsCount = 0;
+    var toolsCount = 0;
 
-    if (typeof data.projectids === 'undefined') {
-      data.projectids = [];
-    }
+    projectsData.map(projectData => projectData.activeflag === "active" ? projectsCount++ : '' ) 
+    projectsData.map(projectData => projectData.activeflag === "active" ? projectData.toolids.map(toolid => toolsCount++ ) : '')
 
     return (
       <div>
@@ -123,11 +132,12 @@ class DatasetDetail extends Component {
                   <Tab eventKey="About" title={'About'}>
                     <About data={data}/>
                   </Tab>  
-                   <Tab eventKey="Projects" title={'Projects using this (' + data.projectids.length + ')'}>
-                    {data.projectids.length <= 0 ? <NotFound word="projects" /> : data.projectids.map(id => <Project id={id} />)}
+                   <Tab eventKey="Projects" title={'Projects using this (' + projectsCount + ')'}>
+                     {projectsCount <=0 ? <NotFound word="projects" />  : projectsData.map(projectData => projectData.activeflag === "active" ? <Project id={projectData.id} /> : '')}
                   </Tab>
-                  <Tab eventKey="Tools" title={'Tools used in the same projects (' + data.toolids.length  + ')'}>
-                    {data.toolids.length <= 0 ? <NotFound word="tools" /> : data.toolids.map(id => <Tool id={id} />)}
+                  <Tab eventKey="Tools" title={'Tools used in the same projects (' + toolsCount + ')'}>
+                    {toolsCount <= 0 ? <NotFound word="tools" /> : projectsData.map(projectData => projectData.activeflag === "active" ? projectData.toolids.map(toolid => <Tool id={toolid} />) : '')}
+
                   </Tab> 
                 </Tabs>
               </div>
@@ -142,50 +152,64 @@ class DatasetDetail extends Component {
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLSeY13LesZ_oMAH_qFdb2cS6b3s7wSf3DQJdwdxGdBcn_gxrfw/viewform" target="_blank" rel="noopener noreferrer" className="Purple-14px" id="UnderlinedLink">
                   Send feedback
                 </a>
-              </p>
-            </Row>
-          </Nav>
-        </Navbar>
-        <Navbar fixed="bottom" className="mr-5 mb-2" >
-          <Nav className="ml-auto">
-            <Row>
-              <p>
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSfadX38bzD5qId2GARODJ7Mv4qHktYoEWY0fL7DcAFmbUuyxw/viewform" target="_blank" rel="noopener noreferrer" className="Purple-14px" id="UnderlinedLink">
-                  Report a problem
+                            </p>
+                        </Row>
+                    </Nav>
+                </Navbar>
+                <Navbar fixed="bottom" className="mr-5 mb-2" >
+                    <Nav className="ml-auto">
+                        <Row>
+                            <p>
+                                <a href="https://docs.google.com/forms/d/e/1FAIpQLSfadX38bzD5qId2GARODJ7Mv4qHktYoEWY0fL7DcAFmbUuyxw/viewform" target="_blank" rel="noopener noreferrer" className="Purple-14px" id="UnderlinedLink">
+                                    Report a problem
                 </a>
-              </p>
-            </Row>
-          </Nav>
-        </Navbar>
-        <Row className='AuthorCard' />
-      </div>
-    );
-  }
+                            </p>
+                        </Row>
+                    </Nav>
+                </Navbar>
+                <Row className='AuthorCard' />
+            </div>
+        );
+    }
 }
 
 class DatasetTitle extends Component {
 
-  constructor(props) {
-      super(props);
-      const { data, datarequest, userState: [user, ...rest], alert} = this.props;
-      this.state = {
-        data,
-        datarequest,
-        user,
-        alert
-      };
-      console.log('dataset detail is: ' + JSON.stringify(props))
-  }
+    constructor(props) {
+        super(props);
+        const { data, datarequest, userState: [user, ...rest], alert } = this.props;
+        this.state = {
+            data,
+            datarequest,
+            user,
+            alert
+        };
+    }
 
-  // initialize our state
-  state = {
-      data: [],
-      datarequest: [],
-      user: {},
-      id: this.props.data.id,
-      alert: null
-  };
+    // initialize our state
+    state = {
+        data: [],
+        datarequest: [],
+        user: {},
+        id: this.props.data.id,
+        alert: null
+    };
 
+    showLoginModal(title, contactPoint) {
+        document.getElementById("myModal").style.display = "block";
+        document.getElementById("loginWayFinder").style.display = "none";
+        document.getElementById("loginButtons").style.display = "block";
+        document.getElementById("loginModalTitle").innerHTML = "You must be signed in to request access";
+        document.getElementById("modalRequestDetails").innerHTML = title;
+        document.getElementById("modalRequestContact").innerHTML = contactPoint;
+        document.getElementById("modalRequestSection").style.display = "block";
+
+        window.onclick = function (event) {
+            if (event.target === document.getElementById("myModal")) {
+                document.getElementById("myModal").style.display = "none";
+            }
+        }
+      }
   /**
    * [render request access]
    * @desc Sets the correct Request Access button for the user
@@ -201,79 +225,79 @@ class DatasetTitle extends Component {
       return <Button variant="primary" className="AddButton" disabled>Request Access</Button>
     } else {
       return <Link className="btn btn-primary AddButton" to={{pathname: 
-        // '/request-access'
-        '/darpoc'
+        '/request-access'
+        // '/dar'
         , state: {title, dataSetId: id, custodianEmail: contactPoint, publisher: publisher }}} onClick={() => Event("Buttons", "Click", "Request Access")}>Request Access</Link>
     }
   }
 
-  render() {
-      const { data, alert } = this.state;
-      console.log('data is: ' + JSON.stringify(data))
-      var keywords = (data.keywords ? data.keywords.split(",") : '');
-      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-      var releaseDate = new Date(data.releaseDate);
-      var releasedOnDate = (data.releaseDate ? releaseDate.getDate() + " " + monthNames[releaseDate.getMonth()] + " " + releaseDate.getFullYear() : "");
-     
-      return (
-          <div>
-              <Row className="mt-2">
-                  <Col sm={1} lg={1} />
-                  <Col sm={10} lg={10}>
-                    { alert ? <Alert variant={alert.type}>{alert.message}</Alert> : null }
-                      <div className="Rectangle">
-                          <Row>
-                              <Col xs={7} md={8}>
-                                  <p>
-                                    <span className="Black-20px">{data.title} </span>
-                                  </p>
-                              </Col>
-                          </Row>
 
-                          <Row>
-                            <Col sm={2} lg={2}>
-                                <Button variant='white' href={'https://metadata-catalogue.org/hdruk/#/catalogue/dataModel/' + data.id} target="_blank" className="TechDetailButton mr-2" >
-                                    Technical details
+    render() {
+        const { data, alert } = this.state;
+        var keywords = (data.keywords ? data.keywords.split(",") : '');
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var releaseDate = new Date(data.releaseDate);
+        var releasedOnDate = (data.releaseDate ? releaseDate.getDate() + " " + monthNames[releaseDate.getMonth()] + " " + releaseDate.getFullYear() : "");
+
+        return (
+            <div>
+                <Row className="mt-2">
+                    <Col sm={1} lg={1} />
+                    <Col sm={10} lg={10}>
+                        {alert ? <Alert variant={alert.type}>{alert.message}</Alert> : null}
+                        <div className="Rectangle">
+                            <Row>
+                                <Col xs={7} md={8}>
+                                    <p>
+                                        <span className="Black-20px">{data.title} </span>
+                                    </p>
+                                </Col>
+                            </Row>
+
+                            <Row>
+                                <Col sm={2} lg={2}>
+                                    <Button variant='white' href={'https://metadata-catalogue.org/hdruk/#/catalogue/dataModel/' + data.id} target="_blank" className="TechDetailButton mr-2" >
+                                        Technical details
                                 </Button>
-                            </Col>
-                            <Col xs={8} lg={8} >
-                              {this.renderRequestAccess()}
-                            </Col>
-                          </Row>
+                                </Col>
+                                <Col xs={8} lg={8} >
+                                    {this.renderRequestAccess()}
+                                </Col>
+                            </Row>
 
-                          <Row className="mt-5">
+                            <Row className="mt-5">
                                 <Col sm={2} lg={2} className="Gray800-14px" >
                                     Release date
                                 </Col>
-                                {releasedOnDate ? <Col sm={8} lg={8} className="Gray800-14px">{releasedOnDate}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col> }
+                                {releasedOnDate ? <Col sm={8} lg={8} className="Gray800-14px">{releasedOnDate}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col>}
                             </Row>
-                        
+
                             <Row className="mt-3">
                                 <Col sm={2} lg={2} className="Gray800-14px" >
                                     Publisher
                                 </Col>
-                                {data.publisher ? <Col sm={8} lg={8} className="Gray800-14px">{data.publisher}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col> }
+                                {data.publisher ? <Col sm={8} lg={8} className="Gray800-14px">{data.publisher}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col>}
                             </Row>
-                            
+
                             <Row className="mt-3">
                                 <Col sm={2} lg={2} className="Gray800-14px" >
-                                    License 
+                                    License
                                 </Col>
-                                {data.license ? <Col sm={8} lg={8} className="Gray800-14px">{data.license}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col> }
+                                {data.license ? <Col sm={8} lg={8} className="Gray800-14px">{data.license}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col>}
                             </Row>
 
                             <Row className="mt-3">
                                 <Col sm={2} lg={2} className="Gray800-14px" >
                                     Request time
                                 </Col>
-                                {data.accessRequestDuration ? <Col sm={8} lg={8} className="Gray800-14px">{data.accessRequestDuration}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col> }
+                                {data.accessRequestDuration ? <Col sm={8} lg={8} className="Gray800-14px">{data.accessRequestDuration}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col>}
                             </Row>
 
                             <Row className="mt-3">
                                 <Col sm={2} lg={2} className="Gray800-14px" >
                                     Standard
                                 </Col>
-                                {data.conformsTo ? <Col sm={8} lg={8} className="Gray800-14px overflowWrap">{data.conformsTo}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col> }
+                                {data.conformsTo ? <Col sm={8} lg={8} className="Gray800-14px overflowWrap">{data.conformsTo}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col>}
                             </Row>
 
                             <Row className="mt-3">
@@ -281,17 +305,17 @@ class DatasetTitle extends Component {
                                     Keywords
                                 </Col>
                                 <Col sm={10} lg={10}>
-                                    {!keywords || keywords.length <= 0 ? <span className="Gray800-14px-Opacity">Not specified</span> : keywords.map((keyword) => {return <div className="mr-2 Gray800-14px tagBadges mb-2"> <a href={'/search?search=' + keyword}> {keyword} </a> </div> })}                                
+                                    {!keywords || keywords.length <= 0 ? <span className="Gray800-14px-Opacity">Not specified</span> : keywords.map((keyword) => { return <div className="mr-2 Gray800-14px tagBadges mb-2"> <a href={'/search?search=' + keyword}> {keyword} </a> </div> })}
                                 </Col>
                             </Row>
-                      </div>
-                  </Col>
-                  <Col sm={1} lg={10} />
-              </Row>
+                        </div>
+                    </Col>
+                    <Col sm={1} lg={10} />
+                </Row>
 
-          </div>
-      );
-  }
+            </div>
+        );
+    }
 }
 
 export default DatasetDetail;

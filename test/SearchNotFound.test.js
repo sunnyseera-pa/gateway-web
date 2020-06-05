@@ -1,14 +1,10 @@
 
 import React from 'react';
-import NotFound from '../src/pages/components/NotFound';
-import Enzyme, { mount } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import NotFound from '../src/pages/commonComponents/NotFound';
+import { notFoundData } from './mocks/dataMock';
 
-Enzyme.configure({ adapter: new Adapter() });
-
-describe('NotFound', () => {
+describe('<NotFound /> rendering for Search', () => {
     it('renders without crashing', () => {
-        var data = {data:[{id:"test"}]};
-        const wrapper = mount(<NotFound words="test" />);
+        const wrapper = shallow(<NotFound data = {notFoundData} />);
     });
 });

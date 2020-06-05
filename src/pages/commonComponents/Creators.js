@@ -1,33 +1,18 @@
 
 // /ShowObjects/Title.js
 import React, { Component } from 'react';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import '../../css/hdruk.css';
+import { Row, Col } from 'react-bootstrap';
 import { ReactComponent as PersonPlaceholderSvg } from '../../images/person-placeholder.svg';
+import '../../css/hdruk.css';
 
-class Creators extends Component {
-
-  // initialize our state
-  state = {
-    author: []
-  };
-
-  constructor(props) {
-    super(props)
-    this.state.author = props.author;
-  }
-
-  // here is our UI
-  // it is easy to understand their functions when you
-  // see them render into our screen
+class  Creators extends Component {
   render() {
-    const { author } = this.state;
+    const { author } = this.props;
     return (
       <span>
         <Row className="mt-2">
           <Col sm={12} lg={12}>
-            <a className="searchHolder" data-testid="href" href={'/person/' + author.id} >
+            <a data-testid="href" href={'/person/' + author.id} >
               <div className="Rectangle">
 
                 <Row className="AuthorCard">
