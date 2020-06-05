@@ -35,6 +35,7 @@ class About extends React.Component {
 
     render() {
         const { data, isLoading } = this.state;
+        console.log('data in about: ' + JSON.stringify(data))
 
         if (isLoading) {
             return <Loading />;

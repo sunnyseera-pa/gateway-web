@@ -14,8 +14,6 @@ import 'react-tabs/style/react-tabs.css';
  class DataAccessRequest extends Component {
 
     constructor(props) {
-        console.log('full props' + JSON.stringify(props));
-        // console.log('props title ' + JSON.stringify(props.history.location.state.title));
         super(props);
         this.onFormSwitchPanel = this.onFormSwitchPanel.bind(this);
         this.onFormUpdate = this.onFormUpdate.bind(this);
@@ -144,7 +142,7 @@ import 'react-tabs/style/react-tabs.css';
         Winterfell.addInputType('datePickerCustom', DatePickerCustom);
         return (
             <div >
-        <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
+                <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
 
                 <Row className="Banner">
                     <Col md={11}>

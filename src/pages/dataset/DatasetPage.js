@@ -112,6 +112,12 @@ class DatasetDetail extends Component {
   
   render() {
     const { searchString, data, projectsData, datarequest, isLoading, userState, alert } = this.state;
+    console.log('data here: ' + JSON.stringify(data) )
+    console.log('data request here: ' + JSON.stringify(datarequest) )
+
+    if (isLoading) {
+      return <Container><Loading /></Container>;
+    }
 
     var projectsCount = 0;
     var toolsCount = 0;
@@ -175,25 +181,9 @@ class DatasetDetail extends Component {
 
 class DatasetTitle extends Component {
 
-    constructor(props) {
-        super(props);
-        const { data, datarequest, userState: [user, ...rest], alert } = this.props;
-        this.state = {
-            data,
-            datarequest,
-            user,
-            alert
-        };
-    }
-
-    // initialize our state
-    state = {
-        data: [],
-        datarequest: [],
-        user: {},
-        id: this.props.data.id,
-        alert: null
-    };
+  constructor(props) {
+    super(props);
+  }
 
     showLoginModal(title, contactPoint) {
         document.getElementById("myModal").style.display = "block";
@@ -216,9 +206,9 @@ class DatasetTitle extends Component {
    * @return  {[type]}  null : button
    */
   renderRequestAccess = () => {
-    const {user: {loggedIn}, data: {title, id, contactPoint, publisher}, alert=null, datarequest} = this.state;
+    const {userState: [user, ...rest], data: {title, id, contactPoint, publisher}, alert=null, datarequest} = this.props;
     const hasRequestedAccess = (datarequest.length === 1 ? true : false);
-    if(!loggedIn) {
+    if(!user.loggedIn) {
       var isRequest=true;
       return <LoginModal isRequest={isRequest} requestDetails={title} requestContact={contactPoint} />;
     } else if (alert || hasRequestedAccess) {
@@ -233,7 +223,7 @@ class DatasetTitle extends Component {
 
 
     render() {
-        const { data, alert } = this.state;
+        const { data, alert } = this.props;
         var keywords = (data.keywords ? data.keywords.split(",") : '');
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         var releaseDate = new Date(data.releaseDate);
