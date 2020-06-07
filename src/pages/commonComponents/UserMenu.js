@@ -6,7 +6,6 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import LoginModal from '../commonComponents/LoginModal';
 
 import { ReactComponent as ArrowDownSvg } from '../../images/stock.svg';
-import { ReactComponent as ArrowDownSvgWhite } from '../../images/arrowDownWhite.svg';
 
 var baseURL = require('./BaseURL').getURL();
 var cmsURL = require('./BaseURL').getCMSURL();
@@ -72,17 +71,12 @@ class UserMenu extends Component {
             if (userState[0].loggedIn === true) {
                 return (
                     <Dropdown>
-                        {isLanding ? 
-                         <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                              <span className="landingPageAccountText">{userState[0].name}</span>
-                              <span className="accountDropDownGap"></span>< ArrowDownSvgWhite />
-                          </Dropdown.Toggle>
-                          :
+                        
                           <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                              <span className="pageAccountText">{userState[0].name}</span>
+                              <span className="Black-14px">{userState[0].name}{userState[0].name}</span>
                               <span className="accountDropDownGap"></span>< ArrowDownSvg />
                           </Dropdown.Toggle>
-                        }
+                        
 
                         <Dropdown.Menu as={CustomMenu}>
                             <Dropdown.Item href="/account?tab=youraccount">Your Account</Dropdown.Item>

@@ -5,17 +5,20 @@
   "type": "module",
   "dependencies": {
     "@kenshooui/react-multi-select": "^1.1.6",
+    "@rjsf/core": "^2.0.1",
     "@semantic-ui-react/event-stack": "^3.1.1",
-    "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
+    "core-js": "^3.6.5",
     "date-fns": "^2.9.0",
     "dotenv": "^8.2.0",
     "formik": "^2.1.4",
+    "lodash": "^4.17.15",
     "moment": "^2.25.3",
     "react": "^16.12.0",
+    "react-app-polyfill": "^1.0.6",
     "react-autosuggest": "^9.4.3",
     "react-bootstrap": "^1.0.0-beta.16",
     "react-bootstrap-typeahead": "^4.0.0-rc.2",
@@ -27,18 +30,20 @@
     "react-markdown": "^4.3.1",
     "react-moment": "^0.9.7",
     "react-multiselect-checkboxes": "^0.1.1",
+    "react-notification-badge": "^1.5.1",
     "react-rating": "^2.0.4",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
     "react-tabs": "^3.1.0",
     "react-web-tabs": "^1.0.1",
     "semantic-ui-react": "^0.88.2",
+    "winterfell": "github:HDRUK/Winterfell",
     "yup": "^0.28.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "jest",
+    "test": "jest --env=jsdom --coverage --config=jest.config.json",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -56,16 +61,14 @@
       "last 1 safari version"
     ]
   },
-  "jest": {
-    "moduleNameMapper": {
-      "\\.(css|less|sass|scss)$": "<rootDir>/test/mocks/styleMock.js",
-      "\\.(gif|ttf|eot|jpg)$": "<rootDir>/test/mocks/fileMock.js",
-      "\\.(svg)": "<rootDir>/test/mocks/svgrMock.js"
-    }
-  },
+  "jest": {},
   "devDependencies": {
+    "@babel/preset-env": "^7.10.2",
+    "@testing-library/jest-dom": "^4.2.4",
+    "babel-preset-react-app": "^9.1.2",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
-    "jest": "24.9.0"
+    "jest": "24.9.0",
+    "jest-cli": "^26.0.1"
   }
 }
