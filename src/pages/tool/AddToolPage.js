@@ -225,6 +225,7 @@ const AddToolForm = (props) => {
         }),
 
         onSubmit: values => {
+            values.toolCreator = props.userState[0];
             axios.post(baseURL + '/api/v1/mytools/add', values)
                 .then((res) => {
                     window.location.href = window.location.search + '/tool/' + res.data.id + '/?toolAdded=true';

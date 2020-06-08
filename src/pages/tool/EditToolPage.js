@@ -65,99 +65,99 @@ class EditToolPage extends React.Component {
 
   doGetTopicsCall() {
     return new Promise((resolve, reject) => {
-    axios.get(baseURL + '/api/v1/search/filter/topic/tool')
-      .then((res) => {
-        var tempTopicArray = ["Blood", "Cancer and neoplasms", "Cardiovascular", "Congenital disorders", "Ear", "Eye", "Infection", "Inflammatory and immune system", "Injuries and accidents", "Mental health", "Metabolic and Endocrine", "Musculoskeletal", "Neurological", "Oral and Gastrointestinal", "Renal and Urogenital", "Reproductive health and childbirth", "Respiratory", "Skin", "Stroke"]
-        res.data.data.forEach((to) => {
-          if (!tempTopicArray.includes(to) && to !== '') {
-            tempTopicArray.push(to);
-          }
-        });
+      axios.get(baseURL + '/api/v1/search/filter/topic/tool')
+        .then((res) => {
+          var tempTopicArray = ["Blood", "Cancer and neoplasms", "Cardiovascular", "Congenital disorders", "Ear", "Eye", "Infection", "Inflammatory and immune system", "Injuries and accidents", "Mental health", "Metabolic and Endocrine", "Musculoskeletal", "Neurological", "Oral and Gastrointestinal", "Renal and Urogenital", "Reproductive health and childbirth", "Respiratory", "Skin", "Stroke"]
+          res.data.data.forEach((to) => {
+            if (!tempTopicArray.includes(to) && to !== '') {
+              tempTopicArray.push(to);
+            }
+          });
 
-        this.setState({ combinedTopic: tempTopicArray.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
-        resolve();
-      });
+          this.setState({ combinedTopic: tempTopicArray.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
+          resolve();
+        });
     });
   }
 
   doGetFeaturesCall() {
     return new Promise((resolve, reject) => {
-    axios.get(baseURL + '/api/v1/search/filter/feature/tool')
-      .then((res) => {
-        var tempFeaturesArray = ["Arbitrage", "Association Rules", "Attribution Modeling", "Bayesian Statistics", "Clustering", "Collaborative Filtering", "Confidence Interval", "Cross-Validation", "Decision Trees", "Deep Learning", "Density Estimation", "Ensembles", "Experimental Design", "Feature Selection", "Game Theory", "Geospatial Modeling", "Graphs", "Imputation", "Indexation / Cataloguing", "Jackknife Regression", "Lift Modeling", "Linear Regression", "Linkage Analysis", "Logistic Regression", "Model Fitting", "Monte-Carlo Simulation", "Naive Bayes", "Nearest Neighbors - (k-NN)", "Neural Networks", "Pattern Recognition", "Predictive Modeling", "Principal Component Analysis - (PCA)", "Random Numbers", "Recommendation Engine", "Relevancy Algorithm", "Rule System", "Scoring Engine", "Search Engine", "Segmentation", "Supervised Learning", "Support Vector Machine - (SVM)", "Survival Analysis", "Test of Hypotheses", "Time Series", "Yield Optimization"]
+      axios.get(baseURL + '/api/v1/search/filter/feature/tool')
+        .then((res) => {
+          var tempFeaturesArray = ["Arbitrage", "Association Rules", "Attribution Modeling", "Bayesian Statistics", "Clustering", "Collaborative Filtering", "Confidence Interval", "Cross-Validation", "Decision Trees", "Deep Learning", "Density Estimation", "Ensembles", "Experimental Design", "Feature Selection", "Game Theory", "Geospatial Modeling", "Graphs", "Imputation", "Indexation / Cataloguing", "Jackknife Regression", "Lift Modeling", "Linear Regression", "Linkage Analysis", "Logistic Regression", "Model Fitting", "Monte-Carlo Simulation", "Naive Bayes", "Nearest Neighbors - (k-NN)", "Neural Networks", "Pattern Recognition", "Predictive Modeling", "Principal Component Analysis - (PCA)", "Random Numbers", "Recommendation Engine", "Relevancy Algorithm", "Rule System", "Scoring Engine", "Search Engine", "Segmentation", "Supervised Learning", "Support Vector Machine - (SVM)", "Survival Analysis", "Test of Hypotheses", "Time Series", "Yield Optimization"]
 
-        res.data.data.forEach((fe) => {
-          if (!tempFeaturesArray.includes(fe) && fe !== '') {
-            tempFeaturesArray.push(fe);
-          }
+          res.data.data.forEach((fe) => {
+            if (!tempFeaturesArray.includes(fe) && fe !== '') {
+              tempFeaturesArray.push(fe);
+            }
+          });
+
+          this.setState({ combinedFeatures: tempFeaturesArray.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
+          resolve();
         });
-
-        this.setState({ combinedFeatures: tempFeaturesArray.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
-        resolve();
-      });
     });
   }
 
   doGetLanguagesCall() {
     return new Promise((resolve, reject) => {
-    axios.get(baseURL + '/api/v1/search/filter/language/tool')
-      .then((res) => {
-        var tempLanguagesArray = ["No coding required", ".net", "AJAX", "ASP.NET", "C", "C#", "C++", "CSS", "Django", "HTML", "Java", "Javascript", "jQuery", "JSON", "Matlab", "MySQL", "Node.js", "Objective C", "PHP", "Python", "R", "React JS", "Regex", "Ruby", "Ruby on Rails", "SQL", "SQL server", "Swift", "XML"];
-        res.data.data.forEach((la) => {
-          if (!tempLanguagesArray.includes(la) && la !== '') {
-            tempLanguagesArray.push(la);
-          }
-        });
+      axios.get(baseURL + '/api/v1/search/filter/language/tool')
+        .then((res) => {
+          var tempLanguagesArray = ["No coding required", ".net", "AJAX", "ASP.NET", "C", "C#", "C++", "CSS", "Django", "HTML", "Java", "Javascript", "jQuery", "JSON", "Matlab", "MySQL", "Node.js", "Objective C", "PHP", "Python", "R", "React JS", "Regex", "Ruby", "Ruby on Rails", "SQL", "SQL server", "Swift", "XML"];
+          res.data.data.forEach((la) => {
+            if (!tempLanguagesArray.includes(la) && la !== '') {
+              tempLanguagesArray.push(la);
+            }
+          });
 
-        this.setState({ combinedLanguages: tempLanguagesArray.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
-        resolve();
-      });
+          this.setState({ combinedLanguages: tempLanguagesArray.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
+          resolve();
+        });
     });
   }
 
   doGetCategoriesCall() {
     return new Promise((resolve, reject) => {
-    axios.get(baseURL + '/api/v1/search/filter/category/tool')
-      .then((res) => {
-        
-        var tempCategoriesArray = ["API", "Code snippet", "Container image", "Dashboard", "Developer stack", "Directory", "Docker app", "Kubernetes app", "Library", "Notebook", "Package", "Platform", "Repository", "Service", "Software", "Virtual machine", "Web application"];
-        res.data.data.forEach((ca) => {
-          if (!tempCategoriesArray.includes(ca) && ca !== '') {
-            tempCategoriesArray.push(ca);
-          }
-        });
+      axios.get(baseURL + '/api/v1/search/filter/category/tool')
+        .then((res) => {
 
-        this.setState({ combinedCategories: tempCategoriesArray.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
-        resolve();
-      });
+          var tempCategoriesArray = ["API", "Code snippet", "Container image", "Dashboard", "Developer stack", "Directory", "Docker app", "Kubernetes app", "Library", "Notebook", "Package", "Platform", "Repository", "Service", "Software", "Virtual machine", "Web application"];
+          res.data.data.forEach((ca) => {
+            if (!tempCategoriesArray.includes(ca) && ca !== '') {
+              tempCategoriesArray.push(ca);
+            }
+          });
+
+          this.setState({ combinedCategories: tempCategoriesArray.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
+          resolve();
+        });
     });
   }
 
   doGetLicensesCall() {
     return new Promise((resolve, reject) => {
-    axios.get(baseURL + '/api/v1/search/filter/license/tool')
-      .then((res) => {
-        var tempLicensesArray = ["Apache License 2.0", "BSD 3-Clause \"New\" or \"Revised\" license", "BSD 2-Clause \"Simplified\" or \"FreeBSD\" license", "GNU General Public License (GPL)", "GNU Library or \"Lesser\" General Public License (LGPL)", "MIT license", "Mozilla Public License 2.0", "Common Development and Distribution License", "Eclipse Public License version 2.0"]
+      axios.get(baseURL + '/api/v1/search/filter/license/tool')
+        .then((res) => {
+          var tempLicensesArray = ["Apache License 2.0", "BSD 3-Clause \"New\" or \"Revised\" license", "BSD 2-Clause \"Simplified\" or \"FreeBSD\" license", "GNU General Public License (GPL)", "GNU Library or \"Lesser\" General Public License (LGPL)", "MIT license", "Mozilla Public License 2.0", "Common Development and Distribution License", "Eclipse Public License version 2.0"]
 
-        res.data.data.forEach((li) => {
-          if (!tempLicensesArray.includes(li) && li !== '') {
-            tempLicensesArray.push(li);
-          }
+          res.data.data.forEach((li) => {
+            if (!tempLicensesArray.includes(li) && li !== '') {
+              tempLicensesArray.push(li);
+            }
+          });
+
+          this.setState({ combinedLicenses: tempLicensesArray.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
+          resolve();
         });
-
-        this.setState({ combinedLicenses: tempLicensesArray.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
-        resolve();
-      });
     });
   }
 
   doGetUsersCall() {
     return new Promise((resolve, reject) => {
-    axios.get(baseURL + '/api/v1/users')
-      .then((res) => {
-        this.setState({ combinedUsers: res.data.data });
-        resolve();
-      });
+      axios.get(baseURL + '/api/v1/users')
+        .then((res) => {
+          this.setState({ combinedUsers: res.data.data });
+          resolve();
+        });
     });
   }
 
@@ -233,6 +233,7 @@ const EditToolForm = (props) => {
     }),
 
     onSubmit: values => {
+      values.toolCreator = props.userState[0];
       axios.put(baseURL + '/api/v1/mytools/edit', values)
         .then((res) => {
           window.location.href = window.location.search + '/tool/' + props.data.id + '/?toolEdited=true';
