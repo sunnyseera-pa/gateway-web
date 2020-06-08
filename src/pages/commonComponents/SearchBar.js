@@ -475,7 +475,7 @@ class SearchBar extends React.Component {
                                                         <NotificationsBellSvg width={50} height={50} id="NotificationsBell" className={this.state.dropdownOpen ? "NotificationsBell" : null} style={{ cursor: 'pointer' }} />
                                                     </Dropdown.Toggle>
 
-                                                    <Dropdown.Menu as={CustomMenu} className="desktopNotificationMenu">
+                                                    <Dropdown.Menu as={CustomMenu} className="mobileNotificationMenu">
                                                         {newData.length <= 0 ? 
                                                             <div className="NoNotifications" >
                                                                 <div className="Gray800-14px" style={{ textAlign: 'center' }}>
