@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import { Row, Col, Button, Modal, Tabs, Tab, DropdownButton, Dropdown} from 'react-bootstrap';
 
 import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading'
@@ -22,89 +19,403 @@ class AccountProjects extends React.Component {
 
     // initialize our state
     state = {
-        userState: []
+        userState: [],
+        key: 'active',
+        data: [],
+        isLoading: true
     };
+
+    handleSelect = (key) => {
+        this.setState({ key: key });
+    }
 
     componentDidMount() {
         initGA('UA-166025838-1');
+        this.doProjectsCall();
+    }
+
+    doProjectsCall() {
+        if (this.state.userState[0].role === "Admin") {
+            axios.get(baseURL + '/api/v1/accounts/admin?type=project')
+                .then((res) => {
+                    this.setState({ data: res.data.data, isLoading: false });
+                });
+        }
+        else {
+            axios.get(baseURL + '/api/v1/accounts?type=project&id=' + this.state.userState[0].id + '')
+                .then((res) => {
+                    this.setState({ data: res.data.data, isLoading: false });
+                });
+        }
     }
 
     render() {
-        const { userState } = this.state;
+        const { userState, key, isLoading, data } = this.state;
+
+        if (isLoading) {
+            return <Loading />;
+        }
+
+        var activeCount = 0;
+        var reviewCount = 0;
+        var archiveCount = 0;
+        var rejectedCount = 0;
+        
+        data.forEach((project) => {
+            if (project.activeflag === "active") activeCount++;
+            else if (project.activeflag === "review") reviewCount++;
+            else if (project.activeflag === "archive") archiveCount++;
+            else if (project.activeflag === "rejected") rejectedCount++;
+        });
 
         return (
             <div>
-                <Row className="mt-3">
-                    <Col style={{ textAlign: "center" }}>
-                        <Button variant="primary" href="/addproject" className="AddButton" onClick={() => Event("Buttons", "Click", "Add a new project")} >
-                            + Add a new project
-                        </Button>
+                <Row>
+                    <Col xs={1}></Col>
+                    <Col xs={10}>
+                        <Row className="AccountHeader mt-5">
+                            <Col xs={8}>
+                                <Row>
+                                    <span className="Black-20px">Projects</span>
+                                </Row>
+                                <Row>
+                                    <span className="Gray700-13px ">Manage your existing projets or add new ones</span>   
+                                </Row>
+                            </Col>
+                            <Col xs={4} style={{ textAlign: "center" }}>
+                            { this.state.userState[0].role === "Admin" ? 
+                                <Button variant="primary" href="/addproject" className="AddButton" onClick={() => Event("Buttons", "Click", "Add a new project")} >
+                                    + Add a new project
+                                </Button>
+                            : ""}
+                            </Col>
+                        </Row>
+                        
+                        <Row className="TabsBackground">
+                            <Col sm={12} lg={12}>
+                                <Tabs className='DataAccessTabs Gray700-13px' activeKey={this.state.key} onSelect={this.handleSelect}>
+                                    <Tab eventKey="active" title={"Active ("+activeCount+")"}> </Tab>
+                                    <Tab eventKey="pending" title={"Pending approval ("+reviewCount+")"}> </Tab>
+                                    <Tab eventKey="rejected" title={"Rejected ("+rejectedCount+")"}> </Tab>
+                                    <Tab eventKey="archive" title={"Archive ("+archiveCount+")"}> </Tab>
+                                </Tabs>
+                            </Col>
+                        </Row>
+
+
+
+                    { this.state.userState[0].role === "Admin" ? 
+                        (() => {
+                            switch (key) {
+                                case "active":
+                                return ( 
+                                    <div className="DARDiv">
+                                        <Row className="SubHeader mt-3"> 
+                                            <Col xs={5}>Name</Col> 
+                                            <Col xs={2}>Author</Col> 
+                                            <Col xs={4}></Col> 
+                                        </Row>
+
+                                        {activeCount <= 0 ? <NotFound word="projects" /> : data.map((dat) => {
+                                            if (dat.activeflag !== "active") {
+                                                return (<></>)
+                                            }
+                                            else {
+                                                return (
+                                                    <Row className="Rectangle mt-1">
+                                                        <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/project/' + dat.id} >{dat.name}</a></Col>
+                                                        <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold">
+                                                            {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
+                                                                return <span>{person.firstname} {person.lastname} <br /></span>
+                                                            })}
+                                                        </Col>
+
+                                                        <Col sm={12} lg={5} className="pl-5 toolsButtons">
+                                                            <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
+                                                                <Dropdown.Item href={'/editproject/' + dat.id}>Edit</Dropdown.Item>
+                                                                <DeleteButton id={dat.id} />
+                                                            </DropdownButton>
+                                                        </Col>
+                                                    </Row>  
+                                                )
+                                            }
+                                        })}
+                                            
+                                    </div>
+                                );
+                                case "pending":
+                                    return ( 
+                                        <div className="DARDiv">
+                                            <Row className="SubHeader mt-3"> 
+                                                <Col xs={4}>Name</Col> 
+                                                <Col xs={4}>Author</Col> 
+                                                <Col xs={4}></Col> 
+                                            </Row>
+                                            
+                                            {reviewCount <= 0 ? <NotFound word="projects" /> : data.map((dat) => {
+                                                if (dat.activeflag !== "review") {
+                                                    return (<></>)
+                                                }
+                                                else {
+                                                    return (
+                                                        <Row className="Rectangle mt-1">
+                                                            <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/project/' + dat.id} >{dat.name}</a></Col>
+                                                            <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold">
+                                                                {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
+                                                                    return <span>{person.firstname} {person.lastname} <br /></span>
+                                                                })}
+                                                            </Col>
+
+                                                            <Col sm={12} lg={5} className="pl-5 toolsButtons">
+                                                                <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
+                                                                    <Dropdown.Item href={'/editproject/' + dat.id}>Edit</Dropdown.Item>
+                                                                    <DeleteButton id={dat.id} />
+                                                                </DropdownButton>
+                                                            </Col>
+                                                        </Row>
+                                                    )
+                                                }
+                                            })}
+                                            
+                                        </div>
+                                );
+                                case "rejected":
+                                    return ( 
+                                        <div className="DARDiv">
+                                            <Row className="SubHeader mt-3"> 
+                                                <Col xs={4}>Name</Col> 
+                                                <Col xs={4}>Author</Col> 
+                                                <Col xs={4}></Col> 
+                                            </Row>
+                                            
+                                            {rejectedCount <= 0 ? <NotFound word="projects" /> : data.map((dat) => {
+                                                if (dat.activeflag !== "rejected") {
+                                                    return (<></>)
+                                                }
+                                                else {
+                                                    return (
+                                                        <Row className="Rectangle mt-1">
+                                                            <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/project/' + dat.id} >{dat.name}</a></Col>
+                                                            <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold">
+                                                                {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
+                                                                    return <span>{person.firstname} {person.lastname} <br /></span>
+                                                                })}
+                                                            </Col>
+
+                                                            <Col sm={12} lg={5} className="pl-5 toolsButtons">
+                                                                <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
+                                                                    <Dropdown.Item href={'/editproject/' + dat.id}>Edit</Dropdown.Item>
+                                                                    <DeleteButton id={dat.id} />
+                                                                </DropdownButton>
+                                                            </Col>
+                                                        </Row>
+                                                    )
+                                                }
+                                            })}
+                                        </div>
+                                );
+                                case "archive":
+                                    return ( 
+                                        <div className="DARDiv">
+                                            <Row className="SubHeader mt-3"> 
+                                                <Col xs={4}>Name</Col> 
+                                                <Col xs={4}>Author</Col> 
+                                                <Col xs={4}></Col> 
+                                            </Row>
+                                            
+                                            {archiveCount <= 0 ? <NotFound word="projects" /> : data.map((dat) => {
+                                                if (dat.activeflag !== "archive") {
+                                                    return (<></>)
+                                                }
+                                                else {
+                                                    return (
+                                                        <Row className="Rectangle mt-1">
+                                                            <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/project/' + dat.id} >{dat.name}</a></Col>
+                                                            <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold">
+                                                                {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
+                                                                    return <span>{person.firstname} {person.lastname} <br /></span>
+                                                                })}
+                                                            </Col>
+
+                                                            <Col sm={12} lg={5} className="pl-5 toolsButtons">
+                                                                <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
+                                                                    <Dropdown.Item href={'/editproject/' + dat.id}>Edit</Dropdown.Item>
+                                                                    <DeleteButton id={dat.id} />
+                                                                </DropdownButton>
+                                                            </Col>
+                                                        </Row>
+                                                    )
+                                                }
+                                            })}
+                                        </div>
+                                );
+                            }
+                        })() 
+                    : "" }
+
+                    { this.state.userState[0].role === "Creator" ? 
+                        (() => {
+                            switch (key) {
+                                case "active":
+                                return ( 
+                                    <div className="DARDiv">
+                                        <Row className="SubHeader mt-3"> 
+                                            <Col xs={4}>Name</Col> 
+                                            <Col xs={4}>Author</Col> 
+                                            <Col xs={4}></Col> 
+                                        </Row>
+
+                                        {activeCount <= 0 ? <NotFound word="projects" /> : data.map((dat) => {
+                                            if (dat.activeflag !== "active") {
+                                                return (<></>)
+                                            }
+                                            else {
+                                                return (
+                                                    <Row className="Rectangle mt-1">
+                                                        <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/project/' + dat.id} >{dat.name}</a></Col>
+                                                        <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold">
+                                                            {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
+                                                                return <span>{person.firstname} {person.lastname} <br /></span>
+                                                            })}
+                                                        </Col>
+
+                                                        <Col sm={12} lg={5} className="pl-5 toolsButtons">
+                                                            <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
+                                                                <Dropdown.Item href={'/editproject/' + dat.id}>Edit</Dropdown.Item>
+                                                                <DeleteButton id={dat.id} />
+                                                            </DropdownButton>
+                                                        </Col>
+                                                    </Row>
+                                                )
+                                            }
+                                        })}
+                                            
+                                    </div>
+                                );
+                                case "pending":
+                                    return ( 
+                                        <div className="DARDiv">
+                                            <Row className="SubHeader mt-3"> 
+                                                <Col xs={4}>Name</Col> 
+                                                <Col xs={4}>Author</Col> 
+                                                <Col xs={4}></Col> 
+                                            </Row>
+                                            
+                                            {reviewCount <= 0 ? <NotFound word="projects" /> : data.map((dat) => {
+                                                if (dat.activeflag !== "review") {
+                                                    return (<></>)
+                                                }
+                                                else {
+                                                    return (
+                                                        <Row className="Rectangle mt-1">
+                                                            <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/project/' + dat.id} >{dat.name}</a></Col>
+                                                            <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold">
+                                                                {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
+                                                                    return <span>{person.firstname} {person.lastname} <br /></span>
+                                                                })}
+                                                            </Col>
+
+                                                            <Col sm={12} lg={5} className="pl-5 toolsButtons">
+                                                                <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
+                                                                    <Dropdown.Item href={'/editproject/' + dat.id}>Edit</Dropdown.Item>
+                                                                    <DeleteButton id={dat.id} />
+                                                                </DropdownButton>
+                                                            </Col>
+                                                        </Row>
+                                                    )
+                                                }
+                                            })}
+                                            
+                                        </div>
+                                );
+                                case "rejected":
+                                    return ( 
+                                        <div className="DARDiv">
+                                            <Row className="SubHeader mt-3"> 
+                                                <Col xs={4}>Name</Col> 
+                                                <Col xs={4}>Author</Col> 
+                                                <Col xs={4}></Col> 
+                                            </Row>
+                                            
+                                            {rejectedCount <= 0 ? <NotFound word="projects" /> : data.map((dat) => {
+                                                if (dat.activeflag !== "rejected") {
+                                                    return (<></>)
+                                                }
+                                                else {
+                                                    return (
+                                                        <Row className="Rectangle mt-1">
+                                                            <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/project/' + dat.id} >{dat.name}</a></Col>
+                                                            <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold">
+                                                                {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
+                                                                    return <span>{person.firstname} {person.lastname} <br /></span>
+                                                                })}
+                                                            </Col>
+
+                                                            <Col sm={12} lg={5} className="pl-5 toolsButtons">
+                                                                <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
+                                                                    <Dropdown.Item href={'/editproject/' + dat.id}>Edit</Dropdown.Item>
+                                                                    <DeleteButton id={dat.id} />
+                                                                </DropdownButton>
+                                                            </Col>
+                                                        </Row>
+                                                    )
+                                                }
+                                            })}
+                                        </div>
+                                );
+                                case "archive":
+                                    return ( 
+                                        <div className="DARDiv">
+                                            <Row className="SubHeader mt-3"> 
+                                                <Col xs={4}>Name</Col> 
+                                                <Col xs={4}>Author</Col> 
+                                                <Col xs={4}></Col> 
+                                            </Row>
+                                            
+                                            {archiveCount <= 0 ? <NotFound word="projects" /> : data.map((dat) => {
+                                                if (dat.activeflag !== "archive") {
+                                                    return (<></>)
+                                                }
+                                                else {
+                                                    return (
+                                                        <Row className="Rectangle mt-1">
+                                                            <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/project/' + dat.id} >{dat.name}</a></Col>
+                                                            <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold">
+                                                                {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
+                                                                    return <span>{person.firstname} {person.lastname} <br /></span>
+                                                                })}
+                                                            </Col>
+
+                                                            <Col sm={12} lg={5} className="pl-5 toolsButtons">
+                                                                <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
+                                                                    <Dropdown.Item href={'/editproject/' + dat.id}>Edit</Dropdown.Item>
+                                                                    <DeleteButton id={dat.id} />
+                                                                </DropdownButton>
+                                                            </Col>
+                                                        </Row>
+                                                    )
+                                                }
+                                            })}
+                                        </div>
+                                );
+                            }
+                        })() 
+                    : "" }
                     </Col>
+
+                    <Col xs={1}></Col>
                 </Row>
-
-                <Row className="mt-3">
-                    <Col>
-                        <span className="Black-16px ml-2">Pending approval</span>
-                    </Col>
-                </Row>
-
-                <Row className="mt-1">
-                    <Col lg={12}>
-                        <div className="ToolsHeader">
-                            <Row>
-                                <Col xs={4} lg={5} className="pl-4 pt-2 Gray800-14px-bold">Name</Col>
-                                <Col xs={4} lg={2} className="pl-1 pt-2 Gray800-14px-bold">Author</Col>
-                                <Col xs={4} lg={5}></Col>
-                            </Row>
-                        </div>
-                    </Col>
-                </Row>
-
-                <PendingProjects userState={userState} />
-
-                <Row className="mt-3">
-                    <Col>
-                        <span className="Black-16px ml-2">Active</span>
-                    </Col>
-                </Row>
-
-                <Row className="mt-1">
-                    <Col lg={12}>
-                        <div className="ToolsHeader">
-                            <Row>
-                                <Col xs={4} lg={5} className="pl-4 pt-2 Gray800-14px-bold">Name</Col>
-                                <Col xs={4} lg={2} className="pl-1 pt-2 Gray800-14px-bold">Author</Col>
-                                <Col xs={4} lg={5}></Col>
-                            </Row>
-                        </div>
-                    </Col>
-                </Row>
-
-                <ActiveProjects userState={userState} />
-
-                <Row className="mt-3">
-                    <Col>
-                        <span className="Black-16px ml-2">Archive</span>
-                    </Col>
-                </Row>
-
-                <Row className="mt-1">
-                    <Col lg={12}>
-                        <div className="ToolsHeader">
-                            <Row>
-                                <Col xs={4} lg={5} className="pl-4 pt-2 Gray800-14px-bold">Name</Col>
-                                <Col xs={4} lg={2} className="pl-1 pt-2 Gray800-14px-bold">Author</Col>
-                                <Col xs={4} lg={5}></Col>
-                            </Row>
-                        </div>
-                    </Col>
-                </Row>
-
-                <ArchiveProjects userState={userState} />
             </div>
         );
     }
 }
+
+
+
+
+
+
+
 
 class PendingProjects extends React.Component {
     constructor(props) {
@@ -290,10 +601,8 @@ function DeleteButton(props) {
 
     return (
         <>
-            <Button variant="light" id="ArchiveButton" className="mr-2" onClick={handleShow}>
-                Archive
-        </Button>
-
+            <Dropdown.Item href="#" onClick={handleShow}>Archive</Dropdown.Item>
+            
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Archive this project?</Modal.Title>
@@ -373,13 +682,12 @@ class ArchiveProjects extends React.Component {
                                     })}
                                 </Col>
 
-
                                 <Col sm={12} lg={5} className="pl-5 toolsButtons">
                                     <Button variant="light" className="mr-2" onClick={() => this.approveTool(dat.id)}>
                                         Unarchive
                                     </Button>
                                     <Button variant='white' href={'/editproject/' + dat.id} className="AccountButtons" >
-                                                Edit
+                                        Edit
                                     </Button>
                                 </Col>
                             </Row>
