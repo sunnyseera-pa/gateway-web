@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import queryString from 'query-string';
 
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Alert from 'react-bootstrap/Alert';
+import { Row, Col } from 'react-bootstrap';
+import { Tabs, Tab, TabPanel, TabList } from 'react-web-tabs';
 
 import SearchBar from '../commonComponents/SearchBar';
 import AccountTools from './AccountTools';
@@ -13,9 +12,7 @@ import YourAccount from './YourAccount';
 import DataAccessRequests from './DataAccessRequests';
 
 import 'react-web-tabs/dist/react-web-tabs.css';
-import { Tabs, Tab, TabPanel, TabList } from 'react-web-tabs';
 import SVGIcon from "../../images/SVGIcon";
-
 
 class Account extends Component {
 
@@ -30,8 +27,6 @@ class Account extends Component {
             id: null,
             name: null
         }],
-        // key: "youraccount",
-        // tabId: "youraccount",
         tabId: "",
         isDeleted: false,
         isApproved: false,
@@ -111,12 +106,148 @@ class Account extends Component {
         if (typeof data.datasetids === 'undefined') {
             data.datasetids = [];
         }
-        
+
         return (
             <div>
                 <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
+                <Tabs vertical defaultTab={this.state.tabId} onChange={this.handleChange}>
+                    <Row>
+                        <Col xs={2}>
+                            <TabList className="TabList" >
+                                <Tab tabFor="youraccount" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                    <Row >
+                                        <Col sm={2} lg={2}>
+                                            <SVGIcon name="accounticon" fill={'#b3b8bd'} className="AccountSvgs" />
+                                        </Col>                                             
+                                        <Col sm={10} lg={10} className="pl-4">
+                                            Your account
+                                        </Col>
+                                    </Row>
+                                </Tab>
 
-                    {isDeleted ?
+                                <Tab tabFor="tools" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                    <Row>
+                                        <Col sm={2} lg={2}>
+                                            <SVGIcon name="newtoolicon" fill={'#b3b8bd'} className="AccountSvgs" />
+                                        </Col>
+                                        <Col sm={10} lg={10} className="pl-4">
+                                            Tools
+                                        </Col>
+                                    </Row>
+                                </Tab>
+        
+                                <Tab tabFor="reviews" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                    <Row>
+                                        <Col sm={2} lg={2}>
+                                            <SVGIcon name="reviewsicon" fill={'#b3b8bd'} className="AccountSvgs" />
+                                        </Col>
+                                        <Col sm={10} lg={10} className="pl-4">
+                                            Reviews
+                                        </Col>
+                                    </Row>
+                                </Tab>
+
+                                <Tab tabFor="projects" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                    <Row>
+                                        <Col sm={2} lg={2}>
+                                            <SVGIcon name="newprojecticon" fill={'#b3b8bd'} className="AccountSvgs"/>
+                                        </Col>
+                                        <Col sm={10} lg={10} className="pl-4">
+                                            Projects    
+                                        </Col>
+                                    </Row>
+                                </Tab>
+
+                                <Tab tabFor="dataaccessrequests" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                    <Row>
+                                        <Col sm={2} lg={2}>
+                                            <SVGIcon name="dataaccessicon" fill={'#b3b8bd'} className="AccountSvgs" />
+                                        </Col>
+                                        <Col sm={10} lg={10} className="pl-4">
+                                            Data access requests
+                                        </Col>
+                                    </Row>
+                                </Tab>
+
+                                <Tab tabFor="usersroles" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                    <Row>
+                                        <Col sm={2} lg={2}>
+                                            <SVGIcon name="rolesicon" fill={'#b3b8bd'} className="AccountSvgs" />
+                                        </Col>
+                                        <Col sm={10} lg={10} className="pl-4">
+                                            Users and roles
+                                        </Col>
+                                    </Row>
+                                </Tab>
+                            </TabList>
+                        </Col>
+                        <Col xs={10}>
+                            <Row>
+                                
+                                <Col sm={12}>
+                                    {tabId === 'youraccount' ?
+                                        <TabPanel tabId="youraccount">
+                                            <YourAccount userState={userState} />
+                                        </TabPanel>
+                                    : ''}
+
+                                    {tabId === 'tools' ?
+                                        <TabPanel tabId="tools">
+                                            <AccountTools userState={userState} />
+                                        </TabPanel>
+                                    : ''}
+
+                                    {tabId === 'reviews' ?
+                                        <TabPanel tabId="reviews">
+                                            <ReviewTools userState={userState} />
+                                        </TabPanel>
+                                    : ''}   
+
+                                    {tabId === 'projects' ?
+                                        <TabPanel tabId="projects">
+                                            <AccountProjects userState={userState} />
+                                        </TabPanel>
+                                    : ''}  
+                                    
+                                    {tabId === 'dataaccessrequests' ?
+                                        <TabPanel tabId="dataaccessrequests">
+                                            <DataAccessRequests userState={userState} />
+                                        </TabPanel>
+                                    : ''}  
+                                    
+                                    {tabId === 'usersroles' ?
+                                        <TabPanel tabId="usersroles">
+                                            <p>Users and roles</p>
+                                        </TabPanel>
+                                    : ''}  
+
+
+                                </Col>
+                                
+                            </Row>
+
+                            
+                        </Col>
+                    </Row>
+                </Tabs>
+
+
+
+
+
+                    
+            </div>
+        );
+    }
+}
+
+export default Account;
+
+
+
+/* 
+
+{isDeleted ?
                         <Row className="">
                             <Col sm={1} lg={1} />
                             <Col sm={10} lg={10}>
@@ -186,159 +317,4 @@ class Account extends Component {
                         </Row>
                         : ""}
 
-                    <Row className="mt-1">
-                        <Col sm={12} lg={12}>
-                            <Tabs vertical 
-                            // activeKey={this.state.tabId}
-                            // defaultTab="youraccount"
-                            // defaultTab="dataaccessrequests"
-                            defaultTab={this.state.tabId}
-                            // defaultTab={defaultTab}
-                            onChange={this.handleChange}
-                             >
-
-                                    <TabList className="TabList" >
-
-                                    
-                                        <Tab tabFor="youraccount" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
-                                            <Row >
-                                                <Col sm={2} lg={2}>
-                                                    <SVGIcon name="accounticon" fill={'#b3b8bd'} className="AccountSvgs" />
-                                                </Col>                                             
-                                                <Col sm={10} lg={10} className="pl-4">
-                                                    Your account
-                                                </Col>
-                                            </Row>
-                                        </Tab>
-                                        <Tab tabFor="tools" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
-                                            <Row>
-                                                <Col sm={2} lg={2}>
-                                                    <SVGIcon name="newtoolicon" fill={'#b3b8bd'} className="AccountSvgs" />
-                                                </Col>
-                                                <Col sm={10} lg={10} className="pl-4">
-                                                    Tools
-                                                </Col>
-                                            </Row>
-                                        </Tab>
-                                        {/* <Tab tabFor="youraccount" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
-                                            <Row >
-                                                <Col sm={2} lg={2}>
-                                                    <SVGIcon name="accounticon" fill={'#b3b8bd'} className="AccountSvgs" />
-                                                </Col>                                             
-                                                <Col sm={10} lg={10} className="pl-4">
-                                                    Your account
-                                                </Col>
-                                            </Row>
-                                        </Tab> */}
-                                        <Tab tabFor="reviews" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
-                                            <Row>
-                                                <Col sm={2} lg={2}>
-                                                    <SVGIcon name="reviewsicon" fill={'#b3b8bd'} className="AccountSvgs" />
-                                                </Col>
-                                                <Col sm={10} lg={10} className="pl-4">
-                                                    Reviews
-                                                </Col>
-                                            </Row>
-                                        </Tab>
-                                        <Tab tabFor="projects" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
-                                            <Row>
-                                                <Col sm={2} lg={2}>
-                                                    <SVGIcon name="newprojecticon" fill={'#b3b8bd'} className="AccountSvgs"/>
-                                                </Col>
-                                                <Col sm={10} lg={10} className="pl-4">
-                                                    Projects    
-                                                </Col>
-                                            </Row>
-                                        </Tab>
-                                        <Tab tabFor="dataaccessrequests" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
-                                            <Row>
-                                                <Col sm={2} lg={2}>
-                                                    <SVGIcon name="dataaccessicon" fill={'#b3b8bd'} className="AccountSvgs" />
-                                                </Col>
-                                                <Col sm={10} lg={10} className="pl-4">
-                                                    Data access requests
-                                                </Col>
-                                            </Row>
-                                        </Tab>
-                                        <Tab tabFor="usersroles" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
-                                            <Row>
-                                                <Col sm={2} lg={2}>
-                                                    <SVGIcon name="rolesicon" fill={'#b3b8bd'} className="AccountSvgs" />
-                                                </Col>
-                                                <Col sm={10} lg={10} className="pl-4">
-                                                    Users and roles
-                                                </Col>
-                                            </Row>
-                                        </Tab>
-                                    </TabList>
-
-                                <Row>
-                                    <Col sm={1} lg={1} />
-                                    <Col sm={10} lg={10}>
-                                        <TabPanel tabId="youraccount">
-                                            <YourAccount userState={userState} />
-                                        </TabPanel>
-                                    </Col>
-                                    <Col sm={1} lg={1} />
-                                </Row>
-
-                                <Row>
-                                    <Col sm={1} lg={1} />
-                                    <Col sm={10} lg={10}>
-                                        <TabPanel tabId="tools">
-                                            <AccountTools userState={userState} />
-                                        </TabPanel>
-                                    </Col>
-                                    <Col sm={1} lg={1} />
-                                </Row>
-
-                                <Row>
-                                    <Col sm={1} lg={1} />
-                                    <Col sm={10} lg={10}>
-                                        <TabPanel tabId="reviews">
-                                            <ReviewTools userState={userState} />
-                                        </TabPanel>
-                                    </Col>
-                                    <Col sm={1} lg={1} />
-                                </Row>
-
-                                <Row>
-                                    <Col sm={1} lg={1} />
-                                    <Col sm={10} lg={10}>
-                                        <TabPanel tabId="projects">
-                                            <AccountProjects userState={userState} />
-                                        </TabPanel>
-                                    </Col>
-                                    <Col sm={1} lg={1} />
-                                </Row>
-
-                                <Row>
-                                    {/* <Col sm={1} lg={1} /> */}
-                                    {/* <Col sm={10} lg={10}> */}
-                                    <Col sm={12} lg={12}>
-                                        <TabPanel tabId="dataaccessrequests">
-                                            <DataAccessRequests userState={userState} />
-                                        </TabPanel>
-                                    </Col>
-                                    {/* <Col sm={1} lg={1} /> */}
-                                </Row>
-
-                                <Row>
-                                    <Col sm={1} lg={1} />
-                                    <Col sm={10} lg={10}>
-                                        <TabPanel tabId="usersroles">
-                                            <p>Users and roles</p>
-                                        </TabPanel>
-                                    </Col>
-                                    <Col sm={1} lg={1} />
-                                </Row>
-                            </Tabs>
-                          
-                        </Col>
-                    </Row>
-            </div>
-        );
-    }
-}
-
-export default Account;
+*/

@@ -109,6 +109,10 @@ class DatasetDetail extends Component {
         }
     }
 
+    updateSearchString = (searchString) => {
+        this.setState({ searchString: searchString });
+    }
+
   
   render() {
     const { searchString, data, projectsData, datarequest, isLoading, userState, alert } = this.state;
