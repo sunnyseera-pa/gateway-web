@@ -1,6 +1,6 @@
 
 import React from 'react';
-import PersonTitle from '../../hdruk-rdt-web/src/pages/person/components/PersonTitle';
+import PersonTitle from '../src/pages/person/components/PersonTitle';
 import {personTitleData} from './mocks/dataMock';
 
 describe('<PersonTitle /> rendering', () => {

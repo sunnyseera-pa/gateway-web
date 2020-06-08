@@ -15,9 +15,14 @@ const _buildUrl = (urlType) => {
     else if (!href.includes('localhost')) {
         let regArray = _getRegexURL(urlType, href);
         if (regArray) {
-            let [first, url] = regArray;
+            let [one, two, url] = regArray
             //add -api to the sub domain for API requests
-            return `https://api${url}`;
+            switch(urlType) {
+                case 'cms':
+                    return `https://${url}`;
+                default :
+                    return `https://api${url}`;
+            }  
         }
     } else {
         return 'http://localhost:3001'
