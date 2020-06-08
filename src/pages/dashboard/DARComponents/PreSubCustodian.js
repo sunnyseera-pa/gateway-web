@@ -17,26 +17,32 @@ class PreSubCustodian extends React.Component {
     constructor(props) {
         console.log('props are: ' + JSON.stringify(props))
         super(props)
-        this.state.data = props;
+        this.state.data = props.data;
     }
 
     render() {
         const { data } = this.state;
 
-        console.log('WHAT? ' + JSON.stringify(data))
+        console.log('WHAT? ' + JSON.stringify(data.dataSetId))
 
         return (
             <div className="DARDiv" >
 
             <Row className="pl-3">
                 <Col sm={2} lg={2}>
-                    <span>date</span>
+                    <span>date 
+                        {/* {data.timeStamp} */}
+                    </span>
                 </Col>
                 <Col sm={3} lg={3}>
-                    <span >dataset name</span>
+                    <span >dataset name 
+                        {/* {data.dataSetId} */}
+                    </span>
                 </Col>
                 <Col sm={3} lg={3}>
-                    <span>applicant name</span>
+                    <span>applicant name 
+                        {/* {data.userID} */}
+                        </span>
                 </Col>
                 <Col sm={2} lg={2}>
                     <span >x/y questions answered</span>
