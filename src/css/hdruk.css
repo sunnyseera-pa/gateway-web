@@ -1359,7 +1359,7 @@ NAVBAR CSS BELOW
     .desktopLoginMenu {
         width:200px;
         top:29px !important;
-        left:-53px !important;
+        left:-5px !important;
     }
     
     .desktopNotificationMenu {
@@ -1367,8 +1367,8 @@ NAVBAR CSS BELOW
         overflow-y: scroll;
         max-height: 400px;
         width: 400px;
-        top:-9px !important;
-        left:-214px !important;
+        top:10px !important;
+        left:0px !important;
         word-wrap: break-word;
     }
 }
@@ -1431,7 +1431,7 @@ NAVBAR CSS BELOW
     .desktopLoginMenu {
         width:200px;
         top:29px !important;
-        left:-53px !important;
+        left:-5px !important;
     }
     
     .desktopNotificationMenu {
@@ -1439,8 +1439,8 @@ NAVBAR CSS BELOW
         overflow-y: scroll;
         max-height: 400px;
         width: 400px;
-        top:-9px !important;
-        left:-214px !important;
+        top:10px !important;
+        left:0px !important;
         word-wrap: break-word;
     }
 }
@@ -1528,7 +1528,7 @@ NAVBAR CSS BELOW
         overflow-y: scroll;
         max-height: 400px;
         width: 320px;
-        top:-9px !important;
+        top:10px !important;
         left:0px !important;
         word-wrap: break-word;
     }
