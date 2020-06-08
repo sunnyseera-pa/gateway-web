@@ -167,6 +167,7 @@ const AddProjectForm = (props) => {
 
         onSubmit: values => {
             //add via same post as add tool form - type set as 'project'
+            values.toolCreator = props.userState[0];
             axios.post(baseURL + '/api/v1/mytools/add', values)
                 .then((res) => {
                     window.location.href = window.location.search + '/project/' + res.data.id + '/?projectAdded=true';
