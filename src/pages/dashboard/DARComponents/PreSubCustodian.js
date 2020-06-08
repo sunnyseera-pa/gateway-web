@@ -11,41 +11,76 @@ var baseURL = require('../../commonComponents/BaseURL').getURL();
 class PreSubCustodian extends React.Component {
 
     state = {
-        data: {}
+        data: {},
+        name: '',
+        dataset: '',
+        isLoading: false
     }
 
     constructor(props) {
-        console.log('props are: ' + JSON.stringify(props))
         super(props)
         this.state.data = props.data;
     }
 
-    render() {
-        const { data } = this.state;
+    componentDidMount() {
+        this.getDataSearchFromDb();
+        this.getDatasetSearch();
+      }
 
-        console.log('WHAT? ' + JSON.stringify(data.dataSetId))
+    getDataSearchFromDb = () => {
+         this.setState({ isLoading: true });
+        axios.get(baseURL + '/api/v1/person/' + this.state.data.userId)
+          .then((res) => {
+            if (typeof res.data.data[0] === "undefined" ) {
+                this.setState({
+                    name: '',
+                    isLoading: false
+                  });
+            } 
+            else {
+                this.setState({
+                    name: res.data.data[0].firstname + ' ' + res.data.data[0].lastname,
+                    isLoading: false
+                  });
+            }
+          })
+    };
+
+
+    getDatasetSearch = () => {
+        this.setState({ isLoading: true });
+        axios.get(baseURL + '/api/v1/datasets/' + this.state.data.dataSetId)
+          .then((res) => {
+            this.setState({
+              dataset: res.data.data.label,
+              isLoading: false
+            });
+          })
+      };
+
+    render() {
+        const { data, name, dataset } = this.state; 
+
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var updatedDate = new Date(data.timeStamp);
+        var updatedOnDate = updatedDate.getDate() + " " + monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
+        var updatedTime = new Intl.DateTimeFormat('en-US', {hour: '2-digit', minute: '2-digit'}).format(updatedDate)
 
         return (
             <div className="DARDiv" >
 
             <Row className="pl-3">
                 <Col sm={2} lg={2}>
-                    <span>date 
-                        {/* {data.timeStamp} */}
-                    </span>
+                    <span> {updatedOnDate}  {updatedTime} </span>
                 </Col>
                 <Col sm={3} lg={3}>
-                    <span >dataset name 
-                        {/* {data.dataSetId} */}
-                    </span>
+                    <span > {dataset}</span>
                 </Col>
                 <Col sm={3} lg={3}>
-                    <span>applicant name 
-                        {/* {data.userID} */}
-                        </span>
+                    <span> {name} </span>
                 </Col>
                 <Col sm={2} lg={2}>
-                    <span >x/y questions answered</span>
+                    <span >12/56 questions answered</span>
                 </Col>
                 <Col sm={2} lg={2} className="pr-5">
                     <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">

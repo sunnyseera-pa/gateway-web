@@ -25,10 +25,10 @@ class InReviewInnovator extends React.Component {
 
                 <Row className="pl-3">
                     <Col sm={3} lg={3}>
-                        <span>date</span>
+                        <span>13 May 2020 03:32 AM</span>
                     </Col>
                     <Col sm={3} lg={3}>
-                        <span >dataset name</span>
+                        <span >MRC Brain Banks Network</span>
                     </Col>
                     <Col sm={4} lg={4}>
                         <span>In review</span>

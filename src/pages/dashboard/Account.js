@@ -48,8 +48,6 @@ class Account extends Component {
     componentWillMount() {
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
-            console.log('values: ' + JSON.stringify(values.tab))
-            console.log('tab: ' + this.state.tabId)
             if (values.tab !== this.state.tabId) {
                 this.setState({ tabId: values.tab });
                 this.handleChange(values.tab);
@@ -60,8 +58,6 @@ class Account extends Component {
     componentDidMount() {
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
-            console.log('values: ' + JSON.stringify(values.tab))
-            console.log('tab: ' + this.state.tabId)
             if (values.tab !== this.state.tabId) {
                 this.setState({ tabId: values.tab });
                 this.handleChange(values.tab);
@@ -79,8 +75,6 @@ class Account extends Component {
     componentWillReceiveProps() {
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
-            console.log('props values: ' + JSON.stringify(values.tab))
-            console.log('props tab: ' + this.state.tabId)
             if (values.tab !== this.state.tabId) {
                 this.setState({ tabId: values.tab });
                 this.setState({ isDeleted: values.accountDeleted });
@@ -108,9 +102,7 @@ class Account extends Component {
     }
 
     handleChange = (tabId) => {
-        console.log('tab changed to ' + tabId)
         this.setState({ tabId: tabId });
-        // console.log('state tab is ' + this.state.tabId)
         this.props.history.push(window.location.pathname + '?tab=' + tabId);
     }
 
@@ -120,10 +112,6 @@ class Account extends Component {
             data.datasetids = [];
         }
         
-        console.log('state tab is ' + this.state.tabId)
-        console.log('plain old tab is ' + tabId)
-        // const defaultTab = this.state.tabId;
-
         return (
             <div>
                 <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
@@ -198,9 +186,6 @@ class Account extends Component {
                         </Row>
                         : ""}
 
-                        {console.log('WHAT?! ' + this.state.tabId)}
-                        {console.log('WHAT?! tab ' + tabId)}
-
                     <Row className="mt-1">
                         <Col sm={12} lg={12}>
                             <Tabs vertical 
@@ -211,7 +196,7 @@ class Account extends Component {
                             // defaultTab={defaultTab}
                             onChange={this.handleChange}
                              >
-                            {/* {console.log('in tabs: ' + defaultTab)} */}
+
                                     <TabList className="TabList" >
 
                                     

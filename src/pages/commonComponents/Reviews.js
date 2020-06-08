@@ -42,10 +42,6 @@ class Reviews extends Component {
   // see them render into our screen
   render() {
     const { data, userState, reviewData } = this.state;
-    console.log('just data is: ' + JSON.stringify(data))
-    console.log('review data is: ' + JSON.stringify(reviewData))
-    console.log('userState is: ' + JSON.stringify(userState))
-
 
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
     return (

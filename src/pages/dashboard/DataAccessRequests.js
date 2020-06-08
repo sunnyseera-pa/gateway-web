@@ -56,9 +56,7 @@ class DataAccessRequests extends React.Component {
 
     render() {
         const { userState, key, isLoading, data } = this.state;
-        console.log('role here: ' + JSON.stringify(this.state.userState[0].role))
 
-        console.log('data for DARs is: ' + JSON.stringify(data))
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -99,17 +97,7 @@ class DataAccessRequests extends React.Component {
                         </Row>
 
                         {/* AND ROLE IS CUSTODIAN */}
-                       {/* { this.state.userState[0].role === "Admin" ? 
-                            key === "presubmission" ? 
-                                <div className="DARDiv">
-                                    <Row className="SubHeader mt-3"> <Col sm={3} lg={3}>Updated</Col> <Col sm={3} lg={3}>Dataset</Col> <Col sm={6} lg={6}>Applicant</Col> </Row>
-                                    <Row className="SubHeader mt-1"> <DataAccess /> </Row> 
-                                </div>
-                                            
-                            : ""
-                        : ""
-                       } */}
-
+                        {/* AND DAR FOR THIS CUSTODIAN */}
                     { this.state.userState[0].role === "Admin" ? 
                         (() => {
                             switch (key) {
@@ -119,7 +107,6 @@ class DataAccessRequests extends React.Component {
                                         <Row className="SubHeader mt-3"> <Col sm={2} lg={2}>Updated</Col> <Col sm={3} lg={3}>Dataset</Col> <Col sm={3} lg={3}>Applicant</Col> <Col sm={4} lg={4}>Progress</Col> </Row>
                                     
                                     {data.map(dat => (
-                                        // console.log('dat is: ' + JSON.stringify(dat))
                                         
                                         <Row className="SubHeader mt-1">
                                             <PreSubCustodian data={dat}/> 
@@ -132,31 +119,42 @@ class DataAccessRequests extends React.Component {
                                     return ( 
                                         <div className="DARDiv">
                                             <Row className="SubHeader mt-3"> <Col sm={2} lg={2}>Updated</Col> <Col sm={3} lg={3}>Dataset</Col> <Col sm={3} lg={3}>Applicant</Col> <Col sm={4} lg={4}>Progress</Col> </Row>
-                                            <Row className="SubHeader mt-1"> <InReviewCustodian /> </Row> 
+                                            {data.map(dat => (
+                                                
+                                                <Row className="SubHeader mt-1">
+                                                    <InReviewCustodian data={dat}/> 
+                                                </Row>          
+                                            ))}
                                         </div>
                                 );
                                 case "approved":
                                     return ( 
                                         <div className="DARDiv">
-                                            {/* <Row className="SubHeader mt-3"> <Col sm={3} lg={3}>Updated</Col> <Col sm={3} lg={3}>Dataset</Col> <Col sm={6} lg={6}>Applicant</Col> </Row> */}
                                             <Row className="SubHeader mt-3"> <Col sm={2} lg={2}>Updated</Col> <Col sm={3} lg={3}>Dataset</Col> <Col sm={3} lg={3}>Applicant</Col> <Col sm={4} lg={4}>Progress</Col> </Row>
-                                            <Row className="SubHeader mt-1"> <ApprovedCustodian /> </Row> 
+                                            {data.map(dat => (
+                                                
+                                                <Row className="SubHeader mt-1">
+                                                    <ApprovedCustodian data={dat}/> 
+                                                </Row>          
+                                            ))}
                                         </div>
                                 );
                                 case "rejected":
                                     return ( 
                                         <div className="DARDiv">
-                                            {/* <Row className="SubHeader mt-3"> <Col sm={3} lg={3}>Updated</Col> <Col sm={3} lg={3}>Dataset</Col> <Col sm={6} lg={6}>Applicant</Col> </Row> */}
                                             <Row className="SubHeader mt-3"> <Col sm={2} lg={2}>Updated</Col> <Col sm={3} lg={3}>Dataset</Col> <Col sm={3} lg={3}>Applicant</Col> <Col sm={4} lg={4}>Progress</Col> </Row>
-                                            <Row className="SubHeader mt-1"> <RejectedCustodian /> </Row> 
+                                            {data.map(dat => (
+                                                
+                                                <Row className="SubHeader mt-1">
+                                                    <RejectedCustodian data={dat}/> 
+                                                </Row>          
+                                            ))}
                                         </div>
                                 );
                                 case "forms":
                                     return ( 
                                         <div className="DARDiv">
-                                            {/* <Row className="SubHeader mt-3"> <Col sm={3} lg={3}>Updated</Col> <Col sm={3} lg={3}>Dataset</Col> <Col sm={6} lg={6}>Applicant</Col> </Row> */}
-                                            <Row className="SubHeader mt-3"> <Col sm={2} lg={2}>Updated</Col> <Col sm={3} lg={3}>Dataset</Col> <Col sm={3} lg={3}>Applicant</Col> <Col sm={4} lg={4}>Progress</Col> </Row>
-                                            <Row className="SubHeader mt-1"> <span>Forms</span> </Row> 
+                                            <Row className="SubHeader mt-1"> <span className="ml-5">Forms placeholder</span> </Row> 
                                         </div>
                                 );
                             }
@@ -164,16 +162,7 @@ class DataAccessRequests extends React.Component {
                     : "" }
 
                         {/* AND ROLE IS INNOVATOR */}
-
-                    {/* { this.state.userState[0].role === "Creator" ? 
-                        key === "presubmission" ? 
-                            <div className="DARDiv">
-                                <Row className="SubHeader mt-3"> <Col sm={3} lg={3}>Updated</Col> <Col sm={3} lg={3}>Dataset</Col> <Col sm={6} lg={6}>Progress</Col> </Row>
-                                <Row className="SubHeader mt-1"> <PreSubInnovator /> </Row> 
-                            </div>
-                        : ""
-                    : ""
-                    } */}
+                        {/* AND DARs MADE WITH THIS USER ID */}
 
                     { this.state.userState[0].role === "Creator" ? 
                         (() => {

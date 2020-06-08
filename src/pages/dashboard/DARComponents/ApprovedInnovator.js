@@ -25,10 +25,10 @@ class ApprovedInnovator extends React.Component {
 
                 <Row className="pl-3">
                     <Col sm={3} lg={3}>
-                        <span>date</span>
+                        <span>27 May 2020 11:54 AM</span>
                     </Col>
                     <Col sm={3} lg={3}>
-                        <span >dataset name</span>
+                        <span >MFT Biobank</span>
                     </Col>
                     <Col sm={4} lg={4}>
                         <span>Approved</span>

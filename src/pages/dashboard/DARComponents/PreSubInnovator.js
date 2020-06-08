@@ -25,13 +25,13 @@ class PreSubInnovator extends React.Component {
 
                 <Row className="pl-3">
                     <Col sm={3} lg={3}>
-                        <span>date</span>
+                        <span>01 June 2020 09:14 AM</span>
                     </Col>
                     <Col sm={3} lg={3}>
-                        <span >dataset name</span>
+                        <span >Epilepsy 12 - Patient Reported Experience Measure</span>
                     </Col>
                     <Col sm={4} lg={4}>
-                        <span>x/y questions answered</span>
+                        <span>7/56 questions answered</span>
                     </Col>
                     <Col sm={2} lg={2} className="pr-5">
                         <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">

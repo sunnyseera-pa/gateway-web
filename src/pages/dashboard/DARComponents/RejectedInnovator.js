@@ -25,10 +25,10 @@ class RejectedInnovator extends React.Component {
 
                 <Row className="pl-3">
                     <Col sm={3} lg={3}>
-                        <span>date</span>
+                        <span>19 May 2020 02:58 PM</span>
                     </Col>
                     <Col sm={3} lg={3}>
-                        <span >dataset name</span>
+                        <span >CPRD GOLD</span>
                     </Col>
                     <Col sm={4} lg={4}>
                         <span>Rejected</span>
