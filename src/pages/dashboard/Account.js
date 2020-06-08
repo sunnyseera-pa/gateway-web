@@ -3,9 +3,6 @@ import queryString from 'query-string';
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Container from 'react-bootstrap/Container';
-import Tabs from 'react-bootstrap/Tabs';
-import Tab from 'react-bootstrap/Tab';
 import Alert from 'react-bootstrap/Alert';
 
 import SearchBar from '../commonComponents/SearchBar';
@@ -13,9 +10,12 @@ import AccountTools from './AccountTools';
 import AccountProjects from './AccountProjects';
 import ReviewTools from './ReviewTools';
 import YourAccount from './YourAccount';
-import Messages from './Messages';
+import DataAccessRequests from './DataAccessRequests';
 
-import 'react-tabs/style/react-tabs.css';
+import 'react-web-tabs/dist/react-web-tabs.css';
+import { Tabs, Tab, TabPanel, TabList } from 'react-web-tabs';
+import SVGIcon from "../../images/SVGIcon";
+
 
 class Account extends Component {
 
@@ -30,7 +30,9 @@ class Account extends Component {
             id: null,
             name: null
         }],
-        key: "youraccount",
+        // key: "youraccount",
+        // tabId: "youraccount",
+        tabId: "",
         isDeleted: false,
         isApproved: false,
         isRejected: false,
@@ -43,11 +45,22 @@ class Account extends Component {
         this.state.userState = props.userState;
     }
 
+    componentWillMount() {
+        if (!!window.location.search) {
+            var values = queryString.parse(window.location.search);
+            if (values.tab !== this.state.tabId) {
+                this.setState({ tabId: values.tab });
+                this.handleChange(values.tab);
+            }
+        }
+    }  
+
     componentDidMount() {
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
-            if (values.tab !== this.state.key) {
-                this.setState({ key: values.tab });
+            if (values.tab !== this.state.tabId) {
+                this.setState({ tabId: values.tab });
+                this.handleChange(values.tab);
                 this.setState({ isDeleted: values.toolDeleted });
                 this.setState({ isApproved: values.toolApproved });
                 this.setState({ isRejected: values.toolRejected });
@@ -62,8 +75,8 @@ class Account extends Component {
     componentWillReceiveProps() {
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
-            if (values.tab !== this.state.key) {
-                this.setState({ key: values.tab });
+            if (values.tab !== this.state.tabId) {
+                this.setState({ tabId: values.tab });
                 this.setState({ isDeleted: values.accountDeleted });
                 this.setState({ isApproved: values.toolApproved });
                 this.setState({ isRejected: values.toolRejected });
@@ -77,6 +90,7 @@ class Account extends Component {
 
     doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
+        
             if (!!this.state.searchString) {
                 window.location.href = "/search?search=" + this.state.searchString;
             }
@@ -87,23 +101,20 @@ class Account extends Component {
         this.setState({ searchString: searchString });
     }
 
-    handleSelect = (key) => {
-        this.setState({ key: key });
-        this.props.history.push(window.location.pathname + '?tab=' + key);
+    handleChange = (tabId) => {
+        this.setState({ tabId: tabId });
+        this.props.history.push(window.location.pathname + '?tab=' + tabId);
     }
 
     render() {
-        const { searchString, data, userState, isDeleted, isApproved, isRejected, isProjectApproved, isProjectRejected, isReviewApproved, isReviewRejected } = this.state;
-
+        const { searchString, data, userState, isDeleted, isApproved, isRejected, isProjectApproved, isProjectRejected, isReviewApproved, isReviewRejected, tabId } = this.state;
         if (typeof data.datasetids === 'undefined') {
             data.datasetids = [];
         }
-
+        
         return (
             <div>
                 <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
-
-                <Container className="mb-5">
 
                     {isDeleted ?
                         <Row className="">
@@ -175,43 +186,156 @@ class Account extends Component {
                         </Row>
                         : ""}
 
-                    <Row className="mt-3">
-                        <Col sm={1} lg={1} />
-                        <Col sm={10} lg={10}>
-                            <div>
-                                <Tabs className='TabsBackground Gray700-13px' activeKey={this.state.key} onSelect={this.handleSelect}>
-                                    <Tab eventKey="youraccount" title="Your account">
-                                        <YourAccount userState={userState} />
-                                    </Tab>
-                                    <Tab eventKey="messages" title="Notifications">
-                                        <Messages userState={userState} />
-                                    </Tab>
-                                    {/* <Tab eventKey="datasets" title="Data sets">
-                                        <Row className="mt-2">
-                                            <Col>
-                                                <div className="Rectangle">
-                                                    <div className="Gray800-14px" style={{ textAlign: 'center' }}>
-                                                        Data sets placeholder
-                                                </div>
-                                                </div>
-                                            </Col>
-                                        </Row>
-                                    </Tab> */}
-                                    <Tab eventKey="projects" title="Projects">
-                                        <AccountProjects userState={userState} />
-                                    </Tab>
-                                    <Tab eventKey="tools" title="Tools">
-                                        <AccountTools userState={userState} />
-                                    </Tab>
-                                    <Tab eventKey="reviews" title="Reviews">
-                                        <ReviewTools userState={userState} />
-                                    </Tab>
-                                </Tabs>
-                            </div>
+                    <Row className="mt-1">
+                        <Col sm={12} lg={12}>
+                            <Tabs vertical 
+                            // activeKey={this.state.tabId}
+                            // defaultTab="youraccount"
+                            // defaultTab="dataaccessrequests"
+                            defaultTab={this.state.tabId}
+                            // defaultTab={defaultTab}
+                            onChange={this.handleChange}
+                             >
+
+                                    <TabList className="TabList" >
+
+                                    
+                                        <Tab tabFor="youraccount" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                            <Row >
+                                                <Col sm={2} lg={2}>
+                                                    <SVGIcon name="accounticon" fill={'#b3b8bd'} className="AccountSvgs" />
+                                                </Col>                                             
+                                                <Col sm={10} lg={10} className="pl-4">
+                                                    Your account
+                                                </Col>
+                                            </Row>
+                                        </Tab>
+                                        <Tab tabFor="tools" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                            <Row>
+                                                <Col sm={2} lg={2}>
+                                                    <SVGIcon name="newtoolicon" fill={'#b3b8bd'} className="AccountSvgs" />
+                                                </Col>
+                                                <Col sm={10} lg={10} className="pl-4">
+                                                    Tools
+                                                </Col>
+                                            </Row>
+                                        </Tab>
+                                        {/* <Tab tabFor="youraccount" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                            <Row >
+                                                <Col sm={2} lg={2}>
+                                                    <SVGIcon name="accounticon" fill={'#b3b8bd'} className="AccountSvgs" />
+                                                </Col>                                             
+                                                <Col sm={10} lg={10} className="pl-4">
+                                                    Your account
+                                                </Col>
+                                            </Row>
+                                        </Tab> */}
+                                        <Tab tabFor="reviews" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                            <Row>
+                                                <Col sm={2} lg={2}>
+                                                    <SVGIcon name="reviewsicon" fill={'#b3b8bd'} className="AccountSvgs" />
+                                                </Col>
+                                                <Col sm={10} lg={10} className="pl-4">
+                                                    Reviews
+                                                </Col>
+                                            </Row>
+                                        </Tab>
+                                        <Tab tabFor="projects" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                            <Row>
+                                                <Col sm={2} lg={2}>
+                                                    <SVGIcon name="newprojecticon" fill={'#b3b8bd'} className="AccountSvgs"/>
+                                                </Col>
+                                                <Col sm={10} lg={10} className="pl-4">
+                                                    Projects    
+                                                </Col>
+                                            </Row>
+                                        </Tab>
+                                        <Tab tabFor="dataaccessrequests" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                            <Row>
+                                                <Col sm={2} lg={2}>
+                                                    <SVGIcon name="dataaccessicon" fill={'#b3b8bd'} className="AccountSvgs" />
+                                                </Col>
+                                                <Col sm={10} lg={10} className="pl-4">
+                                                    Data access requests
+                                                </Col>
+                                            </Row>
+                                        </Tab>
+                                        <Tab tabFor="usersroles" className="VerticalTabsBackground Gray800-14px mt-2 mb-2">
+                                            <Row>
+                                                <Col sm={2} lg={2}>
+                                                    <SVGIcon name="rolesicon" fill={'#b3b8bd'} className="AccountSvgs" />
+                                                </Col>
+                                                <Col sm={10} lg={10} className="pl-4">
+                                                    Users and roles
+                                                </Col>
+                                            </Row>
+                                        </Tab>
+                                    </TabList>
+
+                                <Row>
+                                    <Col sm={1} lg={1} />
+                                    <Col sm={10} lg={10}>
+                                        <TabPanel tabId="youraccount">
+                                            <YourAccount userState={userState} />
+                                        </TabPanel>
+                                    </Col>
+                                    <Col sm={1} lg={1} />
+                                </Row>
+
+                                <Row>
+                                    <Col sm={1} lg={1} />
+                                    <Col sm={10} lg={10}>
+                                        <TabPanel tabId="tools">
+                                            <AccountTools userState={userState} />
+                                        </TabPanel>
+                                    </Col>
+                                    <Col sm={1} lg={1} />
+                                </Row>
+
+                                <Row>
+                                    <Col sm={1} lg={1} />
+                                    <Col sm={10} lg={10}>
+                                        <TabPanel tabId="reviews">
+                                            <ReviewTools userState={userState} />
+                                        </TabPanel>
+                                    </Col>
+                                    <Col sm={1} lg={1} />
+                                </Row>
+
+                                <Row>
+                                    <Col sm={1} lg={1} />
+                                    <Col sm={10} lg={10}>
+                                        <TabPanel tabId="projects">
+                                            <AccountProjects userState={userState} />
+                                        </TabPanel>
+                                    </Col>
+                                    <Col sm={1} lg={1} />
+                                </Row>
+
+                                <Row>
+                                    {/* <Col sm={1} lg={1} /> */}
+                                    {/* <Col sm={10} lg={10}> */}
+                                    <Col sm={12} lg={12}>
+                                        <TabPanel tabId="dataaccessrequests">
+                                            <DataAccessRequests userState={userState} />
+                                        </TabPanel>
+                                    </Col>
+                                    {/* <Col sm={1} lg={1} /> */}
+                                </Row>
+
+                                <Row>
+                                    <Col sm={1} lg={1} />
+                                    <Col sm={10} lg={10}>
+                                        <TabPanel tabId="usersroles">
+                                            <p>Users and roles</p>
+                                        </TabPanel>
+                                    </Col>
+                                    <Col sm={1} lg={1} />
+                                </Row>
+                            </Tabs>
+                          
                         </Col>
-                        <Col sm={1} lg={1} />
                     </Row>
-                </Container>
             </div>
         );
     }

@@ -358,12 +358,20 @@ class SearchBar extends React.Component {
                                                 </Dropdown.Toggle>
 
                                                 <Dropdown.Menu as={CustomMenu} className="desktopLoginMenu">
-                                                    <Dropdown.Item className="Black-14px" href="/account?tab=youraccount">Your Account</Dropdown.Item>
+                                                    {/* <Dropdown.Item className="Black-14px" href="/account?tab=youraccount">Your Account</Dropdown.Item>
                                                     <Dropdown.Item className="Black-14px" href="/account?tab=messages">Notifications</Dropdown.Item>
                                                     <Dropdown.Item className="Black-14px" href="/account?tab=projects">Project</Dropdown.Item>
                                                     <Dropdown.Item className="Black-14px" href="/account?tab=tools">Tools</Dropdown.Item>
                                                     <Dropdown.Item className="Black-14px" href="/account?tab=reviews">Reviews</Dropdown.Item>
-                                                    <Dropdown.Item className="Black-14px" onClick={this.logout}>Logout</Dropdown.Item>
+                                                    <Dropdown.Item className="Black-14px" onClick={this.logout}>Logout</Dropdown.Item> */}
+                                                    
+                                                    <Dropdown.Item href="/account?tab=youraccount" className="Black-14px">Your Account</Dropdown.Item>
+                                                    <Dropdown.Item href="/account?tab=tools" className="Black-14px">Tools</Dropdown.Item>
+                                                    <Dropdown.Item href="/account?tab=reviews" className="Black-14px">Reviews</Dropdown.Item>
+                                                    <Dropdown.Item href="/account?tab=projects" className="Black-14px">Projects</Dropdown.Item>
+                                                    <Dropdown.Item href="/account?tab=dataaccessrequests" className="Black-14px">Data access requests</Dropdown.Item>
+                                                    <Dropdown.Item href="/account?tab=usersroles" className="Black-14px">Users and roles</Dropdown.Item>
+                                                    <Dropdown.Item onClick={this.logout} className="Black-14px">Logout</Dropdown.Item>
                                                 </Dropdown.Menu>
                                             </Dropdown>
                                         )
