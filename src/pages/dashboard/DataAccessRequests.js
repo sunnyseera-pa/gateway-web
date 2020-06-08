@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal'
+import {Container, Row, Col, Button, Modal} from 'react-bootstrap';
 
 import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading';
@@ -33,16 +30,39 @@ class DataAccessRequests extends React.Component {
     // initialize our state
     state = {
         userState: [],
-        key: 'presubmission'
+        key: 'presubmission',
+        data: [],
+        isLoading: true
     };
+
+    componentDidMount() {
+        this.getDARsFromDb();
+      }
+
+    getDARsFromDb = () => {
+        this.setState({ isLoading: true });
+        axios.get(baseURL + '/api/v1/dar')
+          .then((res) => {
+            this.setState({
+              data: res.data.data,
+              isLoading: false
+            });
+          })
+    }
 
     handleSelect = (key) => {
         this.setState({ key: key });
     }
 
     render() {
-        const { userState, key } = this.state;
+        const { userState, key, isLoading, data } = this.state;
         console.log('role here: ' + JSON.stringify(this.state.userState[0].role))
+
+        console.log('data for DARs is: ' + JSON.stringify(data))
+
+        if (isLoading) {
+            return <Container><Loading /></Container>;
+          }
 
         return (
             
@@ -97,8 +117,15 @@ class DataAccessRequests extends React.Component {
                                 return ( 
                                     <div className="DARDiv">
                                         <Row className="SubHeader mt-3"> <Col sm={2} lg={2}>Updated</Col> <Col sm={3} lg={3}>Dataset</Col> <Col sm={3} lg={3}>Applicant</Col> <Col sm={4} lg={4}>Progress</Col> </Row>
-
-                                        <Row className="SubHeader mt-1"> <PreSubCustodian /> </Row> 
+                                    
+                                    {data.map(dat => (
+                                        // console.log('dat is: ' + JSON.stringify(dat))
+                                        
+                                        <Row className="SubHeader mt-1">
+                                            <PreSubCustodian data={dat}/> 
+                                        </Row>          
+                                    ))}
+   
                                     </div>
                                 );
                                 case "inreview":

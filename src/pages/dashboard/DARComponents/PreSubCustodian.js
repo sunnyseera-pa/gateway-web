@@ -11,14 +11,19 @@ var baseURL = require('../../commonComponents/BaseURL').getURL();
 class PreSubCustodian extends React.Component {
 
     state = {
-        
+        data: {}
     }
 
     constructor(props) {
+        console.log('props are: ' + JSON.stringify(props))
         super(props)
+        this.state.data = props;
     }
 
     render() {
+        const { data } = this.state;
+
+        console.log('WHAT? ' + JSON.stringify(data))
 
         return (
             <div className="DARDiv" >
