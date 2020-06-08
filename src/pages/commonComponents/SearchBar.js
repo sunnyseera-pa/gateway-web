@@ -120,7 +120,7 @@ class SearchBar extends React.Component {
         axios.get(baseURL + apiToCall)
             .then((res) => {
                 this.setState({
-                    newData: res.data.newData.reverse(),
+                    newData: res.data.newData,
                     isLoading: false,
                     isRead: res.data.isRead,
                 });
@@ -318,7 +318,7 @@ class SearchBar extends React.Component {
                                                     <Dropdown.Item className="Black-14px" href="/account?tab=tools">Tools</Dropdown.Item>
                                                     <Dropdown.Item className="Black-14px" href="/account?tab=reviews">Reviews</Dropdown.Item>
                                                     <Dropdown.Item className="Black-14px" onClick={this.logout}>Logout</Dropdown.Item> */}
-                                                    
+
                                                     <Dropdown.Item href="/account?tab=youraccount" className="Black-14px">Your Account</Dropdown.Item>
                                                     <Dropdown.Item href="/account?tab=tools" className="Black-14px">Tools</Dropdown.Item>
                                                     <Dropdown.Item href="/account?tab=reviews" className="Black-14px">Reviews</Dropdown.Item>
@@ -430,7 +430,7 @@ class SearchBar extends React.Component {
                                                     </Dropdown.Toggle>
 
                                                     <Dropdown.Menu as={CustomMenu} className="mobileNotificationMenu">
-                                                        {newData.length <= 0 ? 
+                                                        {newData.length <= 0 ?
                                                             <div className="NoNotifications" >
                                                                 <div className="Gray800-14px" style={{ textAlign: 'center' }}>
                                                                     <p><b>No notifications yet</b></p>
