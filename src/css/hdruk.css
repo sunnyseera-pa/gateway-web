@@ -81,6 +81,17 @@ body {
   border-radius: 16px;
 }
 
+.ComingSoonBadge {
+  display: inline-block;
+  background-color: #3db28c;
+  padding: 5px 10px;
+  border-radius: 16px;
+  color: #ffffff;
+  font-family: museo-sans-rounded;
+  font-size: 14px;
+  font-weight: 500;
+}
+
 .BubbleCounts {
   width: 24px;
   height: 24px;
@@ -121,13 +132,13 @@ body {
 }
 
 .Dark-14px {
-  font-family: museo-sans-rounded;
-  font-size: 14px;
-  font-weight: 500;
+  font-family: museo-sans-rounded !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
   font-stretch: normal;
   font-style: normal;
   letter-spacing: normal;
-  color: #29235c;
+  color: #29235c !important;
 }
 
 .Black-14px {
@@ -142,6 +153,17 @@ body {
   font-weight: bold;
   font-stretch: normal;
   font-style: normal;
+  letter-spacing: normal;
+  color: #2d2d2d;
+}
+
+.Black-17px-Bold {
+  font-family: museo-sans-rounded;
+  font-size: 17px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
   letter-spacing: normal;
   color: #2d2d2d;
 }
@@ -249,6 +271,16 @@ h1 {
   color: #53575a;
 }
 
+.Gray700-14px {
+  font-family: museo-sans-rounded !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  color: #53575a !important;
+}
+
 .Gray100-14px {
   font-size: 14px;
   color: #f6f7f8;
@@ -315,6 +347,33 @@ h1 {
   line-height: normal;
   letter-spacing: normal;
   color: #ffffff !important;
+}
+
+.White-16px{
+  font-family: museo-sans-rounded !important;
+  font-size: 16px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #ffffff;
+}
+
+.White-20px{
+  font-family: museo-sans-rounded !important;
+  font-size: 20px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #ffffff;
+}
+
+.searchBarBackground {
+  width: 100%;
+  background-color: #ffffff;
 }
 
 .signLink {
@@ -455,6 +514,7 @@ input[type='radio']:after {
   height: 23px;
   border-radius: 23px;
   top: -4px;
+  /* top: -8px; */
   left: -2px;
   position: relative;
   background-color: #ffffff;
@@ -469,7 +529,8 @@ input[type='radio']:checked:after {
   height: 23px;
   border-radius: 23px;
   padding-left: 3px;
-  padding-top: 1px;
+  /* padding-top: 1px; */
+  padding-top: 3px;
   position: relative;
 
   background-color: #ffffff;
@@ -516,6 +577,16 @@ input[type='radio']:checked:after {
   justify-content: center;
   padding-bottom: 2px;
   box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
+
+}
+
+.DARtabs .tab-content{
+  height: 100%;
+  display: block;
+}
+
+.DARtabs .tab-content .tab-pane{
+  height: 100%;
 }
 
 .AddButton {
@@ -668,6 +739,9 @@ textarea:focus {
   border: 2px solid #3db28c !important;
   border-radius: 4px !important;
   background-color: #ffffff;
+  color: #29235c;
+  font-family: museo-sans-rounded;
+  font-size: 14px !important;
 }
 
 .ClearButtons {
@@ -968,6 +1042,103 @@ iframe#discourse-embed-frame {
     overflow-wrap: break-word;
   }
 
+  .Banner {
+    background-color: #29235c;
+    width: 100%;
+    height: 72px;
+    margin-left: 0px !important;
+    align-content: center;
+  }
+
+  .Icon-18px {
+    width: 18px;
+    height: 18px;
+  }
+
+  .form-control:focus {
+    border: solid 2px #3db28c !important;
+  }
+
+  .radio {
+    display: inline-block !important;
+    margin-right: 1em !important;
+    margin-left: 1em !important;
+    min-width: 5%;
+  }
+
+  .radio #principleInvestigator-label{
+    width: 100%;
+  }
+
+  .radio #principleInvestigator-label input[type='radio']{
+    margin-right: 30%;
+  }
+
+  .BottomCard {
+    background-color: #ffffff;
+    height: 90%;
+  }
+
+  .White {
+    background-color:  #ffffff;
+  }
+
+  .DARIframe{
+    height: 600px;
+    width: 800px;
+  }
+
+  .DARModal .modal-content{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-dialog {
+    position: absolute;
+    top: 40%;
+    left: 15%;
+    transform: translate(-50%, -50%) !important;
+}
+
+.DARTab {
+  height: 90%;
+  background-color:  #ffffff;
+}
+
+.Height100 {
+  height: 100%;
+}
+
+.Width100 {
+  width: 100%;
+}
+
+.FillPage {
+  height: 90vh;
+  width: 100vw;
+}
+
+.FlexColumn{
+  display: flex;
+  flex-direction: column;
+}
+
+
+.DARFooter{
+  width: 100vw;
+  height: 8vh;
+  background-color: #ffffff;
+  position: fixed;
+  bottom: 0;
+  margin-right: 0px !important;
+  margin-left: -20px !important;
+  box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
+}
+
+.hidden {
+  display: none;
+}
 
 
 
@@ -1434,165 +1605,3 @@ NAVBAR CSS BELOW
         height: 130px
     }
 } */
-
-
-
-
-/* 
-
-#searchIcon {
-  width: 3%;
-}
-
-.SearchBarInput {
-  border: 0;
-  padding-left: 5px;
-  background-color: #ffffff;
-  display: block;
-  height: 56px;
-  border-radius: 4px;
-}
-
-@media (min-width: 992px) {
-  .searchBarInputGrey {
-    border: 0;
-    background-color: #f6f7f8;
-    display: inline-block;
-    border-radius: 4px;
-    margin-top: 15px;
-    padding: 5px;
-    width: 100%;
-  }
-}
-
-@media (max-width: 991px) {
-  .searchBarInputGrey {
-    border: 0;
-    background-color: #f6f7f8;
-    display: inline-block;
-    border-radius: 4px;
-    margin-top: 7px;
-    margin-bottom: 7px;
-    padding: 5px;
-    width: 100%;
-  }
-}
-
-#SearchInputSpan {
-  display: inline-block;
-  width: 75%;
-  height: 40px;
-  outline: none;
-  border: 0;
-  font-size: 20px;
-  color: #3c3c3b;
-}
-
-#searchInputSpanGrey {
-  display: inline-block;
-  width: 70%;
-  outline: none;
-  border: 0;
-  font-size: 16px;
-  background-color: #f6f7f8;
-  color: #3c3c3b;
-  padding-top: 5px;
-}
-
-.searchInputIconGrey {
-  float: left;
-  min-width: 40px;
-  padding: 8px 0px 0px 10px;
-}
-
-.searchInputClearGrey {
-  float: right;
-  padding: 5px 10px 0px 0px;
-}
-
-#SearchInputSpan:focus {
-  outline: none;
-}
-
-.NotificationsIcon{
-  float:right;
-  padding-top: 30px;
-}
-
-.NotificationDate{
-  padding-top: 10px;
-  padding-bottom: 20px;
-  height: 16px;
-  font:url(//db.onlinewebfonts.com/c/470ad2519927fa4eedb66fdcd82af115?family=Museo+Sans+Rounded+500);
-  font-size: 13px;
-  font-weight: 500;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: normal;
-  letter-spacing: normal;
-  color: rgba(83, 87, 90, 0.8);
-}
-
-.NotificationInfo{
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;  
-  overflow: hidden;
-  text-overflow: "ellipsis";
-  height: 40px;
-  font:url(//db.onlinewebfonts.com/c/470ad2519927fa4eedb66fdcd82af115?family=Museo+Sans+Rounded+700);
-  font-size: 14px;
-  font-weight: bold;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1.43;
-  letter-spacing: normal;
-  color: #3c3c3b;
-}
-
-#NotificationsBell:hover{
-   background-size: 40px, 40px;
-   background: #e2e2e2; 
-   -moz-border-radius: 70px; 
-   -webkit-border-radius: 70px; 
-   border-radius: 70px;
-  
-}
-
-.NotificationsBell{
-   background-size: 40px, 40px;
-   background: #e2e2e2; 
-   -moz-border-radius: 70px; 
-   -webkit-border-radius: 70px; 
-   border-radius: 70px;
-  
-}
-
- .NoNotifications{
-  width: 100%;
-  box-shadow: 1px 1px 3px 0 #00000017;
-  background-color: #ffffff;
-  padding-top: 40%;
-  padding-right: 20px;
-  padding-bottom: 40%;
-  padding-left: 20px;
-} 
-
-.UnreadNotification{
-  background-color: #f6f7f8
-}
-
-
-#NavSearchInputSpan {
-  display: inline-block;
-  width: 97%;
-  min-height: 48px;
-  height: 100%;
-}
-
-#NavSearchInputSpan:focus {
-  outline: none;
-}
-
-
-*/
