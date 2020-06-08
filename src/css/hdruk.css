@@ -620,6 +620,7 @@ input[type='radio']:checked:after {
   justify-content: center !important;
   padding-bottom: 2px;
   box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
+  margin-top:1px;
 }
 
 .VerticalTabsBackground {
@@ -636,6 +637,7 @@ input[type='radio']:checked:after {
 .TabList {
   background-color: #ffffff;
   height: 100vh;
+  display:block !important;
 }
 
 svg:not(:root) {

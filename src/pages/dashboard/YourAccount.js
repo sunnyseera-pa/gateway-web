@@ -57,7 +57,13 @@ class YourAccount extends React.Component {
 
         return (
             <div>
-                <YourAccountForm data={data} userdata={userdata} isUpdated={isUpdated} />
+                <Row className="mt-5">
+                    <Col xs={1}></Col>
+                    <Col xs={10}>
+                        <YourAccountForm data={data} userdata={userdata} isUpdated={isUpdated} />
+                    </Col>
+                    <Col xs={1}></Col>
+                </Row>    
             </div>
         );
     }
@@ -102,7 +108,7 @@ const YourAccountForm = (props) => {
                 });
         }
     });
-
+    
     return (
 
         <div>
@@ -162,13 +168,13 @@ const YourAccountForm = (props) => {
                             {/* <InputGroup.Checkbox aria-label="Checkbox for following text input" name="toolCategory" checked={projectCategoriesSelected.indexOf(category) !== -1 ? "true" : ""} value={category} onChange={this.changeFilter} /> */}
 
                             <Form.Group className="pb-2">
-                                <InputGroup.Checkbox aria-label="Checkbox for following text input" name="emailNotifications" onChange={formik.handleChange} value={formik.values.emailNotifications} onBlur={formik.handleBlur} />
+                                <InputGroup.Checkbox aria-label="Checkbox for following text input" name="emailNotifications" onChange={formik.handleChange} checked={formik.values.emailNotifications}/>
                                 <span className="Gray800-14px ml-4">I want to receive email notifications about activity relating to my account or content</span>
                             </Form.Group>
                             
                             <Form.Group className="pb-2">
                                 <InputGroup.Checkbox aria-label="Checkbox for following text input" name="terms" onChange={formik.handleChange} checked={formik.values.terms}/>
-                                <span className="Gray800-14px ml-4">I agree to the HDRUK <a href=''>Terms and Conditions</a></span>
+                                <span className="Gray800-14px ml-4">I agree to the HDRUK <a href='https://www.hdruk.ac.uk/infrastructure/gateway/terms-and-conditions/' target="_blank">Terms and Conditions</a></span>
                                 {formik.touched.terms && formik.errors.terms ? <div className="ErrorMessages">{formik.errors.terms}</div> : null}
                             </Form.Group>
 
