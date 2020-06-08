@@ -134,7 +134,6 @@ class SearchBar extends React.Component {
         }
         axios.get(baseURL + apiToCall)
             .then((res) => {
-                console.log(res);
                 this.setState({ count: res.data.countUnreadMessages });
             });
     }
@@ -224,10 +223,10 @@ class SearchBar extends React.Component {
                                                     <SVGIcon name="searchicon" width={20} height={20} fill={'#2c8267'} stroke='none' type="submit" />
                                                 </span>
                                                 <span>
-                                                    <input type="text" placeholder="Search" id="SearchInputSpanGrey" onChange={this.onSearch} onKeyDown={this.props.doSearchMethod} value={this.props.searchString} />
+                                                    <input type="text" placeholder="Search" id="SearchInputSpanGrey" data-testid="searchbar" onChange={this.onSearch} onKeyDown={this.props.doSearchMethod} value={this.props.searchString} />
                                                 </span>
                                                 {(this.props.searchString !== '' && this.props.searchString !== undefined) ?
-                                                    <span className="SearchInputClearGrey">
+                                                    <span className="SearchInputClearGrey" data-testid="searchbar-clear-btn">
                                                         <a style={{ cursor: 'pointer' }} href={'/search?search='} >
                                                             <ClearButtonSvg />
                                                         </a>
@@ -313,12 +312,20 @@ class SearchBar extends React.Component {
                                                 </Dropdown.Toggle>
 
                                                 <Dropdown.Menu as={CustomMenu} className="desktopLoginMenu">
-                                                    <Dropdown.Item className="Black-14px" href="/account?tab=youraccount">Your Account</Dropdown.Item>
+                                                    {/* <Dropdown.Item className="Black-14px" href="/account?tab=youraccount">Your Account</Dropdown.Item>
                                                     <Dropdown.Item className="Black-14px" href="/account?tab=messages">Notifications</Dropdown.Item>
                                                     <Dropdown.Item className="Black-14px" href="/account?tab=projects">Project</Dropdown.Item>
                                                     <Dropdown.Item className="Black-14px" href="/account?tab=tools">Tools</Dropdown.Item>
                                                     <Dropdown.Item className="Black-14px" href="/account?tab=reviews">Reviews</Dropdown.Item>
-                                                    <Dropdown.Item className="Black-14px" onClick={this.logout}>Logout</Dropdown.Item>
+                                                    <Dropdown.Item className="Black-14px" onClick={this.logout}>Logout</Dropdown.Item> */}
+                                                    
+                                                    <Dropdown.Item href="/account?tab=youraccount" className="Black-14px">Your Account</Dropdown.Item>
+                                                    <Dropdown.Item href="/account?tab=tools" className="Black-14px">Tools</Dropdown.Item>
+                                                    <Dropdown.Item href="/account?tab=reviews" className="Black-14px">Reviews</Dropdown.Item>
+                                                    <Dropdown.Item href="/account?tab=projects" className="Black-14px">Projects</Dropdown.Item>
+                                                    <Dropdown.Item href="/account?tab=dataaccessrequests" className="Black-14px">Data access requests</Dropdown.Item>
+                                                    <Dropdown.Item href="/account?tab=usersroles" className="Black-14px">Users and roles</Dropdown.Item>
+                                                    <Dropdown.Item onClick={this.logout} className="Black-14px">Logout</Dropdown.Item>
                                                 </Dropdown.Menu>
                                             </Dropdown>
                                         )
@@ -422,8 +429,8 @@ class SearchBar extends React.Component {
                                                         <NotificationsBellSvg width={50} height={50} id="NotificationsBell" className={this.state.dropdownOpen ? "NotificationsBell" : null} style={{ cursor: 'pointer' }} />
                                                     </Dropdown.Toggle>
 
-                                                    <Dropdown.Menu as={CustomMenu} className="desktopNotificationMenu">
-                                                        {newData.length <= 0 ?
+                                                    <Dropdown.Menu as={CustomMenu} className="mobileNotificationMenu">
+                                                        {newData.length <= 0 ? 
                                                             <div className="NoNotifications" >
                                                                 <div className="Gray800-14px" style={{ textAlign: 'center' }}>
                                                                     <p><b>No notifications yet</b></p>

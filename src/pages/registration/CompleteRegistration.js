@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
-import { Row, Col, Container, Button, Alert, Form } from 'react-bootstrap';
+import { Row, Col, Container, Button, Alert, Form, InputGroup } from 'react-bootstrap';
 
 import SearchBar from '../commonComponents/SearchBar';
 import Loading from '../commonComponents/Loading';
@@ -92,7 +92,9 @@ const YourAccountForm = (props) => {
             bio: '',
             link: '',
             orcid: '',
-            redirectURL: props.userdata.redirectURL
+            redirectURL: props.userdata.redirectURL,
+            emailNotifications: false,
+            terms: false
         },
 
         validationSchema: Yup.object({
@@ -104,7 +106,8 @@ const YourAccountForm = (props) => {
                 .email('This must be a valid email')
                 .required('This cannot be empty'),
             bio: Yup.string()
-                .required('This cannot be empty')
+                .required('This cannot be empty'),
+            terms: Yup.bool().oneOf([true], 'Accept Terms & Conditions is required')
         }),
         
         onSubmit: values => {
@@ -171,6 +174,17 @@ const YourAccountForm = (props) => {
                                 <br />
                                 <span className="Gray700-13px">Your unique ORCID identifier</span>
                                 <Form.Control id="orcid" name="orcid" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.orcid} onBlur={formik.handleBlur} />
+                            </Form.Group>
+
+                            <Form.Group className="pb-2">
+                                <InputGroup.Checkbox aria-label="Checkbox for following text input" name="emailNotifications" onChange={formik.handleChange} checked={formik.values.emailNotifications}/>
+                                <span className="Gray800-14px ml-4">I want to receive email notifications about activity relating to my account or content</span>
+                            </Form.Group>
+                            
+                            <Form.Group className="pb-2">
+                                <InputGroup.Checkbox aria-label="Checkbox for following text input" name="terms" onChange={formik.handleChange} checked={formik.values.terms}/>
+                                <span className="Gray800-14px ml-4">I agree to the HDRUK <a href='https://www.hdruk.ac.uk/infrastructure/gateway/terms-and-conditions/' target="_blank">Terms and Conditions</a></span>
+                                {formik.touched.terms && formik.errors.terms ? <div className="ErrorMessages">{formik.errors.terms}</div> : null}
                             </Form.Group>
 
                         </div>

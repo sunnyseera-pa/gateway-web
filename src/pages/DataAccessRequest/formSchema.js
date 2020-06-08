@@ -18,49 +18,42 @@ export const formSchema = {
     },
     "pages": [
         {
-            "index": 1,
             "pageId": "preSubmission",
             "title": "Pre-submission",
             "description": "Make sure you have everything you need before you start the application process",
             "active": true
         },
         {
-            "index": 2,
             "pageId": "safePeople",
             "title": "Safe People",
             "description": "Please identify any persons or organisations who will have access to the data",
             "active": false
         },
         {
-            "index": 3,
             "pageId": "safeProject",
             "title": "Safe Project",
             "description": "Something else...",
             "active": false
         },
         {
-            "index": 4,
             "pageId": "safeData",
             "title": "Safe Data",
             "description": "Something else...",
             "active": false
         },
         {
-            "index": 5,
             "pageId": "safeSettings",
             "title": "Safe Settings",
             "description": "Something else...",
             "active": false
         },
         {
-            "index": 6,
             "pageId": "safeOutputs",
             "title": "Safe outputs",
             "description": "Something else...",
             "active": false
         },
         {
-            "index": 7,
             "pageId": "postSubmission",
             "title": "Post-submission",
             "description": "Something else...",
