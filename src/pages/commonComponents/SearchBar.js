@@ -13,6 +13,7 @@ import { ReactComponent as HamBurgerSvg } from '../../images/hamburger.svg';
 import { ReactComponent as ArrowDownSvg } from '../../images/stock.svg';
 import { ReactComponent as WhiteArrowDownSvg } from '../../images/arrowDownWhite.svg';
 
+import moment from 'moment';
 import { cmsURL } from '../../configs/url.config';
 
 var baseURL = require('./BaseURL').getURL();
@@ -52,7 +53,7 @@ class SearchBar extends React.Component {
         }],
         dropdownOpen: false,
         clearMessages: false,
-        count: 0, 
+        count: 0,
         prevScrollpos: window.pageYOffset,
         visible: true,
         isLoading: true
@@ -66,7 +67,7 @@ class SearchBar extends React.Component {
     componentDidMount() {
         window.addEventListener("scroll", this.handleScroll);
         document.addEventListener('mousedown', this.handleClick, false);
-        
+
         if (this.state.userState[0].loggedIn) {
             this.getNumberOfUnreadNotificiations();
             this.doMessagesCall();
@@ -119,7 +120,7 @@ class SearchBar extends React.Component {
         axios.get(baseURL + apiToCall)
             .then((res) => {
                 this.setState({
-                    newData: res.data.newData,
+                    newData: res.data.newData.reverse(),
                     isLoading: false,
                     isRead: res.data.isRead,
                 });
@@ -142,7 +143,7 @@ class SearchBar extends React.Component {
         this.state.newData.forEach((data) => {
             messageIds.push(data.messageID);
         })
-        
+
         axios.post(baseURL + '/api/v1/messages/markasread',
             messageIds
         );
@@ -154,9 +155,9 @@ class SearchBar extends React.Component {
                 this.setState({ dropdownOpen: true });
             }
             else {
-                if (this.state.dropdownOpen === true){
+                if (this.state.dropdownOpen === true) {
                     this.setNotificationsAsRead()
-                    this.setState({count: 0, clearMessage: true});
+                    this.setState({ count: 0, clearMessage: true });
                 }
                 this.setState({ dropdownOpen: false });
             }
@@ -186,7 +187,7 @@ class SearchBar extends React.Component {
 
     render() {
         const { userState, newData, isLoading, clearMessage } = this.state;
-        
+
         if (isLoading) {
             return <></>;
         }
@@ -205,10 +206,10 @@ class SearchBar extends React.Component {
                                 </a>
                             </div>
                             <div className="navBarLinkSpacing">
-                                <a href={cmsURL+"/pages/about"} className="Black-14px">About</a>
+                                <a href={cmsURL + "/pages/about"} className="Black-14px">About</a>
                             </div>
                             <div className="navBarLinkSpacing">
-                                <a href={cmsURL+"/pages/community"} className="Black-14px">Community</a>
+                                <a href={cmsURL + "/pages/community"} className="Black-14px">Community</a>
                             </div>
                         </Col>
 
@@ -247,45 +248,29 @@ class SearchBar extends React.Component {
                                                 </Dropdown.Toggle>
 
                                                 <Dropdown.Menu as={CustomMenu} className="desktopNotificationMenu">
-                                                    {newData.length <= 0 ? 
-                                                            <div className="NoNotifications" >
-                                                                <div className="Gray800-14px" style={{ textAlign: 'center' }}>
-                                                                    <p><b>No notifications yet</b></p>
-                                                                    <p>We'll let you know when something important happens to your content or account.</p>
-                                                                </div>
+                                                    {newData.length <= 0 ?
+                                                        <div className="NoNotifications" >
+                                                            <div className="Gray800-14px" style={{ textAlign: 'center' }}>
+                                                                <p><b>No notifications yet</b></p>
+                                                                <p>We'll let you know when something important happens to your content or account.</p>
                                                             </div>
+                                                        </div>
                                                         : newData.slice(0, 48).map((dat) => {
-                                                        let messageDate = new Date(dat.messageSent);
-                                                        let messageDateString = messageDate.getDate() + " " + monthNames[messageDate.getMonth()] + " " + messageDate.getFullYear() + " " + messageDate.getHours() + ":" + messageDate.getMinutes();
-                                                        
-                                                        if (dat.messageType === 'add') {
-                                                            return (
-                                                                <>
-                                                                    <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
-                                                                        <Col xs={10}>
-                                                                            <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                            <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">The {dat.tool[0].type} {dat.tool[0].name} is now available for review.</a></div>
-                                                                        </Col>
-                                                                        <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight:"10px", marginTop:"5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
-                                                                    </Row>
-                                                                    <Dropdown.Divider style={{margin: "0px"}} />
-                                                                </>
-                                                            )    
-                                                        }
-                                                        else if (dat.messageType === 'approved') {
-                                                            if (dat.messageTo === 0) {
+                                                            let messageDateString = moment(dat.messageSent).format('D MMMM YYYY HH:mm');
+
+                                                            if (dat.messageType === 'add') {
                                                                 return (
                                                                     <>
                                                                         <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
                                                                             <Col xs={10}>
                                                                                 <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">The {dat.tool[0].type} {dat.tool[0].name} has been approved.</a></div>
+                                                                                <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">{dat.messageDescription}</a></div>
                                                                             </Col>
-                                                                            <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight:"10px", marginTop:"5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
+                                                                            <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                         </Row>
-                                                                        <Dropdown.Divider style={{margin: "0px"}} />
+                                                                        <Dropdown.Divider style={{ margin: "0px" }} />
                                                                     </>
-                                                                )    
+                                                                )
                                                             }
                                                             else {
                                                                 return (
@@ -293,46 +278,15 @@ class SearchBar extends React.Component {
                                                                         <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
                                                                             <Col xs={10}>
                                                                                 <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">Your {dat.tool[0].type} {dat.tool[0].name} has been approved.</a></div>
+                                                                                <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">{dat.messageDescription}</a></div>
                                                                             </Col>
-                                                                            <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight:"10px", marginTop:"5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
-                                                                        </Row>  
-                                                                        <Dropdown.Divider style={{margin: "0px"}} />
-                                                                    </>
-                                                                )  
-                                                            }
-                                                        }
-                                                        else if (dat.messageType === 'rejected') {
-                                                            if (dat.messageTo === 0) {
-                                                                return (
-                                                                    <>
-                                                                        <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
-                                                                            <Col xs={10}>
-                                                                                <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">The {dat.tool[0].type} {dat.tool[0].name} has been rejected.</a></div>
-                                                                            </Col>
-                                                                            <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight:"10px", marginTop:"5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
+                                                                            <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                         </Row>
-                                                                        <Dropdown.Divider style={{margin: "0px"}} />
+                                                                        <Dropdown.Divider style={{ margin: "0px" }} />
                                                                     </>
-                                                                ) 
+                                                                )
                                                             }
-                                                            else {
-                                                                return (
-                                                                    <>
-                                                                        <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
-                                                                            <Col xs={10}>
-                                                                                <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">Your {dat.tool[0].type} {dat.tool[0].name} has been rejected.</a></div>
-                                                                            </Col>
-                                                                            <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight:"10px", marginTop:"5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
-                                                                        </Row>
-                                                                        <Dropdown.Divider style={{margin: "0px"}} />
-                                                                    </>
-                                                                )  
-                                                            }
-                                                        }
-                                                    })}
+                                                        })}
                                                 </Dropdown.Menu>
                                             </Dropdown>
                                         </div>
@@ -341,8 +295,8 @@ class SearchBar extends React.Component {
                                 else {
                                     return (
                                         <div className="offlineNotificationGap">
-                                        <WhiteArrowDownSvg width={50} height={50} />
-                                    </div>
+                                            <WhiteArrowDownSvg width={50} height={50} />
+                                        </div>
                                     )
                                 }
                             })()}
@@ -398,8 +352,8 @@ class SearchBar extends React.Component {
                                     </Dropdown.Toggle>
 
                                     <Dropdown.Menu as={CustomMenu} className="mobileLoginMenu">
-                                        <Dropdown.Item className="Black-14px" href={cmsURL+"/pages/about"}>About</Dropdown.Item>
-                                        <Dropdown.Item className="Black-14px" href={cmsURL+"/pages/community"}>Community</Dropdown.Item>
+                                        <Dropdown.Item className="Black-14px" href={cmsURL + "/pages/about"}>About</Dropdown.Item>
+                                        <Dropdown.Item className="Black-14px" href={cmsURL + "/pages/community"}>Community</Dropdown.Item>
                                         <Dropdown.Divider />
                                         {(() => {
                                             if (userState[0].loggedIn === true) {
@@ -482,86 +436,56 @@ class SearchBar extends React.Component {
                                                                     <p><b>No notifications yet</b></p>
                                                                     <p>We'll let you know when something important happens to your content or account.</p>
                                                                 </div>
-                                                            </div> 
+                                                            </div>
                                                             : newData.slice(0, 48).map((dat) => {
-                                                            let messageDate = new Date(dat.messageSent);
-                                                            let messageDateString = messageDate.getDate() + " " + monthNames[messageDate.getMonth()] + " " + messageDate.getFullYear() + " " + messageDate.getHours() + ":" + messageDate.getMinutes();
-                                                            
-                                                            if (dat.messageType === 'add') {
-                                                                return (
-                                                                    <>
-                                                                        <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
-                                                                            <Col xs={10}>
-                                                                                <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">The {dat.tool[0].type} {dat.tool[0].name} is now available for review.</a></div>
-                                                                            </Col>
-                                                                            <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight:"10px", marginTop:"5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
-                                                                        </Row>
-                                                                        <Dropdown.Divider style={{margin: "0px"}} />
-                                                                    </>
-                                                                )    
-                                                            }
-                                                            else if (dat.messageType === 'approved') {
-                                                                if (dat.messageTo === 0) {
+                                                                let messageDate = new Date(dat.messageSent);
+                                                                let messageDateString = messageDate.getDate() + " " + monthNames[messageDate.getMonth()] + " " + messageDate.getFullYear() + " " + messageDate.getHours() + ":" + messageDate.getMinutes();
+
+                                                                if (dat.messageType === 'add') {
                                                                     return (
                                                                         <>
                                                                             <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
                                                                                 <Col xs={10}>
                                                                                     <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                    <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">The {dat.tool[0].type} {dat.tool[0].name} has been approved.</a></div>
+                                                                                    <div className="NotificationInfoHolder"><a href={'/' + dat.tool.type + '/' + dat.tool.id} class="NotificationInfo">{dat.messageDescription}</a></div>
                                                                                 </Col>
-                                                                                <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight:"10px", marginTop:"5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
+                                                                                <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                             </Row>
-                                                                            <Dropdown.Divider style={{margin: "0px"}} />
+                                                                            <Dropdown.Divider style={{ margin: "0px" }} />
                                                                         </>
-                                                                    )    
+                                                                    )
                                                                 }
                                                                 else {
-                                                                    return (
-                                                                        <>
-                                                                            <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
-                                                                                <Col xs={10}>
-                                                                                    <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                    <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">Your {dat.tool[0].type} {dat.tool[0].name} has been approved.</a></div>
-                                                                                </Col>
-                                                                                <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight:"10px", marginTop:"5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
-                                                                            </Row>  
-                                                                            <Dropdown.Divider style={{margin: "0px"}} />
-                                                                        </>
-                                                                    )  
+                                                                    if (dat.messageTo === 0) {
+                                                                        return (
+                                                                            <>
+                                                                                <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
+                                                                                    <Col xs={10}>
+                                                                                        <div className="NotificationDate">{messageDateString + '\n'}</div>
+                                                                                        <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">{dat.messageDescription}</a></div>
+                                                                                    </Col>
+                                                                                    <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
+                                                                                </Row>
+                                                                                <Dropdown.Divider style={{ margin: "0px" }} />
+                                                                            </>
+                                                                        )
+                                                                    }
+                                                                    else {
+                                                                        return (
+                                                                            <>
+                                                                                <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
+                                                                                    <Col xs={10}>
+                                                                                        <div className="NotificationDate">{messageDateString + '\n'}</div>
+                                                                                        <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">{dat.messageDescription}</a></div>
+                                                                                    </Col>
+                                                                                    <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
+                                                                                </Row>
+                                                                                <Dropdown.Divider style={{ margin: "0px" }} />
+                                                                            </>
+                                                                        )
+                                                                    }
                                                                 }
-                                                            }
-                                                            else if (dat.messageType === 'rejected') {
-                                                                if (dat.messageTo === 0) {
-                                                                    return (
-                                                                        <>
-                                                                            <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
-                                                                                <Col xs={10}>
-                                                                                    <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                    <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">The {dat.tool[0].type} {dat.tool[0].name} has been rejected.</a></div>
-                                                                                </Col>
-                                                                                <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight:"10px", marginTop:"5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
-                                                                            </Row>
-                                                                            <Dropdown.Divider style={{margin: "0px"}} />
-                                                                        </>
-                                                                    ) 
-                                                                }
-                                                                else {
-                                                                    return (
-                                                                        <>
-                                                                            <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
-                                                                                <Col xs={10}>
-                                                                                    <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                    <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">Your {dat.tool[0].type} {dat.tool[0].name} has been rejected.</a></div>
-                                                                                </Col>
-                                                                                <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight:"10px", marginTop:"5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
-                                                                            </Row>
-                                                                            <Dropdown.Divider style={{margin: "0px"}} />
-                                                                        </>
-                                                                    )  
-                                                                }
-                                                            }
-                                                        })}
+                                                            })}
                                                     </Dropdown.Menu>
                                                 </Dropdown>
                                             </div>
