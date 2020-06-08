@@ -89,9 +89,16 @@ const __projectTitle = {
     "description": "Ketogenic diets have been proposed as a non-pharmacological strategy for the management of several chronic conditions. Their efficacy and safety have been evaluated in the field of neurology, oncology and endocrinology for disorders including cancer, dementia, drug-resistant epilepsy, migraines, obesity, polycystic ovary syndrome and type 2 diabetes mellitus. The nutritional requirements of these subjects are expected to differ significantly. Indeed, although all ketogenic diets restrict carbohy...",
     "link": "https://www.ncbi.nlm.nih.gov/pubmed/32080796",
     "categories": 
-        {category: "Article"},
+        {
+            category: "Article",
+            programmingLanguage: ["Perl","Node"],
+            programmingLanguageVersion: "5 and 12"
+        },
     "tags":
-         {topics: ["Classification", "Nomenclature", "Ketogenic diet"]},
+        {
+             topics: ["Classification", "Nomenclature", "Ketogenic diet"],
+             features: ["feature1","feature2"]
+        },
       "updatedon": "2020-01-13T00:00:00.000Z"
 };
 
