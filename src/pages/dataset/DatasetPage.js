@@ -113,6 +113,10 @@ class DatasetDetail extends Component {
   render() {
     const { searchString, data, projectsData, datarequest, isLoading, userState, alert } = this.state;
 
+    if (isLoading) {
+      return <Container><Loading /></Container>;
+    }
+
     var projectsCount = 0;
     var toolsCount = 0;
 
@@ -180,25 +184,9 @@ class DatasetDetail extends Component {
 
 class DatasetTitle extends Component {
 
-    constructor(props) {
-        super(props);
-        const { data, datarequest, userState: [user, ...rest], alert } = this.props;
-        this.state = {
-            data,
-            datarequest,
-            user,
-            alert
-        };
-    }
-
-    // initialize our state
-    state = {
-        data: [],
-        datarequest: [],
-        user: {},
-        id: this.props.data.id,
-        alert: null
-    };
+  constructor(props) {
+    super(props);
+  }
 
     showLoginModal(title, contactPoint) {
         document.getElementById("myModal").style.display = "block";
@@ -207,7 +195,6 @@ class DatasetTitle extends Component {
         document.getElementById("loginModalTitle").innerHTML = "You must be signed in to request access";
         document.getElementById("modalRequestDetails").innerHTML = title;
         document.getElementById("modalRequestContact").innerHTML = contactPoint;
-
         document.getElementById("modalRequestSection").style.display = "block";
 
         window.onclick = function (event) {
@@ -215,28 +202,31 @@ class DatasetTitle extends Component {
                 document.getElementById("myModal").style.display = "none";
             }
         }
+      }
+  /**
+   * [render request access]
+   * @desc Sets the correct Request Access button for the user
+   * @return  {[type]}  null : button
+   */
+  renderRequestAccess = () => {
+    const {userState: [user, ...rest], data: {title, id, contactPoint, publisher}, alert=null, datarequest} = this.props;
+    const hasRequestedAccess = (datarequest.length === 1 ? true : false);
+    if(!user.loggedIn) {
+      var isRequest=true;
+      return <LoginModal isRequest={isRequest} requestDetails={title} requestContact={contactPoint} />;
+    } else if (alert || hasRequestedAccess) {
+      return <Button variant="primary" className="AddButton" disabled>Request Access</Button>
+    } else {
+      return <Link className="btn btn-primary AddButton" to={{pathname: 
+        '/request-access'
+        // '/dar'
+        , state: {title, dataSetId: id, custodianEmail: contactPoint, publisher: publisher }}} onClick={() => Event("Buttons", "Click", "Request Access")}>Request Access</Link>
     }
+  }
 
-    /**
-     * [render request access]
-     * @desc Sets the correct Request Access button for the user
-     * @return  {[type]}  null : button
-     */
-    renderRequestAccess = () => {
-        const { user: { loggedIn }, data: { title, id, contactPoint }, alert = null, datarequest } = this.state;
-        const hasRequestedAccess = (datarequest.length === 1 ? true : false);
-        if (!loggedIn) {
-            var isRequest = true;
-            return <Button variant="primary" className="AddButton" onClick={e => { this.showLoginModal(title, contactPoint) }}>Request Access</Button>;
-        } else if (alert || hasRequestedAccess) {
-            return <Button variant="primary" className="AddButton" disabled>Request Access</Button>
-        } else {
-            return <Link className="btn btn-primary AddButton" to={{ pathname: '/request-access', state: { title, dataSetId: id, custodianEmail: contactPoint } }} onClick={() => Event("Buttons", "Click", "Request Access")}>Request Access</Link>
-        }
-    }
 
     render() {
-        const { data, alert } = this.state;
+        const { data, alert } = this.props;
 
         var keywords = (data.keywords ? data.keywords.split(",") : '');
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];

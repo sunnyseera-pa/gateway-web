@@ -30,8 +30,8 @@ class DatasetFilterKeywords extends Component {
     }
 
     clearFilter = () => {
-        const keywordsSelected = [];
-        this.setState({ keywordsSelected: keywordsSelected })
+        const keywordsSelected = this.state.keywordsSelected;
+        while (keywordsSelected.length) { keywordsSelected.pop(); }
         this.props.updateOnFilter();
     }
 
