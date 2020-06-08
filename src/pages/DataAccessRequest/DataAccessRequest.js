@@ -1,14 +1,16 @@
 
 
-import React, { Component, Fragment, useState } from 'react';
+import React, { Component } from 'react';
+import { Row, Col, Button, Tabs, Tab } from 'react-bootstrap';
 import Winterfell from 'winterfell';
-import { Container, Row, Col, Button, Modal, Tabs, Tab } from 'react-bootstrap';
+import _ from 'lodash';
+import moment from 'moment';
 import TypeaheadCustom from './components/TypeaheadCustom'
 import DatePickerCustom from './components/DatepickerCustom';
-import _ from 'lodash';
-import {formSchema} from './formSchema';
-import { ReactComponent as CloseIconSvg } from '../../images/close.svg';
 import SearchBar from '../commonComponents/SearchBar';
+import ToolKit from './components/Toolkit';
+import { ReactComponent as CloseIconSvg } from '../../images/close.svg';
+import {formSchema} from './formSchema';
 import 'react-tabs/style/react-tabs.css';
 
  class DataAccessRequest extends Component {
@@ -18,8 +20,6 @@ import 'react-tabs/style/react-tabs.css';
         this.onFormSwitchPanel = this.onFormSwitchPanel.bind(this);
         this.onFormUpdate = this.onFormUpdate.bind(this);
         this.onFormSubmit = this.onFormSubmit.bind(this);
-
-
         // datasetTitle: props.history.location.state.title,
         // datasetPublisher: props.history.location.state.publisher,
         this.state ={
@@ -30,7 +30,11 @@ import 'react-tabs/style/react-tabs.css';
             datasetPublisher: "ALLIANCE > BARTS",
             searchString: '',
             key: 'guidance',
-            totalAnsweredQuestions: '0/5'
+            totalAnsweredQuestions: '',
+            lastSaved: {
+                time: '',
+                ago: ''
+            }
         }
     }
 
@@ -38,8 +42,11 @@ import 'react-tabs/style/react-tabs.css';
         this.setState({form: {...formSchema}, activePanelId: 'mrcHealthDataToolkit'});
     }
 
+    /**
+     * [TotalQuestionAnswered]
+     * @desc - Sets total questions answered for each section
+     */
     totalQuestionsAnswered = (panelId = '') => {
-        // console.log(`2 Total questions answered panel = ${panelId}`);
         let totalQuestions = 0;
         let totalAnsweredQuestions = 0;
         if(!_.isEmpty(panelId)) {
@@ -47,7 +54,6 @@ import 'react-tabs/style/react-tabs.css';
             let {form: {questionSets}, questionAnswers} = this.state;
             // omits out blank null undefined values from this.state.questionAnswers
             questionAnswers  =  _.pickBy({...questionAnswers }, _.identity);
-            // console.log(`2A: question answers ${JSON.stringify(questionAnswers)}`);
             let questionSet = [...questionSets].find(q => q.questionSetId === panelId) || '';
             if(!_.isEmpty(questionSet)) {
                 let { questions } = questionSet;
@@ -57,22 +63,54 @@ import 'react-tabs/style/react-tabs.css';
                    let count = Object.keys(questionAnswers).map((value) => { 
                        return totalQuestionKeys.includes(value) ? totalAnsweredQuestions++ : totalAnsweredQuestions;
                     });
-                }
-                
-                // console.log(`2B: ${totalAnsweredQuestions}/${totalQuestions} questions answered in this section`);
-                this.setState({ totalAnsweredQuestions: `${totalAnsweredQuestions}/${totalQuestions}`});
+                }                
+                this.setState({ totalAnsweredQuestions: `${totalAnsweredQuestions}/${totalQuestions}  questions answered in this section`});
     
             }
         }
+    }
+
+    /**
+     * [saveTime]
+     * @desc Sets the lastSaved state on a field
+     */
+    saveTime = () => {
+        let currentTime = moment();
+        let lastUpdate = this.state.lastSaved.time;
+        let ago = '';
+        if(!_.isEmpty(lastUpdate)) {
+            let min = moment(currentTime.diff(lastUpdate)).format('m');
+            let sec = moment(currentTime.diff(lastUpdate)).format('s');
+            ago = min > 0 ?  `Last saved ${min} minute(s) ago` : `Last saved ${sec} seconds ago`;
+        } 
+        this.setState({lastSaved: {time: currentTime, ago}})
+    }
+
+    /**
+     * [getSavedAgo]
+     * @desc Returns the saved time for DAR
+     */
+    getSavedAgo = () => {
+        let {lastSaved: {time = '', ago = ''}} = this.state;
+        if(!_.isEmpty(time))
+            return `${ago != '' ? ago : `Last saved ${moment(time).format('HH:mm')}`}`;
+        else
+            return ``;
     }
 
     onFormRender() {
         console.log('form render');
     }
     
-    onFormUpdate(questionAnswers) {
+    /**
+     * [onFormUpdate]
+     * @param {obj: questionAnswers}
+     * @desc Callback from Winterfell sets totalQuestionsAnswered + saveTime
+     */
+    onFormUpdate = _.debounce((questionAnswers = {}) => {
         this.totalQuestionsAnswered(this.state.activePanelId);
-    }
+        this.saveTime();
+    }, 500);
 
     onFormSwitchPanel(panelId) {
         if(!_.isEmpty(panelId)) {
@@ -81,15 +119,22 @@ import 'react-tabs/style/react-tabs.css';
         }
     }
 
-    onFormSubmit(questionAnswers, target) {
-        console.log('submit', questionAnswers);
+    onFormSubmit(questionAnswers = {}, target = '') {
+        if(!_.isEmpty(this.state.questionAnswers)) {
+            this.saveTime();
+            alert(`Application saved on ${moment().format('DD/MM/YYYY HH:mm:sss')}`);
+            // console.log('submit', questionAnswers);
+        }
     }
 
     onParentNavClick(item) {
         this.updateNavigation(item);
     }
 
-    //coming from form panels
+    /**
+     * [onSwitchedPanel]
+     * @desc - Winterfell callback for formPanel update
+     */
     onSwitchedPanel = (newForm) => {
         this.updateNavigation(newForm);
     }
@@ -117,6 +162,10 @@ import 'react-tabs/style/react-tabs.css';
         }
     }
 
+    /**
+     * [RenderQuestionSets]
+     * @desc - Builds the navigation child elements
+     */
     renderQuestionSets = (parentForm) => {
         let questionPanels = [...this.state.form.questionPanels];
         if(!_.isEmpty(questionPanels)) {
@@ -130,6 +179,10 @@ import 'react-tabs/style/react-tabs.css';
         }
     }
 
+    /**
+     * [UpdateNavigation]
+     * @desc - Update the navigation state sidebar
+     */
     updateNavigation = (newForm) => {
         const currentActivePage = [...this.state.form.pages].find(p => p.active === true);
         if(currentActivePage.pageId !== newForm.pageId) {
@@ -152,25 +205,26 @@ import 'react-tabs/style/react-tabs.css';
             else {
                 this.setState({ form: {...this.state.form, pages: newFormState}});
             }
-
-            //do the same here for panel index
-            
         }
     }
 
-    doSearch = (e) => { //fires on enter on searchbar
+    /**
+     * [doSearch]
+     * @desc - Injected from props, parent function callout
+     */
+    doSearch = (e) => { 
         if (e.key === 'Enter') {
           if (!!this.state.searchString) {
             window.location.href = "/search?search=" + this.state.searchString;
           }
         }
-      }
+    }
     
-      updateSearchString = (searchString) => {
-        this.setState({ searchString: searchString });
-      }
+    updateSearchString = (searchString) => {
+    this.setState({ searchString: searchString });
+    }
 
-      handleSelect = (key) => {
+    handleSelect = (key) => {
         this.setState({ key: key });
         // this.props.history.push(window.location.pathname + '?tab=' + key);
     }
@@ -183,20 +237,19 @@ import 'react-tabs/style/react-tabs.css';
         return (
             <div >
                 <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
-
                 <Row className="Banner">
                     <Col md={11}>
-
                         <span className="ml-3 White-20px mr-5">Data Access Request</span>
                         {/* <span className="mr-5"/> */}
                         <span className="White-16px pr-5">{datasetTitle} | {datasetPublisher}</span>
+                        <span className="White-16px ml-2">{this.getSavedAgo()}</span>
                     </Col>
                     <Col md={1}>
                         <CloseIconSvg className="Icon-18px" />
                     </Col>
                 </Row>
 
-                <div className="DARForm">
+                <div className="darForm">
                 <Row className="mt-5 ml-1 FillPage">
                     <Col md={2}>
                         {[...this.state.form.pages].map((item, idx) => (
@@ -221,7 +274,6 @@ import 'react-tabs/style/react-tabs.css';
                                 </div>
                             ))}
                         </Row>
-
                         { activePanelId === "mrcHealthDataToolkit" || activePanelId === "adviceFromPublisher" ?
                                     <div>
                                         <Row className="mt-2 pt-3 pl-3 pb-3 Gray800-14px White">
@@ -266,13 +318,10 @@ import 'react-tabs/style/react-tabs.css';
                             }
                         <Row className="BottomCard mt-2 mb-2"  />
                     </Col>
-
-
-                    
-                    <Col md={3} className="DARtabs">
+                    <Col md={3} className="darTabs">
                             <Tabs className='TabsBackground Gray700-14px' activeKey={this.state.key} onSelect={this.handleSelect}>
                                 <Tab eventKey="guidance" title="Guidance">
-                                    <Row className="DARTab toolsButtons ml-1 mr-1 mt-2">
+                                    <Row className="darTab toolsButtons ml-1 mr-1 mt-2">
                                         <Col md={12} className="Gray700-13px mt-2">
                                             <span>There is question-by-question guidance throughout the application process, or you can view everything in one go.</span>
                                             <br /> <br />
@@ -283,7 +332,7 @@ import 'react-tabs/style/react-tabs.css';
                                     </Row>
                                 </Tab>
                                 <Tab eventKey="answers" title="Answers">
-                                    <Row className="DARTab toolsButtons ml-1 mr-1 mt-2">
+                                    <Row className="darTab toolsButtons ml-1 mr-1 mt-2">
                                         <Col md={12} className="Gray700-13px mt-2">
                                             <span>Re-use answers from your previous applications</span>
                                             <br /> <br />
@@ -292,7 +341,7 @@ import 'react-tabs/style/react-tabs.css';
                                     </Row>
                                 </Tab>
                                 <Tab eventKey="notes" title="Notes">
-                                    <Row className="DARTab toolsButtons ml-1 mr-1 mt-2">
+                                    <Row className="darTab toolsButtons ml-1 mr-1 mt-2">
                                         <Col md={12} className="Gray700-13px mt-2">
                                             <span>Data custodians cannot see your notes. </span>
                                             <br /> <br />
@@ -303,7 +352,7 @@ import 'react-tabs/style/react-tabs.css';
                                     </Row>
                                 </Tab>
                                 <Tab eventKey="messages" title="Messages">
-                                    <Row className="DARTab toolsButtons ml-1 mt-2">
+                                    <Row className="darTab toolsButtons ml-1 mt-2">
                                         <Col md={12} className="Gray700-13px mt-2">
                                             <span>Both data custodian and applicants can see messages</span>
                                             <br /> <br />
@@ -315,28 +364,22 @@ import 'react-tabs/style/react-tabs.css';
                                 </Tab>
                             </Tabs>
                     </Col>
-                    
                     <Col md={12}>
-                        <Row className="DARFooter">
+                        <Row className="darFooter">
                             <Col md={8} className="mt-4 ml-4">
-                                <span className="Gray800-14px">{totalAnsweredQuestions } questions answered in this section</span>
+                                <span className="Gray800-14px">{totalAnsweredQuestions}</span>
                             </Col>
                             <Col md={3} className="mt-3 ml-5">
-                                <Button variant="white"  className="TechDetailButton ml-2" >
+                                <Button variant="white" className="TechDetailButton ml-2" onClick={this.onFormSubmit}>
                                     Save
                                 </Button>
-                                
-                            
                                 <Button variant="white"  className="TechDetailButton ml-3" >
                                     Submit application
                                 </Button>
-                            
-                                
                                 <Button variant="primary" className="White-14px ml-3" onClick={() => { this.onNextPanel(activePanelId) }}>
                                     {activePanelId === "mrcHealthDataToolkit" || activePanelId === "adviceFromPublisher" ? "Go to Safe People" : "Go to next section" }
                                 </Button>   
                             </Col>
-                        
                         </Row> 
                     </Col>
                 </Row>
@@ -346,36 +389,7 @@ import 'react-tabs/style/react-tabs.css';
     }
 }
 
-function ToolKit() {
-    const [show, setShow] = useState(false);
-  
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-  
-    return (
-      <>
-        <Button variant="white"  className="TechDetailButton" onClick={handleShow}>
-            View the toolkit
-        </Button>
-  
-        <Modal show={show} onHide={handleClose} size="lg" aria-labelledby="contained-modal-title-vcenter" centered className="DARModal" >
 
-          {/* <Modal.Header closeButton > */}
-            {/* <Modal.Title >Modal heading</Modal.Title> */}
-          {/* </Modal.Header> */}
-          {/* <Modal.Body onClick={handleClose} style={{width:"800", height:"600"}}>  */}
-          {/* <Modal.Body> */}
-            <iframe src="https://hda-toolkit.org/story_html5.html" className="DARIframe"> </iframe>
-          {/* </Modal.Body> */}
-          {/* <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Close
-            </Button>
-          </Modal.Footer> */}
-        </Modal>
-      </>
-    );
-  }
   
 
 export default DataAccessRequest;   

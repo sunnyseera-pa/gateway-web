@@ -133,7 +133,6 @@ class SearchBar extends React.Component {
         }
         axios.get(baseURL + apiToCall)
             .then((res) => {
-                console.log(res);
                 this.setState({ count: res.data.countUnreadMessages });
             });
     }
@@ -223,10 +222,10 @@ class SearchBar extends React.Component {
                                                     <SVGIcon name="searchicon" width={20} height={20} fill={'#2c8267'} stroke='none' type="submit" />
                                                 </span>
                                                 <span>
-                                                    <input type="text" placeholder="Search" id="SearchInputSpanGrey" onChange={this.onSearch} onKeyDown={this.props.doSearchMethod} value={this.props.searchString} />
+                                                    <input type="text" placeholder="Search" id="SearchInputSpanGrey" data-testid="searchbar" onChange={this.onSearch} onKeyDown={this.props.doSearchMethod} value={this.props.searchString} />
                                                 </span>
                                                 {(this.props.searchString !== '' && this.props.searchString !== undefined) ?
-                                                    <span className="SearchInputClearGrey">
+                                                    <span className="SearchInputClearGrey" data-testid="searchbar-clear-btn">
                                                         <a style={{ cursor: 'pointer' }} href={'/search?search='} >
                                                             <ClearButtonSvg />
                                                         </a>
