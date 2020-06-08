@@ -30,8 +30,8 @@ class DatasetFilterGeoCoverage extends Component {
     }
 
     clearFilter = () => {
-        const geoCoverageSelected = [];
-        this.setState({ geoCoverageSelected: geoCoverageSelected })
+        const geoCoverageSelected = this.state.geoCoverageSelected;
+        while (geoCoverageSelected.length) { geoCoverageSelected.pop(); }
         this.props.updateOnFilter();
     }
 

@@ -29,8 +29,8 @@ class DatasetFilterLicense extends Component {
     }
 
     clearFilter = () => {
-        const licensesSelected = [];
-        this.setState({ licensesSelected: licensesSelected })
+        const licensesSelected = this.state.licensesSelected;
+        while (licensesSelected.length) { licensesSelected.pop(); }
         this.props.updateOnFilter();
     }
 
