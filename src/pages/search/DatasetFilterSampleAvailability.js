@@ -30,8 +30,8 @@ class DatasetFilterSampleAvailability extends Component {
     }
 
     clearFilter = () => {
-        const sampleAvailabilitySelected = [];
-        this.setState({ sampleAvailabilitySelected: sampleAvailabilitySelected })
+        const sampleAvailabilitySelected = this.state.sampleAvailabilitySelected;
+        while (sampleAvailabilitySelected.length) { sampleAvailabilitySelected.pop(); }
         this.props.updateOnFilter();
     }
 

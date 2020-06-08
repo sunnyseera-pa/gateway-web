@@ -30,8 +30,8 @@ class DatasetFilterAgeBand extends Component {
     }
 
     clearFilter = () => {
-        const ageBandsSelected = [];
-        this.setState({ ageBandsSelected: ageBandsSelected })
+        const ageBandsSelected = this.state.ageBandsSelected;
+        while (ageBandsSelected.length) { ageBandsSelected.pop(); }
         this.props.updateOnFilter();
     }
 
