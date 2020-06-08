@@ -132,7 +132,7 @@ const Request = (props) => {
     return (
       <div>
         <SearchBar searchString={searchString} doSearchMethod={doSearch} doUpdateSearchString={updateSearchString} userState={userState} />
-        {console.log('dataset is: ' + title)}
+
         <Container className='mt-4 mb-5'>
             {/* HEADER */}
             <div className='Rectangle mb-xs'>
