@@ -5,6 +5,7 @@ import Col from 'react-bootstrap/Col';
 // import Loading from './Loading'
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
+import moment from 'moment';
 
 var baseURL = require('../../commonComponents/BaseURL').getURL();
 
@@ -14,7 +15,7 @@ class PreSubCustodian extends React.Component {
         data: {},
         name: '',
         dataset: '',
-        isLoading: false
+        isLoading: true
     }
 
     constructor(props) {
@@ -33,14 +34,12 @@ class PreSubCustodian extends React.Component {
           .then((res) => {
             if (typeof res.data.data[0] === "undefined" ) {
                 this.setState({
-                    name: '',
-                    isLoading: false
+                    name: ''
                   });
             } 
             else {
                 this.setState({
-                    name: res.data.data[0].firstname + ' ' + res.data.data[0].lastname,
-                    isLoading: false
+                    name: res.data.data[0].firstname + ' ' + res.data.data[0].lastname
                   });
             }
           })
@@ -60,18 +59,14 @@ class PreSubCustodian extends React.Component {
 
     render() {
         const { data, name, dataset } = this.state; 
-
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        var updatedDate = new Date(data.timeStamp);
-        var updatedOnDate = updatedDate.getDate() + " " + monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
-        var updatedTime = new Intl.DateTimeFormat('en-US', {hour: '2-digit', minute: '2-digit'}).format(updatedDate)
+        let updatedDateTime = moment(data.timeStamp).format("d MMMM YYYY HH:mm");
 
         return (
             <div className="DARDiv" >
 
             <Row className="pl-3">
                 <Col sm={2} lg={2}>
-                    <span> {updatedOnDate}  {updatedTime} </span>
+                    <span> {updatedDateTime}</span>
                 </Col>
                 <Col sm={3} lg={3}>
                     <span > {dataset}</span>
