@@ -730,9 +730,7 @@ input[type='radio']:checked:after {
 }
 
 .DARtabs .tab-content{
-  /* height: 90%; */
-  height: 95%;
-
+  height: 100%;
   display: block;
 }
 
@@ -1225,16 +1223,9 @@ iframe#discourse-embed-frame {
     margin-right: 30%;
   }
 
-  /* .button-bar{
-    position: fixed;
-    position: bottom;
-  } */
-
   .BottomCard {
     background-color: #ffffff;
     height: 90%;
-    /* flex: 1; */
-    padding-bottom: 10%;
   }
 
   .White {
@@ -1260,10 +1251,7 @@ iframe#discourse-embed-frame {
 }
 
 .DARTab {
-  /* height: 1000px; */
-  height: 100%;
-  /* display:flex;
-  flex-direction:column; */
+  height: 90%;
   background-color:  #ffffff;
 }
 
@@ -1276,7 +1264,7 @@ iframe#discourse-embed-frame {
 }
 
 .FillPage {
-  height: 100vh;
+  height: 90vh;
   width: 100vw;
 }
 
@@ -1285,9 +1273,20 @@ iframe#discourse-embed-frame {
   flex-direction: column;
 }
 
-.button-bar.hdrukButtonBar {
+
+.DARFooter{
+  width: 100vw;
+  height: 8vh;
+  background-color: #ffffff;
   position: fixed;
   bottom: 0;
+  margin-right: 0px !important;
+  margin-left: -20px !important;
+  box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
+}
+
+.hidden {
+  display: none;
 }
 
 

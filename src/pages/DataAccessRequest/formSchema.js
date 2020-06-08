@@ -14,7 +14,7 @@ export const formSchema = {
         "controlButton": "btn btn-primary pull-right",
         "backButton": "btn btn-default pull-left",
         "errorMessage": "alert alert-danger",
-        "buttonBar": "button-bar hdrukButtonBar" 
+        "buttonBar": "button-bar hidden" 
     },
     "pages": [
         {
@@ -75,7 +75,7 @@ export const formSchema = {
         },
         {
             "index": 2,
-            "panelId": "adviceFromBreathe",
+            "panelId": "adviceFromPublisher",
             "pageId": "preSubmission"
         },
         {
@@ -87,7 +87,6 @@ export const formSchema = {
             "index": 4,
             "panelId": "principleInvestigator",
             "pageId": "safePeople"
-
         },
         {
             "index": 5,
@@ -102,16 +101,6 @@ export const formSchema = {
             "navHeader": "MRC Health Data Toolkit",
             "questionPanelHeaderText": "Test",
             "pageId": "preSubmission",
-            "action": {
-                "default": {
-                    "action": "GOTO",
-                    "target": "applicant"
-                }
-            },
-            "button": {
-                "text": "Go to Safe People",
-                "disabled": false
-            },
             "textareaInput": "mrcHealthDataToolkit"
         },
         {
@@ -120,17 +109,7 @@ export const formSchema = {
             "navHeader": "Advice from Publisher",
             "questionPanelHeaderText": "Test",
             "pageId": "preSubmission",
-            "action": {
-                "default": {
-                    "action": "GOTO",
-                    "target": "applicant"
-                }
-            },
-            "button": {
-                "text": "Go to Safe People",
-                "disabled": false
-            },
-            "textareaInput": "adviceFromBreathe",
+            "textareaInput": "adviceFromPublisher",
         },
         {
             "panelId": "applicant",
@@ -138,17 +117,6 @@ export const formSchema = {
             "navHeader": "Applicant",
             "questionPanelHeaderText": "Test",
             "pageId": "safePeople",
-            "action": {
-                "default": {
-                    "action": "GOTO",
-                    "target": "principleInvestigator"
-
-                }
-            },
-            "button": {
-                "text": "Next",
-                "disabled": false
-            },
             "questionSets": [
                 {
                     "index": 1,
@@ -161,18 +129,6 @@ export const formSchema = {
             "panelHeader": "Principle Investigator",
             "navHeader": "Principle Investigator",
             "pageId": "safePeople",
-            "action": {
-                "default": {
-                    "action": "GOTO",
-                    // "target": "person1"
-                    "target": "safeProject"
-
-                }
-            },
-            "button": {
-                "text": "Next",
-                "disabled": false
-            },
             "questionSets": [
                 {
                     "index": 2,
@@ -180,88 +136,42 @@ export const formSchema = {
                 }
             ]
         },
-        {
-            "panelId": "person1",
-            "panelHeader": "Person 1",
-            "navHeader": "Person 1",
-            "pageId": "safePeople",
-            "action": {
-                "default": {
-                    "action": "GOTO",
-                    "target": "person2"
-                }
-            },
-            "button": {
-                "text": "Next",
-                "disabled": false
-            },
-            "textareaInput": "person1",
-            // "questionSets": [
-            //     {
-            //         "index": 2,
-            //         "questionSetId": "principleInvestigator"
-            //     }
-            // ]
-        },
-        {
-            "panelId": "person2",
-            "panelHeader": "Person 2",
-            "navHeader": "Person 2",
-            "pageId": "safePeople",
-            "action": {
-                "default": {
-                    "action": "GOTO",
-                    "target": "institution1"
-                }
-            },
-            "button": {
-                "text": "Next",
-                "disabled": false
-            },
-            "textareaInput": "person2",
-            // "questionSets": [
-            //     {
-            //         "index": 2,
-            //         "questionSetId": "principleInvestigator"
-            //     }
-            // ]
-        },
-        {
-            "panelId": "institution1",
-            "panelHeader": "Institution 1",
-            "navHeader": "Institution 1",
-            "pageId": "safePeople",
-            "action": {
-                "default": {
-                    "action": "GOTO",
-                    "target": "safeProject"
-                }
-            },
-            "button": {
-                "text": "Next",
-                "disabled": false
-            },
-            "textareaInput": "institution1",
-            // "questionSets": [
-            //     {
-            //         "index": 2,
-            //         "questionSetId": "principleInvestigator"
-            //     }
-            // ]
-        },
+        // {
+        //     "panelId": "person1",
+        //     "panelHeader": "Person 1",
+        //     "navHeader": "Person 1",
+        //     "pageId": "safePeople",
+        //     "textareaInput": "person1"
+        // },
+        // {
+        //     "panelId": "person2",
+        //     "panelHeader": "Person 2",
+        //     "navHeader": "Person 2",
+        //     "pageId": "safePeople",
+        //     "textareaInput": "person2"
+        // },
+        // {
+        //     "panelId": "institution1",
+        //     "panelHeader": "Institution 1",
+        //     "navHeader": "Institution 1",
+        //     "pageId": "safePeople",
+        //     "action": {
+        //         "default": {
+        //             "action": "GOTO",
+        //             "target": "safeProject"
+        //         }
+        //     },
+        //     "button": {
+        //         "text": "Next",
+        //         "disabled": false
+        //     },
+        //     "textareaInput": "institution1"
+        // },
         {
             "panelId": "safeProject",
             "panelHeader": "Safe Project",
             "navHeader": "Safe Project",
             "pageId": "safeProject",
-            "action": {
-                "default": {
-                    "action": "SUBMIT"
-                }
-            },
-            "button": {
-                "text": "Submit"
-            },
             "questionSets": [
                 {
                     "index": 1,

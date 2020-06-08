@@ -5,7 +5,7 @@ import Winterfell from 'winterfell';
 import { Container, Row, Col, Button, Modal, Tabs, Tab } from 'react-bootstrap';
 import TypeaheadCustom from './components/TypeaheadCustom'
 import DatePickerCustom from './components/DatepickerCustom';
-import {isEmpty} from 'lodash';
+import _ from 'lodash';
 import {formSchema} from './formSchema';
 import { ReactComponent as CloseIconSvg } from '../../images/close.svg';
 import SearchBar from '../commonComponents/SearchBar';
@@ -18,7 +18,6 @@ import 'react-tabs/style/react-tabs.css';
         this.onFormSwitchPanel = this.onFormSwitchPanel.bind(this);
         this.onFormUpdate = this.onFormUpdate.bind(this);
         this.onFormSubmit = this.onFormSubmit.bind(this);
-        // this._onButtonClick = this._onButtonClick.bind(this);
 
 
         // datasetTitle: props.history.location.state.title,
@@ -27,11 +26,11 @@ import 'react-tabs/style/react-tabs.css';
             form: {},
             questionAnswers: {},
             activePanelId: '',
-            datasetTitle: "ARIA dataset",
-            datasetPublisher: "",
+            datasetTitle: "ARIA Dataset",
+            datasetPublisher: "ALLIANCE > BARTS",
             searchString: '',
-            // showComponent: false
-            key: 'guidance'
+            key: 'guidance',
+            totalAnsweredQuestions: '0/5'
         }
     }
 
@@ -39,16 +38,47 @@ import 'react-tabs/style/react-tabs.css';
         this.setState({form: {...formSchema}, activePanelId: 'mrcHealthDataToolkit'});
     }
 
+    totalQuestionsAnswered = (panelId = '') => {
+        // console.log(`2 Total questions answered panel = ${panelId}`);
+        let totalQuestions = 0;
+        let totalAnsweredQuestions = 0;
+        if(!_.isEmpty(panelId)) {
+            // deconstruct state
+            let {form: {questionSets}, questionAnswers} = this.state;
+            // omits out blank null undefined values from this.state.questionAnswers
+            questionAnswers  =  _.pickBy({...questionAnswers }, _.identity);
+            // console.log(`2A: question answers ${JSON.stringify(questionAnswers)}`);
+            let questionSet = [...questionSets].find(q => q.questionSetId === panelId) || '';
+            if(!_.isEmpty(questionSet)) {
+                let { questions } = questionSet;
+                totalQuestions = questions.length;
+                let totalQuestionKeys = _.map({...questions}, 'questionId');
+                if(!_.isEmpty(questionAnswers)){
+                   let count = Object.keys(questionAnswers).map((value) => { 
+                       return totalQuestionKeys.includes(value) ? totalAnsweredQuestions++ : totalAnsweredQuestions;
+                    });
+                }
+                
+                // console.log(`2B: ${totalAnsweredQuestions}/${totalQuestions} questions answered in this section`);
+                this.setState({ totalAnsweredQuestions: `${totalAnsweredQuestions}/${totalQuestions}`});
+    
+            }
+        }
+    }
+
     onFormRender() {
         console.log('form render');
     }
     
     onFormUpdate(questionAnswers) {
-        console.log('update', questionAnswers);
+        this.totalQuestionsAnswered(this.state.activePanelId);
     }
 
     onFormSwitchPanel(panelId) {
-        this.setState({ activePanelId: panelId});
+        if(!_.isEmpty(panelId)) {
+            this.setState({ activePanelId: panelId});
+            this.totalQuestionsAnswered(panelId);
+        }
     }
 
     onFormSubmit(questionAnswers, target) {
@@ -59,27 +89,46 @@ import 'react-tabs/style/react-tabs.css';
         this.updateNavigation(item);
     }
 
+    //coming from form panels
     onSwitchedPanel = (newForm) => {
         this.updateNavigation(newForm);
     }
 
+    onNextPanel(activePanelId){
+        if (activePanelId === "mrcHealthDataToolkit" || activePanelId === "adviceFromPublisher"){
+            this.onFormSwitchPanel("applicant")
+            this.onSwitchedPanel({"index":3,"panelId":"applicant","pageId":"safePeople"})
+        }
+        else {
+            const formPanels = [...this.state.form.formPanels];
+            const currentPanelIndex = formPanels.findIndex(panel => panel.panelId === activePanelId);
+            const newPanelIndex = currentPanelIndex + 2;
+            const nextPanelIndex = formPanels.findIndex(panel => panel.index === newPanelIndex);
+            if(nextPanelIndex === -1){
+                console.log("at the end!")
+            }
+            else {
+                const newForm = formPanels.find(panel => panel.index === newPanelIndex);
+                this.onFormSwitchPanel(newForm.panelId);
+                const formPages = [...this.state.form.pages];
+                const newPage = formPages.find(page => page.pageId === newForm.pageId);
+                this.onParentNavClick(newPage);
+            }
+        }
+    }
+
     renderQuestionSets = (parentForm) => {
         let questionPanels = [...this.state.form.questionPanels];
-        if(!isEmpty(questionPanels)) {
+        if(!_.isEmpty(questionPanels)) {
             return questionPanels.map((item, index) =>{
                 if (parentForm.pageId === item.pageId) {
                     return  (
-                        <li className="Gray800-14px" style={{cursor: 'pointer'}} key={index} onClick={e => this.onFormSwitchPanel(item.panelId)}>
-                            {/* {item.panelHeader} */}
-                            {item.navHeader}
-                            </li> 
+                        <li className="Gray800-14px" style={{cursor: 'pointer'}} key={index} onClick={e => this.onFormSwitchPanel(item.panelId)}>{item.navHeader}</li> 
                     )
                 }
             });
         }
     }
-
-   
 
     updateNavigation = (newForm) => {
         const currentActivePage = [...this.state.form.pages].find(p => p.active === true);
@@ -95,12 +144,17 @@ import 'react-tabs/style/react-tabs.css';
             // update actual object model with propert of active true
             newFormState[newPageindex] = {...pages[newPageindex], active: true};
             // get the activepanel and panelId Property
-            const { panelId = '' } = [...this.state.form.formPanels].find(p => p.pageId === newFormState[newPageindex].pageId);
-            if (!isEmpty(panelId) || typeof panel != undefined) {
+            let { panelId } = [...this.state.form.formPanels].find(p => p.pageId === newFormState[newPageindex].pageId);
+            if (!_.isEmpty(panelId) || typeof panel != undefined) {
                 this.setState({ form: {...this.state.form, pages: newFormState}, activePanelId: panelId});
-            } else {
+                this.totalQuestionsAnswered(panelId);
+            } 
+            else {
                 this.setState({ form: {...this.state.form, pages: newFormState}});
             }
+
+            //do the same here for panel index
+            
         }
     }
 
@@ -120,24 +174,10 @@ import 'react-tabs/style/react-tabs.css';
         this.setState({ key: key });
         // this.props.history.push(window.location.pathname + '?tab=' + key);
     }
-
-    //   _onButtonClick() {
-    //     this.setState({
-    //       showComponent: true,
-    //     });
-    //   }
     
     render() {
-        const { searchString, datasetTitle, datasetPublisher } = this.state;
+        const { searchString, datasetTitle, datasetPublisher, activePanelId, totalAnsweredQuestions} = this.state;
         const { userState } = this.props;
-
-        // const totalQuestions = 0;
-        let totalQuestions = 0;
-
-
-        console.log('datasetTitle: ' + datasetTitle)
-        // console.log('userState: ' + JSON.stringify(userState))
-
         Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
         Winterfell.addInputType('datePickerCustom', DatePickerCustom);
         return (
@@ -156,7 +196,6 @@ import 'react-tabs/style/react-tabs.css';
                     </Col>
                 </Row>
 
-                {/* <Container > */}
                 <div className="DARForm">
                 <Row className="mt-5 ml-1 FillPage">
                     <Col md={2}>
@@ -183,11 +222,7 @@ import 'react-tabs/style/react-tabs.css';
                             ))}
                         </Row>
 
-                        {[...this.state.form.pages].map((item, idx) => (
-                            <div >
-                                {item.active &&
-
-                                    item.title === "Pre-submission" ?
+                        { activePanelId === "mrcHealthDataToolkit" || activePanelId === "adviceFromPublisher" ?
                                     <div>
                                         <Row className="mt-2 pt-3 pl-3 pb-3 Gray800-14px White">
                                             <Col md={12}>
@@ -213,109 +248,99 @@ import 'react-tabs/style/react-tabs.css';
                                             </Col>
                                         </Row>
                                     </div>
-                                    : ''}
-                            </div>
-
-                        ))}
-
-                        <Row className="mt-2 pt-3 pl-3 pb-3 Gray800-14px" style={{ backgroundColor: "#ffffff" }} >
-                            <Col md={11}>
-                                <Winterfell
-                                    schema={this.state.form}
-                                    questionAnswers={this.state.questionAnswers}
-                                    panelId={this.state.activePanelId}
-                                    disableSubmit={true}
-                                    onUpdate={this.onFormUpdate}
-                                    onSwitchPanel={this.onSwitchedPanel}
-                                    onSubmit={this.onFormSubmit}
-                                    onRender={this.onFormRender}
-                                />
-                            </Col>
-                        </Row>
-
+                            : 
+                                    <Row className="mt-2 pt-3 pl-3 pb-3 Gray800-14px" style={{ backgroundColor: "#ffffff" }} >
+                                    <Col md={11}>
+                                        <Winterfell
+                                            schema={this.state.form}
+                                            questionAnswers={this.state.questionAnswers}
+                                            panelId={this.state.activePanelId}
+                                            disableSubmit={true}
+                                            onUpdate={this.onFormUpdate}
+                                            onSwitchPanel={this.onSwitchedPanel}
+                                            onSubmit={this.onFormSubmit}
+                                            onRender={this.onFormRender}
+                                        />
+                                    </Col>
+                                </Row>
+                            }
                         <Row className="BottomCard mt-2 mb-2"  />
                     </Col>
 
 
                     
                     <Col md={3} className="DARtabs">
-                        <Tabs className='TabsBackground Gray700-14px' activeKey={this.state.key} onSelect={this.handleSelect}>
-                            <Tab eventKey="guidance" title="Guidance">
-                                {/* <Row className="DARTab ml-1 mt-1">
-                                    Guidance
-                                </Row> */}
-                                <Row className="DARTab toolsButtons ml-1 mr-1 mt-1">
-                                    <Col md={12} className="Gray700-13px mt-2">
-                                        <span>There is question-by-question guidance throughout the application process, or you can view everything in one go.</span>
-                                        <br /> <br />
-                                        <Button variant="light" className="Dark-14px Width100"  >
-                                            View all guidance in a new window
+                            <Tabs className='TabsBackground Gray700-14px' activeKey={this.state.key} onSelect={this.handleSelect}>
+                                <Tab eventKey="guidance" title="Guidance">
+                                    <Row className="DARTab toolsButtons ml-1 mr-1 mt-2">
+                                        <Col md={12} className="Gray700-13px mt-2">
+                                            <span>There is question-by-question guidance throughout the application process, or you can view everything in one go.</span>
+                                            <br /> <br />
+                                            <Button variant="light" className="Dark-14px Width100"  >
+                                                View all guidance in a new window
                                         </Button>
-                                    </Col>
-                                </Row>
-                            </Tab>
-
-                            {/* {[...this.state.form.pages].map((item, idx) => (
-                            <div >
-                                {item.active &&
-
-                                    item.title !== "Pre-submission" ?
-                                    <div> */}
-                                        <Tab eventKey="answers" title="Answers">
-                                            <Row className="DARTab toolsButtons ml-1 mr-1 mt-1">
-                                                <Col md={12} className="Gray700-13px mt-2">
-                                                    <span>Re-use answers from your previous applications</span>
-                                                    <br /> <br />
-                                                    <span className="ComingSoonBadge"> Coming soon </span>
-                                                </Col>
-                                            </Row>
-                                        </Tab>
-                                        <Tab eventKey="notes" title="Notes">
-                                            <Row className="DARTab toolsButtons ml-1 mr-1 mt-1">
-                                                <Col md={12} className="Gray700-13px mt-2">
-                                                    <span>Data custodians cannot see your notes. </span>
-                                                    <br /> <br />
-                                                    <span>You can use notes to capture your thoughts or communicate with any other applicants you invite to collaborate.</span>
-                                                    <br /> <br />
-                                                    <span className="ComingSoonBadge"> Coming soon </span>
-                                                </Col>
-                                            </Row>
-                                        </Tab>
-
-                            <Tab eventKey="messages" title="Messages">
-                                <Row className="DARTab toolsButtons ml-1 mt-1">
-                                    <Col md={12} className="Gray700-13px mt-2">
-                                        <span>Both data custodian and applicants can see messages</span>
-                                        <br /> <br />
-                                        <span>Use messages to seek guidance or clarify questions with the data custodian. You can send messages before or after the application is submitted. You will be notified of every new message, and so will the data custodian.</span>
-                                        <br /> <br />
-                                        <span className="ComingSoonBadge"> Coming soon </span>
-                                    </Col>
-                                </Row>
-                            </Tab>
-                        </Tabs>
-                          {/* </div>
-                                : ''} </div>
-                                ))} */}
+                                        </Col>
+                                    </Row>
+                                </Tab>
+                                <Tab eventKey="answers" title="Answers">
+                                    <Row className="DARTab toolsButtons ml-1 mr-1 mt-2">
+                                        <Col md={12} className="Gray700-13px mt-2">
+                                            <span>Re-use answers from your previous applications</span>
+                                            <br /> <br />
+                                            <span className="ComingSoonBadge"> Coming soon </span>
+                                        </Col>
+                                    </Row>
+                                </Tab>
+                                <Tab eventKey="notes" title="Notes">
+                                    <Row className="DARTab toolsButtons ml-1 mr-1 mt-2">
+                                        <Col md={12} className="Gray700-13px mt-2">
+                                            <span>Data custodians cannot see your notes. </span>
+                                            <br /> <br />
+                                            <span>You can use notes to capture your thoughts or communicate with any other applicants you invite to collaborate.</span>
+                                            <br /> <br />
+                                            <span className="ComingSoonBadge"> Coming soon </span>
+                                        </Col>
+                                    </Row>
+                                </Tab>
+                                <Tab eventKey="messages" title="Messages">
+                                    <Row className="DARTab toolsButtons ml-1 mt-2">
+                                        <Col md={12} className="Gray700-13px mt-2">
+                                            <span>Both data custodian and applicants can see messages</span>
+                                            <br /> <br />
+                                            <span>Use messages to seek guidance or clarify questions with the data custodian. You can send messages before or after the application is submitted. You will be notified of every new message, and so will the data custodian.</span>
+                                            <br /> <br />
+                                            <span className="ComingSoonBadge"> Coming soon </span>
+                                        </Col>
+                                    </Row>
+                                </Tab>
+                            </Tabs>
+                    </Col>
+                    
+                    <Col md={12}>
+                        <Row className="DARFooter">
+                            <Col md={8} className="mt-4 ml-4">
+                                <span className="Gray800-14px">{totalAnsweredQuestions } questions answered in this section</span>
+                            </Col>
+                            <Col md={3} className="mt-3 ml-5">
+                                <Button variant="white"  className="TechDetailButton ml-2" >
+                                    Save
+                                </Button>
+                                
+                            
+                                <Button variant="white"  className="TechDetailButton ml-3" >
+                                    Submit application
+                                </Button>
+                            
+                                
+                                <Button variant="primary" className="White-14px ml-3" onClick={() => { this.onNextPanel(activePanelId) }}>
+                                    {activePanelId === "mrcHealthDataToolkit" || activePanelId === "adviceFromPublisher" ? "Go to Safe People" : "Go to next section" }
+                                </Button>   
+                            </Col>
+                        
+                        </Row> 
                     </Col>
                 </Row>
                 </div>
-                {/* </Container> */}
-
-                <Row>
-                {[...this.state.form.questionSets].map((item, idx) => (
-                        item.questions.forEach((question) => {
-                           if (question.questionId) {
-                                totalQuestions++;
-                            }
-                        }
-                     )    
-                ))}
-                </Row>
-
-            {console.log('totalQuestions: ' + totalQuestions)}
-             <p>{totalQuestions}</p>
-
             </div>
         )
     }
@@ -333,14 +358,7 @@ function ToolKit() {
             View the toolkit
         </Button>
   
-        <Modal show={show} onHide={handleClose} 
-        // className="DARModal"
-        // style={{width:"800", height:"600"}}   
-      size="lg"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-      className="DARModal"
-      >
+        <Modal show={show} onHide={handleClose} size="lg" aria-labelledby="contained-modal-title-vcenter" centered className="DARModal" >
 
           {/* <Modal.Header closeButton > */}
             {/* <Modal.Title >Modal heading</Modal.Title> */}
@@ -353,9 +371,6 @@ function ToolKit() {
             <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>
-            <Button variant="primary" onClick={handleClose}>
-              Save Changes
-            </Button>
           </Modal.Footer> */}
         </Modal>
       </>
@@ -363,5 +378,5 @@ function ToolKit() {
   }
   
 
-export default DataAccessRequest;        // this.props.history.push(window.location.pathname + '?tab=' + key);
+export default DataAccessRequest;   
    
