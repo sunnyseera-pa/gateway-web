@@ -9,6 +9,7 @@ import TypeaheadCustom from './components/TypeaheadCustom'
 import DatePickerCustom from './components/DatepickerCustom';
 import SearchBar from '../commonComponents/SearchBar';
 import ToolKit from './components/Toolkit';
+import NavItem from './components/NavItem';
 import { ReactComponent as CloseIconSvg } from '../../images/close.svg';
 import {formSchema} from './formSchema';
 import 'react-tabs/style/react-tabs.css';
@@ -163,23 +164,6 @@ import 'react-tabs/style/react-tabs.css';
     }
 
     /**
-     * [RenderQuestionSets]
-     * @desc - Builds the navigation child elements
-     */
-    renderQuestionSets = (parentForm) => {
-        let questionPanels = [...this.state.form.questionPanels];
-        if(!_.isEmpty(questionPanels)) {
-            return questionPanels.map((item, index) =>{
-                if (parentForm.pageId === item.pageId) {
-                    return  (
-                        <li className="Gray800-14px" style={{cursor: 'pointer'}} key={index} onClick={e => this.onFormSwitchPanel(item.panelId)}>{item.navHeader}</li> 
-                    )
-                }
-            });
-        }
-    }
-
-    /**
      * [UpdateNavigation]
      * @desc - Update the navigation state sidebar
      */
@@ -235,12 +219,11 @@ import 'react-tabs/style/react-tabs.css';
         Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
         Winterfell.addInputType('datePickerCustom', DatePickerCustom);
         return (
-            <div >
+            <div>
                 <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Row className="Banner">
                     <Col md={11}>
                         <span className="ml-3 White-20px mr-5">Data Access Request</span>
-                        {/* <span className="mr-5"/> */}
                         <span className="White-16px pr-5">{datasetTitle} | {datasetPublisher}</span>
                         <span className="White-16px ml-2">{this.getSavedAgo()}</span>
                     </Col>
@@ -258,7 +241,11 @@ import 'react-tabs/style/react-tabs.css';
                                     <h1 className="Black-16px mb-3 ml-3" onClick={() => { this.onParentNavClick(item) }}>{item.title}</h1>
                                     {item.active &&
                                         <ul className="list-unstyled ml-4 pl-2 active-grey-border">
-                                            {this.renderQuestionSets(item)}
+                                            <NavItem
+                                                parentForm={item}
+                                                questionPanels={this.state.form.questionPanels}
+                                                onFormSwitchPanel={this.onFormSwitchPanel}
+                                            />
                                         </ul>
                                     }
                                 </div>
@@ -275,33 +262,33 @@ import 'react-tabs/style/react-tabs.css';
                             ))}
                         </Row>
                         { activePanelId === "mrcHealthDataToolkit" || activePanelId === "adviceFromPublisher" ?
-                                    <div>
-                                        <Row className="mt-2 pt-3 pl-3 pb-3 Gray800-14px White">
-                                            <Col md={12}>
-                                                <Row className="Black-17px-Bold">
-                                                    MRC Health Data Access toolkit
-                                            </Row>
-                                                <Row className="Gray800-15px mt-2">
-                                                    This toolkit aims to help you understand what approvals are necessary for your research.
-                                            </Row>
-                                                <Row className="mr-2 mt-3 mb-3">
-                                                    <ToolKit />
-                                                </Row>
-                                            </Col>
+                            <div>
+                                <Row className="mt-2 pt-3 pl-3 pb-3 Gray800-14px White">
+                                    <Col md={12}>
+                                        <Row className="Black-17px-Bold">
+                                            MRC Health Data Access toolkit
+                                    </Row>
+                                        <Row className="Gray800-15px mt-2">
+                                            This toolkit aims to help you understand what approvals are necessary for your research.
+                                    </Row>
+                                        <Row className="mr-2 mt-3 mb-3">
+                                            <ToolKit />
                                         </Row>
-                                        <Row className="mt-2 pt-3 pl-3 pb-3 Gray800-14px White">
-                                            <Col md={12}>
-                                                <Row className="Black-17px-Bold">
-                                                    Advice from {datasetPublisher}
-                                            </Row>
-                                                <Row className="Gray800-15px mt-2">
-                                                    We highly recommend getting in touch with us as early as possible. We may be able to help you shape the various approvals, such as ethics, minimising the risk of having to apply more than once.
-                                            </Row>
-                                            </Col>
-                                        </Row>
-                                    </div>
+                                    </Col>
+                                </Row>
+                                <Row className="mt-2 pt-3 pl-3 pb-3 Gray800-14px White">
+                                    <Col md={12}>
+                                        <Row className="Black-17px-Bold">
+                                            Advice from {datasetPublisher}
+                                    </Row>
+                                        <Row className="Gray800-15px mt-2">
+                                            We highly recommend getting in touch with us as early as possible. We may be able to help you shape the various approvals, such as ethics, minimising the risk of having to apply more than once.
+                                    </Row>
+                                    </Col>
+                                </Row>
+                            </div>
                             : 
-                                    <Row className="mt-2 pt-3 pl-3 pb-3 Gray800-14px" style={{ backgroundColor: "#ffffff" }} >
+                                <Row className="mt-2 pt-3 pl-3 pb-3 Gray800-14px" style={{ backgroundColor: "#ffffff" }} >
                                     <Col md={11}>
                                         <Winterfell
                                             schema={this.state.form}
