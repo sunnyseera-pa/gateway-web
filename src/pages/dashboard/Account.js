@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
 import queryString from 'query-string';
-
 import { Row, Col } from 'react-bootstrap';
 import { Tabs, Tab, TabPanel, TabList } from 'react-web-tabs';
-
 import SearchBar from '../commonComponents/SearchBar';
 import AccountTools from './AccountTools';
 import AccountProjects from './AccountProjects';
 import ReviewTools from './ReviewTools';
 import YourAccount from './YourAccount';
 import DataAccessRequests from './DataAccessRequests';
-
 import 'react-web-tabs/dist/react-web-tabs.css';
 import SVGIcon from "../../images/SVGIcon";
 
