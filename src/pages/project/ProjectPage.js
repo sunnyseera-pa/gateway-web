@@ -5,12 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
 import queryString from 'query-string';
 
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Tabs from 'react-bootstrap/Tabs';
-import Tab from 'react-bootstrap/Tab';
-import Alert from 'react-bootstrap/Alert';
+import {Container, Row, Col, Tabs, Tab, Alert, Navbar, Nav} from 'react-bootstrap';
 
 // import DataSet from '../commonComponents/DataSet';
 import DataSet from '../commonComponents/DataSetOld';
@@ -25,6 +20,7 @@ import Creators from '../commonComponents/Creators';
 import {PageView, initGA} from '../../tracking';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
+var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
 
 class ProjectDetail extends Component {
   // initialize our state
@@ -188,6 +184,17 @@ class ProjectDetail extends Component {
           </Row>
 
         </Container>
+        <Navbar fixed="bottom" className="mr-5 mb-2" >
+          <Nav className="ml-auto">
+            <Row>
+              <p>
+                <a href={cmsURL + '/HDRUKGatewaySupportPortal'} target="_blank" rel="noopener noreferrer" className="Purple-14px" id="UnderlinedLink">
+                  HDR UK Gateway Support Portal
+                </a>
+              </p>
+            </Row>
+          </Nav>
+        </Navbar>
       </div>
     );
   }
