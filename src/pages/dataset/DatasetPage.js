@@ -199,7 +199,31 @@ class DatasetTitle extends Component {
       const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
       var releaseDate = new Date(data.releaseDate);
       var releasedOnDate = (data.releaseDate ? releaseDate.getDate() + " " + monthNames[releaseDate.getMonth()] + " " + releaseDate.getFullYear() : "");
-     
+      var metadataQuality         = "";
+      var metadataQualityClass    = "MetadataQuality ";
+
+      if (data.quality) {
+        if (data.quality.quality_score <= 50) {
+          metadataQuality      = "Not rated";
+          metadataQualityClass += "NotRatedBackground";
+
+        } else if (data.quality.quality_score <= 70) {
+          metadataQuality      = "Bronze";
+          metadataQualityClass += "RatingBronzeBackground";
+
+        } else if (data.quality.quality_score <= 80) {
+          metadataQuality      = "Silver";
+          metadataQualityClass += "RatingSilverBackground";
+
+        } else if (data.quality.quality_score <= 90) {
+          metadataQuality      = "Gold";
+          metadataQualityClass += "RatingGoldBackground";
+
+        } else if (data.quality.quality_score > 90) {
+          metadataQuality      = "Platinum";
+          metadataQualityClass += "RatingPlatinumBackground";
+        }
+      }
       return (
           <div>
               <Row className="mt-2">
@@ -269,6 +293,16 @@ class DatasetTitle extends Component {
                                     {!keywords || keywords.length <= 0 ? <span className="Gray800-14px-Opacity">Not specified</span> : keywords.map((keyword) => {return <div className="mr-2 Gray800-14px tagBadges mb-2"> <a href={'/search?search=' + keyword}> {keyword} </a> </div> })}                                
                                 </Col>
                             </Row>
+
+                            <Row className="mt-3">
+                                <Col sm={2} lg={2} className="Gray800-14px" >
+                                    Meta-data quality
+                                </Col>
+                                <Col sm={10} lg={10}>
+                                    {data.quality ? <div><div className={metadataQualityClass}> {metadataQuality} </div> <a href="https://github.com/HDRUK/datasets#about-the-reports" className="ml-2 Purple-14px" target="_blank">How is this calculated? </a></div> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col>}
+                                </Col>
+                            </Row>
+                            
                       </div>
                   </Col>
                   <Col sm={1} lg={10} />
