@@ -135,6 +135,18 @@ a.nav-item.nav-link.active {
   font-weight: 500;
 }
 
+.ToolBadge {
+  display: inline-block;
+  background-color: #29235c;
+  padding: 5px 10px;
+  border-radius: 16px;
+  color: #ffffff;
+  font-family: museo-sans-rounded;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+
 .BubbleCounts {
   width: 24px;
   height: 24px;
@@ -229,6 +241,26 @@ a.nav-item.nav-link.active {
   font-style: normal;
   letter-spacing: normal;
   color: #2d2d2d;
+}
+
+.Gray454443-14px {
+  font-family: museo-sans-rounded;
+  font-size: 14px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  color: #454443;
+}
+
+.Gray595757-14px {
+  font-family: museo-sans-rounded;
+  font-size: 14px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  color: #595757;
 }
 
 .Gray800-14px {
@@ -650,6 +682,11 @@ svg:not(:root) {
 /*   box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09); */
 }
 
+.BadgeSvgs{
+  width: 11px;
+  height: 11px;
+}
+
 .darTabs .tab-content{
   height: 100%;
   display: block;
@@ -803,6 +840,12 @@ textarea:focus {
 .AccountButtons {
   border: 2px solid #3db28c !important;
   border-radius: 4px !important;
+}
+
+.FlexCenter{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* .DashboardDropdown {

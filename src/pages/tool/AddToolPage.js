@@ -4,19 +4,17 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Typeahead } from 'react-bootstrap-typeahead';
 
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-
-import Container from 'react-bootstrap/Container';
+import {Form, Button, Row, Col, Container} from 'react-bootstrap';
 
 import SearchBar from '../commonComponents/SearchBar';
-import Loading from '../commonComponents/Loading'
+import Loading from '../commonComponents/Loading';
+import RelatedResources from '../commonComponents/RelatedResources';
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
+import SVGIcon from '../../images/SVGIcon';
 
 import { Event, initGA } from '../../tracking';
+
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -251,7 +249,17 @@ const AddToolForm = (props) => {
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                     <div className="Rectangle">
-                        <p className="Black-20px">Add a new tool or resource</p>
+                        <Row>
+                            <Col sm={10} lg={10}>
+                             <p className="Black-20px">Add a new tool or resource</p>
+                            </Col>
+                            <Col sm={2} lg={2}>
+                            <span className="ToolBadge"> 
+                                <SVGIcon name="newtoolicon" fill={'#ffffff'} className="BadgeSvgs mr-2" />
+                                Tool 
+                            </span>
+                            </Col>
+                        </Row>
                         <p className="Gray800-14px">Tools can be anything you or someone else created or used during a research project</p>
                     </div>
                 </Col>
@@ -432,19 +440,29 @@ const AddToolForm = (props) => {
                             </Form.Group>
                         </div>
 
+                        <div className="Rectangle mt-2">
+                            <span className="Black-20px">Related resources</span><span className="Gray454443-14px"> (optional)</span>
+                            <br/>
+                            <span className="Gray595757-14px">Show relationships to papers, projects, datasets and tools. Resources must be added to the Gateway first.</span>
+                        </div>
+
+                        <div className="Rectangle FlexCenter mt-1">
+                            {/* <Button variant='white' href={''} target="_blank" className="TechDetailButton mr-2" >
+                                + Add resources
+                            </Button> */}
+                            <RelatedResources />
+                        </div>
+
                         <Row className="mt-3">
-                            <Col xs={5} lg={9}>
-                                <div className="ButtonHolder">
-                                    <a style={{ cursor: 'pointer' }} href={'/account?tab=tools'} >
-                                        <Button variant="medium" className="CancelButton" >
+                            <Col xs={5} lg={9}/>
+                            <Col xs={7} lg={3} className="text-right">
+                                    <a style={{ cursor: 'pointer' }} href={'/account?tab=tools'}>
+                                        <Button variant="medium" className="CancelButton Dark-14px mr-2" >
                                             Cancel
                                         </Button>
                                     </a>
-                                </div>
-                            </Col>
-                            <Col xs={7} lg={3} className="text-right">
-                                <Button variant="primary" type="submit" className="AddButton" onClick={() => Event("Buttons", "Click", "Add tool form submitted")}>
-                                    Add this tool
+                                <Button variant="primary" type="submit" onClick={() => Event("Buttons", "Click", "Add tool form submitted")}>
+                                    Publish
                                 </Button>
                             </Col>
                         </Row>
