@@ -1,48 +1,59 @@
 
 
 import React, { Component } from 'react';
-import { Row, Col, Button, Tabs, Tab } from 'react-bootstrap';
+import { Container, Row, Col, Button, Tabs, Tab } from 'react-bootstrap';
 import Winterfell from 'winterfell';
 import _ from 'lodash';
 import moment from 'moment';
 import TypeaheadCustom from './components/TypeaheadCustom'
 import DatePickerCustom from './components/DatepickerCustom';
 import SearchBar from '../commonComponents/SearchBar';
+import Loading from '../commonComponents/Loading';
 import ToolKit from './components/Toolkit';
 import NavItem from './components/NavItem';
 import { ReactComponent as CloseIconSvg } from '../../images/close.svg';
+import axios from 'axios';
+import {classSchema} from './classSchema';
 import {formSchema} from './formSchema';
+import { baseURL } from '../../configs/url.config';
 import 'react-tabs/style/react-tabs.css';
 
- class DataAccessRequest extends Component {
+class DataAccessRequest extends Component {
 
     constructor(props) {
         super(props);
         this.onFormSwitchPanel = this.onFormSwitchPanel.bind(this);
-        this.onFormUpdate = this.onFormUpdate.bind(this);
         this.onFormSubmit = this.onFormSubmit.bind(this);
-        // datasetTitle: props.history.location.state.title,
-        // datasetPublisher: props.history.location.state.publisher,
-        this.state ={
-            form: {},
-            questionAnswers: {},
-            activePanelId: '',
-            datasetTitle: "ARIA Dataset",
-            datasetPublisher: "ALLIANCE > BARTS",
-            searchString: '',
-            key: 'guidance',
-            totalAnsweredQuestions: '',
-            lastSaved: {
-                time: '',
-                ago: ''
-            }
+        this.onFormUpdate = this.onFormUpdate.bind(this);
+    }
+    
+    state = {
+        _id: '',
+        schema: {},
+        questionAnswers: {},
+        activePanelId: '',
+        searchString: '',
+        key: 'guidance',
+        totalAnsweredQuestions: '',
+        lastSaved: {
+            time: '',
+            ago: ''
+        },
+        isLoading: true
+    }
+
+    async componentDidMount() {
+        try {
+            let { location: { state: { dataSetId }}} = this.props;
+            const response = await axios.get(`${baseURL}/api/v1/data-access-request/${dataSetId}`);
+            const { data: { data: { jsonSchema, questionAnswers, _id }}} = await response;
+            this.setState({schema: {...jsonSchema, ...classSchema}, questionAnswers, _id, activePanelId: 'mrcHealthDataToolkit', isLoading: false});
+        }
+        catch (error) {
+            this.setState({isLoading: false});
+            console.log(error);
         }
     }
-
-    componentWillMount() {
-        this.setState({form: {...formSchema}, activePanelId: 'mrcHealthDataToolkit'});
-    }
-
     /**
      * [TotalQuestionAnswered]
      * @desc - Sets total questions answered for each section
@@ -51,9 +62,9 @@ import 'react-tabs/style/react-tabs.css';
         let totalQuestions = 0;
         let totalAnsweredQuestions = 0;
         if(!_.isEmpty(panelId)) {
-            // deconstruct state
-            let {form: {questionSets}, questionAnswers} = this.state;
-            // omits out blank null undefined values from this.state.questionAnswers
+            // 1. deconstruct state
+            let {schema: {questionSets}, questionAnswers} = this.state;
+            // 2. omits out blank null undefined values from this.state.answers
             questionAnswers  =  _.pickBy({...questionAnswers }, _.identity);
             let questionSet = [...questionSets].find(q => q.questionSetId === panelId) || '';
             if(!_.isEmpty(questionSet)) {
@@ -66,7 +77,6 @@ import 'react-tabs/style/react-tabs.css';
                     });
                 }                
                 this.setState({ totalAnsweredQuestions: `${totalAnsweredQuestions}/${totalQuestions}  questions answered in this section`});
-    
             }
         }
     }
@@ -108,9 +118,9 @@ import 'react-tabs/style/react-tabs.css';
      * @param {obj: questionAnswers}
      * @desc Callback from Winterfell sets totalQuestionsAnswered + saveTime
      */
-    onFormUpdate = _.debounce((questionAnswers = {}) => {
+    onFormUpdate = _.debounce((questionAnswers) => {
         this.totalQuestionsAnswered(this.state.activePanelId);
-        this.saveTime();
+        this.onApplicationUpdate(questionAnswers);
     }, 500);
 
     onFormSwitchPanel(panelId) {
@@ -124,7 +134,33 @@ import 'react-tabs/style/react-tabs.css';
         if(!_.isEmpty(this.state.questionAnswers)) {
             this.saveTime();
             alert(`Application saved on ${moment().format('DD/MM/YYYY HH:mm:sss')}`);
-            // console.log('submit', questionAnswers);
+        }
+    }
+
+    /**
+     * [onApplicationUpdate]
+     * @desc Updates answers to the questions PATCH
+     * @method PATCH
+     * @param {obj: questionAnswers}
+     */
+    onApplicationUpdate = async (questionAnswers) => {
+        try {
+            // 1. spread copy of data, and remove blank null undefined values
+            const data = _.pickBy({...this.state.questionAnswers, ...questionAnswers}, _.identity);
+            // 2. get id
+            let {_id: id} = this.state;
+            // 3. set up body params
+            let params = {
+                questionAnswers: JSON.stringify(data)
+            }
+            // 4. PATCH the data
+            const response = await axios.patch(`${baseURL}/api/v1/data-access-request/${id}`, params);
+            // 5. set state
+            this.setState({ questionAnswers: {...data}});
+            // 6. show / set save time
+            this.saveTime();
+        } catch(err) {
+            console.log(err);
         }
     }
 
@@ -146,7 +182,7 @@ import 'react-tabs/style/react-tabs.css';
             this.onSwitchedPanel({"index":3,"panelId":"applicant","pageId":"safePeople"})
         }
         else {
-            const formPanels = [...this.state.form.formPanels];
+            const formPanels = [...this.state.schema.formPanels];
             const currentPanelIndex = formPanels.findIndex(panel => panel.panelId === activePanelId);
             const newPanelIndex = currentPanelIndex + 2;
             const nextPanelIndex = formPanels.findIndex(panel => panel.index === newPanelIndex);
@@ -156,7 +192,7 @@ import 'react-tabs/style/react-tabs.css';
             else {
                 const newForm = formPanels.find(panel => panel.index === newPanelIndex);
                 this.onFormSwitchPanel(newForm.panelId);
-                const formPages = [...this.state.form.pages];
+                const formPages = [...this.state.schema.pages];
                 const newPage = formPages.find(page => page.pageId === newForm.pageId);
                 this.onParentNavClick(newPage);
             }
@@ -168,26 +204,26 @@ import 'react-tabs/style/react-tabs.css';
      * @desc - Update the navigation state sidebar
      */
     updateNavigation = (newForm) => {
-        const currentActivePage = [...this.state.form.pages].find(p => p.active === true);
+        const currentActivePage = [...this.state.schema.pages].find(p => p.active === true);
         if(currentActivePage.pageId !== newForm.pageId) {
             // copy state pages
-            const pages = [...this.state.form.pages];
+            const pages = [...this.state.schema.pages];
             // get the index of new form
             const newPageindex = pages.findIndex(page => page.pageId === newForm.pageId);
             // reset the current state of active to false for all pages
-            const newFormState = [...this.state.form.pages].map((item) => {
+            const newFormState = [...this.state.schema.pages].map((item) => {
                 return {...item, active: false}
             });
             // update actual object model with propert of active true
             newFormState[newPageindex] = {...pages[newPageindex], active: true};
             // get the activepanel and panelId Property
-            let { panelId } = [...this.state.form.formPanels].find(p => p.pageId === newFormState[newPageindex].pageId);
-            if (!_.isEmpty(panelId) || typeof panel != undefined) {
-                this.setState({ form: {...this.state.form, pages: newFormState}, activePanelId: panelId});
+            let { panelId } = [...this.state.schema.formPanels].find(p => p.pageId === newFormState[newPageindex].pageId) || '';
+            if (!_.isEmpty(panelId) || typeof panel !== 'undefined') {
+                this.setState({ schema: {...this.state.schema, pages: newFormState}, activePanelId: panelId});
                 this.totalQuestionsAnswered(panelId);
             } 
             else {
-                this.setState({ form: {...this.state.form, pages: newFormState}});
+                this.setState({ schema: {...this.state.schema, pages: newFormState}});
             }
         }
     }
@@ -214,17 +250,27 @@ import 'react-tabs/style/react-tabs.css';
     }
     
     render() {
-        const { searchString, datasetTitle, datasetPublisher, activePanelId, totalAnsweredQuestions} = this.state;
-        const { userState } = this.props;
+        const { searchString, activePanelId, totalAnsweredQuestions, isLoading} = this.state;
+        const { userState, location:{state: {title, publisher }} } = this.props;
+
         Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
         Winterfell.addInputType('datePickerCustom', DatePickerCustom);
+
+        if (isLoading) {
+            return (
+                <Container>
+                    <Loading />
+                </Container>
+            );
+        } 
+        
         return (
             <div>
                 <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Row className="Banner">
                     <Col md={11}>
                         <span className="ml-3 White-20px mr-5">Data Access Request</span>
-                        <span className="White-16px pr-5">{datasetTitle} | {datasetPublisher}</span>
+                        <span className="White-16px pr-5">{title} | {publisher}</span>
                         <span className="White-16px ml-2">{this.getSavedAgo()}</span>
                     </Col>
                     <Col md={1}>
@@ -235,15 +281,15 @@ import 'react-tabs/style/react-tabs.css';
                 <div className="darForm">
                 <Row className="mt-5 ml-1 FillPage">
                     <Col md={2}>
-                        {[...this.state.form.pages].map((item, idx) => (
-                            <div key={item.index} className={`${item.active ? "active-border" : ""}`}>
+                        {[...this.state.schema.pages].map((item, idx) => (
+                            <div key={item.index} className={`${item.active ? "active-border" : ''}`}>
                                 <div>
                                     <h1 className="Black-16px mb-3 ml-3" onClick={() => { this.onParentNavClick(item) }}>{item.title}</h1>
-                                    {item.active &&
+                                    { item.active &&
                                         <ul className="list-unstyled ml-4 pl-2 active-grey-border">
                                             <NavItem
                                                 parentForm={item}
-                                                questionPanels={this.state.form.questionPanels}
+                                                questionPanels={this.state.schema.questionPanels}
                                                 onFormSwitchPanel={this.onFormSwitchPanel}
                                             />
                                         </ul>
@@ -254,7 +300,7 @@ import 'react-tabs/style/react-tabs.css';
                     </Col>
                     <Col md={7} className="FlexColumn">
                         <Row style={{ backgroundColor: "#ffffff" }} className="pl-4">
-                            {[...this.state.form.pages].map((item, idx) => (
+                            {[...this.state.schema.pages].map((item, idx) => (
                                 <div >
                                     <p className="Black-20px">{item.active ? item.title : ""}</p>
                                     <p className="Gray800-14px">{item.active ? item.description : ""}</p>
@@ -279,7 +325,7 @@ import 'react-tabs/style/react-tabs.css';
                                 <Row className="mt-2 pt-3 pl-3 pb-3 Gray800-14px White">
                                     <Col md={12}>
                                         <Row className="Black-17px-Bold">
-                                            Advice from {datasetPublisher}
+                                            Advice from {publisher}
                                     </Row>
                                         <Row className="Gray800-15px mt-2">
                                             We highly recommend getting in touch with us as early as possible. We may be able to help you shape the various approvals, such as ethics, minimising the risk of having to apply more than once.
@@ -291,7 +337,7 @@ import 'react-tabs/style/react-tabs.css';
                                 <Row className="mt-2 pt-3 pl-3 pb-3 Gray800-14px" style={{ backgroundColor: "#ffffff" }} >
                                     <Col md={11}>
                                         <Winterfell
-                                            schema={this.state.form}
+                                            schema={this.state.schema}
                                             questionAnswers={this.state.questionAnswers}
                                             panelId={this.state.activePanelId}
                                             disableSubmit={true}
@@ -353,10 +399,10 @@ import 'react-tabs/style/react-tabs.css';
                     </Col>
                     <Col md={12}>
                         <Row className="darFooter">
-                            <Col md={8} className="mt-4 ml-4">
+                            <Col md={6} className="mt-4">
                                 <span className="Gray800-14px">{totalAnsweredQuestions}</span>
                             </Col>
-                            <Col md={3} className="mt-3 ml-5">
+                            <Col md={6} className="mt-3 text-right">
                                 <Button variant="white" className="TechDetailButton ml-2" onClick={this.onFormSubmit}>
                                     Save
                                 </Button>
@@ -373,6 +419,8 @@ import 'react-tabs/style/react-tabs.css';
                 </div>
             </div>
         )
+        
+        
     }
 }
 
