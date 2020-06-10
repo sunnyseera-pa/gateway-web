@@ -20,6 +20,7 @@ import { Event } from '../../tracking';
 import 'react-tabs/style/react-tabs.css';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
+var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
 
 class DatasetDetail extends Component {
 
@@ -139,7 +140,7 @@ class DatasetDetail extends Component {
           <Nav className="ml-auto">
             <Row>
               <p>
-                <a href="https://healthdatagateway.org/HDRUKGatewaySupportPortal" target="_blank" rel="noopener noreferrer" className="Purple-14px" id="UnderlinedLink">
+                <a href={cmsURL + '/HDRUKGatewaySupportPortal'} target="_blank" rel="noopener noreferrer" className="Purple-14px" id="UnderlinedLink">
                   HDR UK Gateway Support Portal
                 </a>
               </p>

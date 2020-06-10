@@ -20,6 +20,7 @@ import Creators from '../commonComponents/Creators';
 import {PageView, initGA} from '../../tracking';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
+var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
 
 class ProjectDetail extends Component {
   // initialize our state
@@ -187,7 +188,7 @@ class ProjectDetail extends Component {
           <Nav className="ml-auto">
             <Row>
               <p>
-                <a href="https://healthdatagateway.org/HDRUKGatewaySupportPortal" target="_blank" rel="noopener noreferrer" className="Purple-14px" id="UnderlinedLink">
+                <a href={cmsURL + '/HDRUKGatewaySupportPortal'} target="_blank" rel="noopener noreferrer" className="Purple-14px" id="UnderlinedLink">
                   HDR UK Gateway Support Portal
                 </a>
               </p>
