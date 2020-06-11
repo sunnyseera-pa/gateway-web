@@ -231,7 +231,7 @@ class ToolDetail extends Component {
             <Row>
               <p>
                 <a href={cmsURL + '/HDRUKGatewaySupportPortal'} target="_blank" rel="noopener noreferrer" className="Purple-14px" id="UnderlinedLink">
-                  HDR UK Gateway Support Portal
+                  Suggest Feedback
                 </a>
               </p>
             </Row>
