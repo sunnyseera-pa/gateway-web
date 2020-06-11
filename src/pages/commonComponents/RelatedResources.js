@@ -1,36 +1,46 @@
 import React, {Fragment, useState} from 'react';
 import { Button, Modal } from 'react-bootstrap';
+import SearchBar from '../commonComponents/SearchBar';
+import SimpleSearchBar from '../commonComponents/SimpleSearchBar';
 
-function RelatedResources() {
+function RelatedResources(props) {
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    
     return (
-        <Fragment>
+        <Fragment className="FlexCenter">
+            {console.log('here props: ' + JSON.stringify(props.userState[0]))}
             <Button variant='white' href={''} target="_blank" className="TechDetailButton mr-2" onClick={handleShow}>
                 + Add resources
             </Button>
             {/* <Button variant="white"  className="TechDetailButton" onClick={handleShow}>
                 View the toolkit
             </Button> */}
-            <Modal show={show} onHide={handleClose} size="lg" aria-labelledby="contained-modal-title-vcenter" centered className="darModal" >
-                <iframe src="https://hda-toolkit.org/story_html5.html" className="darIframe"> </iframe>
+            <Modal show={show} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter" centered className="RelatedResourcesModal" dialogClassName="modal-70w">
                 
 
-                {/* <Modal.Header closeButton>
-                    <Modal.Title>Modal heading</Modal.Title>
+                <Modal.Header closeButton>
+                    <Modal.Title >
+                        <span className="Black-20px">Add related resources</span>
+                        <br />
+                        <span className="Gray800-14px">Search for datasets, tools, papers, projects  and people</span>
+                    </Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+                <Modal.Body>
+                    <SimpleSearchBar userState={props.userState} />
+                    BODY
+                </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                    Close
+                    <Button variant='white' className="TechDetailButton" >
+                        Unselect all
                     </Button>
-                    <Button variant="primary" onClick={handleClose}>
-                    Save Changes
+                    <Button variant="primary" className="White-14px" >
+                        Add resources
                     </Button>
-                </Modal.Footer> */}
+                </Modal.Footer>
 
 
             </Modal>

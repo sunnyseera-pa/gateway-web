@@ -234,13 +234,13 @@ a.nav-item.nav-link.active {
 }
 
 .Black-20px {
-  font-family: museo-sans-rounded;
-  font-size: 20px;
-  font-weight: 500;
+  font-family: museo-sans-rounded !important;
+  font-size: 20px !important;
+  font-weight: 500 !important;
   font-stretch: normal;
   font-style: normal;
   letter-spacing: normal;
-  color: #2d2d2d;
+  color: #2d2d2d !important;
 }
 
 .Gray454443-14px {
@@ -264,13 +264,13 @@ a.nav-item.nav-link.active {
 }
 
 .Gray800-14px {
-  font-family: museo-sans-rounded;
-  font-size: 14px;
-  font-weight: 500;
+  font-family: museo-sans-rounded !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
   font-stretch: normal;
   font-style: normal;
   letter-spacing: normal;
-  color: #3c3c3b;
+  color: #3c3c3b !important;
 }
 
 h4, h5, h6 {
@@ -1753,10 +1753,48 @@ NAVBAR CSS BELOW
   background-image: linear-gradient(to left, #dfca5d, #bb9a30 50%);
 }
 
+/* .RelatedResourcesModal {
+  height: 100vh;
+} */
 
+.RelatedResourcesModal .modal-content{
+  height: 100vh;
+  /* width: 100vw; */
+}
 
+.modal-70w {
+  /* width: 70vw; */
+  padding-right: 50vw;
+  /* padding-left: 15%;
+  padding-right: 15%; */
+}
 
+.modal-70w .modal-content {
+  width: 100%;
+}
 
+.modal-70w .modal-header {
+  width: 70vw !important;
+  background-color: #ffffff;
+}
+
+.modal-70w .modal-body {
+  width: 70vw !important;
+  background-color: #ffffff;
+}
+
+.modal-70w .modal-footer {
+  width: 70vw !important;
+  background-color: #ffffff;
+}
+
+/* @media (min-width: 576px)
+<style>
+.modal-dialog */
+
+.modal-70vw .modal-dialog {
+  margin: 0px !important;
+}
 
 /* @media (max-width: 991px) {
     .navbar2 {

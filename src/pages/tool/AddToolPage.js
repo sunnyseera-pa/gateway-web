@@ -166,7 +166,6 @@ class AddToolPage extends React.Component {
     render() {
         const { data, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, combinedUsers, isLoading, userState } = this.state;
 
-
         if (isLoading) {
             return <Container><Loading /></Container>;
         }
@@ -450,7 +449,15 @@ const AddToolForm = (props) => {
                             {/* <Button variant='white' href={''} target="_blank" className="TechDetailButton mr-2" >
                                 + Add resources
                             </Button> */}
-                            <RelatedResources />
+                            <Row>
+                                <Col sm={1} lg={1} />
+                                <Col sm={10} lg={10}>
+                                { console.log('userState in add tool pg: ' + JSON.stringify(props.userState)) }
+                                    <RelatedResources userState={props.userState} />
+                                </Col>
+                                <Col sm={1} lg={10} />
+                            </Row>
+                            {/* <RelatedResources /> */}
                         </div>
 
                         <Row className="mt-3">
@@ -461,7 +468,7 @@ const AddToolForm = (props) => {
                                             Cancel
                                         </Button>
                                     </a>
-                                <Button variant="primary" type="submit" onClick={() => Event("Buttons", "Click", "Add tool form submitted")}>
+                                <Button variant="primary" className="White-14px" type="submit" onClick={() => Event("Buttons", "Click", "Add tool form submitted")}>
                                     Publish
                                 </Button>
                             </Col>
