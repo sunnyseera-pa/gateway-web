@@ -15,7 +15,6 @@ import SearchBar from '../commonComponents/SearchBar';
 import Tool from '../commonComponents/Tool';
 import Loading from '../commonComponents/Loading'
 import Creators from '../commonComponents/Creators';
-import DiscourseTopic from '../commonComponents/DiscourseTopic';
 
 // import ReactGA from 'react-ga'; 
 import {PageView, initGA} from '../../tracking';
@@ -37,8 +36,7 @@ class ProjectDetail extends Component {
       name: null
     }],
     projectAdded: false,
-    projectEdited: false,
-    discourseTopic: null
+    projectEdited: false
   };
 
   constructor(props) {
@@ -72,7 +70,6 @@ class ProjectDetail extends Component {
       .then((res) => {
         this.setState({
           data: res.data.data[0],
-          discourseTopic: res.data.discourseTopic,
           isLoading: false
         });
       })
@@ -91,7 +88,7 @@ class ProjectDetail extends Component {
   }
 
   render() {
-    const { searchString, data, isLoading, projectAdded, projectEdited, userState, discourseTopic } = this.state;
+    const { searchString, data, isLoading, projectAdded, projectEdited, userState } = this.state;
 
     if (isLoading) {
       return <Container><Loading /></Container>;
@@ -172,9 +169,6 @@ class ProjectDetail extends Component {
             <Col sm={10} lg={10}>
               <div>
                 <Tabs className='TabsBackground Gray700-13px'>
-                    <Tab eventKey="Collaboration" title={`Discussion (${discourseTopic && discourseTopic.posts ? discourseTopic.posts.length : 0})`}>
-                    <DiscourseTopic topic={discourseTopic} toolId={data.id} userState={userState} />
-                  </Tab>
                   <Tab eventKey="Tools" title={'Tools used in this (' + data.toolids.length + ')'}>
                     {data.toolids.length <= 0 ? <NotFound word="tools" /> : data.toolids.map((id) => {
                       return <Tool id={id} />
