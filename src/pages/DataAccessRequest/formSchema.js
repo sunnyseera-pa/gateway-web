@@ -93,8 +93,7 @@ export const formSchema = {
             "panelHeader": "MRC Health Data Access toolkit",
             "navHeader": "MRC Health Data Toolkit",
             "questionPanelHeaderText": "Test",
-            "pageId": "preSubmission",
-            "textareaInput": "mrcHealthDataToolkit"
+            "pageId": "preSubmission"
         },
         {
             "panelId": "adviceFromPublisher",
@@ -102,7 +101,6 @@ export const formSchema = {
             "navHeader": "Advice from Publisher",
             "questionPanelHeaderText": "Test",
             "pageId": "preSubmission",
-            "textareaInput": "adviceFromPublisher",
         },
         {
             "panelId": "applicant",
@@ -129,37 +127,6 @@ export const formSchema = {
                 }
             ]
         },
-        // {
-        //     "panelId": "person1",
-        //     "panelHeader": "Person 1",
-        //     "navHeader": "Person 1",
-        //     "pageId": "safePeople",
-        //     "textareaInput": "person1"
-        // },
-        // {
-        //     "panelId": "person2",
-        //     "panelHeader": "Person 2",
-        //     "navHeader": "Person 2",
-        //     "pageId": "safePeople",
-        //     "textareaInput": "person2"
-        // },
-        // {
-        //     "panelId": "institution1",
-        //     "panelHeader": "Institution 1",
-        //     "navHeader": "Institution 1",
-        //     "pageId": "safePeople",
-        //     "action": {
-        //         "default": {
-        //             "action": "GOTO",
-        //             "target": "safeProject"
-        //         }
-        //     },
-        //     "button": {
-        //         "text": "Next",
-        //         "disabled": false
-        //     },
-        //     "textareaInput": "institution1"
-        // },
         {
             "panelId": "safeProject",
             "panelHeader": "Safe Project",
@@ -234,42 +201,8 @@ export const formSchema = {
                                 ]
                             }
                         ]
-                    },
-                },
-                // {
-                //     "questionId": "optionsSelect",
-                //     "question": "Select multi options",
-                //     "input": {
-                //         "type": "typeaheadCustom",
-                //         "placeholder": "Please select",
-                //         "options": ["Form1", "Form2"],
-                //         "value": ["Form1"]
-                //     },
-                // },
-                // {
-                //     "questionId" : "startDate",
-                //     "question" : "Date",
-                //     "input" : {
-                //     "type" : "textInput",
-                //     "placeholder" : "MM/DD/YYYY"
-                //     },
-                //     "validations" : [{
-                //         "type" : "isDate",
-                //         "matches" : "('mm/dd/yyyy')"
-                //     }]
-                // },
-                // {
-                //     "questionId" : "startDateNew",
-                //     "question" : "Date picker component",
-                //     "input" : {
-                //         "type" : "datePickerCustom",
-                //         "value": "02/02/2020"
-                //     },
-                //     "validations" : [{
-                //         "type" : "isDate",
-                //         "matches" : "('mm/dd/yyyy')"
-                //     }]
-                // }
+                    }
+                }
             ]
         }, 
         {
