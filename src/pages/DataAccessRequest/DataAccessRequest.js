@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { Container, Row, Col, Button, Tabs, Tab } from 'react-bootstrap';
 import Winterfell from 'winterfell';
 import _ from 'lodash';
-import moment from 'moment';
+import moment, { invalid } from 'moment';
 import TypeaheadCustom from './components/TypeaheadCustom'
 import DatePickerCustom from './components/DatepickerCustom';
 import SearchBar from '../commonComponents/SearchBar';
@@ -121,6 +121,7 @@ class DataAccessRequest extends Component {
      * @desc Callback from Winterfell sets totalQuestionsAnswered + saveTime
      */
     onFormUpdate = _.debounce((questionAnswers) => {
+        console.log(questionAnswers);
         this.totalQuestionsAnswered(this.state.activePanelId);
         this.onApplicationUpdate(questionAnswers);
     }, 500);
@@ -162,6 +163,7 @@ class DataAccessRequest extends Component {
             // console.log(errors[activePanel]);
             alert('Fix the following validation issues');
         }
+        return validationMessages;
     }
 
     /**
