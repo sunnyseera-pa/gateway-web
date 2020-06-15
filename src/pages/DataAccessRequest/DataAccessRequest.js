@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { Container, Row, Col, Button, Tabs, Tab } from 'react-bootstrap';
 import Winterfell from 'winterfell';
 import _ from 'lodash';
-import moment from 'moment';
+import moment, { invalid } from 'moment';
 import TypeaheadCustom from './components/TypeaheadCustom'
 import DatePickerCustom from './components/DatepickerCustom';
 import SearchBar from '../commonComponents/SearchBar';
@@ -13,8 +13,8 @@ import ToolKit from './components/Toolkit';
 import NavItem from './components/NavItem';
 import { ReactComponent as CloseIconSvg } from '../../images/close.svg';
 import axios from 'axios';
+import DarValidation from '../../utils/DarValidation.util';
 import {classSchema} from './classSchema';
-import {formSchema} from './formSchema';
 import { baseURL } from '../../configs/url.config';
 import 'react-tabs/style/react-tabs.css';
 
@@ -31,6 +31,7 @@ class DataAccessRequest extends Component {
         _id: '',
         schema: {},
         questionAnswers: {},
+        applicationStatus: '',
         activePanelId: '',
         searchString: '',
         key: 'guidance',
@@ -46,8 +47,9 @@ class DataAccessRequest extends Component {
         try {
             let { location: { state: { dataSetId }}} = this.props;
             const response = await axios.get(`${baseURL}/api/v1/data-access-request/${dataSetId}`);
-            const { data: { data: { jsonSchema, questionAnswers, _id }}} = await response;
-            this.setState({schema: {...jsonSchema, ...classSchema}, questionAnswers, _id, activePanelId: 'mrcHealthDataToolkit', isLoading: false});
+            const { data: { data: { jsonSchema, questionAnswers, _id, applicationStatus }}} = response;
+            this.setState({schema: {...jsonSchema, ...classSchema}, questionAnswers, _id, applicationStatus, activePanelId: 'mrcHealthDataToolkit', isLoading: false});
+            // this.setState({schema: {...formSchema}, activePanelId: 'mrcHealthDataToolkit', isLoading: false});
         }
         catch (error) {
             this.setState({isLoading: false});
@@ -130,10 +132,35 @@ class DataAccessRequest extends Component {
         }
     }
 
-    onFormSubmit(questionAnswers = {}, target = '') {
-        if(!_.isEmpty(this.state.questionAnswers)) {
-            this.saveTime();
-            alert(`Application saved on ${moment().format('DD/MM/YYYY HH:mm:sss')}`);
+    /**
+     * [Form Submit]
+     * @desc Submitting data access request
+     * @params  Object{questionAnswers} {action}
+     */
+    onFormSubmit = async (questionAnswers = {}, action) => {
+        let invalidQuestions = DarValidation.getQuestionPanelInvalidQuestions(Winterfell, this.state.schema.questionSets, this.state.questionAnswers);
+        let validationMessages = DarValidation.buildInvalidMessages(Winterfell, invalidQuestions);
+        let errors = DarValidation.formatValidationObj(validationMessages, [...this.state.schema.questionPanels]);
+        let isValid = Object.keys(errors).length ? false : true;
+        // console.log(`${JSON.stringify(errors, null, 2)}`);
+        if(isValid) {
+            try {
+                let {_id: id} = this.state;
+                // 1. POST 
+                const response = await axios.post(`${baseURL}/api/v1/data-access-request/${id}`, {});
+                alert(`Application saved on ${moment().format('DD/MM/YYYY HH:mm:sss')}`);
+                this.saveTime();
+            } catch (err) {
+                console.log(err);
+            }
+        } else {
+            // get first panel
+            let [activePanel] = Object.keys(errors);
+            // {"index":3,"panelId":"applicant","pageId":"safePeople"}
+            // set active panel to show message
+            this.updateNavigation({pageId: activePanel });
+            // console.log(errors[activePanel]);
+            alert('Fix the following validation issues');
         }
     }
 
@@ -241,7 +268,7 @@ class DataAccessRequest extends Component {
     }
     
     updateSearchString = (searchString) => {
-    this.setState({ searchString: searchString });
+        this.setState({ searchString: searchString });
     }
 
     handleSelect = (key) => {
