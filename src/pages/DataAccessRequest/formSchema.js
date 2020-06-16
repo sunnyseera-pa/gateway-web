@@ -14,7 +14,7 @@ export const formSchema = {
         "controlButton": "btn btn-primary pull-right",
         "backButton": "btn btn-default pull-left",
         "errorMessage": "alert alert-danger",
-        "buttonBar": "button-bar hidden" 
+        "buttonBar": "button-bar" 
     },
     "pages": [
         {
@@ -108,6 +108,15 @@ export const formSchema = {
             "navHeader": "Applicant",
             "questionPanelHeaderText": "Test",
             "pageId": "safePeople",
+            "action": {
+                "default": {
+                  "action": "GOTO",
+                  "target": "principleInvestigator"
+                }
+              },
+              "button": {
+                "text": "Next",
+              },
             "questionSets": [
                 {
                     "index": 1,
@@ -120,6 +129,15 @@ export const formSchema = {
             "panelHeader": "Principle Investigator",
             "navHeader": "Principle Investigator",
             "pageId": "safePeople",
+            "action": {
+                "default": {
+                  "action": "GOTO",
+                  "target": "safeProject"
+                }
+              },
+            "button": {
+            "text": "Next"
+            },
             "questionSets": [
                 {
                     "index": 2,
@@ -132,6 +150,15 @@ export const formSchema = {
             "panelHeader": "Safe Project",
             "navHeader": "Safe Project",
             "pageId": "safeProject",
+            action: {
+                "default": {
+                    "action": "SUBMIT",
+                    "target": ""
+                }
+            },
+            "button": {
+                "text": "Submit"
+            },
             "questionSets": [
                 {
                     "index": 1,
@@ -165,7 +192,7 @@ export const formSchema = {
                     "validations": [{
                         "type": "isLength",
                         "params": [
-                            18
+                            2
                         ]}
                     ]
                 },
