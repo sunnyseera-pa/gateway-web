@@ -52,12 +52,20 @@ class YourAccount extends React.Component {
         const { data, isLoading, isUpdated, userdata } = this.state;
 
         if (isLoading) {
-            return <Loading />;
+            return (
+                <Row className="mt-4">
+                    <Col xs={1}></Col>
+                    <Col xs={10}>
+                        <Loading />
+                    </Col>
+                    <Col xs={1}></Col>
+                </Row> 
+            );
         }
 
         return (
             <div>
-                <Row className="mt-5">
+                <Row className="mt-4">
                     <Col xs={1}></Col>
                     <Col xs={10}>
                         <YourAccountForm data={data} userdata={userdata} isUpdated={isUpdated} />
@@ -113,7 +121,7 @@ const YourAccountForm = (props) => {
 
         <div>
             {props.isUpdated ? <Alert variant="success" className="mt-3">Done! Your account details have been updated</Alert> : ""}
-            <Row className="mt-2">
+            <Row className="pixelGapBottom">
                 <Col>
                     <div className="Rectangle">
                         <p className="Black-20px">Add or edit your account details</p>
@@ -122,7 +130,7 @@ const YourAccountForm = (props) => {
                 </Col>
             </Row>
             <Form onSubmit={formik.handleSubmit}>
-                <Row className="mt-2">
+                <Row>
                     <Col>
                         <div className="Rectangle">
                             <Form.Group className="pb-2">

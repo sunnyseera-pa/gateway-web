@@ -11,7 +11,7 @@ import { Event, initGA } from '../../tracking';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
-class AccountProjects extends React.Component {
+class AccountPapers extends React.Component {
 
     constructor(props) {
         super(props)
@@ -32,31 +32,31 @@ class AccountProjects extends React.Component {
 
     componentDidMount() {
         initGA('UA-166025838-1');
-        this.doProjectsCall();
+        this.doPapersCall();
     }
 
-    doProjectsCall() {
+    doPapersCall() {
         if (this.state.userState[0].role === "Admin") {
-            axios.get(baseURL + '/api/v1/accounts/admin?type=project')
+            axios.get(baseURL + '/api/v1/accounts/admin?type=paper')
                 .then((res) => {
                     this.setState({ data: res.data.data, isLoading: false });
                 });
         }
         else {
-            axios.get(baseURL + '/api/v1/accounts?type=project&id=' + this.state.userState[0].id + '')
+            axios.get(baseURL + '/api/v1/accounts?type=paper&id=' + this.state.userState[0].id + '')
                 .then((res) => {
                     this.setState({ data: res.data.data, isLoading: false });
                 });
         }
     }
 
-    approveProject = (id) => {
+    approvePaper = (id) => {
         axios.put(baseURL + '/api/v1/accounts/status', {
             id: id,
             activeflag: "active"
         })
             .then((res) => {
-                window.location.href = '/account?tab=projects&projectApproved=true';
+                window.location.href = '/account?tab=papers&paperApproved=true';
             });
     }
 
@@ -80,11 +80,11 @@ class AccountProjects extends React.Component {
         var archiveCount = 0;
         var rejectedCount = 0;
 
-        data.forEach((project) => {
-            if (project.activeflag === "active") activeCount++;
-            else if (project.activeflag === "review") reviewCount++;
-            else if (project.activeflag === "archive") archiveCount++;
-            else if (project.activeflag === "rejected") rejectedCount++;
+        data.forEach((paper) => {
+            if (paper.activeflag === "active") activeCount++;
+            else if (paper.activeflag === "review") reviewCount++;
+            else if (paper.activeflag === "archive") archiveCount++;
+            else if (paper.activeflag === "rejected") rejectedCount++;
         });
 
         return (
@@ -95,15 +95,15 @@ class AccountProjects extends React.Component {
                         <Row className="AccountHeader mt-4">
                             <Col xs={8}>
                                 <Row>
-                                    <span className="Black-20px">Projects</span>
+                                    <span className="Black-20px">Papers</span>
                                 </Row>
                                 <Row>
-                                    <span className="Gray700-13px ">Manage your existing projects or add new ones</span>
+                                    <span className="Gray700-13px ">Manage your existing papers or add new ones</span>
                                 </Row>
                             </Col>
                             <Col xs={4} style={{ textAlign: "right" }}>
-                                <Button variant="primary" href="/addproject" className="AddButton" onClick={() => Event("Buttons", "Click", "Add a new project")} >
-                                    + Add a new project
+                                <Button variant="primary" href="/addpaper" className="AddButton" onClick={() => Event("Buttons", "Click", "Add a new paper")} >
+                                    + Add a new paper
                                 </Button>
                             </Col>
                         </Row>
@@ -119,6 +119,8 @@ class AccountProjects extends React.Component {
                             </Col>
                         </Row>
 
+
+
                         {(() => {
                             switch (key) {
                                 case "active":
@@ -131,7 +133,7 @@ class AccountProjects extends React.Component {
                                                 <Col xs={3}></Col>
                                             </Row>
 
-                                            {activeCount <= 0 ? <NotFound word="projects" /> : data.map((dat) => {
+                                            {activeCount <= 0 ? <NotFound word="papers" /> : data.map((dat) => {
                                                 if (dat.activeflag !== "active") {
                                                     return (<></>)
                                                 }
@@ -139,7 +141,7 @@ class AccountProjects extends React.Component {
                                                     return (
                                                         <Row className="entryBox">
                                                             <Col sm={12} lg={2} className="pt-2 Gray800-14px">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
-                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/project/' + dat.id} className="Black-14px">{dat.name}</a></Col>
+                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/paper/' + dat.id} className="Black-14px">{dat.name}</a></Col>
                                                             <Col sm={12} lg={2} className="pt-2 Gray800-14px">
                                                                 {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
                                                                     return <span>{person.firstname} {person.lastname} <br /></span>
@@ -148,7 +150,7 @@ class AccountProjects extends React.Component {
 
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
-                                                                    <Dropdown.Item href={'/editproject/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
+                                                                    <Dropdown.Item href={'/editpaper/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
                                                                     <DeleteButton id={dat.id} />
                                                                 </DropdownButton>
                                                             </Col>
@@ -169,7 +171,7 @@ class AccountProjects extends React.Component {
                                                 <Col xs={3}></Col>
                                             </Row>
 
-                                            {reviewCount <= 0 ? <NotFound word="projects" /> : data.map((dat) => {
+                                            {reviewCount <= 0 ? <NotFound word="papers" /> : data.map((dat) => {
                                                 if (dat.activeflag !== "review") {
                                                     return (<></>)
                                                 }
@@ -177,7 +179,7 @@ class AccountProjects extends React.Component {
                                                     return (
                                                         <Row className="entryBox">
                                                             <Col sm={12} lg={2} className="pt-2 Gray800-14px">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
-                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/project/' + dat.id} className="Black-14px">{dat.name}</a></Col>
+                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/paper/' + dat.id} className="Black-14px">{dat.name}</a></Col>
                                                             <Col sm={12} lg={2} className="pt-2 Gray800-14px">
                                                                 {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
                                                                     return <span>{person.firstname} {person.lastname} <br /></span>
@@ -187,8 +189,8 @@ class AccountProjects extends React.Component {
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 {userState[0].role === 'Admin' ?
                                                                     <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
-                                                                        <Dropdown.Item href={'/editproject/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
-                                                                        <Dropdown.Item href='#' onClick={() => this.approveProject(dat.id)} className="Black-14px">Approve</Dropdown.Item>
+                                                                        <Dropdown.Item href={'/editpaper/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
+                                                                        <Dropdown.Item href='#' onClick={() => this.approvePaper(dat.id)} className="Black-14px">Approve</Dropdown.Item>
                                                                         <RejectButton id={dat.id} />
                                                                     </DropdownButton>
                                                                     : ""}
@@ -197,6 +199,7 @@ class AccountProjects extends React.Component {
                                                     )
                                                 }
                                             })}
+
                                         </div>
                                     );
                                 case "rejected":
@@ -209,7 +212,7 @@ class AccountProjects extends React.Component {
                                                 <Col xs={3}></Col>
                                             </Row>
 
-                                            {rejectedCount <= 0 ? <NotFound word="projects" /> : data.map((dat) => {
+                                            {rejectedCount <= 0 ? <NotFound word="papers" /> : data.map((dat) => {
                                                 if (dat.activeflag !== "rejected") {
                                                     return (<></>)
                                                 }
@@ -217,7 +220,7 @@ class AccountProjects extends React.Component {
                                                     return (
                                                         <Row className="entryBox">
                                                             <Col sm={12} lg={2} className="pt-2 Gray800-14px">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
-                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/project/' + dat.id} className="Black-14px">{dat.name}</a></Col>
+                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/paper/' + dat.id} className="Black-14px">{dat.name}</a></Col>
                                                             <Col sm={12} lg={2} className="pt-2 Gray800-14px">
                                                                 {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
                                                                     return <span>{person.firstname} {person.lastname} <br /></span>
@@ -231,7 +234,6 @@ class AccountProjects extends React.Component {
                                                     )
                                                 }
                                             })}
-
                                         </div>
                                     );
                                 case "archive":
@@ -244,7 +246,7 @@ class AccountProjects extends React.Component {
                                                 <Col xs={3}></Col>
                                             </Row>
 
-                                            {archiveCount <= 0 ? <NotFound word="projects" /> : data.map((dat) => {
+                                            {archiveCount <= 0 ? <NotFound word="papers" /> : data.map((dat) => {
                                                 if (dat.activeflag !== "archive") {
                                                     return (<></>)
                                                 }
@@ -252,7 +254,7 @@ class AccountProjects extends React.Component {
                                                     return (
                                                         <Row className="entryBox">
                                                             <Col sm={12} lg={2} className="pt-2 Gray800-14px">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
-                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/project/' + dat.id} className="Black-14px">{dat.name}</a></Col>
+                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/paper/' + dat.id} className="Black-14px">{dat.name}</a></Col>
                                                             <Col sm={12} lg={2} className="pt-2 Gray800-14px">
                                                                 {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
                                                                     return <span>{person.firstname} {person.lastname} <br /></span>
@@ -261,22 +263,20 @@ class AccountProjects extends React.Component {
 
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
-                                                                    <Dropdown.Item href={'/editproject/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
-                                                                    <Dropdown.Item href='#' onClick={() => this.approveProject(dat.id)} className="Black-14px">Approve</Dropdown.Item>
-                                                                    <Dropdown.Item href='#' onClick={() => this.rejectProject(dat.id)} className="Black-14px">Reject</Dropdown.Item>
+                                                                    <Dropdown.Item href={'/editpaper/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
+                                                                    <Dropdown.Item href='#' onClick={() => this.approvePaper(dat.id)} className="Black-14px">Approve</Dropdown.Item>
+                                                                    <Dropdown.Item href='#' onClick={() => this.rejectPaper(dat.id)} className="Black-14px">Reject</Dropdown.Item>
                                                                 </DropdownButton>
                                                             </Col>
                                                         </Row>
                                                     )
                                                 }
                                             })}
-
                                         </div>
                                     );
                             }
                         })()}
                     </Col>
-
                     <Col xs={1}></Col>
                 </Row>
             </div>
@@ -295,7 +295,7 @@ function RejectButton(props) {
             activeflag: "rejected"
         })
             .then((res) => {
-                window.location.href = '/account?tab=projects&projectRejected=true';
+                window.location.href = '/account?tab=papers&paperRejected=true';
             });
     }
 
@@ -305,7 +305,7 @@ function RejectButton(props) {
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Reject this project?</Modal.Title>
+                    <Modal.Title>Reject this paper?</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>Let the person who added this know know why their submission is being rejected, especially if there’s anything in particular they should correct before re-submitting.</Modal.Body>
                 <Modal.Footer>
@@ -328,7 +328,7 @@ function DeleteButton(props) {
             activeflag: "archive"
         })
             .then((res) => {
-                window.location.href = '/account?tab=projects&projectDeleted=true';
+                window.location.href = '/account?tab=papers&paperDeleted=true';
             });
     }
 
@@ -338,9 +338,9 @@ function DeleteButton(props) {
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Archive this project?</Modal.Title>
+                    <Modal.Title>Archive this paper?</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>This project will be archived from the directory.</Modal.Body>
+                <Modal.Body>This paper will be archived from the directory.</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>No, nevermind</Button>
                     <Button variant="primary" onClick={deleteObject}>Yes, archive</Button>
@@ -350,4 +350,4 @@ function DeleteButton(props) {
     );
 }
 
-export default AccountProjects;
+export default AccountPapers;
