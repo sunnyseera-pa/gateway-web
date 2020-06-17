@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, Fragment} from 'react';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -9,6 +9,7 @@ import {Form, Button, Row, Col, Container} from 'react-bootstrap';
 import SearchBar from '../commonComponents/SearchBar';
 import Loading from '../commonComponents/Loading';
 import RelatedResources from '../commonComponents/RelatedResources';
+import RelatedResourcesResults from '../commonComponents/RelatedResourcesResults';
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
@@ -35,7 +36,28 @@ class AddToolPage extends React.Component {
         combinedLicenses: [],
         combinedUsers: [],
         isLoading: true,
-        userState: []
+        userState: [],
+        searchString: null,
+        datasetData: [],
+        toolData: [],
+        projectData: [],
+        personData: [],
+        summary: [],
+        tempRelatedObjectIds: [],
+        relatedObjectIds: [],
+        relatedObjectIdsCount: 0,
+        tempSelected:{
+            datasets:0,
+            tools:0,
+            projects:0,
+            persons:0
+         },
+       selected:{
+            datasets:0,
+            tools:0,
+            projects:0,
+            persons:0
+       }
     };
 
     async componentDidMount() {
@@ -159,12 +181,106 @@ class AddToolPage extends React.Component {
         }
     }
 
+    doModalSearch = (e, type, page) => {
+
+        if (e.key === 'Enter' || e === 'click') {
+
+            var searchURL = '';
+
+            if (type === 'dataset' && page > 0) searchURL += '&datasetIndex=' + page;
+            if (type === 'tool' && page > 0) searchURL += '&toolIndex=' + page;
+            if (type === 'project' && page > 0) searchURL += '&projectIndex=' + page;
+            if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
+        
+        axios.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL )
+            .then((res) => {
+                this.setState({
+                    datasetData: res.data.datasetResults || [],
+                    toolData: res.data.toolResults || [],
+                    projectData: res.data.projectResults || [],
+                    personData: res.data.personResults || [],
+                    summary: res.data.summary || [],
+                    isLoading: false
+                });
+            })
+        }
+    }
+
     updateSearchString = (searchString) => {
         this.setState({ searchString: searchString });
     }
 
+    addToTempRelatedObjects = (id, type) => {
+
+        if(this.state.tempRelatedObjectIds.includes(id)){
+            this.state.tempRelatedObjectIds.splice( this.state.tempRelatedObjectIds.indexOf(id), 1 );        
+            if(type===undefined){this.state.tempSelected.datasets--}
+            else if(type==="tool"){this.state.tempSelected.tools--}
+            else if(type==="project"){this.state.tempSelected.projects--}
+            else if(type==="person"){this.state.tempSelected.persons--}
+        }
+        else {
+            this.state.tempRelatedObjectIds.push(id)
+            if(type===undefined){this.state.tempSelected.datasets++}
+            else if(type==="tool"){this.state.tempSelected.tools++}
+            else if(type==="project"){this.state.tempSelected.projects++}
+            else if(type==="person"){this.state.tempSelected.persons++}
+        }  
+      
+        this.setState({relatedObjectIdsCount: this.state.tempRelatedObjectIds.length - this.state.relatedObjectIds.length})
+    }
+
+    addToRelatedObjects = () => {
+        const tempObjectIds = JSON.stringify(this.state.tempRelatedObjectIds);
+        const temporaryObjectIds = JSON.parse(tempObjectIds);
+        this.setState({relatedObjectIds: temporaryObjectIds});
+        this.setState({relatedObjectIdsCount: 0 })
+        this.setState(prevState => ({
+            selected: {                   
+                datasets: this.state.tempSelected.datasets,      
+                tools: this.state.tempSelected.tools,
+                projects: this.state.tempSelected.projects,
+                persons: this.state.tempSelected.persons
+            }
+        }))
+    }
+
+    clearRelatedObjects = () => {
+        this.setState({tempRelatedObjectIds: [] })
+        this.setState({relatedObjectIdsCount: 0 })
+    }
+
+    removeObject = (id, type) => {
+        console.log('REMOVE! ' + id + ' - ' + type)
+        this.state.tempRelatedObjectIds.splice( this.state.tempRelatedObjectIds.indexOf(id), 1 );   
+        this.state.relatedObjectIds.splice( this.state.relatedObjectIds.indexOf(id), 1 ); 
+
+        switch (type) {
+            case 'tool':
+                    {this.state.tempSelected.tools--}
+                    {this.state.selected.tools--}
+                break;
+            case 'project':
+                    {this.state.tempSelected.projects--}
+                    {this.state.selected.projects--}
+                break;
+            case 'person':
+                    {this.state.tempSelected.persons--}
+                    {this.state.selected.persons--}
+                break;
+            case undefined:
+                    {this.state.tempSelected.datasets--}
+                    {this.state.selected.datasets--}
+                break;
+        }
+
+        this.setState({tempRelatedObjectIds: this.state.tempRelatedObjectIds})
+        this.setState({relatedObjectIds: this.state.relatedObjectIds})
+
+    }
+
     render() {
-        const { data, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, combinedUsers, isLoading, userState } = this.state;
+        const { data, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, selected } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -172,9 +288,13 @@ class AddToolPage extends React.Component {
 
         return (
             <div>
+
+        {  console.log('relatedObjectIds: ' + this.state.relatedObjectIds) }
+       { console.log('tempRelatedObjectIds: ' + JSON.stringify(this.state.tempRelatedObjectIds)) }
+       
                 <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Container>
-                    <AddToolForm data={data} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} userState={userState} />
+                    <AddToolForm data={data} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} relatedObjectIdsCount={this.state.relatedObjectIdsCount} tempRelatedObjectIds={this.state.tempRelatedObjectIds} relatedObjectIds={this.state.relatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} selected={selected} />
                 </Container>
             </div>
         );
@@ -185,6 +305,9 @@ class AddToolPage extends React.Component {
 const AddToolForm = (props) => {
     // Pass the useFormik() hook initial form values and a submit function that will
     // be called when the form is submitted
+
+    let cardIndex = 0;
+
     const formik = useFormik({
         initialValues: {
             type: 'tool',
@@ -202,6 +325,7 @@ const AddToolForm = (props) => {
                 features: [],
                 topics: [],
             },
+            relationship: ''
         },
 
         validationSchema: Yup.object({
@@ -445,19 +569,46 @@ const AddToolForm = (props) => {
                             <span className="Gray595757-14px">Show relationships to papers, projects, datasets and tools. Resources must be added to the Gateway first.</span>
                         </div>
 
-                        <div className="Rectangle FlexCenter mt-1">
-                            {/* <Button variant='white' href={''} target="_blank" className="TechDetailButton mr-2" >
-                                + Add resources
-                            </Button> */}
+                        {/* <div className="Rectangle FlexCenter mt-1">
                             <Row>
                                 <Col sm={1} lg={1} />
                                 <Col sm={10} lg={10}>
-                                { console.log('userState in add tool pg: ' + JSON.stringify(props.userState)) }
-                                    <RelatedResources userState={props.userState} />
+                                    <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} relatedObjectIdsCount={props.relatedObjectIdsCount} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjectIds={props.relatedObjectIds} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects}/>
                                 </Col>
                                 <Col sm={1} lg={10} />
                             </Row>
-                            {/* <RelatedResources /> */}
+                        </div> */}
+
+                        <div className="Rectangle">
+                            {console.log('tool form relatedObjectIds: ' + props.relatedObjectIds)}
+                            {props.relatedObjectIds.map((objectId) => {
+                                cardIndex = cardIndex + 1;
+                                console.log('id in form - map: ' + objectId)
+                                // console.log('cardIndex: ' + (cardIndex))
+                                // console.log('objectId: ' + objectId)
+                                return <div className="RectangleWithBorder mt-3"> <RelatedResourcesResults objectId={objectId} doRemoveObject={props.doRemoveObject} /> <Form.Group className="mt-5"> <span className="Gray800-14px mr-2">What's the relationship between these resources?</span> <Form.Control id={"relationship" + cardIndex} name={"relationship"} type="text" className={formik.touched.link && formik.errors.link ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.relationship} onBlur={formik.handleBlur} /> </Form.Group> </div>
+                                // return <RelatedResourcesResults objectId={objectId} doRemoveObject={props.doRemoveObject} /> 
+                              
+                            })}
+                           
+
+                            {/* <RelatedResourcesResults objectId={"255199130616951"} /> */}
+
+                            {/* <Form.Group className="mt-5">
+                                <span className="Gray800-14px mr-2">What's the relationship between these resources?</span>
+                                <Form.Control id="link" name="link" type="text" className={formik.touched.link && formik.errors.link ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.link} onBlur={formik.handleBlur} />
+                            </Form.Group> */}
+
+                        </div>
+
+                        <div className="Rectangle FlexCenter mt-1">
+                            <Row>
+                                <Col sm={1} lg={1} />
+                                <Col sm={10} lg={10}>
+                                    <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} relatedObjectIdsCount={props.relatedObjectIdsCount} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjectIds={props.relatedObjectIds} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} selected={props.selected}/>
+                                </Col>
+                                <Col sm={1} lg={10} />
+                            </Row>
                         </div>
 
                         <Row className="mt-3">

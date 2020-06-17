@@ -38,7 +38,7 @@ class DataAccessRequests extends React.Component {
 
     getDARsFromDb = () => {
         this.setState({ isLoading: true });
-        axios.get(baseURL + '/api/v1/dar')
+        axios.get(baseURL + '/api/v1/dar') 
           .then((res) => {
             this.setState({
               data: res.data.data,

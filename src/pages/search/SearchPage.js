@@ -222,7 +222,7 @@ class SearchPage extends React.Component {
             else {
                 this.props.history.push(`${window.location.pathname}?search=${this.state.searchString}` + searchURL);
             }
-        }
+        } 
         
         this.setState({ isLoading: true });
         axios.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL)
@@ -380,25 +380,25 @@ class SearchPage extends React.Component {
                         <Col sm={12} md={12} lg={9}>
                             {key === 'Datasets' ?
                                 datasetData.map((dataset) => {
-                                    return <DataSet key={dataset.id} data={dataset} />
+                                    return <DataSet key={dataset.id} data={dataset} activeLink={true} />
                                 })
                                 : ''}
 
                             {key === 'Tools' ?
                                 toolData.map((tool) => {
-                                    return <Tool key={tool.id} data={tool} />
+                                    return <Tool key={tool.id} data={tool} activeLink={true} />
                                 })
                                 : ''}
 
                             {key === 'Projects' ?
                                 projectData.map((project) => {
-                                    return <Project key={project.id} data={project} />
+                                    return <Project key={project.id} data={project} activeLink={true}/>
                                 })
                                 : ''}
 
                             {key === 'People' ?
                                 personData.map((person) => {
-                                    return <Person key={person.id} data={person} />
+                                    return <Person key={person.id} data={person} activeLink={true} />
                                 })
                                 : ''}
 

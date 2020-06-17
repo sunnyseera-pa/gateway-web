@@ -14,6 +14,14 @@ body {
   padding: 20px;
 }
 
+.RectangleWithBorder{
+  width: 100%;
+  /* box-shadow: 1px 1px 3px 0 #00000017; */
+  background-color: #ffffff;
+  padding: 20px;
+  border: solid 1px #e2e2e2;
+}
+
 .TitleLandingBox {
   width: 480px;
   height: 40px;
@@ -146,6 +154,38 @@ a.nav-item.nav-link.active {
   font-weight: 500;
 }
 
+.DatasetBadge {
+  display: inline-block;
+  background-color: #3db28c;
+  padding: 5px 10px;
+  border-radius: 16px;
+  color: #ffffff;
+  font-family: museo-sans-rounded;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.ProjectBadge {
+  display: inline-block;
+  background-color: #e07410;
+  padding: 5px 10px;
+  border-radius: 16px;
+  color: #ffffff;
+  font-family: museo-sans-rounded;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.PaperBadge {
+  display: inline-block;
+  background-color: #addad9;
+  padding: 5px 10px;
+  border-radius: 16px;
+  color: #3c3c3b;
+  font-family: museo-sans-rounded;
+  font-size: 14px;
+  font-weight: 500;
+}
 
 .BubbleCounts {
   width: 24px;
@@ -210,6 +250,28 @@ a.nav-item.nav-link.active {
   font-style: normal;
   letter-spacing: normal;
   color: #2d2d2d;
+}
+
+.ExtraBlack-16px-Bold {
+  font-family: museo-sans-rounded;
+  font-size: 16px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #222222;
+}
+
+.ExtraBlack-14px {
+  font-family: museo-sans-rounded !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #222222 !important;
 }
 
 .Black-17px-Bold {
@@ -683,8 +745,13 @@ svg:not(:root) {
 }
 
 .BadgeSvgs{
-  width: 11px;
-  height: 11px;
+  width: 12px;
+  height: 12px;
+}
+
+.ButtonSvgs{
+  width: 10px;
+  height: 10px;
 }
 
 .darTabs .tab-content{
@@ -1225,6 +1292,11 @@ iframe#discourse-embed-frame {
     height: 18px;
   }
 
+  .Icon-8px {
+    width: 12px;
+    height: 12px;
+  }
+
   .form-control:focus {
     border: solid 2px #3db28c !important;
   }
@@ -1666,6 +1738,14 @@ NAVBAR CSS BELOW
     background-color: #f6f7f8
 }
 
+.RelatedModalBackground{
+  background-color: #f6f7f8;
+  /* flex-wrap: wrap; */
+  /* height: 100%; */
+  display: flex;
+  flex-direction: column;
+}
+
 .NotificationDate{
   padding: 10px 0px 5px 15px;
   font-size: 13px;
@@ -1795,6 +1875,12 @@ NAVBAR CSS BELOW
 .modal-70vw .modal-dialog {
   margin: 0px !important;
 }
+
+.SelectedBorder{
+  border: solid 4px #3db28c !important;
+
+}
+
 
 /* @media (max-width: 991px) {
     .navbar2 {

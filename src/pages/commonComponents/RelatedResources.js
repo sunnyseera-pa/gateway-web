@@ -1,51 +1,69 @@
 import React, {Fragment, useState} from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import { Button, Modal, Row, Col, Tab, Tabs } from 'react-bootstrap';
 import SearchBar from '../commonComponents/SearchBar';
 import SimpleSearchBar from '../commonComponents/SimpleSearchBar';
+import RelatedResourcesModal from './RelatedResourceModal';
+import { testModeAPI } from 'react-ga';
+import { ReactComponent as ClearButtonSvg } from '../../images/clear.svg'; 
 
 function RelatedResources(props) {
+
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    function addResources() {
+        handleClose();
+        props.doAddToRelatedObjects();
+
+    }
+
+    function closeModal() {
+        handleClose();
+        //DO WE WANT THE TEMP ARRAY TO CLEAR WHEN CLOSING MODAL OR FOR THEM TO STAY SELECTED?
+        // props.doClearRelatedObjects();
+    }
     
     return (
         <Fragment className="FlexCenter">
-            {console.log('here props: ' + JSON.stringify(props.userState[0]))}
             <Button variant='white' href={''} target="_blank" className="TechDetailButton mr-2" onClick={handleShow}>
                 + Add resources
             </Button>
-            {/* <Button variant="white"  className="TechDetailButton" onClick={handleShow}>
-                View the toolkit
-            </Button> */}
             <Modal show={show} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter" centered className="RelatedResourcesModal" dialogClassName="modal-70w">
                 
 
-                <Modal.Header closeButton>
+                <Modal.Header >
                     <Modal.Title >
                         <span className="Black-20px">Add related resources</span>
                         <br />
                         <span className="Gray800-14px">Search for datasets, tools, papers, projects  and people</span>
                     </Modal.Title>
+                    <ClearButtonSvg onClick={closeModal} />
                 </Modal.Header>
-                <Modal.Body>
-                    <SimpleSearchBar userState={props.userState} />
-                    BODY
+                <Modal.Body >
+                    {/* <SimpleSearchBar searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} /> */}
+                   <RelatedResourcesModal searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjectIds={props.relatedObjectIds} selected={props.selected}/>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant='white' className="TechDetailButton" >
-                        Unselect all
-                    </Button>
-                    <Button variant="primary" className="White-14px" >
-                        Add resources
-                    </Button>
+                    <Col sm={1} lg={1} />
+                        <Col sm={7} lg={7} className="ml-5 mr-5">
+                            <span className="Gray800-14px" >{props.relatedObjectIdsCount} selected</span>
+                        </Col>
+                        <Col sm={4} lg={4} > 
+                            <Button variant='white' className="TechDetailButton  ml-5 mr-3"  onClick={props.doClearRelatedObjects} >
+                                Unselect all
+                            </Button>
+                            <Button variant="primary" className="White-14px" onClick={addResources} >
+                                Add resources
+                            </Button>
+                        </Col>
                 </Modal.Footer>
 
 
             </Modal>
         </Fragment>
     )
-}
+} 
 
 export default RelatedResources;

@@ -38,18 +38,11 @@ class SimpleSearchBar extends React.Component {
 
     render() {
         const { userState } = this.state;
-        console.log('simple search bar: ' + JSON.stringify(userState)) 
+
         return (
             <>
                 <div className="searchBarBackground">
                     <Row >
-                        {/* <Col xs={{ span: 6, order: 1 }} lg={{ span: 2, order: 1 }}>
-                            <div>
-                                <a style={{ cursor: 'pointer' }} href={cmsURL} >
-                                    <ColourLogoSvg className="ml-4 mt-3" />
-                                </a>
-                            </div>
-                        </Col> */}
                         <Col xs={12} lg={12}>
                             <div>
                                 <Container>
@@ -60,25 +53,22 @@ class SimpleSearchBar extends React.Component {
                                                     <SVGIcon name="searchicon" width={20} height={20} fill={'#2c8267'} stroke='none' type="submit" />
                                                 </span>
                                                 <span>
-                                                    <input type="text" placeholder="Search" id="SearchInputSpanGrey" onChange={this.changeText} onKeyDown={this.props.doSearchMethod} value={this.props.searchString} />
+                                                    <input type="text" placeholder="Search" id="SearchInputSpanGrey" 
+                                                    onChange={this.changeText} 
+                                                    onKeyDown={this.props.doSearchMethod} value={this.props.searchString} />
                                                 </span>
-                                                {(this.props.searchString != '' && this.props.searchString != undefined) ?
+                                                {/* {(this.props.searchString != '' && this.props.searchString != undefined) ?
                                                     <span className="SearchInputClearGrey">
                                                         <a style={{ cursor: 'pointer' }} href={'/search?search='} >
                                                             <ClearButtonSvg />
                                                         </a>
-                                                    </span> : null}
+                                                    </span> : null} */}
                                             </span>
                                         </Col>
                                     </Row>
                                 </Container>
                             </div>
                         </Col>
-                        {/* <Col xs={{ span: 6, order: 2 }} lg={{ span: 2, order: 3 }}>
-                            <div className="signLink">
-                                <UserMenu userState={userState} />
-                            </div>
-                        </Col> */}
                     </Row>
                 </div>
             </>

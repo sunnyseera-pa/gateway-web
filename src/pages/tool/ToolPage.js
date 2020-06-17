@@ -205,10 +205,10 @@ class ToolDetail extends Component {
                     <DiscourseTopic topic={discourseTopic} toolId={data.id} userState={userState} />
                   </Tab>
                   <Tab eventKey="Projects" title={'Projects using this (' + data.projectids.length + ')'}>
-                    {data.projectids.length <= 0 ? <NotFound word="projects" /> : data.projectids.map(id => <Project id={id} />)}
+                    {data.projectids.length <= 0 ? <NotFound word="projects" /> : data.projectids.map(id => <Project id={id} activeLink={true}/>)}
                   </Tab>
                   <Tab eventKey="Data sets" title={'Data sets in the same projects (' + data.datasetids.length + ')'}>
-                    {data.datasetids.length <= 0 ? <NotFound word="data sets" /> : data.datasetids.map(id => <DataSet id={id} />)}
+                    {data.datasetids.length <= 0 ? <NotFound word="data sets" /> : data.datasetids.map(id => <DataSet id={id} activeLink={true} />)}
                   </Tab>
                 </Tabs>
               </div>

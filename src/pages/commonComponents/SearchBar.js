@@ -8,7 +8,7 @@ import NotificationBadge from 'react-notification-badge';
 import SVGIcon from "../../images/SVGIcon";
 import { ReactComponent as ColourLogoSvg } from '../../images/colour.svg';
 import { ReactComponent as ClearButtonSvg } from '../../images/clear.svg';
-import { ReactComponent as NotificationsBellSvg } from '../../images/bell.svg';
+import { ReactComponent as NotificationsBellSvg } from '../../images/bell.svg'; 
 import { ReactComponent as HamBurgerSvg } from '../../images/hamburger.svg';
 import { ReactComponent as ArrowDownSvg } from '../../images/stock.svg';
 import { ReactComponent as WhiteArrowDownSvg } from '../../images/arrowDownWhite.svg';
@@ -244,7 +244,8 @@ class SearchBar extends React.Component {
                                             <Dropdown>
                                                 <Dropdown.Toggle as={CustomToggle} ref={node => this.node = node}>
                                                     <NotificationBadge count={this.state.count} style={{ backgroundColor: '#29235c' }} />
-                                                    <NotificationsBellSvg width={50} height={50} id="NotificationsBell" className={this.state.dropdownOpen ? "NotificationsBell" : null} style={{ cursor: 'pointer' }} />
+                                                    <SVGIcon name="bell" fill={'#475da7'} width={20} height={20} id="NotificationsBell" className={this.state.dropdownOpen ? "NotificationsBell" : null} style={{ cursor: 'pointer' }} />
+                                                    {/* <NotificationsBellSvg width={50} height={50} id="NotificationsBell" className={this.state.dropdownOpen ? "NotificationsBell" : null} style={{ cursor: 'pointer' }} /> */}
                                                 </Dropdown.Toggle>
 
                                                 <Dropdown.Menu as={CustomMenu} className="desktopNotificationMenu">
@@ -426,7 +427,8 @@ class SearchBar extends React.Component {
                                                 <Dropdown>
                                                     <Dropdown.Toggle as={CustomToggle} ref={nodeMobile => this.nodeMobile = nodeMobile}>
                                                         <NotificationBadge count={this.state.count} style={{ backgroundColor: '#29235c' }} />
-                                                        <NotificationsBellSvg width={50} height={50} id="NotificationsBell" className={this.state.dropdownOpen ? "NotificationsBell" : null} style={{ cursor: 'pointer' }} />
+                                                        <SVGIcon name="bell" fill={'#475da7'} width={20} height={20} id="NotificationsBell" className={this.state.dropdownOpen ? "NotificationsBell" : null} style={{ cursor: 'pointer' }} />
+                                                        {/* <NotificationsBellSvg width={50} height={50} id="NotificationsBell" className={this.state.dropdownOpen ? "NotificationsBell" : null} style={{ cursor: 'pointer' }} /> */}
                                                     </Dropdown.Toggle>
 
                                                     <Dropdown.Menu as={CustomMenu} className="mobileNotificationMenu">

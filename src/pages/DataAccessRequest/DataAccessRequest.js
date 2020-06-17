@@ -11,6 +11,7 @@ import SearchBar from '../commonComponents/SearchBar';
 import ToolKit from './components/Toolkit';
 import NavItem from './components/NavItem';
 import { ReactComponent as CloseIconSvg } from '../../images/close.svg';
+import SVGIcon from "../../images/SVGIcon";
 import {formSchema} from './formSchema';
 import 'react-tabs/style/react-tabs.css';
 
@@ -228,7 +229,9 @@ import 'react-tabs/style/react-tabs.css';
                         <span className="White-16px ml-2">{this.getSavedAgo()}</span>
                     </Col>
                     <Col md={1}>
-                        <CloseIconSvg className="Icon-18px" />
+                        {/* <CloseIconSvg className="Icon-18px" /> */}
+                        <SVGIcon name="closeicon" fill={'#ffffff'} className="BadgeSvgs mr-2" />
+
                     </Col>
                 </Row>
 
