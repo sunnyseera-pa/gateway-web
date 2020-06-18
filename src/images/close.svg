@@ -4,14 +4,14 @@
     <defs>
         <polygon id="path-1" points="19 3.58578644 20.4142136 5 13.415 12 20.4142136 19 19 20.4142136 12 13.415 5 20.4142136 3.58578644 19 10.585 12 3.58578644 5 5 3.58578644 12 10.585"></polygon>
     </defs>
-    <g id="icon-/-close" stroke="none" stroke-width="1" fill="#ffffff" fill-rule="evenodd">
+    <g id="icon-/-close" stroke="none" stroke-width="1" fill="#979797" fill-rule="evenodd">
         <mask id="mask-2" fill="white">
             <use xlink:href="#path-1"></use>
         </mask>
-        <use id="Combined-Shape" fill="#111111" fill-rule="nonzero" xlink:href="#path-1"></use>
+        <use id="Combined-Shape" fill="#979797" fill-rule="nonzero" xlink:href="#path-1"></use>
         <!-- <g id="colour/purple" mask="url(#mask-2)" fill="#475DA7"> -->
         <g id="colour/white" mask="url(#mask-2)" fill="##ffffff">
             <rect id="Rectangle" x="0" y="0" width="24" height="24"></rect>
         </g>
     </g>
-</svg>
+</svg> 

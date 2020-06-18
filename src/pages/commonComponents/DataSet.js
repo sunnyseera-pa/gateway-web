@@ -4,7 +4,7 @@ import { Row, Col } from 'react-bootstrap';
 import SVGIcon from "../../images/SVGIcon";
 
 const DataSet = (props) => {
-    const {data, detailsData} = props;
+    const {data, detailsData, activeLink} = props;
 
     /**
      * [displayShort]
@@ -20,28 +20,34 @@ const DataSet = (props) => {
             
             return data[key];
         } else {
-            return '';
+            return ''; 
         }
     }
+
+
 
     return (
         <Row className="mt-2">
             <Col>
-                <div className="Rectangle">
+              <div className={props.tempRelatedObjectIds && props.tempRelatedObjectIds.some(object => object.objectId === data.id) ? "Rectangle SelectedBorder" : "Rectangle"} onClick={() => !activeLink && props.doAddToTempRelatedObjects(data.id, 'dataset') } >   
                     <Row>
                         <Col xs={2} lg={1} className="iconHolder">
                             <SVGIcon name="dataseticon" width={22} height={24} fill={'#3db28c'} />
-                        </Col>
+                        </Col> 
                         <Col xs={10} lg={11}>
                             <p>
-                                <span>
-                                    <a 
-                                        className="Black-16px" 
-                                        style={{ cursor: 'pointer' }} 
-                                        href={'/dataset/' + data.id} 
-                                        data-testid="dataset-title">{displayShort('title', 75)} 
-                                    </a>
-                                </span>
+                                {activeLink===true ? 
+                                    <span>
+                                        <a className="Black-16px" style={{ cursor: 'pointer' }}  href={'/dataset/' + data.id} data-testid="dataset-title">
+                                            {displayShort('title', 75)} 
+                                        </a>
+                                    </span>
+                                :
+                                    <span className="Black-16px">
+                                        {displayShort('title', 75)} 
+                                    </span>
+                                }
+
                                 <br/>
                                 <span 
                                     className="Gray800-14px" 
@@ -53,9 +59,7 @@ const DataSet = (props) => {
                                 data-testid="dataset-desc">
                                     {data.description ? displayShort('description', 125) : displayShort('abstract', 125)}    
                             </p>
-
                         </Col>
-
                     </Row>
                 </div>
             </Col>

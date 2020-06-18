@@ -4,19 +4,19 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Typeahead } from 'react-bootstrap-typeahead';
 
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-
-import Container from 'react-bootstrap/Container';
+import {Form, Button, Row, Col, Container} from 'react-bootstrap';
 
 import SearchBar from '../commonComponents/SearchBar';
-import Loading from '../commonComponents/Loading'
+import Loading from '../commonComponents/Loading';
+import RelatedResources from '../commonComponents/RelatedResources';
+import RelatedResourcesResults from '../commonComponents/RelatedResourcesResults';
+import RelatedObject from '../commonComponents/RelatedObject';
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
+import SVGIcon from '../../images/SVGIcon';
 
 import { Event, initGA } from '../../tracking';
+
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -37,7 +37,16 @@ class AddToolPage extends React.Component {
         combinedLicenses: [],
         combinedUsers: [],
         isLoading: true,
-        userState: []
+        userState: [],
+        searchString: null,
+        datasetData: [],
+        toolData: [],
+        projectData: [],
+        personData: [],
+        summary: [],
+        tempRelatedObjectIds: [],
+        relatedObjectIds: [],
+        relatedObjects: [],
     };
 
     async componentDidMount() {
@@ -45,7 +54,7 @@ class AddToolPage extends React.Component {
         await Promise.all([
             this.doGetTopicsCall(),
             this.doGetFeaturesCall(),
-            this.doGetLanguagesCall(),
+            this.doGetLanguagesCall(), 
             this.doGetCategoriesCall(),
             this.doGetLicensesCall(),
             this.doGetUsersCall()
@@ -165,9 +174,64 @@ class AddToolPage extends React.Component {
         this.setState({ searchString: searchString });
     }
 
-    render() {
-        const { data, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, combinedUsers, isLoading, userState } = this.state;
+    doModalSearch = (e, type, page) => {
 
+        if (e.key === 'Enter' || e === 'click') {
+
+            var searchURL = '';
+
+            if (type === 'dataset' && page > 0) searchURL += '&datasetIndex=' + page;
+            if (type === 'tool' && page > 0) searchURL += '&toolIndex=' + page;
+            if (type === 'project' && page > 0) searchURL += '&projectIndex=' + page;
+            if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
+        
+        axios.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL )
+            .then((res) => {
+                this.setState({
+                    datasetData: res.data.datasetResults || [],
+                    toolData: res.data.toolResults || [],
+                    projectData: res.data.projectResults || [],
+                    personData: res.data.personResults || [],
+                    summary: res.data.summary || [],
+                    isLoading: false
+                });
+            })
+        }
+    }
+
+    addToTempRelatedObjects = (id, type) => {
+
+        if(this.state.tempRelatedObjectIds && this.state.tempRelatedObjectIds.some(object => object.objectId === id)){
+            this.state.tempRelatedObjectIds = this.state.tempRelatedObjectIds.filter(object => object.objectId !== id);
+        }
+        else {
+            this.state.tempRelatedObjectIds.push({'objectId':id, 'type':type})
+        }
+       this.setState({tempRelatedObjectIds: this.state.tempRelatedObjectIds})
+    }
+
+    addToRelatedObjects = () => {
+        this.state.tempRelatedObjectIds.map((object) => {
+            this.state.relatedObjects.push({'objectId':object.objectId, 'reason':'', 'objectType':object.type})
+        })
+
+        this.setState({tempRelatedObjectIds: []})
+    }
+
+    clearRelatedObjects = () => {
+        this.setState({tempRelatedObjectIds: [] })
+    }
+
+    removeObject = (id) => {
+        console.log('REMOVE! ' + id )
+        console.log('REMOVE BEFORE: ' + JSON.stringify(this.state.relatedObjects))
+        this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id);
+        this.setState({relatedObjects: this.state.relatedObjects})
+        console.log('REMOVE AFTER: ' + JSON.stringify(this.state.relatedObjects))
+    }
+
+    render() {
+        const { data, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, relatedObjects } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -175,9 +239,12 @@ class AddToolPage extends React.Component {
 
         return (
             <div>
+                {console.log('tempRelatedObjects: ' + JSON.stringify(this.state.tempRelatedObjectIds))}
+                {console.log('relatedObjects: ' + JSON.stringify(this.state.relatedObjects))}
+
                 <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Container>
-                    <AddToolForm data={data} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} userState={userState} />
+                    <AddToolForm data={data} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects}/>
                 </Container>
             </div>
         );
@@ -188,13 +255,21 @@ class AddToolPage extends React.Component {
 const AddToolForm = (props) => {
     // Pass the useFormik() hook initial form values and a submit function that will
     // be called when the form is submitted
+
+    console.log('ADD - props.relatedObjects: ' + JSON.stringify(props.relatedObjects))
+    // props.relatedObjects.map((obj) => {
+    //     console.log('objectId: ' + obj.objectId)
+    //     console.log('reason: ' + obj.reason)
+    //     console.log('type: ' + obj.type)
+    // })
+
     const formik = useFormik({
         initialValues: {
             type: 'tool',
             name: '',
             link: '',
             description: '',
-            categories: {
+            categories: { 
                 category: '',
                 programmingLanguage: [],
                 programmingLanguageVersion: ''
@@ -205,6 +280,7 @@ const AddToolForm = (props) => {
                 features: [],
                 topics: [],
             },
+            relatedObjects: props.relatedObjects
         },
 
         validationSchema: Yup.object({
@@ -226,7 +302,7 @@ const AddToolForm = (props) => {
 
         onSubmit: values => {
             values.toolCreator = props.userState[0];
-            axios.post(baseURL + '/api/v1/mytools/add', values)
+            axios.post(baseURL + '/api/v1/mytools/add', values) 
                 .then((res) => {
                     window.location.href = window.location.search + '/tool/' + res.data.id + '/?toolAdded=true';
                 });
@@ -244,6 +320,36 @@ const AddToolForm = (props) => {
         }
     });
 
+  
+    function updateReason(id, reason, type) {
+        let inRelatedObject = false;
+        props.relatedObjects.map((object) => {
+            if(object.objectId===id){
+                inRelatedObject = true;
+                object.reason = reason;
+            }
+        });
+
+        if(!inRelatedObject){
+            props.relatedObjects.push({'objectId':id, 'reason':reason, 'objectType': type})
+        }
+    }
+
+    // function submitForm() {
+    //     // const tempRelObjIds = JSON.stringify(props.tempRelatedObjectIds);
+    //     // const temporaryRelObjIds = JSON.parse(tempRelObjIds);
+    
+    //     // props.relatedObjects.map((object) => {
+    //     //     temporaryRelObjIds.splice( temporaryRelObjIds.indexOf(object.objectId), 1 ); 
+    //     // });
+
+    //     // temporaryRelObjIds.map((id) => {
+    //     //     props.relatedObjects.push({'objectId':id, 'reason':'', 'type': ''})
+    //     // })
+
+    //     Event("Buttons", "Click", "Add tool form submitted");
+    // }
+
     return (
 
         <div>
@@ -251,7 +357,17 @@ const AddToolForm = (props) => {
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                     <div className="Rectangle">
-                        <p className="Black-20px">Add a new tool or resource</p>
+                        <Row>
+                            <Col sm={10} lg={10}>
+                             <p className="Black-20px">Add a new tool or resource</p>
+                            </Col>
+                            <Col sm={2} lg={2}>
+                            <span className="ToolBadge"> 
+                                <SVGIcon name="newtoolicon" fill={'#ffffff'} className="BadgeSvgs mr-2" />
+                                Tool 
+                            </span>
+                            </Col>
+                        </Row>
                         <p className="Gray800-14px">Tools can be anything you or someone else created or used during a research project</p>
                     </div>
                 </Col>
@@ -432,19 +548,43 @@ const AddToolForm = (props) => {
                             </Form.Group>
                         </div>
 
+                        <div className="Rectangle mt-2">
+                            <span className="Black-20px">Related resources</span><span className="Gray454443-14px"> (optional)</span>
+                            <br/>
+                            <span className="Gray595757-14px">Show relationships to papers, projects, datasets and tools. Resources must be added to the Gateway first.</span>
+                        </div>
+
+                        <div className="Rectangle">
+                            {props.relatedObjects.map((object) => {
+                                return (
+                                    <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} />
+                                )
+                            })}
+                        </div>
+
+                        <div className="Rectangle FlexCenter mt-1">
+                            <Row>
+                                <Col sm={1} lg={1} />
+                                <Col sm={10} lg={10}>
+                                    <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
+                                </Col>
+                                <Col sm={1} lg={10} />
+                            </Row>
+                        </div>
+
                         <Row className="mt-3">
-                            <Col xs={5} lg={9}>
-                                <div className="ButtonHolder">
-                                    <a style={{ cursor: 'pointer' }} href={'/account?tab=tools'} >
-                                        <Button variant="medium" className="CancelButton" >
+                            <Col xs={5} lg={9}/>
+                            <Col xs={7} lg={3} className="text-right">
+                                    <a style={{ cursor: 'pointer' }} href={'/account?tab=tools'}>
+                                        <Button variant="medium" className="CancelButton Dark-14px mr-2" >
                                             Cancel
                                         </Button>
                                     </a>
-                                </div>
-                            </Col>
-                            <Col xs={7} lg={3} className="text-right">
-                                <Button variant="primary" type="submit" className="AddButton" onClick={() => Event("Buttons", "Click", "Add tool form submitted")}>
-                                    Add this tool
+                                <Button variant="primary" className="White-14px" type="submit" 
+                                // onClick={submitForm} 
+                                onClick={() => Event("Buttons", "Click", "Add tool form submitted")}
+                                >
+                                    Publish
                                 </Button>
                             </Col>
                         </Row>

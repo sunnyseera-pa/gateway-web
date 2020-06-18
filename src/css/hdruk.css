@@ -14,6 +14,14 @@ body {
   padding: 20px;
 }
 
+.RectangleWithBorder{
+  width: 100%;
+  /* box-shadow: 1px 1px 3px 0 #00000017; */
+  background-color: #ffffff;
+  padding: 20px;
+  border: solid 1px #e2e2e2;
+}
+
 .TitleLandingBox {
   width: 480px;
   height: 40px;
@@ -125,7 +133,7 @@ a.nav-item.nav-link.active {
 .tagBadges {
   display: inline-block;
   background-color: #f3f3f3;
-  padding: 5px 10px;
+  padding: 4px 15px;
   border-radius: 16px;
 }
 
@@ -138,6 +146,46 @@ a.nav-item.nav-link.active {
   font-family: museo-sans-rounded;
   font-size: 14px;
   font-weight: 500;
+}
+
+.ToolBadge {
+  display: inline-block;
+  background-color: #29235c;
+  padding: 4px 15px;
+  border-radius: 16px;
+  color: #ffffff;
+  font-family: museo-sans-rounded;
+  font-size: 12px;
+}
+
+.DatasetBadge {
+  display: inline-block;
+  background-color: #3db28c;
+  padding: 4px 15px;
+  border-radius: 16px;
+  color: #ffffff;
+  font-family: museo-sans-rounded;
+  font-size: 12px;
+}
+
+.ProjectBadge {
+  display: inline-block;
+  background-color: #e07410;
+  padding: 4px 15px;
+  border-radius: 16px;
+  color: #ffffff;
+  font-family: museo-sans-rounded;
+  font-size: 12px;
+}
+
+.PaperBadge {
+  display: inline-block;
+  background-color: #addad9;
+  padding: 4px 15px;
+  border-radius: 16px;
+  color: #3c3c3b;
+  font-family: museo-sans-rounded;
+  font-size: 12px;
 }
 
 .BubbleCounts {
@@ -205,6 +253,28 @@ a.nav-item.nav-link.active {
   color: #2d2d2d;
 }
 
+.ExtraBlack-16px-Bold {
+  font-family: museo-sans-rounded;
+  font-size: 16px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #222222;
+}
+
+.ExtraBlack-14px {
+  font-family: museo-sans-rounded !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #222222 !important;
+}
+
 .Black-17px-Bold {
   font-family: museo-sans-rounded;
   font-size: 17px;
@@ -227,20 +297,43 @@ a.nav-item.nav-link.active {
 }
 
 .Black-20px {
+  font-family: museo-sans-rounded !important;
+  font-size: 20px !important;
+  font-weight: 500 !important;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  color: #2d2d2d !important;
+}
+
+.Gray454443-14px {
   font-family: museo-sans-rounded;
-  font-size: 20px;
+  font-size: 14px;
   font-weight: 500;
   font-stretch: normal;
   font-style: normal;
   letter-spacing: normal;
-  color: #2d2d2d;
+  color: #454443;
 }
 
-.Gray800-14px {
+.Gray595757-14px {
   font-family: museo-sans-rounded;
   font-size: 14px;
   font-weight: 500;
-  color: #3c3c3b;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  color: #595757;
+}
+
+.Gray800-14px {
+  font-family: museo-sans-rounded !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  color: #3c3c3b !important;
 }
 
 h4, h5, h6 {
@@ -672,6 +765,16 @@ svg:not(:root) {
 /*   box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09); */
 }
 
+.BadgeSvgs{
+  width: 12px;
+  height: 12px;
+}
+
+.ButtonSvgs{
+  width: 10px;
+  height: 10px;
+}
+
 .darTabs .tab-content{
   height: 100%;
   display: block;
@@ -824,6 +927,12 @@ textarea:focus {
 .AccountButtons {
   border: 2px solid #3db28c !important;
   border-radius: 4px !important;
+}
+
+.FlexCenter{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .btn-outline-secondary {
@@ -1197,6 +1306,11 @@ iframe#discourse-embed-frame {
   .Icon-18px {
     width: 18px;
     height: 18px;
+  }
+
+  .Icon-8px {
+    width: 12px;
+    height: 12px;
   }
 
   .form-control:focus {
@@ -1639,6 +1753,14 @@ NAVBAR CSS BELOW
     background-color: #f6f7f8
 }
 
+.RelatedModalBackground{
+  background-color: #f6f7f8;
+  /* flex-wrap: wrap; */
+  /* height: 100%; */
+  display: flex;
+  flex-direction: column;
+}
+
 .NotificationDate{
   padding: 10px 0px 5px 15px;
   font-size: 13px;
@@ -1724,6 +1846,79 @@ NAVBAR CSS BELOW
 
 .RatingGoldBackground {
   background-image: linear-gradient(to left, #dfca5d, #bb9a30 50%);
+}
+
+/* .RelatedResourcesModal {
+  height: 100vh;
+} */
+
+.RelatedResourcesModal .modal-content{
+  height: 100vh;
+  /* width: 100vw; */
+}
+
+.modal-70w {
+  /* width: 70vw; */
+  padding-right: 50vw;
+  /* padding-left: 15%;
+  padding-right: 15%; */
+}
+
+.modal-70w .modal-content {
+  width: 100%;
+}
+
+.modal-70w .modal-header {
+  width: 70vw !important;
+  background-color: #ffffff;
+}
+
+.modal-70w .modal-body {
+  width: 70vw !important;
+  background-color: #ffffff;
+}
+
+.modal-70w .modal-footer {
+  width: 70vw !important;
+  background-color: #ffffff;
+}
+
+/* @media (min-width: 576px)
+<style>
+.modal-dialog */
+
+.modal-70vw .modal-dialog {
+  margin: 0px !important;
+}
+
+.SelectedBorder{
+  border: solid 4px #3db28c !important;
+
+}
+
+.ResultsCardInput{
+  width: 100%;
+  height: 40px;
+  border-radius: 4px;
+  border: solid 2px #d0d3d4;
+  background-color: #ffffff;
+}
+
+/* .ResultsCardInput:focus{
+  width: 100%;
+  height: 40px;
+  border-radius: 4px;
+  border: solid 4px #3db28c !important;
+  background-color: #ffffff;
+} */
+
+.ResultsCardInput:focus{
+  width: 100%;
+  height: 40px;
+  border-radius: 4px;
+  border: solid 2px #3db28c !important;
+  outline: none;
+ 
 }
 
 .pixelGapTop {

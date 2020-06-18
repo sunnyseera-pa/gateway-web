@@ -106,8 +106,8 @@ class PersonDetail extends Component {
       <div>
         <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
         <Container className="mb-5">
-
-          <PersonTitle data={data} />
+ 
+          <PersonTitle data={data} activeLink={true} />
 
           <Row className="mt-3">
 
@@ -117,7 +117,7 @@ class PersonDetail extends Component {
                 <Tabs className='TabsBackground Gray700-13px'>
                   <Tab eventKey="Tools" title={'Tools (' + tools.length + ')'}>
                     {tools.length <= 0 ? <NotFound word="tools" /> : tools.map((tool) => {
-                      return <Tool id={tool.id} />
+                      return <Tool id={tool.id} activeLink={true} />
                     })}
                   </Tab>
                   <Tab eventKey="Reviews" title={'Reviews (' + data.reviews.length + ')'}>
@@ -127,11 +127,11 @@ class PersonDetail extends Component {
 
                   </Tab>
                   <Tab eventKey="Data sets" title={'Data sets (' + data.datasetids.length + ')'}>
-                    {data.datasetids.length <= 0 ? <NotFound word="data sets" /> : data.datasetids.map(id => <DataSet id={id} />)}
+                    {data.datasetids.length <= 0 ? <NotFound word="data sets" /> : data.datasetids.map(id => <DataSet id={id} activeLink={true} />)}
                   </Tab>
                   <Tab eventKey="Projects" title={'Projects (' + projects.length + ')'}>
                     {projects.length <= 0 ? <NotFound word="projects" /> : projects.map((project) => {
-                      return <Project id={project.id} />
+                      return <Project id={project.id} activeLink={true}/>
                     })}
                   </Tab>
                 </Tabs>

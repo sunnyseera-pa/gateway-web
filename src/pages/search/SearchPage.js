@@ -6,10 +6,7 @@ import queryString from 'query-string';
 import { Container, Row, Col, Tabs, Tab, Pagination } from 'react-bootstrap';
 
 import SearchBar from '../commonComponents/SearchBar';
-import Project from '../commonComponents/Project';
-import Tool from '../commonComponents/Tool';
-import Person from '../commonComponents/Person';
-import DataSet from '../commonComponents/DataSet';
+import RelatedObject from '../commonComponents/RelatedObject';
 import Loading from '../commonComponents/Loading'
 import KeywordsFilter from './KeywordsFilter';
 import ProgrammingLanguageFilter from './ProgrammingLanguageFilter';
@@ -23,10 +20,7 @@ import DatasetFilterGeoCoverage from './DatasetFilterGeoCoverage';
 import DatasetFilterAgeBand from './DatasetFilterAgeBand';
 import DatasetFilterSampleAvailability from './DatasetFilterSampleAvailability';
 import DatasetFilterKeywords from './DatasetFilterKeywords';
-import NoResultsTool from '../commonComponents/NoResultsTools';
-import NoResultsProjects from '../commonComponents/NoResultsProjects';
-import NoResultsPeople from '../commonComponents/NoResultsPeople';
-import NoResultsDatasets from '../commonComponents/NoResultsDatasets';
+import NoResults from '../commonComponents/NoResults';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -37,10 +31,12 @@ class SearchPage extends React.Component {
         datasetIndex: 0,
         toolIndex: 0,
         projectIndex: 0,
+        paperIndex: 0,
         personIndex: 0,
         datasetData: [],
         toolData: [],
         projectData: [],
+        paperData: [],
         personData: [],
         filterOptions: [],
         licensesSelected: [],
@@ -185,6 +181,7 @@ class SearchPage extends React.Component {
         this.setState({ datasetIndex: 0 })
         this.setState({ toolIndex: 0 })
         this.setState({ projectIndex: 0 })
+        this.setState({ paperIndex: 0 })
         this.setState({ personIndex: 0 })
     }
 
@@ -213,6 +210,7 @@ class SearchPage extends React.Component {
         if (this.state.datasetIndex > 0) searchURL += '&datasetIndex=' + this.state.datasetIndex;
         if (this.state.toolIndex > 0) searchURL += '&toolIndex=' + this.state.toolIndex;
         if (this.state.projectIndex > 0) searchURL += '&projectIndex=' + this.state.projectIndex;
+        if (this.state.paperIndex > 0) searchURL += '&paperIndex=' + this.state.paperIndex;
         if (this.state.personIndex > 0) searchURL += '&personIndex=' + this.state.personIndex;
 
         if (!skipHistory) {
@@ -222,7 +220,7 @@ class SearchPage extends React.Component {
             else {
                 this.props.history.push(`${window.location.pathname}?search=${this.state.searchString}` + searchURL);
             }
-        }
+        } 
         
         this.setState({ isLoading: true });
         axios.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL)
@@ -231,6 +229,7 @@ class SearchPage extends React.Component {
                     datasetData: res.data.datasetResults || [],
                     toolData: res.data.toolResults || [],
                     projectData: res.data.projectResults || [],
+                    paperData: res.data.paperResults || [],
                     personData: res.data.personResults || [],
                     summary: res.data.summary || [],
                     filterOptions: res.data.filterOptions || [],
@@ -266,6 +265,11 @@ class SearchPage extends React.Component {
                 this.setState({ projectIndex: page })
             ])
         }
+        else if (type === 'paper') {
+            await Promise.all([
+                this.setState({ paperIndex: page })
+            ])
+        }
         else if (type === 'person') {
             await Promise.all([
                 this.setState({ personIndex: page })
@@ -275,7 +279,7 @@ class SearchPage extends React.Component {
     }
 
     render() {
-        const { summary, searchString, datasetData, toolData, projectData, personData, filterOptions, userState, isLoading, languageSelected, toolTopicsSelected, toolCategoriesSelected, featuresSelected, projectTopicsSelected, projectCategoriesSelected, publishersSelected, licensesSelected, geoCoverageSelected, sampleAvailabilitySelected, keywordsSelected, ageBandsSelected, datasetIndex, toolIndex, projectIndex, personIndex } = this.state;
+        const { summary, searchString, datasetData, toolData, projectData, paperData, personData, filterOptions, userState, isLoading, languageSelected, toolTopicsSelected, toolCategoriesSelected, featuresSelected, projectTopicsSelected, projectCategoriesSelected, publishersSelected, licensesSelected, geoCoverageSelected, sampleAvailabilitySelected, keywordsSelected, ageBandsSelected, datasetIndex, toolIndex, projectIndex, paperIndex, personIndex } = this.state;
         var { key } = this.state;
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -284,6 +288,7 @@ class SearchPage extends React.Component {
         var datasetCount = summary.datasets || 0;
         var toolCount = summary.tools || 0;
         var projectCount = summary.projects || 0;
+        var paperCount = summary.papers || 0;
         var personCount = summary.persons || 0;
 
         if (key === '' || typeof key === "undefined") {
@@ -296,6 +301,9 @@ class SearchPage extends React.Component {
             else if (projectCount > 0) {
                 key = 'Projects'
             }
+            else if (paperCount > 0) {
+                key = 'Papers'
+            }
             else if (personCount > 0) {
                 key = 'People'
             }
@@ -307,6 +315,7 @@ class SearchPage extends React.Component {
         let datasetPaginationItems = [];
         let toolPaginationItems = [];
         let projectPaginationItems = [];
+        let paperPaginationItems = [];
         let personPaginationItems = [];
         var maxResult = 40;
         for (let i = 1; i <= Math.ceil(datasetCount / maxResult); i++) {
@@ -322,6 +331,11 @@ class SearchPage extends React.Component {
         for (let i = 1; i <= Math.ceil(projectCount / maxResult); i++) {
             projectPaginationItems.push(
                 <Pagination.Item key={i} active={i === (projectIndex/maxResult)+1} onClick={() => this.handlePagination("project", ((i-1)*(maxResult)))}>{i}</Pagination.Item>,
+            );
+        }
+        for (let i = 1; i <= Math.ceil(paperCount / maxResult); i++) {
+            paperPaginationItems.push(
+                <Pagination.Item key={i} active={i === (paperIndex/maxResult)+1} onClick={() => this.handlePagination("paper", ((i-1)*(maxResult)))}>{i}</Pagination.Item>,
             );
         }
         for (let i = 1; i <= Math.ceil(personCount / maxResult); i++) {
@@ -340,16 +354,19 @@ class SearchPage extends React.Component {
                         <div>
                             <Tabs className='TabsBackground Gray700-13px' activeKey={key} onSelect={this.handleSelect}>
                                 <Tab eventKey="Datasets" title={'Datasets (' + datasetCount + ')'}>
-                                    {datasetCount <= 0 ? <NoResultsDatasets searchString={searchString} /> : ''}
+                                    {datasetCount <= 0 ? <NoResults type='datasets' searchString={searchString} /> : ''}
                                 </Tab>
                                 <Tab eventKey="Tools" title={'Tools (' + toolCount + ')'}>
-                                    {toolCount <= 0 ? <NoResultsTool searchString={searchString} /> : ''}
+                                    {toolCount <= 0 ? <NoResults type='tools' searchString={searchString} /> : ''}
                                 </Tab>
                                 <Tab eventKey="Projects" title={'Projects (' + projectCount + ')'}>
-                                    {projectCount <= 0 ? <NoResultsProjects searchString={searchString} /> : ''}
+                                    {projectCount <= 0 ? <NoResults type='projects' searchString={searchString} /> : ''}
+                                </Tab>
+                                <Tab eventKey="Papers" title={'Papers (' + paperCount + ')'}>
+                                    {paperCount <= 0 ? <NoResults type='papers' searchString={searchString} /> : ''}
                                 </Tab>
                                 <Tab eventKey="People" title={'People (' + personCount + ')'}>
-                                    {personCount <= 0 ? <NoResultsPeople searchString={searchString} /> : ''}
+                                    {personCount <= 0 ? <NoResults type='profiles' searchString={searchString} /> : ''}
                                 </Tab>
                             </Tabs>
                         </div>
@@ -380,25 +397,31 @@ class SearchPage extends React.Component {
                         <Col sm={12} md={12} lg={9}>
                             {key === 'Datasets' ?
                                 datasetData.map((dataset) => {
-                                    return <DataSet key={dataset.id} data={dataset} />
+                                    return <RelatedObject key={dataset.id} data={dataset} activeLink={true} />
                                 })
                                 : ''}
 
                             {key === 'Tools' ?
                                 toolData.map((tool) => {
-                                    return <Tool key={tool.id} data={tool} />
+                                    return <RelatedObject key={tool.id} data={tool} activeLink={true} />
                                 })
                                 : ''}
 
                             {key === 'Projects' ?
                                 projectData.map((project) => {
-                                    return <Project key={project.id} data={project} />
+                                    return <RelatedObject key={project.id} data={project} activeLink={true}/>
+                                })
+                                : ''}
+                            
+                            {key === 'Papers' ?
+                                paperData.map((paper) => {
+                                    return <RelatedObject key={paper.id} data={paper} activeLink={true}/>
                                 })
                                 : ''}
 
                             {key === 'People' ?
                                 personData.map((person) => {
-                                    return <Person key={person.id} data={person} />
+                                    return <RelatedObject key={person.id} data={person} activeLink={true} />
                                 })
                                 : ''}
 
@@ -418,6 +441,12 @@ class SearchPage extends React.Component {
                             {key === 'Projects' && projectCount > maxResult ?
                                 <Pagination>
                                     {projectPaginationItems}
+                                </Pagination>
+                                : ''}
+
+                            {key === 'Papers' && paperCount > maxResult ?
+                                <Pagination>
+                                    {paperPaginationItems}
                                 </Pagination>
                                 : ''}
 

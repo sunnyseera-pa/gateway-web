@@ -12,11 +12,13 @@ class Project extends React.Component {
     // initialize our state
     state = {
         data: [],
-        isLoading: true
+        isLoading: true,
+        activeLink: true
     };
 
     constructor(props) {
         super(props)
+        this.state.activeLink = props.activeLink;
         if (props.data) {
             this.state.data = props.data;
             this.state.isLoading = false;
@@ -40,8 +42,8 @@ class Project extends React.Component {
     };
 
     render() {
-        const { data, isLoading } = this.state;
-
+        const { data, isLoading, activeLink } = this.state;
+ 
         if (typeof data.datasetids === 'undefined') {
             data.datasetids = [];
         }
@@ -59,25 +61,37 @@ class Project extends React.Component {
         var updatedOnDate = monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
 
         return (
-            <Row className="mt-2">
+            <Row className="mt-2"> 
                 <Col>
-                    <div className="Rectangle">
+                <div className={this.props.tempRelatedObjectIds && this.props.tempRelatedObjectIds.some(object => object.objectId === data.id) ? "Rectangle SelectedBorder" : "Rectangle"} onClick={() => !activeLink && this.props.doAddToTempRelatedObjects(data.id, data.type) } >   
                         <Row>
                             <Col xs={2} lg={1} className="iconHolder">
                                 <SVGIcon name="projecticon" width={20} height={24} fill={'#3db28c'} />
                             </Col>
                             <Col xs={10} lg={8}>
-                                <p>
+                                <p> 
+                                    {activeLink===true ? 
                                     <span ><a className="Black-16px" style={{ cursor: 'pointer' }} href={'/project/' + data.id} >{data.name.substr(0, 75) + (data.name.length > 75 ? '...' : '')}</a></span>
+                                    : <span className="Black-16px" >{data.name.substr(0, 75) + (data.name.length > 75 ? '...' : '')}</span> }
                                     <br />
                                     <br />
                                     <span className="Gray800-14px">
                                         {data.persons <= 0 ? 'Author not listed' : data.persons.map((person, index) => {
-                                            if (index > 0) {
-                                                return <span><span className="reviewTitleGap Gray800-14px">·</span><a className="Gray800-14px" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a></span>
+                                            if (index > 0 ) {
+                                                if (activeLink===true){
+                                                    return <span><span className="reviewTitleGap Gray800-14px">·</span><a className="Gray800-14px" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a></span>
+                                                }
+                                                else {
+                                                    return <span className="Gray800-14px"><span className="reviewTitleGap Gray800-14px">·</span>{person.firstname} {person.lastname}</span> 
+                                                }
                                             }
                                             else {
-                                                return <span><a className="Gray800-14px" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a></span>
+                                                if (activeLink===true){
+                                                    return <span><a className="Gray800-14px" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a></span>
+                                                }
+                                                else {
+                                                    return <span className="Gray800-14px">{person.firstname} {person.lastname}</span> 
+                                                }
                                             }
                                         })}
                                     </span>
@@ -120,14 +134,24 @@ class Project extends React.Component {
                             </Col>
 
                             <Col xs={{ span: 12, order: 1 }} lg={{ span: 12, order: 3 }}>
-                                {!data.categories.category ? '' : <a href={'/search?search=' + data.categories.category}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{data.categories.category}</div></a>}
+                                {!data.categories.category ? '' : activeLink === true ? <a href={'/search?search=' + data.categories.category}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{data.categories.category}</div></a> : <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{data.categories.category}</div>}
 
                                 {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
-                                    return <a href={'/search?search=' + feature}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{feature}</div></a>
+                                    if (activeLink===true){
+                                        return <a href={'/search?search=' + feature}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{feature}</div></a>
+                                    }
+                                    else {
+                                        return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{feature}</div>
+                                    }
                                 })}
 
                                 {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
-                                    return <a href={'/search?search=' + topic}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{topic}</div></a>
+                                    if (activeLink===true){
+                                        return <a href={'/search?search=' + topic}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{topic}</div></a>
+                                    }
+                                    else {
+                                        return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{topic}</div>
+                                    }
                                 })}
                             </Col>
                         </Row>

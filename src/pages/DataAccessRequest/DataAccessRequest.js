@@ -303,7 +303,9 @@ class DataAccessRequest extends Component {
                         <span className="White-16px ml-2">{this.getSavedAgo()}</span>
                     </Col>
                     <Col md={1}>
-                        <CloseIconSvg className="Icon-18px" />
+                        {/* <CloseIconSvg className="Icon-18px" /> */}
+                        <SVGIcon name="closeicon" fill={'#ffffff'} className="BadgeSvgs mr-2" />
+
                     </Col>
                 </Row>
 

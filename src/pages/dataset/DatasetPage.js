@@ -146,10 +146,10 @@ class DatasetDetail extends Component {
                     <About data={data}/>
                   </Tab>  
                    <Tab eventKey="Projects" title={'Projects using this (' + projectsCount + ')'}>
-                     {projectsCount <=0 ? <NotFound word="projects" />  : projectsData.map(projectData => projectData.activeflag === "active" ? <Project id={projectData.id} /> : '')}
+                     {projectsCount <=0 ? <NotFound word="projects" />  : projectsData.map(projectData => projectData.activeflag === "active" ? <Project id={projectData.id} activeLink={true} /> : '')}
                   </Tab>
                   <Tab eventKey="Tools" title={'Tools used in the same projects (' + toolsCount + ')'}>
-                    {toolsCount <= 0 ? <NotFound word="tools" /> : projectsData.map(projectData => projectData.activeflag === "active" ? projectData.toolids.map(toolid => <Tool id={toolid} />) : '')}
+                    {toolsCount <= 0 ? <NotFound word="tools" /> : projectsData.map(projectData => projectData.activeflag === "active" ? projectData.toolids.map(toolid => <Tool id={toolid} activeLink={true} />) : '')}
 
                   </Tab> 
                 </Tabs>

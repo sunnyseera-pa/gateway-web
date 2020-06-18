@@ -5,11 +5,10 @@ import axios from 'axios';
 import queryString from 'query-string';
 import { Row, Col, Tabs, Tab, Container, Alert, Nav, Navbar } from 'react-bootstrap';
 import NotFound from '../commonComponents/NotFound';
-import DataSet from '../commonComponents/DataSetOld';
 import Creators from '../commonComponents/Creators';
 import Loading from '../commonComponents/Loading'
 import Reviews from '../commonComponents/Reviews';
-import Project from '../commonComponents/Project';
+import RelatedObject from '../commonComponents/RelatedObject';
 import SearchBar from '../commonComponents/SearchBar';
 import DiscourseTopic from '../commonComponents/DiscourseTopic';
 import ToolTitle from './components/ToolTitle';
@@ -104,13 +103,9 @@ class ToolDetail extends Component {
     if (isLoading) {
       return <Container><Loading /></Container>;
     }
-
-    if (data.datasetids === null || typeof data.datasetids === 'undefined') {
-      data.datasetids = [];
-    }
     
-    if (typeof data.projectids === 'undefined') {
-      data.projectids = [];
+    if (data.relatedObjects === null || typeof data.relatedObjects === 'undefined') {
+      data.relatedObjects = [];
     }
 
     return (
@@ -204,11 +199,8 @@ class ToolDetail extends Component {
                   <Tab eventKey="Collaboration" title={`Discussion (${discourseTopic && discourseTopic.posts ? discourseTopic.posts.length : 0})`}>
                     <DiscourseTopic topic={discourseTopic} toolId={data.id} userState={userState} />
                   </Tab>
-                  <Tab eventKey="Projects" title={'Projects using this (' + data.projectids.length + ')'}>
-                    {data.projectids.length <= 0 ? <NotFound word="projects" /> : data.projectids.map(id => <Project id={id} />)}
-                  </Tab>
-                  <Tab eventKey="Data sets" title={'Data sets in the same projects (' + data.datasetids.length + ')'}>
-                    {data.datasetids.length <= 0 ? <NotFound word="data sets" /> : data.datasetids.map(id => <DataSet id={id} />)}
+                  <Tab eventKey="Projects" title={'Related resources (' + data.relatedObjects.length + ')'}>
+                    {data.relatedObjects.length <= 0 ? <NotFound word="related resources" /> : data.relatedObjects.map(object => <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />)}
                   </Tab>
                 </Tabs>
               </div>
