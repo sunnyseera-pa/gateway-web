@@ -128,7 +128,7 @@ a.nav-item.nav-link.active {
 .tagBadges {
   display: inline-block;
   background-color: #f3f3f3;
-  padding: 5px 10px;
+  padding: 4px 15px;
   border-radius: 16px;
 }
 
@@ -146,45 +146,41 @@ a.nav-item.nav-link.active {
 .ToolBadge {
   display: inline-block;
   background-color: #29235c;
-  padding: 5px 10px;
+  padding: 4px 15px;
   border-radius: 16px;
   color: #ffffff;
   font-family: museo-sans-rounded;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 12px;
 }
 
 .DatasetBadge {
   display: inline-block;
   background-color: #3db28c;
-  padding: 5px 10px;
+  padding: 4px 15px;
   border-radius: 16px;
   color: #ffffff;
   font-family: museo-sans-rounded;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 12px;
 }
 
 .ProjectBadge {
   display: inline-block;
   background-color: #e07410;
-  padding: 5px 10px;
+  padding: 4px 15px;
   border-radius: 16px;
   color: #ffffff;
   font-family: museo-sans-rounded;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 12px;
 }
 
 .PaperBadge {
   display: inline-block;
   background-color: #addad9;
-  padding: 5px 10px;
+  padding: 4px 15px;
   border-radius: 16px;
   color: #3c3c3b;
   font-family: museo-sans-rounded;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 12px;
 }
 
 .BubbleCounts {
