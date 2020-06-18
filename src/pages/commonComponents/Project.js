@@ -63,7 +63,7 @@ class Project extends React.Component {
         return (
             <Row className="mt-2"> 
                 <Col>
-                    <div className={this.props.tempRelatedObjectIds && this.props.tempRelatedObjectIds.includes(data.id) ? "Rectangle SelectedBorder" : "Rectangle"} onClick={() => !activeLink && this.props.doAddToTempRelatedObjects(data.id, data.type) } >   
+                <div className={this.props.tempRelatedObjectIds && this.props.tempRelatedObjectIds.some(object => object.objectId === data.id) ? "Rectangle SelectedBorder" : "Rectangle"} onClick={() => !activeLink && this.props.doAddToTempRelatedObjects(data.id, data.type) } >   
                         <Row>
                             <Col xs={2} lg={1} className="iconHolder">
                                 <SVGIcon name="projecticon" width={20} height={24} fill={'#3db28c'} />

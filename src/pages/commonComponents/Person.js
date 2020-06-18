@@ -32,7 +32,7 @@ class Person extends React.Component {
         return (
             <Row className="mt-2">
                 <Col>
-                    <div className={this.props.tempRelatedObjectIds && this.props.tempRelatedObjectIds.includes(data.id) ? "Rectangle SelectedBorder" : "Rectangle"} onClick={() => !activeLink && this.props.doAddToTempRelatedObjects(data.id, data.type) } >   
+                <div className={this.props.tempRelatedObjectIds && this.props.tempRelatedObjectIds.some(object => object.objectId === data.id) ? "Rectangle SelectedBorder" : "Rectangle"} onClick={() => !activeLink && this.props.doAddToTempRelatedObjects(data.id, data.type) } >   
                         <Row>
                             <Col xs={2} md={1} className="iconHolder">
                                 <div class="avatar-circle">
@@ -44,7 +44,7 @@ class Person extends React.Component {
                                         {activeLink===true ? 
                                        <span className="Black-16px"> <a className="Black-16px" style={{ cursor: 'pointer' }} href={'/person/' + data.id} >{data.firstname} {data.lastname}</a> </span>
                                         : <span className="Black-16px"> {data.firstname} {data.lastname} </span>
-                                        }
+                                        } 
                                     <br />
                                     <span className="Gray800-14px">{data.bio}</span>
                                 </p>

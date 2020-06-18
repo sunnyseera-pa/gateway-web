@@ -29,7 +29,7 @@ const DataSet = (props) => {
     return (
         <Row className="mt-2">
             <Col>
-                <div className={props.tempRelatedObjectIds && props.tempRelatedObjectIds.includes(data.id) ? "Rectangle SelectedBorder" : "Rectangle"} onClick={() => !activeLink && props.doAddToTempRelatedObjects(data.id, data.type) } >   
+              <div className={props.tempRelatedObjectIds && props.tempRelatedObjectIds.some(object => object.objectId === data.id) ? "Rectangle SelectedBorder" : "Rectangle"} onClick={() => !activeLink && props.doAddToTempRelatedObjects(data.id, 'dataset') } >   
                     <Row>
                         <Col xs={2} lg={1} className="iconHolder">
                             <SVGIcon name="dataseticon" width={22} height={24} fill={'#3db28c'} />

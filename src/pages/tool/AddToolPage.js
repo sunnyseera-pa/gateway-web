@@ -46,19 +46,6 @@ class AddToolPage extends React.Component {
         tempRelatedObjectIds: [],
         relatedObjectIds: [],
         relatedObjects: [],
-        relatedObjectIdsCount: 0,
-        tempSelected:{ 
-            datasets:0,
-            tools:0,
-            projects:0,
-            persons:0
-         },
-       selected:{
-            datasets:0,
-            tools:0,
-            projects:0,
-            persons:0
-       }
     };
 
     async componentDidMount() {
@@ -213,78 +200,37 @@ class AddToolPage extends React.Component {
 
     addToTempRelatedObjects = (id, type) => {
 
-        if(this.state.tempRelatedObjectIds.includes(id)){
-            this.state.tempRelatedObjectIds.splice( this.state.tempRelatedObjectIds.indexOf(id), 1 );        
-            if(type===undefined){this.state.tempSelected.datasets--}
-            else if(type==="tool"){this.state.tempSelected.tools--}
-            else if(type==="project"){this.state.tempSelected.projects--}
-            else if(type==="person"){this.state.tempSelected.persons--}
+        if(this.state.tempRelatedObjectIds && this.state.tempRelatedObjectIds.some(object => object.objectId === id)){
+            this.state.tempRelatedObjectIds = this.state.tempRelatedObjectIds.filter(object => object.objectId !== id);
         }
         else {
-            this.state.tempRelatedObjectIds.push(id)
-            if(type===undefined){this.state.tempSelected.datasets++}
-            else if(type==="tool"){this.state.tempSelected.tools++}
-            else if(type==="project"){this.state.tempSelected.projects++}
-            else if(type==="person"){this.state.tempSelected.persons++}
-        }  
-      
-        this.setState({relatedObjectIdsCount: this.state.tempRelatedObjectIds.length - this.state.relatedObjectIds.length})
+            this.state.tempRelatedObjectIds.push({'objectId':id, 'type':type})
+        }
+       this.setState({tempRelatedObjectIds: this.state.tempRelatedObjectIds})
     }
 
     addToRelatedObjects = () => {
-        const tempObjectIds = JSON.stringify(this.state.tempRelatedObjectIds);
-        const temporaryObjectIds = JSON.parse(tempObjectIds);
-        this.setState({relatedObjectIds: temporaryObjectIds});
+        this.state.tempRelatedObjectIds.map((object) => {
+            this.state.relatedObjects.push({'objectId':object.objectId, 'reason':'', 'objectType':object.type})
+        })
 
-        this.setState({relatedObjectIdsCount: 0 })
-        this.setState(prevState => ({
-            selected: {                   
-                datasets: this.state.tempSelected.datasets,      
-                tools: this.state.tempSelected.tools,
-                projects: this.state.tempSelected.projects,
-                persons: this.state.tempSelected.persons
-            }
-        }))
+        this.setState({tempRelatedObjectIds: []})
     }
 
     clearRelatedObjects = () => {
         this.setState({tempRelatedObjectIds: [] })
-        this.setState({relatedObjectIdsCount: 0 })
     }
 
-    removeObject = (id, type) => {
-        // console.log('REMOVE! ' + id + ' - ' + type)
-        this.state.tempRelatedObjectIds.splice( this.state.tempRelatedObjectIds.indexOf(id), 1 );   
-        this.state.relatedObjectIds.splice( this.state.relatedObjectIds.indexOf(id), 1 ); 
+    removeObject = (id) => {
+        console.log('REMOVE! ' + id )
+        console.log('REMOVE BEFORE: ' + JSON.stringify(this.state.relatedObjects))
         this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id);
-     
-
-        switch (type) {
-            case 'tool':
-                    {this.state.tempSelected.tools--}
-                    {this.state.selected.tools--}
-                break;
-            case 'project':
-                    {this.state.tempSelected.projects--}
-                    {this.state.selected.projects--}
-                break;
-            case 'person':
-                    {this.state.tempSelected.persons--}
-                    {this.state.selected.persons--}
-                break;
-            case undefined:
-                    {this.state.tempSelected.datasets--}
-                    {this.state.selected.datasets--}
-                break;
-        }
-
-        // this.setState({tempRelatedObjectIds: this.state.tempRelatedObjectIds})
-        // this.setState({relatedObjectIds: this.state.relatedObjectIds})
-
+        this.setState({relatedObjects: this.state.relatedObjects})
+        console.log('REMOVE AFTER: ' + JSON.stringify(this.state.relatedObjects))
     }
 
     render() {
-        const { data, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, selected, relatedObjects } = this.state;
+        const { data, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, relatedObjects } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -292,9 +238,12 @@ class AddToolPage extends React.Component {
 
         return (
             <div>
+                {console.log('tempRelatedObjects: ' + JSON.stringify(this.state.tempRelatedObjectIds))}
+                {console.log('relatedObjects: ' + JSON.stringify(this.state.relatedObjects))}
+
                 <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Container>
-                    <AddToolForm data={data} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} relatedObjectIdsCount={this.state.relatedObjectIdsCount} tempRelatedObjectIds={this.state.tempRelatedObjectIds} relatedObjectIds={this.state.relatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} selected={selected} relatedObjects={relatedObjects}/>
+                    <AddToolForm data={data} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects}/>
                 </Container>
             </div>
         );
@@ -305,6 +254,13 @@ class AddToolPage extends React.Component {
 const AddToolForm = (props) => {
     // Pass the useFormik() hook initial form values and a submit function that will
     // be called when the form is submitted
+
+    console.log('ADD - props.relatedObjects: ' + JSON.stringify(props.relatedObjects))
+    // props.relatedObjects.map((obj) => {
+    //     console.log('objectId: ' + obj.objectId)
+    //     console.log('reason: ' + obj.reason)
+    //     console.log('type: ' + obj.type)
+    // })
 
     const formik = useFormik({
         initialValues: {
@@ -364,7 +320,7 @@ const AddToolForm = (props) => {
     });
 
   
-    function updateReason(id, reason) {
+    function updateReason(id, reason, type) {
         let inRelatedObject = false;
         props.relatedObjects.map((object) => {
             if(object.objectId===id){
@@ -374,24 +330,24 @@ const AddToolForm = (props) => {
         });
 
         if(!inRelatedObject){
-            props.relatedObjects.push({'objectId':id, 'reason':reason})
+            props.relatedObjects.push({'objectId':id, 'reason':reason, 'objectType': type})
         }
     }
 
-    function submitForm() {
-        const tempRelObjIds = JSON.stringify(props.tempRelatedObjectIds);
-        const temporaryRelObjIds = JSON.parse(tempRelObjIds);
+    // function submitForm() {
+    //     // const tempRelObjIds = JSON.stringify(props.tempRelatedObjectIds);
+    //     // const temporaryRelObjIds = JSON.parse(tempRelObjIds);
     
-        props.relatedObjects.map((object) => {
-            temporaryRelObjIds.splice( temporaryRelObjIds.indexOf(object.objectId), 1 ); 
-        });
+    //     // props.relatedObjects.map((object) => {
+    //     //     temporaryRelObjIds.splice( temporaryRelObjIds.indexOf(object.objectId), 1 ); 
+    //     // });
 
-        temporaryRelObjIds.map((id) => {
-            props.relatedObjects.push({'objectId':id, 'reason':''})
-        })
+    //     // temporaryRelObjIds.map((id) => {
+    //     //     props.relatedObjects.push({'objectId':id, 'reason':'', 'type': ''})
+    //     // })
 
-        Event("Buttons", "Click", "Add tool form submitted");
-    }
+    //     Event("Buttons", "Click", "Add tool form submitted");
+    // }
 
     return (
 
@@ -598,8 +554,8 @@ const AddToolForm = (props) => {
                         </div>
 
                         <div className="Rectangle">
-                            {props.relatedObjectIds.map((objectId) => {
-                                return <div className="RectangleWithBorder mt-3"> <RelatedResourcesResults objectId={objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} /> </div>
+                            {props.relatedObjects.map((object) => {
+                                return <div className="RectangleWithBorder mt-3"> <RelatedResourcesResults objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} /> </div>
                             })}
                         </div>
 
@@ -607,7 +563,7 @@ const AddToolForm = (props) => {
                             <Row>
                                 <Col sm={1} lg={1} />
                                 <Col sm={10} lg={10}>
-                                    <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} relatedObjectIdsCount={props.relatedObjectIdsCount} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjectIds={props.relatedObjectIds} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} selected={props.selected}/>
+                                    <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                 </Col>
                                 <Col sm={1} lg={10} />
                             </Row>
@@ -621,7 +577,10 @@ const AddToolForm = (props) => {
                                             Cancel
                                         </Button>
                                     </a>
-                                <Button variant="primary" className="White-14px" type="submit" onClick={submitForm} >
+                                <Button variant="primary" className="White-14px" type="submit" 
+                                // onClick={submitForm} 
+                                onClick={() => Event("Buttons", "Click", "Add tool form submitted")}
+                                >
                                     Publish
                                 </Button>
                             </Col>

@@ -1,10 +1,6 @@
 import React from 'react';
 import { Row, Col, Tab, Tabs, Container, Pagination} from 'react-bootstrap';
 
-// import NoResultsTool from '../commonComponents/NoResultsTools';
-// import NoResultsProjects from '../commonComponents/NoResultsProjects';
-// import NoResultsPeople from '../commonComponents/NoResultsPeople';
-// import NoResultsDatasets from '../commonComponents/NoResultsDatasets';
 import SimpleSearchBar from './SimpleSearchBar';
 import Project from './Project';
 import Tool from './Tool';
@@ -29,13 +25,47 @@ class RelatedResourcesModal extends React.Component {
         toolIndex: 0,
         projectIndex: 0,
         personIndex: 0,
-        relatedObjectIds: []
+        relatedObjectIds: [],
+        relatedObjects: [],
+        selected:{
+            datasets:0,
+            tools:0,
+            projects:0,
+            persons:0
+       }
+
     }
 
     constructor(props) {
         super(props);
         this.state.userState = props.userState;
-        this.state.relatedObjectIds = props.relatedObjectIds;
+        this.state.relatedObjects = props.relatedObjects;
+        this.state.relatedObjectIds = [];
+        this.state.selected.datasets = 0;
+        this.state.selected.tools = 0;
+        this.state.selected.projects = 0;
+        this.state.selected.persons = 0;
+
+       if(props.relatedObjects) {
+            props.relatedObjects.map((object) => {
+                this.state.relatedObjectIds.push(object.objectId) 
+                
+                switch (object.objectType) {
+                    case 'tool':
+                            {this.state.selected.tools++}
+                        break;
+                    case 'project':
+                            {this.state.selected.projects++}
+                        break;
+                    case 'person':
+                            {this.state.selected.persons++}
+                        break;
+                    case 'dataset':
+                            {this.state.selected.datasets++}
+                        break;
+                }
+            })
+        }
     }
 
 
@@ -122,29 +152,23 @@ class RelatedResourcesModal extends React.Component {
 
         return (
             <div>
-            <SimpleSearchBar searchString={this.props.searchString} doSearchMethod={this.props.doSearchMethod} doUpdateSearchString={this.props.doUpdateSearchString} userState={this.props.userState} />
+                {console.log('props.datasetData: ' + JSON.stringify(this.props.datasetData))}
+                {console.log('relatedObjectIds: ' + this.state.relatedObjectIds)}
+              <SimpleSearchBar searchString={this.props.searchString} doSearchMethod={this.props.doSearchMethod} doUpdateSearchString={this.props.doUpdateSearchString} userState={this.props.userState} />
                 {typeof this.props.summary.datasets !== 'undefined' ? 
                     <Row className="SearchTabsHolder">
-                    <Col>
-                        <div>
-                            <Tabs className='TabsBackground Gray700-13px' activeKey={key} onSelect={this.handleSelect} >
-                                <Tab eventKey="Datasets" title={'Datasets (' + (this.props.summary.datasets - this.props.selected.datasets) + ')'} >
-                                    {/* {this.props.summary.datasets <= 0 ? <NoResultsDatasets searchString={this.props.searchString} /> : ''} */}
-                                </Tab>
-                                <Tab eventKey="Tools" title={'Tools (' + (this.props.summary.tools - this.props.selected.tools) + ')'}>
-                                    {/* {this.props.summary.tools <= 0 ? <NoResultsTool searchString={this.props.searchString} /> : ''} */}
-                                </Tab>
-                                <Tab eventKey="Projects" title={'Projects (' + (this.props.summary.projects - this.props.selected.projects) + ')'}>
-                                    {/* {this.props.summary.projects <= 0 ? <NoResultsProjects searchString={this.props.searchString} /> : ''} */}
-                                </Tab>
-                                <Tab eventKey="People" title={'People (' + (this.props.summary.persons - this.props.selected.persons) + ')'}>
-                                    {/* {this.props.summary.persons <= 0 ? <NoResultsPeople searchString={this.props.searchString} /> : ''} */}
-                                </Tab>
-                            </Tabs>
-                        </div>
-                    </Col>
-                </Row> 
-             : ''}
+                        <Col>
+                            <div>
+                                <Tabs className='TabsBackground Gray700-13px' activeKey={key} onSelect={this.handleSelect} >
+                                    <Tab eventKey="Datasets" title={'Datasets (' + (this.props.summary.datasets - this.state.selected.datasets) + ')'} />
+                                    <Tab eventKey="Tools" title={'Tools (' + (this.props.summary.tools - this.state.selected.tools) + ')'} />
+                                    <Tab eventKey="Projects" title={'Projects (' + (this.props.summary.projects - this.state.selected.projects) + ')'} />
+                                  <Tab eventKey="People" title={'People (' + (this.props.summary.persons - this.state.selected.persons) + ')'} />
+                                </Tabs>
+                            </div>
+                        </Col>
+                    </Row> 
+                : ''}
 
             <div className={typeof this.props.summary.datasets==='undefined' ? "" : "RelatedModalBackground"} > 
                 <Container >
@@ -153,7 +177,13 @@ class RelatedResourcesModal extends React.Component {
                         <Col sm={10} lg={10} className="mt-2" >
                             {key === 'Datasets' ?
                                 this.props.datasetData.map((dataset) => {
-                                    if(this.props.relatedObjectIds.includes(dataset.id)){
+                    
+                                    if(dataset.id==="7f125091-12ba-464d-af7d-9a88179b0b95"){
+                                        console.log('this.state.relatedObjectIds here: ' + JSON.stringify(this.state.relatedObjectIds))
+                                    }
+                                    
+                                        if(this.state.relatedObjectIds.includes(dataset.id)){
+
                                         return ''
                                     }
                                     else {
@@ -164,7 +194,8 @@ class RelatedResourcesModal extends React.Component {
 
                             {key === 'Tools' ?
                                 this.props.toolData.map((tool) => {
-                                    if(this.props.relatedObjectIds.includes(tool.id)){
+                                    if(this.state.relatedObjectIds.includes(tool.id)){
+                                    
                                         return ''
                                     }
                                     else {
@@ -175,7 +206,7 @@ class RelatedResourcesModal extends React.Component {
 
                            {key === 'Projects' ?
                                 this.props.projectData.map((project) => {
-                                     if(this.props.relatedObjectIds.includes(project.id)){
+                                    if(this.state.relatedObjectIds.includes(project.id)){
                                          return ''
                                      }
                                      else {
@@ -186,7 +217,8 @@ class RelatedResourcesModal extends React.Component {
 
                               {key === 'People' ?
                                 this.props.personData.map((person) => {
-                                    if(this.props.relatedObjectIds.includes(person.id)){
+                                    if(this.state.relatedObjectIds.includes(person.id)){
+                                    
                                         return ''
                                     }
                                     else {

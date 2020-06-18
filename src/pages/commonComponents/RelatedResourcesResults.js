@@ -22,8 +22,10 @@ class RelatedResourcesResults extends React.Component {
     };
 
     constructor(props) {
+        console.log('props in result: ' + JSON.stringify(props))
         super(props)
         this.state.objectId = props.objectId;
+        this.state.reason = props.reason;
     }
 
     componentWillMount(objectId) {
@@ -70,12 +72,12 @@ class RelatedResourcesResults extends React.Component {
     }
 
     removeButton = () => {
-        this.props.doRemoveObject(this.state.data.id, this.state.data.type)
+        this.props.doRemoveObject(this.state.data.id)
     }
 
-    handleBlur = (id, reason) => {
+    handleChange = (id, reason, type) => {
         this.setState({reason: reason})
-        this.props.doUpdateReason(id, reason)
+        this.props.doUpdateReason(id, reason, type)
     }
 
     renderIconTagsSwitch(type, data, keywords) {
@@ -130,9 +132,9 @@ class RelatedResourcesResults extends React.Component {
 
     render(props) {
         const { data, objectId, isLoading, reason } = this.state;
-        // {console.log('props in results card: ' + JSON.stringify(props))}
+
         let keywords = [];
-        if(data.type===undefined && data.keywords){
+        if(data && data.type===undefined && data.keywords){
             keywords = data.keywords.split(", ")
         } 
 
@@ -195,7 +197,7 @@ class RelatedResourcesResults extends React.Component {
                                 <span className="Gray800-14px mr-2">What's the relationship between these resources?</span> 
                             </Row>
                             <Row className="ml-3 mr-3 testInput">
-                                <input className="ResultsCardInput" id={"reason-" + objectId} onBlur={event => this.handleBlur(objectId, event.target.value)} />
+                                <input className="ResultsCardInput" id={"reason-" + objectId} value={this.state.reason} onChange={event => this.handleChange(objectId, event.target.value, data.type)} />
                             </Row>
                     </div>
                 </Col>

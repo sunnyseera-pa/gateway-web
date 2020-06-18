@@ -81,7 +81,7 @@ class Tool extends React.Component {
         return (
             <Row className="mt-2">
                 <Col>
-                    <div className={this.props.tempRelatedObjectIds && this.props.tempRelatedObjectIds.includes(data.id) ? "Rectangle SelectedBorder" : "Rectangle"} onClick={() => !activeLink && this.props.doAddToTempRelatedObjects(data.id, data.type) } >   
+                <div className={this.props.tempRelatedObjectIds && this.props.tempRelatedObjectIds.some(object => object.objectId === data.id) ? "Rectangle SelectedBorder" : "Rectangle"} onClick={() => !activeLink && this.props.doAddToTempRelatedObjects(data.id, data.type) } >   
                         <Row>
                             <Col xs={2} lg={1} className="iconHolder">
                                 <SVGIcon name="toolicon" width={18} height={18} fill={'#3db28c'} />

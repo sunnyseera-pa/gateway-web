@@ -42,13 +42,12 @@ function RelatedResources(props) {
                     <ClearButtonSvg onClick={closeModal} />
                 </Modal.Header>
                 <Modal.Body >
-                    {/* <SimpleSearchBar searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} /> */}
-                   <RelatedResourcesModal searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjectIds={props.relatedObjectIds} selected={props.selected}/>
+                   <RelatedResourcesModal searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} />
                 </Modal.Body>
                 <Modal.Footer>
                     <Col sm={1} lg={1} />
                         <Col sm={7} lg={7} className="ml-5 mr-5">
-                            <span className="Gray800-14px" >{props.relatedObjectIdsCount} selected</span>
+                            <span className="Gray800-14px" >{props.tempRelatedObjectIds.length} selected</span>
                         </Col>
                         <Col sm={4} lg={4} > 
                             <Button variant='white' className="TechDetailButton  ml-5 mr-3"  onClick={props.doClearRelatedObjects} >
@@ -59,9 +58,7 @@ function RelatedResources(props) {
                             </Button>
                         </Col>
                 </Modal.Footer>
-
-
-            </Modal>
+             </Modal>
         </Fragment>
     )
 } 
