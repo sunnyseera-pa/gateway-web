@@ -79,7 +79,7 @@ class RelatedResourcesResults extends React.Component {
         this.props.doUpdateReason(id, reason, type)
     }
 
-    renderIconTagsSwitch(type, data, keywords) {
+    /* renderIconTagsSwitch(type, data, keywords) {
         switch (type) {
             case 'tool':
                 return <div>
@@ -127,9 +127,13 @@ class RelatedResourcesResults extends React.Component {
             default: 
                 return '';
         }
-    }
+    } */
 
-    render(props) {
+
+
+
+
+    render() {
         const { data, objectId, isLoading, reason } = this.state;
 
         let keywords = [];
@@ -189,8 +193,12 @@ class RelatedResourcesResults extends React.Component {
                             </Row> 
 
                             <Row className="ml-4 mt-3">
-                            {this.renderIconTagsSwitch(data.type, data, keywords)}
+                            {/* {this.renderIconTagsSwitch(data.type, data, keywords)} */}
                             </Row>
+
+
+
+
 
                             <Row className="mt-5 ml-3">
                                 <span className="Gray800-14px mr-2">What's the relationship between these resources?</span> 

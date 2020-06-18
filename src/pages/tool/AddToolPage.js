@@ -10,6 +10,7 @@ import SearchBar from '../commonComponents/SearchBar';
 import Loading from '../commonComponents/Loading';
 import RelatedResources from '../commonComponents/RelatedResources';
 import RelatedResourcesResults from '../commonComponents/RelatedResourcesResults';
+import RelatedObject from '../commonComponents/RelatedObject';
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
@@ -527,7 +528,9 @@ const AddToolForm = (props) => {
 
                         <div className="Rectangle">
                             {props.relatedObjects.map((object) => {
-                                return <div className="RectangleWithBorder mt-3"> <RelatedResourcesResults objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} /> </div>
+                                return (
+                                    <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} />
+                                )
                             })}
                         </div>
 

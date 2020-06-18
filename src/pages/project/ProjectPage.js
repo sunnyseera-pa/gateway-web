@@ -6,8 +6,7 @@ import axios from 'axios';
 import queryString from 'query-string';
 import {Container, Row, Col, Tabs, Tab, Alert} from 'react-bootstrap';
 
-// import DataSet from '../commonComponents/DataSet';
-import DataSet from '../commonComponents/DataSetOld';
+import RelatedObject from '../commonComponents/RelatedObject';
 
 import NotFound from '../commonComponents/NotFound';
 import SearchBar from '../commonComponents/SearchBar';
@@ -93,16 +92,8 @@ class ProjectDetail extends Component {
       return <Container><Loading /></Container>;
     }
 
-    if (typeof data.toolids === 'undefined') {
-      data.toolids = [];
-    }
-
-    if (typeof data.datasetids === 'undefined') {
-      data.datasetids = [];
-    }
-
-    if (typeof data.personids === 'undefined') {
-      data.personids = [];
+    if (data.relatedObjects === null || typeof data.relatedObjects === 'undefined') {
+        data.relatedObjects = [];
     }
 
     return (
@@ -168,13 +159,8 @@ class ProjectDetail extends Component {
             <Col sm={10} lg={10}>
               <div>
                 <Tabs className='TabsBackground Gray700-13px'>
-                  <Tab eventKey="Tools" title={'Tools used in this (' + data.toolids.length + ')'}>
-                    {data.toolids.length <= 0 ? <NotFound word="tools" /> : data.toolids.map((id) => {
-                      return <Tool id={id} activeLink={true} />
-                    })}
-                  </Tab>
-                  <Tab eventKey="Data sets" title={'Data sets used in this (' + data.datasetids.length + ')'}>
-                    {data.datasetids.length <= 0 ? <NotFound word="data sets" /> : data.datasetids.map(id => <DataSet id={id} activeLink={true} />)}
+                  <Tab eventKey="Projects" title={'Related resources (' + data.relatedObjects.length + ')'}>
+                    {data.relatedObjects.length <= 0 ? <NotFound word="related resources" /> : data.relatedObjects.map(object => <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />)}
                   </Tab>
                 </Tabs>
               </div>

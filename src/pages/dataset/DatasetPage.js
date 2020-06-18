@@ -214,7 +214,8 @@ class DatasetTitle extends Component {
    */
   renderRequestAccess = () => {
     const {userState: [user, ...rest], data: {title, id, contactPoint, publisher}, alert=null, datarequest} = this.props;
-    const hasRequestedAccess = (datarequest.length === 1 ? true : false);
+    // const hasRequestedAccess = (datarequest.length === 1 ? true : false);
+    const hasRequestedAccess = false;
     if(!user.loggedIn) {
       var isRequest=true;
       return <LoginModal isRequest={isRequest} requestDetails={title} requestContact={contactPoint} />;
@@ -222,46 +223,45 @@ class DatasetTitle extends Component {
       return <Button variant="primary" className="AddButton" disabled>Request Access</Button>
     } else {
       return <Link className="btn btn-primary AddButton" to={{pathname: 
-        '/request-access'
-        // '/dar'
+        // '/request-access'
+        `/data-access-request/${id}`
         , state: {title, dataSetId: id, custodianEmail: contactPoint, publisher: publisher }}} onClick={() => Event("Buttons", "Click", "Request Access")}>Request Access</Link>
     }
   }
 
+  render() {
+      const { data, alert } = this.props;
 
-    render() {
-        const { data, alert } = this.props;
+      var keywords = (data.keywords ? data.keywords.split(",") : '');
+      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      var releaseDate = new Date(data.releaseDate);
+      var releasedOnDate = (data.releaseDate ? releaseDate.getDate() + " " + monthNames[releaseDate.getMonth()] + " " + releaseDate.getFullYear() : "");
 
-        var keywords = (data.keywords ? data.keywords.split(",") : '');
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        var releaseDate = new Date(data.releaseDate);
-        var releasedOnDate = (data.releaseDate ? releaseDate.getDate() + " " + monthNames[releaseDate.getMonth()] + " " + releaseDate.getFullYear() : "");
+      var metadataQuality         = "";
+      var metadataQualityClass    = "MetadataQuality ";
 
-        var metadataQuality         = "";
-        var metadataQualityClass    = "MetadataQuality ";
+      if (data.quality) {
+          if (data.quality.quality_score <= 50) {
+              metadataQuality      = "Not rated";
+              metadataQualityClass += "NotRatedBackground";
 
-        if (data.quality) {
-            if (data.quality.quality_score <= 50) {
-                metadataQuality      = "Not rated";
-                metadataQualityClass += "NotRatedBackground";
+          } else if (data.quality.quality_score <= 70) {
+              metadataQuality      = "Bronze";
+              metadataQualityClass += "RatingBronzeBackground";
 
-            } else if (data.quality.quality_score <= 70) {
-                metadataQuality      = "Bronze";
-                metadataQualityClass += "RatingBronzeBackground";
+          } else if (data.quality.quality_score <= 80) {
+              metadataQuality      = "Silver";
+              metadataQualityClass += "RatingSilverBackground";
 
-            } else if (data.quality.quality_score <= 80) {
-                metadataQuality      = "Silver";
-                metadataQualityClass += "RatingSilverBackground";
+          } else if (data.quality.quality_score <= 90) {
+              metadataQuality      = "Gold";
+              metadataQualityClass += "RatingGoldBackground";
 
-            } else if (data.quality.quality_score <= 90) {
-                metadataQuality      = "Gold";
-                metadataQualityClass += "RatingGoldBackground";
-
-            } else if (data.quality.quality_score > 90) {
-                metadataQuality      = "Platinum";
-                metadataQualityClass += "RatingPlatinumBackground";
-            }
-        }
+          } else if (data.quality.quality_score > 90) {
+              metadataQuality      = "Platinum";
+              metadataQualityClass += "RatingPlatinumBackground";
+          }
+      }
         return (
             <div>
                 <Row className="mt-2">

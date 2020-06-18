@@ -2,13 +2,7 @@ import React from 'react';
 import { Row, Col, Tab, Tabs, Container, Pagination} from 'react-bootstrap';
 
 import SimpleSearchBar from './SimpleSearchBar';
-import Project from './Project';
-import Tool from './Tool';
-import Person from './Person';
-import DataSet from './DataSet';
-
-var baseURL = require('./BaseURL').getURL();
-var cmsURL = require('./BaseURL').getCMSURL();
+import RelatedObject from '../commonComponents/RelatedObject';
 
 class RelatedResourcesModal extends React.Component {
 
@@ -24,6 +18,7 @@ class RelatedResourcesModal extends React.Component {
         datasetIndex: 0,
         toolIndex: 0,
         projectIndex: 0,
+        paperIndex: 0,
         personIndex: 0,
         relatedObjectIds: [],
         relatedObjects: [],
@@ -90,6 +85,11 @@ class RelatedResourcesModal extends React.Component {
                 this.setState({ projectIndex: page })
             ])
         }
+        else if (type === 'paper') {
+            await Promise.all([
+                this.setState({ paperIndex: page })
+            ])
+        }
         else if (type === 'person') {
             await Promise.all([
                 this.setState({ personIndex: page })
@@ -99,14 +99,15 @@ class RelatedResourcesModal extends React.Component {
     }
 
     render() {
-        const { userState, datasetIndex, toolIndex, projectIndex, personIndex} = this.state;
+        const { userState, datasetIndex, toolIndex, projectIndex, paperIndex, personIndex} = this.state;
         var { key } = this.state;
 
         var datasetCount = this.props.summary.datasets || 0;
         var toolCount = this.props.summary.tools || 0;
         var projectCount = this.props.summary.projects || 0;
+        var paperCount = this.props.summary.papers || 0;
         var personCount = this.props.summary.persons || 0;
-
+        
         if (key === '' || typeof key === "undefined") {
             if (datasetCount > 0) {
                 key = 'Datasets'
@@ -116,6 +117,9 @@ class RelatedResourcesModal extends React.Component {
             }
             else if (projectCount > 0) {
                 key = 'Projects'
+            }
+            else if (paperCount > 0) {
+                key = 'Papers'
             }
             else if (personCount > 0) {
                 key = 'People'
@@ -128,6 +132,7 @@ class RelatedResourcesModal extends React.Component {
         let datasetPaginationItems = [];
         let toolPaginationItems = [];
         let projectPaginationItems = [];
+        let paperPaginationItems = [];
         let personPaginationItems = [];
         var maxResult = 40;
         for (let i = 1; i <= Math.ceil(datasetCount / maxResult); i++) {
@@ -145,6 +150,11 @@ class RelatedResourcesModal extends React.Component {
                 <Pagination.Item key={i} active={i === (projectIndex/maxResult)+1} onClick={(e) => {this.handlePagination("project", ((i-1)*(maxResult)), "click")}}>{i}</Pagination.Item>,
             );
         }
+        for (let i = 1; i <= Math.ceil(paperCount / maxResult); i++) {
+            paperPaginationItems.push(
+                <Pagination.Item key={i} active={i === (paperIndex/maxResult)+1} onClick={(e) => {this.handlePagination("paper", ((i-1)*(maxResult)), "click")}}>{i}</Pagination.Item>,
+            );
+        }
         for (let i = 1; i <= Math.ceil(personCount / maxResult); i++) {
             personPaginationItems.push(
                 <Pagination.Item key={i} active={i === (personIndex/maxResult)+1} onClick={(e) => {this.handlePagination("person", ((i-1)*(maxResult)), "click")}}>{i}</Pagination.Item>,
@@ -156,18 +166,19 @@ class RelatedResourcesModal extends React.Component {
               <SimpleSearchBar searchString={this.props.searchString} doSearchMethod={this.props.doSearchMethod} doUpdateSearchString={this.props.doUpdateSearchString} userState={this.props.userState} />
                 {typeof this.props.summary.datasets !== 'undefined' ? 
                     <Row className="SearchTabsHolder">
-                        <Col>
-                            <div>
-                                <Tabs className='TabsBackground Gray700-13px' activeKey={key} onSelect={this.handleSelect} >
-                                    <Tab eventKey="Datasets" title={'Datasets (' + (this.props.summary.datasets - this.state.selected.datasets) + ')'} />
-                                    <Tab eventKey="Tools" title={'Tools (' + (this.props.summary.tools - this.state.selected.tools) + ')'} />
-                                    <Tab eventKey="Projects" title={'Projects (' + (this.props.summary.projects - this.state.selected.projects) + ')'} />
-                                  <Tab eventKey="People" title={'People (' + (this.props.summary.persons - this.state.selected.persons) + ')'} />
-                                </Tabs>
-                            </div>
-                        </Col>
-                    </Row> 
-                : ''}
+                    <Col>
+                        <div>
+                            <Tabs className='TabsBackground Gray700-13px' activeKey={key} onSelect={this.handleSelect} >
+                                <Tab eventKey="Datasets" title={'Datasets (' + (this.props.summary.datasets - this.state.selected.datasets) + ')'} />
+                                <Tab eventKey="Tools" title={'Tools (' + (this.props.summary.tools - this.state.selected.tools) + ')'} />
+                                <Tab eventKey="Projects" title={'Projects (' + (this.props.summary.projects - this.state.selected.projects) + ')'} />
+                                <Tab eventKey="Papers" title={'Papers (' + (this.props.summary.papers - this.state.selected.papers) + ')'} />
+                                <Tab eventKey="People" title={'People (' + (this.props.summary.persons - this.state.selected.persons) + ')'} />
+                           </Tabs>
+                        </div>
+                    </Col>
+                </Row> 
+             : ''}
 
             <div className={typeof this.props.summary.datasets==='undefined' ? "" : "RelatedModalBackground"} > 
                 <Container >
@@ -180,7 +191,7 @@ class RelatedResourcesModal extends React.Component {
                                         return ''
                                     }
                                     else {
-                                       return <DataSet key={dataset.id} data={dataset} activeLink={false} doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects} tempRelatedObjectIds={this.props.tempRelatedObjectIds} />  
+                                       return <RelatedObject key={dataset.id} data={dataset} activeLink={false} doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects} tempRelatedObjectIds={this.props.tempRelatedObjectIds}/>
                                     }
                                 })
                                 : ''}
@@ -191,7 +202,7 @@ class RelatedResourcesModal extends React.Component {
                                         return ''
                                     }
                                     else {
-                                       return <Tool key={tool.id} data={tool} activeLink={false} doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects} tempRelatedObjectIds={this.props.tempRelatedObjectIds} /> 
+                                       return <RelatedObject key={tool.id} data={tool} activeLink={false} doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects} tempRelatedObjectIds={this.props.tempRelatedObjectIds} /> 
                                     }
                                 })
                                 : ''}
@@ -202,7 +213,18 @@ class RelatedResourcesModal extends React.Component {
                                          return ''
                                      }
                                      else {
-                                        return <Project key={project.id} data={project} activeLink={false} doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects} tempRelatedObjectIds={this.props.tempRelatedObjectIds} />
+                                        return <RelatedObject key={project.id} data={project} activeLink={false} doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects} tempRelatedObjectIds={this.props.tempRelatedObjectIds} />
+                                     }
+                                })
+                                : ''}
+                           
+                           {key === 'Papers' ?
+                                this.props.paperData.map((paper) => {
+                                     if(this.props.relatedObjectIds.includes(paper.id)){
+                                         return ''
+                                     }
+                                     else {
+                                        return <RelatedObject key={paper.id} data={paper} activeLink={false} doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects} tempRelatedObjectIds={this.props.tempRelatedObjectIds} />
                                      }
                                 })
                                 : ''}
@@ -214,7 +236,7 @@ class RelatedResourcesModal extends React.Component {
                                         return ''
                                     }
                                     else {
-                                       return <Person key={person.id} data={person} activeLink={false} doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects} tempRelatedObjectIds={this.props.tempRelatedObjectIds} />
+                                       return <RelatedObject key={person.id} data={person} activeLink={false} doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects} tempRelatedObjectIds={this.props.tempRelatedObjectIds} />
                                     }
                                 })
                                 : ''} 
@@ -235,6 +257,12 @@ class RelatedResourcesModal extends React.Component {
                             {key === 'Projects' && projectCount > maxResult ?
                                 <Pagination>
                                     {projectPaginationItems}
+                                </Pagination>
+                                : ''}
+                            
+                            {key === 'Papers' && paperCount > maxResult ?
+                                <Pagination>
+                                    {paperPaginationItems}
                                 </Pagination>
                                 : ''}
 
