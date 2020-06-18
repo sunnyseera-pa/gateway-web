@@ -36,16 +36,11 @@ class RelatedResourcesModal extends React.Component {
         super(props);
         this.state.userState = props.userState;
         this.state.relatedObjectIds = props.relatedObjectIds;
-        // this.state.numberOfDatasets = this.props.summary.datasets;
-        // this.state.summary = props.summary;
     }
 
 
     handleSelect = (key) => {
         this.setState({ key: key });
-        // var values = queryString.parse(window.location.search);
-        // values.tab = key;
-        // this.props.history.push(window.location.pathname + '?' + queryString.stringify(values))
     }
 
     handlePagination = async (type, page, e) => {
@@ -75,7 +70,6 @@ class RelatedResourcesModal extends React.Component {
     render() {
         const { userState, datasetIndex, toolIndex, projectIndex, personIndex} = this.state;
         var { key } = this.state;
-
 
         var datasetCount = this.props.summary.datasets || 0;
         var toolCount = this.props.summary.tools || 0;
@@ -170,8 +164,6 @@ class RelatedResourcesModal extends React.Component {
 
                             {key === 'Tools' ?
                                 this.props.toolData.map((tool) => {
-                                    // return <Tool key={tool.id} data={tool} activeLink={false} doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects} tempRelatedObjectIds={this.props.tempRelatedObjectIds} /> 
-                                
                                     if(this.props.relatedObjectIds.includes(tool.id)){
                                         return ''
                                     }
@@ -194,8 +186,6 @@ class RelatedResourcesModal extends React.Component {
 
                               {key === 'People' ?
                                 this.props.personData.map((person) => {
-                                    // return <Person key={person.id} data={person} activeLink={false} doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects} tempRelatedObjectIds={this.props.tempRelatedObjectIds} />
-                               
                                     if(this.props.relatedObjectIds.includes(person.id)){
                                         return ''
                                     }

@@ -17,8 +17,8 @@ class RelatedResourcesResults extends React.Component {
         data: [],
         objectId: null,
         isLoading: true,
-        updated: false
-
+        updated: false,
+        reason: ''
     };
 
     constructor(props) {
@@ -26,32 +26,13 @@ class RelatedResourcesResults extends React.Component {
         this.state.objectId = props.objectId;
     }
 
-    // componentDidMount(objectId) {
-    //     isNaN(this.props.objectId) ?
-    //     this.getDatasetData() :
-    //     this.getDataSearchFromDb()
-    // }
-
     componentWillMount(objectId) {
         isNaN(this.props.objectId) ?
         this.getDatasetData() :
         this.getDataSearchFromDb()
     }
 
-    componentWillUnmount(objectId) {
-        isNaN(this.props.objectId) ?
-        this.getDatasetData() :
-        this.getDataSearchFromDb()
-    }
-
-    // componentWillReceiveProps(objectId) {
-    //     isNaN(this.props.objectId) ?
-    //     this.getDatasetData() :
-    //     this.getDataSearchFromDb()
-    // }
-
-    // updateCards(objectId) {
-    //     console.log('in update cards')
+    // componentWillUnmount(objectId) {
     //     isNaN(this.props.objectId) ?
     //     this.getDatasetData() :
     //     this.getDataSearchFromDb()
@@ -89,10 +70,13 @@ class RelatedResourcesResults extends React.Component {
     }
 
     removeButton = () => {
-        console.log('in removeButton')
         this.props.doRemoveObject(this.state.data.id, this.state.data.type)
     }
 
+    handleBlur = (id, reason) => {
+        this.setState({reason: reason})
+        this.props.doUpdateReason(id, reason)
+    }
 
     renderIconTagsSwitch(type, data, keywords) {
         switch (type) {
@@ -145,7 +129,7 @@ class RelatedResourcesResults extends React.Component {
     }
 
     render(props) {
-        const { data, objectId, isLoading } = this.state;
+        const { data, objectId, isLoading, reason } = this.state;
 
         let keywords = [];
         if(data.type===undefined && data.keywords){
@@ -159,7 +143,6 @@ class RelatedResourcesResults extends React.Component {
             
         return (
             <Row className="mt-2">
-                {console.log('results card: ' + objectId)}
                 <Col>
                         <div> 
                         <Row className="ml-2 mt-2">
@@ -208,12 +191,12 @@ class RelatedResourcesResults extends React.Component {
                             {this.renderIconTagsSwitch(data.type, data, keywords)}
                             </Row>
 
-
-                          {/*   <Form.Group className="mt-5"> 
+                            <Row className="mt-5 ml-3">
                                 <span className="Gray800-14px mr-2">What's the relationship between these resources?</span> 
-                                <Form.Control id="link" name="link" type="text" 
-                                className={formik.touched.link && formik.errors.link ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.link} onBlur={formik.handleBlur} /> 
-                            </Form.Group> */}
+                            </Row>
+                            <Row className="ml-3 mr-3 testInput">
+                                <input className="ResultsCardInput" id={"reason-" + objectId} onBlur={event => this.handleBlur(objectId, event.target.value)} />
+                            </Row>
                     </div>
                 </Col>
             </Row>

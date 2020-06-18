@@ -265,7 +265,7 @@ class SearchBar extends React.Component {
                                                                         <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
                                                                             <Col xs={10}>
                                                                                 <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">{dat.messageDescription}</a></div>
+                                                                                <div className="NotificationInfoHolder"><a href={dat.tool[0] ? '/' + dat.tool[0].type + '/' + dat.tool[0].id : ''} class="NotificationInfo">{dat.messageDescription}</a></div>
                                                                             </Col>
                                                                             <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                         </Row>
@@ -478,7 +478,7 @@ class SearchBar extends React.Component {
                                                                                 <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
                                                                                     <Col xs={10}>
                                                                                         <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                        <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">{dat.messageDescription}</a></div>
+                                                                                        <div className="NotificationInfoHolder"><a href={dat.tool[0] ? '/' + dat.tool[0].type + '/' + dat.tool[0].id : ''} class="NotificationInfo">{dat.messageDescription}</a></div>
                                                                                     </Col>
                                                                                     <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                                 </Row>
