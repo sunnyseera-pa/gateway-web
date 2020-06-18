@@ -48,6 +48,7 @@ class RelatedResourcesModal extends React.Component {
 
        if(props.relatedObjects) {
             props.relatedObjects.map((object) => {
+
                 this.state.relatedObjectIds.push(object.objectId) 
                 
                 switch (object.objectType) {
@@ -152,8 +153,6 @@ class RelatedResourcesModal extends React.Component {
 
         return (
             <div>
-                {console.log('props.datasetData: ' + JSON.stringify(this.props.datasetData))}
-                {console.log('relatedObjectIds: ' + this.state.relatedObjectIds)}
               <SimpleSearchBar searchString={this.props.searchString} doSearchMethod={this.props.doSearchMethod} doUpdateSearchString={this.props.doUpdateSearchString} userState={this.props.userState} />
                 {typeof this.props.summary.datasets !== 'undefined' ? 
                     <Row className="SearchTabsHolder">
@@ -176,14 +175,8 @@ class RelatedResourcesModal extends React.Component {
                         <Col sm={1} lg={1} />  
                         <Col sm={10} lg={10} className="mt-2" >
                             {key === 'Datasets' ?
-                                this.props.datasetData.map((dataset) => {
-                    
-                                    if(dataset.id==="7f125091-12ba-464d-af7d-9a88179b0b95"){
-                                        console.log('this.state.relatedObjectIds here: ' + JSON.stringify(this.state.relatedObjectIds))
-                                    }
-                                    
-                                        if(this.state.relatedObjectIds.includes(dataset.id)){
-
+                                this.props.datasetData.map((dataset) => {  
+                                    if(this.state.relatedObjectIds.includes(dataset.id)){
                                         return ''
                                     }
                                     else {
@@ -194,8 +187,7 @@ class RelatedResourcesModal extends React.Component {
 
                             {key === 'Tools' ?
                                 this.props.toolData.map((tool) => {
-                                    if(this.state.relatedObjectIds.includes(tool.id)){
-                                    
+                                    if(this.state.relatedObjectIds.includes(tool.id) || this.state.relatedObjectIds.includes(JSON.stringify(tool.id))){          
                                         return ''
                                     }
                                     else {
@@ -206,7 +198,7 @@ class RelatedResourcesModal extends React.Component {
 
                            {key === 'Projects' ?
                                 this.props.projectData.map((project) => {
-                                    if(this.state.relatedObjectIds.includes(project.id)){
+                                    if(this.state.relatedObjectIds.includes(project.id) || this.state.relatedObjectIds.includes(JSON.stringify(project.id))){
                                          return ''
                                      }
                                      else {
@@ -217,7 +209,7 @@ class RelatedResourcesModal extends React.Component {
 
                               {key === 'People' ?
                                 this.props.personData.map((person) => {
-                                    if(this.state.relatedObjectIds.includes(person.id)){
+                                    if(this.state.relatedObjectIds.includes(person.id) || this.state.relatedObjectIds.includes(JSON.stringify(person.id))){
                                     
                                         return ''
                                     }

@@ -22,7 +22,6 @@ class RelatedResourcesResults extends React.Component {
     };
 
     constructor(props) {
-        console.log('props in result: ' + JSON.stringify(props))
         super(props)
         this.state.objectId = props.objectId;
         this.state.reason = props.reason;

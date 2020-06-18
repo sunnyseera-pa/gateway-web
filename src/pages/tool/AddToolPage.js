@@ -222,11 +222,8 @@ class AddToolPage extends React.Component {
     }
 
     removeObject = (id) => {
-        console.log('REMOVE! ' + id )
-        console.log('REMOVE BEFORE: ' + JSON.stringify(this.state.relatedObjects))
         this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id);
         this.setState({relatedObjects: this.state.relatedObjects})
-        console.log('REMOVE AFTER: ' + JSON.stringify(this.state.relatedObjects))
     }
 
     render() {
@@ -238,9 +235,6 @@ class AddToolPage extends React.Component {
 
         return (
             <div>
-                {console.log('tempRelatedObjects: ' + JSON.stringify(this.state.tempRelatedObjectIds))}
-                {console.log('relatedObjects: ' + JSON.stringify(this.state.relatedObjects))}
-
                 <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Container>
                     <AddToolForm data={data} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects}/>
@@ -254,13 +248,6 @@ class AddToolPage extends React.Component {
 const AddToolForm = (props) => {
     // Pass the useFormik() hook initial form values and a submit function that will
     // be called when the form is submitted
-
-    console.log('ADD - props.relatedObjects: ' + JSON.stringify(props.relatedObjects))
-    // props.relatedObjects.map((obj) => {
-    //     console.log('objectId: ' + obj.objectId)
-    //     console.log('reason: ' + obj.reason)
-    //     console.log('type: ' + obj.type)
-    // })
 
     const formik = useFormik({
         initialValues: {
@@ -333,21 +320,6 @@ const AddToolForm = (props) => {
             props.relatedObjects.push({'objectId':id, 'reason':reason, 'objectType': type})
         }
     }
-
-    // function submitForm() {
-    //     // const tempRelObjIds = JSON.stringify(props.tempRelatedObjectIds);
-    //     // const temporaryRelObjIds = JSON.parse(tempRelObjIds);
-    
-    //     // props.relatedObjects.map((object) => {
-    //     //     temporaryRelObjIds.splice( temporaryRelObjIds.indexOf(object.objectId), 1 ); 
-    //     // });
-
-    //     // temporaryRelObjIds.map((id) => {
-    //     //     props.relatedObjects.push({'objectId':id, 'reason':'', 'type': ''})
-    //     // })
-
-    //     Event("Buttons", "Click", "Add tool form submitted");
-    // }
 
     return (
 
@@ -577,10 +549,7 @@ const AddToolForm = (props) => {
                                             Cancel
                                         </Button>
                                     </a>
-                                <Button variant="primary" className="White-14px" type="submit" 
-                                // onClick={submitForm} 
-                                onClick={() => Event("Buttons", "Click", "Add tool form submitted")}
-                                >
+                                <Button variant="primary" className="White-14px" type="submit" onClick={() => Event("Buttons", "Click", "Add tool form submitted")} >
                                     Publish
                                 </Button>
                             </Col>
