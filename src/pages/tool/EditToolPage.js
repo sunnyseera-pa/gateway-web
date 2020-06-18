@@ -4,16 +4,17 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Typeahead } from 'react-bootstrap-typeahead';
 
-import Container from 'react-bootstrap/Container';
-import SearchBar from '../commonComponents/SearchBar';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import {Form, Button, Row, Col, Container} from 'react-bootstrap';
 
-import Loading from '../commonComponents/Loading'
+import SearchBar from '../commonComponents/SearchBar';
+import Loading from '../commonComponents/Loading';
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
+
+import RelatedResources from '../commonComponents/RelatedResources';
+import RelatedResourcesResults from '../commonComponents/RelatedResourcesResults';
+import SVGIcon from '../../images/SVGIcon';
+
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -34,7 +35,30 @@ class EditToolPage extends React.Component {
     combinedLicenses: [],
     combinedUsers: [],
     isLoading: true,
-    userState: []
+    userState: [],
+    //NEED TO UPDATE THESE WITH INITIAL VALUES???
+    searchString: null,
+    datasetData: [],
+    toolData: [],
+    projectData: [],
+    personData: [],
+    summary: [],
+    tempRelatedObjectIds: [],
+    relatedObjectIds: [],
+    relatedObjects: [],
+    relatedObjectIdsCount: 0,
+    tempSelected:{ 
+        datasets:0,
+        tools:0,
+        projects:0,
+        persons:0
+     },
+   selected:{
+        datasets:0,
+        tools:0,
+        projects:0,
+        persons:0
+   }
   };
 
   // on loading of tool detail page
@@ -58,10 +82,32 @@ class EditToolPage extends React.Component {
       .then((res) => {
         this.setState({
           data: res.data.data[0],
-          isLoading: false
+          relatedObjects: res.data.data[0].relatedObjects
+        //   isLoading: false
         });
+        this.updateRelatedObjectIds();
+        this.setState({isLoading: false})
       });
   };
+
+  updateRelatedObjectIds() {
+    // console.log('type: ' + this.state.data.type)
+
+    if(this.state.relatedObjects && this.state.relatedObjects.length > 0){
+    var relObjs = JSON.stringify(this.state.relatedObjects)
+    var relatedObjs = JSON.parse(relObjs)
+
+    relatedObjs.map((object) => {
+        this.state.relatedObjectIds.push(object.objectId)
+        this.state.tempRelatedObjectIds.push(object.objectId)
+    })
+    }
+
+    //   console.log('tempRelatedObjectIds: ' + JSON.stringify(this.state.tempRelatedObjectIds))
+    //   console.log('relatedObjectIds: ' + JSON.stringify(this.state.relatedObjectIds))
+    //   console.log('relatedObjects: ' + JSON.stringify(this.state.relatedObjects))
+
+  }
 
   doGetTopicsCall() {
     return new Promise((resolve, reject) => {
@@ -173,18 +219,115 @@ class EditToolPage extends React.Component {
     this.setState({ searchString: searchString });
   }
 
-  render() {
-    const { data, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, combinedUsers, isLoading, userState } = this.state;
+  doModalSearch = (e, type, page) => {
 
+    if (e.key === 'Enter' || e === 'click') {
+
+        var searchURL = '';
+
+        if (type === 'dataset' && page > 0) searchURL += '&datasetIndex=' + page;
+        if (type === 'tool' && page > 0) searchURL += '&toolIndex=' + page;
+        if (type === 'project' && page > 0) searchURL += '&projectIndex=' + page;
+        if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
+    
+    axios.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL )
+        .then((res) => {
+            this.setState({
+                datasetData: res.data.datasetResults || [],
+                toolData: res.data.toolResults || [],
+                projectData: res.data.projectResults || [],
+                personData: res.data.personResults || [],
+                summary: res.data.summary || [],
+                isLoading: false
+            });
+        })
+    }
+}
+
+addToTempRelatedObjects = (id, type) => {
+
+    if(this.state.tempRelatedObjectIds.includes(id)){
+        this.state.tempRelatedObjectIds.splice( this.state.tempRelatedObjectIds.indexOf(id), 1 );        
+        if(type===undefined){this.state.tempSelected.datasets--}
+        else if(type==="tool"){this.state.tempSelected.tools--}
+        else if(type==="project"){this.state.tempSelected.projects--}
+        else if(type==="person"){this.state.tempSelected.persons--}
+    }
+    else {
+        this.state.tempRelatedObjectIds.push(id)
+        if(type===undefined){this.state.tempSelected.datasets++}
+        else if(type==="tool"){this.state.tempSelected.tools++}
+        else if(type==="project"){this.state.tempSelected.projects++}
+        else if(type==="person"){this.state.tempSelected.persons++}
+    }  
+  
+    this.setState({relatedObjectIdsCount: this.state.tempRelatedObjectIds.length - this.state.relatedObjectIds.length})
+}
+
+addToRelatedObjects = () => {
+    const tempObjectIds = JSON.stringify(this.state.tempRelatedObjectIds);
+    const temporaryObjectIds = JSON.parse(tempObjectIds);
+    this.setState({relatedObjectIds: temporaryObjectIds});
+
+    this.setState({relatedObjectIdsCount: 0 })
+    this.setState(prevState => ({
+        selected: {                   
+            datasets: this.state.tempSelected.datasets,      
+            tools: this.state.tempSelected.tools,
+            projects: this.state.tempSelected.projects,
+            persons: this.state.tempSelected.persons
+        }
+    }))
+}
+
+clearRelatedObjects = () => {
+    this.setState({tempRelatedObjectIds: [] })
+    this.setState({relatedObjectIdsCount: 0 })
+}
+
+removeObject = (id, type) => {
+    // console.log('REMOVE! ' + id + ' - ' + type)
+    this.state.tempRelatedObjectIds.splice( this.state.tempRelatedObjectIds.indexOf(id), 1 );   
+    this.state.relatedObjectIds.splice( this.state.relatedObjectIds.indexOf(id), 1 ); 
+    this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id);
+ 
+
+    switch (type) {
+        case 'tool':
+                {this.state.tempSelected.tools--}
+                {this.state.selected.tools--}
+            break;
+        case 'project':
+                {this.state.tempSelected.projects--}
+                {this.state.selected.projects--}
+            break;
+        case 'person':
+                {this.state.tempSelected.persons--}
+                {this.state.selected.persons--}
+            break;
+        case undefined:
+                {this.state.tempSelected.datasets--}
+                {this.state.selected.datasets--}
+            break;
+    }
+
+    // this.setState({tempRelatedObjectIds: this.state.tempRelatedObjectIds})
+    // this.setState({relatedObjectIds: this.state.relatedObjectIds})
+
+}
+
+  render() {
+    const { data, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, selected, relatedObjects } = this.state;
     if (isLoading) {
       return <Container><Loading /></Container>;
     }
 
     return (
       <div>
+          {/* {console.log('edit page data: ' + JSON.stringify(data))} */}
         <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
         <Container>
-          <EditToolForm data={data} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} userState={userState} />
+          <EditToolForm data={data} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} relatedObjectIdsCount={this.state.relatedObjectIdsCount} tempRelatedObjectIds={this.state.tempRelatedObjectIds} relatedObjectIds={this.state.relatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} selected={selected} relatedObjects={relatedObjects}/>
         </Container>
       </div>
     );
@@ -197,7 +340,7 @@ const EditToolForm = (props) => {
   // be called when the form is submitted
   const formik = useFormik({
     initialValues: {
-      id: props.data.id,
+      id: props.data.id, 
       type: 'tool',
       name: props.data.name,
       link: props.data.link,
@@ -213,6 +356,7 @@ const EditToolForm = (props) => {
         features: props.data.tags.features,
         topics: props.data.tags.topics
       },
+    relatedObjects: props.relatedObjects
     },
 
     validationSchema: Yup.object({
@@ -258,8 +402,42 @@ const EditToolForm = (props) => {
     });
   });
 
+  function updateReason(id, reason) {
+    let inRelatedObject = false;
+    props.relatedObjects.map((object) => {
+        if(object.objectId===id){
+            inRelatedObject = true;
+            object.reason = reason;
+        }
+    });
+
+    if(!inRelatedObject){
+        props.relatedObjects.push({'objectId':id, 'reason':reason})
+    }
+}
+
+function submitForm() {
+    const tempRelObjIds = JSON.stringify(props.tempRelatedObjectIds);
+    const temporaryRelObjIds = JSON.parse(tempRelObjIds);
+
+    props.relatedObjects.map((object) => {
+        temporaryRelObjIds.splice( temporaryRelObjIds.indexOf(object.objectId), 1 ); 
+    });
+
+    temporaryRelObjIds.map((id) => {
+        props.relatedObjects.push({'objectId':id, 'reason':''})
+    })
+}
+
   return (
     <div>
+
+        {console.log('EDIT - props: ' + JSON.stringify(props.relatedObjects.length) )}
+        
+        {/* {props.relatedObjects.map((object) => {
+            {console.log('edit form reasons: ' + JSON.stringify(object.objectId) + ' - ' + JSON.stringify(object.reason))}
+        })} */}
+        
       <Row className="mt-2">
         <Col sm={1} lg={1} />
         <Col sm={10} lg={10}>
@@ -439,20 +617,46 @@ const EditToolForm = (props) => {
               </Form.Group>
             </div>
 
+            <div className="Rectangle mt-2">
+                <span className="Black-20px">Related resources</span><span className="Gray454443-14px"> (optional)</span>
+                 <br/>
+                <span className="Gray595757-14px">Show relationships to papers, projects, datasets and tools. Resources must be added to the Gateway first.</span>
+            </div>
+
+            <div className="Rectangle">
+                {props.relatedObjectIds.map((objectId) => {
+                    console.log('objectId: ' + JSON.stringify(objectId))
+                    return <div className="RectangleWithBorder mt-3"> <RelatedResourcesResults objectId={objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} /> </div>
+                })}
+
+                {/* {props.relatedObjects.map((object) => {
+                    // {console.log('edit form reasons: ' + JSON.stringify(object.objectId) + ' - ' + JSON.stringify(object.reason))}
+                    return <div className="RectangleWithBorder mt-3"> <RelatedResourcesResults objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} /> </div>
+                })} */}
+            </div>
+
+            <div className="Rectangle FlexCenter mt-1">
+                <Row>
+                    <Col sm={1} lg={1} />
+                    <Col sm={10} lg={10}>
+                        <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} relatedObjectIdsCount={props.relatedObjectIdsCount} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjectIds={props.relatedObjectIds} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} selected={props.selected}/>
+                    </Col>
+                    <Col sm={1} lg={10} />
+                </Row>
+            </div>
+
             <Row className="mt-3">
-              <Col xs={5} lg={9}>
-                <div className="ButtonHolder">
+              <Col xs={5} lg={9} />
+              <Col xs={7} lg={3} className="text-right">
                   <a style={{ cursor: 'pointer' }} href={'/account?tab=tools'} >
-                    <Button variant="medium" className="CancelButton" >
+                    <Button variant="medium" className="CancelButton Dark-14px mr-2" >
                       Cancel
                     </Button>
                   </a>
-                </div>
-              </Col>
-              <Col xs={7} lg={3} className="text-right">
-                <Button variant="primary" type="submit" className="AddButton">
-                  Edit this tool
-                              </Button>
+                <Button variant="primary" className="White-14px" type="submit" onClick={submitForm}>
+                  {/* Edit this tool */}
+                  Publish
+                </Button>
               </Col>
             </Row>
           </Form>

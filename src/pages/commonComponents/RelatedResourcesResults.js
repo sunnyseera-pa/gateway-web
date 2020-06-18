@@ -130,7 +130,7 @@ class RelatedResourcesResults extends React.Component {
 
     render(props) {
         const { data, objectId, isLoading, reason } = this.state;
-
+        // {console.log('props in results card: ' + JSON.stringify(props))}
         let keywords = [];
         if(data.type===undefined && data.keywords){
             keywords = data.keywords.split(", ")
@@ -151,7 +151,7 @@ class RelatedResourcesResults extends React.Component {
                                     <PersonPlaceholderSvg />
                                     <span className="ExtraBlack-16px-Bold ml-3"> {data.firstname && data.lastname ? data.firstname + ' ' + data.lastname : ''}</span>
                                     <br />
-                                    <span className="Gray800-14px ml-5"> {data.bio} </span>
+                                    <span className="Gray800-14px ml-5"> {data.bio } </span>
                                 </Col>
 
                                 :

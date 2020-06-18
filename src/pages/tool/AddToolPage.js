@@ -1,4 +1,4 @@
-import React, {useState, Fragment} from 'react';
+import React from 'react';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -182,6 +182,10 @@ class AddToolPage extends React.Component {
         }
     }
 
+    updateSearchString = (searchString) => {
+        this.setState({ searchString: searchString });
+    }
+
     doModalSearch = (e, type, page) => {
 
         if (e.key === 'Enter' || e === 'click') {
@@ -205,10 +209,6 @@ class AddToolPage extends React.Component {
                 });
             })
         }
-    }
-
-    updateSearchString = (searchString) => {
-        this.setState({ searchString: searchString });
     }
 
     addToTempRelatedObjects = (id, type) => {
@@ -306,15 +306,13 @@ const AddToolForm = (props) => {
     // Pass the useFormik() hook initial form values and a submit function that will
     // be called when the form is submitted
 
-    let cardIndex = 0;
-
     const formik = useFormik({
         initialValues: {
             type: 'tool',
             name: '',
             link: '',
             description: '',
-            categories: {
+            categories: { 
                 category: '',
                 programmingLanguage: [],
                 programmingLanguageVersion: ''
@@ -325,7 +323,6 @@ const AddToolForm = (props) => {
                 features: [],
                 topics: [],
             },
-            // relationship: ''
             relatedObjects: props.relatedObjects
         },
 
@@ -602,7 +599,6 @@ const AddToolForm = (props) => {
 
                         <div className="Rectangle">
                             {props.relatedObjectIds.map((objectId) => {
-                                cardIndex = cardIndex + 1;
                                 return <div className="RectangleWithBorder mt-3"> <RelatedResourcesResults objectId={objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} /> </div>
                             })}
                         </div>
