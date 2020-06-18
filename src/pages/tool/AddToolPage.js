@@ -236,6 +236,8 @@ class AddToolPage extends React.Component {
 
         return (
             <div>
+                {console.log('tempRelatedObjectIds: ' + JSON.stringify(this.state.tempRelatedObjectIds))}
+                {console.log('relatedObjects: ' + JSON.stringify(this.state.relatedObjects))}
                 <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Container>
                     <AddToolForm data={data} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects}/>
@@ -309,6 +311,7 @@ const AddToolForm = (props) => {
 
   
     function updateReason(id, reason, type) {
+        console.log('type: ' + JSON.stringify(props.relatedObjects))
         let inRelatedObject = false;
         props.relatedObjects.map((object) => {
             if(object.objectId===id){
@@ -323,7 +326,6 @@ const AddToolForm = (props) => {
     }
 
     return (
-
         <div>
             <Row className="mt-2">
                 <Col sm={1} lg={1} />
@@ -529,6 +531,9 @@ const AddToolForm = (props) => {
                         <div className="Rectangle">
                             {props.relatedObjects.map((object) => {
                                 return (
+                                    // <RelatedResourcesResults objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} />
+                                    
+
                                     <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} />
                                 )
                             })}
@@ -538,6 +543,7 @@ const AddToolForm = (props) => {
                             <Row>
                                 <Col sm={1} lg={1} />
                                 <Col sm={10} lg={10}>
+                                    
                                     <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                 </Col>
                                 <Col sm={1} lg={10} />

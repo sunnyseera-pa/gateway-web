@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Button } from 'react-bootstrap';
 import Loading from './Loading'
 import { ReactComponent as PersonPlaceholderSvg } from '../../images/person-placeholder.svg';
 import SVGIcon from "../../images/SVGIcon"
@@ -13,6 +13,7 @@ class RelatedObject extends React.Component {
     
     state = {
         relatedObject: [],
+        reason: '',
         data: [],
         activeLink: true,
         isLoading: true
@@ -28,6 +29,7 @@ class RelatedObject extends React.Component {
         }
         else if (props.objectId) {
             this.state.relatedObject = props.relatedObject;
+            this.state.reason = props.reason;
             this.getRelatedObjectFromDb(props.objectId);
         }
         else {
@@ -53,13 +55,16 @@ class RelatedObject extends React.Component {
         this.props.doRemoveObject(this.state.data.id, this.state.data.type)
     }
 
-    handleBlur = (id, reason) => {
+    handleChange = (id, reason, type) => {
+        console.log('type: ' + type)
         this.setState({reason: reason})
-        this.props.doUpdateReason(id, reason)
+        this.props.doUpdateReason(id, reason, type)
     }
 
+
+
     render() {
-        const { data, isLoading, activeLink, relatedObject } = this.state;
+        const { data, isLoading, activeLink, relatedObject } = this.state; 
  
         if (isLoading) {
             return <Loading />;
@@ -76,7 +81,30 @@ class RelatedObject extends React.Component {
         return (
             <Row className="mt-2"> 
                 <Col>
-                    <div className={rectangleClassName} onClick={() => !activeLink && !this.props.showRelationshipQuestion && !this.props.showRelationshipAnswer && this.props.doAddToTempRelatedObjects(data.id, data.type) } >
+                    <div className={rectangleClassName} onClick={() => !activeLink && !this.props.showRelationshipQuestion && !this.props.showRelationshipAnswer && this.props.doAddToTempRelatedObjects(data.id, data.type===undefined ? "dataset" : data.type) } >
+                       
+                    {(() => {
+                            if (this.props.showRelationshipQuestion) {
+                                return (
+                                    <Row>
+                                    <Col sm={10} lg={10}/>
+                                    <Col sm={2} lg={2}>
+                                    <Button variant="medium" className="ExtraBlack-14px" onClick={this.removeButton} >
+                                        <SVGIcon name="closeicon" fill={'#979797'} className="ButtonSvgs mr-2" />
+                                        Remove
+                                    </Button> 
+                                 </Col>
+                                 </Row>
+                                )
+                            }
+                            else if (this.props.showRelationshipAnswer) {
+                                return (
+                                    <>
+                                  
+                                    </>
+                                )
+                            }
+                        })()}
                         {(() => {
                             if (data.type === 'tool') {
                                 return(
@@ -323,7 +351,7 @@ class RelatedObject extends React.Component {
                                         </Row>
                                         <Row className="testInput">
                                             <Col xs={12}>
-                                                <input className="ResultsCardInput" id={"reason-" + this.props.objectId} onBlur={event => this.handleBlur(this.props.objectId, event.target.value)} />
+                                            <input className="ResultsCardInput"  value={this.state.reason} onChange={event => this.handleChange(this.props.objectId, event.target.value, data.type===undefined ? "dataset" : data.type)} />
                                             </Col>
                                         </Row>
                                     </>

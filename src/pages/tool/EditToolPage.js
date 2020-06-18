@@ -10,6 +10,8 @@ import SearchBar from '../commonComponents/SearchBar';
 import Loading from '../commonComponents/Loading';
 import RelatedResources from '../commonComponents/RelatedResources';
 import RelatedResourcesResults from '../commonComponents/RelatedResourcesResults';
+import RelatedObject from '../commonComponents/RelatedObject';
+
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
@@ -344,6 +346,7 @@ const EditToolForm = (props) => {
 
     return (
         <div>
+            {console.log('updated: ' + JSON.stringify(props.relatedObjects))}
             <Row className="mt-2">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
@@ -536,7 +539,9 @@ const EditToolForm = (props) => {
 
                         <div className="Rectangle">
                            {props.relatedObjects ? props.relatedObjects.map((object) => {
-                                return <div className="RectangleWithBorder mt-3"> <RelatedResourcesResults objectId={object.objectId} reason={object.reason} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} /> </div>
+                                return <div className="RectangleWithBorder mt-3"> <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} reason={object.reason} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} /> </div> 
+                                
+                                {/* <RelatedResourcesResults objectId={object.objectId} reason={object.reason} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} /> */}
                             }) : ''}
                         </div>
 

@@ -16,7 +16,7 @@ class RelatedResourcesResults extends React.Component {
     state = { 
         data: [],
         objectId: null,
-        isLoading: true,
+        isLoading: true, 
         updated: false,
         reason: ''
     };

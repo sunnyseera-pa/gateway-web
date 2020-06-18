@@ -1354,7 +1354,7 @@ iframe#discourse-embed-frame {
 
   .modal-dialog {
     position: absolute;
-    top: 10%;
+    top: 40%;
     left: 15%;
     transform: translate(-50%, -50%) !important;
 }
