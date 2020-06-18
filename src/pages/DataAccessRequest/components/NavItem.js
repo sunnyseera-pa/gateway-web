@@ -3,8 +3,9 @@ import { isEmpty } from 'lodash';
 
 const NavItem = ({parentForm, questionPanels, onFormSwitchPanel}) => {
 
-    const onClick = (panelId) => {
-        onFormSwitchPanel(panelId);
+    const onClickItem = (e, panel) => {
+        e.preventDefault();
+        onFormSwitchPanel(panel);
     }
 
     const buildNavItem = () => {
@@ -17,7 +18,7 @@ const NavItem = ({parentForm, questionPanels, onFormSwitchPanel}) => {
                             className="Gray800-14px" 
                             style={{cursor: 'pointer'}} 
                             key={index} 
-                            onClick={e => onClick(item.panelId)}>
+                            onClick={e => onClickItem(e, item)}>
                             {item.navHeader}
                         </li> 
                     )
