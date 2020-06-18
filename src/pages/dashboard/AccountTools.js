@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import moment from 'moment';
 
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal'
+import { Row, Col, Button, Modal, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
 
 import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading';
@@ -22,117 +20,30 @@ class AccountTools extends React.Component {
 
     // initialize our state
     state = {
-        userState: []
-    };
-
-    componentDidMount() {
-        initGA('UA-166025838-1');
-    }
-
-    render() {
-        const { userState } = this.state;
-
-        return (
-            <div>
-                <Row className="mt-3">
-                    <Col style={{ textAlign: "center" }}>
-                        <Button variant="primary" href="/addtool" className="AddButton" onClick={() => Event("Buttons", "Click", "Add a new tool")}>
-                            + Add a new tool
-                        </Button>
-                    </Col>
-                </Row>
-
-                <Row className="mt-3">
-                    <Col>
-                        <span className="Black-16px ml-2">Pending approval</span>
-                    </Col>
-                </Row>
-
-                <Row className="mt-1">
-                    <Col lg={12}>
-                        <div className="ToolsHeader">
-                            <Row>
-                                <Col xs={4} lg={5} className="pl-4 pt-2 Gray800-14px-bold">Name</Col>
-                                <Col xs={4} lg={2} className="pl-1 pt-2 Gray800-14px-bold">Author</Col>
-                                <Col xs={4} lg={5}></Col>
-                            </Row>
-                        </div>
-                    </Col>
-                </Row>
-
-                <PendingTools userState={userState} />
-
-                <Row className="mt-3">
-                    <Col>
-                        <span className="Black-16px ml-2">Active</span>
-                    </Col>
-                </Row>
-
-                <Row className="mt-1">
-                    <Col lg={12}>
-                        <div className="ToolsHeader">
-                            <Row>
-                                <Col xs={4} lg={5} className="pl-4 pt-2 Gray800-14px-bold">Name</Col>
-                                <Col xs={4} lg={2} className="pl-1 pt-2 Gray800-14px-bold">Author</Col>
-                                <Col xs={4} lg={5}></Col>
-                            </Row>
-                        </div>
-                    </Col>
-                </Row>
-
-                <ActiveTool userState={userState} />
-
-                <Row className="mt-3">
-                    <Col>
-                        <span className="Black-16px ml-2">Archive</span>
-                    </Col>
-                </Row>
-
-                <Row className="mt-1">
-                    <Col lg={12}>
-                        <div className="ToolsHeader">
-                            <Row>
-                                <Col xs={4} lg={5} className="pl-4 pt-2 Gray800-14px-bold">Name</Col>
-                                <Col xs={4} lg={2} className="pl-1 pt-2 Gray800-14px-bold">Author</Col>
-                                <Col xs={4} lg={5}></Col>
-                            </Row>
-                        </div>
-                    </Col>
-                </Row>
-
-                <ArchiveTools userState={userState} />
-
-            </div>
-        );
-    }
-}
-
-class PendingTools extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state.userState = props.userState;
-    }
-
-    // initialize our state
-    state = {
-        data: [],
         userState: [],
+        key: 'active',
+        data: [],
         isLoading: true
     };
 
-    componentDidMount() {
-        this.doSearchCall();
+    handleSelect = (key) => {
+        this.setState({ key: key });
     }
 
-    doSearchCall() {
+    componentDidMount() {
+        initGA('UA-166025838-1');
+        this.doToolsCall();
+    }
+
+    doToolsCall() {
         if (this.state.userState[0].role === "Admin") {
-            axios.get(baseURL + '/api/v1/accounts/admin?type=tool&toolState=review')
+            axios.get(baseURL + '/api/v1/accounts/admin?type=tool')
                 .then((res) => {
                     this.setState({ data: res.data.data, isLoading: false });
                 });
         }
         else {
-            axios.get(baseURL + '/api/v1/accounts?type=tool&id=' + this.state.userState[0].id + '&toolState=review')
+            axios.get(baseURL + '/api/v1/accounts?type=tool&id=' + this.state.userState[0].id + '')
                 .then((res) => {
                     this.setState({ data: res.data.data, isLoading: false });
                 });
@@ -159,118 +70,264 @@ class PendingTools extends React.Component {
             });
     }
 
-
     render() {
-        const { data, isLoading, userState } = this.state;
+        const { userState, key, isLoading, data } = this.state;
 
         if (isLoading) {
-            return <Loading />;
+            return (
+                <Row className="mt-4">
+                    <Col xs={1}></Col>
+                    <Col xs={10}>
+                        <Loading />
+                    </Col>
+                    <Col xs={1}></Col>
+                </Row>
+            );
         }
+
+        var activeCount = 0;
+        var reviewCount = 0;
+        var archiveCount = 0;
+        var rejectedCount = 0;
+
+        data.forEach((tool) => {
+            if (tool.activeflag === "active") activeCount++;
+            else if (tool.activeflag === "review") reviewCount++;
+            else if (tool.activeflag === "archive") archiveCount++;
+            else if (tool.activeflag === "rejected") rejectedCount++;
+        });
+
         return (
-            <Row>
-                <Col>
-                    {data.length <= 0 ? <NotFound word='tools' /> : data.map((dat) => {
-                        return (<a /* href={'/tool/'+dat.id} */>
-                            <div className="Rectangle mt-1">
+            <div>
+                <Row>
+                    <Col xs={1}></Col>
+                    <Col xs={10}>
+                        <Row className="AccountHeader mt-4">
+                            <Col xs={8}>
                                 <Row>
-                                    <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/tool/' + dat.id} >{dat.name}</a></Col>
-                                    <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold">
-                                        {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
-                                            return <span>{person.firstname} {person.lastname} <br /></span>
-                                        })}
-                                    </Col>
-                                    <Col sm={12} lg={5} className="pl-5 toolsButtons">
-                                        {userState[0].role === 'Admin' ?
-                                            <div>
-                                                <Button variant='white' href={'/edittool/' + dat.id} className="AccountButtons mr-2">
-                                                    Edit
-                            </Button>
-                                                <Button variant='white' onClick={() => this.rejectTool(dat.id)} className="AccountButtons mr-2">
-                                                    Reject
-                            </Button>
-                                                <Button variant='white' onClick={() => this.approveTool(dat.id)} className="AccountButtons ">
-                                                    Approve
-                            </Button>
-                                            </div> : ""}
-                                    </Col>
+                                    <span className="Black-20px">Tools</span>
                                 </Row>
-                            </div>
-                        </a>)
-                    })}
-                </Col>
-            </Row>
+                                <Row>
+                                    <span className="Gray700-13px ">Manage your existing tools or add new ones</span>
+                                </Row>
+                            </Col>
+                            <Col xs={4} style={{ textAlign: "right" }}>
+                                <Button variant="primary" href="/addtool" className="AddButton" onClick={() => Event("Buttons", "Click", "Add a new tool")} >
+                                    + Add a new tool
+                                </Button>
+                            </Col>
+                        </Row>
+
+                        <Row className="TabsBackground">
+                            <Col sm={12} lg={12}>
+                                <Tabs className='DataAccessTabs Gray700-13px' activeKey={this.state.key} onSelect={this.handleSelect}>
+                                    <Tab eventKey="active" title={"Active (" + activeCount + ")"}> </Tab>
+                                    <Tab eventKey="pending" title={"Pending approval (" + reviewCount + ")"}> </Tab>
+                                    <Tab eventKey="rejected" title={"Rejected (" + rejectedCount + ")"}> </Tab>
+                                    <Tab eventKey="archive" title={"Archive (" + archiveCount + ")"}> </Tab>
+                                </Tabs>
+                            </Col>
+                        </Row>
+
+
+
+                        {(() => {
+                            switch (key) {
+                                case "active":
+                                    return (
+                                        <div>
+                                            <Row className="SubHeader mt-3 Gray800-14px-bold">
+                                                <Col xs={2}>Updated</Col>
+                                                <Col xs={5}>Name</Col>
+                                                <Col xs={2}>Author</Col>
+                                                <Col xs={3}></Col>
+                                            </Row>
+
+                                            {activeCount <= 0 ? <NotFound word="tools" /> : data.map((dat) => {
+                                                if (dat.activeflag !== "active") {
+                                                    return (<></>)
+                                                }
+                                                else {
+                                                    return (
+                                                        <Row className="entryBox">
+                                                            <Col sm={12} lg={2} className="pt-2 Gray800-14px">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
+                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/tool/' + dat.id} className="Black-14px">{dat.name}</a></Col>
+                                                            <Col sm={12} lg={2} className="pt-2 Gray800-14px">
+                                                                {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
+                                                                    return <span>{person.firstname} {person.lastname} <br /></span>
+                                                                })}
+                                                            </Col>
+
+                                                            <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
+                                                                <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
+                                                                    <Dropdown.Item href={'/edittool/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
+                                                                    <DeleteButton id={dat.id} />
+                                                                </DropdownButton>
+                                                            </Col>
+                                                        </Row>
+                                                    )
+                                                }
+                                            })}
+
+                                        </div>
+                                    );
+                                case "pending":
+                                    return (
+                                        <div>
+                                            <Row className="SubHeader mt-3 Gray800-14px-bold">
+                                                <Col xs={2}>Updated</Col>
+                                                <Col xs={5}>Name</Col>
+                                                <Col xs={2}>Author</Col>
+                                                <Col xs={3}></Col>
+                                            </Row>
+
+                                            {reviewCount <= 0 ? <NotFound word="tools" /> : data.map((dat) => {
+                                                if (dat.activeflag !== "review") {
+                                                    return (<></>)
+                                                }
+                                                else {
+                                                    return (
+                                                        <Row className="entryBox">
+                                                            <Col sm={12} lg={2} className="pt-2 Gray800-14px">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
+                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/tool/' + dat.id} className="Black-14px">{dat.name}</a></Col>
+                                                            <Col sm={12} lg={2} className="pt-2 Gray800-14px">
+                                                                {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
+                                                                    return <span>{person.firstname} {person.lastname} <br /></span>
+                                                                })}
+                                                            </Col>
+
+                                                            <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
+                                                                {userState[0].role === 'Admin' ?
+                                                                    <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
+                                                                        <Dropdown.Item href={'/edittool/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
+                                                                        <Dropdown.Item href='#' onClick={() => this.approveTool(dat.id)} className="Black-14px">Approve</Dropdown.Item>
+                                                                        <RejectButton id={dat.id} />
+                                                                    </DropdownButton>
+                                                                    : ""}
+                                                            </Col>
+                                                        </Row>
+                                                    )
+                                                }
+                                            })}
+
+                                        </div>
+                                    );
+                                case "rejected":
+                                    return (
+                                        <div>
+                                            <Row className="SubHeader mt-3 Gray800-14px-bold">
+                                                <Col xs={2}>Updated</Col>
+                                                <Col xs={5}>Name</Col>
+                                                <Col xs={2}>Author</Col>
+                                                <Col xs={3}></Col>
+                                            </Row>
+
+                                            {rejectedCount <= 0 ? <NotFound word="tools" /> : data.map((dat) => {
+                                                if (dat.activeflag !== "rejected") {
+                                                    return (<></>)
+                                                }
+                                                else {
+                                                    return (
+                                                        <Row className="entryBox">
+                                                            <Col sm={12} lg={2} className="pt-2 Gray800-14px">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
+                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/tool/' + dat.id} className="Black-14px">{dat.name}</a></Col>
+                                                            <Col sm={12} lg={2} className="pt-2 Gray800-14px">
+                                                                {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
+                                                                    return <span>{person.firstname} {person.lastname} <br /></span>
+                                                                })}
+                                                            </Col>
+
+                                                            <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
+                                                                
+                                                            </Col>
+                                                        </Row>
+                                                    )
+                                                }
+                                            })}
+
+                                        </div>
+                                    );
+                                case "archive":
+                                    return (
+                                        <div>
+                                            <Row className="SubHeader mt-3 Gray800-14px-bold">
+                                                <Col xs={2}>Updated</Col>
+                                                <Col xs={5}>Name</Col>
+                                                <Col xs={2}>Author</Col>
+                                                <Col xs={3}></Col>
+                                            </Row>
+
+                                            {archiveCount <= 0 ? <NotFound word="tools" /> : data.map((dat) => {
+                                                if (dat.activeflag !== "archive") {
+                                                    return (<></>)
+                                                }
+                                                else {
+                                                    return (
+                                                        <Row className="entryBox">
+                                                            <Col sm={12} lg={2} className="pt-2 Gray800-14px">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
+                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/tool/' + dat.id} className="Black-14px">{dat.name}</a></Col>
+                                                            <Col sm={12} lg={2} className="pt-2 Gray800-14px">
+                                                                {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
+                                                                    return <span>{person.firstname} {person.lastname} <br /></span>
+                                                                })}
+                                                            </Col>
+
+                                                            <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
+                                                                <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
+                                                                    <Dropdown.Item href={'/edittool/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
+                                                                    <Dropdown.Item href='#' onClick={() => this.approveTool(dat.id)} className="Black-14px">Approve</Dropdown.Item>
+                                                                    <Dropdown.Item href='#' onClick={() => this.rejectTool(dat.id)} className="Black-14px">Reject</Dropdown.Item>
+                                                                </DropdownButton>
+                                                            </Col>
+                                                        </Row>
+                                                    )
+                                                }
+                                            })}
+
+                                        </div>
+                                    );
+                            }
+                        })()}
+                    </Col>
+
+                    <Col xs={1}></Col>
+                </Row>
+            </div>
         );
     }
 }
 
-class ActiveTool extends React.Component {
+function RejectButton(props) {
+    const [show, setShow] = useState(false);
 
-    constructor(props) {
-        super(props)
-        this.state.userState = props.userState;
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    const rejectObject = () => {
+        axios.put(baseURL + '/api/v1/accounts/status', {
+            id: props.id,
+            activeflag: "rejected"
+        })
+            .then((res) => {
+                window.location.href = '/account?tab=tools&toolRejected=true';
+            });
     }
 
-    // initialize our state
-    state = {
-        data: [],
-        userState: [],
-        isLoading: true
-    };
+    return (
+        <>
+            <Dropdown.Item href="#" onClick={handleShow} className="Black-14px">Reject</Dropdown.Item>
 
-    componentDidMount() {
-        this.doSearchCall();
-    }
-
-    doSearchCall() {
-        if (this.state.userState[0].role === "Admin") {
-            axios.get(baseURL + '/api/v1/accounts/admin?type=tool&toolState=active')
-                .then((res) => {
-                    this.setState({ data: res.data.data, isLoading: false });
-                });
-        }
-        else {
-            axios.get(baseURL + '/api/v1/accounts?type=tool&id=' + this.state.userState[0].id + '&toolState=active')
-                .then((res) => {
-                    this.setState({ data: res.data.data, isLoading: false });
-                });
-        }
-    }
-
-    render() {
-        const { data, isLoading } = this.state;
-
-        if (isLoading) {
-            return <Loading />;
-        }
-
-        return (
-            <Row className="mt-1">
-                <Col>
-                    {data.length <= 0 ? <NotFound word="tools" /> : data.map((dat) => {
-                        return (<div className="Rectangle mt-1">
-                            <Row>
-                                <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/tool/' + dat.id} >{dat.name}</a></Col>
-                                <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold">
-                                    {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
-                                        return <span>{person.firstname} {person.lastname} <br /></span>
-                                    })}
-                                </Col>
-
-                                <Col sm={12} lg={5} className="pl-5 toolsButtons">
-                                    <DeleteButton id={dat.id} />
-                                    <Button variant='white' href={'/edittool/' + dat.id} className="AccountButtons" >
-                                        Edit
-                            </Button>
-                                </Col>
-                            </Row>
-                        </div>)
-                    })}
-                </Col>
-            </Row>
-        );
-    }
-
-
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Reject this tool?</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Let the person who added this know know why their submission is being rejected, especially if there’s anything in particular they should correct before re-submitting.</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>Cancel</Button>
+                    <Button variant="primary" onClick={rejectObject}>Reject and send message</Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    );
 }
 
 function DeleteButton(props) {
@@ -290,9 +347,7 @@ function DeleteButton(props) {
 
     return (
         <>
-            <Button variant="light" id="ArchiveButton" className="mr-2" onClick={handleShow}>
-                Archive
-        </Button>
+            <Dropdown.Item href="#" onClick={handleShow} className="Black-14px">Archive</Dropdown.Item>
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
@@ -307,89 +362,5 @@ function DeleteButton(props) {
         </>
     );
 }
-
-class ArchiveTools extends React.Component {
-
-    constructor(props) {
-        super(props)
-        this.state.userState = props.userState;
-    }
-
-    // initialize our state
-    state = {
-        data: [],
-        userState: [],
-        isLoading: true
-    };
-
-    componentDidMount() {
-        this.doSearchCall();
-    }
-
-    doSearchCall() {
-
-        if (this.state.userState[0].role === "Admin") {
-            axios.get(baseURL + '/api/v1/accounts/admin?type=tool&toolState=archive')
-                .then((res) => {
-                    this.setState({ data: res.data.data, isLoading: false });
-                });
-        }
-        else {
-            axios.get(baseURL + '/api/v1/accounts?type=tool&id=' + this.state.userState[0].id + '&toolState=archive')
-                .then((res) => {
-                    this.setState({ data: res.data.data, isLoading: false });
-                });
-        }
-    }
-
-    approveTool = (id) => {
-        axios.put(baseURL + '/api/v1/accounts/status', {
-            id: id,
-            activeflag: "active"
-        })
-            .then((res) => {
-                window.location.href = '/account?tab=tools&projectApproved=true';
-            });
-    }
-
-    render() {
-        const { data, isLoading } = this.state;
-
-
-        if (isLoading) {
-            return <Loading />;
-        }
-
-        return (
-            <Row className="mt-1">
-                <Col>
-                    {data.length <= 0 ? <NotFound word="tools" /> : data.map((dat) => {
-                        return (<div className="Rectangle mt-1">
-                            <Row>
-                                <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href={'/project/' + dat.id} >{dat.name}</a></Col>
-                                <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold">
-                                    {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
-                                        return <span>{person.firstname} {person.lastname} <br /></span>
-                                    })}
-                                </Col>
-
-
-                                <Col sm={12} lg={5} className="pl-5 toolsButtons">
-                                    <Button variant="light" className="mr-2" onClick={() => this.approveTool(dat.id)}>
-                                        Unarchive
-                                    </Button>
-                                    <Button variant='white' href={'/edittool/' + dat.id} className="AccountButtons" >
-                                                Edit
-                                    </Button>
-                                </Col>
-                            </Row>
-                        </div>)
-                    })}
-                </Col>
-            </Row>
-        );
-    }
-}
-
 
 export default AccountTools;

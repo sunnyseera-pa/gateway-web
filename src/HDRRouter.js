@@ -95,14 +95,12 @@ class HDRRouter extends Component {
                         <Route path='/dataset/:datasetID' render={(props) => <DatasetPage {...props} userState={userState} />} />
                         <Route path='/completeRegistration/:personID' render={(props) => <CompleteRegistration {...props} userState={userState} />} />
                         <Route path='/sso' render={(props) => <SSOPage {...props} userState={userState} />} />
-                        <Route path='/dar' render={(props) => <DataAccessRequest {...props} userState={userState} />} />
-
+                        {userState[0].loggedIn ? (<Route path='/data-access-request/:datasetId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
                         {userState[0].loggedIn ? (<Route path='/account' render={(props) => <Account {...props} userState={userState} />} />) : ''}
                         {userState[0].loggedIn ? (<Route path='/addtool' render={(props) => <AddToolPage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/addproject' render={(props) => <AddProjectPage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/edittool/:toolID' render={(props) => <EditToolPage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/editproject/:projectID' render={(props) => <EditProjectPage {...props} userState={userState} /> } />) : ''}
-                        
                         {/* Catch all path */}
                         <Redirect to="/search?search=" />
                     </Switch>

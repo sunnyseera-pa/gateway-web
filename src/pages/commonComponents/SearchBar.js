@@ -265,7 +265,7 @@ class SearchBar extends React.Component {
                                                                         <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
                                                                             <Col xs={10}>
                                                                                 <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                <div className="NotificationInfoHolder"><a href={dat.tool[0] ? '/' + dat.tool[0].type + '/' + dat.tool[0].id : ''} class="NotificationInfo">{dat.messageDescription}</a></div>
+                                                                                {dat.tool.length &&  <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">{dat.messageDescription}</a></div> }
                                                                             </Col>
                                                                             <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                         </Row>
@@ -273,13 +273,26 @@ class SearchBar extends React.Component {
                                                                     </>
                                                                 )
                                                             }
-                                                            else {
+                                                            else if(dat.messageType === 'data access request'){
+                                                                return (
+                                                                    <>
+                                                                        <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
+                                                                                <Col xs={10}>
+                                                                                    <div className="NotificationDate">{messageDateString + '\n'}</div>
+                                                                                    <div className="NotificationInfoHolder"><a class="NotificationInfo">{dat.messageDescription}</a></div> 
+                                                                                </Col>
+                                                                                <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
+                                                                            </Row>
+                                                                            <Dropdown.Divider style={{ margin: "0px" }} />
+                                                                    </>
+                                                                )
+                                                            } else {
                                                                 return (
                                                                     <>
                                                                         <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
                                                                             <Col xs={10}>
                                                                                 <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                <div className="NotificationInfoHolder"><a href= {'/' + (dat.tool[0] ? dat.tool[0].type : '') + '/' + (dat.tool[0] ? dat.tool[0].id : '')} class="NotificationInfo">{dat.messageDescription}</a></div>
+                                                                                {dat.tool.length && <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">{dat.messageDescription}</a></div>}
                                                                             </Col>
                                                                             <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                         </Row>
@@ -313,19 +326,15 @@ class SearchBar extends React.Component {
                                                 </Dropdown.Toggle>
 
                                                 <Dropdown.Menu as={CustomMenu} className="desktopLoginMenu">
-                                                    {/* <Dropdown.Item className="Black-14px" href="/account?tab=youraccount">Your Account</Dropdown.Item>
-                                                    <Dropdown.Item className="Black-14px" href="/account?tab=messages">Notifications</Dropdown.Item>
-                                                    <Dropdown.Item className="Black-14px" href="/account?tab=projects">Project</Dropdown.Item>
-                                                    <Dropdown.Item className="Black-14px" href="/account?tab=tools">Tools</Dropdown.Item>
-                                                    <Dropdown.Item className="Black-14px" href="/account?tab=reviews">Reviews</Dropdown.Item>
-                                                    <Dropdown.Item className="Black-14px" onClick={this.logout}>Logout</Dropdown.Item> */}
-
                                                     <Dropdown.Item href="/account?tab=youraccount" className="Black-14px">Your Account</Dropdown.Item>
                                                     <Dropdown.Item href="/account?tab=tools" className="Black-14px">Tools</Dropdown.Item>
                                                     <Dropdown.Item href="/account?tab=reviews" className="Black-14px">Reviews</Dropdown.Item>
                                                     <Dropdown.Item href="/account?tab=projects" className="Black-14px">Projects</Dropdown.Item>
+                                                    <Dropdown.Item href="/account?tab=papers" className="Black-14px">Papers</Dropdown.Item>
                                                     <Dropdown.Item href="/account?tab=dataaccessrequests" className="Black-14px">Data access requests</Dropdown.Item>
-                                                    <Dropdown.Item href="/account?tab=usersroles" className="Black-14px">Users and roles</Dropdown.Item>
+                                                    {userState[0].role === "Admin" ?
+                                                        <Dropdown.Item href="/account?tab=usersroles" className="Black-14px">Users and roles</Dropdown.Item>
+                                                    : ''}
                                                     <Dropdown.Item onClick={this.logout} className="Black-14px">Logout</Dropdown.Item>
                                                 </Dropdown.Menu>
                                             </Dropdown>
@@ -360,9 +369,15 @@ class SearchBar extends React.Component {
                                             if (userState[0].loggedIn === true) {
                                                 return (
                                                     <>
-                                                        <Dropdown.Item className="Black-14px" href="/account?tab=projects">Project</Dropdown.Item>
-                                                        <Dropdown.Item className="Black-14px" href="/account?tab=tools">Tools</Dropdown.Item>
-                                                        <Dropdown.Item className="Black-14px" href="/account?tab=reviews">Reviews</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=youraccount" className="Black-14px">Your Account</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=tools" className="Black-14px">Tools</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=reviews" className="Black-14px">Reviews</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=projects" className="Black-14px">Projects</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=papers" className="Black-14px">Papers</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=dataaccessrequests" className="Black-14px">Data access requests</Dropdown.Item>
+                                                        {userState[0].role === "Admin" ?
+                                                            <Dropdown.Item href="/account?tab=usersroles" className="Black-14px">Users and roles</Dropdown.Item>
+                                                        : ''}
                                                         <Dropdown.Item className="Black-14px" onClick={this.logout}>Logout ({userState[0].name})</Dropdown.Item>
                                                     </>
                                                 )
@@ -457,6 +472,20 @@ class SearchBar extends React.Component {
                                                                         </>
                                                                     )
                                                                 }
+                                                                else if(dat.messageType === 'data access request'){
+                                                                    return (
+                                                                        <>
+                                                                            <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
+                                                                                    <Col xs={10}>
+                                                                                        <div className="NotificationDate">{messageDateString + '\n'}</div>
+                                                                                        <div className="NotificationInfoHolder"><a class="NotificationInfo">{dat.messageDescription}</a></div> 
+                                                                                    </Col>
+                                                                                    <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
+                                                                                </Row>
+                                                                                <Dropdown.Divider style={{ margin: "0px" }} />
+                                                                        </>
+                                                                    )
+                                                                }
                                                                 else {
                                                                     if (dat.messageTo === 0) {
                                                                         return (
@@ -464,7 +493,7 @@ class SearchBar extends React.Component {
                                                                                 <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
                                                                                     <Col xs={10}>
                                                                                         <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                        <div className="NotificationInfoHolder"><a href={'/' + (dat.tool[0] ? dat.tool[0].type : '') + '/' + (dat.tool[0] ? dat.tool[0].id : '')} class="NotificationInfo">{dat.messageDescription}</a></div>
+                                                                                        {dat.tool.length &&  <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">{dat.messageDescription}</a></div> }
                                                                                     </Col>
                                                                                     <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                                 </Row>
@@ -478,7 +507,14 @@ class SearchBar extends React.Component {
                                                                                 <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
                                                                                     <Col xs={10}>
                                                                                         <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                        <div className="NotificationInfoHolder"><a href={dat.tool[0] ? '/' + dat.tool[0].type + '/' + dat.tool[0].id : ''} class="NotificationInfo">{dat.messageDescription}</a></div>
+                                                                                        <div className="NotificationInfoHolder">
+                                                                                        {dat.tool[0] === undefined ?  <a href={'/'} class='NotificationInfo'>{dat.messageDescription}</a>: 
+                                                                                                (<a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class='NotificationInfo'>
+                                                                                                    {dat.messageDescription}
+                                                                                                </a>
+                                                                                                )}
+                                                                                            {/* <a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">{dat.messageDescription}</a> */}
+                                                                                            </div>
                                                                                     </Col>
                                                                                     <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                                 </Row>
