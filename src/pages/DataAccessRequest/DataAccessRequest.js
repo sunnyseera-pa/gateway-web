@@ -16,7 +16,9 @@ import axios from 'axios';
 import DarValidation from '../../utils/DarValidation.util';
 import {classSchema} from './classSchema';
 import { baseURL } from '../../configs/url.config';
+import SVGIcon from "../../images/SVGIcon";
 import 'react-tabs/style/react-tabs.css';
+
 
 class DataAccessRequest extends Component {
 
