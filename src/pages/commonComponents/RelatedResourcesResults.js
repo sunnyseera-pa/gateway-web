@@ -26,25 +26,12 @@ class RelatedResourcesResults extends React.Component {
         this.state.objectId = props.objectId;
         this.state.reason = props.reason;
     }
-
+ 
     componentWillMount(objectId) {
         isNaN(this.props.objectId) ?
         this.getDatasetData() :
         this.getDataSearchFromDb()
     }
-
-    // componentWillUnmount(objectId) {
-    //     isNaN(this.props.objectId) ?
-    //     this.getDatasetData() :
-    //     this.getDataSearchFromDb()
-    // }
-
-    // componentDidUpdate(objectId) {
-    //         isNaN(this.props.objectId) ?
-    //         this.getDatasetData()
-    //         :
-    //         this.getDataSearchFromDb()
-    // }
 
     getDataSearchFromDb = () => {
         //need to handle error if no id is found

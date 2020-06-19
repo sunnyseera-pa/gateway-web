@@ -198,7 +198,7 @@ class RelatedResourcesModal extends React.Component {
 
                             {key === 'Tools' ?
                                 this.props.toolData.map((tool) => {
-                                    if(this.state.relatedObjectIds.includes(tool.id) || this.state.relatedObjectIds.includes(JSON.stringify(tool.id))){          
+                                    if(this.state.relatedObjectIds.includes(tool.id) || this.state.relatedObjectIds.includes(JSON.stringify(tool.id)) || tool.id === this.props.toolid){          
                                         return ''
                                     }
                                     else {
@@ -209,7 +209,7 @@ class RelatedResourcesModal extends React.Component {
 
                            {key === 'Projects' ?
                                 this.props.projectData.map((project) => {
-                                    if(this.state.relatedObjectIds.includes(project.id) || this.state.relatedObjectIds.includes(JSON.stringify(project.id))){
+                                    if(this.state.relatedObjectIds.includes(project.id) || this.state.relatedObjectIds.includes(JSON.stringify(project.id)) || project.id === this.props.projectid){
                                          return ''
                                      }
                                      else {

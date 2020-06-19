@@ -47,6 +47,7 @@ class AddToolPage extends React.Component {
         tempRelatedObjectIds: [],
         relatedObjectIds: [],
         relatedObjects: [],
+        didDelete: false
     };
 
     async componentDidMount() {
@@ -73,7 +74,6 @@ class AddToolPage extends React.Component {
                             tempTopicArray.push(to);
                         }
                     });
-
                     this.setState({ combinedTopic: tempTopicArray.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
                     resolve();
                 });
@@ -225,10 +225,15 @@ class AddToolPage extends React.Component {
     removeObject = (id) => {
         this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id);
         this.setState({relatedObjects: this.state.relatedObjects})
+        this.setState({didDelete: true});
+    }
+
+    updateDeleteFlag = () => {
+        this.setState({didDelete: false});
     }
 
     render() {
-        const { data, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, relatedObjects } = this.state;
+        const { data, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, relatedObjects, didDelete } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -236,11 +241,9 @@ class AddToolPage extends React.Component {
 
         return (
             <div>
-                {console.log('tempRelatedObjectIds: ' + JSON.stringify(this.state.tempRelatedObjectIds))}
-                {console.log('relatedObjects: ' + JSON.stringify(this.state.relatedObjects))}
                 <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Container>
-                    <AddToolForm data={data} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects}/>
+                    <AddToolForm data={data} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
                 </Container>
             </div>
         );
@@ -290,6 +293,7 @@ const AddToolForm = (props) => {
         }),
 
         onSubmit: values => {
+            values.relatedObjects = props.relatedObjects
             values.toolCreator = props.userState[0];
             axios.post(baseURL + '/api/v1/mytools/add', values) 
                 .then((res) => {
@@ -308,10 +312,8 @@ const AddToolForm = (props) => {
             }
         }
     });
-
   
     function updateReason(id, reason, type) {
-        console.log('type: ' + JSON.stringify(props.relatedObjects))
         let inRelatedObject = false;
         props.relatedObjects.map((object) => {
             if(object.objectId===id){
@@ -531,10 +533,7 @@ const AddToolForm = (props) => {
                         <div className="Rectangle">
                             {props.relatedObjects.map((object) => {
                                 return (
-                                    // <RelatedResourcesResults objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} />
-                                    
-
-                                    <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} />
+                                    <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag}/>
                                 )
                             })}
                         </div>

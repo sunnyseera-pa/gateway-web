@@ -16,12 +16,16 @@ class RelatedObject extends React.Component {
         reason: '',
         data: [],
         activeLink: true,
-        isLoading: true
+        isLoading: true,
+        didDelete: false
     };
 
     constructor(props) {
         super(props)
         this.state.activeLink = props.activeLink;
+        if(props.didDelete){
+            this.state.didDelete = props.didDelete;
+        }
         if (props.data) {
             this.state.data = props.data;
             //this.state.reviewData = this.state.data.reviews;
@@ -38,10 +42,18 @@ class RelatedObject extends React.Component {
         }
     }
 
+    removeCard = (id, reason) => {
+        this.setState({
+             reason: reason
+        });
+    
+        this.getRelatedObjectFromDb(id);
+    }
+
+
     getRelatedObjectFromDb = (id) => {
         //need to handle error if no id is found
         this.setState({ isLoading: true });
-    
         axios.get(baseURL + '/api/v1/relatedobject/' + id)
             .then((res) => {
                 this.setState({
@@ -52,11 +64,10 @@ class RelatedObject extends React.Component {
     };
 
     removeButton = () => {
-        this.props.doRemoveObject(this.state.data.id, this.state.data.type)
+        this.props.doRemoveObject(this.state.data.id, this.state.data.type) 
     }
 
     handleChange = (id, reason, type) => {
-        console.log('type: ' + type)
         this.setState({reason: reason})
         this.props.doUpdateReason(id, reason, type)
     }
@@ -65,10 +76,16 @@ class RelatedObject extends React.Component {
 
     render() {
         const { data, isLoading, activeLink, relatedObject } = this.state; 
- 
+
         if (isLoading) {
             return <Loading />;
         }
+
+        if(this.props.didDelete){
+            this.props.updateDeleteFlag()
+            this.removeCard(this.props.objectId, this.props.reason)
+        }
+        
 
         var rectangleClassName = 'Rectangle';
         if (this.props.tempRelatedObjectIds && this.props.tempRelatedObjectIds.some(object => object.objectId === data.id)) {
