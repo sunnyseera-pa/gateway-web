@@ -173,7 +173,7 @@ checkAlerts = () => {
 
             {/* AND ROLE IS INNOVATOR */}
             {/* AND DARs MADE WITH THIS USER ID */}
-
+            {console.log(this.state.userState[0])}
         { this.state.userState[0].role === "Creator" ? 
             (() => {
                 switch (key) {
@@ -181,28 +181,52 @@ checkAlerts = () => {
                     return ( 
                         <div className="DARDiv">
                             <Row className="SubHeader mt-3"> <Col sm={3} lg={3}>Updated</Col> <Col sm={3} lg={3}>Dataset</Col> <Col sm={6} lg={6}>Progress</Col> </Row>
-                            <Row className="SubHeader mt-1"> <PreSubInnovator /> </Row> 
+                            {data.map(dat => (
+                                (dat.userId === this.state.userState[0].id) && dat.applicationStatus === 'inProgress' ? 
+                                    <Row className="SubHeader mt-1"> 
+                                        <PreSubInnovator data={dat}/> 
+                                    </Row> 
+                                    : null
+                            ))}
                         </div>
                     );
                     case "inreview":
                         return ( 
                             <div className="DARDiv">
                                 <Row className="SubHeader mt-3"> <Col sm={3} lg={3}>Updated</Col> <Col sm={3} lg={3}>Dataset</Col> <Col sm={6} lg={6}>Progress</Col> </Row>
-                                <Row className="SubHeader mt-1"> <InReviewInnovator /> </Row> 
+                                {data.map(dat => (
+                                (dat.userId === this.state.userState[0].id) && dat.applicationStatus === 'submitted' ? 
+                                    <Row className="SubHeader mt-1"> 
+                                        <InReviewInnovator data={dat}/> 
+                                    </Row> 
+                                    : null
+                            ))} 
                             </div>
                     );
                     case "approved":
                         return ( 
                             <div className="DARDiv">
                                 <Row className="SubHeader mt-3"> <Col sm={3} lg={3}>Updated</Col> <Col sm={3} lg={3}>Dataset</Col> <Col sm={6} lg={6}>Progress</Col> </Row> 
-                                <Row className="SubHeader mt-1"> <ApprovedInnovator /> </Row> 
+                                {data.map(dat => (
+                                (dat.userId === this.state.userState[0].id) && dat.applicationStatus === 'approved' ? 
+                                    <Row className="SubHeader mt-1"> 
+                                        <ApprovedInnovator data={dat}/> 
+                                    </Row> 
+                                    : null
+                            ))} 
                             </div>
                     );
                     case "rejected":
                         return ( 
                             <div className="DARDiv">
                                 <Row className="SubHeader mt-3"> <Col sm={3} lg={3}>Updated</Col> <Col sm={3} lg={3}>Dataset</Col> <Col sm={6} lg={6}>Progress</Col> </Row>
-                                <Row className="SubHeader mt-1"> <RejectedInnovator /> </Row> 
+                                {data.map(dat => (
+                                (dat.userId === this.state.userState[0].id) && dat.applicationStatus === 'rejected' ? 
+                                    <Row className="SubHeader mt-1"> 
+                                        <RejectedInnovator data={dat}/> 
+                                    </Row> 
+                                    : null
+                            ))} 
                             </div>
                     );
                 }
