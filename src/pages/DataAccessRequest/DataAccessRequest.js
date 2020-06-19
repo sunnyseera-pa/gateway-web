@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { Container, Row, Col, Button, Tabs, Tab } from 'react-bootstrap';
 import Winterfell from 'winterfell';
 import _ from 'lodash';
-import moment, { invalid } from 'moment';
+import moment from 'moment';
 import TypeaheadCustom from './components/TypeaheadCustom'
 import DatePickerCustom from './components/DatepickerCustom';
 import SearchBar from '../commonComponents/SearchBar';
@@ -24,7 +24,6 @@ class DataAccessRequest extends Component {
 
     constructor(props) {
         super(props);
-        this.onFormSwitchPanel = this.onFormSwitchPanel.bind(this);
         this.onFormSubmit = this.onFormSubmit.bind(this);
         this.onFormUpdate = this.onFormUpdate.bind(this);
     }
@@ -37,7 +36,8 @@ class DataAccessRequest extends Component {
         activePanelId: '',
         searchString: '',
         key: 'guidance',
-        totalAnsweredQuestions: '',
+        totalQuestions: '',
+        validationErrors: {},
         lastSaved: {
             time: '',
             ago: ''
@@ -62,25 +62,29 @@ class DataAccessRequest extends Component {
      * [TotalQuestionAnswered]
      * @desc - Sets total questions answered for each section
      */
-    totalQuestionsAnswered = (panelId = '') => {
+    totalQuestionsAnswered = (panelId = '', questionAnswers = {}) => {
         let totalQuestions = 0;
         let totalAnsweredQuestions = 0;
         if(!_.isEmpty(panelId)) {
+            if(_.isEmpty(questionAnswers))
+                ({questionAnswers} = {...this.state})
             // 1. deconstruct state
-            let {schema: {questionSets}, questionAnswers} = this.state;
+            let {schema: {questionSets}} = {...this.state};
             // 2. omits out blank null undefined values from this.state.answers
             questionAnswers  =  _.pickBy({...questionAnswers }, _.identity);
+
             let questionSet = [...questionSets].find(q => q.questionSetId === panelId) || '';
             if(!_.isEmpty(questionSet)) {
                 let { questions } = questionSet;
                 totalQuestions = questions.length;
                 let totalQuestionKeys = _.map({...questions}, 'questionId');
                 if(!_.isEmpty(questionAnswers)){
-                   let count = Object.keys(questionAnswers).map((value) => { 
-                       return totalQuestionKeys.includes(value) ? totalAnsweredQuestions++ : totalAnsweredQuestions;
+                    let count = Object.keys(questionAnswers).map((value) => { 
+                        return totalQuestionKeys.includes(value) ? totalAnsweredQuestions++ : totalAnsweredQuestions;
                     });
-                }                
-                this.setState({ totalAnsweredQuestions: `${totalAnsweredQuestions}/${totalQuestions}  questions answered in this section`});
+                }        
+                // this.setState({ totalQuestionsAnswered: `${totalAnsweredQuestions}/${totalQuestions}  questions answered in this section`});    
+                return `${totalAnsweredQuestions}/${totalQuestions}  questions answered in this section`;
             }
         }
     }
@@ -98,7 +102,7 @@ class DataAccessRequest extends Component {
             let sec = moment(currentTime.diff(lastUpdate)).format('s');
             ago = min > 0 ?  `Last saved ${min} minute(s) ago` : `Last saved ${sec} seconds ago`;
         } 
-        this.setState({lastSaved: {time: currentTime, ago}})
+        return { time: currentTime, ago}
     }
 
     /**
@@ -123,49 +127,40 @@ class DataAccessRequest extends Component {
      * @desc Callback from Winterfell sets totalQuestionsAnswered + saveTime
      */
     onFormUpdate = _.debounce((questionAnswers) => {
-        console.log(questionAnswers);
-        this.totalQuestionsAnswered(this.state.activePanelId);
+        let totalQuestionsAnswered = this.totalQuestionsAnswered(this.state.activePanelId, questionAnswers);
+        this.setState({totalQuestions: totalQuestionsAnswered});
         this.onApplicationUpdate(questionAnswers);
     }, 500);
-
-    onFormSwitchPanel(panelId) {
-        if(!_.isEmpty(panelId)) {
-            this.setState({ activePanelId: panelId});
-            this.totalQuestionsAnswered(panelId);
-        }
-    }
 
     /**
      * [Form Submit]
      * @desc Submitting data access request
-     * @params  Object{questionAnswers} {action}
+     * @params  Object{questionAnswers}
      */
-    onFormSubmit = async (questionAnswers = {}, action) => {
+    onFormSubmit = async (questionAnswers = {}) => {
         let invalidQuestions = DarValidation.getQuestionPanelInvalidQuestions(Winterfell, this.state.schema.questionSets, this.state.questionAnswers);
-        let validationMessages = DarValidation.buildInvalidMessages(Winterfell, invalidQuestions);
-        let errors = DarValidation.formatValidationObj(validationMessages, [...this.state.schema.questionPanels]);
+        let validationSectionMessages = DarValidation.buildInvalidSectionMessages(Winterfell, invalidQuestions);
+        let inValidMessages = DarValidation.buildInvalidMessages(Winterfell, invalidQuestions);
+        let errors = DarValidation.formatValidationObj(inValidMessages, [...this.state.schema.questionPanels]);
         let isValid = Object.keys(errors).length ? false : true;
-        // console.log(`${JSON.stringify(errors, null, 2)}`);
         if(isValid) {
             try {
                 let {_id: id} = this.state;
                 // 1. POST 
                 const response = await axios.post(`${baseURL}/api/v1/data-access-request/${id}`, {});
+                const lastSaved = this.saveTime();
+                this.setState({ lastSaved });
                 alert(`Application saved on ${moment().format('DD/MM/YYYY HH:mm:sss')}`);
-                this.saveTime();
             } catch (err) {
                 console.log(err);
             }
         } else {
-            // get first panel
-            let [activePanel] = Object.keys(errors);
-            // {"index":3,"panelId":"applicant","pageId":"safePeople"}
-            // set active panel to show message
-            this.updateNavigation({pageId: activePanel });
-            // console.log(errors[activePanel]);
-            alert('Fix the following validation issues');
+            let activePage               =  _.get(_.keys({...errors}), 0);
+            let activePanel              =  _.get(_.keys({...errors}[activePage]), 0);
+            let validationMessages       = validationSectionMessages;
+            alert('Please resolve the following validation issues');
+            this.updateNavigation({pageId: activePage, panelId: activePanel}, validationMessages);
         }
-        return validationMessages;
     }
 
     /**
@@ -186,31 +181,18 @@ class DataAccessRequest extends Component {
             }
             // 4. PATCH the data
             const response = await axios.patch(`${baseURL}/api/v1/data-access-request/${id}`, params);
+            // 6. get saved time
+            const lastSaved = this.saveTime();
             // 5. set state
-            this.setState({ questionAnswers: {...data}});
-            // 6. show / set save time
-            this.saveTime();
+            this.setState({ questionAnswers: {...data}, lastSaved});
         } catch(err) {
             console.log(err);
         }
     }
 
-    onParentNavClick(item) {
-        this.updateNavigation(item);
-    }
-
-    /**
-     * [onSwitchedPanel]
-     * @desc - Winterfell callback for formPanel update
-     */
-    onSwitchedPanel = (newForm) => {
-        this.updateNavigation(newForm);
-    }
-
     onNextPanel(activePanelId){
         if (activePanelId === "mrcHealthDataToolkit" || activePanelId === "adviceFromPublisher"){
-            this.onFormSwitchPanel("applicant")
-            this.onSwitchedPanel({"index":3,"panelId":"applicant","pageId":"safePeople"})
+            this.updateNavigation({panelId: "applicant", pageId: "safePeople"});
         }
         else {
             const formPanels = [...this.state.schema.formPanels];
@@ -221,40 +203,8 @@ class DataAccessRequest extends Component {
                 console.log("at the end!")
             }
             else {
-                const newForm = formPanels.find(panel => panel.index === newPanelIndex);
-                this.onFormSwitchPanel(newForm.panelId);
-                const formPages = [...this.state.schema.pages];
-                const newPage = formPages.find(page => page.pageId === newForm.pageId);
-                this.onParentNavClick(newPage);
-            }
-        }
-    }
-
-    /**
-     * [UpdateNavigation]
-     * @desc - Update the navigation state sidebar
-     */
-    updateNavigation = (newForm) => {
-        const currentActivePage = [...this.state.schema.pages].find(p => p.active === true);
-        if(currentActivePage.pageId !== newForm.pageId) {
-            // copy state pages
-            const pages = [...this.state.schema.pages];
-            // get the index of new form
-            const newPageindex = pages.findIndex(page => page.pageId === newForm.pageId);
-            // reset the current state of active to false for all pages
-            const newFormState = [...this.state.schema.pages].map((item) => {
-                return {...item, active: false}
-            });
-            // update actual object model with propert of active true
-            newFormState[newPageindex] = {...pages[newPageindex], active: true};
-            // get the activepanel and panelId Property
-            let { panelId } = [...this.state.schema.formPanels].find(p => p.pageId === newFormState[newPageindex].pageId) || '';
-            if (!_.isEmpty(panelId) || typeof panel !== 'undefined') {
-                this.setState({ schema: {...this.state.schema, pages: newFormState}, activePanelId: panelId});
-                this.totalQuestionsAnswered(panelId);
-            } 
-            else {
-                this.setState({ schema: {...this.state.schema, pages: newFormState}});
+                const { panelId, pageId } = formPanels.find(panel => panel.index === newPanelIndex);;
+                this.updateNavigation({panelId, pageId });
             }
         }
     }
@@ -279,10 +229,43 @@ class DataAccessRequest extends Component {
         this.setState({ key: key });
         // this.props.history.push(window.location.pathname + '?tab=' + key);
     }
+
+       /**
+     * [UpdateNavigation]
+     * @desc - Update the navigation state sidebar
+     */
+    updateNavigation = (newForm, validationErrors = {}) => {
+        let panelId = '';
+        const currentActivePage = [...this.state.schema.pages].find(p => p.active === true);
+        // copy state pages
+        const pages = [...this.state.schema.pages];
+        // get the index of new form
+        const newPageindex = pages.findIndex(page => page.pageId === newForm.pageId);
+        // reset the current state of active to false for all pages
+        const newFormState = [...this.state.schema.pages].map((item) => {
+            return {...item, active: false}
+        });
+        // update actual object model with propert of active true
+        newFormState[newPageindex] = {...pages[newPageindex], active: true};
+
+        // get set the active panelId 
+        ({ panelId } = newForm);
+        if (_.isEmpty(panelId) || typeof panelId == 'undefined') {
+            ({panelId} = [...this.state.schema.formPanels].find(p => p.pageId === newFormState[newPageindex].pageId) || '');
+        } 
+        let totaltotalQuestionsAnswered = this.totalQuestionsAnswered(panelId);
+        this.setState({ schema: {...this.state.schema, pages: newFormState}, activePanelId: panelId, totalQuestions:totaltotalQuestionsAnswered, validationErrors});
+    }
+
+    onClickSave = (e) =>{
+        e.preventDefault();
+        const lastSaved = this.saveTime();
+        this.setState({ lastSaved});
+    }
     
     render() {
-        const { searchString, activePanelId, totalAnsweredQuestions, isLoading} = this.state;
-        const { userState, location:{state: {title, publisher }} } = this.props;
+        const { searchString, activePanelId, totalQuestions, isLoading, validationErrors} = this.state;
+        const { userState, location:{state: {title = '', publisher='' }} } = this.props;
 
         Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
         Winterfell.addInputType('datePickerCustom', DatePickerCustom);
@@ -317,13 +300,13 @@ class DataAccessRequest extends Component {
                         {[...this.state.schema.pages].map((item, idx) => (
                             <div key={item.index} className={`${item.active ? "active-border" : ''}`}>
                                 <div>
-                                    <h1 className="Black-16px mb-3 ml-3" onClick={() => { this.onParentNavClick(item) }}>{item.title}</h1>
+                                    <h1 className="Black-16px mb-3 ml-3" onClick={e => this.updateNavigation(item)}>{item.title}</h1>
                                     { item.active &&
                                         <ul className="list-unstyled ml-4 pl-2 active-grey-border">
                                             <NavItem
                                                 parentForm={item}
                                                 questionPanels={this.state.schema.questionPanels}
-                                                onFormSwitchPanel={this.onFormSwitchPanel}
+                                                onFormSwitchPanel={this.updateNavigation}
                                             />
                                         </ul>
                                     }
@@ -374,8 +357,8 @@ class DataAccessRequest extends Component {
                                             questionAnswers={this.state.questionAnswers}
                                             panelId={this.state.activePanelId}
                                             disableSubmit={true}
+                                            validationErrors={validationErrors}
                                             onUpdate={this.onFormUpdate}
-                                            onSwitchPanel={this.onSwitchedPanel}
                                             onSubmit={this.onFormSubmit}
                                             onRender={this.onFormRender}
                                         />
@@ -433,16 +416,16 @@ class DataAccessRequest extends Component {
                     <Col md={12}>
                         <Row className="darFooter">
                             <Col md={6} className="mt-4">
-                                <span className="Gray800-14px">{totalAnsweredQuestions}</span>
+                                <span className="Gray800-14px">{totalQuestions}</span>
                             </Col>
                             <Col md={6} className="mt-3 text-right">
-                                <Button variant="white" className="TechDetailButton ml-2" onClick={this.onFormSubmit}>
+                                <Button variant="white" className="TechDetailButton ml-2" onClick={this.onClickSave}>
                                     Save
                                 </Button>
-                                <Button variant="white"  className="TechDetailButton ml-3" >
+                                <Button variant="white"  className="TechDetailButton ml-3" onClick={this.onFormSubmit}>
                                     Submit application
                                 </Button>
-                                <Button variant="primary" className="White-14px ml-3" onClick={() => { this.onNextPanel(activePanelId) }}>
+                                <Button variant="primary" className="White-14px ml-3" onClick={(e) => { this.onNextPanel(activePanelId) }}>
                                     {activePanelId === "mrcHealthDataToolkit" || activePanelId === "adviceFromPublisher" ? "Go to Safe People" : "Go to next section" }
                                 </Button>   
                             </Col>
@@ -451,8 +434,7 @@ class DataAccessRequest extends Component {
                 </Row>
                 </div>
             </div>
-        )
-        
+        ) 
         
     }
 }
