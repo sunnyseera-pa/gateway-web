@@ -106,44 +106,44 @@ class RelatedObject extends React.Component {
                                             })}
                                         </Col> 
                                         <Col sm={2} lg={2}></Col>
-                                        <Col sm={12} lg={12} className="pt-2">
-                                            <span className="ToolBadge">
+                                        <Col sm={12} lg={12} className="pt-3">
+                                            <span className="ToolBadge mr-2">
                                                 <SVGIcon name="newtoolicon" fill={'#ffffff'} className="BadgeSvgs mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Tool</span> 
                                             </span>
                                             
-                                            {!data.categories.category ? '' :  activeLink === true ? <a href={'/search?search=' + data.categories.category}><div className="ml-2 Gray800-14px tagBadges mb-2 mt-2">{data.categories.category}</div></a> : <div className="ml-2 Gray800-14px tagBadges mb-2 mt-2">{data.categories.category}</div> }
+                                            {!data.categories.category ? '' :  activeLink === true ? <a href={'/search?search=' + data.categories.category}><div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{data.categories.category}</div></a> : <div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{data.categories.category}</div> }
 
                                             {!data.categories.programmingLanguage || data.categories.programmingLanguage.length <= 0 ? '' : data.categories.programmingLanguage.map((language) => {
                                                 if (activeLink===true){
-                                                    return <a href={'/search?search=' + language}><div className="ml-2 Gray800-14px tagBadges mb-2 mt-2">{language}</div></a>
+                                                    return <a href={'/search?search=' + language}><div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{language}</div></a>
                                                 }
                                                 else {
-                                                    return <div className="ml-2 Gray800-14px tagBadges mb-2 mt-2">{language}</div>
+                                                    return <div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{language}</div>
                                                 }
                                             })}
 
                                             {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
                                                 if (activeLink===true){
-                                                    return <a href={'/search?search=' + feature}><div className="ml-2 Gray800-14px tagBadges mb-2 mt-2">{feature}</div></a>
+                                                    return <a href={'/search?search=' + feature}><div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{feature}</div></a>
                                                 }
                                                 else {
-                                                    return <div className="ml-2 Gray800-14px tagBadges mb-2 mt-2">{feature}</div>
+                                                    return <div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{feature}</div>
                                                 }
                                             })}
 
                                             {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
                                                 if (activeLink===true){
-                                                    return <a href={'/search?search=' + topic}><div className="ml-2 Gray800-14px tagBadges mb-2 mt-2">{topic}</div></a>
+                                                    return <a href={'/search?search=' + topic}><div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{topic}</div></a>
                                                 }
                                                 else {
-                                                    return <div className="ml-2 Gray800-14px tagBadges mb-2 mt-2">{topic}</div>
+                                                    return <div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{topic}</div>
                                                 }
                                             })}
                                         </Col> 
-                                        <Col sm={12} lg={12} className="pt-2">
+                                        <Col sm={12} lg={12} className="pt-3">
                                             <span className="Gray800-14px">
-                                                {data.description.substr(0, 140) + (data.description.length > 140 ? '...' : '')}
+                                                <ReactMarkdown source={data.description.substr(0, 140) + (data.description.length > 140 ? '...' : '')} />
                                             </span>
                                         </Col> 
                                     </Row>   
@@ -177,35 +177,35 @@ class RelatedObject extends React.Component {
                                             })}
                                         </Col> 
                                         <Col sm={2} lg={2}></Col>
-                                        <Col sm={12} lg={12} className="pt-2">
-                                            <span className="ProjectBadge">
+                                        <Col sm={12} lg={12} className="pt-3">
+                                            <span className="ProjectBadge mr-2">
                                                 <SVGIcon name="newestprojecticon" fill={'#ffffff'} className="BadgeSvgs mr-2" viewBox="-2 -2 22 22"/>
                                                 <span>Project</span> 
                                             </span>
                                             
-                                            {!data.categories.category ? '' : activeLink === true ? <a href={'/search?search=' + data.categories.category}><div className="ml-2 Gray800-14px tagBadges mb-2 mt-2">{data.categories.category}</div></a> : <div className="ml-2 Gray800-14px tagBadges mb-2 mt-2">{data.categories.category}</div>}
+                                            {!data.categories.category ? '' : activeLink === true ? <a href={'/search?search=' + data.categories.category}><div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{data.categories.category}</div></a> : <div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{data.categories.category}</div>}
 
                                             {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
                                                 if (activeLink===true){
-                                                    return <a href={'/search?search=' + feature}><div className="ml-2 Gray800-14px tagBadges mb-2 mt-2">{feature}</div></a>
+                                                    return <a href={'/search?search=' + feature}><div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{feature}</div></a>
                                                 }
                                                 else {
-                                                    return <div className="ml-2 Gray800-14px tagBadges mb-2 mt-2">{feature}</div>
+                                                    return <div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{feature}</div>
                                                 }
                                             })}
 
                                             {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
                                                 if (activeLink===true){
-                                                    return <a href={'/search?search=' + topic}><div className="ml-2 Gray800-14px tagBadges mb-2 mt-2">{topic}</div></a>
+                                                    return <a href={'/search?search=' + topic}><div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{topic}</div></a>
                                                 }
                                                 else {
-                                                    return <div className="ml-2 Gray800-14px tagBadges mb-2 mt-2">{topic}</div>
+                                                    return <div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{topic}</div>
                                                 }
                                             })}
                                         </Col>  
-                                        <Col sm={12} lg={12} className="pt-2">
+                                        <Col sm={12} lg={12} className="pt-3">
                                             <span className="Gray800-14px">
-                                                {data.description.substr(0, 140) + (data.description.length > 140 ? '...' : '')}
+                                                <ReactMarkdown source={data.description.substr(0, 140) + (data.description.length > 140 ? '...' : '')} />
                                             </span>
                                         </Col> 
                                     </Row>  
@@ -239,19 +239,19 @@ class RelatedObject extends React.Component {
                                             })}
                                         </Col> 
                                         <Col sm={2} lg={2}></Col>
-                                        <Col sm={12} lg={12} className="pt-2">
-                                            <span className="PaperBadge">
+                                        <Col sm={12} lg={12} className="pt-3">
+                                            <span className="PaperBadge mr-2">
                                                 <SVGIcon name="newestprojecticon" fill={'#ffffff'} className="BadgeSvgs mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Paper</span> 
                                             </span>
-                                            <span className="ml-2 Gray800-14px tagBadges mb-2 mt-2">
+                                            <span className="mr-2 Gray800-14px tagBadges mb-1 mt-1">
                                                 {data.categories.category}
                                             </span>
                                             {!data.categories.programmingLanguage || data.categories.programmingLanguage.length <= 0 ? '' : data.categories.programmingLanguage.map((language) => {
-                                                    return <span className="ml-2 Gray800-14px tagBadges mb-2 mt-2">{language}</span>
+                                                    return <span className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{language}</span>
                                             })}    
                                         </Col>  
-                                        <Col sm={12} lg={12} className="pt-2">
+                                        <Col sm={12} lg={12} className="pt-3">
                                             <span className="Gray800-14px">
                                                 {data.description.substr(0, 140) + (data.description.length > 140 ? '...' : '')}
                                             </span>
@@ -290,13 +290,13 @@ class RelatedObject extends React.Component {
                                             <span className="Gray800-14px"> {data.publisher} </span>
                                         </Col>
                                         <Col sm={2} lg={2}></Col>
-                                        <Col sm={12} lg={12} className="pt-2">
-                                            <span className="DatasetBadge">
+                                        <Col sm={12} lg={12} className="pt-3">
+                                            <span className="DatasetBadge mr-2">
                                                 <SVGIcon name="dataseticon" fill={'#ffffff'} className="BadgeSvgs mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Dataset</span>
                                             </span>
                                         </Col>  
-                                        <Col sm={12} lg={12} className="pt-2">
+                                        <Col sm={12} lg={12} className="pt-3">
                                             <span className="Gray800-14px">
                                                 {(() => {
                                                     if (typeof data.description === 'undefined') {

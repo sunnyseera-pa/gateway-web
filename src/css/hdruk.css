@@ -133,7 +133,7 @@ a.nav-item.nav-link.active {
 .tagBadges {
   display: inline-block;
   background-color: #f3f3f3;
-  padding: 4px 15px;
+  padding: 2px 12px 3px 12px;
   border-radius: 16px;
 }
 
