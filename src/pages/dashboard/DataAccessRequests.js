@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-import { Row, Col, Button, Modal, Container, Tabs, Tab } from 'react-bootstrap';
+import { Row, Col, Button, Modal, Container, Tabs, Tab, Alert } from 'react-bootstrap';
 
 import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading';
@@ -29,11 +29,13 @@ class DataAccessRequests extends React.Component {
     userState: [],
     key: 'presubmission',
     data: [],
-    isLoading: true
+    isLoading: true,
+    alert: null
   };
 
   componentDidMount() {
-    this.getDARsFromDb();
+      this.getDARsFromDb();
+      this.checkAlerts();
   }
 
   getDARsFromDb = () => {
@@ -47,21 +49,31 @@ class DataAccessRequests extends React.Component {
     })
   }
 
+checkAlerts = () => {
+    let alertBanner = JSON.parse(window.localStorage.getItem('alert'));    
+    this.setState({alert: alertBanner});
+    window.localStorage.removeItem('alert');
+}
   handleSelect = (key) => {
     this.setState({ key: key });
   }
 
   render() {
-    const { userState, key, isLoading, data } = this.state;
-
+    const { userState, key, isLoading, data, alert } = this.state;
     
     if (isLoading) {
       return <Container><Loading /></Container>;
     }
    
     return (
-            
         <div>
+            <Row className="">
+                <Col sm={1} lg={1} />
+                    <Col sm={10} lg={10}>
+                        {alert != null ? <Alert variant={alert.type}>{alert.message}</Alert> : null}
+                    </Col>
+                <Col sm={1} lg={10} />
+            </Row>
             <Row>
                 <Col xs={2}></Col>
                 <Col xs={8}>
