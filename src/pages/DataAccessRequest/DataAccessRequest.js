@@ -42,7 +42,8 @@ class DataAccessRequest extends Component {
             time: '',
             ago: ''
         },
-        isLoading: true
+        isLoading: true,
+        formSubmitted: false,
     }
 
     async componentDidMount() {
@@ -150,7 +151,10 @@ class DataAccessRequest extends Component {
                 const response = await axios.post(`${baseURL}/api/v1/data-access-request/${id}`, {});
                 const lastSaved = this.saveTime();
                 this.setState({ lastSaved });
-                alert(`Application saved on ${moment().format('DD/MM/YYYY HH:mm:sss')}`);
+                // 2. Add success banner to local storage
+                let message = {"type":"success", "message":"Done! Your application was submitted successfully"};
+                window.localStorage.setItem('alert', JSON.stringify(message));
+                this.props.history.push({pathname: "/account", search:"?tab=dataaccessrequests"});
             } catch (err) {
                 console.log(err);
             }
