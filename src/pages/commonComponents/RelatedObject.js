@@ -108,7 +108,7 @@ class RelatedObject extends React.Component {
                                         <Col sm={2} lg={2}></Col>
                                         <Col sm={12} lg={12} className="pt-2">
                                             <span className="ToolBadge">
-                                                <SVGIcon name="newtoolicon" fill={'#ffffff'} className="BadgeSvgs mr-2" />
+                                                <SVGIcon name="newtoolicon" fill={'#ffffff'} className="BadgeSvgs mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Tool</span> 
                                             </span>
                                             
@@ -179,7 +179,7 @@ class RelatedObject extends React.Component {
                                         <Col sm={2} lg={2}></Col>
                                         <Col sm={12} lg={12} className="pt-2">
                                             <span className="ProjectBadge">
-                                                <SVGIcon name="newestprojecticon" fill={'#ffffff'} className="BadgeSvgs mr-2" />
+                                                <SVGIcon name="newestprojecticon" fill={'#ffffff'} className="BadgeSvgs mr-2" viewBox="-2 -2 22 22"/>
                                                 <span>Project</span> 
                                             </span>
                                             
@@ -241,7 +241,7 @@ class RelatedObject extends React.Component {
                                         <Col sm={2} lg={2}></Col>
                                         <Col sm={12} lg={12} className="pt-2">
                                             <span className="PaperBadge">
-                                                <SVGIcon name="newestprojecticon" fill={'#ffffff'} className="BadgeSvgs mr-2" />
+                                                <SVGIcon name="newestprojecticon" fill={'#ffffff'} className="BadgeSvgs mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Paper</span> 
                                             </span>
                                             <span className="ml-2 Gray800-14px tagBadges mb-2 mt-2">
@@ -292,7 +292,7 @@ class RelatedObject extends React.Component {
                                         <Col sm={2} lg={2}></Col>
                                         <Col sm={12} lg={12} className="pt-2">
                                             <span className="DatasetBadge">
-                                                <SVGIcon name="dataseticon" fill={'#ffffff'} className="BadgeSvgs mr-2" />
+                                                <SVGIcon name="dataseticon" fill={'#ffffff'} className="BadgeSvgs mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Dataset</span>
                                             </span>
                                         </Col>  
