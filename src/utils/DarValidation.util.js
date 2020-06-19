@@ -1,21 +1,37 @@
 import _ from 'lodash';
 
 let getQuestionPanelInvalidQuestions = (Winterfell, questionSets, questionAnswers) => {
-    debugger;
     return Winterfell.validation.default.getQuestionPanelInvalidQuestions(questionSets, questionAnswers);
 }
 
 let buildInvalidMessages = (Winterfell, invalidQuestions)  => {
     let validationMessages = {};
+ 
     if (Object.keys(invalidQuestions).length > 0) {
         validationMessages =  _.mapValues(invalidQuestions, validations => {
             return validations.map(validation => {
                 return {
+                    type: validation.type,
                     questionSetId: validation.questionSetId,                        
                     message : Winterfell.errorMessages.getErrorMessage(validation)
                 };
             })
         });
+    }
+    return validationMessages;
+}   
+
+let buildInvalidSectionMessages = (Winterfell, invalidQuestions) => {
+    let validationMessages = {};
+    if (Object.keys(invalidQuestions).length > 0) {
+        validationMessages = _.mapValues(invalidQuestions, validations => {
+        return validations.map(validation => {
+          return {
+            type    : validation.type,
+            message : Winterfell.errorMessages.getErrorMessage(validation)
+          };
+        })
+      });
     }
     return validationMessages;
 }
@@ -36,7 +52,6 @@ let formatValidationObj = (validationSet = {}, questionPanels = []) => {
             }
             return arr;
         }, []);
-
         if(errorArr.length) {
             // 2. group our new errorArr by pageId key [SafePeople: {}, SafeProject: {}]
             groupedPages = _.groupBy(errorArr, 'pageId');
@@ -54,5 +69,6 @@ let formatValidationObj = (validationSet = {}, questionPanels = []) => {
 export default {
     getQuestionPanelInvalidQuestions   : getQuestionPanelInvalidQuestions,
     buildInvalidMessages               : buildInvalidMessages,
+    buildInvalidSectionMessages        : buildInvalidSectionMessages,
     formatValidationObj                : formatValidationObj
 };
