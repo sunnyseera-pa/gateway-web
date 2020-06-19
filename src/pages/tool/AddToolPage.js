@@ -47,6 +47,7 @@ class AddToolPage extends React.Component {
         tempRelatedObjectIds: [],
         relatedObjectIds: [],
         relatedObjects: [],
+        didDelete: false
     };
 
     async componentDidMount() {
@@ -73,7 +74,6 @@ class AddToolPage extends React.Component {
                             tempTopicArray.push(to);
                         }
                     });
-
                     this.setState({ combinedTopic: tempTopicArray.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
                     resolve();
                 });
@@ -223,15 +223,17 @@ class AddToolPage extends React.Component {
     }
 
     removeObject = (id) => {
-        console.log('REMOVE! ' + id )
-        console.log('REMOVE BEFORE: ' + JSON.stringify(this.state.relatedObjects))
         this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id);
         this.setState({relatedObjects: this.state.relatedObjects})
-        console.log('REMOVE AFTER: ' + JSON.stringify(this.state.relatedObjects))
+        this.setState({didDelete: true});
+    }
+
+    updateDeleteFlag = () => {
+        this.setState({didDelete: false});
     }
 
     render() {
-        const { data, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, relatedObjects } = this.state;
+        const { data, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, relatedObjects, didDelete } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -239,12 +241,9 @@ class AddToolPage extends React.Component {
 
         return (
             <div>
-                {console.log('tempRelatedObjects: ' + JSON.stringify(this.state.tempRelatedObjectIds))}
-                {console.log('relatedObjects: ' + JSON.stringify(this.state.relatedObjects))}
-
                 <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Container>
-                    <AddToolForm data={data} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects}/>
+                    <AddToolForm data={data} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
                 </Container>
             </div>
         );
@@ -255,13 +254,6 @@ class AddToolPage extends React.Component {
 const AddToolForm = (props) => {
     // Pass the useFormik() hook initial form values and a submit function that will
     // be called when the form is submitted
-
-    console.log('ADD - props.relatedObjects: ' + JSON.stringify(props.relatedObjects))
-    // props.relatedObjects.map((obj) => {
-    //     console.log('objectId: ' + obj.objectId)
-    //     console.log('reason: ' + obj.reason)
-    //     console.log('type: ' + obj.type)
-    // })
 
     const formik = useFormik({
         initialValues: {
@@ -301,6 +293,7 @@ const AddToolForm = (props) => {
         }),
 
         onSubmit: values => {
+            values.relatedObjects = props.relatedObjects
             values.toolCreator = props.userState[0];
             axios.post(baseURL + '/api/v1/mytools/add', values) 
                 .then((res) => {
@@ -319,7 +312,6 @@ const AddToolForm = (props) => {
             }
         }
     });
-
   
     function updateReason(id, reason, type) {
         let inRelatedObject = false;
@@ -335,23 +327,7 @@ const AddToolForm = (props) => {
         }
     }
 
-    // function submitForm() {
-    //     // const tempRelObjIds = JSON.stringify(props.tempRelatedObjectIds);
-    //     // const temporaryRelObjIds = JSON.parse(tempRelObjIds);
-    
-    //     // props.relatedObjects.map((object) => {
-    //     //     temporaryRelObjIds.splice( temporaryRelObjIds.indexOf(object.objectId), 1 ); 
-    //     // });
-
-    //     // temporaryRelObjIds.map((id) => {
-    //     //     props.relatedObjects.push({'objectId':id, 'reason':'', 'type': ''})
-    //     // })
-
-    //     Event("Buttons", "Click", "Add tool form submitted");
-    // }
-
     return (
-
         <div>
             <Row className="mt-2">
                 <Col sm={1} lg={1} />
@@ -557,7 +533,7 @@ const AddToolForm = (props) => {
                         <div className="Rectangle">
                             {props.relatedObjects.map((object) => {
                                 return (
-                                    <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} />
+                                    <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag}/>
                                 )
                             })}
                         </div>
@@ -566,6 +542,7 @@ const AddToolForm = (props) => {
                             <Row>
                                 <Col sm={1} lg={1} />
                                 <Col sm={10} lg={10}>
+                                    
                                     <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                 </Col>
                                 <Col sm={1} lg={10} />
@@ -580,10 +557,7 @@ const AddToolForm = (props) => {
                                             Cancel
                                         </Button>
                                     </a>
-                                <Button variant="primary" className="White-14px" type="submit" 
-                                // onClick={submitForm} 
-                                onClick={() => Event("Buttons", "Click", "Add tool form submitted")}
-                                >
+                                <Button variant="primary" className="White-14px" type="submit" onClick={() => Event("Buttons", "Click", "Add tool form submitted")} >
                                     Publish
                                 </Button>
                             </Col>

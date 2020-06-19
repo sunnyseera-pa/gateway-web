@@ -16,36 +16,22 @@ class RelatedResourcesResults extends React.Component {
     state = { 
         data: [],
         objectId: null,
-        isLoading: true,
+        isLoading: true, 
         updated: false,
         reason: ''
     };
 
     constructor(props) {
-        console.log('props in result: ' + JSON.stringify(props))
         super(props)
         this.state.objectId = props.objectId;
         this.state.reason = props.reason;
     }
-
+ 
     componentWillMount(objectId) {
         isNaN(this.props.objectId) ?
         this.getDatasetData() :
         this.getDataSearchFromDb()
     }
-
-    // componentWillUnmount(objectId) {
-    //     isNaN(this.props.objectId) ?
-    //     this.getDatasetData() :
-    //     this.getDataSearchFromDb()
-    // }
-
-    // componentDidUpdate(objectId) {
-    //         isNaN(this.props.objectId) ?
-    //         this.getDatasetData()
-    //         :
-    //         this.getDataSearchFromDb()
-    // }
 
     getDataSearchFromDb = () => {
         //need to handle error if no id is found

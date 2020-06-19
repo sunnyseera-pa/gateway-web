@@ -4,16 +4,17 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Typeahead } from 'react-bootstrap-typeahead';
 
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import {Form, Button, Row, Col, Container} from 'react-bootstrap';
 
 import SearchBar from '../commonComponents/SearchBar';
 import Loading from '../commonComponents/Loading'
+import RelatedResources from '../commonComponents/RelatedResources';
+import RelatedObject from '../commonComponents/RelatedObject';
+
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
+import SVGIcon from '../../images/SVGIcon';
+
 
 import { Event, initGA } from '../../tracking';
 
@@ -35,7 +36,17 @@ class AddProjectPage extends React.Component {
         combinedTools: [],
         combinedDatasets: [],
         isLoading: true,
-        userState: []
+        userState: [],
+        searchString: null,
+        datasetData: [],
+        toolData: [],
+        projectData: [],
+        personData: [],
+        summary: [],
+        tempRelatedObjectIds: [],
+        relatedObjectIds: [],
+        relatedObjects: [],
+        didDelete: false
     };
 
     async componentDidMount() {
@@ -113,8 +124,66 @@ class AddProjectPage extends React.Component {
         this.setState({ searchString: searchString });
     }
 
+    doModalSearch = (e, type, page) => {
+
+        if (e.key === 'Enter' || e === 'click') {
+
+            var searchURL = '';
+
+            if (type === 'dataset' && page > 0) searchURL += '&datasetIndex=' + page;
+            if (type === 'tool' && page > 0) searchURL += '&toolIndex=' + page;
+            if (type === 'project' && page > 0) searchURL += '&projectIndex=' + page;
+            if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
+        
+        axios.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL )
+            .then((res) => {
+                this.setState({
+                    datasetData: res.data.datasetResults || [],
+                    toolData: res.data.toolResults || [],
+                    projectData: res.data.projectResults || [],
+                    personData: res.data.personResults || [],
+                    summary: res.data.summary || [],
+                    isLoading: false
+                });
+            })
+        }
+    }
+
+    addToTempRelatedObjects = (id, type) => {
+
+        if(this.state.tempRelatedObjectIds && this.state.tempRelatedObjectIds.some(object => object.objectId === id)){
+            this.state.tempRelatedObjectIds = this.state.tempRelatedObjectIds.filter(object => object.objectId !== id);
+        }
+        else {
+            this.state.tempRelatedObjectIds.push({'objectId':id, 'type':type})
+        }
+       this.setState({tempRelatedObjectIds: this.state.tempRelatedObjectIds})
+    }
+
+    addToRelatedObjects = () => {
+        this.state.tempRelatedObjectIds.map((object) => {
+            this.state.relatedObjects.push({'objectId':object.objectId, 'reason':'', 'objectType':object.type})
+        })
+
+        this.setState({tempRelatedObjectIds: []})
+    }
+
+    clearRelatedObjects = () => {
+        this.setState({tempRelatedObjectIds: [] })
+    }
+
+    removeObject = (id) => {
+        this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id);
+        this.setState({relatedObjects: this.state.relatedObjects})
+        this.setState({didDelete: true});
+    }
+
+    updateDeleteFlag = () => {
+        this.setState({didDelete: false});
+    }
+
     render() {
-        const { data, combinedTopic, combinedCategories, combinedUsers, combinedTools, combinedDatasets, isLoading, userState } = this.state;
+        const { data, combinedTopic, combinedCategories, combinedUsers, combinedTools, combinedDatasets, isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, relatedObjects, didDelete } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -123,7 +192,7 @@ class AddProjectPage extends React.Component {
             <div>
                 <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Container>
-                    <AddProjectForm data={data} combinedTopic={combinedTopic} combinedCategories={combinedCategories} combinedUsers={combinedUsers} combinedTools={combinedTools} combinedDatasets={combinedDatasets} userState={userState} />
+                    <AddProjectForm data={data} combinedTopic={combinedTopic} combinedCategories={combinedCategories} combinedUsers={combinedUsers} combinedTools={combinedTools} combinedDatasets={combinedDatasets} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
                 </Container>
             </div>
         );
@@ -149,7 +218,8 @@ const AddProjectForm = (props) => {
                 topics: [],
             },
             toolids: [],
-            datasetids: []
+            datasetids: [],
+            relatedObjects: props.relatedObjects
         },
 
         validationSchema: Yup.object({
@@ -167,6 +237,7 @@ const AddProjectForm = (props) => {
 
         onSubmit: values => {
             //add via same post as add tool form - type set as 'project'
+            values.relatedObjects = props.relatedObjects
             values.toolCreator = props.userState[0];
             axios.post(baseURL + '/api/v1/mytools/add', values)
                 .then((res) => {
@@ -185,6 +256,20 @@ const AddProjectForm = (props) => {
             }
         }
     });
+
+    function updateReason(id, reason, type) {
+        let inRelatedObject = false;
+        props.relatedObjects.map((object) => {
+            if(object.objectId===id){
+                inRelatedObject = true;
+                object.reason = reason;
+            }
+        });
+
+        if(!inRelatedObject){
+            props.relatedObjects.push({'objectId':id, 'reason':reason, 'objectType': type})
+        }
+    }
 
     return (
 
@@ -340,19 +425,42 @@ const AddProjectForm = (props) => {
                             </Form.Group>
                         </div>
 
+                        <div className="Rectangle mt-2">
+                            <span className="Black-20px">Related resources</span><span className="Gray454443-14px"> (optional)</span>
+                            <br/>
+                            <span className="Gray595757-14px">Show relationships to papers, projects, datasets and tools. Resources must be added to the Gateway first.</span>
+                        </div>
+
+                        <div className="Rectangle">
+                            {props.relatedObjects.map((object) => {
+                                return (
+                                    <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} />
+                                )
+                            })}
+                        </div>
+
+                        <div className="Rectangle FlexCenter mt-1">
+                            <Row>
+                                <Col sm={1} lg={1} />
+                                <Col sm={10} lg={10}>
+                                    
+                                    <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
+                                </Col>
+                                <Col sm={1} lg={10} />
+                            </Row>
+                        </div>
+
                         <Row className="mt-3">
-                            <Col xs={5} lg={9}>
-                                <div className="ButtonHolder">
+                            <Col xs={5} lg={9} />
+                                <Col xs={7} lg={3} className="text-right">
                                     <a style={{ cursor: 'pointer' }} href={'/account?tab=projects'} >
                                         <Button variant="medium" className="CancelButton" >
                                             Cancel
                                         </Button>
                                     </a>
-                                </div>
-                            </Col>
-                            <Col xs={7} lg={3} className="text-right">
-                                <Button variant="primary" type="submit" className="AddButton" onClick={() => Event("Buttons", "Click", "Add project form submitted")}>
-                                    Add this project
+                                <Button variant="primary" type="submit" className="White-14px" onClick={() => Event("Buttons", "Click", "Add project form submitted")}>
+                                    {/* Add this project */}
+                                    Publish
                                 </Button>
                             </Col>
                         </Row>

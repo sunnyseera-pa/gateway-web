@@ -10,6 +10,8 @@ import SearchBar from '../commonComponents/SearchBar';
 import Loading from '../commonComponents/Loading';
 import RelatedResources from '../commonComponents/RelatedResources';
 import RelatedResourcesResults from '../commonComponents/RelatedResourcesResults';
+import RelatedObject from '../commonComponents/RelatedObject';
+
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
@@ -43,6 +45,7 @@ class EditToolPage extends React.Component {
         tempRelatedObjectIds: [],
         relatedObjectIds: [],
         relatedObjects: [],
+        didDelete: false
     };
 
     async componentDidMount() {
@@ -63,38 +66,13 @@ class EditToolPage extends React.Component {
         this.setState({ isLoading: true });
         axios.get(baseURL + '/api/v1/tools/' + this.props.match.params.toolID)
           .then((res) => {
-            //   console.log('res: ' + JSON.stringify(res))
-            // console.log('res.data.data[0].relatedObjects: ' + JSON.stringify(res.data.data[0].relatedObjects))
-
             this.setState({
               data: res.data.data[0],
               relatedObjects: res.data.data[0].relatedObjects ? res.data.data[0].relatedObjects : []
-            //   isLoading: false
             });
-            this.updateRelatedObjectIds();
             this.setState({isLoading: false})
           });
       };
-
-      updateRelatedObjectIds() {
-        //  console.log('in edit - update')
-        // console.log('type: ' + this.state.data.type)
-    
-        // if(this.state.relatedObjects && this.state.relatedObjects.length > 0){
-        // var relObjs = JSON.stringify(this.state.relatedObjects)
-        // var relatedObjs = JSON.parse(relObjs)
-    
-        // relatedObjs.map((object) => {
-        //     this.state.relatedObjectIds.push(object.objectId)
-        //     this.state.tempRelatedObjectIds.push(object.objectId)
-        // })
-        // }
-    
-        //   console.log('tempRelatedObjectIds: ' + JSON.stringify(this.state.tempRelatedObjectIds))
-        //   console.log('relatedObjectIds: ' + JSON.stringify(this.state.relatedObjectIds))
-        //   console.log('relatedObjects: ' + JSON.stringify(this.state.relatedObjects))
-    
-      }
 
     doGetTopicsCall() {
         return new Promise((resolve, reject) => {
@@ -259,15 +237,18 @@ class EditToolPage extends React.Component {
     }
 
     removeObject = (id) => {
-        console.log('REMOVE! ' + id )
-        console.log('REMOVE BEFORE: ' + JSON.stringify(this.state.relatedObjects))
         this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id);
+        this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== JSON.stringify(id));
         this.setState({relatedObjects: this.state.relatedObjects})
-        console.log('REMOVE AFTER: ' + JSON.stringify(this.state.relatedObjects))
+        this.setState({didDelete: true});
+    }
+
+    updateDeleteFlag = () => {
+        this.setState({didDelete: false});
     }
 
     render() {
-        const { data, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, relatedObjects } = this.state;
+        const { data, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, relatedObjects, didDelete } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -275,12 +256,9 @@ class EditToolPage extends React.Component {
 
         return (
             <div>
-                {console.log('tempRelatedObjects: ' + JSON.stringify(this.state.tempRelatedObjectIds))}
-                {console.log('relatedObjects: ' + JSON.stringify(this.state.relatedObjects))}
-
                 <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Container>
-                    <EditToolForm data={data} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects}/>
+                    <EditToolForm data={data} toolid={data.id} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
                 </Container>
             </div>
         );
@@ -331,6 +309,7 @@ const EditToolForm = (props) => {
         }),
 
         onSubmit: values => {
+            values.relatedObjects = props.relatedObjects
             values.toolCreator = props.userState[0];
             axios.put(baseURL + '/api/v1/mytools/edit', values) 
                 .then((res) => {
@@ -356,7 +335,7 @@ const EditToolForm = (props) => {
       });
     });
 
-  
+
     function updateReason(id, reason, type) {
         let inRelatedObject = false;
         props.relatedObjects.map((object) => {
@@ -371,36 +350,17 @@ const EditToolForm = (props) => {
         }
     }
 
-    // function submitForm() {
-    //     const tempRelObjIds = JSON.stringify(props.tempRelatedObjectIds);
-    //     const temporaryRelObjIds = JSON.parse(tempRelObjIds);
-    
-    //     props.relatedObjects.map((object) => {
-    //         temporaryRelObjIds.splice( temporaryRelObjIds.indexOf(object.objectId), 1 ); 
-    //     });
-
-    //     temporaryRelObjIds.map((id) => {
-    //         props.relatedObjects.push({'objectId':id, 'reason':''})
-    //     })
-
-    //     Event("Buttons", "Click", "Add tool form submitted");
-    // }
-
     return (
-
         <div>
-
-             {/* {console.log('EDIT - props: ' + JSON.stringify(props.relatedObjects) )} */}
-
-             <Row className="mt-2">
-        <Col sm={1} lg={1} />
-        <Col sm={10} lg={10}>
-          <div className="Rectangle">
-            <p className="Black-20px">Edit a tool or resource</p>
-          </div>
-        </Col>
-        <Col sm={1} lg={10} />
-      </Row>
+            <Row className="mt-2">
+                <Col sm={1} lg={1} />
+                <Col sm={10} lg={10}>
+                <div className="Rectangle">
+                    <p className="Black-20px">Edit a tool or resource</p>
+                </div>
+                </Col>
+                <Col sm={1} lg={10} />
+            </Row>
 
             <Row className="mt-2">
                 <Col sm={1} lg={1} />
@@ -574,7 +534,7 @@ const EditToolForm = (props) => {
                                     }}
                                 />
                             </Form.Group>
-                        </div>
+                        </div> 
 
                         <div className="Rectangle mt-2">
                             <span className="Black-20px">Related resources</span><span className="Gray454443-14px"> (optional)</span>
@@ -584,7 +544,7 @@ const EditToolForm = (props) => {
 
                         <div className="Rectangle">
                            {props.relatedObjects ? props.relatedObjects.map((object) => {
-                                return <div className="RectangleWithBorder mt-3"> <RelatedResourcesResults objectId={object.objectId} reason={object.reason} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} /> </div>
+                                return <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} reason={object.reason} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} />
                             }) : ''}
                         </div>
 
@@ -592,7 +552,7 @@ const EditToolForm = (props) => {
                             <Row>
                                 <Col sm={1} lg={1} />
                                 <Col sm={10} lg={10}>
-                                    <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
+                                    <RelatedResources toolid={props.toolid} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                 </Col>
                                 <Col sm={1} lg={10} />
                             </Row>
@@ -606,9 +566,7 @@ const EditToolForm = (props) => {
                                             Cancel
                                         </Button>
                                     </a>
-                                <Button variant="primary" className="White-14px" type="submit" 
-                                // onClick={submitForm} 
-                                >
+                                <Button variant="primary" className="White-14px" type="submit" >
                                     Publish
                                 </Button>
                             </Col>
