@@ -8,7 +8,7 @@ import moment from 'moment';
 
 var baseURL = require('../../commonComponents/BaseURL').getURL();
 
-class PreSubCustodian extends React.Component {
+class InnovatorApplication extends React.Component {
 
     state = {
         data: {},
@@ -23,27 +23,8 @@ class PreSubCustodian extends React.Component {
     }
 
     componentDidMount() {
-        this.getDataSearchFromDb();
         this.getDatasetSearch();
       }
-
-    getDataSearchFromDb = () => {
-         this.setState({ isLoading: true });
-        axios.get(baseURL + '/api/v1/person/' + this.state.data.userId)
-          .then((res) => {
-            if (typeof res.data.data[0] === "undefined" ) {
-                this.setState({
-                    name: ''
-                  });
-            } 
-            else {
-                this.setState({
-                    name: res.data.data[0].firstname + ' ' + res.data.data[0].lastname
-                  });
-            }
-          })
-    };
-
 
     getDatasetSearch = () => {
         this.setState({ isLoading: true });
@@ -56,7 +37,7 @@ class PreSubCustodian extends React.Component {
           })
       };
 
-      getProgress = () =>{
+    getProgress = () =>{
         switch(this.props.data.applicationStatus){
             case "presubmission":
                 return "Pre-submission";
@@ -73,7 +54,7 @@ class PreSubCustodian extends React.Component {
     }; 
 
     render() {
-        const { isLoading, name, dataset } = this.state; 
+        const { isLoading, dataset } = this.state; 
 
         if (isLoading) {
             return (
@@ -82,31 +63,29 @@ class PreSubCustodian extends React.Component {
                 </Container>
             );
         }
+        {console.log(dataset)}
         return (
             <div className="DARDiv" >
 
-            <Row className="pl-3">
-                <Col sm={2} lg={2}>
-                    <span>{moment(this.props.data.updatedAt).format('D MMMM YYYY HH:mm')}</span>
-                </Col>
-                <Col sm={3} lg={3}>
-                    <span > {dataset}</span>
-                </Col>
-                <Col sm={3} lg={3}>
-                    <span> {name} </span>
-                </Col>
-                <Col sm={2} lg={2}>
-                    <span >12/56 questions answered</span>
-                </Col>
-                <Col sm={2} lg={2} className="pr-5">
-                    <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
-                            <Dropdown.Item href="">View</Dropdown.Item>
-                    </DropdownButton>
-                </Col>
-            </Row>
-            </div>
+                <Row className="pl-3">
+                    <Col sm={3} lg={3}>
+                        <span>{moment(this.props.data.updatedAt).format('D MMMM YYYY HH:mm')}</span>
+                    </Col>
+                    <Col sm={3} lg={3}>
+                        <span > {dataset}</span>
+                    </Col>
+                    <Col sm={4} lg={4}>
+                        <span>{this.getProgress()}</span>
+                    </Col>
+                    <Col sm={2} lg={2} className="pr-5">
+                        <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
+                                <Dropdown.Item href="">View</Dropdown.Item>
+                        </DropdownButton>
+                    </Col>
+                </Row>
+             </div>
         );
     }
 }
 
-export default PreSubCustodian;
+export default InnovatorApplication;

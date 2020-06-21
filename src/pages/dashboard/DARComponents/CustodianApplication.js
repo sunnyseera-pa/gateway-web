@@ -1,15 +1,14 @@
 import React from 'react';
 import axios from 'axios';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-// import Loading from './Loading'
+import {Row, Col, Container} from 'react-bootstrap/';
+import Loading from '../../commonComponents/Loading'
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import moment from 'moment';
 
 var baseURL = require('../../commonComponents/BaseURL').getURL();
 
-class InReviewCustodian extends React.Component {
+class CustodianApplication extends React.Component {
 
     state = {
         data: {},
@@ -57,16 +56,38 @@ class InReviewCustodian extends React.Component {
           })
       };
 
-    render() {
-        const { data, name, dataset } = this.state; 
-        let updatedDateTime = moment(data.timeStamp).format("d MMMM YYYY HH:mm");
+      getProgress = () =>{
+        switch(this.props.data.applicationStatus){
+            case "presubmission":
+                return "Pre-submission";
+            case "submitted":
+                return "In review";
+            case "approved":
+                return "Approved";
+            case "rejected":
+                return "Rejected";
 
+            default:
+                return "";
+        }
+    }; 
+
+    render() {
+        const { isLoading, name, dataset } = this.state; 
+
+        if (isLoading) {
+            return (
+                <Container>
+                    <Loading />
+                </Container>
+            );
+        }
         return (
             <div className="DARDiv" >
 
             <Row className="pl-3">
                 <Col sm={2} lg={2}>
-                    <span> {updatedDateTime} </span>
+                    <span>{moment(this.props.data.updatedAt).format('D MMMM YYYY HH:mm')}</span>
                 </Col>
                 <Col sm={3} lg={3}>
                     <span > {dataset}</span>
@@ -75,7 +96,7 @@ class InReviewCustodian extends React.Component {
                     <span> {name} </span>
                 </Col>
                 <Col sm={2} lg={2}>
-                    <span >In review</span>
+                    <span>{this.getProgress()}</span>
                 </Col>
                 <Col sm={2} lg={2} className="pr-5">
                     <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
@@ -88,4 +109,4 @@ class InReviewCustodian extends React.Component {
     }
 }
 
-export default InReviewCustodian;
+export default CustodianApplication;
