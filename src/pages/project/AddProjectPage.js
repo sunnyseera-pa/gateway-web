@@ -454,7 +454,7 @@ const AddProjectForm = (props) => {
                             <Col xs={5} lg={9} />
                                 <Col xs={7} lg={3} className="text-right">
                                     <a style={{ cursor: 'pointer' }} href={'/account?tab=projects'} >
-                                        <Button variant="medium" className="CancelButton" >
+                                        <Button variant="medium" className="CancelButton Dark-14px mr-2" >
                                             Cancel
                                         </Button>
                                     </a>

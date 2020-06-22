@@ -210,7 +210,7 @@ class RelatedResourcesModal extends React.Component {
                 </Row> 
              : ''}
 
-            <div className={typeof this.props.summary.datasets==='undefined' ? "" : "RelatedModalBackground"} > 
+            <div className={typeof this.props.summary.datasets==='undefined' ? "MinHeightModal" : "RelatedModalBackground MinHeightModal"} > 
                 <Container >
                     <Row>
                         <Col sm={1} lg={1} />  
