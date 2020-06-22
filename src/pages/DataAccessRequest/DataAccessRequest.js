@@ -11,7 +11,6 @@ import SearchBar from '../commonComponents/SearchBar';
 import Loading from '../commonComponents/Loading';
 import ToolKit from './components/Toolkit';
 import NavItem from './components/NavItem';
-import { ReactComponent as CloseIconSvg } from '../../images/close.svg';
 import axios from 'axios';
 import DarValidation from '../../utils/DarValidation.util';
 import {classSchema} from './classSchema';
