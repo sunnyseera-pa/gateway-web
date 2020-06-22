@@ -122,23 +122,26 @@ class DataAccessRequest extends Component {
         console.log('form render');
     }
 
-    getActiveQuestion(questions, questionId) {
-       let questionsArr = [...questions];
-       let question = [...questionsArr].find(q => q.questionId === questionId);
 
-        if(!_.isEmpty(question)) {
-            return question;
-        }
-
-        return questionsArr.map((q) => {
-            if(typeof q.input.options !== 'undefined' && q.input.options.length > 0) {
-                let [ arr ]   = q.input.options.filter(option => { return option.hasOwnProperty('conditionalQuestions')});
-                if(!_.isEmpty(arr))
-                    return this.getActiveQuestion([...arr.conditionalQuestions], questionId);
+    getActiveQuestion(questionsArr, questionId) {
+        let child;
+        
+        if (!questionsArr) 
+            return; 
+        
+        for (const question of questionsArr) {
+            if (question.questionId === questionId) 
+                return question; 
+        
+            if(typeof question.input === 'object' && typeof question.input.options !== 'undefined' && question.input.options.length > 0) {
+                let [nestedQuestion] = [...question.input.options].filter(option => { return option.hasOwnProperty('conditionalQuestions')}) || [];
+                child = this.getActiveQuestion([...nestedQuestion.conditionalQuestions], questionId);
             }
-        });
 
-    }
+            if (child) 
+                return child; 
+        }
+     }
 
     onQuestionFocus(questionId = '') {
         let questions;
@@ -148,7 +151,7 @@ class DataAccessRequest extends Component {
             ({questions} = [...questionSets].find(q => q.questionSetId === this.state.activePanelId) || []);
             if(!_.isEmpty(questions)) {
                 // 2. loop over and find active question 
-                let activeQuestion = this.getActiveQuestion(questions, questionId);
+                let activeQuestion = this.getActiveQuestion([...questions], questionId);
                 this.setState({activeGuidance: activeQuestion.guidance});
             }
         }
