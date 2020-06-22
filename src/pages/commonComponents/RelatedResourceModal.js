@@ -36,32 +36,6 @@ class RelatedResourcesModal extends React.Component {
         this.state.userState = props.userState;
         this.state.relatedObjects = props.relatedObjects;
         this.state.relatedObjectIds = [];
-        this.state.selected.datasets = 0;
-        this.state.selected.tools = 0;
-        this.state.selected.projects = 0;
-        this.state.selected.persons = 0;
-
-       if(props.relatedObjects) {
-            props.relatedObjects.map((object) => {
-
-                this.state.relatedObjectIds.push(object.objectId) 
-                
-                switch (object.objectType) {
-                    case 'tool':
-                            {this.state.selected.tools++}
-                        break;
-                    case 'project':
-                            {this.state.selected.projects++}
-                        break;
-                    case 'person':
-                            {this.state.selected.persons++}
-                        break;
-                    case 'dataset':
-                            {this.state.selected.datasets++}
-                        break;
-                }
-            })
-        }
     }
 
 
@@ -161,6 +135,62 @@ class RelatedResourcesModal extends React.Component {
             );
         }
 
+        var editingObjectProject = 0;
+        var editingObjectTool = 0;
+    
+        if(this.props.projectData.some(object => object.id === this.props.projectid)){
+            editingObjectProject = 1;
+        }
+        if(this.props.toolData.some(object => object.id === this.props.toolid)){
+            editingObjectTool = 1;
+        }  
+
+        this.state.selected.datasets = 0;
+        this.state.selected.tools = 0;
+        this.state.selected.projects = 0;
+        this.state.selected.persons = 0;
+
+       if(this.props.relatedObjects) {
+            this.props.relatedObjects.map((object) => {
+
+                this.state.relatedObjectIds.push(object.objectId) 
+                
+                switch (object.objectType) {
+                    case 'tool':
+                        this.props.toolData.map((tool) => {
+                            if(object.objectId === tool.id || object.objectId === JSON.stringify(tool.id)) {
+                                this.state.selected.tools++
+                            }
+                        })
+                        break;
+                    case 'project':
+                            this.props.projectData.map((project) => {
+                                if(object.objectId === project.id || object.objectId === JSON.stringify(project.id)) {
+                                 
+                                    this.state.selected.projects++
+                                }
+                            })
+                        break;
+                    case 'person':
+                            this.props.personData.map((person) => {
+                                if(object.objectId === person.id || object.objectId === JSON.stringify(person.id)) {
+                                 
+                                    this.state.selected.persons++
+                                }
+                            })
+                        break;
+                    case 'dataset':
+                            this.props.datasetData.map((dataset) => {
+                                if(object.objectId === dataset.id || object.objectId === JSON.stringify(dataset.id)) {
+                                 
+                                    this.state.selected.datasets++
+                                }
+                            })
+                        break;
+                }
+            })
+        }
+
         return (
             <div>
               <SimpleSearchBar searchString={this.props.searchString} doSearchMethod={this.props.doSearchMethod} doUpdateSearchString={this.props.doUpdateSearchString} userState={this.props.userState} />
@@ -169,11 +199,11 @@ class RelatedResourcesModal extends React.Component {
                     <Col>
                         <div>
                             <Tabs className='TabsBackground Gray700-13px' activeKey={key} onSelect={this.handleSelect} >
-                                <Tab eventKey="Datasets" title={'Datasets (' + (this.props.summary.datasets - this.state.selected.datasets) + ')'} />
-                                <Tab eventKey="Tools" title={'Tools (' + (this.props.summary.tools - this.state.selected.tools) + ')'} />
-                                <Tab eventKey="Projects" title={'Projects (' + (this.props.summary.projects - this.state.selected.projects) + ')'} />
-                                <Tab eventKey="Papers" title={'Papers (' + (this.props.summary.papers - this.state.selected.papers) + ')'} />
-                                <Tab eventKey="People" title={'People (' + (this.props.summary.persons - this.state.selected.persons) + ')'} />
+                                <Tab eventKey="Datasets" title={'Datasets (' + (!this.props.summary.datasets ? '0' : this.props.summary.datasets - this.state.selected.datasets) + ')'} />
+                                <Tab eventKey="Tools" title={'Tools (' + (!this.props.summary.tools ? '0' : this.props.summary.tools - this.state.selected.tools - editingObjectTool) + ')'} />
+                                <Tab eventKey="Projects" title={'Projects (' + (!this.props.summary.projects ? '0' : this.props.summary.projects - this.state.selected.projects - editingObjectProject) + ')'} />
+                                <Tab eventKey="Papers" title={'Papers (' + (!this.props.summary.papers ? '0' : this.props.summary.papers - this.state.selected.papers) + ')'} />
+                                <Tab eventKey="People" title={'People (' + (!this.props.summary.persons ? '0' : this.props.summary.persons - this.state.selected.persons) + ')'} />
                            </Tabs>
                         </div>
                     </Col>
@@ -197,6 +227,7 @@ class RelatedResourcesModal extends React.Component {
                                 : ''}
 
                             {key === 'Tools' ?
+                            !this.props.toolData ? '' :
                                 this.props.toolData.map((tool) => {
                                     if(this.state.relatedObjectIds.includes(tool.id) || this.state.relatedObjectIds.includes(JSON.stringify(tool.id)) || tool.id === this.props.toolid){          
                                         return ''
@@ -208,6 +239,7 @@ class RelatedResourcesModal extends React.Component {
                                 : ''}
 
                            {key === 'Projects' ?
+                           !this.props.projectData ? '' :
                                 this.props.projectData.map((project) => {
                                     if(this.state.relatedObjectIds.includes(project.id) || this.state.relatedObjectIds.includes(JSON.stringify(project.id)) || project.id === this.props.projectid){
                                          return ''
@@ -219,8 +251,9 @@ class RelatedResourcesModal extends React.Component {
                                 : ''}
                            
                            {key === 'Papers' ?
+                                !this.props.paperData ? '' :
                                 this.props.paperData.map((paper) => {
-                                     if(this.props.relatedObjectIds.includes(paper.id)){
+                                     if(this.state.relatedObjectIds.includes(paper.id)){
                                          return ''
                                      }
                                      else {
@@ -230,6 +263,7 @@ class RelatedResourcesModal extends React.Component {
                                 : ''}
 
                               {key === 'People' ?
+                              !this.props.personData ? '' :
                                 this.props.personData.map((person) => {
                                     if(this.state.relatedObjectIds.includes(person.id) || this.state.relatedObjectIds.includes(JSON.stringify(person.id))){
                                     
