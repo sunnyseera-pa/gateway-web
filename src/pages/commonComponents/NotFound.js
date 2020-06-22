@@ -17,13 +17,15 @@ class NotFound extends React.Component {
         const { word } = this.state;
 
         return (
-            <Row className="entryBox">
+            
+            <div className="entryBox mt-2">
                 <Col>
                     <div className="Gray800-14px" style={{ textAlign: 'center' }} data-testid="notFound">
                         No {word} found
                     </div>
                 </Col>
-            </Row>
+            
+            </div>
         )
     }
 }

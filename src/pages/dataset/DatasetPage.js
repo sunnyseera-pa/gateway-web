@@ -8,8 +8,7 @@ import { Row, Col, Container, Tabs, Tab, Navbar, Nav, Button, Alert } from 'reac
 import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading'
 import About from '../commonComponents/About';
-import Project from '../commonComponents/Project';
-import Tool from '../commonComponents/Tool';
+import RelatedObject from '../commonComponents/RelatedObject';
 import SearchBar from '../commonComponents/SearchBar';
 import LoginModal from '../commonComponents/LoginModal';
 // import ReactGA from 'react-ga'; 
@@ -115,22 +114,16 @@ class DatasetDetail extends Component {
 
   
   render() {
-    const { searchString, data, projectsData, datarequest, isLoading, userState, alert } = this.state;
+    const { searchString, data, datarequest, isLoading, userState, alert } = this.state;
 
     if (isLoading) {
       return <Container><Loading /></Container>;
     }
 
-    var projectsCount = 0;
-    var toolsCount = 0;
-
-    if (isLoading) {
-      return <Container><Loading /></Container>;
+    if (data.relatedObjects === null || typeof data.relatedObjects === 'undefined') {
+        data.relatedObjects = [];
     }
 
-    projectsData.map(projectData => projectData.activeflag === "active" ? projectsCount++ : '' ) 
-    projectsData.map(projectData => projectData.activeflag === "active" ? projectData.toolids.map(toolid => toolsCount++ ) : '')
-    
     return (
       
       <div>
@@ -145,13 +138,9 @@ class DatasetDetail extends Component {
                   <Tab eventKey="About" title={'About'}>
                     <About data={data}/>
                   </Tab>  
-                   <Tab eventKey="Projects" title={'Projects using this (' + projectsCount + ')'}>
-                     {projectsCount <=0 ? <NotFound word="projects" />  : projectsData.map(projectData => projectData.activeflag === "active" ? <Project id={projectData.id} activeLink={true} /> : '')}
-                  </Tab>
-                  <Tab eventKey="Tools" title={'Tools used in the same projects (' + toolsCount + ')'}>
-                    {toolsCount <= 0 ? <NotFound word="tools" /> : projectsData.map(projectData => projectData.activeflag === "active" ? projectData.toolids.map(toolid => <Tool id={toolid} activeLink={true} />) : '')}
-
-                  </Tab> 
+                    <Tab eventKey="Projects" title={'Related resources (' + data.relatedObjects.length + ')'}>
+                        {data.relatedObjects.length <= 0 ? <NotFound word="related resources" /> : data.relatedObjects.map(object => <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />)}
+                    </Tab>
                 </Tabs>
               </div>
             </Col>

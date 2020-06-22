@@ -7,10 +7,8 @@ import queryString from 'query-string';
 import {Container, Row, Col, Tabs, Tab, Alert} from 'react-bootstrap';
 
 import RelatedObject from '../commonComponents/RelatedObject';
-
 import NotFound from '../commonComponents/NotFound';
 import SearchBar from '../commonComponents/SearchBar';
-import Tool from '../commonComponents/Tool';
 import Loading from '../commonComponents/Loading'
 import Creators from '../commonComponents/Creators';
 import ProjectTitle from './components/ProjectTitle';
