@@ -1940,3 +1940,54 @@ NAVBAR CSS BELOW
 .pixelGapLeft {
     margin-left: 1px;
 }
+
+.RelatedModalBackground{
+  background-color: #f6f7f8;
+  position: relative;
+  height: 100%;
+}
+
+.RelatedResourcesModal .modal-content{
+  height: 100vh;
+}
+
+.MinHeightModal {
+  /* min-height: 70vh; */
+  min-height: 100vh;
+
+}
+
+.ModalWrapper{
+  overflow-y: scroll;
+  height:calc(100% - 72px);
+  width: 70vw !important;
+}
+
+.ModalFooter {
+ position:static;
+ bottom: 0;
+ height: 72px;
+}
+
+.relationshipBar {
+    width: 100%; 
+    text-align: center; 
+    border-bottom: 1px solid #d8d8d8; 
+    line-height: 0.1em;
+    margin: 10px 0 20px; 
+ } 
+ 
+ .relationshipBar span {
+    font-family: museo-sans-rounded;
+    font-size: 13px;
+    color: #848e97 !important;
+    background:#fff; 
+    padding:0 10px; 
+ }
+
+ .relationshipAnswer{
+    width: 100%; 
+    border-radius: 8px;
+    background-color: #f6f7f8;
+    padding:20px;
+ }

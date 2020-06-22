@@ -379,12 +379,16 @@ class RelatedObject extends React.Component {
                                     <>
                                         <Row className="mt-3">
                                             <Col xs={12}>
-                                                <span className="Gray800-14px mr-2">Relationship</span> 
+                                                <div className="relationshipBar">
+                                                    <span className="Gray800-14px mr-2">Relationship</span>
+                                                </div> 
                                             </Col>
                                         </Row>
                                         <Row className="mt-3">
                                             <Col xs={12}>
-                                                <span className="Gray800-14px mr-2">{relatedObject.reason}</span> 
+                                                <div className="relationshipAnswer">
+                                                    <span className="Gray800-14px mr-2">{relatedObject.reason}</span> 
+                                                </div>
                                             </Col>
                                         </Row>
                                     </>
