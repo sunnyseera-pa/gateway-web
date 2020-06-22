@@ -19,6 +19,8 @@ import SVGIcon from '../../images/SVGIcon';
 import ReactMarkdown from 'react-markdown';
 import moment from 'moment';
 
+var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
+
 class ToolDetail extends Component {
 
   // initialize our state
@@ -331,30 +333,17 @@ class ToolDetail extends Component {
             <Col sm={1} lg={1} />
           </Row>
         </Container>
-        <Navbar fixed="bottom" className="mr-5 mb-5" >
-          <Nav className="ml-auto">
-            <Row>
-              <p>
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeY13LesZ_oMAH_qFdb2cS6b3s7wSf3DQJdwdxGdBcn_gxrfw/viewform" target="_blank" rel="noopener noreferrer" className="Purple-14px" id="UnderlinedLink">
-                  Send feedback
-                </a>
-              </p>
-            </Row>
-          </Nav>
-        </Navbar>
-
         <Navbar fixed="bottom" className="mr-5 mb-2" >
           <Nav className="ml-auto">
             <Row>
               <p>
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSfadX38bzD5qId2GARODJ7Mv4qHktYoEWY0fL7DcAFmbUuyxw/viewform" target="_blank" rel="noopener noreferrer" className="Purple-14px" id="UnderlinedLink">
-                  Report a problem
+                <a href={cmsURL + '/HDRUKGatewaySupportPortal'} target="_blank" rel="noopener noreferrer" className="Purple-14px" id="UnderlinedLink">
+                  Suggest Feedback
                 </a>
               </p>
             </Row>
           </Nav>
         </Navbar>
-
         <Row className='AuthorCard' />
       </div>
     );
