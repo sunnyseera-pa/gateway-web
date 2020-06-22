@@ -289,12 +289,23 @@ class RelatedObject extends React.Component {
                                                 <SVGIcon name="newestprojecticon" fill={'#ffffff'} className="BadgeSvgs mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Paper</span> 
                                             </span>
-                                            <span className="mr-2 Gray800-14px tagBadges mb-1 mt-1">
-                                                {data.categories.category}
-                                            </span>
-                                            {!data.categories.programmingLanguage || data.categories.programmingLanguage.length <= 0 ? '' : data.categories.programmingLanguage.map((language) => {
-                                                    return <span className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{language}</span>
-                                            })}    
+                                            {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
+                                                if (activeLink===true){
+                                                    return <a href={'/search?search=' + feature}><div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{feature}</div></a>
+                                                }
+                                                else {
+                                                    return <div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{feature}</div>
+                                                }
+                                            })}
+
+                                            {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
+                                                if (activeLink===true){
+                                                    return <a href={'/search?search=' + topic}><div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{topic}</div></a>
+                                                }
+                                                else {
+                                                    return <div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{topic}</div>
+                                                }
+                                            })}
                                         </Col>  
                                         <Col sm={12} lg={12} className="pt-3">
                                             <span className="Gray800-14px">

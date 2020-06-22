@@ -16,7 +16,7 @@ import SVGIcon from "../../images/SVGIcon";
 class Account extends Component {
 
     state = {
-        searchString: null,
+        searchString: '',
         id: '',
         data: [],
         isLoading: true,

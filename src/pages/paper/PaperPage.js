@@ -102,7 +102,7 @@ class ToolDetail extends Component {
   }
 
   render() {
-    const { searchString, data, isLoading, userState, toolAdded, toolEdited, reviewAdded, replyAdded, reviewData, discourseTopic } = this.state;
+    const { searchString, data, isLoading, userState, paperAdded, paperEdited, reviewAdded, replyAdded, reviewData, discourseTopic } = this.state;
 
     if (isLoading) {
       return <Container><Loading /></Container>;
@@ -117,7 +117,7 @@ class ToolDetail extends Component {
         <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
         <Container className="mb-5">
 
-          {toolAdded ?
+          {paperAdded ?
             <Row className="">
               <Col sm={1} lg={1} />
               <Col sm={10} lg={10}>
@@ -127,7 +127,7 @@ class ToolDetail extends Component {
             </Row>
             : ""}
 
-          {toolEdited ?
+          {paperEdited ?
             <Row className="">
               <Col sm={1} lg={1} />
               <Col sm={10} lg={10}>
@@ -141,7 +141,7 @@ class ToolDetail extends Component {
             <Row className="">
               <Col sm={1} lg={1} />
               <Col sm={10} lg={10}>
-                <Alert variant="warning" className="mt-3">Your tool is pending review. Only you can see this page.</Alert>
+                <Alert variant="warning" className="mt-3">Your paper is pending review. Only you can see this page.</Alert>
               </Col>
               <Col sm={1} lg={10} />
             </Row>
