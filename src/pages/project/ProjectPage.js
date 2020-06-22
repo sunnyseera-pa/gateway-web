@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
 import queryString from 'query-string';
-import {Container, Row, Col, Tabs, Tab, Alert} from 'react-bootstrap';
+import {Container, Row, Col, Tabs, Tab, Alert, Nav, Navbar } from 'react-bootstrap';
 
 import RelatedObject from '../commonComponents/RelatedObject';
 import NotFound from '../commonComponents/NotFound';
@@ -17,6 +17,8 @@ import ProjectTitle from './components/ProjectTitle';
 import {PageView, initGA} from '../../tracking';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
+var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
+
 
 class ProjectDetail extends Component {
   // initialize our state
@@ -165,8 +167,19 @@ class ProjectDetail extends Component {
             </Col>
             <Col sm={1} lg={1} />
           </Row>
-
         </Container>
+        <Navbar fixed="bottom" className="mr-5 mb-2" >
+          <Nav className="ml-auto">
+            <Row>
+              <p>
+                <a href={cmsURL + '/HDRUKGatewaySupportPortal'} target="_blank" rel="noopener noreferrer" className="Purple-14px" id="UnderlinedLink">
+                  Suggest Feedback
+                </a>
+              </p>
+            </Row>
+          </Nav>
+        </Navbar>
+        <Row className='AuthorCard' />
       </div>
     );
   }
