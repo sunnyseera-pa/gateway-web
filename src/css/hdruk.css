@@ -1744,26 +1744,10 @@ NAVBAR CSS BELOW
     margin-top:15px;
 }
 
-
-
-
-
-
-
-
-
-
 .NotificationReadBackground {
     background-color: #f6f7f8
 }
 
-.RelatedModalBackground{
-  background-color: #f6f7f8;
-  /* flex-wrap: wrap; */
-  /* height: 100%; */
-  display: flex;
-  flex-direction: column;
-}
 
 .NotificationDate{
   padding: 10px 0px 5px 15px;
@@ -1850,15 +1834,6 @@ NAVBAR CSS BELOW
 
 .RatingGoldBackground {
   background-image: linear-gradient(to left, #dfca5d, #bb9a30 50%);
-}
-
-/* .RelatedResourcesModal {
-  height: 100vh;
-} */
-
-.RelatedResourcesModal .modal-content{
-  height: 100vh;
-  /* width: 100vw; */
 }
 
 .modal-70w {
