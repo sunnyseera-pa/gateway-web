@@ -29,8 +29,8 @@ class EditProjectPage extends React.Component {
         combinedTopic: [],
         combinedCategories: [],
         combinedUsers: [],
-        combinedTools: [],
-        combinedDatasets: [],
+        // combinedTools: [],
+        // combinedDatasets: [],
         isLoading: true,
         userState: [],
         searchString: null,
@@ -51,8 +51,8 @@ class EditProjectPage extends React.Component {
             this.doGetTopicsCall(),
             this.doGetCategoriesCall(),
             this.doGetUsersCall(),
-            this.doGetToolsCall(),
-            this.doGetDatasetsCall()
+            // this.doGetToolsCall(),
+            // this.doGetDatasetsCall()
         ]);
 
         this.getDataSearchFromDb();
@@ -101,25 +101,25 @@ class EditProjectPage extends React.Component {
         })
     }
 
-    doGetToolsCall() {
-        return new Promise((resolve, reject) => {
-            axios.get(baseURL + '/api/v1/tools')
-                .then((res) => {
-                    this.setState({ combinedTools: res.data.data });
-                    resolve();
-                });
-        })
-    }
+    // doGetToolsCall() {
+    //     return new Promise((resolve, reject) => {
+    //         axios.get(baseURL + '/api/v1/tools')
+    //             .then((res) => {
+    //                 this.setState({ combinedTools: res.data.data });
+    //                 resolve();
+    //             });
+    //     })
+    // }
 
-    doGetDatasetsCall() {
-        return new Promise((resolve, reject) => {
-            axios.get(baseURL + '/api/v1/datasets/filteredsearch?search=')
-                .then((res) => {
-                    this.setState({ combinedDatasets: res.data.data.results });
-                    resolve();
-                });
-        })
-    }
+    // doGetDatasetsCall() {
+    //     return new Promise((resolve, reject) => {
+    //         axios.get(baseURL + '/api/v1/datasets/filteredsearch?search=')
+    //             .then((res) => {
+    //                 this.setState({ combinedDatasets: res.data.data.results });
+    //                 resolve();
+    //             });
+    //     })
+    // }
 
     doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
@@ -195,7 +195,9 @@ class EditProjectPage extends React.Component {
     }
 
     render() {
-        const { data, combinedTopic, combinedCategories, combinedUsers, combinedTools, combinedDatasets, isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, relatedObjects, didDelete } = this.state;
+        const { data, combinedTopic, combinedCategories, combinedUsers, 
+            // combinedTools, combinedDatasets, 
+            isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, relatedObjects, didDelete } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -205,7 +207,9 @@ class EditProjectPage extends React.Component {
             <div>
                 <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Container>
-                    <EditProjectForm data={data} projectid={data.id} combinedTopic={combinedTopic} combinedCategories={combinedCategories} combinedUsers={combinedUsers} userState={userState} combinedTools={combinedTools} combinedDatasets={combinedDatasets} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag} />
+                    <EditProjectForm data={data} projectid={data.id} combinedTopic={combinedTopic} combinedCategories={combinedCategories} combinedUsers={combinedUsers} userState={userState} 
+                    // combinedTools={combinedTools} combinedDatasets={combinedDatasets} 
+                    searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag} />
                 </Container>
             </div>
         );
@@ -228,8 +232,8 @@ const EditProjectForm = (props) => {
             tags: {
                 topics: props.data.tags.topics
             },
-            toolids: props.data.toolids,
-            datasetids: props.data.datasetids,
+            // toolids: props.data.toolids,
+            // datasetids: props.data.datasetids,
             relatedObjects: props.relatedObjects
         },
 
@@ -273,23 +277,23 @@ const EditProjectForm = (props) => {
         });
     });
 
-    var listOfTools = [];
-    props.data.toolids.forEach((tools) => {
-        props.combinedTools.forEach((tool) => {
-            if (tool.id === tools) {
-                listOfTools.push({ id: tool.id, name: tool.name })
-            }
-        });
-    });
+    // var listOfTools = [];
+    // props.data.toolids.forEach((tools) => {
+    //     props.combinedTools.forEach((tool) => {
+    //         if (tool.id === tools) {
+    //             listOfTools.push({ id: tool.id, name: tool.name })
+    //         }
+    //     });
+    // });
 
-    var listOfDatasets = [];
-    props.data.datasetids.forEach((datasets) => {
-        props.combinedDatasets.forEach((dataset) => {
-            if (dataset.id === datasets) {
-                listOfDatasets.push({ id: dataset.id, title: dataset.title })
-            }
-        });
-    });
+    // var listOfDatasets = [];
+    // props.data.datasetids.forEach((datasets) => {
+    //     props.combinedDatasets.forEach((dataset) => {
+    //         if (dataset.id === datasets) {
+    //             listOfDatasets.push({ id: dataset.id, title: dataset.title })
+    //         }
+    //     });
+    // });
 
         function updateReason(id, reason, type) {
         let inRelatedObject = false;
@@ -411,7 +415,7 @@ const EditProjectForm = (props) => {
                                 />
                             </Form.Group>
 
-                            <Form.Group>
+                            {/* <Form.Group>
                                 <span className="Gray800-14px">Tools used in this project</span>
                                 <br />
                                 <span className="Gray700-13px">
@@ -447,7 +451,7 @@ const EditProjectForm = (props) => {
                                         formik.values.datasetids = tempSelected;
                                     }}
                                 />
-                            </Form.Group>
+                            </Form.Group> */}
                         </div>
 
                         <div className="Rectangle mt-2">

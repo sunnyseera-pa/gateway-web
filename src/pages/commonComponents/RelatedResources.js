@@ -36,7 +36,7 @@ function RelatedResources(props) {
             </Button>
             <Modal show={show} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter" centered className="RelatedResourcesModal" dialogClassName="modal-70w">
                 <div class="ModalWrapper">
-                <Modal.Header >
+                <Modal.Header>
                     <Modal.Title >
                         <span className="Black-20px">Add related resources</span>
                         <br />

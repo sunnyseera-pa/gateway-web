@@ -1920,20 +1920,18 @@ NAVBAR CSS BELOW
 
 .RelatedResourcesModal .modal-content{
   height: 100vh;
-  /* width: 100vw; */
 }
 
 .MinHeightModal {
-  min-height: 70vh;
+  /* min-height: 70vh; */
+  min-height: 100vh;
+
 }
 
 .ModalWrapper{
   overflow-y: scroll;
-  /* max-height: 200px; */
   height:calc(100% - 72px);
-  /* height:92%; */
   width: 70vw !important;
-
 }
 
 .ModalFooter {
@@ -1941,3 +1939,4 @@ NAVBAR CSS BELOW
  bottom: 0;
  height: 72px;
 }
+

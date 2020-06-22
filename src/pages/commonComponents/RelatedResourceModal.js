@@ -214,7 +214,7 @@ class RelatedResourcesModal extends React.Component {
                 <Container >
                     <Row>
                         <Col sm={1} lg={1} />  
-                        <Col sm={10} lg={10} className="mt-2" >
+                        <Col sm={10} lg={10} className="mt-2 mb-3" >
                             {key === 'Datasets' ?
                                 this.props.datasetData.map((dataset) => {  
                                     if(this.state.relatedObjectIds.includes(dataset.id)){
