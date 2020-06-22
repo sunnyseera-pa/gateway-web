@@ -214,12 +214,12 @@ class DatasetTitle extends Component {
    */
   renderRequestAccess = () => {
     const {userState: [user, ...rest], data: {title, id, contactPoint, publisher}, alert=null, datarequest} = this.props;
-    // const hasRequestedAccess = (datarequest.length === 1 ? true : false);
-    const hasRequestedAccess = false;
+    const hasRequestedAccess = (datarequest.length === 1 ? true : false);
+    // const hasRequestedAccess = false;
     if(!user.loggedIn) {
       var isRequest=true;
       return <LoginModal isRequest={isRequest} requestDetails={title} requestContact={contactPoint} />;
-    } else if (alert || hasRequestedAccess) {
+    } else if (alert) {
       return <Button variant="primary" className="AddButton" disabled>Request Access</Button>
     } else {
       return <Link className="btn btn-primary AddButton" to={{pathname: 

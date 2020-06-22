@@ -11,7 +11,6 @@ import SearchBar from '../commonComponents/SearchBar';
 import Loading from '../commonComponents/Loading';
 import ToolKit from './components/Toolkit';
 import NavItem from './components/NavItem';
-import { ReactComponent as CloseIconSvg } from '../../images/close.svg';
 import axios from 'axios';
 import DarValidation from '../../utils/DarValidation.util';
 import {classSchema} from './classSchema';
@@ -25,6 +24,7 @@ class DataAccessRequest extends Component {
         super(props);
         this.onFormSubmit = this.onFormSubmit.bind(this);
         this.onFormUpdate = this.onFormUpdate.bind(this);
+        this.onQuestionFocus = this.onQuestionFocus.bind(this);
     }
     
     state = {
@@ -33,6 +33,7 @@ class DataAccessRequest extends Component {
         questionAnswers: {},
         applicationStatus: '',
         activePanelId: '',
+        activeGuidance: 'Active guidance for questions.',
         searchString: '',
         key: 'guidance',
         totalQuestions: '',
@@ -119,6 +120,38 @@ class DataAccessRequest extends Component {
 
     onFormRender() {
         console.log('form render');
+    }
+
+    getActiveQuestion(questions, questionId) {
+       let questionsArr = [...questions];
+       let question = [...questionsArr].find(q => q.questionId === questionId);
+
+        if(!_.isEmpty(question)) {
+            return question;
+        }
+
+        return questionsArr.map((q) => {
+            if(typeof q.input.options !== 'undefined' && q.input.options.length > 0) {
+                let [ arr ]   = q.input.options.filter(option => { return option.hasOwnProperty('conditionalQuestions')});
+                if(!_.isEmpty(arr))
+                    return this.getActiveQuestion([...arr.conditionalQuestions], questionId);
+            }
+        });
+
+    }
+
+    onQuestionFocus(questionId = '') {
+        let questions;
+        if(!_.isEmpty(questionId)) {
+            let {schema: { questionSets } } = this.state;
+            // 1. get active question set
+            ({questions} = [...questionSets].find(q => q.questionSetId === this.state.activePanelId) || []);
+            if(!_.isEmpty(questions)) {
+                // 2. loop over and find active question 
+                let activeQuestion = this.getActiveQuestion(questions, questionId);
+                this.setState({activeGuidance: activeQuestion.guidance});
+            }
+        }
     }
     
     /**
@@ -267,7 +300,7 @@ class DataAccessRequest extends Component {
     }
     
     render() {
-        const { searchString, activePanelId, totalQuestions, isLoading, validationErrors} = this.state;
+        const { searchString, activePanelId, totalQuestions, isLoading, validationErrors, activeGuidance} = this.state;
         const { userState, location:{state: {title = '', publisher='' }} } = this.props;
 
         Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
@@ -361,6 +394,7 @@ class DataAccessRequest extends Component {
                                             panelId={this.state.activePanelId}
                                             disableSubmit={true}
                                             validationErrors={validationErrors}
+                                            onQuestionFocus={this.onQuestionFocus}
                                             onUpdate={this.onFormUpdate}
                                             onSubmit={this.onFormSubmit}
                                             onRender={this.onFormRender}
@@ -375,7 +409,7 @@ class DataAccessRequest extends Component {
                                 <Tab eventKey="guidance" title="Guidance">
                                     <Row className="darTab toolsButtons ml-1 mr-1 mt-2">
                                         <Col md={12} className="Gray700-13px mt-2">
-                                            <span>There is question-by-question guidance throughout the application process, or you can view everything in one go.</span>
+                                            <span>{activeGuidance}</span>
                                             <br /> <br />
                                             <Button variant="light" className="Dark-14px Width100"  >
                                                 View all guidance in a new window
