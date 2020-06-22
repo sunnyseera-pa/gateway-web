@@ -4,7 +4,11 @@ import SearchBar from '../commonComponents/SearchBar';
 import SimpleSearchBar from '../commonComponents/SimpleSearchBar';
 import RelatedResourcesModal from './RelatedResourceModal';
 import { testModeAPI } from 'react-ga';
-import { ReactComponent as ClearButtonSvg } from '../../images/clear.svg'; 
+import { ReactComponent as ClearButtonSvg } from '../../images/clear.svg';  
+import SVGIcon from '../../images/SVGIcon';
+import { ReactComponent as CloseButtonSvg } from '../../images/close.svg';  
+
+
 
 function RelatedResources(props) {
 
@@ -20,9 +24,9 @@ function RelatedResources(props) {
     }
 
     function closeModal() {
+        console.log('CLOSE')
         handleClose();
-        //DO WE WANT THE TEMP ARRAY TO CLEAR WHEN CLOSING MODAL OR FOR THEM TO STAY SELECTED?
-        // props.doClearRelatedObjects();
+        props.doClearRelatedObjects();
     }
     
     return (
@@ -31,20 +35,20 @@ function RelatedResources(props) {
                 + Add resources
             </Button>
             <Modal show={show} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter" centered className="RelatedResourcesModal" dialogClassName="modal-70w">
-                
-
-                <Modal.Header >
+                <div class="ModalWrapper">
+                <Modal.Header>
                     <Modal.Title >
                         <span className="Black-20px">Add related resources</span>
                         <br />
                         <span className="Gray800-14px">Search for datasets, tools, papers, projects  and people</span>
                     </Modal.Title>
-                    <ClearButtonSvg onClick={closeModal} />
+                    <CloseButtonSvg onClick={closeModal} />
                 </Modal.Header>
                 <Modal.Body >
                    <RelatedResourcesModal toolid={props.toolid} projectid={props.projectid} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} />
                 </Modal.Body>
-                <Modal.Footer>
+                </div>  
+                <Modal.Footer className="ModalFooter">
                     <Col sm={1} lg={1} />
                         <Col sm={7} lg={7} className="ml-5 mr-5">
                             <span className="Gray800-14px" >{props.tempRelatedObjectIds.length} selected</span>

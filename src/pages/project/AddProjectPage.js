@@ -33,8 +33,8 @@ class AddProjectPage extends React.Component {
         combinedTopic: [],
         combinedCategories: [],
         combinedUsers: [],
-        combinedTools: [],
-        combinedDatasets: [],
+        // combinedTools: [],
+        // combinedDatasets: [],
         isLoading: true,
         userState: [],
         searchString: null,
@@ -55,8 +55,8 @@ class AddProjectPage extends React.Component {
             this.doGetTopicsCall(),
             this.doGetCategoriesCall(),
             this.doGetUsersCall(),
-            this.doGetToolsCall(),
-            this.doGetDatasetsCall()
+            // this.doGetToolsCall(),
+            // this.doGetDatasetsCall()
         ])
         this.setState({ isLoading: false });
     }
@@ -92,25 +92,25 @@ class AddProjectPage extends React.Component {
         });
     }
 
-    doGetToolsCall() {
-        return new Promise((resolve, reject) => {
-            axios.get(baseURL + '/api/v1/tools')
-                .then((res) => {
-                    this.setState({ combinedTools: res.data.data });
-                    resolve();
-                });
-        });
-    }
+    // doGetToolsCall() {
+    //     return new Promise((resolve, reject) => {
+    //         axios.get(baseURL + '/api/v1/tools')
+    //             .then((res) => {
+    //                 this.setState({ combinedTools: res.data.data });
+    //                 resolve();
+    //             });
+    //     });
+    // }
 
-    doGetDatasetsCall() {
-        return new Promise((resolve, reject) => {
-            axios.get(baseURL + '/api/v1/datasets/filteredsearch?search=')
-                .then((res) => {
-                    this.setState({ combinedDatasets: res.data.data.results });
-                    resolve();
-                });
-        });
-    }
+    // doGetDatasetsCall() {
+    //     return new Promise((resolve, reject) => {
+    //         axios.get(baseURL + '/api/v1/datasets/filteredsearch?search=')
+    //             .then((res) => {
+    //                 this.setState({ combinedDatasets: res.data.data.results });
+    //                 resolve();
+    //             });
+    //     });
+    // }
 
     doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
@@ -183,7 +183,9 @@ class AddProjectPage extends React.Component {
     }
 
     render() {
-        const { data, combinedTopic, combinedCategories, combinedUsers, combinedTools, combinedDatasets, isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, relatedObjects, didDelete } = this.state;
+        const { data, combinedTopic, combinedCategories, combinedUsers, 
+            // combinedTools, combinedDatasets,
+             isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, relatedObjects, didDelete } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -192,7 +194,9 @@ class AddProjectPage extends React.Component {
             <div>
                 <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Container>
-                    <AddProjectForm data={data} combinedTopic={combinedTopic} combinedCategories={combinedCategories} combinedUsers={combinedUsers} combinedTools={combinedTools} combinedDatasets={combinedDatasets} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
+                    <AddProjectForm data={data} combinedTopic={combinedTopic} combinedCategories={combinedCategories} combinedUsers={combinedUsers} 
+                    // combinedTools={combinedTools} combinedDatasets={combinedDatasets} 
+                    userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
                 </Container>
             </div>
         );
@@ -217,8 +221,8 @@ const AddProjectForm = (props) => {
             tags: {
                 topics: [],
             },
-            toolids: [],
-            datasetids: [],
+            // toolids: [],
+            // datasetids: [],
             relatedObjects: props.relatedObjects
         },
 
@@ -380,7 +384,7 @@ const AddProjectForm = (props) => {
                                 />
                             </Form.Group>
 
-                            <Form.Group>
+                            {/* <Form.Group>
                                 <span className="Gray800-14px">Tools used in this project</span>
                                 <br />
                                 <span className="Gray700-13px">
@@ -422,7 +426,7 @@ const AddProjectForm = (props) => {
                                         formik.values.datasetids = tempSelected;
                                     }}
                                 />
-                            </Form.Group>
+                            </Form.Group> */}
                         </div>
 
                         <div className="Rectangle mt-2">
@@ -454,7 +458,7 @@ const AddProjectForm = (props) => {
                             <Col xs={5} lg={9} />
                                 <Col xs={7} lg={3} className="text-right">
                                     <a style={{ cursor: 'pointer' }} href={'/account?tab=projects'} >
-                                        <Button variant="medium" className="CancelButton" >
+                                        <Button variant="medium" className="CancelButton Dark-14px mr-2" >
                                             Cancel
                                         </Button>
                                     </a>
