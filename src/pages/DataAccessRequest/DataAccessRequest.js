@@ -16,7 +16,7 @@ import DarValidation from '../../utils/DarValidation.util';
 import {classSchema} from './classSchema';
 import { baseURL } from '../../configs/url.config';
 import 'react-tabs/style/react-tabs.css';
-import SVGIcon from '../../images/SVGIcon';
+import SVGIcon from "../../images/SVGIcon"
 
 class DataAccessRequest extends Component {
 
