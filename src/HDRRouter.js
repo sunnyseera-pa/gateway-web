@@ -9,13 +9,18 @@ import SSOPage from './pages/sso/SSOPage';
 import ToolPage from './pages/tool/ToolPage';
 import PersonPage from './pages/person/PersonPage';
 import ProjectPage from './pages/project/ProjectPage';
+import PaperPage from './pages/paper/PaperPage';
 import DatasetPage from './pages/dataset/DatasetPage';
 import SearchPage from './pages/search/SearchPage';
-import AddToolPage from './pages/tool/AddToolPage';
-import AddProjectPage from './pages/project/AddProjectPage';
+
 import Account from './pages/dashboard/Account';
+import AddToolPage from './pages/tool/AddToolPage';
 import EditToolPage from './pages/tool/EditToolPage';
+import AddProjectPage from './pages/project/AddProjectPage';
 import EditProjectPage from './pages/project/EditProjectPage';
+import AddPaperPage from './pages/paper/AddPaperPage';
+import EditPaperPage from './pages/paper/EditPaperPage';
+
 import Request from './pages/request/Request';
 import DataAccessRequest from './pages/DataAccessRequest/DataAccessRequest';
 import Loading from './pages/commonComponents/Loading'
@@ -91,6 +96,7 @@ class HDRRouter extends Component {
                         <Route path='/search' render={(props) => <SearchPage {...props} userState={userState} />} />
                         <Route path='/tool/:toolID' render={(props) => <ToolPage {...props} userState={userState} />} />
                         <Route path='/project/:projectID' render={(props) => <ProjectPage {...props} userState={userState} />} />
+                        <Route path='/paper/:paperID' render={(props) => <PaperPage {...props} userState={userState} />} />
                         <Route path='/person/:personID' render={(props) => <PersonPage {...props} userState={userState} />} />
                         <Route path='/dataset/:datasetID' render={(props) => <DatasetPage {...props} userState={userState} />} />
                         <Route path='/completeRegistration/:personID' render={(props) => <CompleteRegistration {...props} userState={userState} />} />
@@ -98,9 +104,11 @@ class HDRRouter extends Component {
                         {userState[0].loggedIn ? (<Route path='/data-access-request/:datasetId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
                         {userState[0].loggedIn ? (<Route path='/account' render={(props) => <Account {...props} userState={userState} />} />) : ''}
                         {userState[0].loggedIn ? (<Route path='/addtool' render={(props) => <AddToolPage {...props} userState={userState} /> } />) : ''}
-                        {userState[0].loggedIn ? (<Route path='/addproject' render={(props) => <AddProjectPage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/edittool/:toolID' render={(props) => <EditToolPage {...props} userState={userState} /> } />) : ''}
+                        {userState[0].loggedIn ? (<Route path='/addproject' render={(props) => <AddProjectPage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/editproject/:projectID' render={(props) => <EditProjectPage {...props} userState={userState} /> } />) : ''}
+                        {userState[0].loggedIn ? (<Route path='/addpaper' render={(props) => <AddPaperPage {...props} userState={userState} /> } />) : ''}
+                        {userState[0].loggedIn ? (<Route path='/editpaper/:paperID' render={(props) => <EditPaperPage {...props} userState={userState} /> } />) : ''}
                         {/* Catch all path */}
                         <Redirect to="/search?search=" />
                     </Switch>

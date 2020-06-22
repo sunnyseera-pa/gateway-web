@@ -18,7 +18,7 @@ import SVGIcon from '../../images/SVGIcon';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
-class EditToolPage extends React.Component {
+class EditPaperPage extends React.Component {
 
     constructor(props) {
         super(props)
@@ -30,9 +30,6 @@ class EditToolPage extends React.Component {
         data: [],
         combinedTopic: [],
         combinedFeatures: [],
-        combinedLanguages: [],
-        combinedCategories: [],
-        combinedLicenses: [],
         combinedUsers: [],
         isLoading: true,
         userState: [],
@@ -52,9 +49,6 @@ class EditToolPage extends React.Component {
         await Promise.all([
             this.doGetTopicsCall(),
             this.doGetFeaturesCall(),
-            this.doGetLanguagesCall(), 
-            this.doGetCategoriesCall(),
-            this.doGetLicensesCall(),
             this.doGetUsersCall()
         ]);
 
@@ -64,7 +58,7 @@ class EditToolPage extends React.Component {
     getDataSearchFromDb = () => {
         //need to handle error if no id is found
         this.setState({ isLoading: true });
-        axios.get(baseURL + '/api/v1/tools/' + this.props.match.params.toolID)
+        axios.get(baseURL + '/api/v1/tools/' + this.props.match.params.paperID)
           .then((res) => {
             this.setState({
               data: res.data.data[0],
@@ -76,7 +70,7 @@ class EditToolPage extends React.Component {
 
     doGetTopicsCall() {
         return new Promise((resolve, reject) => {
-            axios.get(baseURL + '/api/v1/search/filter/topic/tool')
+            axios.get(baseURL + '/api/v1/search/filter/topic/paper')
                 .then((res) => {
                     var tempTopicArray = ["Blood", "Cancer and neoplasms", "Cardiovascular", "Congenital disorders", "Ear", "Eye", "Infection", "Inflammatory and immune system", "Injuries and accidents", "Mental health", "Metabolic and Endocrine", "Musculoskeletal", "Neurological", "Oral and Gastrointestinal", "Renal and Urogenital", "Reproductive health and childbirth", "Respiratory", "Skin", "Stroke"]
 
@@ -94,7 +88,7 @@ class EditToolPage extends React.Component {
 
     doGetFeaturesCall() {
         return new Promise((resolve, reject) => {
-            axios.get(baseURL + '/api/v1/search/filter/feature/tool')
+            axios.get(baseURL + '/api/v1/search/filter/feature/paper')
                 .then((res) => {
                     var tempFeaturesArray = ["Arbitrage", "Association Rules", "Attribution Modeling", "Bayesian Statistics", "Clustering", "Collaborative Filtering", "Confidence Interval", "Cross-Validation", "Decision Trees", "Deep Learning", "Density Estimation", "Ensembles", "Experimental Design", "Feature Selection", "Game Theory", "Geospatial Modeling", "Graphs", "Imputation", "Indexation / Cataloguing", "Jackknife Regression", "Lift Modeling", "Linear Regression", "Linkage Analysis", "Logistic Regression", "Model Fitting", "Monte-Carlo Simulation", "Naive Bayes", "Nearest Neighbors - (k-NN)", "Neural Networks", "Pattern Recognition", "Predictive Modeling", "Principal Component Analysis - (PCA)", "Random Numbers", "Recommendation Engine", "Relevancy Algorithm", "Rule System", "Scoring Engine", "Search Engine", "Segmentation", "Supervised Learning", "Support Vector Machine - (SVM)", "Survival Analysis", "Test of Hypotheses", "Time Series", "Yield Optimization"]
 
@@ -105,60 +99,6 @@ class EditToolPage extends React.Component {
                     });
 
                     this.setState({ combinedFeatures: tempFeaturesArray.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
-                    resolve();
-                });
-        });
-    }
-
-    doGetLanguagesCall() {
-        return new Promise((resolve, reject) => {
-            axios.get(baseURL + '/api/v1/search/filter/language/tool')
-                .then((res) => {
-                    var tempLanguagesArray = ["No coding required", ".net", "AJAX", "ASP.NET", "C", "C#", "C++", "CSS", "Django", "HTML", "Java", "Javascript", "jQuery", "JSON", "Matlab", "MySQL", "Node.js", "Objective C", "PHP", "Python", "R", "React JS", "Regex", "Ruby", "Ruby on Rails", "SQL", "SQL server", "Swift", "XML"]
-
-                    res.data.data.forEach((la) => {
-                        if (!tempLanguagesArray.includes(la) && la !== '') {
-                            tempLanguagesArray.push(la);
-                        }
-                    });
-
-                    this.setState({ combinedLanguages: tempLanguagesArray.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
-                    resolve();
-                });
-        });
-    }
-
-    doGetCategoriesCall() {
-        return new Promise((resolve, reject) => {
-            axios.get(baseURL + '/api/v1/search/filter/category/tool')
-                .then((res) => {
-                    var tempCategoriesArray = ["API", "Code snippet", "Container image", "Dashboard", "Developer stack", "Directory", "Docker app", "Kubernetes app", "Library", "Notebook", "Package", "Platform", "Repository", "Service", "Software", "Virtual machine", "Web application"]
-
-                    res.data.data.forEach((ca) => {
-                        if (!tempCategoriesArray.includes(ca) && ca !== '') {
-                            tempCategoriesArray.push(ca);
-                        }
-                    });
-
-                    this.setState({ combinedCategories: tempCategoriesArray.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
-                    resolve();
-                });
-        });
-    }
-
-    doGetLicensesCall() {
-        return new Promise((resolve, reject) => {
-            axios.get(baseURL + '/api/v1/search/filter/license/tool')
-                .then((res) => {
-                    var tempLicensesArray = ["Apache License 2.0", "BSD 3-Clause \"New\" or \"Revised\" license", "BSD 2-Clause \"Simplified\" or \"FreeBSD\" license", "GNU General Public License (GPL)", "GNU Library or \"Lesser\" General Public License (LGPL)", "MIT license", "Mozilla Public License 2.0", "Common Development and Distribution License", "Eclipse Public License version 2.0"]
-
-                    res.data.data.forEach((li) => {
-                        if (!tempLicensesArray.includes(li) && li !== '') {
-                            tempLicensesArray.push(li);
-                        }
-                    });
-
-                    this.setState({ combinedLicenses: tempLicensesArray.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
                     resolve();
                 });
         });
@@ -195,6 +135,7 @@ class EditToolPage extends React.Component {
             if (type === 'dataset' && page > 0) searchURL += '&datasetIndex=' + page;
             if (type === 'tool' && page > 0) searchURL += '&toolIndex=' + page;
             if (type === 'project' && page > 0) searchURL += '&projectIndex=' + page;
+            if (type === 'paper' && page > 0) searchURL += '&paperIndex=' + page;
             if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
         
         axios.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL )
@@ -203,6 +144,7 @@ class EditToolPage extends React.Component {
                     datasetData: res.data.datasetResults || [],
                     toolData: res.data.toolResults || [],
                     projectData: res.data.projectResults || [],
+                    paperData: res.data.paperResults || [],
                     personData: res.data.personResults || [],
                     summary: res.data.summary || [],
                     isLoading: false
@@ -258,7 +200,7 @@ class EditToolPage extends React.Component {
             <div>
                 <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Container>
-                    <EditToolForm data={data} toolid={data.id} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
+                    <EditPaperForm data={data} toolid={data.id} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
                 </Container>
             </div>
         );
@@ -266,23 +208,19 @@ class EditToolPage extends React.Component {
 
 }
 
-const EditToolForm = (props) => {
+const EditPaperForm = (props) => {
     // Pass the useFormik() hook initial form values and a submit function that will
     // be called when the form is submitted
-
+    
     const formik = useFormik({
         initialValues: {
             id: props.data.id, 
-            type: 'tool',
+            type: 'paper',
             name: props.data.name,
             link: props.data.link,
+            journal:props.data.journal,
+            journalYear:props.data.journalYear,
             description: props.data.description,
-            categories: {
-              category: props.data.categories.category,
-              programmingLanguage: props.data.categories.programmingLanguage,
-              programmingLanguageVersion: props.data.categories.programmingLanguageVersion
-            },
-            license: props.data.license,
             authors: props.data.authors,
             tags: {
               features: props.data.tags.features,
@@ -297,15 +235,10 @@ const EditToolForm = (props) => {
             description: Yup.string()
                 .max(5000, 'Maximum of 5,000 characters')
                 .required('This cannot be empty'),
-            categories: Yup.object().shape({
-                category: Yup.string(),
-                programmingLanguage: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.string()) : Yup.string())),
-                programmingLanguageVersion: Yup.string()
-            }),
-            license: Yup.string(),
-            authors: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.number()) : Yup.number())),
-            features: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.string()) : Yup.string())),
-            topics: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.string()) : Yup.string())),
+            journal: Yup.string()
+                .required('This cannot be empty'),
+            journalYear: Yup.string()
+                .required('Year cannot be empty')
         }),
 
         onSubmit: values => {
@@ -313,7 +246,7 @@ const EditToolForm = (props) => {
             values.toolCreator = props.userState[0];
             axios.put(baseURL + '/api/v1/mytools/edit', values) 
                 .then((res) => {
-                    window.location.href = window.location.search + '/tool/' + props.data.id + '/?toolEdited=true';
+                    window.location.href = window.location.search + '/paper/' + props.data.id + '/?paperEdited=true';
                 });
         }
     });
@@ -355,118 +288,43 @@ const EditToolForm = (props) => {
             <Row className="mt-2">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
-                <div className="Rectangle">
-                    <p className="Black-20px">Edit a tool or resource</p>
-                </div>
+                    <div className="Rectangle">
+                        <Row>
+                            <Col sm={10} lg={10}>
+                             <p className="Black-20px">Edit a paper</p>
+                            </Col>
+                            <Col sm={2} lg={2}>
+                            <span className="PaperBadge"> 
+                                <SVGIcon name="projecticon" fill={'#3c3c3b'} className="BadgeSvgs mr-2" />
+                                Paper 
+                            </span>
+                            </Col>
+                        </Row>
+                        <p className="Gray800-14px">Papers should be articles published in a journal. Add a project if you want</p>
+                    </div>
                 </Col>
                 <Col sm={1} lg={10} />
             </Row>
 
-            <Row className="mt-2">
+            <Row className="pixelGapTop">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                     <Form onSubmit={formik.handleSubmit} onBlur={formik.handleBlur} autocomplete='off'>
                         <div className="Rectangle">
-                            <Form.Group>
-                                <span className="Gray800-14px">Name</span>
-                                <Form.Control id="name" name="name" type="text" className={formik.touched.name && formik.errors.name ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.name} onBlur={formik.handleBlur} />
-                                {formik.touched.name && formik.errors.name ? <div className="ErrorMessages">{formik.errors.name}</div> : null}
-                            </Form.Group>
-
-                            <Form.Group>
+                        <Form.Group>
                                 <span className="Gray800-14px">Link</span>
+                                <br />
+                                <span className="Gray700-13px">
+                                    Where can we find this paper?
+                                </span>
                                 <Form.Control id="link" name="link" type="text" className={formik.touched.link && formik.errors.link ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.link} onBlur={formik.handleBlur} />
                                 {formik.touched.link && formik.errors.link ? <div className="ErrorMessages">{formik.errors.link}</div> : null}
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="Gray800-14px">Description</span>
-                                <br />
-                                <span className="Gray700-13px">
-                                    Up to 5,000 characters
-                                </span>
-                                <Form.Control as="textarea" id="description" name="description" type="text" className={formik.touched.description && formik.errors.description ? "EmptyFormInput AddFormInput DescriptionInput" : "AddFormInput DescriptionInput"} onChange={formik.handleChange} value={formik.values.description} onBlur={formik.handleBlur} />
-                                {formik.touched.description && formik.errors.description ? <div className="ErrorMessages">{formik.errors.description}</div> : null}
-                            </Form.Group>
-
-                            <Form.Group>
-                                <span className="Gray800-14px">Category</span>
-                                <br />
-                                <span className="Gray700-13px">
-                                    Select from existing or enter a new one.
-                                </span>
-                                <Typeahead
-                                    id="categories.category"
-                                    labelKey="category"
-                                    defaultSelected={props.data.categories.category}
-                                    allowNew
-                                    options={props.combinedCategories}
-                                    onChange={(selected) => {
-                                        var tempSelected = [];
-                                        selected.forEach((selectedItem) => {
-                                            selectedItem.customOption === true ? tempSelected.push(selectedItem.category) : tempSelected.push(selectedItem);
-                                        })
-                                        formik.values.categories.category = tempSelected[0];
-                                    }}
-                                />
-                            </Form.Group>
-
-                            <Form.Group>
-                                <span className="Gray800-14px">Programming language</span>
-                                <br />
-                                <span className="Gray700-13px">
-                                    Select from existing or enter a new one. As many as you like.
-                                </span>
-                                <Typeahead
-                                    id="categories.programmingLanguage"
-                                    labelKey="programmingLanguage"
-                                    defaultSelected={props.data.categories.programmingLanguage}
-                                    allowNew
-                                    multiple
-                                    options={props.combinedLanguages}
-                                    onChange={(selected) => {
-                                        var tempSelected = [];
-                                        selected.forEach((selectedItem) => {
-                                            selectedItem.customOption === true ? tempSelected.push(selectedItem.programmingLanguage) : tempSelected.push(selectedItem);
-
-                                        })
-                                        formik.values.categories.programmingLanguage = tempSelected;
-                                    }}
-                                />
-                            </Form.Group>
-
-                            {formik.values.categories.programmingLanguage.length <= 0 || formik.values.categories.programmingLanguage === "Code-free" ? '' :
-                                <Form.Group>
-                                    <span className="Gray800-14px">Programming language version</span>
-                                    <br />
-                                    <span className="Gray700-13px">
-                                        i.e. 3.6.1
-                                    </span>
-                                    <Form.Control id="categories.programmingLanguageVersion" name="categories.programmingLanguageVersion" type="text" className="SmallFormInput AddFormInput" onChange={formik.handleChange} value={formik.values.categories.programmingLanguageVersion} onBlur={formik.handleBlur} />
-                                </Form.Group>
-                            }
-
-                            <Form.Group>
-                                <span className="Gray800-14px">License</span>
-                                <br />
-                                <span className="Gray700-13px">
-                                    Select from existing or enter a new one
-                                </span>
-                                <Typeahead
-                                    id="license"
-                                    labelKey="license"
-                                    allowNew
-                                    multiple
-                                    options={props.combinedLicenses}
-                                    className="SmallFormInput"
-                                    onChange={(selected) => {
-                                        var tempSelected = [];
-                                        selected.forEach((selectedItem) => {
-                                            selectedItem.customOption === true ? tempSelected.push(selectedItem.license) : tempSelected.push(selectedItem);
-                                        })
-                                        formik.values.license = tempSelected[0];
-                                    }}
-                                />
+                                <span className="Gray800-14px">Title</span>
+                                <Form.Control id="name" name="name" type="text" className={formik.touched.name && formik.errors.name ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.name} onBlur={formik.handleBlur} />
+                                {formik.touched.name && formik.errors.name ? <div className="ErrorMessages">{formik.errors.name}</div> : null}
                             </Form.Group>
 
                             <Form.Group>
@@ -490,12 +348,39 @@ const EditToolForm = (props) => {
                                     }}
                                 />
                             </Form.Group>
+                            
+                            <Row className="mt-2">
+                                <Col sm={10}>
+                                    <Form.Group>
+                                        <span className="Gray800-14px">Journal</span>
+                                        <Form.Control id="journal" name="journal" type="text" className={formik.touched.journal && formik.errors.journal ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.journal} onBlur={formik.handleBlur} />
+                                        {formik.touched.journal && formik.errors.journal ? <div className="ErrorMessages">{formik.errors.journal}</div> : null}
+                                        {formik.touched.journalYear && formik.errors.journalYear ? <div className="ErrorMessages">{formik.errors.journalYear}</div> : null}
+                                    </Form.Group>
+                                </Col>
+                                <Col sm={2}>
+                                    <Form.Group>
+                                        <span className="Gray800-14px">Year</span>
+                                        <Form.Control id="journalYear" name="journalYear" type="text" className={formik.touched.journalYear && formik.errors.journalYear ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.journalYear} onBlur={formik.handleBlur} />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
 
                             <Form.Group>
-                                <span className="Gray800-14px">Features</span>
+                                <span className="Gray800-14px">Abstract</span>
                                 <br />
                                 <span className="Gray700-13px">
-                                    Keywords that help people identify what this resource does. As many as you like. For instance: data analysis, random forest
+                                Provide a brief summary of the paper
+                                </span>
+                                <Form.Control as="textarea" id="description" name="description" type="text" className={formik.touched.description && formik.errors.description ? "EmptyFormInput AddFormInput DescriptionInput" : "AddFormInput DescriptionInput"} onChange={formik.handleChange} value={formik.values.description} onBlur={formik.handleBlur} />
+                                {formik.touched.description && formik.errors.description ? <div className="ErrorMessages">{formik.errors.description}</div> : null}
+                            </Form.Group>
+
+                            <Form.Group>
+                            <span className="Gray800-14px">Keywords</span>
+                                <br />
+                                <span className="Gray700-13px">
+                                Technological paradigms or other keywords. Eg. Rule-based, clustering, supervised machine learning
                                 </span>
                                 <Typeahead
                                     id="tags.features"
@@ -516,12 +401,11 @@ const EditToolForm = (props) => {
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="Gray800-14px">Topics</span>
+                            <span className="Gray800-14px">Domain</span>
                                 <br />
                                 <span className="Gray700-13px">
-                                    Keywords that help people identify any related fields. As many as you like. For instance: Biogenomics, Nutrition
+                                    E.g. Biogenomics, Nutrition, Blockchain
                                 </span>
-
                                 <Typeahead
                                     id="tags.topics"
                                     labelKey="topics"
@@ -586,4 +470,4 @@ const EditToolForm = (props) => {
     );
 }
 
-export default EditToolPage;
+export default EditPaperPage;
