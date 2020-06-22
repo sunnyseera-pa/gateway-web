@@ -16,6 +16,9 @@ describe('<DataSet /> rendering', () => {
 
     it('renders a title with value "Epilepsy 12 - National organisational audit (service descriptor questionnai..."', () => {
         wrapper = shallow(<DataSet {...props} />);
+        wrapper.setProps({
+            activeLink: true
+        });
         const title = wrapper.find('[data-testid="dataset-title"]');
         expect(title.text()).toEqual('Epilepsy 12 - National organisational audit (service descriptor questionnai...');
     });
@@ -27,7 +30,7 @@ describe('<DataSet /> rendering', () => {
     });
 
     it('renders a full title of `Test`', () => {
-        wrapper = mount(<DataSet {...props} />);
+        wrapper = mount(<DataSet data={dataSetState.data} detailsData={dataSetState.ddetailsData} activeLink={true} />);
         wrapper.setProps({
             data: { title: 'Test' }
         });
@@ -35,6 +38,12 @@ describe('<DataSet /> rendering', () => {
         expect(title.text()).toEqual(`Test`);
     });
 
+    it('allows a click', () => {
+        wrapper = shallow(<DataSet data={dataSetState.data} detailsData={dataSetState.ddetailsData} activeLink={true} />);
+        const title = wrapper.find('[data-testid="dataset-desc"]');
+        expect(title.simulate('click'));
+    });
 
 
 });
+

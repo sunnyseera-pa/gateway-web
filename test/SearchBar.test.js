@@ -2,11 +2,13 @@
 import React from 'react';
 import SearchBar from '../src/pages/commonComponents/SearchBar';
 import { searchBarState } from './mocks/dataMock';
+import { searchBarStateLoggedIn } from './mocks/dataMock';
 
 let wrapper, props;
 
 beforeEach(() => {
   props = searchBarState;
+  jest.resetModules();
 });
 
 describe('<SearchBar /> rendering', () => {
@@ -42,5 +44,12 @@ describe('<SearchBar /> interactions', () => {
         wrapper = shallow(<SearchBar {...props}  doUpdateSearchString={updateSearchString} />);
         wrapper.find('[data-testid="searchbar"]').simulate('change', mockEvent);
         expect(wrapper.state("textValue")).toEqual('epilepsy');
+    });
+});
+
+
+describe('<SearchBar /> when logged in', () => {
+    it('should render when logged in', () => {
+        wrapper = shallow(<SearchBar {...searchBarStateLoggedIn}/>);
     });
 });

@@ -37,7 +37,7 @@ const __toolTitle = {
   "projectids":[]
   };
 
-const __toolReview = [];
+const __toolReview = [{rating:10},{rating:1}];
 
 const __project = {
       "tags": 
@@ -265,10 +265,13 @@ const __reviews = {
 
 const __searchBarState = {
     "textValue": "",
-    "displayClearButton": true,
-    "userState": [
-      "{ id: null, loggedIn: false, name: null, role: 'Reader' }"
-    ]
+    "userState": "[{ id: 1234567, loggedIn: false, name: 'Bob', role: 'Reader' }]"
+    
+};
+
+const __searchBarStateLoggedIn = {
+    textValue: "",
+    userState: [{ "id": 900000014, loggedIn: true, "name": "Bob", "role": "Reader"}]
 };
 
 const __dataSetState = {
@@ -303,6 +306,7 @@ module.exports = {
   notFoundData: __notFound,
   reviewsData: __reviews,
   searchBarState: __searchBarState,
+  searchBarStateLoggedIn: __searchBarStateLoggedIn,
   dataSetState: __dataSetState,
   creatorsData: __creatorsData
 };
