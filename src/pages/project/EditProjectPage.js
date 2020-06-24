@@ -29,8 +29,6 @@ class EditProjectPage extends React.Component {
         combinedTopic: [],
         combinedCategories: [],
         combinedUsers: [],
-        // combinedTools: [],
-        // combinedDatasets: [],
         isLoading: true,
         userState: [],
         searchString: null,
@@ -50,9 +48,7 @@ class EditProjectPage extends React.Component {
         await Promise.all([
             this.doGetTopicsCall(),
             this.doGetCategoriesCall(),
-            this.doGetUsersCall(),
-            // this.doGetToolsCall(),
-            // this.doGetDatasetsCall()
+            this.doGetUsersCall()
         ]);
 
         this.getDataSearchFromDb();
@@ -100,26 +96,6 @@ class EditProjectPage extends React.Component {
                 });
         })
     }
-
-    // doGetToolsCall() {
-    //     return new Promise((resolve, reject) => {
-    //         axios.get(baseURL + '/api/v1/tools')
-    //             .then((res) => {
-    //                 this.setState({ combinedTools: res.data.data });
-    //                 resolve();
-    //             });
-    //     })
-    // }
-
-    // doGetDatasetsCall() {
-    //     return new Promise((resolve, reject) => {
-    //         axios.get(baseURL + '/api/v1/datasets/filteredsearch?search=')
-    //             .then((res) => {
-    //                 this.setState({ combinedDatasets: res.data.data.results });
-    //                 resolve();
-    //             });
-    //     })
-    // }
 
     doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
@@ -195,9 +171,7 @@ class EditProjectPage extends React.Component {
     }
 
     render() {
-        const { data, combinedTopic, combinedCategories, combinedUsers, 
-            // combinedTools, combinedDatasets, 
-            isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, relatedObjects, didDelete } = this.state;
+        const { data, combinedTopic, combinedCategories, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, relatedObjects, didDelete } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -207,9 +181,7 @@ class EditProjectPage extends React.Component {
             <div>
                 <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Container>
-                    <EditProjectForm data={data} projectid={data.id} combinedTopic={combinedTopic} combinedCategories={combinedCategories} combinedUsers={combinedUsers} userState={userState} 
-                    // combinedTools={combinedTools} combinedDatasets={combinedDatasets} 
-                    searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag} />
+                    <EditProjectForm data={data} projectid={data.id} combinedTopic={combinedTopic} combinedCategories={combinedCategories} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag} />
                 </Container>
             </div>
         );
@@ -232,8 +204,6 @@ const EditProjectForm = (props) => {
             tags: {
                 topics: props.data.tags.topics
             },
-            // toolids: props.data.toolids,
-            // datasetids: props.data.datasetids,
             relatedObjects: props.relatedObjects
         },
 
@@ -276,24 +246,6 @@ const EditProjectForm = (props) => {
             }
         });
     });
-
-    // var listOfTools = [];
-    // props.data.toolids.forEach((tools) => {
-    //     props.combinedTools.forEach((tool) => {
-    //         if (tool.id === tools) {
-    //             listOfTools.push({ id: tool.id, name: tool.name })
-    //         }
-    //     });
-    // });
-
-    // var listOfDatasets = [];
-    // props.data.datasetids.forEach((datasets) => {
-    //     props.combinedDatasets.forEach((dataset) => {
-    //         if (dataset.id === datasets) {
-    //             listOfDatasets.push({ id: dataset.id, title: dataset.title })
-    //         }
-    //     });
-    // });
 
         function updateReason(id, reason, type) {
         let inRelatedObject = false;
@@ -414,44 +366,6 @@ const EditProjectForm = (props) => {
                                     }}
                                 />
                             </Form.Group>
-
-                            {/* <Form.Group>
-                                <span className="Gray800-14px">Tools used in this project</span>
-                                <br />
-                                <span className="Gray700-13px">
-                                    Tools must be added to our portal first
-                                </span>
-                                <Typeahead
-                                    labelKey={tools => `${tools.name}`}
-                                    defaultSelected={listOfTools}
-                                    multiple
-                                    options={props.combinedTools}
-                                    onChange={(selected) => {
-                                        var tempSelected = [];
-                                        selected.forEach((selectedItem) => {
-                                            tempSelected.push(selectedItem.id);
-                                        })
-                                        formik.values.toolids = tempSelected;
-                                    }}
-                                />
-                            </Form.Group>
-
-                            <Form.Group>
-                                <span className="Gray800-14px">Datasets used in this project</span>
-                                <Typeahead
-                                    labelKey={datasets => `${datasets.title}`}
-                                    defaultSelected={listOfDatasets}
-                                    multiple
-                                    options={props.combinedDatasets}
-                                    onChange={(selected) => {
-                                        var tempSelected = [];
-                                        selected.forEach((selectedItem) => {
-                                            tempSelected.push(selectedItem.id);
-                                        })
-                                        formik.values.datasetids = tempSelected;
-                                    }}
-                                />
-                            </Form.Group> */}
                         </div>
 
                         <div className="Rectangle mt-2">
@@ -459,21 +373,25 @@ const EditProjectForm = (props) => {
                             <br/>
                             <span className="Gray595757-14px">Show relationships to papers, projects, datasets and tools. Resources must be added to the Gateway first.</span>
                         </div>
-
-                        <div className="Rectangle">
+   
+                        <div className="RelatedResourcesRectangle mt-1">
                            {props.relatedObjects ? props.relatedObjects.map((object) => {
-                                return <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} reason={object.reason} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} />
+                                return(
+                                    <div className="RelatedObjectRectangle">
+                                        <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} reason={object.reason} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} />
+                                    </div>
+                                )
                             }) : ''}
-                        </div>
-
-                        <div className="Rectangle FlexCenter mt-1">
-                            <Row>
-                                <Col sm={1} lg={1} />
-                                <Col sm={10} lg={10}>
-                                    <RelatedResources projectid={props.projectid} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
-                                </Col>
-                                <Col sm={1} lg={10} />
-                            </Row>
+      
+                            <div className="FlexCenter pt-3 pb-3">
+                                <Row>
+                                    <Col sm={1} lg={1} />
+                                    <Col sm={10} lg={10}>
+                                        <RelatedResources projectid={props.projectid} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
+                                    </Col>
+                                    <Col sm={1} lg={10} />
+                                </Row>
+                            </div>
                         </div>
 
                         <Row className="mt-3">

@@ -13,7 +13,7 @@ import RelatedObject from '../commonComponents/RelatedObject';
 
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-import SVGIcon from '../../images/SVGIcon';
+import SVGIcon from '../../images/SVGIcon'; 
 
 
 import { Event, initGA } from '../../tracking';
@@ -33,8 +33,6 @@ class AddProjectPage extends React.Component {
         combinedTopic: [],
         combinedCategories: [],
         combinedUsers: [],
-        // combinedTools: [],
-        // combinedDatasets: [],
         isLoading: true,
         userState: [],
         searchString: null,
@@ -54,9 +52,7 @@ class AddProjectPage extends React.Component {
         await Promise.all([
             this.doGetTopicsCall(),
             this.doGetCategoriesCall(),
-            this.doGetUsersCall(),
-            // this.doGetToolsCall(),
-            // this.doGetDatasetsCall()
+            this.doGetUsersCall()
         ])
         this.setState({ isLoading: false });
     }
@@ -91,26 +87,6 @@ class AddProjectPage extends React.Component {
                 });
         });
     }
-
-    // doGetToolsCall() {
-    //     return new Promise((resolve, reject) => {
-    //         axios.get(baseURL + '/api/v1/tools')
-    //             .then((res) => {
-    //                 this.setState({ combinedTools: res.data.data });
-    //                 resolve();
-    //             });
-    //     });
-    // }
-
-    // doGetDatasetsCall() {
-    //     return new Promise((resolve, reject) => {
-    //         axios.get(baseURL + '/api/v1/datasets/filteredsearch?search=')
-    //             .then((res) => {
-    //                 this.setState({ combinedDatasets: res.data.data.results });
-    //                 resolve();
-    //             });
-    //     });
-    // }
 
     doSearch = (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
@@ -183,9 +159,7 @@ class AddProjectPage extends React.Component {
     }
 
     render() {
-        const { data, combinedTopic, combinedCategories, combinedUsers, 
-            // combinedTools, combinedDatasets,
-             isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, relatedObjects, didDelete } = this.state;
+        const { data, combinedTopic, combinedCategories, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, relatedObjects, didDelete } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -194,9 +168,7 @@ class AddProjectPage extends React.Component {
             <div>
                 <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Container>
-                    <AddProjectForm data={data} combinedTopic={combinedTopic} combinedCategories={combinedCategories} combinedUsers={combinedUsers} 
-                    // combinedTools={combinedTools} combinedDatasets={combinedDatasets} 
-                    userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
+                    <AddProjectForm data={data} combinedTopic={combinedTopic} combinedCategories={combinedCategories} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
                 </Container>
             </div>
         );
@@ -213,7 +185,6 @@ const AddProjectForm = (props) => {
             name: '',
             link: '',
             description: '',
-            // authors: [],
             authors: [props.userState[0].id],
             categories: {
                 category: ''
@@ -221,8 +192,6 @@ const AddProjectForm = (props) => {
             tags: {
                 topics: [],
             },
-            // toolids: [],
-            // datasetids: [],
             relatedObjects: props.relatedObjects
         },
 
@@ -383,50 +352,6 @@ const AddProjectForm = (props) => {
                                     }}
                                 />
                             </Form.Group>
-
-                            {/* <Form.Group>
-                                <span className="Gray800-14px">Tools used in this project</span>
-                                <br />
-                                <span className="Gray700-13px">
-                                    Tools must be added to our portal first
-                                </span>
-
-                                <Typeahead
-                                    id="tools"
-                                    labelKey={tools => `${tools.name}`}
-                                    multiple
-                                    options={props.combinedTools}
-                                    onChange={(selected) => {
-                                        var tempSelected = [];
-                                        selected.forEach((selectedItem) => {
-                                            tempSelected.push(selectedItem.id);
-                                        })
-                                        formik.values.toolids = tempSelected;
-                                    }}
-                                />
-                            </Form.Group>
-
-                            <Form.Group>
-                                <span className="Gray800-14px">Datasets used in this project</span>
-                                <br />
-                                <span className="Gray700-13px">
-                                    Datasets must be added to our portal first
-                                </span>
-
-                                <Typeahead
-                                    id="datasets"
-                                    labelKey={datasets => `${datasets.title}`}
-                                    multiple
-                                    options={props.combinedDatasets}
-                                    onChange={(selected) => {
-                                        var tempSelected = [];
-                                        selected.forEach((selectedItem) => {
-                                            tempSelected.push(selectedItem.id);
-                                        })
-                                        formik.values.datasetids = tempSelected;
-                                    }}
-                                />
-                            </Form.Group> */}
                         </div>
 
                         <div className="Rectangle mt-2">
@@ -435,23 +360,25 @@ const AddProjectForm = (props) => {
                             <span className="Gray595757-14px">Show relationships to papers, projects, datasets and tools. Resources must be added to the Gateway first.</span>
                         </div>
 
-                        <div className="Rectangle">
+                        <div className="RelatedResourcesRectangle mt-1">
                             {props.relatedObjects.map((object) => {
                                 return (
-                                    <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} />
+                                    <div className="RelatedObjectRectangle">
+                                        <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} />
+                                    </div>
                                 )
                             })}
-                        </div>
 
-                        <div className="Rectangle FlexCenter mt-1">
-                            <Row>
-                                <Col sm={1} lg={1} />
-                                <Col sm={10} lg={10}>
-                                    
-                                    <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
-                                </Col>
-                                <Col sm={1} lg={10} />
-                            </Row>
+                            <div className="FlexCenter pt-3 pb-3">
+                                <Row>
+                                    <Col sm={1} lg={1} />
+                                    <Col sm={10} lg={10}>
+                                        
+                                        <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
+                                    </Col>
+                                    <Col sm={1} lg={10} />
+                                </Row>
+                            </div>
                         </div>
 
                         <Row className="mt-3">
@@ -463,7 +390,6 @@ const AddProjectForm = (props) => {
                                         </Button>
                                     </a>
                                 <Button variant="primary" type="submit" className="White-14px" onClick={() => Event("Buttons", "Click", "Add project form submitted")}>
-                                    {/* Add this project */}
                                     Publish
                                 </Button>
                             </Col>
