@@ -313,7 +313,7 @@ class DatasetTitle extends Component {
 
                             <Row className="mt-3">
                                 <Col sm={2} lg={2} className="Gray800-14px" >
-                                    Meta-data quality
+                                    Metadata quality
                                 </Col>
                                 <Col sm={10} lg={10}>
                                     {data.quality ? <div><div className={metadataQualityClass}> {metadataQuality} </div> <a href="https://github.com/HDRUK/datasets#about-the-reports" className="ml-2 Purple-14px" target="_blank">How is this calculated? </a></div> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col>}
