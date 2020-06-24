@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -14,6 +14,7 @@ import RelatedObject from '../commonComponents/RelatedObject';
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
+import ToolTip from '../../images/imageURL-ToolTip.gif';
 
 import { Event, initGA } from '../../tracking';
 
@@ -158,8 +159,7 @@ const AddCollectionForm = (props) => {
 
     const formik = useFormik({
         initialValues: {
-            type: 'collection', //keep this if adding to same tools collection in db
-            collectionName: '',
+            name: '',
             description: '',
             authors: [props.userState[0].id],
             imageLink: '',
@@ -167,23 +167,22 @@ const AddCollectionForm = (props) => {
         },
 
         validationSchema: Yup.object({
-            collectionName: Yup.string()
+            name: Yup.string()
                 .required('This cannot be empty'),
             description: Yup.string()
                 .max(5000, 'Maximum of 5,000 characters')
                 .required('This cannot be empty'),
-            authors: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.number()) : Yup.number()))
+            authors: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.number()) : Yup.number())) 
         }),
 
-
-//UPDATE THIS SUBMIT TO /API/V1/MYCOLLECTIONS/ADD ???
         onSubmit: values => {
             values.relatedObjects = props.relatedObjects
-            values.toolCreator = props.userState[0];
-            axios.post(baseURL + '/api/v1/mytools/add', values) 
-                .then((res) => {
-                    window.location.href = window.location.search + '/tool/' + res.data.id + '/?toolAdded=true';
-                });
+            // values.toolCreator = props.userState[0];
+            axios.post(baseURL + '/api/v1/collections/add', values)
+            //GO TO THIS COLLECTION PAGE ONCE IT IS CREATED
+                // .then((res) => {
+                //     window.location.href = window.location.search + '/tool/' + res.data.id + '/?toolAdded=true';
+                // });
         }
     });
 
@@ -212,8 +211,17 @@ const AddCollectionForm = (props) => {
         }
     }
 
+    const [isShown, setIsShown] = useState(false);
+
     return (
         <div>
+            {console.log('Collection name: ' + formik.values.name)}
+            {console.log('Description: ' + formik.values.description)}
+            {console.log('Collection collaborators: ' + formik.values.authors)}
+            {console.log('Image URL: ' + formik.values.imageLink)}
+            {console.log('Related resources: ' + JSON.stringify(props.relatedObjects))}
+
+
             <Row className="mt-2">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
@@ -236,8 +244,8 @@ const AddCollectionForm = (props) => {
                         <div className="Rectangle">
                             <Form.Group>
                                 <span className="Gray800-14px">Collection name</span>
-                                <Form.Control id="collectionName" name="collectionName" type="text" className={formik.touched.collectionName && formik.errors.collectionName ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.collectionName} onBlur={formik.handleBlur} />
-                                {formik.touched.collectionName && formik.errors.collectionName ? <div className="ErrorMessages">{formik.errors.collectionName}</div> : null}
+                                <Form.Control id="name" name="name" type="text" className={formik.touched.name && formik.errors.name ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.name} onBlur={formik.handleBlur} />
+                                {formik.touched.name && formik.errors.name ? <div className="ErrorMessages">{formik.errors.name}</div> : null}
                             </Form.Group>
 
                             <Form.Group>
@@ -274,17 +282,20 @@ const AddCollectionForm = (props) => {
 
                             <Form.Group>
                                 <Row>
-                                    <Col>
+                                    <Col sm={7} lg={9}>
                                         <span className="Gray800-14px">Image URL (optional)</span>
-                                    </Col>
-                                    <Col>
-                                     <span className="Purple-13px">How to get an image URL</span>
-                                     </Col>
-                                </Row>
-                                <br />
+                                        <br />
                                 <span className="Gray700-13px">
                                     Paste an image address URL. It must include a protocol prefix, e.g. https://
                                 </span>
+                                    </Col>
+                                    <Col sm={5} lg={3} className="pl-4">
+                                     <span className="Purple-13px" onMouseEnter={() => setIsShown(true)} onMouseLeave={() => setIsShown(false)}>  
+                                        How to get an image URL
+                                     </span>
+                                     {isShown && ( <img src={ToolTip} alt="" id="ImageToolTip" /> )}
+                                     </Col>
+                                </Row>
                                 <Form.Control id="imageLink" name="imageLink" type="text" className={formik.touched.imageLink && formik.errors.imageLink ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.imageLink} onBlur={formik.handleBlur} />
                                 {formik.touched.imageLink && formik.errors.imageLink ? <div className="ErrorMessages">{formik.errors.imageLink}</div> : null}
                             </Form.Group>
