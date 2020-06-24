@@ -17,7 +17,8 @@ class RelatedObject extends React.Component {
         data: [],
         activeLink: true,
         isLoading: true,
-        didDelete: false
+        didDelete: false,
+        inCollection: false
     };
 
     constructor(props) {
@@ -25,6 +26,9 @@ class RelatedObject extends React.Component {
         this.state.activeLink = props.activeLink;
         if(props.didDelete){
             this.state.didDelete = props.didDelete;
+        }
+        if(props.inCollection){
+            this.state.inCollection = props.inCollection;
         }
         if (props.data) {
             this.state.data = props.data;
@@ -75,7 +79,7 @@ class RelatedObject extends React.Component {
 
 
     render() {
-        const { data, isLoading, activeLink, relatedObject } = this.state; 
+        const { data, isLoading, activeLink, relatedObject, inCollection } = this.state; 
 
         if (isLoading) {
             return <Loading />;
@@ -374,7 +378,8 @@ class RelatedObject extends React.Component {
                                     <>
                                         <Row className="mt-3">
                                             <Col xs={12}>
-                                                <span className="Gray800-14px mr-2">What's the relationship between these resources?</span> 
+                                                {!inCollection ? <span className="Gray800-14px mr-2">What's the relationship between these resources?</span> 
+                                                : <span className="Gray800-14px mr-2">What's the relationship of this entity to the collection? (optional)</span> }
                                             </Col>
                                         </Row>
                                         <Row className="testInput">
