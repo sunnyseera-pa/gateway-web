@@ -102,7 +102,7 @@ class SearchBar extends React.Component {
     logout = (e) => {
         axios.get(baseURL + '/api/v1/auth/logout')
             .then((res) => {
-                window.location.href = cmsURL;
+                window.location.reload();
             });
     }
 
