@@ -14,6 +14,7 @@ import LoginModal from '../commonComponents/LoginModal';
 // import ReactGA from 'react-ga'; 
 import { PageView, initGA } from '../../tracking';
 import { Event } from '../../tracking';
+import Footer from '../commonComponents/Footer';
 
 
 import 'react-tabs/style/react-tabs.css';
@@ -160,6 +161,7 @@ class DatasetDetail extends Component {
           </Nav>
         </Navbar>
       <Row className='AuthorCard' />
+      <Footer className="footerBottom"></Footer>
     </div>
         );
     }
