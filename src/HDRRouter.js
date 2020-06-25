@@ -81,7 +81,6 @@ class HDRRouter extends Component {
                 .get(cmsURL+'/footer',{ withCredentials: false })
                 .then((res) => {
                     footer = res.data;
-                    console.log('axios is sucess'+res.data);
                 })
                 .finally(() => {
                     this.setState({
