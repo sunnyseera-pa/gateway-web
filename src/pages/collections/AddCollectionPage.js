@@ -172,11 +172,13 @@ const AddCollectionForm = (props) => {
             description: Yup.string()
                 .max(5000, 'Maximum of 5,000 characters')
                 .required('This cannot be empty'),
-            authors: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.number()) : Yup.number())) 
+            authors: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.number()) : Yup.number())),
+            imageLink: Yup.string()
+                .matches( /^[http|https]+:\/\/(?:([\w\-\.])+(\[?\.\]?)([\w]){2,4}|(?:(?:25[0–5]|2[0–4]\d|[01]?\d\d?)\[?\.\]?){3}(?:25[0–5]|2[0–4]\d|[01]?\d\d?))*([\w\/+=%&_\.~?\-]*)$/ , 'URL must be valid and include a protocol prefix, e.g. https://' )
         }),
 
         onSubmit: values => {
-            values.relatedObjects = props.relatedObjects
+            values.relatedObjects = props.relatedObjects 
             // values.toolCreator = props.userState[0];
             axios.post(baseURL + '/api/v1/collections/add', values)
             //GO TO THIS COLLECTION PAGE ONCE IT IS CREATED
@@ -215,13 +217,6 @@ const AddCollectionForm = (props) => {
 
     return (
         <div>
-            {console.log('Collection name: ' + formik.values.name)}
-            {console.log('Description: ' + formik.values.description)}
-            {console.log('Collection collaborators: ' + formik.values.authors)}
-            {console.log('Image URL: ' + formik.values.imageLink)}
-            {console.log('Related resources: ' + JSON.stringify(props.relatedObjects))}
-
-
             <Row className="mt-2">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
@@ -327,7 +322,7 @@ const AddCollectionForm = (props) => {
                             </div>
                         </div> 
 
-                        <Row className="mt-3">
+                        <Row className="mt-3"> 
                             <Col xs={5} lg={9}/>
                             <Col xs={7} lg={3} className="text-right">
                                     <a style={{ cursor: 'pointer' }} href={'/account?tab=tools'}>

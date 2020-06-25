@@ -24,7 +24,6 @@ function RelatedResources(props) {
     }
 
     function closeModal() {
-        console.log('CLOSE')
         handleClose();
         props.doClearRelatedObjects();
     }

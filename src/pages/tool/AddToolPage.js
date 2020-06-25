@@ -529,7 +529,7 @@ const AddToolForm = (props) => {
                             <br/>
                             <span className="Gray595757-14px">Show relationships to papers, projects, datasets and tools. Resources must be added to the Gateway first.</span>
                         </div>
-
+ 
                         <div className="RelatedResourcesRectangle mt-1">
                             {props.relatedObjects.map((object) => {
                                 return (
