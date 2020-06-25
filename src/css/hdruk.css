@@ -5,6 +5,16 @@
 
 body {
   background-color: #f6f7f8;
+  height: 100vh;
+}
+
+#root {
+    height: 100%;  
+}
+
+.mainWrap {
+   min-height: 100%;  
+   padding-bottom: 440px;
 }
 
 .Rectangle {
@@ -2041,8 +2051,8 @@ NAVBAR CSS BELOW
 
  .footerBottom {
   width: '100%';
-  margin-top: -100px; 
-  height: 360px;
+  margin-top: -440px; /* negative value of footer height */
+  height: 440px;
   clear:both;
   background-image: linear-gradient(110deg,#50b996,#485ea7 100%);
   padding: 48px;
