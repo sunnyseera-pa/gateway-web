@@ -78,7 +78,7 @@ class HDRRouter extends Component {
             .finally(() => {
                 console.log('axios is called');
                 axios
-                .get('https://uatbeta.healthdatagateway.org/footer',{ withCredentials: false })
+                .get(cmsURL+'/footer',{ withCredentials: false })
                 .then((res) => {
                     footer = res.data;
                     console.log('axios is sucess'+res.data);
