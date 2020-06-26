@@ -214,72 +214,59 @@ class SearchBar extends React.Component {
                         </Col>
 
                         <Col lg={8} className="text-right">
-                            <div className="navBarSearchBarSpacing">
-                                <Container>
-                                    <Row>
-                                        <Col>
-                                            <span className="SearchBarInputGrey">
-                                                <span className="SearchInputIconGrey">
-                                                    <SVGIcon name="searchicon" width={20} height={20} fill={'#2c8267'} stroke='none' type="submit" />
+                            <div className="nav-wrapper">
+                                <div className="navBarSearchBarSpacing">
+                                    <Container>
+                                        <Row>
+                                            <Col>
+                                                <span className="SearchBarInputGrey">
+                                                    <span className="SearchInputIconGrey">
+                                                        <SVGIcon name="searchicon" width={20} height={20} fill={'#2c8267'} stroke='none' type="submit" />
+                                                    </span>
+                                                    <span>
+                                                        <input type="text" placeholder="Search" id="SearchInputSpanGrey" data-testid="searchbar" onChange={this.onSearch} onKeyDown={this.props.doSearchMethod} value={this.props.searchString} />
+                                                    </span>
+                                                    {(this.props.searchString !== '' && this.props.searchString !== undefined) ?
+                                                        <span className="SearchInputClearGrey" data-testid="searchbar-clear-btn">
+                                                            <a style={{ cursor: 'pointer' }} href={'/search?search='} >
+                                                                <ClearButtonSvg />
+                                                            </a>
+                                                        </span> : null}
                                                 </span>
-                                                <span>
-                                                    <input type="text" placeholder="Search" id="SearchInputSpanGrey" data-testid="searchbar" onChange={this.onSearch} onKeyDown={this.props.doSearchMethod} value={this.props.searchString} />
-                                                </span>
-                                                {(this.props.searchString !== '' && this.props.searchString !== undefined) ?
-                                                    <span className="SearchInputClearGrey" data-testid="searchbar-clear-btn">
-                                                        <a style={{ cursor: 'pointer' }} href={'/search?search='} >
-                                                            <ClearButtonSvg />
-                                                        </a>
-                                                    </span> : null}
-                                            </span>
-                                        </Col>
-                                    </Row>
-                                </Container>
-                            </div>
+                                            </Col>
+                                        </Row>
+                                    </Container>
+                                </div>
 
-                            {(() => {
-                                if (userState[0].loggedIn === true) {
-                                    return (
-                                        <div className="navBarNotificationSpacing">
-                                            <Dropdown>
-                                                <Dropdown.Toggle as={CustomToggle} ref={node => this.node = node}>
-                                                    <NotificationBadge count={this.state.count} style={{ backgroundColor: '#29235c' }} />
-                                                    <SVGIcon name="bell" fill={'#475da7'} width={20} height={20} id="NotificationsBell" className={this.state.dropdownOpen ? "NotificationsBell" : null} style={{ cursor: 'pointer' }} />
-                                                    {/* <NotificationsBellSvg width={50} height={50} id="NotificationsBell" className={this.state.dropdownOpen ? "NotificationsBell" : null} style={{ cursor: 'pointer' }} /> */}
-                                                </Dropdown.Toggle>
+                                {(() => {
+                                    if (userState[0].loggedIn === true) {
+                                        return (
+                                            <div className="navBarNotificationSpacing">
+                                                <Dropdown>
+                                                    <Dropdown.Toggle as={CustomToggle} ref={node => this.node = node}>
+                                                        <NotificationBadge count={this.state.count} style={{ backgroundColor: '#29235c' }} />
+                                                        <SVGIcon name="bell" fill={'#475da7'} width={20} height={20} id="NotificationsBell" className={this.state.dropdownOpen ? "NotificationsBell" : null} style={{ cursor: 'pointer' }} />
+                                                        {/* <NotificationsBellSvg width={50} height={50} id="NotificationsBell" className={this.state.dropdownOpen ? "NotificationsBell" : null} style={{ cursor: 'pointer' }} /> */}
+                                                    </Dropdown.Toggle>
 
-                                                <Dropdown.Menu as={CustomMenu} className="desktopNotificationMenu">
-                                                    {newData.length <= 0 ?
-                                                        <div className="NoNotifications" >
-                                                            <div className="Gray800-14px" style={{ textAlign: 'center' }}>
-                                                                <p><b>No notifications yet</b></p>
-                                                                <p>We'll let you know when something important happens to your content or account.</p>
+                                                    <Dropdown.Menu as={CustomMenu} className="desktopNotificationMenu">
+                                                        {newData.length <= 0 ?
+                                                            <div className="NoNotifications" >
+                                                                <div className="Gray800-14px" style={{ textAlign: 'center' }}>
+                                                                    <p><b>No notifications yet</b></p>
+                                                                    <p>We'll let you know when something important happens to your content or account.</p>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        : newData.slice(0, 48).map((dat) => {
-                                                            let messageDateString = moment(dat.messageSent).format('D MMMM YYYY HH:mm');
+                                                            : newData.slice(0, 48).map((dat) => {
+                                                                let messageDateString = moment(dat.messageSent).format('D MMMM YYYY HH:mm');
 
-                                                            if (dat.messageType === 'add') {
-                                                                return (
-                                                                    <>
-                                                                        <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
-                                                                            <Col xs={10}>
-                                                                                <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                {dat.tool.length &&  <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">{dat.messageDescription}</a></div> }
-                                                                            </Col>
-                                                                            <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
-                                                                        </Row>
-                                                                        <Dropdown.Divider style={{ margin: "0px" }} />
-                                                                    </>
-                                                                )
-                                                            }
-                                                            else if(dat.messageType === 'data access request'){
-                                                                return (
-                                                                    <>
-                                                                        <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
+                                                                if (dat.messageType === 'add') {
+                                                                    return (
+                                                                        <>
+                                                                            <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
                                                                                 <Col xs={10}>
                                                                                     <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                    <div className="NotificationInfoHolder"><a class="NotificationInfo">{dat.messageDescription}</a></div> 
+                                                                                    {dat.tool.length &&  <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">{dat.messageDescription}</a></div> }
                                                                                 </Col>
                                                                                 <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                             </Row>
@@ -329,38 +316,39 @@ class SearchBar extends React.Component {
                                 }
                             })()}
 
-                            <div className="navBarLoginSpacing">
-                                {(() => {
-                                    if (userState[0].loggedIn === true) {
-                                        return (
-                                            <Dropdown>
-                                                <Dropdown.Toggle as={CustomToggle}>
-                                                    <span className="Black-14px">{userState[0].name}</span>
-                                                    <span className="accountDropDownGap"></span>< ArrowDownSvg />
-                                                </Dropdown.Toggle>
+                                <div className="navBarLoginSpacing">
+                                    {(() => {
+                                        if (userState[0].loggedIn === true) {
+                                            return (
+                                                <Dropdown>
+                                                    <Dropdown.Toggle as={CustomToggle}>
+                                                        <span className="Black-14px">{userState[0].name}</span>
+                                                        <span className="accountDropDownGap"></span>< ArrowDownSvg />
+                                                    </Dropdown.Toggle>
 
-                                                <Dropdown.Menu as={CustomMenu} className="desktopLoginMenu">
-                                                    <Dropdown.Item href="/account?tab=youraccount" className="Black-14px">Your Account</Dropdown.Item>
-                                                    <Dropdown.Item href="/account?tab=tools" className="Black-14px">Tools</Dropdown.Item>
-                                                    <Dropdown.Item href="/account?tab=reviews" className="Black-14px">Reviews</Dropdown.Item>
-                                                    <Dropdown.Item href="/account?tab=projects" className="Black-14px">Projects</Dropdown.Item>
-                                                    <Dropdown.Item href="/account?tab=papers" className="Black-14px">Papers</Dropdown.Item>
-                                                    <Dropdown.Item href="/account?tab=dataaccessrequests" className="Black-14px">Data access requests</Dropdown.Item>
-                                                    {userState[0].role === "Admin" ?
-                                                        <Dropdown.Item href="/account?tab=usersroles" className="Black-14px">Users and roles</Dropdown.Item>
-                                                    : ''}
-                                                    <Dropdown.Item onClick={this.logout} className="Black-14px">Logout</Dropdown.Item>
-                                                </Dropdown.Menu>
-                                            </Dropdown>
-                                        )
-                                    }
-                                    else {
-                                        return (<>
-                                            <span className="Black-14px" id="myBtn" onClick={e => { this.showLoginModal() }} >Sign in | Sign up</span>
-                                        </>
-                                        )
-                                    }
-                                })()}
+                                                    <Dropdown.Menu as={CustomMenu} className="desktopLoginMenu">
+                                                        <Dropdown.Item href="/account?tab=youraccount" className="Black-14px">Your Account</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=tools" className="Black-14px">Tools</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=reviews" className="Black-14px">Reviews</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=projects" className="Black-14px">Projects</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=papers" className="Black-14px">Papers</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=dataaccessrequests" className="Black-14px">Data access requests</Dropdown.Item>
+                                                        {userState[0].role === "Admin" ?
+                                                            <Dropdown.Item href="/account?tab=usersroles" className="Black-14px">Users and roles</Dropdown.Item>
+                                                        : ''}
+                                                        <Dropdown.Item onClick={this.logout} className="Black-14px">Logout</Dropdown.Item>
+                                                    </Dropdown.Menu>
+                                                </Dropdown>
+                                            )
+                                        }
+                                        else {
+                                            return (<>
+                                                <span className="Black-14px" id="myBtn" onClick={e => { this.showLoginModal() }} >Sign in | Sign up</span>
+                                            </>
+                                            )
+                                        }
+                                    })()}
+                                </div>
                             </div>
                         </Col>
                     </Row>
