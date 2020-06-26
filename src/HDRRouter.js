@@ -29,6 +29,8 @@ import CompleteRegistration from './pages/registration/CompleteRegistration'
 import LoginModal from './pages/commonComponents/LoginModal';
 
 var baseURL = require('./pages/commonComponents/BaseURL').getURL();
+var cmsURL = require('./pages/commonComponents/BaseURL').getCMSURL();
+var footer = '';
 
 class HDRRouter extends Component {
     // initialize our state
@@ -44,7 +46,7 @@ class HDRRouter extends Component {
         isLoading: true
     };
 
-    componentDidMount() {
+    async componentDidMount() {
         axios.defaults.withCredentials = true;
         axios
             .get(baseURL + '/api/v1/auth/status')
@@ -58,7 +60,7 @@ class HDRRouter extends Component {
                             name: res.data.data[0].name
                         }
                     ],
-                    isLoading: false
+                    isLoading: true
                 });
             })
             .catch((error) => {
@@ -71,7 +73,20 @@ class HDRRouter extends Component {
                             name: null
                         }
                     ],
-                    isLoading: false
+                    isLoading: true
+                });
+            })
+            .finally(() => {
+                console.log('axios is called');
+                axios
+                .get(cmsURL+'/footer',{ withCredentials: false })
+                .then((res) => {
+                    footer = res.data;
+                })
+                .finally(() => {
+                    this.setState({
+                        isLoading: false
+                    });
                 });
             });
     }
@@ -91,7 +106,7 @@ class HDRRouter extends Component {
             <Router>
                 <LoginModal userState={userState} />
                 <div className='navBarGap'></div>
-                <div>
+                <div className='mainWrap'>
                     <Switch>
                         <Route path='/request-access' render={(props) => <Request {...props} userState={userState} />} />
                         <Route path='/search' render={(props) => <SearchPage {...props} userState={userState} />} />
@@ -115,6 +130,7 @@ class HDRRouter extends Component {
                         <Redirect to="/search?search=" />
                     </Switch>
                 </div>
+                <div dangerouslySetInnerHTML={{__html:footer}} />
             </Router>
         );
     }

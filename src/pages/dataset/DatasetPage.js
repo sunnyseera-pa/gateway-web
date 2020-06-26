@@ -15,7 +15,6 @@ import LoginModal from '../commonComponents/LoginModal';
 import { PageView, initGA } from '../../tracking';
 import { Event } from '../../tracking';
 
-
 import 'react-tabs/style/react-tabs.css';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
