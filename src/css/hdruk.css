@@ -24,6 +24,23 @@ body {
   padding: 20px;
 }
 
+.RelatedResourcesRectangle {
+  width: 100%;
+  box-shadow: 1px 1px 3px 0 #00000017;
+  background-color: #ffffff;
+}
+
+.RelatedObjectRectangle {
+  width: 100%;
+  background-color: #ffffff;
+  border: none;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+
+}
+
 .RectangleWithBorder{
   width: 100%;
   /* box-shadow: 1px 1px 3px 0 #00000017; */
@@ -2076,3 +2093,11 @@ NAVBAR CSS BELOW
   padding-top: 16px;
   padding-bottom: 16px;
 }
+
+ #ImageToolTip {
+  position: absolute;
+  width: 326px;
+  height: 164px;
+  left: -50%;
+  top: 50%;
+ }

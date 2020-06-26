@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -7,20 +7,21 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import {Form, Button, Row, Col, Container} from 'react-bootstrap';
 
 import SearchBar from '../commonComponents/SearchBar';
-import Loading from '../commonComponents/Loading'
+import Loading from '../commonComponents/Loading';
 import RelatedResources from '../commonComponents/RelatedResources';
+import RelatedResourcesResults from '../commonComponents/RelatedResourcesResults';
 import RelatedObject from '../commonComponents/RelatedObject';
 
-
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-import SVGIcon from '../../images/SVGIcon'; 
-
+import SVGIcon from '../../images/SVGIcon';
+import ToolTip from '../../images/imageURL-ToolTip.gif';
 
 import { Event, initGA } from '../../tracking';
 
+
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
-class AddProjectPage extends React.Component {
+class AddCollectionPage extends React.Component {
 
     constructor(props) {
         super(props)
@@ -30,8 +31,6 @@ class AddProjectPage extends React.Component {
     // initialize our state
     state = {
         data: [],
-        combinedTopic: [],
-        combinedCategories: [],
         combinedUsers: [],
         isLoading: true,
         userState: [],
@@ -50,32 +49,9 @@ class AddProjectPage extends React.Component {
     async componentDidMount() {
         initGA('UA-166025838-1');
         await Promise.all([
-            this.doGetTopicsCall(),
-            this.doGetCategoriesCall(),
             this.doGetUsersCall()
-        ])
+        ]);
         this.setState({ isLoading: false });
-    }
-
-    doGetTopicsCall() {
-        return new Promise((resolve, reject) => {
-            axios.get(baseURL + '/api/v1/search/filter/topic/project')
-                .then((res) => {
-                    this.setState({ combinedTopic: res.data.data });
-                    resolve();
-                });
-        });
-    }
-
-
-    doGetCategoriesCall() {
-        return new Promise((resolve, reject) => {
-            axios.get(baseURL + '/api/v1/search/filter/category/project')
-                .then((res) => {
-                    this.setState({ combinedCategories: res.data.data });
-                    resolve();
-                });
-        });
     }
 
     doGetUsersCall() {
@@ -159,16 +135,17 @@ class AddProjectPage extends React.Component {
     }
 
     render() {
-        const { data, combinedTopic, combinedCategories, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, relatedObjects, didDelete } = this.state;
+        const { data, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, relatedObjects, didDelete } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
         }
+
         return (
             <div>
                 <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Container>
-                    <AddProjectForm data={data} combinedTopic={combinedTopic} combinedCategories={combinedCategories} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
+                    <AddCollectionForm data={data} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
                 </Container>
             </div>
         );
@@ -176,22 +153,16 @@ class AddProjectPage extends React.Component {
 
 }
 
-const AddProjectForm = (props) => {
+const AddCollectionForm = (props) => {
     // Pass the useFormik() hook initial form values and a submit function that will
     // be called when the form is submitted
+
     const formik = useFormik({
         initialValues: {
-            type: 'project',
             name: '',
-            link: '',
             description: '',
             authors: [props.userState[0].id],
-            categories: {
-                category: ''
-            },
-            tags: {
-                topics: [],
-            },
+            imageLink: '',
             relatedObjects: props.relatedObjects
         },
 
@@ -201,21 +172,19 @@ const AddProjectForm = (props) => {
             description: Yup.string()
                 .max(5000, 'Maximum of 5,000 characters')
                 .required('This cannot be empty'),
-            categories: Yup.object().shape({
-                category: Yup.string(),
-            }),
-            authors: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.number()) : Yup.number())),
-            topics: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.string()) : Yup.string())),
+            authors: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.number()) : Yup.number())), 
+            imageLink: Yup.string()
+                .matches( /^[http|https]+:\/\/(?:([\w\-\.])+(\[?\.\]?)([\w]){2,4}|(?:(?:25[0–5]|2[0–4]\d|[01]?\d\d?)\[?\.\]?){3}(?:25[0–5]|2[0–4]\d|[01]?\d\d?))*([\w\/+=%&_\.~?\-]*)+[.gif|.jpeg|.png|.svg]$/ , 'Invalid image URL' )
         }),
 
         onSubmit: values => {
-            //add via same post as add tool form - type set as 'project'
-            values.relatedObjects = props.relatedObjects
-            values.toolCreator = props.userState[0];
-            axios.post(baseURL + '/api/v1/mytools/add', values)
-                .then((res) => {
-                    window.location.href = window.location.search + '/project/' + res.data.id + '/?projectAdded=true';
-                });
+            values.relatedObjects = props.relatedObjects 
+            values.collectionCreator = props.userState[0];
+            axios.post(baseURL + '/api/v1/collections/add', values)
+            //GO TO THIS COLLECTION PAGE ONCE IT IS CREATED
+                // .then((res) => {
+                //     window.location.href = window.location.search + '/tool/' + res.data.id + '/?toolAdded=true';
+                // });
         }
     });
 
@@ -229,7 +198,7 @@ const AddProjectForm = (props) => {
             }
         }
     });
-
+  
     function updateReason(id, reason, type) {
         let inRelatedObject = false;
         props.relatedObjects.map((object) => {
@@ -244,15 +213,20 @@ const AddProjectForm = (props) => {
         }
     }
 
-    return (
+    const [isShown, setIsShown] = useState(false);
 
+    return (
         <div>
             <Row className="mt-2">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                     <div className="Rectangle">
-                        <p className="Black-20px">Add a new research project</p>
-                        <p className="Gray800-14px">Projects help others understand the context in which a tool or resource was used</p>
+                        <Row>
+                            <Col sm={12} lg={12}>
+                             <p className="Black-20px">Create a collection</p>
+                            </Col>
+                        </Row>
+                        <p className="Gray800-14px">Collections help collate varying resource types into one discovery space</p>
                     </div>
                 </Col>
                 <Col sm={1} lg={10} />
@@ -261,18 +235,12 @@ const AddProjectForm = (props) => {
             <Row className="mt-2">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
-                    <Form onSubmit={formik.handleSubmit} onBlur={formik.handleBlur} autoComplete='off'>
+                    <Form onSubmit={formik.handleSubmit} onBlur={formik.handleBlur} autocomplete='off'>
                         <div className="Rectangle">
                             <Form.Group>
-                                <span className="Gray800-14px">Project name</span>
+                                <span className="Gray800-14px">Collection name</span>
                                 <Form.Control id="name" name="name" type="text" className={formik.touched.name && formik.errors.name ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.name} onBlur={formik.handleBlur} />
                                 {formik.touched.name && formik.errors.name ? <div className="ErrorMessages">{formik.errors.name}</div> : null}
-                            </Form.Group>
-
-                            <Form.Group>
-                                <span className="Gray800-14px">Link</span>
-                                <Form.Control id="link" name="link" type="text" className={formik.touched.link && formik.errors.link ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.link} onBlur={formik.handleBlur} />
-                                {formik.touched.link && formik.errors.link ? <div className="ErrorMessages">{formik.errors.link}</div> : null}
                             </Form.Group>
 
                             <Form.Group>
@@ -286,10 +254,10 @@ const AddProjectForm = (props) => {
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="Gray800-14px">Uploaded by</span>
+                                <span className="Gray800-14px">Collection collaborators</span>
                                 <br />
                                 <span className="Gray700-13px">
-                                    Add any authors or collaborators who have an account on this site
+                                    Anyone added will be able to add and remove resources to this collection.
                                 </span>
                                 <Typeahead
                                     id="authors"
@@ -308,64 +276,38 @@ const AddProjectForm = (props) => {
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="Gray800-14px">Category</span>
-                                <br />
+                                <Row>
+                                    <Col sm={7} lg={9}>
+                                        <span className="Gray800-14px">Image URL (optional)</span>
+                                        <br />
                                 <span className="Gray700-13px">
-                                    Select from existing or enter a new one.
+                                    Paste an image address URL. It must include a protocol prefix, e.g. https://
                                 </span>
-                                <Typeahead
-                                    id="categories.category"
-                                    labelKey="category"
-                                    allowNew
-                                    // multiple
-                                    options={props.combinedCategories}
-                                    onChange={(selected) => {
-                                        var tempSelected = [];
-                                        selected.forEach((selectedItem) => {
-                                            selectedItem.customOption === true ? tempSelected.push(selectedItem.category) : tempSelected.push(selectedItem);
-                                        })
-                                        formik.values.categories.category = tempSelected[0];
-                                    }}
-                                />
-                            </Form.Group>
-
-                            <Form.Group>
-                                <span className="Gray800-14px">Keywords</span>
-                                <br />
-                                <span className="Gray700-13px">
-                                    Words that help people identify any related fields or key concepts. As many as you like.
-                                </span>
-
-                                <Typeahead
-                                    id="tags.topics"
-                                    labelKey="topics"
-                                    allowNew
-                                    multiple
-                                    options={props.combinedTopic}
-                                    onChange={(selected) => {
-                                        var tempSelected = [];
-                                        selected.forEach((selectedItem) => {
-                                            selectedItem.customOption === true ? tempSelected.push(selectedItem.topics) : tempSelected.push(selectedItem);
-
-                                        })
-                                        formik.values.tags.topics = tempSelected;
-                                    }}
-                                />
+                                    </Col>
+                                    <Col sm={5} lg={3} className="pl-4">
+                                     <span className="Purple-13px" onMouseEnter={() => setIsShown(true)} onMouseLeave={() => setIsShown(false)}>  
+                                        How to get an image URL
+                                     </span>
+                                     {isShown && ( <img src={ToolTip} alt="" id="ImageToolTip" /> )}
+                                     </Col>
+                                </Row>
+                                <Form.Control id="imageLink" name="imageLink" type="text" className={formik.touched.imageLink && formik.errors.imageLink ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.imageLink} onBlur={formik.handleBlur} />
+                                {formik.touched.imageLink && formik.errors.imageLink ? <div className="ErrorMessages">{formik.errors.imageLink}</div> : null}
                             </Form.Group>
                         </div>
 
                         <div className="Rectangle mt-2">
-                            <span className="Black-20px">Related resources</span><span className="Gray454443-14px"> (optional)</span>
+                            <span className="Black-20px">Add resources</span>
                             <br/>
-                            <span className="Gray595757-14px">Show relationships to papers, projects, datasets and tools. Resources must be added to the Gateway first.</span>
+                            <span className="Gray595757-14px">Link resources in the gateway to your collection page.</span>
                         </div>
 
                         <div className="RelatedResourcesRectangle mt-1">
                             {props.relatedObjects.map((object) => {
                                 return (
                                     <div className="RelatedObjectRectangle">
-                                        <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} />
-                                    </div>
+                                        <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} inCollection={true}/>
+                                    </div>   
                                 )
                             })}
 
@@ -373,23 +315,22 @@ const AddProjectForm = (props) => {
                                 <Row>
                                     <Col sm={1} lg={1} />
                                     <Col sm={10} lg={10}>
-                                        
                                         <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                     </Col>
                                     <Col sm={1} lg={10} />
                                 </Row>
                             </div>
-                        </div>
+                        </div> 
 
-                        <Row className="mt-3">
-                            <Col xs={5} lg={9} />
-                                <Col xs={7} lg={3} className="text-right">
-                                    <a style={{ cursor: 'pointer' }} href={'/account?tab=projects'} >
+                        <Row className="mt-3"> 
+                            <Col xs={5} lg={9}/>
+                            <Col xs={7} lg={3} className="text-right">
+                                    <a style={{ cursor: 'pointer' }} href={'/account?tab=tools'}>
                                         <Button variant="medium" className="CancelButton Dark-14px mr-2" >
                                             Cancel
                                         </Button>
                                     </a>
-                                <Button variant="primary" type="submit" className="White-14px" onClick={() => Event("Buttons", "Click", "Add project form submitted")}>
+                                <Button variant="primary" className="White-14px" type="submit" onClick={() => Event("Buttons", "Click", "Add tool form submitted")} >
                                     Publish
                                 </Button>
                             </Col>
@@ -405,4 +346,4 @@ const AddProjectForm = (props) => {
     );
 }
 
-export default AddProjectPage;
+export default AddCollectionPage;
