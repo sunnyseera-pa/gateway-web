@@ -288,7 +288,7 @@ const AddCollectionForm = (props) => {
                                      <span className="Purple-13px" onMouseEnter={() => setIsShown(true)} onMouseLeave={() => setIsShown(false)}>  
                                         How to get an image URL
                                      </span>
-                                     {isShown && ( <img src={ToolTip} alt="" id="ImageToolTip" /> )}
+                                     {isShown && ( <img src={ToolTip} alt="" id="imageToolTip" /> )}
                                      </Col>
                                 </Row>
                                 <Form.Control id="imageLink" name="imageLink" type="text" className={formik.touched.imageLink && formik.errors.imageLink ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.imageLink} onBlur={formik.handleBlur} />
