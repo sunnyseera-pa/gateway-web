@@ -102,7 +102,7 @@ class AccountProjects extends React.Component {
                                 </Row>
                             </Col>
                             <Col xs={4} style={{ textAlign: "right" }}>
-                                <Button variant="primary" href="/addproject" className="AddButton" onClick={() => Event("Buttons", "Click", "Add a new project")} >
+                                <Button variant="primary" href="/project/add" className="AddButton" onClick={() => Event("Buttons", "Click", "Add a new project")} >
                                     + Add a new project
                                 </Button>
                             </Col>
@@ -148,7 +148,7 @@ class AccountProjects extends React.Component {
 
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
-                                                                    <Dropdown.Item href={'/editproject/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
+                                                                    <Dropdown.Item href={'/project/edit/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
                                                                     <DeleteButton id={dat.id} />
                                                                 </DropdownButton>
                                                             </Col>
@@ -187,7 +187,7 @@ class AccountProjects extends React.Component {
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 {userState[0].role === 'Admin' ?
                                                                     <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
-                                                                        <Dropdown.Item href={'/editproject/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
+                                                                        <Dropdown.Item href={'/project/edit/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
                                                                         <Dropdown.Item href='#' onClick={() => this.approveProject(dat.id)} className="Black-14px">Approve</Dropdown.Item>
                                                                         <RejectButton id={dat.id} />
                                                                     </DropdownButton>
@@ -261,7 +261,7 @@ class AccountProjects extends React.Component {
 
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
-                                                                    <Dropdown.Item href={'/editproject/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
+                                                                    <Dropdown.Item href={'/project/edit/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
                                                                     <Dropdown.Item href='#' onClick={() => this.approveProject(dat.id)} className="Black-14px">Approve</Dropdown.Item>
                                                                     <Dropdown.Item href='#' onClick={() => this.rejectProject(dat.id)} className="Black-14px">Reject</Dropdown.Item>
                                                                 </DropdownButton>

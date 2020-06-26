@@ -1,63 +1,61 @@
 import React, { Component } from 'react';
 import { Row, Col, InputGroup, FormText } from 'react-bootstrap';
 
-class DatasetFilterAgeBand extends Component {
-
+class Filters extends Component {
     state = {
-        ageBandsSelected: [],
-        ageBandData: []
+        selected: [],
+        data: [],
+        title:''
     }
 
     constructor(props) {
         super(props);
-        this.state.ageBandData = props.ageBandData;
-        this.state.ageBandsSelected = props.ageBandsSelected;
+        this.state.data = props.data;
+        this.state.selected = props.selected;
+        this.state.title = props.title;
     }
 
     changeFilter = (e) => {
-        const ageBandsSelected = this.state.ageBandsSelected
+        const selected = this.state.selected;
         let index
 
         if (e.target.checked) {
-            ageBandsSelected.push(e.target.value)
+            selected.push(e.target.value)
         } else {
-            index = ageBandsSelected.indexOf(e.target.value)
-            ageBandsSelected.splice(index, 1)
+            index = selected.indexOf(e.target.value)
+            selected.splice(index, 1)
         }
 
-        this.setState({ ageBandsSelected: ageBandsSelected })
+        this.setState({ selected })
         this.props.updateOnFilter();
     }
 
     clearFilter = () => {
-        const ageBandsSelected = this.state.ageBandsSelected;
-        while (ageBandsSelected.length) { ageBandsSelected.pop(); }
+        const selected = this.state.selected;
+        while (selected.length) { selected.pop(); }
         this.props.updateOnFilter();
     }
-
+    
     render() {
+        const { data, selected, title } = this.state;
 
-        const { ageBandData, ageBandsSelected } = this.state;
-
-        if (!ageBandData || ageBandData.length === 0) {
+        if (!data || data.length === 0) {
             return (<></>);
         }
-
+        
         return (
             <div>
                 <div className="FilterCard mt-2">
                     <Row className="mt-2"  >
-
                         <Col xs={7} className="ml-3">
-                            <span className="Gray800-14px-bold">Age band</span>
-                            {ageBandsSelected.length === 0 ? <span /> :
-                                <span> <div className="White-12px BubbleCounts"> {ageBandsSelected.length} </div> </span>
+                            <span className="Gray800-14px-bold">{title}</span>
+                            {selected.length === 0 ? <span /> :
+                                <span> <div className="White-12px BubbleCounts"> {selected.length} </div> </span>
                             }
                             <span className="mr-4 ml-1" />
-
                         </Col>
                         <Col xs={3}>
-                            {this.state.ageBandsSelected.length > 0 ?
+                            {this.state.selected.length > 0 ?
                                 <span>
                                     <button className="ClearButtons Purple-14px" onClick={() => this.clearFilter()}>
                                         Clear
@@ -71,10 +69,10 @@ class DatasetFilterAgeBand extends Component {
                         <Col xs={1}></Col>
                         <Col xs={11} className="ml-4">
 
-                            {!ageBandData ? '' : ageBandData.map((dat) => {
+                            {!data ? '' : data.map((dat) => {
                                 return <InputGroup >
                                     <InputGroup.Prepend>
-                                        <InputGroup.Checkbox aria-label="Checkbox for following text input" name="ageBand" checked={ageBandsSelected.indexOf(dat.replace("+", "%2B")) !== -1 ? "true" : ""} value={dat.replace("+", "%2B")} onChange={this.changeFilter} />
+                                        <InputGroup.Checkbox aria-label="Checkbox for following text input" name="publisher" checked={selected.indexOf(dat) !== -1 ? "true" : ""} value={dat} onChange={this.changeFilter} />
                                     </InputGroup.Prepend>
                                     <FormText className="Gray800-14px ml-4 mt-2 mb-2 pb-1" >{dat}</FormText>
                                 </InputGroup>
@@ -87,4 +85,4 @@ class DatasetFilterAgeBand extends Component {
     }
 }
 
-export default DatasetFilterAgeBand;
+export default Filters;

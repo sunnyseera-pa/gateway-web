@@ -3,210 +3,33 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Typeahead } from 'react-bootstrap-typeahead';
+import { Event } from '../../tracking';
 
-import {Form, Button, Row, Col, Container} from 'react-bootstrap';
+import {Form, Button, Row, Col} from 'react-bootstrap';
 
-import SearchBar from '../commonComponents/SearchBar';
-import Loading from '../commonComponents/Loading';
 import RelatedResources from '../commonComponents/RelatedResources';
-import RelatedResourcesResults from '../commonComponents/RelatedResourcesResults';
 import RelatedObject from '../commonComponents/RelatedObject';
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
 
-import { Event, initGA } from '../../tracking';
-
-
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
-class AddPaperPage extends React.Component {
-
-    constructor(props) {
-        super(props)
-        this.state.userState = props.userState;
-    }
-
-    // initialize our state
-    state = {
-        data: [],
-        combinedTopic: [],
-        combinedFeatures: [],
-        combinedUsers: [],
-        isLoading: true,
-        userState: [],
-        searchString: null,
-        datasetData: [],
-        toolData: [],
-        projectData: [],
-        personData: [],
-        summary: [],
-        tempRelatedObjectIds: [],
-        relatedObjectIds: [],
-        relatedObjects: [],
-        didDelete: false
-    };
-
-    async componentDidMount() {
-        initGA('UA-166025838-1');
-        await Promise.all([
-            this.doGetTopicsCall(),
-            this.doGetFeaturesCall(),
-            this.doGetUsersCall()
-        ]);
-        this.setState({ isLoading: false });
-    }
-
-    doGetTopicsCall() {
-        return new Promise((resolve, reject) => {
-            axios.get(baseURL + '/api/v1/search/filter/topic/paper')
-                .then((res) => {
-                    var tempTopicArray = ["Blood", "Cancer and neoplasms", "Cardiovascular", "Congenital disorders", "Ear", "Eye", "Infection", "Inflammatory and immune system", "Injuries and accidents", "Mental health", "Metabolic and Endocrine", "Musculoskeletal", "Neurological", "Oral and Gastrointestinal", "Renal and Urogenital", "Reproductive health and childbirth", "Respiratory", "Skin", "Stroke"]
-
-                    res.data.data.forEach((to) => {
-                        if (!tempTopicArray.includes(to) && to !== '') {
-                            tempTopicArray.push(to);
-                        }
-                    });
-                    this.setState({ combinedTopic: tempTopicArray.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
-                    resolve();
-                });
-        });
-    }
-
-    doGetFeaturesCall() {
-        return new Promise((resolve, reject) => {
-            axios.get(baseURL + '/api/v1/search/filter/feature/paper')
-                .then((res) => {
-                    var tempFeaturesArray = ["Arbitrage", "Association Rules", "Attribution Modeling", "Bayesian Statistics", "Clustering", "Collaborative Filtering", "Confidence Interval", "Cross-Validation", "Decision Trees", "Deep Learning", "Density Estimation", "Ensembles", "Experimental Design", "Feature Selection", "Game Theory", "Geospatial Modeling", "Graphs", "Imputation", "Indexation / Cataloguing", "Jackknife Regression", "Lift Modeling", "Linear Regression", "Linkage Analysis", "Logistic Regression", "Model Fitting", "Monte-Carlo Simulation", "Naive Bayes", "Nearest Neighbors - (k-NN)", "Neural Networks", "Pattern Recognition", "Predictive Modeling", "Principal Component Analysis - (PCA)", "Random Numbers", "Recommendation Engine", "Relevancy Algorithm", "Rule System", "Scoring Engine", "Search Engine", "Segmentation", "Supervised Learning", "Support Vector Machine - (SVM)", "Survival Analysis", "Test of Hypotheses", "Time Series", "Yield Optimization"]
-
-                    res.data.data.forEach((fe) => {
-                        if (!tempFeaturesArray.includes(fe) && fe !== '') {
-                            tempFeaturesArray.push(fe);
-                        }
-                    });
-
-                    this.setState({ combinedFeatures: tempFeaturesArray.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
-                    resolve();
-                });
-        });
-    }
-
-    doGetUsersCall() {
-        return new Promise((resolve, reject) => {
-            axios.get(baseURL + '/api/v1/users')
-                .then((res) => {
-                    this.setState({ combinedUsers: res.data.data });
-                    resolve();
-                });
-        });
-    }
-
-    doSearch = (e) => { //fires on enter on searchbar
-        if (e.key === 'Enter') {
-            if (!!this.state.searchString) {
-                window.location.href = window.location.search + "/search?search=" + this.state.searchString;
-            }
-        }
-    }
-
-    updateSearchString = (searchString) => {
-        this.setState({ searchString: searchString });
-    }
-
-    doModalSearch = (e, type, page) => {
-
-        if (e.key === 'Enter' || e === 'click') {
-
-            var searchURL = '';
-
-            if (type === 'dataset' && page > 0) searchURL += '&datasetIndex=' + page;
-            if (type === 'tool' && page > 0) searchURL += '&toolIndex=' + page;
-            if (type === 'project' && page > 0) searchURL += '&projectIndex=' + page;
-            if (type === 'paper' && page > 0) searchURL += '&paperIndex=' + page;
-            if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
-        
-        axios.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL )
-            .then((res) => {
-                this.setState({
-                    datasetData: res.data.datasetResults || [],
-                    toolData: res.data.toolResults || [],
-                    projectData: res.data.projectResults || [],
-                    paperData: res.data.paperResults || [],
-                    personData: res.data.personResults || [],
-                    summary: res.data.summary || [],
-                    isLoading: false
-                });
-            })
-        }
-    }
-
-    addToTempRelatedObjects = (id, type) => {
-
-        if(this.state.tempRelatedObjectIds && this.state.tempRelatedObjectIds.some(object => object.objectId === id)){
-            this.state.tempRelatedObjectIds = this.state.tempRelatedObjectIds.filter(object => object.objectId !== id);
-        }
-        else {
-            this.state.tempRelatedObjectIds.push({'objectId':id, 'type':type})
-        }
-       this.setState({tempRelatedObjectIds: this.state.tempRelatedObjectIds})
-    }
-
-    addToRelatedObjects = () => {
-        this.state.tempRelatedObjectIds.map((object) => {
-            this.state.relatedObjects.push({'objectId':object.objectId, 'reason':'', 'objectType':object.type})
-        })
-
-        this.setState({tempRelatedObjectIds: []})
-    }
-
-    clearRelatedObjects = () => {
-        this.setState({tempRelatedObjectIds: [] })
-    }
-
-    removeObject = (id) => {
-        this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id);
-        this.setState({relatedObjects: this.state.relatedObjects})
-        this.setState({didDelete: true});
-    }
-
-    updateDeleteFlag = () => {
-        this.setState({didDelete: false});
-    }
-
-    render() {
-        const { data, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, relatedObjects, didDelete } = this.state;
-
-        if (isLoading) {
-            return <Container><Loading /></Container>;
-        }
-
-        return (
-            <div>
-                <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
-                <Container>
-                    <AddPaperForm data={data} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
-                </Container>
-            </div>
-        );
-    }
-
-}
-
-const AddPaperForm = (props) => {
+const AddEditPaperForm = (props) => {
     // Pass the useFormik() hook initial form values and a submit function that will
     // be called when the form is submitted
 
     const formik = useFormik({
         initialValues: {
+            id: props.data.id || '', 
             type: 'paper',
-            name: '',
-            link: '',
-            journal:'',
-            journalYear:'',
-            description: '',
-            authors: [props.userState[0].id],
-            tags: {
+            name: props.data.name || '',
+            link: props.data.link || '',
+            journal: props.data.journal || '',
+            journalYear: props.data.journalYear || '',
+            description: props.data.description || '',
+            authors: props.data.authors || [props.userState[0].id],
+            tags: props.data.tags || {
                 features: [],
                 topics: [],
             },
@@ -216,22 +39,33 @@ const AddPaperForm = (props) => {
         validationSchema: Yup.object({
             name: Yup.string()
                 .required('This cannot be empty'),
+                link: Yup.string()
+                .required('This cannot be empty'),
             description: Yup.string()
-                .max(5000, 'Maximum of 5,000 characters')
+                .max(1500, 'Maximum of 1,500 characters')
                 .required('This cannot be empty'),
             journal: Yup.string()
                 .required('This cannot be empty'),
             journalYear: Yup.string()
-                .required('Year cannot be empty')
+                .required('Year cannot be empty'),
+            authors: Yup.string().required('This cannot be empty')
         }),
 
         onSubmit: values => {
             values.relatedObjects = props.relatedObjects
             values.toolCreator = props.userState[0];
-            axios.post(baseURL + '/api/v1/mytools/add', values)
+            if (props.isEdit) {
+                axios.put(baseURL + '/api/v1/mytools/edit', values) 
                 .then((res) => {
-                    window.location.href = window.location.search + '/paper/' + res.data.id + '/?paperAdded=true';
+                    window.location.href = window.location.search + '/paper/' + props.data.id + '/?paperEdited=true';
                 });
+            }
+            else {
+                axios.post(baseURL + '/api/v1/mytools/add', values)
+                    .then((res) => {
+                        window.location.href = window.location.search + '/paper/' + res.data.id + '/?paperAdded=true';
+                    });
+            }
         }
     });
 
@@ -260,21 +94,26 @@ const AddPaperForm = (props) => {
         }
     }
 
+    function descriptionCount(e) {
+        var input = e.target.value;
+        document.getElementById("currentCount").innerHTML=e.target.value.length
+    }
+
     return (
         <div>
-            <Row className="mt-2">
+            <Row className="mt-4">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                     <div className="Rectangle">
                         <Row>
                             <Col sm={10} lg={10}>
-                             <p className="Black-20px">Add a new paper</p>
+                             <p className="Black-20px">{props.isEdit ? 'Edit your paper' : 'Add a new paper'}</p>
                             </Col>
-                            <Col sm={2} lg={2}>
-                            <span className="PaperBadge"> 
-                                <SVGIcon name="projecticon" fill={'#3c3c3b'} className="BadgeSvgs mr-2" />
-                                Paper 
-                            </span>
+                            <Col sm={2} lg={2} className="text-right">
+                                <span className="PaperBadge"> 
+                                    <SVGIcon name="projecticon" fill={'#3c3c3b'} className="BadgeSvgs mr-2" />
+                                    Paper 
+                                </span>
                             </Col>
                         </Row>
                         <p className="Gray800-14px">Papers should be articles published in a journal. Add a project if you want</p>
@@ -315,6 +154,7 @@ const AddPaperForm = (props) => {
                                     labelKey={authors => `${authors.name}`}
                                     defaultSelected={listOfAuthors}
                                     multiple
+                                    className={formik.touched.authors && formik.errors.authors ? "EmptyFormInputTypeAhead AddFormInputTypeAhead" : "AddFormInputTypeAhead"}
                                     options={props.combinedUsers}
                                     onChange={(selected) => {
                                         var tempSelected = [];
@@ -324,6 +164,7 @@ const AddPaperForm = (props) => {
                                         formik.values.authors = tempSelected;
                                     }}
                                 />
+                                {formik.touched.authors && formik.errors.authors ? <div className="ErrorMessages">{formik.errors.authors}</div> : null}
                             </Form.Group>
                             
                             <Row className="mt-2">
@@ -342,21 +183,23 @@ const AddPaperForm = (props) => {
                                     </Form.Group>
                                 </Col>
                             </Row>
-
+                            
                             <Form.Group>
-                                <span className="Gray800-14px">Abstract</span>
-                                <br />
-                                <span className="Gray700-13px">
-                                Provide a brief summary of the paper
-                                </span>
-                                <Form.Control as="textarea" id="description" name="description" type="text" className={formik.touched.description && formik.errors.description ? "EmptyFormInput AddFormInput DescriptionInput" : "AddFormInput DescriptionInput"} onChange={formik.handleChange} value={formik.values.description} onBlur={formik.handleBlur} />
+                                <div style={{ display: 'inline-block' }}>
+                                    <span className="Gray800-14px">Abstract</span>
+                                    <br />
+                                    <span className="Gray700-13px">Provide a brief summary of the paper</span>
+                                </div>
+                                <div style={{ display: 'inline-block', float: 'right' }}>
+                                    <br />
+                                    <span className="Gray700-13px">(<span id="currentCount">{formik.values.description.length || 0}</span>/1500)</span>
+                                </div>
+                                <Form.Control as="textarea" id="description" name="description" type="text" className={formik.touched.description && formik.errors.description ? "EmptyFormInput AddFormInput DescriptionInput" : "AddFormInput DescriptionInput"} onKeyUp={descriptionCount} onChange={formik.handleChange}  value={formik.values.description} onBlur={formik.handleBlur} />
                                 {formik.touched.description && formik.errors.description ? <div className="ErrorMessages">{formik.errors.description}</div> : null}
                             </Form.Group>
 
-                            
-
                             <Form.Group>
-                                <span className="Gray800-14px">Keywords</span>
+                                <span className="Gray800-14px">Keywords (optional)</span>
                                 <br />
                                 <span className="Gray700-13px">
                                 Technological paradigms or other keywords. Eg. Rule-based, clustering, supervised machine learning
@@ -366,6 +209,7 @@ const AddPaperForm = (props) => {
                                     labelKey="features"
                                     allowNew
                                     multiple
+                                    className="AddFormInputTypeAhead"
                                     options={props.combinedFeatures}
                                     onChange={(selected) => {
                                         var tempSelected = [];
@@ -379,7 +223,7 @@ const AddPaperForm = (props) => {
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="Gray800-14px">Domain</span>
+                                <span className="Gray800-14px">Domain (optional)</span>
                                 <br />
                                 <span className="Gray700-13px">
                                     E.g. Biogenomics, Nutrition, Blockchain
@@ -389,6 +233,7 @@ const AddPaperForm = (props) => {
                                     labelKey="topics"
                                     allowNew
                                     multiple
+                                    className="AddFormInputTypeAhead"
                                     options={props.combinedTopic}
                                     onChange={(selected) => {
                                         var tempSelected = [];
@@ -406,36 +251,38 @@ const AddPaperForm = (props) => {
                             <br/>
                             <span className="Gray595757-14px">Show relationships to papers, projects, datasets and tools. Resources must be added to the Gateway first.</span>
                         </div>
-
+                        
+                        {props.relatedObjects.length === 0 ? '' :     
                         <div className="Rectangle">
                             {props.relatedObjects.map((object) => {
                                 return (
                                     <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag}/>
                                 )
                             })}
-                        </div>
+                        </div>}
 
-                        <div className="Rectangle FlexCenter mt-1">
+                        <div className="Rectangle FlexCenter pixelGapTop">
                             <Row>
                                 <Col sm={1} lg={1} />
                                 <Col sm={10} lg={10}>
                                     
-                                    <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
+                                    <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} paperData={props.paperData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                 </Col>
                                 <Col sm={1} lg={10} />
                             </Row>
                         </div>
 
                         <Row className="mt-3">
-                            <Col xs={5} lg={9}/>
+                            <Col xs={5} lg={9}>
+                                <a style={{ cursor: 'pointer' }} href={'/account?tab=papers'}>
+                                    <Button variant="medium" className="GreyCancelButton Dark-14px mr-2" >
+                                        Cancel
+                                    </Button>
+                                </a>
+                            </Col>
                             <Col xs={7} lg={3} className="text-right">
-                                    <a style={{ cursor: 'pointer' }} href={'/account?tab=tools'}>
-                                        <Button variant="medium" className="CancelButton Dark-14px mr-2" >
-                                            Cancel
-                                        </Button>
-                                    </a>
                                 <Button variant="primary" className="White-14px" type="submit" onClick={() => Event("Buttons", "Click", "Add tool form submitted")} >
-                                    Publish
+                                    {props.isEdit ? 'Update' : 'Publish'}
                                 </Button>
                             </Col>
                         </Row>
@@ -450,4 +297,4 @@ const AddPaperForm = (props) => {
     );
 }
 
-export default AddPaperPage;
+export default AddEditPaperForm;

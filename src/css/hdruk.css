@@ -184,6 +184,7 @@ a.nav-item.nav-link.active {
   font-family: museo-sans-rounded;
   font-size: 14px;
   line-height: 20px;
+  font-weight: 300;
 }
 
 .DatasetBadge {
@@ -195,6 +196,7 @@ a.nav-item.nav-link.active {
   font-family: museo-sans-rounded;
   font-size: 14px;
   line-height: 20px;
+  font-weight: 300;
 }
 
 .ProjectBadge {
@@ -206,6 +208,7 @@ a.nav-item.nav-link.active {
   font-family: museo-sans-rounded;
   font-size: 14px;
   line-height: 20px;
+  font-weight: 300;
 }
 
 .PaperBadge {
@@ -217,6 +220,7 @@ a.nav-item.nav-link.active {
   font-family: museo-sans-rounded;
   font-size: 14px;
   line-height: 20px;
+  font-weight: 300;
 }
 
 .BubbleCounts {
@@ -777,7 +781,7 @@ input[type='radio']:checked:after {
 }
 
 .verticalNavBar {
-    padding:15px 10px !important;
+    padding:15px 10px 15px 30px !important;
     
 }
 
@@ -845,6 +849,10 @@ textarea:focus {
 }
 
 .form-group .AddFormInput {
+    font-family: museo-sans-rounded;
+  font-size: 13px;
+  font-weight: 500;
+  color: #53575a;    
   width: 100%;
   height: 40px;
   border-radius: 4px;
@@ -861,6 +869,33 @@ textarea:focus {
 .form-group .EmptyFormInput:focus {
   border-radius: 4px;
   border: solid 2px #dc3645;
+}
+
+.form-group .AddFormInputTypeAhead {
+    width: 100%;
+    height: 40px;
+    border-radius: 4px;
+    border: solid 2px #d0d3d4;
+    background-color: #ffffff;
+}
+
+.form-group .AddFormInputTypeAhead:focus-within {
+    border-radius: 4px;
+    border: solid 2px #3db28c !important;
+}
+
+.form-group .EmptyFormInputTypeAhead,
+.form-group .EmptyFormInputTypeAhead:focus-within {
+    border-radius: 4px;
+    border: solid 2px #dc3645;
+}
+
+.rbt-input-main.form-control, .rbt-input-main.form-control:focus  {
+    border: solid 0px #ffffff !important;
+}
+
+.rbt-input-multi.form-control, .rbt-input-multi.form-control:focus  {
+    border: solid 0px #ffffff !important;
 }
 
 .SmallFormInput {
@@ -902,7 +937,18 @@ textarea:focus {
 }
 
 /* RBTS ARE THE STYLES FOR TYPEAHEAD INPUTS */
+.rbt-input {
+    font-family: museo-sans-rounded !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #53575a !important;
+}
+
 .rbt-input-multi {
+    font-family: museo-sans-rounded !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #53575a !important;
   width: 100% !important;
   border-radius: 4px !important;
   border: solid 2px #d0d3d4 !important;
@@ -2023,6 +2069,22 @@ NAVBAR CSS BELOW
 
 .RelatedResourcesModal .modal-content{
   height: 100vh;
+}
+
+.RelatedResourcesRectangle {
+    width: 100%;
+    box-shadow: 1px 1px 3px 0 #00000017;
+    background-color: #ffffff;
+}
+
+.RelatedObjectRectangle {
+    width: 100%;
+    background-color: #ffffff;
+    border: none;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .MinHeightModal {

@@ -8,18 +8,7 @@ import { Container, Row, Col, Tabs, Tab, Pagination } from 'react-bootstrap';
 import SearchBar from '../commonComponents/SearchBar';
 import RelatedObject from '../commonComponents/RelatedObject';
 import Loading from '../commonComponents/Loading'
-import KeywordsFilter from './KeywordsFilter';
-import ProgrammingLanguageFilter from './ProgrammingLanguageFilter';
-import CategoryFilterTool from './CategoryFilterTool';
-import CategoryFilterProject from './CategoryFilterProject';
-import FeaturesFilter from './FeaturesFilter';
-import TopicsFilter from './TopicsFilter';
-import DatasetFilterPublisher from './DatasetFilterPublisher';
-import DatasetFilterLicense from './DatasetFilterLicense';
-import DatasetFilterGeoCoverage from './DatasetFilterGeoCoverage';
-import DatasetFilterAgeBand from './DatasetFilterAgeBand';
-import DatasetFilterSampleAvailability from './DatasetFilterSampleAvailability';
-import DatasetFilterKeywords from './DatasetFilterKeywords';
+import Filters from './Filters';
 import NoResults from '../commonComponents/NoResults';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -50,7 +39,10 @@ class SearchPage extends React.Component {
         featuresSelected: [],
         toolTopicsSelected: [],
         projectCategoriesSelected: [],
+        projectFeaturesSelected: [],
         projectTopicsSelected: [],
+        paperFeaturesSelected: [],
+        paperTopicsSelected: [],
         summary: [],
         key: '',
         isLoading: true,
@@ -93,22 +85,29 @@ class SearchPage extends React.Component {
             var values = queryString.parse(window.location.search);
 
             if (values.search !== this.state.searchString
-                || ((typeof values.license === "undefined" && this.state.licensesSelected.length !== 0) || (typeof values.license !== "undefined" && this.state.licensesSelected.length === 0)) && !this.state.licensesSelected.includes(values.license)
-                || ((typeof values.sampleavailability === "undefined" && this.state.sampleAvailabilitySelected.length !== 0) || (typeof values.sampleavailability !== "undefined" && this.state.sampleAvailabilitySelected.length === 0)) && !this.state.sampleAvailabilitySelected.includes(values.sampleavailability)
-                || ((typeof values.keywords === "undefined" && this.state.keywordsSelected.length !== 0) || (typeof values.keywords !== "undefined" && this.state.keywordsSelected.length === 0)) && !this.state.keywordsSelected.includes(values.keywords)
-                || ((typeof values.publisher === "undefined" && this.state.publishersSelected.length !== 0) || (typeof values.publisher !== "undefined" && this.state.publishersSelected.length === 0)) && !this.state.publishersSelected.includes(values.publisher)
-                || ((typeof values.ageband === "undefined" && this.state.ageBandsSelected.length !== 0) || (typeof values.ageband !== "undefined" && this.state.ageBandsSelected.length === 0)) && !this.state.ageBandsSelected.includes(values.ageband)
-                || ((typeof values.geographiccover === "undefined" && this.state.geoCoverageSelected.length !== 0) || (typeof values.geographiccover !== "undefined" && this.state.geoCoverageSelected.length === 0)) && !this.state.geoCoverageSelected.includes(values.geographiccover)
-                || ((typeof values.toolcategories === "undefined" && this.state.toolCategoriesSelected.length !== 0) || (typeof values.toolcategories !== "undefined" && this.state.toolCategoriesSelected.length === 0)) && !this.state.toolCategoriesSelected.includes(values.toolcategories)
-                || ((typeof values.programmingLanguage === "undefined" && this.state.languageSelected.length !== 0) || (typeof values.programmingLanguage !== "undefined" && this.state.languageSelected.length === 0)) && !this.state.languageSelected.includes(values.programmingLanguage)
-                || ((typeof values.features === "undefined" && this.state.featuresSelected.length !== 0) || (typeof values.features !== "undefined" && this.state.featuresSelected.length === 0)) && !this.state.featuresSelected.includes(values.features)
-                || ((typeof values.tooltopics === "undefined" && this.state.toolTopicsSelected.length !== 0) || (typeof values.tooltopics !== "undefined" && this.state.toolTopicsSelected.length === 0)) && !this.state.toolTopicsSelected.includes(values.tooltopics)
-                || ((typeof values.projectcategories === "undefined" && this.state.projectCategoriesSelected.length !== 0) || (typeof values.projectcategories !== "undefined" && this.state.projectCategoriesSelected.length === 0)) && !this.state.projectCategoriesSelected.includes(values.projectcategories)
-                || ((typeof values.projecttopics === "undefined" && this.state.projectTopicsSelected.length !== 0) || (typeof values.projecttopics !== "undefined" && this.state.projectTopicsSelected.length === 0)) && !this.state.projectTopicsSelected.includes(values.projecttopics)
-                || ((typeof values.datasetIndex === "undefined" && this.state.datasetIndex !== 0) || (typeof values.datasetIndex !== "undefined" && this.state.datasetIndex === 0)) && this.state.datasetIndex !== values.datasetIndex
-                || ((typeof values.toolIndex === "undefined" && this.state.toolIndex !== 0) || (typeof values.toolIndex !== "undefined" && this.state.toolIndex === 0)) && this.state.toolIndex !== values.toolIndex
-                || ((typeof values.projectIndex === "undefined" && this.state.projectIndex !== 0) || (typeof values.projectIndex !== "undefined" && this.state.projectIndex === 0)) && this.state.projectIndex !== values.projectIndex
-                || ((typeof values.personIndex === "undefined" && this.state.personIndex !== 0) || (typeof values.personIndex !== "undefined" && this.state.personIndex === 0)) && this.state.personIndex !== values.personIndex
+                || (((typeof values.license === "undefined" && this.state.licensesSelected.length !== 0) || (typeof values.license !== "undefined" && this.state.licensesSelected.length === 0)) && !this.state.licensesSelected.includes(values.license))
+                || (((typeof values.sampleavailability === "undefined" && this.state.sampleAvailabilitySelected.length !== 0) || (typeof values.sampleavailability !== "undefined" && this.state.sampleAvailabilitySelected.length === 0)) && !this.state.sampleAvailabilitySelected.includes(values.sampleavailability))
+                || (((typeof values.keywords === "undefined" && this.state.keywordsSelected.length !== 0) || (typeof values.keywords !== "undefined" && this.state.keywordsSelected.length === 0)) && !this.state.keywordsSelected.includes(values.keywords))
+                || (((typeof values.publisher === "undefined" && this.state.publishersSelected.length !== 0) || (typeof values.publisher !== "undefined" && this.state.publishersSelected.length === 0)) && !this.state.publishersSelected.includes(values.publisher))
+                || (((typeof values.ageband === "undefined" && this.state.ageBandsSelected.length !== 0) || (typeof values.ageband !== "undefined" && this.state.ageBandsSelected.length === 0)) && !this.state.ageBandsSelected.includes(values.ageband))
+                || (((typeof values.geographiccover === "undefined" && this.state.geoCoverageSelected.length !== 0) || (typeof values.geographiccover !== "undefined" && this.state.geoCoverageSelected.length === 0)) && !this.state.geoCoverageSelected.includes(values.geographiccover))
+                
+                || (((typeof values.toolcategories === "undefined" && this.state.toolCategoriesSelected.length !== 0) || (typeof values.toolcategories !== "undefined" && this.state.toolCategoriesSelected.length === 0)) && !this.state.toolCategoriesSelected.includes(values.toolcategories))
+                || (((typeof values.programmingLanguage === "undefined" && this.state.languageSelected.length !== 0) || (typeof values.programmingLanguage !== "undefined" && this.state.languageSelected.length === 0)) && !this.state.languageSelected.includes(values.programmingLanguage))
+                || (((typeof values.features === "undefined" && this.state.featuresSelected.length !== 0) || (typeof values.features !== "undefined" && this.state.featuresSelected.length === 0)) && !this.state.featuresSelected.includes(values.features))
+                || (((typeof values.tooltopics === "undefined" && this.state.toolTopicsSelected.length !== 0) || (typeof values.tooltopics !== "undefined" && this.state.toolTopicsSelected.length === 0)) && !this.state.toolTopicsSelected.includes(values.tooltopics))
+                
+                || (((typeof values.projectcategories === "undefined" && this.state.projectCategoriesSelected.length !== 0) || (typeof values.projectcategories !== "undefined" && this.state.projectCategoriesSelected.length === 0)) && !this.state.projectCategoriesSelected.includes(values.projectcategories))
+                || (((typeof values.projectfeatures === "undefined" && this.state.projectFeaturesSelected.length !== 0) || (typeof values.projectfeatures !== "undefined" && this.state.projectFeaturesSelected.length === 0)) && !this.state.projectFeaturesSelected.includes(values.projectfeatures))
+                || (((typeof values.projecttopics === "undefined" && this.state.projectTopicsSelected.length !== 0) || (typeof values.projecttopics !== "undefined" && this.state.projectTopicsSelected.length === 0)) && !this.state.projectTopicsSelected.includes(values.projecttopics))
+                
+                || (((typeof values.paperfeatures === "undefined" && this.state.paperFeaturesSelected.length !== 0) || (typeof values.paperfeatures !== "undefined" && this.state.paperFeaturesSelected.length === 0)) && !this.state.paperFeaturesSelected.includes(values.paperfeatures))
+                || (((typeof values.papertopics === "undefined" && this.state.paperTopicsSelected.length !== 0) || (typeof values.papertopics !== "undefined" && this.state.paperTopicsSelected.length === 0)) && !this.state.paperTopicsSelected.includes(values.papertopics))
+                
+                || (((typeof values.datasetIndex === "undefined" && this.state.datasetIndex !== 0) || (typeof values.datasetIndex !== "undefined" && this.state.datasetIndex === 0)) && this.state.datasetIndex !== values.datasetIndex)
+                || (((typeof values.toolIndex === "undefined" && this.state.toolIndex !== 0) || (typeof values.toolIndex !== "undefined" && this.state.toolIndex === 0)) && this.state.toolIndex !== values.toolIndex)
+                || (((typeof values.projectIndex === "undefined" && this.state.projectIndex !== 0) || (typeof values.projectIndex !== "undefined" && this.state.projectIndex === 0)) && this.state.projectIndex !== values.projectIndex)
+                || (((typeof values.personIndex === "undefined" && this.state.personIndex !== 0) || (typeof values.personIndex !== "undefined" && this.state.personIndex === 0)) && this.state.personIndex !== values.personIndex)
             ) {
                 await Promise.all([
                     this.updateFilterStates(values)
@@ -152,7 +151,11 @@ class SearchPage extends React.Component {
         values.tooltopics ? this.setState({ toolTopicsSelected: [values.tooltopics] }) : this.setState({ toolTopicsSelected: [] })
 
         values.projectcategories ? this.setState({ projectCategoriesSelected: [values.projectcategories] }) : this.setState({ projectCategoriesSelected: [] })
+        values.projectfeatures ? this.setState({ projectFeaturesSelected: [values.projectfeatures] }) : this.setState({ projectFeaturesSelected: [] })
         values.projecttopics ? this.setState({ projectTopicsSelected: [values.projecttopics] }) : this.setState({ projectTopicsSelected: [] })
+
+        values.paperfeatures ? this.setState({ paperFeaturesSelected: [values.paperfeatures] }) : this.setState({ paperFeaturesSelected: [] })
+        values.papertopics ? this.setState({ paperTopicsSelected: [values.papertopics] }) : this.setState({ paperTopicsSelected: [] })
 
         values.tab ? this.setState({ key: values.tab }) : this.setState({ key: '' })
         values.datasetIndex ? this.setState({ datasetIndex: values.datasetIndex }) : this.setState({ datasetIndex: 0 })
@@ -175,7 +178,11 @@ class SearchPage extends React.Component {
         this.setState({ toolTopicsSelected: [] })
 
         this.setState({ projectCategoriesSelected: [] })
+        this.setState({ projectFeaturesSelected: [] })
         this.setState({ projectTopicsSelected: [] })
+        
+        this.setState({ paperFeaturesSelected: [] })
+        this.setState({ paperTopicsSelected: [] })
 
         this.setState({ key: "" })
         this.setState({ datasetIndex: 0 })
@@ -205,7 +212,11 @@ class SearchPage extends React.Component {
         if (this.state.toolTopicsSelected.length > 0) searchURL += '&tooltopics=' + this.state.toolTopicsSelected;
 
         if (this.state.projectCategoriesSelected.length > 0) searchURL += '&projectcategories=' + this.state.projectCategoriesSelected;
+        if (this.state.projectFeaturesSelected.length > 0) searchURL += '&projectfeatures=' + this.state.projectFeaturesSelected;
         if (this.state.projectTopicsSelected.length > 0) searchURL += '&projecttopics=' + this.state.projectTopicsSelected;
+        
+        if (this.state.paperFeaturesSelected.length > 0) searchURL += '&paperfeatures=' + this.state.paperFeaturesSelected;
+        if (this.state.paperTopicsSelected.length > 0) searchURL += '&papertopics=' + this.state.paperTopicsSelected;
 
         if (this.state.datasetIndex > 0) searchURL += '&datasetIndex=' + this.state.datasetIndex;
         if (this.state.toolIndex > 0) searchURL += '&toolIndex=' + this.state.toolIndex;
@@ -279,8 +290,45 @@ class SearchPage extends React.Component {
     }
 
     render() {
-        const { summary, searchString, datasetData, toolData, projectData, paperData, personData, filterOptions, userState, isLoading, languageSelected, toolTopicsSelected, toolCategoriesSelected, featuresSelected, projectTopicsSelected, projectCategoriesSelected, publishersSelected, licensesSelected, geoCoverageSelected, sampleAvailabilitySelected, keywordsSelected, ageBandsSelected, datasetIndex, toolIndex, projectIndex, paperIndex, personIndex } = this.state;
+        const { 
+            summary, 
+            searchString, 
+            datasetData, 
+            toolData, 
+            projectData, 
+            paperData, 
+            personData, 
+            filterOptions, 
+            userState, 
+            isLoading, 
+            
+            publishersSelected, 
+            licensesSelected, 
+            geoCoverageSelected, 
+            sampleAvailabilitySelected, 
+            keywordsSelected, 
+
+            languageSelected, 
+            toolTopicsSelected, 
+            toolCategoriesSelected, 
+            featuresSelected, 
+            
+            projectTopicsSelected, 
+            projectFeaturesSelected,
+            projectCategoriesSelected, 
+            
+            paperFeaturesSelected, 
+            paperTopicsSelected, 
+            
+            datasetIndex, 
+            toolIndex, 
+            projectIndex, 
+            paperIndex, 
+            personIndex 
+        } = this.state;
+
         var { key } = this.state;
+        
         if (isLoading) {
             return <Container><Loading /></Container>;
         }
@@ -375,24 +423,28 @@ class SearchPage extends React.Component {
 
                 <Container>
                     <Row>
-                        {key === 'Tools' || key === 'Projects' || key === 'Datasets' ?
+                        {key !== 'People' ?
                             <Col sm={12} md={12} lg={3}>
-                                {key === 'Datasets' ? <DatasetFilterLicense licenseData={filterOptions.licenseFilterOptions} updateOnFilter={this.updateOnFilter} licensesSelected={licensesSelected} /> : ''}
-                                {key === 'Datasets' ? <DatasetFilterSampleAvailability physicalSampleAvailabilityData={filterOptions.sampleFilterOptions} updateOnFilter={this.updateOnFilter} sampleAvailabilitySelected={sampleAvailabilitySelected} /> : ''}
-                                {key === 'Datasets' ? <DatasetFilterKeywords keywordsData={filterOptions.keywordsFilterOptions} updateOnFilter={this.updateOnFilter} keywordsSelected={keywordsSelected} /> : ''}
-                                {key === 'Datasets' ? <DatasetFilterPublisher publisherData={filterOptions.publisherFilterOptions} updateOnFilter={this.updateOnFilter} publishersSelected={publishersSelected} /> : ''}
-                                {key === 'Datasets' ? <DatasetFilterAgeBand ageBandData={filterOptions.ageBandFilterOptions} updateOnFilter={this.updateOnFilter} ageBandsSelected={ageBandsSelected} /> : ''}
-                                {key === 'Datasets' ? <DatasetFilterGeoCoverage geographicCoverageData={filterOptions.geographicCoverageFilterOptions} updateOnFilter={this.updateOnFilter} geoCoverageSelected={geoCoverageSelected} /> : ''}
+                                {key === 'Datasets' ? <Filters data={filterOptions.publisherFilterOptions} updateOnFilter={this.updateOnFilter} selected={publishersSelected} title="Publisher" /> : ''}
+                                {key === 'Datasets' ? <Filters data={filterOptions.licenseFilterOptions} updateOnFilter={this.updateOnFilter} selected={licensesSelected} title="License" /> : ''}
+                                {key === 'Datasets' ? <Filters data={filterOptions.keywordsFilterOptions} updateOnFilter={this.updateOnFilter} selected={keywordsSelected} title="Keywords" /> : ''}
+                                {key === 'Datasets' ? <Filters data={filterOptions.geographicCoverageFilterOptions} updateOnFilter={this.updateOnFilter} selected={geoCoverageSelected} title="Geographic coverage" /> : ''}
+                                {key === 'Datasets' ? <Filters data={filterOptions.sampleFilterOptions} updateOnFilter={this.updateOnFilter} selected={sampleAvailabilitySelected} title="Physical sample availability" /> : ''}
+                                {/* {key === 'Datasets' ? <Filters data={filterOptions.ageBandFilterOptions} updateOnFilter={this.updateOnFilter} selected={ageBandsSelected} title="Age Bands" /> : ''} */}
+                                
+                                {key === 'Tools' ? <Filters data={filterOptions.toolCategoriesFilterOptions} updateOnFilter={this.updateOnFilter} selected={toolCategoriesSelected} title="Type" /> : ''}
+                                {key === 'Tools' ? <Filters data={filterOptions.programmingLanguageFilterOptions} updateOnFilter={this.updateOnFilter} selected={languageSelected} title="Programming language" /> : ''}
+                                {key === 'Tools' ? <Filters data={filterOptions.featuresFilterOptions} updateOnFilter={this.updateOnFilter} selected={featuresSelected} title="Keywords" /> : ''}
+                                {key === 'Tools' ? <Filters data={filterOptions.toolTopicsFilterOptions} updateOnFilter={this.updateOnFilter} selected={toolTopicsSelected} title="Domain" /> : ''}
+                                
+                                {key === 'Projects' ? <Filters data={filterOptions.projectCategoriesFilterOptions} updateOnFilter={this.updateOnFilter} selected={projectCategoriesSelected} title="Type" /> : ''}
+                                {key === 'Projects' ? <Filters data={filterOptions.projectFeaturesFilterOptions} updateOnFilter={this.updateOnFilter} selected={projectFeaturesSelected} title="Keywords" /> : ''}
+                                {key === 'Projects' ? <Filters data={filterOptions.projectTopicsFilterOptions} updateOnFilter={this.updateOnFilter} selected={projectTopicsSelected} title="Domain" /> : ''}
 
-                                {key === 'Tools' ? <CategoryFilterTool toolCategoriesData={filterOptions.toolCategoriesFilterOptions} updateOnFilter={this.updateOnFilter} toolCategoriesSelected={toolCategoriesSelected} /> : ''}
-                                {key === 'Tools' ? <ProgrammingLanguageFilter languagesData={filterOptions.programmingLanguageFilterOptions} updateOnFilter={this.updateOnFilter} languageSelected={languageSelected} /> : ''}
-                                {key === 'Tools' ? <FeaturesFilter featuresData={filterOptions.featuresFilterOptions} updateOnFilter={this.updateOnFilter} featuresSelected={featuresSelected} /> : ''}
-                                {key === 'Tools' ? <TopicsFilter toolTopicData={filterOptions.toolTopicsFilterOptions} updateOnFilter={this.updateOnFilter} toolTopicsSelected={toolTopicsSelected} /> : ''}
-
-                                {key === 'Projects' ? <CategoryFilterProject projectCategoriesData={filterOptions.projectCategoriesFilterOptions} updateOnFilter={this.updateOnFilter} projectCategoriesSelected={projectCategoriesSelected} /> : ''}
-                                {key === 'Projects' ? <KeywordsFilter projectTopicData={filterOptions.projectTopicsFilterOptions} updateOnFilter={this.updateOnFilter} projectTopicsSelected={projectTopicsSelected} /> : ''}
+                                {key === 'Papers' ? <Filters data={filterOptions.paperFeaturesFilterOptions} updateOnFilter={this.updateOnFilter} selected={paperFeaturesSelected} title="Keywords" /> : ''}
+                                {key === 'Papers' ? <Filters data={filterOptions.paperTopicsFilterOptions} updateOnFilter={this.updateOnFilter} selected={paperTopicsSelected} title="Domain" /> : ''}
                             </Col>
-                            : <Col sm={1} md={1} lg={1} />}
+                            : <Col sm={12} md={12} lg={3} />}
 
                         <Col sm={12} md={12} lg={9}>
                             {key === 'Datasets' ?

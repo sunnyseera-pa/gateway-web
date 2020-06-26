@@ -196,7 +196,10 @@ class DatasetTitle extends Component {
     // const hasRequestedAccess = false;
     if(!user.loggedIn) {
       var isRequest=true;
-      return <LoginModal isRequest={isRequest} requestDetails={title} requestContact={contactPoint} />;
+      return <>
+                <Button variant="primary" className="AddButton" onClick={this.showLoginModal}>Request Access</Button>
+                <LoginModal isRequest={isRequest} requestDetails={title} requestContact={contactPoint} />
+            </>
     } else if (alert) {
       return <Button variant="primary" className="AddButton" disabled>Request Access</Button>
     } else {
