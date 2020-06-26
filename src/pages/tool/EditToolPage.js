@@ -546,21 +546,26 @@ const EditToolForm = (props) => {
                             <span className="Gray595757-14px">Show relationships to papers, projects, datasets and tools. Resources must be added to the Gateway first.</span>
                         </div>
 
-                        <div className="Rectangle">
+                        <div className="RelatedResourcesRectangle mt-1">
                            {props.relatedObjects ? props.relatedObjects.map((object) => {
-                                return <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} reason={object.reason} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} />
+                                return (
+                                    <div className="RelatedObjectRectangle">
+                                        <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} reason={object.reason} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} />
+                                    </div>
+                                )
                             }) : ''}
+
+                            <div className="FlexCenter pt-3 pb-3">
+                                <Row>
+                                    <Col sm={1} lg={1} />
+                                    <Col sm={10} lg={10}>
+                                        <RelatedResources toolid={props.toolid} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
+                                    </Col>
+                                    <Col sm={1} lg={10} />
+                                </Row>
+                            </div>
                         </div>
 
-                        <div className="Rectangle FlexCenter mt-1">
-                            <Row>
-                                <Col sm={1} lg={1} />
-                                <Col sm={10} lg={10}>
-                                    <RelatedResources toolid={props.toolid} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
-                                </Col>
-                                <Col sm={1} lg={10} />
-                            </Row>
-                        </div>
 
                         <Row className="mt-3">
                             <Col xs={5} lg={9}/>

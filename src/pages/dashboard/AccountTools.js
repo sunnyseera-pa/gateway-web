@@ -61,7 +61,7 @@ class AccountTools extends React.Component {
     }
 
     approveTool = (id) => {
-        axios.put(baseURL + '/api/v1/accounts/status', {
+        axios.put(baseURL + '/api/v1/accounts/status', { 
             id: id,
             activeflag: "active"
         })

@@ -14,12 +14,13 @@ import DatasetPage from './pages/dataset/DatasetPage';
 import SearchPage from './pages/search/SearchPage';
 
 import Account from './pages/dashboard/Account';
-import AddToolPage from './pages/tool/AddToolPage';
+import AddToolPage from './pages/tool/AddToolPage'; 
 import EditToolPage from './pages/tool/EditToolPage';
 import AddProjectPage from './pages/project/AddProjectPage';
 import EditProjectPage from './pages/project/EditProjectPage';
 import AddPaperPage from './pages/paper/AddPaperPage';
 import EditPaperPage from './pages/paper/EditPaperPage';
+import AddCollectionPage from './pages/collections/AddCollectionPage';
 
 import Request from './pages/request/Request';
 import DataAccessRequest from './pages/DataAccessRequest/DataAccessRequest';
@@ -109,6 +110,7 @@ class HDRRouter extends Component {
                         {userState[0].loggedIn ? (<Route path='/editproject/:projectID' render={(props) => <EditProjectPage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/addpaper' render={(props) => <AddPaperPage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/editpaper/:paperID' render={(props) => <EditPaperPage {...props} userState={userState} /> } />) : ''}
+                        {userState[0].loggedIn ? (<Route path='/addcollection' render={(props) => <AddCollectionPage {...props} userState={userState} /> } />) : ''}
                         {/* Catch all path */}
                         <Redirect to="/search?search=" />
                     </Switch>
