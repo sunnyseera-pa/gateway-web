@@ -21,6 +21,7 @@ import EditProjectPage from './pages/project/EditProjectPage';
 import AddPaperPage from './pages/paper/AddPaperPage';
 import EditPaperPage from './pages/paper/EditPaperPage';
 import AddCollectionPage from './pages/collections/AddCollectionPage';
+import EditCollectionPage from './pages/collections/EditCollectionPage';
 
 import Request from './pages/request/Request';
 import DataAccessRequest from './pages/DataAccessRequest/DataAccessRequest';
@@ -111,6 +112,7 @@ class HDRRouter extends Component {
                         {userState[0].loggedIn ? (<Route path='/addpaper' render={(props) => <AddPaperPage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/editpaper/:paperID' render={(props) => <EditPaperPage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/addcollection' render={(props) => <AddCollectionPage {...props} userState={userState} /> } />) : ''}
+                        {userState[0].loggedIn ? (<Route path='/editcollection/:collectionID' render={(props) => <EditCollectionPage {...props} userState={userState} /> } />) : ''}  
                         {/* Catch all path */}
                         <Redirect to="/search?search=" />
                     </Switch>
