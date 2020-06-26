@@ -1020,6 +1020,80 @@ textarea:focus {
   margin-left: 20px;
 }
 
+@media screen and (max-width: 1146px) {
+  #UnselectButton {
+    margin-bottom: 1%;
+    width: 116px;
+  }
+  #AddResources {
+    width: 116px;
+  }
+}
+
+.modal-dialog {
+  position: absolute;
+  top: 40%;
+  left: 15%;
+  transform: translate(-50%, -50%) !important;
+}
+
+@media screen and (max-width: 901px) {
+  .modal-dialog {
+    left: 20% !important;
+  }
+}
+
+@media screen and (max-width: 866px) {
+  .modal-dialog {
+    left: 25% !important;
+  }
+}
+
+@media screen and (max-width: 866px) {
+  .modal-dialog {
+    left: 30% !important;
+  }
+}
+
+@media screen and (max-width: 706px) {
+  .modal-dialog {
+    left: 35% !important;
+  }
+
+  #amountSelected {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+@media screen and (max-width: 642px) {
+  .modal-dialog {
+    left: 40% !important;
+  }
+}
+
+@media screen and (max-width: 626px) {
+  .modal-dialog {
+    left: 45% !important;
+  }
+}
+
+@media screen and (max-width: 601px) {
+  .modal-dialog {
+    left: 50% !important;
+  }
+}
+
+@media screen and (max-width: 575px) {
+  .modal-dialog {
+    left: 60% !important;
+  }
+
+  #amountSelected {
+
+  }
+}
+
 @media screen and (max-width: 768px) {
   .nav {
     padding-left: 2px;
@@ -1036,9 +1110,6 @@ textarea:focus {
     margin: 0px;
   }
 }
-
-
-
 
 .rwt__tab {
   color: #3c3c3b !important;
@@ -1959,7 +2030,7 @@ NAVBAR CSS BELOW
 .ModalFooter {
  position:static;
  bottom: 0;
- height: 72px;
+ height: 80px;
 }
 
 .relationshipBar {
