@@ -539,6 +539,7 @@ const AddToolForm = (props) => {
                                 )
                             })}
 
+
                             <div className="FlexCenter pt-3 pb-3">
                                 <Row>
                                     <Col sm={1} lg={1} />
@@ -548,6 +549,7 @@ const AddToolForm = (props) => {
                                     <Col sm={1} lg={10} />
                                 </Row>
                             </div>
+
                         </div>
 
                         <Row className="mt-3">

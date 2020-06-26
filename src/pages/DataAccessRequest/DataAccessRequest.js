@@ -122,20 +122,25 @@ class DataAccessRequest extends Component {
         console.log('form render');
     }
 
-
+    
     getActiveQuestion(questionsArr, questionId) {
         let child;
         
         if (!questionsArr) 
             return; 
         
-        for (const question of questionsArr) {
-            if (question.questionId === questionId) 
-                return question; 
-        
-            if(typeof question.input === 'object' && typeof question.input.options !== 'undefined' && question.input.options.length > 0) {
-                let [nestedQuestion] = [...question.input.options].filter(option => { return option.hasOwnProperty('conditionalQuestions')}) || [];
-                child = this.getActiveQuestion([...nestedQuestion.conditionalQuestions], questionId);
+        for (const questionObj of questionsArr) {
+            if (questionObj.questionId === questionId) 
+                return questionObj; 
+
+            if(typeof questionObj.input === 'object' && typeof questionObj.input.options !== 'undefined') {
+                questionObj.input.options
+                    .filter(option => {
+                        return typeof option.conditionalQuestions !== 'undefined' &&  option.conditionalQuestions.length > 0;
+                    })
+                    .forEach(option => {         
+                        child = this.getActiveQuestion(option.conditionalQuestions, questionId);
+                    });
             }
 
             if (child) 
@@ -152,7 +157,8 @@ class DataAccessRequest extends Component {
             if(!_.isEmpty(questions)) {
                 // 2. loop over and find active question 
                 let activeQuestion = this.getActiveQuestion([...questions], questionId);
-                this.setState({activeGuidance: activeQuestion.guidance});
+                if(!_.isEmpty(activeQuestion))
+                    this.setState({activeGuidance: activeQuestion.guidance});
             }
         }
     }

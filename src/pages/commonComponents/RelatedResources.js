@@ -49,14 +49,14 @@ function RelatedResources(props) {
                 </div>  
                 <Modal.Footer className="ModalFooter">
                     <Col sm={1} lg={1} />
-                        <Col sm={7} lg={7} className="ml-5 mr-5">
+                        <Col sm={7} lg={7} className="ml-5 mr-5" id="amountSelected">
                             <span className="Gray800-14px" >{props.tempRelatedObjectIds.length} selected</span>
                         </Col>
                         <Col sm={4} lg={4} > 
-                            <Button variant='white' className="TechDetailButton  ml-5 mr-3"  onClick={props.doClearRelatedObjects} >
+                            <Button variant='white' className="TechDetailButton mr-2" id="UnselectButton" onClick={props.doClearRelatedObjects} >
                                 Unselect all
                             </Button>
-                            <Button variant="primary" className="White-14px" onClick={addResources} >
+                            <Button variant="primary" className="White-14px" id="AddResources" onClick={addResources} >
                                 Add resources
                             </Button>
                         </Col>
