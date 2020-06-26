@@ -6,7 +6,7 @@ import Col from 'react-bootstrap/Col';
 import NotFound from '../commonComponents/NotFound';
 import SVGIcon from "../../images/SVGIcon";
 
-var baseURL = require('../commonComponents/BaseURL').getURL();
+var baseURL = require('../commonComponents/BaseURL').getURL(); 
 
 class YourAccount extends React.Component {
 

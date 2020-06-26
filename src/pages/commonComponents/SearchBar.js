@@ -69,7 +69,7 @@ class SearchBar extends React.Component {
         document.addEventListener('mousedown', this.handleClick, false);
 
         if (this.state.userState[0].loggedIn) {
-            this.getNumberOfUnreadNotificiations();
+            this.getNumberOfUnreadNotifications();
             this.doMessagesCall();
         }
         else {
@@ -99,7 +99,7 @@ class SearchBar extends React.Component {
         });
     };
 
-    logout = (e) => {
+    logout = (e) => { 
         axios.get(baseURL + '/api/v1/auth/logout')
             .then((res) => {
                 window.location.href = cmsURL;
@@ -127,7 +127,7 @@ class SearchBar extends React.Component {
             })
     };
 
-    getNumberOfUnreadNotificiations() {
+    getNumberOfUnreadNotifications() {
         let apiToCall = '/api/v1/messages/numberofunread/' + this.state.userState[0].id;
         if (this.state.userState[0].role === "Admin") {
             apiToCall = '/api/v1/messages/numberofunread/admin/' + this.state.userState[0].id;
@@ -169,7 +169,7 @@ class SearchBar extends React.Component {
     showSearchBar = (e) => {
         document.getElementById("mobileSearchBarRevealed").style.display = "block";
         document.getElementById("mobileSearchBarHidden").style.display = "none";
-    }
+    } 
 
     showLoginModal() {
         document.getElementById("myModal").style.display = "block";
@@ -187,7 +187,7 @@ class SearchBar extends React.Component {
 
     render() {
         const { userState, newData, isLoading, clearMessage } = this.state;
-
+        console.log('new data: ' + JSON.stringify(this.state.newData))
         if (isLoading) {
             return <></>;
         }
@@ -284,6 +284,20 @@ class SearchBar extends React.Component {
                                                                                 <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                             </Row>
                                                                             <Dropdown.Divider style={{ margin: "0px" }} />
+                                                                    </>
+                                                                )
+                                                            }
+                                                            else if(dat.messageType === 'added collection'){
+                                                                return(
+                                                                    <>
+                                                                        <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
+                                                                             <Col xs={10}>
+                                                                                <div className="NotificationDate">{messageDateString + '\n'}</div>
+                                                                                <div className="NotificationInfoHolder"><a class="NotificationInfo">{dat.messageDescription}</a></div> 
+                                                                            </Col>
+                                                                            <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
+                                                                        </Row>
+                                                                        <Dropdown.Divider style={{ margin: "0px" }} />
                                                                     </>
                                                                 )
                                                             } else {

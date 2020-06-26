@@ -172,14 +172,14 @@ const AddCollectionForm = (props) => {
             description: Yup.string()
                 .max(5000, 'Maximum of 5,000 characters')
                 .required('This cannot be empty'),
-            authors: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.number()) : Yup.number())),
+            authors: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.number()) : Yup.number())), 
             imageLink: Yup.string()
                 .matches( /^[http|https]+:\/\/(?:([\w\-\.])+(\[?\.\]?)([\w]){2,4}|(?:(?:25[0–5]|2[0–4]\d|[01]?\d\d?)\[?\.\]?){3}(?:25[0–5]|2[0–4]\d|[01]?\d\d?))*([\w\/+=%&_\.~?\-]*)$/ , 'URL must be valid and include a protocol prefix, e.g. https://' )
         }),
 
         onSubmit: values => {
             values.relatedObjects = props.relatedObjects 
-            // values.toolCreator = props.userState[0];
+            values.collectionCreator = props.userState[0];
             axios.post(baseURL + '/api/v1/collections/add', values)
             //GO TO THIS COLLECTION PAGE ONCE IT IS CREATED
                 // .then((res) => {

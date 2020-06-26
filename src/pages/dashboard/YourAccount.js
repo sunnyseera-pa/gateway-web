@@ -50,7 +50,7 @@ class YourAccount extends React.Component {
 
     render() {
         const { data, isLoading, isUpdated, userdata } = this.state;
-
+        
         if (isLoading) {
             return (
                 <Row className="mt-4">
@@ -92,7 +92,7 @@ const YourAccountForm = (props) => {
             bio: props.data.bio,
             link: props.data.link,
             orcid: props.data.orcid,
-            emailNotifications: props.data.emailNotifications || false,
+            emailNotifications: props.data.emailNotifications || false, 
             terms: props.data.terms || false
         },
 
@@ -118,7 +118,6 @@ const YourAccountForm = (props) => {
     });
     
     return (
-
         <div>
             {props.isUpdated ? <Alert variant="success" className="mt-3">Done! Your account details have been updated</Alert> : ""}
             <Row className="pixelGapBottom">
