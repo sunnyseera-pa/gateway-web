@@ -39,12 +39,12 @@ function RelatedResources(props) {
                     <Modal.Title >
                         <span className="Black-20px">Add related resources</span>
                         <br />
-                        <span className="Gray800-14px">Search for datasets, tools, papers, projects  and people</span>
+                        <span className="Gray800-14px">Link this to other papers, projects, datasets and tools. Resources must be added to the Gateway first.</span>
                     </Modal.Title>
                     <CloseButtonSvg onClick={closeModal} />
                 </Modal.Header>
                 <Modal.Body >
-                   <RelatedResourcesModal toolid={props.toolid} projectid={props.projectid} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} />
+                   <RelatedResourcesModal toolid={props.toolid} projectid={props.projectid} paperid={props.paperid} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} paperData={props.paperData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} />
                 </Modal.Body>
                 </div>  
                 <Modal.Footer className="ModalFooter">

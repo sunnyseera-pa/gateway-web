@@ -112,7 +112,7 @@ class AccountTools extends React.Component {
                                 </Row>
                             </Col>
                             <Col xs={4} style={{ textAlign: "right" }}>
-                                <Button variant="primary" href="/addtool" className="AddButton" onClick={() => Event("Buttons", "Click", "Add a new tool")} >
+                                <Button variant="primary" href="/tool/add" className="AddButton" onClick={() => Event("Buttons", "Click", "Add a new tool")} >
                                     + Add a new tool
                                 </Button>
                             </Col>
@@ -160,7 +160,7 @@ class AccountTools extends React.Component {
 
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
-                                                                    <Dropdown.Item href={'/edittool/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
+                                                                    <Dropdown.Item href={'/tool/edit/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
                                                                     <DeleteButton id={dat.id} />
                                                                 </DropdownButton>
                                                             </Col>
@@ -199,7 +199,7 @@ class AccountTools extends React.Component {
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 {userState[0].role === 'Admin' ?
                                                                     <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
-                                                                        <Dropdown.Item href={'/edittool/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
+                                                                        <Dropdown.Item href={'/tool/edit/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
                                                                         <Dropdown.Item href='#' onClick={() => this.approveTool(dat.id)} className="Black-14px">Approve</Dropdown.Item>
                                                                         <RejectButton id={dat.id} />
                                                                     </DropdownButton>
@@ -274,7 +274,7 @@ class AccountTools extends React.Component {
 
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
-                                                                    <Dropdown.Item href={'/edittool/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
+                                                                    <Dropdown.Item href={'/tool/edit/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
                                                                     <Dropdown.Item href='#' onClick={() => this.approveTool(dat.id)} className="Black-14px">Approve</Dropdown.Item>
                                                                     <Dropdown.Item href='#' onClick={() => this.rejectTool(dat.id)} className="Black-14px">Reject</Dropdown.Item>
                                                                 </DropdownButton>

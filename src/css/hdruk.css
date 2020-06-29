@@ -1,10 +1,20 @@
 :root {
-    --purple: #475da7;
-    --gray-700: #53575a;
-  }  
+  --purple: #475da7;
+  --gray-700: #53575a;
+}
 
 body {
   background-color: #f6f7f8;
+  height: 100vh;
+}
+
+#root {
+  height: 100%;
+}
+
+.mainWrap {
+  min-height: 100%;
+  padding-bottom: 440px;
 }
 
 .Rectangle {
@@ -28,10 +38,9 @@ body {
   padding-right: 20px;
   padding-top: 5px;
   padding-bottom: 5px;
-
 }
 
-.RectangleWithBorder{
+.RectangleWithBorder {
   width: 100%;
   /* box-shadow: 1px 1px 3px 0 #00000017; */
   background-color: #ffffff;
@@ -97,14 +106,12 @@ body {
 }
 
 .entryBox {
-    width: 100%;
-    box-shadow: 1px 1px 3px 0 #00000017;
-    background-color: #ffffff;
-    padding: 20px;
-    margin-bottom:1px
+  width: 100%;
+  box-shadow: 1px 1px 3px 0 #00000017;
+  background-color: #ffffff;
+  padding: 20px;
+  margin-bottom: 1px;
 }
-
-
 
 .FloatRight {
   float: right;
@@ -123,7 +130,6 @@ a.nav-item.nav-link.active {
   color: #2d2d2d !important;
   font-weight: bold !important;
 }
-
 
 .ButtonHolder {
   min-width: 800px;
@@ -174,6 +180,7 @@ a.nav-item.nav-link.active {
   font-family: museo-sans-rounded;
   font-size: 14px;
   line-height: 20px;
+  font-weight: 300;
 }
 
 .DatasetBadge {
@@ -185,6 +192,7 @@ a.nav-item.nav-link.active {
   font-family: museo-sans-rounded;
   font-size: 14px;
   line-height: 20px;
+  font-weight: 300;
 }
 
 .ProjectBadge {
@@ -196,6 +204,7 @@ a.nav-item.nav-link.active {
   font-family: museo-sans-rounded;
   font-size: 14px;
   line-height: 20px;
+  font-weight: 300;
 }
 
 .PaperBadge {
@@ -207,6 +216,7 @@ a.nav-item.nav-link.active {
   font-family: museo-sans-rounded;
   font-size: 14px;
   line-height: 20px;
+  font-weight: 300;
 }
 
 .BubbleCounts {
@@ -259,10 +269,10 @@ a.nav-item.nav-link.active {
 }
 
 .Black-14px {
-    font-family: museo-sans-rounded;
-    font-size: 14px;
-    color: #2d2d2d;
-  }
+  font-family: museo-sans-rounded;
+  font-size: 14px;
+  color: #2d2d2d;
+}
 
 .Black-16px {
   font-family: museo-sans-rounded;
@@ -357,7 +367,9 @@ a.nav-item.nav-link.active {
   color: #3c3c3b !important;
 }
 
-h4, h5, h6 {
+h4,
+h5,
+h6 {
   font-family: museo-sans-rounded !important;
   font-size: 14px !important;
   font-weight: bold !important;
@@ -367,7 +379,8 @@ h4, h5, h6 {
   color: #3c3c3b !important;
 }
 
-h2, h3 {
+h2,
+h3 {
   font-family: museo-sans-rounded !important;
   font-size: 16px !important;
   font-weight: bold !important;
@@ -475,7 +488,7 @@ h1 {
   color: #475da7;
 }
 
-.Indigo-14px{
+.Indigo-14px {
   font-family: museo-sans-rounded;
   font-size: 14px;
   font-weight: 500;
@@ -485,7 +498,7 @@ h1 {
   color: #29235c;
 }
 
-.White-12px{
+.White-12px {
   font-family: museo-sans-rounded;
   font-size: 12px;
   font-weight: bold;
@@ -508,7 +521,7 @@ h1 {
   color: #ffffff !important;
 }
 
-.White-16px{
+.White-16px {
   font-family: museo-sans-rounded !important;
   font-size: 16px;
   font-weight: 500;
@@ -519,7 +532,7 @@ h1 {
   color: #ffffff;
 }
 
-.White-20px{
+.White-20px {
   font-family: museo-sans-rounded !important;
   font-size: 20px;
   font-weight: 500;
@@ -626,16 +639,11 @@ input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px #f6f7f8 inset !important;
 }
 
-
-
-
-
-
 .active-border {
   border-left: 4px solid #3db28c;
 }
 
-.active-border  > div {
+.active-border > div {
   margin-left: 5px;
 }
 
@@ -729,9 +737,6 @@ input[type='radio']:checked:after {
   border: solid 2px #d6d6d6;
 }
 
-
-
-
 .TabsBackground {
   width: 100%;
   background-color: #ffffff !important;
@@ -739,7 +744,7 @@ input[type='radio']:checked:after {
   justify-content: center !important;
   padding-bottom: 2px;
   box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
-  margin-top:1px;
+  margin-top: 1px;
 }
 
 .VerticalTabsBackground {
@@ -755,58 +760,57 @@ input[type='radio']:checked:after {
 .TabList {
   background-color: #ffffff;
   height: 100vh;
-  display:block !important;
+  display: block !important;
   position: fixed;
-  top:0px;
-  padding-top:100px;
-  width:17%;
+  top: 0px;
+  padding-top: 100px;
+  width: 17%;
 }
 
 .verticalNavBarHolder {
-    display:block !important;
+  display: block !important;
 }
 
 .verticalNavBar {
-    padding:15px 10px !important;
-    
+    padding:15px 10px 15px 30px !important;
 }
 
 .verticalNavBar.active {
-    background-color: #f6f7f8;
-    border-right: 4px solid #3db28c !important;
+  background-color: #f6f7f8;
+  border-right: 4px solid #3db28c !important;
 }
 
 svg:not(:root) {
   overflow: visible !important;
 }
 
-.AccountSvgs{
+.AccountSvgs {
   width: 18px;
   height: 18px;
-/*   box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09); */
+  /*   box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09); */
 }
 
-.BadgeSvgs{
+.BadgeSvgs {
   width: 12px;
   height: 12px;
 }
 
-.ButtonSvgs{
+.ButtonSvgs {
   width: 10px;
   height: 10px;
 }
 
-.darTabs .tab-content{
+.darTabs .tab-content {
   height: 100%;
   display: block;
 }
 
-.darTabs .tab-content .tab-pane{
+.darTabs .tab-content .tab-pane {
   height: 100%;
 }
 
 .AddButton {
-    font-size: 14px !important;
+  font-size: 14px !important;
 }
 
 .SmallAddButton {
@@ -827,14 +831,18 @@ svg:not(:root) {
 }
 
 .is-invalid ~ .invalid-feedback {
-    display: block;
-  }
+  display: block;
+}
 
 textarea:focus {
   border: solid 2px #3db28c !important;
 }
 
 .form-group .AddFormInput {
+    font-family: museo-sans-rounded;
+  font-size: 13px;
+  font-weight: 500;
+  color: #53575a;    
   width: 100%;
   height: 40px;
   border-radius: 4px;
@@ -853,21 +861,48 @@ textarea:focus {
   border: solid 2px #dc3645;
 }
 
+.form-group .AddFormInputTypeAhead {
+    width: 100%;
+    height: 40px;
+    border-radius: 4px;
+    border: solid 2px #d0d3d4;
+    background-color: #ffffff;
+}
+
+.form-group .AddFormInputTypeAhead:focus-within {
+    border-radius: 4px;
+    border: solid 2px #3db28c !important;
+}
+
+.form-group .EmptyFormInputTypeAhead,
+.form-group .EmptyFormInputTypeAhead:focus-within {
+    border-radius: 4px;
+    border: solid 2px #dc3645;
+}
+
+.rbt-input-main.form-control, .rbt-input-main.form-control:focus  {
+    border: solid 0px #ffffff !important;
+}
+
+.rbt-input-multi.form-control, .rbt-input-multi.form-control:focus  {
+    border: solid 0px #ffffff !important;
+}
+
 .SmallFormInput {
   width: 100%;
   max-width: 480px;
 }
 
 .hdfeedback {
-  margin-top: .25rem;
-  font-size: .875rem;
-  color:#dc3545;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: #dc3545;
 }
 
 .react-datepicker-wrapper,
 .react-datepicker__input-container {
-    display: block;
-    width: 100%;
+  display: block;
+  width: 100%;
 }
 
 .react-datepicker__input-container input {
@@ -876,14 +911,11 @@ textarea:focus {
   font-size: 1rem;
   line-height: 1.25;
   width: 100%;
-  color:
-  #53575a;
-  background-color:
-  #fff;
+  color: #53575a;
+  background-color: #fff;
   background-image: none;
   background-clip: padding-box;
-  border: 2px solid
-  rgba(0, 0, 0, 0.15);
+  border: 2px solid rgba(0, 0, 0, 0.15);
   border-radius: 0.25rem;
 }
 
@@ -892,7 +924,18 @@ textarea:focus {
 }
 
 /* RBTS ARE THE STYLES FOR TYPEAHEAD INPUTS */
+.rbt-input {
+    font-family: museo-sans-rounded !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #53575a !important;
+}
+
 .rbt-input-multi {
+    font-family: museo-sans-rounded !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #53575a !important;
   width: 100% !important;
   border-radius: 4px !important;
   border: solid 2px #d0d3d4 !important;
@@ -950,34 +993,37 @@ textarea:focus {
   border-radius: 4px !important;
 }
 
-.FlexCenter{
+.FlexCenter {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .btn-outline-secondary {
-    color: #2d2d2d !important;
-    font-size: 14px !important;
-    background-color: #ffffff !important;
-    background-image: none;
-    border-color: #d0d3d4 !important;
+  color: #2d2d2d !important;
+  font-size: 14px !important;
+  background-color: #ffffff !important;
+  background-image: none;
+  border-color: #d0d3d4 !important;
 }
 
-.btn-outline-secondary:active, .btn-outline-secondary.active, .show > .btn-outline-secondary.dropdown-toggle {
-    color: #2d2d2d !important;
-    font-size: 14px !important;
-    background-color: #ffffff !important;
-    background-image: none;
-    border-color: #d0d3d4 !important;
+.btn-outline-secondary:active,
+.btn-outline-secondary.active,
+.show > .btn-outline-secondary.dropdown-toggle {
+  color: #2d2d2d !important;
+  font-size: 14px !important;
+  background-color: #ffffff !important;
+  background-image: none;
+  border-color: #d0d3d4 !important;
 }
 
-.btn-outline-secondary:focus, .btn-outline-secondary.focus {
-    box-shadow: 0 0 0 0px !important;
+.btn-outline-secondary:focus,
+.btn-outline-secondary.focus {
+  box-shadow: 0 0 0 0px !important;
 }
 
 .dropdown-menu {
-    border: 1px solid #d0d3d4 !important;
+  border: 1px solid #d0d3d4 !important;
 }
 
 .TechDetailButton {
@@ -1090,7 +1136,6 @@ textarea:focus {
   }
 
   #amountSelected {
-
   }
 }
 
@@ -1124,7 +1169,7 @@ textarea:focus {
   padding: 1rem 2rem !important;
 }
 
-.rwt__tab[aria-selected="true"]:after {
+.rwt__tab[aria-selected='true']:after {
   right: -1px;
   top: 0;
   height: 100%;
@@ -1178,7 +1223,7 @@ iframe#discourse-embed-frame {
   height: 100%;
   overflow-y: scroll;
 }
-      
+
 /* The Modal (background) */
 .modal {
   display: none; /* Hidden by default */
@@ -1190,8 +1235,8 @@ iframe#discourse-embed-frame {
   width: 100%; /* Full width */
   height: 100%; /* Full height */
   overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
 
 /* Modal Content */
@@ -1202,29 +1247,41 @@ iframe#discourse-embed-frame {
   padding: 0;
   border: 1px solid #888;
   max-width: 540px;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   -webkit-animation-name: animatetop;
   -webkit-animation-duration: 0.4s;
   animation-name: animatetop;
-  animation-duration: 0.4s
+  animation-duration: 0.4s;
 }
 
 /* Add Animation */
 @-webkit-keyframes animatetop {
-  from {top:-300px; opacity:0} 
-  to {top:0; opacity:1}
+  from {
+    top: -300px;
+    opacity: 0;
+  }
+  to {
+    top: 0;
+    opacity: 1;
+  }
 }
 
 @keyframes animatetop {
-  from {top:-300px; opacity:0}
-  to {top:0; opacity:1}
+  from {
+    top: -300px;
+    opacity: 0;
+  }
+  to {
+    top: 0;
+    opacity: 1;
+  }
 }
 
 /* The Close Button */
 .close {
   font-size: 28px;
   font-weight: bold;
-  padding-right: 30px
+  padding-right: 30px;
 }
 
 .close:hover,
@@ -1236,13 +1293,13 @@ iframe#discourse-embed-frame {
 
 .modal-body {
   text-align: left;
-  padding: 2px 16px
+  padding: 2px 16px;
 }
 
 .openAthensButton {
-  width:200px;
-  background:#475da7;
-  color:white;
+  width: 200px;
+  background: #475da7;
+  color: white;
   padding: 8px 20px;
   border-radius: 2px;
   display: block;
@@ -1251,9 +1308,9 @@ iframe#discourse-embed-frame {
 }
 
 .openAthensButton:hover {
-  text-decoration:none;
-  background:#475da7;
-  color:white;
+  text-decoration: none;
+  background: #475da7;
+  color: white;
 }
 
 .discousion-username {
@@ -1291,7 +1348,7 @@ iframe#discourse-embed-frame {
 }
 
 .discousion-comments-separator {
-  border-top: 1px solid rgba(0, 0, 0, 0.1)
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 #discourse-add-comment {
@@ -1313,7 +1370,7 @@ iframe#discourse-embed-frame {
 
 .login-body {
   text-align: left;
-  padding: 2px 16px
+  padding: 2px 16px;
 }
 
 .descriptionWhiteSpace {
@@ -1325,135 +1382,135 @@ iframe#discourse-embed-frame {
 }
 
 .pagination {
-    margin-top: 20px;
-  }
-  
-  .page-item.active .page-link,
-  .page-item.active .page-link:hover { 
-    background-color: var(--purple);
-    color: #ffffff !important;
-  }
-  
-  .page-link {
-    font-family: museo-sans-rounded !important;
-    font-size: 14px;
-    font-weight: 500;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: normal !important;
-    letter-spacing: normal;
-    color: var(--gray-700) !important;
-    display: block !important;
-    border: 0px !important;
-    box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09) !important;
-    padding: 12px 10px !important;
-  }
-  
-  .page-link:focus {
-    background-color: #ffffff !important;
-  }
-  
-  .page-item {
-    margin: 0px 1px !important;
-    width: 32px !important;
-    text-align: center;
-  }
-  
-  .page-item.active .page-link:hover {
-    background-color:rgba(71, 93, 167) !important; 
-    color: #ffffff !important;
-  }
-  
-  .page-link:hover {
-    background-color: rgba(71, 93, 167, 0.3) !important;
-   }
-  
-  .page-item:last-child .page-link {
-    border-top-right-radius: 0 !important;
-    border-bottom-right-radius: 0 !important;
-  }
-  
-  .page-item:first-child .page-link {
-    border-top-left-radius: 0 !important;
-    border-bottom-left-radius: 0 !important;
-  }
-  
-  .page-item:last-child,
-  .page-item:first-child {
-    width: auto !important;
-  }
- 
-  .overflowWrap{
-    overflow-wrap: break-word;
-  }
+  margin-top: 20px;
+}
 
-  .Banner {
-    background-color: #29235c;
-    width: 100%;
-    height: 72px;
-    margin-left: 0px !important;
-    align-content: center;
-  }
+.page-item.active .page-link,
+.page-item.active .page-link:hover {
+  background-color: var(--purple);
+  color: #ffffff !important;
+}
 
-  .Icon-18px {
-    width: 18px;
-    height: 18px;
-  }
+.page-link {
+  font-family: museo-sans-rounded !important;
+  font-size: 14px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal !important;
+  letter-spacing: normal;
+  color: var(--gray-700) !important;
+  display: block !important;
+  border: 0px !important;
+  box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09) !important;
+  padding: 12px 10px !important;
+}
 
-  .Icon-8px {
-    width: 12px;
-    height: 12px;
-  }
+.page-link:focus {
+  background-color: #ffffff !important;
+}
 
-  .form-control:focus {
-    border: solid 2px #3db28c !important;
-  }
+.page-item {
+  margin: 0px 1px !important;
+  width: 32px !important;
+  text-align: center;
+}
 
-  .radio {
-    display: inline-block !important;
-    margin-right: 1em !important;
-    margin-left: 1em !important;
-    min-width: 5%;
-  }
+.page-item.active .page-link:hover {
+  background-color: rgba(71, 93, 167) !important;
+  color: #ffffff !important;
+}
 
-  .radio #principleInvestigator-label{
-    width: 100%;
-  }
+.page-link:hover {
+  background-color: rgba(71, 93, 167, 0.3) !important;
+}
 
-  .radio #principleInvestigator-label input[type='radio']{
-    margin-right: 30%;
-  }
+.page-item:last-child .page-link {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
 
-  .BottomCard {
-    background-color: #ffffff;
-    height: 90%;
-  }
+.page-item:first-child .page-link {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
 
-  .White {
-    background-color:  #ffffff;
-  }
+.page-item:last-child,
+.page-item:first-child {
+  width: auto !important;
+}
 
-  .darIframe{
-    height: 600px;
-    width: 800px;
-  }
+.overflowWrap {
+  overflow-wrap: break-word;
+}
 
-  .darModal .modal-content{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+.Banner {
+  background-color: #29235c;
+  width: 100%;
+  height: 72px;
+  margin-left: 0px !important;
+  align-content: center;
+}
 
-  .modal-dialog {
-    position: absolute;
-    top: 40%;
-    left: 15%;
-    transform: translate(-50%, -50%) !important;
+.Icon-18px {
+  width: 18px;
+  height: 18px;
+}
+
+.Icon-8px {
+  width: 12px;
+  height: 12px;
+}
+
+.form-control:focus {
+  border: solid 2px #3db28c !important;
+}
+
+.radio {
+  display: inline-block !important;
+  margin-right: 1em !important;
+  margin-left: 1em !important;
+  min-width: 5%;
+}
+
+.radio #principleInvestigator-label {
+  width: 100%;
+}
+
+.radio #principleInvestigator-label input[type='radio'] {
+  margin-right: 30%;
+}
+
+.BottomCard {
+  background-color: #ffffff;
+  height: 90%;
+}
+
+.White {
+  background-color: #ffffff;
+}
+
+.darIframe {
+  height: 600px;
+  width: 800px;
+}
+
+.darModal .modal-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-dialog {
+  position: absolute;
+  top: 40%;
+  left: 15%;
+  transform: translate(-50%, -50%) !important;
 }
 
 .darTab {
   height: 90%;
-  background-color:  #ffffff;
+  background-color: #ffffff;
 }
 
 .Height100 {
@@ -1469,12 +1526,12 @@ iframe#discourse-embed-frame {
   width: 100vw;
 }
 
-.FlexColumn{
+.FlexColumn {
   display: flex;
   flex-direction: column;
 }
 
-.darFooter{
+.darFooter {
   width: 100%;
   height: 70px;
   background-color: #ffffff;
@@ -1489,9 +1546,6 @@ iframe#discourse-embed-frame {
   display: none;
 }
 
-
-
-
 /* 
 #
 #
@@ -1500,345 +1554,340 @@ NAVBAR CSS BELOW
 #
 */
 
-
+.nav-wrapper {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  height: 100%;
+}
 
 #desktopSearchBar {
-    display: block;
+  visibility: hidden;
 }
 
 #mobileSearchBar {
-    display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
 }
 
-@media screen and (max-width: 991px) {
-
-    #desktopSearchBar {
-        display: none;
-    }
-
-    #mobileSearchBar {
-        display: block;
-    }
-
+.navBarNotificationSpacing {
+  position: relative;
 }
 
+.desktopNotificationMenu {
+  padding: 0 !important;
+}
+
+@media (min-width: 1020px) {
+  #desktopSearchBar {
+    visibility: unset;
+  }
+
+  #mobileSearchBar {
+    visibility: hidden;
+  }
+}
 
 @media (min-width: 1260px) {
-    .navBarLogoSpacing {
-        vertical-align: middle;
-        display: inline-block;
-    }
+  .navBarLogoSpacing {
+    vertical-align: middle;
+    display: inline-block;
+  }
 
-    .navBarLinkSpacing {
-        vertical-align: middle;
-        display: inline-block;
-        margin-top: 12px;
-        padding: 0px 0px 0px 40px;
-    }
+  .navBarLinkSpacing {
+    vertical-align: middle;
+    display: inline-block;
+    margin-top: 12px;
+    padding: 0px 0px 0px 40px;
+  }
 
-    .navBarLoginSpacing {
-        vertical-align: middle;
-        display: inline-block;
-        margin-top: 9px;
-        padding: 0px 40px 0px 0px;
-    }
+  .navBarLoginSpacing {
+    padding: 0px 40px 0px 0px;
+  }
 
-    .navBarNotificationSpacing {
-        vertical-align: middle;
-        display: inline-block;
-        margin-top:15px;
-        padding: 0px 30px 0px 30px;
-    }
+  .navBarNotificationSpacing {
+    padding: 0px 25px;
+  }
 
-    .navBarSearchBarSpacing {
-        vertical-align: middle;
-        display: inline-block;
-        width: 50%;
-        text-align: left;
-    }
+  .navBarSearchBarSpacing {
+    width: 50%;
+    text-align: left;
+  }
 
-    .SearchBarInputGrey {
-        border: 0;
-        background-color: #f6f7f8;
-        display: inline-block;
-        border-radius: 4px;
-        margin-top: 9px;
-        padding: 5px;
-        width: 100%;
-    }
+  .SearchBarInputGrey {
+    border: 0;
+    background-color: #f6f7f8;
+    display: inline-block;
+    border-radius: 4px;
+    /* margin-top: 9px; */
+    padding: 5px;
+    width: 100%;
+  }
 
-    #SearchInputSpanGrey {
-        display: inline-block;
-        width: 80%;
-        outline: none;
-        border: 0;
-        font-size: 16px;
-        background-color: #f6f7f8;
-        color: #3c3c3b;
-        padding-top: 7px;
-    }
+  #SearchInputSpanGrey {
+    display: inline-block;
+    width: 80%;
+    outline: none;
+    border: 0;
+    font-size: 16px;
+    background-color: #f6f7f8;
+    color: #3c3c3b;
+    padding-top: 7px;
+  }
 
-    .desktopLoginMenu {
-        width:200px;
-        top:29px !important;
-        left:-5px !important;
-    }
-    
-    .desktopNotificationMenu {
-        overflow-x: hidden;
-        overflow-y: scroll;
-        max-height: 400px;
-        width: 400px;
-        top:10px !important;
-        left:0px !important;
-        word-wrap: break-word;
-    }
+  .desktopLoginMenu {
+    width: 200px;
+    top: 28px !important;
+    left: -53px !important;
+  }
+
+  .desktopNotificationMenu {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    max-height: 400px;
+    width: 400px;
+    top: 28px !important;
+    left: -148px !important;
+    word-wrap: break-word;
+  }
 }
 
 @media (max-width: 1259px) {
-    .navBarLogoSpacing {
-        vertical-align: middle;
-        display: inline-block;
-    }
+  .navBarLogoSpacing {
+    vertical-align: middle;
+    display: inline-block;
+  }
 
-    .navBarLinkSpacing {
-        vertical-align: middle;
-        display: inline-block;
-        margin-top: 12px;
-        padding: 0px 0px 0px 20px;
-    }
+  .navBarLinkSpacing {
+    vertical-align: middle;
+    display: inline-block;
+    margin-top: 12px;
+    padding: 0px 0px 0px 20px;
+  }
 
-    .navBarLoginSpacing {
-        vertical-align: middle;
-        display: inline-block;
-        margin-top: 9px;
-        padding: 0px 20px 0px 0px;
-    }
+  .navBarLoginSpacing {
+    padding: 0px 20px 0px 0px;
+  }
 
-    .navBarNotificationSpacing {
-        vertical-align: middle;
-        display: inline-block;
-        margin-top:15px;
-        padding: 0px 15px 0px 15px;
-    }
+  .navBarNotificationSpacing {
+    padding: 0px 15px 0px 15px;
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    align-items: center;
+    align-self: stretch;
+    height: 100%;
+  }
 
-    .navBarSearchBarSpacing {
-        vertical-align: middle;
-        display: inline-block;
-        width: 50%;
-        text-align: left;
-    }
+  .navBarSearchBarSpacing {
+    width: 50%;
+    text-align: left;
+  }
 
-    .SearchBarInputGrey {
-        border: 0;
-        background-color: #f6f7f8;
-        display: inline-block;
-        border-radius: 4px;
-        margin-top: 9px;
-        padding: 5px;
-        width: 100%;
-    }
+  .SearchBarInputGrey {
+    border: 0;
+    background-color: #f6f7f8;
+    display: inline-block;
+    border-radius: 4px;
+    /* margin-top: 9px; */
+    padding: 5px;
+    width: 100%;
+  }
 
-    #SearchInputSpanGrey {
-        display: inline-block;
-        width: 70%;
-        outline: none;
-        border: 0;
-        font-size: 16px;
-        background-color: #f6f7f8;
-        color: #3c3c3b;
-        padding-top: 7px;
-    }
+  #SearchInputSpanGrey {
+    display: inline-block;
+    width: 70%;
+    outline: none;
+    border: 0;
+    font-size: 16px;
+    background-color: #f6f7f8;
+    color: #3c3c3b;
+    padding-top: 7px;
+  }
 
-    .desktopLoginMenu {
-        width:200px;
-        top:29px !important;
-        left:-5px !important;
-    }
-    
-    .desktopNotificationMenu {
-        overflow-x: hidden;
-        overflow-y: scroll;
-        max-height: 400px;
-        width: 400px;
-        top:10px !important;
-        left:0px !important;
-        word-wrap: break-word;
-    }
+  .desktopLoginMenu {
+    width: 200px;
+    top: 29px !important;
+    left: -31px !important;
+  }
+
+  .desktopNotificationMenu {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    max-height: 400px;
+    width: 400px;
+    word-wrap: break-word;
+    top: 28px !important;
+    left: -148px !important;
+  }
 }
 
 @media (max-width: 991px) {
-    .navBarLogoSpacing {
-        vertical-align: middle;
-        display: inline-block;
-    }
+  .navBarLogoSpacing {
+    vertical-align: middle;
+    display: inline-block;
+  }
 
-    .navBarLinkSpacing {
-        vertical-align: middle;
-        display: inline-block;
-        margin-top: 12px;
-        padding: 0px 0px 0px 20px;
-    }
+  .navBarLinkSpacing {
+    margin-top: 12px;
+    padding: 0px 0px 0px 20px;
+  }
 
-    .navBarLoginSpacing {
-        vertical-align: middle;
-        display: inline-block;
-        margin-top: 22px;
-        padding: 0px 20px 0px 0px;
-    }
+  .navBarLoginSpacing {
+    padding: 0px 20px 0px 0px;
+  }
 
-    .navBarNotificationSpacing {
-        vertical-align: middle;
-        display: inline-block;
-        margin-top: 25px;
-        margin-right: 30px;
-        padding: 0px 0px 0px 5px;
-    }
+  .navBarNotificationSpacing {
+    margin-right: 30px;
+    padding: 0px 0px 0px 5px;
+  }
 
-    .navBarSearchBarSpacing {
-        vertical-align: middle;
-        display: inline-block;
-        width: 100%;
-        text-align: left;
-    }
+  .navBarSearchBarSpacing {
+    width: 100%;
+    text-align: left;
+  }
 
-    .navBarSearchIconHolder {
-        float:right;
-        background-color: #f6f7f8;
-        padding: 10px 10px 5px 10px;
-        border-radius: 15px;
-        margin-top: 20px;
-    }
+  .navBarSearchIconHolder {
+    float: right;
+    background-color: #f6f7f8;
+    padding: 10px 10px 5px 10px;
+    border-radius: 15px;
+    margin-top: 20px;
+  }
 
-    .navBarSearchIconHolderAlt {
-        float:right;
-        background-color: #f6f7f8;
-        padding: 10px 10px 5px 10px;
-        border-radius: 15px;
-        margin-top: 20px;
-        margin-right: 25px;
-    }
+  .navBarSearchIconHolderAlt {
+    float: right;
+    background-color: #f6f7f8;
+    padding: 10px 10px 5px 10px;
+    border-radius: 15px;
+    margin-top: 20px;
+    margin-right: 25px;
+  }
 
-    .SearchBarInputGrey {
-        border: 0;
-        background-color: #f6f7f8;
-        display: inline-block;
-        border-radius: 4px;
-        margin-top: 16px;
-        padding: 5px;
-        width: 100%;
-    }
+  .SearchBarInputGrey {
+    border: 0;
+    background-color: #f6f7f8;
+    display: inline-block;
+    border-radius: 4px;
+    margin-top: 16px;
+    padding: 5px;
+    width: 100%;
+  }
 
-    #SearchInputSpanGrey {
-        display: inline-block;
-        width: 70%;
-        outline: none;
-        border: 0;
-        font-size: 16px;
-        background-color: #f6f7f8;
-        color: #3c3c3b;
-        padding-top: 7px;
-    }
+  #SearchInputSpanGrey {
+    display: inline-block;
+    width: 70%;
+    outline: none;
+    border: 0;
+    font-size: 16px;
+    background-color: #f6f7f8;
+    color: #3c3c3b;
+    padding-top: 7px;
+  }
 
-    .mobileLoginMenu {
-        width:300px;
-        top:16px !important;
-        left:-5px !important;
-    }
+  .mobileLoginMenu {
+    width: 300px;
+    top: 16px !important;
+    left: -5px !important;
+  }
 
-    .mobileNotificationMenu {
-        overflow-x: hidden;
-        overflow-y: scroll;
-        max-height: 400px;
-        width: 320px;
-        top:10px !important;
-        left:0px !important;
-        word-wrap: break-word;
-    }
+  .mobileNotificationMenu {
+    top: 28px !important;
+    left: -51px !important;
+    padding: 0 !important;
+    width: 320px;
+    max-height: 400px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    word-wrap: break-word;
+  }
 }
 
 .searchBarBackground {
-    width: 100%;
-    background-color: #ffffff;
+  width: 100%;
+  background-color: #ffffff;
 }
 
 .SearchInputIconGrey {
-    float: left;
-    min-width: 40px;
-    padding: 10px 0px 0px 12px;
+  float: left;
+  min-width: 40px;
+  padding: 10px 0px 0px 12px;
 }
 
 .SearchInputClearGrey {
-    float: right;
-    padding: 8px 10px 0px 0px;
+  float: right;
+  padding: 8px 10px 0px 0px;
 }
 
 .SearchIconGreyHolder {
-    display: inline-block;
+  display: inline-block;
 }
 
 .SearchIconGrey {
-    background-color: #f6f7f8;
-    display: inline-block;
-    border-radius: 30px;
-    padding:15px 15px 5px 15px;
+  background-color: #f6f7f8;
+  display: inline-block;
+  border-radius: 30px;
+  padding: 15px 15px 5px 15px;
 }
-  
+
 .hamBurgerHolder {
-    margin: 27px 0px 0px 27px;
+  margin: 27px 0px 0px 27px;
 }
 
 .navBarNoficationHolder {
-    margin: 27px 27px 0px 0px;
+  margin: 27px 27px 0px 0px;
 }
 
 .showAllLoginOptionsButton {
-    width: 250px;
-    background: #475da7;
-    color: white;
-    padding: 8px 20px;
-    border-radius: 2px;
-    display: block;
-    margin: 0 auto;
-    text-align: center;
-    font-size: 14px
+  width: 250px;
+  background: #475da7;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 2px;
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 14px;
 }
 
 .wayfinder-container {
-    margin-top: 10px;
-    padding: 10px 0px 0px 0px !important;
-    border: solid 1px #d6d6d6;
-    border-radius: 5px
+  margin-top: 10px;
+  padding: 10px 0px 0px 0px !important;
+  border: solid 1px #d6d6d6;
+  border-radius: 5px;
 }
 
 .navbarShown {
-    width: 100%;
-    position: fixed;
-    top: 0;
-    transition: top 0.3s;
-    z-index: 999;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  transition: top 0.3s;
+  z-index: 999;
 }
 
 .navbarHidden {
-    top: -500px;
+  top: -500px;
 }
 
 .navBarGap {
-    height: 79px
+  height: 79px;
 }
 
 .offlineNotificationGap {
-    vertical-align: middle;
-    display: inline-block;
-    margin-top:15px;
+  vertical-align: middle;
+  display: inline-block;
+  margin-top: 15px;
 }
 
 .NotificationReadBackground {
-    background-color: #f6f7f8
+  background-color: #f6f7f8;
 }
 
-
-.NotificationDate{
+.NotificationDate {
   padding: 10px 0px 5px 15px;
   font-size: 13px;
   font-weight: 500;
@@ -1846,38 +1895,32 @@ NAVBAR CSS BELOW
 }
 
 .NotificationInfoHolder {
-    padding: 0px 0px 10px 15px;
+  padding: 0px 0px 10px 15px;
 }
 
-.NotificationInfo{  
+.NotificationInfo {
   overflow: hidden;
   font-size: 14px;
   color: #3c3c3b;
 }
 
-
-
-
-
-#NotificationsBell:hover{
-   background-size: 40px, 40px;
-   background: #e2e2e2; 
-   -moz-border-radius: 70px; 
-   -webkit-border-radius: 70px; 
-   border-radius: 70px;
-  
+#NotificationsBell:hover {
+  background-size: 40px, 40px;
+  background: #e2e2e2;
+  -moz-border-radius: 70px;
+  -webkit-border-radius: 70px;
+  border-radius: 70px;
 }
 
-.NotificationsBell{
-   background-size: 40px, 40px;
-   background: #e2e2e2; 
-   -moz-border-radius: 70px; 
-   -webkit-border-radius: 70px; 
-   border-radius: 70px;
-  
+.NotificationsBell {
+  background-size: 40px, 40px;
+  background: #e2e2e2;
+  -moz-border-radius: 70px;
+  -webkit-border-radius: 70px;
+  border-radius: 70px;
 }
 
- .NoNotifications{
+.NoNotifications {
   width: 100%;
   box-shadow: 1px 1px 3px 0 #00000017;
   background-color: #ffffff;
@@ -1885,28 +1928,28 @@ NAVBAR CSS BELOW
   padding-right: 20px;
   padding-bottom: 40%;
   padding-left: 20px;
-} 
-
-.UnreadNotification{
-  background-color: #f6f7f8
 }
 
-.MetadataQuality{
-  padding-left:12px;
-  padding-right:12px;
+.UnreadNotification {
+  background-color: #f6f7f8;
+}
+
+.MetadataQuality {
+  padding-left: 12px;
+  padding-right: 12px;
   height: 25px;
   line-height: 25px;
   border-radius: 4px;
   display: inline-block;
-  color:white;
+  color: white;
   font-size: 14px;
 }
 
 .NotRatedBackground {
-    color: #3c3c3b;
-    font-weight: 500;
-    opacity: 0.7;
-    padding-left: 0px;
+  color: #3c3c3b;
+  font-weight: 500;
+  opacity: 0.7;
+  padding-left: 0px;
 }
 
 .RatingSilverBackground {
@@ -1959,12 +2002,11 @@ NAVBAR CSS BELOW
   margin: 0px !important;
 }
 
-.SelectedBorder{
+.SelectedBorder {
   border: solid 4px #3db28c !important;
-
 }
 
-.ResultsCardInput{
+.ResultsCardInput {
   width: 100%;
   height: 40px;
   border-radius: 4px;
@@ -1980,86 +2022,128 @@ NAVBAR CSS BELOW
   background-color: #ffffff;
 } */
 
-.ResultsCardInput:focus{
+.ResultsCardInput:focus {
   width: 100%;
   height: 40px;
   border-radius: 4px;
   border: solid 2px #3db28c !important;
   outline: none;
- 
 }
 
 .pixelGapTop {
-    margin-top: 1px;
+  margin-top: 1px;
 }
 
 .pixelGapRight {
-    margin-right: 1px;
+  margin-right: 1px;
 }
 
 .pixelGapBottom {
-    margin-bottom: 1px;
+  margin-bottom: 1px;
 }
 
 .pixelGapLeft {
-    margin-left: 1px;
+  margin-left: 1px;
 }
 
-.RelatedModalBackground{
+.RelatedModalBackground {
   background-color: #f6f7f8;
   position: relative;
   height: 100%;
 }
 
-.RelatedResourcesModal .modal-content{
+.RelatedResourcesModal .modal-content {
   height: 100vh;
+}
+
+.RelatedResourcesRectangle {
+    width: 100%;
+    box-shadow: 1px 1px 3px 0 #00000017;
+    background-color: #ffffff;
+}
+
+.RelatedObjectRectangle {
+    width: 100%;
+    background-color: #ffffff;
+    border: none;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .MinHeightModal {
   /* min-height: 70vh; */
   min-height: 100vh;
-
 }
 
-.ModalWrapper{
+.ModalWrapper {
   overflow-y: scroll;
-  height:calc(100% - 72px);
+  height: calc(100% - 72px);
   width: 70vw !important;
 }
 
 .ModalFooter {
- position:static;
- bottom: 0;
- height: 80px;
+  position: static;
+  bottom: 0;
+  height: 80px;
 }
 
 .relationshipBar {
-    width: 100%; 
-    text-align: center; 
-    border-bottom: 1px solid #d8d8d8; 
-    line-height: 0.1em;
-    margin: 10px 0 20px; 
- } 
- 
- .relationshipBar span {
-    font-family: museo-sans-rounded;
-    font-size: 13px;
-    color: #848e97 !important;
-    background:#fff; 
-    padding:0 10px; 
- }
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px solid #d8d8d8;
+  line-height: 0.1em;
+  margin: 10px 0 20px;
+}
 
- .relationshipAnswer{
-    width: 100%; 
-    border-radius: 8px;
-    background-color: #f6f7f8;
-    padding:20px;
- }
+.footerBottom {
+  width: '100%';
+  margin-top: -440px; /* negative value of footer height */
+  height: 440px;
+  clear: both;
+  background-image: linear-gradient(110deg, #50b996, #485ea7 100%);
+  padding: 48px;
+}
+.text-size-small {
+  font-size: 14px;
+}
+.text-color-lightest {
+  color: #ffffff;
+}
+.text-color-lightest :hover {
+  color: #ffffff;
+}
+.footerLogo {
+  height: 60px;
+}
+.icon-social {
+  height: 50px;
+  padding-left: 30px;
+  padding-right: 5px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
 
- #ImageToolTip {
+#imageToolTip {
   position: absolute;
   width: 326px;
   height: 164px;
   left: -50%;
   top: 50%;
- }
+}
+
+.relationshipBar span {
+  font-family: museo-sans-rounded;
+  font-size: 13px;
+  color: #848e97 !important;
+  background: #fff;
+  padding: 0 10px;
+}
+
+.relationshipAnswer {
+  width: 100%;
+  border-radius: 8px;
+  background-color: #f6f7f8;
+  padding: 20px;
+}
