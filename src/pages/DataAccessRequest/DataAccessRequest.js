@@ -5,17 +5,18 @@ import { Container, Row, Col, Button, Tabs, Tab } from 'react-bootstrap';
 import Winterfell from 'winterfell';
 import _ from 'lodash';
 import moment from 'moment';
+import axios from 'axios';
 import TypeaheadCustom from './components/TypeaheadCustom'
 import DatePickerCustom from './components/DatepickerCustom';
 import SearchBar from '../commonComponents/SearchBar';
 import Loading from '../commonComponents/Loading';
 import ToolKit from './components/Toolkit';
 import NavItem from './components/NavItem';
-import axios from 'axios';
 import DarValidation from '../../utils/DarValidation.util';
 import {classSchema} from './classSchema';
 import { baseURL } from '../../configs/url.config';
 import 'react-tabs/style/react-tabs.css';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from "../../images/SVGIcon"
 
 class DataAccessRequest extends Component {
@@ -52,7 +53,7 @@ class DataAccessRequest extends Component {
             const response = await axios.get(`${baseURL}/api/v1/data-access-request/${dataSetId}`);
             const { data: { data: { jsonSchema, questionAnswers, _id, applicationStatus }}} = response;
             this.setState({schema: {...jsonSchema, ...classSchema}, questionAnswers, _id, applicationStatus, activePanelId: 'mrcHealthDataToolkit', isLoading: false});
-            // this.setState({schema: {...formSchema}, activePanelId: 'mrcHealthDataToolkit', isLoading: false});
+            // this.setState({schema: {...formSchema}, activePanelId: 'mrcHealthDataToolkit', isLoading: false, applicationStatus: 'inProgress'});
         }
         catch (error) {
             this.setState({isLoading: false});
@@ -71,14 +72,17 @@ class DataAccessRequest extends Component {
                 ({questionAnswers} = {...this.state})
             // 1. deconstruct state
             let {schema: {questionSets}} = {...this.state};
-            // 2. omits out blank null undefined values from this.state.answers
-            questionAnswers  =  _.pickBy({...questionAnswers }, _.identity);
-
+            // 2. omits out blank null, undefined, and [] values from this.state.answers
+            questionAnswers = _.pickBy({...questionAnswers}, v => v !== null && v !== undefined && v.length != 0);
+            // 3. find the relevant questionSet { questionSetId: applicant }
             let questionSet = [...questionSets].find(q => q.questionSetId === panelId) || '';
             if(!_.isEmpty(questionSet)) {
+                // 4. get questions
                 let { questions } = questionSet;
+                // 5. total questions in panel 
                 totalQuestions = questions.length;
                 let totalQuestionKeys = _.map({...questions}, 'questionId');
+                // 6. return count of how many questions completed 
                 if(!_.isEmpty(questionAnswers)){
                     let count = Object.keys(questionAnswers).map((value) => { 
                         return totalQuestionKeys.includes(value) ? totalAnsweredQuestions++ : totalAnsweredQuestions;
@@ -171,7 +175,7 @@ class DataAccessRequest extends Component {
     onFormUpdate = _.debounce((questionAnswers) => {
         let totalQuestionsAnswered = this.totalQuestionsAnswered(this.state.activePanelId, questionAnswers);
         this.setState({totalQuestions: totalQuestionsAnswered});
-        this.onApplicationUpdate(questionAnswers);
+        // this.onApplicationUpdate(questionAnswers);
     }, 500);
 
     /**
@@ -185,6 +189,9 @@ class DataAccessRequest extends Component {
         let inValidMessages = DarValidation.buildInvalidMessages(Winterfell, invalidQuestions);
         let errors = DarValidation.formatValidationObj(inValidMessages, [...this.state.schema.questionPanels]);
         let isValid = Object.keys(errors).length ? false : true;
+        if(applicationStatus === 'submitted')
+            return alert('Your application has already been submitted.');
+
         if(isValid) {
             try {
                 let {_id: id} = this.state;

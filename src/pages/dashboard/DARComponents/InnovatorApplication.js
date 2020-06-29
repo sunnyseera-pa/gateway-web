@@ -63,7 +63,6 @@ class InnovatorApplication extends React.Component {
                 </Container>
             );
         }
-        {console.log(dataset)}
         return (
             <div className="DARDiv" >
 

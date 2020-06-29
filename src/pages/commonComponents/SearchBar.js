@@ -187,7 +187,6 @@ class SearchBar extends React.Component {
 
     render() {
         const { userState, newData, isLoading, clearMessage } = this.state;
-        console.log('new data: ' + JSON.stringify(this.state.newData))
         if (isLoading) {
             return <></>;
         }
