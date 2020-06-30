@@ -189,7 +189,7 @@ class DataAccessRequest extends Component {
         let inValidMessages = DarValidation.buildInvalidMessages(Winterfell, invalidQuestions);
         let errors = DarValidation.formatValidationObj(inValidMessages, [...this.state.schema.questionPanels]);
         let isValid = Object.keys(errors).length ? false : true;
-        if(applicationStatus === 'submitted')
+        if(this.state.applicationStatus === 'submitted')
             return alert('Your application has already been submitted.');
 
         if(isValid) {
