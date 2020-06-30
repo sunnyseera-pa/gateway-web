@@ -129,7 +129,7 @@ class LandingPage extends React.Component {
         }
 
         return (
-            <div className="LandingBackground">
+            <div className="landingBackground">
                 <Row className="pt-5 pl-5">
                     <Col xs={{ span: 6, order: 1 }} lg={{ span: 6, order: 1 }}> <WhiteLogoSvg /> </Col>
                     <Col xs={{ span: 6, order: 2 }} lg={{ span: 6, order: 2 }}>
@@ -227,17 +227,17 @@ class RecentSearches extends React.Component {
         return (
             <Row className="mt-2">
                 <Col>
-                    <div className="LandingBox">
+                    <div className="landingBox">
                         <Row >
                             <Col sm={1} lg={1} />
                             <Col sm={10} lg={10} className="mt-3 mb-1">
-                                <span className="Black-16px"> Recent Searches </span>
+                                <span className="black-16"> Recent Searches </span>
                             </Col>
                             <Col sm={1} lg={1} />
                         </Row>
                         <Row>
                             <Col sm={1} lg={1} />
-                            <Col sm={10} lg={10} className="GreyStrip" />
+                            <Col sm={10} lg={10} className="greyStrip" />
                             <Col sm={1} lg={1} />
                         </Row>
 
@@ -248,9 +248,9 @@ class RecentSearches extends React.Component {
                                         <Row >
                                             <Col sm={1} lg={1} />
                                             <Col sm={10} lg={10} className="mt-2 mb-2">
-                                                <a className="Purple-14px" style={{ cursor: 'pointer' }} href={'/search?search=' + searchDat._id}> {searchDat._id} </a>
+                                                <a className="purple-14" style={{ cursor: 'pointer' }} href={'/search?search=' + searchDat._id}> {searchDat._id} </a>
                                                 <br />
-                                                <span className="Gray800-14px">
+                                                <span className="gray800-14">
                                                     {!searchDat.returned.tool ? '' :
                                                         <>
                                                             {searchDat.returned.tool}
@@ -279,7 +279,7 @@ class RecentSearches extends React.Component {
                                         </Row>
                                         <Row>
                                             <Col sm={1} lg={1} />
-                                            <Col sm={10} lg={10} className="GreyStrip" />
+                                            <Col sm={10} lg={10} className="greyStrip" />
                                             <Col sm={1} lg={1} />
                                         </Row>
                                     </div>
@@ -288,7 +288,7 @@ class RecentSearches extends React.Component {
 
                         <Row>
                             <Col sm={1} lg={1} />
-                            <Col sm={10} lg={10} className="GreyStrip" />
+                            <Col sm={10} lg={10} className="greyStrip" />
                             <Col sm={1} lg={1} />
                         </Row>
                     </div>
@@ -316,18 +316,18 @@ class Popular extends React.Component {
         return (
             <Row className="mt-2">
                 <Col>
-                    <div className="LandingBox">
+                    <div className="landingBox">
                         <Row>
                             <Col sm={1} lg={1} />
                             <Col sm={10} lg={10} className="mt-3 mb-1">
-                                <span className="Black-16px"> Most popular this month </span>
+                                <span className="black-16"> Most popular this month </span>
                             </Col>
                             <Col sm={1} lg={1} />
 
                         </Row>
                         <Row>
                             <Col sm={1} lg={1} />
-                            <Col sm={10} lg={10} className="GreyStrip" />
+                            <Col sm={10} lg={10} className="greyStrip" />
                             <Col sm={1} lg={1} />
                         </Row>
 
@@ -340,27 +340,27 @@ class Popular extends React.Component {
                                             <Col sm={10} lg={10} className="mt-2 mb-2">
                                                 {(() => {
                                                     if (popular.type === "person") {
-                                                        return <><a className="Purple-14px" style={{ cursor: 'pointer' }} href={'/person/' + popular.id} >{popular.firstname} {popular.lastname}</a></>
+                                                        return <><a className="purple-14" style={{ cursor: 'pointer' }} href={'/person/' + popular.id} >{popular.firstname} {popular.lastname}</a></>
                                                     }
                                                     else if (popular.type === "tool") {
-                                                        return <><a className="Purple-14px" style={{ cursor: 'pointer' }} href={'/tool/' + popular.id} >{popular.name}</a></>
+                                                        return <><a className="purple-14" style={{ cursor: 'pointer' }} href={'/tool/' + popular.id} >{popular.name}</a></>
                                                     }
                                                     else if (popular.type === "project") {
-                                                        return <><a className="Purple-14px" style={{ cursor: 'pointer' }} href={'/project/' + popular.id} >{popular.name}</a></>
+                                                        return <><a className="purple-14" style={{ cursor: 'pointer' }} href={'/project/' + popular.id} >{popular.name}</a></>
                                                     }
                                                 })()}
                                                 <br />
-                                                <span className="Gray800-14px">
+                                                <span className="gray800-14">
                                                     {(() => {
                                                         if (popular.type === "person") {
                                                             return <>{popular.bio} </>
                                                         }
                                                         else {
                                                             return <>
-                                                                {!popular.categories.category ? '' : <span className="Gray800-14px">{popular.categories.category}</span>}
+                                                                {!popular.categories.category ? '' : <span className="gray800-14">{popular.categories.category}</span>}
                                                                 {!popular.categories.programmingLanguage || popular.categories.programmingLanguage.length <= 0 ? '' : ', '}
                                                                 {!popular.categories.programmingLanguage || popular.categories.programmingLanguage.length <= 0 ? '' : popular.categories.programmingLanguage.map((language) => {
-                                                                    return <span className="Gray800-14px">{language}</span>
+                                                                    return <span className="gray800-14">{language}</span>
                                                                 })}
                                                             </>
                                                         }
@@ -371,7 +371,7 @@ class Popular extends React.Component {
                                         </Row>
                                         <Row>
                                             <Col sm={1} lg={1} />
-                                            <Col sm={10} lg={10} className="GreyStrip" />
+                                            <Col sm={10} lg={10} className="greyStrip" />
                                             <Col sm={1} lg={1} />
                                         </Row>
                                     </div>
@@ -404,18 +404,18 @@ class UnmetDemand extends React.Component {
         return (
             <Row className="mt-2">
                 <Col>
-                    <div className="LandingBox">
+                    <div className="landingBox">
                         <Row>
                             <Col sm={1} lg={1} />
                             <Col sm={10} lg={10} className="mt-3 mb-1">
-                                <span className="Black-16px"> Unmet Demand </span>
+                                <span className="black-16"> Unmet Demand </span>
                             </Col>
                             <Col sm={1} lg={1} />
 
                         </Row>
                         <Row>
                             <Col sm={1} lg={1} />
-                            <Col sm={10} lg={10} className="GreyStrip" />
+                            <Col sm={10} lg={10} className="greyStrip" />
                             <Col sm={1} lg={1} />
                         </Row>
 
@@ -426,15 +426,15 @@ class UnmetDemand extends React.Component {
                                         <Row >
                                             <Col sm={1} lg={1} />
                                             <Col sm={10} lg={10} className="mt-2 mb-2">
-                                                <a className="Purple-14px" style={{ cursor: 'pointer' }} href={'/search?search=' + unmetDat._id}> {unmetDat._id} </a>
+                                                <a className="purple-14" style={{ cursor: 'pointer' }} href={'/search?search=' + unmetDat._id}> {unmetDat._id} </a>
                                                 <br />
-                                                <span className="Gray800-14px"> {unmetDat.count} {unmetDat.count === 1 ? 'search' : 'searches'} but no result</span>
+                                                <span className="gray800-14"> {unmetDat.count} {unmetDat.count === 1 ? 'search' : 'searches'} but no result</span>
                                             </Col>
                                             <Col sm={1} lg={1} />
                                         </Row>
                                         <Row>
                                             <Col sm={1} lg={1} />
-                                            <Col sm={10} lg={10} className="GreyStrip" />
+                                            <Col sm={10} lg={10} className="greyStrip" />
                                             <Col sm={1} lg={1} />
                                         </Row>
                                     </div>
@@ -466,17 +466,17 @@ class Updates extends React.Component {
         return (
             <Row className="mt-2">
                 <Col>
-                    <div className="LandingBox">
+                    <div className="landingBox">
                         <Row>
                             <Col sm={1} lg={1} />
                             <Col sm={10} lg={10} className="mt-3 mb-1">
-                                <span className="Black-16px"> Recently updated </span>
+                                <span className="black-16"> Recently updated </span>
                             </Col>
                             <Col sm={1} lg={1} />
                         </Row>
                         <Row>
                             <Col sm={1} lg={1} />
-                            <Col sm={10} lg={10} className="GreyStrip" />
+                            <Col sm={10} lg={10} className="greyStrip" />
                             <Col sm={1} lg={1} />
                         </Row>
 
@@ -487,31 +487,31 @@ class Updates extends React.Component {
                                         <Row >
                                             <Col sm={1} lg={1} />
                                             <Col sm={10} lg={10} className="mt-2 mb-2">
-                                                <span className="Purple-14px">
+                                                <span className="purple-14">
                                                     {(() => {
                                                         if (updates.type === "person") {
-                                                            return <><a className="Purple-14px" style={{ cursor: 'pointer' }} href={'/person/' + updates.id} >{updates.firstname} {updates.lastname}</a></>
+                                                            return <><a className="purple-14" style={{ cursor: 'pointer' }} href={'/person/' + updates.id} >{updates.firstname} {updates.lastname}</a></>
                                                         }
                                                         else if (updates.type === "tool") {
-                                                            return <><a className="Purple-14px" style={{ cursor: 'pointer' }} href={'/tool/' + updates.id} >{updates.name}</a></>
+                                                            return <><a className="purple-14" style={{ cursor: 'pointer' }} href={'/tool/' + updates.id} >{updates.name}</a></>
                                                         }
                                                         else if (updates.type === "project") {
-                                                            return <><a className="Purple-14px" style={{ cursor: 'pointer' }} href={'/project/' + updates.id} >{updates.name}</a></>
+                                                            return <><a className="purple-14" style={{ cursor: 'pointer' }} href={'/project/' + updates.id} >{updates.name}</a></>
                                                         }
                                                     })()}
                                                 </span>
                                                 <br />
-                                                <span className="Gray800-14px">
+                                                <span className="gray800-14">
                                                     {(() => {
                                                         if (updates.type === "person") {
                                                             return <>{updates.bio} </>
                                                         }
                                                         else {
                                                             return <>
-                                                                {!updates.categories.category ? '' : <span className="Gray800-14px">{updates.categories.category}</span>}
+                                                                {!updates.categories.category ? '' : <span className="gray800-14">{updates.categories.category}</span>}
                                                                 {!updates.categories.programmingLanguage || updates.categories.programmingLanguage.length <= 0 ? '' : ', '}
                                                                 {!updates.categories.programmingLanguage || updates.categories.programmingLanguage.length <= 0 ? '' : updates.categories.programmingLanguage.map((language) => {
-                                                                    return <span className="Gray800-14px">{language}</span>
+                                                                    return <span className="gray800-14">{language}</span>
                                                                 })}
                                                             </>
                                                         }
@@ -522,7 +522,7 @@ class Updates extends React.Component {
                                         </Row>
                                         <Row>
                                             <Col sm={1} lg={1} />
-                                            <Col sm={10} lg={10} className="GreyStrip" />
+                                            <Col sm={10} lg={10} className="greyStrip" />
                                             <Col sm={1} lg={1} />
                                         </Row>
                                     </div>

@@ -70,44 +70,44 @@ class RelatedResourcesResults extends React.Component {
         switch (type) {
             case 'tool':
                 return <div>
-                    <span className="ToolBadge">
-                    <SVGIcon name="newtoolicon" fill={'#ffffff'} className="BadgeSvgs mr-2" />
+                    <span className="toolBadge">
+                    <SVGIcon name="newtoolicon" fill={'#ffffff'} className="badgeSvg mr-2" />
                     Tool 
                     </span>
-                        <span className="ml-2 Gray800-14px tagBadges mb-2 mt-2">
+                        <span className="ml-2 gray800-14 tagBadges mb-2 mt-2">
                             {data.categories.category}
                         </span>
                         {!data.categories.programmingLanguage || data.categories.programmingLanguage.length <= 0 ? '' : data.categories.programmingLanguage.map((language) => {
-                                return <span className="ml-2 Gray800-14px tagBadges mb-2 mt-2">{language}</span>
+                                return <span className="ml-2 gray800-14 tagBadges mb-2 mt-2">{language}</span>
                         })}
                     </div>
                 break;
             case undefined:
                 return <div>
-                        <span className="DatasetBadge">
-                            <SVGIcon name="dataseticon" fill={'#ffffff'} className="BadgeSvgs mr-2" />
+                        <span className="dataSetBadge">
+                            <SVGIcon name="dataseticon" fill={'#ffffff'} className="badgeSvg mr-2" />
                             Dataset
                     </span>
                    {keywords.length <= 0 ? '' : 
                                     keywords.map((keyword) => {
-                                        return <span className="ml-2 Gray800-14px tagBadges mb-2 mt-2">{keyword}</span>
+                                        return <span className="ml-2 gray800-14 tagBadges mb-2 mt-2">{keyword}</span>
                                     })}
                     </div>
                 break;
             case 'project':
                 return <div>
-                        <span className="ProjectBadge">
-                         <SVGIcon name="newestprojecticon" fill={'#ffffff'} className="BadgeSvgs mr-2" />
+                        <span className="projectBadge">
+                         <SVGIcon name="newestprojecticon" fill={'#ffffff'} className="badgeSvg mr-2" />
                             Project
                         </span>
-                        <span className="ml-2 Gray800-14px tagBadges mb-2 mt-2">
+                        <span className="ml-2 gray800-14 tagBadges mb-2 mt-2">
                             {data.categories.category}
                         </span>
                         </div>
                 break;
             case 'paper':
-                return <span className="PaperBadge">
-                    <SVGIcon name="projecticon" fill={'#3c3c3b'} className="BadgeSvgs mr-2" />
+                return <span className="paperBadge">
+                    <SVGIcon name="projecticon" fill={'#3c3c3b'} className="badgeSvg mr-2" />
                     Paper
                     </span>       
                 break;      
@@ -141,23 +141,23 @@ class RelatedResourcesResults extends React.Component {
                             {data.type === "person" ?
                                 <Col sm={10} lg={10}>
                                     <PersonPlaceholderSvg />
-                                    <span className="ExtraBlack-16px-Bold ml-3"> {data.firstname && data.lastname ? data.firstname + ' ' + data.lastname : ''}</span>
+                                    <span className="black-bold-16 ml-3"> {data.firstname && data.lastname ? data.firstname + ' ' + data.lastname : ''}</span>
                                     <br />
-                                    <span className="Gray800-14px ml-5"> {data.bio } </span>
+                                    <span className="gray800-14 ml-5"> {data.bio } </span>
                                 </Col>
 
                                 :
 
                                 data.type === 'tool' || data.type === 'project' ?
                                     <Col sm={10} lg={10}>
-                                        <span className="ExtraBlack-16px-Bold"> {data.name}</span>
+                                        <span className="black-bold-16"> {data.name}</span>
                                         <br />
                                         {!data.persons || data.persons <= 0 ? 'Author not listed' : data.persons.map((person, index) => {
                                             if (index > 0) {
-                                                return <span className="Gray800-14px">, {person.firstname} {person.lastname}</span>
+                                                return <span className="gray800-14">, {person.firstname} {person.lastname}</span>
                                             }
                                             else {
-                                                return <span className="Gray800-14px">{person.firstname} {person.lastname}</span>
+                                                return <span className="gray800-14">{person.firstname} {person.lastname}</span>
                                             }
                                         })}
                                     </Col>
@@ -166,14 +166,14 @@ class RelatedResourcesResults extends React.Component {
 
                                     data.type === undefined ?
                                         <Col sm={10} lg={10}>
-                                            <span className="ExtraBlack-16px-Bold"> {data.title}</span>
+                                            <span className="black-bold-16"> {data.title}</span>
                                             <br />
-                                            <span className="Gray800-14px"> {data.publisher} </span>
+                                            <span className="gray800-14"> {data.publisher} </span>
                                         </Col> : ''}
 
                                 <Col sm={2} lg={2}>
-                                    <Button variant="medium" className="ExtraBlack-14px" onClick={this.removeButton} >
-                                        <SVGIcon name="closeicon" fill={'#979797'} className="ButtonSvgs mr-2" />
+                                    <Button variant="medium" className="soft-black-14" onClick={this.removeButton} >
+                                        <SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />
                                         Remove
                                     </Button> 
                                 </Col>
@@ -188,10 +188,10 @@ class RelatedResourcesResults extends React.Component {
 
 
                             <Row className="mt-5 ml-3">
-                                <span className="Gray800-14px mr-2">What's the relationship between these resources?</span> 
+                                <span className="gray800-14 mr-2">What's the relationship between these resources?</span> 
                             </Row>
                             <Row className="ml-3 mr-3 testInput">
-                                <input className="ResultsCardInput" id={"reason-" + objectId} value={this.state.reason} onChange={event => this.handleChange(objectId, event.target.value, data.type)} />
+                                <input className="resultsCardInput" id={"reason-" + objectId} value={this.state.reason} onChange={event => this.handleChange(objectId, event.target.value, data.type)} />
                             </Row>
                     </div>
                 </Col>

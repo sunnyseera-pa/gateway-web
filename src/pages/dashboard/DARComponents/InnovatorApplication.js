@@ -77,7 +77,7 @@ class InnovatorApplication extends React.Component {
                         <span>{this.getProgress()}</span>
                     </Col>
                     <Col sm={2} lg={2} className="pr-5">
-                        <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
+                        <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
                                 <Dropdown.Item href="">View</Dropdown.Item>
                         </DropdownButton>
                     </Col>

@@ -32,7 +32,7 @@ class Person extends React.Component {
         return (
             <Row className="mt-2">
                 <Col>
-                <div className={this.props.tempRelatedObjectIds && this.props.tempRelatedObjectIds.some(object => object.objectId === data.id) ? "Rectangle SelectedBorder" : "Rectangle"} onClick={() => !activeLink && this.props.doAddToTempRelatedObjects(data.id, data.type) } >   
+                <div className={this.props.tempRelatedObjectIds && this.props.tempRelatedObjectIds.some(object => object.objectId === data.id) ? "rectangle selectedBorder" : "rectangle"} onClick={() => !activeLink && this.props.doAddToTempRelatedObjects(data.id, data.type) } >   
                         <Row>
                             <Col xs={2} md={1} className="iconHolder">
                                 <div class="avatar-circle">
@@ -42,14 +42,14 @@ class Person extends React.Component {
                             <Col xs={10} md={11}>
                                 <p>
                                         {activeLink===true ? 
-                                       <span className="Black-16px"> <a className="Black-16px" style={{ cursor: 'pointer' }} href={'/person/' + data.id} >{data.firstname} {data.lastname}</a> </span>
-                                        : <span className="Black-16px"> {data.firstname} {data.lastname} </span>
+                                       <span className="black-16"> <a className="black-16" style={{ cursor: 'pointer' }} href={'/person/' + data.id} >{data.firstname} {data.lastname}</a> </span>
+                                        : <span className="black-16"> {data.firstname} {data.lastname} </span>
                                         } 
                                     <br />
-                                    <span className="Gray800-14px">{data.bio}</span>
+                                    <span className="gray800-14">{data.bio}</span>
                                 </p>
 
-                                <p className="Gray800-14px">
+                                <p className="gray800-14">
                                     <b>
                                         {(() => {
                                             if (countOfProjects === 0) {

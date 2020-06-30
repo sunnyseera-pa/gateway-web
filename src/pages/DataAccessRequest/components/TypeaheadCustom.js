@@ -33,7 +33,7 @@ class TypaheadCustom extends React.Component {
     return (
       <Typeahead
         id={'test'}
-        className={'AddFormInputTypeAhead'}
+        className={'addFormInputTypeAhead'}
         multiple
         options={this.props.options ? this.props.options : ['Test', 'Test1']}        
         onChange={this.handleChange}

@@ -91,12 +91,12 @@ class RelatedObject extends React.Component {
         }
         
 
-        var rectangleClassName = 'Rectangle';
+        var rectangleClassName = 'rectangle';
         if (this.props.tempRelatedObjectIds && this.props.tempRelatedObjectIds.some(object => object.objectId === data.id)) {
-            rectangleClassName = 'Rectangle SelectedBorder';
+            rectangleClassName = 'rectangle selectedBorder';
         }
         else if (this.props.showRelationshipQuestion) {
-            rectangleClassName= 'RectangleWithBorder';
+            rectangleClassName= 'rectangleWithBorder';
         }
 
         return (
@@ -110,8 +110,8 @@ class RelatedObject extends React.Component {
                                     <Row>
                                     <Col sm={10} lg={10}/>
                                     <Col sm={2} lg={2}>
-                                    <Button variant="medium" className="ExtraBlack-14px" onClick={this.removeButton} >
-                                        <SVGIcon name="closeicon" fill={'#979797'} className="ButtonSvgs mr-2" />
+                                    <Button variant="medium" className="soft-black-14" onClick={this.removeButton} >
+                                        <SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />
                                         Remove
                                     </Button> 
                                  </Col>
@@ -132,66 +132,66 @@ class RelatedObject extends React.Component {
                                     <Row>
                                         <Col sm={10} lg={10}>
                                             {activeLink===true ?
-                                            <a className="ExtraBlack-16px-Bold" style={{ cursor: 'pointer' }} href={'/tool/' + data.id} >{data.name}</a>
-                                            : <span className="ExtraBlack-16px-Bold"> {data.name}</span> }
+                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/tool/' + data.id} >{data.name}</a>
+                                            : <span className="black-bold-16"> {data.name}</span> }
                                             <br />
-                                            {!data.persons || data.persons <= 0 ? <span className="Gray800-14px">Author not listed</span> : data.persons.map((person, index) => {
+                                            {!data.persons || data.persons <= 0 ? <span className="gray800-14">Author not listed</span> : data.persons.map((person, index) => {
                                                 if (index > 0) {
                                                     if (activeLink===true){
-                                                        return <><span className="reviewTitleGap Gray800-14px">·</span><a className="Gray800-14px" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a></>
+                                                        return <><span className="reviewTitleGap gray800-14">·</span><a className="gray800-14" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a></>
                                                     }
                                                     else {
-                                                        return <span className="Gray800-14px">, {person.firstname} {person.lastname}</span>
+                                                        return <span className="gray800-14">, {person.firstname} {person.lastname}</span>
                                                     }
                                                 }
                                                 else {
                                                     if (activeLink===true){
-                                                        return <a className="Gray800-14px" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a>
+                                                        return <a className="gray800-14" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a>
                                                     }
                                                     else {
-                                                        return <span className="Gray800-14px">{person.firstname} {person.lastname}</span>
+                                                        return <span className="gray800-14">{person.firstname} {person.lastname}</span>
                                                     }
                                                 }
                                             })}
                                         </Col> 
                                         <Col sm={2} lg={2}></Col>
                                         <Col sm={12} lg={12} className="pt-3">
-                                            <span className="ToolBadge mr-2">
-                                                <SVGIcon name="newtoolicon" fill={'#ffffff'} className="BadgeSvgs mr-2"  viewBox="-2 -2 22 22"/>
+                                            <span className="toolBadge mr-2">
+                                                <SVGIcon name="newtoolicon" fill={'#ffffff'} className="badgeSvg mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Tool</span> 
                                             </span>
                                             
-                                            {!data.categories.category ? '' :  activeLink === true ? <a href={'/search?search=' + data.categories.category}><div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{data.categories.category}</div></a> : <div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{data.categories.category}</div> }
+                                            {!data.categories.category ? '' :  activeLink === true ? <a href={'/search?search=' + data.categories.category}><div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{data.categories.category}</div></a> : <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{data.categories.category}</div> }
 
                                             {!data.categories.programmingLanguage || data.categories.programmingLanguage.length <= 0 ? '' : data.categories.programmingLanguage.map((language) => {
                                                 if (activeLink===true){
-                                                    return <a href={'/search?search=' + language}><div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{language}</div></a>
+                                                    return <a href={'/search?search=' + language}><div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{language}</div></a>
                                                 }
                                                 else {
-                                                    return <div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{language}</div>
+                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{language}</div>
                                                 }
                                             })}
 
                                             {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
                                                 if (activeLink===true){
-                                                    return <a href={'/search?search=' + feature}><div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{feature}</div></a>
+                                                    return <a href={'/search?search=' + feature}><div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{feature}</div></a>
                                                 }
                                                 else {
-                                                    return <div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{feature}</div>
+                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{feature}</div>
                                                 }
                                             })}
 
                                             {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
                                                 if (activeLink===true){
-                                                    return <a href={'/search?search=' + topic}><div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{topic}</div></a>
+                                                    return <a href={'/search?search=' + topic}><div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{topic}</div></a>
                                                 }
                                                 else {
-                                                    return <div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{topic}</div>
+                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{topic}</div>
                                                 }
                                             })}
                                         </Col> 
                                         <Col sm={12} lg={12} className="pt-3">
-                                            <span className="Gray800-14px">
+                                            <span className="gray800-14">
                                                 <ReactMarkdown source={data.description.substr(0, 140) + (data.description.length > 140 ? '...' : '')} />
                                             </span>
                                         </Col> 
@@ -203,57 +203,57 @@ class RelatedObject extends React.Component {
                                     <Row>
                                         <Col sm={10} lg={10}>
                                             {activeLink===true ?
-                                            <a className="ExtraBlack-16px-Bold" style={{ cursor: 'pointer' }} href={'/project/' + data.id} >{data.name}</a>
-                                            : <span className="ExtraBlack-16px-Bold"> {data.name}</span> }
+                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/project/' + data.id} >{data.name}</a>
+                                            : <span className="black-bold-16"> {data.name}</span> }
                                             <br />
-                                            {!data.persons || data.persons <= 0 ? <span className="Gray800-14px">Author not listed</span> : data.persons.map((person, index) => {
+                                            {!data.persons || data.persons <= 0 ? <span className="gray800-14">Author not listed</span> : data.persons.map((person, index) => {
                                                 if (index > 0) {
                                                     if (activeLink===true){
-                                                        return <><span className="reviewTitleGap Gray800-14px">·</span><a className="Gray800-14px" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a></>
+                                                        return <><span className="reviewTitleGap gray800-14">·</span><a className="gray800-14" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a></>
                                                     }
                                                     else {
-                                                        return <span className="Gray800-14px">, {person.firstname} {person.lastname}</span>
+                                                        return <span className="gray800-14">, {person.firstname} {person.lastname}</span>
                                                     }
                                                 }
                                                 else {
                                                     if (activeLink===true){
-                                                        return <a className="Gray800-14px" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a>
+                                                        return <a className="gray800-14" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a>
                                                     }
                                                     else {
-                                                        return <span className="Gray800-14px">{person.firstname} {person.lastname}</span>
+                                                        return <span className="gray800-14">{person.firstname} {person.lastname}</span>
                                                     }
                                                 }
                                             })}
                                         </Col> 
                                         <Col sm={2} lg={2}></Col>
                                         <Col sm={12} lg={12} className="pt-3">
-                                            <span className="ProjectBadge mr-2">
-                                                <SVGIcon name="newestprojecticon" fill={'#ffffff'} className="BadgeSvgs mr-2" viewBox="-2 -2 22 22"/>
+                                            <span className="projectBadge mr-2">
+                                                <SVGIcon name="newestprojecticon" fill={'#ffffff'} className="badgeSvg mr-2" viewBox="-2 -2 22 22"/>
                                                 <span>Project</span> 
                                             </span>
                                             
-                                            {!data.categories.category ? '' : activeLink === true ? <a href={'/search?search=' + data.categories.category}><div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{data.categories.category}</div></a> : <div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{data.categories.category}</div>}
+                                            {!data.categories.category ? '' : activeLink === true ? <a href={'/search?search=' + data.categories.category}><div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{data.categories.category}</div></a> : <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{data.categories.category}</div>}
 
                                             {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
                                                 if (activeLink===true){
-                                                    return <a href={'/search?search=' + feature}><div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{feature}</div></a>
+                                                    return <a href={'/search?search=' + feature}><div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{feature}</div></a>
                                                 }
                                                 else {
-                                                    return <div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{feature}</div>
+                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{feature}</div>
                                                 }
                                             })}
 
                                             {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
                                                 if (activeLink===true){
-                                                    return <a href={'/search?search=' + topic}><div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{topic}</div></a>
+                                                    return <a href={'/search?search=' + topic}><div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{topic}</div></a>
                                                 }
                                                 else {
-                                                    return <div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{topic}</div>
+                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{topic}</div>
                                                 }
                                             })}
                                         </Col>  
                                         <Col sm={12} lg={12} className="pt-3">
-                                            <span className="Gray800-14px">
+                                            <span className="gray800-14">
                                                 <ReactMarkdown source={data.description.substr(0, 140) + (data.description.length > 140 ? '...' : '')} />
                                             </span>
                                         </Col> 
@@ -265,54 +265,54 @@ class RelatedObject extends React.Component {
                                     <Row>
                                         <Col sm={10} lg={10}>
                                             {activeLink===true ?
-                                            <a className="ExtraBlack-16px-Bold" style={{ cursor: 'pointer' }} href={'/paper/' + data.id} >{data.name}</a>
-                                            : <span className="ExtraBlack-16px-Bold"> {data.name}</span> }
+                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/paper/' + data.id} >{data.name}</a>
+                                            : <span className="black-bold-16"> {data.name}</span> }
                                             <br />
-                                            {!data.persons || data.persons <= 0 ? <span className="Gray800-14px">Author not listed</span> : data.persons.map((person, index) => {
+                                            {!data.persons || data.persons <= 0 ? <span className="gray800-14">Author not listed</span> : data.persons.map((person, index) => {
                                                 if (index > 0) {
                                                     if (activeLink===true){
-                                                        return <><span className="reviewTitleGap Gray800-14px">·</span><a className="Gray800-14px" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a></>
+                                                        return <><span className="reviewTitleGap gray800-14">·</span><a className="gray800-14" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a></>
                                                     }
                                                     else {
-                                                        return <span className="Gray800-14px">, {person.firstname} {person.lastname}</span>
+                                                        return <span className="gray800-14">, {person.firstname} {person.lastname}</span>
                                                     }
                                                 }
                                                 else {
                                                     if (activeLink===true){
-                                                        return <a className="Gray800-14px" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a>
+                                                        return <a className="gray800-14" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a>
                                                     }
                                                     else {
-                                                        return <span className="Gray800-14px">{person.firstname} {person.lastname}</span>
+                                                        return <span className="gray800-14">{person.firstname} {person.lastname}</span>
                                                     }
                                                 }
                                             })}
                                         </Col> 
                                         <Col sm={2} lg={2}></Col>
                                         <Col sm={12} lg={12} className="pt-3">
-                                            <span className="PaperBadge mr-2">
-                                                <SVGIcon name="newestprojecticon" fill={'#ffffff'} className="BadgeSvgs mr-2"  viewBox="-2 -2 22 22"/>
+                                            <span className="paperBadge mr-2">
+                                                <SVGIcon name="newestprojecticon" fill={'#ffffff'} className="badgeSvg mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Paper</span> 
                                             </span>
                                             {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
                                                 if (activeLink===true){
-                                                    return <a href={'/search?search=' + feature}><div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{feature}</div></a>
+                                                    return <a href={'/search?search=' + feature}><div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{feature}</div></a>
                                                 }
                                                 else {
-                                                    return <div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{feature}</div>
+                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{feature}</div>
                                                 }
                                             })}
 
                                             {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
                                                 if (activeLink===true){
-                                                    return <a href={'/search?search=' + topic}><div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{topic}</div></a>
+                                                    return <a href={'/search?search=' + topic}><div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{topic}</div></a>
                                                 }
                                                 else {
-                                                    return <div className="mr-2 Gray800-14px tagBadges mb-1 mt-1">{topic}</div>
+                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{topic}</div>
                                                 }
                                             })}
                                         </Col>  
                                         <Col sm={12} lg={12} className="pt-3">
-                                            <span className="Gray800-14px">
+                                            <span className="gray800-14">
                                                 {data.description.substr(0, 140) + (data.description.length > 140 ? '...' : '')}
                                             </span>
                                         </Col> 
@@ -329,11 +329,11 @@ class RelatedObject extends React.Component {
                                         </Col>
                                         <Col sm={8} lg={8}>
                                             {activeLink===true ? 
-                                            <a className="ExtraBlack-16px-Bold" style={{ cursor: 'pointer' }} href={'/person/' + data.id} >{data.firstname && data.lastname ? data.firstname + ' ' + data.lastname : ''}</a> 
-                                            : <span className="ExtraBlack-16px-Bold"> {data.firstname && data.lastname ? data.firstname + ' ' + data.lastname : ''} </span>
+                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/person/' + data.id} >{data.firstname && data.lastname ? data.firstname + ' ' + data.lastname : ''}</a> 
+                                            : <span className="black-bold-16"> {data.firstname && data.lastname ? data.firstname + ' ' + data.lastname : ''} </span>
                                             }
                                             <br />
-                                            <span className="Gray800-14px"> {data.bio} </span>
+                                            <span className="gray800-14"> {data.bio} </span>
                                         </Col>
                                         <Col sm={2} lg={2}></Col>
                                     </Row>
@@ -344,20 +344,20 @@ class RelatedObject extends React.Component {
                                     <Row>
                                         <Col sm={10} lg={10}>
                                             {activeLink===true ?
-                                            <a className="ExtraBlack-16px-Bold" style={{ cursor: 'pointer' }} href={'/dataset/' + data.id} >{data.title}</a>
-                                            : <span className="ExtraBlack-16px-Bold"> {data.title} </span> }
+                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/dataset/' + data.id} >{data.title}</a>
+                                            : <span className="black-bold-16"> {data.title} </span> }
                                             <br />
-                                            <span className="Gray800-14px"> {data.publisher} </span>
+                                            <span className="gray800-14"> {data.publisher} </span>
                                         </Col>
                                         <Col sm={2} lg={2}></Col>
                                         <Col sm={12} lg={12} className="pt-3">
-                                            <span className="DatasetBadge mr-2">
-                                                <SVGIcon name="dataseticon" fill={'#ffffff'} className="BadgeSvgs mr-2"  viewBox="-2 -2 22 22"/>
+                                            <span className="dataSetBadge mr-2">
+                                                <SVGIcon name="dataseticon" fill={'#ffffff'} className="badgeSvg mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Dataset</span>
                                             </span>
                                         </Col>  
                                         <Col sm={12} lg={12} className="pt-3">
-                                            <span className="Gray800-14px">
+                                            <span className="gray800-14">
                                                 {(() => {
                                                     if (typeof data.description === 'undefined') {
                                                         return data.abstract.substr(0, 140) + (data.abstract.length > 140 ? '...' : '')
@@ -378,13 +378,13 @@ class RelatedObject extends React.Component {
                                     <>
                                         <Row className="mt-3">
                                             <Col xs={12}>
-                                                {!inCollection ? <span className="Gray800-14px mr-2">What's the relationship between these resources?</span> 
-                                                : <span className="Gray800-14px mr-2">What's the relationship of this entity to the collection? (optional)</span> }
+                                                {!inCollection ? <span className="gray800-14 mr-2">What's the relationship between these resources?</span> 
+                                                : <span className="gray800-14 mr-2">What's the relationship of this entity to the collection? (optional)</span> }
                                             </Col>
                                         </Row>
                                         <Row className="testInput">
                                             <Col xs={12}>
-                                            <input className="ResultsCardInput"  value={this.state.reason} onChange={event => this.handleChange(this.props.objectId, event.target.value, data.type===undefined ? "dataset" : data.type)} />
+                                            <input className="resultsCardInput"  value={this.state.reason} onChange={event => this.handleChange(this.props.objectId, event.target.value, data.type===undefined ? "dataset" : data.type)} />
                                             </Col>
                                         </Row>
                                     </>
@@ -396,14 +396,14 @@ class RelatedObject extends React.Component {
                                         <Row className="mt-3">
                                             <Col xs={12}>
                                                 <div className="relationshipBar">
-                                                    <span className="Gray800-14px mr-2">Relationship</span>
+                                                    <span className="gray800-14 mr-2">Relationship</span>
                                                 </div> 
                                             </Col>
                                         </Row>
                                         <Row className="mt-3">
                                             <Col xs={12}>
                                                 <div className="relationshipAnswer">
-                                                    <span className="Gray800-14px mr-2">{relatedObject.reason}</span> 
+                                                    <span className="gray800-14 mr-2">{relatedObject.reason}</span> 
                                                 </div>
                                             </Col>
                                         </Row>

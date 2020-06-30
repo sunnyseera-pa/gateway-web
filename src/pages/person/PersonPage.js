@@ -114,7 +114,7 @@ class PersonDetail extends Component {
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
               <div>
-                <Tabs className='TabsBackground Gray700-13px'>
+                <Tabs className='tabsBackground gray700-13'>
                   <Tab eventKey="Tools" title={'Tools (' + tools.length + ')'}>
                     {tools.length <= 0 ? <NotFound word="tools" /> : tools.map((tool) => {
                       return <Tool id={tool.id} activeLink={true} />

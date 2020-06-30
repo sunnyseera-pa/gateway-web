@@ -15,7 +15,7 @@ const NavItem = ({parentForm, questionPanels, onFormSwitchPanel}) => {
                 if (parentForm.pageId === item.pageId) {
                     return  (
                         <li 
-                            className="Gray800-14px" 
+                            className="gray800-14" 
                             style={{cursor: 'pointer'}} 
                             key={index} 
                             onClick={e => onClickItem(e, item)}>

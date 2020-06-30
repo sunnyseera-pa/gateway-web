@@ -82,21 +82,21 @@ class AccountUsers extends React.Component {
                 <Row>
                     <Col xs={1}></Col>
                     <Col xs={10}>
-                        <Row className="AccountHeader mt-4">
+                        <Row className="accountHeader mt-4">
                             <Col xs={8}>
                                 <Row>
-                                    <span className="Black-20px">Users and roles</span>
+                                    <span className="black-20">Users and roles</span>
                                 </Row>
                                 <Row>
-                                    <span className="Gray700-13px ">Manage permissions by changing user roles</span>
+                                    <span className="gray700-13 ">Manage permissions by changing user roles</span>
                                 </Row>
                             </Col>
                             <Col xs={4}></Col>
                         </Row>
 
-                        <Row className="TabsBackground">
+                        <Row className="tabsBackground">
                             <Col sm={12} lg={12}>
-                                <Tabs className='DataAccessTabs Gray700-13px' activeKey={this.state.key} onSelect={this.handleSelect}>
+                                <Tabs className='dataAccessTabs gray700-13' activeKey={this.state.key} onSelect={this.handleSelect}>
                                     <Tab eventKey="user" title={"Users (" + userCount + ")"}> </Tab>
                                     <Tab eventKey="datacustodian" title={"Data Custodian (" + dataCustodianCount + ")"}> </Tab>
                                     <Tab eventKey="admin" title={"Admin (" + adminCount + ")"}> </Tab>
@@ -109,7 +109,7 @@ class AccountUsers extends React.Component {
                                 case "user":
                                     return (
                                         <div>
-                                            <Row className="SubHeader mt-3 Gray800-14px-bold">
+                                            <Row className="subHeader mt-3 gray800-14-bold">
                                                 <Col xs={2}>Account created</Col>
                                                 <Col xs={3}>Name</Col>
                                                 <Col xs={4}>Institution</Col>
@@ -123,17 +123,17 @@ class AccountUsers extends React.Component {
                                                 else {
                                                     return (
                                                         <Row className="entryBox">
-                                                            <Col sm={12} lg={2} className="pt-2 Gray800-14px">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
-                                                            <Col sm={12} lg={3} className="pt-2"><a href={'/project/' + dat.id} className="Black-14px">{dat.name}</a></Col>
-                                                            <Col sm={12} lg={4} className="pt-2 Gray800-14px">
+                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
+                                                            <Col sm={12} lg={3} className="pt-2"><a href={'/project/' + dat.id} className="black-14">{dat.name}</a></Col>
+                                                            <Col sm={12} lg={4} className="pt-2 gray800-14">
                                                                 {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
                                                                     return <span>{person.firstname} {person.lastname} <br /></span>
                                                                 })}
                                                             </Col>
 
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
-                                                                <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
-                                                                    <Dropdown.Item href={'/editproject/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
+                                                                <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
+                                                                    <Dropdown.Item href={'/editproject/' + dat.id} className="black-14">Edit</Dropdown.Item>
                                                                     <DeleteButton id={dat.id} />
                                                                 </DropdownButton>
                                                             </Col>
@@ -176,7 +176,7 @@ function DeleteButton(props) {
 
     return (
         <>
-            <Dropdown.Item href="#" onClick={handleShow} className="Black-14px">Archive</Dropdown.Item>
+            <Dropdown.Item href="#" onClick={handleShow} className="black-14">Archive</Dropdown.Item>
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
