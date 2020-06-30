@@ -59,32 +59,32 @@ export default class DataSet extends React.Component {
         let description;
 
         if (data.id === 999999999) {
-            description = <p className="Gray800-14px" dangerouslySetInnerHTML={{ __html: data.description }} />
+            description = <p className="gray800-14" dangerouslySetInnerHTML={{ __html: data.description }} />
 
         } else {
-            description = <p className="Gray800-14px">{data.description}</p>
+            description = <p className="gray800-14">{data.description}</p>
         }
 
         return (
             <Row className="mt-2">
                 <Col>
-                    <div className="Rectangle">
+                    <div className="rectangle">
                         <Row>
                             <Col xs={2} lg={1} className="iconHolder">
                                 <SVGIcon name="dataseticon" width={22} height={24} fill={'#3db28c'} />
                             </Col>
                             <Col xs={10} lg={8}>
                                 <p>
-                                    <span className="Black-16px">{data.label}</span>
+                                    <span className="black-16">{data.label}</span>
                                 </p>
                                 {description}
 
                             </Col>
                             <Col xs={{ span: 12, order: 1 }} lg={{ span: 3, order: 0 }} className="dateHolder mt-2">
-                                <span className="Gray700-13px pr-1">
+                                <span className="gray700-13 pr-1">
                                     Updated
                                     </span>
-                                <span className="Gray700-13px pr-1">
+                                <span className="gray700-13 pr-1">
                                     {updatedOnDate}
                                 </span>
                             </Col>

@@ -140,7 +140,7 @@ class ProjectDetail extends Component {
 
               <Row className="mt-4">
                 <Col sm={10} lg={10}>
-                  <span className="Black500-16px">Uploaded by ( {data.authors.length} )</span>
+                  <span className="black-16">Uploaded by ( {data.authors.length} )</span>
                 </Col>
               </Row>
               <Row>
@@ -158,7 +158,7 @@ class ProjectDetail extends Component {
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
               <div>
-                <Tabs className='TabsBackground Gray700-13px'>
+                <Tabs className='tabsBackground gray700-13'>
                   <Tab eventKey="Projects" title={'Related resources (' + data.relatedObjects.length + ')'}>
                     {data.relatedObjects.length <= 0 ? <NotFound word="related resources" /> : data.relatedObjects.map(object => <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />)}
                   </Tab>
@@ -172,14 +172,14 @@ class ProjectDetail extends Component {
           <Nav className="ml-auto">
             <Row>
               <p>
-                <a href={cmsURL + '/HDRUKGatewaySupportPortal'} target="_blank" rel="noopener noreferrer" className="Purple-14px" id="UnderlinedLink">
+                <a href={cmsURL + '/HDRUKGatewaySupportPortal'} target="_blank" rel="noopener noreferrer" className="purple-14" id="underLinedLink">
                   Suggest Feedback
                 </a>
               </p>
             </Row>
           </Nav>
         </Navbar>
-        <Row className='AuthorCard' />
+        <Row className='authorCard' />
       </div>
     );
   }

@@ -80,22 +80,22 @@ class ReviewTools extends React.Component {
                 <Row>
                     <Col xs={1}></Col>
                     <Col xs={10}>
-                        <Row className="AccountHeader mt-4">
+                        <Row className="accountHeader mt-4">
                             <Col xs={8}>
                                 <Row>
-                                    <span className="Black-20px">Reviews</span>
+                                    <span className="black-20">Reviews</span>
                                 </Row>
                                 <Row>
-                                    <span className="Gray700-13px ">View and manage your reviews</span>
+                                    <span className="gray700-13 ">View and manage your reviews</span>
                                 </Row>
                             </Col>
                             <Col xs={4}>
                             </Col>
                         </Row>
 
-                        <Row className="TabsBackground">
+                        <Row className="tabsBackground">
                             <Col sm={12} lg={12}>
-                                <Tabs className='DataAccessTabs Gray700-13px' activeKey={this.state.key} onSelect={this.handleSelect}>
+                                <Tabs className='dataAccessTabs gray700-13' activeKey={this.state.key} onSelect={this.handleSelect}>
                                     <Tab eventKey="active" title={"Active (" + activeCount + ")"}> </Tab>
                                     <Tab eventKey="pending" title={"Pending approval (" + reviewCount + ")"}> </Tab>
                                     <Tab eventKey="rejected" title={"Rejected (" + rejectedCount + ")"}> </Tab>
@@ -111,7 +111,7 @@ class ReviewTools extends React.Component {
                                 case "active":
                                     return (
                                         <div>
-                                            <Row className="SubHeader mt-3 Gray800-14px-bold">
+                                            <Row className="subHeader mt-3 gray800-14-bold">
                                                 <Col xs={2}>Added</Col>
                                                 <Col xs={5}>Name of reviewed</Col>
                                                 <Col xs={2}>Author of review</Col>
@@ -126,13 +126,13 @@ class ReviewTools extends React.Component {
                                                 else {
                                                     return (
                                                         <Row className="entryBox">
-                                                            <Col sm={12} lg={2} className="pt-2 Gray800-14px">{moment(dat.createdAt).format('D MMMM YYYY HH:mm')}</Col>
-                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/paper/' + dat.id} className="Black-14px">{dat.review}</a></Col>
-                                                            <Col sm={12} lg={2} className="pt-2 Gray800-14px">{dat.person[0].firstname} {dat.person[0].lastname}</Col>
+                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(dat.createdAt).format('D MMMM YYYY HH:mm')}</Col>
+                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/paper/' + dat.id} className="black-14">{dat.review}</a></Col>
+                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">{dat.person[0].firstname} {dat.person[0].lastname}</Col>
 
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
-                                                                <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
-                                                                    <Dropdown.Item href={'/editpaper/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
+                                                                <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
+                                                                    <Dropdown.Item href={'/editpaper/' + dat.id} className="black-14">Edit</Dropdown.Item>
                                                                     <DeleteButton id={dat.id} />
                                                                 </DropdownButton>
                                                             </Col>
@@ -146,7 +146,7 @@ class ReviewTools extends React.Component {
                                 case "pending":
                                     return (
                                         <div>
-                                            <Row className="SubHeader mt-3 Gray800-14px-bold">
+                                            <Row className="subHeader mt-3 gray800-14-bold">
                                                 <Col xs={2}>Added</Col>
                                                 <Col xs={5}>Name of reviewed</Col>
                                                 <Col xs={2}>Author of review</Col>
@@ -160,9 +160,9 @@ class ReviewTools extends React.Component {
                                                 else {
                                                     return (
                                                         <Row className="entryBox">
-                                                            <Col sm={12} lg={2} className="pt-2 Gray800-14px">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
-                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/paper/' + dat.id} className="Black-14px">{dat.name}</a></Col>
-                                                            <Col sm={12} lg={2} className="pt-2 Gray800-14px">
+                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
+                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/paper/' + dat.id} className="black-14">{dat.name}</a></Col>
+                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">
                                                                 {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
                                                                     return <span>{person.firstname} {person.lastname} <br /></span>
                                                                 })}
@@ -170,9 +170,9 @@ class ReviewTools extends React.Component {
 
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 {userState[0].role === 'Admin' ?
-                                                                    <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
-                                                                        <Dropdown.Item href={'/editpaper/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
-                                                                        <Dropdown.Item href='#' onClick={() => this.approvePaper(dat.id)} className="Black-14px">Approve</Dropdown.Item>
+                                                                    <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
+                                                                        <Dropdown.Item href={'/editpaper/' + dat.id} className="black-14">Edit</Dropdown.Item>
+                                                                        <Dropdown.Item href='#' onClick={() => this.approvePaper(dat.id)} className="black-14">Approve</Dropdown.Item>
                                                                         <RejectButton id={dat.id} />
                                                                     </DropdownButton>
                                                                     : ""}
@@ -187,7 +187,7 @@ class ReviewTools extends React.Component {
                                 case "archive":
                                     return (
                                         <div>
-                                            <Row className="SubHeader mt-3 Gray800-14px-bold">
+                                            <Row className="subHeader mt-3 gray800-14-bold">
                                                 <Col xs={2}>Added</Col>
                                                 <Col xs={5}>Name of reviewed</Col>
                                                 <Col xs={2}>Author of review</Col>
@@ -201,19 +201,19 @@ class ReviewTools extends React.Component {
                                                 else {
                                                     return (
                                                         <Row className="entryBox">
-                                                            <Col sm={12} lg={2} className="pt-2 Gray800-14px">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
-                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/paper/' + dat.id} className="Black-14px">{dat.name}</a></Col>
-                                                            <Col sm={12} lg={2} className="pt-2 Gray800-14px">
+                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
+                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/paper/' + dat.id} className="black-14">{dat.name}</a></Col>
+                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">
                                                                 {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
                                                                     return <span>{person.firstname} {person.lastname} <br /></span>
                                                                 })}
                                                             </Col>
 
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
-                                                                <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
-                                                                    <Dropdown.Item href={'/editpaper/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
-                                                                    <Dropdown.Item href='#' onClick={() => this.approvePaper(dat.id)} className="Black-14px">Approve</Dropdown.Item>
-                                                                    <Dropdown.Item href='#' onClick={() => this.rejectPaper(dat.id)} className="Black-14px">Reject</Dropdown.Item>
+                                                                <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
+                                                                    <Dropdown.Item href={'/editpaper/' + dat.id} className="black-14">Edit</Dropdown.Item>
+                                                                    <Dropdown.Item href='#' onClick={() => this.approvePaper(dat.id)} className="black-14">Approve</Dropdown.Item>
+                                                                    <Dropdown.Item href='#' onClick={() => this.rejectPaper(dat.id)} className="black-14">Reject</Dropdown.Item>
                                                                 </DropdownButton>
                                                             </Col>
                                                         </Row>
@@ -237,16 +237,16 @@ class ReviewTools extends React.Component {
             <div>
                 <Row className="mt-3">
                     <Col>
-                        <span className="Black-16px ml-2">Pending approval</span>
+                        <span className="black-16 ml-2">Pending approval</span>
                     </Col>
                 </Row>
 
                 <Row className="mt-1">
                     <Col lg={12}>
-                        <div className="ToolsHeader">
+                        <div className="toolsHeader">
                             <Row>
-                                <Col xs={4} lg={5} className="pl-4 pt-2 Gray800-14px-bold">Name</Col>
-                                <Col xs={4} lg={2} className="pl-1 pt-2 Gray800-14px-bold">Author</Col>
+                                <Col xs={4} lg={5} className="pl-4 pt-2 gray800-14-bold">Name</Col>
+                                <Col xs={4} lg={2} className="pl-1 pt-2 gray800-14-bold">Author</Col>
                                 <Col xs={4} lg={5}></Col>
                             </Row>
                         </div>
@@ -263,16 +263,16 @@ class ReviewTools extends React.Component {
 
                 <Row className="mt-3">
                     <Col>
-                        <span className="Black-16px ml-2">Active</span>
+                        <span className="black-16 ml-2">Active</span>
                     </Col>
                 </Row>
 
                 <Row className="mt-1">
                     <Col lg={12}>
-                        <div className="ToolsHeader">
+                        <div className="toolsHeader">
                             <Row>
-                                <Col xs={4} lg={5} className="pl-4 pt-2 Gray800-14px-bold">Name</Col>
-                                <Col xs={4} lg={2} className="pl-1 pt-2 Gray800-14px-bold">Author</Col>
+                                <Col xs={4} lg={5} className="pl-4 pt-2 gray800-14-bold">Name</Col>
+                                <Col xs={4} lg={2} className="pl-1 pt-2 gray800-14-bold">Author</Col>
                                 <Col xs={4} lg={5}></Col>
                             </Row>
                         </div>
@@ -308,7 +308,7 @@ function RejectButton(props) {
 
     return (
         <>
-            <Dropdown.Item href="#" onClick={handleShow} className="Black-14px">Reject</Dropdown.Item>
+            <Dropdown.Item href="#" onClick={handleShow} className="black-14">Reject</Dropdown.Item>
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
@@ -341,7 +341,7 @@ function DeleteButton(props) {
 
     return (
         <>
-            <Dropdown.Item href="#" onClick={handleShow} className="Black-14px">Archive</Dropdown.Item>
+            <Dropdown.Item href="#" onClick={handleShow} className="black-14">Archive</Dropdown.Item>
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
@@ -389,18 +389,18 @@ const ReviewReview = (props) => {
 
     return (
         <>
-            <div className="Rectangle mt-1">
+            <div className="rectangle mt-1">
                 <Row>
-                    <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href="#" onClick={() => setOpen(!open)} aria-controls="collapse-review" aria-expanded={open} >{props.dat.review}</a></Col>
-                    <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold"> {props.dat.person[0].firstname} {props.dat.person[0].lastname} </Col>
+                    <Col sm={12} lg={5} className="pl-2 pt-2 gray800-14-bold"><a href="#" onClick={() => setOpen(!open)} aria-controls="collapse-review" aria-expanded={open} >{props.dat.review}</a></Col>
+                    <Col sm={12} lg={2} className="pl-2 pt-2 gray800-14-bold"> {props.dat.person[0].firstname} {props.dat.person[0].lastname} </Col>
                     <Col sm={12} lg={5} className="pl-5 toolsButtons">
 
                         {props.userState.role === 'Admin' ?
                             <div>
-                                <Button variant='white' onClick={() => rejectReview(props.dat.reviewID)} className="AccountButtons mr-2">
+                                <Button variant='white' onClick={() => rejectReview(props.dat.reviewID)} className="accountButton mr-2">
                                     Reject
                                 </Button>
-                                <Button variant='white' onClick={() => approveReview(props.dat.reviewID)} className="AccountButtons ">
+                                <Button variant='white' onClick={() => approveReview(props.dat.reviewID)} className="accountButton ">
                                     Approve
                                 </Button>
                             </div> : ""}
@@ -415,17 +415,17 @@ const ReviewReview = (props) => {
                                         </Col>
                                         <Col xs={10} lg={8}>
                                             <p>
-                                                <span className="Black-16px"><a href={'/tool/' + props.dat.tool[0].id} >{props.dat.tool[0].name.substr(0, 75) + (props.dat.tool[0].name.length > 75 ? '...' : '')}</a></span>
+                                                <span className="black-16"><a href={'/tool/' + props.dat.tool[0].id} >{props.dat.tool[0].name.substr(0, 75) + (props.dat.tool[0].name.length > 75 ? '...' : '')}</a></span>
                                             </p>
                                         </Col>
                                         <Col xs={12} lg={12}>
                                             <p>
-                                                <span className="Gray800-14px">"{props.dat.tool[0].description}"</span>
+                                                <span className="gray800-14">"{props.dat.tool[0].description}"</span>
                                             </p>
                                         </Col>
                                         <Col xs={12} lg={12}>
-                                            <span className="Purple-13px">{props.dat.person[0].firstname} {props.dat.person[0].lastname}</span><span className="Gray700-13px"> on {updatedOnDate}</span>
-                                            {!props.dat.projectName? '' : <><span className="reviewTitleGap">·</span><span className="Gray700-13px"> in relation to project </span><span className="Purple-13px">{props.dat.projectName}</span></>}
+                                            <span className="purple-13">{props.dat.person[0].firstname} {props.dat.person[0].lastname}</span><span className="gray700-13"> on {updatedOnDate}</span>
+                                            {!props.dat.projectName? '' : <><span className="reviewTitleGap">·</span><span className="gray700-13"> in relation to project </span><span className="purple-13">{props.dat.projectName}</span></>}
                                         </Col>
                                     </Row>
                                 </div>
@@ -446,10 +446,10 @@ const ReviewReviewActive = (props) => {
 
     return (
         <>
-            <div className="Rectangle mt-1">
+            <div className="rectangle mt-1">
                 <Row>
-                    <Col sm={12} lg={5} className="pl-2 pt-2 Gray800-14px-bold"><a href="#" onClick={() => setOpen(!open)} aria-controls="collapse-review" aria-expanded={open} >{props.dat.review}</a></Col>
-                    <Col sm={12} lg={2} className="pl-2 pt-2 Gray800-14px-bold"> {props.dat.person[0].firstname} {props.dat.person[0].lastname} </Col>
+                    <Col sm={12} lg={5} className="pl-2 pt-2 gray800-14-bold"><a href="#" onClick={() => setOpen(!open)} aria-controls="collapse-review" aria-expanded={open} >{props.dat.review}</a></Col>
+                    <Col sm={12} lg={2} className="pl-2 pt-2 gray800-14-bold"> {props.dat.person[0].firstname} {props.dat.person[0].lastname} </Col>
                     <Col sm={12} lg={5} className="pl-5 toolsButtons"></Col>
                     <Col sm={12}>
                         <Collapse in={open}>
@@ -461,17 +461,17 @@ const ReviewReviewActive = (props) => {
                                         </Col>
                                         <Col xs={10} lg={8}>
                                             <p>
-                                                <span className="Black-16px"><a href={'/tool/' + props.dat.tool[0].id} >{props.dat.tool[0].name.substr(0, 75) + (props.dat.tool[0].name.length > 75 ? '...' : '')}</a></span>
+                                                <span className="black-16"><a href={'/tool/' + props.dat.tool[0].id} >{props.dat.tool[0].name.substr(0, 75) + (props.dat.tool[0].name.length > 75 ? '...' : '')}</a></span>
                                             </p>
                                         </Col>
                                         <Col xs={12} lg={12}>
                                             <p>
-                                                <span className="Gray800-14px">"{props.dat.tool[0].description}"</span>
+                                                <span className="gray800-14">"{props.dat.tool[0].description}"</span>
                                             </p>
                                         </Col>
                                         <Col xs={12} lg={12}>
-                                            <span className="Purple-13px">{props.dat.person[0].firstname} {props.dat.person[0].lastname}</span><span className="Gray700-13px"> on {updatedOnDate}</span>
-                                            {!props.dat.projectName? '' : <><span className="reviewTitleGap">·</span><span className="Gray700-13px"> in relation to project </span><span className="Purple-13px">{props.dat.projectName}</span></>}
+                                            <span className="purple-13">{props.dat.person[0].firstname} {props.dat.person[0].lastname}</span><span className="gray700-13"> on {updatedOnDate}</span>
+                                            {!props.dat.projectName? '' : <><span className="reviewTitleGap">·</span><span className="gray700-13"> in relation to project </span><span className="purple-13">{props.dat.projectName}</span></>}
                                         </Col>
                                     </Row>
                                 </div>

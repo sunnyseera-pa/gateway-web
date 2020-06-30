@@ -44,16 +44,16 @@ class About extends React.Component {
             <div>
             <Row className="mt-2">
                 <Col sm={12} lg={12}>
-                    <div className="Rectangle">
-                        <Row className="Gray800-14px-bold">
+                    <div className="rectangle">
+                        <Row className="gray800-14-bold">
                             <Col sm={10} lg={10}>
                                 Description
                             </Col>
                         </Row>
                         <Row className="mt-3">
 
-                            {/* {data.abstract ? <Col sm={12} lg={12} className="Gray800-14px">{data.abstract}</Col> : <Col sm={12} lg={12} className="Gray800-14px-Opacity">Not specified</Col> } */}
-                            {data.abstract ? <Col sm={12} lg={12} className="Gray800-14px"> <ReactMarkdown source={data.abstract} /> </Col> : <Col sm={12} lg={12} className="Gray800-14px-Opacity">Not specified</Col> }
+                            {/* {data.abstract ? <Col sm={12} lg={12} className="gray800-14">{data.abstract}</Col> : <Col sm={12} lg={12} className="gray800-14-opacity">Not specified</Col> } */}
+                            {data.abstract ? <Col sm={12} lg={12} className="gray800-14"> <ReactMarkdown source={data.abstract} /> </Col> : <Col sm={12} lg={12} className="gray800-14-opacity">Not specified</Col> }
 
                         </Row>
                     </div>
@@ -62,25 +62,25 @@ class About extends React.Component {
 
               <Row className="mt-2">
                 <Col sm={12} lg={12}>
-                    <div className="Rectangle">
-                        <Row className="Gray800-14px-bold">
+                    <div className="rectangle">
+                        <Row className="gray800-14-bold">
                             <Col sm={10} lg={10}>
                                 Data access
                             </Col>
                         </Row>
 
                         <Row className="mt-3">
-                                <Col sm={2} lg={2} className="Gray800-14px" >
+                                <Col sm={2} lg={2} className="gray800-14" >
                                     Access rights
                                 </Col>
-                                {data.accessRights ? <Col sm={8} lg={8} className="Gray800-14px">
+                                {data.accessRights ? <Col sm={8} lg={8} className="gray800-14">
                                     {/* {data.accessRights} */}
                                     {/* <a href={data.accessRights} target="_blank"> {data.accessRights} </a> */}
                                     <Linkify 
                                     properties={{ target: '_blank' }}
                                     // target="_blank"
                                     >{data.accessRights}</Linkify>
-                                    </Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col> }
+                                    </Col> : <Col sm={8} lg={8} className="gray800-14-opacity">Not specified</Col> }
                         </Row>
                     </div>
                   </Col>
@@ -88,35 +88,35 @@ class About extends React.Component {
 
               <Row className="mt-2">
                 <Col sm={12} lg={12}>
-                    <div className="Rectangle">
-                        <Row className="Gray800-14px-bold">
+                    <div className="rectangle">
+                        <Row className="gray800-14-bold">
                             <Col sm={10} lg={10}>
                                 Coverage
                             </Col>
                         </Row>
                         <Row className="mt-3">
-                                <Col sm={3} lg={3} className="Gray800-14px" >
+                                <Col sm={3} lg={3} className="gray800-14" >
                                     Jurisdiction
                                 </Col>
-                                {data.jurisdiction ? <Col sm={9} lg={9} className="Gray800-14px">{data.jurisdiction}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col> }
+                                {data.jurisdiction ? <Col sm={9} lg={9} className="gray800-14">{data.jurisdiction}</Col> : <Col sm={8} lg={8} className="gray800-14-opacity">Not specified</Col> }
                         </Row>
                         <Row className="mt-3">
-                                <Col sm={3} lg={3} className="Gray800-14px" >
+                                <Col sm={3} lg={3} className="gray800-14" >
                                     Geographic coverage
                                 </Col>
-                                {data.geographicCoverage ? <Col sm={9} lg={9} className="Gray800-14px">{data.geographicCoverage}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col> }
+                                {data.geographicCoverage ? <Col sm={9} lg={9} className="gray800-14">{data.geographicCoverage}</Col> : <Col sm={8} lg={8} className="gray800-14-opacity">Not specified</Col> }
                         </Row>
                         <Row className="mt-3">
-                                <Col sm={3} lg={3} className="Gray800-14px" >
+                                <Col sm={3} lg={3} className="gray800-14" >
                                     Dataset start date
                                 </Col>
-                                {data.datasetStartDate ? <Col sm={9} lg={9} className="Gray800-14px">{data.datasetStartDate}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col> }
+                                {data.datasetStartDate ? <Col sm={9} lg={9} className="gray800-14">{data.datasetStartDate}</Col> : <Col sm={8} lg={8} className="gray800-14-opacity">Not specified</Col> }
                         </Row>
                         <Row className="mt-3">
-                                <Col sm={3} lg={3} className="Gray800-14px" >
+                                <Col sm={3} lg={3} className="gray800-14" >
                                     Dataset end date
                                 </Col>
-                                {data.datasetEndDate ? <Col sm={9} lg={9} className="Gray800-14px">{data.datasetEndDate}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col> }
+                                {data.datasetEndDate ? <Col sm={9} lg={9} className="gray800-14">{data.datasetEndDate}</Col> : <Col sm={8} lg={8} className="gray800-14-opacity">Not specified</Col> }
                         </Row>
                     </div>
                   </Col>
@@ -124,23 +124,23 @@ class About extends React.Component {
 
               <Row className="mt-2">
                 <Col sm={12} lg={12}>
-                    <div className="Rectangle">
-                        <Row className="Gray800-14px-bold">
+                    <div className="rectangle">
+                        <Row className="gray800-14-bold">
                             <Col sm={10} lg={10}>
                                 Demographics
                             </Col>
                         </Row>
                         <Row className="mt-3">
-                                <Col sm={3} lg={3} className="Gray800-14px" >
+                                <Col sm={3} lg={3} className="gray800-14" >
                                     Statistical population
                                 </Col>
-                                {data.statisticalPopulation ? <Col sm={9} lg={9} className="Gray800-14px">{data.statisticalPopulation}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col> }
+                                {data.statisticalPopulation ? <Col sm={9} lg={9} className="gray800-14">{data.statisticalPopulation}</Col> : <Col sm={8} lg={8} className="gray800-14-opacity">Not specified</Col> }
                         </Row>
                         <Row className="mt-3">
-                                <Col sm={3} lg={3} className="Gray800-14px" >
+                                <Col sm={3} lg={3} className="gray800-14" >
                                     Age band 
                                 </Col>
-                                {data.ageBand ? <Col sm={9} lg={9} className="Gray800-14px">{data.ageBand}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col> }
+                                {data.ageBand ? <Col sm={9} lg={9} className="gray800-14">{data.ageBand}</Col> : <Col sm={8} lg={8} className="gray800-14-opacity">Not specified</Col> }
                         </Row>
                     </div>
                   </Col>
@@ -148,17 +148,17 @@ class About extends React.Component {
 
               <Row className="mt-2">
                 <Col sm={12} lg={12}>
-                    <div className="Rectangle">
-                        <Row className="Gray800-14px-bold">
+                    <div className="rectangle">
+                        <Row className="gray800-14-bold">
                             <Col sm={10} lg={10}>
                                 Related resources
                             </Col>
                         </Row>
                         <Row className="mt-3">
-                                <Col sm={3} lg={3} className="Gray800-14px" >
+                                <Col sm={3} lg={3} className="gray800-14" >
                                     Physical sample availability 
                                 </Col>
-                                {data.physicalSampleAvailability ? <Col sm={9} lg={9} className="Gray800-14px">{data.physicalSampleAvailability}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col> }
+                                {data.physicalSampleAvailability ? <Col sm={9} lg={9} className="gray800-14">{data.physicalSampleAvailability}</Col> : <Col sm={8} lg={8} className="gray800-14-opacity">Not specified</Col> }
                         </Row>
                     </div>
                   </Col>

@@ -112,10 +112,10 @@ class Account extends Component {
                 <Tab.Container defaultActiveKey={tabId} onSelect={this.handleChange}>
                     <Row>
                         <Col xs={2}>
-                            <div className="TabList">
+                            <div className="tabList">
                                 <Nav className="flex-column" className="verticalNavBarHolder">
                                     <Nav.Item>
-                                        <Nav.Link eventKey="youraccount" className="verticalNavBar Gray700-13px">
+                                        <Nav.Link eventKey="youraccount" className="verticalNavBar gray700-13">
                                             <Row>
                                                 <Col sm={2} lg={2}>
                                                     <SVGIcon name="accounticon" fill={'#b3b8bd'} className="AccountSvgs" />
@@ -127,7 +127,7 @@ class Account extends Component {
                                         </Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
-                                        <Nav.Link eventKey="tools" className="verticalNavBar Gray700-13px">
+                                        <Nav.Link eventKey="tools" className="verticalNavBar gray700-13">
                                             <Row>
                                                 <Col sm={2} lg={2}>
                                                     <SVGIcon name="newtoolicon" fill={'#b3b8bd'} className="AccountSvgs" />
@@ -139,7 +139,7 @@ class Account extends Component {
                                         </Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
-                                        <Nav.Link eventKey="reviews" className="verticalNavBar Gray700-13px">
+                                        <Nav.Link eventKey="reviews" className="verticalNavBar gray700-13">
                                             <Row>
                                                 <Col sm={2} lg={2}>
                                                     <SVGIcon name="reviewsicon" fill={'#b3b8bd'} className="AccountSvgs" />
@@ -151,7 +151,7 @@ class Account extends Component {
                                         </Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
-                                        <Nav.Link eventKey="projects" className="verticalNavBar Gray700-13px">
+                                        <Nav.Link eventKey="projects" className="verticalNavBar gray700-13">
                                             <Row>
                                                 <Col sm={2} lg={2}>
                                                     <SVGIcon name="newestprojecticon" fill={'#b3b8bd'} className="AccountSvgs"/>
@@ -163,7 +163,7 @@ class Account extends Component {
                                         </Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
-                                        <Nav.Link eventKey="papers" className="verticalNavBar Gray700-13px">
+                                        <Nav.Link eventKey="papers" className="verticalNavBar gray700-13">
                                             <Row>
                                                 <Col sm={2} lg={2}>
                                                     <SVGIcon name="newprojecticon" fill={'#b3b8bd'} className="AccountSvgs"/>
@@ -175,7 +175,7 @@ class Account extends Component {
                                         </Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
-                                        <Nav.Link eventKey="dataaccessrequests" className="verticalNavBar Gray700-13px">
+                                        <Nav.Link eventKey="dataaccessrequests" className="verticalNavBar gray700-13">
                                             <Row>
                                                 <Col sm={2} lg={2}>
                                                     <SVGIcon name="dataaccessicon" fill={'#b3b8bd'} className="AccountSvgs"/>
@@ -188,7 +188,7 @@ class Account extends Component {
                                     </Nav.Item>
                                     {userState[0].role === 'Admin' ?
                                         <Nav.Item>
-                                            <Nav.Link eventKey="usersroles" className="verticalNavBar Gray700-13px">
+                                            <Nav.Link eventKey="usersroles" className="verticalNavBar gray700-13">
                                                 <Row>
                                                     <Col sm={2} lg={2}>
                                                         <SVGIcon name="rolesicon" fill={'#b3b8bd'} className="AccountSvgs"/>

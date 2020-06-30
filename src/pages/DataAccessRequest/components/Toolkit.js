@@ -9,7 +9,7 @@ function Toolkit() {
 
     return (
         <Fragment>
-            <Button variant="white"  className="TechDetailButton" onClick={handleShow}>
+            <Button variant="white"  className="techDetailButton" onClick={handleShow}>
                 View the toolkit
             </Button>
             <Modal show={show} onHide={handleClose} size="lg" aria-labelledby="contained-modal-title-vcenter" centered className="darModal" >

@@ -134,7 +134,7 @@ class DatasetDetail extends Component {
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
               <div>
-                <Tabs className='TabsBackground Gray700-13px'>
+                <Tabs className='tabsBackground gray700-13'>
                   <Tab eventKey="About" title={'About'}>
                     <About data={data}/>
                   </Tab>  
@@ -151,14 +151,14 @@ class DatasetDetail extends Component {
           <Nav className="ml-auto">
             <Row>
               <p>
-                <a href={cmsURL + '/HDRUKGatewaySupportPortal'} target="_blank" rel="noopener noreferrer" className="Purple-14px" id="UnderlinedLink">
+                <a href={cmsURL + '/HDRUKGatewaySupportPortal'} target="_blank" rel="noopener noreferrer" className="purple-14" id="underLinedLink">
                   Suggest Feedback
                 </a>
               </p>
             </Row>
           </Nav>
         </Navbar>
-      <Row className='AuthorCard' />
+      <Row className='authorCard' />
     </div>
         );
     }
@@ -197,13 +197,13 @@ class DatasetTitle extends Component {
     if(!user.loggedIn) {
       var isRequest=true;
       return <>
-                <Button variant="primary" className="AddButton" onClick={this.showLoginModal}>Request Access</Button>
+                <Button variant="primary" className="addButton" onClick={this.showLoginModal}>Request Access</Button>
                 <LoginModal isRequest={isRequest} requestDetails={title} requestContact={contactPoint} />
             </>
     } else if (alert) {
-      return <Button variant="primary" className="AddButton" disabled>Request Access</Button>
+      return <Button variant="primary" className="addButton" disabled>Request Access</Button>
     } else {
-      return <Link className="btn btn-primary AddButton" to={{pathname: 
+      return <Link className="btn btn-primary addButton" to={{pathname: 
         // '/request-access'
         `/data-access-request/${id}`
         , state: {title, dataSetId: id, custodianEmail: contactPoint, publisher: publisher }}} onClick={() => Event("Buttons", "Click", "Request Access")}>Request Access</Link>
@@ -219,28 +219,28 @@ class DatasetTitle extends Component {
       var releasedOnDate = (data.releaseDate ? releaseDate.getDate() + " " + monthNames[releaseDate.getMonth()] + " " + releaseDate.getFullYear() : "");
 
       var metadataQuality         = "";
-      var metadataQualityClass    = "MetadataQuality ";
+      var metadataQualityClass    = "metadataQuality ";
 
       if (data.quality) {
           if (data.quality.quality_score <= 50) {
               metadataQuality      = "Not rated";
-              metadataQualityClass += "NotRatedBackground";
+              metadataQualityClass += "notRatedBackground";
 
           } else if (data.quality.quality_score <= 70) {
               metadataQuality      = "Bronze";
-              metadataQualityClass += "RatingBronzeBackground";
+              metadataQualityClass += "ratingBronzeBackground";
 
           } else if (data.quality.quality_score <= 80) {
               metadataQuality      = "Silver";
-              metadataQualityClass += "RatingSilverBackground";
+              metadataQualityClass += "ratingSilverBackground";
 
           } else if (data.quality.quality_score <= 90) {
               metadataQuality      = "Gold";
-              metadataQualityClass += "RatingGoldBackground";
+              metadataQualityClass += "ratingGoldBackground";
 
           } else if (data.quality.quality_score > 90) {
               metadataQuality      = "Platinum";
-              metadataQualityClass += "RatingPlatinumBackground";
+              metadataQualityClass += "ratingPlatinumBackground";
           }
       }
         return (
@@ -249,18 +249,18 @@ class DatasetTitle extends Component {
                     <Col sm={1} lg={1} />
                     <Col sm={10} lg={10}>
                         {alert ? <Alert variant={alert.type}>{alert.message}</Alert> : null}
-                        <div className="Rectangle">
+                        <div className="rectangle">
                             <Row>
                                 <Col xs={7} md={8}>
                                     <p>
-                                        <span className="Black-20px">{data.title} </span>
+                                        <span className="black-20">{data.title} </span>
                                     </p>
                                 </Col>
                             </Row>
 
                             <Row>
                                 <Col sm={2} lg={2}>
-                                    <Button variant='white' href={'https://metadata-catalogue.org/hdruk/#/catalogue/dataModel/' + data.id} target="_blank" className="TechDetailButton mr-2" >
+                                    <Button variant='white' href={'https://metadata-catalogue.org/hdruk/#/catalogue/dataModel/' + data.id} target="_blank" className="techDetailButton mr-2" >
                                         Technical details
                                 </Button>
                                 </Col>
@@ -270,55 +270,55 @@ class DatasetTitle extends Component {
                             </Row>
 
                             <Row className="mt-5">
-                                <Col sm={2} lg={2} className="Gray800-14px" >
+                                <Col sm={2} lg={2} className="gray800-14" >
                                     Release date
                                 </Col>
-                                {releasedOnDate ? <Col sm={8} lg={8} className="Gray800-14px">{releasedOnDate}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col>}
+                                {releasedOnDate ? <Col sm={8} lg={8} className="gray800-14">{releasedOnDate}</Col> : <Col sm={8} lg={8} className="gray800-14-opacity">Not specified</Col>}
                             </Row>
 
                             <Row className="mt-3">
-                                <Col sm={2} lg={2} className="Gray800-14px" >
+                                <Col sm={2} lg={2} className="gray800-14" >
                                     Publisher
                                 </Col>
-                                {data.publisher ? <Col sm={8} lg={8} className="Gray800-14px">{data.publisher}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col>}
+                                {data.publisher ? <Col sm={8} lg={8} className="gray800-14">{data.publisher}</Col> : <Col sm={8} lg={8} className="gray800-14-opacity">Not specified</Col>}
                             </Row>
 
                             <Row className="mt-3">
-                                <Col sm={2} lg={2} className="Gray800-14px" >
+                                <Col sm={2} lg={2} className="gray800-14" >
                                     License
                                 </Col>
-                                {data.license ? <Col sm={8} lg={8} className="Gray800-14px">{data.license}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col>}
+                                {data.license ? <Col sm={8} lg={8} className="gray800-14">{data.license}</Col> : <Col sm={8} lg={8} className="gray800-14-opacity">Not specified</Col>}
                             </Row>
 
                             <Row className="mt-3">
-                                <Col sm={2} lg={2} className="Gray800-14px" >
+                                <Col sm={2} lg={2} className="gray800-14" >
                                     Request time
                                 </Col>
-                                {data.accessRequestDuration ? <Col sm={8} lg={8} className="Gray800-14px">{data.accessRequestDuration}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col>}
+                                {data.accessRequestDuration ? <Col sm={8} lg={8} className="gray800-14">{data.accessRequestDuration}</Col> : <Col sm={8} lg={8} className="gray800-14-opacity">Not specified</Col>}
                             </Row>
 
                             <Row className="mt-3">
-                                <Col sm={2} lg={2} className="Gray800-14px" >
+                                <Col sm={2} lg={2} className="gray800-14" >
                                     Standard
                                 </Col>
-                                {data.conformsTo ? <Col sm={8} lg={8} className="Gray800-14px overflowWrap">{data.conformsTo}</Col> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col>}
+                                {data.conformsTo ? <Col sm={8} lg={8} className="gray800-14 overflowWrap">{data.conformsTo}</Col> : <Col sm={8} lg={8} className="gray800-14-opacity">Not specified</Col>}
                             </Row>
 
                             <Row className="mt-3">
-                                <Col sm={2} lg={2} className="Gray800-14px" >
+                                <Col sm={2} lg={2} className="gray800-14" >
                                     Keywords
                                 </Col>
                                 <Col sm={10} lg={10}>
-                                    {!keywords || keywords.length <= 0 ? <span className="Gray800-14px-Opacity">Not specified</span> : keywords.map((keyword) => { return <div className="mr-2 Gray800-14px tagBadges mb-2"> <a href={'/search?search=' + keyword}> {keyword} </a> </div> })}
+                                    {!keywords || keywords.length <= 0 ? <span className="gray800-14-opacity">Not specified</span> : keywords.map((keyword) => { return <div className="mr-2 gray800-14 tagBadges mb-2"> <a href={'/search?search=' + keyword}> {keyword} </a> </div> })}
                                 </Col>
                             </Row>
 
                             <Row className="mt-3">
-                                <Col sm={2} lg={2} className="Gray800-14px" >
+                                <Col sm={2} lg={2} className="gray800-14" >
                                     Metadata Quality
                                 </Col>
                                 <Col sm={10} lg={10}>
-                                    {data.quality ? <div><div className={metadataQualityClass}> {metadataQuality} </div> <a href="https://github.com/HDRUK/datasets#about-the-reports" className="ml-2 Purple-14px" target="_blank">How is this calculated? </a></div> : <Col sm={8} lg={8} className="Gray800-14px-Opacity">Not specified</Col>}
+                                    {data.quality ? <div><div className={metadataQualityClass}> {metadataQuality} </div> <a href="https://github.com/HDRUK/datasets#about-the-reports" className="ml-2 purple-14" target="_blank">How is this calculated? </a></div> : <Col sm={8} lg={8} className="gray800-14-opacity">Not specified</Col>}
                                 </Col>
                             </Row>
                             

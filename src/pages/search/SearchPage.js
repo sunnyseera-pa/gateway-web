@@ -397,10 +397,10 @@ class SearchPage extends React.Component {
 
                 <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
 
-                <Row className="SearchTabsHolder">
+                <Row className="searchTabsHolder">
                     <Col>
                         <div>
-                            <Tabs className='TabsBackground Gray700-13px' activeKey={key} onSelect={this.handleSelect}>
+                            <Tabs className='tabsBackground gray700-13' activeKey={key} onSelect={this.handleSelect}>
                                 <Tab eventKey="Datasets" title={'Datasets (' + datasetCount + ')'}>
                                     {datasetCount <= 0 ? <NoResults type='datasets' searchString={searchString} /> : ''}
                                 </Tab>

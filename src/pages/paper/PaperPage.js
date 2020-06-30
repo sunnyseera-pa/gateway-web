@@ -170,14 +170,14 @@ class ToolDetail extends Component {
             <Row className="mt-2">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
-                    <div className="Rectangle">
+                    <div className="rectangle">
                         <Row>
                             <Col xs={7} md={8}>
                                 <p>
-                                    <span className="Black-16px" data-testid="title">{data.name}</span>
+                                    <span className="black-16" data-testid="title">{data.name}</span>
                                     <br />
-                                    <span className="PaperBadge mt-2"> 
-                                        <SVGIcon name="projecticon" fill={'#3c3c3b'} className="BadgeSvgs mr-2" />
+                                    <span className="paperBadge mt-2"> 
+                                        <SVGIcon name="projecticon" fill={'#3c3c3b'} className="badgeSvg mr-2" />
                                         Paper 
                                     </span>
                                 </p>
@@ -191,7 +191,7 @@ class ToolDetail extends Component {
                             
                             <Row>
                                 <Col className="ml-3">
-                                    <span className='Gray800-14px'>
+                                    <span className='gray800-14'>
                                         {data.counter === undefined ? 1 : data.counter + 1}
                                         {data.counter === undefined ? ' view' : ' views'}
                                     </span>
@@ -210,74 +210,74 @@ class ToolDetail extends Component {
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
               <div>
-                <Tabs className='TabsBackground Gray700-13px'>
+                <Tabs className='tabsBackground gray700-13'>
                   <Tab eventKey="about" title={'About'}>
                     <Row className="mt-2"> 
                         <Col>
-                            <div className="Rectangle">
+                            <div className="rectangle">
                                 <Row>
                                     <Col>
-                                        <span className="Gray800-14px-bold">Details</span>
+                                        <span className="gray800-14-bold">Details</span>
                                     </Col>
                                 </Row>
                                 <Row className="mt-3">
                                     <Col sm={2}>
-                                        <span className="Gray800-14px">URL</span>
+                                        <span className="gray800-14">URL</span>
                                     </Col>
                                     <Col sm={10}>
-                                        <a href={data.link} rel="noopener noreferrer" target="_blank" className="Purple-14px">
+                                        <a href={data.link} rel="noopener noreferrer" target="_blank" className="purple-14">
                                             {data.link}
                                         </a>
                                     </Col>
                                 </Row>
                                 <Row className="mt-3">
                                     <Col sm={2}>
-                                        <span className="Gray800-14px">Journal</span>
+                                        <span className="gray800-14">Journal</span>
                                     </Col>
                                     <Col sm={10}>
-                                        <span className="Gray800-14px">{data.journal} {data.journalYear}</span>
+                                        <span className="gray800-14">{data.journal} {data.journalYear}</span>
                                     </Col>
                                 </Row>
                                 <Row className="mt-3">
                                     <Col sm={2}>
-                                        <span className="Gray800-14px">Last update</span>
+                                        <span className="gray800-14">Last update</span>
                                     </Col>
                                     <Col sm={10}>
-                                        <span className="Gray800-14px">{moment(data.updatedon).format('DD MMMM YYYY')}</span>
+                                        <span className="gray800-14">{moment(data.updatedon).format('DD MMMM YYYY')}</span>
                                     </Col>
                                 </Row>
                                 <Row className="mt-3">
                                     <Col sm={2}>
-                                        <span className="Gray800-14px">Uploader</span>
+                                        <span className="gray800-14">Uploader</span>
                                     </Col>
                                     <Col sm={10}>
-                                        <span className="Gray800-14px">
+                                        <span className="gray800-14">
                                             {data.persons.map((author) =>
-                                                <a data-testid="href" className="Purple-14px" href={'/person/' + author.id}>{author.firstname} {author.lastname}</a>
+                                                <a data-testid="href" className="purple-14" href={'/person/' + author.id}>{author.firstname} {author.lastname}</a>
                                             )}
                                         </span>
                                     </Col>
                                 </Row>
                                 <Row className="mt-3">
                                     <Col sm={2}>
-                                        <span className="Gray800-14px">Keywords</span>
+                                        <span className="gray800-14">Keywords</span>
                                     </Col>
                                     <Col sm={10}>
-                                        <span className="Gray800-14px">
+                                        <span className="gray800-14">
                                             {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature, i) => {
-                                                return <div className="mr-2 tagBadges" key={i}><a className="Gray800-14px" href={'/search?search=' + feature + '&type=all'}>{feature}</a></div>
+                                                return <div className="mr-2 tagBadges" key={i}><a className="gray800-14" href={'/search?search=' + feature + '&type=all'}>{feature}</a></div>
                                             })}
                                         </span>
                                     </Col>
                                 </Row>
                                 <Row className="mt-3">
                                     <Col sm={2}>
-                                        <span className="Gray800-14px">Domain</span>
+                                        <span className="gray800-14">Domain</span>
                                     </Col>
                                     <Col sm={10}>
-                                        <span className="Gray800-14px">
+                                        <span className="gray800-14">
                                             {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic, i) => {
-                                                return <div className="mr-2 tagBadges" key={i}><a className="Gray800-14px" href={'/search?search=' + topic + '&type=all'}>{topic}</a></div>
+                                                return <div className="mr-2 tagBadges" key={i}><a className="gray800-14" href={'/search?search=' + topic + '&type=all'}>{topic}</a></div>
                                             })}
                                         </span>
                                     </Col>
@@ -287,15 +287,15 @@ class ToolDetail extends Component {
                     </Row>
                     <Row className="mt-2"> 
                         <Col>
-                            <div className="Rectangle">
+                            <div className="rectangle">
                                 <Row>
                                     <Col>
-                                        <span className="Gray800-14px-bold">Abstract</span>
+                                        <span className="gray800-14-bold">Abstract</span>
                                     </Col>
                                 </Row>
                                 <Row className="mt-3">
                                     <Col>
-                                        <span className="Gray800-14px"><ReactMarkdown source={data.description} /></span>
+                                        <span className="gray800-14"><ReactMarkdown source={data.description} /></span>
                                     </Col>
                                 </Row>
                             </div>
@@ -304,10 +304,10 @@ class ToolDetail extends Component {
 
                     <Row className="mt-2"> 
                         <Col>
-                            <div className="Rectangle">
+                            <div className="rectangle">
                                 <Row>
                                     <Col>
-                                        <span className="Gray800-14px-bold">Authors</span>
+                                        <span className="gray800-14-bold">Authors</span>
                                     </Col>
                                 </Row>
                                 <Row className="mt-3">
@@ -337,14 +337,14 @@ class ToolDetail extends Component {
           <Nav className="ml-auto">
             <Row>
               <p>
-                <a href={cmsURL + '/HDRUKGatewaySupportPortal'} target="_blank" rel="noopener noreferrer" className="Purple-14px" id="UnderlinedLink">
+                <a href={cmsURL + '/HDRUKGatewaySupportPortal'} target="_blank" rel="noopener noreferrer" className="purple-14" id="underLinedLink">
                   Suggest Feedback
                 </a>
               </p>
             </Row>
           </Nav>
         </Navbar>
-        <Row className='AuthorCard' />
+        <Row className='authorCard' />
       </div>
     );
   }

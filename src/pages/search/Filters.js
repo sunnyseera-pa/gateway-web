@@ -45,26 +45,26 @@ class Filters extends Component {
         
         return (
             <div>
-                <div className="FilterCard mt-2">
+                <div className="filterCard mt-2">
                     <Row className="mt-2"  >
                         <Col xs={7} className="ml-3">
-                            <span className="Gray800-14px-bold">{title}</span>
+                            <span className="gray800-14-bold">{title}</span>
                             {selected.length === 0 ? <span /> :
-                                <span> <div className="White-12px BubbleCounts"> {selected.length} </div> </span>
+                                <span> <div className="white-12-bold bubbleCount"> {selected.length} </div> </span>
                             }
                             <span className="mr-4 ml-1" />
                         </Col>
                         <Col xs={3}>
                             {this.state.selected.length > 0 ?
                                 <span>
-                                    <button className="ClearButtons Purple-14px" onClick={() => this.clearFilter()}>
+                                    <button className="clearButtons purple-14" onClick={() => this.clearFilter()}>
                                         Clear
                                     </button>
                                 </span> : null}
                         </Col>
                     </Row>
                 </div>
-                <div className="AdFilters Gray800-14px">
+                <div className="adFilters gray800-14">
                     <Row className="mb-3">
                         <Col xs={1}></Col>
                         <Col xs={11} className="ml-4">
@@ -74,7 +74,7 @@ class Filters extends Component {
                                     <InputGroup.Prepend>
                                         <InputGroup.Checkbox aria-label="Checkbox for following text input" name="publisher" checked={selected.indexOf(dat) !== -1 ? "true" : ""} value={dat} onChange={this.changeFilter} />
                                     </InputGroup.Prepend>
-                                    <FormText className="Gray800-14px ml-4 mt-2 mb-2 pb-1" >{dat}</FormText>
+                                    <FormText className="gray800-14 ml-4 mt-2 mb-2 pb-1" >{dat}</FormText>
                                 </InputGroup>
                             })}
                         </Col>

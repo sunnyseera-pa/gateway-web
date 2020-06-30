@@ -23,7 +23,7 @@ class NoResults extends React.Component {
         return (
             <div>
                <Row className="mt-4">
-                    <Col className="Gray800-14px text-center">
+                    <Col className="gray800-14 text-center">
                         <span> We couldn’t find any {type} matching the search term ‘{searchString}’ </span>
                     </Col>
                 </Row>
@@ -32,8 +32,8 @@ class NoResults extends React.Component {
                     if (type === "datasets") {
                         return (
                             <Row className="mt-3">
-                                <Col className="Gray800-14px text-center">
-                                    <span> Try searching for ‘<a href={'/search?search=' + 'COVID-19'} className="Purple-14px">COVID-19</a>’ if you want to see examples of datasets </span>
+                                <Col className="gray800-14 text-center">
+                                    <span> Try searching for ‘<a href={'/search?search=' + 'COVID-19'} className="purple-14">COVID-19</a>’ if you want to see examples of datasets </span>
                                 </Col>
                             </Row>
                         );
@@ -42,13 +42,13 @@ class NoResults extends React.Component {
                         return (
                             <>
                                 <Row className="mt-3">
-                                    <Col className="Gray800-14px text-center">
+                                    <Col className="gray800-14 text-center">
                                         <span> Tools may be repositories, software, guidelines, courses or any useful resources that can be used in research or analysis. </span>
                                     </Col>
                                 </Row>
                                 <Row className="mt-3">
-                                    <Col className="Gray800-14px text-center">
-                                        <span> Try searching for ‘<a href={'/search?search=' + 'COVID-19'} className="Purple-14px">COVID-19</a>’ if you want to see examples of tools </span>
+                                    <Col className="gray800-14 text-center">
+                                        <span> Try searching for ‘<a href={'/search?search=' + 'COVID-19'} className="purple-14">COVID-19</a>’ if you want to see examples of tools </span>
                                     </Col>
                                 </Row>
                             </>
@@ -58,13 +58,13 @@ class NoResults extends React.Component {
                         return (
                             <>
                                 <Row className="mt-3">
-                                    <Col className="Gray800-14px text-center">
+                                    <Col className="gray800-14 text-center">
                                         <span> Project can be research projects, work-in-progress, initiatives or any other type of activity. </span>
                                     </Col>
                                 </Row>
                                 <Row className="mt-3">
-                                    <Col className="Gray800-14px text-center">
-                                        <span> Try searching for ‘<a href={'/search?search=' + 'COVID-19'} className="Purple-14px">COVID-19</a>’ if you want to see examples of projects </span>
+                                    <Col className="gray800-14 text-center">
+                                        <span> Try searching for ‘<a href={'/search?search=' + 'COVID-19'} className="purple-14">COVID-19</a>’ if you want to see examples of projects </span>
                                     </Col>
                                 </Row>
                             </>
@@ -74,8 +74,8 @@ class NoResults extends React.Component {
                         return (
                             <>
                                 <Row className="mt-3">
-                                    <Col className="Gray800-14px text-center">
-                                        <span> Try searching for ‘<a href={'/search?search=' + 'COVID-19'} className="Purple-14px">COVID-19</a>’ if you want to see examples of papers </span>
+                                    <Col className="gray800-14 text-center">
+                                        <span> Try searching for ‘<a href={'/search?search=' + 'COVID-19'} className="purple-14">COVID-19</a>’ if you want to see examples of papers </span>
                                     </Col>
                                 </Row>
                             </>

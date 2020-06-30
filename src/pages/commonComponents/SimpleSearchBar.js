@@ -48,17 +48,17 @@ class SimpleSearchBar extends React.Component {
                                 <Container>
                                     <Row>
                                         <Col>
-                                            <span className="SearchBarInputGrey">
-                                                <span className="SearchInputIconGrey">
+                                            <span className="searchBarInputGrey">
+                                                <span className="searchInputIconGrey">
                                                     <SVGIcon name="searchicon" width={20} height={20} fill={'#2c8267'} stroke='none' type="submit" />
                                                 </span>
                                                 <span>
-                                                    <input type="text" placeholder="Search" id="SearchInputSpanGrey" 
+                                                    <input type="text" placeholder="Search" id="searchInputSpanGrey" 
                                                     onChange={this.changeText} 
                                                     onKeyDown={this.props.doSearchMethod} value={this.props.searchString} />
                                                 </span>
                                                 {/* {(this.props.searchString != '' && this.props.searchString != undefined) ?
-                                                    <span className="SearchInputClearGrey">
+                                                    <span className="searchInputClearGrey">
                                                         <a style={{ cursor: 'pointer' }} href={'/search?search='} >
                                                             <ClearButtonSvg />
                                                         </a>

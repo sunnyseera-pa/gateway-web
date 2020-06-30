@@ -122,67 +122,67 @@ const YourAccountForm = (props) => {
             {props.isUpdated ? <Alert variant="success" className="mt-3">Done! Your account details have been updated</Alert> : ""}
             <Row className="pixelGapBottom">
                 <Col>
-                    <div className="Rectangle">
-                        <p className="Black-20px">Add or edit your account details</p>
-                        <p className="Gray800-14px">Your details are visible to other users, with the exception of your email address</p>
+                    <div className="rectangle">
+                        <p className="black-20">Add or edit your account details</p>
+                        <p className="gray800-14">Your details are visible to other users, with the exception of your email address</p>
                     </div>
                 </Col>
             </Row>
             <Form onSubmit={formik.handleSubmit}>
                 <Row>
                     <Col>
-                        <div className="Rectangle">
+                        <div className="rectangle">
                             <Form.Group className="pb-2">
-                                <Form.Label className="Gray800-14px">First name</Form.Label>
-                                <Form.Control id="firstname" name="firstname" type="text" className={formik.touched.firstname && formik.errors.firstname ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.firstname} onBlur={formik.handleBlur} />
-                                {formik.touched.firstname && formik.errors.firstname ? <div className="ErrorMessages">{formik.errors.firstname}</div> : null}
+                                <Form.Label className="gray800-14">First name</Form.Label>
+                                <Form.Control id="firstname" name="firstname" type="text" className={formik.touched.firstname && formik.errors.firstname ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.firstname} onBlur={formik.handleBlur} />
+                                {formik.touched.firstname && formik.errors.firstname ? <div className="errorMessages">{formik.errors.firstname}</div> : null}
                             </Form.Group>
 
                             <Form.Group className="pb-2">
-                                <Form.Label className="Gray800-14px">Last name</Form.Label>
-                                <Form.Control id="lastname" name="lastname" type="text" className={formik.touched.lastname && formik.errors.lastname ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.lastname} onBlur={formik.handleBlur} />
-                                {formik.touched.lastname && formik.errors.lastname ? <div className="ErrorMessages">{formik.errors.lastname}</div> : null}
+                                <Form.Label className="gray800-14">Last name</Form.Label>
+                                <Form.Control id="lastname" name="lastname" type="text" className={formik.touched.lastname && formik.errors.lastname ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.lastname} onBlur={formik.handleBlur} />
+                                {formik.touched.lastname && formik.errors.lastname ? <div className="errorMessages">{formik.errors.lastname}</div> : null}
                             </Form.Group>
 
                             <Form.Group className="pb-2">
-                                <Form.Label className="Gray800-14px">Email</Form.Label>
-                                <Form.Control id="email" name="email" type="text" className={formik.touched.email && formik.errors.email ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.email} onBlur={formik.handleBlur} />
-                                {formik.touched.email && formik.errors.email ? <div className="ErrorMessages">{formik.errors.email}</div> : null}
+                                <Form.Label className="gray800-14">Email</Form.Label>
+                                <Form.Control id="email" name="email" type="text" className={formik.touched.email && formik.errors.email ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.email} onBlur={formik.handleBlur} />
+                                {formik.touched.email && formik.errors.email ? <div className="errorMessages">{formik.errors.email}</div> : null}
                             </Form.Group>
 
                             <Form.Group className="pb-2">
-                                <span className="Gray800-14px">Institution</span>
+                                <span className="gray800-14">Institution</span>
                                 <br />
-                                <span className="Gray700-13px">If you aren't part of an institution, please provide a short description of who you are</span>
-                                <Form.Control id="bio" name="bio" type="text" className={formik.touched.bio && formik.errors.bio ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.bio} onBlur={formik.handleBlur} />
-                                {formik.touched.bio && formik.errors.bio ? <div className="ErrorMessages">{formik.errors.bio}</div> : null}
+                                <span className="gray700-13">If you aren't part of an institution, please provide a short description of who you are</span>
+                                <Form.Control id="bio" name="bio" type="text" className={formik.touched.bio && formik.errors.bio ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.bio} onBlur={formik.handleBlur} />
+                                {formik.touched.bio && formik.errors.bio ? <div className="errorMessages">{formik.errors.bio}</div> : null}
                             </Form.Group>
 
                             <Form.Group className="pb-2">
-                                <span className="Gray800-14px">Link (optional)</span>
+                                <span className="gray800-14">Link (optional)</span>
                                 <br />
-                                <span className="Gray700-13px">Social media, research gate, anywhere that people can go to find out more about you</span>
-                                <Form.Control id="link" name="link" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.link} onBlur={formik.handleBlur} />
+                                <span className="gray700-13">Social media, research gate, anywhere that people can go to find out more about you</span>
+                                <Form.Control id="link" name="link" type="text" className="addFormInput" onChange={formik.handleChange} value={formik.values.link} onBlur={formik.handleBlur} />
                             </Form.Group>
 
                             <Form.Group className="pb-2">
-                                <span className="Gray800-14px">ORCID (optional)</span>
+                                <span className="gray800-14">ORCID (optional)</span>
                                 <br />
-                                <span className="Gray700-13px">Your unique ORCID identifier</span>
-                                <Form.Control id="orcid" name="orcid" type="text" className="AddFormInput" onChange={formik.handleChange} value={formik.values.orcid} onBlur={formik.handleBlur} />
+                                <span className="gray700-13">Your unique ORCID identifier</span>
+                                <Form.Control id="orcid" name="orcid" type="text" className="addFormInput" onChange={formik.handleChange} value={formik.values.orcid} onBlur={formik.handleBlur} />
                             </Form.Group>
                             
                             {/* <InputGroup.Checkbox aria-label="Checkbox for following text input" name="toolCategory" checked={projectCategoriesSelected.indexOf(category) !== -1 ? "true" : ""} value={category} onChange={this.changeFilter} /> */}
 
                             <Form.Group className="pb-2">
                                 <InputGroup.Checkbox aria-label="Checkbox for following text input" name="emailNotifications" onChange={formik.handleChange} checked={formik.values.emailNotifications}/>
-                                <span className="Gray800-14px ml-4">I want to receive email notifications about activity relating to my account or content</span>
+                                <span className="gray800-14 ml-4">I want to receive email notifications about activity relating to my account or content</span>
                             </Form.Group>
                             
                             <Form.Group className="pb-2">
                                 <InputGroup.Checkbox aria-label="Checkbox for following text input" name="terms" onChange={formik.handleChange} checked={formik.values.terms}/>
-                                <span className="Gray800-14px ml-4">I agree to the HDRUK <a href='https://www.hdruk.ac.uk/infrastructure/gateway/terms-and-conditions/' target="_blank">Terms and Conditions</a></span>
-                                {formik.touched.terms && formik.errors.terms ? <div className="ErrorMessages">{formik.errors.terms}</div> : null}
+                                <span className="gray800-14 ml-4">I agree to the HDRUK <a href='https://www.hdruk.ac.uk/infrastructure/gateway/terms-and-conditions/' target="_blank">Terms and Conditions</a></span>
+                                {formik.touched.terms && formik.errors.terms ? <div className="errorMessages">{formik.errors.terms}</div> : null}
                             </Form.Group>
 
                         </div>
@@ -191,7 +191,7 @@ const YourAccountForm = (props) => {
 
                 <Row className="mt-3">
                     <Col className="text-right">
-                        <Button variant="primary" type="submit" className="AddButton">
+                        <Button variant="primary" type="submit" className="addButton">
                             Update Details
                         </Button>
                     </Col>

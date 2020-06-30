@@ -10,11 +10,11 @@ class Loading extends React.Component {
         return (
             <Row className="mt-2">
                 <Col>
-                    <div className="Rectangle">
-                        <div className="Gray800-14px" style={{ textAlign: 'center' }}>
+                    <div className="rectangle">
+                        <div className="gray800-14" style={{ textAlign: 'center' }}>
                             <Image src={require("../../images/Loader.gif")} />
                         </div>
-                        <div className="Gray800-14px" style={{ textAlign: 'center' }}>
+                        <div className="gray800-14" style={{ textAlign: 'center' }}>
                             Loading...
                         </div>
                     </div>

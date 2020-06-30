@@ -73,19 +73,19 @@ class UserMenu extends Component {
                     <Dropdown>
                         
                           <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                              <span className="Black-14px">{userState[0].name}{userState[0].name}</span>
+                              <span className="black-14">{userState[0].name}{userState[0].name}</span>
                               <span className="accountDropDownGap"></span>< ArrowDownSvg />
                           </Dropdown.Toggle>
                         
 
                         <Dropdown.Menu as={CustomMenu}>
-                            <Dropdown.Item href="/account?tab=youraccount" className="Black-14px">Your Account</Dropdown.Item>
-                            <Dropdown.Item href="/account?tab=tools" className="Black-14px">Tools</Dropdown.Item>
-                            <Dropdown.Item href="/account?tab=reviews" className="Black-14px">Reviews</Dropdown.Item>
-                            <Dropdown.Item href="/account?tab=projects" className="Black-14px">Projects</Dropdown.Item>
-                            <Dropdown.Item href="/account?tab=dataaccessrequests" className="Black-14px">Data access requests</Dropdown.Item>
-                            <Dropdown.Item href="/account?tab=usersroles" className="Black-14px">Users and roles</Dropdown.Item>
-                            <Dropdown.Item onClick={this.logout} className="Black-14px">Logout</Dropdown.Item>
+                            <Dropdown.Item href="/account?tab=youraccount" className="black-14">Your Account</Dropdown.Item>
+                            <Dropdown.Item href="/account?tab=tools" className="black-14">Tools</Dropdown.Item>
+                            <Dropdown.Item href="/account?tab=reviews" className="black-14">Reviews</Dropdown.Item>
+                            <Dropdown.Item href="/account?tab=projects" className="black-14">Projects</Dropdown.Item>
+                            <Dropdown.Item href="/account?tab=dataaccessrequests" className="black-14">Data access requests</Dropdown.Item>
+                            <Dropdown.Item href="/account?tab=usersroles" className="black-14">Users and roles</Dropdown.Item>
+                            <Dropdown.Item onClick={this.logout} className="black-14">Logout</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
                 )

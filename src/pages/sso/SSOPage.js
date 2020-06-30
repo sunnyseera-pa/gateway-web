@@ -47,7 +47,7 @@ class SSOPage extends Component {
     const { renderPage } = this.state;
     return (
       renderPage && (
-        <div className='LandingBackground'>
+        <div className='landingBackground'>
           <Row className='pt-5 pl-5'>
             <Col xs={{ span: 6, order: 1 }} lg={{ span: 6, order: 1 }}>
               {' '}
@@ -60,7 +60,7 @@ class SSOPage extends Component {
                 <Row className='mt-4'>
                   <Col xs={1} md={1} />
                   <Col xs={10} md={10}>
-                    <span className='Black-20px'>
+                    <span className='black-20'>
                       Sign in or create a new account
                     </span>
                   </Col>
