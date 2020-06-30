@@ -57,7 +57,7 @@ class ToolDetail extends Component {
       this.setState({ reviewAdded: values.reviewAdded });
       this.setState({ replyAdded: values.replyAdded })
     }
-
+ 
     initGA('UA-166025838-1');
     PageView();
     
@@ -75,7 +75,7 @@ class ToolDetail extends Component {
   getDataSearchFromDb = () => {
     //need to handle error if no id is found
     this.setState({ isLoading: true });
-    axios.get(baseURL + '/api/v1/tools/' + this.props.match.params.toolID)
+    axios.get(baseURL + '/api/v1/tools/' + this.props.match.params.toolID) 
       .then((res) => {
         this.setState({
           data: res.data.data[0],
@@ -115,7 +115,7 @@ class ToolDetail extends Component {
         <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
         <Container className="mb-5">
 
-          {toolAdded ?
+          {toolAdded ? 
             <Row className="">
               <Col sm={1} lg={1} />
               <Col sm={10} lg={10}>

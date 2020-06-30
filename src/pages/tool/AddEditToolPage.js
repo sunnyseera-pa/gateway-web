@@ -41,7 +41,7 @@ class AddEditToolPage extends React.Component {
         relatedObjectIds: [],
         relatedObjects: [],
         didDelete: false,
-        isEdit: false
+        isEdit: false 
     };
 
     async componentDidMount() {

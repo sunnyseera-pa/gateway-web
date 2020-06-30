@@ -12,6 +12,7 @@ import ProjectPage from './pages/project/ProjectPage';
 import PaperPage from './pages/paper/PaperPage';
 import DatasetPage from './pages/dataset/DatasetPage';
 import SearchPage from './pages/search/SearchPage';
+import CollectionPage from './pages/collections/CollectionPage';
 
 import Account from './pages/dashboard/Account';
 
@@ -114,10 +115,12 @@ class HDRRouter extends Component {
                         <Route path='/completeRegistration/:personID' render={(props) => <CompleteRegistration {...props} userState={userState} />} />
                         <Route path='/sso' render={(props) => <SSOPage {...props} userState={userState} />} />
                         
-                        {userState[0].loggedIn ? (<Route path='/addcollection' render={(props) => <AddCollectionPage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/data-access-request/:datasetId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
                         {userState[0].loggedIn ? (<Route path='/account' render={(props) => <Account {...props} userState={userState} />} />) : ''}
                         
+                        {userState[0].loggedIn ? (<Route path='/addcollection' render={(props) => <AddCollectionPage {...props} userState={userState} /> } />) : ''}
+                        <Route path='/collection/:collectionID' render={(props) => <CollectionPage {...props} userState={userState} />} />
+
                         {userState[0].loggedIn ? (<Route path='/tool/add' render={(props) => <AddEditToolPage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/tool/edit/:toolID' render={(props) => <AddEditToolPage {...props} userState={userState} isEdit="true" /> } />) : ''}
                         <Route path='/tool/:toolID' render={(props) => <ToolPage {...props} userState={userState} />} />

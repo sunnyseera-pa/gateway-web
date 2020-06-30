@@ -182,9 +182,10 @@ const AddCollectionForm = (props) => {
             values.collectionCreator = props.userState[0];
             axios.post(baseURL + '/api/v1/collections/add', values)
             //GO TO THIS COLLECTION PAGE ONCE IT IS CREATED
-                // .then((res) => {
+                .then((res) => {
                 //     window.location.href = window.location.search + '/tool/' + res.data.id + '/?toolAdded=true';
-                // });
+                    window.location.href = window.location.search + '/collection/' + res.data.id + '/?collectionAdded=true'; 
+                });
         }
     });
 

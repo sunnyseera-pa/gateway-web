@@ -187,7 +187,7 @@ class SearchBar extends React.Component {
 
     render() {
         const { userState, newData, isLoading, clearMessage } = this.state;
-        console.log('new data: ' + JSON.stringify(this.state.newData))
+        
         if (isLoading) {
             return <></>;
         }
@@ -258,7 +258,7 @@ class SearchBar extends React.Component {
                                                                 </div>
                                                             </div>
                                                             : newData.slice(0, 48).map((dat) => {
-                                                                let messageDateString = moment(dat.messageSent).format('D MMMM YYYY HH:mm');
+                                                            let messageDateString = moment(dat.messageSent).format('D MMMM YYYY HH:mm');
 
                                                                 if (dat.messageType === 'add') {
                                                                     return (
@@ -280,7 +280,7 @@ class SearchBar extends React.Component {
                                                                         <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
                                                                              <Col xs={10}>
                                                                                 <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                <div className="NotificationInfoHolder"><a class="NotificationInfo">{dat.messageDescription}</a></div> 
+                                                                                <div className="NotificationInfoHolder"><a href={'/collection/' + dat.messageObjectID} class="NotificationInfo">{dat.messageDescription}</a></div> 
                                                                             </Col>
                                                                             <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                         </Row>

@@ -337,6 +337,16 @@ a.nav-item.nav-link.active {
   color: #2d2d2d !important;
 }
 
+.Black-28px {
+  font-family: museo-sans-rounded !important;
+  font-size: 28px !important;
+  font-weight: 500 !important;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  color: #2d2d2d !important;
+}
+
 .Gray454443-14px {
   font-family: museo-sans-rounded;
   font-size: 14px;
@@ -420,6 +430,8 @@ h1 {
   letter-spacing: normal;
   color: #3c3c3b;
 }
+
+
 
 .Gray700-16px {
   width: 88px;
@@ -2146,4 +2158,11 @@ NAVBAR CSS BELOW
   border-radius: 8px;
   background-color: #f6f7f8;
   padding: 20px;
+}
+
+#collectionLogo {
+  max-height: 74px;
+  max-width: 74px;
+  min-height: 42px;
+  min-width: 42px;
 }
