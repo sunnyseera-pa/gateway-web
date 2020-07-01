@@ -76,10 +76,10 @@ class RelatedObject extends React.Component {
         this.props.doUpdateReason(id, reason, type)
     }
 
-
+ 
     render() {
         const { data, isLoading, activeLink, relatedObject, inCollection } = this.state; 
-        
+
         if (isLoading) {
             return <Loading />;
         }

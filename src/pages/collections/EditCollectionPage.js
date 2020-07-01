@@ -39,6 +39,7 @@ class EditCollectionPage extends React.Component {
         toolData: [],
         projectData: [],
         personData: [],
+        paperData: [],
         summary: [],
         tempRelatedObjectIds: [],
         relatedObjectIds: [],
@@ -108,6 +109,7 @@ class EditCollectionPage extends React.Component {
                     toolData: res.data.toolResults || [],
                     projectData: res.data.projectResults || [],
                     personData: res.data.personResults || [],
+                    paperData: res.data.paperResults || [],
                     summary: res.data.summary || [],
                     isLoading: false
                 });
@@ -150,7 +152,7 @@ class EditCollectionPage extends React.Component {
     }
 
     render() {
-        const { data, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, relatedObjects, didDelete } = this.state;
+        const { data, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, paperData, summary, relatedObjects, didDelete } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -160,7 +162,7 @@ class EditCollectionPage extends React.Component {
             <div>
                 <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Container>
-                    <EditCollectionForm data={data} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
+                    <EditCollectionForm data={data} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} paperData={paperData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
                 </Container>
             </div>
         );
@@ -195,20 +197,12 @@ const EditCollectionForm = (props) => {
                 .matches( /^[http|https]+:\/\/(?:([\w\-\.])+(\[?\.\]?)([\w]){2,4}|(?:(?:25[0–5]|2[0–4]\d|[01]?\d\d?)\[?\.\]?){3}(?:25[0–5]|2[0–4]\d|[01]?\d\d?))*([\w\/+=%&_\.~?\-]*)+[.gif|.jpeg|.png|.svg]$/ , 'Invalid image URL' )
         }),
 
-
-//DO A PUT METHOD - CHANGE TO THIS
         onSubmit: values => {
             values.relatedObjects = props.relatedObjects 
             values.collectionCreator = props.userState[0];
             axios.put(baseURL + '/api/v1/collections/edit', values)
-            // .then((res) => {
-            //     console.log('submit clicked')
-            // })
-            // GO TO THIS COLLECTION PAGE ONCE IT IS CREATED
                 .then((res) => { 
-                    console.log('submitted - collection edit')
                     window.location.href = window.location.search + '/collection/' + props.data.id + '/?collectionEdited=true';
-                    // window.location.href = window.location.search + '/collection/' + res.data.id;
                 });
         }
     });
@@ -337,7 +331,7 @@ const EditCollectionForm = (props) => {
                             {props.relatedObjects ? props.relatedObjects.map((object) => {
                                 return (
                                     <div className="RelatedObjectRectangle">
-                                        <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} inCollection={true}/>
+                                        <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} inCollection={true}/> 
                                     </div>   
                                 )
                              }) : ''}
@@ -347,7 +341,7 @@ const EditCollectionForm = (props) => {
                                 <Row>
                                     <Col sm={1} lg={1} />
                                     <Col sm={10} lg={10}>
-                                        <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
+                                        <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} paperData={props.paperData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                     </Col>
                                     <Col sm={1} lg={10} />
                                 </Row>

@@ -28,7 +28,7 @@ function RelatedResources(props) {
         props.doClearRelatedObjects();
     }
     
-    return (
+    return ( 
         <Fragment className="FlexCenter">
             <Button variant='white' href={''} target="_blank" className="TechDetailButton mr-2" onClick={handleShow}>
                 + Add resources
@@ -58,7 +58,7 @@ function RelatedResources(props) {
                             </Button>
                             <Button variant="primary" className="White-14px" id="AddResources" onClick={addResources} >
                                 Add resources
-                            </Button>
+                            </Button> 
                         </Col>
                 </Modal.Footer>
              </Modal>

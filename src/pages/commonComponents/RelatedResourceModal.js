@@ -235,7 +235,7 @@ class RelatedResourcesModal extends React.Component {
                                     }
                                 })
                                 : ''}
-
+ 
                             {key === 'Tools' ?
                             !this.props.toolData ? '' :
                                 this.props.toolData.map((tool) => {
@@ -271,6 +271,7 @@ class RelatedResourcesModal extends React.Component {
                                      }
                                 })
                                 : ''}
+
 
                               {key === 'People' ?
                               !this.props.personData ? '' :

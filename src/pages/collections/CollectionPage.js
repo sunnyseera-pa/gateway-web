@@ -39,7 +39,7 @@ state = {
     projectCount: 0,
     paperCount: 0,
     collectionAdded: false,
-    collectionEdited: false
+    collectionEdited: false 
 };
 
 constructor(props) {
