@@ -9,6 +9,13 @@
  */
 
 // Fonts
+
+/*
+Example
+    .dark-14 {
+        @include font-source(14px, $indigo, 500);
+    }
+*/
 @mixin font-source($size: false, $colour: false, $weight: false,  $lh: false, $opacity: false) {
     font-family: $heading-font-family;
     @if $size { font-size: $size !important; }
@@ -32,7 +39,7 @@
  }*/
 
 $breakpoints: (
-    "phone":        400px,
+    "phone":        320px,
     "phone-wide":   480px,
     "phablet":      560px,
     "tablet-small": 640px,
@@ -53,11 +60,20 @@ $breakpoints: (
     }
 }
 
+/*
+	border radius
+	example:
+	.element {
+		@include rounded(20px)
+	}
+*/
+
 @mixin rounded($border) {
 	-webkit-border-radius: $border;
 	-moz-border-radius: $border;
 	border-radius: $border;
 }
+
 
 /*
 	Retina images
