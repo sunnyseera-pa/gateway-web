@@ -353,6 +353,10 @@ input[type='radio']:after {
   border: solid 2px #d6d6d6;
 }
 
+input:active {
+    border: 0 !important
+}
+
 input[type='radio']:checked:after {
     position: relative;
     width: 23px;
@@ -712,7 +716,8 @@ textarea:focus {
 
 .modal-dialog {
   position: absolute;
-  top: 40%;
+  margin: 0 auto !important;
+  top: 50%;
   left: 15%;
   transform: translate(-50%, -50%) !important;
 }
@@ -860,7 +865,7 @@ iframe#discourse-embed-frame {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
+//   padding-top: 100px; /* Location of the box */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -1118,7 +1123,7 @@ iframe#discourse-embed-frame {
 
 .modal-dialog {
   position: absolute;
-  top: 40%;
+  top: 50%;
   left: 15%;
   transform: translate(-50%, -50%) !important;
 }
@@ -1575,13 +1580,7 @@ iframe#discourse-embed-frame {
   width: 100%;
 }
 
-.modal-70w .modal-header {
-  width: 70vw !important;
-  background-color: $white;
-}
-
-.modal-70w .modal-body {
-  width: 70vw !important;
+.modal-70w .modal-header, .modal-70w .modal-body {
   background-color: $white;
 }
 
@@ -1637,7 +1636,7 @@ iframe#discourse-embed-frame {
 }
 
 .relatedResourcesModal .modal-content {
-  height: 100vh;
+  height: calc(100vh - 10px);
 }
 
 .minHeightModal {

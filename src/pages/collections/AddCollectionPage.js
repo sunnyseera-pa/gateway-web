@@ -265,6 +265,7 @@ const AddCollectionForm = (props) => {
                                     defaultSelected={listOfAuthors}
                                     multiple
                                     options={props.combinedUsers}
+                                    className="addFormInput"
                                     onChange={(selected) => {
                                         var tempSelected = [];
                                         selected.forEach((selectedItem) => {

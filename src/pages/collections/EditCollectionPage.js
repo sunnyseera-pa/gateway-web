@@ -289,6 +289,7 @@ const EditCollectionForm = (props) => {
                                 </span>
                                 <Typeahead
                                     id="authors"
+                                    className="addFormInput"
                                     labelKey={authors => `${authors.name}`}
                                     defaultSelected={listOfAuthors}
                                     multiple
