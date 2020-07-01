@@ -118,11 +118,6 @@ class HDRRouter extends Component {
                         
                         {userState[0].loggedIn ? (<Route path='/data-access-request/:datasetId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
                         {userState[0].loggedIn ? (<Route path='/account' render={(props) => <Account {...props} userState={userState} />} />) : ''}
-
-                       
-                        {userState[0].loggedIn ? (<Route path='/addcollection' render={(props) => <AddCollectionPage {...props} userState={userState} /> } />) : ''}
-                        {userState[0].loggedIn ? (<Route path='/editcollection/:collectionID' render={(props) => <EditCollectionPage {...props} userState={userState} /> } />) : ''}  
-
                         
                         {userState[0].loggedIn ? (<Route path='/addcollection' render={(props) => <AddCollectionPage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/editcollection/:collectionID' render={(props) => <EditCollectionPage {...props} userState={userState} /> } />) : ''} 
