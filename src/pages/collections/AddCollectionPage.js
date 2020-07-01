@@ -332,7 +332,7 @@ const AddCollectionForm = (props) => {
                                             Cancel
                                         </Button>
                                     </a>
-                                <Button variant="primary" className="White-14px" type="submit" >
+                                <Button variant="primary" className="white-14-semibold" type="submit" >
                                     Publish
                                 </Button>
                             </Col>
