@@ -51,6 +51,7 @@ componentDidMount() {
   if (!!window.location.search) {
     var values = queryString.parse(window.location.search);
     this.setState({ collectionAdded: values.collectionAdded });
+    this.setState({ collectionEdited: values.collectionEdited });
   }
   this.getDataSearchFromDb()
 }

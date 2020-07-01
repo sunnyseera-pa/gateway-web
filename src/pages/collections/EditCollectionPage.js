@@ -21,7 +21,7 @@ import { Event, initGA } from '../../tracking';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
-class AddCollectionPage extends React.Component {
+class EditCollectionPage extends React.Component {
 
     constructor(props) {
         super(props)
@@ -49,10 +49,24 @@ class AddCollectionPage extends React.Component {
     async componentDidMount() {
         initGA('UA-166025838-1');
         await Promise.all([
-            this.doGetUsersCall()
+            this.doGetUsersCall(),
+            // this.getDataSearchFromDb()
         ]);
-        this.setState({ isLoading: false });
+        this.getDataSearchFromDb(); 
     }
+
+    getDataSearchFromDb = () => {
+        //need to handle error if no id is found
+        this.setState({ isLoading: true });
+        axios.get(baseURL + '/api/v1/collections/' + this.props.match.params.collectionID)
+          .then((res) => {
+            this.setState({
+              data: res.data.data[0],
+              relatedObjects: res.data.data[0].relatedObjects ? res.data.data[0].relatedObjects : []
+            });
+            this.setState({isLoading: false})
+          });
+      };
 
     doGetUsersCall() {
         return new Promise((resolve, reject) => {
@@ -117,15 +131,16 @@ class AddCollectionPage extends React.Component {
             this.state.relatedObjects.push({'objectId':object.objectId, 'reason':'', 'objectType':object.type})
         })
 
-        this.setState({tempRelatedObjectIds: []})
+        this.setState({tempRelatedObjectIds: []}) 
     }
 
     clearRelatedObjects = () => {
-        this.setState({tempRelatedObjectIds: [] })
+        this.setState({tempRelatedObjectIds: [] }) 
     }
 
     removeObject = (id) => {
         this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id);
+        this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== JSON.stringify(id));
         this.setState({relatedObjects: this.state.relatedObjects})
         this.setState({didDelete: true});
     }
@@ -145,7 +160,7 @@ class AddCollectionPage extends React.Component {
             <div>
                 <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Container>
-                    <AddCollectionForm data={data} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
+                    <EditCollectionForm data={data} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
                 </Container>
             </div>
         );
@@ -153,18 +168,21 @@ class AddCollectionPage extends React.Component {
 
 }
 
-const AddCollectionForm = (props) => {
+const EditCollectionForm = (props) => {
     // Pass the useFormik() hook initial form values and a submit function that will
     // be called when the form is submitted
 
     const formik = useFormik({
         initialValues: {
-            name: '',
-            description: '',
-            authors: [props.userState[0].id],
-            imageLink: '',
-            relatedObjects: props.relatedObjects 
+            id: props.data.id,
+            name: props.data.name,
+            description: props.data.description,
+            // authors: [props.userState[0].id],
+            authors: props.data.authors,
+            imageLink: props.data.imageLink,
+            relatedObjects: props.relatedObjects
         },
+    
 
         validationSchema: Yup.object({
             name: Yup.string()
@@ -177,28 +195,40 @@ const AddCollectionForm = (props) => {
                 .matches( /^[http|https]+:\/\/(?:([\w\-\.])+(\[?\.\]?)([\w]){2,4}|(?:(?:25[0–5]|2[0–4]\d|[01]?\d\d?)\[?\.\]?){3}(?:25[0–5]|2[0–4]\d|[01]?\d\d?))*([\w\/+=%&_\.~?\-]*)+[.gif|.jpeg|.png|.svg]$/ , 'Invalid image URL' )
         }),
 
+
+//DO A PUT METHOD - CHANGE TO THIS
         onSubmit: values => {
             values.relatedObjects = props.relatedObjects 
             values.collectionCreator = props.userState[0];
-            axios.post(baseURL + '/api/v1/collections/add', values)
-            //GO TO THIS COLLECTION PAGE ONCE IT IS CREATED
-                .then((res) => {
-                //     window.location.href = window.location.search + '/tool/' + res.data.id + '/?toolAdded=true';
-                    window.location.href = window.location.search + '/collection/' + res.data.id + '/?collectionAdded=true'; 
+            axios.put(baseURL + '/api/v1/collections/edit', values)
+            // .then((res) => {
+            //     console.log('submit clicked')
+            // })
+            // GO TO THIS COLLECTION PAGE ONCE IT IS CREATED
+                .then((res) => { 
+                    console.log('submitted - collection edit')
+                    window.location.href = window.location.search + '/collection/' + props.data.id + '/?collectionEdited=true';
+                    // window.location.href = window.location.search + '/collection/' + res.data.id;
                 });
         }
     });
 
     var listOfAuthors = [];
-
-    props.combinedUsers.forEach((user) => {
-        if (user.id === props.userState[0].id) {
-            listOfAuthors.push({ id: user.id, name: user.name + " (You)" })
-            if (!user.name.includes('(You)')) {
+    props.data.authors.forEach((author) => {
+        props.combinedUsers.forEach((user) => {
+          if (user.id === author) {
+            if (props.userState[0].id === user.id) {
+              listOfAuthors.push({ id: user.id, name: user.name + " (You)" })
+              if (!user.name.includes('(You)')) {
                 user.name = user.name + " (You)";
+              }
             }
-        }
-    });
+            else {
+              listOfAuthors.push({ id: user.id, name: user.name })
+            }
+          }
+        });
+      })
   
     function updateReason(id, reason, type) {
         let inRelatedObject = false;
@@ -224,7 +254,7 @@ const AddCollectionForm = (props) => {
                     <div className="Rectangle">
                         <Row>
                             <Col sm={12} lg={12}>
-                             <p className="Black-20px">Create a collection</p>
+                             <p className="Black-20px">Edit a collection</p>
                             </Col>
                         </Row>
                         <p className="Gray800-14px">Collections help collate varying resource types into one discovery space</p>
@@ -289,7 +319,7 @@ const AddCollectionForm = (props) => {
                                      <span className="Purple-13px" onMouseEnter={() => setIsShown(true)} onMouseLeave={() => setIsShown(false)}>  
                                         How to get an image URL
                                      </span>
-                                     {isShown && ( <img src={ToolTip} alt="" id="imageToolTip" /> )}
+                                     {isShown && ( <img src={ToolTip} alt="" id="ImageToolTip" /> )}
                                      </Col>
                                 </Row>
                                 <Form.Control id="imageLink" name="imageLink" type="text" className={formik.touched.imageLink && formik.errors.imageLink ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.imageLink} onBlur={formik.handleBlur} />
@@ -304,13 +334,14 @@ const AddCollectionForm = (props) => {
                         </div>
 
                         <div className="RelatedResourcesRectangle mt-1">
-                            {props.relatedObjects.map((object) => {
+                            {props.relatedObjects ? props.relatedObjects.map((object) => {
                                 return (
                                     <div className="RelatedObjectRectangle">
                                         <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} inCollection={true}/>
                                     </div>   
                                 )
-                            })}
+                             }) : ''}
+                            
 
                             <div className="FlexCenter pt-3 pb-3">
                                 <Row>
@@ -347,4 +378,4 @@ const AddCollectionForm = (props) => {
     );
 }
 
-export default AddCollectionPage;
+export default EditCollectionPage;
