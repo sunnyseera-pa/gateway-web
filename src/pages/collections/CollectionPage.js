@@ -207,12 +207,11 @@ getDataSearchFromDb = () => {
             : ""}
 
               <Row>
-                <Col sm={1} lg={1} />
-                {data.imageLink ? 
+              <Col sm={1} lg={1} />
+                {!data.imageLink || data.imageLink === "https://" ? '' :
                   <Col sm={1} lg={1} >
                     <img src={data.imageLink} alt="collectionLogo" id="collectionLogo" />
-                  </Col>
-                : '' }
+                  </Col> }
                 <Col sm={10} lg={10}> 
                   <Row>
                     <Col sm={9} lg={9}>
