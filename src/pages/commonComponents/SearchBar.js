@@ -316,7 +316,7 @@ class SearchBar extends React.Component {
                                                                 )
                                                             }
                                                         })}
-                                                </Dropdown.Menu>
+                                                    </Dropdown.Menu>
                                             </Dropdown>
                                         </div>
                                     )

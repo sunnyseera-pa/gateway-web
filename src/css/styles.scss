@@ -1198,6 +1198,7 @@ iframe#discourse-embed-frame {
 }
 
 .desktopNotificationMenu {
+  transform: translate(-380px, 23px) !important;
   padding: 0 !important;
 }
 
@@ -1270,7 +1271,6 @@ iframe#discourse-embed-frame {
     max-height: 400px;
     width: 400px;
     top: 28px !important;
-    left: -148px !important;
     word-wrap: break-word;
   }
 }
@@ -1312,7 +1312,6 @@ iframe#discourse-embed-frame {
     background-color: #f6f7f8;
     display: inline-block;
     border-radius: 4px;
-    /* margin-top: 9px; */
     padding: 5px;
     width: 100%;
   }
@@ -1341,7 +1340,6 @@ iframe#discourse-embed-frame {
     width: 400px;
     word-wrap: break-word;
     top: 28px !important;
-    left: -148px !important;
   }
 }
 
@@ -1416,7 +1414,7 @@ iframe#discourse-embed-frame {
 
   .mobileNotificationMenu {
     top: 28px !important;
-    left: -51px !important;
+    transform: translate3d(-290px, 24px, 0px) !important;
     padding: 0 !important;
     width: 320px;
     max-height: 400px;
