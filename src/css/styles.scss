@@ -44,6 +44,13 @@ body {
   padding-bottom: 5px;
 }
 
+.rectangleWithBorder {
+  width: 100%;
+  background-color: #ffffff;
+  padding: 20px;
+  border: solid 1px #e2e2e2;
+}
+
 .landingBox {
   margin-top: 20px;
   max-height: 506px;
@@ -1713,4 +1720,11 @@ iframe#discourse-embed-frame {
   background-color: #f6f7f8;
   padding: 20px;
   @include rounded(8px);
+}
+
+#collectionLogo {
+  max-height: 74px;
+  max-width: 74px;
+  min-height: 42px;
+  min-width: 42px;
 }

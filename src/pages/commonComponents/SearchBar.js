@@ -258,7 +258,7 @@ class SearchBar extends React.Component {
                                                                 </div>
                                                             </div>
                                                             : newData.slice(0, 48).map((dat) => {
-                                                                let messageDateString = moment(dat.messageSent).format('D MMMM YYYY HH:mm');
+                                                            let messageDateString = moment(dat.messageSent).format('D MMMM YYYY HH:mm');
 
                                                                 if (dat.messageType === 'add') {
                                                                     return (

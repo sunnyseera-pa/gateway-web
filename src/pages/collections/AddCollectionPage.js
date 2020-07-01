@@ -39,6 +39,7 @@ class AddCollectionPage extends React.Component {
         toolData: [],
         projectData: [],
         personData: [],
+        paperData: [],
         summary: [],
         tempRelatedObjectIds: [],
         relatedObjectIds: [],
@@ -94,6 +95,7 @@ class AddCollectionPage extends React.Component {
                     toolData: res.data.toolResults || [],
                     projectData: res.data.projectResults || [],
                     personData: res.data.personResults || [],
+                    paperData: res.data.paperResults || [],
                     summary: res.data.summary || [],
                     isLoading: false
                 });
@@ -135,7 +137,7 @@ class AddCollectionPage extends React.Component {
     }
 
     render() {
-        const { data, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, relatedObjects, didDelete } = this.state;
+        const { data, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, paperData, summary, relatedObjects, didDelete } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -145,7 +147,7 @@ class AddCollectionPage extends React.Component {
             <div>
                 <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Container>
-                    <AddCollectionForm data={data} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
+                    <AddCollectionForm data={data} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} paperData={paperData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
                 </Container>
             </div>
         );
@@ -163,7 +165,7 @@ const AddCollectionForm = (props) => {
             description: '',
             authors: [props.userState[0].id],
             imageLink: '',
-            relatedObjects: props.relatedObjects
+            relatedObjects: props.relatedObjects 
         },
 
         validationSchema: Yup.object({
@@ -181,10 +183,9 @@ const AddCollectionForm = (props) => {
             values.relatedObjects = props.relatedObjects 
             values.collectionCreator = props.userState[0];
             axios.post(baseURL + '/api/v1/collections/add', values)
-            //GO TO THIS COLLECTION PAGE ONCE IT IS CREATED
-                // .then((res) => {
-                //     window.location.href = window.location.search + '/tool/' + res.data.id + '/?toolAdded=true';
-                // });
+                .then((res) => {
+                    window.location.href = window.location.search + '/collection/' + res.data.id + '/?collectionAdded=true'; 
+                });
         }
     });
 
@@ -316,7 +317,7 @@ const AddCollectionForm = (props) => {
                                 <Row>
                                     <Col sm={1} lg={1} />
                                     <Col sm={10} lg={10}>
-                                        <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
+                                        <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} paperData={props.paperData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                     </Col>
                                     <Col sm={1} lg={10} />
                                 </Row>
@@ -331,7 +332,7 @@ const AddCollectionForm = (props) => {
                                             Cancel
                                         </Button>
                                     </a>
-                                <Button variant="primary" className="white-14-semibold" type="submit" onClick={() => Event("Buttons", "Click", "Add tool form submitted")} >
+                                <Button variant="primary" className="white-14-semibold" type="submit" >
                                     Publish
                                 </Button>
                             </Col>

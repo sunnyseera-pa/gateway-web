@@ -58,7 +58,7 @@ function RelatedResources(props) {
                             </Button>
                             <Button variant="primary" className="white-14-semibold" id="addResources" onClick={addResources} >
                                 Add resources
-                            </Button>
+                            </Button> 
                         </Col>
                 </Modal.Footer>
              </Modal>

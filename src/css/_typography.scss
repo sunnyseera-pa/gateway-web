@@ -53,6 +53,10 @@ h6 {
   @include font-source(20px, $gray-dark, $font-weight-bold);
 }
 
+.black-28 {
+  @include font-source(28px, $gray-dark, $font-weight-semibold);
+}
+
 .white-12-bold {
   @include font-source(12px, $white, $font-weight-bold);
 }

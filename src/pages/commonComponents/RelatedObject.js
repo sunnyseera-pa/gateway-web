@@ -42,7 +42,7 @@ class RelatedObject extends React.Component {
         }
         else {
             this.state.relatedObject = props.relatedObject;
-            this.getRelatedObjectFromDb(this.state.relatedObject.objectId);
+            this.getRelatedObjectFromDb(this.state.relatedObject.objectId); 
         }
     }
 
@@ -76,8 +76,7 @@ class RelatedObject extends React.Component {
         this.props.doUpdateReason(id, reason, type)
     }
 
-
-
+ 
     render() {
         const { data, isLoading, activeLink, relatedObject, inCollection } = this.state; 
 
@@ -360,7 +359,9 @@ class RelatedObject extends React.Component {
                                             <span className="gray800-14">
                                                 {(() => {
                                                     if (typeof data.description === 'undefined') {
+                                                        if(data.abstract){
                                                         return data.abstract.substr(0, 140) + (data.abstract.length > 140 ? '...' : '')
+                                                        }
                                                     }
                                                     else {
                                                         return data.description.substr(0, 140) + (data.description.length > 140 ? '...' : '')
@@ -373,7 +374,7 @@ class RelatedObject extends React.Component {
                             }
                         })()}
                         {(() => {
-                            if (this.props.showRelationshipQuestion) {
+                            if (this.props.showRelationshipQuestion) { 
                                 return (
                                     <>
                                         <Row className="mt-3">
@@ -403,7 +404,7 @@ class RelatedObject extends React.Component {
                                         <Row className="mt-3">
                                             <Col xs={12}>
                                                 <div className="relationshipAnswer">
-                                                    <span className="gray800-14 mr-2">{relatedObject.reason}</span> 
+                                                    <span className="gray800-14 mr-2">{relatedObject.reason ? relatedObject.reason : this.props.collectionReason}</span> 
                                                 </div>
                                             </Col>
                                         </Row>
