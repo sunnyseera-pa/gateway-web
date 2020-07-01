@@ -45,8 +45,10 @@ body {
 }
 
 .rectangleWithBorder {
+  width: 100%;
+  background-color: #ffffff;
+  padding: 20px;
   border: solid 1px #e2e2e2;
-  padding: 10px;
 }
 
 .landingBox {
