@@ -277,10 +277,10 @@ class SearchBar extends React.Component {
                                                             else if(dat.messageType === 'data access request'){
                                                                 return (
                                                                     <>
-                                                                        <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
+                                                                        <Row className={dat.isRead === 'true' || clearMessage ? "notificationReadBackground" : ''}>
                                                                                 <Col xs={10}>
-                                                                                    <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                    <div className="NotificationInfoHolder"><a class="NotificationInfo">{dat.messageDescription}</a></div> 
+                                                                                    <div className="notificationDate">{messageDateString + '\n'}</div>
+                                                                                    <div className="notificationInfoHolder"><a class="notificationInfo">{dat.messageDescription}</a></div> 
                                                                                 </Col>
                                                                                 <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                             </Row>
