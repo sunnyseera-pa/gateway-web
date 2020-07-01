@@ -205,8 +205,7 @@ class RelatedResourcesModal extends React.Component {
             <div>
               <SimpleSearchBar searchString={this.props.searchString} doSearchMethod={this.props.doSearchMethod} doUpdateSearchString={this.props.doUpdateSearchString} userState={this.props.userState} />
                 {typeof this.props.summary.datasets !== 'undefined' ? 
-                    <Row className="searchTabsHolder">
-                    <Col>
+                    <div className="searchTabsHolder">
                         <div>
                             <Tabs className='tabsBackground gray700-13' activeKey={key} onSelect={this.handleSelect} >
                                 <Tab eventKey="Datasets" title={'Datasets (' + (!this.props.summary.datasets ? '0' : this.props.summary.datasets - this.state.selected.datasets) + ')'} />
@@ -216,8 +215,7 @@ class RelatedResourcesModal extends React.Component {
                                 <Tab eventKey="People" title={'People (' + (!this.props.summary.persons ? '0' : this.props.summary.persons - this.state.selected.persons) + ')'} />
                            </Tabs>
                         </div>
-                    </Col>
-                </Row> 
+                    </div> 
              : ''}
 
             <div className={typeof this.props.summary.datasets==='undefined' ? "minHeightModal" : "relatedModalBackground minHeightModal"} > 

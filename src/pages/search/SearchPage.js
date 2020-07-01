@@ -397,8 +397,7 @@ class SearchPage extends React.Component {
 
                 <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
 
-                <Row className="searchTabsHolder">
-                    <Col>
+                <div className="searchTabsHolder">
                         <div>
                             <Tabs className='tabsBackground gray700-13' activeKey={key} onSelect={this.handleSelect}>
                                 <Tab eventKey="Datasets" title={'Datasets (' + datasetCount + ')'}>
@@ -418,8 +417,7 @@ class SearchPage extends React.Component {
                                 </Tab>
                             </Tabs>
                         </div>
-                    </Col>
-                </Row>
+                </div>
 
                 <Container>
                     <Row>
