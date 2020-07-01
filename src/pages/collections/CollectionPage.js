@@ -184,10 +184,10 @@ getDataSearchFromDb = () => {
       <div>
         <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
 
-          <div className="Rectangle mt-1">
+          <div className="rectangle mt-1">
             <Container>
               {collectionAdded ? 
-              <Row className="">
+              <Row >
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                   <Alert variant="success" className="mt-3">Published! This collection is now public.</Alert>
@@ -197,7 +197,7 @@ getDataSearchFromDb = () => {
               : ""}
 
             {collectionEdited ?
-            <Row className="">
+            <Row >
               <Col sm={1} lg={1} />
               <Col sm={10} lg={10}>
                 <Alert variant="success" className="mt-3">Done! Your collection has been updated.</Alert>
@@ -216,21 +216,21 @@ getDataSearchFromDb = () => {
                 <Col sm={10} lg={10}> 
                   <Row>
                     <Col sm={9} lg={9}>
-                      <span className="Black-28px"> {data.name} </span>
+                      <span className="black-28"> {data.name} </span>
                     </Col>
                     {data.imageLink ? '' : <Col sm={1} lg={1} /> }
                     <Col sm={2} lg={2}>
-                      <span className="Gray700-13px">Created {moment(data.createdAt).format('MMM YYYY')} </span>
+                      <span className="gray700-13">Created {moment(data.createdAt).format('MMM YYYY')} </span>
                     </Col>
                   </Row>
                   <Row>
                     <Col sm={12} lg={12}> 
                       {data.persons.map((person, index) => {
                         if (index > 0) {
-                          return <span className="Gray800-14px">, {person.firstname} {person.lastname}</span>
+                          return <span className="gray800-14">, {person.firstname} {person.lastname}</span>
                         }
                         else {
-                          return <span className="Gray800-14px">{person.firstname} {person.lastname}</span>
+                          return <span className="gray800-14">{person.firstname} {person.lastname}</span>
                         } 
                       })} 
                     </Col>
@@ -241,7 +241,7 @@ getDataSearchFromDb = () => {
               <Row className="mt-3">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10} >
-                  <p className="Gray800-14px">{data.description}</p> 
+                  <p className="gray800-14">{data.description}</p> 
                 </Col>
                 <Col sm={1} lg={10} />
               </Row>  
@@ -249,7 +249,7 @@ getDataSearchFromDb = () => {
           </div>   
 
           <div> 
-            <Tabs className='TabsBackground Gray700-13px' activeKey={key} onSelect={this.handleSelect} >
+            <Tabs className='tabsBackground gray700-13' activeKey={key} onSelect={this.handleSelect} >
               <Tab eventKey="All" title={'All (' + allCount + ')'}></Tab>
               <Tab eventKey="Datasets" title={'Datasets (' + datasetCount + ')'}></Tab>
               <Tab eventKey="Tools" title={'Tools ('+ toolCount + ')'}></Tab>
