@@ -42,14 +42,14 @@ class ProjectTitle extends Component {
                 <Row className="mt-2">
                     <Col sm={1} lg={1} />
                     <Col sm={10} lg={10}>
-                        <div className="Rectangle">
+                        <div className="rectangle">
                             <Row>
                                 <Col xs={7} md={8}>
                                     <p>
-                                        <span className="Black-16px">{data.name}</span>
+                                        <span className="black-16">{data.name}</span>
                                         <br />
                                         <span >
-                                            <a href={data.link} rel="noopener noreferrer" target="_blank" className="Purple-14px">
+                                            <a href={data.link} rel="noopener noreferrer" target="_blank" className="purple-14">
                                                 {data.link}
                                             </a>
                                         </span>
@@ -57,10 +57,10 @@ class ProjectTitle extends Component {
                                 </Col>
                                 <Col xs={5} md={4} className="iconHolder">
                                     <p>
-                                        <span className="Gray700-13px pr-1">
+                                        <span className="gray700-13 pr-1">
                                             Updated
                                 </span>
-                                        <span className="Gray700-13px pr-1">
+                                        <span className="gray700-13 pr-1">
                                             {updatedOnDate}
                                         </span>
                                     </p>
@@ -72,11 +72,11 @@ class ProjectTitle extends Component {
   
                             <Row>
                                 <Col xs={12} md={12} >
-                                    {!data.categories.category ? '' : <div className="mr-2 Gray800-14px tagBadges"><a href={'/search?search=' + data.categories.category + '&type=all'}>{data.categories.category}</a></div>}
+                                    {!data.categories.category ? '' : <div className="mr-2 gray800-14 tagBadges"><a href={'/search?search=' + data.categories.category + '&type=all'}>{data.categories.category}</a></div>}
   
                                     <Row>
                                         <Col className="mt-3">
-                                            <span className='Gray800-14px'>
+                                            <span className='gray800-14'>
                                                 {data.counter === undefined ? 1 : data.counter + 1}
                                                 {data.counter === undefined ? ' view' : ' views'}
                                             </span>
@@ -84,10 +84,10 @@ class ProjectTitle extends Component {
                                     </Row>
   
                                     {!data.categories.programmingLanguage || data.categories.programmingLanguage <= 0 ? '' : data.categories.programmingLanguage.map((language) => {
-                                        return <div className="mr-2 Gray800-14px tagBadges"><a href={'/search?search=' + language + '&type=all'}>{language}</a></div>
+                                        return <div className="mr-2 gray800-14 tagBadges"><a href={'/search?search=' + language + '&type=all'}>{language}</a></div>
                                     })}
   
-                                    {!data.categories.programmingLanguageVersion ? '' : <div className="mr-2 Gray800-14px tagBadges"><a href={'/search?search=' + data.categories.programmingLanguageVersion + '&type=all'}>{data.categories.programmingLanguageVersion}</a></div>}
+                                    {!data.categories.programmingLanguageVersion ? '' : <div className="mr-2 gray800-14 tagBadges"><a href={'/search?search=' + data.categories.programmingLanguageVersion + '&type=all'}>{data.categories.programmingLanguageVersion}</a></div>}
                                 </Col>
                             </Row>
                         </div>
@@ -98,23 +98,23 @@ class ProjectTitle extends Component {
                     <Col sm={1} lg={1} />
                     <Col sm={10} lg={10}>
   
-                        <div className="Rectangle">
+                        <div className="rectangle">
                             <Row>
                                 <Col xs={12} md={12} className="mb-3">
   
                                     {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
-                                        return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2"><a href={'/search?search=' + feature + '&type=all'}>{feature}</a></div>
+                                        return <div className="mr-2 gray800-14 tagBadges mb-2 mt-2"><a href={'/search?search=' + feature + '&type=all'}>{feature}</a></div>
                                     })}
   
                                     {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
-                                        return <div className="mr-2 Gray800-14px tagBadges mb-2 mt-2"><a href={'/search?search=' + topic + '&type=all'}>{topic}</a></div>
+                                        return <div className="mr-2 gray800-14 tagBadges mb-2 mt-2"><a href={'/search?search=' + topic + '&type=all'}>{topic}</a></div>
                                     })}
   
                                 </Col>
                             </Row>
                             <Row>
                                 <Col xs={12} md={12} className="mb-3">
-                                    <span className="Gray800-14px descriptionWhiteSpace">
+                                    <span className="gray800-14 descriptionWhiteSpace">
                                         <ReactMarkdown source={data.description} />
                                     </span>
                                 </Col>

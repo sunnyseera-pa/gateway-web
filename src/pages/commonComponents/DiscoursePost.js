@@ -31,7 +31,7 @@ class DiscoursePost extends React.Component {
             </Col>
           </Row>
           <Row>
-            <div className='ml-3 mr-4 Gray800-15px' dangerouslySetInnerHTML={{ __html: post.cooked }} />
+            <div className='ml-3 mr-4 gray800-15' dangerouslySetInnerHTML={{ __html: post.cooked }} />
           </Row>
         </Col>
       </Row>

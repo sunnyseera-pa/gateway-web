@@ -35,7 +35,7 @@ const LoginModal = (props) => {
                         <Row className="mt-3">
                             <Col xs={1} md={1} />
                             <Col xs={10} md={10}>
-                                <span className="Black-20px"><span id="loginModalTitle">Sign in or create a new account</span></span>
+                                <span className="black-20"><span id="loginModalTitle">Sign in or create a new account</span></span>
                             </Col>
                             <Col xs={1} md={1}>
                                 <span className="close" onClick={hideLoginModal}>&times;</span>
@@ -48,7 +48,7 @@ const LoginModal = (props) => {
                             <Row className="mb-3">
                                 <Col sm={1} lg={1} />
                                 <Col sm={10} lg={10} >
-                                    <div className="Gray800-14px" style={{ textAlign: 'center' }}>
+                                    <div className="gray800-14" style={{ textAlign: 'center' }}>
                                         <br />Alternatively, you can contact the data custodian directly.<br /><br />
                                         <strong>Dataset selected:</strong> <span id="modalRequestDetails">{props.requestDetails}</span><br />
                                         <strong>Contact details:</strong> <span id="modalRequestContact">{props.requestContact}</span>

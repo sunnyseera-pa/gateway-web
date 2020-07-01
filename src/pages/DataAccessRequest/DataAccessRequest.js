@@ -5,17 +5,18 @@ import { Container, Row, Col, Button, Tabs, Tab } from 'react-bootstrap';
 import Winterfell from 'winterfell';
 import _ from 'lodash';
 import moment from 'moment';
+import axios from 'axios';
 import TypeaheadCustom from './components/TypeaheadCustom'
 import DatePickerCustom from './components/DatepickerCustom';
 import SearchBar from '../commonComponents/SearchBar';
 import Loading from '../commonComponents/Loading';
 import ToolKit from './components/Toolkit';
 import NavItem from './components/NavItem';
-import axios from 'axios';
 import DarValidation from '../../utils/DarValidation.util';
 import {classSchema} from './classSchema';
 import { baseURL } from '../../configs/url.config';
 import 'react-tabs/style/react-tabs.css';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from "../../images/SVGIcon"
 
 class DataAccessRequest extends Component {
@@ -52,7 +53,7 @@ class DataAccessRequest extends Component {
             const response = await axios.get(`${baseURL}/api/v1/data-access-request/${dataSetId}`);
             const { data: { data: { jsonSchema, questionAnswers, _id, applicationStatus }}} = response;
             this.setState({schema: {...jsonSchema, ...classSchema}, questionAnswers, _id, applicationStatus, activePanelId: 'mrcHealthDataToolkit', isLoading: false});
-            // this.setState({schema: {...formSchema}, activePanelId: 'mrcHealthDataToolkit', isLoading: false});
+            // this.setState({schema: {...formSchema}, activePanelId: 'mrcHealthDataToolkit', isLoading: false, applicationStatus: 'inProgress'});
         }
         catch (error) {
             this.setState({isLoading: false});
@@ -71,14 +72,17 @@ class DataAccessRequest extends Component {
                 ({questionAnswers} = {...this.state})
             // 1. deconstruct state
             let {schema: {questionSets}} = {...this.state};
-            // 2. omits out blank null undefined values from this.state.answers
-            questionAnswers  =  _.pickBy({...questionAnswers }, _.identity);
-
+            // 2. omits out blank null, undefined, and [] values from this.state.answers
+            questionAnswers = _.pickBy({...questionAnswers}, v => v !== null && v !== undefined && v.length != 0);
+            // 3. find the relevant questionSet { questionSetId: applicant }
             let questionSet = [...questionSets].find(q => q.questionSetId === panelId) || '';
             if(!_.isEmpty(questionSet)) {
+                // 4. get questions
                 let { questions } = questionSet;
+                // 5. total questions in panel 
                 totalQuestions = questions.length;
                 let totalQuestionKeys = _.map({...questions}, 'questionId');
+                // 6. return count of how many questions completed 
                 if(!_.isEmpty(questionAnswers)){
                     let count = Object.keys(questionAnswers).map((value) => { 
                         return totalQuestionKeys.includes(value) ? totalAnsweredQuestions++ : totalAnsweredQuestions;
@@ -171,7 +175,7 @@ class DataAccessRequest extends Component {
     onFormUpdate = _.debounce((questionAnswers) => {
         let totalQuestionsAnswered = this.totalQuestionsAnswered(this.state.activePanelId, questionAnswers);
         this.setState({totalQuestions: totalQuestionsAnswered});
-        this.onApplicationUpdate(questionAnswers);
+        // this.onApplicationUpdate(questionAnswers);
     }, 500);
 
     /**
@@ -185,6 +189,9 @@ class DataAccessRequest extends Component {
         let inValidMessages = DarValidation.buildInvalidMessages(Winterfell, invalidQuestions);
         let errors = DarValidation.formatValidationObj(inValidMessages, [...this.state.schema.questionPanels]);
         let isValid = Object.keys(errors).length ? false : true;
+        if(this.state.applicationStatus === 'submitted')
+            return alert('Your application has already been submitted.');
+
         if(isValid) {
             try {
                 let {_id: id} = this.state;
@@ -326,26 +333,26 @@ class DataAccessRequest extends Component {
         return (
             <div>
                 <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
-                <Row className="Banner">
+                <Row className="banner">
                     <Col md={11}>
-                        <span className="ml-3 White-20px mr-5">Data Access Request</span>
-                        <span className="White-16px pr-5">{title} | {publisher}</span>
-                        <span className="White-16px ml-2">{this.getSavedAgo()}</span>
+                        <span className="ml-3 white-20-semibold mr-5">Data Access Request</span>
+                        <span className="white-16-semibold pr-5">{title} | {publisher}</span>
+                        <span className="white-16-semibold ml-2">{this.getSavedAgo()}</span>
                     </Col>
                     <Col md={1}>
-                        {/* <CloseIconSvg className="Icon-18px" /> */}
-                        <SVGIcon name="closeicon" fill={'#ffffff'} className="BadgeSvgs mr-2" />
+                        {/* <CloseIconSvg className="icon-18" /> */}
+                        <SVGIcon name="closeicon" fill={'#ffffff'} className="badgeSvg mr-2" />
 
                     </Col>
                 </Row>
 
                 <div className="darForm">
-                <Row className="mt-5 ml-1 FillPage">
+                <Row className="mt-5 ml-1 fillPage">
                     <Col md={2}>
                         {[...this.state.schema.pages].map((item, idx) => (
                             <div key={item.index} className={`${item.active ? "active-border" : ''}`}>
                                 <div>
-                                    <h1 className="Black-16px mb-3 ml-3" onClick={e => this.updateNavigation(item)}>{item.title}</h1>
+                                    <h1 className="black-16 mb-3 ml-3" onClick={e => this.updateNavigation(item)}>{item.title}</h1>
                                     { item.active &&
                                         <ul className="list-unstyled ml-4 pl-2 active-grey-border">
                                             <NavItem
@@ -359,23 +366,23 @@ class DataAccessRequest extends Component {
                             </div>
                         ))}
                     </Col>
-                    <Col md={7} className="FlexColumn">
+                    <Col md={7} className="flexColumn">
                         <Row style={{ backgroundColor: "#ffffff" }} className="pl-4">
                             {[...this.state.schema.pages].map((item, idx) => (
                                 <div >
-                                    <p className="Black-20px">{item.active ? item.title : ""}</p>
-                                    <p className="Gray800-14px">{item.active ? item.description : ""}</p>
+                                    <p className="black-20">{item.active ? item.title : ""}</p>
+                                    <p className="gray800-14">{item.active ? item.description : ""}</p>
                                 </div>
                             ))}
                         </Row>
                         { activePanelId === "mrcHealthDataToolkit" || activePanelId === "adviceFromPublisher" ?
                             <div>
-                                <Row className="mt-2 pt-3 pl-3 pb-3 Gray800-14px White">
+                                <Row className="mt-2 pt-3 pl-3 pb-3 gray800-14 white-bg">
                                     <Col md={12}>
-                                        <Row className="Black-17px-Bold">
+                                        <Row className="black-bold-17">
                                             MRC Health Data Access toolkit
                                     </Row>
-                                        <Row className="Gray800-15px mt-2">
+                                        <Row className="gray800-15 mt-2">
                                             This toolkit aims to help you understand what approvals are necessary for your research.
                                     </Row>
                                         <Row className="mr-2 mt-3 mb-3">
@@ -383,19 +390,19 @@ class DataAccessRequest extends Component {
                                         </Row>
                                     </Col>
                                 </Row>
-                                <Row className="mt-2 pt-3 pl-3 pb-3 Gray800-14px White">
+                                <Row className="mt-2 pt-3 pl-3 pb-3 gray800-14 white-bg">
                                     <Col md={12}>
-                                        <Row className="Black-17px-Bold">
+                                        <Row className="black-bold-17">
                                             Advice from {publisher}
                                     </Row>
-                                        <Row className="Gray800-15px mt-2">
+                                        <Row className="gray800-15 mt-2">
                                             We highly recommend getting in touch with us as early as possible. We may be able to help you shape the various approvals, such as ethics, minimising the risk of having to apply more than once.
                                     </Row>
                                     </Col>
                                 </Row>
                             </div>
                             : 
-                                <Row className="mt-2 pt-3 pl-3 pb-3 Gray800-14px" style={{ backgroundColor: "#ffffff" }} >
+                                <Row className="mt-2 pt-3 pl-3 pb-3 gray800-14" style={{ backgroundColor: "#ffffff" }} >
                                     <Col md={11}>
                                         <Winterfell
                                             schema={this.state.schema}
@@ -411,16 +418,16 @@ class DataAccessRequest extends Component {
                                     </Col>
                                 </Row>
                             }
-                        <Row className="BottomCard mt-2 mb-2"  />
+                        <Row className="bottomCard mt-2 mb-2"  />
                     </Col>
                     <Col md={3} className="darTabs">
-                            <Tabs className='TabsBackground Gray700-14px' activeKey={this.state.key} onSelect={this.handleSelect}>
+                            <Tabs className='tabsBackground gray700-14' activeKey={this.state.key} onSelect={this.handleSelect}>
                                 <Tab eventKey="guidance" title="Guidance">
                                     <Row className="darTab toolsButtons ml-1 mr-1 mt-2">
-                                        <Col md={12} className="Gray700-13px mt-2">
+                                        <Col md={12} className="gray700-13 mt-2">
                                             <span>{activeGuidance}</span>
                                             <br /> <br />
-                                            <Button variant="light" className="Dark-14px Width100"  >
+                                            <Button variant="light" className="dark-14 Width100"  >
                                                 View all guidance in a new window
                                         </Button>
                                         </Col>
@@ -428,32 +435,32 @@ class DataAccessRequest extends Component {
                                 </Tab>
                                 <Tab eventKey="answers" title="Answers">
                                     <Row className="darTab toolsButtons ml-1 mr-1 mt-2">
-                                        <Col md={12} className="Gray700-13px mt-2">
+                                        <Col md={12} className="gray700-13 mt-2">
                                             <span>Re-use answers from your previous applications</span>
                                             <br /> <br />
-                                            <span className="ComingSoonBadge"> Coming soon </span>
+                                            <span className="comingSoonBadge"> Coming soon </span>
                                         </Col>
                                     </Row>
                                 </Tab>
                                 <Tab eventKey="notes" title="Notes">
                                     <Row className="darTab toolsButtons ml-1 mr-1 mt-2">
-                                        <Col md={12} className="Gray700-13px mt-2">
+                                        <Col md={12} className="gray700-13 mt-2">
                                             <span>Data custodians cannot see your notes. </span>
                                             <br /> <br />
                                             <span>You can use notes to capture your thoughts or communicate with any other applicants you invite to collaborate.</span>
                                             <br /> <br />
-                                            <span className="ComingSoonBadge"> Coming soon </span>
+                                            <span className="comingSoonBadge"> Coming soon </span>
                                         </Col>
                                     </Row>
                                 </Tab>
                                 <Tab eventKey="messages" title="Messages">
                                     <Row className="darTab toolsButtons ml-1 mt-2">
-                                        <Col md={12} className="Gray700-13px mt-2">
+                                        <Col md={12} className="gray700-13 mt-2">
                                             <span>Both data custodian and applicants can see messages</span>
                                             <br /> <br />
                                             <span>Use messages to seek guidance or clarify questions with the data custodian. You can send messages before or after the application is submitted. You will be notified of every new message, and so will the data custodian.</span>
                                             <br /> <br />
-                                            <span className="ComingSoonBadge"> Coming soon </span>
+                                            <span className="comingSoonBadge"> Coming soon </span>
                                         </Col>
                                     </Row>
                                 </Tab>
@@ -462,16 +469,16 @@ class DataAccessRequest extends Component {
                     <Col md={12}>
                         <Row className="darFooter">
                             <Col md={6} className="mt-4">
-                                <span className="Gray800-14px">{totalQuestions}</span>
+                                <span className="gray800-14">{totalQuestions}</span>
                             </Col>
                             <Col md={6} className="mt-3 text-right">
-                                <Button variant="white" className="TechDetailButton ml-2" onClick={this.onClickSave}>
+                                <Button variant="white" className="techDetailButton ml-2" onClick={this.onClickSave}>
                                     Save
                                 </Button>
-                                <Button variant="white"  className="TechDetailButton ml-3" onClick={this.onFormSubmit}>
+                                <Button variant="white"  className="techDetailButton ml-3" onClick={this.onFormSubmit}>
                                     Submit application
                                 </Button>
-                                <Button variant="primary" className="White-14px ml-3" onClick={(e) => { this.onNextPanel(activePanelId) }}>
+                                <Button variant="primary" className="white-14-semibold ml-3" onClick={(e) => { this.onNextPanel(activePanelId) }}>
                                     {activePanelId === "mrcHealthDataToolkit" || activePanelId === "adviceFromPublisher" ? "Go to Safe People" : "Go to next section" }
                                 </Button>   
                             </Col>

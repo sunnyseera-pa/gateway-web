@@ -173,7 +173,7 @@ class ToolDetail extends Component {
 
               <Row className="mt-4">
                 <Col sm={10} lg={10}>
-                  <span className="Black500-16px">Uploaded by ( {data.authors.length} )</span>
+                  <span className="black-16">Uploaded by ( {data.authors.length} )</span>
                 </Col>
               </Row>
 
@@ -194,7 +194,7 @@ class ToolDetail extends Component {
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
               <div>
-                <Tabs className='TabsBackground Gray700-13px'>
+                <Tabs className='tabsBackground gray700-13'>
                   <Tab eventKey="Reviews" title={'Reviews (' + reviewData.length + ')'}>
                     <Reviews data={data} userState={userState} reviewData={reviewData} />
                   </Tab>
@@ -214,14 +214,14 @@ class ToolDetail extends Component {
           <Nav className="ml-auto">
             <Row>
               <p>
-                <a href={cmsURL + '/HDRUKGatewaySupportPortal'} target="_blank" rel="noopener noreferrer" className="Purple-14px" id="UnderlinedLink">
+                <a href={cmsURL + '/HDRUKGatewaySupportPortal'} target="_blank" rel="noopener noreferrer" className="purple-14" id="underLinedLink">
                   Suggest Feedback
                 </a>
               </p>
             </Row>
           </Nav>
         </Navbar>
-        <Row className='AuthorCard' />
+        <Row className='authorCard' />
       </div>
     );
   }

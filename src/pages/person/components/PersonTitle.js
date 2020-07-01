@@ -38,11 +38,11 @@ class PersonTitle extends Component {
           <Row className="mt-2">
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
-              <div className="Rectangle">
+              <div className="rectangle">
                   <Row>
                     <Col sm={10} className="text-left ">
-                      <p className="Black-20px"> {data.firstname} {data.lastname} </p>
-                      {!data.bio ? '' : <p className='Gray800-14px'> {data.bio} </p>}
+                      <p className="black-20"> {data.firstname} {data.lastname} </p>
+                      {!data.bio ? '' : <p className='gray800-14'> {data.bio} </p>}
                     </Col>
                     <Col sm={2} className="text-right">
                       <div class="avatar-circle">
@@ -54,8 +54,8 @@ class PersonTitle extends Component {
                   <Row>
                     {!data.orcid ? '' :
                       <Col xs={12} md={12}>
-                        <span className='Gray800-14px'> ORCID </span>
-                        <span className='Purple-14px'> {data.orcid} </span>
+                        <span className='gray800-14'> ORCID </span>
+                        <span className='purple-14'> {data.orcid} </span>
                       </Col>
                     }
                   </Row>
@@ -64,7 +64,7 @@ class PersonTitle extends Component {
                     {!data.link ? '' :
                       <Col xs={12} md={12}>
                         <span>
-                          <a href={data.link} className="Purple-14px">
+                          <a href={data.link} className="purple-14">
                             {data.link}
                           </a>
                         </span>
@@ -74,7 +74,7 @@ class PersonTitle extends Component {
   
                   <Row>
                     <Col className="mt-2">
-                      <span className='Gray800-14px'>
+                      <span className='gray800-14'>
                         {data.counter === undefined ? 1 : data.counter + 1}
                         {data.counter === undefined ? ' view' : ' views'}
                       </span>

@@ -102,25 +102,25 @@ class AccountTools extends React.Component {
                 <Row>
                     <Col xs={1}></Col>
                     <Col xs={10}>
-                        <Row className="AccountHeader mt-4">
+                        <Row className="accountHeader mt-4">
                             <Col xs={8}>
                                 <Row>
-                                    <span className="Black-20px">Tools</span>
+                                    <span className="black-20">Tools</span>
                                 </Row>
                                 <Row>
-                                    <span className="Gray700-13px ">Manage your existing tools or add new ones</span>
+                                    <span className="gray700-13 ">Manage your existing tools or add new ones</span>
                                 </Row>
                             </Col>
                             <Col xs={4} style={{ textAlign: "right" }}>
-                                <Button variant="primary" href="/tool/add" className="AddButton" onClick={() => Event("Buttons", "Click", "Add a new tool")} >
+                                <Button variant="primary" href="/tool/add" className="addButton" onClick={() => Event("Buttons", "Click", "Add a new tool")} >
                                     + Add a new tool
                                 </Button>
                             </Col>
                         </Row>
 
-                        <Row className="TabsBackground">
+                        <Row className="tabsBackground">
                             <Col sm={12} lg={12}>
-                                <Tabs className='DataAccessTabs Gray700-13px' activeKey={this.state.key} onSelect={this.handleSelect}>
+                                <Tabs className='dataAccessTabs gray700-13' activeKey={this.state.key} onSelect={this.handleSelect}>
                                     <Tab eventKey="active" title={"Active (" + activeCount + ")"}> </Tab>
                                     <Tab eventKey="pending" title={"Pending approval (" + reviewCount + ")"}> </Tab>
                                     <Tab eventKey="rejected" title={"Rejected (" + rejectedCount + ")"}> </Tab>
@@ -136,7 +136,7 @@ class AccountTools extends React.Component {
                                 case "active":
                                     return (
                                         <div>
-                                            <Row className="SubHeader mt-3 Gray800-14px-bold">
+                                            <Row className="subHeader mt-3 gray800-14-bold">
                                                 <Col xs={2}>Updated</Col>
                                                 <Col xs={5}>Name</Col>
                                                 <Col xs={2}>Author</Col>
@@ -150,17 +150,17 @@ class AccountTools extends React.Component {
                                                 else {
                                                     return (
                                                         <Row className="entryBox">
-                                                            <Col sm={12} lg={2} className="pt-2 Gray800-14px">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
-                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/tool/' + dat.id} className="Black-14px">{dat.name}</a></Col>
-                                                            <Col sm={12} lg={2} className="pt-2 Gray800-14px">
+                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
+                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/tool/' + dat.id} className="black-14">{dat.name}</a></Col>
+                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">
                                                                 {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
                                                                     return <span>{person.firstname} {person.lastname} <br /></span>
                                                                 })}
                                                             </Col>
 
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
-                                                                <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
-                                                                    <Dropdown.Item href={'/tool/edit/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
+                                                                <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
+                                                                    <Dropdown.Item href={'/tool/edit/' + dat.id} className="black-14">Edit</Dropdown.Item>
                                                                     <DeleteButton id={dat.id} />
                                                                 </DropdownButton>
                                                             </Col>
@@ -174,7 +174,7 @@ class AccountTools extends React.Component {
                                 case "pending":
                                     return (
                                         <div>
-                                            <Row className="SubHeader mt-3 Gray800-14px-bold">
+                                            <Row className="subHeader mt-3 gray800-14-bold">
                                                 <Col xs={2}>Updated</Col>
                                                 <Col xs={5}>Name</Col>
                                                 <Col xs={2}>Author</Col>
@@ -188,9 +188,9 @@ class AccountTools extends React.Component {
                                                 else {
                                                     return (
                                                         <Row className="entryBox">
-                                                            <Col sm={12} lg={2} className="pt-2 Gray800-14px">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
-                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/tool/' + dat.id} className="Black-14px">{dat.name}</a></Col>
-                                                            <Col sm={12} lg={2} className="pt-2 Gray800-14px">
+                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
+                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/tool/' + dat.id} className="black-14">{dat.name}</a></Col>
+                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">
                                                                 {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
                                                                     return <span>{person.firstname} {person.lastname} <br /></span>
                                                                 })}
@@ -198,9 +198,9 @@ class AccountTools extends React.Component {
 
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 {userState[0].role === 'Admin' ?
-                                                                    <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
-                                                                        <Dropdown.Item href={'/tool/edit/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
-                                                                        <Dropdown.Item href='#' onClick={() => this.approveTool(dat.id)} className="Black-14px">Approve</Dropdown.Item>
+                                                                    <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
+                                                                        <Dropdown.Item href={'/tool/edit/' + dat.id} className="black-14">Edit</Dropdown.Item>
+                                                                        <Dropdown.Item href='#' onClick={() => this.approveTool(dat.id)} className="black-14">Approve</Dropdown.Item>
                                                                         <RejectButton id={dat.id} />
                                                                     </DropdownButton>
                                                                     : ""}
@@ -215,7 +215,7 @@ class AccountTools extends React.Component {
                                 case "rejected":
                                     return (
                                         <div>
-                                            <Row className="SubHeader mt-3 Gray800-14px-bold">
+                                            <Row className="subHeader mt-3 gray800-14-bold">
                                                 <Col xs={2}>Updated</Col>
                                                 <Col xs={5}>Name</Col>
                                                 <Col xs={2}>Author</Col>
@@ -229,9 +229,9 @@ class AccountTools extends React.Component {
                                                 else {
                                                     return (
                                                         <Row className="entryBox">
-                                                            <Col sm={12} lg={2} className="pt-2 Gray800-14px">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
-                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/tool/' + dat.id} className="Black-14px">{dat.name}</a></Col>
-                                                            <Col sm={12} lg={2} className="pt-2 Gray800-14px">
+                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
+                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/tool/' + dat.id} className="black-14">{dat.name}</a></Col>
+                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">
                                                                 {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
                                                                     return <span>{person.firstname} {person.lastname} <br /></span>
                                                                 })}
@@ -250,7 +250,7 @@ class AccountTools extends React.Component {
                                 case "archive":
                                     return (
                                         <div>
-                                            <Row className="SubHeader mt-3 Gray800-14px-bold">
+                                            <Row className="subHeader mt-3 gray800-14-bold">
                                                 <Col xs={2}>Updated</Col>
                                                 <Col xs={5}>Name</Col>
                                                 <Col xs={2}>Author</Col>
@@ -264,19 +264,19 @@ class AccountTools extends React.Component {
                                                 else {
                                                     return (
                                                         <Row className="entryBox">
-                                                            <Col sm={12} lg={2} className="pt-2 Gray800-14px">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
-                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/tool/' + dat.id} className="Black-14px">{dat.name}</a></Col>
-                                                            <Col sm={12} lg={2} className="pt-2 Gray800-14px">
+                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
+                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/tool/' + dat.id} className="black-14">{dat.name}</a></Col>
+                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">
                                                                 {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
                                                                     return <span>{person.firstname} {person.lastname} <br /></span>
                                                                 })}
                                                             </Col>
 
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
-                                                                <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
-                                                                    <Dropdown.Item href={'/tool/edit/' + dat.id} className="Black-14px">Edit</Dropdown.Item>
-                                                                    <Dropdown.Item href='#' onClick={() => this.approveTool(dat.id)} className="Black-14px">Approve</Dropdown.Item>
-                                                                    <Dropdown.Item href='#' onClick={() => this.rejectTool(dat.id)} className="Black-14px">Reject</Dropdown.Item>
+                                                                <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
+                                                                    <Dropdown.Item href={'/tool/edit/' + dat.id} className="black-14">Edit</Dropdown.Item>
+                                                                    <Dropdown.Item href='#' onClick={() => this.approveTool(dat.id)} className="black-14">Approve</Dropdown.Item>
+                                                                    <Dropdown.Item href='#' onClick={() => this.rejectTool(dat.id)} className="black-14">Reject</Dropdown.Item>
                                                                 </DropdownButton>
                                                             </Col>
                                                         </Row>
@@ -314,7 +314,7 @@ function RejectButton(props) {
 
     return (
         <>
-            <Dropdown.Item href="#" onClick={handleShow} className="Black-14px">Reject</Dropdown.Item>
+            <Dropdown.Item href="#" onClick={handleShow} className="black-14">Reject</Dropdown.Item>
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
@@ -347,7 +347,7 @@ function DeleteButton(props) {
 
     return (
         <>
-            <Dropdown.Item href="#" onClick={handleShow} className="Black-14px">Archive</Dropdown.Item>
+            <Dropdown.Item href="#" onClick={handleShow} className="black-14">Archive</Dropdown.Item>
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>

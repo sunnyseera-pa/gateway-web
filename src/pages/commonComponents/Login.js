@@ -21,7 +21,7 @@ class Login extends React.Component {
                     <Row className='mt-2'>
                         <Col sm={1} lg={1} />
                         <Col sm={10} lg={10}>
-                            <span className='Gray800-14px'>
+                            <span className='gray800-14'>
                                 You can sign in or create a new account using your existing
                                 Linkedin, Google or OpenAthens account.
                             </span>
@@ -31,7 +31,7 @@ class Login extends React.Component {
                     <Row className='mt-5'>
                         <Col sm={1} lg={1} />
                         <Col sm={10} lg={10}>
-                            <div className='Gray800-14px' style={{ textAlign: 'center' }}>
+                            <div className='gray800-14' style={{ textAlign: 'center' }}>
                                 <a href={baseURL + '/auth/linkedin'}>
                                     <Image
                                         style={{ width: '200px' }}
@@ -46,7 +46,7 @@ class Login extends React.Component {
                     <Row className='mt-3'>
                         <Col sm={1} lg={1} />
                         <Col sm={10} lg={10}>
-                            <div className='Gray800-14px' style={{ textAlign: 'center' }}>
+                            <div className='gray800-14' style={{ textAlign: 'center' }}>
                                 <a href={baseURL + '/auth/google'}>
                                     <Image
                                         style={{ width: '200px' }}
@@ -61,7 +61,7 @@ class Login extends React.Component {
                     <Row className='mt-3'>
                         <Col sm={1} lg={1} />
                         <Col sm={10} lg={10}>
-                            <div className='Gray800-14px' style={{ textAlign: 'center' }}>
+                            <div className='gray800-14' style={{ textAlign: 'center' }}>
                                 {/* <a href={baseURL + '/auth/oidc'} className='openAthensButton'>
                                     Sign in with OpenAthens
                                 </a> */}

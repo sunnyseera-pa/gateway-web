@@ -187,7 +187,7 @@ class SearchBar extends React.Component {
 
     render() {
         const { userState, newData, isLoading, clearMessage } = this.state;
-        
+
         if (isLoading) {
             return <></>;
         }
@@ -198,7 +198,7 @@ class SearchBar extends React.Component {
             <nav className={classnames("navbarShown", { "navbarHidden": !this.state.visible })}>
 
                 <div className="searchBarBackground" id="desktopSearchBar">
-                    <Row className="WhiteBackground">
+                    <Row className="whiteBackground">
                         <Col lg={4}>
                             <div className="navBarLogoSpacing">
                                 <a style={{ cursor: 'pointer' }} href={cmsURL} >
@@ -206,10 +206,10 @@ class SearchBar extends React.Component {
                                 </a>
                             </div>
                             <div className="navBarLinkSpacing">
-                                <a href={cmsURL + "/pages/about"} className="Black-14px">About</a>
+                                <a href={cmsURL + "/pages/about"} className="black-14">About</a>
                             </div>
                             <div className="navBarLinkSpacing">
-                                <a href={cmsURL + "/pages/community"} className="Black-14px">Community</a>
+                                <a href={cmsURL + "/pages/community"} className="black-14">Community</a>
                             </div>
                         </Col>
 
@@ -219,15 +219,15 @@ class SearchBar extends React.Component {
                                     <Container>
                                         <Row>
                                             <Col>
-                                                <span className="SearchBarInputGrey">
-                                                    <span className="SearchInputIconGrey">
+                                                <span className="searchBarInputGrey">
+                                                    <span className="searchInputIconGrey">
                                                         <SVGIcon name="searchicon" width={20} height={20} fill={'#2c8267'} stroke='none' type="submit" />
                                                     </span>
                                                     <span>
-                                                        <input type="text" placeholder="Search" id="SearchInputSpanGrey" data-testid="searchbar" onChange={this.onSearch} onKeyDown={this.props.doSearchMethod} value={this.props.searchString} />
+                                                        <input type="text" placeholder="Search" id="searchInputSpanGrey" data-testid="searchbar" onChange={this.onSearch} onKeyDown={this.props.doSearchMethod} value={this.props.searchString} />
                                                     </span>
                                                     {(this.props.searchString !== '' && this.props.searchString !== undefined) ?
-                                                        <span className="SearchInputClearGrey" data-testid="searchbar-clear-btn">
+                                                        <span className="searchInputClearGrey" data-testid="searchbar-clear-btn">
                                                             <a style={{ cursor: 'pointer' }} href={'/search?search='} >
                                                                 <ClearButtonSvg />
                                                             </a>
@@ -245,14 +245,14 @@ class SearchBar extends React.Component {
                                                 <Dropdown>
                                                     <Dropdown.Toggle as={CustomToggle} ref={node => this.node = node}>
                                                         <NotificationBadge count={this.state.count} style={{ backgroundColor: '#29235c' }} />
-                                                        <SVGIcon name="bell" fill={'#475da7'} width={20} height={20} id="NotificationsBell" className={this.state.dropdownOpen ? "NotificationsBell" : null} style={{ cursor: 'pointer' }} />
-                                                        {/* <NotificationsBellSvg width={50} height={50} id="NotificationsBell" className={this.state.dropdownOpen ? "NotificationsBell" : null} style={{ cursor: 'pointer' }} /> */}
+                                                        <SVGIcon name="bell" fill={'#475da7'} width={20} height={20} id="notificationsBell" className={this.state.dropdownOpen ? "notificationsBell" : null} style={{ cursor: 'pointer' }} />
+                                                        {/* <NotificationsBellSvg width={50} height={50} id="notificationsBell" className={this.state.dropdownOpen ? "notificationsBell" : null} style={{ cursor: 'pointer' }} /> */}
                                                     </Dropdown.Toggle>
 
                                                     <Dropdown.Menu as={CustomMenu} className="desktopNotificationMenu">
                                                         {newData.length <= 0 ?
-                                                            <div className="NoNotifications" >
-                                                                <div className="Gray800-14px" style={{ textAlign: 'center' }}>
+                                                            <div className="noNotifications" >
+                                                                <div className="gray800-14" style={{ textAlign: 'center' }}>
                                                                     <p><b>No notifications yet</b></p>
                                                                     <p>We'll let you know when something important happens to your content or account.</p>
                                                                 </div>
@@ -263,10 +263,24 @@ class SearchBar extends React.Component {
                                                                 if (dat.messageType === 'add') {
                                                                     return (
                                                                         <>
-                                                                            <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
+                                                                            <Row className={dat.isRead === 'true' || clearMessage ? "notificationReadBackground" : ''}>
+                                                                                <Col xs={10}>
+                                                                                    <div className="notificationDate">{messageDateString + '\n'}</div>
+                                                                                    {dat.tool.length &&  <div className="notificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="notificationInfo">{dat.messageDescription}</a></div> }
+                                                                                </Col>
+                                                                                <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
+                                                                            </Row>
+                                                                            <Dropdown.Divider style={{ margin: "0px" }} />
+                                                                    </>
+                                                                )
+                                                            }
+                                                            else if(dat.messageType === 'data access request'){
+                                                                return (
+                                                                    <>
+                                                                        <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
                                                                                 <Col xs={10}>
                                                                                     <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                    {dat.tool.length &&  <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">{dat.messageDescription}</a></div> }
+                                                                                    <div className="NotificationInfoHolder"><a class="NotificationInfo">{dat.messageDescription}</a></div> 
                                                                                 </Col>
                                                                                 <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                             </Row>
@@ -277,10 +291,10 @@ class SearchBar extends React.Component {
                                                             else if(dat.messageType === 'added collection'){
                                                                 return(
                                                                     <>
-                                                                        <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
+                                                                        <Row className={dat.isRead === 'true' || clearMessage ? "notificationReadBackground" : ''}>
                                                                              <Col xs={10}>
-                                                                                <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                <div className="NotificationInfoHolder"><a href={'/collection/' + dat.messageObjectID} class="NotificationInfo">{dat.messageDescription}</a></div> 
+                                                                                <div className="notificationDate">{messageDateString + '\n'}</div>
+                                                                                <div className="notificationInfoHolder"><a class="notificationInfo">{dat.messageDescription}</a></div> 
                                                                             </Col>
                                                                             <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                         </Row>
@@ -290,10 +304,10 @@ class SearchBar extends React.Component {
                                                             } else {
                                                                 return (
                                                                     <>
-                                                                        <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
+                                                                        <Row className={dat.isRead === 'true' || clearMessage ? "notificationReadBackground" : ''}>
                                                                             <Col xs={10}>
-                                                                                <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                {dat.tool.length && <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">{dat.messageDescription}</a></div>}
+                                                                                <div className="notificationDate">{messageDateString + '\n'}</div>
+                                                                                {dat.tool.length && <div className="notificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="notificationInfo">{dat.messageDescription}</a></div>}
                                                                             </Col>
                                                                             <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                         </Row>
@@ -322,28 +336,28 @@ class SearchBar extends React.Component {
                                             return (
                                                 <Dropdown>
                                                     <Dropdown.Toggle as={CustomToggle}>
-                                                        <span className="Black-14px">{userState[0].name}</span>
+                                                        <span className="black-14">{userState[0].name}</span>
                                                         <span className="accountDropDownGap"></span>< ArrowDownSvg />
                                                     </Dropdown.Toggle>
 
                                                     <Dropdown.Menu as={CustomMenu} className="desktopLoginMenu">
-                                                        <Dropdown.Item href="/account?tab=youraccount" className="Black-14px">Your Account</Dropdown.Item>
-                                                        <Dropdown.Item href="/account?tab=tools" className="Black-14px">Tools</Dropdown.Item>
-                                                        <Dropdown.Item href="/account?tab=reviews" className="Black-14px">Reviews</Dropdown.Item>
-                                                        <Dropdown.Item href="/account?tab=projects" className="Black-14px">Projects</Dropdown.Item>
-                                                        <Dropdown.Item href="/account?tab=papers" className="Black-14px">Papers</Dropdown.Item>
-                                                        <Dropdown.Item href="/account?tab=dataaccessrequests" className="Black-14px">Data access requests</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=youraccount" className="black-14">Your Account</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=tools" className="black-14">Tools</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=reviews" className="black-14">Reviews</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=projects" className="black-14">Projects</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=papers" className="black-14">Papers</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=dataaccessrequests" className="black-14">Data access requests</Dropdown.Item>
                                                         {userState[0].role === "Admin" ?
-                                                            <Dropdown.Item href="/account?tab=usersroles" className="Black-14px">Users and roles</Dropdown.Item>
+                                                            <Dropdown.Item href="/account?tab=usersroles" className="black-14">Users and roles</Dropdown.Item>
                                                         : ''}
-                                                        <Dropdown.Item onClick={this.logout} className="Black-14px">Logout</Dropdown.Item>
+                                                        <Dropdown.Item onClick={this.logout} className="black-14">Logout</Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </Dropdown>
                                             )
                                         }
                                         else {
                                             return (<>
-                                                <span className="Black-14px" id="myBtn" onClick={e => { this.showLoginModal() }} >Sign in | Sign up</span>
+                                                <span className="black-14" id="myBtn" onClick={e => { this.showLoginModal() }} >Sign in | Sign up</span>
                                             </>
                                             )
                                         }
@@ -356,7 +370,7 @@ class SearchBar extends React.Component {
 
                 <div id="mobileSearchBar">
                     <div className="searchBarBackground">
-                        <Row className="WhiteBackground">
+                        <Row className="whiteBackground">
                             <Col xs={2}>
                                 <Dropdown>
                                     <Dropdown.Toggle as={CustomToggle}>
@@ -364,30 +378,30 @@ class SearchBar extends React.Component {
                                     </Dropdown.Toggle>
 
                                     <Dropdown.Menu as={CustomMenu} className="mobileLoginMenu">
-                                        <Dropdown.Item className="Black-14px" href={cmsURL + "/pages/about"}>About</Dropdown.Item>
-                                        <Dropdown.Item className="Black-14px" href={cmsURL + "/pages/community"}>Community</Dropdown.Item>
+                                        <Dropdown.Item className="black-14" href={cmsURL + "/pages/about"}>About</Dropdown.Item>
+                                        <Dropdown.Item className="black-14" href={cmsURL + "/pages/community"}>Community</Dropdown.Item>
                                         <Dropdown.Divider />
                                         {(() => {
                                             if (userState[0].loggedIn === true) {
                                                 return (
                                                     <>
-                                                        <Dropdown.Item href="/account?tab=youraccount" className="Black-14px">Your Account</Dropdown.Item>
-                                                        <Dropdown.Item href="/account?tab=tools" className="Black-14px">Tools</Dropdown.Item>
-                                                        <Dropdown.Item href="/account?tab=reviews" className="Black-14px">Reviews</Dropdown.Item>
-                                                        <Dropdown.Item href="/account?tab=projects" className="Black-14px">Projects</Dropdown.Item>
-                                                        <Dropdown.Item href="/account?tab=papers" className="Black-14px">Papers</Dropdown.Item>
-                                                        <Dropdown.Item href="/account?tab=dataaccessrequests" className="Black-14px">Data access requests</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=youraccount" className="black-14">Your Account</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=tools" className="black-14">Tools</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=reviews" className="black-14">Reviews</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=projects" className="black-14">Projects</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=papers" className="black-14">Papers</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=dataaccessrequests" className="black-14">Data access requests</Dropdown.Item>
                                                         {userState[0].role === "Admin" ?
-                                                            <Dropdown.Item href="/account?tab=usersroles" className="Black-14px">Users and roles</Dropdown.Item>
+                                                            <Dropdown.Item href="/account?tab=usersroles" className="black-14">Users and roles</Dropdown.Item>
                                                         : ''}
-                                                        <Dropdown.Item className="Black-14px" onClick={this.logout}>Logout ({userState[0].name})</Dropdown.Item>
+                                                        <Dropdown.Item className="black-14" onClick={this.logout}>Logout ({userState[0].name})</Dropdown.Item>
                                                     </>
                                                 )
                                             }
                                             else {
                                                 return (
                                                     <>
-                                                        <Dropdown.Item className="Black-14px" onClick={e => { this.showLoginModal() }}>Sign in or create a new account</Dropdown.Item>
+                                                        <Dropdown.Item className="black-14" onClick={e => { this.showLoginModal() }}>Sign in or create a new account</Dropdown.Item>
                                                     </>
                                                 )
                                             }
@@ -419,15 +433,15 @@ class SearchBar extends React.Component {
                                                     <Container>
                                                         <Row>
                                                             <Col>
-                                                                <span className="SearchBarInputGrey">
-                                                                    <span className="SearchInputIconGrey">
+                                                                <span className="searchBarInputGrey">
+                                                                    <span className="searchInputIconGrey">
                                                                         <SVGIcon name="searchicon" width={20} height={20} fill={'#2c8267'} stroke='none' type="submit" />
                                                                     </span>
                                                                     <span>
-                                                                        <input type="text" placeholder="Search" id="SearchInputSpanGrey" onChange={this.onSearch} onKeyDown={this.props.doSearchMethod} value={this.props.searchString} />
+                                                                        <input type="text" placeholder="Search" id="searchInputSpanGrey" onChange={this.onSearch} onKeyDown={this.props.doSearchMethod} value={this.props.searchString} />
                                                                     </span>
                                                                     {(this.props.searchString !== '' && this.props.searchString !== undefined) ?
-                                                                        <span className="SearchInputClearGrey">
+                                                                        <span className="searchInputClearGrey">
                                                                             <a style={{ cursor: 'pointer' }} href={'/search?search='} >
                                                                                 <ClearButtonSvg />
                                                                             </a>
@@ -444,14 +458,14 @@ class SearchBar extends React.Component {
                                                 <Dropdown>
                                                     <Dropdown.Toggle as={CustomToggle} ref={nodeMobile => this.nodeMobile = nodeMobile}>
                                                         <NotificationBadge count={this.state.count} style={{ backgroundColor: '#29235c' }} />
-                                                        <SVGIcon name="bell" fill={'#475da7'} width={20} height={20} id="NotificationsBell" className={this.state.dropdownOpen ? "NotificationsBell" : null} style={{ cursor: 'pointer' }} />
-                                                        {/* <NotificationsBellSvg width={50} height={50} id="NotificationsBell" className={this.state.dropdownOpen ? "NotificationsBell" : null} style={{ cursor: 'pointer' }} /> */}
+                                                        <SVGIcon name="bell" fill={'#475da7'} width={20} height={20} id="notificationsBell" className={this.state.dropdownOpen ? "notificationsBell" : null} style={{ cursor: 'pointer' }} />
+                                                        {/* <NotificationsBellSvg width={50} height={50} id="notificationsBell" className={this.state.dropdownOpen ? "notificationsBell" : null} style={{ cursor: 'pointer' }} /> */}
                                                     </Dropdown.Toggle>
 
                                                     <Dropdown.Menu as={CustomMenu} className="mobileNotificationMenu">
                                                         {newData.length <= 0 ?
-                                                            <div className="NoNotifications" >
-                                                                <div className="Gray800-14px" style={{ textAlign: 'center' }}>
+                                                            <div className="noNotifications" >
+                                                                <div className="gray800-14" style={{ textAlign: 'center' }}>
                                                                     <p><b>No notifications yet</b></p>
                                                                     <p>We'll let you know when something important happens to your content or account.</p>
                                                                 </div>
@@ -463,10 +477,10 @@ class SearchBar extends React.Component {
                                                                 if (dat.messageType === 'add') {
                                                                     return (
                                                                         <>
-                                                                            <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
+                                                                            <Row className={dat.isRead === 'true' || clearMessage ? "notificationReadBackground" : ''}>
                                                                                 <Col xs={10}>
-                                                                                    <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                    <div className="NotificationInfoHolder"><a href={'/' + dat.tool.type + '/' + dat.tool.id} class="NotificationInfo">{dat.messageDescription}</a></div>
+                                                                                    <div className="notificationDate">{messageDateString + '\n'}</div>
+                                                                                    <div className="notificationInfoHolder"><a href={'/' + dat.tool.type + '/' + dat.tool.id} class="notificationInfo">{dat.messageDescription}</a></div>
                                                                                 </Col>
                                                                                 <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                             </Row>
@@ -477,10 +491,10 @@ class SearchBar extends React.Component {
                                                                 else if(dat.messageType === 'data access request'){
                                                                     return (
                                                                         <>
-                                                                            <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
+                                                                            <Row className={dat.isRead === 'true' || clearMessage ? "notificationReadBackground" : ''}>
                                                                                     <Col xs={10}>
-                                                                                        <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                        <div className="NotificationInfoHolder"><a class="NotificationInfo">{dat.messageDescription}</a></div> 
+                                                                                        <div className="notificationDate">{messageDateString + '\n'}</div>
+                                                                                        <div className="notificationInfoHolder"><a class="notificationInfo">{dat.messageDescription}</a></div> 
                                                                                     </Col>
                                                                                     <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                                 </Row>
@@ -492,10 +506,10 @@ class SearchBar extends React.Component {
                                                                     if (dat.messageTo === 0) {
                                                                         return (
                                                                             <>
-                                                                                <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
+                                                                                <Row className={dat.isRead === 'true' || clearMessage ? "notificationReadBackground" : ''}>
                                                                                     <Col xs={10}>
-                                                                                        <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                        {dat.tool.length &&  <div className="NotificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">{dat.messageDescription}</a></div> }
+                                                                                        <div className="notificationDate">{messageDateString + '\n'}</div>
+                                                                                        {dat.tool.length &&  <div className="notificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="notificationInfo">{dat.messageDescription}</a></div> }
                                                                                     </Col>
                                                                                     <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                                 </Row>
@@ -506,16 +520,16 @@ class SearchBar extends React.Component {
                                                                     else {
                                                                         return (
                                                                             <>
-                                                                                <Row className={dat.isRead === 'true' || clearMessage ? "NotificationReadBackground" : ''}>
+                                                                                <Row className={dat.isRead === 'true' || clearMessage ? "notificationReadBackground" : ''}>
                                                                                     <Col xs={10}>
-                                                                                        <div className="NotificationDate">{messageDateString + '\n'}</div>
-                                                                                        <div className="NotificationInfoHolder">
-                                                                                        {dat.tool[0] === undefined ?  <a href={'/'} class='NotificationInfo'>{dat.messageDescription}</a>: 
-                                                                                                (<a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class='NotificationInfo'>
+                                                                                        <div className="notificationDate">{messageDateString + '\n'}</div>
+                                                                                        <div className="notificationInfoHolder">
+                                                                                        {dat.tool[0] === undefined ?  <a href={'/'} class='notificationInfo'>{dat.messageDescription}</a>: 
+                                                                                                (<a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class='notificationInfo'>
                                                                                                     {dat.messageDescription}
                                                                                                 </a>
                                                                                                 )}
-                                                                                            {/* <a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="NotificationInfo">{dat.messageDescription}</a> */}
+                                                                                            {/* <a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="notificationInfo">{dat.messageDescription}</a> */}
                                                                                             </div>
                                                                                     </Col>
                                                                                     <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
@@ -555,15 +569,15 @@ class SearchBar extends React.Component {
                                                     <Container>
                                                         <Row>
                                                             <Col>
-                                                                <span className="SearchBarInputGrey">
-                                                                    <span className="SearchInputIconGrey">
+                                                                <span className="searchBarInputGrey">
+                                                                    <span className="searchInputIconGrey">
                                                                         <SVGIcon name="searchicon" width={20} height={20} fill={'#2c8267'} stroke='none' type="submit" />
                                                                     </span>
                                                                     <span>
-                                                                        <input type="text" placeholder="Search" id="SearchInputSpanGrey" onChange={this.onSearch} onKeyDown={this.props.doSearchMethod} value={this.props.searchString} />
+                                                                        <input type="text" placeholder="Search" id="searchInputSpanGrey" onChange={this.onSearch} onKeyDown={this.props.doSearchMethod} value={this.props.searchString} />
                                                                     </span>
                                                                     {(this.props.searchString !== '' && this.props.searchString !== undefined) ?
-                                                                        <span className="SearchInputClearGrey">
+                                                                        <span className="searchInputClearGrey">
                                                                             <a style={{ cursor: 'pointer' }} href={'/search?search='} >
                                                                                 <ClearButtonSvg />
                                                                             </a>

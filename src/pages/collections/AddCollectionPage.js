@@ -221,13 +221,13 @@ const AddCollectionForm = (props) => {
             <Row className="mt-2">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
-                    <div className="Rectangle">
+                    <div className="rectangle">
                         <Row>
                             <Col sm={12} lg={12}>
-                             <p className="Black-20px">Create a collection</p>
+                             <p className="black-20">Create a collection</p>
                             </Col>
                         </Row>
-                        <p className="Gray800-14px">Collections help collate varying resource types into one discovery space</p>
+                        <p className="gray800-14">Collections help collate varying resource types into one discovery space</p>
                     </div>
                 </Col>
                 <Col sm={1} lg={10} />
@@ -237,27 +237,27 @@ const AddCollectionForm = (props) => {
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                     <Form onSubmit={formik.handleSubmit} onBlur={formik.handleBlur} autocomplete='off'>
-                        <div className="Rectangle">
+                        <div className="rectangle">
                             <Form.Group>
-                                <span className="Gray800-14px">Collection name</span>
-                                <Form.Control id="name" name="name" type="text" className={formik.touched.name && formik.errors.name ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.name} onBlur={formik.handleBlur} />
-                                {formik.touched.name && formik.errors.name ? <div className="ErrorMessages">{formik.errors.name}</div> : null}
+                                <span className="gray800-14">Collection name</span>
+                                <Form.Control id="name" name="name" type="text" className={formik.touched.name && formik.errors.name ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.name} onBlur={formik.handleBlur} />
+                                {formik.touched.name && formik.errors.name ? <div className="errorMessages">{formik.errors.name}</div> : null}
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="Gray800-14px">Description</span>
+                                <span className="gray800-14">Description</span>
                                 <br />
-                                <span className="Gray700-13px">
+                                <span className="gray700-13">
                                     Up to 5,000 characters
                                 </span>
-                                <Form.Control as="textarea" id="description" name="description" type="text" className={formik.touched.description && formik.errors.description ? "EmptyFormInput AddFormInput DescriptionInput" : "AddFormInput DescriptionInput"} onChange={formik.handleChange} value={formik.values.description} onBlur={formik.handleBlur} />
-                                {formik.touched.description && formik.errors.description ? <div className="ErrorMessages">{formik.errors.description}</div> : null}
+                                <Form.Control as="textarea" id="description" name="description" type="text" className={formik.touched.description && formik.errors.description ? "emptyFormInput addFormInput descriptionInput" : "addFormInput descriptionInput"} onChange={formik.handleChange} value={formik.values.description} onBlur={formik.handleBlur} />
+                                {formik.touched.description && formik.errors.description ? <div className="errorMessages">{formik.errors.description}</div> : null}
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="Gray800-14px">Collection collaborators</span>
+                                <span className="gray800-14">Collection collaborators</span>
                                 <br />
-                                <span className="Gray700-13px">
+                                <span className="gray700-13">
                                     Anyone added will be able to add and remove resources to this collection.
                                 </span>
                                 <Typeahead
@@ -266,6 +266,7 @@ const AddCollectionForm = (props) => {
                                     defaultSelected={listOfAuthors}
                                     multiple
                                     options={props.combinedUsers}
+                                    className="addFormInput"
                                     onChange={(selected) => {
                                         var tempSelected = [];
                                         selected.forEach((selectedItem) => {
@@ -279,40 +280,40 @@ const AddCollectionForm = (props) => {
                             <Form.Group>
                                 <Row>
                                     <Col sm={7} lg={9}>
-                                        <span className="Gray800-14px">Image URL (optional)</span>
+                                        <span className="gray800-14">Image URL (optional)</span>
                                         <br />
-                                <span className="Gray700-13px">
+                                <span className="gray700-13">
                                     Paste an image address URL. It must include a protocol prefix, e.g. https://
                                 </span>
                                     </Col>
                                     <Col sm={5} lg={3} className="pl-4">
-                                     <span className="Purple-13px" onMouseEnter={() => setIsShown(true)} onMouseLeave={() => setIsShown(false)}>  
+                                     <span className="purple-13" onMouseEnter={() => setIsShown(true)} onMouseLeave={() => setIsShown(false)}>  
                                         How to get an image URL
                                      </span>
                                      {isShown && ( <img src={ToolTip} alt="" id="imageToolTip" /> )}
                                      </Col>
                                 </Row>
-                                <Form.Control id="imageLink" name="imageLink" type="text" className={formik.touched.imageLink && formik.errors.imageLink ? "EmptyFormInput AddFormInput" : "AddFormInput"} onChange={formik.handleChange} value={formik.values.imageLink} onBlur={formik.handleBlur} />
-                                {formik.touched.imageLink && formik.errors.imageLink ? <div className="ErrorMessages">{formik.errors.imageLink}</div> : null}
+                                <Form.Control id="imageLink" name="imageLink" type="text" className={formik.touched.imageLink && formik.errors.imageLink ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.imageLink} onBlur={formik.handleBlur} />
+                                {formik.touched.imageLink && formik.errors.imageLink ? <div className="errorMessages">{formik.errors.imageLink}</div> : null}
                             </Form.Group>
                         </div>
 
-                        <div className="Rectangle mt-2">
-                            <span className="Black-20px">Add resources</span>
+                        <div className="rectangle mt-2">
+                            <span className="black-20">Add resources</span>
                             <br/>
-                            <span className="Gray595757-14px">Link resources in the gateway to your collection page.</span>
+                            <span className="gray800-14">Link resources in the gateway to your collection page.</span>
                         </div>
 
-                        <div className="RelatedResourcesRectangle mt-1">
+                        <div className="relatedResourcesRectangle mt-1">
                             {props.relatedObjects.map((object) => {
                                 return (
-                                    <div className="RelatedObjectRectangle">
+                                    <div className="relatedObjectRectangle">
                                         <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} inCollection={true}/>
                                     </div>   
                                 )
                             })}
 
-                            <div className="FlexCenter pt-3 pb-3">
+                            <div className="flexCenter pt-3 pb-3">
                                 <Row>
                                     <Col sm={1} lg={1} />
                                     <Col sm={10} lg={10}>
@@ -327,7 +328,7 @@ const AddCollectionForm = (props) => {
                             <Col xs={5} lg={9}/>
                             <Col xs={7} lg={3} className="text-right">
                                     <a style={{ cursor: 'pointer' }} href={'/account?tab=tools'}>
-                                        <Button variant="medium" className="CancelButton Dark-14px mr-2" >
+                                        <Button variant="medium" className="cancelButton dark-14 mr-2" >
                                             Cancel
                                         </Button>
                                     </a>

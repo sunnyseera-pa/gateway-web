@@ -61,7 +61,7 @@ class PreSubInnovator extends React.Component {
                         <span>7/56 questions answered</span>
                     </Col>
                     <Col sm={2} lg={2} className="pr-5">
-                        <DropdownButton variant="outline-secondary" alignRight title="Actions" className="FloatRight">
+                        <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
                                 <Dropdown.Item href="">Edit</Dropdown.Item>
                                 <Dropdown.Item href="">Delete</Dropdown.Item>
                         </DropdownButton>
