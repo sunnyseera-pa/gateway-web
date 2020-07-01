@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useFormik } from 'formik';
+import { useFormik } from 'formik'; 
 import * as Yup from 'yup';
 import { Typeahead } from 'react-bootstrap-typeahead';
 
@@ -11,7 +11,7 @@ import Loading from '../commonComponents/Loading';
 import RelatedResources from '../commonComponents/RelatedResources';
 import RelatedResourcesResults from '../commonComponents/RelatedResourcesResults';
 import RelatedObject from '../commonComponents/RelatedObject';
-
+import moment from 'moment';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
 import ToolTip from '../../images/imageURL-ToolTip.gif';
@@ -130,7 +130,7 @@ class EditCollectionPage extends React.Component {
 
     addToRelatedObjects = () => {
         this.state.tempRelatedObjectIds.map((object) => {
-            this.state.relatedObjects.push({'objectId':object.objectId, 'reason':'', 'objectType':object.type})
+            this.state.relatedObjects.push({'objectId':object.objectId, 'reason':'', 'objectType':object.type, 'user':this.state.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
         })
 
         this.setState({tempRelatedObjectIds: []}) 
@@ -230,11 +230,13 @@ const EditCollectionForm = (props) => {
             if(object.objectId===id){
                 inRelatedObject = true;
                 object.reason = reason;
+                object.user = props.userState[0].name;
+                object.updated = moment().format("DD MMM YYYY");
             }
         });
 
         if(!inRelatedObject){
-            props.relatedObjects.push({'objectId':id, 'reason':reason, 'objectType': type})
+            props.relatedObjects.push({'objectId':id, 'reason':reason, 'objectType': type, 'user': props.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
         }
     }
 

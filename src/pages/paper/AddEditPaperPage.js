@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { initGA } from '../../tracking';
-
+import moment from 'moment';
 import { Container } from 'react-bootstrap';
 import SearchBar from '../commonComponents/SearchBar';
 import Loading from '../commonComponents/Loading';
@@ -161,7 +161,7 @@ class AddEditPaperPage extends React.Component {
 
     addToRelatedObjects = () => {
         this.state.tempRelatedObjectIds.map((object) => {
-            this.state.relatedObjects.push({'objectId':object.objectId, 'reason':'', 'objectType':object.type})
+            this.state.relatedObjects.push({'objectId':object.objectId, 'reason':'', 'objectType':object.type, 'user':this.state.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
         })
 
         this.setState({tempRelatedObjectIds: []})

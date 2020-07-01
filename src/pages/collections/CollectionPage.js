@@ -25,6 +25,8 @@ state = {
     objectData: [],
     key: 'All',  
     reason: '',
+    updated: '',
+    user: '',
     isLoading: true,
     userState: [{
       loggedIn: false,
@@ -183,7 +185,6 @@ getDataSearchFromDb = () => {
     return (
       <div>
         <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
-
           <div className="rectangle mt-1">
             <Container>
               {collectionAdded ? 
@@ -265,25 +266,33 @@ getDataSearchFromDb = () => {
               {key === 'All' ?
                   objectData.map((object) => {
                     var reason = '';
+                    var updated = '';
+                    var user = '';
                     data.relatedObjects.map((dat) => {
                       if(dat.objectId === object.id || parseInt(dat.objectId) === object.id){
                         reason = dat.reason
+                        updated = dat.updated
+                        user = dat.user
                       }
                     })
-                    return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason} />
+                    return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason} collectionUpdated={updated} collectionUser={user} />
                   })
               : ''}
               
               {key === 'Datasets' ?
                   objectData.map((object) => {
                     var reason = '';
+                    var updated = '';
+                    var user = '';
                     if(object.type === undefined){
                       data.relatedObjects.map((dat) => {
                         if(dat.objectId === object.id){ 
                           reason = dat.reason
+                          updated = dat.updated
+                          user = dat.user
                         }
                       })
-                      return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason} /> 
+                      return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason} collectionUpdated={updated} collectionUser={user} /> 
                     }
                   })
               : ''}
@@ -291,13 +300,17 @@ getDataSearchFromDb = () => {
               {key === 'Tools' ?
                   objectData.map((object) => {
                     var reason = '';
+                    var updated = '';
+                    var user = '';
                     if(object.type === "tool"){
                       data.relatedObjects.map((dat) => {
                         if(parseInt(dat.objectId) === object.id){
                           reason = dat.reason
+                          updated = dat.updated
+                          user = dat.user
                         }
                       })
-                      return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason}  /> 
+                      return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason} collectionUpdated={updated} collectionUser={user}  /> 
                     }
                   })
               : ''}
@@ -305,14 +318,17 @@ getDataSearchFromDb = () => {
               {key === 'Projects' ?
                   objectData.map((object) => {
                     var reason = '';
-
+                    var updated = '';
+                    var user = '';
                     if(object.type === "project"){
                       data.relatedObjects.map((dat) => {
                         if(parseInt(dat.objectId) === object.id){
                           reason = dat.reason
+                          updated = dat.updated
+                          user = dat.user
                         }
                       })
-                      return <RelatedObject key={object.idd} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason} />
+                      return <RelatedObject key={object.idd} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason}  collectionUpdated={updated} collectionUser={user}/>
                     } 
                   })
               : ''}
@@ -320,28 +336,35 @@ getDataSearchFromDb = () => {
               {key === 'Papers' ?
                 objectData.map((object) => {
                   var reason = '';
+                  var updated = '';
+                  var user = '';
                   if(object.type === "paper"){
                     data.relatedObjects.map((dat) => {
                       if(parseInt(dat.objectId) === object.id){
                         reason = dat.reason
+                        updated = dat.updated
+                        user = dat.user
                       }
                     })
 
-                    return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason} /> 
+                    return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason}  collectionUpdated={updated} collectionUser={user}/> 
                   }
                 })              : ''}
 
               {key === 'People' ?
                 objectData.map((object) => {
                   var reason = '';
-
+                  var updated = '';
+                  var user = '';
                   if(object.type === "person"){  
                     data.relatedObjects.map((dat) => {
                       if(parseInt(dat.objectId) === object.id){
                         reason = dat.reason
+                        updated = dat.updated
+                        user = dat.user
                       }
                     })
-                    return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason} />
+                    return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason}  collectionUpdated={updated} collectionUser={user}/>
                   } 
                 })
               : ''}

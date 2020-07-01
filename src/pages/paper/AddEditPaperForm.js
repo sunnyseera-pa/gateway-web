@@ -6,7 +6,7 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import { Event } from '../../tracking';
 
 import {Form, Button, Row, Col} from 'react-bootstrap';
-
+import moment from 'moment';
 import RelatedResources from '../commonComponents/RelatedResources';
 import RelatedObject from '../commonComponents/RelatedObject';
 
@@ -86,11 +86,13 @@ const AddEditPaperForm = (props) => {
             if(object.objectId===id){
                 inRelatedObject = true;
                 object.reason = reason;
+                object.user = props.userState[0].name;
+                object.updated = moment().format("DD MMM YYYY");
             }
         });
 
         if(!inRelatedObject){
-            props.relatedObjects.push({'objectId':id, 'reason':reason, 'objectType': type})
+            props.relatedObjects.push({'objectId':id, 'reason':reason, 'objectType': type, 'user': props.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
         }
     }
 
