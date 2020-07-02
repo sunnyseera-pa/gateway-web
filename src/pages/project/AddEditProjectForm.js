@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { Event } from '../../tracking';
-
+import moment from 'moment';
 import {Form, Button, Row, Col} from 'react-bootstrap';
 
 import RelatedResources from '../commonComponents/RelatedResources';
@@ -73,7 +73,7 @@ const AddEditProjectForm = (props) => {
     });
 
     var listOfAuthors = [];
-
+ 
     props.combinedUsers.forEach((user) => {
         if (user.id === props.userState[0].id) {
             listOfAuthors.push({ id: user.id, name: user.name + " (You)" })
@@ -89,11 +89,13 @@ const AddEditProjectForm = (props) => {
             if(object.objectId===id){
                 inRelatedObject = true;
                 object.reason = reason;
+                object.user = props.userState[0].name;
+                object.updated = moment().format("DD MMM YYYY");
             }
         });
 
         if(!inRelatedObject){
-            props.relatedObjects.push({'objectId':id, 'reason':reason, 'objectType': type})
+            props.relatedObjects.push({'objectId':id, 'reason':reason, 'objectType': type, 'user': props.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
         }
     }
 
@@ -273,7 +275,7 @@ const AddEditProjectForm = (props) => {
                             <Row>
                                 <Col sm={1} lg={1} />
                                 <Col sm={10} lg={10}>
-                                    <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
+                                    <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} paperData={props.paperData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                 </Col>
                                 <Col sm={1} lg={10} />
                             </Row>
