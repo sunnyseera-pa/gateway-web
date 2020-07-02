@@ -58,13 +58,13 @@ const AddEditProjectForm = (props) => {
             values.relatedObjects = props.relatedObjects
             values.toolCreator = props.userState[0];
             if (props.isEdit) {
-                axios.put(baseURL + '/api/v1/mytools/edit', values)
+                axios.put(baseURL + '/api/v1/project/edit', values)
                     .then((res) => {
                         window.location.href = window.location.search + '/project/' + props.data.id + '/?projectEdited=true';
                     });
             }
             else {
-                axios.post(baseURL + '/api/v1/mytools/add', values)
+                axios.post(baseURL + '/api/v1/project/add', values)
                     .then((res) => {
                         window.location.href = window.location.search + '/project/' + res.data.id + '/?projectAdded=true';
                     });
