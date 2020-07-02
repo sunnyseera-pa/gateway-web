@@ -297,7 +297,7 @@ function RejectButton(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const rejectObject = () => {
-        axios.put(baseURL + '/api/v1/accounts/status', {
+        axios.put(baseURL + '/api/v1/tools/status', {
             id: props.id,
             activeflag: "rejected"
         })
@@ -330,7 +330,7 @@ function DeleteButton(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const deleteObject = () => {
-        axios.put(baseURL + '/api/v1/accounts/status', {
+        axios.put(baseURL + '/api/v1/tools/status', {
             id: props.id,
             activeflag: "archive"
         })

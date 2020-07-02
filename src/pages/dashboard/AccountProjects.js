@@ -37,13 +37,13 @@ class AccountProjects extends React.Component {
 
     doProjectsCall() {
         if (this.state.userState[0].role === "Admin") {
-            axios.get(baseURL + '/api/v1/accounts/admin?type=project')
+            axios.get(baseURL + '/api/v1/project/get/admin')
                 .then((res) => {
                     this.setState({ data: res.data.data, isLoading: false });
                 });
         }
         else {
-            axios.get(baseURL + '/api/v1/accounts?type=project&id=' + this.state.userState[0].id + '')
+            axios.get(baseURL + '/api/v1/project/get?id=' + this.state.userState[0].id + '')
                 .then((res) => {
                     this.setState({ data: res.data.data, isLoading: false });
                 });
@@ -51,7 +51,7 @@ class AccountProjects extends React.Component {
     }
 
     approveProject = (id) => {
-        axios.put(baseURL + '/api/v1/accounts/status', {
+        axios.put(baseURL + '/api/v1/project/status', {
             id: id,
             activeflag: "active"
         })
@@ -290,7 +290,7 @@ function RejectButton(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const rejectObject = () => {
-        axios.put(baseURL + '/api/v1/accounts/status', {
+        axios.put(baseURL + '/api/v1/project/status', {
             id: props.id,
             activeflag: "rejected"
         })
@@ -323,7 +323,7 @@ function DeleteButton(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const deleteObject = () => {
-        axios.put(baseURL + '/api/v1/accounts/status', {
+        axios.put(baseURL + '/api/v1/project/status', {
             id: props.id,
             activeflag: "archive"
         })
