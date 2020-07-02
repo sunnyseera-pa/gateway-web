@@ -37,13 +37,13 @@ class AccountTools extends React.Component {
 
     doToolsCall() {
         if (this.state.userState[0].role === "Admin") {
-            axios.get(baseURL + '/api/v1/accounts/admin?type=tool')
+            axios.get(baseURL + '/api/v1/tools/get/admin')
                 .then((res) => {
                     this.setState({ data: res.data.data, isLoading: false });
                 });
         }
         else {
-            axios.get(baseURL + '/api/v1/accounts?type=tool&id=' + this.state.userState[0].id + '')
+            axios.get(baseURL + '/api/v1/tools/get?id=' + this.state.userState[0].id + '')
                 .then((res) => {
                     this.setState({ data: res.data.data, isLoading: false });
                 });
@@ -51,7 +51,7 @@ class AccountTools extends React.Component {
     }
 
     rejectTool = (id) => {
-        axios.put(baseURL + '/api/v1/accounts/status', {
+        axios.put(baseURL + '/api/v1/tools/status', {
             id: id,
             activeflag: "archive"
         })
@@ -61,7 +61,7 @@ class AccountTools extends React.Component {
     }
 
     approveTool = (id) => {
-        axios.put(baseURL + '/api/v1/accounts/status', { 
+        axios.put(baseURL + '/api/v1/tools/status', { 
             id: id,
             activeflag: "active"
         })
@@ -303,7 +303,7 @@ function RejectButton(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const rejectObject = () => {
-        axios.put(baseURL + '/api/v1/accounts/status', {
+        axios.put(baseURL + '/api/v1/tools/status', {
             id: props.id,
             activeflag: "rejected"
         })
@@ -336,7 +336,7 @@ function DeleteButton(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const deleteObject = () => {
-        axios.put(baseURL + '/api/v1/accounts/status', {
+        axios.put(baseURL + '/api/v1/tools/status', {
             id: props.id,
             activeflag: "archive"
         })
