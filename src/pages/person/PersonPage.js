@@ -22,7 +22,7 @@ class PersonDetail extends Component {
 
   // initialize our state
   state = {
-    searchString: null,
+    searchString: '',
     id: '',
     data: [],
     isLoading: true,

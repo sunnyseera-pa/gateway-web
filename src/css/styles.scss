@@ -1727,6 +1727,19 @@ iframe#discourse-embed-frame {
   min-width: 42px;
 }
 
+.actionBar {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    height: 72px;
+    width:100%;
+    box-shadow: 1px 1px 0 3px #00000017;
+    background-color: #ffffff;
+    text-align: right;
+    padding: 15px
+ }
+
 .floatRight{
   float: right;
 }
+

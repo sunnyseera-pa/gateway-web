@@ -106,7 +106,7 @@ h6 {
 }
 
 .gray800-14-opacity {
-  @include font-source(14px, $gray-800, $font-weight-semibold, 0.7);
+  @include font-source(14px, $gray-800, $font-weight-semibold, null, 0.7);
 }
 
 .gray800-14-bold {

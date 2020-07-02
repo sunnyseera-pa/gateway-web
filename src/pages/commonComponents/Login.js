@@ -66,7 +66,7 @@ class Login extends React.Component {
                                     Sign in with OpenAthens
                                 </a> */}
                                 <a href='#' onClick={this.showWayFinder} className='openAthensButton'>
-                                Sign in with OpenAthens
+                                Sign in using your institution login
                                 </a>
                             </div>
                         </Col>
