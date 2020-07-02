@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-
+import moment from 'moment';
 import { Row, Col, Button } from 'react-bootstrap';
 import Loading from './Loading'
 import { ReactComponent as PersonPlaceholderSvg } from '../../images/person-placeholder.svg';
@@ -13,6 +13,8 @@ class RelatedObject extends React.Component {
     state = {
         relatedObject: [],
         reason: '',
+        // user: '',
+        // updated: '' ,
         data: [],
         activeLink: true,
         isLoading: true,
@@ -37,6 +39,8 @@ class RelatedObject extends React.Component {
         else if (props.objectId) {
             this.state.relatedObject = props.relatedObject;
             this.state.reason = props.reason;
+            // this.state.user = props.userState[0].name;
+            // this.state.updated = moment().format("DD MMM YYYY");
             this.getRelatedObjectFromDb(props.objectId);
         }
         else {
@@ -152,7 +156,10 @@ class RelatedObject extends React.Component {
                                                 }
                                             })}
                                         </Col> 
-                                        <Col sm={2} lg={2}></Col>
+                                        <Col sm={2} lg={2}>
+                                            {/* HERE */}
+                                            {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="gray700-13 mr-2 floatRight">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
+                                        </Col>
                                         <Col sm={12} lg={12} className="pt-3">
                                             <span className="toolBadge mr-2">
                                                 <SVGIcon name="newtoolicon" fill={'#ffffff'} className="badgeSvg mr-2"  viewBox="-2 -2 22 22"/>
@@ -223,7 +230,9 @@ class RelatedObject extends React.Component {
                                                 }
                                             })}
                                         </Col> 
-                                        <Col sm={2} lg={2}></Col>
+                                        <Col sm={2} lg={2}>
+                                            {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="gray700-13 mr-2 floatRight">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
+                                        </Col>
                                         <Col sm={12} lg={12} className="pt-3">
                                             <span className="projectBadge mr-2">
                                                 <SVGIcon name="newestprojecticon" fill={'#ffffff'} className="badgeSvg mr-2" viewBox="-2 -2 22 22"/>
@@ -285,7 +294,9 @@ class RelatedObject extends React.Component {
                                                 }
                                             })}
                                         </Col> 
-                                        <Col sm={2} lg={2}></Col>
+                                        <Col sm={2} lg={2}>
+                                            {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="gray700-13 mr-2 floatRight">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
+                                        </Col>
                                         <Col sm={12} lg={12} className="pt-3">
                                             <span className="paperBadge mr-2">
                                                 <SVGIcon name="newestprojecticon" fill={'#ffffff'} className="badgeSvg mr-2"  viewBox="-2 -2 22 22"/>
@@ -333,7 +344,9 @@ class RelatedObject extends React.Component {
                                             <br />
                                             <span className="gray800-14"> {data.bio} </span>
                                         </Col>
-                                        <Col sm={2} lg={2}></Col>
+                                        <Col sm={2} lg={3}>
+                                            {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="gray700-13 mr-2 floatRight">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
+                                        </Col>
                                     </Row>
                                 );
                             }
@@ -347,7 +360,9 @@ class RelatedObject extends React.Component {
                                             <br />
                                             <span className="gray800-14"> {data.publisher} </span>
                                         </Col>
-                                        <Col sm={2} lg={2}></Col>
+                                        <Col sm={2} lg={2}>
+                                            {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="gray700-13 mr-2 floatRight">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
+                                        </Col>
                                         <Col sm={12} lg={12} className="pt-3">
                                             <span className="dataSetBadge mr-2">
                                                 <SVGIcon name="dataseticon" fill={'#ffffff'} className="badgeSvg mr-2"  viewBox="-2 -2 22 22"/>
@@ -397,12 +412,15 @@ class RelatedObject extends React.Component {
                                             <Col xs={12}>
                                                 <div className="relationshipBar">
                                                     <span className="gray800-14 mr-2">Relationship</span>
-                                                </div> 
+                                                </div>  
                                             </Col>
                                         </Row>
                                         <Row className="mt-3">
                                             <Col xs={12}>
                                                 <div className="relationshipAnswer">
+                                                        <span className="gray700-13 mr-2">{relatedObject.user ? relatedObject.user : this.props.collectionUser}</span>
+                                                        <span className="gray700-13 mr-2 floatRight">{relatedObject.updated ? relatedObject.updated : this.props.collectionUpdated}</span>
+                                                    <br />
                                                     <span className="gray800-14 mr-2">{relatedObject.reason ? relatedObject.reason : this.props.collectionReason}</span> 
                                                 </div>
                                             </Col>

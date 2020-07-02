@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { initGA } from '../../tracking';
-
+import moment from 'moment';
 import { Container } from 'react-bootstrap';
 import SearchBar from '../commonComponents/SearchBar';
 import Loading from '../commonComponents/Loading'
@@ -29,13 +29,14 @@ class AddEditProjectPage extends React.Component {
         combinedFeatures: [],
         combinedCategories: [],
         combinedUsers: [],
-        isLoading: true,
+        isLoading: true, 
         userState: [],
         searchString: '',
         datasetData: [],
         toolData: [],
         projectData: [],
         personData: [],
+        paperData: [],
         summary: [],
         tempRelatedObjectIds: [],
         relatedObjectIds: [],
@@ -139,6 +140,7 @@ class AddEditProjectPage extends React.Component {
                     toolData: res.data.toolResults || [],
                     projectData: res.data.projectResults || [],
                     personData: res.data.personResults || [],
+                    paperData: res.data.paperResults || [],
                     summary: res.data.summary || [],
                     isLoading: false
                 });
@@ -159,7 +161,7 @@ class AddEditProjectPage extends React.Component {
 
     addToRelatedObjects = () => {
         this.state.tempRelatedObjectIds.map((object) => {
-            this.state.relatedObjects.push({'objectId':object.objectId, 'reason':'', 'objectType':object.type})
+            this.state.relatedObjects.push({'objectId':object.objectId, 'reason':'', 'objectType':object.type, 'user':this.state.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
         })
 
         this.setState({tempRelatedObjectIds: []})
@@ -182,7 +184,7 @@ class AddEditProjectPage extends React.Component {
     render() {
         const { data, isEdit, combinedTopic, combinedCategories, combinedUsers, combinedFeatures,
             
-             isLoading, userState, searchString, datasetData, toolData, projectData, personData, summary, relatedObjects, didDelete } = this.state;
+             isLoading, userState, searchString, datasetData, toolData, projectData, personData, paperData, summary, relatedObjects, didDelete } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -192,7 +194,7 @@ class AddEditProjectPage extends React.Component {
                 <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Container>
                     <AddEditProjectForm data={data} isEdit={isEdit} combinedTopic={combinedTopic} combinedCategories={combinedCategories} combinedUsers={combinedUsers} combinedFeatures={combinedFeatures}
-                    userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
+                    userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} paperData={paperData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
                 </Container>
             </div>
         );

@@ -12,6 +12,7 @@ import RelatedResources from '../commonComponents/RelatedResources';
 import RelatedResourcesResults from '../commonComponents/RelatedResourcesResults';
 import RelatedObject from '../commonComponents/RelatedObject';
 
+import moment from 'moment';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
 import ToolTip from '../../images/imageURL-ToolTip.gif';
@@ -116,7 +117,7 @@ class AddCollectionPage extends React.Component {
 
     addToRelatedObjects = () => {
         this.state.tempRelatedObjectIds.map((object) => {
-            this.state.relatedObjects.push({'objectId':object.objectId, 'reason':'', 'objectType':object.type})
+            this.state.relatedObjects.push({'objectId':object.objectId, 'reason':'', 'objectType':object.type, 'user':this.state.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
         })
 
         this.setState({tempRelatedObjectIds: []})
@@ -206,11 +207,13 @@ const AddCollectionForm = (props) => {
             if(object.objectId===id){
                 inRelatedObject = true;
                 object.reason = reason;
+                object.user = props.userState[0].name;
+                object.updated = moment().format("DD MMM YYYY");
             }
         });
 
         if(!inRelatedObject){
-            props.relatedObjects.push({'objectId':id, 'reason':reason, 'objectType': type})
+            props.relatedObjects.push({'objectId':id, 'reason':reason, 'objectType': type, 'user': props.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
         }
     }
 
@@ -305,9 +308,9 @@ const AddCollectionForm = (props) => {
                         </div>
 
                         <div className="relatedResourcesRectangle mt-1">
-                            {props.relatedObjects.map((object) => {
+                            {props.relatedObjects.map((object) => { 
                                 return (
-                                    <div className="relatedObjectRectangle">
+                                    <div className="relatedObjectRectangle"> 
                                         <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} inCollection={true}/>
                                     </div>   
                                 )

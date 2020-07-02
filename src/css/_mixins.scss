@@ -38,6 +38,7 @@ Example
      }
  }*/
 
+
 $breakpoints: (
     "phone":        320px,
     "phone-wide":   480px,
@@ -60,6 +61,49 @@ $breakpoints: (
     }
 }
 
+.collectionTitleText{
+    @include mq('tablet-wide',max){
+        font-size: 24px !important;
+    }
+}
+
+.collectionTitleCard{
+    @include mq('tablet-wide',max){
+        padding-left: 8% !important;
+    }
+    @include mq('tablet',max){
+        padding-left: 15% !important;
+    }
+    @include mq('phablet',max){
+        padding-left: 5% !important;
+    }
+    @include mq('phone-wide',max){
+        padding-left: 15% !important;
+    }
+    @include mq('phone',max){
+        padding-left: 25% !important;
+    }
+}
+
+.collectionDate{
+    @include mq('tablet-wide',max){
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+    }
+}
+
+.logoWidth{
+    @include mq('tablet-small', max){
+        width: 20% !important;
+    }
+}
+
+.titleWidth{
+    @include mq('tablet-small', max){
+        width: 80% !important;
+    }
+}
+
 /*
 	border radius
 	example:
@@ -75,7 +119,7 @@ $breakpoints: (
 }
 
 
-/*
+/* 
 	Retina images
 	example:
 	.element {
