@@ -191,7 +191,7 @@ class Account extends Component {
                                         <Nav.Link eventKey="collections" className="verticalNavBar gray700-13">
                                             <Row>
                                                 <Col sm={2} lg={2}>
-                                                    <SVGIcon name="dataaccessicon" fill={'#b3b8bd'} className="AccountSvgs"/>
+                                                    <SVGIcon name="collections" fill={'#b3b8bd'} className="AccountSvgs"/>
                                                 </Col>
                                                 <Col sm={10} lg={10} className="pl-4 pt-1">
                                                     Collections   
