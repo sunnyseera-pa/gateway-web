@@ -210,21 +210,21 @@ getDataSearchFromDb = () => {
               <Row>
               <Col sm={1} lg={1} />
                 {!data.imageLink || data.imageLink === "https://" ? '' :
-                  <Col sm={1} lg={1} >
+                  <Col sm={1} lg={1} className="logoWidth" >
                     <img src={data.imageLink} alt="collectionLogo" id="collectionLogo" />
                   </Col> }
-                <Col sm={10} lg={10}> 
+                <Col sm={10} lg={10} className={!data.imageLink || data.imageLink === "https://" ? "" : "titleWidth"}>  
                   <Row>
-                    <Col sm={9} lg={9}>
-                      <span className="black-28"> {data.name} </span>
+                    <Col sm={9} lg={9} className={!data.imageLink || data.imageLink === "https://" ? "" : "collectionTitleCard"} >
+                      <span className="black-28 collectionTitleText"> {data.name} </span>
                     </Col>
-                    {data.imageLink ? '' : <Col sm={1} lg={1} /> }
-                    <Col sm={2} lg={2}>
+                      {!data.imageLink || data.imageLink === "https://" ? <Col sm={1} lg={1} /> : '' }
+                    <Col sm={2} lg={2} className={!data.imageLink || data.imageLink === "https://" ? "collectionDate" : "collectionDate collectionTitleCard"}>
                       <span className="gray700-13">Created {moment(data.createdAt).format('MMM YYYY')} </span>
                     </Col>
                   </Row>
                   <Row>
-                    <Col sm={12} lg={12}> 
+                    <Col sm={12} lg={12} className={!data.imageLink || data.imageLink === "https://" ? "" : "collectionTitleCard"}> 
                       {data.persons.map((person, index) => {
                         if (index > 0) {
                           return <span className="gray800-14">, {person.firstname} {person.lastname}</span>
