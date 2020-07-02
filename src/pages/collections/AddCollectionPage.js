@@ -34,7 +34,7 @@ class AddCollectionPage extends React.Component {
         combinedUsers: [],
         isLoading: true,
         userState: [],
-        searchString: null,
+        searchString: '',
         datasetData: [],
         toolData: [],
         projectData: [],

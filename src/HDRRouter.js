@@ -27,10 +27,9 @@ import DataAccessRequest from './pages/DataAccessRequest/DataAccessRequest';
 import Loading from './pages/commonComponents/Loading'
 import CompleteRegistration from './pages/registration/CompleteRegistration'
 import LoginModal from './pages/commonComponents/LoginModal';
+import Footer from './pages/commonComponents/Footer';
 
 var baseURL = require('./pages/commonComponents/BaseURL').getURL();
-var cmsURL = require('./pages/commonComponents/BaseURL').getCMSURL();
-var footer = '';
 
 class HDRRouter extends Component {
     // initialize our state
@@ -60,7 +59,7 @@ class HDRRouter extends Component {
                             name: res.data.data[0].name
                         }
                     ],
-                    isLoading: true
+                    isLoading: false
                 });
             })
             .catch((error) => {
@@ -73,22 +72,9 @@ class HDRRouter extends Component {
                             name: null
                         }
                     ],
-                    isLoading: true
+                    isLoading: false
                 });
             })
-            .finally(() => {
-                console.log('axios is called');
-                axios
-                .get(cmsURL+'/footer',{ withCredentials: false })
-                .then((res) => {
-                    footer = res.data;
-                })
-                .finally(() => {
-                    this.setState({
-                        isLoading: false
-                    });
-                });
-            });
     }
 
     render() {
@@ -140,7 +126,7 @@ class HDRRouter extends Component {
                         <Redirect to="/search?search=" />
                     </Switch>
                 </div>
-                <div dangerouslySetInnerHTML={{__html:footer}} />
+                <Footer />
             </Router>
         );
     }

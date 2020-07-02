@@ -16,7 +16,7 @@ var baseURL = require('../commonComponents/BaseURL').getURL();
 class SearchPage extends React.Component {
 
     state = {
-        searchString: null,
+        searchString: '',
         datasetIndex: 0,
         toolIndex: 0,
         projectIndex: 0,

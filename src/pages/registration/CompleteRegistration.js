@@ -15,7 +15,7 @@ var baseURL = require('../commonComponents/BaseURL').getURL();
 class CompleteRegistration extends Component {
 
     state = {
-        searchString: null,
+        searchString: '',
         id: '',
         userdata: [],
         isLoading: true,

@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import queryString from 'query-string';
-import { Row, Col, Tabs, Tab, Container, Alert, Nav, Navbar } from 'react-bootstrap';
+import { Row, Col, Tabs, Tab, Container, Alert, Button } from 'react-bootstrap';
 import NotFound from '../commonComponents/NotFound';
 import Creators from '../commonComponents/Creators';
 import Loading from '../commonComponents/Loading'
@@ -333,18 +333,11 @@ class ToolDetail extends Component {
             <Col sm={1} lg={1} />
           </Row>
         </Container>
-        <Navbar fixed="bottom" className="mr-5 mb-2" >
-          <Nav className="ml-auto">
-            <Row>
-              <p>
-                <a href={cmsURL + '/HDRUKGatewaySupportPortal'} target="_blank" rel="noopener noreferrer" className="purple-14" id="underLinedLink">
-                  Suggest Feedback
-                </a>
-              </p>
-            </Row>
-          </Nav>
-        </Navbar>
-        <Row className='authorCard' />
+        {!userState[0].loggedIn ? '' :
+            <div className="actionBar">
+                <Button variant='white' href={'/paper/edit/' + data.id} className="TechDetailButton mr-2" >Edit</Button>
+            </div>
+        }
       </div>
     );
   }

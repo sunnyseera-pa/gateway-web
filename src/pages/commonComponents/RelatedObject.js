@@ -1,6 +1,5 @@
 import React from 'react';
 import axios from 'axios';
-import ReactMarkdown from 'react-markdown';
 
 import { Row, Col, Button } from 'react-bootstrap';
 import Loading from './Loading'
@@ -191,7 +190,7 @@ class RelatedObject extends React.Component {
                                         </Col> 
                                         <Col sm={12} lg={12} className="pt-3">
                                             <span className="gray800-14">
-                                                <ReactMarkdown source={data.description.substr(0, 140) + (data.description.length > 140 ? '...' : '')} />
+                                                {data.description.substr(0, 140) + (data.description.length > 140 ? '...' : '')}
                                             </span>
                                         </Col> 
                                     </Row>   
@@ -253,7 +252,7 @@ class RelatedObject extends React.Component {
                                         </Col>  
                                         <Col sm={12} lg={12} className="pt-3">
                                             <span className="gray800-14">
-                                                <ReactMarkdown source={data.description.substr(0, 140) + (data.description.length > 140 ? '...' : '')} />
+                                                {data.description.substr(0, 140) + (data.description.length > 140 ? '...' : '')}
                                             </span>
                                         </Col> 
                                     </Row>  
