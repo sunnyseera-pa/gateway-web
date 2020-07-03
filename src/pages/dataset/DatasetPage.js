@@ -163,7 +163,7 @@ class DatasetDetail extends Component {
 
         return (
           <Tooltip id="metadata-tooltip" {...props}>
-            Meta-data quality score: {score}
+            Metadata quality score: {score}
             <br /><br />
             The score relates to the amount of information available about the dataset, 
             and not to the quality of the actual datasets. 
@@ -199,16 +199,16 @@ class DatasetDetail extends Component {
                         return (<><div style={{lineHeight: 1}}><MetadataNotRated className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Not rated</span></div></>)
                     }
                     else if (data.quality.quality_score <= 70) {
-                        return (<><div style={{lineHeight: 1}}><MetadataBronze className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Bronze meta-data</span></div></>)
+                        return (<><div style={{lineHeight: 1}}><MetadataBronze className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Bronze metadata</span></div></>)
                     } 
                     else if (data.quality.quality_score <= 80) {
-                        return (<><div style={{lineHeight: 1}}><MetadataSilver className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Silver meta-data</span></div></>)
+                        return (<><div style={{lineHeight: 1}}><MetadataSilver className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Silver metadata</span></div></>)
                     } 
                     else if (data.quality.quality_score <= 90) {
-                        return (<><div style={{lineHeight: 1}}><MetadataGold className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Gold meta-data</span></div></>)
+                        return (<><div style={{lineHeight: 1}}><MetadataGold className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Gold metadata</span></div></>)
                     } 
                     else if (data.quality.quality_score > 90) {
-                        return (<><div style={{lineHeight: 1}}><MetadataGold className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Gold meta-data</span></div></>)
+                        return (<><div style={{lineHeight: 1}}><MetadataGold className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Gold metadata</span></div></>)
                     }
                 })()} 
             </div>
@@ -243,7 +243,7 @@ class DatasetDetail extends Component {
                                         <span>Dataset</span>
                                     </span>
                                     {!keywords || keywords.length <= 0 ? '' : 
-                                    keywords.map((keyword) => { return <a href={'/search?search=' + keyword}><div className="ml-2 gray800-14px tagBadges mb-1 mt-1">{keyword}</div></a>})}
+                                    keywords.map((keyword) => { return <a href={'/search?search=' + keyword}><div className="ml-2 gray800-14 tagBadges mb-1 mt-1">{keyword}</div></a>})}
                                 </Col>
                             </Row>
 
@@ -322,7 +322,7 @@ class DatasetDetail extends Component {
                                                     <Col sm={2} className="gray800-14" >
                                                         Standard
                                                     </Col>
-                                                    {data.conformsTo ? <Col sm={10} className="Gray800-14px overflowWrap">{data.conformsTo}</Col> : <Col sm={10} className="gray800-14-opacity">Not specified</Col>}
+                                                    {data.conformsTo ? <Col sm={10} className="gray800-14 overflowWrap">{data.conformsTo}</Col> : <Col sm={10} className="gray800-14-opacity">Not specified</Col>}
                                                 </Row>
                                             </div>
                                         </Col>
