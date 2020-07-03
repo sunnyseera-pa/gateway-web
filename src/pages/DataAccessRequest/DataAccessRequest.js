@@ -34,7 +34,7 @@ class DataAccessRequest extends Component {
         questionAnswers: {},
         applicationStatus: '',
         activePanelId: '',
-        activeGuidance: 'Active guidance for questions.',
+        activeGuidance: '',
         searchString: '',
         key: 'guidance',
         totalQuestions: '',
@@ -354,8 +354,7 @@ class DataAccessRequest extends Component {
                     </Col>
                 </Row>
 
-                <div className="darForm">
-                <Row className="mt-5 ml-1 fillPage">
+                <Row className="mt-5 fillPage">
                     <Col md={2}>
                         {[...this.state.schema.pages].map((item, idx) => (
                             <div key={item.index} className={`${item.active ? "active-border" : ''}`}>
@@ -375,17 +374,17 @@ class DataAccessRequest extends Component {
                         ))}
                     </Col>
                     <Col md={7} className="flexColumn">
-                        <Row style={{ backgroundColor: "#ffffff" }} className="pl-4">
+                        <div style={{ backgroundColor: "#ffffff" }} className="dar__header">
                             {[...this.state.schema.pages].map((item, idx) => (
                                 <div >
-                                    <p className="black-20">{item.active ? item.title : ""}</p>
+                                    <p className="black-20-semibold mb-0">{item.active ? item.title : ""}</p>
                                     <p className="gray800-14">{item.active ? item.description : ""}</p>
                                 </div>
                             ))}
-                        </Row>
+                        </div>
                         { activePanelId === "mrcHealthDataToolkit" || activePanelId === "adviceFromPublisher" ?
                             <div>
-                                <Row className="mt-2 pt-3 pl-3 pb-3 gray800-14 white-bg">
+                                <div className="pt-3 pl-3 pb-3 gray800-14 white-bg">
                                     <Col md={12}>
                                         <Row className="black-bold-17">
                                             MRC Health Data Access toolkit
@@ -397,8 +396,8 @@ class DataAccessRequest extends Component {
                                             <ToolKit />
                                         </Row>
                                     </Col>
-                                </Row>
-                                <Row className="mt-2 pt-3 pl-3 pb-3 gray800-14 white-bg">
+                                </div>
+                                <div className="pt-3 pl-3 pb-3 gray800-14 white-bg">
                                     <Col md={12}>
                                         <Row className="black-bold-17">
                                             Advice from {publisher}
@@ -407,10 +406,10 @@ class DataAccessRequest extends Component {
                                             We highly recommend getting in touch with us as early as possible. We may be able to help you shape the various approvals, such as ethics, minimising the risk of having to apply more than once.
                                     </Row>
                                     </Col>
-                                </Row>
+                                </div>
                             </div>
                             : 
-                                <Row className="mt-2 pt-3 pl-3 pb-3 gray800-14" style={{ backgroundColor: "#ffffff" }} >
+                                <div className="dar__questions gray800-14" style={{ backgroundColor: "#ffffff" }} >
                                     <Col md={11}>
                                         <Winterfell
                                             schema={this.state.schema}
@@ -424,33 +423,29 @@ class DataAccessRequest extends Component {
                                             onRender={this.onFormRender}
                                         />
                                     </Col>
-                                </Row>
+                                </div>
                             }
                     </Col>
                     <Col md={3} className="darTabs">
                             <Tabs className='tabsBackground gray700-14' activeKey={this.state.key} onSelect={this.handleSelect}>
                                 <Tab eventKey="guidance" title="Guidance">
-                                    <Row className="darTab toolsButtons ml-1 mr-1 mt-2">
-                                        <Col md={12} className="gray700-13 mt-2">
-                                            <span>{activeGuidance}</span>
-                                            <br /> <br />
-                                            <Button variant="light" className="dark-14 Width100"  >
-                                                View all guidance in a new window
-                                        </Button>
+                                    <div className="darTab">
+                                        <Col md={12} className="gray700-13 text-center">
+                                            <span>{activeGuidance ? activeGuidance : 'Active guidance for questions'}.</span>
                                         </Col>
-                                    </Row>
+                                    </div>
                                 </Tab>
                                 <Tab eventKey="answers" title="Answers">
-                                    <Row className="darTab toolsButtons ml-1 mr-1 mt-2">
+                                    <div className="darTab">
                                         <Col md={12} className="gray700-13 mt-2">
                                             <span>Re-use answers from your previous applications</span>
                                             <br /> <br />
                                             <span className="comingSoonBadge"> Coming soon </span>
                                         </Col>
-                                    </Row>
+                                    </div>
                                 </Tab>
                                 <Tab eventKey="notes" title="Notes">
-                                    <Row className="darTab toolsButtons ml-1 mr-1 mt-2">
+                                    <div className="darTab">
                                         <Col md={12} className="gray700-13 mt-2">
                                             <span>Data custodians cannot see your notes. </span>
                                             <br /> <br />
@@ -458,10 +453,10 @@ class DataAccessRequest extends Component {
                                             <br /> <br />
                                             <span className="comingSoonBadge"> Coming soon </span>
                                         </Col>
-                                    </Row>
+                                    </div>
                                 </Tab>
                                 <Tab eventKey="messages" title="Messages">
-                                    <Row className="darTab toolsButtons ml-1 mt-2">
+                                    <div className="darTab">
                                         <Col md={12} className="gray700-13 mt-2">
                                             <span>Both data custodian and applicants can see messages</span>
                                             <br /> <br />
@@ -469,30 +464,27 @@ class DataAccessRequest extends Component {
                                             <br /> <br />
                                             <span className="comingSoonBadge"> Coming soon </span>
                                         </Col>
-                                    </Row>
+                                    </div>
                                 </Tab>
                             </Tabs>
                     </Col>
-                    <Col md={12}>
-                        <Row className="darFooter">
-                            <Col md={6} className="mt-4">
-                                <span className="gray800-14">{totalQuestions}</span>
-                            </Col>
-                            <Col md={6} className="mt-3 text-right">
-                                <Button variant="white" className="techDetailButton ml-2" onClick={this.onClickSave}>
-                                    Save
-                                </Button>
-                                <Button variant="white"  className="techDetailButton ml-3" onClick={this.onFormSubmit}>
-                                    Submit application
-                                </Button>
-                                <Button variant="primary" className="white-14-semibold ml-3" onClick={(e) => { this.onNextPanel(activePanelId) }}>
-                                    {activePanelId === "mrcHealthDataToolkit" || activePanelId === "adviceFromPublisher" ? "Go to Safe People" : "Go to next section" }
-                                </Button>   
-                            </Col>
-                        </Row> 
-                    </Col>
+                    <div className="darFooter">
+                        <Col md={6} className="mt-4">
+                            <span className="gray800-14">{totalQuestions}</span>
+                        </Col>
+                        <Col md={6} className="mt-3 text-right">
+                            <Button variant="white" className="techDetailButton ml-2" onClick={this.onClickSave}>
+                                Save
+                            </Button>
+                            <Button variant="white"  className="techDetailButton ml-3" onClick={this.onFormSubmit}>
+                                Submit application
+                            </Button>
+                            <Button variant="primary" className="white-14-semibold ml-3" onClick={(e) => { this.onNextPanel(activePanelId) }}>
+                                {activePanelId === "mrcHealthDataToolkit" || activePanelId === "adviceFromPublisher" ? "Go to Safe People" : "Go to next section" }
+                            </Button>   
+                        </Col>
+                    </div> 
                 </Row>
-                </div>
             </div>
         ) 
         
