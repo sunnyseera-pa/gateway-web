@@ -1,75 +1,73 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import {Row, Col, Container} from 'react-bootstrap/';
 import Loading from '../../commonComponents/Loading'
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import moment from 'moment';
+import { baseURL } from '../../../configs/url.config';
 
+const PreSubInnovator = ({ data }) => {
 
-var baseURL = require('../../commonComponents/BaseURL').getURL();
+    useEffect(() => {
+        getDatasetSearch();
+    }, []);
 
-class PreSubInnovator extends React.Component {
-
-    state = {
-        data: {},
+    const [screenData, setScreenData] = useState({
+        data,
         name: '',
         dataset: '',
-        isLoading: true
-    }
+        publisher: ''
+    }, {});
 
-    constructor(props) {
-        super(props)
-        this.state.data = props.data;
-    }
+    const [isLoading, setLoading] = useState(false);
 
-    componentDidMount() {
-        this.getDatasetSearch();
-      }
-
-    getDatasetSearch = () => {
-        this.setState({ isLoading: true });
-        axios.get(baseURL + '/api/v1/datasets/' + this.state.data.dataSetId)
-          .then((res) => {
-            this.setState({
-              dataset: res.data.data.label,
-              isLoading: false
+    const getDatasetSearch = () => {
+        setLoading(true);
+        axios.get(`${baseURL}/api/v1/datasets/${screenData.data.dataSetId}`)
+            .then((res) => {
+                // state: {title, dataSetId: id, custodianEmail: contactPoint, publisher: publisher }}}
+                let {data: {data: { label, quality: { publisher} }}} = res;
+                setScreenData({...screenData, dataset: label, publisher});
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.log(err);
             });
-          })
-      };
+    }
 
-    render() {
-        const { isLoading, dataset } = this.state; 
-        if (isLoading) {
-            return (
-                <Container>
-                    <Loading />
-                </Container>
-            );
-        }
+    if (isLoading) {
         return (
-            <div className="DARDiv" >
-
-                <Row className="pl-3">
-                    <Col sm={3} lg={3}>
-                        <span>{moment(this.props.data.updatedAt).format('D MMMM YYYY HH:mm')}</span>
-                    </Col>
-                    <Col sm={3} lg={3}>
-                        <span > {dataset}</span>
-                    </Col>
-                    <Col sm={4} lg={4}>
-                        <span>7/56 questions answered</span>
-                    </Col>
-                    <Col sm={2} lg={2} className="pr-5">
-                        <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
-                                <Dropdown.Item href="">Edit</Dropdown.Item>
-                                <Dropdown.Item href="">Delete</Dropdown.Item>
-                        </DropdownButton>
-                    </Col>
-                </Row>
-             </div>
+            <Container>
+                <Loading />
+            </Container>
         );
     }
+
+    return (
+        <div>
+            <Row className="pl-3">
+                <Col sm={3} lg={3}>
+                    <span>{moment(screenData.data.updatedAt).format('D MMMM YYYY HH:mm')}</span>
+                </Col>
+                <Col sm={3} lg={3}>
+                    <span >{screenData.dataset}</span>
+                </Col>
+                <Col sm={4} lg={4}>
+                    <span>7/56 questions answered</span>
+                </Col>
+                <Col sm={2} lg={2} className="pr-5">
+                    <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
+                        <Link className={'black-14 dropdown-item'} to={{
+                            pathname: `/data-access-request/dataset/${screenData.data.dataSetId}`, 
+                            state: { title: screenData.dataset, dataSetId: screenData.data.dataSetId, custodianEmail: '', publisher: screenData.publisher }}}>View</Link>
+                    </DropdownButton>
+                </Col>
+            </Row>
+        </div>
+    );
 }
+
 
 export default PreSubInnovator;

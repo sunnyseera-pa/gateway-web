@@ -50,7 +50,7 @@ class DataAccessRequest extends Component {
     async componentDidMount() {
         try {
             let { location: { state: { dataSetId }}} = this.props;
-            const response = await axios.get(`${baseURL}/api/v1/data-access-request/${dataSetId}`);
+            const response = await axios.get(`${baseURL}/api/v1/data-access-request/dataset/${dataSetId}`);
             const { data: { data: { jsonSchema, questionAnswers, _id, applicationStatus }}} = response;
             this.setState({schema: {...jsonSchema, ...classSchema}, questionAnswers, _id, applicationStatus, activePanelId: 'mrcHealthDataToolkit', isLoading: false});
             // this.setState({schema: {...formSchema}, activePanelId: 'mrcHealthDataToolkit', isLoading: false, applicationStatus: 'inProgress'});
@@ -222,6 +222,9 @@ class DataAccessRequest extends Component {
      * @param {obj: questionAnswers}
      */
     onApplicationUpdate = async (questionAnswers) => {
+        if(this.state.applicationStatus === 'submitted')
+            return alert('Your application has already been submitted.');
+            
         try {
             // 1. spread copy of data, and remove blank null undefined values
             const data = _.pickBy({...this.state.questionAnswers, ...questionAnswers}, _.identity);
