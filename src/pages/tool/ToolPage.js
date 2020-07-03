@@ -186,7 +186,7 @@ class ToolDetail extends Component {
                         <div className="rectangle">
                             <Row>
                                 <Col>
-                                    <span className="black-20px">{data.name}</span>
+                                    <span className="black-20">{data.name}</span>
                                 </Col>
                             </Row>
                             {ratingsCount === 0 ? '' :

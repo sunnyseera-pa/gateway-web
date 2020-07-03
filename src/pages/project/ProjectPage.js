@@ -207,7 +207,7 @@ class ProjectDetail extends Component {
                                             URL
                                         </Col>
                                         <Col sm={10} className="gray800-14" >
-                                            <a href={data.link} rel="noopener noreferrer" target="_blank" className="Purple-14px">
+                                            <a href={data.link} rel="noopener noreferrer" target="_blank" className="purple-14">
                                                 {data.link}
                                             </a>
                                         </Col>
