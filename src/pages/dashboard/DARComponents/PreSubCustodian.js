@@ -5,8 +5,7 @@ import Loading from '../../commonComponents/Loading'
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import moment from 'moment';
-
-var baseURL = require('../../commonComponents/BaseURL').getURL();
+import { baseURL } from '../../../configs/url.config';
 
 class PreSubCustodian extends React.Component {
 
@@ -28,8 +27,8 @@ class PreSubCustodian extends React.Component {
       }
 
     getDataSearchFromDb = () => {
-         this.setState({ isLoading: true });
-        axios.get(baseURL + '/api/v1/person/' + this.state.data.userId)
+        this.setState({ isLoading: true });
+        axios.get(`${baseURL}/api/v1/person/${this.state.data.userId}`)
           .then((res) => {
             if (typeof res.data.data[0] === "undefined" ) {
                 this.setState({
@@ -47,7 +46,7 @@ class PreSubCustodian extends React.Component {
 
     getDatasetSearch = () => {
         this.setState({ isLoading: true });
-        axios.get(baseURL + '/api/v1/datasets/' + this.state.data.dataSetId)
+        axios.get(`${baseURL}/api/v1/datasets/${this.state.data.dataSetId}`)
           .then((res) => {
             this.setState({
               dataset: res.data.data.label,
@@ -71,6 +70,12 @@ class PreSubCustodian extends React.Component {
                 return "";
         }
     }; 
+
+    onView = (e) => {
+        e.preventDefault();
+        console.log(this.props);
+        alert('hi');
+    } 
 
     render() {
         const { isLoading, name, dataset } = this.state; 
@@ -99,9 +104,9 @@ class PreSubCustodian extends React.Component {
                     <span >12/56 questions answered</span>
                 </Col>
                 <Col sm={2} lg={2} className="pr-5">
-                    <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
-                            <Dropdown.Item href="">View</Dropdown.Item>
-                    </DropdownButton>
+                    {/* <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
+                            <Dropdown.Item href="" onClick={e => this.onView(e)}>View</Dropdown.Item>
+                    </DropdownButton> */}
                 </Col>
             </Row>
             </div>

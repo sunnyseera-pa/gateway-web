@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Row, Col, Button, Modal, Container, Tabs, Tab, Alert } from 'react-bootstrap';
-import NotFound from '../commonComponents/NotFound';
+import { Row, Col, Button, Container, Tabs, Tab, Alert } from 'react-bootstrap';
 import Loading from '../commonComponents/Loading';
 import PreSubCustodian from './DARComponents/PreSubCustodian';
 import PreSubInnovator from './DARComponents/PreSubInnovator';
 import CustodianApplication from './DARComponents/CustodianApplication';
 import InnovatorApplication from './DARComponents/InnovatorApplication';
-
-var baseURL = require('../commonComponents/BaseURL').getURL();
+import { baseURL } from '../../configs/url.config';
 
 class DataAccessRequests extends React.Component {
  

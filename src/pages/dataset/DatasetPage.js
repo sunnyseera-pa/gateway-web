@@ -127,6 +127,7 @@ class DatasetDetail extends Component {
         }
       }
 
+
   render() {
     const { searchString, data, datarequest, isLoading, userState, alert=null } = this.state;
 
@@ -449,7 +450,7 @@ class DatasetDetail extends Component {
                     else {
                         return (
                             <Link className="btn btn-primary addButton" 
-                                to={{pathname: `/data-access-request/${data.id}`, state: {title: data.title, dataSetId: data.id, custodianEmail: data.contactPoint, publisher: data.publisher }}} 
+                                to={{pathname: `/data-access-request/dataset/${data.id}`, state: {title: data.title, dataSetId: data.id, custodianEmail: data.contactPoint, publisher: data.publisher }}} 
                                 onClick={() => Event("Buttons", "Click", "Request Access")}>
                                 Request Access
                             </Link>
