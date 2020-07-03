@@ -248,7 +248,11 @@ class DataAccessRequest extends Component {
 
     onNextPanel(activePanelId){
         if (activePanelId === "mrcHealthDataToolkit" || activePanelId === "adviceFromPublisher"){
-            this.updateNavigation({panelId: "applicant", pageId: "safePeople"});
+            // 1. filter for the first section safePeople and get the first obj
+            let {panelId, pageId} = _.head([...this.state.schema.formPanels].filter(p => {
+                                        return p.pageId === 'safePeople' || p.pageId === 'safepeople'
+                                    }));
+            this.updateNavigation({panelId, pageId});
         }
         else {
             const formPanels = [...this.state.schema.formPanels];
@@ -422,7 +426,6 @@ class DataAccessRequest extends Component {
                                     </Col>
                                 </Row>
                             }
-                        <Row className="bottomCard mt-2 mb-2"  />
                     </Col>
                     <Col md={3} className="darTabs">
                             <Tabs className='tabsBackground gray700-14' activeKey={this.state.key} onSelect={this.handleSelect}>
