@@ -90,13 +90,13 @@ class PersonDetail extends Component {
 
     var tools = []
     var projects = []
-
+    
     if (data.tools.length > 0) {
         data.tools.forEach(object => {
-          if (object.type === 'tool') {
+          if (object.type === 'tool' && object.activeflag === 'active') {
             tools.push(object);
           } 
-          else if (object.type === 'project') {
+          else if (object.type === 'project' && object.activeflag === 'active') {
             projects.push(object)
           }
         });
