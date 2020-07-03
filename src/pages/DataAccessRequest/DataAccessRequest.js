@@ -173,9 +173,13 @@ class DataAccessRequest extends Component {
      * @desc Callback from Winterfell sets totalQuestionsAnswered + saveTime
      */
     onFormUpdate = _.debounce((questionAnswers) => {
+        const { applicationStatus } = this.state;
         let totalQuestionsAnswered = this.totalQuestionsAnswered(this.state.activePanelId, questionAnswers);
         this.setState({totalQuestions: totalQuestionsAnswered});
-        // this.onApplicationUpdate(questionAnswers);
+        if(applicationStatus === 'submitted')
+            return alert('Your application has already been submitted.');
+
+        this.onApplicationUpdate(questionAnswers);
     }, 500);
 
     /**
@@ -222,9 +226,6 @@ class DataAccessRequest extends Component {
      * @param {obj: questionAnswers}
      */
     onApplicationUpdate = async (questionAnswers) => {
-        if(this.state.applicationStatus === 'submitted')
-            return alert('Your application has already been submitted.');
-            
         try {
             // 1. spread copy of data, and remove blank null undefined values
             const data = _.pickBy({...this.state.questionAnswers, ...questionAnswers}, _.identity);
