@@ -6,6 +6,7 @@ import SearchBar from '../commonComponents/SearchBar';
 import AccountTools from './AccountTools';
 import AccountProjects from './AccountProjects';
 import AccountPapers from './AccountPapers';
+import AccountCollections from './AccountCollections';
 import AccountUsers from './AccountUsers';
 import ReviewTools from './ReviewTools';
 import YourAccount from './YourAccount';
@@ -181,7 +182,19 @@ class Account extends Component {
                                                     <SVGIcon name="dataaccessicon" fill={'#b3b8bd'} className="AccountSvgs"/>
                                                 </Col>
                                                 <Col sm={10} lg={10} className="pl-4 pt-1">
-                                                Data access requests    
+                                                    Data access requests    
+                                                </Col>
+                                            </Row>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item>
+                                        <Nav.Link eventKey="collections" className="verticalNavBar gray700-13">
+                                            <Row>
+                                                <Col sm={2} lg={2}>
+                                                    <SVGIcon name="collections" fill={'#b3b8bd'} className="AccountSvgs"/>
+                                                </Col>
+                                                <Col sm={10} lg={10} className="pl-4 pt-1">
+                                                    Collections   
                                                 </Col>
                                             </Row>
                                         </Nav.Link>
@@ -241,9 +254,15 @@ class Account extends Component {
                                         <DataAccessRequests userState={userState} />
                                     </Tab.Pane>
                                 : ''}  
+
+                                {tabId === 'collections' ?
+                                    <Tab.Pane eventKey="collections">
+                                        <AccountCollections userState={userState} /> 
+                                    </Tab.Pane>
+                                : ''}  
                                 
                                 {tabId === 'usersroles' ?
-                                    <Tab.Pane eventKey="usersroles">
+                                    <Tab.Pane eventKey="usersroles"> 
                                         <AccountUsers userState={userState} />
                                     </Tab.Pane>
                                 : ''}  

@@ -50,7 +50,7 @@ class AccountPapers extends React.Component {
         }
     }
 
-    approvePaper = (id) => {
+    approvePaper = (id) => { 
         axios.put(baseURL + '/api/v1/accounts/status', {
             id: id,
             activeflag: "active"
