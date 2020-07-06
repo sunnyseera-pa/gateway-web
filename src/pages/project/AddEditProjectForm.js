@@ -17,7 +17,7 @@ var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const AddEditProjectForm = (props) => {
     //Fix for projects were features are set to null
-    if (props.data.length > 0 && props.data.tags.features === null) props.data.tags.features = [];
+    if (props.data && props.data.tags.features === null) props.data.tags.features = [];
     
     // Pass the useFormik() hook initial form values and a submit function that will
     // be called when the form is submitted
