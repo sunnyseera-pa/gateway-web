@@ -379,7 +379,7 @@ class ToolDetail extends Component {
             </Container>
             {!userState[0].loggedIn ? '' :
                 <div className="actionBar">
-                    <Button variant='white' href={'/tool/edit/' + data.id} className="TechDetailButton mr-2" >Edit</Button>
+                    <Button variant='white' href={'/tool/edit/' + data.id} className="techDetailButton mr-2" >Edit</Button>
                 </div>
             }
         </div>
