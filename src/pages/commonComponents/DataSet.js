@@ -1,61 +1,70 @@
 
 import React from 'react';
-import axios from 'axios';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import { Row, Col } from 'react-bootstrap';
 import SVGIcon from "../../images/SVGIcon";
-import Loading from './Loading'
 
-var baseURL = require('./BaseURL').getURL();
+const DataSet = (props) => {
+    const {data, detailsData, activeLink} = props;
 
-class DataSet extends React.Component {
-
-    state = {
-        data: [],
-        isLoading: false,
-        detailsData: []
-    }
-
-    constructor(props) {
-        super(props)
-        if (props.data) {
-            this.state.data = props.data;
-            this.state.isLoading = false;
+    /**
+     * [displayShort]
+     * @params {key[string], size[int]}
+     * @desc returns the relevant field shortened or full length
+     */
+    const displayShort = (key, size) => {
+        // 1. if data and property exists
+        if(data && data[key]) {
+            // 2. if the property val is > than the length format
+            if(data[key].length > size) 
+                return `${data[key].substr(0, size)}${'...'}`
+            
+            return data[key];
+        } else {
+            return ''; 
         }
     }
 
-    render() {
-        const { data, detailsData } = this.state;
 
-        return (
-            <Row className="mt-2">
-                <Col>
-                    <div className="Rectangle">
-                        <Row>
-                            <Col xs={2} lg={1} className="iconHolder">
-                                <SVGIcon name="dataseticon" width={22} height={24} fill={'#3db28c'} />
-                            </Col>
-                            <Col xs={10} lg={11}>
-                                <p>
-                                    <span ><a className="Black-16px" style={{ cursor: 'pointer' }} href={'/dataset/' + data.id} > {data.title ? data.title.substr(0, 75) + (data.title.length > 75 ? '...' : '') : ''} </a></span>
-                                    <br/>
-                                    <span className="Gray800-14px">{data.publisher ? data.publisher : ''}
+
+    return (
+        <Row className="mt-2">
+            <Col>
+              <div className={props.tempRelatedObjectIds && props.tempRelatedObjectIds.some(object => object.objectId === data.id) ? "rectangle selectedBorder" : "rectangle"} onClick={() => !activeLink && props.doAddToTempRelatedObjects(data.id, 'dataset') } >   
+                    <Row>
+                        <Col xs={2} lg={1} className="iconHolder">
+                            <SVGIcon name="dataseticon" width={22} height={24} fill={'#3db28c'} />
+                        </Col> 
+                        <Col xs={10} lg={11}>
+                            <p>
+                                {activeLink===true ? 
+                                    <span>
+                                        <a className="black-16" style={{ cursor: 'pointer' }}  href={'/dataset/' + data.id} data-testid="dataset-title">
+                                            {displayShort('title', 75)} 
+                                        </a>
                                     </span>
-                                </p>
-                                <p>
-                                </p>
-                                <p className="Gray800-14px">
-                                    {data && data.description ? (data.description.substr(0, 125) + (data.description.length > 125 ? '...' : '' )) : (detailsData && detailsData.abstract ? (detailsData.abstract.substr(0,125) + (detailsData.abstract.length > 125 ? '...' : '') ) : "")}    
-                                </p>
+                                :
+                                    <span className="black-16">
+                                        {displayShort('title', 75)} 
+                                    </span>
+                                }
 
-                            </Col>
-
-                        </Row>
-                    </div>
-                </Col>
-            </Row>
-        );
-    }
+                                <br/>
+                                <span 
+                                    className="gray800-14" 
+                                    data-testid="dataset-publisher">{data.publisher || ''}
+                                </span>
+                            </p>
+                            <p 
+                                className="gray800-14" 
+                                data-testid="dataset-desc">
+                                    {data.description ? displayShort('description', 125) : displayShort('abstract', 125)}    
+                            </p>
+                        </Col>
+                    </Row>
+                </div>
+            </Col>
+        </Row>
+    );
 }
 
 export default DataSet;

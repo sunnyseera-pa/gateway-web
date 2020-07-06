@@ -14,11 +14,13 @@ class Tool extends React.Component {
     state = {
         data: [],
         reviewData: [],
-        isLoading: true
+        isLoading: true,
+        activeLink: true,
     };
 
     constructor(props) {
         super(props)
+        this.state.activeLink = props.activeLink;
         if (props.data) {
             this.state.data = props.data;
             this.state.reviewData = this.state.data.reviews;
@@ -44,7 +46,7 @@ class Tool extends React.Component {
     };
 
     render() {
-        const { data, isLoading, reviewData } = this.state;
+        const { data, isLoading, reviewData, activeLink } = this.state;
 
         if (isLoading) {
             return <Loading />;
@@ -75,23 +77,23 @@ class Tool extends React.Component {
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         var updatedDate = new Date(data.updatedon);
         var updatedOnDate = monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
-        
-        
             
         return (
             <Row className="mt-2">
                 <Col>
-                    <div className="Rectangle">
+                <div className={this.props.tempRelatedObjectIds && this.props.tempRelatedObjectIds.some(object => object.objectId === data.id) ? "rectangle selectedBorder" : "rectangle"} onClick={() => !activeLink && this.props.doAddToTempRelatedObjects(data.id, data.type) } >   
                         <Row>
                             <Col xs={2} lg={1} className="iconHolder">
                                 <SVGIcon name="toolicon" width={18} height={18} fill={'#3db28c'} />
                             </Col>
                             <Col xs={10} lg={8}>
                                 <p>
-                                    <span > <a className="searchHolder Black-16px" href={'/tool/' + data.id} >{data.name.substr(0, 75) + (data.name.length > 75 ? '...' : '')}</a></span>
+                                    {activeLink===true ? 
+                                    <span > <a className="black-16" href={'/tool/' + data.id} >{data.name.substr(0, 75) + (data.name.length > 75 ? '...' : '')}</a></span>
+                                    : <span className="black-16">{data.name.substr(0, 75) + (data.name.length > 75 ? '...' : '')}</span> }
                                     <br />
-                                    <span className="Gray500-13px">
-                                        <span className="Gray500-13px">
+                                    <span className="gray500-13">
+                                        <span className="gray500-13">
                                             {!!ratingsTotal && ratingsCount === 1 ? ratingsCount + ' review' : ratingsCount + ' reviews'}
                                             <span className="reviewTitleGap">·</span>
                                             {avgRating === 0 ? 'No average rating' : (Math.round(avgRating * 10) / 10) + ' average rating'}
@@ -99,30 +101,40 @@ class Tool extends React.Component {
                                     </span>
                                     <br />
                                     <br />
-                                    <span className="Gray800-14px">
+                                    <span className="gray800-14">
                                         {data.persons <= 0 ? 'Author not listed' : data.persons.map((person, index) => {
                                             if (index > 0) {
-                                                return <span><span className="reviewTitleGap">·</span><a className="Gray800-14px" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a></span>
+                                                if (activeLink===true){
+                                                    return <span><span className="reviewTitleGap">·</span><a className="gray800-14" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a></span>
+                                                }
+                                                else {
+                                                    return <span className="gray800-14"><span className="reviewTitleGap">·</span>{person.firstname} {person.lastname}</span>
+                                                }
                                             }
                                             else {
-                                                return <span><a className="Gray800-14px" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a></span>
+                                                if (activeLink===true){
+                                                    return <span><a className="gray800-14" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a></span>
+                                                }
+                                                else {
+                                                    return <span className="gray800-14">{person.firstname} {person.lastname}</span>
+                                                }
                                             }
                                         })}
                                     </span>
                                 </p>
                             </Col>
                             <Col xs={{ span: 12, order: 3 }} lg={{ span: 3, order: 1 }} className="dateHolder mt-2">
-                                <span className="Gray700-13px pr-1">
+                                <span className="gray700-13 pr-1">
                                     Updated
                                     </span>
-                                <span className="Gray700-13px pr-1">
+                                <span className="gray700-13 pr-1">
                                     {updatedOnDate}
                                 </span>
                             </Col>
 
                             <Col xs={{ span: 2, order: 0 }} lg={{ span: 1, order: 2 }}></Col>
                             <Col xs={{ span: 10, order: 0 }} lg={{ span: 11, order: 2 }} >
-                                <p className="Gray800-14px">
+                                <p className="gray800-14">
 
                                     {data.projectids && data.projectids.length ? 
                                         <span className="mr-1">
@@ -139,18 +151,33 @@ class Tool extends React.Component {
                             </Col>
 
                             <Col xs={{ span: 12, order: 1 }} lg={{ span: 12, order: 3 }}>
-                                {!data.categories.category ? '' : <a href={'/search?search=' + data.categories.category}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{data.categories.category}</div></a>}
+                                {!data.categories.category ? '' :  activeLink === true ? <a href={'/search?search=' + data.categories.category}><div className="mr-2 gray800-14 tagBadges mb-2 mt-2">{data.categories.category}</div></a> : <div className="mr-2 gray800-14 tagBadges mb-2 mt-2">{data.categories.category}</div> }
 
                                 {!data.categories.programmingLanguage || data.categories.programmingLanguage.length <= 0 ? '' : data.categories.programmingLanguage.map((language) => {
-                                    return <a href={'/search?search=' + language}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{language}</div></a>
+                                    if (activeLink===true){
+                                        return <a href={'/search?search=' + language}><div className="mr-2 gray800-14 tagBadges mb-2 mt-2">{language}</div></a>
+                                    }
+                                    else {
+                                        return <div className="mr-2 gray800-14 tagBadges mb-2 mt-2">{language}</div>
+                                    }
                                 })}
 
                                 {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
-                                    return <a href={'/search?search=' + feature}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{feature}</div></a>
+                                    if (activeLink===true){
+                                        return <a href={'/search?search=' + feature}><div className="mr-2 gray800-14 tagBadges mb-2 mt-2">{feature}</div></a>
+                                    }
+                                    else {
+                                        return <div className="mr-2 gray800-14 tagBadges mb-2 mt-2">{feature}</div>
+                                    }
                                 })}
 
                                 {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
-                                    return <a href={'/search?search=' + topic}><div className="mr-2 Gray800-14px tagBadges mb-2 mt-2">{topic}</div></a>
+                                    if (activeLink===true){
+                                        return <a href={'/search?search=' + topic}><div className="mr-2 gray800-14 tagBadges mb-2 mt-2">{topic}</div></a>
+                                    }
+                                    else {
+                                        return <div className="mr-2 gray800-14 tagBadges mb-2 mt-2">{topic}</div>
+                                    }
                                 })}
 
                             </Col>

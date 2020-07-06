@@ -6,7 +6,6 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import LoginModal from '../commonComponents/LoginModal';
 
 import { ReactComponent as ArrowDownSvg } from '../../images/stock.svg';
-import { ReactComponent as ArrowDownSvgWhite } from '../../images/arrowDownWhite.svg';
 
 var baseURL = require('./BaseURL').getURL();
 var cmsURL = require('./BaseURL').getCMSURL();
@@ -59,7 +58,7 @@ class UserMenu extends Component {
   logout = (e) => {
     axios.get(baseURL + '/api/v1/auth/logout')
         .then((res) => {
-            window.location.href = cmsURL;  
+          window.location.reload();
         });
   }
 
@@ -72,25 +71,21 @@ class UserMenu extends Component {
             if (userState[0].loggedIn === true) {
                 return (
                     <Dropdown>
-                        {isLanding ? 
-                         <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                              <span className="landingPageAccountText">{userState[0].name}</span>
-                              <span className="accountDropDownGap"></span>< ArrowDownSvgWhite />
-                          </Dropdown.Toggle>
-                          :
+                        
                           <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                              <span className="pageAccountText">{userState[0].name}</span>
+                              <span className="black-14">{userState[0].name}{userState[0].name}</span>
                               <span className="accountDropDownGap"></span>< ArrowDownSvg />
                           </Dropdown.Toggle>
-                        }
+                        
 
                         <Dropdown.Menu as={CustomMenu}>
-                            <Dropdown.Item href="/account?tab=youraccount">Your Account</Dropdown.Item>
-                            <Dropdown.Item href="/account?tab=messages">Notifications</Dropdown.Item>
-                            <Dropdown.Item href="/account?tab=projects">Project</Dropdown.Item>
-                            <Dropdown.Item href="/account?tab=tools">Tools</Dropdown.Item>
-                            <Dropdown.Item href="/account?tab=reviews">Reviews</Dropdown.Item>
-                            <Dropdown.Item onClick={this.logout}>Logout</Dropdown.Item>
+                            <Dropdown.Item href="/account?tab=youraccount" className="black-14">Your Account</Dropdown.Item>
+                            <Dropdown.Item href="/account?tab=tools" className="black-14">Tools</Dropdown.Item>
+                            <Dropdown.Item href="/account?tab=reviews" className="black-14">Reviews</Dropdown.Item>
+                            <Dropdown.Item href="/account?tab=projects" className="black-14">Projects</Dropdown.Item>
+                            <Dropdown.Item href="/account?tab=dataaccessrequests" className="black-14">Data access requests</Dropdown.Item>
+                            <Dropdown.Item href="/account?tab=usersroles" className="black-14">Users and roles</Dropdown.Item>
+                            <Dropdown.Item onClick={this.logout} className="black-14">Logout</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
                 )

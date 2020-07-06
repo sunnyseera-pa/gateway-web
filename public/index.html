@@ -1,45 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8" />
-    <link rel="shortcut icon" type="image/png" href="%PUBLIC_URL%/favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="shortcut icon" type="image/png" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <meta name="description" content="Web site created using create-react-app" />
 
     <link rel="stylesheet" href="https://use.typekit.net/xom6vjf.css">
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
-
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
     <title>HDRUK Innovation Gateway | Tools and Artefacts Repository</title>
 
     <script>
-      (function(w,a,y,f){
-         w._wayfinder=w._wayfinder||function(){(w._wayfinder.q=w._wayfinder.q||[]).push(arguments)};
-         p={oaDomain:'hdruk.ac.uk',oaAppId:'5614d0c5-9fbf-46a0-8311-baf34df79bdb'};
-         w._wayfinder.settings=p;h=a.getElementsByTagName('head')[0];s=a.createElement('script');s.async=1;
-         q=Object.keys(p).map(function(key){return key+'='+p[key]}).join('&');
-         s.src=y+'v1'+f+"?"+q;h.appendChild(s);}
-       )(window,document,'https://wayfinder.openathens.net/embed/','/loader.js');
+        (function (w, a, y, f) {
+            var openAthensId = '5614d0c5-9fbf-46a0-8311-baf34df79bdb';
+            if (window.location.href.includes('.www.')) openAthensId = '57227ab3-80a2-4bbe-a367-04fe13abbddd'
+            else if (window.location.href.includes('.uat.')) openAthensId = '685d4935-3c71-4716-afdd-9fb92d218ac6'
+            else if (window.location.href.includes('.uatbeta.')) openAthensId = '5b5b4f69-c4a4-472f-92fe-e60678da6b04'
+            else if (window.location.href.includes('.latest.')) openAthensId = '9e3ed49e-7566-4d2c-925e-6a6a86555d79'
+
+            setTimeout(function () {
+                w._wayfinder = w._wayfinder || function () {
+                    (w._wayfinder.q = w._wayfinder.q || []).push(arguments)
+                };
+                p = { oaDomain: 'hdruk.ac.uk', oaAppId: openAthensId };
+                w._wayfinder.settings = p;
+                h = a.getElementsByTagName('head')[0];
+                s = a.createElement('script');
+                s.async = 1;
+                q = Object.keys(p).map(function (key) {
+                    return key + '=' + p[key]
+                }).join('&');
+                s.src = y + 'v1' + f + "?" + q;
+                h.appendChild(s);
+            }, 2000);
+        })(window, document, 'https://wayfinder.openathens.net/embed/', '/loader.js');
     </script>
-  </head>
-  <body>
+</head>
+
+<body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-  </body>
+</body>
+
 </html>

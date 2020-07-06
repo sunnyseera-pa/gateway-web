@@ -6,15 +6,17 @@ class Person extends React.Component {
     constructor(props) {
         super(props)
         this.state.data = props.data;
+        this.state.activeLink = props.activeLink;
     }
 
     // initialize our state
     state = {
-        data: []
-    };
+        data: [],
+        activeLink: true
+    }; 
 
     render() {
-        const { data } = this.state;
+        const { data, activeLink } = this.state;
 
         var countOfProjects = 0;
         var countOfTools = 0;
@@ -30,21 +32,24 @@ class Person extends React.Component {
         return (
             <Row className="mt-2">
                 <Col>
-                    <div className="Rectangle">
+                <div className={this.props.tempRelatedObjectIds && this.props.tempRelatedObjectIds.some(object => object.objectId === data.id) ? "rectangle selectedBorder" : "rectangle"} onClick={() => !activeLink && this.props.doAddToTempRelatedObjects(data.id, data.type) } >   
                         <Row>
                             <Col xs={2} md={1} className="iconHolder">
                                 <div class="avatar-circle">
-                                    <span class="initials"> {data.firstname.charAt(0).toUpperCase()}{data.lastname.charAt(0).toUpperCase()}</span>
+                                    <span class="initials"> {data.firstname ? data.firstname.charAt(0).toUpperCase() : ''}{data.lastname ? data.lastname.charAt(0).toUpperCase() : ''}</span>
                                 </div>
                             </Col>
                             <Col xs={10} md={11}>
                                 <p>
-                                    <span className="Black-16px"><a className="Black-16px" style={{ cursor: 'pointer' }} href={'/person/' + data.id} >{data.firstname} {data.lastname}</a></span>
+                                        {activeLink===true ? 
+                                       <span className="black-16"> <a className="black-16" style={{ cursor: 'pointer' }} href={'/person/' + data.id} >{data.firstname} {data.lastname}</a> </span>
+                                        : <span className="black-16"> {data.firstname} {data.lastname} </span>
+                                        } 
                                     <br />
-                                    <span className="Gray800-14px">{data.bio}</span>
+                                    <span className="gray800-14">{data.bio}</span>
                                 </p>
 
-                                <p className="Gray800-14px">
+                                <p className="gray800-14">
                                     <b>
                                         {(() => {
                                             if (countOfProjects === 0) {

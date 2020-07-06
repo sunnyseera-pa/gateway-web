@@ -50,24 +50,24 @@ class ReviewTitle extends React.Component {
         return (
             <Row className="mt-2">
                 <Col>
-                    <div className="Rectangle">
+                    <div className="rectangle">
                         <Row>
                             <Col xs={2} lg={1} className="iconHolder">
                                 <SVGIcon name="toolicon" width={18} height={18} fill={'#3db28c'} />
                             </Col>
                             <Col xs={10} lg={8}>
                                 <p>
-                                    <span className="Black-16px"><a className="searchHolder" href={'/tool/' + data.tool[0].id} >{data.tool[0].name.substr(0, 75) + (data.tool[0].name.length > 75 ? '...' : '')}</a></span>
+                                    <span className="black-16"><a href={'/tool/' + data.tool[0].id} >{data.tool[0].name.substr(0, 75) + (data.tool[0].name.length > 75 ? '...' : '')}</a></span>
                                 </p>
                             </Col>
                             <Col xs={12} lg={12}>
                                 <p>
-                                    <span className="Gray800-14px">"{data.review}"</span>
+                                    <span className="gray800-14">"{data.review}"</span>
                                 </p>
                             </Col>
                             <Col xs={12} lg={12}>
-                                <span className="Purple-13px">{data.person[0].firstname} {data.person[0].lastname}</span><span className="Gray700-13px"> on {updatedOnDate}</span>
-                                {!data.projectName ? '' : <><span className="reviewTitleGap">·</span><span className="Gray700-13px"> in relation to project </span><span className="Purple-13px">{data.projectName}</span></>}
+                                <span className="purple-13">{data.person[0].firstname} {data.person[0].lastname}</span><span className="gray700-13"> on {updatedOnDate}</span>
+                                {!data.projectName ? '' : <><span className="reviewTitleGap">·</span><span className="gray700-13"> in relation to project </span><span className="purple-13">{data.projectName}</span></>}
                             </Col>
                         </Row>
                     </div>

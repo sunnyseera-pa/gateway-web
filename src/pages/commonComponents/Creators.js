@@ -1,49 +1,30 @@
 
 // /ShowObjects/Title.js
 import React, { Component } from 'react';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import '../../css/hdruk.css';
+import { Row, Col } from 'react-bootstrap';
 import { ReactComponent as PersonPlaceholderSvg } from '../../images/person-placeholder.svg';
+import '../../css/styles.scss';
 
-class Creators extends Component {
-
-  // initialize our state
-  state = {
-    author: []
-  };
-
-  constructor(props) {
-    super(props)
-    this.state.author = props.author;
-  }
-
-  // here is our UI
-  // it is easy to understand their functions when you
-  // see them render into our screen
+class  Creators extends Component {
   render() {
-    const { author } = this.state;
+    const { author } = this.props;
     return (
       <span>
-        <Row className="mt-2">
-          <Col sm={12} lg={12}>
-            <a className="searchHolder" data-testid="href" href={'/person/' + author.id} >
-              <div className="Rectangle">
-
-                <Row className="AuthorCard">
-                  <Col sm={2}>
+        <a data-testid="href" href={'/person/' + author.id} >
+            <div className="authorCardHolder">
+            <Row className="authorCard">
+                <Col sm={2}>
                     <PersonPlaceholderSvg />
-                  </Col>
-                  <Col sm={10} className="text-left ">
-                    <p className="Black-16px" data-testid="name"> {author.firstname} {author.lastname} </p>
-                    <p className="Gray700-13px" data-testid="bio"> {author.bio} </p>
-                  </Col>
-                  <Col sm={2} />
-                </Row>
-              </div>
-            </a>
-          </Col>
-        </Row>
+                </Col>
+                <Col sm={10} className="text-left ">
+                    <span className="black-16" data-testid="name"> {author.firstname} {author.lastname} </span>
+                    <br /> 
+                    <span className="gray700-13" data-testid="bio"> {author.bio} </span>
+                </Col>
+                <Col sm={2} />
+            </Row>
+            </div>
+        </a>
       </span>
     );
   }

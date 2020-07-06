@@ -6,7 +6,7 @@ import Col from 'react-bootstrap/Col';
 import NotFound from '../commonComponents/NotFound';
 import SVGIcon from "../../images/SVGIcon";
 
-var baseURL = require('../commonComponents/BaseURL').getURL();
+var baseURL = require('../commonComponents/BaseURL').getURL(); 
 
 class YourAccount extends React.Component {
 
@@ -68,7 +68,7 @@ class YourAccount extends React.Component {
             <>
                 <Row className="mt-3">
                     <Col>
-                        <span className="Black-16px ml-2">New notifications</span>
+                        <span className="black-16 ml-2">New notifications</span>
                     </Col>
                 </Row>
 
@@ -80,7 +80,7 @@ class YourAccount extends React.Component {
                             }
 
                             return (
-                                <div className="Rectangle mt-1">
+                                <div className="rectangle mt-1">
                                     <Row>
                                         <Col xs={2} lg={1} className="iconHolder">
                                             {(() => {
@@ -93,7 +93,7 @@ class YourAccount extends React.Component {
                                             })()}
                                         </Col>
 
-                                        <Col xs={10} lg={11} className="pl-2 pt-1 Gray800-14px-bold">
+                                        <Col xs={10} lg={11} className="pl-2 pt-1 gray800-14-bold">
                                             {(() => {
                                                 var messageDate = new Date(dat.messageSent);
                                                 

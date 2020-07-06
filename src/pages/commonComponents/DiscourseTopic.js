@@ -30,7 +30,7 @@ class DiscourseTopic extends Component {
           </Col>
         </Row>
         {topic && topic.posts && topic.posts.length ? (
-          <div className='Rectangle'>
+          <div className='rectangle'>
             { topic.posts.map((post, index) => 
             <div>
               <DiscoursePost key={post.id} post={post} />

@@ -2,18 +2,21 @@
 // /ShowObjects/Reviews.js
 import React, { Component, useState } from 'react';
 import axios from 'axios';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import {Row, Col} from 'react-bootstrap';
 import Rating from 'react-rating';
 import { useFormik } from 'formik';
+
 import { ReactComponent as EmptyStarIconSvg } from '../../images/starempty.svg';
 import { ReactComponent as FullStarIconSvg } from '../../images/star.svg';
+
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal'
 import Form from 'react-bootstrap/Form';
 import * as Yup from 'yup';
 import NotFound from './NotFound';
-import Collapse from 'react-bootstrap/Collapse'
+import Collapse from 'react-bootstrap/Collapse';
+
+// import {ReviewButton, ReplyButton} from './ReviewComponents';
 
 var baseURL = require('./BaseURL').getURL();
 
@@ -39,6 +42,7 @@ class Reviews extends Component {
   // see them render into our screen
   render() {
     const { data, userState, reviewData } = this.state;
+
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
     return (
       <div>
@@ -48,20 +52,20 @@ class Reviews extends Component {
           </Col>
         </Row>
 
-        {reviewData.length <= 0 ? <NotFound word="reviews" /> : reviewData.map((review) => {
+        {reviewData.length <= 0 ? <NotFound word="reviews" /> : reviewData.map((review,index) => {
           var updatedDate = new Date(review.date);;
           var updatedOnDate = updatedDate.getDate() + " " + monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
-          return <div>
+          return <div key={index}>
             <Row className="mt-2">
               <Col>
-                <div className="Rectangle">
+                <div className="rectangle">
                   <Row>
                     <Col xs={12} md={12}>
-                      <span className="Gray800-14px">"{review.review}"</span>
+                      <span className="gray800-14">"{review.review}"</span>
                     </Col>
                     <Col xs={6} md={6} className="mt-2">
-                      <span className="text-left Purple-13px">{review.person[0].firstname} {review.person[0].lastname}</span>
-                      <span className="text-left Gray500-13px">  on {updatedOnDate}</span>
+                      <span className="text-left purple-13">{review.person[0].firstname} {review.person[0].lastname}</span>
+                      <span className="text-left gray500-13">  on {updatedOnDate}</span>
                     </Col>
                     <Col xs={6} md={6} className="mb-1 text-right">
                       <Rating emptySymbol={<EmptyStarIconSvg />} fullSymbol={<FullStarIconSvg />} placeholderSymbol={<FullStarIconSvg />} placeholderRating={review.rating} readonly={true} />
@@ -78,14 +82,14 @@ class Reviews extends Component {
               <Row className="mt-2">
                 <Col md={2}></Col>
                 <Col md={10}>
-                  <div className="Rectangle">
+                  <div className="rectangle">
                     <Row>
                       <Col xs={12} md={12}>
-                        <span className="Gray800-14px">"{review.reply}"</span>
+                        <span className="gray800-14">"{review.reply}"</span>
                       </Col>
                       <Col xs={12} md={12} className="mt-2">
-                        <span className="text-left Purple-13px">{review.owner[0].firstname} {review.owner[0].lastname}</span>
-                        <span className="text-left Gray500-13px">  on {updatedOnDate}</span>
+                        <span className="text-left purple-13">{review.owner[0].firstname} {review.owner[0].lastname}</span>
+                        <span className="text-left gray500-13">  on {updatedOnDate}</span>
                       </Col>
                     </Row>
                   </div>
@@ -126,13 +130,13 @@ const ReviewButton = (props) => {
         props.userState[0].loggedIn === true ?
           <>
             {props.data.authors.includes(props.userState[0].id) ? '' :
-              <Button variant="light" id="AddReviewButton" className="mb-1" onClick={handleShow}>
+              <Button variant="light" id="addReviewButton" className="mb-1" onClick={handleShow}>
                 + Add a review
               </Button>
             }
           </>
           :
-          <Button variant="light" id="AddReviewButton" className="mb-1" onClick={showLoginModal}>
+          <Button variant="light" id="addReviewButton" className="mb-1" onClick={showLoginModal}>
             + Add a review
           </Button>
       }
@@ -144,14 +148,14 @@ const ReviewButton = (props) => {
             <Col xs={1} md={1} className="ml-5" />
             <Col xs={11} md={11}>
               <span className="ml-3" />
-              <span className="Black-20px ml-5">Add a review</span>
+              <span className="black-20 ml-5">Add a review</span>
             </Col>
           </Row>
 
           <Row>
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10} >
-              <span class="Gray800-14px"> Reviews help others understand if this tool could be useful to them..</span>
+              <span class="gray800-14"> Reviews help others understand if this tool could be useful to them..</span>
             </Col>
             <Col sm={1} lg={1} />
           </Row>
@@ -212,7 +216,7 @@ const AddReviewForm = (props) => {
         <Col sm={1} lg={1} />
         <Col sm={10} lg={10} >
           <Form onSubmit={formik.handleSubmit}>
-            <Form.Label className="Gray800-14px">Your score</Form.Label>
+            <Form.Label className="gray800-14">Your score</Form.Label>
             <Form.Group className="mb-2">
               <Rating
                 id="rating"
@@ -223,7 +227,7 @@ const AddReviewForm = (props) => {
                 onChange={handleRatingChange} />
             </Form.Group>
 
-            <Form.Label className="Gray800-14px">Is this review related to a specific project?</Form.Label>
+            <Form.Label className="gray800-14">Is this review related to a specific project?</Form.Label>
             <Form.Group className="mb-2 mt-2" style={{ display: "flex" }}>
               <Row>
                 <Col>
@@ -253,26 +257,26 @@ const AddReviewForm = (props) => {
 
             <Collapse in={open}>
               <Form.Group className="pb-2">
-                <Form.Label className="Gray800-14px">Project name</Form.Label>
-                <Form.Control id="projectName" name="projectName" type="text" className={formik.touched.projectName && formik.errors.projectName ? "EmptyFormInput AddFormInput" : "AddFormInput"} value={formik.values.projectName} onChange={formik.handleChange} onBlur={formik.handleBlur} />
-                {formik.touched.projectName && formik.errors.projectName ? <div className="ErrorMessages">{formik.errors.projectName}</div> : null}
+                <Form.Label className="gray800-14">Project name</Form.Label>
+                <Form.Control id="projectName" name="projectName" type="text" className={formik.touched.projectName && formik.errors.projectName ? "emptyFormInput addFormInput" : "addFormInput"} value={formik.values.projectName} onChange={formik.handleChange} onBlur={formik.handleBlur} />
+                {formik.touched.projectName && formik.errors.projectName ? <div className="errorMessages">{formik.errors.projectName}</div> : null}
               </Form.Group>
             </Collapse>
 
             <Form.Group className="pb-2">
-              <Form.Label className="Gray800-14px">Your review</Form.Label>
-              <Form.Text className="Gray700-13px mb-2">What worked or didn't work for you? What was the context? Is there anything you wish you knew before you tried it?</Form.Text>
-              <Form.Control as="textarea" id="review" name="review" type="text" className={formik.touched.review && formik.errors.review ? "EmptyFormInput AddFormInput DescriptionInput" : "AddFormInput DescriptionInput"} value={formik.values.review} onChange={formik.handleChange} onBlur={formik.handleBlur} />
-              {formik.touched.review && formik.errors.review ? <div className="ErrorMessages">{formik.errors.review}</div> : null}
+              <Form.Label className="gray800-14">Your review</Form.Label>
+              <Form.Text className="gray700-13 mb-2">What worked or didn't work for you? What was the context? Is there anything you wish you knew before you tried it?</Form.Text>
+              <Form.Control as="textarea" id="review" name="review" type="text" className={formik.touched.review && formik.errors.review ? "emptyFormInput addFormInput descriptionInput" : "addFormInput descriptionInput"} value={formik.values.review} onChange={formik.handleChange} onBlur={formik.handleBlur} />
+              {formik.touched.review && formik.errors.review ? <div className="errorMessages">{formik.errors.review}</div> : null}
             </Form.Group>
 
             <Row className="mt-3">
               <Col xs={7} lg={7} />
               <Col xs={1} lg={1} className="text-left pr-5">
-                <Button variant="medium" className="GreyCancelButton" onClick={props.handleClose}>Cancel</Button>
+                <Button variant="medium" className="greyCancelButton" onClick={props.handleClose}>Cancel</Button>
               </Col>
               <Col xs={3} lg={3} className="text-right pl-5">
-                <Button variant="primary" type="submit" className="SmallAddButton">Add this review</Button>
+                <Button variant="primary" type="submit" className="smallAddButton">Add this review</Button>
               </Col>
               <Col xs={1} lg={1} />
 
@@ -309,16 +313,16 @@ const ReplyButton = (props) => {
             <Col xs={1} md={1} className="ml-5" />
             <Col xs={11} md={11}>
               <span className="ml-3" />
-              <span className="Black-20px ml-5">Add a reply to review</span>
+              <span className="black-20 ml-5">Add a reply to review</span>
             </Col>
           </Row>
 
           <Row>
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10} >
-              <span className="Gray800-14px">The review</span>
+              <span className="gray800-14">The review</span>
               <br />
-              <span className="Gray800-14px">"{props.review.review}"</span>
+              <span className="gray800-14">"{props.review.review}"</span>
             </Col>
             <Col sm={1} lg={1} />
           </Row>
@@ -361,18 +365,18 @@ const ReplyReviewForm = (props) => {
         <Col sm={10} lg={10} >
           <Form onSubmit={formik.handleSubmit}>
             <Form.Group className="pb-2">
-              <Form.Text className="Gray700-13px">Your reply to the review</Form.Text>
-              <Form.Control as="textarea" id="reply" name="reply" type="text" className={formik.touched.reply && formik.errors.reply ? "EmptyFormInput AddFormInput DescriptionInput" : "AddFormInput DescriptionInput"} value={formik.values.reply} onChange={formik.handleChange} onBlur={formik.handleBlur} />
-              {formik.touched.reply && formik.errors.reply ? <div className="ErrorMessages">{formik.errors.reply}</div> : null}
+              <Form.Text className="gray700-13">Your reply to the review</Form.Text>
+              <Form.Control as="textarea" id="reply" name="reply" type="text" className={formik.touched.reply && formik.errors.reply ? "emptyFormInput addFormInput descriptionInput" : "addFormInput descriptionInput"} value={formik.values.reply} onChange={formik.handleChange} onBlur={formik.handleBlur} />
+              {formik.touched.reply && formik.errors.reply ? <div className="errorMessages">{formik.errors.reply}</div> : null}
             </Form.Group>
 
             <Row className="mt-3">
               <Col xs={7} lg={7} />
               <Col xs={1} lg={1} className="text-left pr-5">
-                <Button variant="medium" className="GreyCancelButton" onClick={props.handleClose}>Cancel</Button>
+                <Button variant="medium" className="greyCancelButton" onClick={props.handleClose}>Cancel</Button>
               </Col>
               <Col xs={3} lg={3} className="text-right pl-5">
-                <Button variant="primary" type="submit" className="SmallAddButton">Add this review</Button>
+                <Button variant="primary" type="submit" className="smallAddButton">Add this review</Button>
               </Col>
               <Col xs={1} lg={1} />
             </Row>

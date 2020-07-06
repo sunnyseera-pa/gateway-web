@@ -1,26 +1,47 @@
 
 import React from 'react';
-import Person from '../src/pages/components/Person';
-import Enzyme, { mount } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import Person from '../src/pages/commonComponents/Person';
+import { personData } from './mocks/dataMock';
 
-Enzyme.configure({ adapter: new Adapter() });
+beforeEach(() => jest.resetModules());
 
-describe('Person', () => {
+describe('<Person /> rendering - no projects', () => {
     it('renders without crashing', () => {
-        var dataPerson = {
-            "tags": [
-              "Tech Director"
-            ],
-            "_id": "5e3bf4231c9d440000e8d4a7",
-            "id": 89522471,
-            "type": "person",
-            "name": "Tony Espley",
-            "description": "A 32bit process in a 64bit world.",
-            "rating": 4,
-            "link": "https://www.paconsulting.com",
-            "likedids": [89522470,89522469,89522468]
-          };
-        //const wrapper = mount(<Person data={dataPerson}/>);
+        const wrapper = shallow(<Person data={personData}/>);
     });
 });
+
+describe('<Person /> rendering with active link', () => {
+    it('renders without crashing', () => {
+        const wrapper = shallow(<Person data={personData} activeLink={ true } />);
+    });
+});
+
+describe('<Person /> rendering with active link, a project and and two tools', () => {
+    personData.objects.push({"type": "project"});
+    personData.objects.push({"type": "tool"});
+
+    it('renders without crashing', () => {
+        const wrapper = shallow(<Person data={personData} activeLink={ false }/>);
+    });
+});
+
+/*
+
+describe('<Person /> rendering with active link and two projects', () => {
+    personData.objects.push({"type": "project"})
+
+    it('renders without crashing', () => {
+        const wrapper = shallow(<Person data={personData} />);
+    });
+});
+
+describe('<Person /> rendering with active link and two projects', () => {
+    personData.objects = [];
+
+    it('renders without crashing', () => {
+        const wrapper = shallow(<Person data={personData} />);
+    });
+});
+
+*/
