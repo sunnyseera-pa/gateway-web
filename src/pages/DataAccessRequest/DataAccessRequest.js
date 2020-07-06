@@ -13,6 +13,7 @@ import Loading from '../commonComponents/Loading';
 import ToolKit from './components/Toolkit';
 import NavItem from './components/NavItem';
 import DarValidation from '../../utils/DarValidation.util';
+import {formSchema} from './formSchema';
 import {classSchema} from './classSchema';
 import { baseURL } from '../../configs/url.config';
 import 'react-tabs/style/react-tabs.css';
@@ -388,18 +389,12 @@ class DataAccessRequest extends Component {
                                 </div>
                                 { activePanelId === "mrcHealthDataToolkit" || activePanelId === "adviceFromPublisher" ?
                                     <Fragment>
-                                        <div className="pt-3 pl-3 pb-3 gray800-14 white-bg">
-                                            <Col md={12}>
-                                                <Row className="black-bold-17">
-                                                    MRC Health Data Access toolkit
-                                            </Row>
-                                                <Row className="gray800-15 mt-2">
-                                                    This toolkit aims to help you understand what approvals are necessary for your research.
-                                            </Row>
-                                                <Row className="mr-2 mt-3 mb-3">
-                                                    <ToolKit />
-                                                </Row>
-                                            </Col>
+                                        <div className="col-md-12 gray800-14 white-bg">
+                                            <h3 className="black-bold-17">MRC Health Data Access toolkit</h3>
+                                                <p className="gray800-15 mt-2">This toolkit aims to help you understand what approvals are necessary for your research.</p>
+                                                    <div>
+                                                        <ToolKit />
+                                                    </div>
                                         </div>
                                         <div className="pt-3 pl-3 pb-3 gray800-14 white-bg">
                                             <Col md={12}>
@@ -407,8 +402,16 @@ class DataAccessRequest extends Component {
                                                     Advice from {publisher}
                                             </Row>
                                                 <Row className="gray800-15 mt-2">
-                                                    We highly recommend getting in touch with us as early as possible. We may be able to help you shape the various approvals, such as ethics, minimising the risk of having to apply more than once.
-                                            </Row>
+                                                    <p>We highly recommend getting in touch with us as early as possible. We may be able to help you shape the various approvals, such as ethics, minimising the risk of having to apply more than once.</p>
+                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut at dui ac leo hendrerit consectetur eget quis quam. Maecenas eget tortor ut lorem mollis elementum. Nunc quis scelerisque libero. 
+                                                        Suspendisse a sodales justo, vitae tristique urna. Suspendisse nec sem et neque gravida cursus. Praesent ornare vitae nunc et rutrum. Interdum et malesuada 
+                                                        fames ac ante ipsum primis in faucibus. Quisque bibendum scelerisque odio quis molestie. Nulla semper justo ut elementum volutpat. In lobortis tellus 
+                                                        sit amet sem tempus porttitor.</p>  
+                                                        
+                                                        <p>Duis ex nibh, condimentum nec orci quis, volutpat vehicula est. Phasellus tempor tincidunt massa, vel sodales mi 
+                                                        tempor sit amet. Donec vestibulum euismod neque, et posuere tellus gravida nec. Phasellus placerat nulla ullamcorper quam tristique, placerat 
+                                                        fermentum ante condimentum. Fusce pellentesque ipsum ut urna aliquam vulputate.</p>
+                                                </Row>
                                             </Col>
                                         </div>
                                     </Fragment>
