@@ -1,0 +1,20 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.16.0
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-567746:
+    - lodash:
+        patched: '2020-07-06T13:53:41.596Z'
+    - node-sass > lodash:
+        patched: '2020-07-06T13:53:41.596Z'
+    - Winterfell > lodash:
+        patched: '2020-07-06T13:53:41.596Z'
+    - '@rjsf/core > json-schema-merge-allof > lodash':
+        patched: '2020-07-06T13:53:41.596Z'
+    - node-sass > sass-graph > lodash:
+        patched: '2020-07-06T13:53:41.596Z'
+    - '@rjsf/core > json-schema-merge-allof > json-schema-compare > lodash':
+        patched: '2020-07-06T13:53:41.596Z'
+    - node-sass > gaze > globule > lodash:
+        patched: '2020-07-06T13:53:41.596Z'
