@@ -311,11 +311,11 @@ class ToolDetail extends Component {
                                     </Col>
                                 </Row>
                                 <Row className="mt-3">
-                                    {data.persons.map(author =>
-                                        <Col sm={6} lg={6}>
-                                            <Creators author={author} />
+                                    {data.persons.map((author) =>
+                                        <Col sm={6} key={author.id}>
+                                            <Creators key={author.id} author={author} />
                                         </Col>
-                                        )}
+                                    )} 
                                 </Row>
                             </div>
                         </Col>

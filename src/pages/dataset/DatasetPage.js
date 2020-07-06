@@ -1,16 +1,14 @@
 
 // /ShowObjects.js
-import React, { Component, Fragment, useState, useRef } from 'react';
+import React, { Component, useState, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Redirect } from 'react-router-dom';
-import { Row, Col, Container, Tabs, Tab, Navbar, Nav, Button, Alert, Tooltip, Overlay, OverlayTrigger } from 'react-bootstrap/';
+import { Row, Col, Container, Tabs, Tab, Button, Alert, Tooltip, Overlay } from 'react-bootstrap/';
 import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading'
 import RelatedObject from '../commonComponents/RelatedObject';
 import SearchBar from '../commonComponents/SearchBar';
-import LoginModal from '../commonComponents/LoginModal';
 import SVGIcon from '../../images/SVGIcon';
 import { ReactComponent as MetadataBronze } from '../../images/bronze.svg';
 import { ReactComponent as MetadataSilver } from '../../images/silver.svg';
@@ -25,7 +23,6 @@ import Linkify from "react-linkify";
 import 'react-tabs/style/react-tabs.css';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
-var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
 
 class DatasetDetail extends Component {
 
@@ -129,7 +126,7 @@ class DatasetDetail extends Component {
 
 
   render() {
-    const { searchString, data, datarequest, isLoading, userState, alert=null } = this.state;
+    const { searchString, data, isLoading, userState, alert=null } = this.state;
 
     if (isLoading) {
       return <Container><Loading /></Container>;
@@ -141,10 +138,13 @@ class DatasetDetail extends Component {
 
 
     var keywords = (data.keywords ? data.keywords.split(",") : '');
+    
+    function Metadata() {
+        const [show, setShow] = useState(false);
+        const target = useRef(null);
 
-    function renderTooltip(props) {
         var score = ''
-        
+            
         if (data.quality.quality_score <= 50) {
             score = 'Not rated'
         }
@@ -161,51 +161,7 @@ class DatasetDetail extends Component {
             score = "Platinum";
         }
 
-        return (
-          <Tooltip id="metadata-tooltip" {...props}>
-            Metadata quality score: {score}
-            <br /><br />
-            The score relates to the amount of information available about the dataset, 
-            and not to the quality of the actual datasets. 
-            <br /><br />
-            Click to read more about how the score is calculated.
-            <br /><br />
-            {data.quality.completeness_percent} Completeness %
-            <br />
-            {data.quality.weighted_completeness_percent} Weighted completeness %
-            <br />
-            {data.quality.error_percent} Error %
-            <br />
-            {data.quality.weighted_error_percent} Weighted error %
-          </Tooltip>
-        );
-      }
-
-    
-      
-  function Metadata() {
-    const [show, setShow] = useState(false);
-    const target = useRef(null);
-
-    var score = ''
-        
-    if (data.quality.quality_score <= 50) {
-        score = 'Not rated'
-    }
-    else if (data.quality.quality_score <= 70) {
-        score = "Bronze";
-    } 
-    else if (data.quality.quality_score <= 80) {
-        score = "Silver";
-    } 
-    else if (data.quality.quality_score <= 90) {
-        score = "Gold";
-    } 
-    else if (data.quality.quality_score > 90) {
-        score = "Platinum";
-    }
-
-    return (<>
+        return (<>
                 <div className="text-center">
                     {(() => {
                         if (typeof data.quality.quality_score === 'undefined') return <></>
@@ -222,7 +178,7 @@ class DatasetDetail extends Component {
                             return (<div ref={target} onClick={() => setShow(!show)} style={{ cursor: 'pointer' }} ><div style={{lineHeight: 1}}><MetadataGold className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Gold metadata</span></div></div>)
                         } 
                         else if (data.quality.quality_score > 90) {
-                            return (<div ref={target} onClick={() => setShow(!show)} style={{ cursor: 'pointer' }} ><div style={{lineHeight: 1}}><MetadataGold className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Gold metadata</span></div></div>)
+                            return (<div ref={target} onClick={() => setShow(!show)} style={{ cursor: 'pointer' }} ><div style={{lineHeight: 1}}><MetadataPlatinum className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Platinum metadata</span></div></div>)
                         }
                     })()} 
                 </div>

@@ -270,13 +270,11 @@ class ProjectDetail extends Component {
                                         </Col>
                                     </Row>
                                     <Row className="mt-3">
-                                        <Col sm={12} className="gray800-14">
-                                            {data.persons.map((author) =>
-                                                <Col sm={6} key={author.id}>
-                                                    <Creators key={author.id} author={author} />
-                                                </Col>
-                                            )}
-                                        </Col>
+                                        {data.persons.map((author) =>
+                                            <Col sm={6} key={author.id}>
+                                                <Creators key={author.id} author={author} />
+                                            </Col>
+                                        )} 
                                     </Row>
                                 </div>
                             </Col>
