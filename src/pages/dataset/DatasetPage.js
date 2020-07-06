@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
-import { Row, Col, Container, Tabs, Tab, Navbar, Nav, Button, Alert, Tooltip, OverlayTrigger } from 'react-bootstrap/';
+import { Row, Col, Container, Tabs, Tab, Navbar, Nav, Button, Alert, Tooltip, Overlay, OverlayTrigger } from 'react-bootstrap/';
 import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading'
 import RelatedObject from '../commonComponents/RelatedObject';
@@ -187,34 +187,69 @@ class DatasetDetail extends Component {
     const [show, setShow] = useState(false);
     const target = useRef(null);
 
-    return (
-        <OverlayTrigger
-            placement="bottom"
-            delay={{ show: 250, hide: 400 }}
-            overlay={renderTooltip}
-        >
-            <div className="text-center">
-                {(() => {
-                    if (data.quality.quality_score <= 50) {
-                        return (<><div style={{lineHeight: 1}}><MetadataNotRated className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Not rated</span></div></>)
-                    }
-                    else if (data.quality.quality_score <= 70) {
-                        return (<><div style={{lineHeight: 1}}><MetadataBronze className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Bronze metadata</span></div></>)
-                    } 
-                    else if (data.quality.quality_score <= 80) {
-                        return (<><div style={{lineHeight: 1}}><MetadataSilver className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Silver metadata</span></div></>)
-                    } 
-                    else if (data.quality.quality_score <= 90) {
-                        return (<><div style={{lineHeight: 1}}><MetadataGold className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Gold metadata</span></div></>)
-                    } 
-                    else if (data.quality.quality_score > 90) {
-                        return (<><div style={{lineHeight: 1}}><MetadataGold className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Gold metadata</span></div></>)
-                    }
-                })()} 
-            </div>
-        </OverlayTrigger>
-    )
-  }
+    var score = ''
+        
+    if (data.quality.quality_score <= 50) {
+        score = 'Not rated'
+    }
+    else if (data.quality.quality_score <= 70) {
+        score = "Bronze";
+    } 
+    else if (data.quality.quality_score <= 80) {
+        score = "Silver";
+    } 
+    else if (data.quality.quality_score <= 90) {
+        score = "Gold";
+    } 
+    else if (data.quality.quality_score > 90) {
+        score = "Platinum";
+    }
+
+    return (<>
+                <div className="text-center">
+                    {(() => {
+                        if (typeof data.quality.quality_score === 'undefined') return <></>
+                        else if (data.quality.quality_score <= 50) {
+                            return (<div ref={target} onClick={() => setShow(!show)} style={{ cursor: 'pointer' }} ><div style={{lineHeight: 1}}><MetadataNotRated className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Not rated</span></div></div>)
+                        }
+                        else if (data.quality.quality_score <= 70) {
+                            return (<div ref={target} onClick={() => setShow(!show)} style={{ cursor: 'pointer' }} ><div style={{lineHeight: 1}}><MetadataBronze className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Bronze metadata</span></div></div>)
+                        } 
+                        else if (data.quality.quality_score <= 80) {
+                            return (<div ref={target} onClick={() => setShow(!show)} style={{ cursor: 'pointer' }} ><div style={{lineHeight: 1}}><MetadataSilver className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Silver metadata</span></div></div>)
+                        } 
+                        else if (data.quality.quality_score <= 90) {
+                            return (<div ref={target} onClick={() => setShow(!show)} style={{ cursor: 'pointer' }} ><div style={{lineHeight: 1}}><MetadataGold className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Gold metadata</span></div></div>)
+                        } 
+                        else if (data.quality.quality_score > 90) {
+                            return (<div ref={target} onClick={() => setShow(!show)} style={{ cursor: 'pointer' }} ><div style={{lineHeight: 1}}><MetadataGold className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Gold metadata</span></div></div>)
+                        }
+                    })()} 
+                </div>
+                
+                <Overlay target={target.current} show={show} placement="bottom">
+                    {(props) => (
+                    <Tooltip className="metadataOverlay" {...props}>
+                        Metadata quality score: {score}
+                        <br /><br />
+                        The score relates to the amount of information available about the dataset, 
+                        and not to the quality of the actual datasets. 
+                        <br /><br />
+                        <a href="https://github.com/HDRUK/datasets#about-the-reports" target="_blank" className="white-12">Click to read more about how the score is calculated.</a>
+                        <br /><br />
+                        {data.quality.completeness_percent} Completeness %
+                        <br />
+                        {data.quality.weighted_completeness_percent} Weighted completeness %
+                        <br />
+                        {data.quality.error_percent} Error %
+                        <br />
+                        {data.quality.weighted_error_percent} Weighted error %
+                    </Tooltip>
+                    )}
+                </Overlay>
+            </>
+        )
+    }
 
     return (
         <div>
