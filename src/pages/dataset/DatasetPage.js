@@ -31,7 +31,7 @@ class DatasetDetail extends Component {
   state = {
     id: '',
     data: [],
-    projectsData: [],
+    relatedObjects: [],
     datarequest: [],
     DBData: [],
     activeKey: false,
@@ -84,8 +84,9 @@ class DatasetDetail extends Component {
     axios.get(baseURL + '/api/v1/datasets/relatedobjects/' + this.props.match.params.datasetID)
       .then((res) => {
         this.setState({
-          projectsData: res.data.data
+            relatedObjects: res.data.data
         })
+        
       })
   };
 
@@ -127,14 +128,14 @@ class DatasetDetail extends Component {
 
 
   render() {
-    const { searchString, data, isLoading, userState, alert=null } = this.state;
+    const { searchString, data, isLoading, userState, alert=null, relatedObjects } = this.state;
 
     if (isLoading) {
       return <Container><Loading /></Container>;
     }
 
-    if (data.relatedObjects === null || typeof data.relatedObjects === 'undefined') {
-        data.relatedObjects = [];
+    if (relatedObjects === null || typeof relatedObjects === 'undefined') {
+        relatedObjects = [];
     }
 
     var keywords = (data.keywords ? data.keywords.split(",") : '');
@@ -419,8 +420,8 @@ class DatasetDetail extends Component {
                                         </Col>
                                     </Row>
                                 </Tab>
-                                <Tab eventKey="Projects" title={'Related resources (' + data.relatedObjects.length + ')'}>
-                                    {data.relatedObjects.length <= 0 ? <NotFound word="related resources" /> : data.relatedObjects.map(object => <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />)}
+                                <Tab eventKey="Projects" title={'Related resources (' + relatedObjects.length + ')'}>
+                                    {relatedObjects.length <= 0 ? <NotFound word="related resources" /> : relatedObjects.map(object => <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />)}
                                 </Tab>
                             </Tabs>
                         </div>

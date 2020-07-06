@@ -299,7 +299,7 @@ class RelatedObject extends React.Component {
                                         </Col>
                                         <Col sm={12} lg={12} className="pt-3">
                                             <span className="paperBadge mr-2">
-                                                <SVGIcon name="newestprojecticon" fill={'#ffffff'} className="badgeSvg mr-2"  viewBox="-2 -2 22 22"/>
+                                                <SVGIcon name="newprojecticon" fill={'#3c3c3b'} className="badgeSvg mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Paper</span> 
                                             </span>
                                             {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
