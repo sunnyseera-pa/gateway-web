@@ -311,11 +311,11 @@ class ToolDetail extends Component {
                                     </Col>
                                 </Row>
                                 <Row className="mt-3">
-                                    {data.persons.map(author =>
-                                        <Col sm={6} lg={6}>
-                                            <Creators author={author} />
+                                    {data.persons.map((author) =>
+                                        <Col sm={6} key={author.id}>
+                                            <Creators key={author.id} author={author} />
                                         </Col>
-                                        )}
+                                    )} 
                                 </Row>
                             </div>
                         </Col>
@@ -335,7 +335,7 @@ class ToolDetail extends Component {
         </Container>
         {!userState[0].loggedIn ? '' :
             <div className="actionBar">
-                <Button variant='white' href={'/paper/edit/' + data.id} className="TechDetailButton mr-2" >Edit</Button>
+                <Button variant='white' href={'/paper/edit/' + data.id} className="techDetailButton mr-2" >Edit</Button>
             </div>
         }
       </div>

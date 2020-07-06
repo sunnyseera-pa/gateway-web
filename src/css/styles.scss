@@ -832,8 +832,13 @@ textarea:focus {
   text-align: center;
 }
 
+.authorCardHolder {
+    padding: 0px 15px;
+}
 .authorCard {
   height: 80px;
+  padding:10px;
+  border: 1px solid $gray-300;
 }
 
 #underLinedLink {

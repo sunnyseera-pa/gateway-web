@@ -270,13 +270,11 @@ class ProjectDetail extends Component {
                                         </Col>
                                     </Row>
                                     <Row className="mt-3">
-                                        <Col sm={12} className="gray800-14">
-                                            {data.persons.map((author) =>
-                                                <Col sm={6} key={author.id}>
-                                                    <Creators key={author.id} author={author} />
-                                                </Col>
-                                            )}
-                                        </Col>
+                                        {data.persons.map((author) =>
+                                            <Col sm={6} key={author.id}>
+                                                <Creators key={author.id} author={author} />
+                                            </Col>
+                                        )} 
                                     </Row>
                                 </div>
                             </Col>
@@ -293,7 +291,7 @@ class ProjectDetail extends Component {
         </Container>
         {!userState[0].loggedIn ? '' :
             <div className="actionBar">
-                <Button variant='white' href={'/project/edit/' + data.id} className="TechDetailButton mr-2" >Edit</Button>
+                <Button variant='white' href={'/project/edit/' + data.id} className="techDetailButton mr-2" >Edit</Button>
             </div>
         }   
       </div>
