@@ -224,7 +224,7 @@ class ToolDetail extends Component {
 
                             <Row className="mt-2">
                                 <Col xs={12}>
-                                    <span className="   ">
+                                    <span className='gray800-14'>
                                         {data.counter === undefined ? 1 : data.counter + 1}
                                         {data.counter === undefined ? ' view' : ' views'}
                                     </span>

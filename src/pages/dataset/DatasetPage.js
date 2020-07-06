@@ -144,21 +144,23 @@ class DatasetDetail extends Component {
         const target = useRef(null);
 
         var score = ''
-            
-        if (data.quality.quality_score <= 50) {
-            score = 'Not rated'
-        }
-        else if (data.quality.quality_score <= 70) {
-            score = "Bronze";
-        } 
-        else if (data.quality.quality_score <= 80) {
-            score = "Silver";
-        } 
-        else if (data.quality.quality_score <= 90) {
-            score = "Gold";
-        } 
-        else if (data.quality.quality_score > 90) {
-            score = "Platinum";
+        
+        if (typeof data.quality.quality_score !== 'undefined') {
+            if (data.quality.quality_score <= 50) {
+                score = 'Not rated'
+            }
+            else if (data.quality.quality_score <= 70) {
+                score = "Bronze";
+            } 
+            else if (data.quality.quality_score <= 80) {
+                score = "Silver";
+            } 
+            else if (data.quality.quality_score <= 90) {
+                score = "Gold";
+            } 
+            else if (data.quality.quality_score > 90) {
+                score = "Platinum";
+            }
         }
 
         return (<>
