@@ -23,6 +23,7 @@ import Linkify from "react-linkify";
 import 'react-tabs/style/react-tabs.css';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
+var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
 
 class DatasetDetail extends Component {
 
@@ -135,7 +136,6 @@ class DatasetDetail extends Component {
     if (data.relatedObjects === null || typeof data.relatedObjects === 'undefined') {
         data.relatedObjects = [];
     }
-
 
     var keywords = (data.keywords ? data.keywords.split(",") : '');
     
@@ -256,8 +256,6 @@ class DatasetDetail extends Component {
                         <div>
                             <Tabs className='tabsBackground gray700-13'>
                                 <Tab eventKey="About" title={'About'}>
-                                    {/* <About data={data} /> */}
-
                                     <Row className="mt-2">
                                         <Col sm={12}>
                                             <div className="rectangle">

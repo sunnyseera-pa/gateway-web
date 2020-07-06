@@ -14,13 +14,14 @@ import Loading from '../commonComponents/Loading'
 import Creators from '../commonComponents/Creators';
 import ProjectTitle from './components/ProjectTitle';
 import SVGIcon from '../../images/SVGIcon';
+import DiscourseTopic from '../commonComponents/DiscourseTopic';
+
 
 // import ReactGA from 'react-ga'; 
 import {PageView, initGA} from '../../tracking';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
-
 
 class ProjectDetail extends Component {
   // initialize our state
@@ -36,7 +37,8 @@ class ProjectDetail extends Component {
       name: null
     }],
     projectAdded: false,
-    projectEdited: false
+    projectEdited: false,
+    discourseTopic: null
   };
 
   constructor(props) {
@@ -70,6 +72,7 @@ class ProjectDetail extends Component {
       .then((res) => {
         this.setState({
           data: res.data.data[0],
+          discourseTopic: res.data.discourseTopic,
           isLoading: false
         });
       })
@@ -88,7 +91,7 @@ class ProjectDetail extends Component {
   }
 
   render() {
-    const { searchString, data, isLoading, projectAdded, projectEdited, userState } = this.state;
+    const { searchString, data, isLoading, projectAdded, projectEdited, userState, discourseTopic } = this.state;
 
     if (isLoading) {
       return <Container><Loading /></Container>;
@@ -280,6 +283,9 @@ class ProjectDetail extends Component {
                             </Col>
                         </Row>
                   </Tab>
+                  <Tab eventKey="Collaboration" title={`Discussion (${discourseTopic && discourseTopic.posts ? discourseTopic.posts.length : 0})`}>
+                    <DiscourseTopic topic={discourseTopic} toolId={data.id} userState={userState} />
+                  </Tab>
                   <Tab eventKey="Projects" title={'Related resources (' + data.relatedObjects.length + ')'}>
                     {data.relatedObjects.length <= 0 ? <NotFound word="related resources" /> : data.relatedObjects.map(object => <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />)}
                   </Tab>
@@ -289,6 +295,7 @@ class ProjectDetail extends Component {
             <Col sm={1} lg={1} />
           </Row>
         </Container>
+
         {!userState[0].loggedIn ? '' :
             <div className="actionBar">
                 <Button variant='white' href={'/project/edit/' + data.id} className="techDetailButton mr-2" >Edit</Button>
