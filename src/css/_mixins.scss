@@ -13,7 +13,7 @@
 /*
 Example
     .dark-14 {
-        @include font-source(14px, $indigo, 500);
+        @include font-source(14px, $indigo, 500, false, 0.5);
     }
 */
 @mixin font-source($size: false, $colour: false, $weight: false,  $lh: false, $opacity: false) {
@@ -58,49 +58,6 @@ $breakpoints: (
         @media only screen and (#{$type}-width: $width) {
             @content;
         }
-    }
-}
-
-.collectionTitleText{
-    @include mq('tablet-wide',max){
-        font-size: 24px !important;
-    }
-}
-
-.collectionTitleCard{
-    @include mq('tablet-wide',max){
-        padding-left: 8% !important;
-    }
-    @include mq('tablet',max){
-        padding-left: 15% !important;
-    }
-    @include mq('phablet',max){
-        padding-left: 5% !important;
-    }
-    @include mq('phone-wide',max){
-        padding-left: 15% !important;
-    }
-    @include mq('phone',max){
-        padding-left: 25% !important;
-    }
-}
-
-.collectionDate{
-    @include mq('tablet-wide',max){
-        max-width: 100% !important;
-        flex: 0 0 100% !important;
-    }
-}
-
-.logoWidth{
-    @include mq('tablet-small', max){
-        width: 20% !important;
-    }
-}
-
-.titleWidth{
-    @include mq('tablet-small', max){
-        width: 80% !important;
     }
 }
 

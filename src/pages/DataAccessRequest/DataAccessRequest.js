@@ -1,6 +1,6 @@
 
 
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Container, Row, Col, Button, Tabs, Tab } from 'react-bootstrap';
 import Winterfell from 'winterfell';
 import _ from 'lodash';
@@ -373,60 +373,64 @@ class DataAccessRequest extends Component {
                             </div>
                         ))}
                     </Col>
-                    <Col md={7} className="flexColumn">
-                        <div style={{ backgroundColor: "#ffffff" }} className="dar__header">
-                            {[...this.state.schema.pages].map((item, idx) => (
-                                <div >
-                                    <p className="black-20-semibold mb-0">{item.active ? item.title : ""}</p>
-                                    <p className="gray800-14">{item.active ? item.description : ""}</p>
+                    <Col md={10} className="flexColumn">
+                        <Row>
+                            <Col sm={7} md={8} className="pad-1">
+                                <div style={{ backgroundColor: "#ffffff" }} className="dar__header">
+                                    {[...this.state.schema.pages].map((item) => (
+                                        item.active ?
+                                            <Fragment>
+                                                <p className="black-20-semibold mb-0">{item.active ? item.title : ""}</p>
+                                                <p className="gray800-14">{item.active ? item.description : ""}</p>
+                                            </Fragment>
+                                        : ''
+                                    ))}
                                 </div>
-                            ))}
-                        </div>
-                        { activePanelId === "mrcHealthDataToolkit" || activePanelId === "adviceFromPublisher" ?
-                            <div>
-                                <div className="pt-3 pl-3 pb-3 gray800-14 white-bg">
-                                    <Col md={12}>
-                                        <Row className="black-bold-17">
-                                            MRC Health Data Access toolkit
-                                    </Row>
-                                        <Row className="gray800-15 mt-2">
-                                            This toolkit aims to help you understand what approvals are necessary for your research.
-                                    </Row>
-                                        <Row className="mr-2 mt-3 mb-3">
-                                            <ToolKit />
-                                        </Row>
-                                    </Col>
-                                </div>
-                                <div className="pt-3 pl-3 pb-3 gray800-14 white-bg">
-                                    <Col md={12}>
-                                        <Row className="black-bold-17">
-                                            Advice from {publisher}
-                                    </Row>
-                                        <Row className="gray800-15 mt-2">
-                                            We highly recommend getting in touch with us as early as possible. We may be able to help you shape the various approvals, such as ethics, minimising the risk of having to apply more than once.
-                                    </Row>
-                                    </Col>
-                                </div>
-                            </div>
-                            : 
-                                <div className="dar__questions gray800-14" style={{ backgroundColor: "#ffffff" }} >
-                                    <Col md={11}>
-                                        <Winterfell
-                                            schema={this.state.schema}
-                                            questionAnswers={this.state.questionAnswers}
-                                            panelId={this.state.activePanelId}
-                                            disableSubmit={true}
-                                            validationErrors={validationErrors}
-                                            onQuestionFocus={this.onQuestionFocus}
-                                            onUpdate={this.onFormUpdate}
-                                            onSubmit={this.onFormSubmit}
-                                            onRender={this.onFormRender}
-                                        />
-                                    </Col>
-                                </div>
-                            }
-                    </Col>
-                    <Col md={3} className="darTabs">
+                                { activePanelId === "mrcHealthDataToolkit" || activePanelId === "adviceFromPublisher" ?
+                                    <Fragment>
+                                        <div className="pt-3 pl-3 pb-3 gray800-14 white-bg">
+                                            <Col md={12}>
+                                                <Row className="black-bold-17">
+                                                    MRC Health Data Access toolkit
+                                            </Row>
+                                                <Row className="gray800-15 mt-2">
+                                                    This toolkit aims to help you understand what approvals are necessary for your research.
+                                            </Row>
+                                                <Row className="mr-2 mt-3 mb-3">
+                                                    <ToolKit />
+                                                </Row>
+                                            </Col>
+                                        </div>
+                                        <div className="pt-3 pl-3 pb-3 gray800-14 white-bg">
+                                            <Col md={12}>
+                                                <Row className="black-bold-17">
+                                                    Advice from {publisher}
+                                            </Row>
+                                                <Row className="gray800-15 mt-2">
+                                                    We highly recommend getting in touch with us as early as possible. We may be able to help you shape the various approvals, such as ethics, minimising the risk of having to apply more than once.
+                                            </Row>
+                                            </Col>
+                                        </div>
+                                    </Fragment>
+                                    : 
+                                        <div className="dar__questions gray800-14" style={{ backgroundColor: "#ffffff" }} >
+                                            <Col md={12}>
+                                                <Winterfell
+                                                    schema={this.state.schema}
+                                                    questionAnswers={this.state.questionAnswers}
+                                                    panelId={this.state.activePanelId}
+                                                    disableSubmit={true}
+                                                    validationErrors={validationErrors}
+                                                    onQuestionFocus={this.onQuestionFocus}
+                                                    onUpdate={this.onFormUpdate}
+                                                    onSubmit={this.onFormSubmit}
+                                                    onRender={this.onFormRender}
+                                                />
+                                            </Col>
+                                        </div>
+                                    }
+                            </Col>
+                            <Col sm={5} md={4} className="darTabs pr-0 pl-0">
                             <Tabs className='tabsBackground gray700-14' activeKey={this.state.key} onSelect={this.handleSelect}>
                                 <Tab eventKey="guidance" title="Guidance">
                                     <div className="darTab">
@@ -467,7 +471,11 @@ class DataAccessRequest extends Component {
                                     </div>
                                 </Tab>
                             </Tabs>
+                            </Col>
+                        </Row>
+                        
                     </Col>
+                    
                     <div className="darFooter">
                         <Col md={6} className="mt-4">
                             <span className="gray800-14">{totalQuestions}</span>
