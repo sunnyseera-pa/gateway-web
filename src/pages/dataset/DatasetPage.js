@@ -57,7 +57,7 @@ class DatasetDetail extends Component {
     this.getRelatedProjects();
     this.checkAlerts();
     initGA('UA-166025838-1');
-    PageView();
+    PageView(); 
   }
 
 

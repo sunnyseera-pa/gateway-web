@@ -330,17 +330,18 @@ class SearchBar extends React.Component {
                                 }
                             })()}
 
-                                <div className="navBarLoginSpacing">
+                                <div className="navBarLoginSpacing"> 
                                     {(() => {
                                         if (userState[0].loggedIn === true) {
                                             return (
-                                                <Dropdown>
+                                                <Dropdown> 
                                                     <Dropdown.Toggle as={CustomToggle}>
                                                         <span className="black-14">{userState[0].name}</span>
                                                         <span className="accountDropDownGap"></span>< ArrowDownSvg />
                                                     </Dropdown.Toggle>
-
+ 
                                                     <Dropdown.Menu as={CustomMenu} className="desktopLoginMenu">
+                                                        <Dropdown.Item href="/account?tab=dashboard" className="black-14">Dashboard</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=youraccount" className="black-14">Your Account</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=tools" className="black-14">Tools</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=reviews" className="black-14">Reviews</Dropdown.Item>
@@ -386,6 +387,7 @@ class SearchBar extends React.Component {
                                             if (userState[0].loggedIn === true) {
                                                 return (
                                                     <>
+                                                        <Dropdown.Item href="/account?tab=dashboard" className="black-14">Dashboard</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=youraccount" className="black-14">Your Account</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=tools" className="black-14">Tools</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=reviews" className="black-14">Reviews</Dropdown.Item>

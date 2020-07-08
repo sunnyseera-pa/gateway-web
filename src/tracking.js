@@ -1,5 +1,5 @@
 import ReactGA from "react-ga";
-
+ 
 var disableGA = false;
 
 export const initGA = (trackingID) => {   
