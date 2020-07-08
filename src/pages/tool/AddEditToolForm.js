@@ -59,13 +59,13 @@ const AddEditToolForm = (props) => {
             values.relatedObjects = props.relatedObjects
             values.toolCreator = props.userState[0];
             if (props.isEdit) {
-                axios.put(baseURL + '/api/v1/tools/edit', values) 
+                axios.put(baseURL + '/api/v1/tools/' + props.data.id, values) 
                     .then((res) => {
                         window.location.href = window.location.search + '/tool/' + props.data.id + '/?toolEdited=true';
                     });
             }
             else {
-                axios.post(baseURL + '/api/v1/tools/add', values) 
+                axios.post(baseURL + '/api/v1/tools', values) 
                     .then((res) => {
                         window.location.href = window.location.search + '/tool/' + res.data.id + '/?toolAdded=true';
                     });
