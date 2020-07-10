@@ -220,7 +220,7 @@ class ToolDetail extends Component {
                                         <span className="gray800-14-bold">Details</span>
                                     </Col>
                                 </Row>
-                                <Row className="mt-3">
+                                <Row className="mt-2">
                                     <Col sm={2}>
                                         <span className="gray800-14">URL</span>
                                     </Col>
@@ -230,7 +230,7 @@ class ToolDetail extends Component {
                                         </a>
                                     </Col>
                                 </Row>
-                                <Row className="mt-3">
+                                <Row className="mt-2">
                                     <Col sm={2}>
                                         <span className="gray800-14">Journal</span>
                                     </Col>
@@ -238,7 +238,7 @@ class ToolDetail extends Component {
                                         <span className="gray800-14">{data.journal} {data.journalYear}</span>
                                     </Col>
                                 </Row>
-                                <Row className="mt-3">
+                                <Row className="mt-2">
                                     <Col sm={2}>
                                         <span className="gray800-14">Last update</span>
                                     </Col>
@@ -246,19 +246,15 @@ class ToolDetail extends Component {
                                         <span className="gray800-14">{moment(data.updatedon).format('DD MMMM YYYY')}</span>
                                     </Col>
                                 </Row>
-                                <Row className="mt-3">
-                                    <Col sm={2}>
-                                        <span className="gray800-14">Uploader</span>
-                                    </Col>
-                                    <Col sm={10}>
-                                        <span className="gray800-14">
-                                            {data.persons.map((author) =>
-                                                <a data-testid="href" className="purple-14" href={'/person/' + author.id}>{author.firstname} {author.lastname}</a>
-                                            )}
-                                        </span>
-                                    </Col>
-                                </Row>
-                                <Row className="mt-3">
+                                {data.uploader ?
+                                    <Row className="mt-2">
+                                        <Col sm={2} className="gray800-14" >
+                                            Uploader
+                                        </Col>
+                                        <Col sm={10} className="gray800-14 overflowWrap">{data.uploaderIs[0].firstname} {data.uploaderIs[0].lastname}</Col>
+                                    </Row>
+                                    : ''}
+                                <Row className="mt-2">
                                     <Col sm={2}>
                                         <span className="gray800-14">Keywords</span>
                                     </Col>
@@ -270,7 +266,7 @@ class ToolDetail extends Component {
                                         </span>
                                     </Col>
                                 </Row>
-                                <Row className="mt-3">
+                                <Row className="mt-2">
                                     <Col sm={2}>
                                         <span className="gray800-14">Domain</span>
                                     </Col>

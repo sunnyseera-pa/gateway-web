@@ -196,13 +196,13 @@ class DatasetDetail extends Component {
                         <br /><br />
                         <a href="https://github.com/HDRUK/datasets#about-the-reports" target="_blank" className="white-12">Click to read more about how the score is calculated.</a>
                         <br /><br />
-                        {data.quality.completeness_percent} Completeness %
+                        {Math.trunc(data.quality.completeness_percent)} Completeness %
                         <br />
-                        {data.quality.weighted_completeness_percent} Weighted completeness %
+                        {Math.trunc(data.quality.weighted_completeness_percent)} Weighted completeness %
                         <br />
-                        {data.quality.error_percent} Error %
+                        {Math.trunc(data.quality.error_percent)} Error %
                         <br />
-                        {data.quality.weighted_error_percent} Weighted error %
+                        {Math.trunc(data.quality.weighted_error_percent)} Weighted error %
                     </Tooltip>
                     )}
                 </Overlay>

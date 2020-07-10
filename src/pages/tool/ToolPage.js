@@ -296,7 +296,7 @@ class ToolDetail extends Component {
                                                         <Col sm={2} className="gray800-14" >
                                                             Uploader
                                                         </Col>
-                                                        <Col sm={10} className="gray800-14 overflowWrap">{data.uploader}</Col>
+                                                        <Col sm={10} className="gray800-14 overflowWrap">{data.uploaderIs[0].firstname} {data.uploaderIs[0].lastname}</Col>
                                                     </Row>
                                                     : ''}
                                                 <Row className="mt-2">

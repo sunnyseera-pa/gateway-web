@@ -98,7 +98,7 @@ class AccountCollections extends React.Component {
                             <Col sm={12} lg={12}>
                                 <Tabs className='dataAccessTabs gray700-13' activeKey={this.state.key} onSelect={this.handleSelect}>
                                     <Tab eventKey="active" title={"Active (" + activeCount + ")"}> </Tab>
-                                    <Tab eventKey="archive" title={"Archive (" + archiveCount + ")"}> </Tab>
+                                    {/* <Tab eventKey="archive" title={"Archive (" + archiveCount + ")"}> </Tab> */}
                                 </Tabs>
                             </Col>
                         </Row>

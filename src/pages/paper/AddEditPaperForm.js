@@ -55,13 +55,13 @@ const AddEditPaperForm = (props) => {
             values.relatedObjects = props.relatedObjects
             values.toolCreator = props.userState[0];
             if (props.isEdit) {
-                axios.put(baseURL + '/api/v1/paper/edit', values) 
+                axios.put(baseURL + '/api/v1/paper/' + props.data.id, values) 
                 .then((res) => {
                     window.location.href = window.location.search + '/paper/' + props.data.id + '/?paperEdited=true';
                 });
             }
             else {
-                axios.post(baseURL + '/api/v1/paper/add', values)
+                axios.post(baseURL + '/api/v1/paper/', values)
                     .then((res) => {
                         window.location.href = window.location.search + '/paper/' + res.data.id + '/?paperAdded=true';
                     });
@@ -146,7 +146,7 @@ const AddEditPaperForm = (props) => {
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="gray800-14">Uploaded by</span>
+                                <span className="gray800-14">Authors on the Gateway</span>
                                 <br />
                                 <span className="gray700-13">
                                     Add any authors or collaborators who have an account on this site

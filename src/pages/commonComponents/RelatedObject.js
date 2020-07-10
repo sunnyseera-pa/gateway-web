@@ -106,28 +106,6 @@ class RelatedObject extends React.Component {
                 <Col>
                     <div className={rectangleClassName} onClick={() => !activeLink && !this.props.showRelationshipQuestion && !this.props.showRelationshipAnswer && this.props.doAddToTempRelatedObjects(data.id, data.type===undefined ? "dataset" : data.type) } >
                        
-                    {(() => {
-                            if (this.props.showRelationshipQuestion) {
-                                return (
-                                    <Row>
-                                    <Col sm={10} lg={10}/>
-                                    <Col sm={2} lg={2}>
-                                    <Button variant="medium" className="soft-black-14" onClick={this.removeButton} >
-                                        <SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />
-                                        Remove
-                                    </Button> 
-                                 </Col>
-                                 </Row>
-                                )
-                            }
-                            else if (this.props.showRelationshipAnswer) {
-                                return (
-                                    <>
-                                  
-                                    </>
-                                )
-                            }
-                        })()}
                         {(() => {
                             if (data.type === 'tool') {
                                 return(
@@ -157,8 +135,8 @@ class RelatedObject extends React.Component {
                                             })}
                                         </Col> 
                                         <Col sm={2} lg={2}>
-                                            {/* HERE */}
                                             {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="gray700-13 mr-2 floatRight">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
+                                            {this.props.showRelationshipQuestion ? <Button variant="medium" className="soft-black-14" onClick={this.removeButton} ><SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />Remove</Button> : ''}
                                         </Col>
                                         <Col sm={12} lg={12} className="pt-3">
                                             <span className="toolBadge mr-2">
@@ -232,6 +210,7 @@ class RelatedObject extends React.Component {
                                         </Col> 
                                         <Col sm={2} lg={2}>
                                             {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="gray700-13 mr-2 floatRight">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
+                                            {this.props.showRelationshipQuestion ? <Button variant="medium" className="soft-black-14" onClick={this.removeButton} ><SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />Remove</Button> : ''}
                                         </Col>
                                         <Col sm={12} lg={12} className="pt-3">
                                             <span className="projectBadge mr-2">
@@ -296,6 +275,7 @@ class RelatedObject extends React.Component {
                                         </Col> 
                                         <Col sm={2} lg={2}>
                                             {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="gray700-13 mr-2 floatRight">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
+                                            {this.props.showRelationshipQuestion ? <Button variant="medium" className="soft-black-14" onClick={this.removeButton} ><SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />Remove</Button> : ''}
                                         </Col>
                                         <Col sm={12} lg={12} className="pt-3">
                                             <span className="paperBadge mr-2">
@@ -336,7 +316,7 @@ class RelatedObject extends React.Component {
                                                 <span class="initials"> {data.firstname ? data.firstname.charAt(0).toUpperCase() : ''}{data.lastname ? data.lastname.charAt(0).toUpperCase() : ''}</span>
                                             </div>
                                         </Col>
-                                        <Col sm={8} lg={8}>
+                                        <Col sm={8} lg={9}>
                                             {activeLink===true ? 
                                             <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/person/' + data.id} >{data.firstname && data.lastname ? data.firstname + ' ' + data.lastname : ''}</a> 
                                             : <span className="black-bold-16"> {data.firstname && data.lastname ? data.firstname + ' ' + data.lastname : ''} </span>
@@ -344,8 +324,9 @@ class RelatedObject extends React.Component {
                                             <br />
                                             <span className="gray800-14"> {data.bio} </span>
                                         </Col>
-                                        <Col sm={2} lg={3}>
+                                        <Col sm={2} lg={2}>
                                             {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="gray700-13 mr-2 floatRight">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
+                                            {this.props.showRelationshipQuestion ? <Button variant="medium" className="soft-black-14" onClick={this.removeButton} ><SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />Remove</Button> : ''}
                                         </Col>
                                     </Row>
                                 );
@@ -362,6 +343,7 @@ class RelatedObject extends React.Component {
                                         </Col>
                                         <Col sm={2} lg={2}>
                                             {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="gray700-13 mr-2 floatRight">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
+                                            {this.props.showRelationshipQuestion ? <Button variant="medium" className="soft-black-14" onClick={this.removeButton} ><SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />Remove</Button> : ''}
                                         </Col>
                                         <Col sm={12} lg={12} className="pt-3">
                                             <span className="dataSetBadge mr-2">

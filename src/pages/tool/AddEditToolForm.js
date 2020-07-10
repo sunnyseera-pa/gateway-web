@@ -185,7 +185,7 @@ const AddEditToolForm = (props) => {
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="gray800-14">Authors</span>
+                                <span className="gray800-14">Authors on the Gateway</span>
                                 <Typeahead
                                     id="authors"
                                     labelKey={authors => `${authors.name}`}
