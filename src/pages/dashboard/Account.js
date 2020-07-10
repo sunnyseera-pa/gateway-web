@@ -120,7 +120,7 @@ class Account extends Component {
                                         <Nav.Link eventKey="dashboard" className="verticalNavBar gray700-13">
                                             <Row>
                                                 <Col sm={2} lg={2}>
-                                                    <SVGIcon name="accounticon" fill={'#b3b8bd'} className="AccountSvgs" />
+                                                    <SVGIcon name="dashboard" fill={'#b3b8bd'} className="AccountSvgs" />
                                                 </Col>                                             
                                                 <Col sm={10} lg={10} className="pl-4 pt-1">
                                                     Dashboard

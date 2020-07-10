@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import moment from 'moment';
+import UnmetDemand from './DARComponents/UnmetDemand';
 
 import { Row, Col, Button, Modal, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
 
-import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading'
 
 import { Event, initGA } from '../../tracking';
@@ -13,45 +13,51 @@ var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class AccountAnalyticsDashboard extends React.Component {
 
-    constructor(props) {
-        super(props)
-        this.state.userState = props.userState;
-    }
-
     // initialize our state
     state = {
         userState: [],
-        key: 'active',
+        key: 'Datasets',
         data: [],
-        isLoading: true
+        //TODO temporary dates used to check functionality of date dropdown - update to use actual values (ordered so the most recent month is the first option, and therefore the selected option, in the array)
+        dates: ["2020-06-13T00:00:00.000Z", "2020-05-13T00:00:00.000Z", "2020-04-13T00:00:00.000Z"],
+        selectedOption: '',
+        isLoading: false
     };
+
+    constructor(props) {
+        super(props)
+        this.state.userState = props.userState;
+        this.state.selectedOption = moment(this.state.dates[0]).format("MMMM YYYY");
+    }
 
     handleSelect = (key) => {
         this.setState({ key: key });
     }
 
+    handleDateSelect(eventKey, event) {
+        this.setState({ selectedOption: this.state.dates[eventKey] });
+      }
+
     componentDidMount() {
         initGA('UA-166025838-1');
-        this.doCollectionsCall();
+        this.getUnmetDemand();
     }
 
-    doCollectionsCall() {
-        if (this.state.userState[0].role === "Admin") {
-            axios.get(baseURL + '/api/v1/accounts/admin/collections') 
-                .then((res) => {
-                    this.setState({ data: res.data.data, isLoading: false });
-                });
-        }
-        else {
-            axios.get(baseURL + '/api/v1/accounts/collections?id=' + this.state.userState[0].id + '')
-                .then((res) => {
-                    this.setState({ data: res.data.data, isLoading: false });
-                });
-        }
+    //TODO update the below call to the api you set up for the stats needed for unmet demand - using this old one as a placeholder in the mean time
+    getUnmetDemand(){
+        axios.get(baseURL + '/api/v1/stats/unmet') 
+        .then((res) => {
+            this.setState({ data: res.data.data, isLoading: false });
+        });
     }
 
     render() {
-        const { userState, key, isLoading, data } = this.state;
+        const { userState, key, isLoading, data, dates } = this.state;
+
+        console.log('data: ' + JSON.stringify(data))
+
+        //TODO temporary date used to check moment format to be used in select options below
+        let date = "2020-01-13T00:00:00.000Z"; 
 
         if (isLoading) {
             return (
@@ -65,60 +71,68 @@ class AccountAnalyticsDashboard extends React.Component {
             );
         }
 
-        var activeCount = 0;
-        var archiveCount = 0;
-
-        data.forEach((collection) => {
-            if (collection.activeflag === "active") activeCount++;
-            else if (collection.activeflag === "archive") archiveCount++;
-        });
-
         return (
             <div>
                 <Row>
-                    <Col sm={1} lg={1}></Col>
-                    <Col sm={10} lg={10}>
-                        {/* <Row className="accountHeader mt-4"> */}
-                            {/* <Col xs={8}> */}
-                            {/* <div className="accountHeader mt-4"> */}
-                            <Row className="accountHeader mt-4">
-                                <Col sm={12} lg={12}>
-                                    <Row >
-                                        <Col sm={8} lg={8}>
-                                            <span className="black-20">Dashboard</span>
-                                        </Col>
-                                        <Col sm={4} lg={4}>
-                                            <span className="gray700-13">Last updated: date</span>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col sm={8} lg={8}>
-                                            <span className="gray700-13">A collection of statistics, metrics and analytics; giving an overview of the sites data and performance</span>
-                                        </Col>
-                                        <Col sm={4} lg={4}>
-                                            <DropdownButton variant="outline-secondary" alignRight title="Date" className="floatRight">
-                                            {/* loop through months with data available to display dropdown options */}
-                                            <Dropdown.Item href='' className="black-14">Month Year</Dropdown.Item>
+                    <Col sm={1} lg={1}></Col> 
+                    <Col sm={10} lg={10} className="dashboardPadding">
+                        <Row className="accountHeader mt-4">
+                            <Col sm={12} lg={12}>
+                                <Row >
+                                    <Col sm={8} lg={8}>
+                                    {/* <Col sm={12} lg={12}> */}
+                                        <span className="black-20">Dashboard</span>
+                                    </Col>
+                                    <Col sm={4} lg={4}>
+                                        {/*TODO use this moment format on the updated date */}
+                                        <span className="gray700-13 floatRight">Last updated: {moment().format("DD MMM YYYY, hh:mm")}</span>
+                                    </Col> 
+                                </Row>
+                                <Row>
+                                    <Col sm={8} lg={8}>
+                                        <span className="gray700-13">A collection of statistics, metrics and analytics; giving an overview of the sites data and performance</span>
+                                    </Col> 
+                                    <Col sm={4} lg={4}> 
+
+                                        
+                                        <div className="select_option">
+                                            <DropdownButton variant="light" alignRight className="floatRight gray800-14" title={moment(this.state.selectedOption).format("MMMM YYYY")} id="dateDropdown" onSelect={this.handleDateSelect.bind(this)} >
+                                                 {/*TODO loop through months with data available to display dropdown options - using temporary array dates here to check how this looks */}
+                                                {dates.map((date, i) => (
+                                                    <Dropdown.Item className="gray800-14" key={i} eventKey={i}>
+                                                        {moment(date).format("MMMM YYYY")}
+                                                    </Dropdown.Item>
+                                                ))}
                                             </DropdownButton>
-                                        </Col>
-                                    </Row>
-                                </Col>
-                            </Row>
-                            {/* </div> */}
-                            {/* </Col> */}
-                            {/* <Col xs={4} style={{ textAlign: "right" }}>
-                                <DropdownButton variant="outline-secondary" alignRight title="Date" className="floatRight">
-                                    
-                                    <Dropdown.Item href='' className="black-14">Month Year</Dropdown.Item>
-                                </DropdownButton>
-                            </Col> */}
-                        {/* </Row> */}
+                                        </div>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+
+                        <Row className="accountHeader mt-4">
+                            <Col sm={12} lg={12}>
+                                <Row >
+                                    <Col sm={12} lg={12}>
+                                        <span className="black-20">Unmet demand</span>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col sm={12} lg={12}>
+                                        <span className="gray700-13">For each resource type, which searches yielded no results, ordered by highest number of repeat searches</span>
+                                    </Col>
+                                </Row>
+                            </Col> 
+                        </Row>
 
                         <Row className="tabsBackground">
                             <Col sm={12} lg={12}>
                                 <Tabs className='dataAccessTabs gray700-13' activeKey={this.state.key} onSelect={this.handleSelect}>
-                                    <Tab eventKey="active" title={"Active (" + activeCount + ")"}> </Tab>
-                                    <Tab eventKey="archive" title={"Archive (" + archiveCount + ")"}> </Tab>
+                                    <Tab eventKey="Datasets" title={'Datasets'}></Tab>
+                                    <Tab eventKey="Tools" title={'Tools'}></Tab>
+                                    <Tab eventKey="Projects" title={'Projects'}></Tab>
+                                    <Tab eventKey="Papers" title={'Papers'}></Tab>
+                                    <Tab eventKey="People" title={'People'}></Tab>
                                 </Tabs>
                             </Col>
                         </Row>
@@ -126,83 +140,92 @@ class AccountAnalyticsDashboard extends React.Component {
 
                         {(() => {
                             switch (key) {
-                                case "active":
+                                case "Datasets":
                                     return (
                                         <div>
-                                            <Row className="subHeader mt-3 gray800-14-bold">
-                                                <Col xs={2}>Updated</Col>
-                                                <Col xs={5}>Name</Col>
-                                                <Col xs={2}>Author</Col>
-                                                <Col xs={3}></Col>
+                                            <Row>
+                                                <Col sm={12} lg={12}>
+                                                <Row className="subHeader mt-3 gray800-14-bold">
+                                                    <Col sm={8} lg={8}>Search term </Col>
+                                                    <Col sm={2} lg={2}>Searches</Col>
+                                                    <Col sm={2} lg={2}>Dataset results</Col>
+                                                </Row>
+                                                {/*TODO map here and return <UnmetDemand /> with the relevant data for the top 10 unmet demand search terms for datasets */}
+                                                {/* using data from placeholder api call here */}
+                                                    {data.map((dat) => {
+                                                        return <UnmetDemand data={dat} />
+                                                    })}
+                                                </Col>
                                             </Row>
-
-                                            {activeCount <= 0 ? <NotFound word="collections" /> : data.map((dat) => {
-                                                if (dat.activeflag !== "active") {
-                                                    return (<></>)
-                                                }
-                                                else {
-                                                    return (
-                                                        <Row className="entryBox">
-                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
-                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/collection/' + dat.id} className="black-14">{dat.name}</a></Col>
-                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">
-                                                                {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
-                                                                    return <span>{person.firstname} {person.lastname} <br /></span>
-                                                                })}
-                                                            </Col>
-
-                                                            <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
-                                                                <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
-                                                                    <Dropdown.Item href={'/editcollection/' + dat.id} className="black-14">Edit</Dropdown.Item>
-                                                                </DropdownButton>
-                                                            </Col>
-                                                        </Row>
-                                                    )
-                                                }
-                                            })}
-
-                                        </div>
+                                        </div> 
                                     );
-                                case "archive":
+                                case "Tools":
                                     return (
                                         <div>
-                                            <Row className="subHeader mt-3 gray800-14-bold">
-                                                <Col xs={2}>Updated</Col>
-                                                <Col xs={5}>Name</Col>
-                                                <Col xs={2}>Author</Col>
-                                                <Col xs={3}></Col>
+                                            <Row>
+                                                <Col sm={12} lg={12}>
+                                                <Row className="subHeader mt-3 gray800-14-bold">
+                                                    <Col sm={8} lg={8}>Search term </Col>
+                                                    <Col sm={2} lg={2}>Searches</Col>
+                                                    <Col sm={2} lg={2}>Tool results</Col>
+                                                </Row>
+                                                {/*TODO map here and return <UnmetDemand /> with the relevant data for the top 10 unmet demand search terms for tools */}
+                                                    <UnmetDemand />
+                                                </Col>
                                             </Row>
-
-                                            {archiveCount <= 0 ? <NotFound word="collections" /> : data.map((dat) => {
-                                                if (dat.activeflag !== "archive") {
-                                                    return (<></>)
-                                                }
-                                                else {
-                                                    return (
-                                                        <Row className="entryBox">
-                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
-                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/collection/' + dat.id} className="black-14">{dat.name}</a></Col>
-                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">
-                                                                {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
-                                                                    return <span>{person.firstname} {person.lastname} <br /></span>
-                                                                })}
-                                                            </Col> 
-
-                                                            <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
-                                                                <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
-                                                                    <Dropdown.Item href={'/editcollection/' + dat.id} className="black-14">Edit</Dropdown.Item>
-                                                                </DropdownButton>
-                                                            </Col>
-                                                        </Row>
-                                                    )
-                                                }
-                                            })}
                                         </div>
                                     );
-                            }
-                        })()}
+                                case "Projects":
+                                    return (
+                                        <div>
+                                            <Row>
+                                                <Col sm={12} lg={12}>
+                                                <Row className="subHeader mt-3 gray800-14-bold">
+                                                    <Col sm={8} lg={8}>Search term </Col>
+                                                    <Col sm={2} lg={2}>Searches</Col>
+                                                    <Col sm={2} lg={2}>Project results</Col>
+                                                </Row>
+                                                {/*TODO map here and return <UnmetDemand /> with the relevant data for the top 10 unmet demand search terms for projects */}
+                                                    <UnmetDemand />
+                                                </Col>
+                                            </Row>
+                                        </div>
+                                    );
+                                case "Papers":
+                                    return (
+                                        <div>
+                                            <Row>
+                                                <Col sm={12} lg={12}>
+                                                <Row className="subHeader mt-3 gray800-14-bold">
+                                                    <Col sm={8} lg={8}>Search term </Col>
+                                                    <Col sm={2} lg={2}>Searches</Col>
+                                                    <Col sm={2} lg={2}>Paper results</Col>
+                                                </Row>
+                                                {/*TODO map here and return <UnmetDemand /> with the relevant data for the top 10 unmet demand search terms for papers */}
+                                                    <UnmetDemand />
+                                                </Col>
+                                            </Row>
+                                        </div>
+                                    );
+                                case "People":
+                                    return (
+                                        <div>
+                                            <Row>
+                                                <Col sm={12} lg={12}>
+                                                <Row className="subHeader mt-3 gray800-14-bold">
+                                                    <Col sm={8} lg={8}>Search term </Col>
+                                                    <Col sm={2} lg={2}>Searches</Col>
+                                                    <Col sm={2} lg={2}>People results</Col>
+                                                </Row>
+                                                {/*TODO map here and return <UnmetDemand /> with the relevant data for the top 10 unmet demand search terms for people */}
+                                                    <UnmetDemand />
+                                                </Col>
+                                            </Row>
+                                        </div>
+                                    );
+                        }})()}
                     </Col>
-                    <Col xs={1}></Col>
+                    <Col sm={1} lg={10} />
                 </Row>
             </div>
         );
