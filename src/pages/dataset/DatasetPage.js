@@ -146,7 +146,7 @@ class DatasetDetail extends Component {
 
         var score = ''
         
-        if (typeof data.quality.quality_score !== 'undefined') {
+        if (data.quality && typeof data.quality.quality_score !== 'undefined') {
             if (data.quality.quality_score <= 50) {
                 score = 'Not rated'
             }
@@ -167,7 +167,7 @@ class DatasetDetail extends Component {
         return (<>
                 <div className="text-center">
                     {(() => {
-                        if (typeof data.quality.quality_score === 'undefined') return <></>
+                        if (data.quality && typeof data.quality.quality_score === 'undefined') return <></>
                         else if (data.quality.quality_score <= 50) {
                             return (<div ref={target} onClick={() => setShow(!show)} style={{ cursor: 'pointer' }} ><div style={{lineHeight: 1}}><MetadataNotRated className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Not rated</span></div></div>)
                         }
