@@ -88,11 +88,8 @@ checkAlerts = () => {
                     <Row className="tabsBackground">
                         <Col sm={12} lg={12}>
                                 <Tabs className='dataAccessTabs gray700-13' activeKey={this.state.key} onSelect={this.handleSelect}>
-                                    <Tab eventKey="presubmission" title="Pre-submission (x)"> </Tab>
-                                    <Tab eventKey="inreview" title="In review (x)"> </Tab>
-                                    <Tab eventKey="approved" title="Approved (x)"> </Tab>
-                                    <Tab eventKey="rejected" title="Rejected (x)"> </Tab>
-                                    { this.state.userState[0].role === "Admin" ? <Tab eventKey="forms" title="Forms (x)"> </Tab> : ""}
+                                    <Tab eventKey="presubmission" title="Pre-submission"> </Tab>
+                                    <Tab eventKey="inreview" title="In review"> </Tab>
                                 </Tabs>
                         </Col>
                     </Row>
