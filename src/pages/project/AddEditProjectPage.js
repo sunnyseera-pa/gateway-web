@@ -60,7 +60,7 @@ class AddEditProjectPage extends React.Component {
     getProjectFromDb = () => {
         //need to handle error if no id is found
         this.setState({ isLoading: true });
-        axios.get(baseURL + '/api/v1/project/' + this.props.match.params.projectID)
+        axios.get(baseURL + '/api/v1/project/edit/' + this.props.match.params.projectID)
             .then((res) => {
                 this.setState({
                     data: res.data.data[0],
@@ -172,7 +172,7 @@ class AddEditProjectPage extends React.Component {
     }
 
     removeObject = (id) => {
-        this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id);
+        this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id.toString());
         this.setState({relatedObjects: this.state.relatedObjects})
         this.setState({didDelete: true});
     }

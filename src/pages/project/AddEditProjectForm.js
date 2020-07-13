@@ -17,7 +17,7 @@ var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const AddEditProjectForm = (props) => {
     //Fix for projects were features are set to null
-    if (props.data.length > 0 && props.data.tags.features === null) props.data.tags.features = [];
+    if (props.data && props.data.tags.features === null) props.data.tags.features = [];
     
     // Pass the useFormik() hook initial form values and a submit function that will
     // be called when the form is submitted
@@ -58,13 +58,13 @@ const AddEditProjectForm = (props) => {
             values.relatedObjects = props.relatedObjects
             values.toolCreator = props.userState[0];
             if (props.isEdit) {
-                axios.put(baseURL + '/api/v1/project/edit', values)
+                axios.put(baseURL + '/api/v1/project/' + props.data.id, values)
                     .then((res) => {
                         window.location.href = window.location.search + '/project/' + props.data.id + '/?projectEdited=true';
                     });
             }
             else {
-                axios.post(baseURL + '/api/v1/project/add', values)
+                axios.post(baseURL + '/api/v1/project/', values)
                     .then((res) => {
                         window.location.href = window.location.search + '/project/' + res.data.id + '/?projectAdded=true';
                     });

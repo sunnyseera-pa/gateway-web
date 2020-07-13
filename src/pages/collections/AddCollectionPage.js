@@ -128,7 +128,7 @@ class AddCollectionPage extends React.Component {
     }
 
     removeObject = (id) => {
-        this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id);
+        this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id.toString());
         this.setState({relatedObjects: this.state.relatedObjects})
         this.setState({didDelete: true});
     }
@@ -286,7 +286,7 @@ const AddCollectionForm = (props) => {
                                         <span className="gray800-14">Image URL (optional)</span>
                                         <br />
                                 <span className="gray700-13">
-                                    Paste an image address URL. It must include a protocol prefix, e.g. https://
+                                    You must have permission from the owner of the image before you add it to the gateway.
                                 </span>
                                     </Col>
                                     <Col sm={5} lg={3} className="pl-4">

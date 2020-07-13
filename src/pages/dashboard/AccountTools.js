@@ -36,22 +36,14 @@ class AccountTools extends React.Component {
     }
 
     doToolsCall() {
-        if (this.state.userState[0].role === "Admin") {
-            axios.get(baseURL + '/api/v1/tools/get/admin')
+            axios.get(baseURL + '/api/v1/tools')
                 .then((res) => {
                     this.setState({ data: res.data.data, isLoading: false });
                 });
-        }
-        else {
-            axios.get(baseURL + '/api/v1/tools/get?id=' + this.state.userState[0].id + '')
-                .then((res) => {
-                    this.setState({ data: res.data.data, isLoading: false });
-                });
-        }
     }
 
     rejectTool = (id) => {
-        axios.put(baseURL + '/api/v1/tools/status', {
+        axios.patch(baseURL + '/api/v1/tools/'+id, {
             id: id,
             activeflag: "archive"
         })
@@ -61,7 +53,7 @@ class AccountTools extends React.Component {
     }
 
     approveTool = (id) => {
-        axios.put(baseURL + '/api/v1/tools/status', { 
+        axios.patch(baseURL + '/api/v1/tools/'+id, { 
             id: id,
             activeflag: "active"
         })
@@ -303,7 +295,7 @@ function RejectButton(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const rejectObject = () => {
-        axios.put(baseURL + '/api/v1/tools/status', {
+        axios.patch(baseURL + '/api/v1/tools/'+props.id, {
             id: props.id,
             activeflag: "rejected"
         })
@@ -336,7 +328,7 @@ function DeleteButton(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const deleteObject = () => {
-        axios.put(baseURL + '/api/v1/tools/status', {
+        axios.patch(baseURL + '/api/v1/tools/'+props.id, {
             id: props.id,
             activeflag: "archive"
         })

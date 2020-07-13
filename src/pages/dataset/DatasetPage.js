@@ -31,7 +31,7 @@ class DatasetDetail extends Component {
   state = {
     id: '',
     data: [],
-    projectsData: [],
+    relatedObjects: [],
     datarequest: [],
     DBData: [],
     activeKey: false,
@@ -84,8 +84,9 @@ class DatasetDetail extends Component {
     axios.get(baseURL + '/api/v1/datasets/relatedobjects/' + this.props.match.params.datasetID)
       .then((res) => {
         this.setState({
-          projectsData: res.data.data
+            relatedObjects: res.data.data
         })
+        
       })
   };
 
@@ -127,14 +128,14 @@ class DatasetDetail extends Component {
 
 
   render() {
-    const { searchString, data, isLoading, userState, alert=null } = this.state;
+    const { searchString, data, isLoading, userState, alert=null, relatedObjects } = this.state;
 
     if (isLoading) {
       return <Container><Loading /></Container>;
     }
 
-    if (data.relatedObjects === null || typeof data.relatedObjects === 'undefined') {
-        data.relatedObjects = [];
+    if (relatedObjects === null || typeof relatedObjects === 'undefined') {
+        relatedObjects = [];
     }
 
     var keywords = (data.keywords ? data.keywords.split(",") : '');
@@ -145,7 +146,7 @@ class DatasetDetail extends Component {
 
         var score = ''
         
-        if (typeof data.quality.quality_score !== 'undefined') {
+        if (data.quality && typeof data.quality.quality_score !== 'undefined') {
             if (data.quality.quality_score <= 50) {
                 score = 'Not rated'
             }
@@ -166,7 +167,7 @@ class DatasetDetail extends Component {
         return (<>
                 <div className="text-center">
                     {(() => {
-                        if (typeof data.quality.quality_score === 'undefined') return <></>
+                        if (data.quality && typeof data.quality.quality_score === 'undefined') return <></>
                         else if (data.quality.quality_score <= 50) {
                             return (<div ref={target} onClick={() => setShow(!show)} style={{ cursor: 'pointer' }} ><div style={{lineHeight: 1}}><MetadataNotRated className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Not rated</span></div></div>)
                         }
@@ -195,13 +196,13 @@ class DatasetDetail extends Component {
                         <br /><br />
                         <a href="https://github.com/HDRUK/datasets#about-the-reports" target="_blank" className="white-12">Click to read more about how the score is calculated.</a>
                         <br /><br />
-                        {data.quality.completeness_percent} Completeness %
+                        {Math.trunc(data.quality.completeness_percent)} Completeness %
                         <br />
-                        {data.quality.weighted_completeness_percent} Weighted completeness %
+                        {Math.trunc(data.quality.weighted_completeness_percent)} Weighted completeness %
                         <br />
-                        {data.quality.error_percent} Error %
+                        {Math.trunc(data.quality.error_percent)} Error %
                         <br />
-                        {data.quality.weighted_error_percent} Weighted error %
+                        {Math.trunc(data.quality.weighted_error_percent)} Weighted error %
                     </Tooltip>
                     )}
                 </Overlay>
@@ -419,8 +420,8 @@ class DatasetDetail extends Component {
                                         </Col>
                                     </Row>
                                 </Tab>
-                                <Tab eventKey="Projects" title={'Related resources (' + data.relatedObjects.length + ')'}>
-                                    {data.relatedObjects.length <= 0 ? <NotFound word="related resources" /> : data.relatedObjects.map(object => <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />)}
+                                <Tab eventKey="Projects" title={'Related resources (' + relatedObjects.length + ')'}>
+                                    {relatedObjects.length <= 0 ? <NotFound word="related resources" /> : relatedObjects.map(object => <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />)}
                                 </Tab>
                             </Tabs>
                         </div>

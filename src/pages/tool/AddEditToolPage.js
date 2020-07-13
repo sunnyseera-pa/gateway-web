@@ -61,7 +61,7 @@ class AddEditToolPage extends React.Component {
     getToolFromDb = () => {
         //need to handle error if no id is found
         this.setState({ isLoading: true });
-        axios.get(baseURL + '/api/v1/tools/' + this.props.match.params.toolID)
+        axios.get(baseURL + '/api/v1/tools/edit/' + this.props.match.params.toolID)
           .then((res) => {
             this.setState({
               data: res.data.data[0],
@@ -233,7 +233,7 @@ class AddEditToolPage extends React.Component {
     }
 
     removeObject = (id) => {
-        this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id);
+        this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id.toString());
         this.setState({relatedObjects: this.state.relatedObjects})
         this.setState({didDelete: true});
     }

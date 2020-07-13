@@ -54,7 +54,7 @@ class AddEditPaperPage extends React.Component {
     getPaperFromDb = () => {
         //need to handle error if no id is found
         this.setState({ isLoading: true });
-        axios.get(baseURL + '/api/v1/paper/' + this.props.match.params.paperID)
+        axios.get(baseURL + '/api/v1/paper/edit/' + this.props.match.params.paperID)
           .then((res) => {
             this.setState({
               data: res.data.data[0],
@@ -172,7 +172,7 @@ class AddEditPaperPage extends React.Component {
     }
 
     removeObject = (id) => {
-        this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id);
+        this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id.toString());
         this.setState({relatedObjects: this.state.relatedObjects})
         this.setState({didDelete: true});
     }
