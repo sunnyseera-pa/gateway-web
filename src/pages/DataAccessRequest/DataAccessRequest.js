@@ -450,7 +450,7 @@ class DataAccessRequest extends Component {
                         
                     </Col>
                     
-                    <div className="darFooter" style={{index:1000}} >
+                    <div className="darFooter" style={{'z-index':1000}} >
                         <Col md={6} className="mt-4">
                             <span className="gray800-14">{totalQuestions}</span>
                         </Col>
