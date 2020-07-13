@@ -387,36 +387,7 @@ class DataAccessRequest extends Component {
                                         : ''
                                     ))}
                                 </div>
-                                { activePanelId === "mrcHealthDataToolkit" || activePanelId === "adviceFromPublisher" ?
-                                    <Fragment>
-                                        <div className="col-md-12 gray800-14 white-bg">
-                                            <h3 className="black-bold-17">MRC Health Data Access toolkit</h3>
-                                                <p className="gray800-15 mt-2">This toolkit aims to help you understand what approvals are necessary for your research.</p>
-                                                    <div>
-                                                        <ToolKit />
-                                                    </div>
-                                        </div>
-                                        <div className="pt-3 pl-3 pb-3 gray800-14 white-bg">
-                                            <Col md={12}>
-                                                <Row className="black-bold-17">
-                                                    Advice from {publisher}
-                                            </Row>
-                                                <Row className="gray800-15 mt-2">
-                                                    <p>We highly recommend getting in touch with us as early as possible. We may be able to help you shape the various approvals, such as ethics, minimising the risk of having to apply more than once.</p>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut at dui ac leo hendrerit consectetur eget quis quam. Maecenas eget tortor ut lorem mollis elementum. Nunc quis scelerisque libero. 
-                                                        Suspendisse a sodales justo, vitae tristique urna. Suspendisse nec sem et neque gravida cursus. Praesent ornare vitae nunc et rutrum. Interdum et malesuada 
-                                                        fames ac ante ipsum primis in faucibus. Quisque bibendum scelerisque odio quis molestie. Nulla semper justo ut elementum volutpat. In lobortis tellus 
-                                                        sit amet sem tempus porttitor.</p>  
-                                                        
-                                                        <p>Duis ex nibh, condimentum nec orci quis, volutpat vehicula est. Phasellus tempor tincidunt massa, vel sodales mi 
-                                                        tempor sit amet. Donec vestibulum euismod neque, et posuere tellus gravida nec. Phasellus placerat nulla ullamcorper quam tristique, placerat 
-                                                        fermentum ante condimentum. Fusce pellentesque ipsum ut urna aliquam vulputate.</p>
-                                                </Row>
-                                            </Col>
-                                        </div>
-                                    </Fragment>
-                                    : 
-                                        <div className="dar__questions gray800-14" style={{ backgroundColor: "#ffffff" }} >
+                                <div className="dar__questions gray800-14" style={{ backgroundColor: "#ffffff" }} >
                                             <Col md={12}>
                                                 <Winterfell
                                                     schema={this.state.schema}
@@ -431,7 +402,7 @@ class DataAccessRequest extends Component {
                                                 />
                                             </Col>
                                         </div>
-                                    }
+                                
                             </Col>
                             <Col sm={5} md={4} className="darTabs pr-0 pl-0">
                             <Tabs className='tabsBackground gray700-14' activeKey={this.state.key} onSelect={this.handleSelect}>
@@ -479,7 +450,7 @@ class DataAccessRequest extends Component {
                         
                     </Col>
                     
-                    <div className="darFooter">
+                    <div className="darFooter" style={{index:1000}} >
                         <Col md={6} className="mt-4">
                             <span className="gray800-14">{totalQuestions}</span>
                         </Col>
@@ -490,9 +461,6 @@ class DataAccessRequest extends Component {
                             <Button variant="white"  className="techDetailButton ml-3" onClick={this.onFormSubmit}>
                                 Submit application
                             </Button>
-                            <Button variant="primary" className="white-14-semibold ml-3" onClick={(e) => { this.onNextPanel(activePanelId) }}>
-                                {activePanelId === "mrcHealthDataToolkit" || activePanelId === "adviceFromPublisher" ? "Go to Safe People" : "Go to next section" }
-                            </Button>   
                         </Col>
                     </div> 
                 </Row>
