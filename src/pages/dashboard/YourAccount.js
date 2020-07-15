@@ -110,7 +110,7 @@ const YourAccountForm = (props) => {
         }),
 
         onSubmit: values => {
-            axios.post(baseURL + '/api/v1/person/edit', values)
+            axios.put(baseURL + '/api/v1/person', values)
                 .then((res) => {
                     window.location.href = '/account?tab=youraccount&accountUpdated=true';
                 });
