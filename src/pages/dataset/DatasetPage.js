@@ -19,6 +19,7 @@ import { PageView, initGA } from '../../tracking';
 import { Event } from '../../tracking';
 import moment from 'moment';
 import Linkify from "react-linkify";
+import DatasetSchema from './DatasetSchema';
 
 import 'react-tabs/style/react-tabs.css';
 
@@ -32,6 +33,7 @@ class DatasetDetail extends Component {
     id: '',
     data: [],
     relatedObjects: [],
+    datasetSchema: '',
     datarequest: [],
     DBData: [],
     activeKey: false,
@@ -54,6 +56,7 @@ class DatasetDetail extends Component {
   // on loading of tool detail page
   componentDidMount() {
     this.getDetailsSearchFromMDC();
+    this.getDatasetSchema();
     this.getRelatedProjects();
     this.checkAlerts();
     initGA('UA-166025838-1');
@@ -85,6 +88,16 @@ class DatasetDetail extends Component {
       .then((res) => {
         this.setState({
             relatedObjects: res.data.data
+        })
+        
+      })
+  };
+
+  getDatasetSchema = () => {
+    axios.get(baseURL + '/api/v1/datasets/schema/' + this.props.match.params.datasetID)
+      .then((res) => {
+        this.setState({
+            datasetSchema: res.data.data
         })
         
       })
@@ -128,7 +141,7 @@ class DatasetDetail extends Component {
 
 
   render() {
-    const { searchString, data, isLoading, userState, alert=null, relatedObjects } = this.state;
+    const { searchString, data, isLoading, userState, alert=null, relatedObjects, datasetSchema } = this.state;
 
     if (isLoading) {
       return <Container><Loading /></Container>;
@@ -212,6 +225,7 @@ class DatasetDetail extends Component {
 
     return (
         <div>
+            { datasetSchema !== '' ? <DatasetSchema datasetSchema={datasetSchema}/> : null }
             <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
             <Container className="mb-5">
                 <Row className="mt-4">
