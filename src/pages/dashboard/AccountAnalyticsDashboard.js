@@ -2,11 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import UnmetDemand from './DARComponents/UnmetDemand';
-
 import { Row, Col, Button, Modal, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
-
 import Loading from '../commonComponents/Loading'
-
 import { Event, initGA } from '../../tracking';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -18,8 +15,7 @@ class AccountAnalyticsDashboard extends React.Component {
         userState: [],
         key: 'Datasets',
         data: [],
-        //TODO temporary dates used to check functionality of date dropdown - update to use actual values (ordered so the most recent month is the first option, and therefore the selected option, in the array)
-        dates: ["2020-06-13T00:00:00.000Z", "2020-05-13T00:00:00.000Z", "2020-04-13T00:00:00.000Z"],
+        dates: getDatesForDropdown(),
         selectedOption: '',
         isLoading: false
     };
@@ -31,11 +27,15 @@ class AccountAnalyticsDashboard extends React.Component {
     }
 
     handleSelect = (key) => {
-        this.setState({ key: key });
+        this.setState({ key: key },
+            ()=>{
+                this.getUnmetDemand(this.state.selectedOption)
+            });
     }
 
     handleDateSelect(eventKey, event) {
         this.setState({ selectedOption: this.state.dates[eventKey] });
+        this.getUnmetDemand(this.state.dates[eventKey]);
       }
 
     componentDidMount() {
@@ -43,21 +43,26 @@ class AccountAnalyticsDashboard extends React.Component {
         this.getUnmetDemand();
     }
 
-    //TODO update the below call to the api you set up for the stats needed for unmet demand - using this old one as a placeholder in the mean time
-    getUnmetDemand(){
-        axios.get(baseURL + '/api/v1/stats/unmet') 
+    getUnmetDemand(selectedOption){
+        let date = new Date(selectedOption);
+        let selectedMonth = date.getMonth(selectedOption) +1 || new Date().getMonth() +1;
+        let selectedYear = date.getFullYear(selectedOption) || new Date().getFullYear();
+        
+        axios.get(baseURL + '/api/v1/stats/unmet'+ this.state.key, {
+            params: {
+                month: selectedMonth,
+                year: selectedYear
+            }
+        }) 
         .then((res) => {
+            this.setState({data: []});
+            res.data.data.entity = this.state.key;
             this.setState({ data: res.data.data, isLoading: false });
         });
     }
 
     render() {
         const { userState, key, isLoading, data, dates } = this.state;
-
-        console.log('data: ' + JSON.stringify(data))
-
-        //TODO temporary date used to check moment format to be used in select options below
-        let date = "2020-01-13T00:00:00.000Z"; 
 
         if (isLoading) {
             return (
@@ -84,7 +89,6 @@ class AccountAnalyticsDashboard extends React.Component {
                                         <span className="black-20">Dashboard</span>
                                     </Col>
                                     <Col sm={4} lg={4}>
-                                        {/*TODO use this moment format on the updated date */}
                                         <span className="gray700-13 floatRight">Last updated: {moment().format("DD MMM YYYY, hh:mm")}</span>
                                     </Col> 
                                 </Row>
@@ -93,11 +97,8 @@ class AccountAnalyticsDashboard extends React.Component {
                                         <span className="gray700-13">A collection of statistics, metrics and analytics; giving an overview of the sites data and performance</span>
                                     </Col> 
                                     <Col sm={4} lg={4}> 
-
-                                        
                                         <div className="select_option">
                                             <DropdownButton variant="light" alignRight className="floatRight gray800-14" title={moment(this.state.selectedOption).format("MMMM YYYY")} id="dateDropdown" onSelect={this.handleDateSelect.bind(this)} >
-                                                 {/*TODO loop through months with data available to display dropdown options - using temporary array dates here to check how this looks */}
                                                 {dates.map((date, i) => (
                                                     <Dropdown.Item className="gray800-14" key={i} eventKey={i}>
                                                         {moment(date).format("MMMM YYYY")}
@@ -127,7 +128,7 @@ class AccountAnalyticsDashboard extends React.Component {
 
                         <Row className="tabsBackground">
                             <Col sm={12} lg={12}>
-                                <Tabs className='dataAccessTabs gray700-13' activeKey={this.state.key} onSelect={this.handleSelect}>
+                                <Tabs className='dataAccessTabs gray700-13' activeKey={this.state.key} onSelect={this.handleSelect.bind(this)}>
                                     <Tab eventKey="Datasets" title={'Datasets'}></Tab>
                                     <Tab eventKey="Tools" title={'Tools'}></Tab>
                                     <Tab eventKey="Projects" title={'Projects'}></Tab>
@@ -136,7 +137,6 @@ class AccountAnalyticsDashboard extends React.Component {
                                 </Tabs>
                             </Col>
                         </Row>
-
 
                         {(() => {
                             switch (key) {
@@ -150,10 +150,8 @@ class AccountAnalyticsDashboard extends React.Component {
                                                     <Col sm={2} lg={2}>Searches</Col>
                                                     <Col sm={2} lg={2}>Dataset results</Col>
                                                 </Row>
-                                                {/*TODO map here and return <UnmetDemand /> with the relevant data for the top 10 unmet demand search terms for datasets */}
-                                                {/* using data from placeholder api call here */}
                                                     {data.map((dat) => {
-                                                        return <UnmetDemand data={dat} />
+                                                        return <UnmetDemand data={dat}/>
                                                     })}
                                                 </Col>
                                             </Row>
@@ -169,8 +167,9 @@ class AccountAnalyticsDashboard extends React.Component {
                                                     <Col sm={2} lg={2}>Searches</Col>
                                                     <Col sm={2} lg={2}>Tool results</Col>
                                                 </Row>
-                                                {/*TODO map here and return <UnmetDemand /> with the relevant data for the top 10 unmet demand search terms for tools */}
-                                                    <UnmetDemand />
+                                                    {data.map((dat) => {
+                                                            return <UnmetDemand data={dat}/>
+                                                        })}
                                                 </Col>
                                             </Row>
                                         </div>
@@ -185,8 +184,9 @@ class AccountAnalyticsDashboard extends React.Component {
                                                     <Col sm={2} lg={2}>Searches</Col>
                                                     <Col sm={2} lg={2}>Project results</Col>
                                                 </Row>
-                                                {/*TODO map here and return <UnmetDemand /> with the relevant data for the top 10 unmet demand search terms for projects */}
-                                                    <UnmetDemand />
+                                                    {data.map((dat) => {
+                                                                return <UnmetDemand data={dat}/>
+                                                            })}
                                                 </Col>
                                             </Row>
                                         </div>
@@ -201,8 +201,9 @@ class AccountAnalyticsDashboard extends React.Component {
                                                     <Col sm={2} lg={2}>Searches</Col>
                                                     <Col sm={2} lg={2}>Paper results</Col>
                                                 </Row>
-                                                {/*TODO map here and return <UnmetDemand /> with the relevant data for the top 10 unmet demand search terms for papers */}
-                                                    <UnmetDemand />
+                                                    {data.map((dat) => {
+                                                                return <UnmetDemand data={dat}/>
+                                                            })}
                                                 </Col>
                                             </Row>
                                         </div>
@@ -217,8 +218,9 @@ class AccountAnalyticsDashboard extends React.Component {
                                                     <Col sm={2} lg={2}>Searches</Col>
                                                     <Col sm={2} lg={2}>People results</Col>
                                                 </Row>
-                                                {/*TODO map here and return <UnmetDemand /> with the relevant data for the top 10 unmet demand search terms for people */}
-                                                    <UnmetDemand />
+                                                    {data.map((dat) => {
+                                                                return <UnmetDemand data={dat}/>
+                                                            })}
                                                 </Col>
                                             </Row>
                                         </div>
@@ -233,3 +235,25 @@ class AccountAnalyticsDashboard extends React.Component {
 }
 
 export default AccountAnalyticsDashboard;
+
+const getDatesForDropdown = (req, res) => {
+
+    let startDate = new Date('2020-05-01T00:00:00.000Z');
+    let stopDate = new Date();
+    let dateArray = new Array();
+    let currentDate = startDate;
+
+    while (currentDate <= stopDate) {
+    if(currentDate.getUTCDate() == 1)
+        dateArray.push(currentDate)
+    
+    currentDate = currentDate.addDays(1);
+    }
+    return dateArray.reverse();
+}
+
+Date.prototype.addDays = function(days) {
+    var dat = new Date(this.valueOf())
+    dat.setDate(dat.getDate() + days);
+    return dat;
+}

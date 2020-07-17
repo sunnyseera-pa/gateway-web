@@ -25,17 +25,40 @@ class UnmetDemand extends React.Component {
         }
     }
 
-    render() {
-        const { flagClosed, data } = this.state;
+    componentDidMount(){
+        this.setState({state:this.state})
+    }
 
-        //TODO temporary date used to check moment format to be used in select options below
-        let date = "2020-01-13T00:00:00.000Z"; 
+    getNumberOfResults(data){
+        let numResults;
+        switch(data.entity){
+            case 'dataset':
+                numResults = data.maxDatasets || 0;
+                break;
+            case 'tool':
+                numResults = data.maxTools || 0;
+                break;
+            case 'project':
+                numResults = data.maxProjects || 0;
+                break;
+            case 'paper':
+                numResults = data.maxPapers || 0;
+                break;
+            case 'person':
+                numResults = data.maxPeople || 0;
+                break;
+        }
+        return numResults;
+    }
+
+    render() {
+        const { flagClosed, data} = this.state;
 
         var svgClassName = "";
         if(flagClosed===false){
             svgClassName = "flipSVG"
         }
-
+        
         return (
             <div>
                 <div>
@@ -48,7 +71,7 @@ class UnmetDemand extends React.Component {
                             </Col>
                             <Col sm={7} lg={7} className="gray800-14" >
                                 <span style={{"float":"left"}}>
-                                    {!data || !data._id ? 'search term' : data._id}
+                                    {!data || !data._id ? 'search term' : <a href={"/search?search="+data._id}> {data._id} </a>}
                                 </span>
                             </Col>
                             <Col sm={2} lg={2} className="gray800-14">
@@ -57,26 +80,26 @@ class UnmetDemand extends React.Component {
                                 </span>
                             </Col> 
                             <Col sm={2} lg={2} className="gray800-14">
-                                <span style={{"float":"left"}}>number of results</span>
+                                <span style={{"float":"left"}}>{this.getNumberOfResults(data)}
+                                </span>
                             </Col>
                             </Row>
                                 </Accordion.Toggle>
-                                <Accordion.Collapse eventKey="0">
+                                <Accordion.Collapse eventKey="0" style={{"padding-right":"20px"}}>
                                     <Row>
                                         <Col sm={10} lg={10} />
                                         <Col sm={2} lg={2} className="pl-4">
                                             <span className="gray700-13-bold">Other results</span>
                                             <br />
-                                            {/*TODO show the below values if the type is not your current tab type ie. show the relevant 4 of the 5 below */}
-                                            <span className="gray700-13">x datasets</span>
-                                            <br />
-                                            <span className="gray700-13">x tools</span>
-                                            <br />
-                                            <span className="gray700-13">x projects</span>
-                                            <br />
-                                            <span className="gray700-13">x paper</span>
-                                            <br />
-                                            <span className="gray700-13">x people</span>
+                                            {data.entity == 'dataset' ? null : <span className="gray700-13">{data.maxDatasets || 0} datasets</span> }
+                                            {data.entity == 'dataset' ? null : <br />}
+                                            {data.entity == 'tool'  ? null : <span className="gray700-13">{data.maxTools || 0} tools</span>}
+                                            {data.entity == 'tool' ? null : <br />}
+                                            {data.entity == 'project' ? null : <span className="gray700-13">{data.maxProjects || 0} projects</span>}
+                                            {data.entity == 'project' ? null : <br />}
+                                            {data.entity == 'paper' ? null : <span className="gray700-13">{data.maxPapers || 0} paper</span>}
+                                            {data.entity == 'paper' ? null : <br />}
+                                            {data.entity == 'person' ? null : <span className="gray700-13">{data.maxPeople || 0} people</span>}
                                         </Col>
                                     </Row>
                                 </Accordion.Collapse>
@@ -84,7 +107,6 @@ class UnmetDemand extends React.Component {
                         </Accordion>
                     </Row> 
                 </div>
-            
             </div>
         )
     }
