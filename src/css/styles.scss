@@ -101,10 +101,6 @@ body {
   margin-bottom: 1px;
 }
 
-.floatRight {
-  float: right;
-}
-
 .dataAccessTabs {
   align-items: center;
   justify-content: center;
@@ -424,6 +420,7 @@ input[type='radio']:checked:after {
   top: 0px;
   padding-top: 100px;
   width: 17%;
+  min-width: 110px;
 }
 
 .verticalNavBarHolder {
@@ -441,6 +438,11 @@ input[type='radio']:checked:after {
 
 svg:not(:root) {
   overflow: visible !important;
+}
+
+.svg-24 {
+  width: 24px;
+  height: 24px;
 }
 
 .AccountSvgs {
@@ -1917,7 +1919,7 @@ iframe#discourse-embed-frame {
 .actionBar {
     position: fixed;
     z-index: 998;
-    left: 0;
+    left: 0; 
     bottom: 0;
     height: 72px;
     width:100%;
@@ -1928,6 +1930,32 @@ iframe#discourse-embed-frame {
  }
 
 .floatRight{
-  float: right;
+  // float: right;
+  @include mq('tablet-small'){
+    float: right;
+  }
 }
+
+.flipSVG{
+  transform: rotate(180deg);
+}
+
+#dateDropdown input, button, select, optgroup, textarea {
+  font-family: inherit;
+  font-size: inherit !important;
+  color: inherit !important;
+}
+
+.dashboardPadding{
+  @include mq('tablet-small',max){
+    padding-left: 10% !important;
+  }
+  @include mq('phablet',max){
+    padding-left: 15% !important;
+  }
+  @include mq('phone-wide',max){
+    padding-left: 30% !important;
+  }
+}
+
 

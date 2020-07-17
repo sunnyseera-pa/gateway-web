@@ -62,7 +62,7 @@ h6 {
 }
 
 .white-12 {
-    @include font-source(12px, $white);
+    @include font-source(12px, $white); 
     
     &:hover {
         @include font-source(12px, $white);
@@ -107,6 +107,10 @@ h6 {
 
 .gray700-13 {
   @include font-source(13px, $gray-700, $font-weight-semibold);
+}
+
+.gray700-13-bold {
+  @include font-source(13px, $gray-700, $font-weight-bold);
 }
 
 .gray700-14 {

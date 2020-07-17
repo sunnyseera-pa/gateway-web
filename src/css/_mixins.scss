@@ -19,8 +19,8 @@ Example
 @mixin font-source($size: false, $colour: false, $weight: false,  $lh: false, $opacity: false) {
     font-family: $heading-font-family;
     @if $size { font-size: $size !important; }
-    @if $colour { color: $colour; }
-    @if $weight { font-weight: $weight; }
+    @if $colour { color: $colour !important; }
+    @if $weight { font-weight: $weight !important; }
     @if $lh { line-height: $lh; }
     @if $opacity { opacity: $opacity; }
 }
