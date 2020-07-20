@@ -64,7 +64,7 @@ class UnmetDemand extends React.Component {
                 <div>
                     <Row className="entryBox"> 
                         <Accordion defaultActiveKey="1" style={{"width":"100%"}}>
-                                <Accordion.Toggle as={Button} variant="link" eventKey="0" onClick={this.updateFlag} style={{"width":"100%", "padding-left":"0px"}} >
+                                <Accordion.Toggle as={Button} variant="link" eventKey="0" onClick={this.updateFlag} data-testid="accordion-toggle" style={{"width":"100%", "padding-left":"0px"}} >
                                 <Row>
                                 <Col sm={1} lg={1} className="gray800-14">
                                 <SVGIcon name="chevronbottom" fill={'#475da7'} className={flagClosed===true ? "svg-24" : "svg-24 flipSVG"}/>
