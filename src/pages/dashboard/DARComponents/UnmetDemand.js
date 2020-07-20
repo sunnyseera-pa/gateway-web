@@ -62,15 +62,15 @@ class UnmetDemand extends React.Component {
         return (
             <div>
                 <div>
-                    <Row className="entryBox mt-1"> 
+                    <Row className="entryBox"> 
                         <Accordion defaultActiveKey="1" style={{"width":"100%"}}>
-                                <Accordion.Toggle as={Button} variant="link" eventKey="0" onClick={this.updateFlag} style={{"width":"100%"}} >
+                                <Accordion.Toggle as={Button} variant="link" eventKey="0" onClick={this.updateFlag} style={{"width":"100%", "padding-left":"0px"}} >
                                 <Row>
                                 <Col sm={1} lg={1} className="gray800-14">
-                                <SVGIcon name="chevronbottom" fill={'#475da7'} className={flagClosed===true ? "svg-24" : "svg-24 flipSVG"} />
+                                <SVGIcon name="chevronbottom" fill={'#475da7'} className={flagClosed===true ? "svg-24" : "svg-24 flipSVG"}/>
                             </Col>
-                            <Col sm={7} lg={7} className="gray800-14" >
-                                <span style={{"float":"left"}}>
+                            <Col sm={7} lg={7} className="gray800-14" style={{"float":"left", "padding-left":"0px"}}>
+                                <span style={{"float":"left", "padding-left":"0px"}}>
                                     {!data || !data._id ? 'search term' : <a href={"/search?search="+data._id}> {data._id} </a>}
                                 </span>
                             </Col>
