@@ -28,6 +28,7 @@ class SearchPage extends React.Component {
         paperData: [],
         personData: [],
         filterOptions: [],
+        allFilters: [],
         licensesSelected: [],
         sampleAvailabilitySelected: [],
         keywordsSelected: [],
@@ -46,6 +47,7 @@ class SearchPage extends React.Component {
         summary: [],
         key: '',
         isLoading: true,
+        isResultsLoading: true,
         userState: [{
             loggedIn: false,
             role: "Reader",
@@ -67,14 +69,15 @@ class SearchPage extends React.Component {
             await Promise.all([
                 this.updateFilterStates(values)
             ])
-
-            this.doSearchCall();
+            this.getFiltersCall()
+            this.doSearchCall()
             initGA('UA-166025838-1');
             PageView();
         }
         else {
             this.setState({ data: [], searchString: '', isLoading: true });
-            this.doSearchCall();
+            this.getFiltersCall()
+            this.doSearchCall()
             initGA('UA-166025838-1');
             PageView();
         }
@@ -126,36 +129,46 @@ class SearchPage extends React.Component {
 
     doSearch = async (e) => { //fires on enter on searchbar
         if (e.key === 'Enter') {
+            
+            this.setState({ isResultsLoading: true });
             await Promise.all([
-                this.clearFilterStates()
+                this.clearFilterStates(),
+                this.getFiltersCall()
             ])
-
-            if (!!this.state.searchString) {
-                this.doSearchCall();
-            }
+            
+            this.doSearchCall();    
         }
+    }
+
+    doClear = async (e) => {
+        this.setState({ isResultsLoading: true, searchString: '' });
+        await Promise.all([
+            this.clearFilterStates()
+        ])
+        this.doSearchCall();    
     }
 
     updateFilterStates(values) {
         values.search ? this.setState({ searchString: values.search }) : this.setState({ searchString: '' })
-        values.license ? this.setState({ licensesSelected: [values.license] }) : this.setState({ licensesSelected: [] })
-        values.sampleavailability ? this.setState({ sampleAvailabilitySelected: [values.sampleavailability] }) : this.setState({ sampleAvailabilitySelected: [] })
-        values.keywords ? this.setState({ keywordsSelected: [values.keywords] }) : this.setState({ keywordsSelected: [] })
-        values.publisher ? this.setState({ publishersSelected: [values.publisher] }) : this.setState({ publishersSelected: [] })
-        values.ageband ? this.setState({ ageBandsSelected: [values.ageband] }) : this.setState({ ageBandsSelected: [] })
-        values.geographiccover ? this.setState({ geoCoverageSelected: [values.geographiccover] }) : this.setState({ geoCoverageSelected: [] })
 
-        values.toolcategories ? this.setState({ toolCategoriesSelected: [values.toolcategories] }) : this.setState({ toolCategoriesSelected: [] })
-        values.programmingLanguage ? this.setState({ languageSelected: [values.programmingLanguage] }) : this.setState({ languageSelected: [] })
-        values.features ? this.setState({ featuresSelected: [values.features] }) : this.setState({ featuresSelected: [] })
-        values.tooltopics ? this.setState({ toolTopicsSelected: [values.tooltopics] }) : this.setState({ toolTopicsSelected: [] })
+        values.license ? this.setState({ licensesSelected: values.license.split("::") }) : this.setState({ licensesSelected: [] })
+        values.sampleavailability ? this.setState({ sampleAvailabilitySelected: values.sampleavailability.split("::") }) : this.setState({ sampleAvailabilitySelected: [] })
+        values.keywords ? this.setState({ keywordsSelected: values.keywords.split("::") }) : this.setState({ keywordsSelected: [] })
+        values.publisher ? this.setState({ publishersSelected: values.publisher.split("::") }) : this.setState({ publishersSelected: [] })
+        values.ageband ? this.setState({ ageBandsSelected: values.ageband.split("::") }) : this.setState({ ageBandsSelected: [] })
+        values.geographiccover ? this.setState({ geoCoverageSelected: values.geographiccover.split("::") }) : this.setState({ geoCoverageSelected: [] })
 
-        values.projectcategories ? this.setState({ projectCategoriesSelected: [values.projectcategories] }) : this.setState({ projectCategoriesSelected: [] })
-        values.projectfeatures ? this.setState({ projectFeaturesSelected: [values.projectfeatures] }) : this.setState({ projectFeaturesSelected: [] })
-        values.projecttopics ? this.setState({ projectTopicsSelected: [values.projecttopics] }) : this.setState({ projectTopicsSelected: [] })
+        values.toolcategories ? this.setState({ toolCategoriesSelected: values.toolcategories.split("::") }) : this.setState({ toolCategoriesSelected: [] })
+        values.programmingLanguage ? this.setState({ languageSelected: values.programmingLanguage.split("::") }) : this.setState({ languageSelected: [] })
+        values.features ? this.setState({ featuresSelected: values.features.split("::") }) : this.setState({ featuresSelected: [] })
+        values.tooltopics ? this.setState({ toolTopicsSelected: values.tooltopics.split("::") }) : this.setState({ toolTopicsSelected: [] })
 
-        values.paperfeatures ? this.setState({ paperFeaturesSelected: [values.paperfeatures] }) : this.setState({ paperFeaturesSelected: [] })
-        values.papertopics ? this.setState({ paperTopicsSelected: [values.papertopics] }) : this.setState({ paperTopicsSelected: [] })
+        values.projectcategories ? this.setState({ projectCategoriesSelected: values.projectcategories.split("::") }) : this.setState({ projectCategoriesSelected: [] })
+        values.projectfeatures ? this.setState({ projectFeaturesSelected: values.projectfeatures.split("::") }) : this.setState({ projectFeaturesSelected: [] })
+        values.projecttopics ? this.setState({ projectTopicsSelected: values.projecttopics.split("::") }) : this.setState({ projectTopicsSelected: [] })
+
+        values.paperfeatures ? this.setState({ paperFeaturesSelected: values.paperfeatures.split("::") }) : this.setState({ paperFeaturesSelected: [] })
+        values.papertopics ? this.setState({ paperTopicsSelected: values.papertopics.split("::") }) : this.setState({ paperTopicsSelected: [] })
 
         values.tab ? this.setState({ key: values.tab }) : this.setState({ key: '' })
         values.datasetIndex ? this.setState({ datasetIndex: values.datasetIndex }) : this.setState({ datasetIndex: 0 })
@@ -184,7 +197,6 @@ class SearchPage extends React.Component {
         this.setState({ paperFeaturesSelected: [] })
         this.setState({ paperTopicsSelected: [] })
 
-        this.setState({ key: "" })
         this.setState({ datasetIndex: 0 })
         this.setState({ toolIndex: 0 })
         this.setState({ projectIndex: 0 })
@@ -194,29 +206,44 @@ class SearchPage extends React.Component {
 
     updateOnFilter = () => {
         this.doSearchCall();
+        this.setState({ isResultsLoading: true });
+    }
+
+    clearFilter = async (filter, filterGroup) => {
+        if (filter === 'All') {
+            await Promise.all([
+                this.clearFilterStates()
+            ])
+        }
+        else {
+             eval('this.state.'+filterGroup).splice(eval('this.state.'+filterGroup).indexOf(filter), 1);
+        }
+        
+        this.doSearchCall();
+        this.setState({ isResultsLoading: true });
     }
 
     doSearchCall(skipHistory) {
         var searchURL = '';
-
-        if (this.state.licensesSelected.length > 0) searchURL += '&license=' + this.state.licensesSelected;
-        if (this.state.sampleAvailabilitySelected.length > 0) searchURL += '&sampleavailability=' + this.state.sampleAvailabilitySelected;
-        if (this.state.keywordsSelected.length > 0) searchURL += '&keywords=' + this.state.keywordsSelected;
-        if (this.state.publishersSelected.length > 0) searchURL += '&publisher=' + this.state.publishersSelected;
-        if (this.state.ageBandsSelected.length > 0) searchURL += '&ageband=' + this.state.ageBandsSelected;
-        if (this.state.geoCoverageSelected.length > 0) searchURL += '&geographiccover=' + this.state.geoCoverageSelected;
-
-        if (this.state.toolCategoriesSelected.length > 0) searchURL += '&toolcategories=' + this.state.toolCategoriesSelected;
-        if (this.state.languageSelected.length > 0) searchURL += '&programmingLanguage=' + this.state.languageSelected;
-        if (this.state.featuresSelected.length > 0) searchURL += '&features=' + this.state.featuresSelected;
-        if (this.state.toolTopicsSelected.length > 0) searchURL += '&tooltopics=' + this.state.toolTopicsSelected;
-
-        if (this.state.projectCategoriesSelected.length > 0) searchURL += '&projectcategories=' + this.state.projectCategoriesSelected;
-        if (this.state.projectFeaturesSelected.length > 0) searchURL += '&projectfeatures=' + this.state.projectFeaturesSelected;
-        if (this.state.projectTopicsSelected.length > 0) searchURL += '&projecttopics=' + this.state.projectTopicsSelected;
         
-        if (this.state.paperFeaturesSelected.length > 0) searchURL += '&paperfeatures=' + this.state.paperFeaturesSelected;
-        if (this.state.paperTopicsSelected.length > 0) searchURL += '&papertopics=' + this.state.paperTopicsSelected;
+        if (this.state.licensesSelected.length > 0) searchURL += '&license=' + this.state.licensesSelected.toString().split(',').join('::');
+        if (this.state.sampleAvailabilitySelected.length > 0) searchURL += '&sampleavailability=' + this.state.sampleAvailabilitySelected.toString().split(',').join('::');
+        if (this.state.keywordsSelected.length > 0) searchURL += '&keywords=' + this.state.keywordsSelected.toString().split(',').join('::');
+        if (this.state.publishersSelected.length > 0) searchURL += '&publisher=' + this.state.publishersSelected.toString().split(',').join('::');
+        if (this.state.ageBandsSelected.length > 0) searchURL += '&ageband=' + this.state.ageBandsSelected.toString().split(',').join('::');
+        if (this.state.geoCoverageSelected.length > 0) searchURL += '&geographiccover=' + this.state.geoCoverageSelected.toString().split(',').join('::');
+
+        if (this.state.toolCategoriesSelected.length > 0) searchURL += '&toolcategories=' + this.state.toolCategoriesSelected.toString().split(',').join('::');
+        if (this.state.languageSelected.length > 0) searchURL += '&programmingLanguage=' + this.state.languageSelected.toString().split(',').join('::');
+        if (this.state.featuresSelected.length > 0) searchURL += '&features=' + this.state.featuresSelected.toString().split(',').join('::');
+        if (this.state.toolTopicsSelected.length > 0) searchURL += '&tooltopics=' + this.state.toolTopicsSelected.toString().split(',').join('::');
+
+        if (this.state.projectCategoriesSelected.length > 0) searchURL += '&projectcategories=' + this.state.projectCategoriesSelected.toString().split(',').join('::');
+        if (this.state.projectFeaturesSelected.length > 0) searchURL += '&projectfeatures=' + this.state.projectFeaturesSelected.toString().split(',').join('::');
+        if (this.state.projectTopicsSelected.length > 0) searchURL += '&projecttopics=' + this.state.projectTopicsSelected.toString().split(',').join('::');
+        
+        if (this.state.paperFeaturesSelected.length > 0) searchURL += '&paperfeatures=' + this.state.paperFeaturesSelected.toString().split(',').join('::');
+        if (this.state.paperTopicsSelected.length > 0) searchURL += '&papertopics=' + this.state.paperTopicsSelected.toString().split(',').join('::');
 
         if (this.state.datasetIndex > 0) searchURL += '&datasetIndex=' + this.state.datasetIndex;
         if (this.state.toolIndex > 0) searchURL += '&toolIndex=' + this.state.toolIndex;
@@ -233,7 +260,7 @@ class SearchPage extends React.Component {
             }
         } 
         
-        this.setState({ isLoading: true });
+        
         axios.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL)
             .then((res) => {
                 this.setState({
@@ -244,7 +271,17 @@ class SearchPage extends React.Component {
                     personData: res.data.personResults || [],
                     summary: res.data.summary || [],
                     filterOptions: res.data.filterOptions || [],
-                    isLoading: false
+                    isLoading: false,
+                    isResultsLoading: false
+                });
+            })
+    }
+
+    getFiltersCall () {
+        axios.get(baseURL + '/api/v1/search/filter/'+this.state.searchString)
+            .then((res) => {
+                this.setState({
+                    allFilters: res.data.allFilters || []
                 });
             })
     }
@@ -299,8 +336,10 @@ class SearchPage extends React.Component {
             paperData, 
             personData, 
             filterOptions, 
+            allFilters,
             userState, 
             isLoading, 
+            isResultsLoading,
             
             publishersSelected, 
             licensesSelected, 
@@ -395,25 +434,25 @@ class SearchPage extends React.Component {
         return (
             <div>
 
-                <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
+                <SearchBar searchString={searchString} doSearchMethod={this.doSearch} onClearMethod={this.doClear} doUpdateSearchString={this.updateSearchString} userState={userState} />
 
                 <div className="searchTabsHolder">
                         <div>
                             <Tabs className='tabsBackground gray700-13' activeKey={key} onSelect={this.handleSelect}>
                                 <Tab eventKey="Datasets" title={'Datasets (' + datasetCount + ')'}>
-                                    {datasetCount <= 0 ? <NoResults type='datasets' searchString={searchString} /> : ''}
+                                    {datasetCount <= 0 && !isResultsLoading ? <NoResults type='datasets' searchString={searchString} /> : ''}
                                 </Tab>
                                 <Tab eventKey="Tools" title={'Tools (' + toolCount + ')'}>
-                                    {toolCount <= 0 ? <NoResults type='tools' searchString={searchString} /> : ''}
+                                    {toolCount <= 0 && !isResultsLoading ? <NoResults type='tools' searchString={searchString} /> : ''}
                                 </Tab>
                                 <Tab eventKey="Projects" title={'Projects (' + projectCount + ')'}>
-                                    {projectCount <= 0 ? <NoResults type='projects' searchString={searchString} /> : ''}
+                                    {projectCount <= 0 && !isResultsLoading ? <NoResults type='projects' searchString={searchString} /> : ''}
                                 </Tab>
                                 <Tab eventKey="Papers" title={'Papers (' + paperCount + ')'}>
-                                    {paperCount <= 0 ? <NoResults type='papers' searchString={searchString} /> : ''}
+                                    {paperCount <= 0 && !isResultsLoading ? <NoResults type='papers' searchString={searchString} /> : ''}
                                 </Tab>
                                 <Tab eventKey="People" title={'People (' + personCount + ')'}>
-                                    {personCount <= 0 ? <NoResults type='profiles' searchString={searchString} /> : ''}
+                                    {personCount <= 0 && !isResultsLoading ? <NoResults type='profiles' searchString={searchString} /> : ''}
                                 </Tab>
                             </Tabs>
                         </div>
@@ -422,91 +461,208 @@ class SearchPage extends React.Component {
                 <Container>
                     <Row>
                         {key !== 'People' ?
-                            <Col sm={12} md={12} lg={3}>
-                                {key === 'Datasets' ? <Filters data={filterOptions.publisherFilterOptions} updateOnFilter={this.updateOnFilter} selected={publishersSelected} title="Publisher" /> : ''}
-                                {key === 'Datasets' ? <Filters data={filterOptions.licenseFilterOptions} updateOnFilter={this.updateOnFilter} selected={licensesSelected} title="License" /> : ''}
-                                {key === 'Datasets' ? <Filters data={filterOptions.keywordsFilterOptions} updateOnFilter={this.updateOnFilter} selected={keywordsSelected} title="Keywords" /> : ''}
-                                {key === 'Datasets' ? <Filters data={filterOptions.geographicCoverageFilterOptions} updateOnFilter={this.updateOnFilter} selected={geoCoverageSelected} title="Geographic coverage" /> : ''}
-                                {key === 'Datasets' ? <Filters data={filterOptions.sampleFilterOptions} updateOnFilter={this.updateOnFilter} selected={sampleAvailabilitySelected} title="Physical sample availability" /> : ''}
-                                {/* {key === 'Datasets' ? <Filters data={filterOptions.ageBandFilterOptions} updateOnFilter={this.updateOnFilter} selected={ageBandsSelected} title="Age Bands" /> : ''} */}
-                                
-                                {key === 'Tools' ? <Filters data={filterOptions.toolCategoriesFilterOptions} updateOnFilter={this.updateOnFilter} selected={toolCategoriesSelected} title="Type" /> : ''}
-                                {key === 'Tools' ? <Filters data={filterOptions.programmingLanguageFilterOptions} updateOnFilter={this.updateOnFilter} selected={languageSelected} title="Programming language" /> : ''}
-                                {key === 'Tools' ? <Filters data={filterOptions.featuresFilterOptions} updateOnFilter={this.updateOnFilter} selected={featuresSelected} title="Keywords" /> : ''}
-                                {key === 'Tools' ? <Filters data={filterOptions.toolTopicsFilterOptions} updateOnFilter={this.updateOnFilter} selected={toolTopicsSelected} title="Domain" /> : ''}
-                                
-                                {key === 'Projects' ? <Filters data={filterOptions.projectCategoriesFilterOptions} updateOnFilter={this.updateOnFilter} selected={projectCategoriesSelected} title="Type" /> : ''}
-                                {key === 'Projects' ? <Filters data={filterOptions.projectFeaturesFilterOptions} updateOnFilter={this.updateOnFilter} selected={projectFeaturesSelected} title="Keywords" /> : ''}
-                                {key === 'Projects' ? <Filters data={filterOptions.projectTopicsFilterOptions} updateOnFilter={this.updateOnFilter} selected={projectTopicsSelected} title="Domain" /> : ''}
+                            <Col sm={12} md={12} lg={3} className="mt-4">
+                                {key === 'Datasets' ? <>
+                                    <div className="filterHolder">
 
-                                {key === 'Papers' ? <Filters data={filterOptions.paperFeaturesFilterOptions} updateOnFilter={this.updateOnFilter} selected={paperFeaturesSelected} title="Keywords" /> : ''}
-                                {key === 'Papers' ? <Filters data={filterOptions.paperTopicsFilterOptions} updateOnFilter={this.updateOnFilter} selected={paperTopicsSelected} title="Domain" /> : ''}
+
+                                        {publishersSelected.length !== 0 || licensesSelected.length !== 0 || keywordsSelected.length !== 0 || geoCoverageSelected.length !== 0 || sampleAvailabilitySelected.length !== 0 ? 
+                                            <div className="filterCard mb-2">
+                                                <div className="gray500-13">Showing:</div> 
+                                                <div className="purple-13">Clear all</div> 
+                                                
+                                                {!publishersSelected || publishersSelected.length <= 0 ? '' : publishersSelected.map((selected) => {
+                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{selected} X</div>
+                                                })}
+
+                                                {!publishersSelected || publishersSelected.length <= 0 ? '' : publishersSelected.map((selected) => {
+                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{selected} X</div>
+                                                })}
+                                            </div> 
+                                        : ''}
+                                        <Filters data={filterOptions.publisherFilterOptions} allFilters={[]} updateOnFilter={this.updateOnFilter} selected={publishersSelected} title="Publisher" />
+                                        <Filters data={filterOptions.licenseFilterOptions} allFilters={[]} updateOnFilter={this.updateOnFilter} selected={licensesSelected} title="License" />
+                                        <Filters data={filterOptions.keywordsFilterOptions} allFilters={[]} updateOnFilter={this.updateOnFilter} selected={keywordsSelected} title="Keywords" />
+                                        <Filters data={filterOptions.geographicCoverageFilterOptions} allFilters={[]} updateOnFilter={this.updateOnFilter} selected={geoCoverageSelected} title="Geographic coverage" />
+                                        <Filters data={filterOptions.sampleFilterOptions} allFilters={[]} updateOnFilter={this.updateOnFilter} selected={sampleAvailabilitySelected} title="Physical sample availability" /> 
+                                        {/* <Filters data={filterOptions.ageBandFilterOptions} updateOnFilter={this.updateOnFilter} selected={ageBandsSelected} title="Age Bands" /> */}
+                                    </div>
+                                </> : ''}
+                                
+                                
+                                
+                                
+                                
+                                {key === 'Tools' ? <>
+                                    <div className="filterHolder">
+                                        {toolCategoriesSelected.length !== 0 || languageSelected.length !== 0 || featuresSelected.length !== 0 || toolTopicsSelected.length !== 0 ? 
+                                            <div className="filterCard mb-2">
+                                                <Row>
+                                                    <Col className="mb-2">
+                                                        <div className="inlineBlock">
+                                                            <div className="gray500-13">Showing:</div>
+                                                        </div>
+                                                        <div className="floatRight">
+                                                            <div className="purple-13 pointer" onClick={() => this.clearFilter('All')}>Clear all</div>
+                                                        </div>
+                                                    </Col>
+                                                </Row>
+                                                
+                                                {!toolCategoriesSelected || toolCategoriesSelected.length <= 0 ? '' : toolCategoriesSelected.map((selected) => {
+                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'toolCategoriesSelected')}>X</span></div>
+                                                })}
+
+                                                {!languageSelected || languageSelected.length <= 0 ? '' : languageSelected.map((selected) => {
+                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'languageSelected')}>X</span></div>
+                                                })}
+
+                                                {!featuresSelected || featuresSelected.length <= 0 ? '' : featuresSelected.map((selected) => {
+                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'featuresSelected')}>X</span></div>
+                                                })}
+
+                                                {!toolTopicsSelected || toolTopicsSelected.length <= 0 ? '' : toolTopicsSelected.map((selected) => {
+                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'toolTopicsSelected')}>X</span></div>
+                                                })}
+                                            </div> 
+                                        : ''}
+                                        <Filters data={filterOptions.toolCategoriesFilterOptions} allFilters={allFilters.toolCategoryFilter} updateOnFilter={this.updateOnFilter} selected={toolCategoriesSelected} title="Type" />
+                                        <Filters data={filterOptions.programmingLanguageFilterOptions} allFilters={allFilters.toolLanguageFilter} updateOnFilter={this.updateOnFilter} selected={languageSelected} title="Programming language" />
+                                        <Filters data={filterOptions.featuresFilterOptions} allFilters={allFilters.toolFeatureFilter} updateOnFilter={this.updateOnFilter} selected={featuresSelected} title="Keywords" />
+                                        <Filters data={filterOptions.toolTopicsFilterOptions} allFilters={allFilters.toolTopicFilter} updateOnFilter={this.updateOnFilter} selected={toolTopicsSelected} title="Domain" />
+                                    </div>
+                                </> : ''}
+
+                                {key === 'Projects' ? <>
+                                    <div className="filterHolder">
+                                        {projectCategoriesSelected.length !== 0 || projectFeaturesSelected.length !== 0 || projectTopicsSelected.length !== 0 ? 
+                                            <div className="filterCard mb-2">
+                                                <Row>
+                                                    <Col className="mb-2">
+                                                        <div className="inlineBlock">
+                                                            <div className="gray500-13">Showing:</div>
+                                                        </div>
+                                                        <div className="floatRight">
+                                                            <div className="purple-13 pointer" onClick={() => this.clearFilter('All')}>Clear all</div>
+                                                        </div>
+                                                    </Col>
+                                                </Row>
+                                                
+                                                {!projectCategoriesSelected || projectCategoriesSelected.length <= 0 ? '' : projectCategoriesSelected.map((selected) => {
+                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'projectCategoriesSelected')}>X</span></div>
+                                                })}
+
+                                                {!projectFeaturesSelected || projectFeaturesSelected.length <= 0 ? '' : projectFeaturesSelected.map((selected) => {
+                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'projectFeaturesSelected')}>X</span></div>
+                                                })}
+
+                                                {!projectTopicsSelected || projectTopicsSelected.length <= 0 ? '' : projectTopicsSelected.map((selected) => {
+                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'projectTopicsSelected')}>X</span></div>
+                                                })}
+                                            </div> 
+                                        : ''}
+                                        <Filters data={filterOptions.projectCategoriesFilterOptions} allFilters={allFilters.projectCategoryFilter} updateOnFilter={this.updateOnFilter} selected={projectCategoriesSelected} title="Type" />
+                                        <Filters data={filterOptions.projectFeaturesFilterOptions} allFilters={allFilters.projectFeatureFilter} updateOnFilter={this.updateOnFilter} selected={projectFeaturesSelected} title="Keywords" />
+                                        <Filters data={filterOptions.projectTopicsFilterOptions} allFilters={allFilters.projectTopicFilter} updateOnFilter={this.updateOnFilter} selected={projectTopicsSelected} title="Domain" />
+                                    </div>
+                                </> : ''}
+
+                                {key === 'Papers' ? <>
+                                    <div className="filterHolder">
+                                        {paperFeaturesSelected.length !== 0 || paperTopicsSelected.length !== 0 ? 
+                                            <div className="filterCard mb-2">
+                                                <Row>
+                                                    <Col className="mb-2">
+                                                        <div className="inlineBlock">
+                                                            <div className="gray500-13">Showing:</div>
+                                                        </div>
+                                                        <div className="floatRight">
+                                                            <div className="purple-13 pointer" onClick={() => this.clearFilter('All')}>Clear all</div>
+                                                        </div>
+                                                    </Col>
+                                                </Row>
+                                                
+                                                {!paperFeaturesSelected || paperFeaturesSelected.length <= 0 ? '' : paperFeaturesSelected.map((selected) => {
+                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'paperFeaturesSelected')}>X</span></div>
+                                                })}
+
+                                                {!paperTopicsSelected || paperTopicsSelected.length <= 0 ? '' : paperTopicsSelected.map((selected) => {
+                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'paperTopicsSelected')}>X</span></div>
+                                                })}
+                                            </div> 
+                                        : ''}
+                                        <Filters data={filterOptions.paperFeaturesFilterOptions} allFilters={allFilters.paperFeatureFilter} updateOnFilter={this.updateOnFilter} selected={paperFeaturesSelected} title="Keywords" />
+                                        <Filters data={filterOptions.paperTopicsFilterOptions} allFilters={allFilters.paperTopicFilter} updateOnFilter={this.updateOnFilter} selected={paperTopicsSelected} title="Domain" />
+                                    </div>
+                                </> : ''}
                             </Col>
                             : <Col sm={12} md={12} lg={3} />}
 
-                        <Col sm={12} md={12} lg={9}>
-                            {key === 'Datasets' ?
-                                datasetData.map((dataset) => {
-                                    return <RelatedObject key={dataset.id} data={dataset} activeLink={true} />
-                                })
-                                : ''}
+                        {!isResultsLoading ?
+                            <Col sm={12} md={12} lg={9} className="mt-4">
+                                {key === 'Datasets' ?
+                                    datasetData.map((dataset) => {
+                                        return <RelatedObject key={dataset.id} data={dataset} activeLink={true} />
+                                    })
+                                    : ''}
 
-                            {key === 'Tools' ?
-                                toolData.map((tool) => {
-                                    return <RelatedObject key={tool.id} data={tool} activeLink={true} />
-                                })
-                                : ''}
+                                {key === 'Tools' ?
+                                    toolData.map((tool) => {
+                                        return <RelatedObject key={tool.id} data={tool} activeLink={true} />
+                                    })
+                                    : ''}
 
-                            {key === 'Projects' ?
-                                projectData.map((project) => {
-                                    return <RelatedObject key={project.id} data={project} activeLink={true}/>
-                                })
-                                : ''}
-                            
-                            {key === 'Papers' ?
-                                paperData.map((paper) => {
-                                    return <RelatedObject key={paper.id} data={paper} activeLink={true}/>
-                                })
-                                : ''}
+                                {key === 'Projects' ?
+                                    projectData.map((project) => {
+                                        return <RelatedObject key={project.id} data={project} activeLink={true}/>
+                                    })
+                                    : ''}
+                                
+                                {key === 'Papers' ?
+                                    paperData.map((paper) => {
+                                        return <RelatedObject key={paper.id} data={paper} activeLink={true}/>
+                                    })
+                                    : ''}
 
-                            {key === 'People' ?
-                                personData.map((person) => {
-                                    return <RelatedObject key={person.id} data={person} activeLink={true} />
-                                })
-                                : ''}
+                                {key === 'People' ?
+                                    personData.map((person) => {
+                                        return <RelatedObject key={person.id} data={person} activeLink={true} />
+                                    })
+                                    : ''}
 
-                            <div className='text-center'>
-                            {key === 'Datasets' && datasetCount > maxResult ?
-                                <Pagination>
-                                    {datasetPaginationItems}
-                                </Pagination>
-                                : ''}
+                                <div className='text-center'>
+                                {key === 'Datasets' && datasetCount > maxResult ?
+                                    <Pagination>
+                                        {datasetPaginationItems}
+                                    </Pagination>
+                                    : ''}
 
-                            {key === 'Tools' && toolCount > maxResult ?
-                                <Pagination>
-                                    {toolPaginationItems}
-                                </Pagination>
-                                : ''}
+                                {key === 'Tools' && toolCount > maxResult ?
+                                    <Pagination>
+                                        {toolPaginationItems}
+                                    </Pagination>
+                                    : ''}
 
-                            {key === 'Projects' && projectCount > maxResult ?
-                                <Pagination>
-                                    {projectPaginationItems}
-                                </Pagination>
-                                : ''}
+                                {key === 'Projects' && projectCount > maxResult ?
+                                    <Pagination>
+                                        {projectPaginationItems}
+                                    </Pagination>
+                                    : ''}
 
-                            {key === 'Papers' && paperCount > maxResult ?
-                                <Pagination>
-                                    {paperPaginationItems}
-                                </Pagination>
-                                : ''}
+                                {key === 'Papers' && paperCount > maxResult ?
+                                    <Pagination>
+                                        {paperPaginationItems}
+                                    </Pagination>
+                                    : ''}
 
-                            {key === 'People' && personCount > maxResult ?
-                                <Pagination>
-                                    {personPaginationItems}
-                                </Pagination>
-                                : ''}
-                                </div>
-                        </Col>
+                                {key === 'People' && personCount > maxResult ?
+                                    <Pagination>
+                                        {personPaginationItems}
+                                    </Pagination>
+                                    : ''}
+                                    </div>
+                            </Col>
+                        : <Col sm={12} md={12} lg={9}><Loading /></Col>
+                        }
                     </Row>
                 </Container>
             </div>

@@ -175,7 +175,7 @@ class RelatedObject extends React.Component {
                                         </Col> 
                                         <Col sm={12} lg={12} className="pt-3">
                                             <span className="gray800-14">
-                                                {data.description.substr(0, 140) + (data.description.length > 140 ? '...' : '')}
+                                                {data.description.substr(0, 220) + (data.description.length > 220 ? '...' : '')}
                                             </span>
                                         </Col> 
                                     </Row>   
@@ -240,7 +240,7 @@ class RelatedObject extends React.Component {
                                         </Col>  
                                         <Col sm={12} lg={12} className="pt-3">
                                             <span className="gray800-14">
-                                                {data.description.substr(0, 140) + (data.description.length > 140 ? '...' : '')}
+                                                {data.description.substr(0, 220) + (data.description.length > 220 ? '...' : '')}
                                             </span>
                                         </Col> 
                                     </Row>  
@@ -302,7 +302,7 @@ class RelatedObject extends React.Component {
                                         </Col>  
                                         <Col sm={12} lg={12} className="pt-3">
                                             <span className="gray800-14">
-                                                {data.description.substr(0, 140) + (data.description.length > 140 ? '...' : '')}
+                                                {data.description.substr(0, 220) + (data.description.length > 220 ? '...' : '')}
                                             </span>
                                         </Col> 
                                     </Row>
@@ -356,11 +356,11 @@ class RelatedObject extends React.Component {
                                                 {(() => {
                                                     if (typeof data.description === 'undefined') {
                                                         if(data.abstract){
-                                                        return data.abstract.substr(0, 140) + (data.abstract.length > 140 ? '...' : '')
+                                                        return data.abstract.substr(0, 220) + (data.abstract.length > 220 ? '...' : '')
                                                         }
                                                     }
                                                     else {
-                                                        return data.description.substr(0, 140) + (data.description.length > 140 ? '...' : '')
+                                                        return data.description.substr(0, 220) + (data.description.length > 220 ? '...' : '')
                                                     }
                                                 })()}
                                             </span>
