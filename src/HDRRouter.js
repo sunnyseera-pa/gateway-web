@@ -15,6 +15,7 @@ import SearchPage from './pages/search/SearchPage';
 import CollectionPage from './pages/collections/CollectionPage';
 
 import Account from './pages/dashboard/Account';
+import Unsubscribe from './pages/dashboard/Unsubscribe';
 
 import AddEditToolPage from './pages/tool/AddEditToolPage';
 import AddEditProjectPage from './pages/project/AddEditProjectPage';
@@ -101,6 +102,7 @@ class HDRRouter extends Component {
                         <Route path='/dataset/:datasetID' render={(props) => <DatasetPage {...props} userState={userState} />} />
                         <Route path='/completeRegistration/:personID' render={(props) => <CompleteRegistration {...props} userState={userState} />} />
                         <Route path='/sso' render={(props) => <SSOPage {...props} userState={userState} />} />
+                        <Route path='/account/unsubscribe/:userObjectID' render={(props) => <Unsubscribe {...props} userState={userState} />} />
                         
                         {userState[0].loggedIn ? (<Route path='/data-access-request/dataset/:datasetId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
                         {userState[0].loggedIn ? (<Route path='/account' render={(props) => <Account {...props} userState={userState} />} />) : ''}
