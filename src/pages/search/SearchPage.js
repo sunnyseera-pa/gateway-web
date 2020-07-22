@@ -199,30 +199,30 @@ class SearchPage extends React.Component {
     doSearchCall(skipHistory) {
         var searchURL = '';
 
-        if (this.state.licensesSelected.length > 0) searchURL += '&license=' + this.state.licensesSelected;
-        if (this.state.sampleAvailabilitySelected.length > 0) searchURL += '&sampleavailability=' + this.state.sampleAvailabilitySelected;
-        if (this.state.keywordsSelected.length > 0) searchURL += '&keywords=' + this.state.keywordsSelected;
-        if (this.state.publishersSelected.length > 0) searchURL += '&publisher=' + this.state.publishersSelected;
-        if (this.state.ageBandsSelected.length > 0) searchURL += '&ageband=' + this.state.ageBandsSelected;
-        if (this.state.geoCoverageSelected.length > 0) searchURL += '&geographiccover=' + this.state.geoCoverageSelected;
+        if (this.state.licensesSelected.length > 0) searchURL += '&license=' + encodeURIComponent(this.state.licensesSelected);
+        if (this.state.sampleAvailabilitySelected.length > 0) searchURL += '&sampleavailability=' + encodeURIComponent(this.state.sampleAvailabilitySelected);
+        if (this.state.keywordsSelected.length > 0) searchURL += '&keywords=' + encodeURIComponent(this.state.keywordsSelected);
+        if (this.state.publishersSelected.length > 0) searchURL += '&publisher=' + encodeURIComponent(this.state.publishersSelected);
+        if (this.state.ageBandsSelected.length > 0) searchURL += '&ageband=' + encodeURIComponent(this.state.ageBandsSelected);
+        if (this.state.geoCoverageSelected.length > 0) searchURL += '&geographiccover=' + encodeURIComponent(this.state.geoCoverageSelected);
 
-        if (this.state.toolCategoriesSelected.length > 0) searchURL += '&toolcategories=' + this.state.toolCategoriesSelected;
-        if (this.state.languageSelected.length > 0) searchURL += '&programmingLanguage=' + this.state.languageSelected;
-        if (this.state.featuresSelected.length > 0) searchURL += '&features=' + this.state.featuresSelected;
-        if (this.state.toolTopicsSelected.length > 0) searchURL += '&tooltopics=' + this.state.toolTopicsSelected;
+        if (this.state.toolCategoriesSelected.length > 0) searchURL += '&toolcategories=' + encodeURIComponent(this.state.toolCategoriesSelected);
+        if (this.state.languageSelected.length > 0) searchURL += '&programmingLanguage=' + encodeURIComponent(this.state.languageSelected);
+        if (this.state.featuresSelected.length > 0) searchURL += '&features=' + encodeURIComponent(this.state.featuresSelected);
+        if (this.state.toolTopicsSelected.length > 0) searchURL += '&tooltopics=' + encodeURIComponent(this.state.toolTopicsSelected);
 
-        if (this.state.projectCategoriesSelected.length > 0) searchURL += '&projectcategories=' + this.state.projectCategoriesSelected;
-        if (this.state.projectFeaturesSelected.length > 0) searchURL += '&projectfeatures=' + this.state.projectFeaturesSelected;
-        if (this.state.projectTopicsSelected.length > 0) searchURL += '&projecttopics=' + this.state.projectTopicsSelected;
+        if (this.state.projectCategoriesSelected.length > 0) searchURL += '&projectcategories=' + encodeURIComponent(this.state.projectCategoriesSelected);
+        if (this.state.projectFeaturesSelected.length > 0) searchURL += '&projectfeatures=' + encodeURIComponent(this.state.projectFeaturesSelected);
+        if (this.state.projectTopicsSelected.length > 0) searchURL += '&projecttopics=' + encodeURIComponent(this.state.projectTopicsSelected);
         
-        if (this.state.paperFeaturesSelected.length > 0) searchURL += '&paperfeatures=' + this.state.paperFeaturesSelected;
-        if (this.state.paperTopicsSelected.length > 0) searchURL += '&papertopics=' + this.state.paperTopicsSelected;
+        if (this.state.paperFeaturesSelected.length > 0) searchURL += '&paperfeatures=' + encodeURIComponent(this.state.paperFeaturesSelected);
+        if (this.state.paperTopicsSelected.length > 0) searchURL += '&papertopics=' + encodeURIComponent(this.state.paperTopicsSelected);
 
-        if (this.state.datasetIndex > 0) searchURL += '&datasetIndex=' + this.state.datasetIndex;
-        if (this.state.toolIndex > 0) searchURL += '&toolIndex=' + this.state.toolIndex;
-        if (this.state.projectIndex > 0) searchURL += '&projectIndex=' + this.state.projectIndex;
-        if (this.state.paperIndex > 0) searchURL += '&paperIndex=' + this.state.paperIndex;
-        if (this.state.personIndex > 0) searchURL += '&personIndex=' + this.state.personIndex;
+        if (this.state.datasetIndex > 0) searchURL += '&datasetIndex=' + encodeURIComponent(this.state.datasetIndex);
+        if (this.state.toolIndex > 0) searchURL += '&toolIndex=' + encodeURIComponent(this.state.toolIndex);
+        if (this.state.projectIndex > 0) searchURL += '&projectIndex=' + encodeURIComponent(this.state.projectIndex);
+        if (this.state.paperIndex > 0) searchURL += '&paperIndex=' + encodeURIComponent(this.state.paperIndex);
+        if (this.state.personIndex > 0) searchURL += '&personIndex=' + encodeURIComponent(this.state.personIndex);
 
         if (!skipHistory) {
             if (this.state.key) {
