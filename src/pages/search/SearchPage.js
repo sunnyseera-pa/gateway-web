@@ -216,7 +216,7 @@ class SearchPage extends React.Component {
             ])
         }
         else {
-             eval('this.state.'+filterGroup).splice(eval('this.state.'+filterGroup).indexOf(filter), 1);
+            this.state[filterGroup].splice(this.state[filterGroup].indexOf(filter), 1);
         }
         
         this.doSearchCall();
@@ -439,18 +439,10 @@ class SearchPage extends React.Component {
                 <div className="searchTabsHolder">
                         <div>
                             <Tabs className='tabsBackground gray700-13' activeKey={key} onSelect={this.handleSelect}>
-                                <Tab eventKey="Datasets" title={'Datasets (' + datasetCount + ')'}>
-                                    {datasetCount <= 0 && !isResultsLoading ? <NoResults type='datasets' searchString={searchString} /> : ''}
-                                </Tab>
-                                <Tab eventKey="Tools" title={'Tools (' + toolCount + ')'}>
-                                    {toolCount <= 0 && !isResultsLoading ? <NoResults type='tools' searchString={searchString} /> : ''}
-                                </Tab>
-                                <Tab eventKey="Projects" title={'Projects (' + projectCount + ')'}>
-                                    {projectCount <= 0 && !isResultsLoading ? <NoResults type='projects' searchString={searchString} /> : ''}
-                                </Tab>
-                                <Tab eventKey="Papers" title={'Papers (' + paperCount + ')'}>
-                                    {paperCount <= 0 && !isResultsLoading ? <NoResults type='papers' searchString={searchString} /> : ''}
-                                </Tab>
+                                <Tab eventKey="Datasets" title={'Datasets (' + datasetCount + ')'} />
+                                <Tab eventKey="Tools" title={'Tools (' + toolCount + ')'} />
+                                <Tab eventKey="Projects" title={'Projects (' + projectCount + ')'} />
+                                <Tab eventKey="Papers" title={'Papers (' + paperCount + ')'} />
                                 <Tab eventKey="People" title={'People (' + personCount + ')'}>
                                     {personCount <= 0 && !isResultsLoading ? <NoResults type='profiles' searchString={searchString} /> : ''}
                                 </Tab>
@@ -599,26 +591,31 @@ class SearchPage extends React.Component {
 
                         {!isResultsLoading ?
                             <Col sm={12} md={12} lg={9} className="mt-4">
+                                
                                 {key === 'Datasets' ?
-                                    datasetData.map((dataset) => {
+                                    datasetCount <= 0 && !isResultsLoading ? <NoResults type='datasets' searchString={searchString} />
+                                    : datasetData.map((dataset) => {
                                         return <RelatedObject key={dataset.id} data={dataset} activeLink={true} />
                                     })
                                     : ''}
 
                                 {key === 'Tools' ?
-                                    toolData.map((tool) => {
-                                        return <RelatedObject key={tool.id} data={tool} activeLink={true} />
+                                    toolCount <= 0 && !isResultsLoading ? <NoResults type='tools' searchString={searchString} />
+                                    : toolData.map((tool) => {
+                                        return <RelatedObject key={tool.id} data={tool} activeLink={true} />;
                                     })
                                     : ''}
 
                                 {key === 'Projects' ?
-                                    projectData.map((project) => {
+                                    projectCount <= 0 && !isResultsLoading ? <NoResults type='projects' searchString={searchString} />
+                                    : projectData.map((project) => {
                                         return <RelatedObject key={project.id} data={project} activeLink={true}/>
                                     })
                                     : ''}
                                 
                                 {key === 'Papers' ?
-                                    paperData.map((paper) => {
+                                    paperCount <= 0 && !isResultsLoading ? <NoResults type='papers' searchString={searchString} />
+                                    : paperData.map((paper) => {
                                         return <RelatedObject key={paper.id} data={paper} activeLink={true}/>
                                     })
                                     : ''}
