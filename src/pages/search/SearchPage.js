@@ -216,7 +216,7 @@ class SearchPage extends React.Component {
             ])
         }
         else {
-            this.state[filterGroup].splice(this.state[filterGroup].indexOf(filter), 1);
+             eval('this.state.'+filterGroup).splice(eval('this.state.'+filterGroup).indexOf(filter), 1);
         }
         
         this.doSearchCall();
@@ -226,24 +226,24 @@ class SearchPage extends React.Component {
     doSearchCall(skipHistory) {
         var searchURL = '';
         
-        if (this.state.licensesSelected.length > 0) searchURL += '&license=' + encodeURIComponent(this.state.licensesSelected).toString().split(',').join('::');
-        if (this.state.sampleAvailabilitySelected.length > 0) searchURL += '&sampleavailability=' + encodeURIComponent(this.state.sampleAvailabilitySelected).toString().split(',').join('::');
-        if (this.state.keywordsSelected.length > 0) searchURL += '&keywords=' + encodeURIComponent(this.state.keywordsSelected).toString().split(',').join('::');
-        if (this.state.publishersSelected.length > 0) searchURL += '&publisher=' + encodeURIComponent(this.state.publishersSelected).toString().split(',').join('::');
-        if (this.state.ageBandsSelected.length > 0) searchURL += '&ageband=' + encodeURIComponent(this.state.ageBandsSelected).toString().split(',').join('::');
-        if (this.state.geoCoverageSelected.length > 0) searchURL += '&geographiccover=' + encodeURIComponent(this.state.geoCoverageSelected).toString().split(',').join('::');
+        if (this.state.licensesSelected.length > 0) searchURL += '&license=' + encodeURIComponent(this.state.licensesSelected.toString().split(',').join('::'));
+        if (this.state.sampleAvailabilitySelected.length > 0) searchURL += '&sampleavailability=' + encodeURIComponent(this.state.sampleAvailabilitySelected.toString().split(',').join('::'));
+        if (this.state.keywordsSelected.length > 0) searchURL += '&keywords=' + encodeURIComponent(this.state.keywordsSelected.toString().split(',').join('::'));
+        if (this.state.publishersSelected.length > 0) searchURL += '&publisher=' + encodeURIComponent(this.state.publishersSelected.toString().split(',').join('::'));
+        if (this.state.ageBandsSelected.length > 0) searchURL += '&ageband=' + encodeURIComponent(this.state.ageBandsSelected.toString().split(',').join('::'));
+        if (this.state.geoCoverageSelected.length > 0) searchURL += '&geographiccover=' + encodeURIComponent(this.state.geoCoverageSelected.toString().split(',').join('::'));
 
-        if (this.state.toolCategoriesSelected.length > 0) searchURL += '&toolcategories=' + encodeURIComponent(this.state.toolCategoriesSelected).toString().split(',').join('::');
-        if (this.state.languageSelected.length > 0) searchURL += '&programmingLanguage=' + encodeURIComponent(this.state.languageSelected).toString().split(',').join('::');
-        if (this.state.featuresSelected.length > 0) searchURL += '&features=' + encodeURIComponent(this.state.featuresSelected).toString().split(',').join('::');
-        if (this.state.toolTopicsSelected.length > 0) searchURL += '&tooltopics=' + encodeURIComponent(this.state.toolTopicsSelected).toString().split(',').join('::');
+        if (this.state.toolCategoriesSelected.length > 0) searchURL += '&toolcategories=' + encodeURIComponent(this.state.toolCategoriesSelected.toString().split(',').join('::'));
+        if (this.state.languageSelected.length > 0) searchURL += '&programmingLanguage=' + encodeURIComponent(this.state.languageSelected.toString().split(',').join('::'));
+        if (this.state.featuresSelected.length > 0) searchURL += '&features=' + encodeURIComponent(this.state.featuresSelected.toString().split(',').join('::'));
+        if (this.state.toolTopicsSelected.length > 0) searchURL += '&tooltopics=' + encodeURIComponent(this.state.toolTopicsSelected.toString().split(',').join('::'));
 
-        if (this.state.projectCategoriesSelected.length > 0) searchURL += '&projectcategories=' + encodeURIComponent(this.state.projectCategoriesSelected).toString().split(',').join('::');
-        if (this.state.projectFeaturesSelected.length > 0) searchURL += '&projectfeatures=' + encodeURIComponent(this.state.projectFeaturesSelected).toString().split(',').join('::');
-        if (this.state.projectTopicsSelected.length > 0) searchURL += '&projecttopics=' + encodeURIComponent(this.state.projectTopicsSelected).toString().split(',').join('::');
+        if (this.state.projectCategoriesSelected.length > 0) searchURL += '&projectcategories=' + encodeURIComponent(this.state.projectCategoriesSelected.toString().split(',').join('::'));
+        if (this.state.projectFeaturesSelected.length > 0) searchURL += '&projectfeatures=' + encodeURIComponent(this.state.projectFeaturesSelected.toString().split(',').join('::'));
+        if (this.state.projectTopicsSelected.length > 0) searchURL += '&projecttopics=' + encodeURIComponent(this.state.projectTopicsSelected.toString().split(',').join('::'));
         
-        if (this.state.paperFeaturesSelected.length > 0) searchURL += '&paperfeatures=' + encodeURIComponent(this.state.paperFeaturesSelected).toString().split(',').join('::');
-        if (this.state.paperTopicsSelected.length > 0) searchURL += '&papertopics=' + encodeURIComponent(this.state.paperTopicsSelected).toString().split(',').join('::');
+        if (this.state.paperFeaturesSelected.length > 0) searchURL += '&paperfeatures=' + encodeURIComponent(this.state.paperFeaturesSelected.toString().split(',').join('::'));
+        if (this.state.paperTopicsSelected.length > 0) searchURL += '&papertopics=' + encodeURIComponent(this.state.paperTopicsSelected.toString().split(',').join('::'));
 
         if (this.state.datasetIndex > 0) searchURL += '&datasetIndex=' + encodeURIComponent(this.state.datasetIndex);
         if (this.state.toolIndex > 0) searchURL += '&toolIndex=' + encodeURIComponent(this.state.toolIndex);
