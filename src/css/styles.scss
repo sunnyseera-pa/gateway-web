@@ -16,6 +16,12 @@ body {
   height: 100%;
 }
 
+button {
+  &:hover {
+    cursor: pointer;
+  }
+}
+
 .mainWrap {
   min-height: 100%;
   padding-bottom: 440px;
@@ -1255,6 +1261,46 @@ iframe#discourse-embed-frame {
   width: 800px;
 }
 
+.ck-button {
+  margin:4px;
+  background-color:#EFEFEF;
+  border-radius:4px;
+  border:1px solid #D0D0D0;
+  overflow:auto;
+  float:left;
+}
+
+.ck-button label {
+  float:left;
+  width:4.0em;
+}
+
+.ck-button label span {
+  text-align:center;
+  padding:3px 0px;
+  display:block;
+  border-radius:4px;
+}
+
+.ck-button label input {
+  position:absolute;
+  top:-20px;
+}
+
+.ck-button input:hover + span {
+  background-color:#efE0E0;
+}
+
+.ck-button input:checked + span {
+  background-color:#911;
+  color:#fff;
+}
+
+.ck-button input:checked:hover + span {
+  background-color:#c11;
+  color:#fff;
+}
+
 
 .dar {
   &__header {
@@ -1354,7 +1400,18 @@ iframe#discourse-embed-frame {
   }
 }
 
+.userOption {
+  > 
+  div:nth-of-type(2) {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
 
+    span {
+      @include font-source(14px, $gray-600, $font-weight-semibold);
+    }
+  }
+}
 
 .pad-1 {
   padding-right: 1px !important;
@@ -1377,9 +1434,11 @@ iframe#discourse-embed-frame {
   .form-group {
     padding: 10px 12px;
     transition: all 0.2s ease-in-out;
+
     &:hover {
       background: $gray-200;
     }
+
     label {
       @include font-source(14px, $gray-800, $font-weight-semibold);
       margin-bottom: 5px;

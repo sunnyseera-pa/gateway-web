@@ -29,9 +29,9 @@ const LoginModal = (props) => {
 
     return (
         <>
-            <div id="myModal" class="modal">
-                <div class="modal-content">
-                    <div class="modal-body mb-4">
+            <div id="myModal" className="modal">
+                <div className="modal-content">
+                    <div className="modal-body mb-4">
                         <Row className="mt-3">
                             <Col xs={1} md={1} />
                             <Col xs={10} md={10}>

@@ -102,7 +102,7 @@ class HDRRouter extends Component {
                         <Route path='/sso' render={(props) => <SSOPage {...props} userState={userState} />} />
                         <Route path='/account/unsubscribe/:userObjectID' render={(props) => <Unsubscribe {...props} userState={userState} />} />
                         
-                        {userState[0].loggedIn ? (<Route path='/data-access-request/dataset/:datasetId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
+                        {userState[0].loggedIn ? (<Route path='/data-access-request/dataset/:datasetId/publisher/:publisher' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
                         {userState[0].loggedIn ? (<Route path='/account' render={(props) => <Account {...props} userState={userState} />} />) : ''}
                         
                         {userState[0].loggedIn ? (<Route path='/addcollection' render={(props) => <AddCollectionPage {...props} userState={userState} /> } />) : ''}
