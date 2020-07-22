@@ -17,7 +17,7 @@ var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const AddEditProjectForm = (props) => {
     //Fix for projects were features are set to null
-    if (props.data && props.data.tags.features === null) props.data.tags.features = [];
+    if (props.isEdit && props.data && props.data.tags.features === null) props.data.tags.features = [];
     
     // Pass the useFormik() hook initial form values and a submit function that will
     // be called when the form is submitted
@@ -66,7 +66,7 @@ const AddEditProjectForm = (props) => {
             else {
                 axios.post(baseURL + '/api/v1/project/', values)
                     .then((res) => {
-                        window.location.href = window.location.search + '/project/' + res.data.id + '/?projectAdded=true';
+                        window.location.href = window.location.search + '/project/' + res.data.response.id + '/?projectAdded=true';
                     });
             }
         }
