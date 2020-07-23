@@ -53,8 +53,10 @@ class DataAccessRequest extends Component {
             let { location: { state: { dataSetId }}} = this.props;
             const response = await axios.get(`${baseURL}/api/v1/data-access-request/dataset/${dataSetId}`);
             const { data: { data: { jsonSchema, questionAnswers, _id, applicationStatus }}} = response;
-            this.setState({schema: {...jsonSchema, ...classSchema}, questionAnswers, _id, applicationStatus, activePanelId: 'applicant', isLoading: false});
-            // this.setState({schema: {...formSchema}, activePanelId: 'mrcHealthDataToolkit', isLoading: false, applicationStatus: 'inProgress'});
+            // 1. get the first active panel
+            let  { formPanels: [ initialPanel, ...rest ]}= jsonSchema;
+            // 2. set state
+            this.setState({schema: {...jsonSchema, ...classSchema}, questionAnswers, _id, applicationStatus, activePanelId: initialPanel.panelId, isLoading: false});
         }
         catch (error) {
             this.setState({isLoading: false});
