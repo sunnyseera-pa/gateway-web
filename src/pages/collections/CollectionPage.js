@@ -1,6 +1,7 @@
 
 // /ShowObjects.js
 import React, { Component } from 'react';
+import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
 import queryString from 'query-string';
 import { Row, Col, Tabs, Tab, Container, Alert, Nav, Navbar } from 'react-bootstrap';
@@ -240,10 +241,10 @@ getDataSearchFromDb = () => {
               </Row> 
               <Row className="mt-3">
                 <Col sm={1} lg={1} />
-                <Col sm={10} lg={10} >
-                  <p className="gray800-14">{data.description}</p> 
+                <Col sm={10} lg={10} className="gray800-14">
+                    <ReactMarkdown source={data.description} />
                 </Col>
-                <Col sm={1} lg={10} />
+                <Col sm={1} lg={1} />
               </Row>  
             </Container>
           </div>   
