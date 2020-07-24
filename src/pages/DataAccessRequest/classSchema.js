@@ -1,6 +1,6 @@
 export const classSchema = {
     "classes": {
-        "form": "login-form",
+        "form": "dar-form",
         "select": "form-control",
         "typeaheadCustom": "form-control",
         "datePickerCustom": "form-control",

@@ -50,8 +50,8 @@ class DataAccessRequest extends Component {
 
     async componentDidMount() {
         try {
-            let { location: { state: { dataSetId }}} = this.props;
-            const response = await axios.get(`${baseURL}/api/v1/data-access-request/dataset/${dataSetId}`);
+            let { match: { params: { datasetId }}} = this.props;
+            let response = await axios.get(`${baseURL}/api/v1/data-access-request/dataset/${datasetId}`);
             const { data: { data: { jsonSchema, questionAnswers, _id, applicationStatus }}} = response;
             // 1. get the first active panel
             let  { formPanels: [ initialPanel, ...rest ]}= jsonSchema;
@@ -328,7 +328,7 @@ class DataAccessRequest extends Component {
     
     render() {
         const { searchString, activePanelId, totalQuestions, isLoading, validationErrors, activeGuidance} = this.state;
-        const { userState, location:{state: {title = '', publisher='' }} } = this.props;
+        const { userState, location} = this.props;
 
         Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
         Winterfell.addInputType('datePickerCustom', DatePickerCustom);
@@ -345,15 +345,17 @@ class DataAccessRequest extends Component {
             <div>
                 <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Row className="banner">
-                    <Col md={11}>
-                        <span className="ml-3 white-20-semibold mr-5">Data Access Request</span>
-                        <span className="white-16-semibold pr-5">{title} | {publisher}</span>
-                        <span className="white-16-semibold ml-2">{this.getSavedAgo()}</span>
+                    <Col sm={12} md={8}>
+                        <div className="banner-left">
+                            <span className="white-20-semibold mr-5">Data Access Request</span>
+                            <span className="white-16-semibold pr-5">{location.state ? `${location.state.title} | ${location.state.publisher}`  : ''}</span>
+                        </div>
                     </Col>
-                    <Col md={1}>
-                        {/* <CloseIconSvg className="icon-18" /> */}
-                        <SVGIcon name="closeicon" fill={'#ffffff'} className="badgeSvg mr-2" />
-
+                    <Col sm={12} md={4}>
+                        <div className="banner-right">
+                            <span className="white-14-semibold mr-2">{this.getSavedAgo()}</span>
+                            {<a className="linkButton white-14-semibold" onClick={this.onClickSave} href="!#">Save now</a>}
+                        </div>
                     </Col>
                 </Row>
 
@@ -362,7 +364,7 @@ class DataAccessRequest extends Component {
                         {[...this.state.schema.pages].map((item, idx) => (
                             <div key={item.index} className={`${item.active ? "active-border" : ''}`}>
                                 <div>
-                                    <h1 className="black-16 mb-3 ml-3" onClick={e => this.updateNavigation(item)}>{item.title}</h1>
+                                    <h1 className="black-16 mb-3 ml-3 pointer" onClick={e => this.updateNavigation(item)}>{item.title}</h1>
                                     { item.active &&
                                         <ul className="list-unstyled ml-4 pl-2 active-grey-border">
                                             <NavItem
@@ -449,17 +451,12 @@ class DataAccessRequest extends Component {
                             </Tabs>
                             </Col>
                         </Row>
-                        
                     </Col>
-                    
                     <div className="darFooter">
                         <Col md={6} className="mt-4">
                             <span className="gray800-14">{totalQuestions}</span>
                         </Col>
                         <Col md={6} className="mt-3 text-right">
-                            <Button variant="white" className="techDetailButton ml-2" onClick={this.onClickSave}>
-                                Save
-                            </Button>
                             <Button variant="white"  className="techDetailButton ml-3" onClick={this.onFormSubmit}>
                                 Submit application
                             </Button>
