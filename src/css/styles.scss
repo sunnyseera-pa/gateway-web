@@ -832,6 +832,7 @@ textarea:focus {
   height: 80px;
   padding:10px;
   border: 1px solid $gray-300;
+  background-color: #ffffff;
 }
 
 #underLinedLink {
@@ -2006,5 +2007,15 @@ iframe#discourse-embed-frame {
     padding:10px 20px;
 }
 
+.kpiCard {
+  height: 80px;
+  padding:10px;
+  box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
+  background-color: #ffffff;
+}
 
+
+.kpiContainer {
+  width: 100%;
+}
 
