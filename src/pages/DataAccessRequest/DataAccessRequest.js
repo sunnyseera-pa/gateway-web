@@ -40,10 +40,7 @@ class DataAccessRequest extends Component {
         key: 'guidance',
         totalQuestions: '',
         validationErrors: {},
-        lastSaved: {
-            time: '',
-            ago: ''
-        },
+        lastSaved: '',
         isLoading: true,
         formSubmitted: false,
     }
@@ -102,15 +99,9 @@ class DataAccessRequest extends Component {
      * @desc Sets the lastSaved state on a field
      */
     saveTime = () => {
-        let currentTime = moment();
-        let lastUpdate = this.state.lastSaved.time;
-        let ago = '';
-        if(!_.isEmpty(lastUpdate)) {
-            let min = moment(currentTime.diff(lastUpdate)).format('m');
-            let sec = moment(currentTime.diff(lastUpdate)).format('s');
-            ago = min > 0 ?  `Last saved ${min} minute(s) ago` : `Last saved ${sec} seconds ago`;
-        } 
-        return { time: currentTime, ago}
+        let currentTime = moment().format('DD MMM YYYY HH:mm');
+        let lastSaved = `Last saved ${currentTime}`;
+        return lastSaved;
     }
 
     /**
@@ -118,9 +109,9 @@ class DataAccessRequest extends Component {
      * @desc Returns the saved time for DAR
      */
     getSavedAgo = () => {
-        let {lastSaved: {time = '', ago = ''}} = this.state;
-        if(!_.isEmpty(time))
-            return `${ago != '' ? ago : `Last saved ${moment(time).format('HH:mm')}`}`;
+        let { lastSaved } = this.state;
+        if(!_.isEmpty(lastSaved))
+            return lastSaved;
         else
             return ``;
     }
@@ -323,7 +314,7 @@ class DataAccessRequest extends Component {
     onClickSave = (e) =>{
         e.preventDefault();
         const lastSaved = this.saveTime();
-        this.setState({ lastSaved});
+        this.setState({ lastSaved });
     }
     
     render() {
