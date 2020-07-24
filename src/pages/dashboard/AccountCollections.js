@@ -98,7 +98,7 @@ class AccountCollections extends React.Component {
                             <Col sm={12} lg={12}>
                                 <Tabs className='dataAccessTabs gray700-13' activeKey={this.state.key} onSelect={this.handleSelect}>
                                     <Tab eventKey="active" title={"Active (" + activeCount + ")"}> </Tab>
-                                    {/* <Tab eventKey="archive" title={"Archive (" + archiveCount + ")"}> </Tab> */}
+                                    <Tab eventKey="archive" title={"Archive (" + archiveCount + ")"}> </Tab>
                                 </Tabs>
                             </Col>
                         </Row>
@@ -117,7 +117,7 @@ class AccountCollections extends React.Component {
                                             </Row>
 
                                             {activeCount <= 0 ? <NotFound word="collections" /> : data.map((dat) => {
-                                                if (dat.activeflag !== "active") {
+                                                if (dat.activeflag !== "active") { 
                                                     return (<></>)
                                                 }
                                                 else {
@@ -134,6 +134,10 @@ class AccountCollections extends React.Component {
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
                                                                     <Dropdown.Item href={'/editcollection/' + dat.id} className="black-14">Edit</Dropdown.Item>
+                                                                    {/* <Dropdown.Item className="black-14">Archive</Dropdown.Item> */}
+                                                                    <ArchiveButton id={dat.id} />
+                                                                    {/* <Dropdown.Item className="black-14">Delete</Dropdown.Item> */}
+                                                                    <DeleteButton id={dat.id} />
                                                                 </DropdownButton>
                                                             </Col>
                                                         </Row>
@@ -171,6 +175,7 @@ class AccountCollections extends React.Component {
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
                                                                     <Dropdown.Item href={'/editcollection/' + dat.id} className="black-14">Edit</Dropdown.Item>
+                                                                    <DeleteButton id={dat.id} />
                                                                 </DropdownButton>
                                                             </Col>
                                                         </Row>
@@ -187,6 +192,69 @@ class AccountCollections extends React.Component {
             </div>
         );
     }
+}
+
+function ArchiveButton(props) {
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    const archiveObject = () => {
+        axios.put(baseURL + '/api/v1/collections/archive', { 
+            id: props.id,
+            activeflag: "archive"
+        })
+            .then((res) => {
+                window.location.href = '/account?tab=collections&collectionArchived=true';
+            });
+    }
+
+    return (
+        <>
+            <Dropdown.Item href="#" onClick={handleShow} className="black-14">Archive</Dropdown.Item>
+
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Archive this collection?</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>This collection will be archived from the directory.</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>No, nevermind</Button>
+                    <Button variant="primary" onClick={archiveObject}>Yes, archive</Button> 
+                </Modal.Footer>
+            </Modal>
+        </>
+    );
+}
+
+function DeleteButton(props) {
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    const deleteObject = () => {
+        axios.delete(baseURL + '/api/v1/collections/delete/' + props.id) 
+            .then((res) => {
+                window.location.href = '/account?tab=collections&collectionDeleted=true';
+            });
+    }
+
+    return (
+        <>
+            <Dropdown.Item href="#" onClick={handleShow} className="black-14">Delete</Dropdown.Item>
+
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Delete this collection?</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>This collection will be deleted from the directory.</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>No, nevermind</Button>
+                    <Button variant="primary" onClick={deleteObject}>Yes, delete</Button> 
+                </Modal.Footer>
+            </Modal>
+        </>
+    );
 }
 
 export default AccountCollections;
