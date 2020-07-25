@@ -336,28 +336,24 @@ class DataAccessRequest extends Component {
             <div>
                 <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Row className="banner">
-                    <Col sm={12} md={8}>
-                        <div className="banner-left">
+                    <Col sm={12} md={8} className="banner-left">
                             <span className="white-20-semibold mr-5">Data Access Request</span>
                             <span className="white-16-semibold pr-5">{location.state ? `${location.state.title} | ${location.state.publisher}`  : ''}</span>
-                        </div>
                     </Col>
-                    <Col sm={12} md={4}>
-                        <div className="banner-right">
+                    <Col sm={12} md={4} className="banner-right">
                             <span className="white-14-semibold mr-2">{this.getSavedAgo()}</span>
                             {<a className="linkButton white-14-semibold" onClick={this.onClickSave} href="!#">Save now</a>}
-                        </div>
                     </Col>
                 </Row>
 
-                <Row className="mt-5 fillPage">
-                    <Col md={2}>
+                <div id="darContainer" className="flex-form">
+                    <div id="darLeftCol" className="scrollable-sticky-column">
                         {[...this.state.schema.pages].map((item, idx) => (
                             <div key={item.index} className={`${item.active ? "active-border" : ''}`}>
                                 <div>
-                                    <h1 className="black-16 mb-3 ml-3 pointer" onClick={e => this.updateNavigation(item)}>{item.title}</h1>
+                                    <h1 className="black-16 section-header" onClick={e => this.updateNavigation(item)}>{item.title}</h1>
                                     { item.active &&
-                                        <ul className="list-unstyled ml-4 pl-2 active-grey-border">
+                                        <ul className="list-unstyled section-subheader">
                                             <NavItem
                                                 parentForm={item}
                                                 questionPanels={this.state.schema.questionPanels}
@@ -368,10 +364,8 @@ class DataAccessRequest extends Component {
                                 </div>
                             </div>
                         ))}
-                    </Col>
-                    <Col md={10} className="flexColumn">
-                        <Row>
-                            <Col sm={7} md={8} className="pad-1">
+                    </div>
+                    <div id="darCenterCol">
                                 <div style={{ backgroundColor: "#ffffff" }} className="dar__header">
                                     {[...this.state.schema.pages].map((item) => (
                                         item.active ?
@@ -398,8 +392,8 @@ class DataAccessRequest extends Component {
                                             </Col>
                                         </div>
                                 
-                            </Col>
-                            <Col sm={5} md={4} className="darTabs pr-0 pl-0">
+                            </div>
+                    <div id="darRightCol" className="scrollable-sticky-column">
                             <Tabs className='tabsBackground gray700-14' activeKey={this.state.key} onSelect={this.handleSelect}>
                                 <Tab eventKey="guidance" title="Guidance">
                                     <div className="darTab">
@@ -440,10 +434,10 @@ class DataAccessRequest extends Component {
                                     </div>
                                 </Tab>
                             </Tabs>
-                            </Col>
-                        </Row>
-                    </Col>
-                    <div className="darFooter">
+                        </div>
+                </div>
+
+                <div className="action-bar">
                         <Col md={6} className="mt-4">
                             <span className="gray800-14">{totalQuestions}</span>
                         </Col>
@@ -453,7 +447,6 @@ class DataAccessRequest extends Component {
                             </Button>
                         </Col>
                     </div> 
-                </Row>
             </div>
         ) 
         

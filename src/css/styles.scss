@@ -291,15 +291,31 @@ input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px $background inset !important;
 }
 
+.section-header {
+  cursor: pointer;
+  margin-left: 33px;
+  margin-bottom: 16px;
+}
+
+.section-subheader {
+  margin-left: 33px;
+  padding-left: 12px !important;
+  border-left: 1px solid $gray-400;
+}
+
+.dar-nav-item + .dar-nav-item {
+  padding-top: 8px;
+}
+
 .active-border {
   border-left: 4px solid $teal;
 }
 
 .active-border > div {
-  margin-left: 5px;
+  margin-left: -4px;
 }
 
-.active-gray-border {
+.active-grey-border {
   border-left: 1px solid $gray-400;
 }
 
@@ -392,9 +408,13 @@ input[type='radio']:checked:after {
   background-color: $white !important;
   align-items: center !important;
   justify-content: center !important;
-  padding-bottom: 2px;
-  box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
+  margin-left: 1px !important;
+}
+
+.tab-content {
+  margin-left: 1px;
   margin-top: 1px;
+  box-shadow: 0 1px 6px -5px #333;
 }
 
 .tabList {
@@ -446,32 +466,6 @@ svg:not(:root) {
   width: 10px;
   height: 10px;
 }
-
-.darTabs {
-  .tabsBackground {
-    margin-top: 0 !important;
-  }
-
-  .tab-content {
-    height: 100vh;
-    display: block;
-
-    .tab-pane {
-      height: 100%;
-    }
-  }
-}
-
-@media (max-width: 575.98px) {
-  .darTabs nav {
-    padding-left: 15px !important;
-    .tab-content {
-      height: 100%;
-      padding-left: 15px;
-    }
-  }
-}
-
 
 .addButton {
   font-size: 14px !important;
@@ -1102,14 +1096,54 @@ iframe#discourse-embed-frame {
   align-content: center;
 }
 
+.banner .banner-left {
+  vertical-align: middle;
+  height: 30px;
+  padding-left: 32px !important;
+}
+
 .banner .banner-right {
   text-align: right;
   vertical-align: middle;
   height: 30px;
+  padding-right: 32px !important;
 }
 
 .banner .banner-right span, a, button {
   line-height: 30px;
+}
+
+.flex-form {
+  display: flex;
+  flex-direction:row;
+}
+
+.flex-form .scrollable-sticky-column {
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 0;
+}
+
+#darLeftCol {
+  width: calc(25vw - 15px);
+  height: calc(100vh - 70px);
+  margin-right: 15px;
+  padding-top: 24px;
+}
+
+#darCenterCol {
+  width: calc(41.66vw - 15px);
+  margin-left: 15px;
+  padding-top: 24px;
+}
+
+#darRightCol {
+  width: calc(33.33vw - 30px);
+  height: calc(100vh - 70px);
+  padding-top: 24px;
+  margin-right: 30px;
 }
 
 .icon-18 {
@@ -1153,8 +1187,7 @@ iframe#discourse-embed-frame {
 
 .dar {
   &__header {
-    padding: 25px;
-    box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
+    padding: 24px;
 
     p {
       margin-bottom: 0;
@@ -1167,10 +1200,10 @@ iframe#discourse-embed-frame {
   }
   
   &__questions {
-    margin-bottom: 40px;
+    margin-bottom: 24px;
+    margin-top: 1px;
     padding: 15px 0;
-    box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
-    border-top: 1px solid $gray-200;
+    box-shadow: 0 1px 6px -5px #333;
   }
 
   &__check {
@@ -1279,7 +1312,7 @@ iframe#discourse-embed-frame {
 .darTab {
   padding: 15px 0;
   background-color: $white;
-  box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
+  height: calc(100vh - 169px);
 }
 
 .fillPage {
@@ -1293,7 +1326,7 @@ iframe#discourse-embed-frame {
   flex-direction: column;
 }
 
-.darFooter {
+.action-bar {
   display: flex;
   flex-flow: row nowrap;
   position: fixed;
