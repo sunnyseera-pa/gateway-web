@@ -175,6 +175,7 @@ class AccountCollections extends React.Component {
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
                                                                     <Dropdown.Item href={'/editcollection/' + dat.id} className="black-14">Edit</Dropdown.Item>
+                                                                    <UnarchiveButton id={dat.id} />
                                                                     <DeleteButton id={dat.id} />
                                                                 </DropdownButton>
                                                             </Col>
@@ -200,7 +201,7 @@ function ArchiveButton(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const archiveObject = () => {
-        axios.put(baseURL + '/api/v1/collections/archive', { 
+        axios.put(baseURL + '/api/v1/collections/status', { 
             id: props.id,
             activeflag: "archive"
         })
@@ -221,6 +222,40 @@ function ArchiveButton(props) {
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>No, nevermind</Button>
                     <Button variant="primary" onClick={archiveObject}>Yes, archive</Button> 
+                </Modal.Footer>
+            </Modal>
+        </>
+    );
+}
+
+
+function UnarchiveButton(props) {
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    const archiveObject = () => {
+        axios.put(baseURL + '/api/v1/collections/status', { 
+            id: props.id,
+            activeflag: "active"
+        })
+            .then((res) => {
+                window.location.href = '/account?tab=collections&collectionUnarchived=true';
+            });
+    }
+
+    return (
+        <>
+            <Dropdown.Item href="#" onClick={handleShow} className="black-14">Unarchive</Dropdown.Item>
+
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Unarchive this collection?</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>This collection will be unarchived from the directory.</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>No, nevermind</Button>
+                    <Button variant="primary" onClick={archiveObject}>Yes, unarchive</Button> 
                 </Modal.Footer>
             </Modal>
         </>
