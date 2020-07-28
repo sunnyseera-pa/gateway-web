@@ -42,7 +42,7 @@ state = {
     projectCount: 0,
     paperCount: 0,
     collectionAdded: false,
-    collectionEdited: false 
+    collectionEdited: false
 };
 
 constructor(props) {
@@ -179,6 +179,7 @@ getDataSearchFromDb = () => {
     var { key } = this.state;
     var allCount = toolCount + datasetCount + personCount + projectCount + paperCount;
 
+
     if (isLoading) {
       return <Container><Loading /></Container>;
     }
@@ -203,6 +204,16 @@ getDataSearchFromDb = () => {
               <Col sm={1} lg={1} />
               <Col sm={10} lg={10}>
                 <Alert variant="success" className="mt-3">Done! Your collection has been updated.</Alert>
+              </Col>
+              <Col sm={1} lg={10} />
+            </Row>
+            : ""}
+
+          {data.activeflag === "archive" ?
+            <Row >
+              <Col sm={1} lg={1} />
+              <Col sm={10} lg={10}>
+                <Alert variant="danger" className="mt-3">This collection has been archived</Alert>
               </Col>
               <Col sm={1} lg={10} />
             </Row>
