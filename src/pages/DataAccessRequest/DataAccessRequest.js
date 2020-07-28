@@ -20,7 +20,7 @@ import { baseURL } from '../../configs/url.config';
 import 'react-tabs/style/react-tabs.css';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from "../../images/SVGIcon"
-import DOMPurify from 'dompurify';
+import ReactMarkdown from 'react-markdown';
 
 class DataAccessRequest extends Component {
 
@@ -320,12 +320,6 @@ class DataAccessRequest extends Component {
         const lastSaved = this.saveTime();
         this.setState({ lastSaved });
     }
-
-    sanitize = (value) => {
-        if(!_.isEmpty(value))
-            return DOMPurify.sanitize(value);
-        return '';
-    }
     
     render() {
         const { searchString, activePanelId, totalQuestions, isLoading, validationErrors, activeGuidance} = this.state;
@@ -385,7 +379,7 @@ class DataAccessRequest extends Component {
                                         item.active ?
                                             <Fragment>
                                                 <p className="black-20-semibold mb-0">{item.active ? item.title : ""}</p>
-                                                <p className="gray800-14" dangerouslySetInnerHTML={{__html: this.sanitize(item.description)}} />
+                                                <p><ReactMarkdown className="gray800-14" source={item.description} /></p>
                                             </Fragment>
                                         : ''
                                     ))}
@@ -408,7 +402,7 @@ class DataAccessRequest extends Component {
                                 
                             </div>
                     <div id="darRightCol" className="scrollable-sticky-column">
-                            <Tabs className='tabsBackground gray700-14' activeKey={this.state.key} onSelect={this.handleSelect}>
+                            <Tabs className='dar-tabsBackground gray700-14' activeKey={this.state.key} onSelect={this.handleSelect}>
                                 <Tab eventKey="guidance" title="Guidance">
                                     <div className="darTab">
                                         <Col md={12} className="gray700-13 text-center">
