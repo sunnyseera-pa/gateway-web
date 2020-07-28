@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import moment from 'moment';
-
+ 
 import { Row, Col, Button, Modal, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
 
 import NotFound from '../commonComponents/NotFound';
@@ -135,9 +135,9 @@ class AccountCollections extends React.Component {
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
                                                                     <Dropdown.Item href={'/editcollection/' + dat.id} className="black-14">Edit</Dropdown.Item>
                                                                     {/* <Dropdown.Item className="black-14">Archive</Dropdown.Item> */}
-                                                                    <ArchiveButton id={dat.id} />
+                                                                    <ArchiveButton id={dat.id} role={this.props.userState[0].role} userId={this.props.userState[0].id} />
                                                                     {/* <Dropdown.Item className="black-14">Delete</Dropdown.Item> */}
-                                                                    <DeleteButton id={dat.id} />
+                                                                    <DeleteButton id={dat.id} role={this.props.userState[0].role} userId={this.props.userState[0].id} />
                                                                 </DropdownButton>
                                                             </Col>
                                                         </Row>
@@ -175,8 +175,8 @@ class AccountCollections extends React.Component {
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
                                                                     <Dropdown.Item href={'/editcollection/' + dat.id} className="black-14">Edit</Dropdown.Item>
-                                                                    <UnarchiveButton id={dat.id} />
-                                                                    <DeleteButton id={dat.id} />
+                                                                    <UnarchiveButton id={dat.id} role={this.props.userState[0].role} userId={this.props.userState[0].id} />
+                                                                    <DeleteButton id={dat.id} role={this.props.userState[0].role} userId={this.props.userState[0].id} />
                                                                 </DropdownButton>
                                                             </Col>
                                                         </Row>
@@ -197,13 +197,14 @@ class AccountCollections extends React.Component {
 
 function ArchiveButton(props) {
     const [show, setShow] = useState(false);
-
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const archiveObject = () => {
         axios.put(baseURL + '/api/v1/collections/status', { 
             id: props.id,
-            activeflag: "archive"
+            activeflag: "archive",
+            userRole: props.role,
+            userId: props.userId
         })
             .then((res) => {
                 window.location.href = '/account?tab=collections&collectionArchived=true';
@@ -237,7 +238,9 @@ function UnarchiveButton(props) {
     const archiveObject = () => {
         axios.put(baseURL + '/api/v1/collections/status', { 
             id: props.id,
-            activeflag: "active"
+            activeflag: "active",
+            userRole: props.role,
+            userId: props.userId
         })
             .then((res) => {
                 window.location.href = '/account?tab=collections&collectionUnarchived=true';
@@ -268,7 +271,11 @@ function DeleteButton(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const deleteObject = () => {
-        axios.delete(baseURL + '/api/v1/collections/delete/' + props.id) 
+        axios.delete(baseURL + '/api/v1/collections/delete/' + props.id, 
+        { data: { 
+            userRole: props.role,
+            userId: props.userId 
+        } } ) 
             .then((res) => {
                 window.location.href = '/account?tab=collections&collectionDeleted=true';
             });
