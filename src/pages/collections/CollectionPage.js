@@ -118,7 +118,7 @@ getDataSearchFromDb = () => {
   getProjectData = async (projectID) => {
     this.setState({ isLoading: true });
     await Promise.all([
-    axios.get(baseURL + '/api/v1/project/' + projectID) 
+    axios.get(baseURL + '/api/v1/projects/' + projectID) 
       .then((res) => {
         this.state.objectData.push(res.data.data[0])
       })

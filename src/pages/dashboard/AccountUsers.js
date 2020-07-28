@@ -36,15 +36,14 @@ class AccountUsers extends React.Component {
     }
 
     doUsersCall() {
-        axios.get(baseURL + '/api/v1/project/get/admin')
+        axios.get(baseURL + '/api/v1/projects/getList')
             .then((res) => {
                 this.setState({ data: res.data.data, isLoading: false });
             });
     }
 
     approveProject = (id) => {
-        axios.put(baseURL + '/api/v1/project/status', {
-            id: id,
+        axios.patch(baseURL + '/api/v1/projects/'+id, {
             activeflag: "active"
         })
             .then((res) => {
@@ -165,8 +164,7 @@ function DeleteButton(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const deleteObject = () => {
-        axios.put(baseURL + '/api/v1/project/status', {
-            id: props.id,
+        axios.patch(baseURL + '/api/v1/projects/'+props.id, {
             activeflag: "archive"
         })
             .then((res) => {
