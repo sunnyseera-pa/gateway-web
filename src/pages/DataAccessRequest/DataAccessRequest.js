@@ -12,6 +12,7 @@ import SearchBar from '../commonComponents/SearchBar';
 import Loading from '../commonComponents/Loading';
 import ToolKit from './components/Toolkit';
 import NavItem from './components/NavItem';
+import NavDropdown from './components/NavDropdown';
 import DarValidation from '../../utils/DarValidation.util';
 import {formSchema} from './formSchema';
 import {classSchema} from './classSchema';
@@ -19,6 +20,7 @@ import { baseURL } from '../../configs/url.config';
 import 'react-tabs/style/react-tabs.css';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from "../../images/SVGIcon"
+import DOMPurify from 'dompurify';
 
 class DataAccessRequest extends Component {
 
@@ -289,6 +291,8 @@ class DataAccessRequest extends Component {
      * @desc - Update the navigation state sidebar
      */
     updateNavigation = (newForm, validationErrors = {}) => {
+        // reset scroll to 0, 0
+        window.scrollTo(0, 0);
         let panelId = '';
         const currentActivePage = [...this.state.schema.pages].find(p => p.active === true);
         // copy state pages
@@ -316,6 +320,12 @@ class DataAccessRequest extends Component {
         const lastSaved = this.saveTime();
         this.setState({ lastSaved });
     }
+
+    sanitize = (value) => {
+        if(!_.isEmpty(value))
+            return DOMPurify.sanitize(value);
+        return '';
+    }
     
     render() {
         const { searchString, activePanelId, totalQuestions, isLoading, validationErrors, activeGuidance} = this.state;
@@ -341,8 +351,8 @@ class DataAccessRequest extends Component {
                             <span className="white-16-semibold pr-5">{location.state ? `${location.state.title} | ${location.state.publisher}`  : ''}</span>
                     </Col>
                     <Col sm={12} md={4} className="banner-right">
-                            <span className="white-14-semibold mr-2">{this.getSavedAgo()}</span>
-                            {<a className="linkButton white-14-semibold" onClick={this.onClickSave} href="!#">Save now</a>}
+                            <span className="white-14-semibold">{this.getSavedAgo()}</span>
+                            {<a className="linkButton white-14-semibold ml-2" onClick={this.onClickSave} href="!#">Save now</a>}
                     </Col>
                 </Row>
 
@@ -358,6 +368,7 @@ class DataAccessRequest extends Component {
                                                 parentForm={item}
                                                 questionPanels={this.state.schema.questionPanels}
                                                 onFormSwitchPanel={this.updateNavigation}
+                                                activePanelId={this.state.activePanelId}
                                             />
                                         </ul>
                                     }
@@ -366,12 +377,15 @@ class DataAccessRequest extends Component {
                         ))}
                     </div>
                     <div id="darCenterCol">
+                                <div id="darDropdownNav">
+                                    <NavDropdown options={this.state.schema} onFormSwitchPanel={this.updateNavigation} />
+                                </div>
                                 <div style={{ backgroundColor: "#ffffff" }} className="dar__header">
                                     {[...this.state.schema.pages].map((item) => (
                                         item.active ?
                                             <Fragment>
                                                 <p className="black-20-semibold mb-0">{item.active ? item.title : ""}</p>
-                                                <p className="gray800-14">{item.active ? item.description : ""}</p>
+                                                <p className="gray800-14" dangerouslySetInnerHTML={{__html: this.sanitize(item.description)}} />
                                             </Fragment>
                                         : ''
                                     ))}

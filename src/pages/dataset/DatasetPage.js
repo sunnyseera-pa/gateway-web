@@ -451,14 +451,14 @@ class DatasetDetail extends Component {
                 
                 {(() => {
                     if(!userState[0].loggedIn) {
-                        return <Button variant="primary" className="addButton" onClick={() => this.showLoginModal(data.title, data.contactPoint)}>Request Access</Button>
+                        return <Button variant="primary" className="btn btn-primary addButton pointer" onClick={() => this.showLoginModal(data.title, data.contactPoint)}>Request Access</Button>
                     }
                     else if (alert) {
-                        return <Button variant="primary" className="addButton" disabled>Request Access</Button>
+                        return <Button variant="primary" className="btn btn-primary addButton pointer" disabled>Request Access</Button>
                     }   
                     else {
                         return (
-                            <Link className="btn btn-primary addButton" 
+                            <Link className="btn btn-primary addButton pointer" 
                                 to={{pathname: `/data-access-request/dataset/${data.id}`, state: {title: data.title, dataSetId: data.id, custodianEmail: data.contactPoint, publisher: data.publisher }}} 
                                 onClick={() => Event("Buttons", "Click", "Request Access")}>
                                 Request Access
