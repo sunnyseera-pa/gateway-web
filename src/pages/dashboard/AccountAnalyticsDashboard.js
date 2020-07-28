@@ -22,6 +22,7 @@ class AccountAnalyticsDashboard extends React.Component {
         gaUsers: 0,
         searchesWithResults: 0,
         accessRequests: 0,
+        uptime: 0,
         datasetsWithTechMetaData: 0,
         dates: getDatesForDropdown(),
         selectedOption: '',
@@ -50,6 +51,7 @@ class AccountAnalyticsDashboard extends React.Component {
             this.getTotalGAUsers(),
             this.getGAUsers(moment(this.state.dates[eventKey]).startOf('month').format("YYYY-MM-DD"), moment(this.state.dates[eventKey]).endOf('month').format("YYYY-MM-DD")),
             this.getKPIs(this.state.dates[eventKey]),
+            this.getUptime(this.state.dates[eventKey]),
             this.getDatasetsWithTechMetadata()
         ])
         this.setState({isLoading: false})
@@ -58,12 +60,12 @@ class AccountAnalyticsDashboard extends React.Component {
       async componentDidMount() {
         initGA('UA-166025838-1');
         this.getUnmetDemand()
-
         await Promise.all([
             this.getStats(),
             this.getTotalGAUsers(),
             this.getGAUsers(moment(this.state.selectedOption).startOf('month').format("YYYY-MM-DD"), moment(this.state.selectedOption).endOf('month').format("YYYY-MM-DD")),
             this.getKPIs(this.state.selectedOption),
+            this.getUptime(this.state.selectedOption),
             this.getDatasetsWithTechMetadata()
         ])
         this.setState({isLoading: false})
@@ -144,6 +146,18 @@ class AccountAnalyticsDashboard extends React.Component {
 
     }
 
+    getUptime(selectedDate){
+        return new Promise((resolve, reject) => {
+        axios.get(baseURL + '/api/v1/stats/uptime/' + selectedDate )
+        .then((res) => {
+            this.setState({ uptime: res.data.data});
+            resolve();
+        }); 
+
+    });
+
+    }
+
     getDatasetsWithTechMetadata(){
         return new Promise((resolve, reject) => {
         axios.get(baseURL + '/api/v1/stats/technicalmetadata')
@@ -158,8 +172,7 @@ class AccountAnalyticsDashboard extends React.Component {
     }
 
     render() {
-        const { userState, key, isLoading, data, dates, statsDataType, gaUsers, totalGAUsers, searchesWithResults, accessRequests, datasetsWithTechMetaData } = this.state;
-        const tempValue = "100";
+        const { userState, key, isLoading, data, dates, statsDataType, gaUsers, totalGAUsers, searchesWithResults, accessRequests, datasetsWithTechMetaData, uptime } = this.state;
 
         let uniqueUsers = (statsDataType.person / totalGAUsers) * 100;
 
@@ -176,7 +189,7 @@ class AccountAnalyticsDashboard extends React.Component {
         }
 
         return (
-            <div>
+           <div>
                 <Row>
                     <Col sm={1} lg={1}></Col> 
                     <Col sm={10} lg={10} className="dashboardPadding">  
@@ -209,30 +222,34 @@ class AccountAnalyticsDashboard extends React.Component {
                             </Col>
                         </Row>
 
-                        <Row className="kpiContainer">
+                        <Row className="kpiContainer"> 
                             <Col sm={3} lg={3} className="dashboardPadding"> 
                                 <DashboardKPI kpiText="total datasets" kpiValue={statsDataType.datasets}/>
                             </Col>
                             <Col sm={3} lg={3} className="dashboardPadding">
-                                <DashboardKPI kpiText="datasets with technical metadata" kpiValue={datasetsWithTechMetaData.toFixed(1)} percentageFlag={true}/>
+                                <DashboardKPI kpiText="datasets with technical metadata" kpiValue={datasetsWithTechMetaData.toFixed(0)} percentageFlag={true}/>
                             </Col>
                             <Col sm={3} lg={3} className="dashboardPadding">
                                 <DashboardKPI kpiText="unique users this month" kpiValue={gaUsers}/>
                             </Col>
                             <Col sm={3} lg={3} className="dashboardPadding">                               
-                                <DashboardKPI kpiText="unique registered users" kpiValue={uniqueUsers.toFixed(1)} percentageFlag={true}/> 
+                                <DashboardKPI kpiText="unique registered users" kpiValue={uniqueUsers.toFixed(0)} percentageFlag={true}/> 
                             </Col>                        
                         </Row>
 
                         <Row className="kpiContainer">
                             <Col sm={3} lg={3} className="dashboardPadding">
-                                <DashboardKPI kpiText="searches with results this month" kpiValue={searchesWithResults.toFixed(1)} percentageFlag={true}/>
+                                <DashboardKPI kpiText="searches with results this month" kpiValue={searchesWithResults.toFixed(0)} percentageFlag={true}/>
                             </Col>
                             <Col sm={3} lg={3} className="dashboardPadding">
                                 <DashboardKPI kpiText="new access requests" kpiValue={accessRequests}/> 
                             </Col>
                             <Col sm={3} lg={3} className="dashboardPadding">
-                                <DashboardKPI kpiText="uptime this month" kpiValue={tempValue}/>
+                                {this.state.selectedOption == 'Fri May 01 2020 01:00:00 GMT+0100 (British Summer Time)' ? 
+                                <DashboardKPI kpiText="uptime this month" kpiValue={'not available'}/>
+                                : 
+                                <DashboardKPI kpiText="uptime this month" kpiValue={uptime.toFixed(2)} percentageFlag={true}/>
+                                }
                             </Col>
                         </Row>
 
