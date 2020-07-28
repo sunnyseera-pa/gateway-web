@@ -1,6 +1,6 @@
 export const formSchema = {
   classes: {
-    "form": "login-form",
+    "form": "dar-form",
     "select": "form-control",
     "typeaheadCustom": "form-control",
     "datePickerCustom": "form-control",
@@ -92,7 +92,6 @@ export const formSchema = {
   questionPanels: [
     {
       panelId: 'mrcHealthDataToolkit',
-      panelHeader: 'MRC Health Data Access toolkit',
       navHeader: 'MRC Health Data Toolkit',
       questionPanelHeaderText: 'Test',
       pageId: 'preSubmission',
@@ -100,7 +99,6 @@ export const formSchema = {
     },
     {
       panelId: 'adviceFromPublisher',
-      panelHeader: 'Advice from Publisher',
       navHeader: 'Advice from Publisher',
       questionPanelHeaderText: 'Test',
       pageId: 'preSubmission',
@@ -108,7 +106,6 @@ export const formSchema = {
     },
     {
       panelId: 'applicant',
-      panelHeader: 'Applicant Details',
       navHeader: 'Applicant',
       questionPanelHeaderText: 'Test',
       pageId: 'safePeople',
@@ -121,7 +118,6 @@ export const formSchema = {
     },
     {
       panelId: 'principleInvestigator',
-      panelHeader: 'Principle Investigator',
       navHeader: 'Principle Investigator',
       pageId: 'safePeople',
       questionSets: [
@@ -133,7 +129,6 @@ export const formSchema = {
     },
     {
       panelId: 'safeProject',
-      panelHeader: 'Safe Project',
       navHeader: 'Safe Project',
       pageId: 'safeProject',
       questionSets: [

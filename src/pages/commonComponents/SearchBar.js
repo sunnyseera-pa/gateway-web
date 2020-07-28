@@ -86,8 +86,8 @@ class SearchBar extends React.Component {
         const currentScrollPos = window.pageYOffset;
         var visible = this.state.visible;
 
-        if (window.innerWidth < 992) {
-            visible = (prevScrollpos > currentScrollPos) || (currentScrollPos < 115);
+        if (window.innerWidth < 769) {
+            visible = true;
         }
         else {
             visible = (prevScrollpos > currentScrollPos) || (currentScrollPos < 65);
@@ -370,7 +370,7 @@ class SearchBar extends React.Component {
                     </Row>
                 </div>
 
-                <div id="mobileSearchBar">
+                <div id="mobileSearchBar" className={!this.state.visible ? "navbarHidden" : ""}>
                     <div className="searchBarBackground">
                         <Row className="whiteBackground">
                             <Col xs={2}>
