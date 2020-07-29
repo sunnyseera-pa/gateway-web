@@ -10,7 +10,7 @@ import Loading from '../commonComponents/Loading';
 
 import SVGIcon from '../../images/SVGIcon';
 import { ReactComponent as WhiteLogoSvg } from '../../../src/images/white.svg';
-
+ 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
 
