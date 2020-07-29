@@ -1,6 +1,7 @@
 
 // /ShowObjects.js
 import React, { Component } from 'react';
+import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
 import queryString from 'query-string';
 import { Row, Col, Tabs, Tab, Container, Alert, Nav, Navbar } from 'react-bootstrap';
@@ -41,7 +42,7 @@ state = {
     projectCount: 0,
     paperCount: 0,
     collectionAdded: false,
-    collectionEdited: false 
+    collectionEdited: false
 };
 
 constructor(props) {
@@ -117,7 +118,7 @@ getDataSearchFromDb = () => {
   getProjectData = async (projectID) => {
     this.setState({ isLoading: true });
     await Promise.all([
-    axios.get(baseURL + '/api/v1/project/' + projectID) 
+    axios.get(baseURL + '/api/v1/projects/' + projectID) 
       .then((res) => {
         this.state.objectData.push(res.data.data[0])
       })
@@ -178,6 +179,7 @@ getDataSearchFromDb = () => {
     var { key } = this.state;
     var allCount = toolCount + datasetCount + personCount + projectCount + paperCount;
 
+
     if (isLoading) {
       return <Container><Loading /></Container>;
     }
@@ -202,6 +204,16 @@ getDataSearchFromDb = () => {
               <Col sm={1} lg={1} />
               <Col sm={10} lg={10}>
                 <Alert variant="success" className="mt-3">Done! Your collection has been updated.</Alert>
+              </Col>
+              <Col sm={1} lg={10} />
+            </Row>
+            : ""}
+
+          {data.activeflag === "archive" ?
+            <Row >
+              <Col sm={1} lg={1} />
+              <Col sm={10} lg={10}>
+                <Alert variant="danger" className="mt-3">This collection has been archived</Alert>
               </Col>
               <Col sm={1} lg={10} />
             </Row>
@@ -240,10 +252,10 @@ getDataSearchFromDb = () => {
               </Row> 
               <Row className="mt-3">
                 <Col sm={1} lg={1} />
-                <Col sm={10} lg={10} >
-                  <p className="gray800-14">{data.description}</p> 
+                <Col sm={10} lg={10} className="gray800-14">
+                    <ReactMarkdown source={data.description} />
                 </Col>
-                <Col sm={1} lg={10} />
+                <Col sm={1} lg={1} />
               </Row>  
             </Container>
           </div>   

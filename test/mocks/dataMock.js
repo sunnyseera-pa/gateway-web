@@ -295,6 +295,8 @@ const __dataSetState = {
 
 const __creatorsData = { id: 900000014, firstname: 'Michael', lastname: 'Sperling', bio: 'Jefferson Comprehensive Epilepsy Center, Philadelphia' };
 
+const __unsubscribeState = { match : { params : { userObjectID : '' } } };
+
 module.exports = {
   toolTitle: __toolTitle,
   toolReview: __toolReview,
@@ -308,5 +310,6 @@ module.exports = {
   searchBarState: __searchBarState,
   searchBarStateLoggedIn: __searchBarStateLoggedIn,
   dataSetState: __dataSetState,
-  creatorsData: __creatorsData
+  creatorsData: __creatorsData,
+  unsubscribeState: __unsubscribeState
 };

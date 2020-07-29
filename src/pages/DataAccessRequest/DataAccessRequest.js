@@ -12,6 +12,7 @@ import SearchBar from '../commonComponents/SearchBar';
 import Loading from '../commonComponents/Loading';
 import ToolKit from './components/Toolkit';
 import NavItem from './components/NavItem';
+import NavDropdown from './components/NavDropdown';
 import DarValidation from '../../utils/DarValidation.util';
 import {formSchema} from './formSchema';
 import {classSchema} from './classSchema';
@@ -19,6 +20,7 @@ import { baseURL } from '../../configs/url.config';
 import 'react-tabs/style/react-tabs.css';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from "../../images/SVGIcon"
+import ReactMarkdown from 'react-markdown';
 
 class DataAccessRequest extends Component {
 
@@ -40,21 +42,20 @@ class DataAccessRequest extends Component {
         key: 'guidance',
         totalQuestions: '',
         validationErrors: {},
-        lastSaved: {
-            time: '',
-            ago: ''
-        },
+        lastSaved: '',
         isLoading: true,
         formSubmitted: false,
     }
 
     async componentDidMount() {
         try {
-            let { location: { state: { dataSetId }}} = this.props;
-            const response = await axios.get(`${baseURL}/api/v1/data-access-request/dataset/${dataSetId}`);
+            let { match: { params: { datasetId }}} = this.props;
+            let response = await axios.get(`${baseURL}/api/v1/data-access-request/dataset/${datasetId}`);
             const { data: { data: { jsonSchema, questionAnswers, _id, applicationStatus }}} = response;
-            this.setState({schema: {...jsonSchema, ...classSchema}, questionAnswers, _id, applicationStatus, activePanelId: 'applicant', isLoading: false});
-            // this.setState({schema: {...formSchema}, activePanelId: 'mrcHealthDataToolkit', isLoading: false, applicationStatus: 'inProgress'});
+            // 1. get the first active panel
+            let  { formPanels: [ initialPanel, ...rest ]}= jsonSchema;
+            // 2. set state
+            this.setState({schema: {...jsonSchema, ...classSchema}, questionAnswers, _id, applicationStatus, activePanelId: initialPanel.panelId, isLoading: false});
         }
         catch (error) {
             this.setState({isLoading: false});
@@ -100,15 +101,9 @@ class DataAccessRequest extends Component {
      * @desc Sets the lastSaved state on a field
      */
     saveTime = () => {
-        let currentTime = moment();
-        let lastUpdate = this.state.lastSaved.time;
-        let ago = '';
-        if(!_.isEmpty(lastUpdate)) {
-            let min = moment(currentTime.diff(lastUpdate)).format('m');
-            let sec = moment(currentTime.diff(lastUpdate)).format('s');
-            ago = min > 0 ?  `Last saved ${min} minute(s) ago` : `Last saved ${sec} seconds ago`;
-        } 
-        return { time: currentTime, ago}
+        let currentTime = moment().format('DD MMM YYYY HH:mm');
+        let lastSaved = `Last saved ${currentTime}`;
+        return lastSaved;
     }
 
     /**
@@ -116,9 +111,9 @@ class DataAccessRequest extends Component {
      * @desc Returns the saved time for DAR
      */
     getSavedAgo = () => {
-        let {lastSaved: {time = '', ago = ''}} = this.state;
-        if(!_.isEmpty(time))
-            return `${ago != '' ? ago : `Last saved ${moment(time).format('HH:mm')}`}`;
+        let { lastSaved } = this.state;
+        if(!_.isEmpty(lastSaved))
+            return lastSaved;
         else
             return ``;
     }
@@ -296,6 +291,8 @@ class DataAccessRequest extends Component {
      * @desc - Update the navigation state sidebar
      */
     updateNavigation = (newForm, validationErrors = {}) => {
+        // reset scroll to 0, 0
+        window.scrollTo(0, 0);
         let panelId = '';
         const currentActivePage = [...this.state.schema.pages].find(p => p.active === true);
         // copy state pages
@@ -321,12 +318,12 @@ class DataAccessRequest extends Component {
     onClickSave = (e) =>{
         e.preventDefault();
         const lastSaved = this.saveTime();
-        this.setState({ lastSaved});
+        this.setState({ lastSaved });
     }
     
     render() {
         const { searchString, activePanelId, totalQuestions, isLoading, validationErrors, activeGuidance} = this.state;
-        const { userState, location:{state: {title = '', publisher='' }} } = this.props;
+        const { userState, location} = this.props;
 
         Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
         Winterfell.addInputType('datePickerCustom', DatePickerCustom);
@@ -343,46 +340,46 @@ class DataAccessRequest extends Component {
             <div>
                 <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Row className="banner">
-                    <Col md={11}>
-                        <span className="ml-3 white-20-semibold mr-5">Data Access Request</span>
-                        <span className="white-16-semibold pr-5">{title} | {publisher}</span>
-                        <span className="white-16-semibold ml-2">{this.getSavedAgo()}</span>
+                    <Col sm={12} md={8} className="banner-left">
+                            <span className="white-20-semibold mr-5">Data Access Request</span>
+                            <span className="white-16-semibold pr-5">{location.state ? `${location.state.title} | ${location.state.publisher}`  : ''}</span>
                     </Col>
-                    <Col md={1}>
-                        {/* <CloseIconSvg className="icon-18" /> */}
-                        <SVGIcon name="closeicon" fill={'#ffffff'} className="badgeSvg mr-2" />
-
+                    <Col sm={12} md={4} className="banner-right">
+                            <span className="white-14-semibold">{this.getSavedAgo()}</span>
+                            {<a className="linkButton white-14-semibold ml-2" onClick={this.onClickSave} href="!#">Save now</a>}
                     </Col>
                 </Row>
 
-                <Row className="mt-5 fillPage">
-                    <Col md={2}>
+                <div id="darContainer" className="flex-form">
+                    <div id="darLeftCol" className="scrollable-sticky-column">
                         {[...this.state.schema.pages].map((item, idx) => (
                             <div key={item.index} className={`${item.active ? "active-border" : ''}`}>
                                 <div>
-                                    <h1 className="black-16 mb-3 ml-3" onClick={e => this.updateNavigation(item)}>{item.title}</h1>
+                                    <h1 className="black-16 section-header" onClick={e => this.updateNavigation(item)}>{item.title}</h1>
                                     { item.active &&
-                                        <ul className="list-unstyled ml-4 pl-2 active-grey-border">
+                                        <ul className="list-unstyled section-subheader">
                                             <NavItem
                                                 parentForm={item}
                                                 questionPanels={this.state.schema.questionPanels}
                                                 onFormSwitchPanel={this.updateNavigation}
+                                                activePanelId={this.state.activePanelId}
                                             />
                                         </ul>
                                     }
                                 </div>
                             </div>
                         ))}
-                    </Col>
-                    <Col md={10} className="flexColumn">
-                        <Row>
-                            <Col sm={7} md={8} className="pad-1">
+                    </div>
+                    <div id="darCenterCol">
+                                <div id="darDropdownNav">
+                                    <NavDropdown options={this.state.schema} onFormSwitchPanel={this.updateNavigation} />
+                                </div>
                                 <div style={{ backgroundColor: "#ffffff" }} className="dar__header">
                                     {[...this.state.schema.pages].map((item) => (
                                         item.active ?
                                             <Fragment>
                                                 <p className="black-20-semibold mb-0">{item.active ? item.title : ""}</p>
-                                                <p className="gray800-14">{item.active ? item.description : ""}</p>
+                                                <p><ReactMarkdown className="gray800-14" source={item.description} /></p>
                                             </Fragment>
                                         : ''
                                     ))}
@@ -403,9 +400,9 @@ class DataAccessRequest extends Component {
                                             </Col>
                                         </div>
                                 
-                            </Col>
-                            <Col sm={5} md={4} className="darTabs pr-0 pl-0">
-                            <Tabs className='tabsBackground gray700-14' activeKey={this.state.key} onSelect={this.handleSelect}>
+                            </div>
+                    <div id="darRightCol" className="scrollable-sticky-column">
+                            <Tabs className='dar-tabsBackground gray700-14' activeKey={this.state.key} onSelect={this.handleSelect}>
                                 <Tab eventKey="guidance" title="Guidance">
                                     <div className="darTab">
                                         <Col md={12} className="gray700-13 text-center">
@@ -445,25 +442,19 @@ class DataAccessRequest extends Component {
                                     </div>
                                 </Tab>
                             </Tabs>
-                            </Col>
-                        </Row>
-                        
-                    </Col>
-                    
-                    <div className="darFooter">
+                        </div>
+                </div>
+
+                <div className="action-bar">
                         <Col md={6} className="mt-4">
                             <span className="gray800-14">{totalQuestions}</span>
                         </Col>
                         <Col md={6} className="mt-3 text-right">
-                            <Button variant="white" className="techDetailButton ml-2" onClick={this.onClickSave}>
-                                Save
-                            </Button>
                             <Button variant="white"  className="techDetailButton ml-3" onClick={this.onFormSubmit}>
                                 Submit application
                             </Button>
                         </Col>
                     </div> 
-                </Row>
             </div>
         ) 
         

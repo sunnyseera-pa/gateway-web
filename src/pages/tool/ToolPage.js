@@ -90,6 +90,9 @@ class ToolDetail extends Component {
           isLoading: false
         });
         document.title = res.data.data[0].name.trim();
+        
+        let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
+        this.updateCounter(this.props.match.params.toolID, counter);
       })
   };
 
@@ -105,7 +108,9 @@ class ToolDetail extends Component {
     this.setState({ searchString: searchString });
   }
 
-  
+    updateCounter = (id, counter) => {
+        axios.post(baseURL + '/api/v1/counter/update', { id, counter });
+    }
 
   render() {
     const { searchString, data, isLoading, userState, toolAdded, toolEdited, reviewAdded, replyAdded, reviewData, discourseTopic } = this.state;

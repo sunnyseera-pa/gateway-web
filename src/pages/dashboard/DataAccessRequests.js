@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Fragment } from 'react';
 import axios from 'axios';
 import { Row, Col, Button, Container, Tabs, Tab, Alert } from 'react-bootstrap';
 import Loading from '../commonComponents/Loading';
@@ -97,27 +97,35 @@ checkAlerts = () => {
             {/* AND ROLE IS CUSTODIAN */}
             {/* AND DAR FOR THIS CUSTODIAN */}
             { this.state.userState[0].role === "Admin" ? 
-                        (() => {
-                            switch (key) {
-                                case "presubmission":
-                                return ( 
-                                    <div className="DARDiv">
-                                        <Row className="subHeader mt-3"> <Col sm={2} lg={2}>Updated</Col> <Col sm={3} lg={3}>Dataset</Col> <Col sm={3} lg={3}>Applicant</Col> <Col sm={4} lg={4}>Progress</Col> </Row>
-                                    
-                                    {data.map(dat => (
-                                        dat.applicationStatus === 'inProgress' ? 
-                                        <Row className="subHeader mt-1">
-                                            <PreSubCustodian data={dat}/> 
-                                        </Row>   
-                                        :null       
-                                    ))}
-   
-                                    </div>
+                (() => {
+                    switch (key) {
+                        case "presubmission":
+                        return ( <Fragment>
+                                <Row className="subHeader mt-3"> 
+                                    <Col sm={2} lg={2}>Updated</Col> 
+                                    <Col sm={3} lg={4}>Dataset</Col> 
+                                    <Col sm={3} lg={2}>Applicant</Col> 
+                                    <Col sm={2} lg={2}>Progress</Col> 
+                                </Row>
+                            {data.map(dat => (
+                                dat.applicationStatus === 'inProgress' ? 
+                                <Row className="subHeader mt-1">
+                                    <PreSubCustodian data={dat}/> 
+                                </Row>   
+                                :null       
+                            ))}
+                            </Fragment>
+
                       );
                       case "inreview":
                         return ( 
-                            <div className="DARDiv">
-                                <Row className="subHeader mt-3"> <Col sm={2} lg={2}>Updated</Col> <Col sm={3} lg={3}>Dataset</Col> <Col sm={3} lg={3}>Applicant</Col> <Col sm={4} lg={4}>Progress</Col> </Row>
+                            <Fragment>
+                                <Row className="subHeader mt-3"> 
+                                    <Col sm={2} lg={2}>Updated</Col> 
+                                    <Col sm={3} lg={4}>Dataset</Col> 
+                                    <Col sm={3} lg={2}>Applicant</Col> 
+                                    <Col sm={2} lg={2}>Progress</Col> 
+                                </Row>
                                 {data.map(dat => (
                                     dat.applicationStatus === 'submitted' ?
                                     <Row className="subHeader mt-1">
@@ -125,12 +133,17 @@ checkAlerts = () => {
                                     </Row>          
                                     :null
                                 ))}
-                            </div>
+                                </Fragment>
                     );
                     case "approved":
                         return ( 
-                            <div className="DARDiv">
-                                <Row className="subHeader mt-3"> <Col sm={2} lg={2}>Updated</Col> <Col sm={3} lg={3}>Dataset</Col> <Col sm={3} lg={3}>Applicant</Col> <Col sm={4} lg={4}>Progress</Col> </Row>
+                            <Fragment>
+                                <Row className="subHeader mt-3"> 
+                                    <Col sm={2} lg={2}>Updated</Col> 
+                                    <Col sm={3} lg={4}>Dataset</Col> 
+                                    <Col sm={3} lg={2}>Applicant</Col> 
+                                    <Col sm={2} lg={2}>Progress</Col> 
+                                </Row>
                                 {data.map(dat => (
                                     dat.applicationStatus === 'approved' ?
                                     <Row className="subHeader mt-1">
@@ -138,12 +151,17 @@ checkAlerts = () => {
                                     </Row>          
                                     : null
                                 ))}
-                            </div>
+                                </Fragment>
                     );
                     case "rejected":
                         return ( 
-                            <div className="DARDiv">
-                                <Row className="subHeader mt-3"> <Col sm={2} lg={2}>Updated</Col> <Col sm={3} lg={3}>Dataset</Col> <Col sm={3} lg={3}>Applicant</Col> <Col sm={4} lg={4}>Progress</Col> </Row>
+                            <Fragment>
+                                <Row className="subHeader mt-3"> 
+                                    <Col sm={2} lg={2}>Updated</Col> 
+                                    <Col sm={3} lg={4}>Dataset</Col> 
+                                    <Col sm={3} lg={2}>Applicant</Col> 
+                                    <Col sm={2} lg={2}>Progress</Col> 
+                                </Row>
                                 {data.map(dat => (
                                     dat.applicationStatus === 'rejected' ?
                                     <Row className="subHeader mt-1">
@@ -151,13 +169,13 @@ checkAlerts = () => {
                                     </Row>          
                                     : null
                                 ))}
-                            </div>
+                                </Fragment>
                     );
                     case "forms":
                         return ( 
-                            <div className="DARDiv">
+                            <Fragment>
                                 <Row className="subHeader mt-1"> <span className="ml-5">Forms placeholder</span> </Row> 
-                            </div>
+                                </Fragment>
                     );
                 }
             })() 
@@ -166,12 +184,17 @@ checkAlerts = () => {
             {/* AND ROLE IS INNOVATOR */}
             {/* AND DARs MADE WITH THIS USER ID */}
         { this.state.userState[0].role === "Creator" ? 
+
             (() => {
                 switch (key) {
                     case "presubmission":
                     return ( 
-                        <div className="DARDiv">
-                            <Row className="subHeader mt-3"> <Col sm={3} lg={3}>Updated</Col> <Col sm={3} lg={3}>Dataset</Col> <Col sm={6} lg={6}>Progress</Col> </Row>
+                        <Fragment>
+                            <Row className="subHeader mt-3"> 
+                                <Col sm={3} lg={3}>Updated</Col> 
+                                <Col sm={3} lg={3}>Dataset</Col> 
+                                <Col sm={6} lg={6}>Progress</Col> 
+                            </Row>
                             {data.map(dat => (
                                 (dat.userId === this.state.userState[0].id) && dat.applicationStatus === 'inProgress' ? 
                                     <Row className="subHeader mt-1"> 
@@ -179,12 +202,16 @@ checkAlerts = () => {
                                     </Row> 
                                     : null
                             ))}
-                        </div>
+                        </Fragment>
                     );
                     case "inreview":
                         return ( 
-                            <div className="DARDiv">
-                                <Row className="subHeader mt-3"> <Col sm={3} lg={3}>Updated</Col> <Col sm={3} lg={3}>Dataset</Col> <Col sm={6} lg={6}>Progress</Col> </Row>
+                            <Fragment>
+                                <Row className="subHeader mt-3"> 
+                                    <Col sm={3} lg={3}>Updated</Col> 
+                                    <Col sm={3} lg={3}>Dataset</Col> 
+                                    <Col sm={6} lg={6}>Progress</Col> 
+                                </Row>
                                 {data.map(dat => (
                                 (dat.userId === this.state.userState[0].id) && dat.applicationStatus === 'submitted' ? 
                                     <Row className="subHeader mt-1"> 
@@ -192,12 +219,16 @@ checkAlerts = () => {
                                     </Row> 
                                     : null
                             ))} 
-                            </div>
+                            </Fragment>
                     );
                     case "approved":
                         return ( 
-                            <div className="DARDiv">
-                                <Row className="subHeader mt-3"> <Col sm={3} lg={3}>Updated</Col> <Col sm={3} lg={3}>Dataset</Col> <Col sm={6} lg={6}>Progress</Col> </Row> 
+                            <Fragment>
+                                <Row className="subHeader mt-3"> 
+                                    <Col sm={3} lg={3}>Updated</Col> 
+                                    <Col sm={3} lg={3}>Dataset</Col> 
+                                    <Col sm={6} lg={6}>Progress</Col> 
+                                </Row> 
                                 {data.map(dat => (
                                 (dat.userId === this.state.userState[0].id) && dat.applicationStatus === 'approved' ? 
                                     <Row className="subHeader mt-1"> 
@@ -205,12 +236,16 @@ checkAlerts = () => {
                                     </Row> 
                                     : null
                             ))} 
-                            </div>
+                            </Fragment>
                     );
                     case "rejected":
                         return ( 
-                            <div className="DARDiv">
-                                <Row className="subHeader mt-3"> <Col sm={3} lg={3}>Updated</Col> <Col sm={3} lg={3}>Dataset</Col> <Col sm={6} lg={6}>Progress</Col> </Row>
+                            <Fragment>
+                                <Row className="subHeader mt-3"> 
+                                    <Col sm={3} lg={3}>Updated</Col> 
+                                    <Col sm={3} lg={3}>Dataset</Col> 
+                                    <Col sm={6} lg={6}>Progress</Col> 
+                                </Row>
                                 {data.map(dat => (
                                 (dat.userId === this.state.userState[0].id) && dat.applicationStatus === 'rejected' ? 
                                     <Row className="subHeader mt-1"> 
@@ -218,7 +253,7 @@ checkAlerts = () => {
                                     </Row> 
                                     : null
                             ))} 
-                            </div>
+                            </Fragment>
                     );
                 }
             })() 

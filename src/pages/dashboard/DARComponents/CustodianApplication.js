@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import axios from 'axios';
 import {Row, Col, Container} from 'react-bootstrap/';
 import Loading from '../../commonComponents/Loading'
@@ -83,19 +83,17 @@ class CustodianApplication extends React.Component {
             );
         }
         return (
-            <div className="DARDiv" >
-
-            <Row className="pl-3">
-                <Col sm={2} lg={2}>
+            <Fragment>
+                <Col sm={2} lg={2} className="pt-2 gray800-14">
                     <span>{moment(this.props.data.updatedAt).format('D MMMM YYYY HH:mm')}</span>
                 </Col>
-                <Col sm={3} lg={3}>
+                <Col sm={3} lg={4} className="pt-2 gray800-14">
                     <span > {dataset}</span>
                 </Col>
-                <Col sm={3} lg={3}>
+                <Col sm={3} lg={2} className="pt-2 gray800-14">
                     <span> {name} </span>
                 </Col>
-                <Col sm={2} lg={2}>
+                <Col sm={2} lg={2} className="pt-2 gray800-14">
                     <span>{this.getProgress()}</span>
                 </Col>
                 <Col sm={2} lg={2} className="pr-5">
@@ -103,8 +101,7 @@ class CustodianApplication extends React.Component {
                             <Dropdown.Item href="">View</Dropdown.Item>
                     </DropdownButton>
                 </Col>
-            </Row>
-            </div>
+            </Fragment>
         );
     }
 }

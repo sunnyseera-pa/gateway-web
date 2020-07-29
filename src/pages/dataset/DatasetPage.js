@@ -176,11 +176,14 @@ class DatasetDetail extends Component {
                 score = "Platinum";
             }
         }
+        else if(!data.quality){
+            score = 'Not rated';
+        }
 
         return (<>
                 <div className="text-center">
                     {(() => {
-                        if (data.quality && typeof data.quality.quality_score === 'undefined') return <></>
+                        if (!data.quality || typeof data.quality.quality_score === 'undefined') return (<div ref={target} onClick={() => setShow(!show)} style={{ cursor: 'pointer' }} ><div style={{lineHeight: 1}}><MetadataNotRated className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Not rated</span></div></div>)
                         else if (data.quality.quality_score <= 50) {
                             return (<div ref={target} onClick={() => setShow(!show)} style={{ cursor: 'pointer' }} ><div style={{lineHeight: 1}}><MetadataNotRated className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Not rated</span></div></div>)
                         }
@@ -209,13 +212,13 @@ class DatasetDetail extends Component {
                         <br /><br />
                         <a href="https://github.com/HDRUK/datasets#about-the-reports" target="_blank" className="white-12">Click to read more about how the score is calculated.</a>
                         <br /><br />
-                        {Math.trunc(data.quality.completeness_percent)} Completeness %
+                        {(data.quality) ? Math.trunc(data.quality.completeness_percent) : 0} Completeness %
                         <br />
-                        {Math.trunc(data.quality.weighted_completeness_percent)} Weighted completeness %
+                        {(data.quality) ? Math.trunc(data.quality.weighted_completeness_percent) : 0} Weighted completeness %
                         <br />
-                        {Math.trunc(data.quality.error_percent)} Error %
+                        {(data.quality) ? Math.trunc(data.quality.error_percent) : 0} Error %
                         <br />
-                        {Math.trunc(data.quality.weighted_error_percent)} Weighted error %
+                        {(data.quality) ? Math.trunc(data.quality.weighted_error_percent) : 0} Weighted error %
                     </Tooltip>
                     )}
                 </Overlay>
@@ -448,14 +451,14 @@ class DatasetDetail extends Component {
                 
                 {(() => {
                     if(!userState[0].loggedIn) {
-                        return <Button variant="primary" className="addButton" onClick={() => this.showLoginModal(data.title, data.contactPoint)}>Request Access</Button>
+                        return <Button variant="primary" className="btn btn-primary addButton pointer" onClick={() => this.showLoginModal(data.title, data.contactPoint)}>Request Access</Button>
                     }
                     else if (alert) {
-                        return <Button variant="primary" className="addButton" disabled>Request Access</Button>
+                        return <Button variant="primary" className="btn btn-primary addButton pointer" disabled>Request Access</Button>
                     }   
                     else {
                         return (
-                            <Link className="btn btn-primary addButton" 
+                            <Link className="btn btn-primary addButton pointer" 
                                 to={{pathname: `/data-access-request/dataset/${data.id}`, state: {title: data.title, dataSetId: data.id, custodianEmail: data.contactPoint, publisher: data.publisher }}} 
                                 onClick={() => Event("Buttons", "Click", "Request Access")}>
                                 Request Access

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import axios from 'axios';
 import {Row, Col, Container} from 'react-bootstrap/';
 import Loading from '../../commonComponents/Loading'
@@ -64,25 +64,22 @@ class InnovatorApplication extends React.Component {
             );
         }
         return (
-            <div className="DARDiv" >
-
-                <Row className="pl-3">
-                    <Col sm={3} lg={3}>
-                        <span>{moment(this.props.data.updatedAt).format('D MMMM YYYY HH:mm')}</span>
-                    </Col>
-                    <Col sm={3} lg={3}>
-                        <span > {dataset}</span>
-                    </Col>
-                    <Col sm={4} lg={4}>
-                        <span>{this.getProgress()}</span>
-                    </Col>
-                    <Col sm={2} lg={2} className="pr-5">
-                        <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
-                                <Dropdown.Item href="">View</Dropdown.Item>
-                        </DropdownButton>
-                    </Col>
-                </Row>
-             </div>
+            <Fragment>
+                <Col sm={3} lg={3} className="pt-2 gray800-14">
+                    {moment(this.props.data.updatedAt).format('D MMMM YYYY HH:mm')}
+                </Col>
+                <Col sm={3} lg={3} className="pt-2 gray800-14">
+                    {dataset}
+                </Col>
+                <Col sm={4} lg={4} className="pt-2 gray800-14">
+                    {this.getProgress()}
+                </Col>
+                <Col sm={2} lg={2} className="pt-2 gray800-14">
+                    <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
+                            <Dropdown.Item href="">View</Dropdown.Item>
+                    </DropdownButton>
+                </Col>
+            </Fragment>
         );
     }
 }
