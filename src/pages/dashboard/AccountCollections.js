@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import moment from 'moment';
-
+ 
 import { Row, Col, Button, Modal, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
 
 import NotFound from '../commonComponents/NotFound';
@@ -134,9 +134,7 @@ class AccountCollections extends React.Component {
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
                                                                     <Dropdown.Item href={'/editcollection/' + dat.id} className="black-14">Edit</Dropdown.Item>
-                                                                    {/* <Dropdown.Item className="black-14">Archive</Dropdown.Item> */}
                                                                     <ArchiveButton id={dat.id} />
-                                                                    {/* <Dropdown.Item className="black-14">Delete</Dropdown.Item> */}
                                                                     <DeleteButton id={dat.id} />
                                                                 </DropdownButton>
                                                             </Col>
@@ -197,7 +195,6 @@ class AccountCollections extends React.Component {
 
 function ArchiveButton(props) {
     const [show, setShow] = useState(false);
-
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const archiveObject = () => {
@@ -268,7 +265,7 @@ function DeleteButton(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const deleteObject = () => {
-        axios.delete(baseURL + '/api/v1/collections/delete/' + props.id) 
+        axios.delete(baseURL + '/api/v1/collections/delete/' + props.id ) 
             .then((res) => {
                 window.location.href = '/account?tab=collections&collectionDeleted=true';
             });
