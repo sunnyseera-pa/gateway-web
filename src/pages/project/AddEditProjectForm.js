@@ -58,7 +58,6 @@ const AddEditProjectForm = (props) => {
             values.relatedObjects = props.relatedObjects
             values.toolCreator = props.userState[0];
             if (props.isEdit) {
-                debugger;
                 axios.put(baseURL + '/api/v1/projects/' + props.data.id, values)
                     .then((res) => {
                         window.location.href = window.location.search + '/project/' + props.data.id + '/?projectEdited=true';
@@ -214,7 +213,7 @@ const AddEditProjectForm = (props) => {
                                     Technological paradigms or other keywords. Eg. Rule-based, clustering, supervised machine learning
                                 </span>
                                 <Typeahead
-                                   thx id="tags.features"
+                                    id="tags.features"
                                     labelKey="features"
                                     allowNew
                                     defaultSelected={formik.values.tags.features}
