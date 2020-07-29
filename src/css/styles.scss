@@ -842,6 +842,7 @@ textarea:focus {
   height: 80px;
   padding:10px;
   border: 1px solid $gray-300;
+  background-color: #ffffff;
 }
 
 #underLinedLink {
@@ -2231,21 +2232,32 @@ button a {
   }
 
   
+.kpiCard {
+  height: 80px;
+  padding:10px;
+  box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
+  background-color: #ffffff;
+}
 
-  .collection-card {
-    color: $gray-700;
-    font-size: 13px;
-    font-weight: 500;
-    &-user {
-      @extend .collection-card;
-    }
-    &-updated {
-      @extend .collection-card;
-      float:right;
-    }
-  }
 
-  .col .widthAuto {
-    width: auto !important;
-    flex-grow: 0 !important;
+.kpiContainer {
+  width: 100%;
+}
+
+.collection-card {
+  color: $gray-700;
+  font-size: 13px;
+  font-weight: 500;
+  &-user {
+    @extend .collection-card;
   }
+  &-updated {
+    @extend .collection-card;
+    float:right;
+  }
+}
+
+.col .widthAuto {
+  width: auto !important;
+  flex-grow: 0 !important;
+}

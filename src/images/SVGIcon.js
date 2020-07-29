@@ -19,7 +19,7 @@ const getViewBox = name => {
     case "stock":
       return "0 0 12 9";
 
-    default:
+    default: 
       return "0 0 18 18";
   }
 };
