@@ -1,5 +1,5 @@
 import React from 'react';
-import Col from 'react-bootstrap/Col';
+import { Col, Row } from 'react-bootstrap';
 
 class NotFound extends React.Component {
 
@@ -17,14 +17,13 @@ class NotFound extends React.Component {
 
         return (
             
-            <div className="entryBox mt-2">
+            <Row className="entryBox mt-2">
                 <Col>
                     <div className="gray800-14" style={{ textAlign: 'center' }} data-testid="notFound">
                         No {word} found
                     </div>
                 </Col>
-            
-            </div>
+            </Row>
         )
     }
 }

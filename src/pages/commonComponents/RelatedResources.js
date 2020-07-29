@@ -31,7 +31,7 @@ function RelatedResources(props) {
     return (
         <Fragment className="flexCenter">
             <Button variant='white' href={''} target="_blank" className="techDetailButton mr-2" onClick={handleShow}>
-                + Add resources
+                + Add resource
             </Button>
             <Modal show={show} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter" centered className="relatedResourcesModal" dialogClassName="modal-70w">
                 <div class="modalWrapper">

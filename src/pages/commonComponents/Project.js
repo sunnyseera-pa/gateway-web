@@ -134,23 +134,23 @@ class Project extends React.Component {
                             </Col>
 
                             <Col xs={{ span: 12, order: 1 }} lg={{ span: 12, order: 3 }}>
-                                {!data.categories.category ? '' : activeLink === true ? <a href={'/search?search=' + data.categories.category}><div className="mr-2 gray800-14 tagBadges mb-2 mt-2">{data.categories.category}</div></a> : <div className="mr-2 gray800-14 tagBadges mb-2 mt-2">{data.categories.category}</div>}
+                                {!data.categories.category ? '' : activeLink === true ? <a href={'/search?search=' + data.categories.category}><div className="badge-tag">{data.categories.category}</div></a> : <div className="badge-tag">{data.categories.category}</div>}
 
                                 {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
                                     if (activeLink===true){
-                                        return <a href={'/search?search=' + feature}><div className="mr-2 gray800-14 tagBadges mb-2 mt-2">{feature}</div></a>
+                                        return <a href={'/search?search=' + feature}><div className="badge-tag">{feature}</div></a>
                                     }
                                     else {
-                                        return <div className="mr-2 gray800-14 tagBadges mb-2 mt-2">{feature}</div>
+                                        return <div className="badge-tag">{feature}</div>
                                     }
                                 })}
 
                                 {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
                                     if (activeLink===true){
-                                        return <a href={'/search?search=' + topic}><div className="mr-2 gray800-14 tagBadges mb-2 mt-2">{topic}</div></a>
+                                        return <a href={'/search?search=' + topic}><div className="badge-tag">{topic}</div></a>
                                     }
                                     else {
-                                        return <div className="mr-2 gray800-14 tagBadges mb-2 mt-2">{topic}</div>
+                                        return <div className="badge-tag">{topic}</div>
                                     }
                                 })}
                             </Col>

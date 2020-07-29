@@ -249,12 +249,12 @@ class DatasetDetail extends Component {
 
                             <Row className="mt-2">
                                 <Col xs={12}>
-                                    <span className="dataSetBadge mr-2">
+                                    <span className="badge-dataset">
                                         <SVGIcon name="dataseticon" fill={'#ffffff'} className="badgeSvg mr-2"  viewBox="-2 -2 22 22"/>
                                         <span>Dataset</span>
                                     </span>
                                     {!keywords || keywords.length <= 0 ? '' : 
-                                    keywords.map((keyword) => { return <a href={'/search?search=' + keyword}><div className="ml-2 gray800-14 tagBadges mb-1 mt-1">{keyword}</div></a>})}
+                                    keywords.map((keyword) => { return <a href={'/search?search=' + keyword}><div className="ml-2 badge-tag">{keyword}</div></a>})}
                                 </Col>
                             </Row>
 

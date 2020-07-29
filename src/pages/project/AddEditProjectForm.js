@@ -115,7 +115,7 @@ const AddEditProjectForm = (props) => {
                              <p className="black-20">{props.isEdit ? 'Edit your project' : 'Add a new research project'}</p>
                             </Col>
                             <Col sm={2} lg={2} className="text-right">
-                                <span className="projectBadge"> 
+                                <span className="badge-project"> 
                                     <SVGIcon name="newtoolicon" fill={'#ffffff'} className="badgeSvg mr-2" />
                                     Project 
                                 </span>
