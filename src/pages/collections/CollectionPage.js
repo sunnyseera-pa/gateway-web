@@ -13,6 +13,7 @@ import SearchBar from '../commonComponents/SearchBar';
 import 'react-tabs/style/react-tabs.css';
 import { baseURL } from '../../configs/url.config';
 import moment from 'moment';
+import _ from 'lodash';
 
 
 var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
@@ -187,7 +188,7 @@ getDataSearchFromDb = () => {
     return (
       <div>
         <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
-          <div className="rectangle mt-1">
+          <div className="rectangle pixelGapTop pixelGapBottom">
             <Container>
               {collectionAdded ? 
               <Row >
@@ -250,7 +251,7 @@ getDataSearchFromDb = () => {
                 </Col>
                 <Col sm={1} lg={10} />
               </Row> 
-              <Row className="mt-3">
+              <Row className="pad-top-32">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10} className="gray800-14">
                     <ReactMarkdown source={data.description} />
@@ -271,23 +272,25 @@ getDataSearchFromDb = () => {
             </Tabs>
           </div>
 
-        <Container>
+        <Container className="resource-card">
           <Row>
             <Col sm={1} lg={1} /> 
-            <Col sm={10} lg={10}> 
+            <Col sm={10} lg={10}>
               {key === 'All' ?
                   objectData.map((object) => {
                     var reason = '';
                     var updated = '';
                     var user = '';
+                    let showAnswer = false;
                     data.relatedObjects.map((dat) => {
                       if(dat.objectId === object.id || parseInt(dat.objectId) === object.id){
                         reason = dat.reason
                         updated = dat.updated
                         user = dat.user
+                        showAnswer = !_.isEmpty(reason)
                       }
                     })
-                    return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason} collectionUpdated={updated} collectionUser={user} />
+                    return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason} collectionUpdated={updated} collectionUser={user} />
                   })
               : ''}
               
@@ -296,15 +299,17 @@ getDataSearchFromDb = () => {
                     var reason = '';
                     var updated = '';
                     var user = '';
+                    let showAnswer = false;
                     if(object.type === undefined){
                       data.relatedObjects.map((dat) => {
                         if(dat.objectId === object.id){ 
                           reason = dat.reason
                           updated = dat.updated
                           user = dat.user
+                          showAnswer = !_.isEmpty(reason)
                         }
                       })
-                      return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason} collectionUpdated={updated} collectionUser={user} /> 
+                      return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason} collectionUpdated={updated} collectionUser={user} /> 
                     }
                   })
               : ''}
@@ -314,15 +319,17 @@ getDataSearchFromDb = () => {
                     var reason = '';
                     var updated = '';
                     var user = '';
+                    let showAnswer = false;
                     if(object.type === "tool"){
                       data.relatedObjects.map((dat) => {
                         if(parseInt(dat.objectId) === object.id){
                           reason = dat.reason
                           updated = dat.updated
                           user = dat.user
+                          showAnswer = !_.isEmpty(reason)
                         }
                       })
-                      return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason} collectionUpdated={updated} collectionUser={user}  /> 
+                      return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason} collectionUpdated={updated} collectionUser={user}  /> 
                     }
                   })
               : ''}
@@ -332,15 +339,17 @@ getDataSearchFromDb = () => {
                     var reason = '';
                     var updated = '';
                     var user = '';
+                    let showAnswer = false;
                     if(object.type === "project"){
                       data.relatedObjects.map((dat) => {
                         if(parseInt(dat.objectId) === object.id){
                           reason = dat.reason
                           updated = dat.updated
                           user = dat.user
+                          showAnswer = !_.isEmpty(reason)
                         }
                       })
-                      return <RelatedObject key={object.idd} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason}  collectionUpdated={updated} collectionUser={user}/>
+                      return <RelatedObject key={object.idd} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason}  collectionUpdated={updated} collectionUser={user}/>
                     } 
                   })
               : ''}
@@ -350,16 +359,18 @@ getDataSearchFromDb = () => {
                   var reason = '';
                   var updated = '';
                   var user = '';
+                  let showAnswer = false;
                   if(object.type === "paper"){
                     data.relatedObjects.map((dat) => {
                       if(parseInt(dat.objectId) === object.id){
                         reason = dat.reason
                         updated = dat.updated
                         user = dat.user
+                        showAnswer = !_.isEmpty(reason)
                       }
                     })
 
-                    return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason}  collectionUpdated={updated} collectionUser={user}/> 
+                    return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason}  collectionUpdated={updated} collectionUser={user}/> 
                   }
                 })              : ''}
 
@@ -368,15 +379,17 @@ getDataSearchFromDb = () => {
                   var reason = '';
                   var updated = '';
                   var user = '';
+                  let showAnswer = false;
                   if(object.type === "person"){  
                     data.relatedObjects.map((dat) => {
                       if(parseInt(dat.objectId) === object.id){
                         reason = dat.reason
                         updated = dat.updated
                         user = dat.user
+                        showAnswer = !_.isEmpty(reason)
                       }
                     })
-                    return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason}  collectionUpdated={updated} collectionUser={user}/>
+                    return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason}  collectionUpdated={updated} collectionUser={user}/>
                   } 
                 })
               : ''}

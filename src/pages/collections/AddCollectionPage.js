@@ -221,7 +221,7 @@ const AddCollectionForm = (props) => {
 
     return (
         <div>
-            <Row className="mt-2">
+            <Row className="margin-top-24">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                     <div className="rectangle">
@@ -236,7 +236,7 @@ const AddCollectionForm = (props) => {
                 <Col sm={1} lg={10} />
             </Row>
 
-            <Row className="mt-2">
+            <Row className="pixelGapTop">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                     <Form onSubmit={formik.handleSubmit} onBlur={formik.handleBlur} autocomplete='off'>
@@ -301,13 +301,13 @@ const AddCollectionForm = (props) => {
                             </Form.Group>
                         </div>
 
-                        <div className="rectangle mt-2">
+                        <div className="rectangle margin-top-16">
                             <span className="black-20">Add resources</span>
                             <br/>
                             <span className="gray800-14">Link resources in the gateway to your collection page.</span>
                         </div>
 
-                        <div className="relatedResourcesRectangle mt-1">
+                        <div className="relatedResourcesRectangle pixelGapTop">
                             {props.relatedObjects.map((object) => { 
                                 return (
                                     <div className="relatedObjectRectangle"> 

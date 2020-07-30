@@ -464,11 +464,11 @@ class SearchPage extends React.Component {
                                                 <div className="purple-13">Clear all</div> 
                                                 
                                                 {!publishersSelected || publishersSelected.length <= 0 ? '' : publishersSelected.map((selected) => {
-                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{selected} X</div>
+                                                    return <div className="badge-tag">{selected} X</div>
                                                 })}
 
                                                 {!publishersSelected || publishersSelected.length <= 0 ? '' : publishersSelected.map((selected) => {
-                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{selected} X</div>
+                                                    return <div className="badge-tag">{selected} X</div>
                                                 })}
                                             </div> 
                                         : ''}
@@ -501,19 +501,19 @@ class SearchPage extends React.Component {
                                                 </Row>
                                                 
                                                 {!toolCategoriesSelected || toolCategoriesSelected.length <= 0 ? '' : toolCategoriesSelected.map((selected) => {
-                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'toolCategoriesSelected')}>X</span></div>
+                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'toolCategoriesSelected')}>X</span></div>
                                                 })}
 
                                                 {!languageSelected || languageSelected.length <= 0 ? '' : languageSelected.map((selected) => {
-                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'languageSelected')}>X</span></div>
+                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'languageSelected')}>X</span></div>
                                                 })}
 
                                                 {!featuresSelected || featuresSelected.length <= 0 ? '' : featuresSelected.map((selected) => {
-                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'featuresSelected')}>X</span></div>
+                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'featuresSelected')}>X</span></div>
                                                 })}
 
                                                 {!toolTopicsSelected || toolTopicsSelected.length <= 0 ? '' : toolTopicsSelected.map((selected) => {
-                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'toolTopicsSelected')}>X</span></div>
+                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'toolTopicsSelected')}>X</span></div>
                                                 })}
                                             </div> 
                                         : ''}
@@ -540,15 +540,15 @@ class SearchPage extends React.Component {
                                                 </Row>
                                                 
                                                 {!projectCategoriesSelected || projectCategoriesSelected.length <= 0 ? '' : projectCategoriesSelected.map((selected) => {
-                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'projectCategoriesSelected')}>X</span></div>
+                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'projectCategoriesSelected')}>X</span></div>
                                                 })}
 
                                                 {!projectFeaturesSelected || projectFeaturesSelected.length <= 0 ? '' : projectFeaturesSelected.map((selected) => {
-                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'projectFeaturesSelected')}>X</span></div>
+                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'projectFeaturesSelected')}>X</span></div>
                                                 })}
 
                                                 {!projectTopicsSelected || projectTopicsSelected.length <= 0 ? '' : projectTopicsSelected.map((selected) => {
-                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'projectTopicsSelected')}>X</span></div>
+                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'projectTopicsSelected')}>X</span></div>
                                                 })}
                                             </div> 
                                         : ''}
@@ -574,11 +574,11 @@ class SearchPage extends React.Component {
                                                 </Row>
                                                 
                                                 {!paperFeaturesSelected || paperFeaturesSelected.length <= 0 ? '' : paperFeaturesSelected.map((selected) => {
-                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'paperFeaturesSelected')}>X</span></div>
+                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'paperFeaturesSelected')}>X</span></div>
                                                 })}
 
                                                 {!paperTopicsSelected || paperTopicsSelected.length <= 0 ? '' : paperTopicsSelected.map((selected) => {
-                                                    return <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'paperTopicsSelected')}>X</span></div>
+                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'paperTopicsSelected')}>X</span></div>
                                                 })}
                                             </div> 
                                         : ''}

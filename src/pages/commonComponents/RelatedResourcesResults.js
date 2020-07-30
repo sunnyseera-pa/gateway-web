@@ -70,43 +70,43 @@ class RelatedResourcesResults extends React.Component {
         switch (type) {
             case 'tool':
                 return <div>
-                    <span className="toolBadge">
+                    <span className="badge-tool">
                     <SVGIcon name="newtoolicon" fill={'#ffffff'} className="badgeSvg mr-2" />
                     Tool 
                     </span>
-                        <span className="ml-2 gray800-14 tagBadges mb-2 mt-2">
+                        <span className="badge-tag">
                             {data.categories.category}
                         </span>
                         {!data.categories.programmingLanguage || data.categories.programmingLanguage.length <= 0 ? '' : data.categories.programmingLanguage.map((language) => {
-                                return <span className="ml-2 gray800-14 tagBadges mb-2 mt-2">{language}</span>
+                                return <span className="badge-tag">{language}</span>
                         })}
                     </div>
                 break;
             case undefined:
                 return <div>
-                        <span className="dataSetBadge">
+                        <span className="badge-dataset">
                             <SVGIcon name="dataseticon" fill={'#ffffff'} className="badgeSvg mr-2" />
                             Dataset
                     </span>
                    {keywords.length <= 0 ? '' : 
                                     keywords.map((keyword) => {
-                                        return <span className="ml-2 gray800-14 tagBadges mb-2 mt-2">{keyword}</span>
+                                        return <span className="badge-tag">{keyword}</span>
                                     })}
                     </div>
                 break;
             case 'project':
                 return <div>
-                        <span className="projectBadge">
+                        <span className="badge-project">
                          <SVGIcon name="newestprojecticon" fill={'#ffffff'} className="badgeSvg mr-2" />
                             Project
                         </span>
-                        <span className="ml-2 gray800-14 tagBadges mb-2 mt-2">
+                        <span className="badge-tag">
                             {data.categories.category}
                         </span>
                         </div>
                 break;
             case 'paper':
-                return <span className="paperBadge">
+                return <span className="badge-paper">
                     <SVGIcon name="projecticon" fill={'#3c3c3b'} className="badgeSvg mr-2" />
                     Paper
                     </span>       

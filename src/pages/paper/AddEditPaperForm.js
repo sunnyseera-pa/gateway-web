@@ -112,7 +112,7 @@ const AddEditPaperForm = (props) => {
                              <p className="black-20">{props.isEdit ? 'Edit your paper' : 'Add a new paper'}</p>
                             </Col>
                             <Col sm={2} lg={2} className="text-right">
-                                <span className="paperBadge"> 
+                                <span className="badge-paper"> 
                                     <SVGIcon name="projecticon" fill={'#3c3c3b'} className="badgeSvg mr-2" />
                                     Paper 
                                 </span>

@@ -183,7 +183,7 @@ class ToolDetail extends Component {
                                 <p>
                                     <span className="black-16" data-testid="title">{data.name}</span>
                                     <br />
-                                    <span className="paperBadge mt-2"> 
+                                    <span className="badge-paper"> 
                                         <SVGIcon name="projecticon" fill={'#3c3c3b'} className="badgeSvg mr-2" />
                                         Paper 
                                     </span>
@@ -268,7 +268,7 @@ class ToolDetail extends Component {
                                     <Col sm={10}>
                                         <span className="gray800-14">
                                             {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature, i) => {
-                                                return <div className="mr-2 tagBadges" key={i}><a className="gray800-14" href={'/search?search=' + feature + '&type=all'}>{feature}</a></div>
+                                                return <div className="badge-tag" key={i}><a className="gray800-14" href={'/search?search=' + feature + '&type=all'}>{feature}</a></div>
                                             })}
                                         </span>
                                     </Col>
@@ -280,7 +280,7 @@ class ToolDetail extends Component {
                                     <Col sm={10}>
                                         <span className="gray800-14">
                                             {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic, i) => {
-                                                return <div className="mr-2 tagBadges" key={i}><a className="gray800-14" href={'/search?search=' + topic + '&type=all'}>{topic}</a></div>
+                                                return <div className="badge-tag" key={i}><a className="gray800-14" href={'/search?search=' + topic + '&type=all'}>{topic}</a></div>
                                             })}
                                         </span>
                                     </Col>
