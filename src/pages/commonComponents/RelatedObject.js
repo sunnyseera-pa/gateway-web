@@ -379,7 +379,7 @@ class RelatedObject extends React.Component {
                                                 : <span className="gray800-14 mr-2">What's the relationship of this entity to the collection? (optional)</span> }
                                             </Col>
                                         </Row>
-                                        <Row className="testInput noMargin">
+                                        <Row className="noMargin">
                                             <Col xs={12} className="pad-left-24 pad-right-24">
                                             <input className="resultsCardInput"  value={this.state.reason} onChange={event => this.handleChange(this.props.objectId, event.target.value, data.type===undefined ? "dataset" : data.type)} />
                                             </Col>
