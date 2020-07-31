@@ -14,7 +14,7 @@ class  DashboardKPI extends Component {
 
     return (
       <span> 
-        <Row className="kpiCard">
+        <Row className="kpiCard"> 
             <Col sm={12} lg={12}>
                 <Row className="text-left ml-2">
                     <span className="gray700-12" > {kpiText} </span>  

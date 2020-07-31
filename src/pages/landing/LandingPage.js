@@ -204,7 +204,7 @@ class LandingPage extends React.Component {
                         </Col>
                     </Row>
                 </Container>
-            </div>
+            </div> 
         );
     }
 }

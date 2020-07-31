@@ -1424,7 +1424,7 @@ iframe#discourse-embed-frame {
   display: none;
 }
 
-.collectionTitleText{
+.collectionTitleText{ 
   @include mq('tablet-wide',max){
       font-size: 24px !important;
   }
@@ -2151,13 +2151,38 @@ button a {
     padding:10px 20px;
 }
 
-.kpiCard {
+.kpiCard { 
   height: 80px;
   padding:10px;
   box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
   background-color: #ffffff;
 }
 
+.kpiCard{
+  @include mq('desktop',max){
+    height: 100px !important;
+    padding:10px !important;
+    box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09) !important;
+    background-color: #ffffff !important;
+  }
+  @include mq('tablet-wide',max){
+    height: 100px !important;
+    padding:5px !important;
+    box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09) !important;
+    background-color: #ffffff !important;
+  }
+} 
+
+.kpiClass {
+  @include mq('tablet',max){
+    flex: 0 0 50% !important;
+    max-width: 50% !important;
+  }
+  @include mq('phone-wide',max){
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+}
 
 .kpiContainer {
   width: 100%;

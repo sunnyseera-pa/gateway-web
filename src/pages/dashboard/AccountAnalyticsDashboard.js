@@ -81,7 +81,7 @@ class AccountAnalyticsDashboard extends React.Component {
         axios.get(baseURL + '/api/v1/stats/unmet'+ this.state.key, {
             params: {
                 month: selectedMonth,
-                year: selectedYear
+                year: selectedYear 
             }
         }) 
         .then((res) => {
@@ -223,34 +223,37 @@ class AccountAnalyticsDashboard extends React.Component {
                         </Row>
 
                         <Row className="kpiContainer"> 
-                            <Col sm={3} lg={3} className="dashboardPadding"> 
+                            <Col sm={3} lg={3} className="kpiClass"> 
                                 <DashboardKPI kpiText="total datasets" kpiValue={statsDataType.datasets}/>
                             </Col>
-                            <Col sm={3} lg={3} className="dashboardPadding">
+                            <Col sm={3} lg={3} className="kpiClass">
                                 <DashboardKPI kpiText="datasets with technical metadata" kpiValue={datasetsWithTechMetaData.toFixed(0)} percentageFlag={true}/>
                             </Col>
-                            <Col sm={3} lg={3} className="dashboardPadding">
+                            <Col sm={3} lg={3} className="kpiClass">
                                 <DashboardKPI kpiText="unique users this month" kpiValue={gaUsers}/>
                             </Col>
-                            <Col sm={3} lg={3} className="dashboardPadding">                               
+                            <Col sm={3} lg={3} className="kpiClass">                               
                                 <DashboardKPI kpiText="unique registered users" kpiValue={uniqueUsers.toFixed(0)} percentageFlag={true}/> 
                             </Col>                        
                         </Row>
 
                         <Row className="kpiContainer">
-                            <Col sm={3} lg={3} className="dashboardPadding">
+                            <Col sm={3} lg={3} className="kpiClass">
                                 <DashboardKPI kpiText="searches with results this month" kpiValue={searchesWithResults.toFixed(0)} percentageFlag={true}/>
                             </Col>
-                            <Col sm={3} lg={3} className="dashboardPadding">
+                            <Col sm={3} lg={3} className="kpiClass">
                                 <DashboardKPI kpiText="new access requests" kpiValue={accessRequests}/> 
                             </Col>
-                            <Col sm={3} lg={3} className="dashboardPadding">
+                            <Col sm={3} lg={3} className="kpiClass">
                                 {this.state.selectedOption == 'Fri May 01 2020 01:00:00 GMT+0100 (British Summer Time)' ? 
                                 <DashboardKPI kpiText="uptime this month" kpiValue={'not available'}/>
                                 : 
                                 <DashboardKPI kpiText="uptime this month" kpiValue={uptime.toFixed(2)} percentageFlag={true}/>
                                 }
                             </Col>
+                            <Col sm={3} lg={3} className="kpiClass">                               
+                                <DashboardKPI kpiText="" kpiValue=""/> 
+                            </Col> 
                         </Row>
 
                         <Row className="accountHeader mt-4">
