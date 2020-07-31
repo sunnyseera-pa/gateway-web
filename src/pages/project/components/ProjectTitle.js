@@ -72,7 +72,7 @@ class ProjectTitle extends Component {
   
                             <Row>
                                 <Col xs={12} md={12} >
-                                    {!data.categories.category ? '' : <div className="mr-2 gray800-14 tagBadges"><a href={'/search?search=' + data.categories.category + '&type=all'}>{data.categories.category}</a></div>}
+                                    {!data.categories.category ? '' : <div className="badge-tag"><a href={'/search?search=' + data.categories.category + '&type=all'}>{data.categories.category}</a></div>}
   
                                     <Row>
                                         <Col className="mt-3">
@@ -84,10 +84,10 @@ class ProjectTitle extends Component {
                                     </Row>
   
                                     {!data.categories.programmingLanguage || data.categories.programmingLanguage <= 0 ? '' : data.categories.programmingLanguage.map((language) => {
-                                        return <div className="mr-2 gray800-14 tagBadges"><a href={'/search?search=' + language + '&type=all'}>{language}</a></div>
+                                        return <div className="badge-tag"><a href={'/search?search=' + language + '&type=all'}>{language}</a></div>
                                     })}
   
-                                    {!data.categories.programmingLanguageVersion ? '' : <div className="mr-2 gray800-14 tagBadges"><a href={'/search?search=' + data.categories.programmingLanguageVersion + '&type=all'}>{data.categories.programmingLanguageVersion}</a></div>}
+                                    {!data.categories.programmingLanguageVersion ? '' : <div className="badge-tag"><a href={'/search?search=' + data.categories.programmingLanguageVersion + '&type=all'}>{data.categories.programmingLanguageVersion}</a></div>}
                                 </Col>
                             </Row>
                         </div>
@@ -103,11 +103,11 @@ class ProjectTitle extends Component {
                                 <Col xs={12} md={12} className="mb-3">
   
                                     {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
-                                        return <div className="mr-2 gray800-14 tagBadges mb-2 mt-2"><a href={'/search?search=' + feature + '&type=all'}>{feature}</a></div>
+                                        return <div className="badge-tag mb-2 mt-2"><a href={'/search?search=' + feature + '&type=all'}>{feature}</a></div>
                                     })}
   
                                     {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
-                                        return <div className="mr-2 gray800-14 tagBadges mb-2 mt-2"><a href={'/search?search=' + topic + '&type=all'}>{topic}</a></div>
+                                        return <div className="badge-tag mb-2 mt-2"><a href={'/search?search=' + topic + '&type=all'}>{topic}</a></div>
                                     })}
   
                                 </Col>
