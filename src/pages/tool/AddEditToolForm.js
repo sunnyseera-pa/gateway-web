@@ -116,7 +116,7 @@ const AddEditToolForm = (props) => {
                              <p className="black-20">{props.isEdit ? 'Edit your tool or resource' : 'Add a new tool or resource'}</p>
                             </Col>
                             <Col sm={2} lg={2} className="text-right">
-                                <span className="toolBadge"> 
+                                <span className="badge-tool"> 
                                     <SVGIcon name="newtoolicon" fill={'#ffffff'} className="badgeSvg mr-2" />
                                     Tool 
                                 </span>

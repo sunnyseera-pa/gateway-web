@@ -51,13 +51,12 @@ class AccountPapers extends React.Component {
     }
 
     approvePaper = (id) => {
-        axios.put(baseURL + '/api/v1/paper/status', {
-            id: id,
+        axios.patch(baseURL + '/api/v1/paper/' + id, {
             activeflag: "active"
         })
-            .then((res) => {
-                window.location.href = '/account?tab=papers&paperApproved=true';
-            });
+        .then((res) => {
+            window.location.href = '/account?tab=papers&paperApproved=true';
+        });
     }
 
     render() {
@@ -265,7 +264,7 @@ class AccountPapers extends React.Component {
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
                                                                     <Dropdown.Item href={'/paper/edit/' + dat.id} className="black-14">Edit</Dropdown.Item>
                                                                     <Dropdown.Item href='#' onClick={() => this.approvePaper(dat.id)} className="black-14">Approve</Dropdown.Item>
-                                                                    <Dropdown.Item href='#' onClick={() => this.rejectPaper(dat.id)} className="black-14">Reject</Dropdown.Item>
+                                                                    <RejectButton id={dat.id} />
                                                                 </DropdownButton>
                                                             </Col>
                                                         </Row>
@@ -290,13 +289,12 @@ function RejectButton(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const rejectObject = () => {
-        axios.put(baseURL + '/api/v1/paper/status', {
-            id: props.id,
+        axios.patch(baseURL + '/api/v1/paper/'+props.id, {
             activeflag: "rejected"
         })
-            .then((res) => {
-                window.location.href = '/account?tab=papers&paperRejected=true';
-            });
+        .then((res) => {
+            window.location.href = '/account?tab=papers&paperRejected=true';
+        });
     }
 
     return (
@@ -323,13 +321,12 @@ function DeleteButton(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const deleteObject = () => {
-        axios.put(baseURL + '/api/v1/paper/status', {
-            id: props.id,
+        axios.patch(baseURL + '/api/v1/paper/'+props.id, {
             activeflag: "archive"
         })
-            .then((res) => {
-                window.location.href = '/account?tab=papers&paperDeleted=true';
-            });
+        .then((res) => {
+            window.location.href = '/account?tab=papers&paperDeleted=true';
+        });
     }
 
     return (

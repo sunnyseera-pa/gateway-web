@@ -67,13 +67,13 @@ class ToolTitle extends React.Component {
   
                             <Row>
                                 <Col md={12} lg={6} className="mb-3">
-                                    {!data.categories.category ? '' : <div className="mr-2 gray800-14 tagBadges"><a href={'/search?search=' + data.categories.category + '&type=all'}>{data.categories.category}</a></div>}
+                                    {!data.categories.category ? '' : <div className="badge-tag"><a href={'/search?search=' + data.categories.category + '&type=all'}>{data.categories.category}</a></div>}
   
                                     {!data.categories.programmingLanguage || data.categories.programmingLanguage <= 0 ? '' : data.categories.programmingLanguage.map((language, i) => {
-                                        return <div className="mr-2 gray800-14 tagBadges" key={i}><a href={'/search?search=' + language + '&type=all'}>{language}</a></div>
+                                        return <div className="badge-tag" key={i}><a href={'/search?search=' + language + '&type=all'}>{language}</a></div>
                                     })}
   
-                                    {!data.categories.programmingLanguageVersion ? '' : <div className="mr-2 gray800-14 tagBadges"><a href={'/search?search=' + data.categories.programmingLanguageVersion + '&type=all'}>{data.categories.programmingLanguageVersion}</a></div>}
+                                    {!data.categories.programmingLanguageVersion ? '' : <div className="badge-tag"><a href={'/search?search=' + data.categories.programmingLanguageVersion + '&type=all'}>{data.categories.programmingLanguageVersion}</a></div>}
                                 </Col>
                                 <Col md={12} lg={6} className="mb-1 pr-3 text-right">
                                     <div className="gray500-13">
@@ -111,11 +111,11 @@ class ToolTitle extends React.Component {
                                 <Col xs={12} md={12} className="mb-3">
   
                                     {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature, i) => {
-                                        return <div className="mr-2 gray800-14 tagBadges mb-2 mt-2" key={i}><a href={'/search?search=' + feature + '&type=all'}>{feature}</a></div>
+                                        return <div className="badge-tag mb-2 mt-2" key={i}><a href={'/search?search=' + feature + '&type=all'}>{feature}</a></div>
                                     })}
   
                                     {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic, i) => {
-                                        return <div className="mr-2 gray800-14 tagBadges mb-2 mt-2" key={i}><a href={'/search?search=' + topic + '&type=all'}>{topic}</a></div>
+                                        return <div className="badge-tag mb-2 mt-2" key={i}><a href={'/search?search=' + topic + '&type=all'}>{topic}</a></div>
                                     })}
   
                                 </Col>
