@@ -216,7 +216,7 @@ class SearchPage extends React.Component {
             ])
         }
         else {
-             eval('this.state.'+filterGroup).splice(eval('this.state.'+filterGroup).indexOf(filter), 1);
+            this.state[filterGroup].splice(this.state[filterGroup].indexOf(filter), 1);
         }
         
         this.doSearchCall();
@@ -226,30 +226,30 @@ class SearchPage extends React.Component {
     doSearchCall(skipHistory) {
         var searchURL = '';
         
-        if (this.state.licensesSelected.length > 0) searchURL += '&license=' + this.state.licensesSelected.toString().split(',').join('::');
-        if (this.state.sampleAvailabilitySelected.length > 0) searchURL += '&sampleavailability=' + this.state.sampleAvailabilitySelected.toString().split(',').join('::');
-        if (this.state.keywordsSelected.length > 0) searchURL += '&keywords=' + this.state.keywordsSelected.toString().split(',').join('::');
-        if (this.state.publishersSelected.length > 0) searchURL += '&publisher=' + this.state.publishersSelected.toString().split(',').join('::');
-        if (this.state.ageBandsSelected.length > 0) searchURL += '&ageband=' + this.state.ageBandsSelected.toString().split(',').join('::');
-        if (this.state.geoCoverageSelected.length > 0) searchURL += '&geographiccover=' + this.state.geoCoverageSelected.toString().split(',').join('::');
+        if (this.state.licensesSelected.length > 0) searchURL += '&license=' + encodeURIComponent(this.state.licensesSelected.toString().split(',').join('::'));
+        if (this.state.sampleAvailabilitySelected.length > 0) searchURL += '&sampleavailability=' + encodeURIComponent(this.state.sampleAvailabilitySelected.toString().split(',').join('::'));
+        if (this.state.keywordsSelected.length > 0) searchURL += '&keywords=' + encodeURIComponent(this.state.keywordsSelected.toString().split(',').join('::'));
+        if (this.state.publishersSelected.length > 0) searchURL += '&publisher=' + encodeURIComponent(this.state.publishersSelected.toString().split(',').join('::'));
+        if (this.state.ageBandsSelected.length > 0) searchURL += '&ageband=' + encodeURIComponent(this.state.ageBandsSelected.toString().split(',').join('::'));
+        if (this.state.geoCoverageSelected.length > 0) searchURL += '&geographiccover=' + encodeURIComponent(this.state.geoCoverageSelected.toString().split(',').join('::'));
 
-        if (this.state.toolCategoriesSelected.length > 0) searchURL += '&toolcategories=' + this.state.toolCategoriesSelected.toString().split(',').join('::');
-        if (this.state.languageSelected.length > 0) searchURL += '&programmingLanguage=' + this.state.languageSelected.toString().split(',').join('::');
-        if (this.state.featuresSelected.length > 0) searchURL += '&features=' + this.state.featuresSelected.toString().split(',').join('::');
-        if (this.state.toolTopicsSelected.length > 0) searchURL += '&tooltopics=' + this.state.toolTopicsSelected.toString().split(',').join('::');
+        if (this.state.toolCategoriesSelected.length > 0) searchURL += '&toolcategories=' + encodeURIComponent(this.state.toolCategoriesSelected.toString().split(',').join('::'));
+        if (this.state.languageSelected.length > 0) searchURL += '&programmingLanguage=' + encodeURIComponent(this.state.languageSelected.toString().split(',').join('::'));
+        if (this.state.featuresSelected.length > 0) searchURL += '&features=' + encodeURIComponent(this.state.featuresSelected.toString().split(',').join('::'));
+        if (this.state.toolTopicsSelected.length > 0) searchURL += '&tooltopics=' + encodeURIComponent(this.state.toolTopicsSelected.toString().split(',').join('::'));
 
-        if (this.state.projectCategoriesSelected.length > 0) searchURL += '&projectcategories=' + this.state.projectCategoriesSelected.toString().split(',').join('::');
-        if (this.state.projectFeaturesSelected.length > 0) searchURL += '&projectfeatures=' + this.state.projectFeaturesSelected.toString().split(',').join('::');
-        if (this.state.projectTopicsSelected.length > 0) searchURL += '&projecttopics=' + this.state.projectTopicsSelected.toString().split(',').join('::');
+        if (this.state.projectCategoriesSelected.length > 0) searchURL += '&projectcategories=' + encodeURIComponent(this.state.projectCategoriesSelected.toString().split(',').join('::'));
+        if (this.state.projectFeaturesSelected.length > 0) searchURL += '&projectfeatures=' + encodeURIComponent(this.state.projectFeaturesSelected.toString().split(',').join('::'));
+        if (this.state.projectTopicsSelected.length > 0) searchURL += '&projecttopics=' + encodeURIComponent(this.state.projectTopicsSelected.toString().split(',').join('::'));
         
-        if (this.state.paperFeaturesSelected.length > 0) searchURL += '&paperfeatures=' + this.state.paperFeaturesSelected.toString().split(',').join('::');
-        if (this.state.paperTopicsSelected.length > 0) searchURL += '&papertopics=' + this.state.paperTopicsSelected.toString().split(',').join('::');
+        if (this.state.paperFeaturesSelected.length > 0) searchURL += '&paperfeatures=' + encodeURIComponent(this.state.paperFeaturesSelected.toString().split(',').join('::'));
+        if (this.state.paperTopicsSelected.length > 0) searchURL += '&papertopics=' + encodeURIComponent(this.state.paperTopicsSelected.toString().split(',').join('::'));
 
-        if (this.state.datasetIndex > 0) searchURL += '&datasetIndex=' + this.state.datasetIndex;
-        if (this.state.toolIndex > 0) searchURL += '&toolIndex=' + this.state.toolIndex;
-        if (this.state.projectIndex > 0) searchURL += '&projectIndex=' + this.state.projectIndex;
-        if (this.state.paperIndex > 0) searchURL += '&paperIndex=' + this.state.paperIndex;
-        if (this.state.personIndex > 0) searchURL += '&personIndex=' + this.state.personIndex;
+        if (this.state.datasetIndex > 0) searchURL += '&datasetIndex=' + encodeURIComponent(this.state.datasetIndex);
+        if (this.state.toolIndex > 0) searchURL += '&toolIndex=' + encodeURIComponent(this.state.toolIndex);
+        if (this.state.projectIndex > 0) searchURL += '&projectIndex=' + encodeURIComponent(this.state.projectIndex);
+        if (this.state.paperIndex > 0) searchURL += '&paperIndex=' + encodeURIComponent(this.state.paperIndex);
+        if (this.state.personIndex > 0) searchURL += '&personIndex=' + encodeURIComponent(this.state.personIndex);
 
         if (!skipHistory) {
             if (this.state.key) {
@@ -439,18 +439,10 @@ class SearchPage extends React.Component {
                 <div className="searchTabsHolder">
                         <div>
                             <Tabs className='tabsBackground gray700-13' activeKey={key} onSelect={this.handleSelect}>
-                                <Tab eventKey="Datasets" title={'Datasets (' + datasetCount + ')'}>
-                                    {datasetCount <= 0 && !isResultsLoading ? <NoResults type='datasets' searchString={searchString} /> : ''}
-                                </Tab>
-                                <Tab eventKey="Tools" title={'Tools (' + toolCount + ')'}>
-                                    {toolCount <= 0 && !isResultsLoading ? <NoResults type='tools' searchString={searchString} /> : ''}
-                                </Tab>
-                                <Tab eventKey="Projects" title={'Projects (' + projectCount + ')'}>
-                                    {projectCount <= 0 && !isResultsLoading ? <NoResults type='projects' searchString={searchString} /> : ''}
-                                </Tab>
-                                <Tab eventKey="Papers" title={'Papers (' + paperCount + ')'}>
-                                    {paperCount <= 0 && !isResultsLoading ? <NoResults type='papers' searchString={searchString} /> : ''}
-                                </Tab>
+                                <Tab eventKey="Datasets" title={'Datasets (' + datasetCount + ')'} />
+                                <Tab eventKey="Tools" title={'Tools (' + toolCount + ')'} />
+                                <Tab eventKey="Projects" title={'Projects (' + projectCount + ')'} />
+                                <Tab eventKey="Papers" title={'Papers (' + paperCount + ')'} />
                                 <Tab eventKey="People" title={'People (' + personCount + ')'}>
                                     {personCount <= 0 && !isResultsLoading ? <NoResults type='profiles' searchString={searchString} /> : ''}
                                 </Tab>
@@ -599,26 +591,31 @@ class SearchPage extends React.Component {
 
                         {!isResultsLoading ?
                             <Col sm={12} md={12} lg={9} className="mt-4">
+                                
                                 {key === 'Datasets' ?
-                                    datasetData.map((dataset) => {
+                                    datasetCount <= 0 && !isResultsLoading ? <NoResults type='datasets' searchString={searchString} />
+                                    : datasetData.map((dataset) => {
                                         return <RelatedObject key={dataset.id} data={dataset} activeLink={true} />
                                     })
                                     : ''}
 
                                 {key === 'Tools' ?
-                                    toolData.map((tool) => {
-                                        return <RelatedObject key={tool.id} data={tool} activeLink={true} />
+                                    toolCount <= 0 && !isResultsLoading ? <NoResults type='tools' searchString={searchString} />
+                                    : toolData.map((tool) => {
+                                        return <RelatedObject key={tool.id} data={tool} activeLink={true} />;
                                     })
                                     : ''}
 
                                 {key === 'Projects' ?
-                                    projectData.map((project) => {
+                                    projectCount <= 0 && !isResultsLoading ? <NoResults type='projects' searchString={searchString} />
+                                    : projectData.map((project) => {
                                         return <RelatedObject key={project.id} data={project} activeLink={true}/>
                                     })
                                     : ''}
                                 
                                 {key === 'Papers' ?
-                                    paperData.map((paper) => {
+                                    paperCount <= 0 && !isResultsLoading ? <NoResults type='papers' searchString={searchString} />
+                                    : paperData.map((paper) => {
                                         return <RelatedObject key={paper.id} data={paper} activeLink={true}/>
                                     })
                                     : ''}

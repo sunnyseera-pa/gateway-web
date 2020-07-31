@@ -63,7 +63,7 @@ const AddEditPaperForm = (props) => {
             else {
                 axios.post(baseURL + '/api/v1/paper/', values)
                     .then((res) => {
-                        window.location.href = window.location.search + '/paper/' + res.data.id + '/?paperAdded=true';
+                        window.location.href = window.location.search + '/paper/' + res.data.response.id + '/?paperAdded=true';
                     });
             }
         }

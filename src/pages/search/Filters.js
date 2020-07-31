@@ -99,10 +99,6 @@ class Filters extends Component {
     render() {
         const { data, selected, title, filterOpen, allFilters } = this.state;
 
-        if (!data || data.length === 0) {
-            return (<></>);
-        }
-  
         var filterCard = 'filterCard mb-1';
         if (filterOpen) {
             filterCard = 'filterCardSelected mb-1';

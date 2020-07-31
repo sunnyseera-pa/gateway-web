@@ -68,13 +68,17 @@ class ProjectDetail extends Component {
   getDataSearchFromDb = () => {
     //need to handle error if no id is found
     this.setState({ isLoading: true });
-    axios.get(baseURL + '/api/v1/project/' + this.props.match.params.projectID)
+    axios.get(baseURL + '/api/v1/projects/' + this.props.match.params.projectID)
       .then((res) => {
         this.setState({
           data: res.data.data[0],
           discourseTopic: res.data.discourseTopic,
           isLoading: false
         });
+        document.title = res.data.data[0].name.trim();
+        
+        let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
+        this.updateCounter(this.props.match.params.projectID, counter);
       })
   };
 
@@ -89,6 +93,10 @@ class ProjectDetail extends Component {
   updateSearchString = (searchString) => {
     this.setState({ searchString: searchString });
   }
+
+    updateCounter = (id, counter) => {
+        axios.post(baseURL + '/api/v1/counter/update', { id, counter });
+    }
 
   render() {
     const { searchString, data, isLoading, projectAdded, projectEdited, userState, discourseTopic } = this.state;
