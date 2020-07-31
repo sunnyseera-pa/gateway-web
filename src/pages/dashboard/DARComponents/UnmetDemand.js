@@ -15,7 +15,7 @@ class UnmetDemand extends React.Component {
         this.state.data = props.data;
         this.updateFlag = this.updateFlag.bind(this)
     }
-
+ 
     updateFlag(){
         if(this.state.flagClosed===true){
             this.setState({flagClosed: false})
