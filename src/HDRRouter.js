@@ -23,7 +23,6 @@ import AddEditPaperPage from './pages/paper/AddEditPaperPage';
 import AddCollectionPage from './pages/collections/AddCollectionPage';
 import EditCollectionPage from './pages/collections/EditCollectionPage';
 
-import Request from './pages/request/Request';
 import DataAccessRequest from './pages/DataAccessRequest/DataAccessRequest';
 import Loading from './pages/commonComponents/Loading'
 import CompleteRegistration from './pages/registration/CompleteRegistration'
@@ -95,7 +94,6 @@ class HDRRouter extends Component {
                 <div className='navBarGap'></div>
                 <div className='mainWrap'>
                     <Switch>
-                        <Route path='/request-access' render={(props) => <Request {...props} userState={userState} />} />
                         <Route path='/search' render={(props) => <SearchPage {...props} userState={userState} />} />
                         
                         <Route path='/person/:personID' render={(props) => <PersonPage {...props} userState={userState} />} />

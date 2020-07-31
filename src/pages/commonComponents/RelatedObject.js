@@ -94,17 +94,17 @@ class RelatedObject extends React.Component {
         
 
         var rectangleClassName = 'collection-rectangle';
-        if (this.props.tempRelatedObjectIds && this.props.tempRelatedObjectIds.some(object => object.objectId === data.id)) {
+        if (this.props.tempRelatedObjectIds && (this.props.tempRelatedObjectIds.some(object => object.objectId === data.id) || this.props.tempRelatedObjectIds.some(object => object.objectId === data.datasetid))) {
             rectangleClassName = 'collection-rectangle selectedBorder';
         }
         else if (this.props.showRelationshipQuestion) {
             rectangleClassName= 'collection-rectangleWithBorder';
         }
-
+        
         return (
             <Row className="resource-card-row"> 
                 <Col>
-                    <div className={rectangleClassName} onClick={() => !activeLink && !this.props.showRelationshipQuestion && !this.props.showRelationshipAnswer && this.props.doAddToTempRelatedObjects(data.id, data.type===undefined ? "dataset" : data.type) } >
+                    <div className={rectangleClassName} onClick={() => !activeLink && !this.props.showRelationshipQuestion && !this.props.showRelationshipAnswer && this.props.doAddToTempRelatedObjects(data.type === "dataset" ? data.datasetid : data.id, data.type) } >
                        
                         {(() => {
                             if (data.type === 'tool') {
@@ -336,10 +336,10 @@ class RelatedObject extends React.Component {
                                     <Row className="noMargin">
                                         <Col sm={10} lg={10} className="pad-left-24">
                                             {activeLink===true ?
-                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/dataset/' + data.id} >{data.title}</a>
-                                            : <span className="black-bold-16"> {data.title} </span> }
+                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/dataset/' + data.datasetid} >{data.name}</a>
+                                            : <span className="black-bold-16"> {data.name} </span> }
                                             <br />
-                                            <span className="gray800-14"> {data.publisher} </span>
+                                            <span className="gray800-14"> {data.datasetfields.publisher} </span>
                                         </Col>
                                         <Col sm={2} lg={2} className="pad-right-24">
                                             {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="collection-card-updated">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
@@ -350,13 +350,22 @@ class RelatedObject extends React.Component {
                                                 <SVGIcon name="dataseticon" fill={'#ffffff'} className="badgeSvg mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Dataset</span>
                                             </span>
+
+                                            {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
+                                                if (activeLink===true){
+                                                    return <a href={'/search?search=' + feature}><div className="badge-tag">{feature}</div></a>
+                                                }
+                                                else {
+                                                    return <div className="badge-tag">{feature}</div>
+                                                }
+                                            })}
                                         </Col>  
                                         <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-18">
                                             <span className="gray800-14">
                                                 {(() => {
-                                                    if (typeof data.description === 'undefined') {
-                                                        if(data.abstract){
-                                                        return data.abstract.substr(0, 220) + (data.abstract.length > 220 ? '...' : '')
+                                                    if (!data.description || typeof data.description === 'undefined') {
+                                                        if(data.datasetfields.abstract){
+                                                        return data.datasetfields.abstract.substr(0, 220) + (data.datasetfields.abstract.length > 220 ? '...' : '')
                                                         }
                                                     }
                                                     else {

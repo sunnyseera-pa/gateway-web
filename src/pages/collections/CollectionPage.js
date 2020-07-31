@@ -36,7 +36,7 @@ state = {
       id: null,
       name: null
     }],
-    searchString: null,
+    searchString: '',
     toolCount: 0,
     datasetCount: 0,
     personCount: 0,
@@ -130,9 +130,9 @@ getDataSearchFromDb = () => {
   getDatasetData = async (datasetID) => {
     this.setState({ isLoading: true });
     await Promise.all([
-    axios.get(baseURL + '/api/v1/datasets/detail/' + datasetID) 
-      .then((res) => {
-        this.state.objectData.push(res.data.data)
+    axios.get(baseURL + '/api/v1/datasets/' + datasetID)
+    .then((res) => {
+        this.state.objectData.push(res.data.data[0])
       })
     ]);
     this.setState({objectData: this.state.objectData})
@@ -163,13 +163,9 @@ getDataSearchFromDb = () => {
     this.setState({ key: key });
   }
 
-  doSearch = (e) => { //fires on enter on searchbar
-    if (e.key === 'Enter') {
-      if (!!this.state.searchString) {
-        window.location.href = "/search?search=" + this.state.searchString;
-      }
+    doSearch = (e) => { //fires on enter on searchbar
+        if (e.key === 'Enter') window.location.href = "/search?search=" + this.state.searchString;
     }
-  }
 
   updateSearchString = (searchString) => {
     this.setState({ searchString: searchString });
