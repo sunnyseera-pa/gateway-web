@@ -25,7 +25,7 @@ const PreSubInnovator = ({ data }) => {
 
     const getDatasetSearch = () => {
         setLoading(true);
-        axios.get(`${baseURL}/api/v1/datasets/${screenData.data.dataSetId}`)
+        axios.get(`${baseURL}/api/v1/dataset/${screenData.data.dataSetId}`)
             .then((res) => {
                 // state: {title, dataSetId: id, custodianEmail: contactPoint, publisher: publisher }}}
                 let {data: {data: { label, quality: { publisher} }}} = res;

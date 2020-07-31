@@ -460,23 +460,43 @@ class SearchPage extends React.Component {
 
                                         {publishersSelected.length !== 0 || licensesSelected.length !== 0 || keywordsSelected.length !== 0 || geoCoverageSelected.length !== 0 || sampleAvailabilitySelected.length !== 0 ? 
                                             <div className="filterCard mb-2">
-                                                <div className="gray500-13">Showing:</div> 
-                                                <div className="purple-13">Clear all</div> 
+                                                <Row>
+                                                    <Col className="mb-2">
+                                                        <div className="inlineBlock">
+                                                            <div className="gray500-13">Showing:</div>
+                                                        </div>
+                                                        <div className="floatRight">
+                                                            <div className="purple-13 pointer" onClick={() => this.clearFilter('All')}>Clear all</div>
+                                                        </div>
+                                                    </Col>
+                                                </Row> 
                                                 
                                                 {!publishersSelected || publishersSelected.length <= 0 ? '' : publishersSelected.map((selected) => {
-                                                    return <div className="badge-tag">{selected} X</div>
+                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'publishersSelected')}>X</span></div>
                                                 })}
 
-                                                {!publishersSelected || publishersSelected.length <= 0 ? '' : publishersSelected.map((selected) => {
-                                                    return <div className="badge-tag">{selected} X</div>
+                                                {!licensesSelected || licensesSelected.length <= 0 ? '' : licensesSelected.map((selected) => {
+                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'licensesSelected')}>X</span></div>
+                                                })}
+
+                                                {!keywordsSelected || keywordsSelected.length <= 0 ? '' : keywordsSelected.map((selected) => {
+                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'keywordsSelected')}>X</span></div>
+                                                })}
+
+                                                {!geoCoverageSelected || geoCoverageSelected.length <= 0 ? '' : geoCoverageSelected.map((selected) => {
+                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'geoCoverageSelected')}>X</span></div>
+                                                })}
+
+                                                {!sampleAvailabilitySelected || sampleAvailabilitySelected.length <= 0 ? '' : sampleAvailabilitySelected.map((selected) => {
+                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'sampleAvailabilitySelected')}>X</span></div>
                                                 })}
                                             </div> 
                                         : ''}
-                                        <Filters data={filterOptions.publisherFilterOptions} allFilters={[]} updateOnFilter={this.updateOnFilter} selected={publishersSelected} title="Publisher" />
-                                        <Filters data={filterOptions.licenseFilterOptions} allFilters={[]} updateOnFilter={this.updateOnFilter} selected={licensesSelected} title="License" />
-                                        <Filters data={filterOptions.keywordsFilterOptions} allFilters={[]} updateOnFilter={this.updateOnFilter} selected={keywordsSelected} title="Keywords" />
-                                        <Filters data={filterOptions.geographicCoverageFilterOptions} allFilters={[]} updateOnFilter={this.updateOnFilter} selected={geoCoverageSelected} title="Geographic coverage" />
-                                        <Filters data={filterOptions.sampleFilterOptions} allFilters={[]} updateOnFilter={this.updateOnFilter} selected={sampleAvailabilitySelected} title="Physical sample availability" /> 
+                                        <Filters data={filterOptions.publisherFilterOptions} allFilters={allFilters.publisherFilter} updateOnFilter={this.updateOnFilter} selected={publishersSelected} title="Publisher" />
+                                        <Filters data={filterOptions.licenseFilterOptions} allFilters={allFilters.licenseFilter} updateOnFilter={this.updateOnFilter} selected={licensesSelected} title="License" />
+                                        <Filters data={filterOptions.datasetFeaturesFilterOptions} allFilters={allFilters.datasetFeatureFilter} updateOnFilter={this.updateOnFilter} selected={keywordsSelected} title="Keywords" />
+                                        <Filters data={filterOptions.geographicCoverageFilterOptions} allFilters={allFilters.geographicCoverageFilter} updateOnFilter={this.updateOnFilter} selected={geoCoverageSelected} title="Geographic coverage" />
+                                        <Filters data={filterOptions.sampleFilterOptions} allFilters={allFilters.sampleFilter} updateOnFilter={this.updateOnFilter} selected={sampleAvailabilitySelected} title="Physical sample availability" /> 
                                         {/* <Filters data={filterOptions.ageBandFilterOptions} updateOnFilter={this.updateOnFilter} selected={ageBandsSelected} title="Age Bands" /> */}
                                     </div>
                                 </> : ''}

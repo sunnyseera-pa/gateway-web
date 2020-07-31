@@ -45,6 +45,7 @@ class DataAccessRequest extends Component {
         lastSaved: '',
         isLoading: true,
         formSubmitted: false,
+        dataset: {}
     }
 
     async componentDidMount() {
@@ -52,6 +53,7 @@ class DataAccessRequest extends Component {
             let { match: { params: { datasetId }}} = this.props;
             let response = await axios.get(`${baseURL}/api/v1/data-access-request/dataset/${datasetId}`);
             const { data: { data: { jsonSchema, questionAnswers, _id, applicationStatus }}} = response;
+            this.setState({ dataset: response.data.dataset});
             // 1. get the first active panel
             let  { formPanels: [ initialPanel, ...rest ]}= jsonSchema;
             // 2. set state
@@ -194,9 +196,8 @@ class DataAccessRequest extends Component {
 
         if(isValid) {
             try {
-                let {_id: id} = this.state;
                 // 1. POST 
-                const response = await axios.post(`${baseURL}/api/v1/data-access-request/${id}`, {});
+                const response = await axios.post(`${baseURL}/api/v1/data-access-request/${this.state.dataset.datasetid}`, {});
                 const lastSaved = this.saveTime();
                 this.setState({ lastSaved });
                 // 2. Add success banner to local storage
@@ -232,7 +233,7 @@ class DataAccessRequest extends Component {
                 questionAnswers: JSON.stringify(data)
             }
             // 4. PATCH the data
-            const response = await axios.patch(`${baseURL}/api/v1/data-access-request/${id}`, params);
+            const response = await axios.patch(`${baseURL}/api/v1/data-access-request/${this.state.dataset.datasetid}`, params);
             // 6. get saved time
             const lastSaved = this.saveTime();
             // 5. set state
@@ -269,12 +270,8 @@ class DataAccessRequest extends Component {
      * [doSearch]
      * @desc - Injected from props, parent function callout
      */
-    doSearch = (e) => { 
-        if (e.key === 'Enter') {
-          if (!!this.state.searchString) {
-            window.location.href = "/search?search=" + this.state.searchString;
-          }
-        }
+    doSearch = (e) => { //fires on enter on searchbar
+        if (e.key === 'Enter') window.location.href = "/search?search=" + this.state.searchString;
     }
     
     updateSearchString = (searchString) => {
@@ -322,7 +319,7 @@ class DataAccessRequest extends Component {
     }
     
     render() {
-        const { searchString, activePanelId, totalQuestions, isLoading, validationErrors, activeGuidance} = this.state;
+        const { searchString, activePanelId, totalQuestions, isLoading, validationErrors, activeGuidance, dataset} = this.state;
         const { userState, location} = this.props;
 
         Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
@@ -342,7 +339,7 @@ class DataAccessRequest extends Component {
                 <Row className="banner">
                     <Col sm={12} md={8} className="banner-left">
                             <span className="white-20-semibold mr-5">Data Access Request</span>
-                            <span className="white-16-semibold pr-5">{location.state ? `${location.state.title} | ${location.state.publisher}`  : ''}</span>
+                            <span className="white-16-semibold pr-5">{dataset.name} | {dataset.datasetfields.publisher}</span>
                     </Col>
                     <Col sm={12} md={4} className="banner-right">
                             <span className="white-14-semibold">{this.getSavedAgo()}</span>
