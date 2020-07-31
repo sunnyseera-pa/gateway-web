@@ -71,8 +71,8 @@ class UnmetDemand extends React.Component {
                             </Col>
                             <Col sm={7} lg={7} className="gray800-14" style={{"float":"left", "padding-left":"0px"}}>
                                 <span style={{"float":"left", "padding-left":"0px"}}>
-                                    {!data || !data._id ? 'search term' : <a href={"/search?search="+data._id}> {data._id} </a>}
-                                </span>
+                                    {!data || !data._id ? 'search term' : <a href={"/search?search="+data._id} className="searchTermLink"> {data._id} </a>}
+                                </span>                
                             </Col>
                             <Col sm={2} lg={2} className="gray800-14">
                                 <span style={{"float":"left"}}>
