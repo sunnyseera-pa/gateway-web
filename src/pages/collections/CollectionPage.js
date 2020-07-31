@@ -130,7 +130,7 @@ getDataSearchFromDb = () => {
   getDatasetData = async (datasetID) => {
     this.setState({ isLoading: true });
     await Promise.all([
-    axios.get(baseURL + '/api/v1/dataset/' + datasetID)
+    axios.get(baseURL + '/api/v1/datasets/' + datasetID)
     .then((res) => {
         this.state.objectData.push(res.data.data[0])
       })

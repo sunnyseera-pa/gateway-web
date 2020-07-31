@@ -28,7 +28,7 @@ class InnovatorApplication extends React.Component {
 
     getDatasetSearch = () => {
         this.setState({ isLoading: true });
-        axios.get(baseURL + '/api/v1/dataset/' + this.state.data.dataSetId)
+        axios.get(baseURL + '/api/v1/datasets/' + this.state.data.dataSetId)
           .then((res) => {
             this.setState({
               dataset: res.data.data.label,

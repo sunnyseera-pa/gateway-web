@@ -74,7 +74,7 @@ class DatasetDetail extends Component {
     getDataset = () => {
         //need to handle error if no id is found
         this.setState({ isLoading: true });
-        axios.get(baseURL + '/api/v1/dataset/' + this.props.match.params.datasetID)
+        axios.get(baseURL + '/api/v1/datasets/' + this.props.match.params.datasetID)
           .then((res) => {
             this.setState({
               data: res.data.data[0],
