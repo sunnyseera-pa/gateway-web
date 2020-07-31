@@ -147,7 +147,7 @@ getDataSearchFromDb = () => {
       })
     ]);
     this.setState({objectData: this.state.objectData})
-  }
+  } 
 
   doGetUsersCall() {
     return new Promise((resolve, reject) => {
@@ -181,8 +181,9 @@ getDataSearchFromDb = () => {
     var allCount = toolCount + datasetCount + personCount + projectCount + paperCount;
 
 
+
     if (isLoading) {
-      return <Container><Loading /></Container>;
+      return <Container><Loading data-testid="isLoading" /></Container>;
     }
  
     return (
@@ -190,7 +191,7 @@ getDataSearchFromDb = () => {
         <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
           <div className="rectangle pixelGapTop pixelGapBottom">
             <Container>
-              {collectionAdded ? 
+              {collectionAdded ?  
               <Row >
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
@@ -237,13 +238,13 @@ getDataSearchFromDb = () => {
                     </Col>
                   </Row>
                   <Row>
-                    <Col sm={12} lg={12} className={!data.imageLink || data.imageLink === "https://" ? "" : "collectionTitleCard"}> 
+                    <Col sm={12} lg={12} className={!data.imageLink || data.imageLink === "https://" ? "" : "collectionTitleCard"}>
                       {data.persons.map((person, index) => {
                         if (index > 0) {
-                          return <span className="gray800-14">, {person.firstname} {person.lastname}</span>
+                          return <span className="gray800-14" key={index}>, {person.firstname} {person.lastname}</span>
                         }
                         else {
-                          return <span className="gray800-14">{person.firstname} {person.lastname}</span>
+                          return <span className="gray800-14" key={index}>{person.firstname} {person.lastname}</span>
                         } 
                       })} 
                     </Col>
@@ -276,6 +277,7 @@ getDataSearchFromDb = () => {
           <Row>
             <Col sm={1} lg={1} /> 
             <Col sm={10} lg={10}>
+
               {key === 'All' ?
                   objectData.map((object) => {
                     var reason = '';

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Fragment } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import UnmetDemand from './DARComponents/UnmetDemand';
@@ -9,7 +9,7 @@ import { Event, initGA } from '../../tracking';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
-class AccountAnalyticsDashboard extends React.Component {
+class AccountAnalyticsDashboard extends React.Component { 
 
     // initialize our state
     state = {
@@ -186,7 +186,7 @@ class AccountAnalyticsDashboard extends React.Component {
                 <Row className="mt-4">
                     <Col xs={1}></Col>
                     <Col xs={10}>
-                        <Loading />
+                        <Loading data-testid="isLoading" />
                     </Col>
                     <Col xs={1}></Col>
                 </Row>
@@ -224,12 +224,12 @@ class AccountAnalyticsDashboard extends React.Component {
                                         </div>
                                     </Col>
                                 </Row>
-                            </Col>
+                            </Col> 
                         </Row>
 
                         <Row className="kpiContainer"> 
                             <Col sm={3} lg={3} className="dashboardPadding"> 
-                                <DashboardKPI kpiText="total datasets" kpiValue={statsDataType.datasets}/>
+                                <DashboardKPI kpiText="total datasets" kpiValue={statsDataType.datasets} />
                             </Col>
                             <Col sm={3} lg={3} className="dashboardPadding">
                                 <DashboardKPI kpiText="datasets with technical metadata" kpiValue={datasetsWithTechMetaData.toFixed(0)} percentageFlag={true}/>
@@ -262,7 +262,7 @@ class AccountAnalyticsDashboard extends React.Component {
                             <Col sm={12} lg={12}>
                                 <Row >
                                     <Col sm={12} lg={12}>
-                                        <span className="black-20">Unmet demand</span>
+                                        <span className="black-20" >Unmet demand</span>
                                     </Col>
                                 </Row>
                                 <Row>
@@ -298,7 +298,7 @@ class AccountAnalyticsDashboard extends React.Component {
                                                     <Col sm={2} lg={2}>Dataset results</Col>
                                                 </Row>
                                                     {data.map((dat) => {
-                                                        return <UnmetDemand data={dat}/>
+                                                        return <UnmetDemand data={dat} /> 
                                                     })}
                                                 </Col>
                                             </Row>
