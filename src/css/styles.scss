@@ -163,7 +163,7 @@ a.nav-item.nav-link.active {
   &-paper {
     @extend .badge;
     background-color: $duck-egg;
-    color: $white !important;
+    color: $gray-800 !important;
   }
 
   &-tag {
@@ -179,8 +179,8 @@ a.nav-item.nav-link.active {
   background-color: $purple;
   border-radius: 16px;
   display: inline-block;
-  padding: 6px;
   text-align: center;
+  line-height: 24px;
 }
 
 .iconHolder {
@@ -327,7 +327,7 @@ input[type='checkbox']:checked:after {
   border: solid 2px #d6d6d6;
   background-color: $white;
   position: relative;
-  padding-top: 1px;
+  padding-left: 3px;
   content: url(../images/wee-square.svg);
   display: inline-block;
   visibility: visible;
