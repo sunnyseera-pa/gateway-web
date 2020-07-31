@@ -254,7 +254,7 @@ class AccountProjects extends React.Component {
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
                                                                     <Dropdown.Item href={'/project/edit/' + dat.id} className="black-14">Edit</Dropdown.Item>
                                                                     <Dropdown.Item href='#' onClick={() => this.approveProject(dat.id)} className="black-14">Approve</Dropdown.Item>
-                                                                    <Dropdown.Item href='#' onClick={() => this.rejectProject(dat.id)} className="black-14">Reject</Dropdown.Item>
+                                                                    <RejectButton id={dat.id} />
                                                                 </DropdownButton>
                                                             </Col>
                                                         </Row>

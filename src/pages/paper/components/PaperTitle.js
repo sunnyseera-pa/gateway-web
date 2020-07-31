@@ -80,11 +80,11 @@ class ToolTitle extends React.Component {
                                 <Col xs={12} md={12} className="mb-3">
   
                                     {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature, i) => {
-                                        return <div className="mr-2 gray800-14 tagBadges mb-2 mt-2" key={i}><a href={'/search?search=' + feature + '&type=all'}>{feature}</a></div>
+                                        return <div className="badge-tag" key={i}><a href={'/search?search=' + feature + '&type=all'}>{feature}</a></div>
                                     })}
   
                                     {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic, i) => {
-                                        return <div className="mr-2 gray800-14 tagBadges mb-2 mt-2" key={i}><a href={'/search?search=' + topic + '&type=all'}>{topic}</a></div>
+                                        return <div className="badge-tag" key={i}><a href={'/search?search=' + topic + '&type=all'}>{topic}</a></div>
                                     })}
   
                                 </Col>

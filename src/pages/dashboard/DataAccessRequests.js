@@ -7,6 +7,7 @@ import PreSubInnovator from './DARComponents/PreSubInnovator';
 import CustodianApplication from './DARComponents/CustodianApplication';
 import InnovatorApplication from './DARComponents/InnovatorApplication';
 import { baseURL } from '../../configs/url.config';
+import { isUndefined } from 'lodash';
 
 class DataAccessRequests extends React.Component {
  
@@ -108,7 +109,7 @@ checkAlerts = () => {
                                     <Col sm={2} lg={2}>Progress</Col> 
                                 </Row>
                             {data.map(dat => (
-                                dat.applicationStatus === 'inProgress' ? 
+                                dat.applicationStatus === 'inProgress'&& !isUndefined(dat.dataSetId) && dat.dataSetId !== 'undefined' ?  
                                 <Row className="subHeader mt-1">
                                     <PreSubCustodian data={dat}/> 
                                 </Row>   
@@ -127,7 +128,7 @@ checkAlerts = () => {
                                     <Col sm={2} lg={2}>Progress</Col> 
                                 </Row>
                                 {data.map(dat => (
-                                    dat.applicationStatus === 'submitted' ?
+                                    dat.applicationStatus === 'submitted' && !isUndefined(dat.userId) && !isUndefined(dat.dataSetId) && dat.userId !== 'undefined' && dat.dataSetId !== 'undefined' ?
                                     <Row className="subHeader mt-1">
                                         <CustodianApplication data={dat}/> 
                                     </Row>          
@@ -145,7 +146,7 @@ checkAlerts = () => {
                                     <Col sm={2} lg={2}>Progress</Col> 
                                 </Row>
                                 {data.map(dat => (
-                                    dat.applicationStatus === 'approved' ?
+                                    dat.applicationStatus === 'approved' && !isUndefined(dat.userId) && !isUndefined(dat.dataSetId)  && dat.userId !== 'undefined' && dat.dataSetId !== 'undefined'?
                                     <Row className="subHeader mt-1">
                                         <CustodianApplication data={dat}/> 
                                     </Row>          
@@ -163,7 +164,7 @@ checkAlerts = () => {
                                     <Col sm={2} lg={2}>Progress</Col> 
                                 </Row>
                                 {data.map(dat => (
-                                    dat.applicationStatus === 'rejected' ?
+                                    dat.applicationStatus === 'rejected' && !isUndefined(dat.userId) && !isUndefined(dat.dataSetId)  && dat.userId !== 'undefined' && dat.dataSetId !== 'undefined'?
                                     <Row className="subHeader mt-1">
                                         <CustodianApplication data={dat}/> 
                                     </Row>          
@@ -196,7 +197,7 @@ checkAlerts = () => {
                                 <Col sm={6} lg={6}>Progress</Col> 
                             </Row>
                             {data.map(dat => (
-                                (dat.userId === this.state.userState[0].id) && dat.applicationStatus === 'inProgress' ? 
+                                (dat.userId === this.state.userState[0].id) && dat.applicationStatus === 'inProgress' && !isUndefined(dat.dataSetId) && dat.dataSetId !== 'undefined'?  
                                     <Row className="subHeader mt-1"> 
                                         <PreSubInnovator data={dat}/> 
                                     </Row> 
@@ -213,7 +214,7 @@ checkAlerts = () => {
                                     <Col sm={6} lg={6}>Progress</Col> 
                                 </Row>
                                 {data.map(dat => (
-                                (dat.userId === this.state.userState[0].id) && dat.applicationStatus === 'submitted' ? 
+                                (dat.userId === this.state.userState[0].id) && dat.applicationStatus === 'submitted' && !isUndefined(dat.dataSetId) && dat.dataSetId !== 'undefined'? 
                                     <Row className="subHeader mt-1"> 
                                         <InnovatorApplication data={dat}/> 
                                     </Row> 
@@ -230,7 +231,7 @@ checkAlerts = () => {
                                     <Col sm={6} lg={6}>Progress</Col> 
                                 </Row> 
                                 {data.map(dat => (
-                                (dat.userId === this.state.userState[0].id) && dat.applicationStatus === 'approved' ? 
+                                (dat.userId === this.state.userState[0].id) && dat.applicationStatus === 'approved' && !isUndefined(dat.dataSetId) && dat.dataSetId !== 'undefined'?  
                                     <Row className="subHeader mt-1"> 
                                         <InnovatorApplication data={dat}/> 
                                     </Row> 
@@ -247,7 +248,7 @@ checkAlerts = () => {
                                     <Col sm={6} lg={6}>Progress</Col> 
                                 </Row>
                                 {data.map(dat => (
-                                (dat.userId === this.state.userState[0].id) && dat.applicationStatus === 'rejected' ? 
+                                (dat.userId === this.state.userState[0].id) && dat.applicationStatus === 'rejected' && !isUndefined(dat.dataSetId) && dat.dataSetId !== 'undefined'?  
                                     <Row className="subHeader mt-1"> 
                                         <InnovatorApplication data={dat}/> 
                                     </Row> 
