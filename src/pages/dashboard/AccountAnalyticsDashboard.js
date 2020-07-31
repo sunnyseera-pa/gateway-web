@@ -25,7 +25,6 @@ class AccountAnalyticsDashboard extends React.Component {
         uptime: 0,
         datasetsWithTechMetaData: 0,
         dates: getDatesForDropdown(),
-        // dates: [],
         selectedOption: '',
         isLoading: true
     };
@@ -45,10 +44,9 @@ class AccountAnalyticsDashboard extends React.Component {
     }
 
     async handleDateSelect(eventKey, event) {
-        console.log('eventKey: ' + eventKey)
+        if(eventKey === null) {eventKey = 0} 
         this.setState({ selectedOption: this.state.dates[eventKey] });
         this.getUnmetDemand(this.state.dates[eventKey]);
-        // this.getDatesForDropdown()
         await Promise.all([
             this.getStats(),
             this.getTotalGAUsers(),
@@ -63,7 +61,6 @@ class AccountAnalyticsDashboard extends React.Component {
       async componentDidMount() {
         initGA('UA-166025838-1');
         this.getUnmetDemand()
-        // this.getDatesForDropdown()
         await Promise.all([
             this.getStats(),
             this.getTotalGAUsers(),
@@ -177,8 +174,6 @@ class AccountAnalyticsDashboard extends React.Component {
 
     render() {
         const { userState, key, isLoading, data, dates, statsDataType, gaUsers, totalGAUsers, searchesWithResults, accessRequests, datasetsWithTechMetaData, uptime } = this.state;
-        console.log('logs are working!')
-        console.log('dates: ' + dates)
         let uniqueUsers = (statsDataType.person / totalGAUsers) * 100;
 
         if (isLoading) {
@@ -202,7 +197,7 @@ class AccountAnalyticsDashboard extends React.Component {
                             <Col sm={12} lg={12}>
                                 <Row >
                                     <Col sm={8} lg={8}>
-                                        <span className="black-20">Dashboard</span>
+                                        <span className="black-20">BLUE Dashboard</span>
                                     </Col>
                                     <Col sm={4} lg={4}>
                                         <span className="gray700-13 floatRight">Last updated: {moment().format("DD MMM YYYY, hh:mm")}</span>
@@ -384,17 +379,11 @@ class AccountAnalyticsDashboard extends React.Component {
 export default AccountAnalyticsDashboard;
 
 const getDatesForDropdown = (req, res) => {
-    console.log('in dates dropdown')
 
     let startDate = new Date('2020-05-01T00:00:00.000Z');
     let stopDate = new Date();
     let dateArray = new Array();
     let currentDate = startDate;
-
-    console.log('startDate: ' + startDate)
-    console.log('stopDate: ' + stopDate)
-    console.log('currentDate: ' + currentDate) 
-
 
     while (currentDate <= stopDate) {
     if(currentDate.getUTCDate() == 1)
@@ -402,8 +391,8 @@ const getDatesForDropdown = (req, res) => {
     
     currentDate = currentDate.addDays(1);
     }
+
     return dateArray.reverse();
-    // this.setState({ dates: dateArray.reverse()}); 
 }
 
 Date.prototype.addDays = function(days) {
