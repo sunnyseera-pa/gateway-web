@@ -197,7 +197,7 @@ class AccountAnalyticsDashboard extends React.Component {
                             <Col sm={12} lg={12}>
                                 <Row >
                                     <Col sm={8} lg={8}>
-                                        <span className="black-20">BLUE Dashboard</span>
+                                        <span className="black-20">Dashboard</span>
                                     </Col>
                                     <Col sm={4} lg={4}>
                                         <span className="gray700-13 floatRight">Last updated: {moment().format("DD MMM YYYY, hh:mm")}</span>
