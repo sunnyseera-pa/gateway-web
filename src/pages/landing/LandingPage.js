@@ -63,7 +63,7 @@ class LandingPage extends React.Component {
                     isLoading: false
                 });
             })
-    };
+    }; 
 
     getRecentSearches = () => {
         axios.get(baseURL + '/api/v1/stats/recent')
