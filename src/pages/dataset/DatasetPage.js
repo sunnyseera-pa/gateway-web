@@ -437,7 +437,7 @@ class DatasetDetail extends Component {
                     else {
                         return (
                             <Link className="btn btn-primary addButton pointer" 
-                                to={{pathname: `/data-access-request/dataset/${data.datasetid}`}} 
+                                to={{pathname: `/data-access-request/dataset/${data.datasetid}/publisher/${data.publisher}`}} 
                                 onClick={() => Event("Buttons", "Click", "Request Access")}>
                                 Request Access
                             </Link>

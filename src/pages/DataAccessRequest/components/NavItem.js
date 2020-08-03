@@ -1,9 +1,9 @@
-import React, {Fragment} from 'react'
+import React, {useState, Fragment} from 'react'
 import { isEmpty } from 'lodash';
 
 const NavItem = ({parentForm, questionPanels, onFormSwitchPanel, activePanelId}) => {
 
-    const onClickItem = (e, panel) => {
+    const onClickItem = (e, panel, index) => {
         e.preventDefault();
         onFormSwitchPanel(panel);
     }
@@ -20,7 +20,7 @@ const NavItem = ({parentForm, questionPanels, onFormSwitchPanel, activePanelId})
                             className={classes} 
                             style={{cursor: 'pointer'}} 
                             key={index} 
-                            onClick={e => onClickItem(e, item)}>
+                            onClick={e => onClickItem(e, item, index)}>
                             {item.navHeader}
                         </li> 
                     )
