@@ -94,7 +94,6 @@ class HDRRouter extends Component {
                 <div className='navBarGap'></div>
                 <div className='mainWrap'>
                     <Switch>
-                        <Route path='/request-access' render={(props) => <Request {...props} userState={userState} />} />
                         <Route path='/search' render={(props) => <SearchPage {...props} userState={userState} />} />
                         
                         <Route path='/person/:personID' render={(props) => <PersonPage {...props} userState={userState} />} />
