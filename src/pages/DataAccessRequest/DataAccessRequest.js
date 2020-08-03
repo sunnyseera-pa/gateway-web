@@ -219,9 +219,9 @@ class DataAccessRequest extends Component {
 
         if(isValid) {
             try {
-                let {_id: id} = this.state;
+                let {_id} = this.state;
                 // 1. POST 
-                const response = await axios.post(`${baseURL}/api/v1/data-access-request/${id}`, {});
+                const response = await axios.post(`${baseURL}/api/v1/data-access-request/${_id}`, {});
                 const lastSaved = this.saveTime();
                 this.setState({ lastSaved });
                 let message = {"type":"success", "message":"Done! Your application was submitted successfully"};
