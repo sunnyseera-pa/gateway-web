@@ -171,11 +171,7 @@ class AddEditToolPage extends React.Component {
     }
 
     doSearch = (e) => { //fires on enter on searchbar
-        if (e.key === 'Enter') {
-            if (!!this.state.searchString) {
-                window.location.href = window.location.search + "/search?search=" + this.state.searchString;
-            }
-        }
+        if (e.key === 'Enter') window.location.href = "/search?search=" + this.state.searchString;
     }
 
     updateSearchString = (searchString) => {
@@ -210,7 +206,6 @@ class AddEditToolPage extends React.Component {
     }
 
     addToTempRelatedObjects = (id, type) => {
-
         if(this.state.tempRelatedObjectIds && this.state.tempRelatedObjectIds.some(object => object.objectId === id)){
             this.state.tempRelatedObjectIds = this.state.tempRelatedObjectIds.filter(object => object.objectId !== id);
         }

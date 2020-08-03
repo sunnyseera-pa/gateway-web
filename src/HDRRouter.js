@@ -23,14 +23,11 @@ import AddEditPaperPage from './pages/paper/AddEditPaperPage';
 import AddCollectionPage from './pages/collections/AddCollectionPage';
 import EditCollectionPage from './pages/collections/EditCollectionPage';
 
-import Request from './pages/request/Request';
 import DataAccessRequest from './pages/DataAccessRequest/DataAccessRequest';
 import Loading from './pages/commonComponents/Loading'
 import CompleteRegistration from './pages/registration/CompleteRegistration'
 import LoginModal from './pages/commonComponents/LoginModal';
 import Footer from './pages/commonComponents/Footer';
-
-import LandingPage from './pages/landing/LandingPage';
 
 var baseURL = require('./pages/commonComponents/BaseURL').getURL();
 
@@ -97,10 +94,6 @@ class HDRRouter extends Component {
                 <div className='navBarGap'></div>
                 <div className='mainWrap'>
                     <Switch>
-                        {/* <Route path='/landingpage'> <LandingPage/> </Route> */}
-                        <Route path='/landingpage' render={(props) => <LandingPage {...props} userState={userState} />} />
-
-
                         <Route path='/request-access' render={(props) => <Request {...props} userState={userState} />} />
                         <Route path='/search' render={(props) => <SearchPage {...props} userState={userState} />} />
                         

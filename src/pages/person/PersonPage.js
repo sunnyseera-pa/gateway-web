@@ -5,8 +5,7 @@ import PersonTitle from './components/PersonTitle';
 import {Container, Row, Col, Tabs, Tab} from 'react-bootstrap';
 
 import SearchBar from '../commonComponents/SearchBar';
-// import DataSet from '../commonComponents/DataSet';
-import DataSet from '../commonComponents/DataSetOld';
+import DataSet from '../commonComponents/DataSet';
 
 import Tool from '../commonComponents/Tool';
 import NotFound from '../commonComponents/NotFound';
@@ -65,13 +64,9 @@ class PersonDetail extends Component {
       })
   };
 
-  doSearch = (e) => { //fires on enter on searchbar
-    if (e.key === 'Enter') {
-      if (!!this.state.searchString) {
-        window.location.href = "/search?search=" + this.state.searchString;
-      }
+    doSearch = (e) => { //fires on enter on searchbar
+        if (e.key === 'Enter') window.location.href = "/search?search=" + this.state.searchString;
     }
-  }
 
   updateSearchString = (searchString) => {
     this.setState({ searchString: searchString });

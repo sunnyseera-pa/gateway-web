@@ -11,7 +11,7 @@ import { Event, initGA } from '../../tracking';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
-class AccountCollections extends React.Component {
+class AccountCollections extends React.Component { 
 
     constructor(props) {
         super(props)
@@ -24,14 +24,16 @@ class AccountCollections extends React.Component {
         key: 'active',
         data: [],
         isLoading: true
-    };
+    }; 
 
     handleSelect = (key) => {
         this.setState({ key: key });
     }
 
     componentDidMount() {
-        initGA('UA-166025838-1');
+        if(process.env.NODE_ENV === 'production'){
+            initGA('UA-166025838-1');
+        } 
         this.doCollectionsCall();
     }
 
@@ -58,9 +60,9 @@ class AccountCollections extends React.Component {
                 <Row className="mt-4">
                     <Col xs={1}></Col>
                     <Col xs={10}>
-                        <Loading />
+                        <Loading data-testid="isLoading" />
                     </Col>
-                    <Col xs={1}></Col>
+                    <Col xs={1}></Col> 
                 </Row>
             );
         }
@@ -122,12 +124,12 @@ class AccountCollections extends React.Component {
                                                 }
                                                 else {
                                                     return (
-                                                        <Row className="entryBox">
+                                                        <Row className="entryBox" data-testid="collectionEntry">
                                                             <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
                                                             <Col sm={12} lg={5} className="pt-2"><a href={'/collection/' + dat.id} className="black-14">{dat.name}</a></Col>
                                                             <Col sm={12} lg={2} className="pt-2 gray800-14">
-                                                                {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
-                                                                    return <span>{person.firstname} {person.lastname} <br /></span>
+                                                                {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person, index) => {
+                                                                    return <span key={index}>{person.firstname} {person.lastname} <br /></span>
                                                                 })}
                                                             </Col>
 
@@ -152,7 +154,7 @@ class AccountCollections extends React.Component {
                                                 <Col xs={2}>Updated</Col>
                                                 <Col xs={5}>Name</Col>
                                                 <Col xs={2}>Author</Col>
-                                                <Col xs={3}></Col>
+                                                <Col xs={3}></Col> 
                                             </Row>
 
                                             {archiveCount <= 0 ? <NotFound word="collections" /> : data.map((dat) => {
@@ -161,7 +163,7 @@ class AccountCollections extends React.Component {
                                                 }
                                                 else {
                                                     return (
-                                                        <Row className="entryBox">
+                                                        <Row className="entryBox" data-testid="collectionEntry">
                                                             <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
                                                             <Col sm={12} lg={5} className="pt-2"><a href={'/collection/' + dat.id} className="black-14">{dat.name}</a></Col>
                                                             <Col sm={12} lg={2} className="pt-2 gray800-14">

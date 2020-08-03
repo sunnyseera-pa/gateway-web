@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Fragment } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import UnmetDemand from './DARComponents/UnmetDemand';
@@ -9,7 +9,7 @@ import { Event, initGA } from '../../tracking';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
-class AccountAnalyticsDashboard extends React.Component {
+class AccountAnalyticsDashboard extends React.Component { 
 
     // initialize our state
     state = {
@@ -44,6 +44,7 @@ class AccountAnalyticsDashboard extends React.Component {
     }
 
     async handleDateSelect(eventKey, event) {
+        if(eventKey === null) {eventKey = 0} 
         this.setState({ selectedOption: this.state.dates[eventKey] });
         this.getUnmetDemand(this.state.dates[eventKey]);
         await Promise.all([
@@ -81,7 +82,7 @@ class AccountAnalyticsDashboard extends React.Component {
         // axios.get(baseURL + '/api/v1/stats/unmet/'+ this.state.key, {
             params: {
                 month: selectedMonth,
-                year: selectedYear
+                year: selectedYear 
             }
         }) 
         .then((res) => {
@@ -133,7 +134,8 @@ class AccountAnalyticsDashboard extends React.Component {
 
     getKPIs(selectedDate){
         return new Promise((resolve, reject) => {
-        axios.get(baseURL + '/api/v1/stats/kpis/' + selectedDate )
+        // axios.get(baseURL + '/api/v1/stats/kpis/' + selectedDate )
+        axios.get(baseURL + '/api/v1/stats/kpis?kpi=searchanddar&selectedDate=' + selectedDate )
         .then((res) => {
             let haveResultsMonth = res.data.data.totalMonth - res.data.data.noResultsMonth;
             let searchesWithResults = (haveResultsMonth / res.data.data.totalMonth) * 100;
@@ -149,7 +151,8 @@ class AccountAnalyticsDashboard extends React.Component {
 
     getUptime(selectedDate){
         return new Promise((resolve, reject) => {
-        axios.get(baseURL + '/api/v1/stats/uptime/' + selectedDate )
+        // axios.get(baseURL + '/api/v1/stats/uptime/' + selectedDate )
+        axios.get(baseURL + '/api/v1/stats//kpis?kpi=uptime&selectedDate=' + selectedDate )
         .then((res) => {
             this.setState({ uptime: res.data.data});
             resolve();
@@ -161,7 +164,8 @@ class AccountAnalyticsDashboard extends React.Component {
 
     getDatasetsWithTechMetadata(){
         return new Promise((resolve, reject) => {
-        axios.get(baseURL + '/api/v1/stats/technicalmetadata')
+        // axios.get(baseURL + '/api/v1/stats/technicalmetadata')
+        axios.get(baseURL + '/api/v1/stats/kpis?kpi=technicalmetadata')
         .then((res) => {
             let datasetsWithTechMetaData = (res.data.data.datasetsMetadata / res.data.data.totalDatasets) * 100;
             this.setState({ datasetsWithTechMetaData: datasetsWithTechMetaData});
@@ -174,7 +178,6 @@ class AccountAnalyticsDashboard extends React.Component {
 
     render() {
         const { userState, key, isLoading, data, dates, statsDataType, gaUsers, totalGAUsers, searchesWithResults, accessRequests, datasetsWithTechMetaData, uptime } = this.state;
-
         let uniqueUsers = (statsDataType.person / totalGAUsers) * 100;
 
         if (isLoading) {
@@ -182,7 +185,7 @@ class AccountAnalyticsDashboard extends React.Component {
                 <Row className="mt-4">
                     <Col xs={1}></Col>
                     <Col xs={10}>
-                        <Loading />
+                        <Loading data-testid="isLoading" />
                     </Col>
                     <Col xs={1}></Col>
                 </Row>
@@ -220,45 +223,49 @@ class AccountAnalyticsDashboard extends React.Component {
                                         </div>
                                     </Col>
                                 </Row>
-                            </Col>
+                            </Col> 
                         </Row>
 
                         <Row className="kpiContainer"> 
-                            <Col sm={3} lg={3} className="dashboardPadding"> 
-                                <DashboardKPI kpiText="total datasets" kpiValue={statsDataType.datasets}/>
+
+                            <Col sm={3} lg={3} className="kpiClass"> 
+                                <DashboardKPI kpiText="total datasets" kpiValue={statsDataType.dataset}/>
                             </Col>
-                            <Col sm={3} lg={3} className="dashboardPadding">
+                            <Col sm={3} lg={3} className="kpiClass">
                                 <DashboardKPI kpiText="datasets with technical metadata" kpiValue={datasetsWithTechMetaData.toFixed(0)} percentageFlag={true}/>
                             </Col>
-                            <Col sm={3} lg={3} className="dashboardPadding">
+                            <Col sm={3} lg={3} className="kpiClass">
                                 <DashboardKPI kpiText="unique users this month" kpiValue={gaUsers}/>
                             </Col>
-                            <Col sm={3} lg={3} className="dashboardPadding">                               
+                            <Col sm={3} lg={3} className="kpiClass">                               
                                 <DashboardKPI kpiText="unique registered users" kpiValue={uniqueUsers.toFixed(0)} percentageFlag={true}/> 
                             </Col>                        
                         </Row>
 
                         <Row className="kpiContainer">
-                            <Col sm={3} lg={3} className="dashboardPadding">
+                            <Col sm={3} lg={3} className="kpiClass">
                                 <DashboardKPI kpiText="searches with results this month" kpiValue={searchesWithResults.toFixed(0)} percentageFlag={true}/>
                             </Col>
-                            <Col sm={3} lg={3} className="dashboardPadding">
+                            <Col sm={3} lg={3} className="kpiClass">
                                 <DashboardKPI kpiText="new access requests" kpiValue={accessRequests}/> 
                             </Col>
-                            <Col sm={3} lg={3} className="dashboardPadding">
+                            <Col sm={3} lg={3} className="kpiClass">
                                 {this.state.selectedOption == 'Fri May 01 2020 01:00:00 GMT+0100 (British Summer Time)' ? 
                                 <DashboardKPI kpiText="uptime this month" kpiValue={'not available'}/>
                                 : 
                                 <DashboardKPI kpiText="uptime this month" kpiValue={uptime.toFixed(2)} percentageFlag={true}/>
                                 }
                             </Col>
+                            <Col sm={3} lg={3} className="kpiClass">                               
+                                <DashboardKPI kpiText="" kpiValue=""/> 
+                            </Col> 
                         </Row>
 
                         <Row className="accountHeader mt-4">
                             <Col sm={12} lg={12}>
                                 <Row >
                                     <Col sm={12} lg={12}>
-                                        <span className="black-20">Unmet demand</span>
+                                        <span className="black-20" >Unmet demand</span>
                                     </Col>
                                 </Row>
                                 <Row>
@@ -294,7 +301,7 @@ class AccountAnalyticsDashboard extends React.Component {
                                                     <Col sm={2} lg={2}>Dataset results</Col>
                                                 </Row>
                                                     {data.map((dat) => {
-                                                        return <UnmetDemand data={dat}/>
+                                                        return <UnmetDemand data={dat} /> 
                                                     })}
                                                 </Col>
                                             </Row>
@@ -392,6 +399,7 @@ const getDatesForDropdown = (req, res) => {
     
     currentDate = currentDate.addDays(1);
     }
+
     return dateArray.reverse();
 }
 
