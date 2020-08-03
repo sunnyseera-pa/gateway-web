@@ -34,7 +34,6 @@ class DatasetDetail extends Component {
     id: '',
     data: [],
     relatedObjects: [],
-    datasetSchema: '',
     datarequest: [],
     DBData: [],
     activeKey: false,
@@ -200,7 +199,7 @@ class DatasetDetail extends Component {
 
     return (
         <div>
-            {/* { datasetSchema !== '' ? <DatasetSchema datasetSchema={datasetSchema}/> : null } */}
+            { data.datasetfields.metadataschema !== '' ? <DatasetSchema datasetSchema={data.datasetfields.metadataschema}/> : null }
             <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
             <Container className="mb-5">
                 <Row className="mt-4">
