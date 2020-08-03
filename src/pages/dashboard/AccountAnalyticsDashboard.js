@@ -133,7 +133,8 @@ class AccountAnalyticsDashboard extends React.Component {
 
     getKPIs(selectedDate){
         return new Promise((resolve, reject) => {
-        axios.get(baseURL + '/api/v1/stats/kpis/' + selectedDate )
+        // axios.get(baseURL + '/api/v1/stats/kpis/' + selectedDate )
+        axios.get(baseURL + '/api/v1/stats/kpis?kpi=searchanddar&selectedDate=' + selectedDate )
         .then((res) => {
             let haveResultsMonth = res.data.data.totalMonth - res.data.data.noResultsMonth;
             let searchesWithResults = (haveResultsMonth / res.data.data.totalMonth) * 100;
@@ -149,7 +150,8 @@ class AccountAnalyticsDashboard extends React.Component {
 
     getUptime(selectedDate){
         return new Promise((resolve, reject) => {
-        axios.get(baseURL + '/api/v1/stats/uptime/' + selectedDate )
+        // axios.get(baseURL + '/api/v1/stats/uptime/' + selectedDate )
+        axios.get(baseURL + '/api/v1/stats//kpis?kpi=uptime&selectedDate=' + selectedDate )
         .then((res) => {
             this.setState({ uptime: res.data.data});
             resolve();
@@ -161,7 +163,8 @@ class AccountAnalyticsDashboard extends React.Component {
 
     getDatasetsWithTechMetadata(){
         return new Promise((resolve, reject) => {
-        axios.get(baseURL + '/api/v1/stats/technicalmetadata')
+        // axios.get(baseURL + '/api/v1/stats/technicalmetadata')
+        axios.get(baseURL + '/api/v1/stats/kpis?kpi=technicalmetadata')
         .then((res) => {
             let datasetsWithTechMetaData = (res.data.data.datasetsMetadata / res.data.data.totalDatasets) * 100;
             this.setState({ datasetsWithTechMetaData: datasetsWithTechMetaData});
@@ -225,7 +228,7 @@ class AccountAnalyticsDashboard extends React.Component {
                         <Row className="kpiContainer"> 
 
                             <Col sm={3} lg={3} className="kpiClass"> 
-                                <DashboardKPI kpiText="total datasets" kpiValue={statsDataType.datasets}/>
+                                <DashboardKPI kpiText="total datasets" kpiValue={statsDataType.dataset}/>
                             </Col>
                             <Col sm={3} lg={3} className="kpiClass">
                                 <DashboardKPI kpiText="datasets with technical metadata" kpiValue={datasetsWithTechMetaData.toFixed(0)} percentageFlag={true}/>
