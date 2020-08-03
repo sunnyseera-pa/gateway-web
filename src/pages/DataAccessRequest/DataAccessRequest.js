@@ -52,9 +52,9 @@ class DataAccessRequest extends Component {
     async componentDidMount() {
         try {
             let { match: { params: { datasetId, publisher }}} = this.props;
-            debugger;
-            let response = await axios.get(`${baseURL}/api/v1/data-access-request/dataset/${datasetId}/publisher/${publisher}`);
-             const { data: { data: { jsonSchema, questionAnswers, _id, applicationStatus, dataset }}} = response;
+            let response = await axios.get(`${baseURL}/api/v1/data-access-request/dataset/${datasetId}`);
+             const { data: { data: { jsonSchema, questionAnswers, _id, applicationStatus }, dataset}} = response;
+             debugger;
             // 1. get the first active panel
              let  { formPanels: [ initialPanel, ...rest ]} = jsonSchema;
             // 2. set state
@@ -220,8 +220,9 @@ class DataAccessRequest extends Component {
 
         if(isValid) {
             try {
+                let {_id: id} = this.state;
                 // 1. POST 
-                const response = await axios.post(`${baseURL}/api/v1/data-access-request/${this.state.dataset.datasetid}`, {});
+                const response = await axios.post(`${baseURL}/api/v1/data-access-request/${id}`, {});
                 const lastSaved = this.saveTime();
                 this.setState({ lastSaved });
                 let message = {"type":"success", "message":"Done! Your application was submitted successfully"};
