@@ -79,7 +79,6 @@ class AccountAnalyticsDashboard extends React.Component {
         let selectedYear = date.getFullYear(selectedOption) || new Date().getFullYear();
         console.log('key: ' + this.state.key)
         axios.get(baseURL + '/api/v1/stats/unmet'+ this.state.key, {
-        // axios.get(baseURL + '/api/v1/stats/unmet/'+ this.state.key, {
             params: {
                 month: selectedMonth,
                 year: selectedYear 
