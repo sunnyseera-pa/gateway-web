@@ -54,7 +54,6 @@ class DataAccessRequest extends Component {
             let { match: { params: { datasetId, publisher }}} = this.props;
             let response = await axios.get(`${baseURL}/api/v1/data-access-request/dataset/${datasetId}`);
              const { data: { data: { jsonSchema, questionAnswers, _id, applicationStatus }, dataset}} = response;
-             debugger;
             // 1. get the first active panel
              let  { formPanels: [ initialPanel, ...rest ]} = jsonSchema;
             // 2. set state
