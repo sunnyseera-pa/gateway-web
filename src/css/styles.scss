@@ -1127,7 +1127,8 @@ iframe#discourse-embed-frame {
 
 #darLeftCol {
   width: calc(25vw - 15px);
-  height: calc(100vh - 70px);
+  max-height: calc(100vh - 70px);
+  height: min-content;
   margin-right: 15px;
   margin-top: 24px;
   padding-top: 24px;
@@ -1140,7 +1141,8 @@ iframe#discourse-embed-frame {
 }
 
 #darRightCol {
-  height: calc(100vh - 79px);
+  max-height: calc(100vh - 79px);
+  height: min-content;
   width: calc(33.33vw - 30px);
   padding-top: 24px;
   margin-right: 30px;
@@ -1164,7 +1166,7 @@ iframe#discourse-embed-frame {
 .darTab {
   padding: 15px 0;
   background-color: $white;
-  height: calc(100vh - 169px);
+  max-height: calc(100vh - 169px);
 }
 
 @media (min-width: 769px) and (max-width: 1160px) {
@@ -1173,17 +1175,17 @@ iframe#discourse-embed-frame {
   }
 
   .darTab {
-    height: calc(100vh - 208px);
+    max-height: calc(100vh - 208px);
   }
 }
 
 @media (min-width: 1161px) {
   #darRightCol {
-    height: calc(100vh - 79px);
+    max-height: calc(100vh - 79px);
   }
 
   .darTab {
-    height: calc(100vh - 169px);
+    max-height: calc(100vh - 169px);
   }
 }
 
