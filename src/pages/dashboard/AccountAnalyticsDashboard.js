@@ -23,6 +23,7 @@ class AccountAnalyticsDashboard extends React.Component {
         searchesWithResults: 0,
         accessRequests: 0,
         uptime: 0,
+        uniqueUsers: 0,
         datasetsWithTechMetaData: 0,
         dates: getDatesForDropdown(),
         selectedOption: '',
@@ -55,6 +56,8 @@ class AccountAnalyticsDashboard extends React.Component {
             this.getUptime(this.state.dates[eventKey]),
             this.getDatasetsWithTechMetadata()
         ])
+        console.log('select - statsDataType.person: ' + this.state.statsDataType.person)
+        this.setState({uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100})
         this.setState({isLoading: false})
       }
 
@@ -69,6 +72,10 @@ class AccountAnalyticsDashboard extends React.Component {
             this.getUptime(this.state.selectedOption),
             this.getDatasetsWithTechMetadata()
         ])
+        console.log('mount - statsDataType.person: ' + this.state.statsDataType.person)
+        console.log('mount - totalGAUsers: ' + this.state.totalGAUsers) 
+
+        this.setState({uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100})
         this.setState({isLoading: false})
 
     }
@@ -91,6 +98,7 @@ class AccountAnalyticsDashboard extends React.Component {
     }
 
     getStats(){
+        console.log('1. get stats')
         return new Promise((resolve, reject) => {
         axios.get(baseURL + '/api/v1/stats')
         .then((res) => {
@@ -106,6 +114,8 @@ class AccountAnalyticsDashboard extends React.Component {
     }
 
     getTotalGAUsers(){
+        console.log('2. statsDataType.person: ' + this.state.statsDataType.person)
+        console.log('2. get total GA users')
         return new Promise((resolve, reject) => {
         axios.get(baseURL + '/api/v1/analyticsdashboard/totalusers')
         .then((res) => {
@@ -119,6 +129,7 @@ class AccountAnalyticsDashboard extends React.Component {
     }   
 
     getGAUsers(startDate, endDate){
+        console.log('3. get GA users')
         return new Promise((resolve, reject) => {
         axios.get(baseURL + '/api/v1/analyticsdashboard/userspermonth?startDate=' + startDate + '&endDate=' + endDate)
         .then((res) => {
@@ -131,6 +142,7 @@ class AccountAnalyticsDashboard extends React.Component {
     } 
 
     getKPIs(selectedDate){
+        console.log('4. get kpis')
         return new Promise((resolve, reject) => {
         axios.get(baseURL + '/api/v1/stats/kpis?kpi=searchanddar&selectedDate=' + selectedDate )
         .then((res) => {
@@ -147,6 +159,7 @@ class AccountAnalyticsDashboard extends React.Component {
     }
 
     getUptime(selectedDate){
+        console.log('5. get uptime')
         return new Promise((resolve, reject) => {
         axios.get(baseURL + '/api/v1/stats//kpis?kpi=uptime&selectedDate=' + selectedDate )
         .then((res) => {
@@ -159,6 +172,8 @@ class AccountAnalyticsDashboard extends React.Component {
     }
 
     getDatasetsWithTechMetadata(){
+        console.log('6. statsDataType.person: ' + this.state.statsDataType.person)
+        console.log('6. get tech meta data')
         return new Promise((resolve, reject) => {
         axios.get(baseURL + '/api/v1/stats/kpis?kpi=technicalmetadata')
         .then((res) => {
@@ -172,8 +187,7 @@ class AccountAnalyticsDashboard extends React.Component {
     }
 
     render() {
-        const { userState, key, isLoading, data, dates, statsDataType, gaUsers, totalGAUsers, searchesWithResults, accessRequests, datasetsWithTechMetaData, uptime } = this.state;
-        let uniqueUsers = (statsDataType.person / totalGAUsers) * 100;
+        const { key, isLoading, data, dates, statsDataType, gaUsers, searchesWithResults, accessRequests, datasetsWithTechMetaData, uptime, uniqueUsers } = this.state;
 
         if (isLoading) {
             return (
@@ -220,7 +234,7 @@ class AccountAnalyticsDashboard extends React.Component {
                                 </Row>
                             </Col> 
                         </Row>
-
+ 
                         <Row className="kpiContainer"> 
 
                             <Col sm={3} lg={3} className="kpiClass"> 
