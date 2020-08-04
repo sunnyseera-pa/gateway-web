@@ -42,7 +42,7 @@ const AddEditPaperForm = (props) => {
                 link: Yup.string()
                 .required('This cannot be empty'),
             description: Yup.string()
-                .max(1500, 'Maximum of 1,500 characters')
+                .max(3000, 'Maximum of 3,000 characters')
                 .required('This cannot be empty'),
             journal: Yup.string()
                 .required('This cannot be empty'),
@@ -194,7 +194,7 @@ const AddEditPaperForm = (props) => {
                                 </div>
                                 <div style={{ display: 'inline-block', float: 'right' }}>
                                     <br />
-                                    <span className="gray700-13">(<span id="currentCount">{formik.values.description.length || 0}</span>/1500)</span>
+                                    <span className="gray700-13">(<span id="currentCount">{formik.values.description.length || 0}</span>/3000)</span>
                                 </div>
                                 <Form.Control as="textarea" id="description" name="description" type="text" className={formik.touched.description && formik.errors.description ? "emptyFormInput addFormInput descriptionInput" : "addFormInput descriptionInput"} onKeyUp={descriptionCount} onChange={formik.handleChange}  value={formik.values.description} onBlur={formik.handleBlur} />
                                 {formik.touched.description && formik.errors.description ? <div className="errorMessages">{formik.errors.description}</div> : null}
