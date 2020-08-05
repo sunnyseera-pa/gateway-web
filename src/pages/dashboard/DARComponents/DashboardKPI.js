@@ -17,11 +17,11 @@ class  DashboardKPI extends Component {
       <span> 
         <Row className="kpiCard"> 
             <Col sm={12} lg={12}>
-                <Row className="text-left ml-2">
-                    <span className="gray700-12" data-testid="kpiText" > {kpiText} </span>  
-                </Row>
                 <Row className="text-left ml-2">                
                     <span className="black-28 text-left" data-testid="kpiValue" > { percentageFlag===true ? kpiValue + '%' : kpiValue} </span> 
+                </Row>
+                <Row className="text-left ml-2">
+                    <span className="gray700-12" data-testid="kpiText" > {kpiText} </span>  
                 </Row>
             </Col>
         </Row>

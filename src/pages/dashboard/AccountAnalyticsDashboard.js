@@ -23,6 +23,7 @@ class AccountAnalyticsDashboard extends React.Component {
         searchesWithResults: 0,
         accessRequests: 0,
         uptime: 0,
+        uniqueUsers: 0,
         datasetsWithTechMetaData: 0,
         dates: getDatesForDropdown(),
         selectedOption: '',
@@ -44,6 +45,7 @@ class AccountAnalyticsDashboard extends React.Component {
     }
 
     async handleDateSelect(eventKey, event) {
+        this.setState({isLoading: true})
         if(eventKey === null) {eventKey = 0} 
         this.setState({ selectedOption: this.state.dates[eventKey] });
         this.getUnmetDemand(this.state.dates[eventKey]);
@@ -55,6 +57,7 @@ class AccountAnalyticsDashboard extends React.Component {
             this.getUptime(this.state.dates[eventKey]),
             this.getDatasetsWithTechMetadata()
         ])
+        this.setState({uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100})
         this.setState({isLoading: false})
       }
 
@@ -69,6 +72,7 @@ class AccountAnalyticsDashboard extends React.Component {
             this.getUptime(this.state.selectedOption),
             this.getDatasetsWithTechMetadata()
         ])
+        this.setState({uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100})
         this.setState({isLoading: false})
 
     }
@@ -172,8 +176,7 @@ class AccountAnalyticsDashboard extends React.Component {
     }
 
     render() {
-        const { userState, key, isLoading, data, dates, statsDataType, gaUsers, totalGAUsers, searchesWithResults, accessRequests, datasetsWithTechMetaData, uptime } = this.state;
-        let uniqueUsers = (statsDataType.person / totalGAUsers) * 100;
+        const { key, isLoading, data, dates, statsDataType, gaUsers, searchesWithResults, accessRequests, datasetsWithTechMetaData, uptime, uniqueUsers } = this.state;
 
         if (isLoading) {
             return (
@@ -220,7 +223,7 @@ class AccountAnalyticsDashboard extends React.Component {
                                 </Row>
                             </Col> 
                         </Row>
-
+ 
                         <Row className="kpiContainer"> 
 
                             <Col sm={3} lg={3} className="kpiClass"> 
@@ -245,11 +248,7 @@ class AccountAnalyticsDashboard extends React.Component {
                                 <DashboardKPI kpiText="new access requests" kpiValue={accessRequests}/> 
                             </Col>
                             <Col sm={3} lg={3} className="kpiClass">
-                                {this.state.selectedOption == 'Fri May 01 2020 01:00:00 GMT+0100 (British Summer Time)' ? 
-                                <DashboardKPI kpiText="uptime this month" kpiValue={'not available'}/>
-                                : 
                                 <DashboardKPI kpiText="uptime this month" kpiValue={uptime.toFixed(2)} percentageFlag={true}/>
-                                }
                             </Col>
                             <Col sm={3} lg={3} className="kpiClass">                               
                                 <DashboardKPI kpiText="" kpiValue=""/> 
@@ -383,7 +382,7 @@ export default AccountAnalyticsDashboard;
 
 const getDatesForDropdown = (req, res) => {
 
-    let startDate = new Date('2020-05-01T00:00:00.000Z');
+    let startDate = new Date('2020-06-01T00:00:00.000Z');
     let stopDate = new Date();
     let dateArray = new Array();
     let currentDate = startDate;
