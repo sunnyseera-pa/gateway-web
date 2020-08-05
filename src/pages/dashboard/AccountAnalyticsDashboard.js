@@ -45,6 +45,7 @@ class AccountAnalyticsDashboard extends React.Component {
     }
 
     async handleDateSelect(eventKey, event) {
+        this.setState({isLoading: true})
         if(eventKey === null) {eventKey = 0} 
         this.setState({ selectedOption: this.state.dates[eventKey] });
         this.getUnmetDemand(this.state.dates[eventKey]);
@@ -56,7 +57,6 @@ class AccountAnalyticsDashboard extends React.Component {
             this.getUptime(this.state.dates[eventKey]),
             this.getDatasetsWithTechMetadata()
         ])
-        console.log('select - statsDataType.person: ' + this.state.statsDataType.person)
         this.setState({uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100})
         this.setState({isLoading: false})
       }
@@ -72,9 +72,6 @@ class AccountAnalyticsDashboard extends React.Component {
             this.getUptime(this.state.selectedOption),
             this.getDatasetsWithTechMetadata()
         ])
-        console.log('mount - statsDataType.person: ' + this.state.statsDataType.person)
-        console.log('mount - totalGAUsers: ' + this.state.totalGAUsers) 
-
         this.setState({uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100})
         this.setState({isLoading: false})
 
@@ -98,7 +95,6 @@ class AccountAnalyticsDashboard extends React.Component {
     }
 
     getStats(){
-        console.log('1. get stats')
         return new Promise((resolve, reject) => {
         axios.get(baseURL + '/api/v1/stats')
         .then((res) => {
@@ -114,8 +110,6 @@ class AccountAnalyticsDashboard extends React.Component {
     }
 
     getTotalGAUsers(){
-        console.log('2. statsDataType.person: ' + this.state.statsDataType.person)
-        console.log('2. get total GA users')
         return new Promise((resolve, reject) => {
         axios.get(baseURL + '/api/v1/analyticsdashboard/totalusers')
         .then((res) => {
@@ -129,7 +123,6 @@ class AccountAnalyticsDashboard extends React.Component {
     }   
 
     getGAUsers(startDate, endDate){
-        console.log('3. get GA users')
         return new Promise((resolve, reject) => {
         axios.get(baseURL + '/api/v1/analyticsdashboard/userspermonth?startDate=' + startDate + '&endDate=' + endDate)
         .then((res) => {
@@ -142,7 +135,6 @@ class AccountAnalyticsDashboard extends React.Component {
     } 
 
     getKPIs(selectedDate){
-        console.log('4. get kpis')
         return new Promise((resolve, reject) => {
         axios.get(baseURL + '/api/v1/stats/kpis?kpi=searchanddar&selectedDate=' + selectedDate )
         .then((res) => {
@@ -159,7 +151,6 @@ class AccountAnalyticsDashboard extends React.Component {
     }
 
     getUptime(selectedDate){
-        console.log('5. get uptime')
         return new Promise((resolve, reject) => {
         axios.get(baseURL + '/api/v1/stats//kpis?kpi=uptime&selectedDate=' + selectedDate )
         .then((res) => {
@@ -172,8 +163,6 @@ class AccountAnalyticsDashboard extends React.Component {
     }
 
     getDatasetsWithTechMetadata(){
-        console.log('6. statsDataType.person: ' + this.state.statsDataType.person)
-        console.log('6. get tech meta data')
         return new Promise((resolve, reject) => {
         axios.get(baseURL + '/api/v1/stats/kpis?kpi=technicalmetadata')
         .then((res) => {
@@ -259,11 +248,7 @@ class AccountAnalyticsDashboard extends React.Component {
                                 <DashboardKPI kpiText="new access requests" kpiValue={accessRequests}/> 
                             </Col>
                             <Col sm={3} lg={3} className="kpiClass">
-                                {this.state.selectedOption == 'Fri May 01 2020 01:00:00 GMT+0100 (British Summer Time)' ? 
-                                <DashboardKPI kpiText="uptime this month" kpiValue={'not available'}/>
-                                : 
                                 <DashboardKPI kpiText="uptime this month" kpiValue={uptime.toFixed(2)} percentageFlag={true}/>
-                                }
                             </Col>
                             <Col sm={3} lg={3} className="kpiClass">                               
                                 <DashboardKPI kpiText="" kpiValue=""/> 
@@ -397,7 +382,7 @@ export default AccountAnalyticsDashboard;
 
 const getDatesForDropdown = (req, res) => {
 
-    let startDate = new Date('2020-05-01T00:00:00.000Z');
+    let startDate = new Date('2020-06-01T00:00:00.000Z');
     let stopDate = new Date();
     let dateArray = new Array();
     let currentDate = startDate;
