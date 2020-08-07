@@ -4,7 +4,7 @@ import RelatedResourcesModal from './RelatedResourceModal';
 import { ReactComponent as CloseButtonSvg } from '../../images/close.svg';  
 
 
-
+ 
 function RelatedResources(props) {
 
 
