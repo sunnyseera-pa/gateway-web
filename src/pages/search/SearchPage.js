@@ -204,7 +204,14 @@ class SearchPage extends React.Component {
         this.setState({ personIndex: 0 })
     }
 
-    updateOnFilter = () => {
+    updateOnFilter = async () => {
+        await Promise.all([
+            this.setState({ datasetIndex: 0 }),
+            this.setState({ toolIndex: 0 }),
+            this.setState({ projectIndex: 0 }),
+            this.setState({ paperIndex: 0 }),
+            this.setState({ personIndex: 0 })
+        ])
         this.doSearchCall();
         this.setState({ isResultsLoading: true });
     }
