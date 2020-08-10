@@ -2486,9 +2486,12 @@ button a {
 }
 
 .heightVariable{
-  max-height: 56px
+  height: 56px
 }
 
+.entryBox .collapseWait{
+  transition: transform 0.5s linear 0s;
+}
 .dataClassArrow{
   @include mq('tablet-small',max){
     transform: translate(-20px, 0px) !important;
@@ -2511,9 +2514,6 @@ button a {
 @include mq('phone',max){
   transform: translate(-20px, 5px) !important;
 }
-
-// translate(-20px, 5px) !important;
-
 
 }
 

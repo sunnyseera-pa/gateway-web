@@ -51,27 +51,17 @@ class TechnicalMetadataVariables extends React.Component {
     }
 
     return (
-     <div className = "entryBox"  > 
-     {/* <div className = { open ? "entryBox" : "entryBox heightVariable" } >  */}
-
+      <div className={open ? "entryBox" : "entryBox heightVariable"}>
         <Row>
-          <Col
-            sm={11}
-            lg={11}
-            className="black-14-bold pl-3 "
-          >
+          <Col sm={11} lg={11} className="black-14-bold pl-3 ">
             <span>
-              <VariableSvg className="mr-1" 
-              style={{ float: "left" }}
-               />
+              <VariableSvg className="mr-1" style={{ float: "left" }} />
             </span>
 
-            <span className="pad-right-8" 
-            style={{ float: "left" }}
-            >
+            <span className="pad-right-8" style={{ float: "left" }}>
               {techMetadataVariables ? techMetadataVariables.label : ""}
             </span>
- 
+
             <span className="gray800-14-opacity" style={{ float: "left" }}>
               {open
                 ? ""
@@ -97,32 +87,35 @@ class TechnicalMetadataVariables extends React.Component {
           </Col>
         </Row>
 
-        <Collapse in={this.state.open}>
+        <Collapse in={this.state.open} className="collapseWait">
           <div>
             <Row>
               <Col sm={11} lg={11} className="gray800-14-opacity pad-top-8">
                 {techMetadataVariables ? techMetadataVariables.description : ""}
               </Col>
-              
             </Row>
             <Row className="pad-top-16">
-
-                <span className="gray800-14-opacity pad-right-24 margin-left-15">Data type</span>
-                  <span className="gray800-14 pad-right-8">
-                    {
-                    techMetadataVariables.dataType 
-                    ? techMetadataVariables.dataType.label.charAt(0).toUpperCase() + techMetadataVariables.dataType.label.substring(1).toLowerCase()
-                    : "-"}
-                  </span>
-                {techMetadataVariables &&
-                techMetadataVariables.dataType.domainType !==
-                  "PrimitiveType" ? (
-                  <Alert variant="info" className="customLabel gray700-13">
-                    Custom type
-                  </Alert>
-                ) : (
-                  " "
-                )}
+              <span className="gray800-14-opacity pad-right-24 margin-left-15">
+                Data type
+              </span>
+              <span className="gray800-14 pad-right-8">
+                {techMetadataVariables.dataType
+                  ? techMetadataVariables.dataType.label
+                      .charAt(0)
+                      .toUpperCase() +
+                    techMetadataVariables.dataType.label
+                      .substring(1)
+                      .toLowerCase()
+                  : "-"}
+              </span>
+              {techMetadataVariables &&
+              techMetadataVariables.dataType.domainType !== "PrimitiveType" ? (
+                <Alert variant="info" className="customLabel gray700-13">
+                  Custom type
+                </Alert>
+              ) : (
+                " "
+              )}
             </Row>
           </div>
         </Collapse>

@@ -19,8 +19,6 @@ import Loading from "../commonComponents/Loading";
 import RelatedObject from "../commonComponents/RelatedObject";
 import SearchBar from "../commonComponents/SearchBar";
 import SVGIcon from "../../images/SVGIcon";
-import { ReactComponent as InfoSVG } from "../../images/info.svg";
-import { ReactComponent as FilledInfoSVG } from "../../images/filledInfo.svg";
 import { ReactComponent as MetadataBronze } from "../../images/bronze.svg";
 import { ReactComponent as MetadataSilver } from "../../images/silver.svg";
 import { ReactComponent as MetadataGold } from "../../images/gold.svg";
@@ -760,56 +758,53 @@ class DatasetDetail extends Component {
                     </Row>
                   </Tab>
                   <Tab eventKey="TechDetails" title={`Technical details`}>
-                    <Row className="width-100"
-                      style={{ "margin":"0%" }}
-                    >
+                    <Row className="width-100" style={{ margin: "0%" }}>
                       {dataClassOpen === -1 ? (
                         <>
-                          <Col sm={12} lg={12} className="subHeader mt-3 gray800-14-bold">
-                              <span className="black-16-semibold mr-3">
-                                Data Classes
-                              </span>
-                              <span
-                                onMouseEnter={this.handleMouseHover}
-                                onMouseLeave={this.handleMouseHover}
-                              >
-                                {this.state.isHovering ? (
-                                  //   <FilledInfoSVG />
-
-                                  //   <InfoSVG fill={"#475da7"} fill-rule={"evenodd"} />
-
-                                  <SVGIcon
-                                    name="info"
-                                    fill={"#475da7"}
-                                    fill-rule={"evenodd"}
-                                    className="svg-16"
-                                  />
-                                ) : (
-                                  // <InfoSVG />
-
-                                  <SVGIcon
-                                    name="info"
-                                    fill={"#3db28c"}
-                                    className="svg-16"
-                                  />
-                                )}
-                              </span>
-
-                              {this.state.isHovering && (
-                                <div className="dataClassToolTip">
-                                  <span className="white-13-semibold">
-                                  A Dataset contains a number of Data Classes: groupings or collections of data points that share some common context: for example appearing in the same table of a database, or the same section in a form. A data class has a name, a description, some aliases, and may contain further (sub-) data classes.
-                                  </span>
-                                </div>
+                          <Col
+                            sm={12}
+                            lg={12}
+                            className="subHeader mt-3 gray800-14-bold"
+                          >
+                            <span className="black-16-semibold mr-3">
+                              Data Classes
+                            </span>
+                            <span
+                              onMouseEnter={this.handleMouseHover}
+                              onMouseLeave={this.handleMouseHover}
+                            >
+                              {this.state.isHovering ? (
+                                <SVGIcon
+                                  name="info"
+                                  fill={"#475da7"}
+                                  className="svg-16"
+                                />
+                              ) : (
+                                <SVGIcon
+                                  name="info"
+                                  fill={"#475da7"}
+                                  className="svg-16"
+                                />
                               )}
+                            </span>
+
+                            {this.state.isHovering && (
+                              <div className="dataClassToolTip">
+                                <span className="white-13-semibold">
+                                  A Dataset contains a number of Data Classes:
+                                  groupings or collections of data points that
+                                  share some common context: for example
+                                  appearing in the same table of a database, or
+                                  the same section in a form. A data class has a
+                                  name, a description, some aliases, and may
+                                  contain further (sub-) data classes.
+                                </span>
+                              </div>
+                            )}
                           </Col>
 
                           <Row>
-                            <Col
-                              sm={12}
-                              lg={12}
-                              className="ml-3 width-100"
-                            >
+                            <Col sm={12} lg={12} className="ml-3 width-100">
                               {technicalMetadata.map((techMetadata, index) => (
                                 <TechnicalMetadata
                                   technicalMetadata={techMetadata}
@@ -823,16 +818,16 @@ class DatasetDetail extends Component {
                           </Row>
                         </>
                       ) : (
-
-<Row>
-                          <Col sm={12} lg={12} >
-
-                            
-                            <TechnicalDetailsPage technicalMetadata={technicalMetadata[dataClassOpen]} doUpdateDataClassOpen={this.doUpdateDataClassOpen} />
-                            
-                        
+                        <Row style={{ width: "-webkit-fill-available" }}>
+                          <Col sm={12} lg={12}>
+                            <TechnicalDetailsPage
+                              technicalMetadata={
+                                technicalMetadata[dataClassOpen]
+                              }
+                              doUpdateDataClassOpen={this.doUpdateDataClassOpen}
+                            />
                           </Col>
-                         </Row>
+                        </Row>
                       )}
                     </Row>
                   </Tab>

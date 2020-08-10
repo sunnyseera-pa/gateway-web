@@ -32,7 +32,7 @@ class TechnicalMetadata extends React.Component {
           <Row className="entryBox">
             <Col sm={11} lg={11}>
               <Row>
-                <TableSvg className="margin-top-2"/>
+                <TableSvg className="margin-top-2" />
 
                 <span className="pad-left-8 black-18">
                   {technicalMetadata ? technicalMetadata.label : ""}
@@ -58,7 +58,6 @@ class TechnicalMetadata extends React.Component {
                   fill={"#475da7"}
                   className="svg-24 dataClassArrow"
                 />
- 
               </span>
             </Col>
           </Row>
