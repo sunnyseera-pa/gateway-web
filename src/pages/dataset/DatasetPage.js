@@ -19,6 +19,7 @@ import Loading from "../commonComponents/Loading";
 import RelatedObject from "../commonComponents/RelatedObject";
 import SearchBar from "../commonComponents/SearchBar";
 import SVGIcon from "../../images/SVGIcon";
+import { ReactComponent as InfoFill } from "../../images/infofill.svg";
 import { ReactComponent as MetadataBronze } from "../../images/bronze.svg";
 import { ReactComponent as MetadataSilver } from "../../images/silver.svg";
 import { ReactComponent as MetadataGold } from "../../images/gold.svg";
@@ -775,7 +776,7 @@ class DatasetDetail extends Component {
                             >
                               {this.state.isHovering ? (
                                 <SVGIcon
-                                  name="info"
+                                  name="infofill"
                                   fill={"#475da7"}
                                   className="svg-16"
                                 />
