@@ -54,7 +54,7 @@ class AddEditPaperPage extends React.Component {
     getPaperFromDb = () => {
         //need to handle error if no id is found
         this.setState({ isLoading: true });
-        axios.get(baseURL + '/api/v1/papers/' + this.props.match.params.paperID)
+        axios.get(baseURL + '/api/v1/papers/edit/' + this.props.match.params.paperID)
           .then((res) => {
             this.setState({
               data: res.data.data[0],
