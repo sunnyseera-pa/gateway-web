@@ -74,14 +74,33 @@ const AddEditProjectForm = (props) => {
 
     var listOfAuthors = [];
  
-    props.combinedUsers.forEach((user) => {
-        if (user.id === props.userState[0].id) {
-            listOfAuthors.push({ id: user.id, name: user.name + " (You)" })
-            if (!user.name.includes('(You)')) {
-                user.name = user.name + " (You)";
+    if (props.isEdit) {
+        props.data.authors.forEach((author) => {
+            props.combinedUsers.forEach((user) => {
+              if (user.id === author) {
+                if (props.userState[0].id === user.id) {
+                  listOfAuthors.push({ id: user.id, name: user.name + " (You)" })
+                  if (!user.name.includes('(You)')) {
+                    user.name = user.name + " (You)";
+                  }
+                }
+                else {
+                  listOfAuthors.push({ id: user.id, name: user.name })
+                }
+              }
+            });
+          });
+    }
+    else {
+        props.combinedUsers.forEach((user) => {
+            if (user.id === props.userState[0].id) {
+                listOfAuthors.push({ id: user.id, name: user.name + " (You)" })
+                if (!user.name.includes('(You)')) {
+                    user.name = user.name + " (You)";
+                }
             }
-        }
-    });
+        });
+    }
 
     function updateReason(id, reason, type) {
         let inRelatedObject = false;
@@ -116,7 +135,7 @@ const AddEditProjectForm = (props) => {
                             </Col>
                             <Col sm={2} lg={2} className="text-right">
                                 <span className="badge-project"> 
-                                    <SVGIcon name="newtoolicon" fill={'#ffffff'} className="badgeSvg mr-2" />
+                                    <SVGIcon name="newestprojecticon" fill={'#ffffff'} className="badgeSvg mr-2" />
                                     Project 
                                 </span>
                             </Col>
