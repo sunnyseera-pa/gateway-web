@@ -21,7 +21,7 @@ button {
     cursor: pointer;
   }
 }
-
+ 
 .mainWrap {
   min-height: 100%;
   padding-bottom: 440px;
@@ -466,6 +466,11 @@ svg:not(:root) {
   overflow: visible !important;
 }
 
+.svg-16 {
+  width: 16px;
+  height: 16px;
+}
+
 .svg-24 {
   float: left;
   width: 24px;
@@ -503,7 +508,7 @@ svg:not(:root) {
 }
 
 .greyCancelButton {
-  width: 83px;
+  min-width: 83px;
   height: 40px;
   background-color: $gray-200;
 }
@@ -2180,6 +2185,12 @@ iframe#discourse-embed-frame {
   transform: scaleY(-1);
 }
 
+.sideArrowSVG{
+  transform: rotate(270deg);
+  position: absolute;
+  top: 35%;
+}
+
 #dateDropdown input, select, optgroup, textarea {
   font-family: inherit;
   font-size: inherit !important;
@@ -2279,6 +2290,15 @@ button a {
     padding-top: 16px !important;
   }
 
+  .pad-top-8 {
+    padding-top: 8px !important;
+  }
+
+  .pad-bottom-16 {
+    padding-bottom: 16px !important;
+  }
+
+
   .margin-top-24 {
     margin-top: 24px !important;
   }
@@ -2291,6 +2311,14 @@ button a {
     margin-top: 16px !important;
   }
 
+  .margin-top-2 {
+    margin-top: 2px !important;
+  }
+
+  .margin-left-15{
+    margin-left: 15px !important;
+  }
+
   .col .noPadding {
     padding-left: 0px !important;
     padding-right: 0px !important;
@@ -2298,6 +2326,18 @@ button a {
 
   .col .pad-8 {
     padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  .pad-left-0 {
+    padding-left: 0px !important;
+  }
+
+  .pad-left-8 {
+    padding-left: 8px !important;
+  }
+
+  .pad-right-8 {
     padding-right: 8px !important;
   }
 
@@ -2309,8 +2349,24 @@ button a {
     padding-left: 24px !important;
   }
 
+  .pad-left-24 {
+    padding-left: 24px !important;
+  }
+
   .col .pad-right-24 {
     padding-right: 24px !important;
+  }
+
+  .pad-right-24 {
+    padding-right: 24px !important;
+  }
+
+  .pad-right-0 {
+    padding-right: 0px !important;
+  }
+
+  .width-100{
+    width: 100%;
   }
 
   .modal-title {
@@ -2402,3 +2458,61 @@ button a {
   width: auto !important;
   flex-grow: 0 !important;
 }
+
+.customLabel {
+  background-color: $light-teal !important;
+  border: none !important;
+  padding: 4px !important;
+  width: 84px;
+}
+
+.dataClassToolTip{
+  width: 275px;
+  // height: 132px;
+  border-radius: 8px;
+  background-color: $dark;
+  padding: 10px;
+  position: absolute;
+  left: 0%;
+  // left: 2%;
+  
+  // top: 13%;
+  // top: 7%;
+  top: 80%;
+
+
+  z-index: 1;
+}
+
+.heightVariable{
+  height: 56px
+}
+
+.entryBox .collapseWait{
+  transition: transform 0.5s linear 0s;
+}
+.dataClassArrow{
+  @include mq('tablet-small',max){
+    transform: translate(-20px, 0px) !important;
+  }
+}
+
+.dataClassX{
+  @include mq('tablet-small',max){
+    transform: translate(-20px, 0px) !important;
+  }
+
+  @include mq('phablet',max){
+  transform: translate(375px, -30px) !important;
+}
+
+@include mq('phone-wide',max){
+  transform: translate(215px, -30px) !important;
+}
+
+@include mq('phone',max){
+  transform: translate(-20px, 5px) !important;
+}
+
+}
+

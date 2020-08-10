@@ -57,7 +57,7 @@ class RelatedObject extends React.Component {
         this.getRelatedObjectFromDb(id);
     }
 
-
+ 
     getRelatedObjectFromDb = (id) => {
         //need to handle error if no id is found
         this.setState({ isLoading: true });

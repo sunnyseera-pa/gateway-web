@@ -295,7 +295,7 @@ const AddCollectionForm = (props) => {
                                 {formik.touched.imageLink && formik.errors.imageLink ? <div className="errorMessages">{formik.errors.imageLink}</div> : null}
                             </Form.Group>
                         </div>
-
+ 
                         <div className="rectangle margin-top-16">
                             <span className="black-20">Add resources</span>
                             <br/>
