@@ -1,4 +1,4 @@
-// /ShowObjects.js
+// /ShowObjects.js 
 import React, { Component, useState, useRef, Fragment } from "react";
 import ReactMarkdown from "react-markdown";
 import { Link } from "react-router-dom";
@@ -804,9 +804,10 @@ class DatasetDetail extends Component {
                             )}
                           </Col>
 
-                          <Row>
+                          <Row style={{ width: "-webkit-fill-available" }}>
                             <Col sm={12} lg={12} className="ml-3 width-100">
-                              {technicalMetadata.map((techMetadata, index) => (
+                              {technicalMetadata.length > 0 ?
+                              technicalMetadata.map((techMetadata, index) => (
                                 <TechnicalMetadata
                                   technicalMetadata={techMetadata}
                                   index={index}
@@ -814,7 +815,11 @@ class DatasetDetail extends Component {
                                     this.doUpdateDataClassOpen
                                   }
                                 />
-                              ))}
+                              ))
+                              :
+                              <NotFound word='technical details' />
+                              }
+
                             </Col>
                           </Row>
                         </>
