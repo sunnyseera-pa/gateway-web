@@ -60,7 +60,7 @@ class AddEditProjectPage extends React.Component {
     getProjectFromDb = () => {
         //need to handle error if no id is found
         this.setState({ isLoading: true });
-        axios.get(baseURL + '/api/v1/project/edit/' + this.props.match.params.projectID)
+        axios.get(baseURL + '/api/v1/projects/' + this.props.match.params.projectID)
             .then((res) => {
                 this.setState({
                     data: res.data.data[0],
@@ -111,11 +111,7 @@ class AddEditProjectPage extends React.Component {
     }
 
     doSearch = (e) => { //fires on enter on searchbar
-        if (e.key === 'Enter') {
-            if (!!this.state.searchString) {
-                window.location.href = window.location.search + "/search?search=" + this.state.searchString;
-            }
-        }
+        if (e.key === 'Enter') window.location.href = "/search?search=" + this.state.searchString;
     }
 
     updateSearchString = (searchString) => {

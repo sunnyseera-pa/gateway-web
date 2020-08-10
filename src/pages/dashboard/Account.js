@@ -7,6 +7,7 @@ import AccountTools from './AccountTools';
 import AccountProjects from './AccountProjects';
 import AccountPapers from './AccountPapers';
 import AccountCollections from './AccountCollections';
+import AccountAnalyticsDashboard from './AccountAnalyticsDashboard';
 import AccountUsers from './AccountUsers';
 import ReviewTools from './ReviewTools';
 import YourAccount from './YourAccount';
@@ -84,12 +85,7 @@ class Account extends Component {
     }
 
     doSearch = (e) => { //fires on enter on searchbar
-        if (e.key === 'Enter') {
-        
-            if (!!this.state.searchString) {
-                window.location.href = "/search?search=" + this.state.searchString;
-            }
-        }
+        if (e.key === 'Enter') window.location.href = "/search?search=" + this.state.searchString;
     }
 
     updateSearchString = (searchString) => {
@@ -115,6 +111,18 @@ class Account extends Component {
                         <Col xs={2}>
                             <div className="tabList">
                                 <Nav className="flex-column" className="verticalNavBarHolder">
+                                <Nav.Item>
+                                        <Nav.Link eventKey="dashboard" className="verticalNavBar gray700-13">
+                                            <Row>
+                                                <Col sm={2} lg={2}>
+                                                    <SVGIcon name="dashboard" fill={'#b3b8bd'} className="AccountSvgs" />
+                                                </Col>                                             
+                                                <Col sm={10} lg={10} className="pl-4 pt-1">
+                                                    Dashboard
+                                                </Col>
+                                            </Row>
+                                        </Nav.Link>
+                                    </Nav.Item>
                                     <Nav.Item>
                                         <Nav.Link eventKey="youraccount" className="verticalNavBar gray700-13">
                                             <Row>
@@ -186,7 +194,7 @@ class Account extends Component {
                                                 </Col>
                                             </Row>
                                         </Nav.Link>
-                                    </Nav.Item>
+                                    </Nav.Item> 
                                     <Nav.Item>
                                         <Nav.Link eventKey="collections" className="verticalNavBar gray700-13">
                                             <Row>
@@ -219,6 +227,12 @@ class Account extends Component {
 
                         <Col xs={10}>
                             <Tab.Content>
+                                {tabId === 'dashboard' ?
+                                    <Tab.Pane eventKey="dashboard">
+                                        <AccountAnalyticsDashboard userState={userState} />
+                                    </Tab.Pane>
+                                : ''}
+
                                 {tabId === 'youraccount' ?
                                     <Tab.Pane eventKey="youraccount">
                                         <YourAccount userState={userState} />

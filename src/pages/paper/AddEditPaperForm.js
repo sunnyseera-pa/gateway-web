@@ -42,7 +42,7 @@ const AddEditPaperForm = (props) => {
                 link: Yup.string()
                 .required('This cannot be empty'),
             description: Yup.string()
-                .max(1500, 'Maximum of 1,500 characters')
+                .max(3000, 'Maximum of 3,000 characters')
                 .required('This cannot be empty'),
             journal: Yup.string()
                 .required('This cannot be empty'),
@@ -71,14 +71,33 @@ const AddEditPaperForm = (props) => {
 
     var listOfAuthors = [];
 
-    props.combinedUsers.forEach((user) => {
-        if (user.id === props.userState[0].id) {
-            listOfAuthors.push({ id: user.id, name: user.name + " (You)" })
-            if (!user.name.includes('(You)')) {
-                user.name = user.name + " (You)";
+    if (props.isEdit) {
+        props.data.authors.forEach((author) => {
+            props.combinedUsers.forEach((user) => {
+                if (user.id === author) {
+                    if (props.userState[0].id === user.id) {
+                        listOfAuthors.push({ id: user.id, name: user.name + " (You)" })
+                        if (!user.name.includes('(You)')) {
+                            user.name = user.name + " (You)";
+                        }
+                    }
+                    else {
+                        listOfAuthors.push({ id: user.id, name: user.name })
+                    }
+                }
+            });
+        });
+    }
+    else {
+        props.combinedUsers.forEach((user) => {
+            if (user.id === props.userState[0].id) {
+                listOfAuthors.push({ id: user.id, name: user.name + " (You)" })
+                if (!user.name.includes('(You)')) {
+                    user.name = user.name + " (You)";
+                }
             }
-        }
-    });
+        });
+    }
   
     function updateReason(id, reason, type) {
         let inRelatedObject = false;
@@ -112,7 +131,7 @@ const AddEditPaperForm = (props) => {
                              <p className="black-20">{props.isEdit ? 'Edit your paper' : 'Add a new paper'}</p>
                             </Col>
                             <Col sm={2} lg={2} className="text-right">
-                                <span className="paperBadge"> 
+                                <span className="badge-paper"> 
                                     <SVGIcon name="projecticon" fill={'#3c3c3b'} className="badgeSvg mr-2" />
                                     Paper 
                                 </span>
@@ -194,7 +213,7 @@ const AddEditPaperForm = (props) => {
                                 </div>
                                 <div style={{ display: 'inline-block', float: 'right' }}>
                                     <br />
-                                    <span className="gray700-13">(<span id="currentCount">{formik.values.description.length || 0}</span>/1500)</span>
+                                    <span className="gray700-13">(<span id="currentCount">{formik.values.description.length || 0}</span>/3000)</span>
                                 </div>
                                 <Form.Control as="textarea" id="description" name="description" type="text" className={formik.touched.description && formik.errors.description ? "emptyFormInput addFormInput descriptionInput" : "addFormInput descriptionInput"} onKeyUp={descriptionCount} onChange={formik.handleChange}  value={formik.values.description} onBlur={formik.handleBlur} />
                                 {formik.touched.description && formik.errors.description ? <div className="errorMessages">{formik.errors.description}</div> : null}

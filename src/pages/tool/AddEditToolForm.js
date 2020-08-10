@@ -75,15 +75,34 @@ const AddEditToolForm = (props) => {
 
     var listOfAuthors = [];
 
-    props.combinedUsers.forEach((user) => {
-        if (user.id === props.userState[0].id) {
-            listOfAuthors.push({ id: user.id, name: user.name + " (You)" })
-            if (!user.name.includes('(You)')) {
-                user.name = user.name + " (You)";
+    if (props.isEdit) {
+        props.data.authors.forEach((author) => {
+            props.combinedUsers.forEach((user) => {
+                if (user.id === author) {
+                    if (props.userState[0].id === user.id) {
+                        listOfAuthors.push({ id: user.id, name: user.name + " (You)" })
+                        if (!user.name.includes('(You)')) {
+                            user.name = user.name + " (You)";
+                        }
+                    }
+                    else {
+                        listOfAuthors.push({ id: user.id, name: user.name })
+                    }
+                }
+            });
+        });
+    }
+    else {
+        props.combinedUsers.forEach((user) => {
+            if (user.id === props.userState[0].id) {
+                listOfAuthors.push({ id: user.id, name: user.name + " (You)" })
+                if (!user.name.includes('(You)')) {
+                    user.name = user.name + " (You)";
+                }
             }
-        }
-    });
-  
+        });
+    }
+
     function updateReason(id, reason, type) {
         let inRelatedObject = false;
         props.relatedObjects.map((object) => {
@@ -116,7 +135,7 @@ const AddEditToolForm = (props) => {
                              <p className="black-20">{props.isEdit ? 'Edit your tool or resource' : 'Add a new tool or resource'}</p>
                             </Col>
                             <Col sm={2} lg={2} className="text-right">
-                                <span className="toolBadge"> 
+                                <span className="badge-tool"> 
                                     <SVGIcon name="newtoolicon" fill={'#ffffff'} className="badgeSvg mr-2" />
                                     Tool 
                                 </span>

@@ -28,7 +28,6 @@ class TypaheadCustom extends React.Component {
     this.props.onBlur(this.props.value);
   }
 
-
   render() {
     return (
       <Typeahead

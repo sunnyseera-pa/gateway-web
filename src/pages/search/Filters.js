@@ -1,11 +1,37 @@
-import React, { Component } from 'react';
-import { Row, Col, InputGroup, FormText } from 'react-bootstrap';
+import React, { Component, useState } from 'react';
+import { Row, Col, InputGroup, FormText, Dropdown } from 'react-bootstrap';
+import { ReactComponent as ChevronRight } from '../../images/chevron-right.svg';
+
+const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+    <a href="" ref={ref} onClick={e => { e.preventDefault(); onClick(e); }} >
+        {children}
+    </a>
+));
+
+const CustomMenu = React.forwardRef(
+    ({ children, style, className, 'aria-labelledby': labeledBy }, ref) => {
+        const [value] = useState('');
+
+        return (
+            <div ref={ref} style={style} className={className} aria-labelledby={labeledBy}>
+                <ul className="list-unstyled">
+                    {React.Children.toArray(children).filter(
+                        child =>
+                            !value || child.props.children.toLowerCase().startsWith(value),
+                    )}
+                </ul>
+            </div>
+        );
+    },
+);
 
 class Filters extends Component {
     state = {
         selected: [],
+        allFilters: [],
         data: [],
-        title:''
+        title:'',
+        filterOpen: false,
     }
 
     constructor(props) {
@@ -13,6 +39,40 @@ class Filters extends Component {
         this.state.data = props.data;
         this.state.selected = props.selected;
         this.state.title = props.title;
+        if (props.allFilters && props.allFilters.length !== 0) this.state.allFilters = props.allFilters;
+        
+    }
+
+    componentWillReceiveProps(props) {
+        this.state.data = props.data;
+        this.state.selected = props.selected;
+        this.state.title = props.title;
+        if (props.allFilters && props.allFilters.length !== 0) this.state.allFilters = props.allFilters;
+    }
+
+    componentDidMount() {
+        document.addEventListener('mousedown', this.handleClick, false);
+    }
+
+    handleClick = (e) => {
+        try {
+            if (this.filterButton.contains(e.target)) {
+                if (this.state.filterOpen === true) {
+                    this.setState({ filterOpen: false });
+                }
+                else {
+                    this.setState({ filterOpen: true });
+                }
+            }
+            else {
+                if (!this.filterHolder.contains(e.target)) {
+                    this.setState({ filterOpen: false });
+                }
+            }
+        }
+        catch (e) {
+            this.setState({ filterOpen: false });
+        }
     }
 
     changeFilter = (e) => {
@@ -37,50 +97,57 @@ class Filters extends Component {
     }
     
     render() {
-        const { data, selected, title } = this.state;
+        const { data, selected, title, filterOpen, allFilters } = this.state;
 
-        if (!data || data.length === 0) {
-            return (<></>);
+        var filterCard = 'filterCard mb-1';
+        if (filterOpen) {
+            filterCard = 'filterCardSelected mb-1';
         }
-        
+    
         return (
-            <div>
-                <div className="filterCard mt-2">
-                    <Row className="mt-2"  >
-                        <Col xs={7} className="ml-3">
-                            <span className="gray800-14-bold">{title}</span>
-                            {selected.length === 0 ? <span /> :
-                                <span> <div className="white-12-bold bubbleCount"> {selected.length} </div> </span>
-                            }
-                            <span className="mr-4 ml-1" />
-                        </Col>
-                        <Col xs={3}>
-                            {this.state.selected.length > 0 ?
-                                <span>
-                                    <button className="clearButtons purple-14" onClick={() => this.clearFilter()}>
-                                        Clear
-                                    </button>
-                                </span> : null}
-                        </Col>
-                    </Row>
-                </div>
-                <div className="adFilters gray800-14">
-                    <Row className="mb-3">
-                        <Col xs={1}></Col>
-                        <Col xs={11} className="ml-4">
+            <Dropdown>
+                <Dropdown.Toggle as={CustomToggle} ref={filterButton => this.filterButton = filterButton}>
+                    <div className={filterCard}>
+                        <Row className=""  >
+                            <Col xs={12}>
+                                <div className="inlineBlock"><span className="gray800-14-bold">{title}</span></div>
+                            
+                                <div className="floatRight"><ChevronRight /></div>
+                                {selected.length === 0 ? <span /> :
+                                    <div className="white-12-bold bubbleCount floatRight"> {selected.length} </div>
+                                }
+                                
+                            </Col>
+                        </Row>
+                    </div>
+                </Dropdown.Toggle>
 
-                            {!data ? '' : data.map((dat) => {
-                                return <InputGroup >
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Checkbox aria-label="Checkbox for following text input" name="publisher" checked={selected.indexOf(dat) !== -1 ? "true" : ""} value={dat} onChange={this.changeFilter} />
-                                    </InputGroup.Prepend>
-                                    <FormText className="gray800-14 ml-4 mt-2 mb-2 pb-1" >{dat}</FormText>
-                                </InputGroup>
-                            })}
-                        </Col>
-                    </Row>
-                </div>
-            </div>
+                <Dropdown.Menu as={CustomMenu} className="filterMenu" ref={filterHolder => this.filterHolder = filterHolder}>
+                    <div className="filterMenuHeader" >
+                        <div className="inlineBlock">
+                            <div className="gray500-13">{selected.length} selected</div> 
+                        </div>
+                        <div className="floatRight">
+                            {selected.length !== 0 ? <div className="purple-13 pointer" onClick={() => this.clearFilter()}>Clear all</div> : ''}
+                        </div>
+                    </div>
+                
+                <div className="filterMenuInner" >
+                    {!allFilters ? '' : allFilters.map((filter) => {
+                        var filterClass = 'gray800-14 ml-4 mt-2 mb-2 pb-1';
+                        
+                        if (!data.includes(filter)) filterClass = 'gray800-14-opacity ml-4 mt-2 mb-2 pb-1';
+                        
+                        return <InputGroup >
+                            <InputGroup.Prepend>
+                                <InputGroup.Checkbox aria-label="Checkbox for following text input" name="publisher" checked={selected.indexOf(filter) !== -1 ? "true" : ""} value={filter} onChange={this.changeFilter} />
+                            </InputGroup.Prepend>
+                            <FormText className={filterClass}>{filter}</FormText>
+                        </InputGroup>
+                    })}
+                    </div>
+                </Dropdown.Menu>
+            </Dropdown>
         );
     }
 }

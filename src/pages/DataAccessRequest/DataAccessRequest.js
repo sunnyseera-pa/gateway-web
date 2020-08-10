@@ -6,19 +6,21 @@ import Winterfell from 'winterfell';
 import _ from 'lodash';
 import moment from 'moment';
 import axios from 'axios';
+import ReactMarkdown from 'react-markdown';
 import TypeaheadCustom from './components/TypeaheadCustom'
+import TypeaheadUser from './components/TypeaheadUser'
 import DatePickerCustom from './components/DatepickerCustom';
 import SearchBar from '../commonComponents/SearchBar';
 import Loading from '../commonComponents/Loading';
-import ToolKit from './components/Toolkit';
 import NavItem from './components/NavItem';
+import NavDropdown from './components/NavDropdown';
 import DarValidation from '../../utils/DarValidation.util';
-import {formSchema} from './formSchema';
+import DarHelper from '../../utils/DarHelper.util';
+import { formSchema } from './formSchema';
 import {classSchema} from './classSchema';
-import { baseURL } from '../../configs/url.config';
+import { baseURL} from '../../configs/url.config';
 import 'react-tabs/style/react-tabs.css';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-import SVGIcon from "../../images/SVGIcon"
 
 class DataAccessRequest extends Component {
 
@@ -27,40 +29,44 @@ class DataAccessRequest extends Component {
         this.onFormSubmit = this.onFormSubmit.bind(this);
         this.onFormUpdate = this.onFormUpdate.bind(this);
         this.onQuestionFocus = this.onQuestionFocus.bind(this);
-    }
-    
-    state = {
-        _id: '',
-        schema: {},
-        questionAnswers: {},
-        applicationStatus: '',
-        activePanelId: '',
-        activeGuidance: '',
-        searchString: '',
-        key: 'guidance',
-        totalQuestions: '',
-        validationErrors: {},
-        lastSaved: {
-            time: '',
-            ago: ''
-        },
-        isLoading: true,
-        formSubmitted: false,
+
+        this.state = {
+            _id: '',
+            jsonSchema: {},
+            questionAnswers: {},
+            applicationStatus: '',
+            activePanelId: '',
+            activeGuidance: '',
+            searchString: '',
+            key: 'guidance',
+            totalQuestions: '',
+            validationErrors: {},
+            lastSaved: '',
+            lookup: ['fullname'],
+            isLoading: true,
+            formSubmitted: false,
+            dataset: {}
+        }
     }
 
     async componentDidMount() {
         try {
-            let { location: { state: { dataSetId }}} = this.props;
-            const response = await axios.get(`${baseURL}/api/v1/data-access-request/dataset/${dataSetId}`);
-            const { data: { data: { jsonSchema, questionAnswers, _id, applicationStatus }}} = response;
-            this.setState({schema: {...jsonSchema, ...classSchema}, questionAnswers, _id, applicationStatus, activePanelId: 'applicant', isLoading: false});
-            // this.setState({schema: {...formSchema}, activePanelId: 'mrcHealthDataToolkit', isLoading: false, applicationStatus: 'inProgress'});
+            let { match: { params: { datasetId, publisher }}} = this.props;
+            let response = await axios.get(`${baseURL}/api/v1/data-access-request/dataset/${datasetId}`);
+             const { data: { data: { jsonSchema, questionAnswers, _id, applicationStatus }, dataset}} = response;
+            // 1. get the first active panel
+             let  { formPanels: [ initialPanel, ...rest ]} = jsonSchema;
+            // 2. set state
+            this.setState({jsonSchema: {...jsonSchema, ...classSchema}, dataset, questionAnswers, _id, applicationStatus, activePanelId: initialPanel.panelId, isLoading: false});
+            // for local test uses formSchema.json
+            //  this.setState({jsonSchema: {...formSchema}, questionAnswers: {fullname: {"id":5385077600698822,"orcid":"12345678","name":"Paul McCafferty","bio":"Developer @ PA","email":"p*************y@p**************m"}, orcid:"12345678", email:"p*************y@p**************m"}, activePanelId: 'applicant', isLoading: false, applicationStatus: 'inProgress'});
         }
         catch (error) {
             this.setState({isLoading: false});
             console.log(error);
         }
     }
+
     /**
      * [TotalQuestionAnswered]
      * @desc - Sets total questions answered for each section
@@ -68,21 +74,25 @@ class DataAccessRequest extends Component {
     totalQuestionsAnswered = (panelId = '', questionAnswers = {}) => {
         let totalQuestions = 0;
         let totalAnsweredQuestions = 0;
+
         if(!_.isEmpty(panelId)) {
+
             if(_.isEmpty(questionAnswers))
                 ({questionAnswers} = {...this.state})
             // 1. deconstruct state
-            let {schema: {questionSets}} = {...this.state};
+            let {jsonSchema: {questionSets}} = {...this.state};
             // 2. omits out blank null, undefined, and [] values from this.state.answers
             questionAnswers = _.pickBy({...questionAnswers}, v => v !== null && v !== undefined && v.length != 0);
             // 3. find the relevant questionSet { questionSetId: applicant }
             let questionSet = [...questionSets].find(q => q.questionSetId === panelId) || '';
+
             if(!_.isEmpty(questionSet)) {
                 // 4. get questions
                 let { questions } = questionSet;
                 // 5. total questions in panel 
                 totalQuestions = questions.length;
                 let totalQuestionKeys = _.map({...questions}, 'questionId');
+
                 // 6. return count of how many questions completed 
                 if(!_.isEmpty(questionAnswers)){
                     let count = Object.keys(questionAnswers).map((value) => { 
@@ -100,15 +110,9 @@ class DataAccessRequest extends Component {
      * @desc Sets the lastSaved state on a field
      */
     saveTime = () => {
-        let currentTime = moment();
-        let lastUpdate = this.state.lastSaved.time;
-        let ago = '';
-        if(!_.isEmpty(lastUpdate)) {
-            let min = moment(currentTime.diff(lastUpdate)).format('m');
-            let sec = moment(currentTime.diff(lastUpdate)).format('s');
-            ago = min > 0 ?  `Last saved ${min} minute(s) ago` : `Last saved ${sec} seconds ago`;
-        } 
-        return { time: currentTime, ago}
+        let currentTime = moment().format('DD MMM YYYY HH:mm');
+        let lastSaved = `Last saved ${currentTime}`;
+        return lastSaved;
     }
 
     /**
@@ -116,9 +120,9 @@ class DataAccessRequest extends Component {
      * @desc Returns the saved time for DAR
      */
     getSavedAgo = () => {
-        let {lastSaved: {time = '', ago = ''}} = this.state;
-        if(!_.isEmpty(time))
-            return `${ago != '' ? ago : `Last saved ${moment(time).format('HH:mm')}`}`;
+        let { lastSaved } = this.state;
+        if(!_.isEmpty(lastSaved))
+            return lastSaved;
         else
             return ``;
     }
@@ -127,7 +131,6 @@ class DataAccessRequest extends Component {
         console.log('form render');
     }
 
-    
     getActiveQuestion(questionsArr, questionId) {
         let child;
         
@@ -151,12 +154,12 @@ class DataAccessRequest extends Component {
             if (child) 
                 return child; 
         }
-     }
+    }
 
     onQuestionFocus(questionId = '') {
         let questions;
         if(!_.isEmpty(questionId)) {
-            let {schema: { questionSets } } = this.state;
+            let {jsonSchema: { questionSets } } = this.state;
             // 1. get active question set
             ({questions} = [...questionSets].find(q => q.questionSetId === this.state.activePanelId) || []);
             if(!_.isEmpty(questions)) {
@@ -173,14 +176,31 @@ class DataAccessRequest extends Component {
      * @param {obj: questionAnswers}
      * @desc Callback from Winterfell sets totalQuestionsAnswered + saveTime
      */
-    onFormUpdate = _.debounce((questionAnswers) => {
-        const { applicationStatus } = this.state;
-        let totalQuestionsAnswered = this.totalQuestionsAnswered(this.state.activePanelId, questionAnswers);
-        this.setState({totalQuestions: totalQuestionsAnswered});
+    onFormUpdate = _.debounce((id, questionAnswers) => {
+        let { applicationStatus, lookup } = this.state;
+        // 1. check for auto complete
+        if(!_.isEmpty(id)) {
+            let [questionId, uniqueId] = id.split('_');
+            let qId = questionId.toLowerCase();
+            let lookupAutoComplete = [...lookup].includes(qId);
+            if(lookupAutoComplete) 
+                questionAnswers =  DarHelper.autoComplete(qId, uniqueId, {...questionAnswers});
+            
+        }
+        // 2. get totalQuestionAnswered
+        let totalQuestions = this.totalQuestionsAnswered(this.state.activePanelId, questionAnswers);
+
+        this.setState({totalQuestions});
+
         if(applicationStatus === 'submitted')
             return alert('Your application has already been submitted.');
 
-        this.onApplicationUpdate(questionAnswers);
+        // 3. remove blank vals from questionAnswers
+        let data = _.pickBy({...this.state.questionAnswers, ...questionAnswers}, _.identity);
+        // 4. create dataObject
+        let dataObj = {key: "questionAnswers", data };
+        // 5. update application
+        this.updateApplication(dataObj);
     }, 500);
 
     /**
@@ -189,22 +209,21 @@ class DataAccessRequest extends Component {
      * @params  Object{questionAnswers}
      */
     onFormSubmit = async (questionAnswers = {}) => {
-        let invalidQuestions = DarValidation.getQuestionPanelInvalidQuestions(Winterfell, this.state.schema.questionSets, this.state.questionAnswers);
+        let invalidQuestions = DarValidation.getQuestionPanelInvalidQuestions(Winterfell, this.state.jsonSchema.questionSets, this.state.questionAnswers);
         let validationSectionMessages = DarValidation.buildInvalidSectionMessages(Winterfell, invalidQuestions);
         let inValidMessages = DarValidation.buildInvalidMessages(Winterfell, invalidQuestions);
-        let errors = DarValidation.formatValidationObj(inValidMessages, [...this.state.schema.questionPanels]);
+        let errors = DarValidation.formatValidationObj(inValidMessages, [...this.state.jsonSchema.questionPanels]);
         let isValid = Object.keys(errors).length ? false : true;
         if(this.state.applicationStatus === 'submitted')
             return alert('Your application has already been submitted.');
 
         if(isValid) {
             try {
-                let {_id: id} = this.state;
+                let {_id} = this.state;
                 // 1. POST 
-                const response = await axios.post(`${baseURL}/api/v1/data-access-request/${id}`, {});
+                const response = await axios.post(`${baseURL}/api/v1/data-access-request/${_id}`, {});
                 const lastSaved = this.saveTime();
                 this.setState({ lastSaved });
-                // 2. Add success banner to local storage
                 let message = {"type":"success", "message":"Done! Your application was submitted successfully"};
                 window.localStorage.setItem('alert', JSON.stringify(message));
                 this.props.history.push({pathname: "/account", search:"?tab=dataaccessrequests"});
@@ -220,28 +239,22 @@ class DataAccessRequest extends Component {
         }
     }
 
-    /**
-     * [onApplicationUpdate]
-     * @desc Updates answers to the questions PATCH
-     * @method PATCH
-     * @param {obj: questionAnswers}
-     */
-    onApplicationUpdate = async (questionAnswers) => {
+    updateApplication = async (obj = {}) => {
         try {
-            // 1. spread copy of data, and remove blank null undefined values
-            const data = _.pickBy({...this.state.questionAnswers, ...questionAnswers}, _.identity);
-            // 2. get id
+            // 1. data = {key: jsonSchema || questionAnswers, data: { object of data}}
+            let {key, data = {}} = obj;
+            //2.  id of dataSet
             let {_id: id} = this.state;
             // 3. set up body params
             let params = {
-                questionAnswers: JSON.stringify(data)
+                [`${key}`]: JSON.stringify(data)
             }
             // 4. PATCH the data
             const response = await axios.patch(`${baseURL}/api/v1/data-access-request/${id}`, params);
             // 6. get saved time
             const lastSaved = this.saveTime();
             // 5. set state
-            this.setState({ questionAnswers: {...data}, lastSaved});
+            this.setState({ [`${key}`]: {...data}, lastSaved });
         } catch(err) {
             console.log(err);
         }
@@ -250,13 +263,13 @@ class DataAccessRequest extends Component {
     onNextPanel(activePanelId){
         if (activePanelId === "mrcHealthDataToolkit" || activePanelId === "adviceFromPublisher"){
             // 1. filter for the first section safePeople and get the first obj
-            let {panelId, pageId} = _.head([...this.state.schema.formPanels].filter(p => {
-                                        return p.pageId === 'safePeople' || p.pageId === 'safepeople'
+            let {panelId, pageId} = _.head([...this.state.jsonSchema.formPanels].filter(p => {
+                                        return p.pageId.toUpperCase() === 'SAFEPEOPLE'
                                     }));
             this.updateNavigation({panelId, pageId});
         }
         else {
-            const formPanels = [...this.state.schema.formPanels];
+            const formPanels = [...this.state.jsonSchema.formPanels];
             const currentPanelIndex = formPanels.findIndex(panel => panel.panelId === activePanelId);
             const newPanelIndex = currentPanelIndex + 2;
             const nextPanelIndex = formPanels.findIndex(panel => panel.index === newPanelIndex);
@@ -274,12 +287,8 @@ class DataAccessRequest extends Component {
      * [doSearch]
      * @desc - Injected from props, parent function callout
      */
-    doSearch = (e) => { 
-        if (e.key === 'Enter') {
-          if (!!this.state.searchString) {
-            window.location.href = "/search?search=" + this.state.searchString;
-          }
-        }
+    doSearch = (e) => { //fires on enter on searchbar
+        if (e.key === 'Enter') window.location.href = "/search?search=" + this.state.searchString;
     }
     
     updateSearchString = (searchString) => {
@@ -288,22 +297,23 @@ class DataAccessRequest extends Component {
 
     handleSelect = (key) => {
         this.setState({ key: key });
-        // this.props.history.push(window.location.pathname + '?tab=' + key);
     }
 
-       /**
+    /**
      * [UpdateNavigation]
      * @desc - Update the navigation state sidebar
      */
     updateNavigation = (newForm, validationErrors = {}) => {
+        // reset scroll to 0, 0
+        window.scrollTo(0, 0);
         let panelId = '';
-        const currentActivePage = [...this.state.schema.pages].find(p => p.active === true);
+        const currentActivePage = [...this.state.jsonSchema.pages].find(p => p.active === true);
         // copy state pages
-        const pages = [...this.state.schema.pages];
+        const pages = [...this.state.jsonSchema.pages];
         // get the index of new form
         const newPageindex = pages.findIndex(page => page.pageId === newForm.pageId);
         // reset the current state of active to false for all pages
-        const newFormState = [...this.state.schema.pages].map((item) => {
+        const newFormState = [...this.state.jsonSchema.pages].map((item) => {
             return {...item, active: false}
         });
         // update actual object model with propert of active true
@@ -312,24 +322,53 @@ class DataAccessRequest extends Component {
         // get set the active panelId 
         ({ panelId } = newForm);
         if (_.isEmpty(panelId) || typeof panelId == 'undefined') {
-            ({panelId} = [...this.state.schema.formPanels].find(p => p.pageId === newFormState[newPageindex].pageId) || '');
+            ({panelId} = [...this.state.jsonSchema.formPanels].find(p => p.pageId === newFormState[newPageindex].pageId) || '');
         } 
         let totaltotalQuestionsAnswered = this.totalQuestionsAnswered(panelId);
-        this.setState({ schema: {...this.state.schema, pages: newFormState}, activePanelId: panelId, totalQuestions:totaltotalQuestionsAnswered, validationErrors});
+        this.setState({ jsonSchema: {...this.state.jsonSchema, pages: newFormState}, activePanelId: panelId, totalQuestions:totaltotalQuestionsAnswered, validationErrors});
     }
 
     onClickSave = (e) =>{
         e.preventDefault();
         const lastSaved = this.saveTime();
-        this.setState({ lastSaved});
+        this.setState({ lastSaved });
+    }
+
+    onQuestionClick = async (questionSetId = '', questionId = '') => {
+        let questionSet, jsonSchema, questionAnswers, data;
+        questionSet = DarHelper.findQuestionSet(questionSetId, {...this.state.jsonSchema});
+
+        if(!_.isEmpty(questionSet) && !_.isEmpty(questionId)) {
+            let { input: { action }} = DarHelper.findQuestion(questionId, questionSet);  
+            switch(action) {
+                case "addApplicant":
+                    let duplicateQuestionSet =  DarHelper.questionSetToDuplicate(questionSetId, {...this.state.jsonSchema});
+                    jsonSchema = DarHelper.insertSchemaUpdates(questionSetId, duplicateQuestionSet, {...this.state.jsonSchema});
+                    data ={key: 'jsonSchema', data: jsonSchema};
+                    // post to API to do of new jsonSchema
+                    await this.updateApplication(data);
+                    break
+                case "removeApplicant":
+                    jsonSchema = DarHelper.removeQuestionReferences(questionSetId, questionId, {...this.state.jsonSchema});
+                    questionAnswers = DarHelper.removeQuestionAnswers(questionId, {...this.state.questionAnswers});
+                    // post to API of new jsonSchema
+                    await this.updateApplication({key: 'jsonSchema', data: jsonSchema});
+                    await this.updateApplication({key: 'questionAnswers', data: questionAnswers});
+                    break;
+                default:
+                    console.log(questionSetId);
+                    break;
+            }
+        }
     }
     
     render() {
-        const { searchString, activePanelId, totalQuestions, isLoading, validationErrors, activeGuidance} = this.state;
-        const { userState, location:{state: {title = '', publisher='' }} } = this.props;
+        const { searchString, activePanelId, totalQuestions, isLoading, validationErrors, activeGuidance, dataset} = this.state;
+        const { userState, location} = this.props;
 
         Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
         Winterfell.addInputType('datePickerCustom', DatePickerCustom);
+        Winterfell.addInputType('typeaheadUser', TypeaheadUser);
 
         if (isLoading) {
             return (
@@ -343,69 +382,68 @@ class DataAccessRequest extends Component {
             <div>
                 <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
                 <Row className="banner">
-                    <Col md={11}>
-                        <span className="ml-3 white-20-semibold mr-5">Data Access Request</span>
-                        <span className="white-16-semibold pr-5">{title} | {publisher}</span>
-                        <span className="white-16-semibold ml-2">{this.getSavedAgo()}</span>
+                    <Col sm={12} md={8} className="banner-left">
+                            <span className="white-20-semibold mr-5">Data Access Request</span>
+                            <span className="white-16-semibold pr-5">{dataset.name} | {dataset.datasetfields.publisher}</span>
                     </Col>
-                    <Col md={1}>
-                        {/* <CloseIconSvg className="icon-18" /> */}
-                        <SVGIcon name="closeicon" fill={'#ffffff'} className="badgeSvg mr-2" />
-
+                    <Col sm={12} md={4} className="banner-right">
+                            <span className="white-14-semibold">{this.getSavedAgo()}</span>
+                            {<a className="linkButton white-14-semibold ml-2" onClick={this.onClickSave} href="!#">Save now</a>}
                     </Col>
                 </Row>
 
-                <Row className="mt-5 fillPage">
-                    <Col md={2}>
-                        {[...this.state.schema.pages].map((item, idx) => (
+                <div id="darContainer" className="flex-form">
+                    <div id="darLeftCol" className="scrollable-sticky-column">
+                        {[...this.state.jsonSchema.pages].map((item, idx) => (
                             <div key={item.index} className={`${item.active ? "active-border" : ''}`}>
                                 <div>
-                                    <h1 className="black-16 mb-3 ml-3" onClick={e => this.updateNavigation(item)}>{item.title}</h1>
+                                    <h1 className="black-16 section-header" onClick={e => this.updateNavigation(item)}>{item.title}</h1>
                                     { item.active &&
-                                        <ul className="list-unstyled ml-4 pl-2 active-grey-border">
+                                        <ul className="list-unstyled section-subheader">
                                             <NavItem
                                                 parentForm={item}
-                                                questionPanels={this.state.schema.questionPanels}
+                                                questionPanels={this.state.jsonSchema.questionPanels}
                                                 onFormSwitchPanel={this.updateNavigation}
+                                                activePanelId={this.state.activePanelId}
                                             />
                                         </ul>
                                     }
                                 </div>
                             </div>
                         ))}
-                    </Col>
-                    <Col md={10} className="flexColumn">
-                        <Row>
-                            <Col sm={7} md={8} className="pad-1">
+                    </div>
+                    <div id="darCenterCol">
+                                <div id="darDropdownNav">
+                                    <NavDropdown options={this.state.jsonSchema} onFormSwitchPanel={this.updateNavigation} />
+                                </div>
                                 <div style={{ backgroundColor: "#ffffff" }} className="dar__header">
-                                    {[...this.state.schema.pages].map((item) => (
+                                    {this.state.jsonSchema.pages ? [...this.state.jsonSchema.pages].map((item) => (
                                         item.active ?
                                             <Fragment>
                                                 <p className="black-20-semibold mb-0">{item.active ? item.title : ""}</p>
-                                                <p className="gray800-14">{item.active ? item.description : ""}</p>
+                                                <p><ReactMarkdown className="gray800-14" source={item.description} /></p>
                                             </Fragment>
                                         : ''
-                                    ))}
+                                    )) : ''}
                                 </div>
                                 <div className="dar__questions gray800-14" style={{ backgroundColor: "#ffffff" }} >
-                                            <Col md={12}>
-                                                <Winterfell
-                                                    schema={this.state.schema}
-                                                    questionAnswers={this.state.questionAnswers}
-                                                    panelId={this.state.activePanelId}
-                                                    disableSubmit={true}
-                                                    validationErrors={validationErrors}
-                                                    onQuestionFocus={this.onQuestionFocus}
-                                                    onUpdate={this.onFormUpdate}
-                                                    onSubmit={this.onFormSubmit}
-                                                    onRender={this.onFormRender}
-                                                />
-                                            </Col>
-                                        </div>
-                                
-                            </Col>
-                            <Col sm={5} md={4} className="darTabs pr-0 pl-0">
-                            <Tabs className='tabsBackground gray700-14' activeKey={this.state.key} onSelect={this.handleSelect}>
+                                    <div className="col-md-12">
+                                        <Winterfell
+                                            schema={this.state.jsonSchema}
+                                            questionAnswers={this.state.questionAnswers}
+                                            panelId={this.state.activePanelId}
+                                            disableSubmit={true}
+                                            validationErrors={validationErrors}
+                                            onQuestionFocus={this.onQuestionFocus}
+                                            onQuestionClick={this.onQuestionClick}
+                                            onUpdate={this.onFormUpdate}
+                                            onSubmit={this.onFormSubmit}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                    <div id="darRightCol" className="scrollable-sticky-column">
+                            <Tabs className='dar-tabsBackground gray700-14' activeKey={this.state.key} onSelect={this.handleSelect}>
                                 <Tab eventKey="guidance" title="Guidance">
                                     <div className="darTab">
                                         <Col md={12} className="gray700-13 text-center">
@@ -445,25 +483,19 @@ class DataAccessRequest extends Component {
                                     </div>
                                 </Tab>
                             </Tabs>
-                            </Col>
-                        </Row>
-                        
-                    </Col>
-                    
-                    <div className="darFooter">
+                        </div>
+                </div>
+
+                <div className="action-bar">
                         <Col md={6} className="mt-4">
                             <span className="gray800-14">{totalQuestions}</span>
                         </Col>
                         <Col md={6} className="mt-3 text-right">
-                            <Button variant="white" className="techDetailButton ml-2" onClick={this.onClickSave}>
-                                Save
-                            </Button>
                             <Button variant="white"  className="techDetailButton ml-3" onClick={this.onFormSubmit}>
                                 Submit application
                             </Button>
                         </Col>
                     </div> 
-                </Row>
             </div>
         ) 
         

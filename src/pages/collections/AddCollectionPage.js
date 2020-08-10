@@ -9,7 +9,6 @@ import {Form, Button, Row, Col, Container} from 'react-bootstrap';
 import SearchBar from '../commonComponents/SearchBar';
 import Loading from '../commonComponents/Loading';
 import RelatedResources from '../commonComponents/RelatedResources';
-import RelatedResourcesResults from '../commonComponents/RelatedResourcesResults';
 import RelatedObject from '../commonComponents/RelatedObject';
 
 import moment from 'moment';
@@ -67,11 +66,7 @@ class AddCollectionPage extends React.Component {
     }
 
     doSearch = (e) => { //fires on enter on searchbar
-        if (e.key === 'Enter') {
-            if (!!this.state.searchString) {
-                window.location.href = window.location.search + "/search?search=" + this.state.searchString;
-            }
-        }
+        if (e.key === 'Enter') window.location.href = "/search?search=" + this.state.searchString;
     }
 
     updateSearchString = (searchString) => {
@@ -221,7 +216,7 @@ const AddCollectionForm = (props) => {
 
     return (
         <div>
-            <Row className="mt-2">
+            <Row className="margin-top-24">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                     <div className="rectangle">
@@ -236,7 +231,7 @@ const AddCollectionForm = (props) => {
                 <Col sm={1} lg={10} />
             </Row>
 
-            <Row className="mt-2">
+            <Row className="pixelGapTop">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                     <Form onSubmit={formik.handleSubmit} onBlur={formik.handleBlur} autocomplete='off'>
@@ -301,13 +296,13 @@ const AddCollectionForm = (props) => {
                             </Form.Group>
                         </div>
 
-                        <div className="rectangle mt-2">
+                        <div className="rectangle margin-top-16">
                             <span className="black-20">Add resources</span>
                             <br/>
                             <span className="gray800-14">Link resources in the gateway to your collection page.</span>
                         </div>
 
-                        <div className="relatedResourcesRectangle mt-1">
+                        <div className="relatedResourcesRectangle pixelGapTop">
                             {props.relatedObjects.map((object) => { 
                                 return (
                                     <div className="relatedObjectRectangle"> 

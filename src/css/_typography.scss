@@ -58,11 +58,11 @@ h6 {
 }
 
 .black-28 {
-  @include font-source(28px, $gray-dark, $font-weight-semibold);
+  @include font-source(28px, $gray-dark, $font-weight-semibold); 
 }
 
 .white-12 {
-    @include font-source(12px, $white);
+    @include font-source(12px, $white); 
     
     &:hover {
         @include font-source(12px, $white);
@@ -105,8 +105,16 @@ h6 {
   @include font-source(13px, $gray-700, $font-weight-semibold);
 }
 
+.gray700-12 {
+  @include font-source(13px, $gray-700, $font-weight-semibold);
+}
+
 .gray700-13 {
   @include font-source(13px, $gray-700, $font-weight-semibold);
+}
+
+.gray700-13-bold {
+  @include font-source(13px, $gray-700, $font-weight-bold);
 }
 
 .gray700-14 {

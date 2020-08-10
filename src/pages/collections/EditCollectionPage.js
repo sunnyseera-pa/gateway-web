@@ -9,7 +9,6 @@ import {Form, Button, Row, Col, Container} from 'react-bootstrap';
 import SearchBar from '../commonComponents/SearchBar';
 import Loading from '../commonComponents/Loading';
 import RelatedResources from '../commonComponents/RelatedResources';
-import RelatedResourcesResults from '../commonComponents/RelatedResourcesResults';
 import RelatedObject from '../commonComponents/RelatedObject';
 import moment from 'moment';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
@@ -34,7 +33,7 @@ class EditCollectionPage extends React.Component {
         combinedUsers: [],
         isLoading: true,
         userState: [],
-        searchString: null,
+        searchString: '',
         datasetData: [],
         toolData: [],
         projectData: [],
@@ -80,11 +79,7 @@ class EditCollectionPage extends React.Component {
     }
 
     doSearch = (e) => { //fires on enter on searchbar
-        if (e.key === 'Enter') {
-            if (!!this.state.searchString) {
-                window.location.href = window.location.search + "/search?search=" + this.state.searchString;
-            }
-        }
+        if (e.key === 'Enter') window.location.href = "/search?search=" + this.state.searchString;
     }
 
     updateSearchString = (searchString) => {

@@ -68,7 +68,7 @@ class ProjectDetail extends Component {
   getDataSearchFromDb = () => {
     //need to handle error if no id is found
     this.setState({ isLoading: true });
-    axios.get(baseURL + '/api/v1/project/' + this.props.match.params.projectID)
+    axios.get(baseURL + '/api/v1/projects/' + this.props.match.params.projectID)
       .then((res) => {
         this.setState({
           data: res.data.data[0],
@@ -82,13 +82,9 @@ class ProjectDetail extends Component {
       })
   };
 
-  doSearch = (e) => { //fires on enter on searchbar
-    if (e.key === 'Enter') {
-      if (!!this.state.searchString) {
-        window.location.href = "/search?search=" + this.state.searchString;
-      }
+    doSearch = (e) => { //fires on enter on searchbar
+        if (e.key === 'Enter') window.location.href = "/search?search=" + this.state.searchString;
     }
-  }
 
   updateSearchString = (searchString) => {
     this.setState({ searchString: searchString });
@@ -158,13 +154,13 @@ class ProjectDetail extends Component {
                             </Row>
                             <Row className="mt-3">
                                 <Col xs={12}>
-                                    <span className="projectBadge mr-2">
+                                    <span className="badge-project">
                                         <SVGIcon name="newestprojecticon" fill={'#ffffff'} className="badgeSvg mr-2" viewBox="-2 -2 22 22"/>
                                         <span>Project</span> 
                                     </span>
 
                                     <a href={'/search?search=' + data.categories.category}>
-                                        <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{data.categories.category}</div>
+                                        <div className="badge-tag">{data.categories.category}</div>
                                     </a>
                                 </Col>
                             </Row>
@@ -245,7 +241,7 @@ class ProjectDetail extends Component {
                                         </Col>
                                         <Col sm={10} className="gray800-14">
                                             <a href={'/search?search=' + data.categories.category}>
-                                                <div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{data.categories.category}</div>
+                                                <div className="badge-tag">{data.categories.category}</div>
                                             </a>
                                         </Col>
                                     </Row>
@@ -256,7 +252,7 @@ class ProjectDetail extends Component {
                                         <Col sm={10} className="gray800-14">
 
                                             {!data.tags.features || data.tags.features.length <= 0 ? <span className="gray800-14-opacity">Not specified</span> :
-                                                data.tags.features.map((keyword) => { return <a href={'/search?search=' + keyword}><div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{keyword}</div></a> })}
+                                                data.tags.features.map((keyword) => { return <a href={'/search?search=' + keyword}><div className="badge-tag">{keyword}</div></a> })}
                                         </Col>
                                     </Row>
                                     <Row className="mt-2">
@@ -265,7 +261,7 @@ class ProjectDetail extends Component {
                                         </Col>
                                         <Col sm={10} className="gray800-14">
                                             {!data.tags.topics || data.tags.topics.length <= 0 ? <span className="gray800-14-opacity">Not specified</span> :
-                                                data.tags.topics.map((domain) => { return <a href={'/search?search=' + domain}><div className="mr-2 gray800-14 tagBadges mb-1 mt-1">{domain}</div></a> })}
+                                                data.tags.topics.map((domain) => { return <a href={'/search?search=' + domain}><div className="badge-tag">{domain}</div></a> })}
                                         </Col>
                                     </Row>
                                 </div>

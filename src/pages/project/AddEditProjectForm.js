@@ -45,7 +45,7 @@ const AddEditProjectForm = (props) => {
             link: Yup.string()
                 .required('This cannot be empty'),    
             description: Yup.string()
-                .max(1500, 'Maximum of 1,500 characters')
+                .max(3000, 'Maximum of 3,000 characters')
                 .required('This cannot be empty'),
             categories: Yup.object().shape({
                 category: Yup.string().required('This cannot be empty')
@@ -58,13 +58,13 @@ const AddEditProjectForm = (props) => {
             values.relatedObjects = props.relatedObjects
             values.toolCreator = props.userState[0];
             if (props.isEdit) {
-                axios.put(baseURL + '/api/v1/project/' + props.data.id, values)
+                axios.put(baseURL + '/api/v1/projects/' + props.data.id, values)
                     .then((res) => {
                         window.location.href = window.location.search + '/project/' + props.data.id + '/?projectEdited=true';
                     });
             }
             else {
-                axios.post(baseURL + '/api/v1/project/', values)
+                axios.post(baseURL + '/api/v1/projects/', values)
                     .then((res) => {
                         window.location.href = window.location.search + '/project/' + res.data.response.id + '/?projectAdded=true';
                     });
@@ -74,14 +74,33 @@ const AddEditProjectForm = (props) => {
 
     var listOfAuthors = [];
  
-    props.combinedUsers.forEach((user) => {
-        if (user.id === props.userState[0].id) {
-            listOfAuthors.push({ id: user.id, name: user.name + " (You)" })
-            if (!user.name.includes('(You)')) {
-                user.name = user.name + " (You)";
+    if (props.isEdit) {
+        props.data.authors.forEach((author) => {
+            props.combinedUsers.forEach((user) => {
+              if (user.id === author) {
+                if (props.userState[0].id === user.id) {
+                  listOfAuthors.push({ id: user.id, name: user.name + " (You)" })
+                  if (!user.name.includes('(You)')) {
+                    user.name = user.name + " (You)";
+                  }
+                }
+                else {
+                  listOfAuthors.push({ id: user.id, name: user.name })
+                }
+              }
+            });
+          });
+    }
+    else {
+        props.combinedUsers.forEach((user) => {
+            if (user.id === props.userState[0].id) {
+                listOfAuthors.push({ id: user.id, name: user.name + " (You)" })
+                if (!user.name.includes('(You)')) {
+                    user.name = user.name + " (You)";
+                }
             }
-        }
-    });
+        });
+    }
 
     function updateReason(id, reason, type) {
         let inRelatedObject = false;
@@ -115,8 +134,8 @@ const AddEditProjectForm = (props) => {
                              <p className="black-20">{props.isEdit ? 'Edit your project' : 'Add a new research project'}</p>
                             </Col>
                             <Col sm={2} lg={2} className="text-right">
-                                <span className="projectBadge"> 
-                                    <SVGIcon name="newtoolicon" fill={'#ffffff'} className="badgeSvg mr-2" />
+                                <span className="badge-project"> 
+                                    <SVGIcon name="newestprojecticon" fill={'#ffffff'} className="badgeSvg mr-2" />
                                     Project 
                                 </span>
                             </Col>
@@ -177,7 +196,7 @@ const AddEditProjectForm = (props) => {
                                 </div>
                                 <div style={{ display: 'inline-block', float: 'right' }}>
                                     <br />
-                                    <span className="gray700-13">(<span id="currentCount">{formik.values.description.length || 0}</span>/1500)</span>
+                                    <span className="gray700-13">(<span id="currentCount">{formik.values.description.length || 0}</span>/3000)</span>
                                 </div>
                                 <Form.Control as="textarea" id="description" name="description" type="text" className={formik.touched.description && formik.errors.description ? "emptyFormInput addFormInput descriptionInput" : "addFormInput descriptionInput"} onKeyUp={descriptionCount} onChange={formik.handleChange}  value={formik.values.description} onBlur={formik.handleBlur} />
                                 {formik.touched.description && formik.errors.description ? <div className="errorMessages">{formik.errors.description}</div> : null}

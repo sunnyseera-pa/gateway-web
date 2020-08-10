@@ -1,6 +1,7 @@
 
 // /ShowObjects.js
 import React, { Component } from 'react';
+import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
 import queryString from 'query-string';
 import { Row, Col, Tabs, Tab, Container, Alert, Nav, Navbar } from 'react-bootstrap';
@@ -12,6 +13,7 @@ import SearchBar from '../commonComponents/SearchBar';
 import 'react-tabs/style/react-tabs.css';
 import { baseURL } from '../../configs/url.config';
 import moment from 'moment';
+import _ from 'lodash';
 
 
 var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
@@ -34,14 +36,14 @@ state = {
       id: null,
       name: null
     }],
-    searchString: null,
+    searchString: '',
     toolCount: 0,
     datasetCount: 0,
     personCount: 0,
     projectCount: 0,
     paperCount: 0,
     collectionAdded: false,
-    collectionEdited: false 
+    collectionEdited: false
 };
 
 constructor(props) {
@@ -117,7 +119,7 @@ getDataSearchFromDb = () => {
   getProjectData = async (projectID) => {
     this.setState({ isLoading: true });
     await Promise.all([
-    axios.get(baseURL + '/api/v1/project/' + projectID) 
+    axios.get(baseURL + '/api/v1/projects/' + projectID) 
       .then((res) => {
         this.state.objectData.push(res.data.data[0])
       })
@@ -128,9 +130,9 @@ getDataSearchFromDb = () => {
   getDatasetData = async (datasetID) => {
     this.setState({ isLoading: true });
     await Promise.all([
-    axios.get(baseURL + '/api/v1/datasets/detail/' + datasetID) 
-      .then((res) => {
-        this.state.objectData.push(res.data.data)
+    axios.get(baseURL + '/api/v1/datasets/' + datasetID)
+    .then((res) => {
+        this.state.objectData.push(res.data.data[0])
       })
     ]);
     this.setState({objectData: this.state.objectData})
@@ -145,7 +147,7 @@ getDataSearchFromDb = () => {
       })
     ]);
     this.setState({objectData: this.state.objectData})
-  }
+  } 
 
   doGetUsersCall() {
     return new Promise((resolve, reject) => {
@@ -161,13 +163,9 @@ getDataSearchFromDb = () => {
     this.setState({ key: key });
   }
 
-  doSearch = (e) => { //fires on enter on searchbar
-    if (e.key === 'Enter') {
-      if (!!this.state.searchString) {
-        window.location.href = "/search?search=" + this.state.searchString;
-      }
+    doSearch = (e) => { //fires on enter on searchbar
+        if (e.key === 'Enter') window.location.href = "/search?search=" + this.state.searchString;
     }
-  }
 
   updateSearchString = (searchString) => {
     this.setState({ searchString: searchString });
@@ -178,16 +176,18 @@ getDataSearchFromDb = () => {
     var { key } = this.state;
     var allCount = toolCount + datasetCount + personCount + projectCount + paperCount;
 
+
+
     if (isLoading) {
-      return <Container><Loading /></Container>;
+      return <Container><Loading data-testid="isLoading" /></Container>;
     }
  
     return (
       <div>
         <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
-          <div className="rectangle mt-1">
+          <div className="rectangle pixelGapTop pixelGapBottom">
             <Container>
-              {collectionAdded ? 
+              {collectionAdded ?  
               <Row >
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
@@ -202,6 +202,16 @@ getDataSearchFromDb = () => {
               <Col sm={1} lg={1} />
               <Col sm={10} lg={10}>
                 <Alert variant="success" className="mt-3">Done! Your collection has been updated.</Alert>
+              </Col>
+              <Col sm={1} lg={10} />
+            </Row>
+            : ""}
+
+          {data.activeflag === "archive" ?
+            <Row >
+              <Col sm={1} lg={1} />
+              <Col sm={10} lg={10}>
+                <Alert variant="danger" className="mt-3">This collection has been archived</Alert>
               </Col>
               <Col sm={1} lg={10} />
             </Row>
@@ -224,13 +234,13 @@ getDataSearchFromDb = () => {
                     </Col>
                   </Row>
                   <Row>
-                    <Col sm={12} lg={12} className={!data.imageLink || data.imageLink === "https://" ? "" : "collectionTitleCard"}> 
+                    <Col sm={12} lg={12} className={!data.imageLink || data.imageLink === "https://" ? "" : "collectionTitleCard"}>
                       {data.persons.map((person, index) => {
                         if (index > 0) {
-                          return <span className="gray800-14">, {person.firstname} {person.lastname}</span>
+                          return <span className="gray800-14" key={index}>, {person.firstname} {person.lastname}</span>
                         }
                         else {
-                          return <span className="gray800-14">{person.firstname} {person.lastname}</span>
+                          return <span className="gray800-14" key={index}>{person.firstname} {person.lastname}</span>
                         } 
                       })} 
                     </Col>
@@ -238,12 +248,12 @@ getDataSearchFromDb = () => {
                 </Col>
                 <Col sm={1} lg={10} />
               </Row> 
-              <Row className="mt-3">
+              <Row className="pad-top-32">
                 <Col sm={1} lg={1} />
-                <Col sm={10} lg={10} >
-                  <p className="gray800-14">{data.description}</p> 
+                <Col sm={10} lg={10} className="gray800-14">
+                    <ReactMarkdown source={data.description} />
                 </Col>
-                <Col sm={1} lg={10} />
+                <Col sm={1} lg={1} />
               </Row>  
             </Container>
           </div>   
@@ -259,23 +269,26 @@ getDataSearchFromDb = () => {
             </Tabs>
           </div>
 
-        <Container>
+        <Container className="resource-card">
           <Row>
             <Col sm={1} lg={1} /> 
-            <Col sm={10} lg={10}> 
+            <Col sm={10} lg={10}>
+
               {key === 'All' ?
                   objectData.map((object) => {
                     var reason = '';
                     var updated = '';
                     var user = '';
+                    let showAnswer = false;
                     data.relatedObjects.map((dat) => {
                       if(dat.objectId === object.id || parseInt(dat.objectId) === object.id){
                         reason = dat.reason
                         updated = dat.updated
                         user = dat.user
+                        showAnswer = !_.isEmpty(reason)
                       }
                     })
-                    return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason} collectionUpdated={updated} collectionUser={user} />
+                    return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason} collectionUpdated={updated} collectionUser={user} />
                   })
               : ''}
               
@@ -284,15 +297,17 @@ getDataSearchFromDb = () => {
                     var reason = '';
                     var updated = '';
                     var user = '';
+                    let showAnswer = false;
                     if(object.type === undefined){
                       data.relatedObjects.map((dat) => {
                         if(dat.objectId === object.id){ 
                           reason = dat.reason
                           updated = dat.updated
                           user = dat.user
+                          showAnswer = !_.isEmpty(reason)
                         }
                       })
-                      return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason} collectionUpdated={updated} collectionUser={user} /> 
+                      return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason} collectionUpdated={updated} collectionUser={user} /> 
                     }
                   })
               : ''}
@@ -302,15 +317,17 @@ getDataSearchFromDb = () => {
                     var reason = '';
                     var updated = '';
                     var user = '';
+                    let showAnswer = false;
                     if(object.type === "tool"){
                       data.relatedObjects.map((dat) => {
                         if(parseInt(dat.objectId) === object.id){
                           reason = dat.reason
                           updated = dat.updated
                           user = dat.user
+                          showAnswer = !_.isEmpty(reason)
                         }
                       })
-                      return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason} collectionUpdated={updated} collectionUser={user}  /> 
+                      return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason} collectionUpdated={updated} collectionUser={user}  /> 
                     }
                   })
               : ''}
@@ -320,15 +337,17 @@ getDataSearchFromDb = () => {
                     var reason = '';
                     var updated = '';
                     var user = '';
+                    let showAnswer = false;
                     if(object.type === "project"){
                       data.relatedObjects.map((dat) => {
                         if(parseInt(dat.objectId) === object.id){
                           reason = dat.reason
                           updated = dat.updated
                           user = dat.user
+                          showAnswer = !_.isEmpty(reason)
                         }
                       })
-                      return <RelatedObject key={object.idd} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason}  collectionUpdated={updated} collectionUser={user}/>
+                      return <RelatedObject key={object.idd} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason}  collectionUpdated={updated} collectionUser={user}/>
                     } 
                   })
               : ''}
@@ -338,16 +357,18 @@ getDataSearchFromDb = () => {
                   var reason = '';
                   var updated = '';
                   var user = '';
+                  let showAnswer = false;
                   if(object.type === "paper"){
                     data.relatedObjects.map((dat) => {
                       if(parseInt(dat.objectId) === object.id){
                         reason = dat.reason
                         updated = dat.updated
                         user = dat.user
+                        showAnswer = !_.isEmpty(reason)
                       }
                     })
 
-                    return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason}  collectionUpdated={updated} collectionUser={user}/> 
+                    return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason}  collectionUpdated={updated} collectionUser={user}/> 
                   }
                 })              : ''}
 
@@ -356,15 +377,17 @@ getDataSearchFromDb = () => {
                   var reason = '';
                   var updated = '';
                   var user = '';
+                  let showAnswer = false;
                   if(object.type === "person"){  
                     data.relatedObjects.map((dat) => {
                       if(parseInt(dat.objectId) === object.id){
                         reason = dat.reason
                         updated = dat.updated
                         user = dat.user
+                        showAnswer = !_.isEmpty(reason)
                       }
                     })
-                    return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={true} collectionReason={reason}  collectionUpdated={updated} collectionUser={user}/>
+                    return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason}  collectionUpdated={updated} collectionUser={user}/>
                   } 
                 })
               : ''}

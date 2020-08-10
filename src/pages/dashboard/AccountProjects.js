@@ -36,28 +36,19 @@ class AccountProjects extends React.Component {
     }
 
     doProjectsCall() {
-        if (this.state.userState[0].role === "Admin") {
-            axios.get(baseURL + '/api/v1/project/get/admin')
-                .then((res) => {
-                    this.setState({ data: res.data.data, isLoading: false });
-                });
-        }
-        else {
-            axios.get(baseURL + '/api/v1/project/get?id=' + this.state.userState[0].id + '')
-                .then((res) => {
-                    this.setState({ data: res.data.data, isLoading: false });
-                });
-        }
+        axios.get(baseURL + '/api/v1/projects/getList')
+            .then((res) => {
+                this.setState({ data: res.data.data, isLoading: false });
+            });
     }
 
     approveProject = (id) => {
-        axios.put(baseURL + '/api/v1/project/status', {
-            id: id,
+        axios.patch(baseURL + '/api/v1/projects/' + id, {
             activeflag: "active"
         })
-            .then((res) => {
-                window.location.href = '/account?tab=projects&projectApproved=true';
-            });
+        .then((res) => {
+            window.location.href = '/account?tab=projects&projectApproved=true';
+        });
     }
 
     render() {
@@ -263,7 +254,7 @@ class AccountProjects extends React.Component {
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
                                                                     <Dropdown.Item href={'/project/edit/' + dat.id} className="black-14">Edit</Dropdown.Item>
                                                                     <Dropdown.Item href='#' onClick={() => this.approveProject(dat.id)} className="black-14">Approve</Dropdown.Item>
-                                                                    <Dropdown.Item href='#' onClick={() => this.rejectProject(dat.id)} className="black-14">Reject</Dropdown.Item>
+                                                                    <RejectButton id={dat.id} />
                                                                 </DropdownButton>
                                                             </Col>
                                                         </Row>
@@ -290,13 +281,12 @@ function RejectButton(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const rejectObject = () => {
-        axios.put(baseURL + '/api/v1/project/status', {
-            id: props.id,
+        axios.patch(baseURL + '/api/v1/projects/'+props.id, {
             activeflag: "rejected"
         })
-            .then((res) => {
-                window.location.href = '/account?tab=projects&projectRejected=true';
-            });
+        .then((res) => {
+            window.location.href = '/account?tab=projects&projectRejected=true';
+        });
     }
 
     return (
@@ -323,13 +313,12 @@ function DeleteButton(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const deleteObject = () => {
-        axios.put(baseURL + '/api/v1/project/status', {
-            id: props.id,
+        axios.patch(baseURL + '/api/v1/projects/'+props.id, {
             activeflag: "archive"
         })
-            .then((res) => {
-                window.location.href = '/account?tab=projects&projectDeleted=true';
-            });
+        .then((res) => {
+            window.location.href = '/account?tab=projects&projectDeleted=true';
+        });
     }
 
     return (

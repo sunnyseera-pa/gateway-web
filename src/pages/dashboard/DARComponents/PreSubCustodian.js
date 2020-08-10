@@ -1,4 +1,4 @@
-import React from 'react';
+import  React,{ Fragment } from 'react';
 import axios from 'axios';
 import {Row, Col, Container} from 'react-bootstrap/';
 import Loading from '../../commonComponents/Loading'
@@ -88,28 +88,26 @@ class PreSubCustodian extends React.Component {
             );
         }
         return (
-            <div className="DARDiv" >
-
-            <Row className="pl-3">
-                <Col sm={2} lg={2}>
-                    <span>{moment(this.props.data.updatedAt).format('D MMMM YYYY HH:mm')}</span>
+            <Fragment>
+                <Col sm={2} lg={2} className="pt-2 gray800-14"> 
+                    {moment(this.props.data.updatedAt).format('D MMMM YYYY HH:mm')}
                 </Col>
-                <Col sm={3} lg={3}>
-                    <span > {dataset}</span>
+                <Col sm={3} lg={4} className="pt-2 gray800-14">
+                     {dataset}
                 </Col>
-                <Col sm={3} lg={3}>
-                    <span> {name} </span>
+                <Col sm={3} lg={2} className="pt-2 gray800-14">
+                     {name} 
                 </Col>
-                <Col sm={2} lg={2}>
+                <Col sm={2} lg={2} className="pt-2 gray800-14">
                     <span >12/56 questions answered</span>
                 </Col>
+
                 <Col sm={2} lg={2} className="pr-5">
                     {/* <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
                             <Dropdown.Item href="" onClick={e => this.onView(e)}>View</Dropdown.Item>
                     </DropdownButton> */}
                 </Col>
-            </Row>
-            </div>
+            </Fragment>
         );
     }
 }

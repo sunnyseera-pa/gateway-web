@@ -19,6 +19,8 @@ import { PageView, initGA } from '../../tracking';
 import { Event } from '../../tracking';
 import moment from 'moment';
 import Linkify from "react-linkify";
+import DiscourseTopic from '../commonComponents/DiscourseTopic';
+import DatasetSchema from './DatasetSchema';
 
 import 'react-tabs/style/react-tabs.css';
 
@@ -43,7 +45,8 @@ class DatasetDetail extends Component {
       id: null,
       name: null
     }],
-    alert: null
+    alert: null,
+    searchString: ''
   };
 
   constructor(props) {
@@ -53,11 +56,10 @@ class DatasetDetail extends Component {
 
   // on loading of tool detail page
   componentDidMount() {
-    this.getDetailsSearchFromMDC();
-    this.getRelatedProjects();
+    this.getDataset();
     this.checkAlerts();
     initGA('UA-166025838-1');
-    PageView();
+    PageView(); 
   }
 
 
@@ -68,34 +70,25 @@ class DatasetDetail extends Component {
     }
     }
 
-  getDetailsSearchFromMDC = () => {
-    this.setState({ isLoading: true });
-    axios.get(baseURL + '/api/v1/datasets/detail/' + this.props.match.params.datasetID+'?&id=' + this.state.userState[0].id)
-      .then((res) => {
-        this.setState({
-          data: res.data.data,
-          datarequest: res.data.datarequest,
-          isLoading: false
-        });
-      })
-  };
+    getDataset = () => {
+        //need to handle error if no id is found
+        this.setState({ isLoading: true });
+        axios.get(baseURL + '/api/v1/datasets/' + this.props.match.params.datasetID)
+          .then((res) => {
+            this.setState({
+              data: res.data.data[0],
+              discourseTopic: res.data.discourseTopic,
+              isLoading: false
+            });
+            document.title = res.data.data[0].name.trim();
+    
+            let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
+            this.updateCounter(this.props.match.params.datasetID, counter);
+          })
+      };
 
-  getRelatedProjects = () => {
-    axios.get(baseURL + '/api/v1/datasets/relatedobjects/' + this.props.match.params.datasetID)
-      .then((res) => {
-        this.setState({
-            relatedObjects: res.data.data
-        })
-        
-      })
-  };
-
-  doSearch = (e) => { //fires on enter on searchbar
-    if (e.key === 'Enter') {
-      if (!!this.state.searchString) {
-        window.location.href = "/search?search=" + this.state.searchString;
-      }
-    }
+    doSearch = (e) => { //fires on enter on searchbar
+        if (e.key === 'Enter') window.location.href = "/search?search=" + this.state.searchString;
     }
 
     checkAlerts = () => {
@@ -126,61 +119,55 @@ class DatasetDetail extends Component {
         }
       }
 
+      updateCounter = (id, counter) => {
+        axios.post(baseURL + '/api/v1/counter/update', { id, counter });
+    }
 
   render() {
-    const { searchString, data, isLoading, userState, alert=null, relatedObjects } = this.state;
+    const { searchString, data, isLoading, userState, alert=null, discourseTopic } = this.state;
 
     if (isLoading) {
       return <Container><Loading /></Container>;
     }
 
-    if (relatedObjects === null || typeof relatedObjects === 'undefined') {
-        relatedObjects = [];
-    }
+    if (data.relatedObjects === null || typeof data.relatedObjects === 'undefined') {
+        data.relatedObjects = [];
+      }
 
-    var keywords = (data.keywords ? data.keywords.split(",") : '');
-    
     function Metadata() {
         const [show, setShow] = useState(false);
         const target = useRef(null);
 
         var score = ''
         
-        if (data.quality && typeof data.quality.quality_score !== 'undefined') {
-            if (data.quality.quality_score <= 50) {
-                score = 'Not rated'
-            }
-            else if (data.quality.quality_score <= 70) {
-                score = "Bronze";
-            } 
-            else if (data.quality.quality_score <= 80) {
-                score = "Silver";
-            } 
-            else if (data.quality.quality_score <= 90) {
-                score = "Gold";
-            } 
-            else if (data.quality.quality_score > 90) {
-                score = "Platinum";
-            }
+        if (data.datasetfields.metadataquality && typeof data.datasetfields.metadataquality.quality_score !== 'undefined') {
+            if (data.datasetfields.metadataquality.quality_score <= 50) score = 'Not rated'
+            else if (data.datasetfields.metadataquality.quality_score <= 70) score = "Bronze";
+            else if (data.datasetfields.metadataquality.quality_score <= 80) score = "Silver";
+            else if (data.datasetfields.metadataquality.quality_score <= 90) score = "Gold";
+            else if (data.datasetfields.metadataquality.quality_score > 90) score = "Platinum";
+        }
+        else if(!data.quality){
+            score = 'Not rated';
         }
 
         return (<>
                 <div className="text-center">
                     {(() => {
-                        if (data.quality && typeof data.quality.quality_score === 'undefined') return <></>
-                        else if (data.quality.quality_score <= 50) {
+                        if (data.datasetfields.metadataquality && typeof data.datasetfields.metadataquality.quality_score === 'undefined') return <></>
+                        else if (data.datasetfields.metadataquality.quality_score <= 50) {
                             return (<div ref={target} onClick={() => setShow(!show)} style={{ cursor: 'pointer' }} ><div style={{lineHeight: 1}}><MetadataNotRated className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Not rated</span></div></div>)
                         }
-                        else if (data.quality.quality_score <= 70) {
+                        else if (data.datasetfields.metadataquality.quality_score <= 70) {
                             return (<div ref={target} onClick={() => setShow(!show)} style={{ cursor: 'pointer' }} ><div style={{lineHeight: 1}}><MetadataBronze className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Bronze metadata</span></div></div>)
                         } 
-                        else if (data.quality.quality_score <= 80) {
+                        else if (data.datasetfields.metadataquality.quality_score <= 80) {
                             return (<div ref={target} onClick={() => setShow(!show)} style={{ cursor: 'pointer' }} ><div style={{lineHeight: 1}}><MetadataSilver className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Silver metadata</span></div></div>)
                         } 
-                        else if (data.quality.quality_score <= 90) {
+                        else if (data.datasetfields.metadataquality.quality_score <= 90) {
                             return (<div ref={target} onClick={() => setShow(!show)} style={{ cursor: 'pointer' }} ><div style={{lineHeight: 1}}><MetadataGold className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Gold metadata</span></div></div>)
                         } 
-                        else if (data.quality.quality_score > 90) {
+                        else if (data.datasetfields.metadataquality.quality_score > 90) {
                             return (<div ref={target} onClick={() => setShow(!show)} style={{ cursor: 'pointer' }} ><div style={{lineHeight: 1}}><MetadataPlatinum className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Platinum metadata</span></div></div>)
                         }
                     })()} 
@@ -196,13 +183,13 @@ class DatasetDetail extends Component {
                         <br /><br />
                         <a href="https://github.com/HDRUK/datasets#about-the-reports" target="_blank" className="white-12">Click to read more about how the score is calculated.</a>
                         <br /><br />
-                        {Math.trunc(data.quality.completeness_percent)} Completeness %
+                        {Math.trunc(data.datasetfields.metadataquality.completeness_percent)} Completeness %
                         <br />
-                        {Math.trunc(data.quality.weighted_completeness_percent)} Weighted completeness %
+                        {Math.trunc(data.datasetfields.metadataquality.weighted_completeness_percent)} Weighted completeness %
                         <br />
-                        {Math.trunc(data.quality.error_percent)} Error %
+                        {Math.trunc(data.datasetfields.metadataquality.error_percent)} Error %
                         <br />
-                        {Math.trunc(data.quality.weighted_error_percent)} Weighted error %
+                        {Math.trunc(data.datasetfields.metadataquality.weighted_error_percent)} Weighted error %
                     </Tooltip>
                     )}
                 </Overlay>
@@ -212,6 +199,7 @@ class DatasetDetail extends Component {
 
     return (
         <div>
+            { data.datasetfields.metadataschema !== '' ? <DatasetSchema datasetSchema={data.datasetfields.metadataschema}/> : null }
             <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
             <Container className="mb-5">
                 <Row className="mt-4">
@@ -221,9 +209,9 @@ class DatasetDetail extends Component {
                         <div className="rectangle">
                             <Row>
                                 <Col xs={10}>
-                                    <span className="black-20">{data.title} </span>
+                                    <span className="black-20">{data.name} </span>
                                     <br />
-                                    {data.publisher ? <span className="gray800-14">{data.publisher}</span> : <span className="gray800-14-opacity">Not specified</span>}
+                                    {data.datasetfields.publisher ? <span className="gray800-14">{data.datasetfields.publisher}</span> : <span className="gray800-14-opacity">Not specified</span>}
                                 </Col>
                                 <Col xs={2} className="text-right">
                                     <Metadata />
@@ -232,18 +220,21 @@ class DatasetDetail extends Component {
 
                             <Row className="mt-2">
                                 <Col xs={12}>
-                                    <span className="dataSetBadge mr-2">
+                                    <span className="badge-dataset">
                                         <SVGIcon name="dataseticon" fill={'#ffffff'} className="badgeSvg mr-2"  viewBox="-2 -2 22 22"/>
                                         <span>Dataset</span>
                                     </span>
-                                    {!keywords || keywords.length <= 0 ? '' : 
-                                    keywords.map((keyword) => { return <a href={'/search?search=' + keyword}><div className="ml-2 gray800-14 tagBadges mb-1 mt-1">{keyword}</div></a>})}
+                                    {!data.tags.features || data.tags.features.length <= 0 ? '' : 
+                                    data.tags.features.map((keyword) => { return <a href={'/search?search=' + keyword}><div className="ml-2 badge-tag">{keyword}</div></a>})}
                                 </Col>
                             </Row>
 
                             <Row className="mt-2">
                                 <Col xs={12}>
-                                    <span className="gray700-13">12 views</span>
+                                    <span className='gray800-14'>
+                                        {data.counter === undefined ? 1 : data.counter + 1}
+                                        {data.counter === undefined ? ' view' : ' views'}
+                                    </span>
                                 </Col>
                             </Row>
                         </div>
@@ -271,8 +262,8 @@ class DatasetDetail extends Component {
                                                             if (data.description) {
                                                                 return <span className="gray800-14"><ReactMarkdown source={data.description} /></span>
                                                             }
-                                                            else if (data.abstract) {
-                                                                return <span className="gray800-14">{data.abstract}</span>
+                                                            else if (data.datasetfields.abstract) {
+                                                                return <span className="gray800-14">{data.datasetfields.abstract}</span>
                                                             }
                                                             else {
                                                                 return <span className="gray800-14-opacity">Not specified</span>
@@ -296,7 +287,7 @@ class DatasetDetail extends Component {
                                                     <Col sm={2} className="gray800-14" >
                                                         Release date
                                                     </Col>
-                                                    {data.releaseDate ? <Col sm={10} className="gray800-14">{moment(data.releaseDate).format('DD MMMM YYYY')}</Col> : <Col sm={10} className="gray800-14-opacity">Not specified</Col>}
+                                                    {data.datasetfields.releaseDate ? <Col sm={10} className="gray800-14">{moment(data.datasetfields.releaseDate).format('DD MMMM YYYY')}</Col> : <Col sm={10} className="gray800-14-opacity">Not specified</Col>}
                                                 </Row>
                                                 <Row className="mt-2">
                                                     <Col sm={2} className="gray800-14" >
@@ -308,13 +299,13 @@ class DatasetDetail extends Component {
                                                     <Col sm={2} className="gray800-14" >
                                                         Request time
                                                     </Col>
-                                                    {data.accessRequestDuration ? <Col sm={10} className="gray800-14">{data.accessRequestDuration}</Col> : <Col sm={10} className="gray800-14-opacity">Not specified</Col>}
+                                                    {data.datasetfields.accessRequestDuration ? <Col sm={10} className="gray800-14">{data.datasetfields.accessRequestDuration}</Col> : <Col sm={10} className="gray800-14-opacity">Not specified</Col>}
                                                 </Row>
                                                 <Row className="mt-2">
                                                     <Col sm={2} className="gray800-14" >
                                                         Standard
                                                     </Col>
-                                                    {data.conformsTo ? <Col sm={10} className="gray800-14 overflowWrap">{data.conformsTo}</Col> : <Col sm={10} className="gray800-14-opacity">Not specified</Col>}
+                                                    {data.datasetfields.conformsTo ? <Col sm={10} className="gray800-14 overflowWrap">{data.datasetfields.conformsTo}</Col> : <Col sm={10} className="gray800-14-opacity">Not specified</Col>}
                                                 </Row>
                                             </div>
                                         </Col>
@@ -332,9 +323,9 @@ class DatasetDetail extends Component {
                                                         <Col sm={2} className="gray800-14" >
                                                             Access rights
                                                         </Col>
-                                                        {data.accessRights ? 
+                                                        {data.datasetfields.accessRights ? 
                                                         <Col sm={10} className="gray800-14">
-                                                            <Linkify properties={{ target: '_blank' }}>{data.accessRights}</Linkify>
+                                                            <Linkify properties={{ target: '_blank' }}>{data.datasetfields.accessRights}</Linkify>
                                                         </Col> 
                                                         : <Col sm={10} className="gray800-14-opacity">Not specified</Col> }
                                                 </Row>
@@ -354,25 +345,25 @@ class DatasetDetail extends Component {
                                                     <Col sm={3} className="gray800-14" >
                                                         Jurisdiction
                                                     </Col>
-                                                    {data.jurisdiction ? <Col sm={9} className="gray800-14">{data.jurisdiction}</Col> : <Col sm={9} className="gray800-14-opacity">Not specified</Col> }
+                                                    {data.datasetfields.jurisdiction ? <Col sm={9} className="gray800-14">{data.datasetfields.jurisdiction}</Col> : <Col sm={9} className="gray800-14-opacity">Not specified</Col> }
                                                 </Row>
                                                 <Row className="mt-2">
                                                     <Col sm={3} className="gray800-14" >
                                                         Geographic coverage
                                                     </Col>
-                                                    {data.geographicCoverage ? <Col sm={9} className="gray800-14">{data.geographicCoverage}</Col> : <Col sm={9} className="gray800-14-opacity">Not specified</Col> }
+                                                    {data.datasetfields.geographicCoverage ? <Col sm={9} className="gray800-14">{data.datasetfields.geographicCoverage}</Col> : <Col sm={9} className="gray800-14-opacity">Not specified</Col> }
                                                 </Row>
                                                 <Row className="mt-2">
                                                     <Col sm={3} className="gray800-14" >
                                                         Dataset start date
                                                     </Col>
-                                                    {data.datasetStartDate ? <Col sm={9} className="gray800-14">{data.datasetStartDate}</Col> : <Col sm={9} className="gray800-14-opacity">Not specified</Col> }
+                                                    {data.datasetfields.datasetStartDate ? <Col sm={9} className="gray800-14">{data.datasetfields.datasetStartDate}</Col> : <Col sm={9} className="gray800-14-opacity">Not specified</Col> }
                                                 </Row>
                                                 <Row className="mt-2">
                                                     <Col sm={3} className="gray800-14" >
                                                         Dataset end date
                                                     </Col>
-                                                    {data.datasetEndDate ? <Col sm={9} className="gray800-14">{data.datasetEndDate}</Col> : <Col sm={9} className="gray800-14-opacity">Not specified</Col> }
+                                                    {data.datasetfields.datasetEndDate ? <Col sm={9} className="gray800-14">{data.datasetfields.datasetEndDate}</Col> : <Col sm={9} className="gray800-14-opacity">Not specified</Col> }
                                                 </Row>
                                             </div>
                                         </Col>
@@ -390,13 +381,13 @@ class DatasetDetail extends Component {
                                                     <Col sm={3} className="gray800-14" >
                                                         Statistical population
                                                     </Col>
-                                                    {data.statisticalPopulation ? <Col sm={9} className="gray800-14">{data.statisticalPopulation}</Col> : <Col sm={9} className="gray800-14-opacity">Not specified</Col> }
+                                                    {data.datasetfields.statisticalPopulation ? <Col sm={9} className="gray800-14">{data.datasetfields.statisticalPopulation}</Col> : <Col sm={9} className="gray800-14-opacity">Not specified</Col> }
                                                 </Row>
                                                 <Row className="mt-2">
                                                     <Col sm={3} className="gray800-14" >
                                                         Age band 
                                                     </Col>
-                                                    {data.ageBand ? <Col sm={9} className="gray800-14">{data.ageBand}</Col> : <Col sm={9} className="gray800-14-opacity">Not specified</Col> }
+                                                    {data.datasetfields.ageBand ? <Col sm={9} className="gray800-14">{data.datasetfields.ageBand}</Col> : <Col sm={9} className="gray800-14-opacity">Not specified</Col> }
                                                 </Row>
                                             </div>
                                         </Col>
@@ -414,14 +405,17 @@ class DatasetDetail extends Component {
                                                     <Col sm={3} className="gray800-14" >
                                                         Physical sample availability 
                                                     </Col>
-                                                    {data.physicalSampleAvailability ? <Col sm={9} className="gray800-14">{data.physicalSampleAvailability}</Col> : <Col sm={9} className="gray800-14-opacity">Not specified</Col> }
+                                                    {data.datasetfields.physicalSampleAvailability ? <Col sm={9} className="gray800-14">{data.datasetfields.physicalSampleAvailability}</Col> : <Col sm={9} className="gray800-14-opacity">Not specified</Col> }
                                                 </Row>
                                             </div>
                                         </Col>
                                     </Row>
                                 </Tab>
-                                <Tab eventKey="Projects" title={'Related resources (' + relatedObjects.length + ')'}>
-                                    {relatedObjects.length <= 0 ? <NotFound word="related resources" /> : relatedObjects.map(object => <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />)}
+                                <Tab eventKey="Collaboration" title={`Discussion (${discourseTopic && discourseTopic.posts ? discourseTopic.posts.length : 0})`}>
+                                    <DiscourseTopic topic={discourseTopic} toolId={data.id} userState={userState} />
+                                </Tab>
+                                <Tab eventKey="Projects" title={'Related resources (' + data.relatedObjects.length + ')'}>
+                                    {data.relatedObjects.length <= 0 ? <NotFound word="related resources" /> : data.relatedObjects.map(object => <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />)}
                                 </Tab>
                             </Tabs>
                         </div>
@@ -430,19 +424,19 @@ class DatasetDetail extends Component {
                 </Row>
             </Container>
             <div className="actionBar">
-                <Button variant='white' href={'https://metadata-catalogue.org/hdruk/#/catalogue/dataModel/' + data.id} target="_blank" className="techDetailButton mr-2" >Technical details</Button>
+                <Button variant='white' href={'https://metadata-catalogue.org/hdruk/#/catalogue/dataModel/' + data.datasetid} target="_blank" className="techDetailButton mr-2" >Technical details</Button>
                 
                 {(() => {
                     if(!userState[0].loggedIn) {
-                        return <Button variant="primary" className="addButton" onClick={() => this.showLoginModal(data.title, data.contactPoint)}>Request Access</Button>
+                        return <Button variant="primary" className="btn btn-primary addButton pointer" onClick={() => this.showLoginModal(data.name, data.datasetfields.contactPoint)}>Request Access</Button>
                     }
                     else if (alert) {
-                        return <Button variant="primary" className="addButton" disabled>Request Access</Button>
+                        return <Button variant="primary" className="btn btn-primary addButton pointer" disabled>Request Access</Button>
                     }   
                     else {
                         return (
-                            <Link className="btn btn-primary addButton" 
-                                to={{pathname: `/data-access-request/dataset/${data.id}`, state: {title: data.title, dataSetId: data.id, custodianEmail: data.contactPoint, publisher: data.publisher }}} 
+                            <Link className="btn btn-primary addButton pointer" 
+                                to={{pathname: `/data-access-request/dataset/${data.datasetid}`}} 
                                 onClick={() => Event("Buttons", "Click", "Request Access")}>
                                 Request Access
                             </Link>
