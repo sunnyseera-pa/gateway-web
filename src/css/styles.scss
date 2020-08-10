@@ -107,6 +107,13 @@ button {
   margin-bottom: 1px;
 }
 
+.truncate {
+  width: 380px;
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .dataAccessTabs {
   align-items: center;
   justify-content: center;
