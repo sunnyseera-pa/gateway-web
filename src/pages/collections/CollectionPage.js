@@ -300,7 +300,7 @@ getDataSearchFromDb = () => {
                     let showAnswer = false;
                     if(object.type === undefined){
                       data.relatedObjects.map((dat) => {
-                        if(dat.objectId === object.id){ 
+                        if(object.type === 'dataset'){
                           reason = dat.reason
                           updated = dat.updated
                           user = dat.user
