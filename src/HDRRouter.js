@@ -109,15 +109,15 @@ class HDRRouter extends Component {
                         {userState[0].loggedIn ? (<Route path='/editcollection/:collectionID' render={(props) => <EditCollectionPage {...props} userState={userState} /> } />) : ''} 
                         <Route path='/collection/:collectionID' render={(props) => <CollectionPage {...props} userState={userState} />} />
 
-                        {userState[0].loggedIn ? (<Route path='/tool/add' render={(props) => <AddEditToolPage {...props} userState={userState} /> } />) : <Redirect to="/search?search=" />}
+                        {userState[0].loggedIn ? (<Route path='/tool/add' render={(props) => <AddEditToolPage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/tool/edit/:toolID' render={(props) => <AddEditToolPage {...props} userState={userState} isEdit="true" /> } />) : ''}
                         <Route path='/tool/:toolID' render={(props) => <ToolPage {...props} userState={userState} />} />
                         
-                        {userState[0].loggedIn ? (<Route path='/project/add' render={(props) => <AddEditProjectPage {...props} userState={userState} /> } />) : <Redirect to="/search?search=" />}
+                        {userState[0].loggedIn ? (<Route path='/project/add' render={(props) => <AddEditProjectPage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/project/edit/:projectID' render={(props) => <AddEditProjectPage {...props} userState={userState} isEdit="true"  /> } />) : ''}
                         <Route path='/project/:projectID' render={(props) => <ProjectPage {...props} userState={userState} />} />
                         
-                        {userState[0].loggedIn ? (<Route path='/paper/add' render={(props) => <AddEditPaperPage {...props} userState={userState} /> } />) : <Redirect to="/search?search=" />}
+                        {userState[0].loggedIn ? (<Route path='/paper/add' render={(props) => <AddEditPaperPage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/paper/edit/:paperID' render={(props) => <AddEditPaperPage {...props} userState={userState} isEdit="true" /> } />) : ''}
                         <Route path='/paper/:paperID' render={(props) => <PaperPage {...props} userState={userState} />} />
                         

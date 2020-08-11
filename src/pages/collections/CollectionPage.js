@@ -141,7 +141,7 @@ getDataSearchFromDb = () => {
   getPaperData = async (paperID) => {
     this.setState({ isLoading: true });
     await Promise.all([
-    axios.get(baseURL + '/api/v1/paper/' + paperID) 
+    axios.get(baseURL + '/api/v1/papers/' + paperID) 
       .then((res) => {
         this.state.objectData.push(res.data.data[0]) 
       })

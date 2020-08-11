@@ -1,4 +1,4 @@
-// /ShowObjects.js
+// /ShowObjects.js 
 import React, { Component, useState, useRef, Fragment } from "react";
 import ReactMarkdown from "react-markdown";
 import { Link } from "react-router-dom";
@@ -29,10 +29,10 @@ import { PageView, initGA } from "../../tracking";
 import { Event } from "../../tracking";
 import moment from "moment";
 import Linkify from "react-linkify";
-import DiscourseTopic from "../commonComponents/DiscourseTopic";
 import DatasetSchema from "./DatasetSchema";
 import TechnicalMetadata from "./components/TechnicalMetadata";
 import TechnicalDetailsPage from "./components/TechnicalDetailsPage";
+import DiscourseTopic from '../discourse/DiscourseTopic';
 
 import "react-tabs/style/react-tabs.css";
 
@@ -61,6 +61,7 @@ class DatasetDetail extends Component {
       }
     ],
     alert: null,
+    discoursePostCount: 0,
     searchString: "",
     isHovering: false
   };
@@ -92,23 +93,21 @@ class DatasetDetail extends Component {
   }
 
   getDataset = () => {
-    //need to handle error if no id is found
     this.setState({ isLoading: true });
-    axios
-      .get(baseURL + "/api/v1/datasets/" + this.props.match.params.datasetID)
-      .then(res => {
+    axios.get(baseURL + '/api/v1/datasets/' + this.props.match.params.datasetID)
+      .then((res) => {
         this.setState({
           data: res.data.data[0],
-          discourseTopic: res.data.discourseTopic
+          isLoading: false
         });
-        this.getTechnicalMetadata();
         document.title = res.data.data[0].name.trim();
-
-        let counter = !this.state.data.counter
-          ? 1
-          : this.state.data.counter + 1;
+        let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
         this.updateCounter(this.props.match.params.datasetID, counter);
-      });
+      }).catch((error) => {
+        this.setState({
+          isLoading: false
+        })
+      })
   };
 
   getTechnicalMetadata() {
@@ -178,6 +177,10 @@ class DatasetDetail extends Component {
     };
   }
 
+  updateDiscoursePostCount = (count) => {
+    this.setState({ discoursePostCount: count });
+  }
+
   render() {
     const {
       searchString,
@@ -186,7 +189,7 @@ class DatasetDetail extends Component {
       isLoading,
       userState,
       alert = null,
-      discourseTopic,
+      discoursePostCount,
       dataClassOpen
     } = this.state;
 
@@ -389,7 +392,7 @@ class DatasetDetail extends Component {
           doUpdateSearchString={this.updateSearchString}
           userState={userState}
         />
-        <Container className="mb-5">
+        <Container className="margin-bottom-48">
           <Row className="mt-4">
             <Col sm={1} />
             <Col sm={10}>
@@ -804,9 +807,10 @@ class DatasetDetail extends Component {
                             )}
                           </Col>
 
-                          <Row>
+                          <Row style={{ width: "-webkit-fill-available" }}>
                             <Col sm={12} lg={12} className="ml-3 width-100">
-                              {technicalMetadata.map((techMetadata, index) => (
+                              {technicalMetadata.length > 0 ?
+                              technicalMetadata.map((techMetadata, index) => (
                                 <TechnicalMetadata
                                   technicalMetadata={techMetadata}
                                   index={index}
@@ -814,7 +818,11 @@ class DatasetDetail extends Component {
                                     this.doUpdateDataClassOpen
                                   }
                                 />
-                              ))}
+                              ))
+                              :
+                              <NotFound word='technical details' />
+                              }
+
                             </Col>
                           </Row>
                         </>
@@ -835,16 +843,13 @@ class DatasetDetail extends Component {
 
                   <Tab
                     eventKey="Collaboration"
-                    title={`Discussion (${
-                      discourseTopic && discourseTopic.posts
-                        ? discourseTopic.posts.length
-                        : 0
-                    })`}
+                    title={`Discussion (${discoursePostCount})`}
                   >
-                    <DiscourseTopic
-                      topic={discourseTopic}
-                      toolId={data.id}
-                      userState={userState}
+                    <DiscourseTopic 
+                    toolId={data.id} 
+                    topicId={data.discourseTopicId || 0} 
+                    userState={userState} 
+                    onUpdateDiscoursePostCount={this.updateDiscoursePostCount}
                     />
                   </Tab>
                   <Tab

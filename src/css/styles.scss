@@ -21,7 +21,92 @@ button {
     cursor: pointer;
   }
 }
- 
+
+/* Style Guide Components */
+
+.button-{
+  display: inline-block;
+  height: 40px;
+  border: none;
+  border-radius: 4px;
+  font-family: Museo-Sans-Rounded;
+  font-size: 14px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  padding-left: 16px;
+  padding-right: 16px;
+
+  &primary {
+    @extend .button-;
+    background-color: $purple;
+    color: $white;
+    &:hover {
+      background-color: #3c4e8c;
+      border-color: #384983;
+    }
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(71, 93, 167, 0.5);
+    }
+  }
+
+  &secondary {
+    @extend .button-;
+    background-color: $white;
+    border: 2px solid $teal;
+    color: $white;
+  }
+
+  &tertiary {
+    @extend .button-;
+    background-color: $gray-200;
+    color: $indigo;
+  } &:focus {
+    outline: 0;
+    box-shadow: 0 0 0 3px rgba(71, 93, 167, 0.25);
+  }
+}
+
+.form-input-label {
+  font-family: Museo-Sans-Rounded;
+  font-size: 14px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: $gray-800;
+  margin-bottom: 4px;
+  display: block;
+
+  &-desc {
+    @extend .form-input-label;
+    font-size: 13px;
+    color: $gray-700;
+  }
+}
+
+.form-input {
+  background-color: $white;
+  border: 2px solid $gray-400;
+  border-radius: 4px;
+  width: 100%;
+  &:focus {
+  border: solid 2px #3db28c !important;
+  outline: none;
+  }
+  &:hover {
+    border: solid 2px #3db28c;
+  } 
+}
+
+/* Style Guide Components end */
+
 .mainWrap {
   min-height: 100%;
   padding-bottom: 440px;
@@ -103,8 +188,15 @@ button {
   width: 100%;
   box-shadow: 1px 1px 3px 0 #00000017;
   background-color: $white;
-  padding: 20px;
+  padding: 30px;
   margin-bottom: 1px;
+}
+
+.truncate {
+  width: 380px;
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .dataAccessTabs {
@@ -988,37 +1080,6 @@ iframe#discourse-embed-frame {
   text-decoration: none;
   background: $purple;
   color: white;
-}
-
-.discousion-username {
-  font-family: museo-sans-rounded;
-  font-size: 13px;
-  font-weight: bold;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: normal;
-  letter-spacing: normal;
-  color: #848e97;
-}
-
-.discousion-date {
-  font-family: museo-sans-rounded;
-  font-size: 13px;
-  font-weight: bold;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: normal;
-  letter-spacing: normal;
-  text-align: right;
-  color: #848e97;
-}
-
-.discousion-comments-separator {
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-#discourse-add-comment {
-  width: 100%;
 }
 
 .btn-light {
@@ -2315,8 +2376,12 @@ button a {
     margin-top: 2px !important;
   }
 
-  .margin-left-15{
+  .margin-left-15 {
     margin-left: 15px !important;
+  }
+
+  .margin-bottom-48 {
+    margin-bottom: 48px !important;
   }
 
   .col .noPadding {
@@ -2468,19 +2533,12 @@ button a {
 
 .dataClassToolTip{
   width: 275px;
-  // height: 132px;
   border-radius: 8px;
   background-color: $dark;
   padding: 10px;
   position: absolute;
   left: 0%;
-  // left: 2%;
-  
-  // top: 13%;
-  // top: 7%;
   top: 80%;
-
-
   z-index: 1;
 }
 
