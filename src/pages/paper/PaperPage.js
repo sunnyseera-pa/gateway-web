@@ -78,7 +78,7 @@ class ToolDetail extends Component {
   getDataSearchFromDb = () => {
     //need to handle error if no id is found
     this.setState({ isLoading: true });
-    axios.get(baseURL + '/api/v1/paper/' + this.props.match.params.paperID)
+    axios.get(baseURL + '/api/v1/papers/' + this.props.match.params.paperID)
       .then((res) => {
         this.setState({
           data: res.data.data[0],

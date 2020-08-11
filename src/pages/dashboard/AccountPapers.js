@@ -36,22 +36,14 @@ class AccountPapers extends React.Component {
     }
 
     doPapersCall() {
-        if (this.state.userState[0].role === "Admin") {
-            axios.get(baseURL + '/api/v1/paper/get/admin')
-                .then((res) => {
-                    this.setState({ data: res.data.data, isLoading: false });
-                });
-        }
-        else {
-            axios.get(baseURL + '/api/v1/paper/get?id=' + this.state.userState[0].id + '')
-                .then((res) => {
-                    this.setState({ data: res.data.data, isLoading: false });
-                });
-        }
+        axios.get(baseURL + '/api/v1/papers/getList')
+            .then((res) => {
+                this.setState({ data: res.data.data, isLoading: false });
+            });
     }
 
     approvePaper = (id) => {
-        axios.patch(baseURL + '/api/v1/paper/' + id, {
+        axios.patch(baseURL + '/api/v1/papers/' + id, {
             activeflag: "active"
         })
         .then((res) => {
@@ -289,7 +281,7 @@ function RejectButton(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const rejectObject = () => {
-        axios.patch(baseURL + '/api/v1/paper/'+props.id, {
+        axios.patch(baseURL + '/api/v1/papers/'+props.id, {
             activeflag: "rejected"
         })
         .then((res) => {
@@ -321,7 +313,7 @@ function DeleteButton(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const deleteObject = () => {
-        axios.patch(baseURL + '/api/v1/paper/'+props.id, {
+        axios.patch(baseURL + '/api/v1/papers/'+props.id, {
             activeflag: "archive"
         })
         .then((res) => {
