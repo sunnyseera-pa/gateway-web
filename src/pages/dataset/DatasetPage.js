@@ -100,6 +100,7 @@ class DatasetDetail extends Component {
           data: res.data.data[0],
           isLoading: false
         });
+        this.getTechnicalMetadata();
         document.title = res.data.data[0].name.trim();
         let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
         this.updateCounter(this.props.match.params.datasetID, counter);
@@ -448,7 +449,6 @@ class DatasetDetail extends Component {
                     </span>
                   </Col>
                   <Col xs={2}>
-                    {/* TODO */}
                     {(() => {
                       if (!userState[0].loggedIn) {
                         return (
@@ -461,7 +461,7 @@ class DatasetDetail extends Component {
                               )
                             }
                           >
-                            Request Access
+                            Request Access 
                           </Button>
                         );
                       } else if (alert) {
