@@ -25,6 +25,7 @@ function RelatedResources(props) {
     
     return (
         <Fragment className="flexCenter">
+            {/* {console.log('props.paperData: ' + JSON.stringify(props.paperData))} */}
             <Button variant='white' href={''} target="_blank" className="techDetailButton mr-2" onClick={handleShow}>
                 + Add resource
             </Button>
@@ -41,7 +42,7 @@ function RelatedResources(props) {
                 <Modal.Body >
                    <RelatedResourcesModal toolid={props.toolid} projectid={props.projectid} paperid={props.paperid} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} paperData={props.paperData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} />
                 </Modal.Body>
-                </div>  
+                </div>   
                 <Modal.Footer>
                         <div class="flex-grow">
                             <span className="gray800-14" >{props.tempRelatedObjectIds.length} selected</span>
