@@ -10,7 +10,7 @@ import Loading from '../commonComponents/Loading'
 import Reviews from '../commonComponents/Reviews';
 import RelatedObject from '../commonComponents/RelatedObject';
 import SearchBar from '../commonComponents/SearchBar';
-import DiscourseTopic from '../commonComponents/DiscourseTopic';
+import DiscourseTopic from '../discourse/DiscourseTopic';
 import 'react-tabs/style/react-tabs.css';
 import { baseURL } from '../../configs/url.config';
 // import ReactGA from 'react-ga'; 
@@ -42,7 +42,7 @@ class ToolDetail extends Component {
     toolEdited: false,
     reviewAdded: false,
     replyAdded: false,
-    discourseTopic: null,
+    discoursePostCount: 0,
     searchString: ''
   };
 
@@ -76,37 +76,42 @@ class ToolDetail extends Component {
   }
 
   getDataSearchFromDb = () => {
-    //need to handle error if no id is found
     this.setState({ isLoading: true });
     axios.get(baseURL + '/api/v1/papers/' + this.props.match.params.paperID)
       .then((res) => {
         this.setState({
           data: res.data.data[0],
           reviewData: res.data.reviewData,
-          discourseTopic: res.data.discourseTopic,
           isLoading: false
         });
         document.title = res.data.data[0].name.trim();
-
         let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
         this.updateCounter(this.props.match.params.paperID, counter);
+      }).catch((error) => {
+        this.setState({
+          isLoading: false
+        })
       })
   };
 
-    doSearch = (e) => { //fires on enter on searchbar
-        if (e.key === 'Enter') window.location.href = "/search?search=" + this.state.searchString;
-    }
+  doSearch = (e) => { //fires on enter on searchbar
+      if (e.key === 'Enter') window.location.href = "/search?search=" + this.state.searchString;
+  }
 
   updateSearchString = (searchString) => {
     this.setState({ searchString: searchString });
   }
 
-    updateCounter = (id, counter) => {
-        axios.post(baseURL + '/api/v1/counter/update', { id, counter });
-    }
+  updateCounter = (id, counter) => {
+      axios.post(baseURL + '/api/v1/counter/update', { id, counter });
+  }
+
+  updateDiscoursePostCount = (count) => {
+    this.setState({ discoursePostCount: count });
+  }
 
   render() {
-    const { searchString, data, isLoading, userState, paperAdded, paperEdited, reviewAdded, replyAdded, reviewData, discourseTopic } = this.state;
+    const { searchString, data, isLoading, userState, paperAdded, paperEdited, reviewAdded, replyAdded, discoursePostCount } = this.state;
 
     if (isLoading) {
       return <Container><Loading /></Container>;
@@ -119,7 +124,7 @@ class ToolDetail extends Component {
     return (
       <div>
         <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
-        <Container className="mb-5">
+        <Container className="margin-bottom-48">
 
           {paperAdded ?
             <Row className="">
@@ -321,8 +326,8 @@ class ToolDetail extends Component {
                         </Col>
                     </Row>
                   </Tab>
-                  <Tab eventKey="Collaboration" title={`Discussion (${discourseTopic && discourseTopic.posts ? discourseTopic.posts.length : 0})`}>
-                    <DiscourseTopic topic={discourseTopic} toolId={data.id} userState={userState} />
+                  <Tab eventKey="Collaboration" title={`Discussion (${discoursePostCount})`}>
+                    <DiscourseTopic toolId={data.id} topicId={data.discourseTopicId || 0} userState={userState} onUpdateDiscoursePostCount={this.updateDiscoursePostCount}/>
                   </Tab>
                   <Tab eventKey="Projects" title={'Related resources (' + data.relatedObjects.length + ')'}>
                     {data.relatedObjects.length <= 0 ? <NotFound word="related resources" /> : data.relatedObjects.map(object => <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />)}
