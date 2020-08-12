@@ -117,7 +117,7 @@ class DatasetDetail extends Component {
       .get(baseURL + "/api/v1/datasets/" + this.state.data.datasetid)
       .then(res => {
         this.setState({
-          technicalMetadata: res.data.data[0].datasetfields.technicaldetails
+          technicalMetadata: res.data.data[0].datasetfields.technicaldetails || []
         });
         this.setState({ isLoading: false });
       });
