@@ -298,9 +298,9 @@ getDataSearchFromDb = () => {
                     var updated = '';
                     var user = '';
                     let showAnswer = false;
-                    if(object.type === undefined){
+                    if(object.type === 'dataset'){
                       data.relatedObjects.map((dat) => {
-                        if(object.type === 'dataset'){
+                        if(dat.objectId === object.id){ 
                           reason = dat.reason
                           updated = dat.updated
                           user = dat.user
