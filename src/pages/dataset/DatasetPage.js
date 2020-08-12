@@ -222,70 +222,21 @@ class DatasetDetail extends Component {
       return (
         <>
           <div className="text-center">
-            {(() => {
-              if (rating === "Not rated") {
-                return (
-                  <div ref={target} onClick={() => setShow(!show)} style={{ cursor: "pointer" }} >
-                    <div style={{ lineHeight: 1 }}>
-                      <MetadataNotRated className="" />
-                    </div>
-                    <div style={{ lineHeight: 1 }}>
-                      <span className="gray800-14-opacity">Not rated</span>
-                    </div>
-                  </div>
-                );
-              } else if (rating === "Bronze") {
-                return (
-                    <div ref={target} onClick={() => setShow(!show)} style={{ cursor: "pointer" }} >
-                    <div style={{ lineHeight: 1 }}>
-                      <MetadataBronze className="" />
-                    </div>
-                    <div style={{ lineHeight: 1 }}>
-                      <span className="gray800-14-opacity">
-                        Bronze metadata
-                      </span>
-                    </div>
-                  </div>
-                );
-              } else if (rating === "Silver") {
-                return (
-                    <div ref={target} onClick={() => setShow(!show)} style={{ cursor: "pointer" }} >
-                    <div style={{ lineHeight: 1 }}>
-                      <MetadataSilver className="" />
-                    </div>
-                    <div style={{ lineHeight: 1 }}>
-                      <span className="gray800-14-opacity">
-                        Silver metadata
-                      </span>
-                    </div>
-                  </div>
-                );
-              } else if (rating === "Gold") {
-                return (
-                    <div ref={target} onClick={() => setShow(!show)} style={{ cursor: "pointer" }} >
-                    <div style={{ lineHeight: 1 }}>
-                      <MetadataGold className="" />
-                    </div>
-                    <div style={{ lineHeight: 1 }}>
-                      <span className="gray800-14-opacity">Gold metadata</span>
-                    </div>
-                  </div>
-                );
-              } else if (rating === "Platinum") {
-                return (
-                    <div ref={target} onClick={() => setShow(!show)} style={{ cursor: "pointer" }} >
-                    <div style={{ lineHeight: 1 }}>
-                      <MetadataPlatinum className="" />
-                    </div>
-                    <div style={{ lineHeight: 1 }}>
-                      <span className="gray800-14-opacity">
-                        Platinum metadata
-                      </span>
-                    </div>
-                  </div>
-                );
-              }
-            })()}
+            <div ref={target} onClick={() => setShow(!show)} style={{ cursor: "pointer" }} >
+                <div style={{ lineHeight: 1 }}>
+
+                    {(() => {
+                        if (rating === "Not Rated") return <MetadataNotRated />
+                        else if (rating === "Bronze") return <MetadataBronze />
+                        else if (rating === "Silver") return <MetadataSilver />
+                        else if (rating === "Gold") return <MetadataGold />
+                        else if (rating === "Platinum") return <MetadataPlatinum />
+                    })()}
+                </div>
+                <div style={{ lineHeight: 1 }}>
+                    <span className="gray800-14-opacity">{rating === "Not rated" ? rating : rating+" metadata"}</span>
+                </div>
+            </div>
           </div>
 
           <Overlay target={target.current} show={show} placement="bottom">
