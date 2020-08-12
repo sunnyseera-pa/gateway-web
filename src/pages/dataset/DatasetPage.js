@@ -117,7 +117,7 @@ class DatasetDetail extends Component {
       .get(baseURL + "/api/v1/datasets/" + this.state.data.datasetid)
       .then(res => {
         this.setState({
-          technicalMetadata: res.data.data[0].datasetfields.technicaldetails
+          technicalMetadata: res.data.data[0].datasetfields.technicaldetails || []
         });
         this.setState({ isLoading: false });
       });
@@ -809,7 +809,7 @@ class DatasetDetail extends Component {
 
                           <Row style={{ width: "-webkit-fill-available" }}>
                             <Col sm={12} lg={12} className="ml-3 width-100">
-                              {technicalMetadata.length > 0 ?
+                              {technicalMetadata && technicalMetadata.length > 0 ?
                               technicalMetadata.map((techMetadata, index) => (
                                 <TechnicalMetadata
                                   technicalMetadata={techMetadata}
@@ -858,7 +858,7 @@ class DatasetDetail extends Component {
                       "Related resources (" + data.relatedObjects.length + ")"
                     }
                   >
-                    {data.relatedObjects.length <= 0 ? (
+                    {data.relatedObjects && data.relatedObjects.length <= 0 ? (
                       <NotFound word="related resources" />
                     ) : (
                       data.relatedObjects.map(object => (
