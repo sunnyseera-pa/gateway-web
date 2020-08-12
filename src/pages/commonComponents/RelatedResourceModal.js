@@ -257,8 +257,6 @@ class RelatedResourcesModal extends React.Component {
                                      }
                                 })
                                 : ''}
-                            
-                            {/* {key === 'Papers' ? console.log('paperData: ' + JSON.stringify(this.props.paperData)) : console.log('no')} */}
                            
                            {key === 'Papers' ?
                                 !this.props.paperData ? '' :

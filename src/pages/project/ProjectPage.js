@@ -38,7 +38,12 @@ class ProjectDetail extends Component {
     }],
     projectAdded: false,
     projectEdited: false,
-    discourseTopic: null
+    discourseTopic: null,
+    objects: [{
+      id: '',
+      authors: [],
+      activeflag: ''
+    }] 
   };
 
   constructor(props) {
@@ -79,6 +84,11 @@ class ProjectDetail extends Component {
         
         let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
         this.updateCounter(this.props.match.params.projectID, counter);
+
+        {res.data.data[0].relatedObjects.map((object, index) => {
+          this.getAdditionalObjectInfo(object.objectId, index)
+        })}  
+
       })
   };
 
@@ -94,8 +104,33 @@ class ProjectDetail extends Component {
         axios.post(baseURL + '/api/v1/counter/update', { id, counter });
     }
 
+    getAdditionalObjectInfo = (objectId, index) => {
+      axios.get(baseURL + '/api/v1/relatedobject/' + objectId)
+          .then((res) => {
+              if(index === 0) {
+                  this.setState({
+                      objects: [
+                          {
+                              id: objectId,
+                              authors: res.data.data[0].authors,
+                              activeflag: res.data.data[0].activeflag
+                          }
+                      ],
+                  })
+              } else {
+                  var objectArray = this.state.objects.slice();
+                  objectArray.push({
+                                  id: objectId,
+                                  authors: res.data.data[0].authors,
+                                  activeflag: res.data.data[0].activeflag
+                              });
+                  this.setState({objects: objectArray});
+              }
+          })
+  }
+
   render() {
-    const { searchString, data, isLoading, projectAdded, projectEdited, userState, discourseTopic } = this.state;
+    const { searchString, data, isLoading, projectAdded, projectEdited, userState, discourseTopic, objects } = this.state;
 
     if (isLoading) {
       return <Container><Loading /></Container>;
@@ -104,6 +139,20 @@ class ProjectDetail extends Component {
     if (data.relatedObjects === null || typeof data.relatedObjects === 'undefined') {
         data.relatedObjects = [];
     }
+
+    let relatedObjects = [];
+    
+    data.relatedObjects.map(object =>                                         
+        objects.map(item => {
+            if(object.objectId === item.id && item.activeflag === 'active'){
+                relatedObjects.push(object)
+            }
+            
+            if(object.objectId === item.id && item.activeflag === 'review' && item.authors.includes(userState[0].id)){
+                relatedObjects.push(object)
+            }
+        })
+    )
 
     return (
       <div>
@@ -290,9 +339,13 @@ class ProjectDetail extends Component {
                   <Tab eventKey="Collaboration" title={`Discussion (${discourseTopic && discourseTopic.posts ? discourseTopic.posts.length : 0})`}>
                     <DiscourseTopic topic={discourseTopic} toolId={data.id} userState={userState} />
                   </Tab>
-                  <Tab eventKey="Projects" title={'Related resources (' + data.relatedObjects.length + ')'}>
+                  {/* <Tab eventKey="Projects" title={'Related resources (' + data.relatedObjects.length + ')'}> */}
+                  <Tab eventKey="Projects" title={'Related resources (' + relatedObjects.length + ')'}>
+
                     {/* TODO */}
-                    {data.relatedObjects.length <= 0 ? <NotFound word="related resources" /> : data.relatedObjects.map(object => <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />)}
+                    {/* {data.relatedObjects.length <= 0 ? <NotFound word="related resources" /> : data.relatedObjects.map(object => <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />)} */}
+                    {relatedObjects.length <= 0 ? <NotFound word="related resources" /> : relatedObjects.map(object => <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />)}
+                  
                   </Tab>
                 </Tabs>
               </div>

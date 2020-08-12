@@ -25,7 +25,6 @@ function RelatedResources(props) {
     
     return (
         <Fragment className="flexCenter">
-            {/* {console.log('props.paperData: ' + JSON.stringify(props.paperData))} */}
             <Button variant='white' href={''} target="_blank" className="techDetailButton mr-2" onClick={handleShow}>
                 + Add resource
             </Button>

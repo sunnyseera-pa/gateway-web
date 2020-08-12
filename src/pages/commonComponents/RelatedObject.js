@@ -67,10 +67,9 @@ class RelatedObject extends React.Component {
                     data: res.data.data[0],
                     isLoading: false
                 });
-                // console.log('related object data is: ' + JSON.stringify(res.data.data[0]))
             })
     };
-
+ 
     removeButton = () => {
         this.props.doRemoveObject(this.state.data.id, this.state.data.type) 
     }
@@ -83,8 +82,6 @@ class RelatedObject extends React.Component {
  
     render() {
         const { data, isLoading, activeLink, relatedObject, inCollection } = this.state; 
-
-        // console.log('data: ' + JSON.stringify(data.activeflag))
 
         if (isLoading) {
             return <Loading />;
@@ -111,11 +108,9 @@ class RelatedObject extends React.Component {
                        
                        {data.activeflag === 'review' ? 
                             <Row >
-                                {/* <Col sm={1} lg={1} /> */}
                                 <Col sm={12} lg={12}>
                                     <Alert variant="warning" className="ml-4 mr-4">This resource is under review. It won't be visible to others until it is approved.</Alert> 
                                 </Col>
-                                {/* <Col sm={1} lg={1} /> */}
                             </Row>
                        : ''} 
 

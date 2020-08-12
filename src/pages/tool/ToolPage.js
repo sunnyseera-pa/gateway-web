@@ -26,7 +26,7 @@ import { ReactComponent as FullStarIconSvg } from '../../images/star.svg';
 var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
 
 class ToolDetail extends Component {
-
+ 
   // initialize our state
   state = {
     id: '',
@@ -50,17 +50,11 @@ class ToolDetail extends Component {
     searchString: '',
     relatedObjectAuthors: [],
     relatedObjectActiveFlag: '',
-    // object: [{
-    //     id: '',
-    //     authors: [],
-    //     activeflag: ''
-    // }]
-    object: {
+    objects: [{
         id: '',
         authors: [],
         activeflag: ''
-    },
-    objectId: ''
+    }]
   };
  
   constructor(props) {
@@ -107,6 +101,11 @@ class ToolDetail extends Component {
         
         let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
         this.updateCounter(this.props.match.params.toolID, counter);
+
+        {res.data.data[0].relatedObjects.map((object, index) => {
+            this.getAdditionalObjectInfo(object.objectId, index)
+        })} 
+
       })
   };
 
@@ -122,35 +121,37 @@ class ToolDetail extends Component {
         axios.post(baseURL + '/api/v1/counter/update', { id, counter });
     }
 
-    getAdditionalObjectInfo = (objectId) => {
-        console.log('in function: ' + objectId)
-        // this.setState({ isLoading: true });
+    // TODO
+    getAdditionalObjectInfo = (objectId, index) => {
         axios.get(baseURL + '/api/v1/relatedobject/' + objectId)
             .then((res) => {
-                console.log('res author: ' + JSON.stringify(res.data.data[0].authors))
-                console.log('res activeflag: ' + JSON.stringify(res.data.data[0].activeflag))
-
-                this.setState({
-                    // object: [
-                //         {
-                //             id: objectId,
-                //             authors: res.data.data[0].authors,
-                //             activeflag: res.data.data[0].activeflag
-                //         }
-                //     ],
-
-                // //     relatedObjectAuthors: res.data.data[0].authors,
-                // //     relatedObjectActiveFlag: res.data.data[0].activeflag ,
-                //     // isLoading: false
-                });
-                
-                // this.state.object.id = objectId;
+                if(index === 0) {
+                    this.setState({
+                        objects: [
+                            {
+                                id: objectId,
+                                authors: res.data.data[0].authors,
+                                activeflag: res.data.data[0].activeflag
+                            }
+                        ],
+                    })
+                } else {
+                    var objectArray = this.state.objects.slice();
+                    objectArray.push({
+                                    id: objectId,
+                                    authors: res.data.data[0].authors,
+                                    activeflag: res.data.data[0].activeflag
+                                });
+                    this.setState({objects: objectArray});
+                }
             })
     }
 
+
+
   render() {
-    const { searchString, data, isLoading, userState, toolAdded, toolEdited, reviewAdded, replyAdded, reviewData, discourseTopic } = this.state;
-    console.log('this.state.object.id: ' + this.state.object.id)
+    const { searchString, data, isLoading, userState, toolAdded, toolEdited, reviewAdded, replyAdded, reviewData, discourseTopic, objects } = this.state;
+    
     if (isLoading) {
       return <Container><Loading /></Container>;
     }
@@ -158,6 +159,21 @@ class ToolDetail extends Component {
     if (data.relatedObjects === null || typeof data.relatedObjects === 'undefined') {
       data.relatedObjects = [];
     }
+
+    // TODO
+    let relatedObjects = [];
+    
+    data.relatedObjects.map(object =>                                         
+        objects.map(item => {
+            if(object.objectId === item.id && item.activeflag === 'active'){
+                relatedObjects.push(object)
+            }
+            
+            if(object.objectId === item.id && item.activeflag === 'review' && item.authors.includes(userState[0].id)){
+                relatedObjects.push(object)
+            }
+        })
+    )
 
     let ratingsTotal = 0;
     if (reviewData && reviewData.length) {
@@ -168,25 +184,10 @@ class ToolDetail extends Component {
     const ratingsCount = (reviewData ? reviewData.length : 0);
     const avgRating = reviewData.length > 0 ? (ratingsTotal / ratingsCount) : '';
 
-    for (let i = 0; i < data.relatedObjects.length; i++) {
-        // datasetPaginationItems.push(
-        //     <Pagination.Item key={i} active={i === (datasetIndex/maxResult)+1} onClick={(e) => {this.handlePagination("dataset", ((i-1)*(maxResult)), "click")}}>{i}</Pagination.Item>,
-        // );
-        console.log('data.relatedObjects: ' + JSON.stringify(data.relatedObjects[i].objectId))
-        this.getAdditionalObjectInfo(data.relatedObjects[i].objectId)
-    } 
-
     return (
       <div>
         <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
         <Container className="mb-5">
-
-        {/* {data.relatedObjects.map(object => 
-            this.getAdditionalObjectInfo(object.objectId)
-            // <div> {this.getAdditionalObjectInfo(object.objectId)} </div>
-            // console.log('object: ' + JSON.stringify(object.objectId))
-        )}  */}
-
 
           {toolAdded ? 
             <Row className="">
@@ -425,18 +426,21 @@ class ToolDetail extends Component {
                                 <Tab eventKey="Collaboration" title={`Discussion (${discourseTopic && discourseTopic.posts ? discourseTopic.posts.length : 0})`}>
                                     <DiscourseTopic topic={discourseTopic} toolId={data.id} userState={userState} />
                                 </Tab>
-                                <Tab eventKey="Projects" title={'Related resources (' + data.relatedObjects.length + ')'}>
+                                {/* <Tab eventKey="Projects" title={'Related resources (' + data.relatedObjects.length + ')'}> */}
+                                <Tab eventKey="Projects" title={'Related resources (' + relatedObjects.length + ')'}>
+
                                     {/* TODO */}
-                                    {console.log('relatedObjects: ' + JSON.stringify(data.relatedObjects))}
-                                    {data.relatedObjects.length <= 0 ? 
+                                    {/* {data.relatedObjects.length <= 0 ? 
                                     <NotFound word="related resources" /> 
                                     : 
-                                    data.relatedObjects.map(object => 
-                                        // (this.getAdditionalObjectInfo(object.objectId),
-                                        // console.log('object: ' + JSON.stringify(object.objectId))
-                                        
+                                    data.relatedObjects.map(object =>                                         
                                         <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />
-                                        // )
+                                    )} */}
+                                    {relatedObjects.length <= 0 ? 
+                                    <NotFound word="related resources" /> 
+                                    : 
+                                    relatedObjects.map(object =>                                         
+                                        <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />
                                     )}
                                 </Tab>
                             </Tabs>

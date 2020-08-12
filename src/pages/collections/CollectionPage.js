@@ -76,19 +76,14 @@ getDataSearchFromDb = () => {
     data.relatedObjects.map((object) => {
       if(object.objectType === "tool"){
         this.getToolData(object.objectId)
-        this.state.toolCount++
       } else if(object.objectType === "person"){
         this.getPersonData(object.objectId);
-        this.state.personCount++
       } else if(object.objectType === "project"){
         this.getProjectData(object.objectId)
-        this.state.projectCount++
       } else if(object.objectType === "dataset"){
         this.getDatasetData(object.objectId)
-        this.state.datasetCount++
       } else if(object.objectType === "paper"){
         this.getPaperData(object.objectId)
-        this.state.paperCount++
       }
     })
     this.setState({isLoading: false})
@@ -100,6 +95,9 @@ getDataSearchFromDb = () => {
     axios.get(baseURL + '/api/v1/tools/' + toolID) 
       .then((res) => {
         this.state.objectData.push(res.data.data[0])
+        if(res.data.data[0].activeflag === 'active' || res.data.data[0].activeflag === 'review' && res.data.data[0].authors.includes(this.state.userState[0].id)){
+         this.state.toolCount++
+        }
       })
     ]);
     this.setState({objectData: this.state.objectData})
@@ -111,6 +109,9 @@ getDataSearchFromDb = () => {
     axios.get(baseURL + '/api/v1/person/' + personID) 
       .then((res) => {
         this.state.objectData.push(res.data.data[0])
+        if(res.data.data[0].activeflag === 'active' || res.data.data[0].activeflag === 'review' && res.data.data[0].authors.includes(this.state.userState[0].id)){
+          this.state.personCount++
+         }
       })
     ]);
     this.setState({objectData: this.state.objectData})
@@ -122,6 +123,9 @@ getDataSearchFromDb = () => {
     axios.get(baseURL + '/api/v1/projects/' + projectID) 
       .then((res) => {
         this.state.objectData.push(res.data.data[0])
+        if(res.data.data[0].activeflag === 'active' || res.data.data[0].activeflag === 'review' && res.data.data[0].authors.includes(this.state.userState[0].id)){
+          this.state.projectCount++
+         }
       })
     ]);
     this.setState({objectData: this.state.objectData})
@@ -133,6 +137,9 @@ getDataSearchFromDb = () => {
     axios.get(baseURL + '/api/v1/datasets/' + datasetID)
     .then((res) => {
         this.state.objectData.push(res.data.data[0])
+        if(res.data.data[0].activeflag === 'active' || res.data.data[0].activeflag === 'review' && res.data.data[0].authors.includes(this.state.userState[0].id)){
+          this.state.datasetCount++
+         }
       })
     ]);
     this.setState({objectData: this.state.objectData})
@@ -144,6 +151,9 @@ getDataSearchFromDb = () => {
     axios.get(baseURL + '/api/v1/paper/' + paperID) 
       .then((res) => {
         this.state.objectData.push(res.data.data[0]) 
+        if(res.data.data[0].activeflag === 'active' || res.data.data[0].activeflag === 'review' && res.data.data[0].authors.includes(this.state.userState[0].id)){
+          this.state.paperCount++
+         }
       })
     ]);
     this.setState({objectData: this.state.objectData})
@@ -273,72 +283,99 @@ getDataSearchFromDb = () => {
           <Row>
             <Col sm={1} lg={1} /> 
             <Col sm={10} lg={10}>
-
               {key === 'All' ?
                   objectData.map((object) => {
-                    var reason = '';
-                    var updated = '';
-                    var user = '';
-                    let showAnswer = false;
-                    data.relatedObjects.map((dat) => {
-                      if(dat.objectId === object.id || parseInt(dat.objectId) === object.id){
-                        reason = dat.reason
-                        updated = dat.updated
-                        user = dat.user
-                        showAnswer = !_.isEmpty(reason)
-                      }
-                    })
-                    return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason} collectionUpdated={updated} collectionUser={user} />
-                  })
-              : ''}
-              
-              {key === 'Datasets' ?
-                  objectData.map((object) => {
-                    var reason = '';
-                    var updated = '';
-                    var user = '';
-                    let showAnswer = false;
-                    if(object.type === undefined){
+                    if(object.activeflag === 'active' || object.activeflag === 'review' && object.authors.includes(userState[0].id)){
+                      var reason = '';
+                      var updated = '';
+                      var user = '';
+                      let showAnswer = false;
                       data.relatedObjects.map((dat) => {
-                        if(dat.objectId === object.id){ 
+                        if(dat.objectId === object.id || parseInt(dat.objectId) === object.id){
                           reason = dat.reason
                           updated = dat.updated
                           user = dat.user
                           showAnswer = !_.isEmpty(reason)
                         }
                       })
-                      return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason} collectionUpdated={updated} collectionUser={user} /> 
+                      return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason} collectionUpdated={updated} collectionUser={user} />
+                    }})
+              : ''}
+              
+              {key === 'Datasets' ?
+                  objectData.map((object) => {
+                    if(object.activeflag === 'active' || object.activeflag === 'review' && object.authors.includes(userState[0].id)){
+                      var reason = '';
+                      var updated = '';
+                      var user = '';
+                      let showAnswer = false;
+                      if(object.type === undefined){
+                        data.relatedObjects.map((dat) => {
+                          if(dat.objectId === object.id){ 
+                            reason = dat.reason
+                            updated = dat.updated
+                            user = dat.user
+                            showAnswer = !_.isEmpty(reason)
+                          }
+                        })
+                        return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason} collectionUpdated={updated} collectionUser={user} /> 
+                      }
                     }
                   })
               : ''}
 
               {key === 'Tools' ?
                   objectData.map((object) => {
-                    var reason = '';
-                    var updated = '';
-                    var user = '';
-                    let showAnswer = false;
-                    if(object.type === "tool"){
-                      data.relatedObjects.map((dat) => {
-                        if(parseInt(dat.objectId) === object.id){
-                          reason = dat.reason
-                          updated = dat.updated
-                          user = dat.user
-                          showAnswer = !_.isEmpty(reason)
-                        }
-                      })
-                      return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason} collectionUpdated={updated} collectionUser={user}  /> 
+                    if(object.activeflag === 'active' || object.activeflag === 'review' && object.authors.includes(userState[0].id)){
+                      var reason = '';
+                      var updated = '';
+                      var user = '';
+                      let showAnswer = false;
+                      if(object.type === "tool"){
+                        data.relatedObjects.map((dat) => {
+                          if(parseInt(dat.objectId) === object.id){
+                            reason = dat.reason
+                            updated = dat.updated
+                            user = dat.user
+                            showAnswer = !_.isEmpty(reason)
+                          }
+                        })
+                        return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason} collectionUpdated={updated} collectionUser={user}  /> 
+                      }
                     }
                   })
               : ''}
 
               {key === 'Projects' ?
                   objectData.map((object) => {
+                    if(object.activeflag === 'active' || object.activeflag === 'review' && object.authors.includes(userState[0].id)){
+                      var reason = '';
+                      var updated = '';
+                      var user = '';
+                      let showAnswer = false;
+                      if(object.type === "project"){
+                        data.relatedObjects.map((dat) => {
+                          if(parseInt(dat.objectId) === object.id){
+                            reason = dat.reason
+                            updated = dat.updated
+                            user = dat.user
+                            showAnswer = !_.isEmpty(reason)
+                          }
+                        })
+                        return <RelatedObject key={object.idd} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason}  collectionUpdated={updated} collectionUser={user}/>
+                      } 
+                    }
+                  })
+              : ''}
+
+              {key === 'Papers' ?
+                objectData.map((object) => {
+                  if(object.activeflag === 'active' || object.activeflag === 'review' && object.authors.includes(userState[0].id)){
                     var reason = '';
                     var updated = '';
                     var user = '';
                     let showAnswer = false;
-                    if(object.type === "project"){
+                    if(object.type === "paper"){
                       data.relatedObjects.map((dat) => {
                         if(parseInt(dat.objectId) === object.id){
                           reason = dat.reason
@@ -347,47 +384,30 @@ getDataSearchFromDb = () => {
                           showAnswer = !_.isEmpty(reason)
                         }
                       })
-                      return <RelatedObject key={object.idd} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason}  collectionUpdated={updated} collectionUser={user}/>
-                    } 
-                  })
-              : ''}
 
-              {key === 'Papers' ?
-                objectData.map((object) => {
-                  var reason = '';
-                  var updated = '';
-                  var user = '';
-                  let showAnswer = false;
-                  if(object.type === "paper"){
-                    data.relatedObjects.map((dat) => {
-                      if(parseInt(dat.objectId) === object.id){
-                        reason = dat.reason
-                        updated = dat.updated
-                        user = dat.user
-                        showAnswer = !_.isEmpty(reason)
-                      }
-                    })
-
-                    return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason}  collectionUpdated={updated} collectionUser={user}/> 
-                  }
+                      return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason}  collectionUpdated={updated} collectionUser={user}/> 
+                    }
+                  } 
                 })              : ''}
 
               {key === 'People' ?
                 objectData.map((object) => {
-                  var reason = '';
-                  var updated = '';
-                  var user = '';
-                  let showAnswer = false;
-                  if(object.type === "person"){  
-                    data.relatedObjects.map((dat) => {
-                      if(parseInt(dat.objectId) === object.id){
-                        reason = dat.reason
-                        updated = dat.updated
-                        user = dat.user
-                        showAnswer = !_.isEmpty(reason)
-                      }
-                    })
-                    return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason}  collectionUpdated={updated} collectionUser={user}/>
+                  if(object.activeflag === 'active' || object.activeflag === 'review' && object.authors.includes(userState[0].id)){
+                    var reason = '';
+                    var updated = '';
+                    var user = '';
+                    let showAnswer = false;
+                    if(object.type === "person"){  
+                      data.relatedObjects.map((dat) => {
+                        if(parseInt(dat.objectId) === object.id){
+                          reason = dat.reason
+                          updated = dat.updated
+                          user = dat.user
+                          showAnswer = !_.isEmpty(reason)
+                        }
+                      })
+                      return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason}  collectionUpdated={updated} collectionUser={user}/>
+                    } 
                   } 
                 })
               : ''}
