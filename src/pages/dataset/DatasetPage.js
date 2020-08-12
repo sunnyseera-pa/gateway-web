@@ -210,46 +210,22 @@ class DatasetDetail extends Component {
     }
 
     function Metadata() {
-      const [show, setShow] = useState(false);
-      const target = useRef(null);
+        const [show, setShow] = useState(false);
+        const target = useRef(null);
 
-      var score = "";
+        var rating = "Not Rated";
 
-      if (
-        data.datasetfields.metadataquality &&
-        typeof data.datasetfields.metadataquality.quality_score !== "undefined"
-      ) {
-        if (data.datasetfields.metadataquality.quality_score <= 50)
-          score = "Not rated";
-        else if (data.datasetfields.metadataquality.quality_score <= 70)
-          score = "Bronze";
-        else if (data.datasetfields.metadataquality.quality_score <= 80)
-          score = "Silver";
-        else if (data.datasetfields.metadataquality.quality_score <= 90)
-          score = "Gold";
-        else if (data.datasetfields.metadataquality.quality_score > 90)
-          score = "Platinum";
-      } else if (!data.quality) {
-        score = "Not rated";
-      }
+        if (data.datasetfields.metadataquality && typeof data.datasetfields.metadataquality.quality_rating !== "undefined") {
+            rating = data.datasetfields.metadataquality.quality_rating;
+        }
 
       return (
         <>
           <div className="text-center">
             {(() => {
-              if (
-                data.datasetfields.metadataquality &&
-                typeof data.datasetfields.metadataquality.quality_score ===
-                  "undefined"
-              )
-                return <></>;
-              else if (data.datasetfields.metadataquality.quality_score <= 50) {
+              if (rating === "Not rated") {
                 return (
-                  <div
-                    ref={target}
-                    onClick={() => setShow(!show)}
-                    style={{ cursor: "pointer" }}
-                  >
+                  <div ref={target} onClick={() => setShow(!show)} style={{ cursor: "pointer" }} >
                     <div style={{ lineHeight: 1 }}>
                       <MetadataNotRated className="" />
                     </div>
@@ -258,15 +234,9 @@ class DatasetDetail extends Component {
                     </div>
                   </div>
                 );
-              } else if (
-                data.datasetfields.metadataquality.quality_score <= 70
-              ) {
+              } else if (rating === "Bronze") {
                 return (
-                  <div
-                    ref={target}
-                    onClick={() => setShow(!show)}
-                    style={{ cursor: "pointer" }}
-                  >
+                    <div ref={target} onClick={() => setShow(!show)} style={{ cursor: "pointer" }} >
                     <div style={{ lineHeight: 1 }}>
                       <MetadataBronze className="" />
                     </div>
@@ -277,15 +247,9 @@ class DatasetDetail extends Component {
                     </div>
                   </div>
                 );
-              } else if (
-                data.datasetfields.metadataquality.quality_score <= 80
-              ) {
+              } else if (rating === "Silver") {
                 return (
-                  <div
-                    ref={target}
-                    onClick={() => setShow(!show)}
-                    style={{ cursor: "pointer" }}
-                  >
+                    <div ref={target} onClick={() => setShow(!show)} style={{ cursor: "pointer" }} >
                     <div style={{ lineHeight: 1 }}>
                       <MetadataSilver className="" />
                     </div>
@@ -296,15 +260,9 @@ class DatasetDetail extends Component {
                     </div>
                   </div>
                 );
-              } else if (
-                data.datasetfields.metadataquality.quality_score <= 90
-              ) {
+              } else if (rating === "Gold") {
                 return (
-                  <div
-                    ref={target}
-                    onClick={() => setShow(!show)}
-                    style={{ cursor: "pointer" }}
-                  >
+                    <div ref={target} onClick={() => setShow(!show)} style={{ cursor: "pointer" }} >
                     <div style={{ lineHeight: 1 }}>
                       <MetadataGold className="" />
                     </div>
@@ -313,15 +271,9 @@ class DatasetDetail extends Component {
                     </div>
                   </div>
                 );
-              } else if (
-                data.datasetfields.metadataquality.quality_score > 90
-              ) {
+              } else if (rating === "Platinum") {
                 return (
-                  <div
-                    ref={target}
-                    onClick={() => setShow(!show)}
-                    style={{ cursor: "pointer" }}
-                  >
+                    <div ref={target} onClick={() => setShow(!show)} style={{ cursor: "pointer" }} >
                     <div style={{ lineHeight: 1 }}>
                       <MetadataPlatinum className="" />
                     </div>
@@ -339,42 +291,25 @@ class DatasetDetail extends Component {
           <Overlay target={target.current} show={show} placement="bottom">
             {props => (
               <Tooltip className="metadataOverlay" {...props}>
-                Metadata quality score: {score}
+                Metadata quality score: {Math.trunc(data.datasetfields.metadataquality.quality_score)}
                 <br />
                 <br />
                 The score relates to the amount of information available about
                 the dataset, and not to the quality of the actual datasets.
                 <br />
                 <br />
-                <a
-                  href="https://github.com/HDRUK/datasets#about-the-reports"
-                  target="_blank"
-                  className="white-12"
-                >
+                <a href="https://github.com/HDRUK/datasets#about-the-reports" target="_blank" className="white-12" >
                   Click to read more about how the score is calculated.
                 </a>
                 <br />
                 <br />
-                {Math.trunc(
-                  data.datasetfields.metadataquality.completeness_percent
-                )}{" "}
-                Completeness %
+                {Math.trunc(data.datasetfields.metadataquality.completeness_percent)} Completeness %
                 <br />
-                {Math.trunc(
-                  data.datasetfields.metadataquality
-                    .weighted_completeness_percent
-                )}{" "}
-                Weighted completeness %
+                {Math.trunc(data.datasetfields.metadataquality.weighted_completeness_percent)} Weighted completeness %
                 <br />
-                {Math.trunc(
-                  data.datasetfields.metadataquality.error_percent
-                )}{" "}
-                Error %
+                {Math.trunc(data.datasetfields.metadataquality.error_percent)} Error %
                 <br />
-                {Math.trunc(
-                  data.datasetfields.metadataquality.weighted_error_percent
-                )}{" "}
-                Weighted error %
+                {Math.trunc(data.datasetfields.metadataquality.weighted_error_percent)} Weighted error %
               </Tooltip>
             )}
           </Overlay>
