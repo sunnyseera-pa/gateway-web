@@ -118,7 +118,7 @@ class AddEditPaperPage extends React.Component {
     }
 
     doModalSearch = (e, type, page) => {
-
+ 
         if (e.key === 'Enter' || e === 'click') {
  
             var searchURL = '';
@@ -134,7 +134,7 @@ class AddEditPaperPage extends React.Component {
                 form: true,
                 userID: this.state.userState[0].id 
             }
-        }) 
+        })  
             .then((res) => {
                 // console.log('res: ' + JSON.stringify(res))
                 this.setState({

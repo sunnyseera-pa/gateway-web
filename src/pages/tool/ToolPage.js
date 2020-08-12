@@ -47,9 +47,22 @@ class ToolDetail extends Component {
     reviewAdded: false,
     replyAdded: false,
     discourseTopic: null,
-    searchString: ''
+    searchString: '',
+    relatedObjectAuthors: [],
+    relatedObjectActiveFlag: '',
+    // object: [{
+    //     id: '',
+    //     authors: [],
+    //     activeflag: ''
+    // }]
+    object: {
+        id: '',
+        authors: [],
+        activeflag: ''
+    },
+    objectId: ''
   };
-
+ 
   constructor(props) {
     super(props);
     this.state.userState = props.userState;
@@ -109,9 +122,35 @@ class ToolDetail extends Component {
         axios.post(baseURL + '/api/v1/counter/update', { id, counter });
     }
 
+    getAdditionalObjectInfo = (objectId) => {
+        console.log('in function: ' + objectId)
+        // this.setState({ isLoading: true });
+        axios.get(baseURL + '/api/v1/relatedobject/' + objectId)
+            .then((res) => {
+                console.log('res author: ' + JSON.stringify(res.data.data[0].authors))
+                console.log('res activeflag: ' + JSON.stringify(res.data.data[0].activeflag))
+
+                this.setState({
+                    // object: [
+                //         {
+                //             id: objectId,
+                //             authors: res.data.data[0].authors,
+                //             activeflag: res.data.data[0].activeflag
+                //         }
+                //     ],
+
+                // //     relatedObjectAuthors: res.data.data[0].authors,
+                // //     relatedObjectActiveFlag: res.data.data[0].activeflag ,
+                //     // isLoading: false
+                });
+                
+                // this.state.object.id = objectId;
+            })
+    }
+
   render() {
     const { searchString, data, isLoading, userState, toolAdded, toolEdited, reviewAdded, replyAdded, reviewData, discourseTopic } = this.state;
-
+    console.log('this.state.object.id: ' + this.state.object.id)
     if (isLoading) {
       return <Container><Loading /></Container>;
     }
@@ -129,10 +168,25 @@ class ToolDetail extends Component {
     const ratingsCount = (reviewData ? reviewData.length : 0);
     const avgRating = reviewData.length > 0 ? (ratingsTotal / ratingsCount) : '';
 
+    for (let i = 0; i < data.relatedObjects.length; i++) {
+        // datasetPaginationItems.push(
+        //     <Pagination.Item key={i} active={i === (datasetIndex/maxResult)+1} onClick={(e) => {this.handlePagination("dataset", ((i-1)*(maxResult)), "click")}}>{i}</Pagination.Item>,
+        // );
+        console.log('data.relatedObjects: ' + JSON.stringify(data.relatedObjects[i].objectId))
+        this.getAdditionalObjectInfo(data.relatedObjects[i].objectId)
+    } 
+
     return (
       <div>
         <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
         <Container className="mb-5">
+
+        {/* {data.relatedObjects.map(object => 
+            this.getAdditionalObjectInfo(object.objectId)
+            // <div> {this.getAdditionalObjectInfo(object.objectId)} </div>
+            // console.log('object: ' + JSON.stringify(object.objectId))
+        )}  */}
+
 
           {toolAdded ? 
             <Row className="">
@@ -372,7 +426,18 @@ class ToolDetail extends Component {
                                     <DiscourseTopic topic={discourseTopic} toolId={data.id} userState={userState} />
                                 </Tab>
                                 <Tab eventKey="Projects" title={'Related resources (' + data.relatedObjects.length + ')'}>
-                                    {data.relatedObjects.length <= 0 ? <NotFound word="related resources" /> : data.relatedObjects.map(object => <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />)}
+                                    {/* TODO */}
+                                    {console.log('relatedObjects: ' + JSON.stringify(data.relatedObjects))}
+                                    {data.relatedObjects.length <= 0 ? 
+                                    <NotFound word="related resources" /> 
+                                    : 
+                                    data.relatedObjects.map(object => 
+                                        // (this.getAdditionalObjectInfo(object.objectId),
+                                        // console.log('object: ' + JSON.stringify(object.objectId))
+                                        
+                                        <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />
+                                        // )
+                                    )}
                                 </Tab>
                             </Tabs>
                         </div>

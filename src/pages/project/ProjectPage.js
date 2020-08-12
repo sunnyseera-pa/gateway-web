@@ -291,6 +291,7 @@ class ProjectDetail extends Component {
                     <DiscourseTopic topic={discourseTopic} toolId={data.id} userState={userState} />
                   </Tab>
                   <Tab eventKey="Projects" title={'Related resources (' + data.relatedObjects.length + ')'}>
+                    {/* TODO */}
                     {data.relatedObjects.length <= 0 ? <NotFound word="related resources" /> : data.relatedObjects.map(object => <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />)}
                   </Tab>
                 </Tabs>
