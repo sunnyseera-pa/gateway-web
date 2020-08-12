@@ -1,0 +1,121 @@
+@import '../../../css/styles.scss';
+@import '../sidedrawer/SideDrawer.scss';
+
+.sideDrawer {
+    &-header {
+        box-sizing: border-box;
+        padding: 25px;
+        background: $indigo;
+        height: 72px;
+        display: flex;
+        color: $white;
+        align-items: center;
+        justify-content: space-between;
+
+        &-wrapper {
+            display: grid;
+        }
+
+        &--close {
+            fill: #fff;
+            width: 20px;
+            height: 20px;
+            &:hover {
+                cursor: pointer;
+            }
+        }
+    }
+
+    &-body {
+        display: grid;
+        height: 100vh;
+        grid-template-columns: 35% 65%;
+        justify-items: stretch;
+        align-items: stretch;
+    }
+
+    &-nav {
+        background: $gray-200;
+        overflow-y: scroll;
+        height: calc(100vh - 72px);
+        box-sizing: border-box;
+
+        &-item {
+            margin-bottom: 1px;
+            box-sizing: inherit;
+            width: 100%;
+            height: 105px;
+            padding: 15px 24px;
+            background: $white;
+            border-right: 1px solid #e7e9ed;
+
+            &:hover {
+                cursor: pointer !important;
+            }
+        }
+    }
+}
+
+.nav {
+    &-desc {
+        width: 100%;
+        max-width: 295px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.messageArea {
+    display: grid;
+    grid-template-rows: 106px 1fr 170px;
+    box-sizing: border-box;
+    height: calc(100vh - 40px);
+    
+
+    &-header{
+        background: $white;
+        padding: 0 24px;
+        border-bottom: 1px solid $gray-200;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    &-body{
+        background: $white;
+        overflow-y: scroll;
+    }
+    
+    &-item {
+        display: flex;
+        padding: 15px 24px;
+        flex-flow: column nowrap;
+        width: 100%;
+        min-height: 106px;
+        border-bottom: 1px solid $gray-200;
+
+        @include font-source(14px, $soft-black, $font-weight-semibold);
+
+        &-header {
+            display: flex;
+            flex-flow: row nowrap;
+            width: 100%;
+            margin-bottom: 12px;
+            justify-content: space-between;
+        }
+    }
+
+    &-footer {
+        display: flex;
+        flex-flow: column nowrap;
+        border-top: 1px solid $gray-200;
+        padding: 15px 24px;
+        background: $white;
+    }
+}
+
+.selected-item {
+    border-right: 4px solid $teal !important;
+}

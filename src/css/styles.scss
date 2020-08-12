@@ -10,6 +10,10 @@ body {
   -webkit-text-size-adjust: 100%; //fix for iOS
 }
 
+.no-scroll {
+  overflow:  hidden !important;
+}
+
 #root {
   margin: 0;
   padding: 0;
