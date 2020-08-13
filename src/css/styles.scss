@@ -192,6 +192,10 @@ button {
   margin-bottom: 1px;
 }
 
+.padding-28 {
+  padding: 28px !important;
+}
+
 .truncate {
   width: 380px;
   white-space: nowrap !important;
@@ -561,6 +565,11 @@ svg:not(:root) {
 .svg-16 {
   width: 16px;
   height: 16px;
+}
+
+.svg-19 {
+  width: 19px;
+  height: 19px;
 }
 
 .svg-24 {
@@ -2359,6 +2368,9 @@ button a {
     padding-bottom: 16px !important;
   }
 
+  .pad-bottom-24 {
+    padding-bottom: 24px !important;
+  }
 
   .margin-top-24 {
     margin-top: 24px !important;
@@ -2543,7 +2555,16 @@ button a {
 }
 
 .heightVariable{
-  height: 56px
+  height: 56px;
+
+  // @include mq('desktop',max){
+  //   height: 60px !important;
+  // }
+
+}
+
+.heightDataClass{
+  height: 114px;
 }
 
 .entryBox .collapseWait{

@@ -32,12 +32,12 @@ class TechnicalDetailsPage extends React.Component {
     if (flagClosed === false) {
       svgClassName = "flipSVG";
     }
-
+ 
     return (
       <div className="ml-3">
         <Row className="mt-3">
           <Col sm={12} lg={12} style={{ "padding-left": "0px" }}>
-            <div className="entryBox">
+            <div className="entryBox"> 
               <Row className="pad-left-24">
                 <Col sm={11} lg={11}>
                   <Row>

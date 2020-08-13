@@ -768,8 +768,8 @@ class DatasetDetail extends Component {
                           <Col
                             sm={12}
                             lg={12}
-                            className="subHeader mt-3 gray800-14-bold"
-                          >
+                            className="subHeader mt-3 gray800-14-bold pad-bottom-24 pad-top-24"
+                          > 
                             <span className="black-16-semibold mr-3">
                               Data Classes
                             </span>

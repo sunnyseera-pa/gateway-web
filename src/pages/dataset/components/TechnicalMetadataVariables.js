@@ -51,7 +51,7 @@ class TechnicalMetadataVariables extends React.Component {
     }
 
     return (
-      <div className={open ? "entryBox" : "entryBox heightVariable"}>
+      <div className={open ? "entryBox padding-28" : "entryBox padding-28 heightVariable"}>
         <Row>
           <Col sm={11} lg={11} className="black-14-bold pl-3 ">
             <span>

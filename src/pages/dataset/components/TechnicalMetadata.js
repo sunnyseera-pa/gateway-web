@@ -3,6 +3,8 @@ import axios from "axios";
 import { Col, Row } from "react-bootstrap";
 import SVGIcon from "../../../images/SVGIcon";
 import { ReactComponent as TableSvg } from "../../../images/table.svg";
+import { ReactComponent as ChevronRightSvg } from "../../../images/chevron-right.svg";
+
 
 var baseURL = require("../../commonComponents/BaseURL").getURL();
 
@@ -29,12 +31,15 @@ class TechnicalMetadata extends React.Component {
     return (
       <div>
         <div>
-          <Row className="entryBox">
+          <Row className="entryBox heightDataClass">
             <Col sm={11} lg={11}>
               <Row>
                 <TableSvg className="margin-top-2" />
 
-                <span className="pad-left-8 black-18">
+                <span className="pad-left-8 black-18"                 
+                onClick={() =>
+                  this.props.doUpdateDataClassOpen(this.state.index)
+                }>
                   {technicalMetadata ? technicalMetadata.label : ""}
                 </span>
               </Row>
@@ -53,11 +58,15 @@ class TechnicalMetadata extends React.Component {
                   this.props.doUpdateDataClassOpen(this.state.index)
                 }
               >
-                <SVGIcon
+                {/* <SVGIcon
                   name="chevronright"
                   fill={"#475da7"}
-                  className="svg-24 dataClassArrow"
-                />
+                  className="svg-19 dataClassArrow" 
+                /> */}
+                <ChevronRightSvg
+                  fill={"#475da7"}
+                  className="dataClassArrow" 
+                   />
               </span>
             </Col>
           </Row>
