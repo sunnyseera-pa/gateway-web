@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Fragment } from 'react';
 import axios from 'axios';
 import classnames from "classnames";
 
@@ -12,6 +12,7 @@ import { ReactComponent as NotificationsBellSvg } from '../../images/bell.svg';
 import { ReactComponent as HamBurgerSvg } from '../../images/hamburger.svg';
 import { ReactComponent as ArrowDownSvg } from '../../images/stock.svg';
 import { ReactComponent as WhiteArrowDownSvg } from '../../images/arrowDownWhite.svg';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 import moment from 'moment';
 import { cmsURL } from '../../configs/url.config';
@@ -56,6 +57,7 @@ class SearchBar extends React.Component {
         count: 0,
         prevScrollpos: window.pageYOffset,
         visible: true,
+        showToast: true,
         isLoading: true
     }
 
@@ -185,6 +187,16 @@ class SearchBar extends React.Component {
         }
     }
 
+    checkRedirectToast(){
+        if((window.localStorage.getItem('redirectMsg') != null )) {
+            //rerender the Search bar so Toast notification will appear
+            this.setState({showToast: true})
+            //Display Toast Notification based on local storage variable
+            NotificationManager.warning(window.localStorage.getItem('redirectMsg'), 'Page not found', 10000);
+            window.localStorage.removeItem('redirectMsg');
+        }
+    }
+
     render() {
         const { userState, newData, isLoading, clearMessage } = this.state;
 
@@ -195,6 +207,7 @@ class SearchBar extends React.Component {
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
         return (
+            <Fragment>
             <nav className={classnames("navbarShown", { "navbarHidden": !this.state.visible })}>
 
                 <div className="searchBarBackground" id="desktopSearchBar">
@@ -318,6 +331,7 @@ class SearchBar extends React.Component {
                                                         })}
                                                     </Dropdown.Menu>
                                             </Dropdown>
+                                            {this.checkRedirectToast()}
                                         </div>
                                     )
                                 }
@@ -600,6 +614,7 @@ class SearchBar extends React.Component {
                     </div>
                 </div>
             </nav>
+            </Fragment>
         );
     }
 }

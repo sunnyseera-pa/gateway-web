@@ -96,6 +96,10 @@ class ToolDetail extends Component {
           isLoading: false
         })
       })
+      .catch((err) => {
+        window.localStorage.setItem('redirectMsg', err.response.data);
+        this.props.history.push({pathname: "/search?search=", search:""});
+    })
   };
 
     doSearch = (e) => { //fires on enter on searchbar

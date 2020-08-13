@@ -2574,3 +2574,91 @@ button a {
 
 }
 
+.notification-container {
+  box-sizing: border-box;
+  position: fixed;
+  top: $react-notifications-container-top;
+  align-items: center;
+  right: $react-notifications-container-right;
+  left: $react-notifications-container-left;
+  z-index: $react-notifications-container-z-index;
+  width: $react-notifications-container-width;
+  padding: $react-notifications-container-top-padding $react-notifications-container-right-padding;
+  max-height: $react-notifications-container-max-height;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.notification {
+  box-sizing: border-box;
+  padding: $react-notifications-padding-top $react-notifications-padding-right $react-notifications-padding-bottom $react-notifications-padding-left;
+  border-radius: $react-notifications-border-radius;
+  color: $react-notifications-color;
+  background-color: $react-notifications-background-color;
+  box-shadow: $react-notifications-box-shadow;
+  cursor: $react-notifications-cursor;
+  font-size: $react-notifications-font-size;
+  line-height: $react-notifications-line-height;
+  position: relative;
+  opacity: $react-notifications-opacity;
+  margin-top: $react-notifications-margin-top;
+  border-top-style: solid;
+  border-top-color: $red;
+  border-top-width: 8px;
+  .title {
+    font-size: $react-notifications-title-font-size;
+    line-height: $react-notifications-title-line-height;
+    font-weight: $react-notifications-title-font-weight;
+    margin: $react-notifications-title-margin;
+  }
+  &:hover, &:focus {
+    opacity: $react-notifications-hover-opacity;
+  }
+}
+
+.notification-enter {
+  visibility: hidden;
+  transform: translate3d(0, 100%, 0);
+}
+
+.notification-enter.notification-enter-active {
+  visibility: visible;
+  transform: translate3d(0, 0, 0);
+  transition: all $react-notifications-transition-time;
+}
+
+.notification-leave {
+  visibility: visible;
+  transform: translate3d(0, 0, 0);
+}
+
+.notification-leave.notification-leave-active {
+  visibility: hidden;
+  transform: translate3d(0, 0%, 0, 100%);
+  transition: all $react-notifications-transition-time;
+}
+
+.notification {
+  &:before {
+    position: absolute;
+    top: $react-notifications-icon-top;
+    left: $react-notifications-icon-left;
+    margin-top: $react-notifications-icon-margin-top;
+    display: block;
+    font-family: 'Notification';
+    width: $react-notifications-icon-width;
+    height: $react-notifications-icon-height;
+    font-size: $react-notifications-icon-font-size;
+    text-align: center;
+    line-height: $react-notifications-icon-line-height;
+  }
+}
+
+.notification-warning {
+  background-color: $react-notifications-warning-background-color;
+  &:before {
+    content: $react-notifications-warning-content;
+    margin-top: -18px;
+    margin-left: 0px;
+  }
+}

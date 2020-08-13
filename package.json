@@ -34,6 +34,7 @@
     "react-moment": "^0.9.7",
     "react-multiselect-checkboxes": "^0.1.1",
     "react-notification-badge": "^1.5.1",
+    "react-notifications": "^1.6.0",
     "react-rating": "^2.0.4",
     "react-router-dom": "^5.1.2",
     "react-schemaorg": "^1.1.0",
