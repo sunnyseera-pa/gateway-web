@@ -31,7 +31,7 @@ class TechnicalMetadata extends React.Component {
     return (
       <div>
         <div>
-          <Row className="entryBox heightDataClass">
+          <Row className="entryBox heightDataClass alignCenter pad-bottom-24">
             <Col sm={11} lg={11}>
               <Row>
                 <TableSvg className="margin-top-2" />
@@ -52,7 +52,7 @@ class TechnicalMetadata extends React.Component {
                 </p>
               </Row>
             </Col>
-            <Col sm={1} lg={1}>
+            <Col sm={1} lg={1} className="alignSelfCenter">
               <span
                 onClick={() =>
                   this.props.doUpdateDataClassOpen(this.state.index)

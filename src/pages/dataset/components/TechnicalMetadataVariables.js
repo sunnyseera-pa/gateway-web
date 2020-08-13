@@ -51,9 +51,9 @@ class TechnicalMetadataVariables extends React.Component {
     }
 
     return (
-      <div className={open ? "entryBox padding-28" : "entryBox padding-28 heightVariable"}>
-        <Row>
-          <Col sm={11} lg={11} className="black-14-bold pl-3 ">
+      <div className={open ? "entryBox pad-bottom-16 " : "entryBox pad-bottom-16  heightVariable"}>
+        <Row className="centerVariable">
+          <Col sm={11} lg={11} className="black-14-bold pl-3 variablePadding">
             <span>
               <VariableSvg className="mr-1" style={{ float: "left" }} />
             </span>
@@ -87,7 +87,7 @@ class TechnicalMetadataVariables extends React.Component {
           </Col>
         </Row>
 
-        <Collapse in={this.state.open} className="collapseWait">
+        <Collapse in={this.state.open} className="collapseWait pad-top-8">
           <div>
             <Row>
               <Col sm={11} lg={11} className="gray800-14-opacity pad-top-8">

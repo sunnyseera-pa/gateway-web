@@ -19,7 +19,8 @@ import Loading from "../commonComponents/Loading";
 import RelatedObject from "../commonComponents/RelatedObject";
 import SearchBar from "../commonComponents/SearchBar";
 import SVGIcon from "../../images/SVGIcon";
-import { ReactComponent as InfoFill } from "../../images/infofill.svg";
+import { ReactComponent as InfoFillSVG } from "../../images/infofill.svg";
+import { ReactComponent as InfoSVG } from "../../images/info.svg";
 import { ReactComponent as MetadataBronze } from "../../images/bronze.svg";
 import { ReactComponent as MetadataSilver } from "../../images/silver.svg";
 import { ReactComponent as MetadataGold } from "../../images/gold.svg";
@@ -759,7 +760,7 @@ class DatasetDetail extends Component {
                           </Row>
                         </div>
                       </Col>
-                    </Row>
+                    </Row> 
                   </Tab>
                   <Tab eventKey="TechDetails" title={`Technical details`}>
                     <Row className="width-100" style={{ margin: "0%" }}>
@@ -776,19 +777,11 @@ class DatasetDetail extends Component {
                             <span
                               onMouseEnter={this.handleMouseHover}
                               onMouseLeave={this.handleMouseHover}
-                            >
+                            > 
                               {this.state.isHovering ? (
-                                <SVGIcon
-                                  name="infofill"
-                                  fill={"#475da7"}
-                                  className="svg-16"
-                                />
+                                <InfoFillSVG />
                               ) : (
-                                <SVGIcon
-                                  name="info"
-                                  fill={"#475da7"}
-                                  className="svg-16"
-                                />
+                                <InfoSVG />
                               )}
                             </span>
 
