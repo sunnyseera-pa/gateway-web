@@ -1,4 +1,4 @@
-// /ShowObjects.js 
+// /ShowObjects.js
 import React, { Component, useState, useRef, Fragment } from "react";
 import ReactMarkdown from "react-markdown";
 import { Link } from "react-router-dom";
@@ -63,11 +63,14 @@ class DatasetDetail extends Component {
     alert: null,
     searchString: "",
     isHovering: false,
-    objects: [{
-      id: '',
-      authors: [],
-      activeflag: ''
-    }] 
+    objects: [
+      {
+        id: "",
+        authors: [],
+        activeflag: ""
+      }
+    ],
+    relatedObjects: []
   };
 
   constructor(props) {
@@ -114,9 +117,7 @@ class DatasetDetail extends Component {
           : this.state.data.counter + 1;
         this.updateCounter(this.props.match.params.datasetID, counter);
 
-        {res.data.data[0].relatedObjects.map((object, index) => {
-          this.getAdditionalObjectInfo(object.objectId, index)
-        })} 
+        this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
       });
   };
 
@@ -128,7 +129,6 @@ class DatasetDetail extends Component {
         this.setState({
           technicalMetadata: res.data.data[0].datasetfields.technicaldetails
         });
-        this.setState({ isLoading: false });
       });
   }
 
@@ -187,30 +187,45 @@ class DatasetDetail extends Component {
     };
   }
 
-  getAdditionalObjectInfo = (objectId, index) => {
-    axios.get(baseURL + '/api/v1/relatedobject/' + objectId)
-        .then((res) => {
-            if(index === 0) {
-                this.setState({
-                    objects: [
-                        {
-                            id: objectId,
-                            authors: res.data.data[0].authors,
-                            activeflag: res.data.data[0].activeflag
-                        }
-                    ],
-                })
-            } else {
-                var objectArray = this.state.objects.slice();
-                objectArray.push({
-                                id: objectId,
-                                authors: res.data.data[0].authors,
-                                activeflag: res.data.data[0].activeflag
-                            });
-                this.setState({objects: objectArray});
-            }
-        })
-}
+  getAdditionalObjectInfo = async data => {
+    let tempObjects = [];
+    const promises = data.map(async (object, index) => {
+      await axios
+        .get(baseURL + "/api/v1/relatedobject/" + object.objectId)
+        .then(res => {
+          tempObjects.push({
+            id: object.objectId,
+            authors: res.data.data[0].authors,
+            activeflag: res.data.data[0].activeflag
+          });
+        });
+    });
+    await Promise.all(promises);
+    this.setState({ objects: tempObjects });
+
+    this.getRelatedObjects();
+  };
+
+  getRelatedObjects() {
+    let tempRelatedObjects = [];
+    this.state.data.relatedObjects.map(object =>
+      this.state.objects.map(item => {
+        if (object.objectId === item.id && item.activeflag === "active") {
+          tempRelatedObjects.push(object);
+        }
+
+        if (
+          object.objectId === item.id &&
+          item.activeflag === "review" &&
+          item.authors.includes(this.state.userState[0].id)
+        ) {
+          tempRelatedObjects.push(object);
+        }
+      })
+    );
+    this.setState({ relatedObjects: tempRelatedObjects });
+    this.setState({ isLoading: false });
+  }
 
   render() {
     const {
@@ -222,7 +237,8 @@ class DatasetDetail extends Component {
       alert = null,
       discourseTopic,
       dataClassOpen,
-      objects
+      objects,
+      relatedObjects
     } = this.state;
 
     if (isLoading) {
@@ -239,20 +255,6 @@ class DatasetDetail extends Component {
     ) {
       data.relatedObjects = [];
     }
-
-    let relatedObjects = [];
-    
-    data.relatedObjects.map(object =>                                         
-        objects.map(item => {
-            if(object.objectId === item.id && item.activeflag === 'active'){
-                relatedObjects.push(object)
-            }
-            
-            if(object.objectId === item.id && item.activeflag === 'review' && item.authors.includes(userState[0].id)){
-                relatedObjects.push(object)
-            }
-        })
-    )
 
     function Metadata() {
       const [show, setShow] = useState(false);
@@ -277,7 +279,7 @@ class DatasetDetail extends Component {
       } else if (!data.quality) {
         score = "Not rated";
       }
- 
+
       return (
         <>
           <div className="text-center">
@@ -855,20 +857,19 @@ class DatasetDetail extends Component {
 
                           <Row style={{ width: "-webkit-fill-available" }}>
                             <Col sm={12} lg={12} className="ml-3 width-100">
-                              {technicalMetadata.length > 0 ?
-                              technicalMetadata.map((techMetadata, index) => (
-                                <TechnicalMetadata
-                                  technicalMetadata={techMetadata}
-                                  index={index}
-                                  doUpdateDataClassOpen={
-                                    this.doUpdateDataClassOpen
-                                  }
-                                />
-                              ))
-                              :
-                              <NotFound word='technical details' />
-                              }
-
+                              {technicalMetadata.length > 0 ? (
+                                technicalMetadata.map((techMetadata, index) => (
+                                  <TechnicalMetadata
+                                    technicalMetadata={techMetadata}
+                                    index={index}
+                                    doUpdateDataClassOpen={
+                                      this.doUpdateDataClassOpen
+                                    }
+                                  />
+                                ))
+                              ) : (
+                                <NotFound word="technical details" />
+                              )}
                             </Col>
                           </Row>
                         </>
@@ -903,23 +904,8 @@ class DatasetDetail extends Component {
                   </Tab>
                   <Tab
                     eventKey="Projects"
-                    title={
-                      // "Related resources (" + data.relatedObjects.length + ")"
-                      "Related resources (" + relatedObjects.length + ")"
-
-                    }
+                    title={"Related resources (" + relatedObjects.length + ")"}
                   >
-                    {/* {data.relatedObjects.length <= 0 ? (
-                      <NotFound word="related resources" />
-                    ) : (
-                      data.relatedObjects.map(object => (
-                        <RelatedObject
-                          relatedObject={object}
-                          activeLink={true}
-                          showRelationshipAnswer={true}
-                        />
-                      ))
-                    )} */}
                     {relatedObjects.length <= 0 ? (
                       <NotFound word="related resources" />
                     ) : (
