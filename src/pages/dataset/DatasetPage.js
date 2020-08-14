@@ -19,7 +19,8 @@ import Loading from "../commonComponents/Loading";
 import RelatedObject from "../commonComponents/RelatedObject";
 import SearchBar from "../commonComponents/SearchBar";
 import SVGIcon from "../../images/SVGIcon";
-import { ReactComponent as InfoFill } from "../../images/infofill.svg";
+import { ReactComponent as InfoFillSVG } from "../../images/infofill.svg";
+import { ReactComponent as InfoSVG } from "../../images/info.svg";
 import { ReactComponent as MetadataBronze } from "../../images/bronze.svg";
 import { ReactComponent as MetadataSilver } from "../../images/silver.svg";
 import { ReactComponent as MetadataGold } from "../../images/gold.svg";
@@ -645,7 +646,7 @@ class DatasetDetail extends Component {
                           </Row>
                         </div>
                       </Col>
-                    </Row>
+                    </Row> 
                   </Tab>
                   <Tab eventKey="TechDetails" title={`Technical details`}>
                     <Row className="width-100" style={{ margin: "0%" }}>
@@ -654,27 +655,19 @@ class DatasetDetail extends Component {
                           <Col
                             sm={12}
                             lg={12}
-                            className="subHeader mt-3 gray800-14-bold"
-                          >
+                            className="subHeader mt-3 gray800-14-bold pad-bottom-24 pad-top-24"
+                          > 
                             <span className="black-16-semibold mr-3">
                               Data Classes
                             </span>
                             <span
                               onMouseEnter={this.handleMouseHover}
                               onMouseLeave={this.handleMouseHover}
-                            >
+                            > 
                               {this.state.isHovering ? (
-                                <SVGIcon
-                                  name="infofill"
-                                  fill={"#475da7"}
-                                  className="svg-16"
-                                />
+                                <InfoFillSVG />
                               ) : (
-                                <SVGIcon
-                                  name="info"
-                                  fill={"#475da7"}
-                                  className="svg-16"
-                                />
+                                <InfoSVG />
                               )}
                             </span>
 
@@ -694,7 +687,7 @@ class DatasetDetail extends Component {
                           </Col>
 
                           <Row style={{ width: "-webkit-fill-available" }}>
-                            <Col sm={12} lg={12} className="ml-3 width-100">
+                            <Col sm={12} lg={12} className={technicalMetadata && technicalMetadata.length > 0 ? "margin-left-15 width-100" : "width-100"}>
                               {technicalMetadata && technicalMetadata.length > 0 ?
                               technicalMetadata.map((techMetadata, index) => (
                                 <TechnicalMetadata

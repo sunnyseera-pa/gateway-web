@@ -51,9 +51,10 @@ class TechnicalMetadataVariables extends React.Component {
     }
 
     return (
-      <div className={open ? "entryBox" : "entryBox heightVariable"}>
-        <Row>
-          <Col sm={11} lg={11} className="black-14-bold pl-3 ">
+      <div className={open ? "variableBox pad-bottom-16 " : "variableBox pad-bottom-16  heightVariable"}>
+
+        <Row className="centerVariable">
+          <Col sm={11} lg={11} className="black-14-bold pl-3 variablePadding">
             <span>
               <VariableSvg className="mr-1" style={{ float: "left" }} />
             </span>
@@ -81,13 +82,13 @@ class TechnicalMetadataVariables extends React.Component {
               <SVGIcon
                 name="chevronbottom"
                 fill={"#475da7"}
-                className={flagClosed === true ? "svg-24" : "svg-24 flipSVG"}
+                className={flagClosed === true ? "svg-24 variableArrow" : "svg-24 flipSVG variableArrow"}
               />
             </span>
           </Col>
         </Row>
 
-        <Collapse in={this.state.open} className="collapseWait">
+        <Collapse in={this.state.open} className="collapseWait pad-top-8">
           <div>
             <Row>
               <Col sm={11} lg={11} className="gray800-14-opacity pad-top-8">
