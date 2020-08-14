@@ -10,6 +10,7 @@ import RelatedObject from '../commonComponents/RelatedObject';
 import Loading from '../commonComponents/Loading'
 import Filters from './Filters';
 import NoResults from '../commonComponents/NoResults';
+import { NotificationContainer } from 'react-notifications';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -689,6 +690,7 @@ class SearchPage extends React.Component {
                         }
                     </Row>
                 </Container>
+                <NotificationContainer/>
             </div>
         );
     }

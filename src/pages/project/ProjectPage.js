@@ -69,17 +69,19 @@ class ProjectDetail extends Component {
     this.setState({ isLoading: true });
     axios.get(baseURL + '/api/v1/projects/' + this.props.match.params.projectID)
       .then((res) => {
-        this.setState({
-          data: res.data.data[0],
-          isLoading: false
-        });
-        document.title = res.data.data[0].name.trim();
-        let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
-        this.updateCounter(this.props.match.params.projectID, counter);
-      }).catch((error) => {
-        this.setState({
-          isLoading: false
-        })
+          this.setState({
+            data: res.data.data[0],
+            discourseTopic: res.data.discourseTopic,
+            isLoading: false
+          });
+          document.title = res.data.data[0].name.trim();
+        
+          let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
+          this.updateCounter(this.props.match.params.projectID, counter);
+      })
+      .catch((err) => {
+          window.localStorage.setItem('redirectMsg', err.response.data);  
+          this.props.history.push({pathname: "/search?search=", search:""});
       })
   };
 
