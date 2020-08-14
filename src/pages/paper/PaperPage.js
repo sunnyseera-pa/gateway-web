@@ -89,7 +89,10 @@ class ToolDetail extends Component {
         this.updateCounter(this.props.match.params.paperID, counter);
       })
       .catch((err) => {
-        window.localStorage.setItem('redirectMsg', err.response.data);
+        //check if request is for a PaperID or a different route such as /add
+        if(!isNaN(this.props.match.params.paperID)){
+          window.localStorage.setItem('redirectMsg', err.response.data);
+        }
         this.props.history.push({pathname: "/search?search=", search:""});
     })
   };

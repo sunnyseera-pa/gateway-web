@@ -339,6 +339,7 @@ class SearchBar extends React.Component {
                                     return (
                                         <div className="offlineNotificationGap">
                                             <WhiteArrowDownSvg width={50} height={50} />
+                                            {this.checkRedirectToast()}
                                         </div>
                                     )
                                 }
