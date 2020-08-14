@@ -36,9 +36,14 @@ class TechnicalDetailsPage extends React.Component {
  
     return (
       <div className="ml-3">
-        <Row className="mt-3">
-          <Col sm={12} lg={12} style={{ "padding-left": "0px" }}>
-            <div className="entryBox pad-bottom-16"> 
+        <Row>
+          <Col sm={12} lg={12} className="pad-left-0">
+            
+            <div className="entryBox noPadding">
+
+            <Row className="mt-3">
+          <Col sm={12} lg={12} >
+            <div className="variableBox pad-bottom-16"> 
               <Row className="pad-left-24">
                 <Col sm={11} lg={11}>
                   <Row>
@@ -51,11 +56,6 @@ class TechnicalDetailsPage extends React.Component {
 
                 <Col sm={1} lg={1}>
                   <span onClick={() => this.props.doUpdateDataClassOpen(-1)}>
-                    {/* <SVGIcon
-                      name="closeicon"
-                      fill={"#475da7"}
-                      className="svg-24 floatRight dataClassX" 
-                    /> */}
                     <CloseButtonSvg width="19px" height="19px"/>
                   </span>
                 </Col>
@@ -86,18 +86,17 @@ class TechnicalDetailsPage extends React.Component {
             </div>
           </Col>
         </Row>
-
-        <Row>
-          <Col sm={12} lg={12} className="pad-left-0">
+        
             {technicalMetadata.elements.map(element => (
               <TechnicalMetadataVariables
                 techMetadataVariables={element}
                 open={allOpen}
               />
             ))}
-              <div className= "entryBox height-16 noPadding">
-                <Row className="centerVariable"></Row>
+              <div className= "height-16" />
               </div>
+
+    
           </Col>
         </Row>
       </div>

@@ -51,7 +51,8 @@ class TechnicalMetadataVariables extends React.Component {
     }
 
     return (
-      <div className={open ? "entryBox pad-bottom-16 " : "entryBox pad-bottom-16  heightVariable"}>
+      <div className={open ? "variableBox pad-bottom-16 " : "variableBox pad-bottom-16  heightVariable"}>
+
         <Row className="centerVariable">
           <Col sm={11} lg={11} className="black-14-bold pl-3 variablePadding">
             <span>
@@ -81,7 +82,7 @@ class TechnicalMetadataVariables extends React.Component {
               <SVGIcon
                 name="chevronbottom"
                 fill={"#475da7"}
-                className={flagClosed === true ? "svg-24" : "svg-24 flipSVG"}
+                className={flagClosed === true ? "svg-24 variableArrow" : "svg-24 flipSVG variableArrow"}
               />
             </span>
           </Col>

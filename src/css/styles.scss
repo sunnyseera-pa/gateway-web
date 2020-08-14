@@ -2353,7 +2353,7 @@ button a {
   }
 
   .noPadding{
-    padding: 0px;
+    padding: 0px !important;
   }
 
   .pad-top-32 {
@@ -2605,18 +2605,36 @@ button a {
   width: 95%;
 }
 
+.variableBox {
+    // box-shadow: 1px 1px 3px 0 #00000017;
+    background-color: #fff;
+    padding: 30px;
+    margin-left: 8px;
+    margin-right: 8px;
+    // border-top: #e7e9ed solid 1px;
+    border-bottom: #e7e9ed solid 1px;
+
+}
+
+.variableBox .collapseWait{
+  transition: transform 0.5s linear 0s;
+}
+
 .heightDataClass{ 
   @include mq('tablet-wide'){
     height: 114px !important;
   }
 }
 
-.entryBox .collapseWait{
-  transition: transform 0.5s linear 0s;
-}
 .dataClassArrow{
   @include mq('tablet-small',max){
     transform: translate(-20px, 0px) !important;
+  }
+}
+
+.variableArrow{
+  @include mq('tablet-wide',max){
+    transform: translate(-25px, 0px) !important;
   }
 }
 

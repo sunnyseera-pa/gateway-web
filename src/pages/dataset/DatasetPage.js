@@ -801,7 +801,7 @@ class DatasetDetail extends Component {
                           </Col>
 
                           <Row style={{ width: "-webkit-fill-available" }}>
-                            <Col sm={12} lg={12} className="ml-3 width-100">
+                            <Col sm={12} lg={12} className={technicalMetadata && technicalMetadata.length > 0 ? "margin-left-15 width-100" : "width-100"}>
                               {technicalMetadata && technicalMetadata.length > 0 ?
                               technicalMetadata.map((techMetadata, index) => (
                                 <TechnicalMetadata

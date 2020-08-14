@@ -58,11 +58,6 @@ class TechnicalMetadata extends React.Component {
                   this.props.doUpdateDataClassOpen(this.state.index)
                 }
               >
-                {/* <SVGIcon
-                  name="chevronright"
-                  fill={"#475da7"}
-                  className="svg-19 dataClassArrow" 
-                /> */}
                 <ChevronRightSvg
                   fill={"#475da7"}
                   className="dataClassArrow" 
