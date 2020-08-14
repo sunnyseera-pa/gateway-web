@@ -3,26 +3,26 @@ import React, { Component } from "react";
 import axios from "axios";
 import queryString from "query-string";
 import { Row, Col, Tabs, Tab, Container, Alert, Button } from "react-bootstrap";
+import NotFound from '../commonComponents/NotFound';
+import Loading from '../commonComponents/Loading'
+import Reviews from '../commonComponents/Reviews';
+import RelatedObject from '../commonComponents/RelatedObject';
+import SearchBar from '../commonComponents/SearchBar';
+import Creators from '../commonComponents/Creators';
+import DiscourseTopic from '../discourse/DiscourseTopic';
+import 'react-tabs/style/react-tabs.css';
+import { baseURL } from '../../configs/url.config';
+import { PageView, initGA } from '../../tracking';
+import ReactMarkdown from 'react-markdown';
+import Rating from 'react-rating';
+import moment from 'moment';
 
-import NotFound from "../commonComponents/NotFound";
-import Loading from "../commonComponents/Loading";
-import Reviews from "../commonComponents/Reviews";
-import RelatedObject from "../commonComponents/RelatedObject";
-import SearchBar from "../commonComponents/SearchBar";
-import Creators from "../commonComponents/Creators";
-import DiscourseTopic from "../commonComponents/DiscourseTopic";
-import "react-tabs/style/react-tabs.css";
-import { baseURL } from "../../configs/url.config";
-import { PageView, initGA } from "../../tracking";
-import ReactMarkdown from "react-markdown";
-import Rating from "react-rating";
-import moment from "moment";
+import SVGIcon from '../../images/SVGIcon';
+import { ReactComponent as EmptyStarIconSvg } from '../../images/starempty.svg'
+import { ReactComponent as FullStarIconSvg } from '../../images/star.svg';
 
-import SVGIcon from "../../images/SVGIcon";
-import { ReactComponent as EmptyStarIconSvg } from "../../images/starempty.svg";
-import { ReactComponent as FullStarIconSvg } from "../../images/star.svg";
+var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
 
-var cmsURL = require("../commonComponents/BaseURL").getCMSURL();
 
 class ToolDetail extends Component {
   // initialize our state
@@ -48,8 +48,6 @@ class ToolDetail extends Component {
     replyAdded: false,
     discourseTopic: null,
     searchString: "",
-    relatedObjectAuthors: [],
-    relatedObjectActiveFlag: "",
     objects: [
       {
         id: "",
@@ -57,7 +55,8 @@ class ToolDetail extends Component {
         activeflag: ""
       }
     ],
-    relatedObjects: []
+    relatedObjects: [],
+    discoursePostCount: 0,
   };
 
   constructor(props) {
@@ -93,7 +92,6 @@ class ToolDetail extends Component {
   }
 
   getDataSearchFromDb = () => {
-    //need to handle error if no id is found
     this.setState({ isLoading: true });
     axios
       .get(baseURL + "/api/v1/tools/" + this.props.match.params.toolID)
@@ -168,6 +166,10 @@ class ToolDetail extends Component {
     this.setState({ isLoading: false });
   }
 
+    updateDiscoursePostCount = (count) => {
+        this.setState({ discoursePostCount: count });
+    }
+
   render() {
     const {
       searchString,
@@ -181,7 +183,8 @@ class ToolDetail extends Component {
       reviewData,
       discourseTopic,
       objects,
-      relatedObjects
+      relatedObjects,
+      discoursePostCount 
     } = this.state;
 
     if (isLoading) {
@@ -216,7 +219,7 @@ class ToolDetail extends Component {
           doUpdateSearchString={this.updateSearchString}
           userState={userState}
         />
-        <Container className="mb-5">
+        <Container className="margin-bottom-48">
           {toolAdded ? (
             <Row className="">
               <Col sm={1} lg={1} />
@@ -530,19 +533,143 @@ class ToolDetail extends Component {
                       </Col>
                     </Row>
 
-                    <Row className="mt-2">
-                      <Col sm={12}>
-                        <div className="rectangle">
-                          <Row className="gray800-14-bold">
-                            <Col sm={12}>Authors</Col>
-                          </Row>
-                          <Row className="mt-3">
-                            {data.persons.map(author => (
-                              <Col sm={6} key={author.id}>
-                                <Creators key={author.id} author={author} />
-                              </Col>
-                            ))}
-                          </Row>
+                <Row>
+                    <Col sm={1} />
+                    <Col sm={10}>
+                        <div>
+                            <Tabs className='tabsBackground gray700-13'>
+                                <Tab eventKey="About" title={'About'}>
+                                    <Row className="mt-2">
+                                        <Col sm={12} lg={12}>
+                                            <div className="rectangle">
+                                                <Row className="gray800-14-bold">
+                                                    <Col sm={12}>
+                                                        Description
+                                                    </Col>
+                                                </Row>
+                                                <Row className="mt-3">
+                                                    <Col sm={12} className="gray800-14">
+                                                        <ReactMarkdown source={data.description} />
+                                                    </Col>
+                                                </Row>
+                                            </div>
+                                        </Col>
+                                    </Row>
+
+                                    <Row className="mt-2">
+                                        <Col sm={12}>
+                                            <div className="rectangle">
+                                                <Row className="gray800-14-bold">
+                                                    <Col sm={12}>
+                                                        Details
+                                                    </Col>
+                                                </Row>
+                                                <Row className="mt-3">
+                                                    <Col sm={2} className="gray800-14" >
+                                                        URL
+                                                    </Col>
+                                                    <Col sm={10} className="gray800-14" >
+                                                        <a href={data.link} rel="noopener noreferrer" target="_blank" className="purple-14">
+                                                            {data.link}
+                                                        </a>
+                                                    </Col>
+                                                </Row>
+                                                <Row className="mt-2">
+                                                    <Col sm={2} className="gray800-14" >
+                                                        License
+                                                    </Col>
+                                                    {data.license ? <Col sm={10} className="gray800-14">{data.license}</Col> : <Col sm={10} className="gray800-14-opacity">Not specified</Col>}
+                                                </Row>
+                                                <Row className="mt-2">
+                                                    <Col sm={2} className="gray800-14" >
+                                                        Last update
+                                                    </Col>
+                                                    <Col sm={10} className="gray800-14">
+                                                        {moment(data.updatedon).format('DD MMM YYYY')}
+                                                    </Col>
+                                                </Row>
+                                                {data.uploader ?
+                                                    <Row className="mt-2">
+                                                        <Col sm={2} className="gray800-14" >
+                                                            Uploader
+                                                        </Col>
+                                                        <Col sm={10} className="gray800-14 overflowWrap">{data.uploaderIs[0].firstname} {data.uploaderIs[0].lastname}</Col>
+                                                    </Row>
+                                                    : ''}
+                                                <Row className="mt-2">
+                                                    <Col sm={2} className="gray800-14" >
+                                                        Type
+                                                    </Col>
+                                                    <Col sm={10} className="gray800-14">
+                                                        <a href={'/search?search=' + data.categories.category}>
+                                                            <div className="badge-tag">{data.categories.category}</div>
+                                                        </a>
+                                                    </Col>
+                                                </Row>
+                                                <Row className="mt-2">
+                                                    <Col sm={2} className="gray800-14" >
+                                                        Implementation
+                                                    </Col>
+                                                    <Col sm={10} className="gray800-14">
+                                                        {!data.categories.programmingLanguage || data.categories.programmingLanguage <= 0 ? '' : data.categories.programmingLanguage.map((language, i) => {
+                                                            return <a href={'/search?search=' + language}><div className="badge-tag" key={i}>{language}</div></a>
+                                                        })}
+
+                                                        {!data.categories.programmingLanguageVersion ? '' : <a href={'/search?search=' + data.categories.programmingLanguageVersion}><div className="badge-tag">{data.categories.programmingLanguageVersion}</div></a>}
+                                                    </Col>
+                                                </Row>
+                                                <Row className="mt-2">
+                                                    <Col sm={2} className="gray800-14" >
+                                                        Keywords
+                                                    </Col>
+                                                    <Col sm={10} className="gray800-14">
+
+                                                        {!data.tags.features || data.tags.features.length <= 0 ? <span className="gray800-14-opacity">Not specified</span> :
+                                                            data.tags.features.map((keyword) => { return <a href={'/search?search=' + keyword}><div className="badge-tag">{keyword}</div></a> })}
+                                                    </Col>
+                                                </Row>
+                                                <Row className="mt-2">
+                                                    <Col sm={2} className="gray800-14" >
+                                                        Domain
+                                                    </Col>
+                                                    <Col sm={10} className="gray800-14">
+                                                        {!data.tags.topics || data.tags.topics.length <= 0 ? <span className="gray800-14-opacity">Not specified</span> :
+                                                            data.tags.topics.map((domain) => { return <a href={'/search?search=' + domain}><div className="badge-tag">{domain}</div></a> })}
+                                                    </Col>
+                                                </Row>
+                                            </div>
+                                        </Col>
+                                    </Row>
+
+                                    <Row className="mt-2">
+                                        <Col sm={12}>
+                                            <div className="rectangle">
+                                                <Row className="gray800-14-bold">
+                                                    <Col sm={12}>
+                                                        Authors
+                                                    </Col>
+                                                </Row>
+                                                <Row className="mt-3">
+                                                    {data.persons.map((author) =>
+                                                        <Col sm={6} key={author.id}>
+                                                            <Creators key={author.id} author={author} />
+                                                        </Col>
+                                                    )} 
+                                                </Row>
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                </Tab>
+                                <Tab eventKey="Reviews" title={'Reviews (' + reviewData.length + ')'}>
+                                    <Reviews data={data} userState={userState} reviewData={reviewData} />
+                                </Tab>
+                                <Tab eventKey="Collaboration" title={`Discussion (${discoursePostCount})`}>
+                                    <DiscourseTopic toolId={data.id} topicId={data.discourseTopicId || 0} userState={userState} onUpdateDiscoursePostCount={this.updateDiscoursePostCount}/>
+                                </Tab>
+                                <Tab eventKey="Projects" title={'Related resources (' + data.relatedObjects.length + ')'}>
+                                    {data.relatedObjects.length <= 0 ? <NotFound word="related resources" /> : data.relatedObjects.map(object => <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />)}
+                                </Tab>
+                            </Tabs>
                         </div>
                       </Col>
                     </Row>
@@ -557,20 +684,9 @@ class ToolDetail extends Component {
                       reviewData={reviewData}
                     />
                   </Tab>
-                  <Tab
-                    eventKey="Collaboration"
-                    title={`Discussion (${
-                      discourseTopic && discourseTopic.posts
-                        ? discourseTopic.posts.length
-                        : 0
-                    })`}
-                  >
-                    <DiscourseTopic
-                      topic={discourseTopic}
-                      toolId={data.id}
-                      userState={userState}
-                    />
-                  </Tab>
+                  <Tab eventKey="Collaboration" title={`Discussion (${discoursePostCount})`}>
+                      <DiscourseTopic toolId={data.id} topicId={data.discourseTopicId || 0} userState={userState} onUpdateDiscoursePostCount={this.updateDiscoursePostCount}/>
+                   </Tab>
                   <Tab
                     eventKey="Projects"
                     title={"Related resources (" + relatedObjects.length + ")"}

@@ -2,25 +2,17 @@ import React from 'react';
 import { Col, Row } from 'react-bootstrap';
 
 class NotFound extends React.Component {
-
+    
     constructor(props) {
-        super(props)
-        this.state.word = props.word;
+        super(props);
     }
 
-    state = {
-        word: "results"
-    };
-
     render() {
-        const { word } = this.state;
-
         return (
-            
-            <Row className="entryBox mt-2">
+            <Row className="entryBox noMargin margin-top-16">
                 <Col>
                     <div className="gray800-14" style={{ textAlign: 'center' }} data-testid="notFound">
-                        No {word} found
+                        {this.props.text ? this.props.text : `No ${this.props.word || 'results'} found`}
                     </div>
                 </Col>
             </Row>

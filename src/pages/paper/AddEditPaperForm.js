@@ -55,13 +55,13 @@ const AddEditPaperForm = (props) => {
             values.relatedObjects = props.relatedObjects
             values.toolCreator = props.userState[0];
             if (props.isEdit) {
-                axios.put(baseURL + '/api/v1/paper/' + props.data.id, values) 
+                axios.put(baseURL + '/api/v1/papers/' + props.data.id, values) 
                 .then((res) => {
                     window.location.href = window.location.search + '/paper/' + props.data.id + '/?paperEdited=true';
                 });
             }
             else {
-                axios.post(baseURL + '/api/v1/paper/', values)
+                axios.post(baseURL + '/api/v1/papers/', values)
                     .then((res) => {
                         window.location.href = window.location.search + '/paper/' + res.data.response.id + '/?paperAdded=true';
                     });

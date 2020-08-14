@@ -29,10 +29,10 @@ import { PageView, initGA } from "../../tracking";
 import { Event } from "../../tracking";
 import moment from "moment";
 import Linkify from "react-linkify";
-import DiscourseTopic from "../commonComponents/DiscourseTopic";
 import DatasetSchema from "./DatasetSchema";
 import TechnicalMetadata from "./components/TechnicalMetadata";
 import TechnicalDetailsPage from "./components/TechnicalDetailsPage";
+import DiscourseTopic from '../discourse/DiscourseTopic';
 
 import "react-tabs/style/react-tabs.css";
 
@@ -61,6 +61,7 @@ class DatasetDetail extends Component {
       }
     ],
     alert: null,
+    discoursePostCount: 0,
     searchString: "",
     isHovering: false,
     objects: [
@@ -100,25 +101,21 @@ class DatasetDetail extends Component {
   }
 
   getDataset = () => {
-    //need to handle error if no id is found
     this.setState({ isLoading: true });
-    axios
-      .get(baseURL + "/api/v1/datasets/" + this.props.match.params.datasetID)
-      .then(res => {
+    axios.get(baseURL + '/api/v1/datasets/' + this.props.match.params.datasetID)
+      .then((res) => {
         this.setState({
           data: res.data.data[0],
-          discourseTopic: res.data.discourseTopic
+          isLoading: false
         });
         this.getTechnicalMetadata();
         document.title = res.data.data[0].name.trim();
-
-        let counter = !this.state.data.counter
-          ? 1
-          : this.state.data.counter + 1;
+        let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
         this.updateCounter(this.props.match.params.datasetID, counter);
-
+      
         this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
       });
+
   };
 
   getTechnicalMetadata() {
@@ -127,7 +124,7 @@ class DatasetDetail extends Component {
       .get(baseURL + "/api/v1/datasets/" + this.state.data.datasetid)
       .then(res => {
         this.setState({
-          technicalMetadata: res.data.data[0].datasetfields.technicaldetails
+          technicalMetadata: res.data.data[0].datasetfields.technicaldetails || []
         });
       });
   }
@@ -225,6 +222,9 @@ class DatasetDetail extends Component {
     );
     this.setState({ relatedObjects: tempRelatedObjects });
     this.setState({ isLoading: false });
+
+  updateDiscoursePostCount = (count) => {
+    this.setState({ discoursePostCount: count });
   }
 
   render() {
@@ -238,7 +238,8 @@ class DatasetDetail extends Component {
       discourseTopic,
       dataClassOpen,
       objects,
-      relatedObjects
+      relatedObjects,
+      discoursePostCount
     } = this.state;
 
     if (isLoading) {
@@ -257,171 +258,57 @@ class DatasetDetail extends Component {
     }
 
     function Metadata() {
-      const [show, setShow] = useState(false);
-      const target = useRef(null);
+        const [show, setShow] = useState(false);
+        const target = useRef(null);
 
-      var score = "";
+        var rating = "Not Rated";
 
-      if (
-        data.datasetfields.metadataquality &&
-        typeof data.datasetfields.metadataquality.quality_score !== "undefined"
-      ) {
-        if (data.datasetfields.metadataquality.quality_score <= 50)
-          score = "Not rated";
-        else if (data.datasetfields.metadataquality.quality_score <= 70)
-          score = "Bronze";
-        else if (data.datasetfields.metadataquality.quality_score <= 80)
-          score = "Silver";
-        else if (data.datasetfields.metadataquality.quality_score <= 90)
-          score = "Gold";
-        else if (data.datasetfields.metadataquality.quality_score > 90)
-          score = "Platinum";
-      } else if (!data.quality) {
-        score = "Not rated";
-      }
+        if (data.datasetfields.metadataquality && typeof data.datasetfields.metadataquality.quality_rating !== "undefined") {
+            rating = data.datasetfields.metadataquality.quality_rating;
+        }
 
       return (
         <>
           <div className="text-center">
-            {(() => {
-              if (
-                data.datasetfields.metadataquality &&
-                typeof data.datasetfields.metadataquality.quality_score ===
-                  "undefined"
-              )
-                return <></>;
-              else if (data.datasetfields.metadataquality.quality_score <= 50) {
-                return (
-                  <div
-                    ref={target}
-                    onClick={() => setShow(!show)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <div style={{ lineHeight: 1 }}>
-                      <MetadataNotRated className="" />
-                    </div>
-                    <div style={{ lineHeight: 1 }}>
-                      <span className="gray800-14-opacity">Not rated</span>
-                    </div>
-                  </div>
-                );
-              } else if (
-                data.datasetfields.metadataquality.quality_score <= 70
-              ) {
-                return (
-                  <div
-                    ref={target}
-                    onClick={() => setShow(!show)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <div style={{ lineHeight: 1 }}>
-                      <MetadataBronze className="" />
-                    </div>
-                    <div style={{ lineHeight: 1 }}>
-                      <span className="gray800-14-opacity">
-                        Bronze metadata
-                      </span>
-                    </div>
-                  </div>
-                );
-              } else if (
-                data.datasetfields.metadataquality.quality_score <= 80
-              ) {
-                return (
-                  <div
-                    ref={target}
-                    onClick={() => setShow(!show)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <div style={{ lineHeight: 1 }}>
-                      <MetadataSilver className="" />
-                    </div>
-                    <div style={{ lineHeight: 1 }}>
-                      <span className="gray800-14-opacity">
-                        Silver metadata
-                      </span>
-                    </div>
-                  </div>
-                );
-              } else if (
-                data.datasetfields.metadataquality.quality_score <= 90
-              ) {
-                return (
-                  <div
-                    ref={target}
-                    onClick={() => setShow(!show)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <div style={{ lineHeight: 1 }}>
-                      <MetadataGold className="" />
-                    </div>
-                    <div style={{ lineHeight: 1 }}>
-                      <span className="gray800-14-opacity">Gold metadata</span>
-                    </div>
-                  </div>
-                );
-              } else if (
-                data.datasetfields.metadataquality.quality_score > 90
-              ) {
-                return (
-                  <div
-                    ref={target}
-                    onClick={() => setShow(!show)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <div style={{ lineHeight: 1 }}>
-                      <MetadataPlatinum className="" />
-                    </div>
-                    <div style={{ lineHeight: 1 }}>
-                      <span className="gray800-14-opacity">
-                        Platinum metadata
-                      </span>
-                    </div>
-                  </div>
-                );
-              }
-            })()}
+            <div ref={target} onClick={() => setShow(!show)} style={{ cursor: "pointer" }} >
+                <div style={{ lineHeight: 1 }}>
+
+                    {(() => {
+                        if (rating === "Not Rated") return <MetadataNotRated />
+                        else if (rating === "Bronze") return <MetadataBronze />
+                        else if (rating === "Silver") return <MetadataSilver />
+                        else if (rating === "Gold") return <MetadataGold />
+                        else if (rating === "Platinum") return <MetadataPlatinum />
+                    })()}
+                </div>
+                <div style={{ lineHeight: 1 }}>
+                    <span className="gray800-14-opacity">{rating === "Not rated" ? rating : rating+" metadata"}</span>
+                </div>
+            </div>
           </div>
 
           <Overlay target={target.current} show={show} placement="bottom">
             {props => (
               <Tooltip className="metadataOverlay" {...props}>
-                Metadata quality score: {score}
+                Metadata quality score: {Math.trunc(data.datasetfields.metadataquality.quality_score)}
                 <br />
                 <br />
                 The score relates to the amount of information available about
                 the dataset, and not to the quality of the actual datasets.
                 <br />
                 <br />
-                <a
-                  href="https://github.com/HDRUK/datasets#about-the-reports"
-                  target="_blank"
-                  className="white-12"
-                >
+                <a href="https://github.com/HDRUK/datasets#about-the-reports" target="_blank" className="white-12" >
                   Click to read more about how the score is calculated.
                 </a>
                 <br />
                 <br />
-                {Math.trunc(
-                  data.datasetfields.metadataquality.completeness_percent
-                )}{" "}
-                Completeness %
+                {Math.trunc(data.datasetfields.metadataquality.completeness_percent)} Completeness %
                 <br />
-                {Math.trunc(
-                  data.datasetfields.metadataquality
-                    .weighted_completeness_percent
-                )}{" "}
-                Weighted completeness %
+                {Math.trunc(data.datasetfields.metadataquality.weighted_completeness_percent)} Weighted completeness %
                 <br />
-                {Math.trunc(
-                  data.datasetfields.metadataquality.error_percent
-                )}{" "}
-                Error %
+                {Math.trunc(data.datasetfields.metadataquality.error_percent)} Error %
                 <br />
-                {Math.trunc(
-                  data.datasetfields.metadataquality.weighted_error_percent
-                )}{" "}
-                Weighted error %
+                {Math.trunc(data.datasetfields.metadataquality.weighted_error_percent)} Weighted error %
               </Tooltip>
             )}
           </Overlay>
@@ -440,7 +327,7 @@ class DatasetDetail extends Component {
           doUpdateSearchString={this.updateSearchString}
           userState={userState}
         />
-        <Container className="mb-5">
+        <Container className="margin-bottom-48">
           <Row className="mt-4">
             <Col sm={1} />
             <Col sm={10}>
@@ -496,7 +383,6 @@ class DatasetDetail extends Component {
                     </span>
                   </Col>
                   <Col xs={2}>
-                    {/* TODO */}
                     {(() => {
                       if (!userState[0].loggedIn) {
                         return (
@@ -509,7 +395,7 @@ class DatasetDetail extends Component {
                               )
                             }
                           >
-                            Request Access
+                            Request Access 
                           </Button>
                         );
                       } else if (alert) {
@@ -857,19 +743,21 @@ class DatasetDetail extends Component {
 
                           <Row style={{ width: "-webkit-fill-available" }}>
                             <Col sm={12} lg={12} className="ml-3 width-100">
-                              {technicalMetadata.length > 0 ? (
-                                technicalMetadata.map((techMetadata, index) => (
-                                  <TechnicalMetadata
-                                    technicalMetadata={techMetadata}
-                                    index={index}
-                                    doUpdateDataClassOpen={
-                                      this.doUpdateDataClassOpen
-                                    }
-                                  />
-                                ))
-                              ) : (
-                                <NotFound word="technical details" />
-                              )}
+
+                              {technicalMetadata && technicalMetadata.length > 0 ?
+                              technicalMetadata.map((techMetadata, index) => (
+                                <TechnicalMetadata
+                                  technicalMetadata={techMetadata}
+                                  index={index}
+                                  doUpdateDataClassOpen={
+                                    this.doUpdateDataClassOpen
+                                  }
+                                />
+                              ))
+                              :
+                              <NotFound word='technical details' />
+                              }
+
                             </Col>
                           </Row>
                         </>
@@ -890,23 +778,22 @@ class DatasetDetail extends Component {
 
                   <Tab
                     eventKey="Collaboration"
-                    title={`Discussion (${
-                      discourseTopic && discourseTopic.posts
-                        ? discourseTopic.posts.length
-                        : 0
-                    })`}
+                    title={`Discussion (${discoursePostCount})`}
                   >
-                    <DiscourseTopic
-                      topic={discourseTopic}
-                      toolId={data.id}
-                      userState={userState}
+                    <DiscourseTopic 
+                    toolId={data.id} 
+                    topicId={data.discourseTopicId || 0} 
+                    userState={userState} 
+                    onUpdateDiscoursePostCount={this.updateDiscoursePostCount}
                     />
                   </Tab>
                   <Tab
                     eventKey="Projects"
                     title={"Related resources (" + relatedObjects.length + ")"}
                   >
-                    {relatedObjects.length <= 0 ? (
+
+                    {data.relatedObjects && data.relatedObjects.length <= 0 ? (
+
                       <NotFound word="related resources" />
                     ) : (
                       relatedObjects.map(object => (

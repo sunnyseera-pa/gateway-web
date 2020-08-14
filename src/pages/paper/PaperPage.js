@@ -51,7 +51,8 @@ class ToolDetail extends Component {
         activeflag: ""
       }
     ],
-    relatedObjects: []
+    relatedObjects: [],
+    discoursePostCount: 0
   };
 
   constructor(props) {
@@ -87,7 +88,6 @@ class ToolDetail extends Component {
   }
 
   getDataSearchFromDb = () => {
-    //need to handle error if no id is found
     this.setState({ isLoading: true });
     axios
       .get(baseURL + "/api/v1/paper/" + this.props.match.params.paperID)
@@ -121,6 +121,10 @@ class ToolDetail extends Component {
   updateCounter = (id, counter) => {
     axios.post(baseURL + "/api/v1/counter/update", { id, counter });
   };
+
+  updateDiscoursePostCount = (count) => {
+    this.setState({ discoursePostCount: count });
+  }
 
   getAdditionalObjectInfo = async data => {
     let tempObjects = [];
@@ -175,8 +179,10 @@ class ToolDetail extends Component {
       reviewData,
       discourseTopic,
       objects,
-      relatedObjects
+      relatedObjects,
+      discoursePostCount
     } = this.state;
+
 
     if (isLoading) {
       return (
@@ -201,7 +207,7 @@ class ToolDetail extends Component {
           doUpdateSearchString={this.updateSearchString}
           userState={userState}
         />
-        <Container className="mb-5">
+        <Container className="margin-bottom-48">
           {paperAdded ? (
             <Row className="">
               <Col sm={1} lg={1} />
@@ -471,19 +477,9 @@ class ToolDetail extends Component {
                       </Col>
                     </Row>
                   </Tab>
-                  <Tab
-                    eventKey="Collaboration"
-                    title={`Discussion (${
-                      discourseTopic && discourseTopic.posts
-                        ? discourseTopic.posts.length
-                        : 0
-                    })`}
-                  >
-                    <DiscourseTopic
-                      topic={discourseTopic}
-                      toolId={data.id}
-                      userState={userState}
-                    />
+
+                  <Tab eventKey="Collaboration" title={`Discussion (${discoursePostCount})`}>
+                    <DiscourseTopic toolId={data.id} topicId={data.discourseTopicId || 0} userState={userState} onUpdateDiscoursePostCount={this.updateDiscoursePostCount}/>
                   </Tab>
                   <Tab
                     eventKey="Projects"

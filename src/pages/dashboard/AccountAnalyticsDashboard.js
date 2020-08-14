@@ -7,7 +7,7 @@ import { Row, Col, Button, Modal, Tabs, Tab, DropdownButton, Dropdown } from 're
 import DashboardKPI from './DARComponents/DashboardKPI';
 import Loading from '../commonComponents/Loading'
 import { Event, initGA } from '../../tracking';
-
+ 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class AccountAnalyticsDashboard extends React.Component { 
@@ -86,7 +86,7 @@ class AccountAnalyticsDashboard extends React.Component {
         let date = new Date(selectedOption);
         let selectedMonth = date.getMonth(selectedOption) +1 || new Date().getMonth() +1;
         let selectedYear = date.getFullYear(selectedOption) || new Date().getFullYear();
-        axios.get(baseURL + '/api/v1/stats/unmet'+ this.state.key, {
+        axios.get(baseURL + '/api/v1/stats?rank=unmet&type='+ this.state.key, {
             params: {
                 month: selectedMonth,
                 year: selectedYear 
@@ -157,7 +157,7 @@ class AccountAnalyticsDashboard extends React.Component {
 
     getKPIs(selectedDate){
         return new Promise((resolve, reject) => {
-        axios.get(baseURL + '/api/v1/stats/kpis?kpi=searchanddar&selectedDate=' + selectedDate )
+        axios.get(baseURL + '/api/v1/kpis?kpi=searchanddar&selectedDate=' + selectedDate )
         .then((res) => {
             let haveResultsMonth = res.data.data.totalMonth - res.data.data.noResultsMonth;
             let searchesWithResults = (haveResultsMonth / res.data.data.totalMonth) * 100;
@@ -173,7 +173,8 @@ class AccountAnalyticsDashboard extends React.Component {
 
     getUptime(selectedDate){
         return new Promise((resolve, reject) => {
-        axios.get(baseURL + '/api/v1/stats//kpis?kpi=uptime&selectedDate=' + selectedDate )
+        axios.get(baseURL + '/api/v1/kpis?kpi=uptime&selectedDate=' + selectedDate )
+
         .then((res) => {
             this.setState({ uptime: res.data.data});
             resolve();
@@ -185,7 +186,7 @@ class AccountAnalyticsDashboard extends React.Component {
 
     getDatasetsWithTechMetadata(){
         return new Promise((resolve, reject) => {
-        axios.get(baseURL + '/api/v1/stats/kpis?kpi=technicalmetadata')
+        axios.get(baseURL + '/api/v1/kpis?kpi=technicalmetadata')
         .then((res) => {
             let datasetsWithTechMetaData = (res.data.data.datasetsMetadata / res.data.data.totalDatasets) * 100;
             this.setState({ datasetsWithTechMetaData: datasetsWithTechMetaData});

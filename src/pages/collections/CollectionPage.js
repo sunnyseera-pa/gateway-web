@@ -148,7 +148,7 @@ getDataSearchFromDb = () => {
   getPaperData = async (paperID) => {
     this.setState({ isLoading: true });
     await Promise.all([
-    axios.get(baseURL + '/api/v1/paper/' + paperID) 
+    axios.get(baseURL + '/api/v1/papers/' + paperID) 
       .then((res) => {
         this.state.objectData.push(res.data.data[0]) 
         if(res.data.data[0].activeflag === 'active' || res.data.data[0].activeflag === 'review' && res.data.data[0].authors.includes(this.state.userState[0].id)){
@@ -290,17 +290,19 @@ getDataSearchFromDb = () => {
                       var updated = '';
                       var user = '';
                       let showAnswer = false;
-                      data.relatedObjects.map((dat) => {
-                        if(dat.objectId === object.id || parseInt(dat.objectId) === object.id){
-                          reason = dat.reason
-                          updated = dat.updated
-                          user = dat.user
-                          showAnswer = !_.isEmpty(reason)
-                        }
-                      })
-                      return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason} collectionUpdated={updated} collectionUser={user} />
-                    }})
+        
+                    data.relatedObjects.map((dat) => {
+                      if(dat.objectId === object.id || parseInt(dat.objectId) === object.id){
+                        reason = dat.reason
+                        updated = dat.updated
+                        user = dat.user
+                        showAnswer = !_.isEmpty(reason)
+                      }
+                    })
+                    return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason} collectionUpdated={updated} collectionUser={user} />
+                  })
               : ''}
+              
               
               {key === 'Datasets' ?
                   objectData.map((object) => {

@@ -1,11 +1,11 @@
 // /ShowObjects.js
+
 import React, { Component } from "react";
 import ReactMarkdown from "react-markdown";
 import axios from "axios";
 import queryString from "query-string";
 import { Container, Row, Col, Tabs, Tab, Alert, Button } from "react-bootstrap";
 import moment from "moment";
-
 import RelatedObject from "../commonComponents/RelatedObject";
 import NotFound from "../commonComponents/NotFound";
 import SearchBar from "../commonComponents/SearchBar";
@@ -46,7 +46,9 @@ class ProjectDetail extends Component {
         activeflag: ""
       }
     ],
-    relatedObjects: []
+    relatedObjects: [],
+    discoursePostCount: 0
+
   };
 
   constructor(props) {
@@ -78,7 +80,6 @@ class ProjectDetail extends Component {
   }
 
   getDataSearchFromDb = () => {
-    //need to handle error if no id is found
     this.setState({ isLoading: true });
     axios
       .get(baseURL + "/api/v1/projects/" + this.props.match.params.projectID)
@@ -104,8 +105,13 @@ class ProjectDetail extends Component {
       window.location.href = "/search?search=" + this.state.searchString;
   };
 
+
   updateSearchString = searchString => {
     this.setState({ searchString: searchString });
+  };
+
+ updateDiscoursePostCount = (count) => {
+      this.setState({ discoursePostCount: count });
   };
 
   updateCounter = (id, counter) => {
@@ -162,7 +168,8 @@ class ProjectDetail extends Component {
       userState,
       discourseTopic,
       objects,
-      relatedObjects
+      relatedObjects,
+      discoursePostCount
     } = this.state;
 
     if (isLoading) {
@@ -188,7 +195,7 @@ class ProjectDetail extends Component {
           doUpdateSearchString={this.updateSearchString}
           userState={userState}
         />
-        <Container className="mb-5">
+        <Container className="margin-bottom-48">
           {projectAdded ? (
             <Row className="">
               <Col sm={1} lg={1} />
@@ -417,19 +424,9 @@ class ProjectDetail extends Component {
                       </Col>
                     </Row>
                   </Tab>
-                  <Tab
-                    eventKey="Collaboration"
-                    title={`Discussion (${
-                      discourseTopic && discourseTopic.posts
-                        ? discourseTopic.posts.length
-                        : 0
-                    })`}
-                  >
-                    <DiscourseTopic
-                      topic={discourseTopic}
-                      toolId={data.id}
-                      userState={userState}
-                    />
+
+                  <Tab eventKey="Collaboration" title={`Discussion (${discoursePostCount})`}>
+                    <DiscourseTopic toolId={data.id} topicId={data.discourseTopicId || 0} userState={userState} onUpdateDiscoursePostCount={this.updateDiscoursePostCount}/>
                   </Tab>
                   <Tab
                     eventKey="Projects"
