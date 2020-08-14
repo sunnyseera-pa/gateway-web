@@ -80,7 +80,10 @@ class ProjectDetail extends Component {
           this.updateCounter(this.props.match.params.projectID, counter);
       })
       .catch((err) => {
-          window.localStorage.setItem('redirectMsg', err.response.data);  
+          //check if request is for a ProjectID or a different route such as /add
+          if(this.props.match.params.projectID == parseInt(this.props.match.params.projectID, 10)){
+            window.localStorage.setItem('redirectMsg', err.response.data);  
+          }
           this.props.history.push({pathname: "/search?search=", search:""});
       })
   };
