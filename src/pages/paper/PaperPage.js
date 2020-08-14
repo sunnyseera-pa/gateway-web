@@ -90,7 +90,7 @@ class ToolDetail extends Component {
       })
       .catch((err) => {
         //check if request is for a PaperID or a different route such as /add
-        if(this.props.match.params.paperID == parseInt(this.props.match.params.paperID, 10)){
+        if(!isNaN(this.props.match.params.paperID, 10)){
           window.localStorage.setItem('redirectMsg', err.response.data);
         }
         this.props.history.push({pathname: "/search?search=", search:""});
