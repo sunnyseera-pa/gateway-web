@@ -10,6 +10,10 @@ body {
   -webkit-text-size-adjust: 100%; //fix for iOS
 }
 
+.no-scroll {
+  overflow:  hidden !important;
+}
+
 #root {
   margin: 0;
   padding: 0;
@@ -59,7 +63,7 @@ button {
     @extend .button-;
     background-color: $white;
     border: 2px solid $teal;
-    color: $white;
+    color: $indigo;
   }
 
   &tertiary {
