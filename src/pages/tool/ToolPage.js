@@ -94,7 +94,7 @@ class ToolDetail extends Component {
       })
       .catch((err) => {
         //check if request is for a ToolID or a different route such as /add
-        if(!isNaN(this.props.match.params.toolID, 10)){
+        if(!isNaN(this.props.match.params.toolID)){
             window.localStorage.setItem('redirectMsg', err.response.data);
           }
         this.props.history.push({pathname: "/search?search=", search:""});

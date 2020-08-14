@@ -81,7 +81,7 @@ class ProjectDetail extends Component {
       })
       .catch((err) => {
           //check if request is for a ProjectID or a different route such as /add
-          if(!isNaN(this.props.match.params.projectID, 10)){
+          if(!isNaN(this.props.match.params.projectID)){
             window.localStorage.setItem('redirectMsg', err.response.data);  
           }
           this.props.history.push({pathname: "/search?search=", search:""});
