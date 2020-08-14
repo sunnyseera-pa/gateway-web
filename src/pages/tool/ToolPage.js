@@ -574,13 +574,13 @@ class ToolDetail extends Component {
                   <Tab
                     eventKey="Projects"
                     title={
-                      "Related resources (" + data.relatedObjects.length + ")"
+                      "Related resources (" + relatedObjects.length + ")"
                     }
                   >
-                    {data.relatedObjects.length <= 0 ? (
+                    {relatedObjects.length <= 0 ? (
                       <NotFound word="related resources" />
                     ) : (
-                      data.relatedObjects.map(object => (
+                      relatedObjects.map(object => (
                         <RelatedObject
                           relatedObject={object}
                           activeLink={true}
