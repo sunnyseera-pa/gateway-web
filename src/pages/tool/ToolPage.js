@@ -91,10 +91,6 @@ class ToolDetail extends Component {
         document.title = res.data.data[0].name.trim();
         let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
         this.updateCounter(this.props.match.params.toolID, counter);
-      }).catch((error) => {
-        this.setState({
-          isLoading: false
-        })
       })
       .catch((err) => {
         window.localStorage.setItem('redirectMsg', err.response.data);
