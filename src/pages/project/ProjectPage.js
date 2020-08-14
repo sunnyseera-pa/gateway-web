@@ -13,7 +13,8 @@ import Loading from "../commonComponents/Loading";
 import Creators from "../commonComponents/Creators";
 import ProjectTitle from "./components/ProjectTitle";
 import SVGIcon from "../../images/SVGIcon";
-import DiscourseTopic from "../commonComponents/DiscourseTopic";
+import DiscourseTopic from '../discourse/DiscourseTopic';
+
 
 // import ReactGA from 'react-ga';
 import { PageView, initGA } from "../../tracking";

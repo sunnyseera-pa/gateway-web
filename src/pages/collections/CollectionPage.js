@@ -300,6 +300,7 @@ getDataSearchFromDb = () => {
                       }
                     })
                     return <RelatedObject key={object.id} data={object} activeLink={true} showRelationshipAnswer={showAnswer} collectionReason={reason} collectionUpdated={updated} collectionUser={user} />
+                  }
                   })
               : ''}
               

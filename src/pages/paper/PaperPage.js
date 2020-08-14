@@ -9,7 +9,8 @@ import Loading from "../commonComponents/Loading";
 import Reviews from "../commonComponents/Reviews";
 import RelatedObject from "../commonComponents/RelatedObject";
 import SearchBar from "../commonComponents/SearchBar";
-import DiscourseTopic from "../commonComponents/DiscourseTopic";
+import DiscourseTopic from '../discourse/DiscourseTopic';
+
 import "react-tabs/style/react-tabs.css";
 import { baseURL } from "../../configs/url.config";
 // import ReactGA from 'react-ga';

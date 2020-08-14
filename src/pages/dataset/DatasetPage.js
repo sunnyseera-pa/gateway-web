@@ -34,6 +34,7 @@ import TechnicalMetadata from "./components/TechnicalMetadata";
 import TechnicalDetailsPage from "./components/TechnicalDetailsPage";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 
+
 import "react-tabs/style/react-tabs.css";
 
 var baseURL = require("../commonComponents/BaseURL").getURL();
@@ -222,6 +223,7 @@ class DatasetDetail extends Component {
     );
     this.setState({ relatedObjects: tempRelatedObjects });
     this.setState({ isLoading: false });
+  }
 
   updateDiscoursePostCount = (count) => {
     this.setState({ discoursePostCount: count });
