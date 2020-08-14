@@ -163,7 +163,6 @@ const UserMessages = ({ topicContext, closed }) => {
         e.preventDefault();
         let id = '';
 		if (!_.isEmpty(activeTopic)) {
-            debugger;
 			let { dataSetId: dSId } = { ...activeTopic };
 			if (typeof dSId !== 'undefined' && !_.isEmpty(dSId)) {
                 id = dSId;

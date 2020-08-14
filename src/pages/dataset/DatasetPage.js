@@ -110,7 +110,6 @@ class DatasetDetail extends Component {
         this.getTechnicalMetadata();
         document.title = res.data.data[0].name.trim();
         let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
-        debugger;
         this.topicContext = { dataSetId: this.state.data.datasetid, relatedObjectId: this.state.data._id || '', title: this.state.data.name || '', subTitle: this.state.data.datasetfields.publisher || '' };
 
         this.updateCounter(this.props.match.params.datasetID, counter);
