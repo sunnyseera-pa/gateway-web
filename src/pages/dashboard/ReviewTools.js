@@ -80,7 +80,7 @@ class ReviewTools extends React.Component {
                 <Row>
                     <Col xs={1}></Col>
                     <Col xs={10}>
-                        <Row className="accountHeader mt-4">
+                        <Row className="accountHeader">
                             <Col xs={8}>
                                 <Row>
                                     <span className="black-20">Reviews</span>
@@ -110,13 +110,14 @@ class ReviewTools extends React.Component {
                             switch (key) {
                                 case "active":
                                     return (
-                                        <div>
+                                        <div> 
+                                            {activeCount <= 0 ? '' :
                                             <Row className="subHeader mt-3 gray800-14-bold">
                                                 <Col xs={2}>Added</Col>
                                                 <Col xs={5}>Name of reviewed</Col>
                                                 <Col xs={2}>Author of review</Col>
                                                 <Col xs={3}></Col>
-                                            </Row>
+                                            </Row>}
 
                                             {activeCount <= 0 ? 
                                             <Row className="margin-right-15">
@@ -149,12 +150,13 @@ class ReviewTools extends React.Component {
                                 case "pending":
                                     return (
                                         <div>
+                                            {reviewCount <= 0 ? '' :
                                             <Row className="subHeader mt-3 gray800-14-bold">
                                                 <Col xs={2}>Added</Col>
                                                 <Col xs={5}>Name of reviewed</Col>
                                                 <Col xs={2}>Author of review</Col>
                                                 <Col xs={3}></Col>
-                                            </Row>
+                                            </Row>}
 
                                             {reviewCount <= 0 ? 
                                             <Row className="margin-right-15">
@@ -189,16 +191,17 @@ class ReviewTools extends React.Component {
 
                                         </div>
                                     ); 
-                                    //TODO
+
                                     case "rejected":
                                             return (
                                                 <div>
+                                                    {rejectedCount <= 0 ? '' :
                                                     <Row className="subHeader mt-3 gray800-14-bold">
                                                         <Col xs={2}>Added</Col>
                                                         <Col xs={5}>Name of reviewed</Col>
                                                         <Col xs={2}>Author of review</Col>
                                                         <Col xs={3}></Col>
-                                                    </Row>
+                                                    </Row>}
         
                                                     {rejectedCount <= 0 ? 
                                                     <Row className="margin-right-15">
@@ -230,12 +233,13 @@ class ReviewTools extends React.Component {
                                 case "archive":
                                     return (
                                         <div>
+                                            {archiveCount <= 0 ? '' :
                                             <Row className="subHeader mt-3 gray800-14-bold">
                                                 <Col xs={2}>Added</Col>
                                                 <Col xs={5}>Name of reviewed</Col>
                                                 <Col xs={2}>Author of review</Col>
                                                 <Col xs={3}></Col>
-                                            </Row>
+                                            </Row>}
 
                                             {archiveCount <= 0 ? 
                                                 <Row className="margin-right-15">
