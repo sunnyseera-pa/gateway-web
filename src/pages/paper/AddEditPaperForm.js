@@ -173,7 +173,7 @@ const AddEditPaperForm = (props) => {
                                 <p className="gray800-14 margin-bottom-0 pad-bottom-4">Link</p>
                                 <p className="gray700-13 margin-bottom-0">
                                     Where can we find this paper?
-                                </span>
+                                </p>
                                 <Form.Control id="link" name="link" type="text" className={formik.touched.link && formik.errors.link ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.link} onBlur={validatePaper} />
                                 {formik.touched.link && formik.errors.link ? <div className="errorMessages">{formik.errors.link}</div> : null}
                                 {formik.status && formik.status.duplicateLink ? <div className="errorMessages">{formik.status.duplicateLink}</div> : null}
