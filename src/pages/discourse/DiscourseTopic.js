@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import { Button, Modal, Row, Col } from 'react-bootstrap';
 import DiscoursePost from './DiscoursePost';
 import DiscourseAddPost from './DiscourseAddPost';
 import NotFound from '../commonComponents/NotFound';
@@ -218,7 +218,11 @@ class DiscourseTopic extends Component {
               ) }
           </div>
         ) : (
-          <NotFound text='Nothing yet.  Add a comment to start the discussion.' />
+            <Row>
+                <Col xs={12} className="ml-3">
+                    <NotFound text='Nothing yet.  Add a comment to start the discussion.' />
+                </Col>
+            </Row>
         )}
 
           <Modal show={showDeleteModal} onHide={() => {this.showDeleteModal(false)}}>  

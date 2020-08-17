@@ -812,7 +812,6 @@ class DatasetDetail extends Component {
                   >
 
                     {data.relatedObjects && data.relatedObjects.length <= 0 ? (
-
                       <NotFound word="related resources" />
                     ) : (
                       relatedObjects.map(object => (

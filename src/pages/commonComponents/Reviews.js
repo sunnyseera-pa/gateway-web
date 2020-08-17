@@ -52,7 +52,13 @@ class Reviews extends Component {
           </Col>
         </Row>
 
-        {reviewData.length <= 0 ? <NotFound word="reviews" /> : reviewData.map((review,index) => {
+        {reviewData.length <= 0 ? 
+            <Row>
+                <Col xs={12} className="ml-3">
+                    <NotFound word="reviews" /> 
+                </Col>
+            </Row>
+            : reviewData.map((review,index) => {
           var updatedDate = new Date(review.date);;
           var updatedOnDate = updatedDate.getDate() + " " + monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
           return <div key={index}>
