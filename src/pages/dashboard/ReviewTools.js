@@ -31,7 +31,7 @@ class ReviewTools extends React.Component {
 
     componentDidMount() {
         this.doReviewCall();
-    }
+    } 
 
     doReviewCall() {
         if (this.state.userState[0].role === "Admin") {
@@ -50,7 +50,7 @@ class ReviewTools extends React.Component {
 
     render() {
         const { data, key, isLoading, userState } = this.state;
-        
+
         if (isLoading) {
             return (
                 <Row className="mt-4">
@@ -118,7 +118,11 @@ class ReviewTools extends React.Component {
                                                 <Col xs={3}></Col>
                                             </Row>
 
-                                            {activeCount <= 0 ? <NotFound word="reviews" /> : data.map((dat) => {
+                                            {activeCount <= 0 ? 
+                                            <Row className="margin-right-15">
+                                                <NotFound word="reviews" /> 
+                                            </Row>
+                                         : data.map((dat) => {
                                                 
                                                 if (dat.activeflag !== "active") {
                                                     return (<></>)
@@ -132,8 +136,7 @@ class ReviewTools extends React.Component {
 
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
-                                                                    <Dropdown.Item href={'/editpaper/' + dat.id} className="black-14">Edit</Dropdown.Item>
-                                                                    <DeleteButton id={dat.id} />
+                                                                    <ArchiveButton id={dat.reviewID} />
                                                                 </DropdownButton>
                                                             </Col>
                                                         </Row>
@@ -153,7 +156,11 @@ class ReviewTools extends React.Component {
                                                 <Col xs={3}></Col>
                                             </Row>
 
-                                            {reviewCount <= 0 ? <NotFound word="reviews" /> : data.map((dat) => {
+                                            {reviewCount <= 0 ? 
+                                            <Row className="margin-right-15">
+                                                <NotFound word="reviews" /> 
+                                            </Row>
+                                            : data.map((dat) => {
                                                 if (dat.activeflag !== "review") {
                                                     return (<></>)
                                                 }
@@ -161,19 +168,17 @@ class ReviewTools extends React.Component {
                                                     return (
                                                         <Row className="entryBox">
                                                             <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
-                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/paper/' + dat.id} className="black-14">{dat.name}</a></Col>
+                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/paper/' + dat.id} className="black-14">{dat.review}</a></Col>
                                                             <Col sm={12} lg={2} className="pt-2 gray800-14">
-                                                                {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
-                                                                    return <span>{person.firstname} {person.lastname} <br /></span>
-                                                                })}
+                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">{dat.person[0].firstname} {dat.person[0].lastname}</Col>
+
                                                             </Col>
 
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 {userState[0].role === 'Admin' ?
                                                                     <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
-                                                                        <Dropdown.Item href={'/editpaper/' + dat.id} className="black-14">Edit</Dropdown.Item>
-                                                                        <Dropdown.Item href='#' onClick={() => this.approvePaper(dat.id)} className="black-14">Approve</Dropdown.Item>
-                                                                        <RejectButton id={dat.id} />
+                                                                        <ApproveButton id={dat.reviewID} />
+                                                                        <RejectButton id={dat.reviewID} />
                                                                     </DropdownButton>
                                                                     : ""}
                                                             </Col>
@@ -183,7 +188,45 @@ class ReviewTools extends React.Component {
                                             })}
 
                                         </div>
-                                    );
+                                    ); 
+                                    //TODO
+                                    case "rejected":
+                                            return (
+                                                <div>
+                                                    <Row className="subHeader mt-3 gray800-14-bold">
+                                                        <Col xs={2}>Added</Col>
+                                                        <Col xs={5}>Name of reviewed</Col>
+                                                        <Col xs={2}>Author of review</Col>
+                                                        <Col xs={3}></Col>
+                                                    </Row>
+        
+                                                    {rejectedCount <= 0 ? 
+                                                    <Row className="margin-right-15">
+                                                        <NotFound word="reviews" /> 
+                                                    </Row>
+                                                    : data.map((dat) => {
+                                                        if (dat.activeflag !== "rejected") {
+                                                            return (<></>)
+                                                        }
+                                                        else {
+                                                            return (
+                                                                <Row className="entryBox">
+                                                                    <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
+                                                                    <Col sm={12} lg={5} className="pt-2"><a href={'/paper/' + dat.id} className="black-14">{dat.review}</a></Col>
+                                                                    <Col sm={12} lg={2} className="pt-2 gray800-14">{dat.person[0].firstname} {dat.person[0].lastname}</Col>
+
+        
+                                                                    <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
+                                                                        <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
+                                                                            <ApproveButton id={dat.reviewID} />
+                                                                        </DropdownButton>
+                                                                    </Col>
+                                                                </Row>
+                                                            )
+                                                        }
+                                                    })}
+                                                </div>
+                                            );
                                 case "archive":
                                     return (
                                         <div>
@@ -194,7 +237,11 @@ class ReviewTools extends React.Component {
                                                 <Col xs={3}></Col>
                                             </Row>
 
-                                            {archiveCount <= 0 ? <NotFound word="reviews" /> : data.map((dat) => {
+                                            {archiveCount <= 0 ? 
+                                                <Row className="margin-right-15">
+                                                    <NotFound word="reviews" /> 
+                                                </Row>
+                                                : data.map((dat) => {
                                                 if (dat.activeflag !== "archive") {
                                                     return (<></>)
                                                 }
@@ -202,18 +249,13 @@ class ReviewTools extends React.Component {
                                                     return (
                                                         <Row className="entryBox">
                                                             <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
-                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/paper/' + dat.id} className="black-14">{dat.name}</a></Col>
-                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">
-                                                                {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
-                                                                    return <span>{person.firstname} {person.lastname} <br /></span>
-                                                                })}
-                                                            </Col>
+                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/paper/' + dat.id} className="black-14">{dat.review}</a></Col>
+                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">{dat.person[0].firstname} {dat.person[0].lastname}</Col>
 
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
-                                                                    <Dropdown.Item href={'/editpaper/' + dat.id} className="black-14">Edit</Dropdown.Item>
-                                                                    <Dropdown.Item href='#' onClick={() => this.approvePaper(dat.id)} className="black-14">Approve</Dropdown.Item>
-                                                                    <Dropdown.Item href='#' onClick={() => this.rejectPaper(dat.id)} className="black-14">Reject</Dropdown.Item>
+                                                                    <ApproveButton id={dat.reviewID} />
+                                                                    <RejectButton id={dat.reviewID} />
                                                                 </DropdownButton>
                                                             </Col>
                                                         </Row>
@@ -229,65 +271,6 @@ class ReviewTools extends React.Component {
                 </Row>
             </div>
         );
-
-
-
-
-        return (
-            <div>
-                <Row className="mt-3">
-                    <Col>
-                        <span className="black-16 ml-2">Pending approval</span>
-                    </Col>
-                </Row>
-
-                <Row className="mt-1">
-                    <Col lg={12}>
-                        <div className="toolsHeader">
-                            <Row>
-                                <Col xs={4} lg={5} className="pl-4 pt-2 gray800-14-bold">Name</Col>
-                                <Col xs={4} lg={2} className="pl-1 pt-2 gray800-14-bold">Author</Col>
-                                <Col xs={4} lg={5}></Col>
-                            </Row>
-                        </div>
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col>
-                        {data.length <= 0 ? <NotFound word='reviews' /> : data.map((dat) => {
-                            return (<ReviewReview dat={dat} userState={userState[0]} />)
-                        })}
-                    </Col>
-                </Row>
-
-                <Row className="mt-3">
-                    <Col>
-                        <span className="black-16 ml-2">Active</span>
-                    </Col>
-                </Row>
-
-                <Row className="mt-1">
-                    <Col lg={12}>
-                        <div className="toolsHeader">
-                            <Row>
-                                <Col xs={4} lg={5} className="pl-4 pt-2 gray800-14-bold">Name</Col>
-                                <Col xs={4} lg={2} className="pl-1 pt-2 gray800-14-bold">Author</Col>
-                                <Col xs={4} lg={5}></Col>
-                            </Row>
-                        </div>
-                    </Col>
-                </Row>
-
-                <Row>
-                    {/* <Col>
-                        {allReviews.length <= 0 ? <NotFound word='reviews' /> : allReviews.map((dat) => {
-                            return (<ReviewReviewActive dat={dat} userState={userState[0]} />)
-                        })}
-                    </Col> */}
-                </Row>
-            </div>
-        );
     }
 }
 
@@ -297,12 +280,12 @@ function RejectButton(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const rejectObject = () => {
-        axios.patch(baseURL + '/api/v1/tools/'+props.id, {
+        axios.put(baseURL + '/api/v1/tools/review/approve', {  
             id: props.id,
             activeflag: "rejected"
         })
             .then((res) => {
-                window.location.href = '/account?tab=papers&paperRejected=true';
+                window.location.href = '/account?tab=reviews&reviewRejected=true';
             });
     }
 
@@ -312,9 +295,9 @@ function RejectButton(props) {
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Reject this paper?</Modal.Title>
+                    <Modal.Title>Reject this review?</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Let the person who added this know know why their submission is being rejected, especially if there’s anything in particular they should correct before re-submitting.</Modal.Body>
+                <Modal.Body>Let the person who added this know know why their review is being rejected.</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>Cancel</Button>
                     <Button variant="primary" onClick={rejectObject}>Reject and send message</Button>
@@ -324,18 +307,51 @@ function RejectButton(props) {
     );
 }
 
-function DeleteButton(props) {
+function ApproveButton(props) {
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    const deleteObject = () => {
-        axios.patch(baseURL + '/api/v1/tools/'+props.id, {
+    const rejectObject = () => {
+        axios.put(baseURL + '/api/v1/tools/review/approve', {  
+            id: props.id,
+            activeflag: "active"
+        })
+            .then((res) => {
+                window.location.href = '/account?tab=reviews&reviewApproved=true';
+            });
+    }
+
+    return (
+        <>
+            <Dropdown.Item href="#" onClick={handleShow} className="black-14">Approve</Dropdown.Item>
+
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Approve this review?</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Let the person who added this know their review is being approved.</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>Cancel</Button>
+                    <Button variant="primary" onClick={rejectObject}>Approve</Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    );
+}
+
+function ArchiveButton(props) {
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    const rejectObject = () => {
+        axios.put(baseURL + '/api/v1/tools/review/approve', {  
             id: props.id,
             activeflag: "archive"
         })
             .then((res) => {
-                window.location.href = '/account?tab=papers&paperDeleted=true';
+                window.location.href = '/account?tab=reviews&reviewArchived=true';
             });
     }
 
@@ -345,20 +361,17 @@ function DeleteButton(props) {
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Archive this paper?</Modal.Title>
+                    <Modal.Title>Archive this review?</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>This paper will be archived from the directory.</Modal.Body>
+                <Modal.Body>This review will be archived.</Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>No, nevermind</Button>
-                    <Button variant="primary" onClick={deleteObject}>Yes, archive</Button>
+                    <Button variant="secondary" onClick={handleClose}>Cancel</Button>
+                    <Button variant="primary" onClick={rejectObject}>Archive</Button>
                 </Modal.Footer>
             </Modal>
         </>
     );
 }
-
-
-
 
 const ReviewReview = (props) => {
     const [open, setOpen] = useState(false);

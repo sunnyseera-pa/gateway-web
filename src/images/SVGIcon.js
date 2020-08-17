@@ -18,6 +18,8 @@ const getViewBox = name => {
       return "0 0 25 24";
     case "stock":
       return "0 0 12 9";
+    case "info":
+      return "0 0 16 16"
 
     default: 
       return "0 0 18 18";

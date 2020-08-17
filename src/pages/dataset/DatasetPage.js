@@ -19,7 +19,8 @@ import Loading from "../commonComponents/Loading";
 import RelatedObject from "../commonComponents/RelatedObject";
 import SearchBar from "../commonComponents/SearchBar";
 import SVGIcon from "../../images/SVGIcon";
-import { ReactComponent as InfoFill } from "../../images/infofill.svg";
+import { ReactComponent as InfoFillSVG } from "../../images/infofill.svg";
+import { ReactComponent as InfoSVG } from "../../images/info.svg";
 import { ReactComponent as MetadataBronze } from "../../images/bronze.svg";
 import { ReactComponent as MetadataSilver } from "../../images/silver.svg";
 import { ReactComponent as MetadataGold } from "../../images/gold.svg";
@@ -33,9 +34,12 @@ import DatasetSchema from "./DatasetSchema";
 import TechnicalMetadata from "./components/TechnicalMetadata";
 import TechnicalDetailsPage from "./components/TechnicalDetailsPage";
 import DiscourseTopic from '../discourse/DiscourseTopic';
+import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
+
 
 
 import "react-tabs/style/react-tabs.css";
+import UserMessages from "../commonComponents/userMessages/UserMessages";
 
 var baseURL = require("../commonComponents/BaseURL").getURL();
 var cmsURL = require("../commonComponents/BaseURL").getCMSURL();
@@ -44,7 +48,7 @@ class DatasetDetail extends Component {
   // initialize our state
   state = {
     id: "",
-    data: [],
+    data: {},
     technicalMetadata: [],
     dataClassOpen: -1,
     relatedObjects: [],
@@ -72,8 +76,11 @@ class DatasetDetail extends Component {
         activeflag: ""
       }
     ],
-    relatedObjects: []
+    relatedObjects: [],
+    showDrawer: false
   };
+
+  topicContext = {};
 
   constructor(props) {
     super(props);
@@ -83,8 +90,8 @@ class DatasetDetail extends Component {
   }
 
   // on loading of tool detail page
-  componentDidMount() {
-    this.getDataset();
+  async componentDidMount() {
+    await this.getDataset();
     this.checkAlerts();
     initGA("UA-166025838-1");
     PageView();
@@ -101,9 +108,9 @@ class DatasetDetail extends Component {
     }
   }
 
-  getDataset = () => {
+  getDataset = async () => {
     this.setState({ isLoading: true });
-    axios.get(baseURL + '/api/v1/datasets/' + this.props.match.params.datasetID)
+    await axios.get(baseURL + '/api/v1/datasets/' + this.props.match.params.datasetID)
       .then((res) => {
         this.setState({
           data: res.data.data[0],
@@ -112,6 +119,8 @@ class DatasetDetail extends Component {
         this.getTechnicalMetadata();
         document.title = res.data.data[0].name.trim();
         let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
+        this.topicContext = { dataSetId: this.state.data.datasetid, relatedObjectId: this.state.data._id || '', title: this.state.data.name || '', subTitle: this.state.data.datasetfields.publisher || '' };
+
         this.updateCounter(this.props.match.params.datasetID, counter);
       
         this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
@@ -229,6 +238,13 @@ class DatasetDetail extends Component {
     this.setState({ discoursePostCount: count });
   }
 
+    toggleDrawer = () => {
+        this.setState( ( prevState ) => {
+            return { showDrawer: !prevState.showDrawer };
+        });
+    }
+
+
   render() {
     const {
       searchString,
@@ -243,6 +259,9 @@ class DatasetDetail extends Component {
       relatedObjects,
       discoursePostCount
     } = this.state;
+
+
+
 
     if (isLoading) {
       return (
@@ -378,18 +397,18 @@ class DatasetDetail extends Component {
                 </Row>
 
                 <Row className="mt-2">
-                  <Col xs={10}>
+                  <Col xs={8}>
                     <span className="gray800-14">
                       {data.counter === undefined ? 1 : data.counter + 1}
                       {data.counter === undefined ? " view" : " views"}
                     </span>
                   </Col>
-                  <Col xs={2}>
+                  <Col xs={4}>
                     {(() => {
                       if (!userState[0].loggedIn) {
                         return (
                           <Button
-                            className="greyCancelButton dark-14 mr-2 btn btn-medium"
+                            className="greyCancelButton dark-14 mr-2 btn btn-tertiary float-right"
                             onClick={() =>
                               this.showLoginModal(
                                 data.name,
@@ -402,26 +421,33 @@ class DatasetDetail extends Component {
                         );
                       } else if (alert) {
                         return (
-                          <Button
-                            className="greyCancelButton dark-14 mr-2 btn btn-medium"
-                            disabled
-                          >
-                            Request Access
-                          </Button>
+                            <Fragment>
+                                <Button
+                                    className="greyCancelButton dark-14 mr-2 btn btn-tertiary"
+                                    disabled
+                                >
+                                    Request Access
+                                </Button>
+                                <Button className="btn btn-primary addButton pointer" onClick={() => this.toggleDrawer()}>Make Enquiry</Button>
+                            </Fragment>
                         );
                       } else {
                         return (
-                          <Link
-                            className="greyCancelButton dark-14 mr-2 btn btn-medium"
-                            to={{
-                              pathname: `/data-access-request/dataset/${data.datasetid}`
-                            }}
-                            onClick={() =>
-                              Event("Buttons", "Click", "Request Access")
-                            }
-                          >
-                            Request Access
-                          </Link>
+                            <Fragment>
+                                <Link
+                                    className="greyCancelButton dark-14 mr-2 btn btn-tertiary"
+                                    to={{
+                                    pathname: `/data-access-request/dataset/${data.datasetid}`
+                                    }}
+                                    onClick={() =>
+                                    Event("Buttons", "Click", "Request Access")
+                                    }
+                                >
+                                    Request Access
+                                </Link>
+                                <Button className="btn btn-primary addButton pointer" onClick={() => this.toggleDrawer()}>Make Enquiry</Button>
+
+                            </Fragment>
                         );
                       }
                     })()}
@@ -695,7 +721,7 @@ class DatasetDetail extends Component {
                           </Row>
                         </div>
                       </Col>
-                    </Row>
+                    </Row> 
                   </Tab>
                   <Tab eventKey="TechDetails" title={`Technical details`}>
                     <Row className="width-100" style={{ margin: "0%" }}>
@@ -704,27 +730,19 @@ class DatasetDetail extends Component {
                           <Col
                             sm={12}
                             lg={12}
-                            className="subHeader mt-3 gray800-14-bold"
-                          >
+                            className="subHeader mt-3 gray800-14-bold pad-bottom-24 pad-top-24"
+                          > 
                             <span className="black-16-semibold mr-3">
                               Data Classes
                             </span>
                             <span
                               onMouseEnter={this.handleMouseHover}
                               onMouseLeave={this.handleMouseHover}
-                            >
+                            > 
                               {this.state.isHovering ? (
-                                <SVGIcon
-                                  name="infofill"
-                                  fill={"#475da7"}
-                                  className="svg-16"
-                                />
+                                <InfoFillSVG />
                               ) : (
-                                <SVGIcon
-                                  name="info"
-                                  fill={"#475da7"}
-                                  className="svg-16"
-                                />
+                                <InfoSVG />
                               )}
                             </span>
 
@@ -744,8 +762,7 @@ class DatasetDetail extends Component {
                           </Col>
 
                           <Row style={{ width: "-webkit-fill-available" }}>
-                            <Col sm={12} lg={12} className="ml-3 width-100">
-
+                            <Col sm={12} lg={12} className={technicalMetadata && technicalMetadata.length > 0 ? "margin-left-15 width-100" : "width-100"}>
                               {technicalMetadata && technicalMetadata.length > 0 ?
                               technicalMetadata.map((techMetadata, index) => (
                                 <TechnicalMetadata
@@ -813,6 +830,13 @@ class DatasetDetail extends Component {
             <Col sm={1} />
           </Row>
         </Container>
+        <SideDrawer
+            open={this.state.showDrawer}
+            closed={this.toggleDrawer}>
+            <UserMessages 
+                closed={this.toggleDrawer} 
+                topicContext={this.topicContext} />
+        </SideDrawer>
       </div>
     );
   }
