@@ -53,10 +53,19 @@
                 cursor: pointer !important;
             }
         }
+
+        
     }
 }
 
 .nav {
+    &-meta {
+        display: flex;
+        flex-flow: row nowrap;
+        width: 100%;
+        justify-content: space-between;
+    }
+
     &-desc {
         width: 100%;
         max-width: 295px;
