@@ -259,7 +259,7 @@ class SearchPage extends React.Component {
         if (this.state.paperIndex > 0) searchURL += '&paperIndex=' + encodeURIComponent(this.state.paperIndex);
         if (this.state.personIndex > 0) searchURL += '&personIndex=' + encodeURIComponent(this.state.personIndex);
 
-        if (!skipHistory) {
+        if (!skipHistory) { 
             if (this.state.key) {
                 this.props.history.push(`${window.location.pathname}?search=${this.state.searchString}&tab=${this.state.key}` + searchURL);
             }

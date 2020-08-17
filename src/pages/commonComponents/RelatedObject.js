@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import moment from 'moment';
-import { Row, Col, Button } from 'react-bootstrap';
+import { Row, Col, Button, Alert } from 'react-bootstrap';
 import Loading from './Loading'
 import { ReactComponent as PersonPlaceholderSvg } from '../../images/person-placeholder.svg';
 import SVGIcon from "../../images/SVGIcon"
@@ -69,7 +69,7 @@ class RelatedObject extends React.Component {
                 });
             })
     };
-
+ 
     removeButton = () => {
         this.props.doRemoveObject(this.state.data.id, this.state.data.type) 
     }
@@ -106,6 +106,14 @@ class RelatedObject extends React.Component {
                 <Col>
                     <div className={rectangleClassName} onClick={() => !activeLink && !this.props.showRelationshipQuestion && !this.props.showRelationshipAnswer && this.props.doAddToTempRelatedObjects(data.type === "dataset" ? data.datasetid : data.id, data.type) } >
                        
+                       {data.activeflag === 'review' ? 
+                            <Row >
+                                <Col sm={12} lg={12}>
+                                    <Alert variant="warning" className="ml-4 mr-4">This resource is under review. It won't be visible to others until it is approved.</Alert> 
+                                </Col>
+                            </Row>
+                       : ''} 
+
                         {(() => {
                             if (data.type === 'tool') {
                                 return(
@@ -121,7 +129,7 @@ class RelatedObject extends React.Component {
                                                         return <><span className="reviewTitleGap gray800-14">·</span><a className="gray800-14" href={'/person/' + person.id}>{person.firstname} {person.lastname}</a></>
                                                     }
                                                     else {
-                                                        return <span className="gray800-14">, {person.firstname} {person.lastname}</span>
+                                                        return <span className="gray800-14">, {person.firstname} {person.lastname} </span>
                                                     }
                                                 }
                                                 else {

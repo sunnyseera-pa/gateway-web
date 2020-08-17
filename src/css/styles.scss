@@ -171,13 +171,12 @@ button {
   background-color: $white;
 }
 
-.accountHeader {
+.accountHeader { 
   box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
   background-color: $white;
   width: 100%;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  padding-left: 20px;
+  padding: 24px;
+  margin-top: 32px !important;
 }
 
 .subHeader {
@@ -210,6 +209,7 @@ button {
 .dataAccessTabs {
   align-items: center;
   justify-content: center;
+  height: 47px;
 }
 
 a.nav-item.nav-link {
@@ -2380,6 +2380,14 @@ button a {
     padding-top: 8px !important;
   }
 
+  .pad-bottom-4 {
+    padding-bottom: 4px !important;
+  }
+
+  .pad-bottom-8 {
+    padding-bottom: 8px !important;
+  }
+
   .pad-bottom-16 {
     padding-bottom: 16px !important;
   }
@@ -2387,6 +2395,11 @@ button a {
   .pad-bottom-24 {
     padding-bottom: 24px !important;
   }
+
+  .margin-top-32 {
+    margin-top: 32px !important;
+  }
+
 
   .margin-top-24 {
     margin-top: 24px !important;
@@ -2410,6 +2423,14 @@ button a {
 
   .margin-right-15 {
     margin-right: 15px !important;
+  }
+
+  .margin-bottom-0 {
+    margin-bottom: 0px !important;
+  }
+
+  .margin-bottom-16 {
+    margin-bottom: 16px !important;
   }
 
   .margin-bottom-48 {

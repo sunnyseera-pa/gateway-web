@@ -3,7 +3,7 @@ import axios from 'axios';
 import moment from 'moment';
  
 import { Row, Col, Button, Modal, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
-
+ 
 import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading'
 
@@ -80,7 +80,7 @@ class AccountCollections extends React.Component {
                 <Row>
                     <Col xs={1}></Col>
                     <Col xs={10}>
-                        <Row className="accountHeader mt-4">
+                        <Row className="accountHeader">
                             <Col xs={8}>
                                 <Row>
                                     <span className="black-20">Collections</span>
@@ -111,14 +111,19 @@ class AccountCollections extends React.Component {
                                 case "active":
                                     return (
                                         <div>
+                                            {activeCount <= 0 ? '' :
                                             <Row className="subHeader mt-3 gray800-14-bold">
                                                 <Col xs={2}>Updated</Col>
                                                 <Col xs={5}>Name</Col>
                                                 <Col xs={2}>Author</Col>
                                                 <Col xs={3}></Col>
-                                            </Row>
+                                            </Row>}
 
-                                            {activeCount <= 0 ? <NotFound word="collections" /> : data.map((dat) => {
+                                            {activeCount <= 0 ? 
+                                            <Row className="margin-right-15">
+                                                <NotFound word="collections" /> 
+                                            </Row>
+                                             : data.map((dat) => {
                                                 if (dat.activeflag !== "active") { 
                                                     return (<></>)
                                                 }
@@ -150,14 +155,19 @@ class AccountCollections extends React.Component {
                                 case "archive":
                                     return (
                                         <div>
+                                            {archiveCount <= 0 ? '' :
                                             <Row className="subHeader mt-3 gray800-14-bold">
                                                 <Col xs={2}>Updated</Col>
                                                 <Col xs={5}>Name</Col>
                                                 <Col xs={2}>Author</Col>
                                                 <Col xs={3}></Col> 
-                                            </Row>
+                                            </Row>}
 
-                                            {archiveCount <= 0 ? <NotFound word="collections" /> : data.map((dat) => {
+                                            {archiveCount <= 0 ? 
+                                            <Row className="margin-right-15">
+                                                <NotFound word="collections" /> 
+                                            </Row>
+                                             : data.map((dat) => {
                                                 if (dat.activeflag !== "archive") {
                                                     return (<></>)
                                                 }

@@ -50,7 +50,7 @@ const AddEditPaperForm = (props) => {
                 .required('Year cannot be empty'),
             authors: Yup.string().required('This cannot be empty')
         }),
-
+ 
         onSubmit: values => {
             values.relatedObjects = props.relatedObjects
             values.toolCreator = props.userState[0];
@@ -143,13 +143,13 @@ const AddEditPaperForm = (props) => {
 
     return (
         <div>
-            <Row className="mt-4">
+            <Row className="margin-top-32">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                     <div className="rectangle">
                         <Row>
                             <Col sm={10} lg={10}>
-                             <p className="black-20">{props.isEdit ? 'Edit your paper' : 'Add a new paper'}</p>
+                             <p className="black-20 margin-bottom-0 pad-bottom-8">{props.isEdit ? 'Edit your paper' : 'Add a new paper'}</p>
                             </Col>
                             <Col sm={2} lg={2} className="text-right">
                                 <span className="badge-paper"> 
@@ -158,7 +158,7 @@ const AddEditPaperForm = (props) => {
                                 </span>
                             </Col>
                         </Row>
-                        <p className="gray800-14">Papers should be articles published in a journal. Add a project if you want</p>
+                        <p className="gray800-14 margin-bottom-0">Papers should be articles published in a journal. Add a project if you want</p>
                     </div>
                 </Col>
                 <Col sm={1} lg={10} />
@@ -170,9 +170,8 @@ const AddEditPaperForm = (props) => {
                     <Form onSubmit={formik.handleSubmit} onBlur={formik.handleBlur} autocomplete='off'>
                         <div className="rectangle">
                             <Form.Group>
-                                <span className="gray800-14">Link</span>
-                                <br />
-                                <span className="gray700-13">
+                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">Link</p>
+                                <p className="gray700-13 margin-bottom-0">
                                     Where can we find this paper?
                                 </span>
                                 <Form.Control id="link" name="link" type="text" className={formik.touched.link && formik.errors.link ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.link} onBlur={validatePaper} />
@@ -187,11 +186,10 @@ const AddEditPaperForm = (props) => {
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="gray800-14">Authors on the Gateway</span>
-                                <br />
-                                <span className="gray700-13">
+                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">Authors on the Gateway</p>
+                                <p className="gray700-13 margin-bottom-0">
                                     Add any authors or collaborators who have an account on this site
-                                </span>
+                                </p>
                                 <Typeahead
                                     id="authors"
                                     labelKey={authors => `${authors.name}`}
@@ -229,9 +227,8 @@ const AddEditPaperForm = (props) => {
                             
                             <Form.Group>
                                 <div style={{ display: 'inline-block' }}>
-                                    <span className="gray800-14">Abstract</span>
-                                    <br />
-                                    <span className="gray700-13">Provide a brief summary of the paper</span>
+                                    <p className="gray800-14 margin-bottom-0 pad-bottom-4">Abstract</p>
+                                    <p className="gray700-13 margin-bottom-0">Provide a brief summary of the paper</p>
                                 </div>
                                 <div style={{ display: 'inline-block', float: 'right' }}>
                                     <br />
@@ -242,11 +239,10 @@ const AddEditPaperForm = (props) => {
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="gray800-14">Keywords (optional)</span>
-                                <br />
-                                <span className="gray700-13">
+                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">Keywords (optional)</p>
+                                <p className="gray700-13 margin-bottom-0">
                                 Technological paradigms or other keywords. Eg. Rule-based, clustering, supervised machine learning
-                                </span>
+                                </p>
                                 <Typeahead
                                     id="tags.features"
                                     labelKey="features"
@@ -266,11 +262,10 @@ const AddEditPaperForm = (props) => {
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="gray800-14">Domain (optional)</span>
-                                <br />
-                                <span className="gray700-13">
+                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">Domain (optional)</p>
+                                <p className="gray700-13 margin-bottom-0">
                                     E.g. Biogenomics, Nutrition, Blockchain
-                                </span>
+                                </p>
                                 <Typeahead
                                     id="tags.topics"
                                     labelKey="topics"
@@ -308,13 +303,13 @@ const AddEditPaperForm = (props) => {
                             <Row>
                                 <Col sm={1} lg={1} />
                                 <Col sm={10} lg={10}>
-                                    
+                                    {/* {console.log('paper form data: ' + JSON.stringify(props.paperData))} */}
                                     <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} paperData={props.paperData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                 </Col>
                                 <Col sm={1} lg={10} />
                             </Row>
                         </div>
-
+ 
                         <Row className="mt-3">
                             <Col xs={5} lg={9}>
                                 <a style={{ cursor: 'pointer' }} href={'/account?tab=papers'}>
