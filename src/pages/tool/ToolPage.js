@@ -380,7 +380,13 @@ class ToolDetail extends Component {
                                     <DiscourseTopic toolId={data.id} topicId={data.discourseTopicId || 0} userState={userState} onUpdateDiscoursePostCount={this.updateDiscoursePostCount}/>
                                 </Tab>
                                 <Tab eventKey="Projects" title={'Related resources (' + data.relatedObjects.length + ')'}>
-                                    {data.relatedObjects.length <= 0 ? <NotFound word="related resources" /> : data.relatedObjects.map(object => <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />)}
+                                    {data.relatedObjects.length <= 0 ? 
+                                    <Row>
+                                        <Col xs={12} className="ml-3">
+                                            <NotFound word="related resources" />
+                                        </Col>
+                                    </Row>
+                                    : data.relatedObjects.map(object => <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />)}
                                 </Tab>
                             </Tabs>
                         </div>

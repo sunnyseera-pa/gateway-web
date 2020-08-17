@@ -763,7 +763,11 @@ class DatasetDetail extends Component {
                     }
                   >
                     {data.relatedObjects && data.relatedObjects.length <= 0 ? (
-                      <NotFound word="related resources" />
+                        <Row>
+                            <Col xs={12} className="ml-3">
+                                <NotFound word="related resources" />
+                            </Col>
+                        </Row>
                     ) : (
                       data.relatedObjects.map(object => (
                         <RelatedObject
