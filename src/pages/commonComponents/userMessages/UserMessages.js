@@ -163,6 +163,10 @@ const UserMessages = ({ topicContext, closed }) => {
         e.preventDefault();
         let id = '';
 		if (!_.isEmpty(activeTopic)) {
+            // remove scroll if in body
+            if(document.body.classList.contains('no-scroll'))
+                document.body.classList.remove('no-scroll');
+
 			let { dataSetId: dSId } = { ...activeTopic };
 			if (typeof dSId !== 'undefined' && !_.isEmpty(dSId)) {
                 id = dSId;
