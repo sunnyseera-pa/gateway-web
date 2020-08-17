@@ -1,4 +1,4 @@
-// /ShowObjects.js 
+// /ShowObjects.js
 import React, { Component, useState, useRef, Fragment } from "react";
 import ReactMarkdown from "react-markdown";
 import { Link } from "react-router-dom";
@@ -37,6 +37,7 @@ import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 
 
+
 import "react-tabs/style/react-tabs.css";
 import UserMessages from "../commonComponents/userMessages/UserMessages";
 
@@ -68,6 +69,14 @@ class DatasetDetail extends Component {
     discoursePostCount: 0,
     searchString: "",
     isHovering: false,
+    objects: [
+      {
+        id: "",
+        authors: [],
+        activeflag: ""
+      }
+    ],
+    relatedObjects: [],
     showDrawer: false
   };
 
@@ -113,11 +122,10 @@ class DatasetDetail extends Component {
         this.topicContext = { dataSetId: this.state.data.datasetid, relatedObjectId: this.state.data._id || '', title: this.state.data.name || '', subTitle: this.state.data.datasetfields.publisher || '' };
 
         this.updateCounter(this.props.match.params.datasetID, counter);
-      }).catch((error) => {
-        this.setState({
-          isLoading: false
-        })
-      })
+      
+        this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+      });
+
   };
 
   getTechnicalMetadata() {
@@ -128,7 +136,6 @@ class DatasetDetail extends Component {
         this.setState({
           technicalMetadata: res.data.data[0].datasetfields.technicaldetails || []
         });
-        this.setState({ isLoading: false });
       });
   }
 
@@ -187,6 +194,46 @@ class DatasetDetail extends Component {
     };
   }
 
+  getAdditionalObjectInfo = async data => {
+    let tempObjects = [];
+    const promises = data.map(async (object, index) => {
+      await axios
+        .get(baseURL + "/api/v1/relatedobject/" + object.objectId)
+        .then(res => {
+          tempObjects.push({
+            id: object.objectId,
+            authors: res.data.data[0].authors,
+            activeflag: res.data.data[0].activeflag
+          });
+        });
+    });
+    await Promise.all(promises);
+    this.setState({ objects: tempObjects });
+
+    this.getRelatedObjects();
+  };
+
+  getRelatedObjects() {
+    let tempRelatedObjects = [];
+    this.state.data.relatedObjects.map(object =>
+      this.state.objects.map(item => {
+        if (object.objectId === item.id && item.activeflag === "active") {
+          tempRelatedObjects.push(object);
+        }
+
+        if (
+          object.objectId === item.id &&
+          item.activeflag === "review" &&
+          item.authors.includes(this.state.userState[0].id)
+        ) {
+          tempRelatedObjects.push(object);
+        }
+      })
+    );
+    this.setState({ relatedObjects: tempRelatedObjects });
+    this.setState({ isLoading: false });
+  }
+
   updateDiscoursePostCount = (count) => {
     this.setState({ discoursePostCount: count });
   }
@@ -206,8 +253,11 @@ class DatasetDetail extends Component {
       isLoading,
       userState,
       alert = null,
-      discoursePostCount,
+      discourseTopic,
       dataClassOpen,
+      objects,
+      relatedObjects,
+      discoursePostCount
     } = this.state;
 
 
@@ -758,18 +808,13 @@ class DatasetDetail extends Component {
                   </Tab>
                   <Tab
                     eventKey="Projects"
-                    title={
-                      "Related resources (" + data.relatedObjects.length + ")"
-                    }
+                    title={"Related resources (" + relatedObjects.length + ")"}
                   >
+
                     {data.relatedObjects && data.relatedObjects.length <= 0 ? (
-                        <Row>
-                            <Col xs={12} className="ml-3">
-                                <NotFound word="related resources" />
-                            </Col>
-                        </Row>
+                      <NotFound word="related resources" />
                     ) : (
-                      data.relatedObjects.map(object => (
+                      relatedObjects.map(object => (
                         <RelatedObject
                           relatedObject={object}
                           activeLink={true}

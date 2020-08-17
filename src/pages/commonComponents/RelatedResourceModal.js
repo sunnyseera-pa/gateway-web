@@ -31,7 +31,7 @@ class RelatedResourcesModal extends React.Component {
        }
 
     }
-
+ 
     constructor(props) {
         super(props);
         this.state.userState = props.userState;
@@ -233,7 +233,7 @@ class RelatedResourcesModal extends React.Component {
                                     }
                                 })
                                 : ''}
- 
+  
                             {key === 'Tools' ?
                             !this.props.toolData ? '' :
                                 this.props.toolData.map((tool) => {

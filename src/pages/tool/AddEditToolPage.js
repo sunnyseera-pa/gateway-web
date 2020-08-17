@@ -190,7 +190,12 @@ class AddEditToolPage extends React.Component {
             if (type === 'paper' && page > 0) searchURL += '&paperIndex=' + page;
             if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
         
-        axios.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL )
+        axios.get(baseURL + '/api/v1/search?search='+ this.state.searchString + searchURL, {
+            params: {
+                form: true,
+                userID: this.state.userState[0].id 
+            }
+        })  
             .then((res) => {
                 this.setState({
                     datasetData: res.data.datasetResults || [],

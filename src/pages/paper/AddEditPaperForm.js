@@ -308,13 +308,13 @@ const AddEditPaperForm = (props) => {
                             <Row>
                                 <Col sm={1} lg={1} />
                                 <Col sm={10} lg={10}>
-                                    
+                                    {/* {console.log('paper form data: ' + JSON.stringify(props.paperData))} */}
                                     <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} paperData={props.paperData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                 </Col>
                                 <Col sm={1} lg={10} />
                             </Row>
                         </div>
-
+ 
                         <Row className="mt-3">
                             <Col xs={5} lg={9}>
                                 <a style={{ cursor: 'pointer' }} href={'/account?tab=papers'}>
