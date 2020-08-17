@@ -49,7 +49,7 @@ class ToolDetail extends Component {
     discoursePostCount: 0,
     searchString: ''
   };
-
+ 
   constructor(props) {
     super(props);
     this.state.userState = props.userState;

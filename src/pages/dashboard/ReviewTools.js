@@ -80,7 +80,7 @@ class ReviewTools extends React.Component {
                 <Row>
                     <Col xs={1}></Col>
                     <Col xs={10}>
-                        <Row className="accountHeader mt-4">
+                        <Row className="accountHeader">
                             <Col xs={8}>
                                 <Row>
                                     <span className="black-20">Reviews</span>
@@ -323,7 +323,7 @@ function RejectButton(props) {
         </>
     );
 }
-
+ 
 function DeleteButton(props) {
     const [show, setShow] = useState(false);
 

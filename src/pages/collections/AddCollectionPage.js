@@ -46,7 +46,7 @@ class AddCollectionPage extends React.Component {
         relatedObjects: [],
         didDelete: false
     };
-
+ 
     async componentDidMount() {
         initGA('UA-166025838-1');
         await Promise.all([
@@ -216,16 +216,16 @@ const AddCollectionForm = (props) => {
 
     return (
         <div>
-            <Row className="margin-top-24">
+            <Row className="margin-top-32">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                     <div className="rectangle">
                         <Row>
                             <Col sm={12} lg={12}>
-                             <p className="black-20">Create a collection</p>
+                             <p className="black-20 margin-bottom-0 pad-bottom-8">Create a collection</p>
                             </Col>
                         </Row>
-                        <p className="gray800-14">Collections help collate varying resource types into one discovery space</p>
+                        <p className="gray800-14 margin-bottom-0">Collections help collate varying resource types into one discovery space</p>
                     </div>
                 </Col>
                 <Col sm={1} lg={10} />
@@ -243,21 +243,19 @@ const AddCollectionForm = (props) => {
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="gray800-14">Description</span>
-                                <br />
-                                <span className="gray700-13">
+                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">Description</p>
+                                <p className="gray700-13 margin-bottom-0">
                                     Up to 5,000 characters
-                                </span>
+                                </p>
                                 <Form.Control as="textarea" id="description" name="description" type="text" className={formik.touched.description && formik.errors.description ? "emptyFormInput addFormInput descriptionInput" : "addFormInput descriptionInput"} onChange={formik.handleChange} value={formik.values.description} onBlur={formik.handleBlur} />
                                 {formik.touched.description && formik.errors.description ? <div className="errorMessages">{formik.errors.description}</div> : null}
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="gray800-14">Collection collaborators</span>
-                                <br />
-                                <span className="gray700-13">
+                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">Collection collaborators</p>
+                                <p className="gray700-13 margin-bottom-0">
                                     Anyone added will be able to add and remove resources to this collection.
-                                </span>
+                                </p>
                                 <Typeahead
                                     id="authors"
                                     labelKey={authors => `${authors.name}`}
@@ -278,11 +276,10 @@ const AddCollectionForm = (props) => {
                             <Form.Group>
                                 <Row>
                                     <Col sm={7} lg={9}>
-                                        <span className="gray800-14">Image URL (optional)</span>
-                                        <br />
-                                <span className="gray700-13">
+                                        <p className="gray800-14 margin-bottom-0 pad-bottom-4">Image URL (optional)</p>
+                                <p className="gray700-13 margin-bottom-0">
                                     You must have permission from the owner of the image before you add it to the gateway.
-                                </span>
+                                </p>
                                     </Col>
                                     <Col sm={5} lg={3} className="pl-4">
                                      <span className="purple-13" onMouseEnter={() => setIsShown(true)} onMouseLeave={() => setIsShown(false)}>  

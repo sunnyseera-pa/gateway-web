@@ -125,13 +125,13 @@ const AddEditProjectForm = (props) => {
     return (
 
         <div>
-            <Row className="mt-4">
+            <Row className="margin-top-32">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                     <div className="rectangle">
                         <Row>
                             <Col sm={10} lg={10}>
-                             <p className="black-20">{props.isEdit ? 'Edit your project' : 'Add a new research project'}</p>
+                             <p className="black-20 margin-bottom-0 pad-bottom-8">{props.isEdit ? 'Edit your project' : 'Add a new research project'}</p>
                             </Col>
                             <Col sm={2} lg={2} className="text-right">
                                 <span className="badge-project"> 
@@ -140,7 +140,7 @@ const AddEditProjectForm = (props) => {
                                 </span>
                             </Col>
                         </Row>
-                        <p className="gray800-14">Projects help others understand the context in which a tool or resource was used</p>
+                        <p className="gray800-14 margin-bottom-0">Projects help others understand the context in which a tool or resource was used</p>
                     </div>
                 </Col>
                 <Col sm={1} lg={10} />
@@ -158,17 +158,15 @@ const AddEditProjectForm = (props) => {
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="gray800-14">Link</span>
-                                <br />
-                                <span className="gray700-13">Where can we find this research project?</span>
+                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">Link</p>
+                                <p className="gray700-13 margin-bottom-0">Where can we find this research project?</p>
                                 <Form.Control id="link" name="link" type="text" className={formik.touched.link && formik.errors.link ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.link} onBlur={formik.handleBlur} />
                                 {formik.touched.link && formik.errors.link ? <div className="errorMessages">{formik.errors.link}</div> : null}
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="gray800-14">Type</span>
-                                <br />
-                                <span className="gray700-13">Select from existing or enter a new one.</span>
+                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">Type</p>
+                                <p className="gray700-13 margin-bottom-0">Select from existing or enter a new one.</p>
                                 <Typeahead
                                     id="categories.category"
                                     labelKey="category"
@@ -190,9 +188,8 @@ const AddEditProjectForm = (props) => {
 
                             <Form.Group>
                                 <div style={{ display: 'inline-block' }}>
-                                    <span className="gray800-14">Description</span>
-                                    <br />
-                                    <span className="gray700-13">Include the tool purpose and objective.</span>
+                                    <p className="gray800-14 margin-bottom-0 pad-bottom-4">Description</p>
+                                    <p className="gray700-13 margin-bottom-0">Include the tool purpose and objective.</p>
                                 </div>
                                 <div style={{ display: 'inline-block', float: 'right' }}>
                                     <br />
@@ -203,11 +200,10 @@ const AddEditProjectForm = (props) => {
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="gray800-14">Collaborators</span>
-                                <br />
-                                <span className="gray700-13">
+                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">Collaborators</p>
+                                <p className="gray700-13 margin-bottom-0">
                                     Their name will appear on the project page, and will be able to make edits.
-                                </span>
+                                </p>
                                 <Typeahead
                                     id="authors"
                                     labelKey={authors => `${authors.name}`}
@@ -226,11 +222,10 @@ const AddEditProjectForm = (props) => {
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="gray800-14">Keywords (optional)</span>
-                                <br />
-                                <span className="gray700-13">
+                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">Keywords (optional)</p>
+                                <p className="gray700-13 margin-bottom-0">
                                     Technological paradigms or other keywords. Eg. Rule-based, clustering, supervised machine learning
-                                </span>
+                                </p>
                                 <Typeahead
                                     id="tags.features"
                                     labelKey="features"
@@ -251,11 +246,10 @@ const AddEditProjectForm = (props) => {
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="gray800-14">Domain (optional)</span>
-                                <br />
-                                <span className="gray700-13">
+                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">Domain (optional)</p>
+                                <p className="gray700-13 margin-bottom-0">
                                     E.g. Biogenomics, Nutrition, Blockchain
-                                </span>
+                                </p>
                                 <Typeahead
                                     id="tags.topics"
                                     labelKey="topics"
@@ -271,7 +265,7 @@ const AddEditProjectForm = (props) => {
                                         })
                                         formik.values.tags.topics = tempSelected;
                                     }}
-                                />
+                                /> 
                             </Form.Group>                            
                         </div>
 
