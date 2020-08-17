@@ -9,7 +9,7 @@ class NotFound extends React.Component {
 
     render() {
         return (
-            <Row className="entryBox noMargin margin-top-16">
+            <Row className="entryBox margin-top-16">
                 <Col>
                     <div className="gray800-14" style={{ textAlign: 'center' }} data-testid="notFound">
                         {this.props.text ? this.props.text : `No ${this.props.word || 'results'} found`}
