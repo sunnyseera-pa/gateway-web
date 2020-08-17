@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Row, Col, Container, Alert } from 'react-bootstrap';
 import SearchBar from '../commonComponents/SearchBar';
 import axios from 'axios';
+import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
+import UserMessages from "../commonComponents/userMessages/UserMessages";
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -15,12 +17,14 @@ class Unsubscribe extends Component {
         name: null
         }],
         searchString: null,
-        msg: ''
+        msg: '',
+        showDrawer: false
     };
 
     constructor(props) {
         super(props)
         this.state.userState = props.userState;
+        this.searchBar = React.createRef();
     }
 
     componentDidMount() {
@@ -54,12 +58,22 @@ class Unsubscribe extends Component {
         this.setState({ searchString: searchString });
     }
 
+    toggleDrawer = () => {
+        this.setState( ( prevState ) => {
+            debugger;
+            if(prevState.showDrawer === true) {
+                this.searchBar.current.getNumberOfUnreadMessages();
+            }
+            return { showDrawer: !prevState.showDrawer };
+        });
+    }
+
     render() {
-        const { searchString, userState, error } = this.state;
+        const { searchString, userState, error, showDrawer } = this.state;
 
         return(
         <div>
-            <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
+            <SearchBar ref={this.searchBar} searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} doToggleDrawer={this.toggleDrawer} userState={userState} />
             <div className="rectangle mt-1">
                 <Container>
                     <Row >
@@ -70,6 +84,14 @@ class Unsubscribe extends Component {
                         <Col sm={1} lg={10} />
                     </Row>
                 </Container>
+                <SideDrawer
+                    open={showDrawer}
+                    closed={this.toggleDrawer}>
+                    <UserMessages 
+                        closed={this.toggleDrawer}
+                        drawerIsOpen={this.state.showDrawer} 
+                    />
+                </SideDrawer>
             </div>
         </div>
         )};

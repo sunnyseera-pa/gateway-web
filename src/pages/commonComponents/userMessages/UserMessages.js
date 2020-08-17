@@ -11,7 +11,7 @@ import MessageItem from './components/MessageItem';
 import MessageFooter from './components/MessageFooter';
 import './UserMessages.scss';
 
-const UserMessages = ({ topicContext, closed }) => {
+const UserMessages = ({ topicContext, closed, drawerIsOpen = false }) => {
 	const defaultMessage =
 		'Use messages to clarify questions with the data custodian before starting your application to request access to the data. Provide a brief description of your project and what datasets you are interested in.';
 
@@ -25,6 +25,8 @@ const UserMessages = ({ topicContext, closed }) => {
 	const [messageDescription, setMessageDescription] = useState('');
 
 	const [topics, setTopics] = useState([]);
+
+	const [drawerState, setDrawer] = useState(false);
 
 	const [activeTopic, setActiveTopic] = useState({});
 
@@ -45,26 +47,34 @@ const UserMessages = ({ topicContext, closed }) => {
 				} = res;
 				// 1. clone topics from t
 				let topicsArr = [...topics];
-				// 2. check if existing relatedObjectId already in topic arr
+				// 2. check if  dataset id has been passed
+				if(_.isEmpty(dataSetId) && !_.isEmpty(topicsArr)) {
+					const initialTopic = topicsArr[0];
+					topicsArr[0].active = true;
+					await getTopicById(initialTopic._id);
+					setTopics(topicsArr);
+					return;
+				}
+				// 3. check if existing relatedObjectId already in topic arr
 				const existingTopicIdx = checkTopicExists(topicsArr, relatedObjectId);
-				// 3. if topics exists
+				// 4. if topics exists
 				if (existingTopicIdx > -1) {
-					// 3a. get topic in arr
+					// 4a. get topic in arr
 					const activeTopic = topicsArr[existingTopicIdx];
-					// 3b. get full topic including messages set active topic
+					// 4b. get full topic including messages set active topic
 					await getTopicById(activeTopic._id);
-					// 3c. set active state on topics arr
+					// 4c. set active state on topics arr
 					topicsArr[existingTopicIdx].active = true;
 				} else {
-					// 4. if new topic make new object
+					// 5. if new topic make new object
 					const newTopic = setNewTopic();
-					// 5. only push new topic in if not empty
+					// 6. only push new topic in if not empty
 					if (!_.isEmpty(newTopic)) {
 						topicsArr.unshift(newTopic);
 						setActiveTopic(newTopic);
 					}
 				}
-				// 6 set topics state
+				// 7. set topics state
 				setTopics(topicsArr);
 			})
 			.catch((error) => {
@@ -252,10 +262,13 @@ const UserMessages = ({ topicContext, closed }) => {
 	};
 
 	useEffect(() => {
-        // 1. GET Topics for current user
-        if(typeof topicContext !== 'undefined')
-		    getUserTopics();
-	}, []);
+		// 1. GET Topics for current user
+		setDrawer(drawerIsOpen);
+
+		if (drawerIsOpen)
+			getUserTopics();
+		
+	}, [drawerIsOpen]);
 
 	return (
 		<Fragment>
@@ -304,7 +317,7 @@ const UserMessages = ({ topicContext, closed }) => {
 
 export default UserMessages;
 
-UserMessages.propTypes = {
-	closed: PropTypes.bool,
-	topicContext: undefined
-};
+// UserMessages.propTypes = {
+// 	closed: PropTypes.bool,
+// 	topicContext: undefined
+// };

@@ -14,6 +14,8 @@ import YourAccount from './YourAccount';
 import DataAccessRequests from './DataAccessRequests';
 import 'react-web-tabs/dist/react-web-tabs.css';
 import SVGIcon from "../../images/SVGIcon";
+import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
+import UserMessages from "../commonComponents/userMessages/UserMessages";
 
 class Account extends Component {
 
@@ -33,12 +35,14 @@ class Account extends Component {
         isApproved: false,
         isRejected: false,
         isProjectDeleted: false,
-        isProjectApproved: false
+        isProjectApproved: false,
+        showDrawer: false
     };
 
     constructor(props) {
         super(props);
         this.state.userState = props.userState;
+        this.searchBar = React.createRef();
     }
 
     componentWillMount() {
@@ -97,15 +101,25 @@ class Account extends Component {
         this.props.history.push(window.location.pathname + '?tab=' + tabId);
     }
 
+    toggleDrawer = () => {
+        this.setState( ( prevState ) => {
+            debugger;
+            if(prevState.showDrawer === true) {
+                this.searchBar.current.getNumberOfUnreadMessages();
+            }
+            return { showDrawer: !prevState.showDrawer };
+        });
+    }
+
     render() {
-        const { searchString, data, userState, isDeleted, isApproved, isRejected, isProjectApproved, isProjectRejected, isReviewApproved, isReviewRejected, tabId } = this.state;
+        const { searchString, data, userState, isDeleted, isApproved, isRejected, isProjectApproved, isProjectRejected, isReviewApproved, isReviewRejected, tabId, showDrawer } = this.state;
         if (typeof data.datasetids === 'undefined') {
             data.datasetids = [];
         }
 
         return (
             <div>
-                <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
+                <SearchBar ref={this.searchBar} searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} doToggleDrawer={this.toggleDrawer} userState={userState} />
                 <Tab.Container defaultActiveKey={tabId} onSelect={this.handleChange}>
                     <Row>
                         <Col xs={2}>
@@ -285,6 +299,14 @@ class Account extends Component {
                         </Col>
                     </Row>
                 </Tab.Container>
+                <SideDrawer
+                    open={showDrawer}
+                    closed={this.toggleDrawer}>
+                    <UserMessages 
+                        closed={this.toggleDrawer}
+                        drawerIsOpen={this.state.showDrawer} 
+                    />
+                </SideDrawer>
             </div>
         );
     }

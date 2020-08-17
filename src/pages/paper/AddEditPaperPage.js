@@ -6,6 +6,8 @@ import { Container } from 'react-bootstrap';
 import SearchBar from '../commonComponents/SearchBar';
 import Loading from '../commonComponents/Loading';
 import AddEditPaperForm from './AddEditPaperForm';
+import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
+import UserMessages from "../commonComponents/userMessages/UserMessages";
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
@@ -17,6 +19,7 @@ class AddEditPaperPage extends React.Component {
         super(props)
         this.state.userState = props.userState;
         if (props.isEdit ) this.state.isEdit = props.isEdit;
+        this.searchBar = React.createRef();
     }
 
     // initialize our state
@@ -37,7 +40,8 @@ class AddEditPaperPage extends React.Component {
         relatedObjectIds: [],
         relatedObjects: [],
         didDelete: false,
-        isEdit: false
+        isEdit: false,
+        showDrawer: false
     };
 
     async componentDidMount() {
@@ -183,8 +187,18 @@ class AddEditPaperPage extends React.Component {
         this.setState({didDelete: false});
     }
 
+    toggleDrawer = () => {
+        this.setState( ( prevState ) => {
+            debugger;
+            if(prevState.showDrawer === true) {
+                this.searchBar.current.getNumberOfUnreadMessages();
+            }
+            return { showDrawer: !prevState.showDrawer };
+        });
+    }
+
     render() {
-        const { data, isEdit, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, paperData, personData, summary, relatedObjects, didDelete } = this.state;
+        const { data, isEdit, combinedTopic, combinedFeatures, combinedLanguages, combinedCategories, combinedLicenses, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, paperData, personData, summary, relatedObjects, didDelete, showDrawer } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -194,10 +208,18 @@ class AddEditPaperPage extends React.Component {
 
         return (
             <div>
-                <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
+                <SearchBar ref={this.searchBar} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} doToggleDrawer={this.toggleDrawer} userState={userState} />
                 <Container>
                     <AddEditPaperForm data={data} isEdit={isEdit} combinedTopic={combinedTopic} combinedFeatures={combinedFeatures} combinedLanguages={combinedLanguages} combinedCategories={combinedCategories} combinedLicenses={combinedLicenses} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} paperData={paperData} personData={personData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
                 </Container>
+                <SideDrawer
+                    open={showDrawer}
+                    closed={this.toggleDrawer}>
+                    <UserMessages 
+                        closed={this.toggleDrawer}
+                        drawerIsOpen={this.state.showDrawer} 
+                    />
+                </SideDrawer>
             </div>
         );
     }

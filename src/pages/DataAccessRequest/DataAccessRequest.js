@@ -19,8 +19,11 @@ import DarHelper from '../../utils/DarHelper.util';
 import { formSchema } from './formSchema';
 import {classSchema} from './classSchema';
 import { baseURL} from '../../configs/url.config';
+import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
+import UserMessages from "../commonComponents/userMessages/UserMessages";
 import 'react-tabs/style/react-tabs.css';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
+
 
 class DataAccessRequest extends Component {
 
@@ -29,6 +32,7 @@ class DataAccessRequest extends Component {
         this.onFormSubmit = this.onFormSubmit.bind(this);
         this.onFormUpdate = this.onFormUpdate.bind(this);
         this.onQuestionFocus = this.onQuestionFocus.bind(this);
+        this.searchBar = React.createRef();
 
         this.state = {
             _id: '',
@@ -45,7 +49,8 @@ class DataAccessRequest extends Component {
             lookup: ['fullname'],
             isLoading: true,
             formSubmitted: false,
-            dataset: {}
+            dataset: {},
+            showDrawer: false
         }
     }
 
@@ -362,9 +367,19 @@ class DataAccessRequest extends Component {
             }
         }
     }
+
+    toggleDrawer = () => {
+        this.setState( ( prevState ) => {
+            debugger;
+            if(prevState.showDrawer === true) {
+                this.searchBar.current.getNumberOfUnreadMessages();
+            }
+            return { showDrawer: !prevState.showDrawer };
+        });
+    }
     
     render() {
-        const { searchString, activePanelId, totalQuestions, isLoading, validationErrors, activeGuidance, dataset} = this.state;
+        const { searchString, activePanelId, totalQuestions, isLoading, validationErrors, activeGuidance, dataset, showDrawer} = this.state;
         const { userState, location} = this.props;
 
         Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
@@ -381,7 +396,7 @@ class DataAccessRequest extends Component {
         
         return (
             <div>
-                <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
+                <SearchBar ref={this.searchBar} searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} doToggleDrawer={this.toggleDrawer} userState={userState} />
                 <Row className="banner">
                     <Col sm={12} md={8} className="banner-left">
                             <span className="white-20-semibold mr-5">Data Access Request</span>
@@ -488,15 +503,24 @@ class DataAccessRequest extends Component {
                 </div>
 
                 <div className="action-bar">
-                        <Col md={6} className="mt-4">
-                            <span className="gray800-14">{totalQuestions}</span>
-                        </Col>
-                        <Col md={6} className="mt-3 text-right">
-                            <Button variant="white"  className="techDetailButton ml-3" onClick={this.onFormSubmit}>
-                                Submit application
-                            </Button>
-                        </Col>
-                    </div> 
+                    <Col md={6} className="mt-4">
+                        <span className="gray800-14">{totalQuestions}</span>
+                    </Col>
+                    <Col md={6} className="mt-3 text-right">
+                        <Button variant="white"  className="techDetailButton ml-3" onClick={this.onFormSubmit}>
+                            Submit application
+                        </Button>
+                    </Col>
+                </div>
+
+                <SideDrawer
+                    open={showDrawer}
+                    closed={this.toggleDrawer}>
+                    <UserMessages 
+                        closed={this.toggleDrawer}
+                        drawerIsOpen={this.state.showDrawer} 
+                    />
+                </SideDrawer>
             </div>
         ) 
         

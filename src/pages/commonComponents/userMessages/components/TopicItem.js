@@ -3,7 +3,6 @@ import moment from 'moment';
 import NotificationBadge from 'react-notification-badge';
 import '../UserMessages.scss';
 
-
 const TopicItem = (props) => { 
 
     const { onTopicClick, topic:  {  createdDate, title, subTitle, _id, unreadMessages = 0, active = false } } = props;
@@ -12,7 +11,6 @@ const TopicItem = (props) => {
         e.preventDefault();
         onTopicClick(id);
     }
-
     const setCreatedDate = () => {
         if(typeof createdDate !== 'undefined') {
             let reg = /^.*new.*$/gmi;
@@ -21,7 +19,6 @@ const TopicItem = (props) => {
             return '';
         }
     }
-
     return (
         <div className={`sideDrawer-nav-item ${active ? 'selected-item' : ''}`} onClick={(e) => onItemClick(e, _id)}>
             <div className="nav-meta">

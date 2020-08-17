@@ -55,6 +55,7 @@ class SearchBar extends React.Component {
         dropdownOpen: false,
         clearMessages: false,
         count: 0,
+        messageCount: 0,
         prevScrollpos: window.pageYOffset,
         visible: true,
         showToast: true,
@@ -72,6 +73,7 @@ class SearchBar extends React.Component {
 
         if (this.state.userState[0].loggedIn) {
             this.getNumberOfUnreadNotifications();
+            this.getNumberOfUnreadMessages();
             this.doMessagesCall();
         }
         else {
@@ -137,6 +139,13 @@ class SearchBar extends React.Component {
         axios.get(baseURL + apiToCall)
             .then((res) => {
                 this.setState({ count: res.data.countUnreadMessages });
+            });
+    }
+
+    getNumberOfUnreadMessages() {
+        axios.get(`${baseURL}/api/v1/messages/unread/count`)
+            .then((res) => {
+                this.setState({ messageCount: res.data.count || 0 });
             });
     }
 
@@ -254,6 +263,11 @@ class SearchBar extends React.Component {
                                 {(() => {
                                     if (userState[0].loggedIn === true) {
                                         return (
+                                        <Fragment>
+                                            <div className="navBarNotificationSpacing" onClick={this.props.doToggleDrawer}>
+                                            <NotificationBadge count={this.state.messageCount} style={{ backgroundColor: '#29235c' }} />
+                                                <SVGIcon name="chat" fill={'#475da7'} width={20} height={20} id="notificationsBell" className={'pointer'} />
+                                            </div>
                                             <div className="navBarNotificationSpacing">
                                                 <Dropdown>
                                                     <Dropdown.Toggle as={CustomToggle} ref={node => this.node = node}>
@@ -333,6 +347,7 @@ class SearchBar extends React.Component {
                                             </Dropdown>
                                             {this.checkRedirectToast()}
                                         </div>
+                                        </Fragment>               
                                     )
                                 }
                                 else {
