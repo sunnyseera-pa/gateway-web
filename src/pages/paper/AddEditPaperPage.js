@@ -118,9 +118,9 @@ class AddEditPaperPage extends React.Component {
     }
 
     doModalSearch = (e, type, page) => {
-
+ 
         if (e.key === 'Enter' || e === 'click') {
-
+ 
             var searchURL = '';
 
             if (type === 'dataset' && page > 0) searchURL += '&datasetIndex=' + page;
@@ -129,8 +129,14 @@ class AddEditPaperPage extends React.Component {
             if (type === 'paper' && page > 0) searchURL += '&paperIndex=' + page;
             if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
         
-        axios.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL )
+        axios.get(baseURL + '/api/v1/search?search='+ this.state.searchString + searchURL, {
+            params: {
+                form: true,
+                userID: this.state.userState[0].id 
+            }
+        })  
             .then((res) => {
+                // console.log('res: ' + JSON.stringify(res))
                 this.setState({
                     datasetData: res.data.datasetResults || [],
                     toolData: res.data.toolResults || [],
@@ -183,6 +189,8 @@ class AddEditPaperPage extends React.Component {
         if (isLoading) {
             return <Container><Loading /></Container>;
         }
+
+        // console.log('PAGE DATA: ' + JSON.stringify(paperData))
 
         return (
             <div>

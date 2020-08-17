@@ -6,7 +6,7 @@ import {Container, Row, Col, Tabs, Tab} from 'react-bootstrap';
 
 import SearchBar from '../commonComponents/SearchBar';
 import DataSet from '../commonComponents/DataSet';
-
+ 
 import Tool from '../commonComponents/Tool';
 import NotFound from '../commonComponents/NotFound';
 import ReviewsTitle from '../commonComponents/ReviewTitle';
@@ -88,10 +88,10 @@ class PersonDetail extends Component {
     
     if (data.tools.length > 0) {
         data.tools.forEach(object => {
-          if (object.type === 'tool' && object.activeflag === 'active') {
+          if (object.type === 'tool' && object.activeflag === 'active' || object.type === 'tool' && object.activeflag === 'review' && object.authors.includes(userState[0].id) ) {
             tools.push(object);
           } 
-          else if (object.type === 'project' && object.activeflag === 'active') {
+          else if (object.type === 'project' && object.activeflag === 'active' || object.type === 'project' && object.activeflag === 'review' && object.authors.includes(userState[0].id)) {
             projects.push(object)
           }
         });

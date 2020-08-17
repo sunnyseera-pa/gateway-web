@@ -1,7 +1,8 @@
 import React from "react";
 import { Col, Row } from "react-bootstrap";
 import SVGIcon from "../../../images/SVGIcon";
-import { ReactComponent as CloseButtonSvg } from '../../../images/close.svg';  
+import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg';  
+
 import { ReactComponent as TableSvg } from "../../../images/table.svg";
 import TechnicalMetadataVariables from "./TechnicalMetadataVariables";
 
@@ -56,7 +57,7 @@ class TechnicalDetailsPage extends React.Component {
 
                 <Col sm={1} lg={1}>
                   <span onClick={() => this.props.doUpdateDataClassOpen(-1)}>
-                    <CloseButtonSvg width="19px" height="19px"/>
+                    <CloseButtonSvg width="19px" height="19px" fill="#475DA7"/>
                   </span>
                 </Col>
               </Row>

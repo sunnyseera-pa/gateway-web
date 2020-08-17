@@ -1,4 +1,4 @@
-// /ShowObjects.js 
+// /ShowObjects.js
 import React, { Component, useState, useRef, Fragment } from "react";
 import ReactMarkdown from "react-markdown";
 import { Link } from "react-router-dom";
@@ -34,8 +34,12 @@ import DatasetSchema from "./DatasetSchema";
 import TechnicalMetadata from "./components/TechnicalMetadata";
 import TechnicalDetailsPage from "./components/TechnicalDetailsPage";
 import DiscourseTopic from '../discourse/DiscourseTopic';
+import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
+
+
 
 import "react-tabs/style/react-tabs.css";
+import UserMessages from "../commonComponents/userMessages/UserMessages";
 
 var baseURL = require("../commonComponents/BaseURL").getURL();
 var cmsURL = require("../commonComponents/BaseURL").getCMSURL();
@@ -44,7 +48,7 @@ class DatasetDetail extends Component {
   // initialize our state
   state = {
     id: "",
-    data: [],
+    data: {},
     technicalMetadata: [],
     dataClassOpen: -1,
     relatedObjects: [],
@@ -64,8 +68,19 @@ class DatasetDetail extends Component {
     alert: null,
     discoursePostCount: 0,
     searchString: "",
-    isHovering: false
+    isHovering: false,
+    objects: [
+      {
+        id: "",
+        authors: [],
+        activeflag: ""
+      }
+    ],
+    relatedObjects: [],
+    showDrawer: false
   };
+
+  topicContext = {};
 
   constructor(props) {
     super(props);
@@ -75,8 +90,8 @@ class DatasetDetail extends Component {
   }
 
   // on loading of tool detail page
-  componentDidMount() {
-    this.getDataset();
+  async componentDidMount() {
+    await this.getDataset();
     this.checkAlerts();
     initGA("UA-166025838-1");
     PageView();
@@ -93,9 +108,9 @@ class DatasetDetail extends Component {
     }
   }
 
-  getDataset = () => {
+  getDataset = async () => {
     this.setState({ isLoading: true });
-    axios.get(baseURL + '/api/v1/datasets/' + this.props.match.params.datasetID)
+    await axios.get(baseURL + '/api/v1/datasets/' + this.props.match.params.datasetID)
       .then((res) => {
         this.setState({
           data: res.data.data[0],
@@ -104,12 +119,13 @@ class DatasetDetail extends Component {
         this.getTechnicalMetadata();
         document.title = res.data.data[0].name.trim();
         let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
+        this.topicContext = { dataSetId: this.state.data.datasetid, relatedObjectId: this.state.data._id || '', title: this.state.data.name || '', subTitle: this.state.data.datasetfields.publisher || '' };
+
         this.updateCounter(this.props.match.params.datasetID, counter);
-      }).catch((error) => {
-        this.setState({
-          isLoading: false
-        })
-      })
+      
+        this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+      });
+
   };
 
   getTechnicalMetadata() {
@@ -120,7 +136,6 @@ class DatasetDetail extends Component {
         this.setState({
           technicalMetadata: res.data.data[0].datasetfields.technicaldetails || []
         });
-        this.setState({ isLoading: false });
       });
   }
 
@@ -179,9 +194,56 @@ class DatasetDetail extends Component {
     };
   }
 
+  getAdditionalObjectInfo = async data => {
+    let tempObjects = [];
+    const promises = data.map(async (object, index) => {
+      await axios
+        .get(baseURL + "/api/v1/relatedobject/" + object.objectId)
+        .then(res => {
+          tempObjects.push({
+            id: object.objectId,
+            authors: res.data.data[0].authors,
+            activeflag: res.data.data[0].activeflag
+          });
+        });
+    });
+    await Promise.all(promises);
+    this.setState({ objects: tempObjects });
+
+    this.getRelatedObjects();
+  };
+
+  getRelatedObjects() {
+    let tempRelatedObjects = [];
+    this.state.data.relatedObjects.map(object =>
+      this.state.objects.map(item => {
+        if (object.objectId === item.id && item.activeflag === "active") {
+          tempRelatedObjects.push(object);
+        }
+
+        if (
+          object.objectId === item.id &&
+          item.activeflag === "review" &&
+          item.authors.includes(this.state.userState[0].id)
+        ) {
+          tempRelatedObjects.push(object);
+        }
+      })
+    );
+    this.setState({ relatedObjects: tempRelatedObjects });
+    this.setState({ isLoading: false });
+  }
+
   updateDiscoursePostCount = (count) => {
     this.setState({ discoursePostCount: count });
   }
+
+    toggleDrawer = () => {
+        this.setState( ( prevState ) => {
+            return { showDrawer: !prevState.showDrawer };
+        });
+    }
+
 
   render() {
     const {
@@ -191,9 +253,15 @@ class DatasetDetail extends Component {
       isLoading,
       userState,
       alert = null,
-      discoursePostCount,
-      dataClassOpen
+      discourseTopic,
+      dataClassOpen,
+      objects,
+      relatedObjects,
+      discoursePostCount
     } = this.state;
+
+
+
 
     if (isLoading) {
       return (
@@ -329,18 +397,18 @@ class DatasetDetail extends Component {
                 </Row>
 
                 <Row className="mt-2">
-                  <Col xs={10}>
+                  <Col xs={8}>
                     <span className="gray800-14">
                       {data.counter === undefined ? 1 : data.counter + 1}
                       {data.counter === undefined ? " view" : " views"}
                     </span>
                   </Col>
-                  <Col xs={2}>
+                  <Col xs={4}>
                     {(() => {
                       if (!userState[0].loggedIn) {
                         return (
                           <Button
-                            className="greyCancelButton dark-14 mr-2 btn btn-medium"
+                            className="greyCancelButton dark-14 mr-2 btn btn-tertiary float-right"
                             onClick={() =>
                               this.showLoginModal(
                                 data.name,
@@ -353,26 +421,33 @@ class DatasetDetail extends Component {
                         );
                       } else if (alert) {
                         return (
-                          <Button
-                            className="greyCancelButton dark-14 mr-2 btn btn-medium"
-                            disabled
-                          >
-                            Request Access
-                          </Button>
+                            <Fragment>
+                                <Button
+                                    className="greyCancelButton dark-14 mr-2 btn btn-tertiary"
+                                    disabled
+                                >
+                                    Request Access
+                                </Button>
+                                <Button className="btn btn-primary addButton pointer" onClick={() => this.toggleDrawer()}>Make Enquiry</Button>
+                            </Fragment>
                         );
                       } else {
                         return (
-                          <Link
-                            className="greyCancelButton dark-14 mr-2 btn btn-medium"
-                            to={{
-                              pathname: `/data-access-request/dataset/${data.datasetid}`
-                            }}
-                            onClick={() =>
-                              Event("Buttons", "Click", "Request Access")
-                            }
-                          >
-                            Request Access
-                          </Link>
+                            <Fragment>
+                                <Link
+                                    className="greyCancelButton dark-14 mr-2 btn btn-tertiary"
+                                    to={{
+                                    pathname: `/data-access-request/dataset/${data.datasetid}`
+                                    }}
+                                    onClick={() =>
+                                    Event("Buttons", "Click", "Request Access")
+                                    }
+                                >
+                                    Request Access
+                                </Link>
+                                <Button className="btn btn-primary addButton pointer" onClick={() => this.toggleDrawer()}>Make Enquiry</Button>
+
+                            </Fragment>
                         );
                       }
                     })()}
@@ -733,14 +808,13 @@ class DatasetDetail extends Component {
                   </Tab>
                   <Tab
                     eventKey="Projects"
-                    title={
-                      "Related resources (" + data.relatedObjects.length + ")"
-                    }
+                    title={"Related resources (" + relatedObjects.length + ")"}
                   >
+
                     {data.relatedObjects && data.relatedObjects.length <= 0 ? (
                       <NotFound word="related resources" />
                     ) : (
-                      data.relatedObjects.map(object => (
+                      relatedObjects.map(object => (
                         <RelatedObject
                           relatedObject={object}
                           activeLink={true}
@@ -755,6 +829,13 @@ class DatasetDetail extends Component {
             <Col sm={1} />
           </Row>
         </Container>
+        <SideDrawer
+            open={this.state.showDrawer}
+            closed={this.toggleDrawer}>
+            <UserMessages 
+                closed={this.toggleDrawer} 
+                topicContext={this.topicContext} />
+        </SideDrawer>
       </div>
     );
   }

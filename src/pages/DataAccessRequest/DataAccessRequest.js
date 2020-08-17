@@ -176,31 +176,32 @@ class DataAccessRequest extends Component {
      * @param {obj: questionAnswers}
      * @desc Callback from Winterfell sets totalQuestionsAnswered + saveTime
      */
-    onFormUpdate = _.debounce((id, questionAnswers) => {
-        let { applicationStatus, lookup } = this.state;
-        // 1. check for auto complete
-        if(!_.isEmpty(id)) {
-            let [questionId, uniqueId] = id.split('_');
-            let qId = questionId.toLowerCase();
-            let lookupAutoComplete = [...lookup].includes(qId);
-            if(lookupAutoComplete) 
-                questionAnswers =  DarHelper.autoComplete(qId, uniqueId, {...questionAnswers});
-            
+    onFormUpdate = _.debounce((id = '', questionAnswers = {}) => {
+        if(!_.isEmpty(id) && !_.isEmpty(questionAnswers)) {
+            let { applicationStatus, lookup } = this.state;
+            // 1. check for auto complete
+            if(typeof id === 'string') {
+                let [questionId, uniqueId] = id.split('_');
+                let qId = questionId.toLowerCase();
+                let lookupAutoComplete = [...lookup].includes(qId);
+                if(lookupAutoComplete) 
+                    questionAnswers =  DarHelper.autoComplete(qId, uniqueId, {...questionAnswers});
+            }
+            // 2. get totalQuestionAnswered
+            let totalQuestions = this.totalQuestionsAnswered(this.state.activePanelId, questionAnswers);
+
+            this.setState({totalQuestions});
+
+            if(applicationStatus === 'submitted')
+                return alert('Your application has already been submitted.');
+
+            // 3. remove blank vals from questionAnswers
+            let data = _.pickBy({...this.state.questionAnswers, ...questionAnswers}, _.identity);
+            // 4. create dataObject
+            let dataObj = {key: "questionAnswers", data };
+            // 5. update application
+            this.updateApplication(dataObj);
         }
-        // 2. get totalQuestionAnswered
-        let totalQuestions = this.totalQuestionsAnswered(this.state.activePanelId, questionAnswers);
-
-        this.setState({totalQuestions});
-
-        if(applicationStatus === 'submitted')
-            return alert('Your application has already been submitted.');
-
-        // 3. remove blank vals from questionAnswers
-        let data = _.pickBy({...this.state.questionAnswers, ...questionAnswers}, _.identity);
-        // 4. create dataObject
-        let dataObj = {key: "questionAnswers", data };
-        // 5. update application
-        this.updateApplication(dataObj);
     }, 500);
 
     /**

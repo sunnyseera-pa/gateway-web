@@ -69,6 +69,27 @@ const AddEditPaperForm = (props) => {
         }
     });
 
+    const validatePaper = async (e) => {
+        // 1. Continue event handling for onBlur with Formik
+        formik.handleBlur(e);
+        // 2. Extract the link value
+        const payload = { link: e.target.value };
+        // 3. If a link has been entered, validate
+        if(payload) {
+        // 4. Use axios to call backend to check if link exists against another paper
+        axios.post(baseURL + '/api/v1/papers/validate', payload)
+            .then((res) => {
+                const { data: { error }} = res;
+                // 5. Set Formik status to include the error message returned by the backend to be displayed below the input field
+                if(error) {
+                    formik.setStatus({duplicateLink: error});
+                } else {
+                    formik.setStatus({});
+                }
+            });
+        }
+    }
+
     var listOfAuthors = [];
 
     if (props.isEdit) {
@@ -152,9 +173,10 @@ const AddEditPaperForm = (props) => {
                                 <p className="gray800-14 margin-bottom-0 pad-bottom-4">Link</p>
                                 <p className="gray700-13 margin-bottom-0">
                                     Where can we find this paper?
-                                </p>
-                                <Form.Control id="link" name="link" type="text" className={formik.touched.link && formik.errors.link ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.link} onBlur={formik.handleBlur} />
+                                </span>
+                                <Form.Control id="link" name="link" type="text" className={formik.touched.link && formik.errors.link ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.link} onBlur={validatePaper} />
                                 {formik.touched.link && formik.errors.link ? <div className="errorMessages">{formik.errors.link}</div> : null}
+                                {formik.status && formik.status.duplicateLink ? <div className="errorMessages">{formik.status.duplicateLink}</div> : null}
                             </Form.Group>
 
                             <Form.Group>
@@ -281,13 +303,13 @@ const AddEditPaperForm = (props) => {
                             <Row>
                                 <Col sm={1} lg={1} />
                                 <Col sm={10} lg={10}>
-                                    
+                                    {/* {console.log('paper form data: ' + JSON.stringify(props.paperData))} */}
                                     <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} paperData={props.paperData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                 </Col>
                                 <Col sm={1} lg={10} />
                             </Row>
                         </div>
-
+ 
                         <Row className="mt-3">
                             <Col xs={5} lg={9}>
                                 <a style={{ cursor: 'pointer' }} href={'/account?tab=papers'}>
