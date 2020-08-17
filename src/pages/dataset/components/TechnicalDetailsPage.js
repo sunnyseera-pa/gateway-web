@@ -1,7 +1,8 @@
 import React from "react";
 import { Col, Row } from "react-bootstrap";
 import SVGIcon from "../../../images/SVGIcon";
-import { ReactComponent as CloseButtonSvg } from '../../../images/close.svg';  
+// import { ReactComponent as CloseButtonSvg } from '../../../images/close.svg'; 
+import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg';  
 import { ReactComponent as TableSvg } from "../../../images/table.svg";
 import TechnicalMetadataVariables from "./TechnicalMetadataVariables";
 
