@@ -219,7 +219,7 @@ class DiscourseTopic extends Component {
           </div>
         ) : (
             <Row>
-                <Col xs={12} className="ml-3">
+                <Col>
                     <NotFound text='Nothing yet.  Add a comment to start the discussion.' />
                 </Col>
             </Row>
