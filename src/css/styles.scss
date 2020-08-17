@@ -2198,7 +2198,7 @@ iframe#discourse-embed-frame {
   height: 164px;
   left: -50%;
   top: 50%;
-}
+} 
 
 .relationshipBar span {
   font-family: museo-sans-rounded;
@@ -2663,6 +2663,9 @@ button a {
   @include mq('tablet-wide',max){
     transform: translate(-25px, 0px) !important;
   }
+  @include mq('tablet-wide'){
+    transform: translate(0px, -8px) !important;
+  }
 }
 
 .dataClassX{
@@ -2772,4 +2775,3 @@ button a {
     margin-left: 0px;
   }
 }
-
