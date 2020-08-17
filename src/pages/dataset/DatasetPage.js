@@ -358,7 +358,7 @@ class DatasetDetail extends Component {
                       if (!userState[0].loggedIn) {
                         return (
                           <Button
-                            className="greyCancelButton dark-14 mr-2 btn btn-tertiary"
+                            className="greyCancelButton dark-14 mr-2 btn btn-tertiary float-right"
                             onClick={() =>
                               this.showLoginModal(
                                 data.name,
