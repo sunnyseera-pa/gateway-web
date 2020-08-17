@@ -2256,7 +2256,7 @@ iframe#discourse-embed-frame {
 }
 
 .flipSVG{
-  transform: scaleY(-1);
+  transform: scaleY(-1) !important;
 }
 
 .sideArrowSVG{
@@ -2664,7 +2664,7 @@ button a {
     transform: translate(-25px, 0px) !important;
   }
   @include mq('tablet-wide'){
-    transform: translate(0px, -8px) !important;
+    transform: translate(0px, -8px);
   }
 }
 
