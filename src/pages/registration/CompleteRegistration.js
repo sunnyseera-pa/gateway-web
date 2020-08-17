@@ -7,6 +7,8 @@ import { Row, Col, Container, Button, Alert, Form, InputGroup } from 'react-boot
 
 import SearchBar from '../commonComponents/SearchBar';
 import Loading from '../commonComponents/Loading';
+import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
+import UserMessages from "../commonComponents/userMessages/UserMessages";
 
 import 'react-tabs/style/react-tabs.css';
 
@@ -14,11 +16,16 @@ var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class CompleteRegistration extends Component {
 
+    constructor() {
+        this.searchBar = React.createRef();
+    }
+
     state = {
         searchString: '',
         id: '',
         userdata: [],
         isLoading: true,
+        showDrawer: false,
         userState: [{
             loggedIn: false,
             role: "Reader",
@@ -35,6 +42,16 @@ class CompleteRegistration extends Component {
         this.setState({ searchString: searchString });
     }
 
+    toggleDrawer = () => {
+        this.setState( ( prevState ) => {
+            debugger;
+            if(prevState.showDrawer === true) {
+                this.searchBar.current.getNumberOfUnreadMessages();
+            }
+            return { showDrawer: !prevState.showDrawer };
+        });
+    }
+
     componentDidMount() {
         this.setState({ isLoading: true });
         axios.get(baseURL + '/api/v1/auth/register/' + this.props.match.params.personID)
@@ -47,7 +64,7 @@ class CompleteRegistration extends Component {
     }
 
     render() {
-        const { isLoading, searchString, userState, userdata } = this.state;
+        const { isLoading, searchString, userState, userdata, showDrawer } = this.state;
         
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -55,7 +72,7 @@ class CompleteRegistration extends Component {
 
         return (
             <div>
-                <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
+                <SearchBar ref={this.searchBar} searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} doToggleDrawer={this.toggleDrawer} userState={userState} />
 
                 <Container className="mb-5">
 
@@ -69,6 +86,14 @@ class CompleteRegistration extends Component {
                         <Col sm={1} lg={1} />
                     </Row>
                 </Container>
+                <SideDrawer
+                    open={showDrawer}
+                    closed={this.toggleDrawer}>
+                    <UserMessages 
+                        closed={this.toggleDrawer}
+                        drawerIsOpen={this.state.showDrawer} 
+                    />
+                </SideDrawer>
             </div>
         );
     }

@@ -14,7 +14,8 @@ import 'react-tabs/style/react-tabs.css';
 import { baseURL } from '../../configs/url.config';
 import moment from 'moment';
 import _ from 'lodash';
-
+import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
+import UserMessages from "../commonComponents/userMessages/UserMessages";
 
 var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
 
@@ -43,12 +44,14 @@ state = {
     projectCount: 0,
     paperCount: 0,
     collectionAdded: false,
-    collectionEdited: false
+    collectionEdited: false,
+    showDrawer: false
 };
 
 constructor(props) {
   super(props)
   this.state.userState = props.userState;
+  this.searchBar = React.createRef();
 }
 
 componentDidMount() {
@@ -87,7 +90,7 @@ getDataSearchFromDb = () => {
       }
     })
     this.setState({isLoading: false})
-};
+  };
 
   getToolData = async (toolID) => {
     this.setState({ isLoading: true });
@@ -181,12 +184,20 @@ getDataSearchFromDb = () => {
     this.setState({ searchString: searchString });
   }
 
+  toggleDrawer = () => {
+    this.setState( ( prevState ) => {
+        debugger;
+        if(prevState.showDrawer === true) {
+            this.searchBar.current.getNumberOfUnreadMessages();
+        }
+        return { showDrawer: !prevState.showDrawer };
+    });
+}
+
   render() {
-    const { searchString, data, objectData, isLoading, userState,  toolCount, datasetCount, personCount, projectCount, paperCount, collectionAdded, collectionEdited } = this.state; 
+    const { searchString, data, objectData, isLoading, userState,  toolCount, datasetCount, personCount, projectCount, paperCount, collectionAdded, collectionEdited, showDrawer } = this.state; 
     var { key } = this.state;
     var allCount = toolCount + datasetCount + personCount + projectCount + paperCount;
-
-
 
     if (isLoading) {
       return <Container><Loading data-testid="isLoading" /></Container>;
@@ -194,7 +205,7 @@ getDataSearchFromDb = () => {
  
     return (
       <div>
-        <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
+        <SearchBar ref={this.searchBar} searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} doToggleDrawer={this.toggleDrawer} userState={userState} />
           <div className="rectangle pixelGapTop pixelGapBottom">
             <Container>
               {collectionAdded ?  
@@ -418,6 +429,14 @@ getDataSearchFromDb = () => {
             <Col sm={1} lg={10} /> 
           </Row>
         </Container>
+        <SideDrawer
+          open={showDrawer}
+          closed={this.toggleDrawer}>
+          <UserMessages 
+              closed={this.toggleDrawer}
+              drawerIsOpen={this.state.showDrawer} 
+          />
+        </SideDrawer>
       </div>
     );
   }

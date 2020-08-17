@@ -21,6 +21,8 @@ import moment from "moment";
 import SVGIcon from "../../images/SVGIcon";
 import { ReactComponent as EmptyStarIconSvg } from "../../images/starempty.svg";
 import { ReactComponent as FullStarIconSvg } from "../../images/star.svg";
+import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
+import UserMessages from "../commonComponents/userMessages/UserMessages";
 
 var cmsURL = require("../commonComponents/BaseURL").getCMSURL();
 
@@ -56,12 +58,14 @@ class ToolDetail extends Component {
       }
     ],
     relatedObjects: [],
-    discoursePostCount: 0
+    discoursePostCount: 0,
+    showDrawer: false
   };
  
   constructor(props) {
     super(props);
     this.state.userState = props.userState;
+    this.searchBar = React.createRef();
   }
 
   // on loading of tool detail page
@@ -175,6 +179,16 @@ class ToolDetail extends Component {
     this.setState({ discoursePostCount: count });
   };
 
+    toggleDrawer = () => {
+        this.setState( ( prevState ) => {
+            debugger;
+            if(prevState.showDrawer === true) {
+                this.searchBar.current.getNumberOfUnreadMessages();
+            }
+            return { showDrawer: !prevState.showDrawer };
+        });
+    }
+
   render() {
     const {
       searchString,
@@ -189,7 +203,8 @@ class ToolDetail extends Component {
       discourseTopic,
       objects,
       relatedObjects,
-      discoursePostCount
+      discoursePostCount,
+      showDrawer
     } = this.state;
 
     if (isLoading) {
@@ -223,6 +238,7 @@ class ToolDetail extends Component {
           doSearchMethod={this.doSearch}
           doUpdateSearchString={this.updateSearchString}
           userState={userState}
+          doToggleDrawer={this.toggleDrawer}
         />
         <Container className="margin-bottom-48">
           {toolAdded ? (
@@ -599,6 +615,14 @@ class ToolDetail extends Component {
             <Col sm={1} />
           </Row>
         </Container>
+        <SideDrawer
+            open={showDrawer}
+            closed={this.toggleDrawer}>
+            <UserMessages 
+                closed={this.toggleDrawer}
+                drawerIsOpen={this.state.showDrawer}
+            />
+        </SideDrawer>
         {!userState[0].loggedIn ? (
           ""
         ) : (

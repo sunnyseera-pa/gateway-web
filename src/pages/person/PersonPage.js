@@ -12,6 +12,8 @@ import NotFound from '../commonComponents/NotFound';
 import ReviewsTitle from '../commonComponents/ReviewTitle';
 import Loading from '../commonComponents/Loading'
 import Project from '../commonComponents/Project';
+import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
+import UserMessages from "../commonComponents/userMessages/UserMessages";
 // import ReactGA from 'react-ga'; 
 import {PageView, initGA} from '../../tracking';
 
@@ -29,13 +31,15 @@ class PersonDetail extends Component {
       loggedIn: false,
       role: "Reader",
       id: null,
-      firstName: null
+      firstName: null,
+      showDrawer: false
     }]
   };
 
   constructor(props) {
     super(props);
     this.state.userState = props.userState;
+    this.searchBar = React.createRef();
   }
 
   // on loading of tool detail page
@@ -72,8 +76,18 @@ class PersonDetail extends Component {
     this.setState({ searchString: searchString });
   }
 
+  toggleDrawer = () => {
+    this.setState( ( prevState ) => {
+        debugger;
+        if(prevState.showDrawer === true) {
+            this.searchBar.current.getNumberOfUnreadMessages();
+        }
+        return { showDrawer: !prevState.showDrawer };
+    });
+}
+
   render() {
-    const { searchString, data, isLoading, userState } = this.state;
+    const { searchString, data, isLoading, userState, showDrawer } = this.state;
 
     if (isLoading) {
       return <Container><Loading /></Container>;
@@ -99,7 +113,7 @@ class PersonDetail extends Component {
 
     return (
       <div>
-        <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
+        <SearchBar ref={this.searchBar} searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} doToggleDrawer={this.toggleDrawer} userState={userState} />
         <Container className="mb-5">
  
           <PersonTitle data={data} activeLink={true} />
@@ -135,6 +149,14 @@ class PersonDetail extends Component {
             <Col sm={1} lg={1} />
           </Row>
         </ Container>
+        <SideDrawer
+          open={showDrawer}
+          closed={this.toggleDrawer}>
+          <UserMessages 
+              closed={this.toggleDrawer}
+              drawerIsOpen={this.state.showDrawer} 
+          />
+        </SideDrawer>
       </div>
     );
   }

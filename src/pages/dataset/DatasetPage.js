@@ -87,6 +87,7 @@ class DatasetDetail extends Component {
     this.doUpdateDataClassOpen = this.doUpdateDataClassOpen.bind(this);
     this.state.userState = props.userState;
     this.handleMouseHover = this.handleMouseHover.bind(this);
+    this.searchBar = React.createRef();
   }
 
   // on loading of tool detail page
@@ -238,11 +239,15 @@ class DatasetDetail extends Component {
     this.setState({ discoursePostCount: count });
   }
 
-    toggleDrawer = () => {
-        this.setState( ( prevState ) => {
-            return { showDrawer: !prevState.showDrawer };
-        });
-    }
+  toggleDrawer = () => {
+    this.setState( ( prevState ) => {
+        debugger;
+        if(prevState.showDrawer === true) {
+            this.searchBar.current.getNumberOfUnreadMessages();
+        }
+        return { showDrawer: !prevState.showDrawer };
+    });
+}
 
 
   render() {
@@ -343,6 +348,7 @@ class DatasetDetail extends Component {
           <DatasetSchema datasetSchema={data.datasetfields.metadataschema} />
         ) : null}
         <SearchBar
+          ref={this.searchBar}
           searchString={searchString}
           doSearchMethod={this.doSearch}
           doUpdateSearchString={this.updateSearchString}
@@ -833,7 +839,8 @@ class DatasetDetail extends Component {
             open={this.state.showDrawer}
             closed={this.toggleDrawer}>
             <UserMessages 
-                closed={this.toggleDrawer} 
+                closed={this.toggleDrawer}
+                drawerIsOpen={this.state.showDrawer}
                 topicContext={this.topicContext} />
         </SideDrawer>
       </div>

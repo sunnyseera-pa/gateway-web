@@ -11,6 +11,8 @@ import Loading from '../commonComponents/Loading'
 import Filters from './Filters';
 import NoResults from '../commonComponents/NoResults';
 import { NotificationContainer } from 'react-notifications';
+import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
+import UserMessages from "../commonComponents/userMessages/UserMessages";
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -49,6 +51,7 @@ class SearchPage extends React.Component {
         key: '',
         isLoading: true,
         isResultsLoading: true,
+        showDrawer: false,
         userState: [{
             loggedIn: false,
             role: "Reader",
@@ -61,6 +64,7 @@ class SearchPage extends React.Component {
         super(props);
         this.state.userState = props.userState;
         this.state.searchString = props.searchString || null;
+        this.searchBar = React.createRef();
     }
 
     async componentDidMount() { //fires on first time in or page is refreshed/url loaded
@@ -334,6 +338,16 @@ class SearchPage extends React.Component {
         this.doSearchCall()
     }
 
+    toggleDrawer = () => {
+        this.setState( ( prevState ) => {
+            debugger;
+            if(prevState.showDrawer === true) {
+                this.searchBar.current.getNumberOfUnreadMessages();
+            }
+            return { showDrawer: !prevState.showDrawer };
+        });
+    }
+
     render() {
         const { 
             summary, 
@@ -371,7 +385,9 @@ class SearchPage extends React.Component {
             toolIndex, 
             projectIndex, 
             paperIndex, 
-            personIndex 
+            personIndex,
+            
+            showDrawer
         } = this.state;
 
         var { key } = this.state;
@@ -442,7 +458,7 @@ class SearchPage extends React.Component {
         return (
             <div>
 
-                <SearchBar searchString={searchString} doSearchMethod={this.doSearch} onClearMethod={this.doClear} doUpdateSearchString={this.updateSearchString} userState={userState} />
+                <SearchBar ref={this.searchBar} searchString={searchString} doSearchMethod={this.doSearch} onClearMethod={this.doClear} doUpdateSearchString={this.updateSearchString} doToggleDrawer={this.toggleDrawer} userState={userState} />
 
                 <div className="searchTabsHolder">
                         <div>
@@ -691,6 +707,14 @@ class SearchPage extends React.Component {
                     </Row>
                 </Container>
                 <NotificationContainer/>
+                <SideDrawer
+                    open={showDrawer}
+                    closed={this.toggleDrawer}>
+                    <UserMessages 
+                        closed={this.toggleDrawer}
+                        drawerIsOpen={this.state.showDrawer} 
+                    />
+                </SideDrawer>
             </div>
         );
     }

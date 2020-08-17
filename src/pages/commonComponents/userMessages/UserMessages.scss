@@ -1,6 +1,5 @@
 @import '../../../css/styles.scss';
 @import '../sidedrawer/SideDrawer.scss';
-
 .sideDrawer {
     &-header {
         box-sizing: border-box;
@@ -11,11 +10,9 @@
         color: $white;
         align-items: center;
         justify-content: space-between;
-
         &-wrapper {
             display: grid;
         }
-
         &--close {
             fill: #fff;
             width: 20px;
@@ -25,7 +22,6 @@
             }
         }
     }
-
     &-body {
         display: grid;
         height: 100vh;
@@ -33,13 +29,11 @@
         justify-items: stretch;
         align-items: stretch;
     }
-
     &-nav {
         background: $gray-200;
         overflow-y: scroll;
         height: calc(100vh - 72px);
         box-sizing: border-box;
-
         &-item {
             margin-bottom: 1px;
             box-sizing: inherit;
@@ -48,7 +42,6 @@
             padding: 15px 24px;
             background: $white;
             border-right: 1px solid #e7e9ed;
-
             &:hover {
                 cursor: pointer !important;
             }
@@ -57,7 +50,6 @@
         
     }
 }
-
 .nav {
     &-meta {
         display: flex;
@@ -65,7 +57,6 @@
         width: 100%;
         justify-content: space-between;
     }
-
     &-desc {
         width: 100%;
         max-width: 295px;
@@ -74,14 +65,11 @@
         text-overflow: ellipsis;
     }
 }
-
 .messageArea {
     display: grid;
     grid-template-rows: 106px 1fr 170px;
     box-sizing: border-box;
     height: calc(100vh - 40px);
-    
-
     &-header{
         background: $white;
         padding: 0 24px;
@@ -91,12 +79,10 @@
         align-items: center;
         justify-content: space-between;
     }
-
     &-body{
         background: $white;
         overflow-y: scroll;
     }
-    
     &-item {
         display: flex;
         padding: 15px 24px;
@@ -104,9 +90,7 @@
         width: 100%;
         min-height: 106px;
         border-bottom: 1px solid $gray-200;
-
         @include font-source(14px, $soft-black, $font-weight-semibold);
-
         &-header {
             display: flex;
             flex-flow: row nowrap;
@@ -115,7 +99,6 @@
             justify-content: space-between;
         }
     }
-
     &-footer {
         display: flex;
         flex-flow: column nowrap;
@@ -124,7 +107,6 @@
         background: $white;
     }
 }
-
 .selected-item {
     border-right: 4px solid $teal !important;
 }
