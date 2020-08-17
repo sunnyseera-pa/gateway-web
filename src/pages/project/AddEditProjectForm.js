@@ -152,16 +152,16 @@ const AddEditProjectForm = (props) => {
                     <Form onSubmit={formik.handleSubmit} onBlur={formik.handleBlur} autoComplete='off'>
                         <div className="rectangle">
                             <Form.Group>
-                                <span className="gray800-14">Project name</span>
-                                <Form.Control id="name" name="name" type="text" className={formik.touched.name && formik.errors.name ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.name} onBlur={formik.handleBlur} />
-                                {formik.touched.name && formik.errors.name ? <div className="errorMessages">{formik.errors.name}</div> : null}
-                            </Form.Group>
-
-                            <Form.Group>
                                 <p className="gray800-14 margin-bottom-0 pad-bottom-4">Link</p>
                                 <p className="gray700-13 margin-bottom-0">Where can we find this research project?</p>
                                 <Form.Control id="link" name="link" type="text" className={formik.touched.link && formik.errors.link ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.link} onBlur={formik.handleBlur} />
                                 {formik.touched.link && formik.errors.link ? <div className="errorMessages">{formik.errors.link}</div> : null}
+                            </Form.Group>
+
+                            <Form.Group>
+                                <span className="gray800-14">Project name</span>
+                                <Form.Control id="name" name="name" type="text" className={formik.touched.name && formik.errors.name ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.name} onBlur={formik.handleBlur} />
+                                {formik.touched.name && formik.errors.name ? <div className="errorMessages">{formik.errors.name}</div> : null}
                             </Form.Group>
 
                             <Form.Group>
