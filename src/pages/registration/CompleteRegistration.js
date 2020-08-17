@@ -16,7 +16,8 @@ var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class CompleteRegistration extends Component {
 
-    constructor() {
+    constructor(props) {
+        super(props);
         this.searchBar = React.createRef();
     }
 
