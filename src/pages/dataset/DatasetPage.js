@@ -262,7 +262,8 @@ class DatasetDetail extends Component {
       dataClassOpen,
       objects,
       relatedObjects,
-      discoursePostCount
+      discoursePostCount,
+      showDrawer
     } = this.state;
 
 
@@ -353,6 +354,7 @@ class DatasetDetail extends Component {
           doSearchMethod={this.doSearch}
           doUpdateSearchString={this.updateSearchString}
           userState={userState}
+          doToggleDrawer={this.toggleDrawer}
         />
         <Container className="margin-bottom-48">
           <Row className="mt-4">
@@ -836,11 +838,11 @@ class DatasetDetail extends Component {
           </Row>
         </Container>
         <SideDrawer
-            open={this.state.showDrawer}
+            open={showDrawer}
             closed={this.toggleDrawer}>
             <UserMessages 
                 closed={this.toggleDrawer}
-                drawerIsOpen={this.state.showDrawer}
+                drawerIsOpen={showDrawer}
                 topicContext={this.topicContext} />
         </SideDrawer>
       </div>
