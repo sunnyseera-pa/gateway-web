@@ -123,8 +123,10 @@ class DatasetDetail extends Component {
         this.topicContext = { dataSetId: this.state.data.datasetid, relatedObjectId: this.state.data._id || '', title: this.state.data.name || '', subTitle: this.state.data.datasetfields.publisher || '' };
 
         this.updateCounter(this.props.match.params.datasetID, counter);
-      
-        this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+        
+        if(!_.isUndefined(res.data.data[0].relatedObjects)) {
+          this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+        }
       });
 
   };

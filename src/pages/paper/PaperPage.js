@@ -108,7 +108,9 @@ class ToolDetail extends Component {
           ? 1
           : this.state.data.counter + 1;
         this.updateCounter(this.props.match.params.paperID, counter);
-        this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+        if(!_.isUndefined(res.data.data[0].relatedObjects)) {
+          this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+        }
       })
       .catch((err) => {
         //check if request is for a PaperID or a different route such as /add

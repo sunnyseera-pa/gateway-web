@@ -96,7 +96,9 @@ class ProjectDetail extends Component {
         let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
         this.updateCounter(this.props.match.params.projectID, counter);
 
-        this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+        if(!_.isUndefined(res.data.data[0].relatedObjects)) {
+          this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+        }
       })
       .catch((err) => {
           //check if request is for a ProjectID or a different route such as /add
