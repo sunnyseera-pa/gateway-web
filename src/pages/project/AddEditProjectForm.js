@@ -72,7 +72,7 @@ const AddEditProjectForm = (props) => {
         }
     });
 
-    var listOfAuthors = [];
+    var listOfAuthors = []; 
  
     if (props.isEdit) {
         props.data.authors.forEach((author) => {
@@ -121,6 +121,8 @@ const AddEditProjectForm = (props) => {
     function descriptionCount(e) {
         document.getElementById("currentCount").innerHTML=e.target.value.length   
     }
+
+    const relatedResourcesRef = React.useRef()
 
     return (
 
@@ -288,26 +290,32 @@ const AddEditProjectForm = (props) => {
                             <Row>
                                 <Col sm={1} lg={1} />
                                 <Col sm={10} lg={10}>
-                                    <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} paperData={props.paperData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
+                                    <RelatedResources ref={relatedResourcesRef} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} paperData={props.paperData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                 </Col>
                                 <Col sm={1} lg={10} />
                             </Row>
                         </div>
 
-                        <Row className="mt-3">
-                            <Col xs={5} lg={9}>
-                                <a style={{ cursor: 'pointer' }} href={'/account?tab=projects'} >
+                        {!props.userState[0].loggedIn ? (
+                        "" 
+                        ) : ( 
+                        <div className="actionBar">
+                                <a style={{ cursor: 'pointer' }} href={'/account?tab=projects'}>
                                     <Button variant="medium" className="cancelButton dark-14 mr-2" >
                                         Cancel
                                     </Button>
-                                </a>
-                            </Col>
-                            <Col xs={7} lg={3} className="text-right">
-                                <Button variant="primary" type="submit" className="white-14-semibold" onClick={() => Event("Buttons", "Click", "Add project form submitted")}>
+                                </a> 
+
+                                <Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className="techDetailButton mr-2">
+                                    + Add resource
+                                </Button>
+                                
+                                <Button variant="primary" className="publishButton white-14-semibold" type="submit" >
                                     {props.isEdit ? 'Update' : 'Publish'}
                                 </Button>
-                            </Col>
-                        </Row>
+                        </div>
+                        )} 
+
                     </Form>
                 </Col>
                 <Col sm={1} lg={10} />

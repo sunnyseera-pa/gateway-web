@@ -141,6 +141,8 @@ const AddEditPaperForm = (props) => {
         document.getElementById("currentCount").innerHTML=e.target.value.length
     }
 
+    const relatedResourcesRef = React.useRef()
+
     return (
         <div>
             <Row className="margin-top-32">
@@ -304,13 +306,13 @@ const AddEditPaperForm = (props) => {
                                 <Col sm={1} lg={1} />
                                 <Col sm={10} lg={10}>
                                     {/* {console.log('paper form data: ' + JSON.stringify(props.paperData))} */}
-                                    <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} paperData={props.paperData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
+                                    <RelatedResources ref={relatedResourcesRef} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} paperData={props.paperData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                 </Col>
                                 <Col sm={1} lg={10} />
                             </Row>
                         </div>
  
-                        <Row className="mt-3">
+                        {/* <Row className="mt-3">
                             <Col xs={5} lg={9}>
                                 <a style={{ cursor: 'pointer' }} href={'/account?tab=papers'}>
                                     <Button variant="medium" className="greyCancelButton dark-14 mr-2" >
@@ -323,7 +325,28 @@ const AddEditPaperForm = (props) => {
                                     {props.isEdit ? 'Update' : 'Publish'}
                                 </Button>
                             </Col>
-                        </Row>
+                        </Row> */}
+
+                        {!props.userState[0].loggedIn ? (
+                        "" 
+                        ) : ( 
+                        <div className="actionBar">
+                                <a style={{ cursor: 'pointer' }} href={'/account?tab=papers'}>
+                                    <Button variant="medium" className="cancelButton dark-14 mr-2" >
+                                        Cancel
+                                    </Button>
+                                </a> 
+
+                                <Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className="techDetailButton mr-2">
+                                    + Add resource
+                                </Button>
+                                
+                                <Button variant="primary" className="publishButton white-14-semibold" type="submit" >
+                                    {props.isEdit ? 'Update' : 'Publish'}
+                                </Button>
+                        </div>
+                        )} 
+
                     </Form>
                 </Col>
                 <Col sm={1} lg={10} />

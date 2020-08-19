@@ -139,6 +139,8 @@ class ToolDetail extends Component {
 
   getAdditionalObjectInfo = async data => {
     let tempObjects = [];
+
+    if(data){
     const promises = data.map(async (object, index) => {
       await axios
         .get(baseURL + "/api/v1/relatedobject/" + object.objectId)
@@ -151,6 +153,7 @@ class ToolDetail extends Component {
         });
     });
     await Promise.all(promises);
+  }
     this.setState({ objects: tempObjects });
 
     this.getRelatedObjects();
@@ -158,6 +161,8 @@ class ToolDetail extends Component {
 
   getRelatedObjects() {
     let tempRelatedObjects = [];
+
+    if(this.state.data.relatedObjects && this.state.objects){
     this.state.data.relatedObjects.map(object =>
       this.state.objects.map(item => {
         if (object.objectId === item.id && item.activeflag === "active") {
@@ -173,6 +178,7 @@ class ToolDetail extends Component {
         }
       })
     );
+    }
     this.setState({ relatedObjects: tempRelatedObjects });
     this.setState({ isLoading: false });
   }
@@ -533,7 +539,7 @@ class ToolDetail extends Component {
               closed={this.toggleDrawer}
               drawerIsOpen={this.state.showDrawer} 
           />
-        </SideDrawer>
+        </SideDrawer> 
         {!userState[0].loggedIn ? (
           ""
         ) : (

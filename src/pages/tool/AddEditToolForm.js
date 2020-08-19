@@ -123,6 +123,8 @@ const AddEditToolForm = (props) => {
         var input = e.target.value;
         document.getElementById("currentCount").innerHTML=e.target.value.length
     }
+
+    const relatedResourcesRef = React.useRef()
     
     return (
         <div>
@@ -145,7 +147,7 @@ const AddEditToolForm = (props) => {
                     </div>
                 </Col>
                 <Col sm={1} lg={10} />
-            </Row>
+            </Row> 
 
             <Row className="pixelGapTop">
                 <Col sm={1} lg={1} />
@@ -351,26 +353,32 @@ const AddEditToolForm = (props) => {
                                 <Col sm={1} lg={1} />
                                 <Col sm={10} lg={10}>
                                     
-                                    <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} paperData={props.paperData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
+                                    <RelatedResources ref={relatedResourcesRef} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} paperData={props.paperData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                 </Col>
                                 <Col sm={1} lg={10} />
                             </Row>
                         </div>
 
-                        <Row className="mt-3">
-                            <Col xs={5} lg={9}>
+                        {!props.userState[0].loggedIn ? (
+                        "" 
+                        ) : ( 
+                        <div className="actionBar">
                                 <a style={{ cursor: 'pointer' }} href={'/account?tab=tools'}>
-                                    <Button variant="medium" className="greyCancelButton dark-14 mr-2" >
+                                    <Button variant="medium" className="cancelButton dark-14 mr-2" >
                                         Cancel
                                     </Button>
-                                </a>
-                            </Col>
-                            <Col xs={7} lg={3} className="text-right">
-                                <Button variant="primary" className="white-14-semibold" type="submit" onClick={() => Event("Buttons", "Click", "Add tool form submitted")} >
+                                </a> 
+
+                                <Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className="techDetailButton mr-2">
+                                    + Add resource
+                                </Button>
+                                
+                                <Button variant="primary" className="publishButton white-14-semibold" type="submit" >
                                     {props.isEdit ? 'Update' : 'Publish'}
                                 </Button>
-                            </Col>
-                        </Row>
+                        </div>
+                        )} 
+
                     </Form>
                 </Col>
                 <Col sm={1} lg={10} />

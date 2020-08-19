@@ -177,6 +177,7 @@ class AddCollectionPage extends React.Component {
 
 }
 
+
 const AddCollectionForm = (props) => {
     // Pass the useFormik() hook initial form values and a submit function that will
     // be called when the form is submitted
@@ -240,6 +241,8 @@ const AddCollectionForm = (props) => {
 
     const [isShown, setIsShown] = useState(false);
 
+    const relatedResourcesRef = React.useRef()
+
     return (
         <div>
             <Row className="margin-top-32">
@@ -281,7 +284,7 @@ const AddCollectionForm = (props) => {
                                 <p className="gray800-14 margin-bottom-0 pad-bottom-4">Collection collaborators</p>
                                 <p className="gray700-13 margin-bottom-0">
                                     Anyone added will be able to add and remove resources to this collection.
-                                </p>
+                                </p> 
                                 <Typeahead
                                     id="authors"
                                     labelKey={authors => `${authors.name}`}
@@ -338,35 +341,46 @@ const AddCollectionForm = (props) => {
                                 <Row>
                                     <Col sm={1} lg={1} />
                                     <Col sm={10} lg={10}>
-                                        <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} paperData={props.paperData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
+                                        <RelatedResources ref={relatedResourcesRef} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} paperData={props.paperData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                     </Col>
                                     <Col sm={1} lg={10} />
                                 </Row>
                             </div>
                         </div> 
 
-                        <Row className="mt-3"> 
-                            <Col xs={5} lg={9}/>
-                            <Col xs={7} lg={3} className="text-right">
-                                    <a style={{ cursor: 'pointer' }} href={'/account?tab=tools'}>
-                                        <Button variant="medium" className="cancelButton dark-14 mr-2" >
-                                            Cancel
-                                        </Button>
-                                    </a>
-                                <Button variant="primary" className="white-14-semibold" type="submit" >
+                        {!props.userState[0].loggedIn ? (
+                        ""
+                        ) : ( 
+                        <div className="actionBar">
+                                <a style={{ cursor: 'pointer' }} href={'/account?tab=collections'}>
+                                    <Button variant="medium" className="cancelButton dark-14 mr-2" >
+                                        Cancel
+                                    </Button>
+                                </a> 
+
+                                <Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className="techDetailButton mr-2">
+                                    + Add resource
+                                </Button>
+                                
+                                <Button variant="primary" className="publishButton white-14-semibold" type="submit" >
                                     Publish
                                 </Button>
-                            </Col>
-                        </Row>
+                        </div>
+                        )} 
+
+
+
                     </Form>
                 </Col>
                 <Col sm={1} lg={10} />
             </Row>
+
+ 
             <Row>
                 <span className="formBottomGap"></span>
             </Row>
         </div>
     );
-}
+} 
 
 export default AddCollectionPage;
