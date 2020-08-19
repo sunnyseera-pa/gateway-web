@@ -3,6 +3,7 @@
 import React, { Component } from "react";
 import ReactMarkdown from "react-markdown";
 import axios from "axios";
+import _ from 'lodash';
 import queryString from "query-string";
 import { Container, Row, Col, Tabs, Tab, Alert, Button } from "react-bootstrap";
 import moment from "moment";
@@ -15,9 +16,7 @@ import SVGIcon from "../../images/SVGIcon";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
-import _ from 'lodash';
-
-// import ReactGA from 'react-ga';
+import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
 import { PageView, initGA } from "../../tracking";
 
 var baseURL = require("../commonComponents/BaseURL").getURL();
@@ -49,7 +48,8 @@ class ProjectDetail extends Component {
     ],
     relatedObjects: [],
     discoursePostCount: 0,
-    showDrawer: false
+    showDrawer: false,
+    showModal: false
   };
 
   constructor(props) {
@@ -183,7 +183,17 @@ class ProjectDetail extends Component {
         }
         return { showDrawer: !prevState.showDrawer };
     });
-}
+  }
+
+  toggleModal = (showEnquiry = false) => {
+    this.setState( ( prevState ) => {
+        return { showModal: !prevState.showModal };
+    });
+
+    if(showEnquiry) {
+      this.toggleDrawer();
+    }
+  }
 
   render() {
     const {
@@ -195,7 +205,8 @@ class ProjectDetail extends Component {
       userState,
       relatedObjects,
       discoursePostCount,
-      showDrawer
+      showDrawer,
+      showModal
     } = this.state;
 
     if (isLoading) {
@@ -483,9 +494,16 @@ class ProjectDetail extends Component {
           closed={this.toggleDrawer}>
           <UserMessages 
               closed={this.toggleDrawer}
+              toggleModal={this.toggleModal}
               drawerIsOpen={this.state.showDrawer}
           />
         </SideDrawer>  
+
+        <DataSetModal 
+          open={showModal} 
+          closed={this.toggleModal}
+          userState={userState[0]}
+        />
 
         {!userState[0].loggedIn ? (
           ""

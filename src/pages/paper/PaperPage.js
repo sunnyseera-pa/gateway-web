@@ -11,10 +11,9 @@ import SearchBar from "../commonComponents/SearchBar";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
-
+import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
 import "react-tabs/style/react-tabs.css";
 import { baseURL } from "../../configs/url.config";
-// import ReactGA from 'react-ga';
 import { PageView, initGA } from "../../tracking";
 import SVGIcon from "../../images/SVGIcon";
 import ReactMarkdown from "react-markdown";
@@ -54,7 +53,8 @@ class ToolDetail extends Component {
     ],
     relatedObjects: [],
     discoursePostCount: 0,
-    showDrawer: false
+    showDrawer: false,
+    showModal: false
   };
 
   constructor(props) {
@@ -193,6 +193,17 @@ class ToolDetail extends Component {
     });
   }
 
+  toggleModal = (showEnquiry = false) => {
+    this.setState( ( prevState ) => {
+        return { showModal: !prevState.showModal };
+    });
+
+    if(showEnquiry) {
+      this.toggleDrawer();
+    }
+}
+  
+
   render() {
     const {
       searchString,
@@ -205,7 +216,8 @@ class ToolDetail extends Component {
       replyAdded,
       relatedObjects,
       discoursePostCount,
-      showDrawer
+      showDrawer,
+      showModal
     } = this.state;
 
 
@@ -534,9 +546,18 @@ class ToolDetail extends Component {
           closed={this.toggleDrawer}>
           <UserMessages 
               closed={this.toggleDrawer}
+              toggleModal={this.toggleModal}
               drawerIsOpen={this.state.showDrawer} 
           />
         </SideDrawer> 
+
+        <DataSetModal 
+          open={showModal} 
+          closed={this.toggleModal}
+          userState={userState[0]}
+        />
+      
+
         {!userState[0].loggedIn ? (
           ""
         ) : (

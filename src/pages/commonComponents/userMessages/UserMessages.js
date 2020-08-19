@@ -10,7 +10,7 @@ import MessageItem from './components/MessageItem';
 import MessageFooter from './components/MessageFooter';
 import './UserMessages.scss';
 
-const UserMessages = ({ topicContext, closed, drawerIsOpen = false }) => {
+const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false }) => {
 	const defaultMessage =
 		'Use messages to clarify questions with the data custodian before starting your application to request access to the data. Provide a brief description of your project and what datasets you are interested in.';
 
@@ -197,10 +197,16 @@ const UserMessages = ({ topicContext, closed, drawerIsOpen = false }) => {
 			} else {
                 id = dataSetIds[0];
             }
-            console.log('Request Access');
             history.push({pathname: `/data-access-request/dataset/${id}`});
 		} 
 	};
+
+
+	const onShowModal = (e) => {
+		e.preventDefault();
+		closed();
+		toggleModal();
+	}
 
 	/**
 	 * onMessageChange
@@ -297,6 +303,7 @@ const UserMessages = ({ topicContext, closed, drawerIsOpen = false }) => {
 							<MessageHeader
 								topic={activeTopic}
 								onRequestAccess={onRequestAccess}
+								onShowModal={onShowModal}
 							/>
 						) : (
 							''
@@ -327,7 +334,9 @@ const UserMessages = ({ topicContext, closed, drawerIsOpen = false }) => {
 
 export default UserMessages;
 
-// UserMessages.propTypes = {
-// 	closed: PropTypes.bool,
-// 	topicContext: undefined
-// };
+UserMessages.defaultProps = {
+	closed			: () => {},
+	toggleModal		: () => {},
+	topicContext	: undefined,
+	drawerIsOpen	: false
+};
