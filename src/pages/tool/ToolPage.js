@@ -157,7 +157,7 @@ class ToolDetail extends Component {
 
     this.getRelatedObjects();
   
-  };
+  }; 
 
   getRelatedObjects() {
     let tempRelatedObjects = [];
@@ -181,7 +181,7 @@ class ToolDetail extends Component {
     );
 
     }
-    
+
     this.setState({ relatedObjects: tempRelatedObjects });
     this.setState({ isLoading: false });
   }

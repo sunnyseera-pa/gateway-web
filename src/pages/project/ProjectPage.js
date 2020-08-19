@@ -144,7 +144,7 @@ class ProjectDetail extends Component {
   }
     this.setState({ objects: tempObjects });
 
-    this.getRelatedObjects();
+    this.getRelatedObjects(); 
   };
 
   getRelatedObjects() {
@@ -167,7 +167,7 @@ class ProjectDetail extends Component {
         }
       })
     );
-    
+
     }
 
     this.setState({ relatedObjects: tempRelatedObjects });

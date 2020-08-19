@@ -331,7 +331,7 @@ const AddEditToolForm = (props) => {
                                     }}
                                 />
                             </Form.Group>
-                        </div>
+                        </div> 
 
                         <div className="rectangle mt-2">
                             <span className="black-20">Related resources</span><span className="gray800-14"> (optional)</span>

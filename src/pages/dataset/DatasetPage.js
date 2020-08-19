@@ -666,7 +666,7 @@ class DatasetDetail extends Component {
                         </div>
                       </Col>
                     </Row>
-
+ 
                     <Row className="mt-2">
                       <Col sm={12}>
                         <div className="rectangle">

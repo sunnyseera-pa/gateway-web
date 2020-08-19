@@ -25,7 +25,7 @@ const RelatedResources =  React.forwardRef((props, ref) => {
         handleClose();
         props.doClearRelatedObjects();
     }
-    
+     
     return (
         <Fragment className="flexCenter" >
             <Button variant='white' href={''} target="_blank" className="techDetailButton mr-2" onClick={handleShow} ref={ref}>

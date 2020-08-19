@@ -37,7 +37,7 @@ class RelatedResourcesModal extends React.Component {
         this.state.userState = props.userState;
         this.state.relatedObjects = props.relatedObjects;
         this.state.relatedObjectIds = [];
-    }
+    } 
 
 
     handleSelect = (key) => {
@@ -191,7 +191,7 @@ class RelatedResourcesModal extends React.Component {
                         break;
                     case 'dataset':
                             this.props.datasetData.map((dataset) => {
-                                if(object.objectId === dataset.id || object.objectId === JSON.stringify(dataset.id)) {
+                                if(object.objectId === dataset.datasetid || object.objectId === JSON.stringify(dataset.datasetid)) {
                                  
                                     this.state.selected.datasets++
                                 }
@@ -216,7 +216,7 @@ class RelatedResourcesModal extends React.Component {
                            </Tabs>
                         </div>
                     </div> 
-             : ''}
+             : ''} 
 
             <div className={typeof this.props.summary.datasets==='undefined' ? "minHeightModal" : "relatedModalBackground minHeightModal"} > 
                 <Container >
@@ -225,7 +225,7 @@ class RelatedResourcesModal extends React.Component {
                         <Col sm={10} lg={10} className="mt-2 mb-3" >
                             {key === 'Datasets' ?
                                 this.props.datasetData.map((dataset) => {  
-                                    if(this.state.relatedObjectIds.includes(dataset.id)){
+                                    if(this.state.relatedObjectIds.includes(dataset.datasetid)){ 
                                         return ''
                                     }
                                     else {

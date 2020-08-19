@@ -131,7 +131,7 @@ class AddCollectionPage extends React.Component {
     }
 
     removeObject = (id) => {
-        this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id.toString());
+        this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id);
         this.setState({relatedObjects: this.state.relatedObjects})
         this.setState({didDelete: true});
     }
@@ -340,13 +340,13 @@ const AddCollectionForm = (props) => {
                             <div className="flexCenter pt-3 pb-3">
                                 <Row>
                                     <Col sm={1} lg={1} />
-                                    <Col sm={10} lg={10}>
+                                    <Col sm={10} lg={10}> 
                                         <RelatedResources ref={relatedResourcesRef} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} paperData={props.paperData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                     </Col>
                                     <Col sm={1} lg={10} />
                                 </Row>
                             </div>
-                        </div> 
+                        </div>  
 
                         {!props.userState[0].loggedIn ? (
                         ""

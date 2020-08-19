@@ -10,7 +10,7 @@ var baseURL = require('./BaseURL').getURL();
 
 class RelatedObject extends React.Component {
     
-    state = {
+    state = { 
         relatedObject: [],
         reason: '',
         // user: '',
@@ -71,7 +71,11 @@ class RelatedObject extends React.Component {
     };
  
     removeButton = () => {
-        this.props.doRemoveObject(this.state.data.id, this.state.data.type) 
+        if(this.state.data.type === 'dataset') {
+            this.props.doRemoveObject(this.state.data.datasetid, this.state.data.type) 
+        } else{
+            this.props.doRemoveObject(this.state.data.id, this.state.data.type) 
+        }
     }
 
     handleChange = (id, reason, type) => {
