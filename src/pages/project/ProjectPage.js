@@ -11,17 +11,16 @@ import NotFound from "../commonComponents/NotFound";
 import SearchBar from "../commonComponents/SearchBar";
 import Loading from "../commonComponents/Loading";
 import Creators from "../commonComponents/Creators";
-import ProjectTitle from "./components/ProjectTitle";
 import SVGIcon from "../../images/SVGIcon";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
+import _ from 'lodash';
 
 // import ReactGA from 'react-ga';
 import { PageView, initGA } from "../../tracking";
 
 var baseURL = require("../commonComponents/BaseURL").getURL();
-var cmsURL = require("../commonComponents/BaseURL").getCMSURL();
 
 class ProjectDetail extends Component {
   // initialize our state
@@ -86,7 +85,7 @@ class ProjectDetail extends Component {
     this.setState({ isLoading: true });
     axios
       .get(baseURL + "/api/v1/projects/" + this.props.match.params.projectID)
-      .then(res => {
+      .then( async (res) => {
         this.setState({
           data: res.data.data[0],
           discourseTopic: res.data.discourseTopic
@@ -96,7 +95,9 @@ class ProjectDetail extends Component {
         let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
         this.updateCounter(this.props.match.params.projectID, counter);
 
-        this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+        if(!_.isUndefined(res.data.data[0].relatedObjects)) {
+          await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+        }
       })
       .catch((err) => {
           //check if request is for a ProjectID or a different route such as /add
@@ -104,7 +105,9 @@ class ProjectDetail extends Component {
             window.localStorage.setItem('redirectMsg', err.response.data);  
           }
           this.props.history.push({pathname: "/search?search=", search:""});
-      })
+      }).finally(() => {
+        this.setState({ isLoading: false });
+    });
   };
 
   doSearch = e => {
@@ -148,7 +151,7 @@ class ProjectDetail extends Component {
   getRelatedObjects() {
     let tempRelatedObjects = [];
     this.state.data.relatedObjects.map(object =>
-      this.state.objects.map(item => {
+      this.state.objects.forEach(item => {
         if (object.objectId === item.id && item.activeflag === "active") {
           tempRelatedObjects.push(object);
         }
@@ -163,7 +166,6 @@ class ProjectDetail extends Component {
       })
     );
     this.setState({ relatedObjects: tempRelatedObjects });
-    this.setState({ isLoading: false });
   }
 
   toggleDrawer = () => {
@@ -184,8 +186,6 @@ class ProjectDetail extends Component {
       projectAdded,
       projectEdited,
       userState,
-      discourseTopic,
-      objects,
       relatedObjects,
       discoursePostCount,
       showDrawer

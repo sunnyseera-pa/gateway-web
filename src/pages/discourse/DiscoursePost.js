@@ -1,19 +1,13 @@
 import React from 'react';
-import { Row, Col, Image } from 'react-bootstrap';
+import { Image } from 'react-bootstrap';
 import Moment from 'react-moment';
 import styles from './Discourse.module.scss';
 import { Fragment } from 'react';
 import { Formik } from 'formik';
-import { ReactComponent as DeleteIcon } from '../../images/delete.svg' 
-import { ReactComponent as EditIcon } from '../../images/edit.svg' 
 import editIcon from '../../images/edit.svg';
 import deleteIcon from '../../images/delete.svg';
 
 class DiscoursePost extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   readPost() {
     let { post, userState, onPostEdit, onPostDelete } = this.props;
     return (
@@ -34,11 +28,13 @@ class DiscoursePost extends React.Component {
           {post.can_edit && userState[0].loggedIn ? 
             <div className={styles.buttonFooter}> 
                 <img
+                  alt="edit"
                   src={editIcon}
                   className={styles.iconButton}
                   onClick={() => onPostEdit(post.id)}
                 />
                 <img
+                  alt="delete"
                   src={deleteIcon}
                   className={styles.iconButton}
                   onClick={() => onPostDelete(post.id)}

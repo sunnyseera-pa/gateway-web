@@ -17,14 +17,13 @@ import { PageView, initGA } from "../../tracking";
 import ReactMarkdown from "react-markdown";
 import Rating from "react-rating";
 import moment from "moment";
+import _ from 'lodash';
 
 import SVGIcon from "../../images/SVGIcon";
 import { ReactComponent as EmptyStarIconSvg } from "../../images/starempty.svg";
 import { ReactComponent as FullStarIconSvg } from "../../images/star.svg";
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
-
-var cmsURL = require("../commonComponents/BaseURL").getCMSURL();
 
 class ToolDetail extends Component {
   // initialize our state
@@ -99,7 +98,7 @@ class ToolDetail extends Component {
     this.setState({ isLoading: true });
     axios
       .get(baseURL + "/api/v1/tools/" + this.props.match.params.toolID)
-      .then(res => {
+      .then( async (res) => {
         this.setState({
           data: res.data.data[0],
           reviewData: res.data.reviewData,
@@ -111,14 +110,18 @@ class ToolDetail extends Component {
           ? 1
           : this.state.data.counter + 1;
         this.updateCounter(this.props.match.params.toolID, counter);
-        this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+        if(!_.isUndefined(res.data.data[0].relatedObjects)) {
+            await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+        }
       }).catch((err) => {
         //check if request is for a ToolID or a different route such as /add
         if(!isNaN(this.props.match.params.toolID)){
             window.localStorage.setItem('redirectMsg', err.response.data);
           }
         this.props.history.push({pathname: "/search?search=", search:""});
-    })
+    }).finally(() => {
+        this.setState({ isLoading: false });
+    });
   };
 
   doSearch = e => {
@@ -150,14 +153,14 @@ class ToolDetail extends Component {
     });
     await Promise.all(promises);
     this.setState({ objects: tempObjects });
-
+    
     this.getRelatedObjects();
   };
 
   getRelatedObjects() {
     let tempRelatedObjects = [];
     this.state.data.relatedObjects.map(object =>
-      this.state.objects.map(item => {
+      this.state.objects.forEach(item => {
         if (object.objectId === item.id && item.activeflag === "active") {
           tempRelatedObjects.push(object);
         }
@@ -172,7 +175,6 @@ class ToolDetail extends Component {
       })
     );
     this.setState({ relatedObjects: tempRelatedObjects });
-    this.setState({ isLoading: false });
   }
 
   updateDiscoursePostCount = count => {
@@ -200,8 +202,6 @@ class ToolDetail extends Component {
       reviewAdded,
       replyAdded,
       reviewData,
-      discourseTopic,
-      objects,
       relatedObjects,
       discoursePostCount,
       showDrawer
