@@ -172,8 +172,10 @@ class AccountAnalyticsDashboard extends React.Component {
     }
 
     getUptime(selectedDate){
+        let currentDate = new Date()
+
         return new Promise((resolve, reject) => {
-        axios.get(baseURL + '/api/v1/kpis?kpi=uptime&selectedDate=' + selectedDate )
+        axios.get(baseURL + '/api/v1/kpis?kpi=uptime&selectedDate=' + currentDate )
 
         .then((res) => {
             this.setState({ uptime: res.data.data});
