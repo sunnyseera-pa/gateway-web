@@ -93,7 +93,7 @@ class ToolDetail extends Component {
   getDataSearchFromDb = () => {
     this.setState({ isLoading: true });
     axios
-      .get(baseURL + "/api/v1/paper/" + this.props.match.params.paperID)
+      .get(baseURL + "/api/v1/papers/" + this.props.match.params.paperID)
       .then( async (res) => {
         this.setState({
           data: res.data.data[0],
