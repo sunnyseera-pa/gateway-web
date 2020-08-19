@@ -35,14 +35,13 @@ import TechnicalMetadata from "./components/TechnicalMetadata";
 import TechnicalDetailsPage from "./components/TechnicalDetailsPage";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
-
+import _ from 'lodash';
 
 
 import "react-tabs/style/react-tabs.css";
 import UserMessages from "../commonComponents/userMessages/UserMessages";
 
 var baseURL = require("../commonComponents/BaseURL").getURL();
-var cmsURL = require("../commonComponents/BaseURL").getCMSURL();
 
 class DatasetDetail extends Component {
   // initialize our state
@@ -76,7 +75,6 @@ class DatasetDetail extends Component {
         activeflag: ""
       }
     ],
-    relatedObjects: [],
     showDrawer: false
   };
 
@@ -112,7 +110,7 @@ class DatasetDetail extends Component {
   getDataset = async () => {
     this.setState({ isLoading: true });
     await axios.get(baseURL + '/api/v1/datasets/' + this.props.match.params.datasetID)
-      .then((res) => {
+      .then( async (res) => {
         this.setState({
           data: res.data.data[0],
           isLoading: false
@@ -125,8 +123,9 @@ class DatasetDetail extends Component {
         this.updateCounter(this.props.match.params.datasetID, counter);
         
         if(!_.isUndefined(res.data.data[0].relatedObjects)) {
-          this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+          await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
         }
+        this.setState({ isLoading: false });
       });
 
   };
@@ -219,7 +218,7 @@ class DatasetDetail extends Component {
   getRelatedObjects() {
     let tempRelatedObjects = [];
     this.state.data.relatedObjects.map(object =>
-      this.state.objects.map(item => {
+      this.state.objects.forEach(item => {
         if (object.objectId === item.id && item.activeflag === "active") {
           tempRelatedObjects.push(object);
         }
@@ -234,7 +233,6 @@ class DatasetDetail extends Component {
       })
     );
     this.setState({ relatedObjects: tempRelatedObjects });
-    this.setState({ isLoading: false });
   }
 
   updateDiscoursePostCount = (count) => {
@@ -260,9 +258,7 @@ class DatasetDetail extends Component {
       isLoading,
       userState,
       alert = null,
-      discourseTopic,
       dataClassOpen,
-      objects,
       relatedObjects,
       discoursePostCount,
       showDrawer
@@ -326,7 +322,7 @@ class DatasetDetail extends Component {
                 the dataset, and not to the quality of the actual datasets.
                 <br />
                 <br />
-                <a href="https://github.com/HDRUK/datasets#about-the-reports" target="_blank" className="white-12" >
+                <a href="https://github.com/HDRUK/datasets#about-the-reports" target="_blank" className="white-12" rel="noopener noreferrer" >
                   Click to read more about how the score is calculated.
                 </a>
                 <br />

@@ -6,7 +6,6 @@ import { Row, Col, Tabs, Tab, Container, Alert, Button } from "react-bootstrap";
 import NotFound from "../commonComponents/NotFound";
 import Creators from "../commonComponents/Creators";
 import Loading from "../commonComponents/Loading";
-import Reviews from "../commonComponents/Reviews";
 import RelatedObject from "../commonComponents/RelatedObject";
 import SearchBar from "../commonComponents/SearchBar";
 import DiscourseTopic from '../discourse/DiscourseTopic';
@@ -20,8 +19,7 @@ import { PageView, initGA } from "../../tracking";
 import SVGIcon from "../../images/SVGIcon";
 import ReactMarkdown from "react-markdown";
 import moment from "moment";
-
-var cmsURL = require("../commonComponents/BaseURL").getCMSURL();
+import _ from 'lodash';
 
 class ToolDetail extends Component {
   // initialize our state
@@ -96,7 +94,7 @@ class ToolDetail extends Component {
     this.setState({ isLoading: true });
     axios
       .get(baseURL + "/api/v1/paper/" + this.props.match.params.paperID)
-      .then(res => {
+      .then( async (res) => {
         this.setState({
           data: res.data.data[0],
           reviewData: res.data.reviewData,
@@ -109,7 +107,7 @@ class ToolDetail extends Component {
           : this.state.data.counter + 1;
         this.updateCounter(this.props.match.params.paperID, counter);
         if(!_.isUndefined(res.data.data[0].relatedObjects)) {
-          this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+          await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
         }
       })
       .catch((err) => {
@@ -118,7 +116,9 @@ class ToolDetail extends Component {
           window.localStorage.setItem('redirectMsg', err.response.data);
         }
         this.props.history.push({pathname: "/search?search=", search:""});
-    })
+      }).finally(() => {
+        this.setState({ isLoading: false });
+    });
   };
 
   doSearch = e => {
@@ -161,7 +161,7 @@ class ToolDetail extends Component {
   getRelatedObjects() {
     let tempRelatedObjects = [];
     this.state.data.relatedObjects.map(object =>
-      this.state.objects.map(item => {
+      this.state.objects.forEach(item => {
         if (object.objectId === item.id && item.activeflag === "active") {
           tempRelatedObjects.push(object);
         }
@@ -176,7 +176,6 @@ class ToolDetail extends Component {
       })
     );
     this.setState({ relatedObjects: tempRelatedObjects });
-    this.setState({ isLoading: false });
   }
 
   toggleDrawer = () => {
@@ -199,9 +198,6 @@ class ToolDetail extends Component {
       paperEdited,
       reviewAdded,
       replyAdded,
-      reviewData,
-      discourseTopic,
-      objects,
       relatedObjects,
       discoursePostCount,
       showDrawer
