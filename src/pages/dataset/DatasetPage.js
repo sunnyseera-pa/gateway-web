@@ -322,7 +322,7 @@ class DatasetDetail extends Component {
                 the dataset, and not to the quality of the actual datasets.
                 <br />
                 <br />
-                <a href="https://github.com/HDRUK/datasets#about-the-reports" target="_blank" className="white-12" rel="noopener noreferrer" >
+                <a href="https://github.com/HDRUK/datasets/tree/master/reports#hdr-uk-data-documentation-scores" target="_blank" className="white-12" rel="noopener noreferrer" >
                   Click to read more about how the score is calculated.
                 </a>
                 <br />
