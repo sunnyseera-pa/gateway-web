@@ -118,7 +118,13 @@ class DatasetDetail extends Component {
         this.getTechnicalMetadata();
         document.title = res.data.data[0].name.trim();
         let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
-        this.topicContext = { dataSetId: this.state.data.datasetid, relatedObjectId: this.state.data._id || '', title: this.state.data.name || '', subTitle: this.state.data.datasetfields.publisher || '' };
+        this.topicContext = { 
+                              dataSetIds: [this.state.data.datasetid], 
+                              tags: [this.state.data.name],
+                              relatedObjectIds: [this.state.data._id] || '', 
+                              title: this.state.data.datasetfields.publisher || '', 
+                              subTitle: this.state.data.name || '' 
+                            };
 
         this.updateCounter(this.props.match.params.datasetID, counter);
         
@@ -241,7 +247,6 @@ class DatasetDetail extends Component {
 
   toggleDrawer = () => {
     this.setState( ( prevState ) => {
-        debugger;
         if(prevState.showDrawer === true) {
             this.searchBar.current.getNumberOfUnreadMessages();
         }
@@ -392,9 +397,9 @@ class DatasetDetail extends Component {
                     </span>
                     {!data.tags.features || data.tags.features.length <= 0
                       ? ""
-                      : data.tags.features.map(keyword => {
+                      : data.tags.features.map((keyword, index) => {
                           return (
-                            <a href={"/search?search=" + keyword}>
+                            <a key={`tag-${index}`} href={"/search?search=" + keyword}>
                               <div className="ml-2 badge-tag">{keyword}</div>
                             </a>
                           );
@@ -772,6 +777,7 @@ class DatasetDetail extends Component {
                               {technicalMetadata && technicalMetadata.length > 0 ?
                               technicalMetadata.map((techMetadata, index) => (
                                 <TechnicalMetadata
+                                  key={`techMetadata-${index}`}
                                   technicalMetadata={techMetadata}
                                   index={index}
                                   doUpdateDataClassOpen={

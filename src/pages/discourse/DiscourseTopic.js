@@ -8,6 +8,8 @@ import axios from 'axios';
 import { baseURL } from '../../configs/url.config';
 
 class DiscourseTopic extends Component {
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -17,9 +19,15 @@ class DiscourseTopic extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
+
     let { topicId } = this.props;
     // 1. If this entity has a related Discourse topic, get it
     if(topicId) this.getTopic(topicId);
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   getTopic(topicId) {
@@ -37,9 +45,11 @@ class DiscourseTopic extends Component {
       .then((res) => {
         const { data: { topic }} = res;
         // 4. Store topic result in state
-        this.setState({
-          topic
-        });
+        if(this._isMounted) {
+          this.setState({
+            topic
+          });
+        }
         // 5. Update discussion counter in tab
         const postCount = topic.posts.length || 0;
         this.props.onUpdateDiscoursePostCount(postCount);
@@ -203,7 +213,6 @@ class DiscourseTopic extends Component {
         {topic && topic.posts && topic.posts.length ? (
           <div className={styles.rectangle}>
             { topic.posts.map((post, index) => 
-            <div>
               <DiscoursePost 
                 key={post.id} 
                 post={post} 
@@ -214,7 +223,6 @@ class DiscourseTopic extends Component {
                 onPostSubmit={this.submitPost} 
                 userState={userState}
               />
-            </div>
               ) }
           </div>
         ) : (
