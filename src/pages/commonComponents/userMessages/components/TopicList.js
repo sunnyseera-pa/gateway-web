@@ -10,7 +10,6 @@ const TopicList = ({topics, onTopicClick}) => {
     const [activeTopic, setActiveTopic]= useState('');
 
     const topicClick = (id)  =>{
-        console.log('TopicList parent click');
         onTopicClick(id);
     }
 

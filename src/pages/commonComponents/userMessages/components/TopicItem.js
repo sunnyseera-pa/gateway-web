@@ -19,6 +19,7 @@ const TopicItem = (props) => {
             return '';
         }
     }
+    
     return (
         <div className={`sideDrawer-nav-item ${active ? 'selected-item' : ''}`} onClick={(e) => onItemClick(e, _id)}>
             <div className="nav-meta">

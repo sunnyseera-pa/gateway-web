@@ -1,9 +1,7 @@
 import React from 'react';
 import axios from 'axios';
-import moment from 'moment';
 import { Row, Col, Button, Alert } from 'react-bootstrap';
 import Loading from './Loading'
-import { ReactComponent as PersonPlaceholderSvg } from '../../images/person-placeholder.svg';
 import SVGIcon from "../../images/SVGIcon"
 
 var baseURL = require('./BaseURL').getURL();
@@ -147,7 +145,7 @@ class RelatedObject extends React.Component {
                                             })}
                                         </Col> 
                                         <Col sm={2} lg={2} className="pad-right-24">
-                                            {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="collection-card-updated">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
+                                            {((this.props.showRelationshipAnswer && relatedObject.updated) || this.props.collectionUpdated) ? <span className="collection-card-updated">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
                                             {this.props.showRelationshipQuestion ? <Button variant="medium" className="soft-black-14" onClick={this.removeButton} ><SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />Remove</Button> : ''}
                                         </Col>
                                         <Col className="pad-left-24 pad-right-24 pad-top-18">

@@ -16,6 +16,7 @@ import 'react-web-tabs/dist/react-web-tabs.css';
 import SVGIcon from "../../images/SVGIcon";
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
+import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
 
 class Account extends Component {
 
@@ -36,7 +37,8 @@ class Account extends Component {
         isRejected: false,
         isProjectDeleted: false,
         isProjectApproved: false,
-        showDrawer: false
+        showDrawer: false,
+        showModal: false
     };
 
     constructor(props) {
@@ -110,8 +112,18 @@ class Account extends Component {
         });
     }
 
+    toggleModal = (showEnquiry = false) => {
+        this.setState( ( prevState ) => {
+            return { showModal: !prevState.showModal };
+        });
+    
+        if(showEnquiry) {
+          this.toggleDrawer();
+        }
+    }
+
     render() {
-        const { searchString, data, userState, isDeleted, isApproved, isRejected, isProjectApproved, isProjectRejected, isReviewApproved, isReviewRejected, tabId, showDrawer } = this.state;
+        const { searchString, data, userState, isDeleted, isApproved, isRejected, isProjectApproved, isProjectRejected, isReviewApproved, isReviewRejected, tabId, showDrawer, showModal } = this.state;
         if (typeof data.datasetids === 'undefined') {
             data.datasetids = [];
         }
@@ -303,9 +315,16 @@ class Account extends Component {
                     closed={this.toggleDrawer}>
                     <UserMessages 
                         closed={this.toggleDrawer}
+                        toggleModal={this.toggleModal}
                         drawerIsOpen={this.state.showDrawer} 
                     />
                 </SideDrawer>
+
+                <DataSetModal 
+                    open={showModal} 
+                    closed={this.toggleModal}
+                    userState={userState[0]}
+                />
             </div>
         );
     }

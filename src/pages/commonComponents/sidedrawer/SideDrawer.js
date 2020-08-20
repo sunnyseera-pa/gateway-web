@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
 import Backdrop from '../backdrop/Backdrop';
-import { ReactComponent as CloseButtonSvg } from '../../../images/close.svg';  
 
 import './SideDrawer.scss';
 

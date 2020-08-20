@@ -20,7 +20,7 @@ const Message = ({ messageDescription, createdBy, createdDate }) => {
             <div className="messageArea-item">
                 <div className="messageArea-item-header">
                     <div className="black-14-bold">{getName()}</div>
-                    <div className="gray500-13">{moment(createdDate).format('d MMM HH:mm')}</div>
+                    <div className="gray500-13">{moment(createdDate).format('DD MMM HH:mm')}</div>
                 </div>
                 <p>{messageDescription}</p>
             </div>
