@@ -3,10 +3,13 @@ import { Button, Modal, Row, Col, Tab, Tabs } from 'react-bootstrap';
 import RelatedResourcesModal from './RelatedResourceModal';
 import { ReactComponent as CloseButtonSvg } from '../../images/close.svg';  
 
+const RelatedResources =  React.forwardRef((props, ref) => {
 
- 
-function RelatedResources(props) {
-
+    React.useImperativeHandle(ref, () => ({
+        showModal() {
+            handleShow();
+        }
+    }));
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -22,10 +25,10 @@ function RelatedResources(props) {
         handleClose();
         props.doClearRelatedObjects();
     }
-    
+     
     return (
-        <Fragment className="flexCenter">
-            <Button variant='white' href={''} target="_blank" className="techDetailButton mr-2" onClick={handleShow}>
+        <Fragment className="flexCenter" >
+            <Button variant='white' href={''} target="_blank" className="techDetailButton mr-2" onClick={handleShow} ref={ref}>
                 + Add resource
             </Button>
             <Modal show={show} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter" centered className="relatedResourcesModal" dialogClassName="modal-70w">
@@ -59,5 +62,6 @@ function RelatedResources(props) {
         </Fragment>
     )
 } 
+)
 
 export default RelatedResources;

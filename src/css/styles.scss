@@ -608,7 +608,12 @@ svg:not(:root) {
 }
 
 .cancelButton {
-  width: 83px;
+  width: 82px;
+  height: 40px;
+}
+
+.publishButton {
+  width: 79px;
   height: 40px;
 }
 
@@ -811,6 +816,8 @@ textarea:focus {
 }
 
 .techDetailButton {
+  height: 40px;
+  width: 140px;
   border: 2px solid $teal !important;
   border-radius: 4px !important;
   background-color: $white;
@@ -1555,7 +1562,7 @@ iframe#discourse-embed-frame {
   left: 0;
   bottom: 0;
   width: 100%;
-  height: 70px;
+  height: 72px;
   background-color: $white;
   box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.09);
   z-index:1000;
@@ -2221,7 +2228,7 @@ iframe#discourse-embed-frame {
   min-height: 42px;
   min-width: 42px;
 }
-
+ 
 .actionBar {
     position: fixed;
     z-index: 998;
