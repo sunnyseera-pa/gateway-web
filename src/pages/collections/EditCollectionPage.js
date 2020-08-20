@@ -136,6 +136,7 @@ class EditCollectionPage extends React.Component {
     }
 
     removeObject = (id) => {
+        this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id);
         this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id.toString());
         this.setState({relatedObjects: this.state.relatedObjects})
         this.setState({didDelete: true});
