@@ -249,7 +249,6 @@ class AddEditToolPage extends React.Component {
 
     toggleDrawer = () => {
         this.setState( ( prevState ) => {
-            debugger;
             if(prevState.showDrawer === true) {
                 this.searchBar.current.getNumberOfUnreadMessages();
             }

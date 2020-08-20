@@ -4,7 +4,7 @@ const MessageFooter = ( { onSubmitMessage, onMessageChange, value} ) => {
     return (
         <Fragment>
             <form onSubmit={e => { onSubmitMessage(e)}}>
-                <div class="form-group">
+                <div className="form-group">
                     <textarea className="form-control" type="text" value={value} name="name" onChange={e => {onMessageChange(e)}} />
                 </div>
                 <button className="button-secondary" type="submit">Submit</button>
