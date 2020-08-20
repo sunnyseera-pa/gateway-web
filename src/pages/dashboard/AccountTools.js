@@ -36,7 +36,7 @@ class AccountTools extends React.Component {
     }
 
     doToolsCall() {
-            axios.get(baseURL + '/api/v1/tools')
+            axios.get(baseURL + '/api/v1/tools/getList')
                 .then((res) => {
                     this.setState({ data: res.data.data, isLoading: false });
                 });
