@@ -123,7 +123,7 @@ class AddCollectionPage extends React.Component {
     }
 
     removeObject = (id) => {
-        this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id.toString());
+        this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id);
         this.setState({relatedObjects: this.state.relatedObjects})
         this.setState({didDelete: true});
     }
