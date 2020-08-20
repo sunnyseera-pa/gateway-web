@@ -123,7 +123,6 @@ const UserMessages = ({ topicContext, closed, drawerIsOpen = false }) => {
 	 * @returns [{Object}] topics
 	 */
 	const onTopicClick = (id = '') => {
-		debugger;
 		// 1. loop over topics and set active state to the id
 		const generatedTopics = [...topics].reduce((arr, item) => {
 			let topic = {
@@ -219,7 +218,6 @@ const UserMessages = ({ topicContext, closed, drawerIsOpen = false }) => {
 	 * @desc Event to Post message to db
 	 */
 	const onSubmitMessage = (e) => {
-		debugger;
 		e.preventDefault();
 		if (_.isEmpty(messageDescription)) return false;
 
