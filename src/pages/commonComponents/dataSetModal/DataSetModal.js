@@ -68,8 +68,6 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 							/>
 						</div>
 
-						{/* <ReactMarkdown source={data.description} /> */}
-
 						<p>
 							We are responsible for the largest programme of clinical audit in
 							the UK. Our data access request service ensures that data from
@@ -82,7 +80,6 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 				</div>
 
 				<div className='appModal-body'>
-					{/* <ReactMarkdown source={data.description} /> */}
 					<div className='appModal-body--item'>
 						<h2 className='black-bold-17'>Before you submit an application</h2>
 						<p className='gray800-14'>

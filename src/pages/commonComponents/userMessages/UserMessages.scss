@@ -108,7 +108,7 @@
         &-action {
             display: flex;
             flex-flow: row nowrap;
-            justify-content: space-between;
+            justify-content: flex-end;
             max-width: 310px;
             width: 100%;
         }
