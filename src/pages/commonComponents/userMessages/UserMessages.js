@@ -178,6 +178,14 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 		}
 	};
 
+	const getPublihserById = (publihserId = '') => {
+		if(!_.isEmpty(publihserId)) {
+			const response = axios.get(`${baseURL}/api/v1/publishers/${publihserId}`);
+			return response;
+		}
+		return {};
+	}
+
 	/**
 	 * Request Access
 	 * @param topic {ObjectId}

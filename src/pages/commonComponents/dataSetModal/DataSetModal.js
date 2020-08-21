@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
+import ReactMarkdown from 'react-markdown';
 import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg';
 import { Event } from '../../../tracking';
 import DataSetHelper from '../../../utils/DataSetHelper.util';
@@ -66,6 +67,9 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 								onClick={() => onCloseModal(false)}
 							/>
 						</div>
+
+						{/* <ReactMarkdown source={data.description} /> */}
+
 						<p>
 							We are responsible for the largest programme of clinical audit in
 							the UK. Our data access request service ensures that data from
@@ -78,6 +82,7 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 				</div>
 
 				<div className='appModal-body'>
+					{/* <ReactMarkdown source={data.description} /> */}
 					<div className='appModal-body--item'>
 						<h2 className='black-bold-17'>Before you submit an application</h2>
 						<p className='gray800-14'>
@@ -146,16 +151,16 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 				<div className='appModal-footer'>
 					<div className='appModal-footer--wrap'>
 						<button
-							className='button-secondary mr-4'
+							className='button-secondary mr-2'
 							onClick={(e) => onRequestAccess(e)}
 						>
-							Request Access
+							Request access
 						</button>
 						<button
 							className='btn btn-primary addButton'
 							onClick={() => onCloseModal(true)}
 						>
-							Make Enquiry
+							Make an Enquiry
 						</button>
 					</div>
 				</div>
