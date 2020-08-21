@@ -54,7 +54,8 @@ class ToolDetail extends Component {
     relatedObjects: [],
     discoursePostCount: 0,
     showDrawer: false,
-    showModal: false
+    showModal: false,
+    context: {}
   };
 
   constructor(props) {
@@ -193,17 +194,12 @@ class ToolDetail extends Component {
     });
   }
 
-  toggleModal = (showEnquiry = false) => {
+  toggleModal = (showEnquiry = false, context = {}) => {
     this.setState( ( prevState ) => {
-        return { showModal: !prevState.showModal };
+        return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
     });
-
-    if(showEnquiry) {
-      this.toggleDrawer();
-    }
-}
+  }
   
-
   render() {
     const {
       searchString,
@@ -217,7 +213,8 @@ class ToolDetail extends Component {
       relatedObjects,
       discoursePostCount,
       showDrawer,
-      showModal
+      showModal,
+      context
     } = this.state;
 
 
@@ -553,8 +550,9 @@ class ToolDetail extends Component {
 
         <DataSetModal 
           open={showModal} 
+          context={context}
           closed={this.toggleModal}
-          userState={userState[0]}
+          userState={userState[0]} 
         />
       
 
