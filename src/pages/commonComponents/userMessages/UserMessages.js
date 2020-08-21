@@ -14,12 +14,12 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 	const defaultMessage =
 		'Use messages to clarify questions with the data custodian before starting your application to request access to the data. Provide a brief description of your project and what datasets you are interested in.';
 
-    let relatedObjectIds, title, subTitle, dataSetIds, tags;
+    let relatedObjectIds, title, subTitle, datasets, tags;
     
     let history = useHistory();
 
 	if (typeof topicContext !== 'undefined')
-		({ relatedObjectIds = [], title = '', subTitle = '', dataSetIds = [], tags = [] } = topicContext);
+		({ relatedObjectIds = [], title = '', subTitle = '', datasets = [], tags = [] } = topicContext);
 
 	const [messageDescription, setMessageDescription] = useState('');
 
@@ -45,7 +45,7 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 				// 1. clone topics from t
 				let topicsArr = [...topics];
 				// 2. check if  dataset id has been passed
-				if(_.isEmpty(dataSetIds) && !_.isEmpty(topicsArr)) {
+				if(_.isEmpty(datasets) && !_.isEmpty(topicsArr)) {
 					const initialTopic = topicsArr[0];
 					topicsArr[0].active = true;
 					await getTopicById(initialTopic._id);
@@ -191,11 +191,11 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
             if(document.body.classList.contains('no-scroll'))
                 document.body.classList.remove('no-scroll');
 
-			let { dataSetIds: dSIds } = { ...activeTopic };
-			if (typeof dSIds !== 'undefined' && !_.isEmpty(dSIds)) {
-                id = dSIds[0];
+			let { datasets: dS } = { ...activeTopic };
+			if (typeof dS !== 'undefined' && !_.isEmpty(dS)) {
+                id = dS[0].datasetId;
 			} else {
-                id = dataSetIds[0];
+                id = datasets[0].datasetId;
             }
             history.push({pathname: `/data-access-request/dataset/${id}`});
 		} 

@@ -193,7 +193,6 @@ class ToolDetail extends Component {
 
 	toggleDrawer = () => {
 		this.setState((prevState) => {
-			debugger;
 			if (prevState.showDrawer === true) {
 				this.searchBar.current.getNumberOfUnreadMessages();
 			}
