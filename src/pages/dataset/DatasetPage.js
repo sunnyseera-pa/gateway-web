@@ -116,11 +116,12 @@ class DatasetDetail extends Component {
         document.title = res.data.data[0].name.trim();
         let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
         this.topicContext = { 
-          dataSetId: this.state.data.datasetid, 
-          relatedObjectId: this.state.data._id || '', 
-          title: this.state.data.name || '', 
-          subTitle: this.state.data.datasetfields.publisher || '', 
-          contactPoint: this.state.data.datasetfields.contactPoint ||  '' 
+          datasets: [{ datasetId: this.state.data.datasetid, publisher: this.state.data.datasetfields.publisher }], 
+          tags: [this.state.data.name],
+          relatedObjectIds: [this.state.data._id] || '', 
+          title: this.state.data.datasetfields.publisher || '', 
+          subTitle: this.state.data.name || '',
+          contactPoint: this.state.data.datasetfields.contactPoint ||  ''  
         };
 
         this.updateCounter(this.props.match.params.datasetID, counter);
