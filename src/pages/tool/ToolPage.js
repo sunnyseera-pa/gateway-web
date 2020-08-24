@@ -10,8 +10,6 @@ import RelatedObject from "../commonComponents/RelatedObject";
 import SearchBar from "../commonComponents/SearchBar";
 import Creators from "../commonComponents/Creators";
 import DiscourseTopic from "../discourse/DiscourseTopic";
-import AddToCollection from "../commonComponents/AddToCollection";
-
 import "react-tabs/style/react-tabs.css";
 import { baseURL } from "../../configs/url.config";
 import { PageView, initGA } from "../../tracking";
@@ -24,8 +22,9 @@ import SVGIcon from "../../images/SVGIcon";
 import { ReactComponent as EmptyStarIconSvg } from "../../images/starempty.svg";
 import { ReactComponent as FullStarIconSvg } from "../../images/star.svg";
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
-import ActionBar from '../commonComponents/actionbar/ActionBar';
 import UserMessages from "../commonComponents/userMessages/UserMessages";
+import ActionBar from '../commonComponents/actionbar/ActionBar';
+import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 
 class ToolDetail extends Component {
   // initialize our state
@@ -637,16 +636,8 @@ class ToolDetail extends Component {
             />
         </SideDrawer>
 
-        <ActionBar userState={userState}>
-          <Button 
-            variant="white"
-            href={"/tool/edit/" + data.id}
-            className="techDetailButton mr-2"
-          >
-            Edit
-          </Button> 
-        
-          <AddToCollection className="addToCollectionButton" data={data} userState={userState} />
+        <ActionBar userState={userState}> 
+          <ResourcePageButtons data={data} userState={userState} />
         </ActionBar>
       </div>
     );

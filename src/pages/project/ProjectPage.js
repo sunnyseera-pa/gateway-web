@@ -14,9 +14,9 @@ import Creators from "../commonComponents/Creators";
 import SVGIcon from "../../images/SVGIcon";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
-import ActionBar from '../commonComponents/actionbar/ActionBar';
 import UserMessages from "../commonComponents/userMessages/UserMessages";
-import AddToCollection from "../commonComponents/AddToCollection"; 
+import ActionBar from '../commonComponents/actionbar/ActionBar';
+import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import _ from 'lodash';
 
 // import ReactGA from 'react-ga';
@@ -490,16 +490,9 @@ class ProjectDetail extends Component {
           />
         </SideDrawer>  
 
-            <ActionBar userState={userState}> 
-            <Button
-              variant="white"
-              href={"/project/edit/" + data.id}
-              className="techDetailButton mr-2"
-            >
-              Edit
-            </Button>
-            <AddToCollection className="addToCollectionButton" data={data} userState={userState} />
-            </ActionBar> 
+        <ActionBar userState={userState}> 
+          <ResourcePageButtons data={data} userState={userState} />
+        </ActionBar> 
 
       </div>
     );

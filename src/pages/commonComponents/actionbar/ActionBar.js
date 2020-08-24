@@ -2,11 +2,9 @@ import React from 'react';
 import { Row } from "react-bootstrap";
 import './ActionBar.scss'; 
 
-const ActionBar = (props) => { 
+const ActionBar = (props) => {  
     
     return (
-
-        // console.log('props: ' + JSON.stringify(props.userState[0].loggedIn))
         !props.userState[0].loggedIn ? (
             ""
         ) : (

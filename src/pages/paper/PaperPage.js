@@ -10,9 +10,9 @@ import RelatedObject from "../commonComponents/RelatedObject";
 import SearchBar from "../commonComponents/SearchBar";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
-import ActionBar from '../commonComponents/actionbar/ActionBar';
 import UserMessages from "../commonComponents/userMessages/UserMessages";
-import AddToCollection from "../commonComponents/AddToCollection"; 
+import ActionBar from '../commonComponents/actionbar/ActionBar';
+import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import "react-tabs/style/react-tabs.css";
 import { baseURL } from "../../configs/url.config";
 // import ReactGA from 'react-ga';
@@ -541,14 +541,7 @@ class ToolDetail extends Component {
         </SideDrawer> 
 
         <ActionBar userState={userState}> 
-            <Button
-              variant="white"
-              href={"/paper/edit/" + data.id}
-              className="techDetailButton mr-2"
-            >
-              Edit
-            </Button>
-            <AddToCollection className="addToCollectionButton" data={data} userState={userState} />
+          <ResourcePageButtons data={data} userState={userState} /> 
         </ActionBar> 
       
       </div>
