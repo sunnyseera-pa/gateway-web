@@ -794,7 +794,6 @@ class DatasetDetail extends Component {
                 topicContext={this.topicContext} />
         </SideDrawer>
 
-
         <DataSetModal 
           open={showModal} 
           closed={this.toggleModal}

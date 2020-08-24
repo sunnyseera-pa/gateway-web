@@ -557,6 +557,7 @@ class DataAccessRequest extends Component {
 
 				<div id='darContainer' className='flex-form'>
 					<div id='darLeftCol' className='scrollable-sticky-column'>
+						
 						{[...this.state.jsonSchema.pages].map((item, idx) => (
 							<div
 								key={item.index}
