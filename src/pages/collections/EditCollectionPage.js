@@ -137,7 +137,7 @@ class EditCollectionPage extends React.Component {
             this.state.relatedObjects.push({'objectId':object.objectId, 'reason':'', 'objectType':object.type, 'user':this.state.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
         })
 
-        this.setState({tempRelatedObjectIds: []}) 
+        this.setState({tempRelatedObjectIds: []})  
     }
 
     clearRelatedObjects = () => {
@@ -347,7 +347,7 @@ const EditCollectionForm = (props) => {
                         </div>
 
                         <div className="rectangle mt-2">
-                            <span className="black-20">Add resources</span>
+                            <span className="black-20">Add resources</span> 
                             <br/>
                             <span className="gray800-14">Link resources in the gateway to your collection page.</span>
                         </div>
@@ -399,7 +399,7 @@ const EditCollectionForm = (props) => {
                 <Col sm={1} lg={10} />
             </Row>
             <Row>
-                <span className="formBottomGap"></span>
+                <span className="formBottomGap"></span> 
             </Row>
         </div>
     );

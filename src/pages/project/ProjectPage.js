@@ -15,6 +15,7 @@ import SVGIcon from "../../images/SVGIcon";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
+import AddToCollection from "../commonComponents/AddToCollection";
 import _ from 'lodash';
 
 // import ReactGA from 'react-ga';
@@ -492,6 +493,7 @@ class ProjectDetail extends Component {
           ""
         ) : (
           <div className="actionBar">
+            <Row className="floatRight">
             <Button
               variant="white"
               href={"/project/edit/" + data.id}
@@ -499,6 +501,8 @@ class ProjectDetail extends Component {
             >
               Edit
             </Button>
+            <AddToCollection className="addToCollectionButton" data={data} userState={userState} />
+            </Row>
           </div>
         )}
       </div>

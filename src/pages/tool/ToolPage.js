@@ -10,6 +10,7 @@ import RelatedObject from "../commonComponents/RelatedObject";
 import SearchBar from "../commonComponents/SearchBar";
 import Creators from "../commonComponents/Creators";
 import DiscourseTopic from "../discourse/DiscourseTopic";
+import AddToCollection from "../commonComponents/AddToCollection";
 
 import "react-tabs/style/react-tabs.css";
 import { baseURL } from "../../configs/url.config";
@@ -638,13 +639,19 @@ class ToolDetail extends Component {
           ""
         ) : (
           <div className="actionBar"> 
-            <Button
-              variant="white"
-              href={"/tool/edit/" + data.id}
-              className="techDetailButton mr-2"
-            >
-              Edit
-            </Button>
+
+          <Row className="floatRight">
+              <Button 
+                variant="white"
+                href={"/tool/edit/" + data.id}
+                className="techDetailButton mr-2"
+              >
+                Edit
+              </Button> 
+        
+        {/* {console.log('data on toolpg - ' + JSON.stringify(data))} */}
+              <AddToCollection className="addToCollectionButton" data={data} userState={userState} />
+            </Row>
           </div>
         )}
       </div>

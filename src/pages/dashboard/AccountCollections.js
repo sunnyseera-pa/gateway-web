@@ -18,7 +18,7 @@ class AccountCollections extends React.Component {
         this.state.userState = props.userState;
     }
 
-    // initialize our state
+    // initialize our state 
     state = {
         userState: [],
         key: 'active',
@@ -43,7 +43,7 @@ class AccountCollections extends React.Component {
                 .then((res) => {
                     this.setState({ data: res.data.data, isLoading: false });
                 });
-        }
+        } 
         else {
             axios.get(baseURL + '/api/v1/accounts/collections?id=' + this.state.userState[0].id + '')
                 .then((res) => {

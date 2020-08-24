@@ -11,7 +11,7 @@ import SearchBar from "../commonComponents/SearchBar";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
-
+import AddToCollection from "../commonComponents/AddToCollection"; 
 import "react-tabs/style/react-tabs.css";
 import { baseURL } from "../../configs/url.config";
 // import ReactGA from 'react-ga';
@@ -542,6 +542,7 @@ class ToolDetail extends Component {
           ""
         ) : (
           <div className="actionBar">
+            <Row className="floatRight">
             <Button
               variant="white"
               href={"/paper/edit/" + data.id}
@@ -549,6 +550,8 @@ class ToolDetail extends Component {
             >
               Edit
             </Button>
+            <AddToCollection className="addToCollectionButton" data={data} userState={userState} />
+            </Row>
           </div>
         )}
       </div>

@@ -258,7 +258,7 @@ class SearchBar extends React.Component {
                                             </Col>
                                         </Row>
                                     </Container>
-                                </div>
+                                </div> 
 
                                 {(() => {
                                     if (userState[0].loggedIn === true) {
