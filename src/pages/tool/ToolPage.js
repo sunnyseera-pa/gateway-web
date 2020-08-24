@@ -17,7 +17,7 @@ import ReactMarkdown from "react-markdown";
 import Rating from "react-rating";
 import moment from "moment";
 import _ from 'lodash';
-
+import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import SVGIcon from "../../images/SVGIcon";
 import { ReactComponent as EmptyStarIconSvg } from "../../images/starempty.svg";
 import { ReactComponent as FullStarIconSvg } from "../../images/star.svg";
@@ -59,7 +59,8 @@ class ToolDetail extends Component {
     ],
     relatedObjects: [],
     discoursePostCount: 0,
-    showDrawer: false
+    showDrawer: false,
+    showModal: false
   };
  
   constructor(props) {
@@ -202,6 +203,16 @@ class ToolDetail extends Component {
             return { showDrawer: !prevState.showDrawer };
         });
     }
+    
+    toggleModal = (showEnquiry = false) => {
+		this.setState((prevState) => {
+			return { showModal: !prevState.showModal };
+		});
+
+		if (showEnquiry) {
+			this.toggleDrawer();
+		}
+	};
 
   render() {
     const {
@@ -216,7 +227,8 @@ class ToolDetail extends Component {
       reviewData,
       relatedObjects,
       discoursePostCount,
-      showDrawer
+      showDrawer,
+      showModal
     } = this.state;
 
     if (isLoading) {
@@ -627,14 +639,19 @@ class ToolDetail extends Component {
             <Col sm={1} />
           </Row>
         </Container>
-        <SideDrawer
-            open={showDrawer}
-            closed={this.toggleDrawer}>
-            <UserMessages 
-                closed={this.toggleDrawer}
-                drawerIsOpen={this.state.showDrawer}
-            />
-        </SideDrawer>
+    		<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
+					<UserMessages
+						closed={this.toggleDrawer}
+						toggleModal={this.toggleModal}
+						drawerIsOpen={this.state.showDrawer}
+					/>
+				</SideDrawer>
+
+				<DataSetModal
+					open={showModal}
+					closed={this.toggleModal}
+					userState={userState[0]}
+				/>
 
         <ActionBar userState={userState}> 
           <ResourcePageButtons data={data} userState={userState} />

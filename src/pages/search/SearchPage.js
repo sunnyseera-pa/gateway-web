@@ -13,6 +13,7 @@ import NoResults from '../commonComponents/NoResults';
 import { NotificationContainer } from 'react-notifications';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
+import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -52,6 +53,7 @@ class SearchPage extends React.Component {
         isLoading: true,
         isResultsLoading: true,
         showDrawer: false,
+        showModal: false,
         userState: [{
             loggedIn: false,
             role: "Reader",
@@ -340,12 +342,21 @@ class SearchPage extends React.Component {
 
     toggleDrawer = () => {
         this.setState( ( prevState ) => {
-            debugger;
             if(prevState.showDrawer === true) {
                 this.searchBar.current.getNumberOfUnreadMessages();
             }
             return { showDrawer: !prevState.showDrawer };
         });
+    }
+
+    toggleModal = (showEnquiry = false) => {
+        this.setState( ( prevState ) => {
+            return { showModal: !prevState.showModal };
+        });
+    
+        if(showEnquiry) {
+          this.toggleDrawer();
+        }
     }
 
     render() {
@@ -387,7 +398,8 @@ class SearchPage extends React.Component {
             paperIndex, 
             personIndex,
             
-            showDrawer
+            showDrawer,
+            showModal
         } = this.state;
 
         var { key } = this.state;
@@ -712,9 +724,16 @@ class SearchPage extends React.Component {
                     closed={this.toggleDrawer}>
                     <UserMessages 
                         closed={this.toggleDrawer}
+                        toggleModal={this.toggleModal}
                         drawerIsOpen={this.state.showDrawer} 
                     />
                 </SideDrawer>
+
+                <DataSetModal 
+                    open={showModal} 
+                    closed={this.toggleModal}
+                    userState={userState[0]}
+                />
             </div>
         );
     }

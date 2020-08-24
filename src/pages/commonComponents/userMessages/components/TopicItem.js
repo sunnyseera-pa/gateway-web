@@ -14,11 +14,12 @@ const TopicItem = (props) => {
     const setCreatedDate = () => {
         if(typeof createdDate !== 'undefined') {
             let reg = /^.*new.*$/gmi;
-            return reg.test(createdDate) ? 'New message' : moment(createdDate).format('d MMM HH:mm');
+            return reg.test(createdDate) ? 'New message' : moment(createdDate).format('DD MMM HH:mm');
         } else {
             return '';
         }
     }
+    
     return (
         <div className={`sideDrawer-nav-item ${active ? 'selected-item' : ''}`} onClick={(e) => onItemClick(e, _id)}>
             <div className="nav-meta">

@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import PersonTitle from './components/PersonTitle';
-
 import {Container, Row, Col, Tabs, Tab} from 'react-bootstrap';
-
 import SearchBar from '../commonComponents/SearchBar';
 import DataSet from '../commonComponents/DataSet';
- 
 import Tool from '../commonComponents/Tool';
 import NotFound from '../commonComponents/NotFound';
 import ReviewsTitle from '../commonComponents/ReviewTitle';
@@ -14,8 +11,8 @@ import Loading from '../commonComponents/Loading'
 import Project from '../commonComponents/Project';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
-// import ReactGA from 'react-ga'; 
-import {PageView, initGA} from '../../tracking';
+import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
+import { PageView, initGA } from '../../tracking';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -32,8 +29,10 @@ class PersonDetail extends Component {
       role: "Reader",
       id: null,
       firstName: null,
-      showDrawer: false
-    }]
+      
+    }],
+    showDrawer: false,
+    showModal: false
   };
 
   constructor(props) {
@@ -78,16 +77,25 @@ class PersonDetail extends Component {
 
   toggleDrawer = () => {
     this.setState( ( prevState ) => {
-        debugger;
         if(prevState.showDrawer === true) {
             this.searchBar.current.getNumberOfUnreadMessages();
         }
         return { showDrawer: !prevState.showDrawer };
     });
+  }
+
+  toggleModal = (showEnquiry = false) => {
+    this.setState( ( prevState ) => {
+        return { showModal: !prevState.showModal };
+    });
+
+    if(showEnquiry) {
+      this.toggleDrawer();
+    }
 }
 
   render() {
-    const { searchString, data, isLoading, userState, showDrawer } = this.state;
+    const { searchString, data, isLoading, userState, showDrawer, showModal } = this.state;
 
     if (isLoading) {
       return <Container><Loading /></Container>;
@@ -154,9 +162,16 @@ class PersonDetail extends Component {
           closed={this.toggleDrawer}>
           <UserMessages 
               closed={this.toggleDrawer}
+              toggleModal={this.toggleModal}
               drawerIsOpen={this.state.showDrawer} 
           />
         </SideDrawer>
+
+        <DataSetModal 
+          open={showModal} 
+          closed={this.toggleModal}
+          userState={userState[0]}
+    />
       </div>
     );
   }

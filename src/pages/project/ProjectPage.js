@@ -3,6 +3,7 @@
 import React, { Component } from "react";
 import ReactMarkdown from "react-markdown";
 import axios from "axios";
+import _ from 'lodash';
 import queryString from "query-string";
 import { Container, Row, Col, Tabs, Tab, Alert, Button } from "react-bootstrap";
 import moment from "moment";
@@ -20,6 +21,7 @@ import ResourcePageButtons from '../commonComponents/resourcePageButtons/Resourc
 import _ from 'lodash';
 
 // import ReactGA from 'react-ga';
+import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
 import { PageView, initGA } from "../../tracking";
 
 var baseURL = require("../commonComponents/BaseURL").getURL();
@@ -51,7 +53,8 @@ class ProjectDetail extends Component {
     ],
     relatedObjects: [],
     discoursePostCount: 0,
-    showDrawer: false
+    showDrawer: false,
+    showModal: false
   };
 
   constructor(props) {
@@ -180,13 +183,22 @@ class ProjectDetail extends Component {
 
   toggleDrawer = () => {
     this.setState( ( prevState ) => {
-        debugger;
         if(prevState.showDrawer === true) {
             this.searchBar.current.getNumberOfUnreadMessages();
         }
         return { showDrawer: !prevState.showDrawer };
     });
-}
+  }
+
+  toggleModal = (showEnquiry = false) => {
+    this.setState( ( prevState ) => {
+        return { showModal: !prevState.showModal };
+    });
+
+    if(showEnquiry) {
+      this.toggleDrawer();
+    }
+  }
 
   render() {
     const {
@@ -198,7 +210,8 @@ class ProjectDetail extends Component {
       userState,
       relatedObjects,
       discoursePostCount,
-      showDrawer
+      showDrawer,
+      showModal
     } = this.state;
 
     if (isLoading) {
@@ -486,6 +499,7 @@ class ProjectDetail extends Component {
           closed={this.toggleDrawer}>
           <UserMessages 
               closed={this.toggleDrawer}
+              toggleModal={this.toggleModal}
               drawerIsOpen={this.state.showDrawer}
           />
         </SideDrawer>  
@@ -493,6 +507,12 @@ class ProjectDetail extends Component {
         <ActionBar userState={userState}> 
           <ResourcePageButtons data={data} userState={userState} />
         </ActionBar> 
+
+        <DataSetModal 
+          open={showModal} 
+          closed={this.toggleModal}
+          userState={userState[0]}
+        />
 
       </div>
     );

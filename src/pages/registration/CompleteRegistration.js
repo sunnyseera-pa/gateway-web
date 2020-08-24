@@ -2,14 +2,12 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-
 import { Row, Col, Container, Button, Alert, Form, InputGroup } from 'react-bootstrap';
-
 import SearchBar from '../commonComponents/SearchBar';
 import Loading from '../commonComponents/Loading';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
-
+import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
 import 'react-tabs/style/react-tabs.css';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -32,7 +30,8 @@ class CompleteRegistration extends Component {
             role: "Reader",
             id: null,
             name: null
-        }]
+        }],
+        showModal: false
     };
 
     doSearch = (e) => { //fires on enter on searchbar
@@ -45,12 +44,21 @@ class CompleteRegistration extends Component {
 
     toggleDrawer = () => {
         this.setState( ( prevState ) => {
-            debugger;
             if(prevState.showDrawer === true) {
                 this.searchBar.current.getNumberOfUnreadMessages();
             }
             return { showDrawer: !prevState.showDrawer };
         });
+    }
+
+    toggleModal = (showEnquiry = false) => {
+        this.setState( ( prevState ) => {
+            return { showModal: !prevState.showModal };
+        });
+    
+        if(showEnquiry) {
+          this.toggleDrawer();
+        }
     }
 
     componentDidMount() {
@@ -65,7 +73,7 @@ class CompleteRegistration extends Component {
     }
 
     render() {
-        const { isLoading, searchString, userState, userdata, showDrawer } = this.state;
+        const { isLoading, searchString, userState, userdata, showDrawer, showModal } = this.state;
         
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -92,9 +100,16 @@ class CompleteRegistration extends Component {
                     closed={this.toggleDrawer}>
                     <UserMessages 
                         closed={this.toggleDrawer}
+                        toggleModal={this.toggleModal}
                         drawerIsOpen={this.state.showDrawer} 
                     />
                 </SideDrawer>
+
+                <DataSetModal 
+                    open={showModal} 
+                    closed={this.toggleModal}
+                    userState={userState[0]}
+                />
             </div>
         );
     }

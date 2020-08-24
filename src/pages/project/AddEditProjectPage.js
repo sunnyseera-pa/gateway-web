@@ -8,10 +8,8 @@ import Loading from '../commonComponents/Loading'
 import AddEditProjectForm from './AddEditProjectForm';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
-
+import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-
-
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -45,7 +43,8 @@ class AddEditProjectPage extends React.Component {
         relatedObjects: [],
         didDelete: false,
         isEdit: false,
-        showDrawer: false
+        showDrawer: false,
+        showModal: false
     };
 
     async componentDidMount() {
@@ -188,7 +187,6 @@ class AddEditProjectPage extends React.Component {
 
     toggleDrawer = () => {
         this.setState( ( prevState ) => {
-            debugger;
             if(prevState.showDrawer === true) {
                 this.searchBar.current.getNumberOfUnreadMessages();
             }
@@ -196,8 +194,18 @@ class AddEditProjectPage extends React.Component {
         });
     }
 
+    toggleModal = (showEnquiry = false) => {
+        this.setState( ( prevState ) => {
+            return { showModal: !prevState.showModal };
+        });
+    
+        if(showEnquiry) {
+          this.toggleDrawer();
+        }
+    }
+
     render() {
-        const { data, isEdit, combinedTopic, combinedCategories, combinedUsers, combinedFeatures, isLoading, userState, searchString, datasetData, toolData, projectData, personData, paperData, summary, relatedObjects, didDelete, showDrawer } = this.state;
+        const { data, isEdit, combinedTopic, combinedCategories, combinedUsers, combinedFeatures, isLoading, userState, searchString, datasetData, toolData, projectData, personData, paperData, summary, relatedObjects, didDelete, showDrawer, showModal } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -214,9 +222,16 @@ class AddEditProjectPage extends React.Component {
                     closed={this.toggleDrawer}>
                     <UserMessages 
                         closed={this.toggleDrawer}
+                        toggleModal={this.toggleModal}
                         drawerIsOpen={this.state.showDrawer} 
                     />
                 </SideDrawer>
+
+                <DataSetModal 
+                    open={showModal} 
+                    closed={this.toggleModal}
+                    userState={userState[0]}
+                />
             </div>
         );
     }

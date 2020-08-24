@@ -540,13 +540,13 @@ input[type='radio']:checked:after {
 
 .tabList {
   background-color: $white;
-  height: 100vh;
-  display: block !important;
-  position: fixed;
-  top: 0px;
-  padding-top: 100px;
-  width: 17%;
+  height: min-content;
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 36px;
+  width: 100%;
   min-width: 110px;
+  margin-top: 36px;
 }
 
 .verticalNavBarHolder {

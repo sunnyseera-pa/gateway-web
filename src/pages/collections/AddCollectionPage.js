@@ -21,6 +21,8 @@ import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from "../commonComponents/userMessages/UserMessages";
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 
+import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
+
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class AddCollectionPage extends React.Component {
@@ -48,7 +50,8 @@ class AddCollectionPage extends React.Component {
         relatedObjectIds: [],
         relatedObjects: [],
         didDelete: false,
-        showDrawer: false
+        showDrawer: false,
+        showModal: false
     };
  
     async componentDidMount() {
@@ -143,7 +146,6 @@ class AddCollectionPage extends React.Component {
 
     toggleDrawer = () => {
         this.setState( ( prevState ) => {
-            debugger;
             if(prevState.showDrawer === true) {
                 this.searchBar.current.getNumberOfUnreadMessages();
             }
@@ -151,8 +153,18 @@ class AddCollectionPage extends React.Component {
         });
     }
 
+    toggleModal = (showEnquiry = false) => {
+        this.setState( ( prevState ) => {
+            return { showModal: !prevState.showModal };
+        });
+    
+        if(showEnquiry) {
+          this.toggleDrawer();
+        }
+    }
+
     render() {
-        const { data, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, paperData, summary, relatedObjects, didDelete, showDrawer } = this.state;
+        const { data, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, paperData, summary, relatedObjects, didDelete, showDrawer, showModal } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -169,9 +181,16 @@ class AddCollectionPage extends React.Component {
                     closed={this.toggleDrawer}>
                     <UserMessages
                         closed={this.toggleDrawer}
+                        toggleModal={this.toggleModal}
                         drawerIsOpen={this.state.showDrawer} 
                     />
                 </SideDrawer>
+
+                <DataSetModal 
+                    open={showModal} 
+                    closed={this.toggleModal}
+                    userState={userState[0]}
+                />
             </div>
         );
     }

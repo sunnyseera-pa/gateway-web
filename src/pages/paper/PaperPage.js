@@ -13,9 +13,10 @@ import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from "../commonComponents/userMessages/UserMessages";
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
+import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
+
 import "react-tabs/style/react-tabs.css";
 import { baseURL } from "../../configs/url.config";
-// import ReactGA from 'react-ga';
 import { PageView, initGA } from "../../tracking";
 import SVGIcon from "../../images/SVGIcon";
 import ReactMarkdown from "react-markdown";
@@ -55,7 +56,8 @@ class ToolDetail extends Component {
     ],
     relatedObjects: [],
     discoursePostCount: 0,
-    showDrawer: false
+    showDrawer: false,
+    showModal: false
   };
 
   constructor(props) {
@@ -187,13 +189,23 @@ class ToolDetail extends Component {
 
   toggleDrawer = () => {
     this.setState( ( prevState ) => {
-        debugger;
         if(prevState.showDrawer === true) {
             this.searchBar.current.getNumberOfUnreadMessages();
         }
         return { showDrawer: !prevState.showDrawer };
     });
   }
+
+  toggleModal = (showEnquiry = false) => {
+    this.setState( ( prevState ) => {
+        return { showModal: !prevState.showModal };
+    });
+
+    if(showEnquiry) {
+      this.toggleDrawer();
+    }
+}
+  
 
   render() {
     const {
@@ -207,7 +219,8 @@ class ToolDetail extends Component {
       replyAdded,
       relatedObjects,
       discoursePostCount,
-      showDrawer
+      showDrawer,
+      showModal
     } = this.state;
 
 
@@ -536,6 +549,7 @@ class ToolDetail extends Component {
           closed={this.toggleDrawer}>
           <UserMessages 
               closed={this.toggleDrawer}
+              toggleModal={this.toggleModal}
               drawerIsOpen={this.state.showDrawer} 
           />
         </SideDrawer> 
@@ -543,6 +557,12 @@ class ToolDetail extends Component {
         <ActionBar userState={userState}> 
           <ResourcePageButtons data={data} userState={userState} /> 
         </ActionBar> 
+      
+        <DataSetModal 
+          open={showModal} 
+          closed={this.toggleModal}
+          userState={userState[0]}
+        />
       
       </div>
     );

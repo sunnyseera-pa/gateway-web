@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import { Redirect, useHistory } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import { useHistory } from 'react-router-dom';
 import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg';
 import axios from 'axios';
 import _ from 'lodash';
@@ -11,22 +10,20 @@ import MessageItem from './components/MessageItem';
 import MessageFooter from './components/MessageFooter';
 import './UserMessages.scss';
 
-const UserMessages = ({ topicContext, closed, drawerIsOpen = false }) => {
+const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false }) => {
 	const defaultMessage =
 		'Use messages to clarify questions with the data custodian before starting your application to request access to the data. Provide a brief description of your project and what datasets you are interested in.';
 
-    let relatedObjectId, title, subTitle, dataSetId;
+    let relatedObjectIds, title, subTitle, datasets, tags;
     
     let history = useHistory();
 
 	if (typeof topicContext !== 'undefined')
-		({ relatedObjectId = '', title = '', subTitle = '', dataSetId = '' } = topicContext);
+		({ relatedObjectIds = [], title = '', subTitle = '', datasets = [], tags = [] } = topicContext);
 
 	const [messageDescription, setMessageDescription] = useState('');
 
 	const [topics, setTopics] = useState([]);
-
-	const [drawerState, setDrawer] = useState(false);
 
 	const [activeTopic, setActiveTopic] = useState({});
 
@@ -48,15 +45,15 @@ const UserMessages = ({ topicContext, closed, drawerIsOpen = false }) => {
 				// 1. clone topics from t
 				let topicsArr = [...topics];
 				// 2. check if  dataset id has been passed
-				if(_.isEmpty(dataSetId) && !_.isEmpty(topicsArr)) {
+				if(_.isEmpty(datasets) && !_.isEmpty(topicsArr)) {
 					const initialTopic = topicsArr[0];
 					topicsArr[0].active = true;
 					await getTopicById(initialTopic._id);
 					setTopics(topicsArr);
 					return;
 				}
-				// 3. check if existing relatedObjectId already in topic arr
-				const existingTopicIdx = checkTopicExists(topicsArr, relatedObjectId);
+				// 3. check if existing relatedObjectIds already in topic arr
+				const existingTopicIdx = checkTopicExists(topicsArr, relatedObjectIds);
 				// 4. if topics exists
 				if (existingTopicIdx > -1) {
 					// 4a. get topic in arr
@@ -83,15 +80,16 @@ const UserMessages = ({ topicContext, closed, drawerIsOpen = false }) => {
 	};
 
 	const setNewTopic = () => {
-		if (typeof relatedObjectId !== 'undefined') {
+		if (typeof relatedObjectIds !== 'undefined') {
 			let topic = {
 				_id: '',
 				title,
 				subTitle,
+				tags,
 				recipients: [],
 				status: 'active',
 				isDeleted: false,
-				relatedObjectId,
+				relatedObjectIds,
 				createdDate: 'New message',
 				active: true,
 				topicMessages: []
@@ -101,11 +99,14 @@ const UserMessages = ({ topicContext, closed, drawerIsOpen = false }) => {
 		return {};
 	};
 
-	const checkTopicExists = (topics = [], relatedObjectId = '') => {
-		if (!_.isEmpty(topics) && !_.isEmpty(relatedObjectId)) {
+	const checkTopicExists = (topics = [], relatedObjectIds = []) => {
+		// 1. Check that a valid set of params have been passed
+		if (!_.isEmpty(topics) && !_.isEmpty(relatedObjectIds)) {
+			// 2. Find the index of a topic that contains each of the relatedObjectIds
 			const idx = topics.findIndex(
-				(t) => t.relatedObjectId === relatedObjectId
+				(t) => relatedObjectIds.every(id => t.relatedObjectIds.includes(id))
 			);
+			// 3. Return the index for selection otherwise return -1 and create new topic to cover all objects
 			return idx;
 		}
 		return -1;
@@ -148,19 +149,32 @@ const UserMessages = ({ topicContext, closed, drawerIsOpen = false }) => {
 	 * @returns Sets state for active topic
 	 */
 	const getTopicById = async (id = '') => {
+		// 1. Check if this is an existing topic denoted by populated id
 		if (!_.isEmpty(id)) {
+			// 2. Load full topic details from Db
 			await axios
 				.get(`${baseURL}/api/v1/topics/${id}`)
 				.then((res) => {
 					const {
 						data: { topic }
 					} = res;
+					// 3. Set active topic to update messages pane
 					setActiveTopic({ ...topic, active: true });
 				})
 				.catch((err) => {
-					console.log(err);
+					console.error(err);
 					return {};
 				});
+		} else {
+			// 2. Otherwise it is a new topic so find topic with empty id in topic list
+			let topic = topics.find(t => t._id === '');
+			// 3. Check new topic was found
+			if(!topic) {
+				console.error('An error occurred selecting the topic');
+				return {};
+			}
+			// 4. Set active topic to update messages pane
+			setActiveTopic({ ...topic, active: true});
 		}
 	};
 
@@ -177,17 +191,22 @@ const UserMessages = ({ topicContext, closed, drawerIsOpen = false }) => {
             if(document.body.classList.contains('no-scroll'))
                 document.body.classList.remove('no-scroll');
 
-			let { dataSetId: dSId } = { ...activeTopic };
-			if (typeof dSId !== 'undefined' && !_.isEmpty(dSId)) {
-                id = dSId;
+			let { datasets: dS } = { ...activeTopic };
+			if (typeof dS !== 'undefined' && !_.isEmpty(dS)) {
+                id = dS[0].datasetId;
 			} else {
-                id = dataSetId;
+                id = datasets[0].datasetId;
             }
-
-            console.log('Request Access');
             history.push({pathname: `/data-access-request/dataset/${id}`});
 		} 
 	};
+
+
+	const onShowModal = (e) => {
+		e.preventDefault();
+		closed();
+		toggleModal();
+	}
 
 	/**
 	 * onMessageChange
@@ -211,7 +230,7 @@ const UserMessages = ({ topicContext, closed, drawerIsOpen = false }) => {
 		let params = {
 			messageType: 'message',
 			topic: activeTopic._id,
-			relatedObjectId: activeTopic.relatedObjectId,
+			relatedObjectIds: activeTopic.relatedObjectIds,
 			messageDescription
 		};
 		// do post here
@@ -263,11 +282,8 @@ const UserMessages = ({ topicContext, closed, drawerIsOpen = false }) => {
 
 	useEffect(() => {
 		// 1. GET Topics for current user
-		setDrawer(drawerIsOpen);
-
 		if (drawerIsOpen)
 			getUserTopics();
-		
 	}, [drawerIsOpen]);
 
 	return (
@@ -287,6 +303,7 @@ const UserMessages = ({ topicContext, closed, drawerIsOpen = false }) => {
 							<MessageHeader
 								topic={activeTopic}
 								onRequestAccess={onRequestAccess}
+								onShowModal={onShowModal}
 							/>
 						) : (
 							''
@@ -317,7 +334,9 @@ const UserMessages = ({ topicContext, closed, drawerIsOpen = false }) => {
 
 export default UserMessages;
 
-// UserMessages.propTypes = {
-// 	closed: PropTypes.bool,
-// 	topicContext: undefined
-// };
+UserMessages.defaultProps = {
+	closed			: () => {},
+	toggleModal		: () => {},
+	topicContext	: undefined,
+	drawerIsOpen	: false
+};
