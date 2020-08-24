@@ -9,7 +9,7 @@ import {Form, Button, Row, Col} from 'react-bootstrap';
 import moment from 'moment';
 import RelatedResources from '../commonComponents/RelatedResources';
 import RelatedObject from '../commonComponents/RelatedObject';
-
+import ActionBar from '../commonComponents/actionbar/ActionBar'; 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
 
@@ -305,32 +305,13 @@ const AddEditPaperForm = (props) => {
                             <Row>
                                 <Col sm={1} lg={1} />
                                 <Col sm={10} lg={10}>
-                                    {/* {console.log('paper form data: ' + JSON.stringify(props.paperData))} */}
                                     <RelatedResources ref={relatedResourcesRef} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} paperData={props.paperData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                 </Col>
                                 <Col sm={1} lg={10} />
                             </Row>
                         </div>
- 
-                        {/* <Row className="mt-3">
-                            <Col xs={5} lg={9}>
-                                <a style={{ cursor: 'pointer' }} href={'/account?tab=papers'}>
-                                    <Button variant="medium" className="greyCancelButton dark-14 mr-2" >
-                                        Cancel
-                                    </Button>
-                                </a>
-                            </Col>
-                            <Col xs={7} lg={3} className="text-right">
-                                <Button variant="primary" className="white-14-semibold" type="submit" onClick={() => Event("Buttons", "Click", "Add tool form submitted")} >
-                                    {props.isEdit ? 'Update' : 'Publish'}
-                                </Button>
-                            </Col>
-                        </Row> */}
 
-                        {!props.userState[0].loggedIn ? (
-                        "" 
-                        ) : ( 
-                        <div className="actionBar">
+                        <ActionBar userState={props.userState}>  
                                 <a style={{ cursor: 'pointer' }} href={'/account?tab=papers'}>
                                     <Button variant="medium" className="cancelButton dark-14 mr-2" >
                                         Cancel
@@ -341,11 +322,10 @@ const AddEditPaperForm = (props) => {
                                     + Add resource
                                 </Button>
                                 
-                                <Button variant="primary" className="publishButton white-14-semibold" type="submit" >
+                                <Button variant="primary" className="publishButton white-14-semibold mr-2" type="submit" >
                                     {props.isEdit ? 'Update' : 'Publish'}
                                 </Button>
-                        </div>
-                        )} 
+                        </ActionBar>  
 
                     </Form>
                 </Col>

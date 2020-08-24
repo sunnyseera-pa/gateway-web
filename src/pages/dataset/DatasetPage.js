@@ -836,7 +836,7 @@ class DatasetDetail extends Component {
             <Col sm={1} />
           </Row>
         </Container>
-        <SideDrawer
+        <SideDrawer 
             open={showDrawer}
             closed={this.toggleDrawer}>
             <UserMessages 

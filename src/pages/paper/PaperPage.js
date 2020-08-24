@@ -10,6 +10,7 @@ import RelatedObject from "../commonComponents/RelatedObject";
 import SearchBar from "../commonComponents/SearchBar";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
+import ActionBar from '../commonComponents/actionbar/ActionBar';
 import UserMessages from "../commonComponents/userMessages/UserMessages";
 import AddToCollection from "../commonComponents/AddToCollection"; 
 import "react-tabs/style/react-tabs.css";
@@ -538,11 +539,8 @@ class ToolDetail extends Component {
               drawerIsOpen={this.state.showDrawer} 
           />
         </SideDrawer> 
-        {!userState[0].loggedIn ? (
-          ""
-        ) : (
-          <div className="actionBar">
-            <Row className="floatRight">
+
+        <ActionBar userState={userState}> 
             <Button
               variant="white"
               href={"/paper/edit/" + data.id}
@@ -551,9 +549,8 @@ class ToolDetail extends Component {
               Edit
             </Button>
             <AddToCollection className="addToCollectionButton" data={data} userState={userState} />
-            </Row>
-          </div>
-        )}
+        </ActionBar> 
+      
       </div>
     );
   }

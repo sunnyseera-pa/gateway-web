@@ -19,6 +19,7 @@ import ToolTip from '../../images/imageURL-ToolTip.gif';
 import { Event, initGA } from '../../tracking';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
+import ActionBar from '../commonComponents/actionbar/ActionBar';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -346,12 +347,9 @@ const AddCollectionForm = (props) => {
                                     <Col sm={1} lg={10} />
                                 </Row>
                             </div>
-                        </div>  
+                        </div>   
 
-                        {!props.userState[0].loggedIn ? (
-                        ""
-                        ) : ( 
-                        <div className="actionBar">
+                        <ActionBar userState={props.userState}> 
                                 <a style={{ cursor: 'pointer' }} href={'/account?tab=collections'}>
                                     <Button variant="medium" className="cancelButton dark-14 mr-2" >
                                         Cancel
@@ -362,14 +360,10 @@ const AddCollectionForm = (props) => {
                                     + Add resource
                                 </Button>
                                 
-                                <Button variant="primary" className="publishButton white-14-semibold" type="submit" >
+                                <Button variant="primary" className="publishButton white-14-semibold mr-2" type="submit" >
                                     Publish
                                 </Button>
-                        </div>
-                        )} 
-
-
-
+                        </ActionBar> 
                     </Form>
                 </Col>
                 <Col sm={1} lg={10} />

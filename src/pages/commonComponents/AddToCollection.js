@@ -4,6 +4,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import { Row, Col, Tabs, Tab, Container, Alert, Button, FormText } from "react-bootstrap";
 import moment from 'moment';
 import { ReactComponent as CheckSvg } from '../../images/check.svg';
+import ActionBar from '../commonComponents/actionbar/ActionBar';
 
 var baseURL = require('./BaseURL').getURL();
 var cmsURL = require('./BaseURL').getCMSURL();
@@ -112,15 +113,13 @@ updateCollection(dat){
                     <Dropdown>
                         
                         {this.state.resourceData.type === "dataset" ?
-                            <div className="actionBar"> 
-                                <Row className="floatRight"> 
+                            <ActionBar userState={userState}> 
                                     <Dropdown.Toggle as={CustomToggle} >
                                         <Button variant="medium" className="addToCollectionButton dark-14 mr-2" >
                                             Add to collection  
                                         </Button>
                                     </Dropdown.Toggle>
-                                </Row >  
-                            </div>
+                            </ActionBar>
                         : 
                           <Dropdown.Toggle as={CustomToggle} >
                                 <Button variant="medium" className="addToCollectionButton dark-14 mr-2" >

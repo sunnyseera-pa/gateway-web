@@ -1,0 +1,20 @@
+@import '../../../css/styles.scss';
+
+.actionBar {
+    position: fixed;
+    z-index: 998;
+    left: 0; 
+    bottom: 0;
+    height: 72px;
+    width:100%;
+    box-shadow: 1px 1px 0 3px #00000017;
+    background-color: #ffffff;
+    text-align: right;
+    padding: 15px
+ }
+
+.floatRight{
+    @include mq('tablet-small'){
+      float: right;
+    }
+  }

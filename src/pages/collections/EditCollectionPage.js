@@ -16,6 +16,7 @@ import SVGIcon from '../../images/SVGIcon';
 import ToolTip from '../../images/imageURL-ToolTip.gif';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
+import ActionBar from '../commonComponents/actionbar/ActionBar';
 
 import { Event, initGA } from '../../tracking';
 
@@ -362,7 +363,7 @@ const EditCollectionForm = (props) => {
                              }) : ''}
                             
 
-                            <div className="flexCenter pt-3 pb-3">
+                            <div className="flexCenter pt-3 pb-3"> 
                                 <Row>
                                     <Col sm={1} lg={1} />
                                     <Col sm={10} lg={10}>
@@ -373,10 +374,7 @@ const EditCollectionForm = (props) => {
                             </div>
                         </div> 
 
-                        {!props.userState[0].loggedIn ? (
-                        ""
-                        ) : ( 
-                        <div className="actionBar">
+                        <ActionBar userState={props.userState}>  
                                 <a style={{ cursor: 'pointer' }} href={'/account?tab=collections'}>
                                     <Button variant="medium" className="cancelButton dark-14 mr-2" >
                                         Cancel
@@ -387,13 +385,10 @@ const EditCollectionForm = (props) => {
                                     + Add resource
                                 </Button>
 
-                                <Button variant="primary" className="publishButton white-14-semibold" type="submit" onClick={() => Event("Buttons", "Click", "Add tool form submitted")} >
+                                <Button variant="primary" className="publishButton white-14-semibold mr-2" type="submit" onClick={() => Event("Buttons", "Click", "Add tool form submitted")} >
                                     Publish
                                 </Button>
-                        </div>
-                        )} 
-
-
+                        </ActionBar> 
                     </Form>
                 </Col>
                 <Col sm={1} lg={10} />

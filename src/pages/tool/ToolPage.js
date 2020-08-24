@@ -24,6 +24,7 @@ import SVGIcon from "../../images/SVGIcon";
 import { ReactComponent as EmptyStarIconSvg } from "../../images/starempty.svg";
 import { ReactComponent as FullStarIconSvg } from "../../images/star.svg";
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
+import ActionBar from '../commonComponents/actionbar/ActionBar';
 import UserMessages from "../commonComponents/userMessages/UserMessages";
 
 class ToolDetail extends Component {
@@ -635,25 +636,18 @@ class ToolDetail extends Component {
                 drawerIsOpen={this.state.showDrawer}
             />
         </SideDrawer>
-        {!userState[0].loggedIn ? (
-          ""
-        ) : (
-          <div className="actionBar"> 
 
-          <Row className="floatRight">
-              <Button 
-                variant="white"
-                href={"/tool/edit/" + data.id}
-                className="techDetailButton mr-2"
-              >
-                Edit
-              </Button> 
+        <ActionBar userState={userState}>
+          <Button 
+            variant="white"
+            href={"/tool/edit/" + data.id}
+            className="techDetailButton mr-2"
+          >
+            Edit
+          </Button> 
         
-        {/* {console.log('data on toolpg - ' + JSON.stringify(data))} */}
-              <AddToCollection className="addToCollectionButton" data={data} userState={userState} />
-            </Row>
-          </div>
-        )}
+          <AddToCollection className="addToCollectionButton" data={data} userState={userState} />
+        </ActionBar>
       </div>
     );
   }

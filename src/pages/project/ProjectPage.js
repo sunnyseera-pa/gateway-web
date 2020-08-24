@@ -14,8 +14,9 @@ import Creators from "../commonComponents/Creators";
 import SVGIcon from "../../images/SVGIcon";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
+import ActionBar from '../commonComponents/actionbar/ActionBar';
 import UserMessages from "../commonComponents/userMessages/UserMessages";
-import AddToCollection from "../commonComponents/AddToCollection";
+import AddToCollection from "../commonComponents/AddToCollection"; 
 import _ from 'lodash';
 
 // import ReactGA from 'react-ga';
@@ -489,11 +490,7 @@ class ProjectDetail extends Component {
           />
         </SideDrawer>  
 
-        {!userState[0].loggedIn ? (
-          ""
-        ) : (
-          <div className="actionBar">
-            <Row className="floatRight">
+            <ActionBar userState={userState}> 
             <Button
               variant="white"
               href={"/project/edit/" + data.id}
@@ -502,9 +499,8 @@ class ProjectDetail extends Component {
               Edit
             </Button>
             <AddToCollection className="addToCollectionButton" data={data} userState={userState} />
-            </Row>
-          </div>
-        )}
+            </ActionBar> 
+
       </div>
     );
   }
