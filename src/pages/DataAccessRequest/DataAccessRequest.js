@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Container, Row, Col, Button, Tabs, Tab } from 'react-bootstrap';
+import { Container, Row, Col, Button, Tabs, Tab, Accordion, Card } from 'react-bootstrap';
 import Winterfell from 'winterfell';
 import _ from 'lodash';
 import moment from 'moment';
@@ -7,6 +7,7 @@ import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import TypeaheadCustom from './components/TypeaheadCustom';
 import TypeaheadUser from './components/TypeaheadUser';
+import TypeaheadDataset from './components/TypeaheadDataset';
 import DatePickerCustom from './components/DatepickerCustom';
 import SearchBar from '../commonComponents/SearchBar';
 import Loading from '../commonComponents/Loading';
@@ -22,6 +23,9 @@ import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import 'react-tabs/style/react-tabs.css';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
+import './DataAccessRequest.scss';
+import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
+import { Link } from 'react-router-dom';
 
 class DataAccessRequest extends Component {
 	constructor(props) {
@@ -29,6 +33,7 @@ class DataAccessRequest extends Component {
 		this.onFormSubmit = this.onFormSubmit.bind(this);
 		this.onFormUpdate = this.onFormUpdate.bind(this);
 		this.onQuestionFocus = this.onQuestionFocus.bind(this);
+		this.onHandleDataSetChange = this.onHandleDataSetChange.bind(this);
 		this.searchBar = React.createRef();
 
 		this.state = {
@@ -48,47 +53,86 @@ class DataAccessRequest extends Component {
 			formSubmitted: false,
 			dataset: {},
 			showDrawer: false,
-			showModal: false
+			showModal: false,
+			isWideForm: false,
+			is5SafesForm: false,
+			activeAccordionCard: 0,
+			allowedNavigation: true,
+			topicContext: {}
 		};
 	}
 
+	aboutPageNav = {
+		pageId: 'about',
+		active: true,
+		title: 'About this application',
+		description:
+			'Requesting access to data can be a lengthy process due the amount of checks needed in order to ensure the safe use of patient data. The steps below aim to clarify the process.',
+	};
+
+	aboutPanel = {
+		panelId: 'about',
+		index: 1,
+		pageId: 'about',
+	};
+
 	async componentDidMount() {
 		try {
-			let {
-				match: {
-					params: { datasetId, publisher }
-				}
-			} = this.props;
-			let response = await axios.get(
-				`${baseURL}/api/v1/data-access-request/dataset/${datasetId}`
-			);
-			const {
-				data: {
-					data: { jsonSchema, questionAnswers, _id, applicationStatus },
-					dataset
-				}
-			} = response;
-			// 1. get the first active panel
-			let {
-				formPanels: [initialPanel, ...rest]
-			} = jsonSchema;
-			// 2. set state
-			this.setState({
-				jsonSchema: { ...jsonSchema, ...classSchema },
-				dataset,
-				questionAnswers,
-				_id,
-				applicationStatus,
-				activePanelId: initialPanel.panelId,
-				isLoading: false
-			});
-			// for local test uses formSchema.json
-			//  this.setState({jsonSchema: {...formSchema}, questionAnswers: {fullname: {"id":5385077600698822,"orcid":"12345678","name":"Paul McCafferty","bio":"Developer @ PA","email":"p*************y@p**************m"}, orcid:"12345678", email:"p*************y@p**************m"}, activePanelId: 'applicant', isLoading: false, applicationStatus: 'inProgress'});
+			this.loadData();
 		} catch (error) {
 			this.setState({ isLoading: false });
 			console.log(error);
 		}
 	}
+
+	loadData = async () => {
+		let {
+			match: {
+				params: { datasetId, publisher },
+			},
+		} = this.props;
+		let response = await axios.get(
+			`${baseURL}/api/v1/data-access-request/dataset/${datasetId}`
+		);
+		const {
+			data: {
+				data: { jsonSchema, questionAnswers, _id, applicationStatus },
+				dataset,
+			},
+		} = response;
+
+		// Get publisher for data set to establish messaging context and if 5SafesForm
+
+		// Check if 5 Safes form
+		let is5SafesForm = true;
+		// Set state to say about application is shown
+		if(is5SafesForm) {
+			// Add 'about' page nav item
+			jsonSchema.pages[0].active = false;
+			jsonSchema.pages.unshift(this.aboutPageNav);
+
+			// Add form panel
+			jsonSchema.formPanels.unshift(this.aboutPanel);
+		}
+		// 1. get the first active panel
+		let {
+			formPanels: [initialPanel, ...rest],
+		} = jsonSchema;
+		// 2. set state
+		this.setState({
+			jsonSchema: { ...jsonSchema, ...classSchema },
+			dataset,
+			questionAnswers,
+			_id,
+			applicationStatus,
+			activePanelId: initialPanel.panelId,
+			isWideForm: initialPanel.panelId === 'about',
+			is5SafesForm,
+			isLoading: false
+		});
+		// for local test uses formSchema.json
+		//  this.setState({jsonSchema: {...formSchema}, questionAnswers: {fullname: {"id":5385077600698822,"orcid":"12345678","name":"Paul McCafferty","bio":"Developer @ PA","email":"p*************y@p**************m"}, orcid:"12345678", email:"p*************y@p**************m"}, activePanelId: 'applicant', isLoading: false, applicationStatus: 'inProgress'});
+	};
 
 	/**
 	 * [TotalQuestionAnswered]
@@ -102,7 +146,7 @@ class DataAccessRequest extends Component {
 			if (_.isEmpty(questionAnswers)) ({ questionAnswers } = { ...this.state });
 			// 1. deconstruct state
 			let {
-				jsonSchema: { questionSets }
+				jsonSchema: { questionSets },
 			} = { ...this.state };
 			// 2. omits out blank null, undefined, and [] values from this.state.answers
 			questionAnswers = _.pickBy(
@@ -193,7 +237,7 @@ class DataAccessRequest extends Component {
 		let questions;
 		if (!_.isEmpty(questionId)) {
 			let {
-				jsonSchema: { questionSets }
+				jsonSchema: { questionSets },
 			} = this.state;
 			// 1. get active question set
 			({ questions } =
@@ -224,7 +268,7 @@ class DataAccessRequest extends Component {
 				let lookupAutoComplete = [...lookup].includes(qId);
 				if (lookupAutoComplete)
 					questionAnswers = DarHelper.autoComplete(qId, uniqueId, {
-						...questionAnswers
+						...questionAnswers,
 					});
 			}
 			// 2. get totalQuestionAnswered
@@ -270,7 +314,7 @@ class DataAccessRequest extends Component {
 			invalidQuestions
 		);
 		let errors = DarValidation.formatValidationObj(inValidMessages, [
-			...this.state.jsonSchema.questionPanels
+			...this.state.jsonSchema.questionPanels,
 		]);
 		let isValid = Object.keys(errors).length ? false : true;
 		if (this.state.applicationStatus === 'submitted')
@@ -288,12 +332,12 @@ class DataAccessRequest extends Component {
 				this.setState({ lastSaved });
 				let message = {
 					type: 'success',
-					message: 'Done! Your application was submitted successfully'
+					message: 'Done! Your application was submitted successfully',
 				};
 				window.localStorage.setItem('alert', JSON.stringify(message));
 				this.props.history.push({
 					pathname: '/account',
-					search: '?tab=dataaccessrequests'
+					search: '?tab=dataaccessrequests',
 				});
 			} catch (err) {
 				console.log(err);
@@ -318,7 +362,7 @@ class DataAccessRequest extends Component {
 			let { _id: id } = this.state;
 			// 3. set up body params
 			let params = {
-				[`${key}`]: JSON.stringify(data)
+				[`${key}`]: JSON.stringify(data),
 			};
 			// 4. PATCH the data
 			const response = await axios.patch(
@@ -389,40 +433,43 @@ class DataAccessRequest extends Component {
 	 * @desc - Update the navigation state sidebar
 	 */
 	updateNavigation = (newForm, validationErrors = {}) => {
-		// reset scroll to 0, 0
-		window.scrollTo(0, 0);
-		let panelId = '';
-		const currentActivePage = [...this.state.jsonSchema.pages].find(
-			(p) => p.active === true
-		);
-		// copy state pages
-		const pages = [...this.state.jsonSchema.pages];
-		// get the index of new form
-		const newPageindex = pages.findIndex(
-			(page) => page.pageId === newForm.pageId
-		);
-		// reset the current state of active to false for all pages
-		const newFormState = [...this.state.jsonSchema.pages].map((item) => {
-			return { ...item, active: false };
-		});
-		// update actual object model with propert of active true
-		newFormState[newPageindex] = { ...pages[newPageindex], active: true };
+		if(this.state.allowedNavigation) {
+			// reset scroll to 0, 0
+			window.scrollTo(0, 0);
+			let panelId = '';
+			const currentActivePage = [...this.state.jsonSchema.pages].find(
+				(p) => p.active === true
+			);
+			// copy state pages
+			const pages = [...this.state.jsonSchema.pages];
+			// get the index of new form
+			const newPageindex = pages.findIndex(
+				(page) => page.pageId === newForm.pageId
+			);
+			// reset the current state of active to false for all pages
+			const newFormState = [...this.state.jsonSchema.pages].map((item) => {
+				return { ...item, active: false };
+			});
+			// update actual object model with propert of active true
+			newFormState[newPageindex] = { ...pages[newPageindex], active: true };
 
-		// get set the active panelId
-		({ panelId } = newForm);
-		if (_.isEmpty(panelId) || typeof panelId == 'undefined') {
-			({ panelId } =
-				[...this.state.jsonSchema.formPanels].find(
-					(p) => p.pageId === newFormState[newPageindex].pageId
-				) || '');
+			// get set the active panelId
+			({ panelId } = newForm);
+			if (_.isEmpty(panelId) || typeof panelId == 'undefined') {
+				({ panelId } =
+					[...this.state.jsonSchema.formPanels].find(
+						(p) => p.pageId === newFormState[newPageindex].pageId
+					) || '');
+			}
+			let totaltotalQuestionsAnswered = this.totalQuestionsAnswered(panelId);
+			this.setState({
+				jsonSchema: { ...this.state.jsonSchema, pages: newFormState },
+				activePanelId: panelId,
+				isWideForm: panelId === 'about',
+				totalQuestions: totaltotalQuestionsAnswered,
+				validationErrors,
+			});
 		}
-		let totaltotalQuestionsAnswered = this.totalQuestionsAnswered(panelId);
-		this.setState({
-			jsonSchema: { ...this.state.jsonSchema, pages: newFormState },
-			activePanelId: panelId,
-			totalQuestions: totaltotalQuestionsAnswered,
-			validationErrors
-		});
 	};
 
 	onClickSave = (e) => {
@@ -434,12 +481,12 @@ class DataAccessRequest extends Component {
 	onQuestionClick = async (questionSetId = '', questionId = '') => {
 		let questionSet, jsonSchema, questionAnswers, data;
 		questionSet = DarHelper.findQuestionSet(questionSetId, {
-			...this.state.jsonSchema
+			...this.state.jsonSchema,
 		});
 
 		if (!_.isEmpty(questionSet) && !_.isEmpty(questionId)) {
 			let {
-				input: { action }
+				input: { action },
 			} = DarHelper.findQuestion(questionId, questionSet);
 			switch (action) {
 				case 'addApplicant':
@@ -463,13 +510,13 @@ class DataAccessRequest extends Component {
 						{ ...this.state.jsonSchema }
 					);
 					questionAnswers = DarHelper.removeQuestionAnswers(questionId, {
-						...this.state.questionAnswers
+						...this.state.questionAnswers,
 					});
 					// post to API of new jsonSchema
 					await this.updateApplication({ key: 'jsonSchema', data: jsonSchema });
 					await this.updateApplication({
 						key: 'questionAnswers',
-						data: questionAnswers
+						data: questionAnswers,
 					});
 					break;
 				default:
@@ -498,19 +545,121 @@ class DataAccessRequest extends Component {
 		}
 	};
 
+	onHandleDataSetChange = (e) => {
+		console.log(e);
+		alert(e);
+	}
+
 	render() {
 		const {
 			searchString,
-			activePanelId,
 			totalQuestions,
 			isLoading,
 			validationErrors,
 			activeGuidance,
 			dataset,
 			showDrawer,
-			showModal
+			showModal,
+			isWideForm,
+			activeAccordionCard,
+			allowedNavigation
 		} = this.state;
 		const { userState, location } = this.props;
+
+		const toggleCard = (e, eventKey) => {
+			e.preventDefault();
+			if(activeAccordionCard === eventKey) {
+				eventKey = -1;
+			}
+			this.setState({
+				activeAccordionCard: eventKey
+			});
+		}
+
+		const calcAccordionClasses = (active) => {
+			let classes = ['black-16'];
+			if(!allowedNavigation) 
+				classes = [...classes, 'disabled'];
+			
+			if(active)
+				classes = [...classes, 'active'];
+
+			return classes;
+		}
+
+		const aboutForm = (
+			<div class='aboutAccordion'>
+				<Accordion defaultActiveKey='0'>
+					<Card className={activeAccordionCard === 0 ? 'activeCard' : ''}>
+						<Accordion.Toggle as={Card.Header} className={calcAccordionClasses(activeAccordionCard === 0)} eventKey='0' onClick={e => toggleCard(e, 0)}>
+						<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>1</div>
+							Select the datasets you need
+						</Accordion.Toggle>
+						<Accordion.Collapse eventKey='0'>
+							<Card.Body className='gray800-14'>
+								<div className='margin-bottom-16'>
+									If you’re not sure, <Link className={allowedNavigation ? '' : 'disabled'} onClick={this.toggleDrawer}>send a message to the data custodian</Link> to clarify. The datasets you select may impact the questions being asked in this application form. You cannot change this later.
+								</div>
+								<div>
+									<span>Datasets</span>
+									<div className='form-group'>
+										<TypeaheadDataset className='form-control' onHandleDataSetChange={this.onHandleDataSetChange}/>
+									</div>
+									<div className='panConfirmDatasets'>
+										<button type='input' className={`button-primary ${allowedNavigation ? '' : 'disabled'}`} disabled={!allowedNavigation}>Confirm</button>
+									</div>
+								</div>
+							</Card.Body>
+						</Accordion.Collapse>
+					</Card>
+					<Card className={activeAccordionCard === 1 ? 'activeCard' : ''}>
+						<Accordion.Toggle as={Card.Header} className={calcAccordionClasses(activeAccordionCard === 1)} eventKey='1' onClick={e => toggleCard(e, 1)}>
+						<div className={`stepNumber ${activeAccordionCard === 1 ? 'active' : ''}`}>2</div>
+							Read the advice from the data custodian
+						</Accordion.Toggle>
+						<Accordion.Collapse eventKey='1'>
+							<Card.Body className='gray800-14'>Hello! I'm another body</Card.Body>
+						</Accordion.Collapse>
+					</Card>
+					<Card className={activeAccordionCard === 2 ? 'activeCard' : ''}>
+						<Accordion.Toggle as={Card.Header} className={calcAccordionClasses(activeAccordionCard === 2)} eventKey='2' onClick={e => toggleCard(e, 2)}>
+						<div className={`stepNumber ${activeAccordionCard === 2 ? 'active' : ''}`}>3</div>
+							Communicate with the data custodian
+						</Accordion.Toggle>
+						<Accordion.Collapse eventKey='2'>
+							<Card.Body className='gray800-14'>Hello! I'm another body</Card.Body>
+						</Accordion.Collapse>
+					</Card>
+					<Card className={activeAccordionCard === 3 ? 'activeCard' : ''}>
+						<Accordion.Toggle as={Card.Header} className={calcAccordionClasses(activeAccordionCard === 3)} eventKey='3' onClick={e => toggleCard(e, 3)}>
+						<div className={`stepNumber ${activeAccordionCard === 3 ? 'active' : ''}`}>4</div>
+							Check what approvals you might need
+						</Accordion.Toggle>
+						<Accordion.Collapse eventKey='3'>
+							<Card.Body className='gray800-14'>Hello! I'm another body</Card.Body>
+						</Accordion.Collapse>
+					</Card>
+					<Card className={activeAccordionCard === 4 ? 'activeCard' : ''}>
+						<Accordion.Toggle as={Card.Header} className={calcAccordionClasses(activeAccordionCard === 4)} eventKey='4' onClick={e => toggleCard(e, 4)}>
+						<div className={`stepNumber ${activeAccordionCard === 4 ? 'active' : ''}`}>5</div>
+							Understand what happens after you submit the application
+						</Accordion.Toggle>
+						<Accordion.Collapse eventKey='4'>
+							<Card.Body className='gray800-14'>Hello! I'm another body</Card.Body>
+						</Accordion.Collapse>
+					</Card>
+					<Card className={activeAccordionCard === 5 ? 'activeCard' : ''}>
+						<Accordion.Toggle as={Card.Header} className={calcAccordionClasses(activeAccordionCard === 5)} eventKey='5' onClick={e => toggleCard(e, 5)}>
+						<div className={`stepNumber ${activeAccordionCard === 5 ? 'active' : ''}`}>6</div>
+							Invite Collaborators
+						</Accordion.Toggle>
+						<Accordion.Collapse eventKey='5'>
+							<Card.Body className='gray800-14'>Hello! I'm another body</Card.Body>
+						</Accordion.Collapse>
+					</Card>
+				</Accordion>
+			</div>
+		);
 
 		Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
 		Winterfell.addInputType('datePickerCustom', DatePickerCustom);
@@ -545,7 +694,7 @@ class DataAccessRequest extends Component {
 						<span className='white-14-semibold'>{this.getSavedAgo()}</span>
 						{
 							<a
-								className='linkButton white-14-semibold ml-2'
+								className={`linkButton white-14-semibold ml-2 ${allowedNavigation ? '' : 'disabled'}`}
 								onClick={this.onClickSave}
 								href='!#'
 							>
@@ -557,15 +706,16 @@ class DataAccessRequest extends Component {
 
 				<div id='darContainer' className='flex-form'>
 					<div id='darLeftCol' className='scrollable-sticky-column'>
-						
 						{[...this.state.jsonSchema.pages].map((item, idx) => (
 							<div
-								key={item.index}
+								key={`navItem-${idx}`}
 								className={`${item.active ? 'active-border' : ''}`}
 							>
 								<div>
 									<h1
-										className='black-16 section-header'
+										className={`black-16 ${
+											item.active ? 'section-header-active' : 'section-header'
+										} ${this.state.allowedNavigation ? '' : 'disabled'}`}
 										onClick={(e) => this.updateNavigation(item)}
 									>
 										{item.title}
@@ -577,6 +727,7 @@ class DataAccessRequest extends Component {
 												questionPanels={this.state.jsonSchema.questionPanels}
 												onFormSwitchPanel={this.updateNavigation}
 												activePanelId={this.state.activePanelId}
+												enabled={allowedNavigation}
 											/>
 										</ul>
 									)}
@@ -584,27 +735,28 @@ class DataAccessRequest extends Component {
 							</div>
 						))}
 					</div>
-					<div id='darCenterCol'>
+					<div id='darCenterCol' className={isWideForm ? 'extended' : ''}>
 						<div id='darDropdownNav'>
 							<NavDropdown
-								options={this.state.jsonSchema}
+								options={{...this.state.jsonSchema, is5SafesForm: this.state.is5SafesForm}}
 								onFormSwitchPanel={this.updateNavigation}
+								enabled={allowedNavigation}
 							/>
 						</div>
 						<div style={{ backgroundColor: '#ffffff' }} className='dar__header'>
 							{this.state.jsonSchema.pages
-								? [...this.state.jsonSchema.pages].map((item) =>
+								? [...this.state.jsonSchema.pages].map((item, idx) =>
 										item.active ? (
-											<Fragment>
+											<Fragment key={`pageContent-${idx}`}>
 												<p className='black-20-semibold mb-0'>
 													{item.active ? item.title : ''}
 												</p>
-												<p>
+												<span>
 													<ReactMarkdown
 														className='gray800-14'
 														source={item.description}
 													/>
-												</p>
+												</span>
 											</Fragment>
 										) : (
 											''
@@ -613,10 +765,12 @@ class DataAccessRequest extends Component {
 								: ''}
 						</div>
 						<div
-							className='dar__questions gray800-14'
+							className={`dar__questions gray800-14 ${this.state.activePanelId === 'about' ? 'pad-bottom-0' : ''}`}
 							style={{ backgroundColor: '#ffffff' }}
 						>
-							<div className='col-md-12'>
+							{this.state.activePanelId === 'about' ? (
+								aboutForm
+							) : (
 								<Winterfell
 									schema={this.state.jsonSchema}
 									questionAnswers={this.state.questionAnswers}
@@ -628,70 +782,75 @@ class DataAccessRequest extends Component {
 									onUpdate={this.onFormUpdate}
 									onSubmit={this.onFormSubmit}
 								/>
-							</div>
+							)}
 						</div>
 					</div>
-					<div id='darRightCol' className='scrollable-sticky-column'>
-						<Tabs
-							className='dar-tabsBackground gray700-14'
-							activeKey={this.state.key}
-							onSelect={this.handleSelect}
-						>
-							<Tab eventKey='guidance' title='Guidance'>
-								<div className='darTab'>
-									<Col md={12} className='gray700-13 text-center'>
-										<span>
-											{activeGuidance
-												? activeGuidance
-												: 'Active guidance for questions'}
-											.
-										</span>
-									</Col>
-								</div>
-							</Tab>
-							<Tab eventKey='answers' title='Answers'>
-								<div className='darTab'>
-									<Col md={12} className='gray700-13 mt-2'>
-										<span>Re-use answers from your previous applications</span>
-										<br /> <br />
-										<span className='comingSoonBadge'> Coming soon </span>
-									</Col>
-								</div>
-							</Tab>
-							<Tab eventKey='notes' title='Notes'>
-								<div className='darTab'>
-									<Col md={12} className='gray700-13 mt-2'>
-										<span>Data custodians cannot see your notes. </span>
-										<br /> <br />
-										<span>
-											You can use notes to capture your thoughts or communicate
-											with any other applicants you invite to collaborate.
-										</span>
-										<br /> <br />
-										<span className='comingSoonBadge'> Coming soon </span>
-									</Col>
-								</div>
-							</Tab>
-							<Tab eventKey='messages' title='Messages'>
-								<div className='darTab'>
-									<Col md={12} className='gray700-13 mt-2'>
-										<span>
-											Both data custodian and applicants can see messages
-										</span>
-										<br /> <br />
-										<span>
-											Use messages to seek guidance or clarify questions with
-											the data custodian. You can send messages before or after
-											the application is submitted. You will be notified of
-											every new message, and so will the data custodian.
-										</span>
-										<br /> <br />
-										<span className='comingSoonBadge'> Coming soon </span>
-									</Col>
-								</div>
-							</Tab>
-						</Tabs>
-					</div>
+					{isWideForm ? null : (
+						<div id='darRightCol' className='scrollable-sticky-column'>
+							<Tabs
+								className='dar-tabsBackground gray700-14'
+								activeKey={this.state.key}
+								onSelect={this.handleSelect}
+							>
+								<Tab eventKey='guidance' title='Guidance'>
+									<div className='darTab'>
+										<Col md={12} className='gray700-13 text-center'>
+											<span>
+												{activeGuidance
+													? activeGuidance
+													: 'Active guidance for questions'}
+												.
+											</span>
+										</Col>
+									</div>
+								</Tab>
+								<Tab eventKey='answers' title='Answers'>
+									<div className='darTab'>
+										<Col md={12} className='gray700-13 mt-2'>
+											<span>
+												Re-use answers from your previous applications
+											</span>
+											<br /> <br />
+											<span className='comingSoonBadge'> Coming soon </span>
+										</Col>
+									</div>
+								</Tab>
+								<Tab eventKey='notes' title='Notes'>
+									<div className='darTab'>
+										<Col md={12} className='gray700-13 mt-2'>
+											<span>Data custodians cannot see your notes. </span>
+											<br /> <br />
+											<span>
+												You can use notes to capture your thoughts or
+												communicate with any other applicants you invite to
+												collaborate.
+											</span>
+											<br /> <br />
+											<span className='comingSoonBadge'> Coming soon </span>
+										</Col>
+									</div>
+								</Tab>
+								<Tab eventKey='messages' title='Messages'>
+									<div className='darTab'>
+										<Col md={12} className='gray700-13 mt-2'>
+											<span>
+												Both data custodian and applicants can see messages
+											</span>
+											<br /> <br />
+											<span>
+												Use messages to seek guidance or clarify questions with
+												the data custodian. You can send messages before or
+												after the application is submitted. You will be notified
+												of every new message, and so will the data custodian.
+											</span>
+											<br /> <br />
+											<span className='comingSoonBadge'> Coming soon </span>
+										</Col>
+									</div>
+								</Tab>
+							</Tabs>
+						</div>
+					)}
 				</div>
 
 				<div className='action-bar'>
@@ -699,13 +858,13 @@ class DataAccessRequest extends Component {
 						<span className='gray800-14'>{totalQuestions}</span>
 					</Col>
 					<Col md={6} className='mt-3 text-right'>
-						<Button
-							variant='white'
-							className='techDetailButton ml-3'
+						<button
+							type='button'
+							className={`button-tertiary ${allowedNavigation ? '' : 'disabled'}`}
 							onClick={this.onFormSubmit}
 						>
 							Submit application
-						</Button>
+						</button>
 					</Col>
 				</div>
 
@@ -714,6 +873,7 @@ class DataAccessRequest extends Component {
 						closed={this.toggleDrawer}
 						toggleModal={this.toggleModal}
 						drawerIsOpen={this.state.showDrawer}
+						topicContext={this.topicContext}
 					/>
 				</SideDrawer>
 

@@ -14,12 +14,12 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 	const defaultMessage =
 		'Use messages to clarify questions with the data custodian before starting your application to request access to the data. Provide a brief description of your project and what datasets you are interested in.';
 
-    let relatedObjectIds, title, subTitle, datasets, tags, allowNewMessage;
+    let relatedObjectIds, title, subTitle, datasets, tags, allowNewMessage, requiresModal;
     
     let history = useHistory();
 
 	if (typeof topicContext !== 'undefined')
-		({ relatedObjectIds = [], title = '', subTitle = '', datasets = [], tags = [], allowNewMessage = false } = topicContext);
+		({ relatedObjectIds = [], title = '', subTitle = '', datasets = [], tags = [], allowNewMessage = false, requiresModal = false } = topicContext);
 
 	const [messageDescription, setMessageDescription] = useState('');
 
@@ -29,7 +29,7 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 
 	const [textArea, resetTextArea] = useState('');
 
-	const [requiresModal, setRequiresModal] = useState(topicContext.requiresModal);
+	const [modalRequired, setRequiresModal] = useState(requiresModal);
 
 	/**
 	 * GetUserTopics
@@ -168,7 +168,7 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 						setRequiresModal(!_.isEmpty(dataRequestModalContent) ? true : false);
 					}
 					// 3. Set active topic to update messages pane
-					setActiveTopic({ ...topic, requiresModal, active: true });
+					setActiveTopic({ ...topic, modalRequired, active: true });
 				})
 				.catch((err) => {
 					console.error(err);
@@ -318,7 +318,7 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 						{!_.isEmpty(activeTopic) ? (
 							<MessageHeader
 								topic={activeTopic}
-								requiresModal={requiresModal}
+								modalRequired={modalRequired}
 								onRequestAccess={onRequestAccess}
 								onShowModal={onShowModal}
 							/>

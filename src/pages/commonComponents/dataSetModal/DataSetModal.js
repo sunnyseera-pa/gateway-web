@@ -5,16 +5,18 @@ import ReactMarkdown from 'react-markdown';
 import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg';
 import { Event } from '../../../tracking';
 import DataSetHelper from '../../../utils/DataSetHelper.util';
+import _ from 'lodash'
 
 import './DataSetModal.scss';
 
 const DataSetModal = ({ open, closed, context, userState }) => {
 
-	let dataSetId = '', title = '', contactPoint = '';
+	let dataset = {}, datasetId = '', title = '', contactPoint = '';
 
-	if(typeof context !== 'undefined')
-		 ({dataSetId, title, contactPoint } = context);
-
+    if(typeof context !== 'undefined' && !_.isEmpty(context)) {
+         ({datasets: [dataset], title, contactPoint } = context);
+         ({datasetId } = dataset);
+    }
 	const { loggedIn: isLoggedIn } = userState;
 
 	let history = useHistory();
@@ -32,7 +34,7 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 			// 2. log google analytics event (Category-Action-Label)
 			Event('Buttons', 'Click', 'Request Access');
 			// 3. redirect to access request
-			history.push({ pathname: `/data-access-request/dataset/${dataSetId}` });
+			history.push({ pathname: `/data-access-request/dataset/${datasetId}` });
 		}
 	};
 

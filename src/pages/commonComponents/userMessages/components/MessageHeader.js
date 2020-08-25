@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 
-const MessageHeader = ( {topic, requiresModal, onRequestAccess, onShowModal} ) => { 
+const MessageHeader = ( {topic, modalRequired, onRequestAccess, onShowModal} ) => { 
     return (
         <Fragment>
             <div className="messageArea-header-desc">
@@ -10,7 +10,7 @@ const MessageHeader = ( {topic, requiresModal, onRequestAccess, onShowModal} ) =
                 )}
             </div>
             <div className="messageArea-header-action">
-                { requiresModal ? <button className="button-tertiary mr-2" onClick={e => onShowModal(e)}>How to request access</button> : null}
+                { modalRequired ? <button className="button-tertiary mr-2" onClick={e => onShowModal(e)}>How to request access</button> : null}
                 <button className="btn btn-primary addButton" onClick={e => onRequestAccess(e)}>Request Access</button>
             </div>
         </Fragment>
