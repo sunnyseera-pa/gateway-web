@@ -60,7 +60,8 @@ class ToolDetail extends Component {
     relatedObjects: [],
     discoursePostCount: 0,
     showDrawer: false,
-    showModal: false
+    showModal: false,
+    context: {}
   };
  
   constructor(props) {
@@ -196,7 +197,6 @@ class ToolDetail extends Component {
 
     toggleDrawer = () => {
         this.setState( ( prevState ) => {
-            debugger;
             if(prevState.showDrawer === true) {
                 this.searchBar.current.getNumberOfUnreadMessages();
             }
@@ -204,15 +204,11 @@ class ToolDetail extends Component {
         });
     }
     
-    toggleModal = (showEnquiry = false) => {
-		this.setState((prevState) => {
-			return { showModal: !prevState.showModal };
+  toggleModal = (showEnquiry = false, context = {}) => {
+		this.setState( ( prevState ) => {
+			return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
 		});
-
-		if (showEnquiry) {
-			this.toggleDrawer();
-		}
-	};
+	}
 
   render() {
     const {
@@ -228,7 +224,8 @@ class ToolDetail extends Component {
       relatedObjects,
       discoursePostCount,
       showDrawer,
-      showModal
+      showModal,
+      context
     } = this.state;
 
     if (isLoading) {
@@ -640,6 +637,7 @@ class ToolDetail extends Component {
           </Row>
         </Container>
     		<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
+
 					<UserMessages
 						closed={this.toggleDrawer}
 						toggleModal={this.toggleModal}
@@ -649,6 +647,7 @@ class ToolDetail extends Component {
 
 				<DataSetModal
 					open={showModal}
+          context={context}
 					closed={this.toggleModal}
 					userState={userState[0]}
 				/>

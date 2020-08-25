@@ -31,7 +31,8 @@ class CompleteRegistration extends Component {
             id: null,
             name: null
         }],
-        showModal: false
+        showModal: false,
+        context: {}
     };
 
     doSearch = (e) => { //fires on enter on searchbar
@@ -51,14 +52,10 @@ class CompleteRegistration extends Component {
         });
     }
 
-    toggleModal = (showEnquiry = false) => {
+    toggleModal = (showEnquiry = false, context = {}) => {
         this.setState( ( prevState ) => {
-            return { showModal: !prevState.showModal };
+            return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
         });
-    
-        if(showEnquiry) {
-          this.toggleDrawer();
-        }
     }
 
     componentDidMount() {
@@ -73,7 +70,7 @@ class CompleteRegistration extends Component {
     }
 
     render() {
-        const { isLoading, searchString, userState, userdata, showDrawer, showModal } = this.state;
+        const { isLoading, searchString, userState, userdata, showDrawer, showModal, context } = this.state;
         
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -107,8 +104,9 @@ class CompleteRegistration extends Component {
 
                 <DataSetModal 
                     open={showModal} 
+                    context={context}
                     closed={this.toggleModal}
-                    userState={userState[0]}
+                    userState={userState[0]} 
                 />
             </div>
         );
