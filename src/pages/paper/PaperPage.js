@@ -22,6 +22,8 @@ import SVGIcon from "../../images/SVGIcon";
 import ReactMarkdown from "react-markdown";
 import moment from "moment";
 import _ from 'lodash';
+import { ReactComponent as InfoFillSVG } from "../../images/infofill.svg";
+import { ReactComponent as InfoSVG } from "../../images/info.svg";
 
 class ToolDetail extends Component {
   // initialize our state
@@ -58,6 +60,7 @@ class ToolDetail extends Component {
     discoursePostCount: 0,
     showDrawer: false,
     showModal: false,
+    isHovering: false,
     context: {}
   };
 
@@ -65,6 +68,8 @@ class ToolDetail extends Component {
     super(props);
     this.state.userState = props.userState;
     this.searchBar = React.createRef();
+    this.handleMouseHover = this.handleMouseHover.bind(this);
+
   }
 
   // on loading of tool detail page
@@ -77,14 +82,17 @@ class ToolDetail extends Component {
       this.setState({ replyAdded: values.replyAdded });
     }
 
-    initGA("UA-166025838-1");
-    PageView();
+    if(process.env.NODE_ENV === 'production'){
+      initGA('UA-166025838-1');
+      PageView();
+  } 
 
     this.getDataSearchFromDb();
   }
 
   // on loading of tool detail page were id is different
   componentDidUpdate() {
+
     if (
       this.props.match.params.toolID !== this.state.id &&
       this.state.id !== "" &&
@@ -201,8 +209,22 @@ class ToolDetail extends Component {
     this.setState( ( prevState ) => {
         return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
     });
-  }
-  
+
+    if(showEnquiry) {
+      this.toggleDrawer();
+    }
+}
+
+handleMouseHover() {
+  this.setState(this.toggleHoverState);
+}
+
+toggleHoverState(state) {
+  return {
+    isHovering: !state.isHovering
+  };
+} 
+
   render() {
     const {
       searchString,
@@ -224,7 +246,7 @@ class ToolDetail extends Component {
     if (isLoading) {
       return (
         <Container>
-          <Loading />
+          <Loading data-testid="isLoading" />
         </Container>
       );
     }
@@ -317,6 +339,38 @@ class ToolDetail extends Component {
             ""
           )}
 
+          {data.isPreprint ? (
+            <Row className="">
+              <Col sm={1} lg={1} />
+              <Col sm={10} lg={10}>
+                  <Alert variant="warning" className="mt-3" data-testid="preprintAlert">
+                    This article is a preprint. It may not have been peer
+                    reviewed.
+
+                    <span
+                      onMouseEnter={this.handleMouseHover}
+                      onMouseLeave={this.handleMouseHover}
+                      className="floatRight"
+                    >
+                      <InfoSVG />
+                    </span>
+
+                    {this.state.isHovering && (
+                      <div className="preprintToolTip">
+                        <span className="white-13-semibold">
+                          A preprint is a complete scientific manuscript that an author uploads on a public server for free viewing. Initially it is posted without peer review, but may acquire feedback or reviews as a preprint, and may eventually be published in a peer-reviewed journal. The posting of preprints on public servers allows almost immediate dissemination and scientific feedback early in the 'publication' process.
+                        </span>
+                      </div>
+                    )}
+
+                  </Alert>
+              </Col>
+              <Col sm={1} lg={10} />
+            </Row>
+          ) : (
+            ""
+          )}
+
           <Row className="mt-2">
             <Col sm={1} lg={1} />
             <Col sm={10} lg={10}>
@@ -385,16 +439,18 @@ class ToolDetail extends Component {
                               </a>
                             </Col>
                           </Row>
-                          <Row className="mt-2">
-                            <Col sm={2}>
-                              <span className="gray800-14">Journal</span>
-                            </Col>
-                            <Col sm={10}>
-                              <span className="gray800-14">
-                                {data.journal} {data.journalYear}
-                              </span>
-                            </Col>
-                          </Row>
+                          {data.isPreprint ? '' :
+                            <Row className="mt-2">
+                              <Col sm={2}>
+                                <span className="gray800-14">Journal</span>
+                              </Col>
+                              <Col sm={10}>
+                                <span className="gray800-14">
+                                  {data.journal} {data.journalYear}
+                                </span>
+                              </Col>
+                            </Row>
+                          }
                           <Row className="mt-2">
                             <Col sm={2}>
                               <span className="gray800-14">Last update</span>
@@ -516,8 +572,16 @@ class ToolDetail extends Component {
                     </Row>
                   </Tab>
 
-                  <Tab eventKey="Collaboration" title={`Discussion (${discoursePostCount})`}>
-                    <DiscourseTopic toolId={data.id} topicId={data.discourseTopicId || 0} userState={userState} onUpdateDiscoursePostCount={this.updateDiscoursePostCount}/>
+                  <Tab
+                    eventKey="Collaboration"
+                    title={`Discussion (${discoursePostCount})`}
+                  >
+                    <DiscourseTopic
+                      toolId={data.id}
+                      topicId={data.discourseTopicId || 0}
+                      userState={userState}
+                      onUpdateDiscoursePostCount={this.updateDiscoursePostCount}
+                    />
                   </Tab>
                   <Tab
                     eventKey="Projects"
@@ -541,15 +605,13 @@ class ToolDetail extends Component {
             <Col sm={1} lg={1} />
           </Row>
         </Container>
-        <SideDrawer
-          open={showDrawer}
-          closed={this.toggleDrawer}>
-          <UserMessages 
-              closed={this.toggleDrawer}
-              toggleModal={this.toggleModal}
-              drawerIsOpen={this.state.showDrawer} 
+        <SideDrawer open={showDrawer} closed={this.toggleDrawer}>
+          <UserMessages
+            closed={this.toggleDrawer}
+            toggleModal={this.toggleModal}
+            drawerIsOpen={this.state.showDrawer}
           />
-        </SideDrawer> 
+        </SideDrawer>
 
         <ActionBar userState={userState}> 
           <ResourcePageButtons data={data} userState={userState} /> 
@@ -561,7 +623,7 @@ class ToolDetail extends Component {
           closed={this.toggleModal}
           userState={userState[0]} 
         />
-      
+
       </div>
     );
   }

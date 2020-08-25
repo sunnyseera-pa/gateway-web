@@ -331,7 +331,7 @@ a.nav-item.nav-link.active {
   padding-bottom: 50px;
 }
 
-#TagItem {
+#TagItem { 
   list-style-type: none;
 }
 
@@ -438,6 +438,7 @@ input[type='checkbox']:checked:after {
   display: inline-block;
   visibility: visible;
   border: solid 2px #d6d6d6;
+  padding-top: 2px;
 }
 
 input[type='radio']:after {
@@ -2586,6 +2587,38 @@ button a {
   z-index: 1;
 }
 
+.preprintToolTip{
+  width: 275px;
+  border-radius: 8px;
+  background-color: $dark;
+  padding: 10px;
+  position: absolute;
+  left: 80%;
+  top: 60%;
+  z-index: 1;
+
+  @include mq('tablet-wide', max){
+    left: 64%;
+    top: 70%;
+  }
+
+  @include mq('tablet-small', max){
+    left: 0%;
+    top: 75%;
+  }
+}
+
+.preprintFormToolTip {
+  width: 275px;
+  border-radius: 8px;
+  background-color: $dark;
+  padding: 10px;
+  position: absolute;
+  left: 5%;
+  top: 90%;
+  z-index: 1;
+}
+
 .heightVariable{
   @include mq('tablet-wide'){
     height: 56px !important;
@@ -2763,6 +2796,32 @@ button a {
   }
 }
 
+.paperFormCheckbox {
+  width: 0% !important;
+}
+
+.paperFormSVG {
+  transform: translate(8px, 3px);
+}
+
+#preprintCheckCol {
+  margin-left: -36px; 
+  padding-left: 8px;
+
+  @include mq('tablet-wide',max){
+    margin-left: -15px;
+  }
+
+  @include mq('tablet',max){
+    margin-left: 0px;
+  }
+
+  @include mq('phablet',max){
+    margin-left: 35px;
+    margin-top: -13px;
+  }
+}
+
 .addToCollectionButton {
   width: 147px;
   height: 40px;
@@ -2779,6 +2838,7 @@ button a {
   background-color: $white !important;
   overflow-x: hidden !important;
   overflow-y: scroll !important;
+  margin-bottom: 36px !important;
   padding-top: 0px !important;
   padding-bottom: 12px !important;
 }
@@ -2817,4 +2877,3 @@ button a {
   padding-right: 16px;
   padding-top: 16px;
 }
-
