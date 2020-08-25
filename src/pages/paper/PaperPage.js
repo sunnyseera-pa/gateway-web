@@ -60,7 +60,7 @@ class ToolDetail extends Component {
     discoursePostCount: 0,
     showDrawer: false,
     showModal: false,
-    isHovering: false
+    isHovering: false,
     context: {}
   };
 
