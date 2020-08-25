@@ -295,7 +295,7 @@ class SearchPage extends React.Component {
     getFiltersCall () {
         axios.get(baseURL + '/api/v1/search/filter/'+this.state.searchString)
             .then((res) => {
-                this.setState({
+                this.setState({ 
                     allFilters: res.data.allFilters || []
                 });
             })

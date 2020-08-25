@@ -16,6 +16,8 @@ import SVGIcon from '../../images/SVGIcon';
 import ToolTip from '../../images/imageURL-ToolTip.gif';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
+import ActionBar from '../commonComponents/actionbar/ActionBar';
+
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
 
 import { Event, initGA } from '../../tracking';
@@ -140,7 +142,7 @@ class EditCollectionPage extends React.Component {
             this.state.relatedObjects.push({'objectId':object.objectId, 'reason':'', 'objectType':object.type, 'user':this.state.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
         })
 
-        this.setState({tempRelatedObjectIds: []}) 
+        this.setState({tempRelatedObjectIds: []})  
     }
 
     clearRelatedObjects = () => {
@@ -363,7 +365,7 @@ const EditCollectionForm = (props) => {
                         </div>
 
                         <div className="rectangle mt-2">
-                            <span className="black-20">Add resources</span>
+                            <span className="black-20">Add resources</span> 
                             <br/>
                             <span className="gray800-14">Link resources in the gateway to your collection page.</span>
                         </div>
@@ -378,7 +380,7 @@ const EditCollectionForm = (props) => {
                              }) : ''}
                             
 
-                            <div className="flexCenter pt-3 pb-3">
+                            <div className="flexCenter pt-3 pb-3"> 
                                 <Row>
                                     <Col sm={1} lg={1} />
                                     <Col sm={10} lg={10}>
@@ -389,10 +391,7 @@ const EditCollectionForm = (props) => {
                             </div>
                         </div> 
 
-                        {!props.userState[0].loggedIn ? (
-                        ""
-                        ) : ( 
-                        <div className="actionBar">
+                        <ActionBar userState={props.userState}>  
                                 <a style={{ cursor: 'pointer' }} href={'/account?tab=collections'}>
                                     <Button variant="medium" className="cancelButton dark-14 mr-2" >
                                         Cancel
@@ -403,19 +402,16 @@ const EditCollectionForm = (props) => {
                                     + Add resource
                                 </Button>
 
-                                <Button variant="primary" className="publishButton white-14-semibold" type="submit" onClick={() => Event("Buttons", "Click", "Add tool form submitted")} >
+                                <Button variant="primary" className="publishButton white-14-semibold mr-2" type="submit" onClick={() => Event("Buttons", "Click", "Add tool form submitted")} >
                                     Publish
                                 </Button>
-                        </div>
-                        )} 
-
-
+                        </ActionBar> 
                     </Form>
                 </Col>
                 <Col sm={1} lg={10} />
             </Row>
             <Row>
-                <span className="formBottomGap"></span>
+                <span className="formBottomGap"></span> 
             </Row>
         </div>
     );

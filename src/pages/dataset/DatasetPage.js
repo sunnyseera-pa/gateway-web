@@ -34,6 +34,7 @@ import TechnicalMetadata from "./components/TechnicalMetadata";
 import TechnicalDetailsPage from "./components/TechnicalDetailsPage";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
+import AddToCollection from "../commonComponents/AddToCollection"; 
 import _ from 'lodash';
 import UserMessages from "../commonComponents/userMessages/UserMessages";
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
@@ -854,6 +855,12 @@ class DatasetDetail extends Component {
                 drawerIsOpen={showDrawer}
                 topicContext={this.topicContext} />
         </SideDrawer>
+
+        {!userState[0].loggedIn ? (
+          ""
+        ) : (
+          <AddToCollection className="addToCollectionButton" data={data} userState={userState} />
+        )}
 
         <DataSetModal 
           open={showModal} 

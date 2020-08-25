@@ -16,6 +16,10 @@ import SVGIcon from "../../images/SVGIcon";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
+import ActionBar from '../commonComponents/actionbar/ActionBar';
+import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
+
+// import ReactGA from 'react-ga';
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
 import { PageView, initGA } from "../../tracking";
 
@@ -497,6 +501,10 @@ class ProjectDetail extends Component {
           />
         </SideDrawer>  
 
+        <ActionBar userState={userState}> 
+          <ResourcePageButtons data={data} userState={userState} />
+        </ActionBar> 
+
         <DataSetModal 
           open={showModal} 
           context={context}
@@ -504,19 +512,6 @@ class ProjectDetail extends Component {
           userState={userState[0]} 
         />
 
-        {!userState[0].loggedIn ? (
-          ""
-        ) : (
-          <div className="actionBar">
-            <Button
-              variant="white"
-              href={"/project/edit/" + data.id}
-              className="techDetailButton mr-2"
-            >
-              Edit
-            </Button>
-          </div>
-        )}
       </div>
     );
   }

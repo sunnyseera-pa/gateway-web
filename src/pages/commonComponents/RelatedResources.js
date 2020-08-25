@@ -17,7 +17,7 @@ const RelatedResources =  React.forwardRef((props, ref) => {
 
     function addResources() {
         handleClose();
-        props.doAddToRelatedObjects();
+        props.doAddToRelatedObjects(); 
 
     }
 

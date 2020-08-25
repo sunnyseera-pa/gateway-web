@@ -11,7 +11,10 @@ import SearchBar from "../commonComponents/SearchBar";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
+import ActionBar from '../commonComponents/actionbar/ActionBar';
+import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
+
 import "react-tabs/style/react-tabs.css";
 import { baseURL } from "../../configs/url.config";
 import { PageView, initGA } from "../../tracking";
@@ -548,6 +551,10 @@ class ToolDetail extends Component {
           />
         </SideDrawer> 
 
+        <ActionBar userState={userState}> 
+          <ResourcePageButtons data={data} userState={userState} /> 
+        </ActionBar> 
+      
         <DataSetModal 
           open={showModal} 
           context={context}
@@ -555,20 +562,6 @@ class ToolDetail extends Component {
           userState={userState[0]} 
         />
       
-
-        {!userState[0].loggedIn ? (
-          ""
-        ) : (
-          <div className="actionBar">
-            <Button
-              variant="white"
-              href={"/paper/edit/" + data.id}
-              className="techDetailButton mr-2"
-            >
-              Edit
-            </Button>
-          </div>
-        )}
       </div>
     );
   }
