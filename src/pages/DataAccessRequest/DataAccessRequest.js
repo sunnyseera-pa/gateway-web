@@ -70,6 +70,7 @@ class DataAccessRequest extends Component {
 					dataset
 				}
 			} = response;
+
 			// 1. get the first active panel
 			let {
 				formPanels: [initialPanel, ...rest]
@@ -84,6 +85,7 @@ class DataAccessRequest extends Component {
 				activePanelId: initialPanel.panelId,
 				isLoading: false
 			});
+		
 			// for local test uses formSchema.json
 			//  this.setState({jsonSchema: {...formSchema}, questionAnswers: {fullname: {"id":5385077600698822,"orcid":"12345678","name":"Paul McCafferty","bio":"Developer @ PA","email":"p*************y@p**************m"}, orcid:"12345678", email:"p*************y@p**************m"}, activePanelId: 'applicant', isLoading: false, applicationStatus: 'inProgress'});
 		} catch (error) {
@@ -337,10 +339,15 @@ class DataAccessRequest extends Component {
 	};
 
 	onNextPanel = () => {
+		// 1. copy formpanels
 		let formPanels = [...this.state.jsonSchema.formPanels];
-		let activeIndex = formPanels.findIndex(p => p.panelId === this.state.activePanelId);
-		let nextIndex = ++activeIndex;
-		let { panelId, pageId } = formPanels[nextIndex > formPanels.length - 1 ? 0 : nextIndex];
+		// 2. get activeIdx
+		let activeIdx = formPanels.findIndex(p => p.panelId === this.state.activePanelId);
+		// 3. increment idx
+		let nextIdx = ++activeIdx;
+		// 4. get activePanel - make sure newIdx doesnt exceed panels length
+		let { panelId, pageId } = formPanels[nextIdx > formPanels.length - 1 ? 0 : nextIdx];
+		// 5. update the navigationState
 		this.updateNavigation({ panelId, pageId });
 	}
 
@@ -574,12 +581,10 @@ class DataAccessRequest extends Component {
 												<p className='black-20-semibold mb-0'>
 													{item.active ? item.title : ''}
 												</p>
-												<p>
-													<ReactMarkdown
-														className='gray800-14'
-														source={item.description}
-													/>
-												</p>
+												<ReactMarkdown
+													className='gray800-14'
+													source={item.description}
+												/>
 											</Fragment>
 										) : (
 											''
