@@ -3,13 +3,15 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import axios from 'axios';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { baseURL } from '../../../configs/url.config';
+import _ from 'lodash'; 
 
 
 class TypeaheadDataset extends React.Component {
   constructor(props) {
-    super(props);    
+    super(props);
+
     this.state = {
-      value: [],
+      value: props.selectedDatasets,
       options: [],
       id: props.id
     };
@@ -20,33 +22,25 @@ class TypeaheadDataset extends React.Component {
   }
 
   getData() {
-    axios.get(`${baseURL}/api/v1/users`)
-      .then((res) => {
-        let id;
-        let value = [];
-        let {data: {data}} = res;
-        if(typeof this.props.value !== 'undefined') {
-          ({id} = this.props.value);
-          value = [...data].filter(d => d.id === id) ;
-        }
-        this.setState({ options: data, value });
-      })
-      .catch(err => {
-        alert('Failed to fetch users');
-      });
+    if(this.props.selectedDatasets) {
+      const { datasetfields: { publisher }} = this.props.selectedDatasets[0];
+      axios.get(`${baseURL}/api/v1/publishers/${publisher}/datasets`)
+        .then((res) => {
+          const { data: { datasets }} = res;
+          let value = [...this.state.value];
+          this.setState({ options: datasets, value });
+        })
+        .catch(err => {
+          alert('Failed to fetch publisher datasets');
+        });
+    }
 }
 
   handleChange(e) {
-    debugger;
     this.props.onHandleDataSetChange(e);
-    console.log(e);
-    //let user = '';
-    //if(e.length > 0) 
-      //[user] = e;
-  
-    //this.setState({
-      //value: (user ? [user] : []),
-    //}, this.props.onChange.bind(null, user));
+    this.setState({
+       value: e,
+    });
   }
 
   render() {
@@ -54,7 +48,7 @@ class TypeaheadDataset extends React.Component {
 
       <Typeahead
         id={'typeaheadDataset'}
-        className={'addFormInputTypeAhead'}
+        className={`addFormInputTypeAhead ${_.isEmpty(this.state.value) ? 'emptyFormInputTypeAhead' : '' }`}
         options={this.state.options}        
         onChange={e => {this.handleChange(e)}}
         selected={this.state.value}
@@ -64,9 +58,13 @@ class TypeaheadDataset extends React.Component {
         defaultSelected={this.state.value}
         labelKey={options => `${options.name}`}
         renderMenuItemChildren={(option, props) => (
-          <div className="userOption">
-            <div>{option.name}</div>
-            <div><span>{option.bio || 'Institution not set'}</span> <span>{option.orcid || 'No ORCID'}</span></div>
+          <div>
+            <div className='datasetName'>
+              {option.name}
+            </div>
+            <div className='datasetDescription'>
+              {option.description || option.datasetfields.abstract}
+            </div>
           </div>
         )}
       />

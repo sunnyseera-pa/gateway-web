@@ -44,7 +44,6 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 				const {
 					data: { topics }
 				} = res;
-				debugger;
 				// 1. clone topics from t
 				let topicsArr = [...topics];
 				// 2. check if  dataset id has been passed
@@ -162,7 +161,6 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 					let {datasets: [publisherObj = {}, ...rest] = []} = topic;
 					console.log(publisherObj);
 					const {data: { publisher = {} }} = await getPublihserById(publisherObj.publisher);
-					debugger;
 					if(!_.isEmpty(publisher)) {
 						let {dataRequestModalContent = {}} = publisher;
 						setRequiresModal(!_.isEmpty(dataRequestModalContent) ? true : false);

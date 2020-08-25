@@ -15,7 +15,7 @@ const NavItem = ({parentForm, questionPanels, onFormSwitchPanel, activePanelId, 
         const baseClasses = 'gray800-14 dar-nav-item';
         if(!isEmpty(qPanels)) {
             return qPanels.map((item, index) =>{
-                if (parentForm.pageId === item.pageId) {
+                if (parentForm.pageId === item.pageId && item.navHeader) {
                     let classes = item.panelId === activePanelId ? baseClasses + ' nav-item-active' : baseClasses;
                     
                     return  (

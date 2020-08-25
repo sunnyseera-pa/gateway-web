@@ -51,14 +51,15 @@ class DataAccessRequest extends Component {
 			lookup: ['fullname'],
 			isLoading: true,
 			formSubmitted: false,
-			dataset: {},
+			datasets: [],
 			showDrawer: false,
 			showModal: false,
 			isWideForm: false,
 			is5SafesForm: false,
 			activeAccordionCard: 0,
 			allowedNavigation: true,
-			topicContext: {}
+			topicContext: {},
+			selectedDatasets: []
 		};
 	}
 
@@ -88,7 +89,7 @@ class DataAccessRequest extends Component {
 	loadData = async () => {
 		let {
 			match: {
-				params: { datasetId, publisher },
+				params: { datasetId },
 			},
 		} = this.props;
 		let response = await axios.get(
@@ -118,10 +119,17 @@ class DataAccessRequest extends Component {
 		let {
 			formPanels: [initialPanel, ...rest],
 		} = jsonSchema;
+
+		const selectedDatasets = [dataset].map(dataset => {
+			let { name, description, datasetfields: { abstract }} = dataset;
+			return { name, description, abstract };
+		});
+
 		// 2. set state
 		this.setState({
 			jsonSchema: { ...jsonSchema, ...classSchema },
-			dataset,
+			datasets: [dataset],
+			selectedDatasets,
 			questionAnswers,
 			_id,
 			applicationStatus,
@@ -546,8 +554,10 @@ class DataAccessRequest extends Component {
 	};
 
 	onHandleDataSetChange = (e) => {
-		console.log(e);
-		alert(e);
+		this.setState({
+			selectedDatasets: e,
+			allowedNavigation: !_.isEmpty(e)
+		});
 	}
 
 	render() {
@@ -557,12 +567,13 @@ class DataAccessRequest extends Component {
 			isLoading,
 			validationErrors,
 			activeGuidance,
-			dataset,
+			datasets,
 			showDrawer,
 			showModal,
 			isWideForm,
 			activeAccordionCard,
-			allowedNavigation
+			allowedNavigation,
+			selectedDatasets
 		} = this.state;
 		const { userState, location } = this.props;
 
@@ -588,7 +599,7 @@ class DataAccessRequest extends Component {
 		}
 
 		const aboutForm = (
-			<div class='aboutAccordion'>
+			<div className='aboutAccordion'>
 				<Accordion defaultActiveKey='0'>
 					<Card className={activeAccordionCard === 0 ? 'activeCard' : ''}>
 						<Accordion.Toggle as={Card.Header} className={calcAccordionClasses(activeAccordionCard === 0)} eventKey='0' onClick={e => toggleCard(e, 0)}>
@@ -598,13 +609,20 @@ class DataAccessRequest extends Component {
 						<Accordion.Collapse eventKey='0'>
 							<Card.Body className='gray800-14'>
 								<div className='margin-bottom-16'>
-									If you’re not sure, <Link className={allowedNavigation ? '' : 'disabled'} onClick={this.toggleDrawer}>send a message to the data custodian</Link> to clarify. The datasets you select may impact the questions being asked in this application form. You cannot change this later.
+									If you’re not sure, <Link id='messageLink' to=' ' className={allowedNavigation ? '' : 'disabled'} onClick={this.toggleDrawer}>send a message to the data custodian</Link> to clarify. The datasets you select may impact the questions being asked in this application form. You cannot change this later.
 								</div>
 								<div>
 									<span>Datasets</span>
 									<div className='form-group'>
-										<TypeaheadDataset className='form-control' onHandleDataSetChange={this.onHandleDataSetChange}/>
+										<TypeaheadDataset selectedDatasets={this.state.datasets} onHandleDataSetChange={this.onHandleDataSetChange}/>
 									</div>
+									{ 
+									_.isEmpty(this.state.selectedDatasets) ? 
+										<div className='errorMessages'>
+											You must select at least one dataset
+										</div> 
+									: null 
+									}
 									<div className='panConfirmDatasets'>
 										<button type='input' className={`button-primary ${allowedNavigation ? '' : 'disabled'}`} disabled={!allowedNavigation}>Confirm</button>
 									</div>
@@ -687,7 +705,7 @@ class DataAccessRequest extends Component {
 					<Col sm={12} md={8} className='banner-left'>
 						<span className='white-20-semibold mr-5'>Data Access Request</span>
 						<span className='white-16-semibold pr-5'>
-							{dataset.name} | {dataset.datasetfields.publisher}
+							{datasets[0].name} | {datasets[0].datasetfields.publisher}
 						</span>
 					</Col>
 					<Col sm={12} md={4} className='banner-right'>

@@ -332,6 +332,22 @@
 	}
 }
 
+.datasetName {
+    @include font-source(14px, $gray-800, $font-weight-semibold);
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.datasetDescription {
+    @include font-source(14px, $gray-600, $font-weight-semibold);
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .pad-1 {
 	padding-right: 1px !important;
 }
@@ -416,7 +432,7 @@
     border: solid 2px #3db28c;
 }
 
-a {
+#messageLink {
     color: $purple !important;
     text-decoration: underline !important;
 }
@@ -429,4 +445,8 @@ a {
 .panConfirmDatasets > button {
     height: 40px;
     width: 85px;
+}
+
+.form-group .addFormInputTypeAhead {
+    height: min-content !important;
 }
