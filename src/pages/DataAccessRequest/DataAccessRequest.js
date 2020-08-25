@@ -22,6 +22,7 @@ import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import 'react-tabs/style/react-tabs.css';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
+import './DataAccessRequest.scss';
 
 class DataAccessRequest extends Component {
 	constructor(props) {
@@ -335,36 +336,12 @@ class DataAccessRequest extends Component {
 		}
 	};
 
-	onNextPanel(activePanelId) {
-		if (
-			activePanelId === 'mrcHealthDataToolkit' ||
-			activePanelId === 'adviceFromPublisher'
-		) {
-			// 1. filter for the first section safePeople and get the first obj
-			let { panelId, pageId } = _.head(
-				[...this.state.jsonSchema.formPanels].filter((p) => {
-					return p.pageId.toUpperCase() === 'SAFEPEOPLE';
-				})
-			);
-			this.updateNavigation({ panelId, pageId });
-		} else {
-			const formPanels = [...this.state.jsonSchema.formPanels];
-			const currentPanelIndex = formPanels.findIndex(
-				(panel) => panel.panelId === activePanelId
-			);
-			const newPanelIndex = currentPanelIndex + 2;
-			const nextPanelIndex = formPanels.findIndex(
-				(panel) => panel.index === newPanelIndex
-			);
-			if (nextPanelIndex === -1) {
-				console.log('at the end!');
-			} else {
-				const { panelId, pageId } = formPanels.find(
-					(panel) => panel.index === newPanelIndex
-				);
-				this.updateNavigation({ panelId, pageId });
-			}
-		}
+	onNextPanel = () => {
+		let formPanels = [...this.state.jsonSchema.formPanels];
+		let activeIndex = formPanels.findIndex(p => p.panelId === this.state.activePanelId);
+		let nextIndex = ++activeIndex;
+		let { panelId, pageId } = formPanels[nextIndex > formPanels.length - 1 ? 0 : nextIndex];
+		this.updateNavigation({ panelId, pageId });
 	}
 
 	/**
@@ -393,9 +370,6 @@ class DataAccessRequest extends Component {
 		// reset scroll to 0, 0
 		window.scrollTo(0, 0);
 		let panelId = '';
-		const currentActivePage = [...this.state.jsonSchema.pages].find(
-			(p) => p.active === true
-		);
 		// copy state pages
 		const pages = [...this.state.jsonSchema.pages];
 		// get the index of new form
@@ -696,18 +670,13 @@ class DataAccessRequest extends Component {
 				</div>
 
 				<div className='action-bar'>
-					<Col md={6} className='mt-4'>
-						<span className='gray800-14'>{totalQuestions}</span>
-					</Col>
-					<Col md={6} className='mt-3 text-right'>
-						<Button
-							variant='white'
-							className='techDetailButton ml-3'
-							onClick={this.onFormSubmit}
-						>
-							Submit application
-						</Button>
-					</Col>
+					<div className="action-bar--questions">
+						<p>{totalQuestions}</p>
+					</div>
+					<div className="action-bar-actions">
+						<button className="btn btn-tertiary mr-2" onClick={this.onFormSubmit}>Submit application</button>
+						<button className="btn btn-primary" onClick={this.onNextPanel}>Next</button>
+					</div>
 				</div>
 
 				<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
