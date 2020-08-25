@@ -23,6 +23,7 @@ import DiscourseTopic from '../commonComponents/DiscourseTopic';
 import DatasetSchema from './DatasetSchema';
 
 import 'react-tabs/style/react-tabs.css';
+import { Fragment } from 'react';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
@@ -154,7 +155,9 @@ class DatasetDetail extends Component {
         return (<>
                 <div className="text-center">
                     {(() => {
-                        if (data.datasetfields.metadataquality && typeof data.datasetfields.metadataquality.quality_score === 'undefined') return <></>
+                        if (typeof data.datasetfields.metadataquality === 'undefined' || typeof data.datasetfields.metadataquality.quality_score === 'undefined') {
+                            return <Fragment><div style={{lineHeight: 1}}><MetadataNotRated className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Not rated</span></div></Fragment>
+                        }
                         else if (data.datasetfields.metadataquality.quality_score <= 50) {
                             return (<div ref={target} onClick={() => setShow(!show)} style={{ cursor: 'pointer' }} ><div style={{lineHeight: 1}}><MetadataNotRated className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Not rated</span></div></div>)
                         }
