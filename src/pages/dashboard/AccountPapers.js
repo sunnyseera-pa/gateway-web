@@ -23,7 +23,11 @@ class AccountPapers extends React.Component {
         userState: [],
         key: 'active',
         data: [],
-        isLoading: true
+        isLoading: true,
+        activeCount: 0,
+        reviewCount: 0,
+        archiveCount: 0,
+        rejectedCount: 0
     };
 
     handleSelect = (key) => {
@@ -36,10 +40,28 @@ class AccountPapers extends React.Component {
     }
 
     doPapersCall() {
+        this.setState({isLoading: true});
         axios.get(baseURL + '/api/v1/papers/getList')
-            .then((res) => {
-                this.setState({ data: res.data.data, isLoading: false });
-            });
+        .then((res) => {
+            this.setState({ data: res.data.data, isLoading: false });
+
+            let activeCount = 0;
+            let reviewCount = 0;
+            let archiveCount = 0;
+            let rejectedCount = 0;
+        
+            res.data.data.forEach((paper) => {
+                if (paper.activeflag === "active") activeCount++;
+                else if (paper.activeflag === "review") reviewCount++;
+                else if (paper.activeflag === "archive") archiveCount++;
+                else if (paper.activeflag === "rejected") rejectedCount++;
+                });
+        
+            this.setState({ activeCount: activeCount});
+            this.setState({ reviewCount: reviewCount});
+            this.setState({ archiveCount: archiveCount});
+            this.setState({ rejectedCount: rejectedCount});
+        })
     }
 
     approvePaper = (id) => {
@@ -47,12 +69,60 @@ class AccountPapers extends React.Component {
             activeflag: "active"
         })
         .then((res) => {
-            window.location.href = '/account?tab=papers&paperApproved=true';
+            this.doPapersCall();
+            if(shouldChangeTab(this.state)){
+                this.setState({key: "active"});
+            }
+        });
+    }
+
+    updateCounters = (data) => {
+        let activeCount = 0;
+        let reviewCount = 0;
+        let archiveCount = 0;
+        let rejectedCount = 0;
+    
+        data.forEach((tool) => {
+            if (tool.activeflag === "active") activeCount++;
+            else if (tool.activeflag === "review") reviewCount++;
+            else if (tool.activeflag === "archive") archiveCount++;
+            else if (tool.activeflag === "rejected") rejectedCount++;
+        });
+    
+        this.setState({ activeCount: activeCount});
+        this.setState({ reviewCount: reviewCount});
+        this.setState({ archiveCount: archiveCount});
+        this.setState({ rejectedCount: rejectedCount});
+    }
+
+    rejectObject = (id) => {
+        axios.patch(baseURL + '/api/v1/papers/'+ id, {
+            id: id,
+            activeflag: "rejected"
+        })
+        .then((res) => {
+            this.doPapersCall();
+            if(shouldChangeTab(this.state)){
+                this.setState({key: "active"});
+            }
+        });
+    }
+
+    deleteObject = (id) => {
+        axios.patch(baseURL + '/api/v1/papers/'+ id, {
+            id: id,
+            activeflag: "archive"
+        })
+        .then((res) => {
+            this.doPapersCall();
+            if(shouldChangeTab(this.state)){
+                this.setState({key: "active"});
+            }
         });
     }
 
     render() {
-        const { userState, key, isLoading, data } = this.state;
+        const { userState, key, isLoading, data, activeCount, reviewCount, archiveCount, rejectedCount } = this.state;
 
         if (isLoading) {
             return (
@@ -65,18 +135,6 @@ class AccountPapers extends React.Component {
                 </Row>
             );
         }
-
-        var activeCount = 0;
-        var reviewCount = 0;
-        var archiveCount = 0;
-        var rejectedCount = 0;
-
-        data.forEach((paper) => {
-            if (paper.activeflag === "active") activeCount++;
-            else if (paper.activeflag === "review") reviewCount++;
-            else if (paper.activeflag === "archive") archiveCount++;
-            else if (paper.activeflag === "rejected") rejectedCount++;
-        });
 
         return (
             <div>
@@ -147,7 +205,7 @@ class AccountPapers extends React.Component {
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
                                                                     <Dropdown.Item href={'/paper/edit/' + dat.id} className="black-14">Edit</Dropdown.Item>
-                                                                    <DeleteButton id={dat.id} />
+                                                                    <DeleteButton id={dat.id} deleteObject={this.deleteObject}/>
                                                                 </DropdownButton>
                                                             </Col>
                                                         </Row>
@@ -192,7 +250,7 @@ class AccountPapers extends React.Component {
                                                                     <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
                                                                         <Dropdown.Item href={'/paper/edit/' + dat.id} className="black-14">Edit</Dropdown.Item>
                                                                         <Dropdown.Item href='#' onClick={() => this.approvePaper(dat.id)} className="black-14">Approve</Dropdown.Item>
-                                                                        <RejectButton id={dat.id} />
+                                                                        <RejectButton id={dat.id} rejectObject={this.rejectObject}/>
                                                                     </DropdownButton>
                                                                     : ""}
                                                             </Col>
@@ -276,7 +334,7 @@ class AccountPapers extends React.Component {
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
                                                                     <Dropdown.Item href={'/paper/edit/' + dat.id} className="black-14">Edit</Dropdown.Item>
                                                                     <Dropdown.Item href='#' onClick={() => this.approvePaper(dat.id)} className="black-14">Approve</Dropdown.Item>
-                                                                    <RejectButton id={dat.id} />
+                                                                    <RejectButton id={dat.id} rejectObject={this.rejectObject}/>
                                                                 </DropdownButton>
                                                             </Col>
                                                         </Row>
@@ -300,14 +358,7 @@ function RejectButton(props) {
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    const rejectObject = () => {
-        axios.patch(baseURL + '/api/v1/papers/'+props.id, {
-            activeflag: "rejected"
-        })
-        .then((res) => {
-            window.location.href = '/account?tab=papers&paperRejected=true';
-        });
-    }
+    const rejectObject = () => props.rejectObject(props.id);
 
     return (
         <>
@@ -332,14 +383,7 @@ function DeleteButton(props) {
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    const deleteObject = () => {
-        axios.patch(baseURL + '/api/v1/papers/'+props.id, {
-            activeflag: "archive"
-        })
-        .then((res) => {
-            window.location.href = '/account?tab=papers&paperDeleted=true';
-        });
-    }
+    const deleteObject = () => props.deleteObject(props.id);
 
     return (
         <>
@@ -357,6 +401,10 @@ function DeleteButton(props) {
             </Modal>
         </>
     );
+}
+
+function shouldChangeTab(state){
+    return (state.key === 'pending' && state.reviewCount <= 1) || (state.key === 'archive' && state.archiveCount <= 1)? true : false;
 }
 
 export default AccountPapers;

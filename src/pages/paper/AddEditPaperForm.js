@@ -9,7 +9,7 @@ import {Form, Button, Row, Col} from 'react-bootstrap';
 import moment from 'moment';
 import RelatedResources from '../commonComponents/RelatedResources';
 import RelatedObject from '../commonComponents/RelatedObject';
-
+import ActionBar from '../commonComponents/actionbar/ActionBar'; 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
 import ToolTip from '../../images/imageURL-ToolTip.gif';
@@ -509,65 +509,31 @@ const AddEditPaperForm = (props) => {
               )}
 
               <div className="rectangle flexCenter pixelGapTop">
-                <Row>
-                  <Col sm={1} lg={1} />
-                  <Col sm={10} lg={10}>
-                    <RelatedResources
-                      ref={relatedResourcesRef}
-                      searchString={props.searchString}
-                      doSearchMethod={props.doSearchMethod}
-                      doUpdateSearchString={props.doUpdateSearchString}
-                      userState={props.userState}
-                      datasetData={props.datasetData}
-                      toolData={props.toolData}
-                      projectData={props.projectData}
-                      paperData={props.paperData}
-                      personData={props.personData}
-                      summary={props.summary}
-                      doAddToTempRelatedObjects={
-                        props.doAddToTempRelatedObjects
-                      }
-                      tempRelatedObjectIds={props.tempRelatedObjectIds}
-                      relatedObjects={props.relatedObjects}
-                      doClearRelatedObjects={props.doClearRelatedObjects}
-                      doAddToRelatedObjects={props.doAddToRelatedObjects}
-                    />
-                  </Col>
-                  <Col sm={1} lg={10} />
-                </Row>
+                  <Row>
+                      <Col sm={1} lg={1} />
+                      <Col sm={10} lg={10}>
+                          <RelatedResources ref={relatedResourcesRef} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} paperData={props.paperData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
+                      </Col>
+                      <Col sm={1} lg={10} />
+                  </Row>
               </div>
 
-              {!props.userState[0].loggedIn ? (
-                ""
-              ) : (
-                <div className="actionBar">
-                  <a style={{ cursor: "pointer" }} href={"/account?tab=papers"} data-testid="cancelButton">
-                    <Button
-                      variant="medium"
-                      className="cancelButton dark-14 mr-2"
-                    >
-                      Cancel
-                    </Button>
-                  </a>
+              <ActionBar userState={props.userState}>  
+                      <a style={{ cursor: 'pointer' }} href={'/account?tab=papers'}>
+                          <Button variant="medium" className="cancelButton dark-14 mr-2" >
+                              Cancel
+                          </Button>
+                      </a> 
 
-                  <Button
-                    onClick={() => relatedResourcesRef.current.showModal()}
-                    variant="white"
-                    className="techDetailButton mr-2"
-                  >
-                    + Add resource
-                  </Button>
+                      <Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className="techDetailButton mr-2">
+                          + Add resource
+                      </Button>
 
-                  <Button
-                    variant="primary"
-                    className="publishButton white-14-semibold"
-                    type="submit"
-                    data-testid="updatePublishButton"
-                  >
-                    {props.isEdit ? "Update" : "Publish"}
-                  </Button>
-                </div>
-              )}
+                      <Button variant="primary" className="publishButton white-14-semibold mr-2" type="submit" >
+                          {props.isEdit ? 'Update' : 'Publish'}
+                      </Button>
+              </ActionBar>                
+
             </Form>
           </Col>
           <Col sm={1} lg={10} />

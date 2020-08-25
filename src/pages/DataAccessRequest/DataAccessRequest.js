@@ -48,7 +48,8 @@ class DataAccessRequest extends Component {
 			formSubmitted: false,
 			dataset: {},
 			showDrawer: false,
-			showModal: false
+			showModal: false,
+			context: {}
 		};
 	}
 
@@ -488,15 +489,15 @@ class DataAccessRequest extends Component {
 		});
 	};
 
-	toggleModal = (showEnquiry = false) => {
-		this.setState((prevState) => {
-			return { showModal: !prevState.showModal };
+	toggleModal = (showEnquiry = false, context = {}) => {
+		this.setState( ( prevState ) => {
+			return { showModal: !prevState.showModal, context };
 		});
-
-		if (showEnquiry) {
-			this.toggleDrawer();
+	
+		if(showEnquiry) {
+		  this.toggleDrawer();
 		}
-	};
+	}
 
 	render() {
 		const {
@@ -508,7 +509,8 @@ class DataAccessRequest extends Component {
 			activeGuidance,
 			dataset,
 			showDrawer,
-			showModal
+			showModal,
+			context
 		} = this.state;
 		const { userState, location } = this.props;
 
@@ -716,10 +718,11 @@ class DataAccessRequest extends Component {
 					/>
 				</SideDrawer>
 
-				<DataSetModal
-					open={showModal}
-					closed={this.toggleModal}
-					userState={userState[0]}
+				<DataSetModal 
+                    open={showModal} 
+                    context={context}
+                    closed={this.toggleModal}
+                    userState={userState[0]} 
 				/>
 			</div>
 		);

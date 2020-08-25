@@ -2228,21 +2228,8 @@ iframe#discourse-embed-frame {
   max-width: 74px;
   min-height: 42px;
   min-width: 42px;
-}
+} 
  
-.actionBar {
-    position: fixed;
-    z-index: 998;
-    left: 0; 
-    bottom: 0;
-    height: 72px;
-    width:100%;
-    box-shadow: 1px 1px 0 3px #00000017;
-    background-color: #ffffff;
-    text-align: right;
-    padding: 15px
- }
-
 .floatRight{
   @include mq('tablet-small'){
     float: right;
@@ -2790,7 +2777,7 @@ button a {
   transform: translate3d(0, 0%, 0, 100%);
   transition: all 0.4s;
 }
-
+ 
 .notification {
   &:before {
     position: absolute;
@@ -2840,4 +2827,60 @@ button a {
     margin-left: 35px;
     margin-top: -13px;
   }
+}
+=======
+.addToCollectionButton {
+  width: 147px;
+  height: 40px;
+}
+
+.addToCollectionButton:focus {
+  box-shadow: none !important;
+}
+
+.addToCollectionDropdown {
+  width: 229px !important;
+  max-height: 176px !important;
+  box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03) !important;
+  background-color: $white !important;
+  overflow-x: hidden !important;
+  overflow-y: scroll !important;
+  top: -37px !important;
+  padding-top: 0px !important;
+  padding-bottom: 12px !important;
+}
+
+.addToCollectionItem {
+  white-space: pre-wrap !important;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.addToCollectionItem:hover {
+  background-color: $gray-200 !important;
+}
+
+.checkSvg {
+  float: right;
+
+  // @include mq(575px,max){
+  @include mq("tablet-small",max) {
+    transform: translate(-5px, 0px) !important;
+  }
+  @include mq("phablet",max) {
+    transform: translate(0px, -20px) !important;
+  }
+  // transform: translate(0px, -20px) !important;
+}
+
+.addToCollectionHeader {
+  position: sticky;
+  top: 0;
+  background-color: $white;
+  z-index: 1;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 16px;
 }

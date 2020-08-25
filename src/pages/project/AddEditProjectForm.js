@@ -8,6 +8,7 @@ import {Form, Button, Row, Col} from 'react-bootstrap';
 
 import RelatedResources from '../commonComponents/RelatedResources';
 import RelatedObject from '../commonComponents/RelatedObject';
+import ActionBar from '../commonComponents/actionbar/ActionBar';
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
@@ -295,10 +296,7 @@ const AddEditProjectForm = (props) => {
                             </Row>
                         </div>
 
-                        {!props.userState[0].loggedIn ? (
-                        "" 
-                        ) : ( 
-                        <div className="actionBar">
+                        <ActionBar userState={props.userState}>   
                                 <a style={{ cursor: 'pointer' }} href={'/account?tab=projects'}>
                                     <Button variant="medium" className="cancelButton dark-14 mr-2" >
                                         Cancel
@@ -309,11 +307,10 @@ const AddEditProjectForm = (props) => {
                                     + Add resource
                                 </Button>
                                 
-                                <Button variant="primary" className="publishButton white-14-semibold" type="submit" >
+                                <Button variant="primary" className="publishButton white-14-semibold mr-2" type="submit" >
                                     {props.isEdit ? 'Update' : 'Publish'}
                                 </Button>
-                        </div>
-                        )} 
+                        </ActionBar> 
 
                     </Form>
                 </Col>

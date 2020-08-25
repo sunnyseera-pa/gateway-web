@@ -56,7 +56,8 @@ class CollectionPage extends Component {
 		collectionAdded: false,
 		collectionEdited: false,
 		showDrawer: false,
-		showModal: false
+		showModal: false,
+		context: {}
 	};
 
 	constructor(props) {
@@ -223,15 +224,11 @@ class CollectionPage extends Component {
 		});
 	};
 
-	toggleModal = (showEnquiry = false) => {
-		this.setState((prevState) => {
-			return { showModal: !prevState.showModal };
-		});
-
-		if (showEnquiry) {
-			this.toggleDrawer();
-		}
-	};
+	toggleModal = (showEnquiry = false, context = {}) => {
+        this.setState( ( prevState ) => {
+            return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
+        });
+    }
 
 	render() {
 		const {
@@ -248,7 +245,8 @@ class CollectionPage extends Component {
 			collectionAdded,
 			collectionEdited,
 			showDrawer,
-			showModal
+			showModal,
+			context
 		} = this.state;
 		var { key } = this.state;
 		var allCount =
@@ -667,11 +665,12 @@ class CollectionPage extends Component {
 					/>
 				</SideDrawer>
 
-        <DataSetModal 
-          open={showModal} 
-          closed={this.toggleModal}
-          userState={userState[0]}
-        />
+				<DataSetModal 
+                    open={showModal} 
+                    context={context}
+                    closed={this.toggleModal}
+                    userState={userState[0]} 
+				/>
 			</div>
 		);
 	}

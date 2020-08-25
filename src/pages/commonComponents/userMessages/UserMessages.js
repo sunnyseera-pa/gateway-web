@@ -14,12 +14,12 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 	const defaultMessage =
 		'Use messages to clarify questions with the data custodian before starting your application to request access to the data. Provide a brief description of your project and what datasets you are interested in.';
 
-    let relatedObjectIds, title, subTitle, datasets, tags;
+    let relatedObjectIds, title, subTitle, datasets, tags, allowNewMessage, requiresModal, dataRequestModalContent;
     
     let history = useHistory();
 
 	if (typeof topicContext !== 'undefined')
-		({ relatedObjectIds = [], title = '', subTitle = '', datasets = [], tags = [] } = topicContext);
+		({ relatedObjectIds = [], title = '', subTitle = '', datasets = [], tags = [], allowNewMessage = false, requiresModal = false, dataRequestModalContent = {} } = topicContext);
 
 	const [messageDescription, setMessageDescription] = useState('');
 
@@ -28,6 +28,8 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 	const [activeTopic, setActiveTopic] = useState({});
 
 	const [textArea, resetTextArea] = useState('');
+
+	const [modalRequired, setRequiresModal] = useState(requiresModal);
 
 	/**
 	 * GetUserTopics
@@ -62,7 +64,7 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 					await getTopicById(activeTopic._id);
 					// 4c. set active state on topics arr
 					topicsArr[existingTopicIdx].active = true;
-				} else {
+				} else if (allowNewMessage) {
 					// 5. if new topic make new object
 					const newTopic = setNewTopic();
 					// 6. only push new topic in if not empty
@@ -154,12 +156,18 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 			// 2. Load full topic details from Db
 			await axios
 				.get(`${baseURL}/api/v1/topics/${id}`)
-				.then((res) => {
-					const {
-						data: { topic }
-					} = res;
+				.then(async (res) => {
+					let dataRequestModalContent = {};
+					let {data: { topic }} = res;
+					let {datasets: [publisherObj = {}, ...rest] = []} = topic;
+					console.log(publisherObj);
+					const {data: { publisher = {} }} = await getPublihserById(publisherObj.publisher);
+					if(!_.isEmpty(publisher)) {
+						({dataRequestModalContent} = publisher);
+						setRequiresModal(!_.isEmpty(dataRequestModalContent) ? true : false);
+					}
 					// 3. Set active topic to update messages pane
-					setActiveTopic({ ...topic, active: true });
+					setActiveTopic({ ...topic, modalRequired, dataRequestModalContent, active: true });
 				})
 				.catch((err) => {
 					console.error(err);
@@ -177,6 +185,14 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 			setActiveTopic({ ...topic, active: true});
 		}
 	};
+
+	const getPublihserById = (publihserId = '') => {
+		if(!_.isEmpty(publihserId)) {
+			const response = axios.get(`${baseURL}/api/v1/publishers/${publihserId}`);
+			return response;
+		}
+		return {};
+	}
 
 	/**
 	 * Request Access
@@ -201,11 +217,10 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 		} 
 	};
 
-
 	const onShowModal = (e) => {
 		e.preventDefault();
 		closed();
-		toggleModal();
+		toggleModal(false, activeTopic);
 	}
 
 	/**
@@ -284,7 +299,7 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 		// 1. GET Topics for current user
 		if (drawerIsOpen)
 			getUserTopics();
-	}, [drawerIsOpen]);
+	}, [drawerIsOpen, topicContext]);
 
 	return (
 		<Fragment>
@@ -302,6 +317,7 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 						{!_.isEmpty(activeTopic) ? (
 							<MessageHeader
 								topic={activeTopic}
+								modalRequired={modalRequired}
 								onRequestAccess={onRequestAccess}
 								onShowModal={onShowModal}
 							/>

@@ -11,7 +11,10 @@ import SearchBar from "../commonComponents/SearchBar";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
+import ActionBar from '../commonComponents/actionbar/ActionBar';
+import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
+
 import "react-tabs/style/react-tabs.css";
 import { baseURL } from "../../configs/url.config";
 import { PageView, initGA } from "../../tracking";
@@ -58,6 +61,7 @@ class ToolDetail extends Component {
     showDrawer: false,
     showModal: false,
     isHovering: false
+    context: {}
   };
 
   constructor(props) {
@@ -201,9 +205,9 @@ class ToolDetail extends Component {
     });
   }
 
-  toggleModal = (showEnquiry = false) => {
+  toggleModal = (showEnquiry = false, context = {}) => {
     this.setState( ( prevState ) => {
-        return { showModal: !prevState.showModal };
+        return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
     });
 
     if(showEnquiry) {
@@ -235,6 +239,7 @@ toggleHoverState(state) {
       discoursePostCount,
       showDrawer,
       showModal,
+      context
     } = this.state;
 
 
@@ -608,25 +613,17 @@ toggleHoverState(state) {
           />
         </SideDrawer>
 
-        <DataSetModal
-          open={showModal}
+        <ActionBar userState={userState}> 
+          <ResourcePageButtons data={data} userState={userState} /> 
+        </ActionBar> 
+      
+        <DataSetModal 
+          open={showModal} 
+          context={context}
           closed={this.toggleModal}
-          userState={userState[0]}
+          userState={userState[0]} 
         />
 
-        {!userState[0].loggedIn ? (
-          ""
-        ) : (
-          <div className="actionBar">
-            <Button
-              variant="white"
-              href={"/paper/edit/" + data.id}
-              className="techDetailButton mr-2"
-            >
-              Edit
-            </Button>
-          </div>
-        )}
       </div>
     );
   }

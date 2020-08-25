@@ -1,5 +1,6 @@
 // /ShowObjects.js
 import React, { Component, useState, useRef, Fragment } from "react";
+import { Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import axios from "axios";
 import {
@@ -25,6 +26,7 @@ import { ReactComponent as MetadataGold } from "../../images/gold.svg";
 import { ReactComponent as MetadataPlatinum } from "../../images/platinum.svg";
 import { ReactComponent as MetadataNotRated } from "../../images/not-rated.svg";
 import { PageView, initGA } from "../../tracking";
+import { Event } from "../../tracking";
 import moment from "moment";
 import Linkify from "react-linkify";
 import DatasetSchema from "./DatasetSchema";
@@ -32,6 +34,7 @@ import TechnicalMetadata from "./components/TechnicalMetadata";
 import TechnicalDetailsPage from "./components/TechnicalDetailsPage";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
+import AddToCollection from "../commonComponents/AddToCollection"; 
 import _ from 'lodash';
 import UserMessages from "../commonComponents/userMessages/UserMessages";
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
@@ -72,7 +75,11 @@ class DatasetDetail extends Component {
       }
     ],
     showDrawer: false,
-    showModal: false
+    showModal: false,
+    requiresModal: false,
+    allowsMessaging: false,
+    allowNewMessage: false,
+    dataRequestModalContent: {}
   };
 
   topicContext = {};
@@ -115,13 +122,15 @@ class DatasetDetail extends Component {
         this.getTechnicalMetadata();
         document.title = res.data.data[0].name.trim();
         let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
+      
         this.topicContext = { 
-          datasets: [{ datasetId: this.state.data.datasetid, publisher: this.state.data.datasetfields.publisher }], 
+          datasets: [{ datasetId: this.state.data.datasetid, publisher: this.state.data.datasetfields.publisher }] || [], 
           tags: [this.state.data.name],
           relatedObjectIds: [this.state.data._id] || '', 
           title: this.state.data.datasetfields.publisher || '', 
           subTitle: this.state.data.name || '',
-          contactPoint: this.state.data.datasetfields.contactPoint ||  ''  
+          contactPoint: this.state.data.datasetfields.contactPoint ||  '',
+          allowNewMessage: false  
         };
 
         this.updateCounter(this.props.match.params.datasetID, counter);
@@ -129,6 +138,12 @@ class DatasetDetail extends Component {
         if(!_.isUndefined(res.data.data[0].relatedObjects)) {
           await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
         }
+
+        if(!_.isEmpty(this.topicContext.title)) {
+          const publisherId = this.topicContext.title;
+          await this.getPublisherById(publisherId);
+        }
+
         this.setState({ isLoading: false });
       });
 
@@ -226,6 +241,28 @@ class DatasetDetail extends Component {
     this.setState({ discoursePostCount: count });
   }
 
+  getPublisherById = async (publisherId) => {
+    await axios
+          .get(`${baseURL}/api/v1/publishers/${publisherId}`)
+          .then(response => {
+            const {data: { publisher : { dataRequestModalContent = {}, allowsMessaging = false }}} = response;
+            const stateObj = { 
+              requiresModal: !_.isEmpty(dataRequestModalContent) ? true : false,
+              allowNewMessage: _.isEmpty(dataRequestModalContent) ? true : false,
+              allowsMessaging,
+              dataRequestModalContent
+             }
+             this.topicContext = {
+               ...this.topicContext,
+               ...stateObj
+             }
+            this.setState({...stateObj});
+          })
+          .catch(error => {
+            console.log(error);
+          });
+  } 
+
   toggleDrawer = () => {
     this.setState( ( prevState ) => {
         if(prevState.showDrawer === true) {
@@ -233,17 +270,25 @@ class DatasetDetail extends Component {
         }
         return { showDrawer: !prevState.showDrawer };
     });
-}
+  } 
 
-  toggleModal = (showEnquiry = false) => {
-      this.setState( ( prevState ) => {
-          return { showModal: !prevState.showModal };
-      });
+  toggleModal = (showEnquiry = false, context = {}) => {
+    this.setState( ( prevState ) => {
+        return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
+    });
 
-      if(showEnquiry) {
-        this.toggleDrawer();
+    if(showEnquiry) {
+      this.topicContext = {
+        ...this.topicContext,
+        allowNewMessage: true
       }
-  }
+    } else {
+      this.topicContext = {
+        ...this.topicContext,
+        allowNewMessage: true
+      }
+    }
+}
 
   render() {
     const {
@@ -257,7 +302,9 @@ class DatasetDetail extends Component {
       relatedObjects,
       discoursePostCount,
       showDrawer,
-      showModal
+      showModal,
+      requiresModal,
+      allowsMessaging
     } = this.state;
 
     if (isLoading) {
@@ -396,14 +443,29 @@ class DatasetDetail extends Component {
                 </Row>
 
                 <Row className="mt-2">
-                  <Col xs={9}>
+                  <Col xs={8}>
                     <span className="gray800-14">
                       {data.counter === undefined ? 1 : data.counter + 1}
                       {data.counter === undefined ? " view" : " views"}
                     </span>
                   </Col>
-                  <Col xs={3}>
-                    <button className="btn btn-primary addButton pointer float-right" onClick={() => { this.toggleModal()}}>How to request access</button>
+                  <Col xs={4}>
+                    {                      
+                      requiresModal ?
+                        <button className="btn btn-primary addButton pointer float-right" onClick={() => { this.toggleModal()}}>How to request access</button>
+                        : 
+                        <Fragment>
+                          <Link className={`btn button-tertiary dark-14  ${allowsMessaging ? 'mr-2' : 'float-right'}`}
+                            to={{ pathname: `/data-access-request/dataset/${data.datasetid}`}}
+                            onClick={() => Event("Buttons", "Click", "Request Access")}>Request Access
+                          </Link>
+                          {
+                            allowsMessaging ?
+                              <button className="btn button-primary addButton pointer" onClick={() => this.toggleDrawer()}>Make an enquiry</button> 
+                            : null
+                          }
+                        </Fragment>
+                    }
                   </Col>
                 </Row>
               </div>
@@ -794,6 +856,11 @@ class DatasetDetail extends Component {
                 topicContext={this.topicContext} />
         </SideDrawer>
 
+        {!userState[0].loggedIn ? (
+          ""
+        ) : (
+          <AddToCollection className="addToCollectionButton" data={data} userState={userState} />
+        )}
 
         <DataSetModal 
           open={showModal} 

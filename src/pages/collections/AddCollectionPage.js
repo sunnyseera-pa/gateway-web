@@ -19,6 +19,8 @@ import ToolTip from '../../images/imageURL-ToolTip.gif';
 import { Event, initGA } from '../../tracking';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
+import ActionBar from '../commonComponents/actionbar/ActionBar';
+
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -49,7 +51,8 @@ class AddCollectionPage extends React.Component {
         relatedObjects: [],
         didDelete: false,
         showDrawer: false,
-        showModal: false
+        showModal: false,
+        context: {}
     };
  
     async componentDidMount() {
@@ -151,18 +154,14 @@ class AddCollectionPage extends React.Component {
         });
     }
 
-    toggleModal = (showEnquiry = false) => {
+    toggleModal = (showEnquiry = false, context = {}) => {
         this.setState( ( prevState ) => {
-            return { showModal: !prevState.showModal };
+            return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
         });
-    
-        if(showEnquiry) {
-          this.toggleDrawer();
-        }
     }
 
     render() {
-        const { data, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, paperData, summary, relatedObjects, didDelete, showDrawer, showModal } = this.state;
+        const { data, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, paperData, summary, relatedObjects, didDelete, showDrawer, showModal, context } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -186,8 +185,9 @@ class AddCollectionPage extends React.Component {
 
                 <DataSetModal 
                     open={showModal} 
+                    context={context}
                     closed={this.toggleModal}
-                    userState={userState[0]}
+                    userState={userState[0]} 
                 />
             </div>
         );
@@ -364,12 +364,9 @@ const AddCollectionForm = (props) => {
                                     <Col sm={1} lg={10} />
                                 </Row>
                             </div>
-                        </div>  
+                        </div>   
 
-                        {!props.userState[0].loggedIn ? (
-                        ""
-                        ) : ( 
-                        <div className="actionBar">
+                        <ActionBar userState={props.userState}> 
                                 <a style={{ cursor: 'pointer' }} href={'/account?tab=collections'}>
                                     <Button variant="medium" className="cancelButton dark-14 mr-2" >
                                         Cancel
@@ -380,14 +377,10 @@ const AddCollectionForm = (props) => {
                                     + Add resource
                                 </Button>
                                 
-                                <Button variant="primary" className="publishButton white-14-semibold" type="submit" >
+                                <Button variant="primary" className="publishButton white-14-semibold mr-2" type="submit" >
                                     Publish
                                 </Button>
-                        </div>
-                        )} 
-
-
-
+                        </ActionBar> 
                     </Form>
                 </Col>
                 <Col sm={1} lg={10} />

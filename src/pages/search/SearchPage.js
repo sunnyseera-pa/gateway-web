@@ -54,6 +54,7 @@ class SearchPage extends React.Component {
         isResultsLoading: true,
         showDrawer: false,
         showModal: false,
+        context: {},
         userState: [{
             loggedIn: false,
             role: "Reader",
@@ -294,7 +295,7 @@ class SearchPage extends React.Component {
     getFiltersCall () {
         axios.get(baseURL + '/api/v1/search/filter/'+this.state.searchString)
             .then((res) => {
-                this.setState({
+                this.setState({ 
                     allFilters: res.data.allFilters || []
                 });
             })
@@ -349,15 +350,11 @@ class SearchPage extends React.Component {
         });
     }
 
-    toggleModal = (showEnquiry = false) => {
+    toggleModal = (showEnquiry = false, context = {}) => {
         this.setState( ( prevState ) => {
-            return { showModal: !prevState.showModal };
+            return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
         });
-    
-        if(showEnquiry) {
-          this.toggleDrawer();
-        }
-    }
+      }
 
     render() {
         const { 
@@ -399,7 +396,8 @@ class SearchPage extends React.Component {
             personIndex,
             
             showDrawer,
-            showModal
+            showModal,
+            context
         } = this.state;
 
         var { key } = this.state;
@@ -731,8 +729,9 @@ class SearchPage extends React.Component {
 
                 <DataSetModal 
                     open={showModal} 
+                    context={context}
                     closed={this.toggleModal}
-                    userState={userState[0]}
+                    userState={userState[0]} 
                 />
             </div>
         );

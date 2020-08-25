@@ -16,6 +16,10 @@ import SVGIcon from "../../images/SVGIcon";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
+import ActionBar from '../commonComponents/actionbar/ActionBar';
+import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
+
+// import ReactGA from 'react-ga';
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
 import { PageView, initGA } from "../../tracking";
 
@@ -49,7 +53,8 @@ class ProjectDetail extends Component {
     relatedObjects: [],
     discoursePostCount: 0,
     showDrawer: false,
-    showModal: false
+    showModal: false,
+    context: {}
   };
 
   constructor(props) {
@@ -185,15 +190,11 @@ class ProjectDetail extends Component {
     });
   }
 
-  toggleModal = (showEnquiry = false) => {
+  toggleModal = (showEnquiry = false, context = {}) => {
     this.setState( ( prevState ) => {
-        return { showModal: !prevState.showModal };
+        return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
     });
-
-    if(showEnquiry) {
-      this.toggleDrawer();
-    }
-  }
+}
 
   render() {
     const {
@@ -206,7 +207,8 @@ class ProjectDetail extends Component {
       relatedObjects,
       discoursePostCount,
       showDrawer,
-      showModal
+      showModal,
+      context
     } = this.state;
 
     if (isLoading) {
@@ -499,25 +501,17 @@ class ProjectDetail extends Component {
           />
         </SideDrawer>  
 
+        <ActionBar userState={userState}> 
+          <ResourcePageButtons data={data} userState={userState} />
+        </ActionBar> 
+
         <DataSetModal 
           open={showModal} 
+          context={context}
           closed={this.toggleModal}
-          userState={userState[0]}
+          userState={userState[0]} 
         />
 
-        {!userState[0].loggedIn ? (
-          ""
-        ) : (
-          <div className="actionBar">
-            <Button
-              variant="white"
-              href={"/project/edit/" + data.id}
-              className="techDetailButton mr-2"
-            >
-              Edit
-            </Button>
-          </div>
-        )}
       </div>
     );
   }
