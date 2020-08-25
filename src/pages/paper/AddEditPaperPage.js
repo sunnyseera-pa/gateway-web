@@ -42,7 +42,8 @@ class AddEditPaperPage extends React.Component {
 		didDelete: false,
 		isEdit: false,
 		showDrawer: false,
-		showModal: false
+		showModal: false,
+		context: {}
 	};
 
 	async componentDidMount() {
@@ -300,15 +301,11 @@ class AddEditPaperPage extends React.Component {
 		});
 	};
 
-	toggleModal = (showEnquiry = false) => {
-		this.setState((prevState) => {
-			return { showModal: !prevState.showModal };
-		});
-
-		if (showEnquiry) {
-			this.toggleDrawer();
-		}
-	};
+	toggleModal = (showEnquiry = false, context = {}) => {
+        this.setState( ( prevState ) => {
+            return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
+        });
+    }
 
 	render() {
 		const {
@@ -332,7 +329,8 @@ class AddEditPaperPage extends React.Component {
 			relatedObjects,
 			didDelete,
 			showDrawer,
-			showModal
+			showModal,
+			context
 		} = this.state;
 
 		if (isLoading) {
@@ -392,10 +390,11 @@ class AddEditPaperPage extends React.Component {
 					/>
 				</SideDrawer>
 
-				<DataSetModal
-					open={showModal}
-					closed={this.toggleModal}
-					userState={userState[0]}
+				<DataSetModal 
+                    open={showModal} 
+                    context={context}
+                    closed={this.toggleModal}
+                    userState={userState[0]} 
 				/>
 			</div>
 		);

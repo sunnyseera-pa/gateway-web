@@ -38,7 +38,8 @@ class Account extends Component {
         isProjectDeleted: false,
         isProjectApproved: false,
         showDrawer: false,
-        showModal: false
+        showModal: false,
+        context: {}
     };
 
     constructor(props) {
@@ -112,18 +113,14 @@ class Account extends Component {
         });
     }
 
-    toggleModal = (showEnquiry = false) => {
+    toggleModal = (showEnquiry = false, context = {}) => {
         this.setState( ( prevState ) => {
-            return { showModal: !prevState.showModal };
+            return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
         });
-    
-        if(showEnquiry) {
-          this.toggleDrawer();
-        }
     }
 
     render() {
-        const { searchString, data, userState, isDeleted, isApproved, isRejected, isProjectApproved, isProjectRejected, isReviewApproved, isReviewRejected, tabId, showDrawer, showModal } = this.state;
+        const { searchString, data, userState, isDeleted, isApproved, isRejected, isProjectApproved, isProjectRejected, isReviewApproved, isReviewRejected, tabId, showDrawer, showModal ,context } = this.state;
         if (typeof data.datasetids === 'undefined') {
             data.datasetids = [];
         }
@@ -322,6 +319,7 @@ class Account extends Component {
 
                 <DataSetModal 
                     open={showModal} 
+                    context={context}
                     closed={this.toggleModal}
                     userState={userState[0]}
                 />
@@ -331,79 +329,3 @@ class Account extends Component {
 }
 
 export default Account;
-
-
-
-/* 
-
-{isDeleted ?
-                        <Row className="">
-                            <Col sm={1} lg={1} />
-                            <Col sm={10} lg={10}>
-                                <Alert variant="success" className="mt-3">Done! The tool has been archived</Alert>
-                            </Col>
-                            <Col sm={1} lg={10} />
-                        </Row>
-                        : ""}
-
-                    {isApproved ?
-                        <Row className="">
-                            <Col sm={1} lg={1} />
-                            <Col sm={10} lg={10}>
-                                <Alert variant="success" className="mt-3">Done! The tool has been approved and is now live.</Alert>
-                            </Col>
-                            <Col sm={1} lg={10} />
-                        </Row>
-                        : ""}
-
-                    {isRejected ?
-                        <Row className="">
-                            <Col sm={1} lg={1} />
-                            <Col sm={10} lg={10}>
-                                <Alert variant="success" className="mt-3">Done! This tool has been rejected and is now archived</Alert>
-                            </Col>
-                            <Col sm={1} lg={10} />
-                        </Row>
-                        : ""}
-
-                    {isProjectApproved ?
-                        <Row className="">
-                            <Col sm={1} lg={1} />
-                            <Col sm={10} lg={10}>
-                                <Alert variant="success" className="mt-3">Done! The project has been approved and is now live.</Alert>
-                            </Col>
-                            <Col sm={1} lg={10} />
-                        </Row>
-                        : ""}
-
-                    {isProjectRejected ?
-                        <Row className="">
-                            <Col sm={1} lg={1} />
-                            <Col sm={10} lg={10}>
-                                <Alert variant="success" className="mt-3">Done! This project has been rejected and is now archived</Alert>
-                            </Col>
-                            <Col sm={1} lg={10} />
-                        </Row>
-                        : ""}
-
-                    {isReviewApproved ?
-                        <Row className="">
-                            <Col sm={1} lg={1} />
-                            <Col sm={10} lg={10}>
-                                <Alert variant="success" className="mt-3">Done! The review has been approved and is now live.</Alert>
-                            </Col>
-                            <Col sm={1} lg={10} />
-                        </Row>
-                        : ""}
-
-                    {isReviewRejected ?
-                        <Row className="">
-                            <Col sm={1} lg={1} />
-                            <Col sm={10} lg={10}>
-                                <Alert variant="success" className="mt-3">Done! This review has been rejected and is now deleted</Alert>
-                            </Col>
-                            <Col sm={1} lg={10} />
-                        </Row>
-                        : ""}
-
-*/

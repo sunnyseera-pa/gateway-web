@@ -2,6 +2,31 @@
 
 .modal {
 
+    h1,h2,h3,h4 {
+        @include font-source(14px, $gray-dark, $font-weight-bold);
+    }
+
+    p, li, table {
+        @include font-source(14px, $gray-dark);
+    }
+
+    table {
+        border: 1px solid #dee2e6;
+        margin-bottom: 10px; 
+        thead {
+            th {
+                padding: 12px;
+                vertical-align: bottom;
+                border-bottom: 2px solid #dee2e6;  
+            }
+        }
+
+        td {
+            padding: 12px;
+            border: 1px solid #dee2e6;
+        }
+    }
+
     &-lg {
         max-width: 940px !important;
         width: 100% !important;
@@ -58,7 +83,7 @@
     }
 
     &-body {
-        padding: 0 32px 20px 32px;
+        padding: 32px 32px 20px 32px;
         height: calc(100vh - 350px);
         overflow-y: auto;
 
@@ -88,6 +113,6 @@
             padding: 0 16px;
         }
     }
-    
+
 
 }

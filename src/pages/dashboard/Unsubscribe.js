@@ -22,7 +22,8 @@ class Unsubscribe extends Component {
 		searchString: null,
 		msg: '',
 		showDrawer: false,
-		showModal: false
+		showModal: false,
+		context: {}
 	};
 
 	constructor(props) {
@@ -90,15 +91,11 @@ class Unsubscribe extends Component {
         });
     }
 
-	toggleModal = (showEnquiry = false) => {
-		this.setState((prevState) => {
-			return { showModal: !prevState.showModal };
-		});
-
-		if (showEnquiry) {
-			this.toggleDrawer();
-		}
-	};
+	toggleModal = (showEnquiry = false, context = {}) => {
+        this.setState( ( prevState ) => {
+            return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
+        });
+    }
 
 	render() {
 		const {
@@ -106,7 +103,8 @@ class Unsubscribe extends Component {
 			userState,
 			error,
 			showDrawer,
-			showModal
+			showModal,
+			context
 		} = this.state;
 
 		return (
@@ -139,10 +137,11 @@ class Unsubscribe extends Component {
 						/>
 					</SideDrawer>
 
-					<DataSetModal
-						open={showModal}
+					<DataSetModal 
+						open={showModal} 
+						context={context}
 						closed={this.toggleModal}
-						userState={userState[0]}
+						userState={userState[0]} 
 					/>
 				</div>
 			</div>

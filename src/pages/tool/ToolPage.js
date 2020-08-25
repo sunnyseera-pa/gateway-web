@@ -58,7 +58,8 @@ class ToolDetail extends Component {
 		relatedObjects: [],
 		discoursePostCount: 0,
 		showDrawer: false,
-		showModal: false
+		showModal: false,
+		context: {}
 	};
 
 	constructor(props) {
@@ -200,15 +201,11 @@ class ToolDetail extends Component {
 		});
 	};
 
-	toggleModal = (showEnquiry = false) => {
-		this.setState((prevState) => {
-			return { showModal: !prevState.showModal };
+	toggleModal = (showEnquiry = false, context = {}) => {
+		this.setState( ( prevState ) => {
+			return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
 		});
-
-		if (showEnquiry) {
-			this.toggleDrawer();
-		}
-	};
+	}
 
 	render() {
 		const {
@@ -224,7 +221,8 @@ class ToolDetail extends Component {
 			relatedObjects,
 			discoursePostCount,
 			showDrawer,
-			showModal
+			showModal,
+			context
 		} = this.state;
 
 		if (isLoading) {
@@ -641,11 +639,12 @@ class ToolDetail extends Component {
 					/>
 				</SideDrawer>
 
-				<DataSetModal
-					open={showModal}
-					closed={this.toggleModal}
-					userState={userState[0]}
-				/>
+				<DataSetModal 
+                    open={showModal} 
+                    context={context}
+                    closed={this.toggleModal}
+                    userState={userState[0]} 
+                />
 				{!userState[0].loggedIn ? (
 					''
 				) : (

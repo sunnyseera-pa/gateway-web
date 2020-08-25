@@ -45,7 +45,8 @@ class AddEditToolPage extends React.Component {
 		didDelete: false,
 		isEdit: false,
 		showDrawer: false,
-		showModal: false
+		showModal: false,
+		context: {}
 	};
 
 	async componentDidMount() {
@@ -438,15 +439,11 @@ class AddEditToolPage extends React.Component {
 		});
 	};
 
-	toggleModal = (showEnquiry = false) => {
-		this.setState((prevState) => {
-			return { showModal: !prevState.showModal };
+	toggleModal = (showEnquiry = false, context = {}) => {
+		this.setState( ( prevState ) => {
+			return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
 		});
-
-		if (showEnquiry) {
-			this.toggleDrawer();
-		}
-	};
+	  }
 
 	render() {
 		const {
@@ -470,7 +467,8 @@ class AddEditToolPage extends React.Component {
 			relatedObjects,
 			didDelete,
 			showDrawer,
-			showModal
+			showModal,
+			context
 		} = this.state;
 
 		if (isLoading) {
@@ -528,11 +526,11 @@ class AddEditToolPage extends React.Component {
 					/>
 				</SideDrawer>
 
-				<DataSetModal
-					open={showModal}
-					closed={this.toggleModal}
-					context={this.topicContext}
-					userState={userState[0]}
+				<DataSetModal 
+                    open={showModal} 
+                    context={context}
+                    closed={this.toggleModal}
+                    userState={userState[0]} 
 				/>
 			</div>
 		);
