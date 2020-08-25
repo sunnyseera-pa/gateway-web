@@ -182,7 +182,7 @@ class AddEditPaperPage extends React.Component {
 							: 0;
 					})
 				});
-				resolve();
+				resolve(); 
 			});
 		});
 	}
@@ -230,7 +230,6 @@ class AddEditPaperPage extends React.Component {
 					}
 				)
 				.then((res) => {
-					// console.log('res: ' + JSON.stringify(res))
 					this.setState({
 						datasetData: res.data.datasetResults || [],
 						toolData: res.data.toolResults || [],
@@ -342,8 +341,6 @@ class AddEditPaperPage extends React.Component {
 				</Container>
 			);
 		}
-
-		// console.log('PAGE DATA: ' + JSON.stringify(paperData))
 
 		return (
 			<div>

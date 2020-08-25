@@ -1,5 +1,5 @@
-import React from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
+import axios from 'axios'; 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Typeahead } from 'react-bootstrap-typeahead';
@@ -12,13 +12,15 @@ import RelatedObject from '../commonComponents/RelatedObject';
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
+import ToolTip from '../../images/imageURL-ToolTip.gif';
+import { ReactComponent as InfoFillSVG } from "../../images/infofill.svg";
+import { ReactComponent as InfoSVG } from "../../images/info.svg";
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const AddEditPaperForm = (props) => {
     // Pass the useFormik() hook initial form values and a submit function that will
     // be called when the form is submitted
-
     const formik = useFormik({
         initialValues: {
             id: props.data.id || '', 
@@ -33,7 +35,8 @@ const AddEditPaperForm = (props) => {
                 features: [],
                 topics: [],
             },
-            relatedObjects: props.relatedObjects
+            relatedObjects: props.relatedObjects,
+            isPreprint: typeof props.data.isPreprint === "undefined" ? false : props.data.isPreprint
         },
 
         validationSchema: Yup.object({
@@ -44,18 +47,26 @@ const AddEditPaperForm = (props) => {
             description: Yup.string()
                 .max(3000, 'Maximum of 3,000 characters')
                 .required('This cannot be empty'),
+            authors: Yup.string().required('This cannot be empty'),
+            isPreprint: Yup.bool(),
             journal: Yup.string()
-                .required('This cannot be empty'),
+                .when("isPreprint", { 
+                    is: false,
+                    then: Yup.string().required('This cannot be empty')
+                }),
             journalYear: Yup.string()
-                .required('Year cannot be empty'),
-            authors: Yup.string().required('This cannot be empty')
+                .when("isPreprint", {
+                    is: false,
+                    then: Yup.string().required('Year cannot be empty')
+                })
         }),
  
         onSubmit: values => {
             values.relatedObjects = props.relatedObjects
             values.toolCreator = props.userState[0];
+
             if (props.isEdit) {
-                axios.put(baseURL + '/api/v1/papers/' + props.data.id, values) 
+                axios.put(baseURL + '/api/v1/papers/' + props.data.id, values)  
                 .then((res) => {
                     window.location.href = window.location.search + '/paper/' + props.data.id + '/?paperEdited=true';
                 });
@@ -141,220 +152,430 @@ const AddEditPaperForm = (props) => {
         document.getElementById("currentCount").innerHTML=e.target.value.length
     }
 
+    const [isShown, setIsShown] = useState(false);
+
     const relatedResourcesRef = React.useRef()
 
     return (
-        <div>
-            <Row className="margin-top-32">
-                <Col sm={1} lg={1} />
+      <div>
+        <Row className="margin-top-32">
+          <Col sm={1} lg={1} />
+          <Col sm={10} lg={10}>
+            <div className="rectangle">
+              <Row>
                 <Col sm={10} lg={10}>
-                    <div className="rectangle">
-                        <Row>
-                            <Col sm={10} lg={10}>
-                             <p className="black-20 margin-bottom-0 pad-bottom-8">{props.isEdit ? 'Edit your paper' : 'Add a new paper'}</p>
-                            </Col>
-                            <Col sm={2} lg={2} className="text-right">
-                                <span className="badge-paper"> 
-                                    <SVGIcon name="projecticon" fill={'#3c3c3b'} className="badgeSvg mr-2" />
-                                    Paper 
-                                </span>
-                            </Col>
-                        </Row>
-                        <p className="gray800-14 margin-bottom-0">Papers should be articles published in a journal. Add a project if you want</p>
+                  <p className="black-20 margin-bottom-0 pad-bottom-8">
+                    {props.isEdit ? "Edit your paper" : "Add a new paper"}
+                  </p>
+                </Col>
+                <Col sm={2} lg={2} className="text-right">
+                  <span className="badge-paper">
+                    <SVGIcon
+                      name="projecticon"
+                      fill={"#3c3c3b"}
+                      className="badgeSvg mr-2"
+                    />
+                    Paper
+                  </span>
+                </Col>
+              </Row>
+              <p className="gray800-14 margin-bottom-0">
+                Papers should be articles published in a journal. Add a project
+                if you want
+              </p>
+            </div>
+          </Col>
+          <Col sm={1} lg={10} />
+        </Row>
+
+        <Row className="pixelGapTop">
+          <Col sm={1} lg={1} />
+          <Col sm={10} lg={10}>
+            <Form
+              onSubmit={formik.handleSubmit}
+              onBlur={formik.handleBlur}
+              autocomplete="off"
+            >
+              <div className="rectangle">
+                <Form.Group>
+                  <p className="gray800-14 margin-bottom-0 pad-bottom-4">
+                    Link
+                  </p>
+                  <p className="gray700-13 margin-bottom-0">
+                    Where can we find this paper?
+                  </p>
+                  <Form.Control
+                    id="link"
+                    name="link"
+                    type="text"
+                    className={
+                      formik.touched.link && formik.errors.link
+                        ? "emptyFormInput addFormInput"
+                        : "addFormInput"
+                    }
+                    onChange={formik.handleChange}
+                    value={formik.values.link}
+                    onBlur={validatePaper}
+                  />
+                  {formik.touched.link && formik.errors.link ? (
+                    <div className="errorMessages">{formik.errors.link}</div>
+                  ) : null}
+                  {formik.status && formik.status.duplicateLink ? (
+                    <div className="errorMessages">
+                      {formik.status.duplicateLink}
                     </div>
-                </Col>
-                <Col sm={1} lg={10} />
-            </Row>
+                  ) : null}
+                </Form.Group>
 
-            <Row className="pixelGapTop">
-                <Col sm={1} lg={1} />
-                <Col sm={10} lg={10}>
-                    <Form onSubmit={formik.handleSubmit} onBlur={formik.handleBlur} autocomplete='off'>
-                        <div className="rectangle">
-                            <Form.Group>
-                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">Link</p>
-                                <p className="gray700-13 margin-bottom-0">
-                                    Where can we find this paper?
-                                </p>
-                                <Form.Control id="link" name="link" type="text" className={formik.touched.link && formik.errors.link ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.link} onBlur={validatePaper} />
-                                {formik.touched.link && formik.errors.link ? <div className="errorMessages">{formik.errors.link}</div> : null}
-                                {formik.status && formik.status.duplicateLink ? <div className="errorMessages">{formik.status.duplicateLink}</div> : null}
-                            </Form.Group>
+                <Form.Group>
+                  <span className="gray800-14">Title</span>
+                  <Form.Control
+                    id="name"
+                    name="name"
+                    type="text"
+                    className={
+                      formik.touched.name && formik.errors.name
+                        ? "emptyFormInput addFormInput"
+                        : "addFormInput"
+                    }
+                    onChange={formik.handleChange}
+                    value={formik.values.name}
+                    onBlur={formik.handleBlur}
+                  />
+                  {formik.touched.name && formik.errors.name ? (
+                    <div className="errorMessages">{formik.errors.name}</div>
+                  ) : null}
+                </Form.Group>
 
-                            <Form.Group>
-                                <span className="gray800-14">Title</span>
-                                <Form.Control id="name" name="name" type="text" className={formik.touched.name && formik.errors.name ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.name} onBlur={formik.handleBlur} />
-                                {formik.touched.name && formik.errors.name ? <div className="errorMessages">{formik.errors.name}</div> : null}
-                            </Form.Group>
+                <Form.Group>
+                  <p className="gray800-14 margin-bottom-0 pad-bottom-4">
+                    Authors on the Gateway
+                  </p>
+                  <p className="gray700-13 margin-bottom-0">
+                    Add any authors or collaborators who have an account on this
+                    site
+                  </p>
+                  <Typeahead
+                    id="authors"
+                    labelKey={authors => `${authors.name}`}
+                    defaultSelected={listOfAuthors}
+                    multiple
+                    className={
+                      formik.touched.authors && formik.errors.authors
+                        ? "emptyFormInputTypeAhead addFormInputTypeAhead"
+                        : "addFormInputTypeAhead"
+                    }
+                    options={props.combinedUsers}
+                    onChange={selected => {
+                      var tempSelected = [];
+                      selected.forEach(selectedItem => {
+                        tempSelected.push(selectedItem.id);
+                      });
+                      formik.values.authors = tempSelected;
+                    }}
+                  />
+                  {formik.touched.authors && formik.errors.authors ? (
+                    <div className="errorMessages">{formik.errors.authors}</div>
+                  ) : null}
+                </Form.Group>
 
-                            <Form.Group>
-                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">Authors on the Gateway</p>
-                                <p className="gray700-13 margin-bottom-0">
-                                    Add any authors or collaborators who have an account on this site
-                                </p>
-                                <Typeahead
-                                    id="authors"
-                                    labelKey={authors => `${authors.name}`}
-                                    defaultSelected={listOfAuthors}
-                                    multiple
-                                    className={formik.touched.authors && formik.errors.authors ? "emptyFormInputTypeAhead addFormInputTypeAhead" : "addFormInputTypeAhead"}
-                                    options={props.combinedUsers}
-                                    onChange={(selected) => {
-                                        var tempSelected = [];
-                                        selected.forEach((selectedItem) => {
-                                            tempSelected.push(selectedItem.id);
-                                        })
-                                        formik.values.authors = tempSelected;
-                                    }}
-                                />
-                                {formik.touched.authors && formik.errors.authors ? <div className="errorMessages">{formik.errors.authors}</div> : null}
-                            </Form.Group>
-                            
-                            <Row className="mt-2">
-                                <Col sm={10}>
-                                    <Form.Group>
-                                        <span className="gray800-14">Journal</span>
-                                        <Form.Control id="journal" name="journal" type="text" className={formik.touched.journal && formik.errors.journal ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.journal} onBlur={formik.handleBlur} />
-                                        {formik.touched.journal && formik.errors.journal ? <div className="errorMessages">{formik.errors.journal}</div> : null}
-                                        {formik.touched.journalYear && formik.errors.journalYear ? <div className="errorMessages">{formik.errors.journalYear}</div> : null}
-                                    </Form.Group>
-                                </Col>
-                                <Col sm={2}>
-                                    <Form.Group>
-                                        <span className="gray800-14">Year</span>
-                                        <Form.Control id="journalYear" name="journalYear" type="text" className={formik.touched.journalYear && formik.errors.journalYear ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.journalYear} onBlur={formik.handleBlur} />
-                                    </Form.Group>
-                                </Col>
-                            </Row>
-                            
-                            <Form.Group>
-                                <div style={{ display: 'inline-block' }}>
-                                    <p className="gray800-14 margin-bottom-0 pad-bottom-4">Abstract</p>
-                                    <p className="gray700-13 margin-bottom-0">Provide a brief summary of the paper</p>
-                                </div>
-                                <div style={{ display: 'inline-block', float: 'right' }}>
-                                    <br />
-                                    <span className="gray700-13">(<span id="currentCount">{formik.values.description.length || 0}</span>/3000)</span>
-                                </div>
-                                <Form.Control as="textarea" id="description" name="description" type="text" className={formik.touched.description && formik.errors.description ? "emptyFormInput addFormInput descriptionInput" : "addFormInput descriptionInput"} onKeyUp={descriptionCount} onChange={formik.handleChange}  value={formik.values.description} onBlur={formik.handleBlur} />
-                                {formik.touched.description && formik.errors.description ? <div className="errorMessages">{formik.errors.description}</div> : null}
-                            </Form.Group>
+                <Row className="mt-2">
+                  <Col sm={12} lg={12}>
+                    <Form.Group>
+                      <Row>
+                        <Col sm={1} lg={1}>
+                          <Form.Control
+                            type="checkbox"
+                            id="isPreprint"
+                            name="isPreprint"
+                            checked={formik.values.isPreprint}
+                            onChange={formik.handleChange}
+                            value={formik.values.isPreprint}
+                            className="paperFormCheckbox"
+                            data-testid="isPreprint"
+                          />
+                        </Col>
+                        <Col sm={11} lg={11} id="preprintCheckCol">
+                          <span className="gray800-14">
+                            This article is a preprint
+                          </span>
 
-                            <Form.Group>
-                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">Keywords (optional)</p>
-                                <p className="gray700-13 margin-bottom-0">
-                                Technological paradigms or other keywords. Eg. Rule-based, clustering, supervised machine learning
-                                </p>
-                                <Typeahead
-                                    id="tags.features"
-                                    labelKey="features"
-                                    allowNew
-                                    multiple
-                                    className="addFormInputTypeAhead"
-                                    options={props.combinedFeatures}
-                                    onChange={(selected) => {
-                                        var tempSelected = [];
-                                        selected.forEach((selectedItem) => {
-                                            selectedItem.customOption === true ? tempSelected.push(selectedItem.features) : tempSelected.push(selectedItem);
+                          <span
+                            className="purple-13"
+                            onMouseEnter={() => setIsShown(true)}
+                            onMouseLeave={() => setIsShown(false)}
+                          >
+                            <InfoSVG className="paperFormSVG" />
+                          </span>
+                          {isShown && (
+                            <div className="preprintFormToolTip">
+                              <span className="white-13-semibold">
+                                A preprint is a complete scientific manuscript
+                                that an author uploads on a public server for
+                                free viewing. Initially it is posted without
+                                peer review, but may acquire feedback or reviews
+                                as a preprint, and may eventually be published
+                                in a peer-reviewed journal. The posting of
+                                preprints on public servers allows almost
+                                immediate dissemination and scientific feedback
+                                early in the 'publication' process.
+                              </span>
+                            </div>
+                          )}
+                        </Col>
+                      </Row>
+                    </Form.Group>
+                  </Col>
+                </Row>
 
-                                        })
-                                        formik.values.tags.features = tempSelected;
-                                    }}
-                                />
-                            </Form.Group>
+                {formik.values.isPreprint === false ? (
+                  <Row className="mt-2">
+                    <Col sm={10}>
+                      <Form.Group>
+                        <span className="gray800-14">Journal</span>
+                        <Form.Control
+                          id="journal"
+                          name="journal"
+                          type="text"
+                          className={
+                            formik.touched.journal && formik.errors.journal
+                              ? "emptyFormInput addFormInput"
+                              : "addFormInput"
+                          }
+                          onChange={formik.handleChange}
+                          value={formik.values.journal}
+                          onBlur={formik.handleBlur}
+                        />
+                        {formik.touched.journal && formik.errors.journal ? (
+                          <div className="errorMessages">
+                            {formik.errors.journal}
+                          </div>
+                        ) : null}
+                        {formik.touched.journalYear &&
+                        formik.errors.journalYear ? (
+                          <div className="errorMessages">
+                            {formik.errors.journalYear}
+                          </div>
+                        ) : null}
+                      </Form.Group>
+                    </Col>
+                    <Col sm={2}>
+                      <Form.Group>
+                        <span className="gray800-14">Year</span>
+                        <Form.Control
+                          id="journalYear"
+                          name="journalYear"
+                          type="text"
+                          className={
+                            formik.touched.journalYear &&
+                            formik.errors.journalYear
+                              ? "emptyFormInput addFormInput"
+                              : "addFormInput"
+                          }
+                          onChange={formik.handleChange}
+                          value={formik.values.journalYear}
+                          onBlur={formik.handleBlur}
+                        />
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                ) : (
+                  ""
+                )}
 
-                            <Form.Group>
-                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">Domain (optional)</p>
-                                <p className="gray700-13 margin-bottom-0">
-                                    E.g. Biogenomics, Nutrition, Blockchain
-                                </p>
-                                <Typeahead
-                                    id="tags.topics"
-                                    labelKey="topics"
-                                    allowNew
-                                    multiple
-                                    className="addFormInputTypeAhead"
-                                    options={props.combinedTopic}
-                                    onChange={(selected) => {
-                                        var tempSelected = [];
-                                        selected.forEach((selectedItem) => {
-                                            selectedItem.customOption === true ? tempSelected.push(selectedItem.topics) : tempSelected.push(selectedItem);
-                                        })
-                                        formik.values.tags.topics = tempSelected;
-                                    }}
-                                />
-                            </Form.Group>
-                        </div>
+                <Form.Group>
+                  <div style={{ display: "inline-block" }}>
+                    <p className="gray800-14 margin-bottom-0 pad-bottom-4">
+                      Abstract
+                    </p>
+                    <p className="gray700-13 margin-bottom-0">
+                      Provide a brief summary of the paper
+                    </p>
+                  </div>
+                  <div style={{ display: "inline-block", float: "right" }}>
+                    <br />
+                    <span className="gray700-13">
+                      (
+                      <span id="currentCount">
+                        {formik.values.description.length || 0}
+                      </span>
+                      /3000)
+                    </span>
+                  </div>
+                  <Form.Control
+                    as="textarea"
+                    id="description"
+                    name="description"
+                    type="text"
+                    className={
+                      formik.touched.description && formik.errors.description
+                        ? "emptyFormInput addFormInput descriptionInput"
+                        : "addFormInput descriptionInput"
+                    }
+                    onKeyUp={descriptionCount}
+                    onChange={formik.handleChange}
+                    value={formik.values.description}
+                    onBlur={formik.handleBlur}
+                  />
+                  {formik.touched.description && formik.errors.description ? (
+                    <div className="errorMessages">
+                      {formik.errors.description}
+                    </div>
+                  ) : null}
+                </Form.Group>
 
-                        <div className="rectangle mt-2">
-                            <span className="black-20">Related resources</span><span className="gray800-14"> (optional)</span>
-                            <br/>
-                            <span className="gray800-14">Show relationships to papers, projects, datasets and tools. Resources must be added to the Gateway first.</span>
-                        </div>
-                        
-                        {props.relatedObjects.length === 0 ? '' :     
-                        <div className="rectangle">
-                            {props.relatedObjects.map((object) => {
-                                return (
-                                    <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag}/>
-                                )
-                            })}
-                        </div>}
+                <Form.Group>
+                  <p className="gray800-14 margin-bottom-0 pad-bottom-4">
+                    Keywords (optional)
+                  </p>
+                  <p className="gray700-13 margin-bottom-0">
+                    Technological paradigms or other keywords. Eg. Rule-based,
+                    clustering, supervised machine learning
+                  </p>
+                  <Typeahead
+                    id="tags.features"
+                    labelKey="features"
+                    allowNew
+                    multiple
+                    className="addFormInputTypeAhead"
+                    options={props.combinedFeatures}
+                    onChange={selected => {
+                      var tempSelected = [];
+                      selected.forEach(selectedItem => {
+                        selectedItem.customOption === true
+                          ? tempSelected.push(selectedItem.features)
+                          : tempSelected.push(selectedItem);
+                      });
+                      formik.values.tags.features = tempSelected;
+                    }}
+                  />
+                </Form.Group>
 
-                        <div className="rectangle flexCenter pixelGapTop">
-                            <Row>
-                                <Col sm={1} lg={1} />
-                                <Col sm={10} lg={10}>
-                                    {/* {console.log('paper form data: ' + JSON.stringify(props.paperData))} */}
-                                    <RelatedResources ref={relatedResourcesRef} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} paperData={props.paperData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
-                                </Col>
-                                <Col sm={1} lg={10} />
-                            </Row>
-                        </div>
- 
-                        {/* <Row className="mt-3">
-                            <Col xs={5} lg={9}>
-                                <a style={{ cursor: 'pointer' }} href={'/account?tab=papers'}>
-                                    <Button variant="medium" className="greyCancelButton dark-14 mr-2" >
-                                        Cancel
-                                    </Button>
-                                </a>
-                            </Col>
-                            <Col xs={7} lg={3} className="text-right">
-                                <Button variant="primary" className="white-14-semibold" type="submit" onClick={() => Event("Buttons", "Click", "Add tool form submitted")} >
-                                    {props.isEdit ? 'Update' : 'Publish'}
-                                </Button>
-                            </Col>
-                        </Row> */}
+                <Form.Group>
+                  <p className="gray800-14 margin-bottom-0 pad-bottom-4">
+                    Domain (optional)
+                  </p>
+                  <p className="gray700-13 margin-bottom-0">
+                    E.g. Biogenomics, Nutrition, Blockchain
+                  </p>
+                  <Typeahead
+                    id="tags.topics"
+                    labelKey="topics"
+                    allowNew
+                    multiple
+                    className="addFormInputTypeAhead"
+                    options={props.combinedTopic}
+                    onChange={selected => {
+                      var tempSelected = [];
+                      selected.forEach(selectedItem => {
+                        selectedItem.customOption === true
+                          ? tempSelected.push(selectedItem.topics)
+                          : tempSelected.push(selectedItem);
+                      });
+                      formik.values.tags.topics = tempSelected;
+                    }}
+                  />
+                </Form.Group>
+              </div>
 
-                        {!props.userState[0].loggedIn ? (
-                        "" 
-                        ) : ( 
-                        <div className="actionBar">
-                                <a style={{ cursor: 'pointer' }} href={'/account?tab=papers'}>
-                                    <Button variant="medium" className="cancelButton dark-14 mr-2" >
-                                        Cancel
-                                    </Button>
-                                </a> 
+              <div className="rectangle mt-2">
+                <span className="black-20">Related resources</span>
+                <span className="gray800-14"> (optional)</span>
+                <br />
+                <span className="gray800-14">
+                  Show relationships to papers, projects, datasets and tools.
+                  Resources must be added to the Gateway first.
+                </span>
+              </div>
 
-                                <Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className="techDetailButton mr-2">
-                                    + Add resource
-                                </Button>
-                                
-                                <Button variant="primary" className="publishButton white-14-semibold" type="submit" >
-                                    {props.isEdit ? 'Update' : 'Publish'}
-                                </Button>
-                        </div>
-                        )} 
+              {props.relatedObjects.length === 0 ? (
+                ""
+              ) : (
+                <div className="rectangle">
+                  {props.relatedObjects.map(object => {
+                    return (
+                      <RelatedObject
+                        showRelationshipQuestion={true}
+                        objectId={object.objectId}
+                        doRemoveObject={props.doRemoveObject}
+                        doUpdateReason={updateReason}
+                        reason={object.reason}
+                        didDelete={props.didDelete}
+                        updateDeleteFlag={props.updateDeleteFlag}
+                      />
+                    );
+                  })}
+                </div>
+              )}
 
-                    </Form>
-                </Col>
-                <Col sm={1} lg={10} />
-            </Row>
-            <Row>
-                <span className="formBottomGap"></span>
-            </Row>
-        </div>
+              <div className="rectangle flexCenter pixelGapTop">
+                <Row>
+                  <Col sm={1} lg={1} />
+                  <Col sm={10} lg={10}>
+                    <RelatedResources
+                      ref={relatedResourcesRef}
+                      searchString={props.searchString}
+                      doSearchMethod={props.doSearchMethod}
+                      doUpdateSearchString={props.doUpdateSearchString}
+                      userState={props.userState}
+                      datasetData={props.datasetData}
+                      toolData={props.toolData}
+                      projectData={props.projectData}
+                      paperData={props.paperData}
+                      personData={props.personData}
+                      summary={props.summary}
+                      doAddToTempRelatedObjects={
+                        props.doAddToTempRelatedObjects
+                      }
+                      tempRelatedObjectIds={props.tempRelatedObjectIds}
+                      relatedObjects={props.relatedObjects}
+                      doClearRelatedObjects={props.doClearRelatedObjects}
+                      doAddToRelatedObjects={props.doAddToRelatedObjects}
+                    />
+                  </Col>
+                  <Col sm={1} lg={10} />
+                </Row>
+              </div>
+
+              {!props.userState[0].loggedIn ? (
+                ""
+              ) : (
+                <div className="actionBar">
+                  <a style={{ cursor: "pointer" }} href={"/account?tab=papers"} data-testid="cancelButton">
+                    <Button
+                      variant="medium"
+                      className="cancelButton dark-14 mr-2"
+                    >
+                      Cancel
+                    </Button>
+                  </a>
+
+                  <Button
+                    onClick={() => relatedResourcesRef.current.showModal()}
+                    variant="white"
+                    className="techDetailButton mr-2"
+                  >
+                    + Add resource
+                  </Button>
+
+                  <Button
+                    variant="primary"
+                    className="publishButton white-14-semibold"
+                    type="submit"
+                    data-testid="updatePublishButton"
+                  >
+                    {props.isEdit ? "Update" : "Publish"}
+                  </Button>
+                </div>
+              )}
+            </Form>
+          </Col>
+          <Col sm={1} lg={10} />
+        </Row>
+        <Row>
+          <span className="formBottomGap"></span>
+        </Row>
+      </div>
     );
 }
 
