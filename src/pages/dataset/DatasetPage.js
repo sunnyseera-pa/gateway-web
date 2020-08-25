@@ -2,6 +2,7 @@
 import React, { Component, useState, useRef, Fragment } from "react";
 import { Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
+import _ from 'lodash';
 import axios from "axios";
 import {
   Row,
@@ -35,9 +36,9 @@ import TechnicalDetailsPage from "./components/TechnicalDetailsPage";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import AddToCollection from "../commonComponents/AddToCollection"; 
-import _ from 'lodash';
 import UserMessages from "../commonComponents/userMessages/UserMessages";
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
+import DataSetHelper from '../../utils/DataSetHelper.util';
 import "react-tabs/style/react-tabs.css";
 
 var baseURL = require("../commonComponents/BaseURL").getURL();
@@ -263,6 +264,10 @@ class DatasetDetail extends Component {
           });
   } 
 
+  showLoginModal = (title, contactPoint) => {
+    DataSetHelper.showLoginPanel(window, title, contactPoint);
+  }
+
   toggleDrawer = () => {
     this.setState( ( prevState ) => {
         if(prevState.showDrawer === true) {
@@ -288,7 +293,7 @@ class DatasetDetail extends Component {
         allowNewMessage: true
       }
     }
-}
+  }
 
   render() {
     const {
@@ -450,8 +455,16 @@ class DatasetDetail extends Component {
                     </span>
                   </Col>
                   <Col xs={4}>
-                    {                      
-                      requiresModal ?
+                    { !userState[0].loggedIn ?
+
+                        <button className="btn button-tertiary dark-14 float-right" onClick={() =>
+                          this.showLoginModal(
+                            data.name,
+                            data.datasetfields.contactPoint
+                          )
+                        }>Request Access</button>
+                      
+                       : requiresModal ?
                         <button className="btn btn-primary addButton pointer float-right" onClick={() => { this.toggleModal()}}>How to request access</button>
                         : 
                         <Fragment>
