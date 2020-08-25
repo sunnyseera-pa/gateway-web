@@ -11,7 +11,7 @@ import './DataSetModal.scss';
 
 const DataSetModal = ({ open, closed, context, userState }) => {
 
-	let dataset = {}, datasetId = '', title = '', contactPoint = '', dataRequestModalContent = {} ;
+	let dataset = {}, datasetId = '', title = '', contactPoint = '', dataRequestModalContent = {header: '', body: ''} ;
 
 	if(typeof context !== 'undefined' && !_.isEmpty(context)) {
 		 ({datasets: [dataset], title, contactPoint, dataRequestModalContent } = context);
@@ -70,13 +70,13 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 								onClick={() => onCloseModal(false)}
 							/>
 						</div>
-						{ dataRequestModalContent.header ? <ReactMarkdown source={dataRequestModalContent.header}/> : ''}
+						{ (!_.isEmpty(dataRequestModalContent) && typeof dataRequestModalContent.header !== 'undefined') ? <ReactMarkdown source={dataRequestModalContent.header}/> : ''}
 					</div>
 				</div>
 
 
 				<div className='appModal-body'>
-					{ dataRequestModalContent.body ? <ReactMarkdown source={dataRequestModalContent.body} /> : '' }
+					{ (!_.isEmpty(dataRequestModalContent) && typeof dataRequestModalContent.body !== 'undefined') ? <ReactMarkdown source={dataRequestModalContent.body} /> : '' }
 				</div>
 
 				<div className='appModal-footer'>

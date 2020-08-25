@@ -872,7 +872,7 @@ textarea:focus {
   margin: 0 auto !important;
   top: 50%;
   left: 15%;
-  transform: translate(-50%, -50%) !important;
+  transform: translate(-50%, -50%);
 }
 
 @media screen and (max-width: 901px) {
@@ -1531,13 +1531,6 @@ iframe#discourse-embed-frame {
       margin-bottom: 5px;
     }
   }
-}
-
-.modal-dialog {
-  position: absolute;
-  top: 50%;
-  left: 15%;
-  transform: translate(-50%, -50%) !important;
 }
 
 .flex-grow {
