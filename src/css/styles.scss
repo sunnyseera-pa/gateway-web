@@ -277,6 +277,14 @@ a.nav-item.nav-link.active {
     background-color: $gray-light;
     color: $gray-800 !important;
   }
+
+  &-comingSoon {
+    @extend .badge;
+    background-color: $orange-light;
+    color: $gray-dark !important;
+    font-weight: bold;
+    font-size: 16px;
+  }
 }
 
 .bubbleCount {
@@ -331,7 +339,7 @@ a.nav-item.nav-link.active {
   padding-bottom: 50px;
 }
 
-#TagItem {
+#TagItem { 
   list-style-type: none;
 }
 
@@ -406,6 +414,7 @@ input[type='checkbox']:checked:after {
   display: inline-block;
   visibility: visible;
   border: solid 2px #d6d6d6;
+  padding-top: 2px;
 }
 
 input[type='radio']:after {
@@ -837,7 +846,7 @@ textarea:focus {
   margin: 0 auto !important;
   top: 50%;
   left: 15%;
-  transform: translate(-50%, -50%) !important;
+  transform: translate(-50%, -50%);
 }
 
 @media screen and (max-width: 901px) {
@@ -1889,21 +1898,8 @@ iframe#discourse-embed-frame {
   max-width: 74px;
   min-height: 42px;
   min-width: 42px;
-}
+} 
  
-.actionBar {
-    position: fixed;
-    z-index: 998;
-    left: 0; 
-    bottom: 0;
-    height: 72px;
-    width:100%;
-    box-shadow: 1px 1px 0 3px #00000017;
-    background-color: #ffffff;
-    text-align: right;
-    padding: 15px
- }
-
 .floatRight{
   @include mq('tablet-small'){
     float: right;
@@ -2276,6 +2272,38 @@ button a {
   z-index: 1;
 }
 
+.preprintToolTip{
+  width: 275px;
+  border-radius: 8px;
+  background-color: $dark;
+  padding: 10px;
+  position: absolute;
+  left: 80%;
+  top: 60%;
+  z-index: 1;
+
+  @include mq('tablet-wide', max){
+    left: 64%;
+    top: 70%;
+  }
+
+  @include mq('tablet-small', max){
+    left: 0%;
+    top: 75%;
+  }
+}
+
+.preprintFormToolTip {
+  width: 275px;
+  border-radius: 8px;
+  background-color: $dark;
+  padding: 10px;
+  position: absolute;
+  left: 5%;
+  top: 90%;
+  z-index: 1;
+}
+
 .heightVariable{
   @include mq('tablet-wide'){
     height: 56px !important;
@@ -2427,7 +2455,7 @@ button a {
   transform: translate3d(0, 0%, 0, 100%);
   transition: all 0.4s;
 }
-
+ 
 .notification {
   &:before {
     position: absolute;
@@ -2453,15 +2481,84 @@ button a {
   }
 }
 
-.modal-dialog {
-	position: absolute;
-	top: 50%;
-	left: 15%;
-	transform: translate(-50%, -50%) !important;
+.paperFormCheckbox {
+  width: 0% !important;
 }
 
-.darModal .modal-content {
-	display: flex;
-	align-items: center;
-	justify-content: center;
+.paperFormSVG {
+  transform: translate(8px, 3px);
+}
+
+#preprintCheckCol {
+  margin-left: -36px; 
+  padding-left: 8px;
+
+  @include mq('tablet-wide',max){
+    margin-left: -15px;
+  }
+
+  @include mq('tablet',max){
+    margin-left: 0px;
+  }
+
+  @include mq('phablet',max){
+    margin-left: 35px;
+    margin-top: -13px;
+  }
+}
+
+.addToCollectionButton {
+  width: 147px;
+  height: 40px;
+}
+
+.addToCollectionButton:focus {
+  box-shadow: none !important;
+}
+
+.addToCollectionDropdown {
+  width: 229px !important;
+  max-height: 176px !important;
+  box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03) !important;
+  background-color: $white !important;
+  overflow-x: hidden !important;
+  overflow-y: scroll !important;
+  margin-bottom: 24px !important;
+  padding-top: 0px !important;
+  padding-bottom: 12px !important;
+}
+
+.addToCollectionItem {
+  white-space: pre-wrap !important;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.addToCollectionItem:hover {
+  background-color: $gray-200 !important;
+}
+
+.checkSvg {
+  float: right;
+
+  // @include mq(575px,max){
+  @include mq("tablet-small",max) {
+    transform: translate(-5px, 0px) !important;
+  }
+  @include mq("phablet",max) {
+    transform: translate(0px, -20px) !important;
+  }
+  // transform: translate(0px, -20px) !important;
+}
+
+.addToCollectionHeader {
+  position: sticky;
+  top: 0;
+  background-color: $white;
+  z-index: 1;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 16px;
 }

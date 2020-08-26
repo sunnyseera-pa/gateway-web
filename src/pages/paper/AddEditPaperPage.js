@@ -42,7 +42,8 @@ class AddEditPaperPage extends React.Component {
 		didDelete: false,
 		isEdit: false,
 		showDrawer: false,
-		showModal: false
+		showModal: false,
+		context: {}
 	};
 
 	async componentDidMount() {
@@ -182,7 +183,7 @@ class AddEditPaperPage extends React.Component {
 							: 0;
 					})
 				});
-				resolve();
+				resolve(); 
 			});
 		});
 	}
@@ -230,7 +231,6 @@ class AddEditPaperPage extends React.Component {
 					}
 				)
 				.then((res) => {
-					// console.log('res: ' + JSON.stringify(res))
 					this.setState({
 						datasetData: res.data.datasetResults || [],
 						toolData: res.data.toolResults || [],
@@ -300,15 +300,11 @@ class AddEditPaperPage extends React.Component {
 		});
 	};
 
-	toggleModal = (showEnquiry = false) => {
-		this.setState((prevState) => {
-			return { showModal: !prevState.showModal };
-		});
-
-		if (showEnquiry) {
-			this.toggleDrawer();
-		}
-	};
+	toggleModal = (showEnquiry = false, context = {}) => {
+        this.setState( ( prevState ) => {
+            return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
+        });
+    }
 
 	render() {
 		const {
@@ -332,7 +328,8 @@ class AddEditPaperPage extends React.Component {
 			relatedObjects,
 			didDelete,
 			showDrawer,
-			showModal
+			showModal,
+			context
 		} = this.state;
 
 		if (isLoading) {
@@ -342,8 +339,6 @@ class AddEditPaperPage extends React.Component {
 				</Container>
 			);
 		}
-
-		// console.log('PAGE DATA: ' + JSON.stringify(paperData))
 
 		return (
 			<div>
@@ -392,10 +387,11 @@ class AddEditPaperPage extends React.Component {
 					/>
 				</SideDrawer>
 
-				<DataSetModal
-					open={showModal}
-					closed={this.toggleModal}
-					userState={userState[0]}
+				<DataSetModal 
+                    open={showModal} 
+                    context={context}
+                    closed={this.toggleModal}
+                    userState={userState[0]} 
 				/>
 			</div>
 		);

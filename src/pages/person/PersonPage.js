@@ -32,7 +32,8 @@ class PersonDetail extends Component {
       
     }],
     showDrawer: false,
-    showModal: false
+    showModal: false,
+    context: {}
   };
 
   constructor(props) {
@@ -84,18 +85,14 @@ class PersonDetail extends Component {
     });
   }
 
-  toggleModal = (showEnquiry = false) => {
+  toggleModal = (showEnquiry = false, context = {}) => {
     this.setState( ( prevState ) => {
-        return { showModal: !prevState.showModal };
+        return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
     });
-
-    if(showEnquiry) {
-      this.toggleDrawer();
-    }
 }
 
   render() {
-    const { searchString, data, isLoading, userState, showDrawer, showModal } = this.state;
+    const { searchString, data, isLoading, userState, showDrawer, showModal, context } = this.state;
 
     if (isLoading) {
       return <Container><Loading /></Container>;
@@ -169,9 +166,10 @@ class PersonDetail extends Component {
 
         <DataSetModal 
           open={showModal} 
+          context={context}
           closed={this.toggleModal}
-          userState={userState[0]}
-    />
+          userState={userState[0]} 
+        />
       </div>
     );
   }

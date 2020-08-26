@@ -413,7 +413,7 @@
 }
 
 .card-body {
-    padding: 0 32px 32px 64px !important;
+    padding: 8px 32px 32px 64px !important;
 }
 
 .stepNumber {
@@ -429,10 +429,15 @@
 }
 
 .stepNumber.active {
-    border: solid 2px #3db28c;
+    border: solid 2px $teal;
 }
 
-#messageLink {
+.stepNumber.completed {
+    background-color: $teal;
+    border: solid 2px $teal;
+}
+
+#messageLink, #howToRequestAccessLink {
     color: $purple !important;
     text-decoration: underline !important;
 }
@@ -449,4 +454,38 @@
 
 .form-group .addFormInputTypeAhead {
     height: min-content !important;
+}
+
+.addFormInputTypeAhead .dropdown-item.active, .addFormInputTypeAhead .dropdown-item:active {
+    background-color: $gray-light;
+}
+
+.dar-form-check-label {
+    padding-left: 8px;
+    margin-bottom: 0;
+}
+
+.dar-form-check-group {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    height: 24px;
+}
+
+.dar-form-check-group > button {
+    margin-right: 32px;
+}
+
+.dar-form-check {
+    height: 24px;
+    width: 24px;
+}
+
+.checkSvg {
+    fill: #ffffff !important;
+    width: 100px;
+}
+
+.badge-comingSoon {
+    margin-left: 16px;
 }

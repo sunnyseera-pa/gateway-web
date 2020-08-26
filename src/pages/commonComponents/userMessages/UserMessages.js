@@ -14,12 +14,12 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 	const defaultMessage =
 		'Use messages to clarify questions with the data custodian before starting your application to request access to the data. Provide a brief description of your project and what datasets you are interested in.';
 
-    let relatedObjectIds, title, subTitle, datasets, tags, allowNewMessage, requiresModal;
+    let relatedObjectIds, title, subTitle, datasets, tags, allowNewMessage, requiresModal, dataRequestModalContent;
     
     let history = useHistory();
 
 	if (typeof topicContext !== 'undefined')
-		({ relatedObjectIds = [], title = '', subTitle = '', datasets = [], tags = [], allowNewMessage = false, requiresModal = false } = topicContext);
+		({ relatedObjectIds = [], title = '', subTitle = '', datasets = [], tags = [], allowNewMessage = false, requiresModal = false, dataRequestModalContent = {} } = topicContext);
 
 	const [messageDescription, setMessageDescription] = useState('');
 
@@ -157,16 +157,17 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 			await axios
 				.get(`${baseURL}/api/v1/topics/${id}`)
 				.then(async (res) => {
+					let dataRequestModalContent = {};
 					let {data: { topic }} = res;
 					let {datasets: [publisherObj = {}, ...rest] = []} = topic;
 					console.log(publisherObj);
 					const {data: { publisher = {} }} = await getPublihserById(publisherObj.publisher);
 					if(!_.isEmpty(publisher)) {
-						let {dataRequestModalContent = {}} = publisher;
+						({dataRequestModalContent} = publisher);
 						setRequiresModal(!_.isEmpty(dataRequestModalContent) ? true : false);
 					}
 					// 3. Set active topic to update messages pane
-					setActiveTopic({ ...topic, modalRequired, active: true });
+					setActiveTopic({ ...topic, modalRequired, dataRequestModalContent, active: true });
 				})
 				.catch((err) => {
 					console.error(err);
@@ -219,7 +220,7 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 	const onShowModal = (e) => {
 		e.preventDefault();
 		closed();
-		toggleModal();
+		toggleModal(false, activeTopic);
 	}
 
 	/**

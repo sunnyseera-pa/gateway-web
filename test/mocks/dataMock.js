@@ -309,7 +309,7 @@ const _userState = {
     }]
 }
 
-const _collectionPage = {
+const _collectionPage = { 
     data: {
         "_id":"5efe1228f1e02c543835d806",
         "authors":[947228017269611,46035149615760184],
@@ -348,6 +348,112 @@ const __creatorsData = { id: 900000014, firstname: 'Michael', lastname: 'Sperlin
 
 const __unsubscribeState = { match : { params : { userObjectID : '' } } };
 
+const _preprintData = {
+    data: {
+            "counter":48,
+            "relatedObjects":[],
+            "authors":[
+                900000011
+            ],
+            "activeflag":"active",
+            "isPreprint":true,
+            "name":" test paper - preprint 1",
+            "link":"https://www.test.com",
+            "journal":"",
+            "journalYear":null,
+            "updatedon":"2020-08-24T14:26:19.482Z",
+            "uploader":900000011,
+            "uploaderIs":[
+                {
+                    "_id":"5e6f984a0a7300dc8f6fb196",
+                    "categories":{
+                        "programmingLanguage":[]
+                    },
+                    "tags":{
+                        "features":[],
+                        "topics":[]
+                    },
+                    "authors":[],
+                    "id":900000011,
+                    "type":"person",
+                    "firstname":"Maromi",
+                    "lastname":"Nei",
+                    "activeflag":"active",
+                    "createdAt":"2020-03-16T15:16:26.395Z",
+                    "updatedAt":"2020-08-12T11:19:29.462Z",
+                    "__v":0,
+                    "counter":79
+                }
+            ],
+            "tags":{"features":[],"topics":[]},
+            "description":" test paper - preprint 1",
+            "persons":[
+                {
+                    "_id":"5e6f984a0a7300dc8f6fb196",
+                    "categories":{
+                        "programmingLanguage":[]
+                    },
+                    "tags":{
+                        "features":[],
+                        "topics":[]
+                    },
+                    "authors":[],
+                    "id":900000011,
+                    "type":"person",
+                    "firstname":"Maromi",
+                    "lastname":"Nei",
+                    "activeflag":"active",
+                    "createdAt":"2020-03-16T15:16:26.395Z",
+                    "updatedAt":"2020-08-12T11:19:29.462Z",
+                    "__v":0,
+                    "counter":79
+                }
+            ],
+            "id":5593227117488826
+    },
+    props: {
+        "history":{"length":14,"action":"POP","location":{"pathname":"/paper/5593227117488826","search":"","hash":""}},"location":{"pathname":"/paper/5593227117488826","search":"","hash":""},"match":{"path":"/paper/:paperID","url":"/paper/5593227117488826","isExact":true,"params":{"paperID":"5593227117488826"}},"userState":[{"loggedIn":true,"role":"Creator","id":900000011,"name":"Maromi Nei"}]
+    }
+}
+
+const _paperData = {
+    data: {
+        "_id":"5f156b42577505d15e88f239","categories":{"programmingLanguage":[]},"tags":{"features":["Arbitrage"],"topics":["Blood"]},"authors":[900000011],"toolids":[],"datasetids":[],"relatedObjects":[{"_id":"5f156b42577505d15e88f23a","objectId":"2c764139-22a3-4db9-89ee-583fdb9d9396","reason":"","objectType":"dataset","user":"Maromi Nei","updated":"20 Jul 2020"},{"_id":"5f156b42577505d15e88f23b","objectId":"775391074715128","reason":"","objectType":"tool","user":"Maromi Nei","updated":"20 Jul 2020"},{"_id":"5f156b42577505d15e88f23c","objectId":"35009624796505336","reason":"","objectType":"project","user":"Maromi Nei","updated":"20 Jul 2020"},{"_id":"5f156b42577505d15e88f23d","objectId":"7485531672584456","reason":"","objectType":"paper","user":"Maromi Nei","updated":"20 Jul 2020"},{"_id":"5f156b42577505d15e88f23e","objectId":"46035149615760184","reason":"","objectType":"person","user":"Maromi Nei","updated":"20 Jul 2020"},{"objectId":4054397566482544,"reason":"","objectType":"paper","user":"Maromi Nei","updated":"12 Aug 2020"}],"id":18656838486747996,"type":"paper","name":"test paper c","link":"https://test paper c","journal":"test paper c","journalYear":2020,"description":"test paper c","activeflag":"active","updatedon":"2020-07-20T10:00:34.819Z","uploader":900000011,"createdAt":"2020-07-20T10:00:34.825Z","updatedAt":"2020-08-25T08:27:26.140Z","__v":0,"counter":44,"persons":[{"_id":"5e6f984a0a7300dc8f6fb196","categories":{"programmingLanguage":[]},"tags":{"features":[],"topics":[]},"authors":[],"id":947228017269611,"type":"person","firstname":"Maromi","lastname":"Nei","activeflag":"active","createdAt":"2020-03-16T15:16:26.395Z","updatedAt":"2020-08-12T11:19:29.462Z","__v":0,"counter":79}],"uploaderIs":[{"_id":"5e6f984a0a7300dc8f6fb196","categories":{"programmingLanguage":[]},"tags":{"features":[],"topics":[]},"authors":[],"id":947228017269611,"type":"person","firstname":"Maromi","lastname":"Nei","activeflag":"active","createdAt":"2020-03-16T15:16:26.395Z","updatedAt":"2020-08-12T11:19:29.462Z","__v":0,"counter":79}]
+    }
+}
+
+const _preprintFormData = {
+    data: {
+        "categories":{"programmingLanguage":[]},"tags":{"features":[],"topics":[]},
+        "datasetfields":{"physicalSampleAvailability":[],"technicaldetails":[],"versionLinks":[]},
+        "authors":[900000011],
+        "toolids":[],
+        "datasetids":[],
+        "relatedObjects":[],
+        "id":5593227117488826,
+        "type":"paper",
+        "name":" test paper - preprint 1",
+        "link":"https://www.test.com",
+        "journal":"",
+        "journalYear":null,
+        "description":" test paper - preprint 1",
+        "activeflag":"active",
+        "updatedon":"2020-08-24T14:26:19.482Z",
+        "isPreprint":true,
+        "uploader":900000011,
+        "createdAt":"2020-08-24T14:26:19.484Z",
+        "updatedAt":"2020-08-25T09:52:48.420Z",
+        "__v":0,
+        "counter":53,
+        "persons":[{"_id":"5e6f984a0a7300dc8f6fb196","categories":{"programmingLanguage":[]},"tags":{"features":[],"topics":[]},"authors":[],"id":900000011,"type":"person","firstname":"Maromi","lastname":"Nei","activeflag":"active","createdAt":"2020-03-16T15:16:26.395Z","updatedAt":"2020-08-12T11:19:29.462Z","__v":0,"counter":79}]
+    },
+    combinedUsers: [
+        {"id":900000011,"orcid":"","name":"Maromi Nei","bio":"Jefferson Comprehensive Epilepsy Center","email":[]},{"id":900000012,"orcid":"","name":"Laura Ngo","bio":"Virtua Voorhees Medical Center","email":[]}
+    ],
+    relatedObjects: []
+    
+}
+
 module.exports = {
   toolTitle: __toolTitle,
   toolReview: __toolReview,
@@ -366,5 +472,8 @@ module.exports = {
   dashboardKPIData: _dashboardKPI,
   userStateData: _userState,
   collectionPageData: _collectionPage,
-  accountCollectionsData: _accountCollections
+  accountCollectionsData: _accountCollections,
+  preprintData: _preprintData,
+  preprintFormData: _preprintFormData,
+  paperData: _paperData
 };

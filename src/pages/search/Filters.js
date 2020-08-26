@@ -35,7 +35,7 @@ class Filters extends Component {
     }
 
     constructor(props) {
-        super(props);
+        super(props); 
         this.state.data = props.data;
         this.state.selected = props.selected;
         this.state.title = props.title;

@@ -2,6 +2,7 @@
 import React, { Component, useState, useRef, Fragment } from "react";
 import { Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
+import _ from 'lodash';
 import axios from "axios";
 import {
   Row,
@@ -34,9 +35,10 @@ import TechnicalMetadata from "./components/TechnicalMetadata";
 import TechnicalDetailsPage from "./components/TechnicalDetailsPage";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
-import _ from 'lodash';
+import AddToCollection from "../commonComponents/AddToCollection"; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
+import DataSetHelper from '../../utils/DataSetHelper.util';
 import "react-tabs/style/react-tabs.css";
 
 var baseURL = require("../commonComponents/BaseURL").getURL();
@@ -77,7 +79,8 @@ class DatasetDetail extends Component {
     showModal: false,
     requiresModal: false,
     allowsMessaging: false,
-    allowNewMessage: false
+    allowNewMessage: false,
+    dataRequestModalContent: {}
   };
 
   topicContext = {};
@@ -122,7 +125,7 @@ class DatasetDetail extends Component {
         let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
       
         this.topicContext = { 
-          datasets: [{ datasetId: this.state.data.datasetid, publisher: this.state.data.datasetfields.publisher }], 
+          datasets: [{ datasetId: this.state.data.datasetid, publisher: this.state.data.datasetfields.publisher }] || [], 
           tags: [this.state.data.name],
           relatedObjectIds: [this.state.data._id] || '', 
           title: this.state.data.datasetfields.publisher || '', 
@@ -247,7 +250,8 @@ class DatasetDetail extends Component {
             const stateObj = { 
               requiresModal: !_.isEmpty(dataRequestModalContent) ? true : false,
               allowNewMessage: _.isEmpty(dataRequestModalContent) ? true : false,
-              allowsMessaging
+              allowsMessaging,
+              dataRequestModalContent
              }
              this.topicContext = {
                ...this.topicContext,
@@ -260,6 +264,10 @@ class DatasetDetail extends Component {
           });
   } 
 
+  showLoginModal = (title, contactPoint) => {
+    DataSetHelper.showLoginPanel(window, title, contactPoint);
+  }
+
   toggleDrawer = () => {
     this.setState( ( prevState ) => {
         if(prevState.showDrawer === true) {
@@ -269,24 +277,22 @@ class DatasetDetail extends Component {
     });
   } 
 
-  toggleModal = (showEnquiry = false) => {
-      this.setState( ( prevState ) => {
-          return { showModal: !prevState.showModal };
-      });
+  toggleModal = (showEnquiry = false, context = {}) => {
+    this.setState( ( prevState ) => {
+        return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
+    });
 
-      if(showEnquiry) {
-        this.topicContext = {
-          ...this.topicContext,
-          allowNewMessage: true
-        }
-        this.toggleDrawer();
-      } else {
-        this.topicContext = {
-          ...this.topicContext,
-          allowNewMessage: true
-        }
+    if(showEnquiry) {
+      this.topicContext = {
+        ...this.topicContext,
+        allowNewMessage: true
       }
-      
+    } else {
+      this.topicContext = {
+        ...this.topicContext,
+        allowNewMessage: true
+      }
+    }
   }
 
   render() {
@@ -449,8 +455,16 @@ class DatasetDetail extends Component {
                     </span>
                   </Col>
                   <Col xs={4}>
-                    {                      
-                      requiresModal ?
+                    { !userState[0].loggedIn ?
+
+                        <button className="btn button-tertiary dark-14 float-right" onClick={() =>
+                          this.showLoginModal(
+                            data.name,
+                            data.datasetfields.contactPoint
+                          )
+                        }>Request Access</button>
+                      
+                       : requiresModal ?
                         <button className="btn btn-primary addButton pointer float-right" onClick={() => { this.toggleModal()}}>How to request access</button>
                         : 
                         <Fragment>
@@ -854,6 +868,12 @@ class DatasetDetail extends Component {
                 drawerIsOpen={showDrawer}
                 topicContext={this.topicContext} />
         </SideDrawer>
+
+        {!userState[0].loggedIn ? (
+          ""
+        ) : (
+          <AddToCollection className="addToCollectionButton" data={data} userState={userState} />
+        )}
 
         <DataSetModal 
           open={showModal} 

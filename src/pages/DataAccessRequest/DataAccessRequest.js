@@ -26,6 +26,7 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 import './DataAccessRequest.scss';
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import { Link } from 'react-router-dom';
+import SVGIcon from '../../images/SVGIcon';
 
 class DataAccessRequest extends Component {
 	constructor(props) {
@@ -59,7 +60,16 @@ class DataAccessRequest extends Component {
 			activeAccordionCard: 0,
 			allowedNavigation: true,
 			topicContext: {},
-			selectedDatasets: []
+			aboutApplication: {
+				selectedDatasets: [],
+				completedDatasetSelection: false,
+				completedReadAdvice: false,
+				completedCommunicateAdvice: false,
+				completedApprovalsAdvice: false,
+				completedSubmitAdvice: false,
+				completedInviteCollaborators: false
+			},
+			context: {}
 		};
 	}
 
@@ -102,7 +112,7 @@ class DataAccessRequest extends Component {
 			},
 		} = response;
 
-		// Get publisher for data set to establish messaging context and if 5SafesForm
+		// TODO Get publisher for data set to establish messaging context, modal content and if 5SafesForm
 
 		// Check if 5 Safes form
 		let is5SafesForm = true;
@@ -121,15 +131,15 @@ class DataAccessRequest extends Component {
 		} = jsonSchema;
 
 		const selectedDatasets = [dataset].map(dataset => {
-			let { name, description, datasetfields: { abstract }} = dataset;
-			return { name, description, abstract };
+			let { name, description, datasetfields: { abstract, publisher }} = dataset;
+			return { name, description, abstract, publisher };
 		});
 
 		// 2. set state
 		this.setState({
 			jsonSchema: { ...jsonSchema, ...classSchema },
 			datasets: [dataset],
-			selectedDatasets,
+			aboutApplication: { ...this.state.application, selectedDatasets },
 			questionAnswers,
 			_id,
 			applicationStatus,
@@ -543,21 +553,93 @@ class DataAccessRequest extends Component {
 		});
 	};
 
-	toggleModal = (showEnquiry = false) => {
-		this.setState((prevState) => {
-			return { showModal: !prevState.showModal };
+	toggleModal = (showEnquiry = false, context = {}) => {
+		this.setState( ( prevState ) => {
+			return { showModal: !prevState.showModal, context };
 		});
-
-		if (showEnquiry) {
-			this.toggleDrawer();
+	
+		if(showEnquiry) {
+		  this.toggleDrawer();
 		}
-	};
+	}
 
 	onHandleDataSetChange = (e) => {
+		// 1. Deconstruct current state
+		let { aboutApplication, allowedNavigation } = this.state;
+		// 2. If no datasets are passed, set invalid and incomplete step
+		if(_.isEmpty(e)) {
+			aboutApplication.completedDatasetSelection = false;
+			allowedNavigation = false;
+		} else {
+			allowedNavigation = true;
+		}
+		// 3. Update state to reflect change
 		this.setState({
 			selectedDatasets: e,
-			allowedNavigation: !_.isEmpty(e)
+			allowedNavigation,
+			aboutApplication
 		});
+	}
+
+	onNextStep = (completed) => {
+		// 1. Deconstruct current state
+		let { aboutApplication, activeAccordionCard } = this.state;
+		// 2. Mark the relevant step as completed or incompleted
+		switch(activeAccordionCard) {
+			case 0:
+				aboutApplication.completedDatasetSelection = completed;
+				break;
+			case 1:
+				aboutApplication.completedReadAdvice = completed;
+				break;
+			case 2:
+				aboutApplication.completedCommunicateAdvice = completed;
+				break;
+			case 3:
+				aboutApplication.completedApprovalsAdvice = completed;
+				break;
+			case 4:
+				aboutApplication.completedSubmitAdvice = completed;
+				// Temporary until feature is released
+				aboutApplication.completedInviteCollaborators = true;
+				break;
+			default:
+				console.error("Invalid step passed");
+				break;
+		}
+		// 3. Set new state
+		this.setState({
+			activeAccordionCard: ++activeAccordionCard,
+			aboutApplication
+		});
+	}
+
+	toggleCard = (e, eventKey) => {
+		e.preventDefault();
+		// 1. Deconstruct current state
+		let { aboutApplication, activeAccordionCard } = this.state;
+		if(activeAccordionCard === eventKey) {
+			eventKey = -1;
+		}
+		// 2. Mark step 6 as completed when it is toggled (coming soon feature)
+		if(eventKey === 5 && !aboutApplication.completedInviteCollaborators)
+			aboutApplication.completedInviteCollaborators = true;
+		// 3. Set new state
+		this.setState({
+			activeAccordionCard: eventKey,
+			aboutApplication
+		});
+	}
+
+	calcAccordionClasses = (active) => {
+		let classes = ['black-16'];
+		if(!this.state.allowedNavigation) 
+			classes = [...classes, 'disabled'];
+		
+		if(active)
+			classes = [...classes, 'active'];
+
+		return classes;
 	}
 
 	render() {
@@ -573,37 +655,30 @@ class DataAccessRequest extends Component {
 			isWideForm,
 			activeAccordionCard,
 			allowedNavigation,
-			selectedDatasets
-		} = this.state;
-		const { userState, location } = this.props;
-
-		const toggleCard = (e, eventKey) => {
-			e.preventDefault();
-			if(activeAccordionCard === eventKey) {
-				eventKey = -1;
+			context,
+			aboutApplication: { 
+				selectedDatasets,
+				completedDatasetSelection,
+				completedReadAdvice, 
+				completedCommunicateAdvice, 
+				completedApprovalsAdvice, 
+				completedSubmitAdvice, 
+				completedInviteCollaborators 
 			}
-			this.setState({
-				activeAccordionCard: eventKey
-			});
-		}
+		} = this.state;
 
-		const calcAccordionClasses = (active) => {
-			let classes = ['black-16'];
-			if(!allowedNavigation) 
-				classes = [...classes, 'disabled'];
-			
-			if(active)
-				classes = [...classes, 'active'];
-
-			return classes;
-		}
+		const { userState, location } = this.props;
 
 		const aboutForm = (
 			<div className='aboutAccordion'>
-				<Accordion defaultActiveKey='0'>
+				<Accordion defaultActiveKey='0' activeKey={activeAccordionCard.toString()}>
 					<Card className={activeAccordionCard === 0 ? 'activeCard' : ''}>
-						<Accordion.Toggle as={Card.Header} className={calcAccordionClasses(activeAccordionCard === 0)} eventKey='0' onClick={e => toggleCard(e, 0)}>
-						<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>1</div>
+						<Accordion.Toggle as={Card.Header} className={this.calcAccordionClasses(activeAccordionCard === 0)} eventKey='0' onClick={e => this.toggleCard(e, 0)}>
+						{completedDatasetSelection ? 
+							<div className='stepNumber completed'><SVGIcon name="check" width={24} height={24} fill={'#ffffff'} /></div> 
+							:
+							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>1</div>
+						}
 							Select the datasets you need
 						</Accordion.Toggle>
 						<Accordion.Collapse eventKey='0'>
@@ -614,65 +689,154 @@ class DataAccessRequest extends Component {
 								<div>
 									<span>Datasets</span>
 									<div className='form-group'>
-										<TypeaheadDataset selectedDatasets={this.state.datasets} onHandleDataSetChange={this.onHandleDataSetChange}/>
+										<TypeaheadDataset selectedDatasets={selectedDatasets} onHandleDataSetChange={this.onHandleDataSetChange}/>
 									</div>
 									{ 
-									_.isEmpty(this.state.selectedDatasets) ? 
+									_.isEmpty(selectedDatasets) ? 
 										<div className='errorMessages'>
 											You must select at least one dataset
 										</div> 
 									: null 
 									}
 									<div className='panConfirmDatasets'>
-										<button type='input' className={`button-primary ${allowedNavigation ? '' : 'disabled'}`} disabled={!allowedNavigation}>Confirm</button>
+										<button 
+											type='input' 
+											className={`button-primary ${allowedNavigation ? '' : 'disabled'}`} 
+											disabled={!allowedNavigation}
+											onClick={ () => { this.onNextStep(allowedNavigation) }}
+										>Confirm
+										</button>
 									</div>
 								</div>
 							</Card.Body>
 						</Accordion.Collapse>
 					</Card>
 					<Card className={activeAccordionCard === 1 ? 'activeCard' : ''}>
-						<Accordion.Toggle as={Card.Header} className={calcAccordionClasses(activeAccordionCard === 1)} eventKey='1' onClick={e => toggleCard(e, 1)}>
-						<div className={`stepNumber ${activeAccordionCard === 1 ? 'active' : ''}`}>2</div>
+						<Accordion.Toggle as={Card.Header} className={this.calcAccordionClasses(activeAccordionCard === 1)} eventKey='1' onClick={e => this.toggleCard(e, 1)}>
+						{completedReadAdvice ? 
+							<div className='stepNumber completed'><SVGIcon name="check" width={24} height={24} fill={'#ffffff'} /></div> 
+							:
+							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>2</div>
+						}
 							Read the advice from the data custodian
 						</Accordion.Toggle>
 						<Accordion.Collapse eventKey='1'>
-							<Card.Body className='gray800-14'>Hello! I'm another body</Card.Body>
+							<Card.Body className='gray800-14'>
+								<Fragment>
+									<div className='margin-bottom-16'>
+										If you haven’t already, please make sure you have read the advice provided by the data custodian on how to request access to their datasets.
+									</div>
+									<div className="dar-form-check-group">
+										<input type="checkbox" id="chkReadAdvice" className='dar-form-check' onChange={e => {this.onNextStep(e.target.checked)}}/>
+										<span className="dar-form-check-label" for="chkReadAdvice">
+											I have read <Link id='howToRequestAccessLink' to=' ' className={allowedNavigation ? '' : 'disabled'} onClick={e => this.toggleModal(false, this.state.context)}>how to request access</Link>
+										</span>
+									</div>
+								</Fragment>
+							</Card.Body>
 						</Accordion.Collapse>
 					</Card>
 					<Card className={activeAccordionCard === 2 ? 'activeCard' : ''}>
-						<Accordion.Toggle as={Card.Header} className={calcAccordionClasses(activeAccordionCard === 2)} eventKey='2' onClick={e => toggleCard(e, 2)}>
-						<div className={`stepNumber ${activeAccordionCard === 2 ? 'active' : ''}`}>3</div>
+						<Accordion.Toggle as={Card.Header} className={this.calcAccordionClasses(activeAccordionCard === 2)} eventKey='2' onClick={e => this.toggleCard(e, 2)}>
+						{completedCommunicateAdvice ? 
+							<div className='stepNumber completed'><SVGIcon name="check" width={24} height={24} fill={'#ffffff'} /></div> 
+							:
+							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>3</div>
+						}
 							Communicate with the data custodian
 						</Accordion.Toggle>
 						<Accordion.Collapse eventKey='2'>
-							<Card.Body className='gray800-14'>Hello! I'm another body</Card.Body>
+							<Card.Body className='gray800-14'>
+								<Fragment>
+									<div className='margin-bottom-16'>
+										The earlier you get in touch, the better. A lot of projects are not eligible for data access, so it’s important you clarify with the custodian whether they have the data you need, and whether you have a chance of getting access. If you've not done so yet, we recommend sending a message with a brief description of your project and the data you are interested in.
+									</div>
+									<div className="dar-form-check-group">
+										<button className="button-secondary" type='button' onClick={this.toggleDrawer}>Send message</button>
+										<input type="checkbox" id="chkCommunicateAdvice" className='dar-form-check' onChange={e => {this.onNextStep(e.target.checked)}}/>
+										<span className="dar-form-check-label" for="chkCommunicateAdvice">
+											I have completed this step
+										</span>
+									</div>
+								</Fragment>
+							</Card.Body>
 						</Accordion.Collapse>
 					</Card>
 					<Card className={activeAccordionCard === 3 ? 'activeCard' : ''}>
-						<Accordion.Toggle as={Card.Header} className={calcAccordionClasses(activeAccordionCard === 3)} eventKey='3' onClick={e => toggleCard(e, 3)}>
-						<div className={`stepNumber ${activeAccordionCard === 3 ? 'active' : ''}`}>4</div>
+						<Accordion.Toggle as={Card.Header} className={this.calcAccordionClasses(activeAccordionCard === 3)} eventKey='3' onClick={e => this.toggleCard(e, 3)}>
+						{completedApprovalsAdvice ? 
+							<div className='stepNumber completed'><SVGIcon name="check" width={24} height={24} fill={'#ffffff'} /></div>  
+							:
+							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>4</div>
+						}
 							Check what approvals you might need
 						</Accordion.Toggle>
 						<Accordion.Collapse eventKey='3'>
-							<Card.Body className='gray800-14'>Hello! I'm another body</Card.Body>
+							<Card.Body className='gray800-14'>
+								<Fragment>
+									<div className='margin-bottom-16'>
+										The MRC Health Data Access tookit aims to help you understand what approvals might be necessary for your research. Many custodians request these approvals are in place before you start your application process.
+									</div>
+									<div className="dar-form-check-group">
+										<button className="button-secondary" type='button' onClick={this.toggleDrawer}>MRC Health Data Access toolkit</button>
+										<input type="checkbox" id="chkApprovalAdvice" className='dar-form-check' onChange={e => {this.onNextStep(e.target.checked)}}/>
+										<span className="dar-form-check-label" for="chkApprovalAdvice">
+											I have completed this step
+										</span>
+									</div>
+								</Fragment>
+							</Card.Body>
 						</Accordion.Collapse>
 					</Card>
 					<Card className={activeAccordionCard === 4 ? 'activeCard' : ''}>
-						<Accordion.Toggle as={Card.Header} className={calcAccordionClasses(activeAccordionCard === 4)} eventKey='4' onClick={e => toggleCard(e, 4)}>
-						<div className={`stepNumber ${activeAccordionCard === 4 ? 'active' : ''}`}>5</div>
+						<Accordion.Toggle as={Card.Header} className={this.calcAccordionClasses(activeAccordionCard === 4)} eventKey='4' onClick={e => this.toggleCard(e, 4)}>
+						{completedSubmitAdvice ? 
+							<div className='stepNumber completed'><SVGIcon name="check" width={24} height={24} fill={'#ffffff'} /></div>  
+							:
+							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>5</div>
+						}
 							Understand what happens after you submit the application
 						</Accordion.Toggle>
 						<Accordion.Collapse eventKey='4'>
-							<Card.Body className='gray800-14'>Hello! I'm another body</Card.Body>
+							<Card.Body className='gray800-14'>
+								<Fragment>
+									<div className='margin-bottom-16'>
+										After you have completed the form, you can submit the application.
+									</div>
+									<div className='margin-bottom-16'>
+										<ul>
+											<li>Make sure to double-check everything before submitting</li>
+											<li>You will NOT be able to edit your responses via the Gateway after submission (for now)</li>
+											<li>If you do need to make any amendments, get in touch with the data custodian</li>
+											<li>Both you and the data custodian will receive an email with a copy of the information submitted using this form.</li>
+										</ul>
+									</div>
+									<div className="dar-form-check-group">
+										<input type="checkbox" id="chkSubmitAdvice" className='dar-form-check' onChange={e => {this.onNextStep(e.target.checked)}}/>
+										<span className="dar-form-check-label" for="chkSubmitAdvice">
+											I have completed this step
+										</span>
+									</div>
+								</Fragment>
+							</Card.Body>
 						</Accordion.Collapse>
 					</Card>
 					<Card className={activeAccordionCard === 5 ? 'activeCard' : ''}>
-						<Accordion.Toggle as={Card.Header} className={calcAccordionClasses(activeAccordionCard === 5)} eventKey='5' onClick={e => toggleCard(e, 5)}>
-						<div className={`stepNumber ${activeAccordionCard === 5 ? 'active' : ''}`}>6</div>
-							Invite Collaborators
+						<Accordion.Toggle as={Card.Header} className={this.calcAccordionClasses(activeAccordionCard === 5)} eventKey='5' onClick={e => this.toggleCard(e, 5)}>
+						{completedInviteCollaborators ? 
+							<div className='stepNumber completed'><SVGIcon name="check" width={24} height={24} fill={'#ffffff'} /></div>  
+							:
+							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>6</div>
+						}
+							Invite collaborators
+							<div className="badge-comingSoon">Coming soon</div>
 						</Accordion.Toggle>
 						<Accordion.Collapse eventKey='5'>
-							<Card.Body className='gray800-14'>Hello! I'm another body</Card.Body>
+							<Card.Body className='gray800-14'>
+								<div>
+									Applications are often a team effort, so you can add others to help. Collaborators can exchange private notes, make edits, message the data custodian, invite others and submit the application. If they’re named in the application, you can fill in some of their details automatically. You can do this later too.
+								</div>
+							</Card.Body>
 						</Accordion.Collapse>
 					</Card>
 				</Accordion>
@@ -704,9 +868,14 @@ class DataAccessRequest extends Component {
 				<Row className='banner'>
 					<Col sm={12} md={8} className='banner-left'>
 						<span className='white-20-semibold mr-5'>Data Access Request</span>
-						<span className='white-16-semibold pr-5'>
-							{datasets[0].name} | {datasets[0].datasetfields.publisher}
-						</span>
+						{this.state.is5SafesForm ? 
+							<span className='white-16-semibold pr-5'>
+								{datasets[0].datasetfields.publisher}
+							</span> :
+							<span className='white-16-semibold pr-5'>
+								{datasets[0].name} | {datasets[0].datasetfields.publisher}
+							</span>
+					  	}
 					</Col>
 					<Col sm={12} md={4} className='banner-right'>
 						<span className='white-14-semibold'>{this.getSavedAgo()}</span>
@@ -895,10 +1064,11 @@ class DataAccessRequest extends Component {
 					/>
 				</SideDrawer>
 
-				<DataSetModal
-					open={showModal}
-					closed={this.toggleModal}
-					userState={userState[0]}
+				<DataSetModal 
+                    open={showModal} 
+                    context={context}
+                    closed={this.toggleModal}
+                    userState={userState[0]} 
 				/>
 			</div>
 		);

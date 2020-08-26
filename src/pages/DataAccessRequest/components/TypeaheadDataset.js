@@ -23,7 +23,7 @@ class TypeaheadDataset extends React.Component {
 
   getData() {
     if(this.props.selectedDatasets) {
-      const { datasetfields: { publisher }} = this.props.selectedDatasets[0];
+      const { publisher } = this.props.selectedDatasets[0];
       axios.get(`${baseURL}/api/v1/publishers/${publisher}/datasets`)
         .then((res) => {
           const { data: { datasets }} = res;
