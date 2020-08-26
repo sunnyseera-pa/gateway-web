@@ -2597,7 +2597,7 @@ button a {
   top: 60%;
   z-index: 1;
 
-  @include mq('tablet-wide', max){
+  @include mq('tablet-wide', max){ 
     left: 64%;
     top: 70%;
   }
@@ -2876,4 +2876,8 @@ button a {
   padding-left: 16px;
   padding-right: 16px;
   padding-top: 16px;
+}
+
+.textUnderline {
+  text-decoration: underline;
 }
