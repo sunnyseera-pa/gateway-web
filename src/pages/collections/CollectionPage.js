@@ -277,7 +277,7 @@ class CollectionPage extends Component {
 								<Col sm={1} lg={1} />
 								<Col sm={10} lg={10}>
 									<Alert variant='success' className='mt-3'>
-										Published! This collection is now public.
+										This collection is now live. Share the collection link to allow anyone to view this page.
 									</Alert>
 								</Col>
 								<Col sm={1} lg={10} />
