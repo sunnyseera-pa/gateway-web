@@ -181,7 +181,7 @@ const AddEditProjectForm = (props) => {
                                         selected.forEach((selectedItem) => {
                                             selectedItem.customOption === true ? tempSelected.push(selectedItem.category) : tempSelected.push(selectedItem);
                                         })
-                                        formik.values.categories.category = tempSelected[0];
+                                        tempSelected.length > 0 ? formik.values.categories.category = tempSelected[0] : formik.values.categories.category = ""
                                     }}
                                 />
                                 {formik.touched.categories && (formik.errors.categories && typeof formik.errors.categories.category !== "undefined")

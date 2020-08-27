@@ -873,55 +873,30 @@ textarea:focus {
   margin: 0 auto !important;
   top: 50%;
   left: 15%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) ;
 }
 
-@media screen and (max-width: 901px) {
-  .modal-dialog {
+.relatedResourcesModal .modal-dialog {
+  margin: 0 auto !important;
+  top: 50% !important;
+  left: 15% !important;
+  transform: translate(-50%, -50%) !important;
+
+  @include mq('tablet-wide',max){
     left: 20% !important;
-  }
-}
+  }  
 
-@media screen and (max-width: 866px) {
-  .modal-dialog {
-    left: 25% !important;
-  }
-}
-
-@media screen and (max-width: 866px) {
-  .modal-dialog {
+  @include mq('tablet',max){
     left: 30% !important;
-  }
-}
-
-@media screen and (max-width: 706px) {
-  .modal-dialog {
-    left: 35% !important;
-  }
-}
-
-@media screen and (max-width: 642px) {
-  .modal-dialog {
-    left: 40% !important;
-  }
-}
-
-@media screen and (max-width: 626px) {
-  .modal-dialog {
-    left: 45% !important;
-  }
-}
-
-@media screen and (max-width: 601px) {
-  .modal-dialog {
+  }  
+  
+  @include mq('tablet-small',max){
     left: 50% !important;
-  }
-}
+  } 
 
-@media screen and (max-width: 575px) {
-  .modal-dialog {
+  @include mq('phablet',max){
     left: 60% !important;
-  }
+  } 
 }
 
 @media screen and (max-width: 768px) {
@@ -2118,7 +2093,7 @@ iframe#discourse-embed-frame {
 }
 
 .relatedResourcesModal .modal-content {
-  height: calc(100vh - 10px);
+  height: calc(100vh - 10px); 
 }
 
 .minHeightModal {
@@ -2597,7 +2572,7 @@ button a {
   top: 60%;
   z-index: 1;
 
-  @include mq('tablet-wide', max){
+  @include mq('tablet-wide', max){ 
     left: 64%;
     top: 70%;
   }
@@ -2876,4 +2851,8 @@ button a {
   padding-left: 16px;
   padding-right: 16px;
   padding-top: 16px;
+}
+
+.textUnderline {
+  text-decoration: underline;
 }

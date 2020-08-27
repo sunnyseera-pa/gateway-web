@@ -60,12 +60,14 @@ class SearchBar extends React.Component {
         prevScrollpos: window.pageYOffset,
         visible: true,
         showToast: true,
+        isHovering: false,
         isLoading: true
     }
 
     constructor(props) {
         super(props);
         this.state.userState = props.userState;
+        this.handleMouseHover = this.handleMouseHover.bind(this);
     }
 
     componentDidMount() {
@@ -219,8 +221,18 @@ class SearchBar extends React.Component {
         }
     }
 
+    handleMouseHover() {
+        this.setState(this.toggleHoverState);
+      }
+    
+      toggleHoverState(state) {
+        return {
+          isHovering: !state.isHovering
+        };
+      }
+
     render() {
-        const { userState, newData, isLoading, clearMessage } = this.state;
+        const { userState, newData, isLoading, clearMessage, isHovering } = this.state;
 
         if (isLoading) {
             return <></>;
@@ -399,11 +411,11 @@ class SearchBar extends React.Component {
                                                     </Dropdown.Menu>
                                                 </Dropdown>
                                             )
-                                        }
+                                        } 
                                         else {
                                             return (<>
-                                                <span className="black-14" id="myBtn" onClick={e => { this.showLoginModal() }} >Sign in | Sign up</span>
-                                            </>
+                                                <span className={isHovering ? "black-14 textUnderline" : "black-14"} id="myBtn" style={{ cursor: 'pointer' }} onClick={e => { this.showLoginModal() }} onMouseEnter={this.handleMouseHover} onMouseLeave={this.handleMouseHover} > Sign in | Sign up </span>
+                                            </> 
                                             )
                                         }
                                     })()}
