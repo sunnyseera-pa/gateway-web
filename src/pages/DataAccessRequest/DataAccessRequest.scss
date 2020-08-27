@@ -1,12 +1,10 @@
 @import '../../css/styles.scss';
-
 .section-header {
 	cursor: pointer;
     margin-left: 33px;
     margin-top: 8px;
     margin-bottom: 16px;
 }
-
 .section-header-active {
     cursor: pointer !important;
     opacity: 1 !important;
@@ -14,7 +12,6 @@
     margin-top: 0px;
     margin-bottom: 0px;
 }
-
 .section-subheader {
     margin-left: 33px;
     margin-top: 0;
@@ -60,7 +57,6 @@
 	justify-content: center !important;
 	margin-left: 1px !important;
 }
-
 .banner {
 	background-color: $indigo;
 	width: 100%;
@@ -68,18 +64,15 @@
 	margin-left: 0px !important;
 	align-content: center;
 }
-
 .banner .banner-left {
 	vertical-align: middle;
 	padding-left: 32px !important;
 }
-
 .banner .banner-right {
 	text-align: right;
 	vertical-align: middle;
 	padding-right: 32px !important;
 }
-
 #darLeftCol {
 	width: calc(25vw - 15px);
 	max-height: calc(100vh - 70px);
@@ -88,7 +81,6 @@
 	margin-top: 24px;
 	padding-top: 24px;
 }
-
 #darCenterCol {
 	width: calc(41.66vw - 15px);
 	margin-left: 15px;
@@ -121,7 +113,6 @@
 	font-weight: 500;
 	color: $gray-800;
 }
-
 .darTab {
 	padding: 15px 0;
 	background-color: $white;
@@ -179,7 +170,6 @@
 	height: 600px;
 	width: 800px;
 }
-
 .ck-button {
 	margin: 4px;
 	background-color: #efefef;
@@ -188,19 +178,16 @@
 	overflow: auto;
 	float: left;
 }
-
 .ck-button label {
 	float: left;
 	width: 4em;
 }
-
 .ck-button label span {
 	text-align: center;
 	padding: 3px 0px;
 	display: block;
 	border-radius: 4px;
 }
-
 .ck-button label input {
 	position: absolute;
 	top: -20px;
@@ -214,7 +201,6 @@
 	background-color: #911;
 	color: #fff;
 }
-
 .ck-button input:checked:hover + span {
 	background-color: #c11;
 	color: #fff;
@@ -232,20 +218,17 @@
 			}
 		}
 	}
-
 	&__questions {
 		margin-bottom: 36px;
 		padding: 24px;
 		margin-top: 1px;
 		box-shadow: 0 1px 6px -5px #333;
 	}
-
 	&__questions .col-md-12 {
 		padding: 0px !important;
 		padding-left: 8px !important;
 		padding-right: 8px !important;
 	}
-
 	&__questions .form-group {
 		padding-left: 16px !important;
 		padding-right: 16px !important;
@@ -256,7 +239,6 @@
         padding-right: 0 !important;
         margin-bottom: 0 !important;
     }
-
 	&__check {
 		list-style: none;
 		margin-left: 24px;
@@ -273,7 +255,6 @@
 			}
 		}
 	}
-
 	&__radio {
 		&--item {
 			label {
@@ -294,7 +275,6 @@
 					margin-right: 10px;
 					vertical-align: middle;
 					transition: all 250ms ease;
-
 					&:focus {
 						border-color: transparent;
 						outline: none;
@@ -313,11 +293,48 @@
 				}
 			}
 		}
-
 		&--list {
 			list-style: none;
 		}
 	}
+}
+
+.action-bar {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    box-sizing: border-box;
+    position: fixed;
+    padding: 0 24px;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 72px;
+    background-color: $white;
+    box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.09);
+    z-index:1000;
+
+    &--questions {
+        flex: 0 0 30%;
+        @include font-source(14px, $gray-800, $font-weight-semibold);
+        p {
+            margin-bottom: 0;
+        }
+    }
+
+    &-actions {
+        display: flex;
+        justify-content: flex-end;
+        flex: 0 0 70%;
+    }
+
+    &-actions > button {
+        margin-right: 8px;
+    }
+
+    &-actions > button:last-child {
+        margin-right: 0px;
+    }
 }
 
 .userOption {
@@ -325,13 +342,11 @@
 		display: flex;
 		flex-flow: row nowrap;
 		justify-content: space-between;
-
 		span {
 			@include font-source(14px, $gray-600, $font-weight-semibold);
 		}
 	}
 }
-
 .datasetName {
     @include font-source(14px, $gray-800, $font-weight-semibold);
     width: 100%;
@@ -339,7 +354,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
 .datasetDescription {
     @include font-source(14px, $gray-600, $font-weight-semibold);
     width: 100%;
@@ -389,7 +403,6 @@
     background-color: $white !important;
     border-bottom: 1px solid $background !important;
 }
-
 .card-header {
     border-radius: 0 !important;
     background-color: $white !important;
@@ -401,12 +414,10 @@
     transition: linear padding 250ms;
     cursor: pointer;
 }
-
 .disabled {
     pointer-events: none;
     opacity: 0.5;
 }
-
 .card-header.active {
     padding-bottom: 1px !important;
     opacity: 1 !important;
@@ -446,12 +457,10 @@
     text-align: right;
     margin-top: 8px;
 }
-
 .panConfirmDatasets > button {
     height: 40px;
     width: 85px;
 }
-
 .form-group .addFormInputTypeAhead {
     height: min-content !important;
 }
@@ -489,3 +498,34 @@
 .badge-comingSoon {
     margin-left: 16px;
 }
+
+.modal-content {
+    align-items: center;
+    width: fit-content;
+}
+
+input[type='checkbox']:after {
+    width: 24px;
+    height: 24px;
+    border: solid 2px #d6d6d6;
+    background-color: $white;
+    content: '';
+    display: inline-block;
+    visibility: visible;
+    border: solid 2px #d6d6d6;
+  }
+  
+  input[type='checkbox']:checked:after {
+    width: 24px;
+    height: 24px;
+    border: solid 2px #d6d6d6;
+    background-color: $white;
+    position: relative;
+    background-image: url(../../images/tick.svg);
+    background-repeat: no-repeat;
+    background-size: 21px 21px;
+    display: inline-block;
+    visibility: visible;
+    border: solid 2px #d6d6d6;
+    content: '';
+  }

@@ -10,8 +10,11 @@ const MessageHeader = ( {topic, modalRequired, onRequestAccess, onShowModal} ) =
                 )}
             </div>
             <div className="messageArea-header-action">
-                { modalRequired ? <button className="button-tertiary mr-2" onClick={e => onShowModal(e)}>How to request access</button> : null}
-                <button className="btn btn-primary addButton" onClick={e => onRequestAccess(e)}>Request Access</button>
+                { modalRequired ? 
+                    <button className="button-tertiary mr-2" onClick={e => onShowModal(e)}>How to request access</button> 
+                :
+                    <button className="btn btn-primary addButton" onClick={e => onRequestAccess(e)}>Request access</button>
+                }
             </div>
         </Fragment>
     )

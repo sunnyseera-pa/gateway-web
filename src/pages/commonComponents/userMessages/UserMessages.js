@@ -72,6 +72,9 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 						topicsArr.unshift(newTopic);
 						setActiveTopic(newTopic);
 					}
+				} else if (!allowNewMessage) {
+					// Clear message header/body
+					setActiveTopic({});
 				}
 				// 7. set topics state
 				setTopics(topicsArr);
@@ -161,7 +164,7 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 					let {data: { topic }} = res;
 					let {datasets: [publisherObj = {}, ...rest] = []} = topic;
 					console.log(publisherObj);
-					const {data: { publisher = {} }} = await getPublihserById(publisherObj.publisher);
+					const {data: { publisher = {} }} = await getPublisherById(publisherObj.publisher);
 					if(!_.isEmpty(publisher)) {
 						({dataRequestModalContent} = publisher);
 						setRequiresModal(!_.isEmpty(dataRequestModalContent) ? true : false);
@@ -186,9 +189,9 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 		}
 	};
 
-	const getPublihserById = (publihserId = '') => {
-		if(!_.isEmpty(publihserId)) {
-			const response = axios.get(`${baseURL}/api/v1/publishers/${publihserId}`);
+	const getPublisherById = (publisherId = '') => {
+		if(!_.isEmpty(publisherId)) {
+			const response = axios.get(`${baseURL}/api/v1/publishers/${publisherId}`);
 			return response;
 		}
 		return {};
@@ -201,7 +204,7 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 	 */
 	const onRequestAccess = (e) => {
         e.preventDefault();
-        let id = '';
+		let id = '';
 		if (!_.isEmpty(activeTopic)) {
             // remove scroll if in body
             if(document.body.classList.contains('no-scroll'))
@@ -212,7 +215,8 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
                 id = dS[0].datasetId;
 			} else {
                 id = datasets[0].datasetId;
-            }
+			}
+			closed();
             history.push({pathname: `/data-access-request/dataset/${id}`});
 		} 
 	};
@@ -336,11 +340,16 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 							: ''}
 					</div>
 					<div className='messageArea-footer'>
-						<MessageFooter
-							value={messageDescription}
-							onSubmitMessage={onSubmitMessage}
-							onMessageChange={onMessageChange}
-						/>
+						{!_.isEmpty(activeTopic) ? (
+							<MessageFooter
+								value={messageDescription}
+								onSubmitMessage={onSubmitMessage}
+								onMessageChange={onMessageChange}
+							/>
+						) : (
+							''
+						)}
+						
 					</div>
 				</div>
 			</div>

@@ -11,17 +11,13 @@ import './DataSetModal.scss';
 
 const DataSetModal = ({ open, closed, context, userState }) => {
 
-	let dataset = {}, datasetId = '', title = '', contactPoint = '', dataRequestModalContent = {header: '', body: ''} ;
+	let datasets = [], datasetId = '', title = '', contactPoint = '', dataRequestModalContent = {header: '', body: ''} ;
 
-	if(typeof context !== 'undefined' && !_.isEmpty(context)) {
-		 ({datasets: [dataset], title, contactPoint, dataRequestModalContent } = context);
-		 ({datasetId } = dataset);
+	if(typeof context !== 'undefined' && !_.isEmpty(context) && !_.isEmpty(context.datasets)) {
+		 ({datasets, title, contactPoint, dataRequestModalContent } = context);
+		 ({datasetId } = datasets[0]);
 	}
 
-    if(typeof context !== 'undefined' && !_.isEmpty(context)) {
-         ({datasets: [dataset], title, contactPoint } = context);
-         ({datasetId } = dataset);
-    }
 	const { loggedIn: isLoggedIn } = userState;
 
 	let history = useHistory();
@@ -39,7 +35,7 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 			// 3. log google analytics event (Category-Action-Label)
 			Event('Buttons', 'Click', 'Request Access');
 			// 4. redirect to access request
-			history.push({ pathname: `/data-access-request/dataset/${datasetId}` });
+			history.push({ pathname: `/data-access-request/dataset/${datasetId}` }, { context });
 		}
 	};
 

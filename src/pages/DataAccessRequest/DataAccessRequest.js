@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Container, Row, Col, Button, Tabs, Tab, Accordion, Card } from 'react-bootstrap';
+import { Container, Row, Col, Modal, Tabs, Tab, Accordion, Card } from 'react-bootstrap';
 import Winterfell from 'winterfell';
 import _ from 'lodash';
 import moment from 'moment';
@@ -15,7 +15,6 @@ import NavItem from './components/NavItem';
 import NavDropdown from './components/NavDropdown';
 import DarValidation from '../../utils/DarValidation.util';
 import DarHelper from '../../utils/DarHelper.util';
-import { formSchema } from './formSchema';
 import { classSchema } from './classSchema';
 import { baseURL } from '../../configs/url.config';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
@@ -24,7 +23,6 @@ import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import 'react-tabs/style/react-tabs.css';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import './DataAccessRequest.scss';
-import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import { Link } from 'react-router-dom';
 import SVGIcon from '../../images/SVGIcon';
 
@@ -52,9 +50,17 @@ class DataAccessRequest extends Component {
 			lookup: ['fullname'],
 			isLoading: true,
 			formSubmitted: false,
-			datasets: [],
+			datasets: [{
+				name: '',
+				datasetfields: {
+					publisher: ''
+				}
+			}],
+			publisher: '',
+			contactPoint: '',
 			showDrawer: false,
 			showModal: false,
+			showMrcModal: false,
 			isWideForm: false,
 			is5SafesForm: false,
 			activeAccordionCard: 0,
@@ -83,13 +89,20 @@ class DataAccessRequest extends Component {
 
 	aboutPanel = {
 		panelId: 'about',
-		index: 1,
+		index: 0,
 		pageId: 'about',
 	};
 
 	async componentDidMount() {
 		try {
-			this.loadData();
+			await this.loadData();
+			// Set questions answered for entire application
+			let countedQuestionAnswers = this.totalQuestionsAnswered();
+			let totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered`;
+
+			this.setState({
+				totalQuestions
+			});
 		} catch (error) {
 			this.setState({ isLoading: false });
 			console.log(error);
@@ -112,10 +125,19 @@ class DataAccessRequest extends Component {
 			},
 		} = response;
 
-		// TODO Get publisher for data set to establish messaging context, modal content and if 5SafesForm
+		// Get publisher generic fields from dataset
+		let { datasetfields: { publisher, contactPoint }} = dataset;
 
-		// Check if 5 Safes form
-		let is5SafesForm = true;
+		// Get publisher data for establishing modal content and messaging context
+		await this.getPublisherById(publisher);
+
+		// Check if 5 Safes form - currently based on if the publisher has a pre-submission modal
+		let is5SafesForm = false
+		if(this.state.topicContext.requiresModal) {
+			is5SafesForm = true;
+		}
+
+		let { aboutApplication, topicContext } = this.state;
 		// Set state to say about application is shown
 		if(is5SafesForm) {
 			// Add 'about' page nav item
@@ -124,33 +146,81 @@ class DataAccessRequest extends Component {
 
 			// Add form panel
 			jsonSchema.formPanels.unshift(this.aboutPanel);
+
+			// Check if a historic state has been passed through linkage from request access modal
+			aboutApplication.selectedDatasets = [dataset].map(dataset => {
+				let { _id, datasetid, name, description, datasetfields: { abstract, publisher }} = dataset;
+				return { _id, datasetId: datasetid, name, description, abstract, publisher };
+			});
+			
+			// Set messaging context
+			topicContext = { 
+				...topicContext,
+				datasets: aboutApplication.selectedDatasets.map(dataset => { 
+					let { datasetId, publisher } = dataset;
+					return { datasetId, publisher};
+				}) || [],
+				tags: aboutApplication.selectedDatasets.map(dataset => dataset.name) || [],
+				relatedObjectIds: aboutApplication.selectedDatasets.map(dataset => dataset._id),
+				title: publisher || '', 
+				subTitle: aboutApplication.selectedDatasets.map(dataset => dataset.name).join(' '),
+				contactPoint,
+				allowNewMessage: true  
+			};
 		}
-		// 1. get the first active panel
+		
+		// get the first active panel
 		let {
 			formPanels: [initialPanel, ...rest],
 		} = jsonSchema;
 
-		const selectedDatasets = [dataset].map(dataset => {
-			let { name, description, datasetfields: { abstract, publisher }} = dataset;
-			return { name, description, abstract, publisher };
-		});
-
-		// 2. set state
+		// set state
 		this.setState({
 			jsonSchema: { ...jsonSchema, ...classSchema },
 			datasets: [dataset],
-			aboutApplication: { ...this.state.application, selectedDatasets },
+			aboutApplication,
 			questionAnswers,
 			_id,
 			applicationStatus,
 			activePanelId: initialPanel.panelId,
 			isWideForm: initialPanel.panelId === 'about',
 			is5SafesForm,
-			isLoading: false
+			isLoading: false,
+			topicContext,
+			publisher,
+			contactPoint
 		});
+		
 		// for local test uses formSchema.json
 		//  this.setState({jsonSchema: {...formSchema}, questionAnswers: {fullname: {"id":5385077600698822,"orcid":"12345678","name":"Paul McCafferty","bio":"Developer @ PA","email":"p*************y@p**************m"}, orcid:"12345678", email:"p*************y@p**************m"}, activePanelId: 'applicant', isLoading: false, applicationStatus: 'inProgress'});
 	};
+
+	/**
+	 * [getPublisherById]
+	 * @desc - Gets publisher details from the publisher Id (name)
+	 */
+
+	getPublisherById = async (publisherId) => {
+		await axios
+			  .get(`${baseURL}/api/v1/publishers/${publisherId}`)
+			  .then(response => {
+				const {data: { publisher : { dataRequestModalContent = {}, allowsMessaging = false }}} = response;
+				const stateObj = { 
+				  requiresModal: !_.isEmpty(dataRequestModalContent) ? true : false,
+				  allowNewMessage: true,
+				  allowsMessaging,
+				  dataRequestModalContent
+				 }
+				 let topicContext = {
+				   ...this.state.topicContext,
+				   ...stateObj
+				 }
+				 this.setState({ topicContext });
+			  })
+			  .catch(error => {
+				console.log(error);
+			  });
+	  } 
 
 	/**
 	 * [TotalQuestionAnswered]
@@ -160,7 +230,17 @@ class DataAccessRequest extends Component {
 		let totalQuestions = 0;
 		let totalAnsweredQuestions = 0;
 
-		if (!_.isEmpty(panelId)) {
+		if (_.isEmpty(panelId)) 
+		{ 
+			const formPanels = [...this.state.jsonSchema.formPanels];
+			let applicationQuestionAnswers = formPanels.reduce((acc, val) => {
+					let countObj = this.totalQuestionsAnswered(val.panelId);
+					acc[0] = acc[0] + countObj.totalAnsweredQuestions
+					acc[1] = acc[1] + countObj.totalQuestions
+					return acc;
+				}, [0,0]);
+			return { totalAnsweredQuestions: applicationQuestionAnswers[0], totalQuestions: applicationQuestionAnswers[1] };
+		} else {
 			if (_.isEmpty(questionAnswers)) ({ questionAnswers } = { ...this.state });
 			// 1. deconstruct state
 			let {
@@ -190,9 +270,9 @@ class DataAccessRequest extends Component {
 							: totalAnsweredQuestions;
 					});
 				}
-				// this.setState({ totalQuestionsAnswered: `${totalAnsweredQuestions}/${totalQuestions}  questions answered in this section`});
-				return `${totalAnsweredQuestions}/${totalQuestions}  questions answered in this section`;
+				return { totalAnsweredQuestions, totalQuestions };
 			}
+			return { totalAnsweredQuestions: 0, totalQuestions: 0 };
 		}
 	};
 
@@ -278,7 +358,7 @@ class DataAccessRequest extends Component {
 	 */
 	onFormUpdate = _.debounce((id = '', questionAnswers = {}) => {
 		if (!_.isEmpty(id) && !_.isEmpty(questionAnswers)) {
-			let { applicationStatus, lookup } = this.state;
+			let { applicationStatus, lookup, activePanelId } = this.state;
 			// 1. check for auto complete
 			if (typeof id === 'string') {
 				let [questionId, uniqueId] = id.split('_');
@@ -290,10 +370,19 @@ class DataAccessRequest extends Component {
 					});
 			}
 			// 2. get totalQuestionAnswered
-			let totalQuestions = this.totalQuestionsAnswered(
-				this.state.activePanelId,
-				questionAnswers
-			);
+			let countedQuestionAnswers = {};
+			let totalQuestions = '';
+
+			if(activePanelId === 'about') {
+				countedQuestionAnswers = this.totalQuestionsAnswered();
+				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered`;
+			} else {
+				countedQuestionAnswers = this.totalQuestionsAnswered(
+					this.state.activePanelId,
+					questionAnswers
+				);
+				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered in this section`;
+			}
 
 			this.setState({ totalQuestions });
 
@@ -396,36 +485,35 @@ class DataAccessRequest extends Component {
 		}
 	};
 
-	onNextPanel(activePanelId) {
-		if (
-			activePanelId === 'mrcHealthDataToolkit' ||
-			activePanelId === 'adviceFromPublisher'
-		) {
-			// 1. filter for the first section safePeople and get the first obj
-			let { panelId, pageId } = _.head(
-				[...this.state.jsonSchema.formPanels].filter((p) => {
-					return p.pageId.toUpperCase() === 'SAFEPEOPLE';
-				})
-			);
-			this.updateNavigation({ panelId, pageId });
-		} else {
-			const formPanels = [...this.state.jsonSchema.formPanels];
-			const currentPanelIndex = formPanels.findIndex(
-				(panel) => panel.panelId === activePanelId
-			);
-			const newPanelIndex = currentPanelIndex + 2;
-			const nextPanelIndex = formPanels.findIndex(
-				(panel) => panel.index === newPanelIndex
-			);
-			if (nextPanelIndex === -1) {
-				console.log('at the end!');
-			} else {
-				const { panelId, pageId } = formPanels.find(
-					(panel) => panel.index === newPanelIndex
-				);
-				this.updateNavigation({ panelId, pageId });
+	onNextClick = () => {
+		// 1. If in the about panel, we go to the next step.  Otherwise next panel.
+		if(this.state.activePanelId === 'about') {
+			// 2. Pass no completed bool value to go to next step without modifying completed status
+			this.onNextStep();
+			// 3. If we have reached the end of the about accordion, reset active accordion so all are closed
+			if(this.state.activeAccordionCard >= 5) {
+				this.setState({
+					activeAccordionCard: -1
+				});
+				// 4. Move to the next step
+				this.onNextPanel();
 			}
+		} else {
+			this.onNextPanel();
 		}
+	}
+
+	onNextPanel = () => {
+		// 1. Copy formpanels
+		let formPanels = [...this.state.jsonSchema.formPanels];
+		// 2. Get activeIdx
+		let activeIdx = formPanels.findIndex(p => p.panelId === this.state.activePanelId);
+		// 3. Increment idx
+		let nextIdx = ++activeIdx;
+		// 4. Get activePanel - make sure newIdx doesnt exceed panels length
+		let { panelId, pageId } = formPanels[nextIdx > formPanels.length - 1 ? 0 : nextIdx];
+		// 5. Update the navigationState
+		this.updateNavigation({ panelId, pageId });
 	}
 
 	/**
@@ -455,9 +543,6 @@ class DataAccessRequest extends Component {
 			// reset scroll to 0, 0
 			window.scrollTo(0, 0);
 			let panelId = '';
-			const currentActivePage = [...this.state.jsonSchema.pages].find(
-				(p) => p.active === true
-			);
 			// copy state pages
 			const pages = [...this.state.jsonSchema.pages];
 			// get the index of new form
@@ -479,13 +564,23 @@ class DataAccessRequest extends Component {
 						(p) => p.pageId === newFormState[newPageindex].pageId
 					) || '');
 			}
-			let totaltotalQuestionsAnswered = this.totalQuestionsAnswered(panelId);
+
+			let countedQuestionAnswers = {};
+			let totalQuestions = '';
+			// if in the about panel, retrieve question answers count for entire application
+			if(panelId === 'about') {
+				countedQuestionAnswers = this.totalQuestionsAnswered();
+				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions || 0}/${countedQuestionAnswers.totalQuestions || 0}  questions answered`;
+			} else {
+				countedQuestionAnswers = this.totalQuestionsAnswered(panelId);
+				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions || 0}/${countedQuestionAnswers.totalQuestions || 0}  questions answered in this section`;
+			}
 			this.setState({
 				jsonSchema: { ...this.state.jsonSchema, pages: newFormState },
 				activePanelId: panelId,
 				isWideForm: panelId === 'about',
-				totalQuestions: totaltotalQuestionsAnswered,
-				validationErrors,
+				totalQuestions: totalQuestions,
+				validationErrors
 			});
 		}
 	};
@@ -563,49 +658,85 @@ class DataAccessRequest extends Component {
 		}
 	}
 
+	toggleMrcModal = () => {
+		this.setState( ( prevState ) => {
+			return { showMrcModal: !prevState.showMrcModal };
+		});
+	}
+
+
+
 	onHandleDataSetChange = (e) => {
 		// 1. Deconstruct current state
-		let { aboutApplication, allowedNavigation } = this.state;
-		// 2. If no datasets are passed, set invalid and incomplete step
+		let { aboutApplication, allowedNavigation, topicContext, publisher, contactPoint } = this.state;
+
+		// 2. Update 'about application' state with selected datasets
+		aboutApplication.selectedDatasets = e
+
+		// 3. If no datasets are passed, set invalid and incomplete step, and update message context
 		if(_.isEmpty(e)) {
 			aboutApplication.completedDatasetSelection = false;
 			allowedNavigation = false;
+			topicContext = {
+				...topicContext,
+				datasets: [],
+				tags: [],
+				relatedObjectIds: [],
+				subTitle: '',
+				allowNewMessage: false
+			};
 		} else {
 			allowedNavigation = true;
+			topicContext = { 
+				...topicContext,
+				datasets: aboutApplication.selectedDatasets.map(dataset => { 
+					let { datasetId, publisher } = dataset;
+					return { datasetId, publisher};
+				}) || [],
+				tags: aboutApplication.selectedDatasets.map(dataset => dataset.name) || [],
+				relatedObjectIds: aboutApplication.selectedDatasets.map(dataset => dataset._id),
+				title: publisher || '', 
+				subTitle: aboutApplication.selectedDatasets.map(dataset => dataset.name).join(' '),
+				contactPoint,
+				allowNewMessage: true
+			};
 		}
-		// 3. Update state to reflect change
+
+		// 4. Update state to reflect change
 		this.setState({
-			selectedDatasets: e,
 			allowedNavigation,
-			aboutApplication
+			aboutApplication,
+			topicContext
 		});
 	}
 
 	onNextStep = (completed) => {
 		// 1. Deconstruct current state
 		let { aboutApplication, activeAccordionCard } = this.state;
-		// 2. Mark the relevant step as completed or incompleted
-		switch(activeAccordionCard) {
-			case 0:
-				aboutApplication.completedDatasetSelection = completed;
-				break;
-			case 1:
-				aboutApplication.completedReadAdvice = completed;
-				break;
-			case 2:
-				aboutApplication.completedCommunicateAdvice = completed;
-				break;
-			case 3:
-				aboutApplication.completedApprovalsAdvice = completed;
-				break;
-			case 4:
-				aboutApplication.completedSubmitAdvice = completed;
-				// Temporary until feature is released
-				aboutApplication.completedInviteCollaborators = true;
-				break;
-			default:
-				console.error("Invalid step passed");
-				break;
+		// 2. If a completed flag has been passed, update step during navigation
+		if(!_.isUndefined(completed)) {
+			switch(activeAccordionCard) {
+				case 0:
+					aboutApplication.completedDatasetSelection = completed;
+					break;
+				case 1:
+					aboutApplication.completedReadAdvice = completed;
+					break;
+				case 2:
+					aboutApplication.completedCommunicateAdvice = completed;
+					break;
+				case 3:
+					aboutApplication.completedApprovalsAdvice = completed;
+					break;
+				case 4:
+					aboutApplication.completedSubmitAdvice = completed;
+					// Temporary until feature is released
+					aboutApplication.completedInviteCollaborators = true;
+					break;
+				default:
+					console.error("Invalid step passed");
+					break;
+			}
 		}
 		// 3. Set new state
 		this.setState({
@@ -652,6 +783,7 @@ class DataAccessRequest extends Component {
 			datasets,
 			showDrawer,
 			showModal,
+			showMrcModal,
 			isWideForm,
 			activeAccordionCard,
 			allowedNavigation,
@@ -666,7 +798,6 @@ class DataAccessRequest extends Component {
 				completedInviteCollaborators 
 			}
 		} = this.state;
-
 		const { userState, location } = this.props;
 
 		const aboutForm = (
@@ -727,8 +858,8 @@ class DataAccessRequest extends Component {
 										If you haven’t already, please make sure you have read the advice provided by the data custodian on how to request access to their datasets.
 									</div>
 									<div className="dar-form-check-group">
-										<input type="checkbox" id="chkReadAdvice" className='dar-form-check' onChange={e => {this.onNextStep(e.target.checked)}}/>
-										<span className="dar-form-check-label" for="chkReadAdvice">
+										<input type="checkbox" id="chkReadAdvice" checked={completedReadAdvice} className='dar-form-check' onChange={e => {this.onNextStep(e.target.checked)}}/>
+										<span className="dar-form-check-label">
 											I have read <Link id='howToRequestAccessLink' to=' ' className={allowedNavigation ? '' : 'disabled'} onClick={e => this.toggleModal(false, this.state.context)}>how to request access</Link>
 										</span>
 									</div>
@@ -753,8 +884,8 @@ class DataAccessRequest extends Component {
 									</div>
 									<div className="dar-form-check-group">
 										<button className="button-secondary" type='button' onClick={this.toggleDrawer}>Send message</button>
-										<input type="checkbox" id="chkCommunicateAdvice" className='dar-form-check' onChange={e => {this.onNextStep(e.target.checked)}}/>
-										<span className="dar-form-check-label" for="chkCommunicateAdvice">
+										<input type="checkbox" id="chkCommunicateAdvice" checked={completedCommunicateAdvice} className='dar-form-check' onChange={e => {this.onNextStep(e.target.checked)}}/>
+										<span className="dar-form-check-label">
 											I have completed this step
 										</span>
 									</div>
@@ -778,9 +909,9 @@ class DataAccessRequest extends Component {
 										The MRC Health Data Access tookit aims to help you understand what approvals might be necessary for your research. Many custodians request these approvals are in place before you start your application process.
 									</div>
 									<div className="dar-form-check-group">
-										<button className="button-secondary" type='button' onClick={this.toggleDrawer}>MRC Health Data Access toolkit</button>
-										<input type="checkbox" id="chkApprovalAdvice" className='dar-form-check' onChange={e => {this.onNextStep(e.target.checked)}}/>
-										<span className="dar-form-check-label" for="chkApprovalAdvice">
+										<button className="button-secondary" type='button' onClick={this.toggleMrcModal}>MRC Health Data Access toolkit</button>
+										<input type="checkbox" id="chkApprovalAdvice" checked={completedApprovalsAdvice} className='dar-form-check' onChange={e => {this.onNextStep(e.target.checked)}}/>
+										<span className="dar-form-check-label">
 											I have completed this step
 										</span>
 									</div>
@@ -812,8 +943,8 @@ class DataAccessRequest extends Component {
 										</ul>
 									</div>
 									<div className="dar-form-check-group">
-										<input type="checkbox" id="chkSubmitAdvice" className='dar-form-check' onChange={e => {this.onNextStep(e.target.checked)}}/>
-										<span className="dar-form-check-label" for="chkSubmitAdvice">
+										<input type="checkbox" id="chkSubmitAdvice" checked={completedSubmitAdvice} className='dar-form-check' onChange={e => {this.onNextStep(e.target.checked)}}/>
+										<span className="dar-form-check-label">
 											I have completed this step
 										</span>
 									</div>
@@ -938,12 +1069,10 @@ class DataAccessRequest extends Component {
 												<p className='black-20-semibold mb-0'>
 													{item.active ? item.title : ''}
 												</p>
-												<span>
-													<ReactMarkdown
-														className='gray800-14'
-														source={item.description}
-													/>
-												</span>
+												<ReactMarkdown
+													className='gray800-14'
+													source={item.description}
+												/>
 											</Fragment>
 										) : (
 											''
@@ -1041,18 +1170,13 @@ class DataAccessRequest extends Component {
 				</div>
 
 				<div className='action-bar'>
-					<Col md={6} className='mt-4'>
-						<span className='gray800-14'>{totalQuestions}</span>
-					</Col>
-					<Col md={6} className='mt-3 text-right'>
-						<button
-							type='button'
-							className={`button-tertiary ${allowedNavigation ? '' : 'disabled'}`}
-							onClick={this.onFormSubmit}
-						>
-							Submit application
-						</button>
-					</Col>
+					<div className="action-bar--questions">
+						<p>{totalQuestions}</p>
+					</div>
+					<div className="action-bar-actions">
+						<button className={`button-tertiary ${allowedNavigation ? '' : 'disabled'}`} style={{width:'156px'}} onClick={this.onFormSubmit}>Submit application</button>
+						<button className={`button-primary ${allowedNavigation ? '' : 'disabled'}`} style={{width:'62px'}} onClick={this.onNextClick}>Next</button>
+					</div>
 				</div>
 
 				<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
@@ -1060,16 +1184,20 @@ class DataAccessRequest extends Component {
 						closed={this.toggleDrawer}
 						toggleModal={this.toggleModal}
 						drawerIsOpen={this.state.showDrawer}
-						topicContext={this.topicContext}
+						topicContext={this.state.topicContext}
 					/>
 				</SideDrawer>
 
 				<DataSetModal 
                     open={showModal} 
-                    context={context}
+                    context={this.state.topicContext}
                     closed={this.toggleModal}
                     userState={userState[0]} 
 				/>
+
+				<Modal show={showMrcModal} onHide={this.toggleMrcModal} size="lg" aria-labelledby="contained-modal-title-vcenter" centered className="darModal" >
+                	<iframe src="https://hda-toolkit.org/story_html5.html" className="darIframe"> </iframe>
+            	</Modal>
 			</div>
 		);
 	}
