@@ -11,11 +11,11 @@ import './DataSetModal.scss';
 
 const DataSetModal = ({ open, closed, context, userState }) => {
 
-	let dataset = {}, datasetId = '', title = '', contactPoint = '', dataRequestModalContent = {header: '', body: ''} ;
+	let datasets = [], datasetId = '', title = '', contactPoint = '', dataRequestModalContent = {header: '', body: ''} ;
 
-	if(typeof context !== 'undefined' && !_.isEmpty(context)) {
-		 ({datasets: [dataset], title, contactPoint, dataRequestModalContent } = context);
-		 ({datasetId } = dataset);
+	if(typeof context !== 'undefined' && !_.isEmpty(context) && !_.isEmpty(context.datasets)) {
+		 ({datasets, title, contactPoint, dataRequestModalContent } = context);
+		 ({datasetId } = datasets[0]);
 	}
 
 	const { loggedIn: isLoggedIn } = userState;
@@ -25,17 +25,17 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 	const onRequestAccess = (e) => {
 		// 1. stop default click
 		e.preventDefault();
-		// 2. check user loggedIn status if not make user login
+		// 2. close modal and do not show enquiry - false
+		closed(false);
+		// 3. check user loggedIn status if not make user login
 		if (!isLoggedIn) {
-			// 2a. close modal and do not show enquiry - false;
-			closed(false);
-			// 2b. Show the loginPanel
+			// 3a. Show the loginPanel
 			DataSetHelper.showLoginPanel(window, title, contactPoint);
 		} else {
-			// 2. log google analytics event (Category-Action-Label)
+			// 3. log google analytics event (Category-Action-Label)
 			Event('Buttons', 'Click', 'Request Access');
-			// 3. redirect to access request
-			history.push({ pathname: `/data-access-request/dataset/${datasetId}` });
+			// 4. redirect to access request
+			history.push({ pathname: `/data-access-request/dataset/${datasetId}` }, { context });
 		}
 	};
 
@@ -91,7 +91,7 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 							className='btn btn-primary addButton'
 							onClick={() => onCloseModal(true)}
 						>
-							Make an Enquiry
+							Make an enquiry
 						</button>
 					</div>
 				</div>

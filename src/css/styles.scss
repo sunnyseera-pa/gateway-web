@@ -277,6 +277,14 @@ a.nav-item.nav-link.active {
     background-color: $gray-light;
     color: $gray-800 !important;
   }
+
+  &-comingSoon {
+    @extend .badge;
+    background-color: $orange-light;
+    color: $gray-dark !important;
+    font-weight: bold;
+    font-size: 16px;
+  }
 }
 
 .bubbleCount {
@@ -382,38 +390,6 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px $background inset !important;
   box-shadow: 0 0 0 30px $background inset !important;
-}
-
-.section-header {
-  cursor: pointer;
-  margin-left: 33px;
-  margin-bottom: 16px;
-}
-
-.section-subheader {
-  margin-left: 33px;
-  padding-left: 12px !important;
-  border-left: 1px solid $gray-400;
-}
-
-.dar-nav-item + .dar-nav-item {
-  padding-top: 8px;
-}
-
-.nav-item-active {
-  font-weight: bold !important;
-}
-
-.active-border {
-  border-left: 4px solid $teal;
-}
-
-.active-border > div {
-  margin-left: -4px;
-}
-
-.active-grey-border {
-  border-left: 1px solid $gray-400;
 }
 
 input[type='checkbox']:after {
@@ -529,14 +505,6 @@ input[type='radio']:checked:after {
 
 .tab-content {
   margin-top: 1px;
-}
-
-.dar-tabsBackground {
-  width: 100%;
-  background-color: $white !important;
-  align-items: center !important;
-  justify-content: center !important;
-  margin-left: 1px !important;
 }
 
 .tabList {
@@ -760,6 +728,11 @@ textarea:focus {
 .rbt-token {
   background-color: #f3f3f3 !important;
   color: $gray-800 !important;
+  border-radius: 16px;
+}
+
+.rbt-close {
+  color: #979797 !important;
 }
 
 .descriptionInput {
@@ -1167,112 +1140,6 @@ iframe#discourse-embed-frame {
   overflow-wrap: break-word;
 }
 
-.banner {
-  background-color: $indigo;
-  width: 100%;
-  min-height: 70px;
-  margin-left: 0px !important;
-  align-content: center;
-}
-
-.banner .banner-left {
-  vertical-align: middle;
-  padding-left: 32px !important;
-}
-
-.banner .banner-right {
-  text-align: right;
-  vertical-align: middle;
-  padding-right: 32px !important;
-}
-
-#darLeftCol {
-  width: calc(25vw - 15px);
-  max-height: calc(100vh - 70px);
-  height: min-content;
-  margin-right: 15px;
-  margin-top: 24px;
-  padding-top: 24px;
-}
-
-#darCenterCol {
-  width: calc(41.66vw - 15px);
-  margin-left: 15px;
-  padding-top: 24px;
-}
-
-#darRightCol {
-  max-height: calc(100vh - 79px);
-  height: min-content;
-  width: calc(33.33vw - 30px);
-  padding-top: 24px;
-  margin-right: 30px;
-}
-
-#darDropdownNav { 
-  display: none;
-}
-
-#darDropdownNav select { 
-  width: 100%;
-  height: 40px;
-  background-color: #ffffff;
-  border: solid 2px $gray-400;
-  border-radius: 4px;
-  font-family: museo-sans-rounded;
-  font-weight: 500;
-  color: $gray-800;
-}
-
-.darTab {
-  padding: 15px 0;
-  background-color: $white;
-  max-height: calc(100vh - 169px);
-}
-
-@media (min-width: 769px) and (max-width: 1160px) {
-  .banner {
-    height: 70px !important;
-  }
-
-  .darTab {
-    max-height: calc(100vh - 208px);
-  }
-}
-
-@media (min-width: 1161px) {
-  #darRightCol {
-    max-height: calc(100vh - 79px);
-  }
-
-  .darTab {
-    max-height: calc(100vh - 169px);
-  }
-}
-
-@media (max-width: 768px) {
-  #darLeftCol, #darRightCol {
-    display: none !important;
-  }
-
-  #darDropdownNav { 
-    display: block;
-    width: 100%;
-    margin-bottom: 16px;
-  }
-
-  #darCenterCol {
-    width: calc(100vw - 15px);
-    margin-right: 15px;
-  }
-}
-
-@media (min-width: 884px) {
-  .banner .banner-right span, .banner-right a, .banner-right button {
-    line-height: 30px;
-  }
-}
-
 .flex-form {
   display: flex;
   flex-direction:row;
@@ -1317,196 +1184,6 @@ iframe#discourse-embed-frame {
 
 .white-bg {
   background-color: $white;
-}
-
-.darIframe {
-  height: 600px;
-  width: 800px;
-}
-
-.ck-button {
-  margin:4px;
-  background-color:#EFEFEF;
-  border-radius:4px;
-  border:1px solid #D0D0D0;
-  overflow:auto;
-  float:left;
-}
-
-.ck-button label {
-  float:left;
-  width:4.0em;
-}
-
-.ck-button label span {
-  text-align:center;
-  padding:3px 0px;
-  display:block;
-  border-radius:4px;
-}
-
-.ck-button label input {
-  position:absolute;
-  top:-20px;
-}
-
-.ck-button input:hover + span {
-  background-color:#efE0E0;
-}
-
-.ck-button input:checked + span {
-  background-color:#911;
-  color:#fff;
-}
-
-.ck-button input:checked:hover + span {
-  background-color:#c11;
-  color:#fff;
-}
-
-
-.dar {
-  &__header {
-    padding: 24px;
-
-    p {
-      margin-bottom: 0;
-
-      &:first-child {
-        margin-bottom: 8px !important;
-      }
-
-    }
-  }
-  
-  &__questions {
-    margin-bottom: 24px;
-    padding-top: 24px;
-    padding-bottom: 24px;
-    margin-top: 1px;
-    box-shadow: 0 1px 6px -5px #333;
-  }
-
-  &__questions .col-md-12 {
-    padding: 0px !important;
-    padding-left: 8px !important;
-    padding-right: 8px !important;
-  }
-
-  &__questions .form-group {
-    padding-left: 16px !important;
-    padding-right: 16px !important;
-  }
-
-  &__check {
-    list-style: none;
-    margin-left: 24px;
-    label {
-      padding: 5px;
-      >input[type="checkbox"] {
-        margin-right: 10px;
-        width: 20px;
-        height: 20px;
-        cursor: pointer;
-        text-align: center;
-        vertical-align: middle;
-        margin-left: -30px;
-      }
-    }
-  }
-
-  &__radio {
-    
-    &--item {
-      label {
-        padding: 5px;
-        > input[type="radio"] {
-          -moz-appearance: none;
-          -webkit-appearance: none;
-          appearance: none; /* in case this ever gets supported */
-          background: #fff;
-          border-radius: 100%;
-          border: 1px solid transparent;
-          display: inline-block;
-          cursor: pointer;
-          text-align: center;
-          top: 5px;
-          width: 20px;
-          height: 20px;
-          margin-right: 10px;
-          vertical-align: middle;
-          transition: all 250ms ease;
-
-          &:focus {
-            border-color: transparent;
-            outline:none;
-          }
-
-          &:checked {
-            border-color: #fff;
-            transition: all 250ms ease;
-
-            &:after {
-              padding-left: 1px;
-              padding-top: 3px;
-              @include rounded(100%);
-            }
-          }
-        }
-       
-      }
-    }
-  
-    &--list {
-      list-style: none;
-    }
-  }
-}
-
-.userOption {
-  > 
-  div:nth-of-type(2) {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-between;
-
-    span {
-      @include font-source(14px, $gray-600, $font-weight-semibold);
-    }
-  }
-}
-
-.pad-1 {
-  padding-right: 1px !important;
-}
-
-
-.darModal .modal-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.dar-form {
-  h4 {
-    margin-bottom: 0;
-    padding: 16px 16px;
-    font-size: 20px;
-    font-weight: 500 !important;
-  }
-  .form-group {
-    padding: 10px 12px;
-    transition: all 0.2s ease-in-out;
-
-    &:hover {
-      background: $gray-200;
-    }
-
-    label {
-      @include font-source(14px, $gray-800, $font-weight-semibold);
-      margin-bottom: 5px;
-    }
-  }
 }
 
 .flex-grow {
@@ -2343,6 +2020,10 @@ button a {
     padding-top: 8px !important;
   }
 
+  .pad-bottom-0 {
+    padding-bottom: 0 !important;
+  }
+
   .pad-bottom-4 {
     padding-bottom: 4px !important;
   }
@@ -2390,6 +2071,10 @@ button a {
 
   .margin-bottom-0 {
     margin-bottom: 0px !important;
+  }
+
+  .margin-bottom-8 {
+    margin-bottom: 8px !important;
   }
 
   .margin-bottom-16 {
