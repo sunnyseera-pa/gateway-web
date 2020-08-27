@@ -185,7 +185,7 @@ class RelatedObject extends React.Component {
                                         </Col> 
                                         <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-18">
                                             <span className="gray800-14">
-                                                {data.description.substr(0, 220) + (data.description.length > 220 ? '...' : '')}
+                                                {data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}
                                             </span>
                                         </Col> 
                                     </Row>   
@@ -250,7 +250,7 @@ class RelatedObject extends React.Component {
                                         </Col>  
                                         <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-18">
                                             <span className="gray800-14">
-                                                {data.description.substr(0, 220) + (data.description.length > 220 ? '...' : '')}
+                                                {data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}
                                             </span>
                                         </Col> 
                                     </Row>  
@@ -312,8 +312,8 @@ class RelatedObject extends React.Component {
                                         </Col>  
                                         <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-18">
                                             <span className="gray800-14">
-                                                {data.description.substr(0, 220) + (data.description.length > 220 ? '...' : '')}
-                                            </span>
+                                                {data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}
+                                            </span> 
                                         </Col> 
                                     </Row>
                                 );
@@ -368,18 +368,18 @@ class RelatedObject extends React.Component {
                                                 else {
                                                     return <div className="badge-tag">{feature}</div>
                                                 }
-                                            })}
+                                            })} 
                                         </Col>  
                                         <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-18">
                                             <span className="gray800-14">
                                                 {(() => {
-                                                    if (!data.description || typeof data.description === 'undefined') {
-                                                        if(data.datasetfields.abstract){
-                                                        return data.datasetfields.abstract.substr(0, 220) + (data.datasetfields.abstract.length > 220 ? '...' : '')
+                                                    if (!data.datasetfields.abstract || typeof data.datasetfields.abstract === 'undefined') {
+                                                        if(data.description){
+                                                        return data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')
                                                         }
                                                     }
                                                     else {
-                                                        return data.description.substr(0, 220) + (data.description.length > 220 ? '...' : '')
+                                                        return data.datasetfields.abstract.substr(0, 255) + (data.datasetfields.abstract.length > 255 ? '...' : '')
                                                     }
                                                 })()}
                                             </span>

@@ -171,7 +171,7 @@ const AddEditToolForm = (props) => {
                             <Form.Group>
                                 <p className="gray800-14 margin-bottom-0 pad-bottom-4">Type</p>
                                 <p className="gray700-13 margin-bottom-0">Select from existing or enter a new one.</p>
-                                <Typeahead
+                                <Typeahead 
                                     id="categories.category"
                                     labelKey="category"
                                     allowNew
@@ -183,7 +183,7 @@ const AddEditToolForm = (props) => {
                                         selected.forEach((selectedItem) => {
                                             selectedItem.customOption === true ? tempSelected.push(selectedItem.category) : tempSelected.push(selectedItem);
                                         })
-                                        formik.values.categories.category = tempSelected[0];
+                                        tempSelected.length > 0 ? formik.values.categories.category = tempSelected[0] : formik.values.categories.category = ""
                                     }}
                                 />
                                 {formik.touched.categories && (formik.errors.categories && typeof formik.errors.categories.category !== "undefined")
@@ -269,7 +269,7 @@ const AddEditToolForm = (props) => {
                                 <p className="gray700-13 margin-bottom-0">
                                     Select from existing or enter a new one
                                 </p>
-                                <Typeahead
+                                <Typeahead 
                                     id="license"
                                     labelKey="license"
                                     allowNew
@@ -281,7 +281,7 @@ const AddEditToolForm = (props) => {
                                         selected.forEach((selectedItem) => {
                                             selectedItem.customOption === true ? tempSelected.push(selectedItem.license) : tempSelected.push(selectedItem);
                                         })
-                                        formik.values.license = tempSelected[0];
+                                        tempSelected.length > 0 ? formik.values.license = tempSelected[0] : formik.values.license = ""
                                     }}
                                 />
                             </Form.Group>

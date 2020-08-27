@@ -492,6 +492,27 @@ class DatasetDetail extends Component {
               <div>
                 <Tabs className="tabsBackground gray700-13">
                   <Tab eventKey="About" title={"About"}>
+
+                  {!data.datasetfields.abstract ? "" : 
+                    <Row className="mt-2">
+                        <Col sm={12}>
+                          <div className="rectangle">
+                            <Row className="gray800-14-bold">
+                              <Col sm={12}>Abstract</Col>
+                            </Row>
+                            <Row className="mt-3">
+                              <Col sm={12} className="gray800-14">
+                                      <span className="gray800-14">
+                                        {data.datasetfields.abstract}
+                                      </span>
+                              </Col>
+                            </Row>
+                          </div>
+                        </Col>
+                      </Row>
+                    }
+
+                  {!data.description ? "" : 
                     <Row className="mt-2">
                       <Col sm={12}>
                         <div className="rectangle">
@@ -500,34 +521,17 @@ class DatasetDetail extends Component {
                           </Row>
                           <Row className="mt-3">
                             <Col sm={12} className="gray800-14">
-                              {(() => {
-                                if (data.description) {
-                                  return (
                                     <span className="gray800-14">
                                       <ReactMarkdown
                                         source={data.description}
                                       />
                                     </span>
-                                  );
-                                } else if (data.datasetfields.abstract) {
-                                  return (
-                                    <span className="gray800-14">
-                                      {data.datasetfields.abstract}
-                                    </span>
-                                  );
-                                } else {
-                                  return (
-                                    <span className="gray800-14-opacity">
-                                      Not specified
-                                    </span>
-                                  );
-                                }
-                              })()}
                             </Col>
                           </Row>
                         </div>
                       </Col>
                     </Row>
+                  }
 
                     <Row className="mt-2">
                       <Col sm={12}>
