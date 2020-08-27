@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import queryString from 'query-string';
 import { Row, Col, Button, Alert } from 'react-bootstrap';
 import Loading from './Loading'
 import SVGIcon from "../../images/SVGIcon"
@@ -15,6 +16,7 @@ class RelatedObject extends React.Component {
         // updated: '' ,
         data: [],
         activeLink: true,
+        onSearchPage: false,
         isLoading: true,
         didDelete: false,
         inCollection: false
@@ -23,6 +25,7 @@ class RelatedObject extends React.Component {
     constructor(props) {
         super(props)
         this.state.activeLink = props.activeLink;
+        this.state.onSearchPage = props.onSearchPage;
         if(props.didDelete){
             this.state.didDelete = props.didDelete;
         }
@@ -81,9 +84,12 @@ class RelatedObject extends React.Component {
         this.props.doUpdateReason(id, reason, type)
     }
 
+    updateOnFilterBadge = (filter, option) => {
+        this.props.updateOnFilterBadge(filter, option);
+    }
  
     render() {
-        const { data, isLoading, activeLink, relatedObject, inCollection } = this.state; 
+        const { data, isLoading, activeLink, onSearchPage, relatedObject, inCollection } = this.state; 
 
         if (isLoading) {
             return <Loading />;
@@ -153,12 +159,22 @@ class RelatedObject extends React.Component {
                                                 <SVGIcon name="newtoolicon" fill={'#ffffff'} className="badgeSvg mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Tool</span> 
                                             </span>
-                                            
-                                            {!data.categories.category ? '' :  activeLink === true ? <a href={'/search?search=' + data.categories.category}><div className="badge-tag">{data.categories.category}</div></a> : <div className="badge-tag">{data.categories.category}</div> }
+
+                                            {!data.categories.category ? '' :  
+                                                activeLink === true ? 
+                                                    onSearchPage === true ?
+                                                        <span className="pointer" onClick={event => this.updateOnFilterBadge('toolCategoriesSelected', data.categories.category)}><div className="badge-tag">{data.categories.category}</div></span> :
+                                                        <a href={'/search?search=&tab=Tools&toolcategories=' + data.categories.category}><div className="badge-tag">{data.categories.category}</div></a> 
+                                                    : <div className="badge-tag">{data.categories.category}</div> }
 
                                             {!data.categories.programmingLanguage || data.categories.programmingLanguage.length <= 0 ? '' : data.categories.programmingLanguage.map((language) => {
                                                 if (activeLink===true){
-                                                    return <a href={'/search?search=' + language}><div className="badge-tag">{language}</div></a>
+                                                    if (onSearchPage === true) { 
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('languageSelected', language)}><div className="badge-tag">{language}</div></span>
+                                                    }
+                                                    else {
+                                                        return <a href={'/search?search=&tab=Tools&programmingLanguage=' + language}><div className="badge-tag">{language}</div></a>
+                                                    }
                                                 }
                                                 else {
                                                     return <div className="badge-tag">{language}</div>
@@ -167,7 +183,12 @@ class RelatedObject extends React.Component {
 
                                             {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
                                                 if (activeLink===true){
-                                                    return <a href={'/search?search=' + feature}><div className="badge-tag">{feature}</div></a>
+                                                    if (onSearchPage === true) { 
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('featuresSelected', feature)}><div className="badge-tag">{feature}</div></span>
+                                                    }
+                                                    else { 
+                                                        return <a href={'/search?search=&tab=Tools&features=' + feature}><div className="badge-tag">{feature}</div></a>
+                                                    }
                                                 }
                                                 else {
                                                     return <div className="badge-tag">{feature}</div>
@@ -176,7 +197,12 @@ class RelatedObject extends React.Component {
 
                                             {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
                                                 if (activeLink===true){
-                                                    return <a href={'/search?search=' + topic}><div className="badge-tag">{topic}</div></a>
+                                                    if (onSearchPage === true) {
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('toolTopicsSelected', topic)}><div className="badge-tag">{topic}</div></span>
+                                                    }
+                                                    else {
+                                                        return <a href={'/search?search=&tab=Tools&tooltopics=' + topic}><div className="badge-tag">{topic}</div></a>
+                                                    }
                                                 }
                                                 else {
                                                     return <div className="badge-tag">{topic}</div>
@@ -228,11 +254,21 @@ class RelatedObject extends React.Component {
                                                 <span>Project</span> 
                                             </span>
                                             
-                                            {!data.categories.category ? '' : activeLink === true ? <a href={'/search?search=' + data.categories.category}><div className="badge-tag">{data.categories.category}</div></a> : <div className="badge-tag">{data.categories.category}</div>}
+                                            {!data.categories.category ? '' :  
+                                                activeLink === true ? 
+                                                    onSearchPage === true ?
+                                                        <span className="pointer" onClick={event => this.updateOnFilterBadge('projectCategoriesSelected', data.categories.category)}><div className="badge-tag">{data.categories.category}</div></span> :
+                                                        <a href={'/search?search=&tab=Projects&projectcategories=' + data.categories.category}><div className="badge-tag">{data.categories.category}</div></a> 
+                                                    : <div className="badge-tag">{data.categories.category}</div> }
 
                                             {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
                                                 if (activeLink===true){
-                                                    return <a href={'/search?search=' + feature}><div className="badge-tag">{feature}</div></a>
+                                                    if (onSearchPage === true) { 
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('projectFeaturesSelected', feature)}><div className="badge-tag">{feature}</div></span>
+                                                    }
+                                                    else { 
+                                                        return <a href={'/search?search=&tab=Projects&projectfeatures=' + feature}><div className="badge-tag">{feature}</div></a>
+                                                    }
                                                 }
                                                 else {
                                                     return <div className="badge-tag">{feature}</div>
@@ -241,7 +277,12 @@ class RelatedObject extends React.Component {
 
                                             {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
                                                 if (activeLink===true){
-                                                    return <a href={'/search?search=' + topic}><div className="badge-tag">{topic}</div></a>
+                                                    if (onSearchPage === true) {
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('projectTopicsSelected', topic)}><div className="badge-tag">{topic}</div></span>
+                                                    }
+                                                    else {
+                                                        return <a href={'/search?search=&tab=Projects&projecttopics=' + topic}><div className="badge-tag">{topic}</div></a>
+                                                    }
                                                 }
                                                 else {
                                                     return <div className="badge-tag">{topic}</div>
@@ -294,7 +335,12 @@ class RelatedObject extends React.Component {
                                             </span>
                                             {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
                                                 if (activeLink===true){
-                                                    return <a href={'/search?search=' + feature}><div className="badge-tag">{feature}</div></a>
+                                                    if (onSearchPage === true) { 
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('paperFeaturesSelected', feature)}><div className="badge-tag">{feature}</div></span>
+                                                    }
+                                                    else { 
+                                                        return <a href={'/search?search=&tab=Papers&paperfeatures=' + feature}><div className="badge-tag">{feature}</div></a>
+                                                    }
                                                 }
                                                 else {
                                                     return <div className="badge-tag">{feature}</div>
@@ -303,7 +349,12 @@ class RelatedObject extends React.Component {
 
                                             {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
                                                 if (activeLink===true){
-                                                    return <a href={'/search?search=' + topic}><div className="badge-tag">{topic}</div></a>
+                                                    if (onSearchPage === true) {
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('paperTopicsSelected', topic)}><div className="badge-tag">{topic}</div></span>
+                                                    }
+                                                    else {
+                                                        return <a href={'/search?search=&tab=Projects&papertopics=' + topic}><div className="badge-tag">{topic}</div></a>
+                                                    }
                                                 }
                                                 else {
                                                     return <div className="badge-tag">{topic}</div>
@@ -342,6 +393,8 @@ class RelatedObject extends React.Component {
                                 );
                             }
                             else { //default to dataset
+                                var phenotypesSelected = queryString.parse(window.location.search).phenotypes ? queryString.parse(window.location.search).phenotypes.split("::") : [];
+                        
                                 return (
                                     <Row className="noMargin">
                                         <Col sm={10} lg={10} className="pad-left-24">
@@ -360,10 +413,29 @@ class RelatedObject extends React.Component {
                                                 <SVGIcon name="dataseticon" fill={'#ffffff'} className="badgeSvg mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Dataset</span>
                                             </span>
+                                            
+                                            {!phenotypesSelected || phenotypesSelected.length <= 0 ? '' : phenotypesSelected.map((phenotype) => {
+                                                if (activeLink===true){
+                                                    if (onSearchPage === true) { 
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('phenotypesSelected', phenotype)}><div className="badge-phenotype">Phenotype: {phenotype}</div></span>
+                                                    }
+                                                    else { 
+                                                        return <a href={'/search?search=&tab=Datasets&phenotypes==' + phenotype}><div className="badge-phenotype">Phenotype: {phenotype}</div></a>
+                                                    }
+                                                }
+                                                else {
+                                                    return <div className="badge-phenotype">Phenotype: {phenotype}</div>
+                                                }
+                                            })}
 
                                             {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
                                                 if (activeLink===true){
-                                                    return <a href={'/search?search=' + feature}><div className="badge-tag">{feature}</div></a>
+                                                    if (onSearchPage === true) { 
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('keywordsSelected', feature)}><div className="badge-tag">{feature}</div></span>
+                                                    }
+                                                    else { 
+                                                        return <a href={'/search?search=&tab=Datasets&keywords==' + feature}><div className="badge-tag">{feature}</div></a>
+                                                    }
                                                 }
                                                 else {
                                                     return <div className="badge-tag">{feature}</div>

@@ -302,7 +302,7 @@ class ProjectDetail extends Component {
                       <span>Project</span>
                     </span>
 
-                    <a href={"/search?search=" + data.categories.category}>
+                    <a href={"/search?search=&tab=Projects&projectcategories=" + data.categories.category}>
                       <div className="badge-tag">
                         {data.categories.category}
                       </div>
@@ -392,7 +392,7 @@ class ProjectDetail extends Component {
                             <Col sm={10} className="gray800-14">
                               <a
                                 href={
-                                  "/search?search=" + data.categories.category
+                                  "/search?search=&tab=Projects&projectcategories=" + data.categories.category
                                 }
                               >
                                 <div className="badge-tag">
@@ -414,7 +414,7 @@ class ProjectDetail extends Component {
                               ) : (
                                 data.tags.features.map(keyword => {
                                   return (
-                                    <a href={"/search?search=" + keyword}>
+                                    <a href={"/search?search=&tab=Projects&projectfeatures=" + keyword}>
                                       <div className="badge-tag">{keyword}</div>
                                     </a>
                                   );
@@ -435,7 +435,7 @@ class ProjectDetail extends Component {
                               ) : (
                                 data.tags.topics.map(domain => {
                                   return (
-                                    <a href={"/search?search=" + domain}>
+                                    <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
                                       <div className="badge-tag">{domain}</div>
                                     </a>
                                   );

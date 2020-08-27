@@ -39,6 +39,7 @@ class SearchPage extends React.Component {
         publishersSelected: [],
         ageBandsSelected: [],
         geoCoverageSelected: [],
+        phenotypesSelected: [],
         toolCategoriesSelected: [],
         languageSelected: [],
         featuresSelected: [],
@@ -49,7 +50,7 @@ class SearchPage extends React.Component {
         paperFeaturesSelected: [],
         paperTopicsSelected: [],
         summary: [],
-        key: '',
+        key: 'Datasets',
         isLoading: true,
         isResultsLoading: true,
         showDrawer: false,
@@ -77,14 +78,12 @@ class SearchPage extends React.Component {
             await Promise.all([
                 this.updateFilterStates(values)
             ])
-            this.getFiltersCall()
             this.doSearchCall()
             initGA('UA-166025838-1');
             PageView();
         }
         else {
             this.setState({ data: [], searchString: '', isLoading: true });
-            this.getFiltersCall()
             this.doSearchCall()
             initGA('UA-166025838-1');
             PageView();
@@ -102,6 +101,7 @@ class SearchPage extends React.Component {
                 || (((typeof values.publisher === "undefined" && this.state.publishersSelected.length !== 0) || (typeof values.publisher !== "undefined" && this.state.publishersSelected.length === 0)) && !this.state.publishersSelected.includes(values.publisher))
                 || (((typeof values.ageband === "undefined" && this.state.ageBandsSelected.length !== 0) || (typeof values.ageband !== "undefined" && this.state.ageBandsSelected.length === 0)) && !this.state.ageBandsSelected.includes(values.ageband))
                 || (((typeof values.geographiccover === "undefined" && this.state.geoCoverageSelected.length !== 0) || (typeof values.geographiccover !== "undefined" && this.state.geoCoverageSelected.length === 0)) && !this.state.geoCoverageSelected.includes(values.geographiccover))
+                || (((typeof values.phenotypes === "undefined" && this.state.phenotypesSelected.length !== 0) || (typeof values.phenotypes !== "undefined" && this.state.phenotypesSelected.length === 0)) && !this.state.phenotypesSelected.includes(values.phenotypes))
                 
                 || (((typeof values.toolcategories === "undefined" && this.state.toolCategoriesSelected.length !== 0) || (typeof values.toolcategories !== "undefined" && this.state.toolCategoriesSelected.length === 0)) && !this.state.toolCategoriesSelected.includes(values.toolcategories))
                 || (((typeof values.programmingLanguage === "undefined" && this.state.languageSelected.length !== 0) || (typeof values.programmingLanguage !== "undefined" && this.state.languageSelected.length === 0)) && !this.state.languageSelected.includes(values.programmingLanguage))
@@ -140,8 +140,7 @@ class SearchPage extends React.Component {
             
             this.setState({ isResultsLoading: true });
             await Promise.all([
-                this.clearFilterStates(),
-                this.getFiltersCall()
+                this.clearFilterStates()
             ])
             
             this.doSearchCall();    
@@ -165,6 +164,7 @@ class SearchPage extends React.Component {
         values.publisher ? this.setState({ publishersSelected: values.publisher.split("::") }) : this.setState({ publishersSelected: [] })
         values.ageband ? this.setState({ ageBandsSelected: values.ageband.split("::") }) : this.setState({ ageBandsSelected: [] })
         values.geographiccover ? this.setState({ geoCoverageSelected: values.geographiccover.split("::") }) : this.setState({ geoCoverageSelected: [] })
+        values.phenotypes ? this.setState({ phenotypesSelected: values.phenotypes.split("::") }) : this.setState({ phenotypesSelected: [] })
 
         values.toolcategories ? this.setState({ toolCategoriesSelected: values.toolcategories.split("::") }) : this.setState({ toolCategoriesSelected: [] })
         values.programmingLanguage ? this.setState({ languageSelected: values.programmingLanguage.split("::") }) : this.setState({ languageSelected: [] })
@@ -178,7 +178,7 @@ class SearchPage extends React.Component {
         values.paperfeatures ? this.setState({ paperFeaturesSelected: values.paperfeatures.split("::") }) : this.setState({ paperFeaturesSelected: [] })
         values.papertopics ? this.setState({ paperTopicsSelected: values.papertopics.split("::") }) : this.setState({ paperTopicsSelected: [] })
 
-        values.tab ? this.setState({ key: values.tab }) : this.setState({ key: '' })
+        values.tab ? this.setState({ key: values.tab }) : this.setState({ key: 'Datasets' })
         values.datasetIndex ? this.setState({ datasetIndex: values.datasetIndex }) : this.setState({ datasetIndex: 0 })
         values.toolIndex ? this.setState({ toolIndex: values.toolIndex }) : this.setState({ toolIndex: 0 })
         values.projectIndex ? this.setState({ projectIndex: values.projectIndex }) : this.setState({ projectIndex: 0 })
@@ -192,6 +192,7 @@ class SearchPage extends React.Component {
         this.setState({ publishersSelected: [] })
         this.setState({ ageBandsSelected: [] })
         this.setState({ geoCoverageSelected: [] })
+        this.setState({ phenotypesSelected: [] })
 
         this.setState({ toolCategoriesSelected: [] })
         this.setState({ languageSelected: [] })
@@ -210,6 +211,13 @@ class SearchPage extends React.Component {
         this.setState({ projectIndex: 0 })
         this.setState({ paperIndex: 0 })
         this.setState({ personIndex: 0 })
+    }
+
+    updateOnFilterBadge = async (filterGroup, filter) => {
+        if (!this.state[filterGroup].find(x => x === filter)) {
+            this.state[filterGroup].push(filter)
+            this.updateOnFilter()
+        }
     }
 
     updateOnFilter = async () => {
@@ -247,6 +255,7 @@ class SearchPage extends React.Component {
         if (this.state.publishersSelected.length > 0) searchURL += '&publisher=' + encodeURIComponent(this.state.publishersSelected.toString().split(',').join('::'));
         if (this.state.ageBandsSelected.length > 0) searchURL += '&ageband=' + encodeURIComponent(this.state.ageBandsSelected.toString().split(',').join('::'));
         if (this.state.geoCoverageSelected.length > 0) searchURL += '&geographiccover=' + encodeURIComponent(this.state.geoCoverageSelected.toString().split(',').join('::'));
+        if (this.state.phenotypesSelected.length > 0) searchURL += '&phenotypes=' + encodeURIComponent(this.state.phenotypesSelected.toString().split(',').join('::'));
 
         if (this.state.toolCategoriesSelected.length > 0) searchURL += '&toolcategories=' + encodeURIComponent(this.state.toolCategoriesSelected.toString().split(',').join('::'));
         if (this.state.languageSelected.length > 0) searchURL += '&programmingLanguage=' + encodeURIComponent(this.state.languageSelected.toString().split(',').join('::'));
@@ -267,14 +276,19 @@ class SearchPage extends React.Component {
         if (this.state.personIndex > 0) searchURL += '&personIndex=' + encodeURIComponent(this.state.personIndex);
 
         if (!skipHistory) { 
-            if (this.state.key) {
-                this.props.history.push(`${window.location.pathname}?search=${this.state.searchString}&tab=${this.state.key}` + searchURL);
-            }
-            else {
-                this.props.history.push(`${window.location.pathname}?search=${this.state.searchString}` + searchURL);
-            }
+            if (this.state.key) searchURL += '&tab='+this.state.key
+            this.props.history.push(`${window.location.pathname}?search=${this.state.searchString}` + searchURL);
         } 
-        
+
+        if (this.state.key !== 'People') {
+            axios.get(baseURL + '/api/v1/search/filter?search='+this.state.searchString + searchURL)
+            .then((res) => {
+                this.setState({ 
+                    allFilters: res.data.allFilters || [],
+                    filterOptions: res.data.filterOptions || []
+                });
+            })
+        }
         
         axios.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL)
             .then((res) => {
@@ -285,18 +299,8 @@ class SearchPage extends React.Component {
                     paperData: res.data.paperResults || [],
                     personData: res.data.personResults || [],
                     summary: res.data.summary || [],
-                    filterOptions: res.data.filterOptions || [],
                     isLoading: false,
                     isResultsLoading: false
-                });
-            })
-    }
-
-    getFiltersCall () {
-        axios.get(baseURL + '/api/v1/search/filter/'+this.state.searchString)
-            .then((res) => {
-                this.setState({ 
-                    allFilters: res.data.allFilters || []
                 });
             })
     }
@@ -305,11 +309,15 @@ class SearchPage extends React.Component {
         this.setState({ searchString });
     }
 
-    handleSelect = (key) => {
-        this.setState({ key: key });
+    handleSelect = async (key) => {
+        await Promise.all([
+            this.setState({ key: key, isResultsLoading: true })
+        ])
         var values = queryString.parse(window.location.search);
         values.tab = key;
         this.props.history.push(window.location.pathname + '?' + queryString.stringify(values))
+        
+        this.doSearchCall();   
     }
 
     handlePagination = async (type, page) => {
@@ -376,6 +384,7 @@ class SearchPage extends React.Component {
             geoCoverageSelected, 
             sampleAvailabilitySelected, 
             keywordsSelected, 
+            phenotypesSelected, 
 
             languageSelected, 
             toolTopicsSelected, 
@@ -492,7 +501,7 @@ class SearchPage extends React.Component {
                                     <div className="filterHolder">
 
 
-                                        {publishersSelected.length !== 0 || licensesSelected.length !== 0 || keywordsSelected.length !== 0 || geoCoverageSelected.length !== 0 || sampleAvailabilitySelected.length !== 0 ? 
+                                        {publishersSelected.length !== 0 || licensesSelected.length !== 0 || keywordsSelected.length !== 0 || geoCoverageSelected.length !== 0 || sampleAvailabilitySelected.length !== 0 || phenotypesSelected.length !== 0 ? 
                                             <div className="filterCard mb-2">
                                                 <Row>
                                                     <Col className="mb-2">
@@ -524,13 +533,18 @@ class SearchPage extends React.Component {
                                                 {!sampleAvailabilitySelected || sampleAvailabilitySelected.length <= 0 ? '' : sampleAvailabilitySelected.map((selected) => {
                                                     return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'sampleAvailabilitySelected')}>X</span></div>
                                                 })}
-                                            </div> 
+
+                                                {!phenotypesSelected || phenotypesSelected.length <= 0 ? '' : phenotypesSelected.map((selected) => {
+                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'phenotypesSelected')}>X</span></div>
+                                                })}
+                                            </div>
                                         : ''}
                                         <Filters data={filterOptions.publisherFilterOptions} allFilters={allFilters.publisherFilter} updateOnFilter={this.updateOnFilter} selected={publishersSelected} title="Publisher" />
                                         <Filters data={filterOptions.licenseFilterOptions} allFilters={allFilters.licenseFilter} updateOnFilter={this.updateOnFilter} selected={licensesSelected} title="License" />
                                         <Filters data={filterOptions.datasetFeaturesFilterOptions} allFilters={allFilters.datasetFeatureFilter} updateOnFilter={this.updateOnFilter} selected={keywordsSelected} title="Keywords" />
                                         <Filters data={filterOptions.geographicCoverageFilterOptions} allFilters={allFilters.geographicCoverageFilter} updateOnFilter={this.updateOnFilter} selected={geoCoverageSelected} title="Geographic coverage" />
                                         <Filters data={filterOptions.sampleFilterOptions} allFilters={allFilters.sampleFilter} updateOnFilter={this.updateOnFilter} selected={sampleAvailabilitySelected} title="Physical sample availability" /> 
+                                        <Filters data={filterOptions.phenotypesOptions} allFilters={allFilters.phenotypesFilter} updateOnFilter={this.updateOnFilter} selected={phenotypesSelected} title="Phenotype" /> 
                                         {/* <Filters data={filterOptions.ageBandFilterOptions} updateOnFilter={this.updateOnFilter} selected={ageBandsSelected} title="Age Bands" /> */}
                                     </div>
                                 </> : ''}
@@ -649,34 +663,34 @@ class SearchPage extends React.Component {
                                 {key === 'Datasets' ?
                                     datasetCount <= 0 && !isResultsLoading ? <NoResults type='datasets' searchString={searchString} />
                                     : datasetData.map((dataset) => {
-                                        return <RelatedObject key={dataset.id} data={dataset} activeLink={true} />
+                                        return <RelatedObject key={dataset.id} data={dataset} activeLink={true} onSearchPage={true} updateOnFilterBadge={this.updateOnFilterBadge} />
                                     })
                                     : ''}
 
                                 {key === 'Tools' ?
                                     toolCount <= 0 && !isResultsLoading ? <NoResults type='tools' searchString={searchString} />
                                     : toolData.map((tool) => {
-                                        return <RelatedObject key={tool.id} data={tool} activeLink={true} />;
+                                        return <RelatedObject key={tool.id} data={tool} activeLink={true} onSearchPage={true} updateOnFilterBadge={this.updateOnFilterBadge} />;
                                     })
                                     : ''}
 
                                 {key === 'Projects' ?
                                     projectCount <= 0 && !isResultsLoading ? <NoResults type='projects' searchString={searchString} />
                                     : projectData.map((project) => {
-                                        return <RelatedObject key={project.id} data={project} activeLink={true}/>
+                                        return <RelatedObject key={project.id} data={project} activeLink={true} onSearchPage={true} updateOnFilterBadge={this.updateOnFilterBadge} />
                                     })
                                     : ''}
                                 
                                 {key === 'Papers' ?
                                     paperCount <= 0 && !isResultsLoading ? <NoResults type='papers' searchString={searchString} />
                                     : paperData.map((paper) => {
-                                        return <RelatedObject key={paper.id} data={paper} activeLink={true}/>
+                                        return <RelatedObject key={paper.id} data={paper} activeLink={true} onSearchPage={true} updateOnFilterBadge={this.updateOnFilterBadge} />
                                     })
                                     : ''}
 
                                 {key === 'People' ?
                                     personData.map((person) => {
-                                        return <RelatedObject key={person.id} data={person} activeLink={true} />
+                                        return <RelatedObject key={person.id} data={person} activeLink={true} onSearchPage={true} updateOnFilterBadge={this.updateOnFilterBadge}  />
                                     })
                                     : ''}
 
