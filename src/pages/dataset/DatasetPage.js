@@ -249,7 +249,7 @@ class DatasetDetail extends Component {
             const {data: { publisher : { dataRequestModalContent = {}, allowsMessaging = false }}} = response;
             const stateObj = { 
               requiresModal: !_.isEmpty(dataRequestModalContent) ? true : false,
-              allowNewMessage: _.isEmpty(dataRequestModalContent) ? true : false,
+              allowNewMessage: allowsMessaging && _.isEmpty(dataRequestModalContent) ? true : false,
               allowsMessaging,
               dataRequestModalContent
              }
@@ -290,7 +290,7 @@ class DatasetDetail extends Component {
     } else {
       this.topicContext = {
         ...this.topicContext,
-        allowNewMessage: true
+        allowNewMessage: false
       }
     }
   }
