@@ -138,6 +138,7 @@ class DataAccessRequest extends Component {
 		}
 
 		let { aboutApplication, topicContext } = this.state;
+
 		// Set state to say about application is shown
 		if(is5SafesForm) {
 			// Add 'about' page nav item
@@ -164,8 +165,7 @@ class DataAccessRequest extends Component {
 				relatedObjectIds: aboutApplication.selectedDatasets.map(dataset => dataset._id),
 				title: publisher || '', 
 				subTitle: aboutApplication.selectedDatasets.map(dataset => dataset.name).join(' '),
-				contactPoint,
-				allowNewMessage: true  
+				contactPoint
 			};
 		}
 		
@@ -207,7 +207,7 @@ class DataAccessRequest extends Component {
 				const {data: { publisher : { dataRequestModalContent = {}, allowsMessaging = false }}} = response;
 				const stateObj = { 
 				  requiresModal: !_.isEmpty(dataRequestModalContent) ? true : false,
-				  allowNewMessage: true,
+				  allowNewMessage: allowsMessaging && _.isEmpty(dataRequestModalContent),
 				  allowsMessaging,
 				  dataRequestModalContent
 				 }
