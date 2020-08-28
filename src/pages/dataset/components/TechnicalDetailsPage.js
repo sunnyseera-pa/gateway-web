@@ -47,7 +47,7 @@ class TechnicalDetailsPage extends React.Component {
           <Col sm={12} lg={12} >
             <div className="variableBox pad-bottom-16"> 
               <Row className="pad-left-24">
-                <Col sm={11} lg={11}>
+                <Col sm={9} lg={11}>
                   <Row>
                     <TableSvg className="margin-top-2" />
                     <span className="pad-left-8 black-18">
@@ -56,9 +56,9 @@ class TechnicalDetailsPage extends React.Component {
                   </Row>
                 </Col>
 
-                <Col sm={1} lg={1}>
-                  <span onClick={() => this.props.doUpdateDataClassOpen(-1)}>
-                    <CloseButtonSvg width="19px" height="19px" fill="#475DA7"/>
+                <Col sm={3} lg={1} className="closeDataClass">
+                  <span className="floatRight pointer" onClick={() => this.props.doUpdateDataClassOpen(-1)}>
+                    <CloseButtonSvg width="19px" height="19px" fill="#475DA7"/> 
                   </span>
                 </Col>
               </Row>

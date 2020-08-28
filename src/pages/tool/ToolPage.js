@@ -379,7 +379,7 @@ class ToolDetail extends Component {
                       <span>Tool</span>
                     </span>
 
-                    <a href={"/search?search=" + data.categories.category}>
+                    <a href={"/search?search=&tab=Tools&toolcategories=" + data.categories.category}>
                       <div className="badge-tag">
                         {data.categories.category}
                       </div>
@@ -484,7 +484,7 @@ class ToolDetail extends Component {
                             <Col sm={10} className="gray800-14">
                               <a
                                 href={
-                                  "/search?search=" + data.categories.category
+                                  "/search?search=&tab=Tools&toolcategories=" + data.categories.category
                                 }
                               >
                                 <div className="badge-tag">
@@ -504,7 +504,7 @@ class ToolDetail extends Component {
                                 : data.categories.programmingLanguage.map(
                                     (language, i) => {
                                       return (
-                                        <a href={"/search?search=" + language}>
+                                        <a href={"/search?search=&tab=Tools&programmingLanguage=" + language}>
                                           <div className="badge-tag" key={i}>
                                             {language}
                                           </div>
@@ -542,7 +542,7 @@ class ToolDetail extends Component {
                               ) : (
                                 data.tags.features.map(keyword => {
                                   return (
-                                    <a href={"/search?search=" + keyword}>
+                                    <a href={"/search?search=&tab=Tools&features=" + keyword}>
                                       <div className="badge-tag">{keyword}</div>
                                     </a>
                                   );
@@ -563,7 +563,7 @@ class ToolDetail extends Component {
                               ) : (
                                 data.tags.topics.map(domain => {
                                   return (
-                                    <a href={"/search?search=" + domain}>
+                                    <a href={"/search?search=&tab=Tools&tooltopics=" + domain}>
                                       <div className="badge-tag">{domain}</div>
                                     </a>
                                   );

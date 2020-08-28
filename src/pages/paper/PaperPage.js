@@ -490,7 +490,7 @@ toggleHoverState(state) {
                                           <a
                                             className="gray800-14"
                                             href={
-                                              "/search?search=" +
+                                              "/search?search=&tab=Papers&paperfeatures=" +
                                               feature +
                                               "&type=all"
                                             }
@@ -518,7 +518,7 @@ toggleHoverState(state) {
                                           <a
                                             className="gray800-14"
                                             href={
-                                              "/search?search=" +
+                                              "/search?search=&tab=Papers&papertopics=" +
                                               topic +
                                               "&type=all"
                                             }

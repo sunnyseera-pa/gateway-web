@@ -2,7 +2,7 @@ import React, {Fragment, useState} from 'react';
 import { Button, Modal, Row, Col, Tab, Tabs } from 'react-bootstrap';
 import RelatedResourcesModal from '../relatedResourcesModal/RelatedResourceModal';
 import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg';    
-import './RelatedResources.scss';  
+import './RelatedResources.scss';   
 
 const RelatedResources =  React.forwardRef((props, ref) => {
 
@@ -60,7 +60,7 @@ const RelatedResources =  React.forwardRef((props, ref) => {
                         </div>
                 </Modal.Footer>
              </Modal>
-        </Fragment>
+        </Fragment> 
     )
 } 
 )

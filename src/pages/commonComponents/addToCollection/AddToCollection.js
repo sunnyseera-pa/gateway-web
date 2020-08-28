@@ -141,9 +141,9 @@ updateCollection(dat){
                                                     </Col>
                                                     <Col sm={1} lg={1} style={{"align-self": "center"}}>
                                                     {this.state.resourceData.type === "dataset" ?  
-                                                        dat.relatedObjects.some(e => e.objectId === this.state.resourceData.datasetid) ? <CheckSvg fill="#2c8267" className="checkSvg" /> : '' 
+                                                        dat.relatedObjects.some(e => e.objectId === this.state.resourceData.datasetid) ? <CheckSvg fill="#2c8267" className="collectionCheckSvg" /> : '' 
                                                     :
-                                                        dat.relatedObjects.some(e => e.objectId === this.state.resourceData.id.toString()) ? <CheckSvg fill="#2c8267" className="checkSvg" /> : ''
+                                                        dat.relatedObjects.some(e => e.objectId === this.state.resourceData.id.toString()) ? <CheckSvg fill="#2c8267" className="collectionCheckSvg" /> : '' 
                                                      }                                                    
                                                     </Col> 
                                                 </Row>

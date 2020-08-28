@@ -6,20 +6,16 @@
       left: 15% !important;
       transform: translate(-50%, -50%) !important;
     
-      @include mq('tablet-wide',max){
-        left: 20% !important;
-      }  
-    
       @include mq('tablet',max){
-        left: 30% !important;
+        left: -10% !important;
       }  
       
       @include mq('tablet-small',max){
-        left: 50% !important;
+        left: -15% !important;
       } 
     
       @include mq('phablet',max){
-        left: 60% !important;
+        left: -25% !important;
       } 
     }
 
