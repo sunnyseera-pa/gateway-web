@@ -840,7 +840,7 @@ textarea:focus {
     width: 116px;
   }
 }
-
+ 
 .modal-dialog {
   position: absolute;
   margin: 0 auto !important;
@@ -2533,4 +2533,12 @@ button a {
 
 .textUnderline {
   text-decoration: underline;
+}
+
+@media (max-width: 576px) {
+
+  .closeDataClass{
+    transform: translate(90%, -100%);
+    }
+
 }

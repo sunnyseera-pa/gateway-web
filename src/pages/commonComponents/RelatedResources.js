@@ -59,7 +59,7 @@ const RelatedResources =  React.forwardRef((props, ref) => {
                         </div>
                 </Modal.Footer>
              </Modal>
-        </Fragment>
+        </Fragment> 
     )
 } 
 )
