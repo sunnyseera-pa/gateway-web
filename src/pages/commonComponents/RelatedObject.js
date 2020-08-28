@@ -432,16 +432,18 @@ class RelatedObject extends React.Component {
                                             })()}
 
                                             {!phenotypesSelected || phenotypesSelected.length <= 0 ? '' : phenotypesSelected.map((phenotype) => {
-                                                if (activeLink===true){
-                                                    if (onSearchPage === true) { 
-                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('phenotypesSelected', phenotype)}><div className="badge-phenotype">Phenotype: {phenotype}</div></span>
+                                                if (phenotypesSeached.length === 0 || phenotypesSeached[0].name !== phenotype) {
+                                                    if (activeLink===true){
+                                                        if (onSearchPage === true) { 
+                                                            return <span className="pointer" onClick={event => this.updateOnFilterBadge('phenotypesSelected', phenotype)}><div className="badge-phenotype">Phenotype: {phenotype}</div></span>
+                                                        }
+                                                        else { 
+                                                            return <a href={'/search?search=&tab=Datasets&phenotypes==' + phenotype}><div className="badge-phenotype">Phenotype: {phenotype}</div></a>
+                                                        }
                                                     }
-                                                    else { 
-                                                        return <a href={'/search?search=&tab=Datasets&phenotypes==' + phenotype}><div className="badge-phenotype">Phenotype: {phenotype}</div></a>
+                                                    else {
+                                                        return <div className="badge-phenotype">Phenotype: {phenotype}</div>
                                                     }
-                                                }
-                                                else {
-                                                    return <div className="badge-phenotype">Phenotype: {phenotype}</div>
                                                 }
                                             })}
 
