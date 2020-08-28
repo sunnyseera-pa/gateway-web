@@ -36,7 +36,7 @@ class TechnicalMetadata extends React.Component {
               <Row>
                 <TableSvg className="margin-top-2" />
 
-                <span className="pad-left-8 black-18"                 
+                <span className="pad-left-8 black-18 pointer"                 
                 onClick={() =>
                   this.props.doUpdateDataClassOpen(this.state.index)
                 }>
@@ -60,7 +60,7 @@ class TechnicalMetadata extends React.Component {
               >
                 <ChevronRightSvg
                   fill={"#475da7"}
-                  className="dataClassArrow" 
+                  className="dataClassArrow pointer" 
                    />
               </span>
             </Col>

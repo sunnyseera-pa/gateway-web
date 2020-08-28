@@ -870,7 +870,7 @@ textarea:focus {
     width: 116px;
   }
 }
-
+ 
 .modal-dialog {
   position: absolute;
   margin: 0 auto !important;
@@ -882,23 +882,18 @@ textarea:focus {
 .relatedResourcesModal .modal-dialog {
   margin: 0 auto !important;
   top: 50% !important;
-  left: 15% !important;
-  transform: translate(-50%, -50%) !important;
-
-  @include mq('tablet-wide',max){
-    left: 20% !important;
-  }  
+  transform: translate(50%, -50%) !important;
 
   @include mq('tablet',max){
-    left: 30% !important;
+    left: -10% !important;
   }  
   
   @include mq('tablet-small',max){
-    left: 50% !important;
+    left: -15% !important;
   } 
 
   @include mq('phablet',max){
-    left: 60% !important;
+    left: -25% !important;
   } 
 }
 
@@ -2545,17 +2540,15 @@ button a {
   background-color: $gray-200 !important;
 }
 
-.checkSvg {
+.collectionCheckSvg {
   float: right;
 
-  // @include mq(575px,max){
   @include mq("tablet-small",max) {
     transform: translate(-5px, 0px) !important;
   }
   @include mq("phablet",max) {
     transform: translate(0px, -20px) !important;
   }
-  // transform: translate(0px, -20px) !important;
 }
 
 .addToCollectionHeader {
@@ -2570,4 +2563,12 @@ button a {
 
 .textUnderline {
   text-decoration: underline;
+}
+
+@media (max-width: 576px) {
+
+  .closeDataClass{
+    transform: translate(90%, -100%);
+    }
+
 }

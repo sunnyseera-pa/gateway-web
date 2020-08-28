@@ -51,7 +51,11 @@ class TechnicalMetadataVariables extends React.Component {
     }
 
     return (
-      <div className={open ? "variableBox pad-bottom-16 " : "variableBox pad-bottom-16  heightVariable"}>
+      <div className={open ? "variableBox pad-bottom-16 pointer" : "variableBox pad-bottom-16  heightVariable pointer"}  
+      onClick={() =>
+        this.setState({ open: !open, flagClosed: !flagClosed })
+      }
+      >
 
         <Row className="centerVariable">
           <Col sm={11} lg={11} className="black-14-bold pl-3 variablePadding">
@@ -74,11 +78,7 @@ class TechnicalMetadataVariables extends React.Component {
           </Col>
 
           <Col sm={1} lg={1}>
-            <span
-              onClick={() =>
-                this.setState({ open: !open, flagClosed: !flagClosed })
-              }
-            >
+            <span>
               <SVGIcon
                 name="chevronbottom"
                 fill={"#475da7"}
