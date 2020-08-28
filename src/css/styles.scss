@@ -130,29 +130,8 @@ button {
   border: solid 1px #e2e2e2;
 }
 
-.landingBox {
-  margin-top: 20px;
-  max-height: 506px;
-  background-color: $white;
-  overflow-y: scroll;
-  @include rounded(4px);
-}
-
 .mb-xs {
   margin-bottom: 0.15rem;
-}
-
-.greyStrip {
-  width: 432px;
-  height: 2px;
-  background-color: $gray-300;
-}
-
-.toolsHeader {
-  width: 100%;
-  height: 40px;
-  box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
-  background-color: $white;
 }
 
 .subHeader {
@@ -241,47 +220,10 @@ a.nav-item.nav-link.active {
   padding-top: 5px;
 }
 
-.reviewStarsGap {
-  margin-left: 20px;
-}
-
 .reviewTitleGap {
   margin-left: 10px;
   margin-right: 10px;
 }
-
-.signLink {
-  text-align: right;
-  margin-top: 28px;
-  margin-right: 32px;
-}
-
-.signLinkLanding {
-  text-align: right;
-  margin-right: 32px;
-}
-
-#TagItem { 
-  list-style-type: none;
-}
-
-#Logo {
-  width: 152px;
-}
-
-#Picture {
-  width: 24px;
-  height: 24px;
-}
-
-#BigPicture {
-  width: 56px;
-  height: 56px;
-}
-
-#projectTitleEmptyRow {
-  min-height: 24px;
-}  
 
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
@@ -609,18 +551,6 @@ textarea:focus {
   height: 186px !important;
 }
 
-.reviewReviewHolder {
-  margin-top: 20px;
-  border: 1px solid $gray-300;
-  @include rounded(4px);
-  padding: 20px 10px;
-}
-
-.accountButton {
-  border: 2px solid $teal !important;
-  border-radius: 4px !important;
-}
-
 .flexCenter {
   display: flex;
   justify-content: center;
@@ -663,11 +593,6 @@ textarea:focus {
   color: $indigo;
   font-family: museo-sans-rounded;
   font-size: 14px !important;
-}
-
-.clearButtons {
-  border: none !important;
-  border-radius: none !important;
 }
 
 .accountDropDownGap {
@@ -723,10 +648,6 @@ textarea:focus {
 
 .rwt__tab:focus {
   background-color: #f6f7f8 !important;
-}
-
-#underLinedLink {
-  text-decoration-line: underline;
 }
 
 .avatar-circle {
@@ -1048,15 +969,6 @@ iframe#discourse-embed-frame {
   margin-right: 30%;
 }
 
-.bottomCard {
-  background-color: $white;
-  height: 90%;
-}
-
-.white-bg {
-  background-color: $white;
-}
-
 .darIframe {
   height: 600px;
   width: 800px;
@@ -1279,29 +1191,6 @@ iframe#discourse-embed-frame {
   display: none;
 }
 
-/* 
-  #
-  #
-  NAVBAR CSS BELOW
-  #
-  #
-  */
-
-.searchIconGreyHolder {
-  display: inline-block;
-}
-
-.searchIconGrey {
-  background-color: #f6f7f8;
-  display: inline-block;
-  padding: 15px 15px 5px 15px;
-  @include rounded(30px);
-}
-
-.navBarNoficationHolder {
-  margin: 27px 27px 0px 0px;
-}
-
 .wayfinder-container {
   margin-top: 10px;
   padding: 10px 0px 0px 0px !important;
@@ -1436,6 +1325,7 @@ iframe#discourse-embed-frame {
 .footerLogo {
   height: 60px;
 }
+
 .icon-social {
   width: 17px;
   margin-right: 8px;
@@ -1463,12 +1353,6 @@ iframe#discourse-embed-frame {
 
 .flipSVG{
   transform: scaleY(-1) !important;
-}
-
-.sideArrowSVG{
-  transform: rotate(270deg);
-  position: absolute;
-  top: 35%;
 }
 
 button a {
