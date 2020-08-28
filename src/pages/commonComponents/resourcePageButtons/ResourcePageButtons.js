@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button } from "react-bootstrap";
-import AddToCollection from "../../commonComponents/AddToCollection";
+import AddToCollection from "../addToCollection/AddToCollection";
 
 const ResourcePageButtons = (props) => {  
     
-    return (
+    return ( 
         !props.userState[0].loggedIn ? (
             ""
         ) : (

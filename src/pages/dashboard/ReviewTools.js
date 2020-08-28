@@ -7,6 +7,7 @@ import { Row, Col, Button, Modal, Tabs, Tab, DropdownButton, Dropdown, Collapse 
 import SVGIcon from "../../images/SVGIcon";
 import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading'
+import './Dashboard.scss'; 
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 

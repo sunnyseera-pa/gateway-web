@@ -18,7 +18,7 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
-}
+} 
  
 button {
   &:hover {
@@ -122,23 +122,7 @@ button {
   background-color: $white;
   padding: 24px;
 }
-
-.relatedResourcesRectangle {
-  width: 100%;
-  box-shadow: 1px 1px 3px 0 #00000017; 
-  background-color: $white;
-}
-
-.relatedObjectRectangle {
-  width: 100%;
-  background-color: $white;
-  border: none;
-  padding-left: 24px;
-  padding-right: 24px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-}
-
+ 
 .rectangleWithBorder {
   width: 100%;
   background-color: #ffffff;
@@ -171,14 +155,6 @@ button {
   background-color: $white;
 }
 
-.accountHeader { 
-  box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
-  background-color: $white;
-  width: 100%;
-  padding: 24px;
-  margin-top: 32px !important;
-}
-
 .subHeader {
   box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
   background-color: $white;
@@ -199,19 +175,6 @@ button {
   padding: 28px !important;
 }
 
-.truncate {
-  width: 380px;
-  white-space: nowrap !important;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.dataAccessTabs {
-  align-items: center;
-  justify-content: center;
-  height: 47px;
-}
-
 a.nav-item.nav-link {
   color: $gray-700 !important;
 }
@@ -219,12 +182,6 @@ a.nav-item.nav-link {
 a.nav-item.nav-link.active {
   color: #2d2d2d !important;
   font-weight: bold !important;
-}
-
-.whiteBackground {
-  min-height: 80px;
-  background-color: $white;
-  box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
 }
 
 .comingSoonBadge {
@@ -279,24 +236,9 @@ a.nav-item.nav-link.active {
   }
 }
 
-.bubbleCount {
-  width: 24px;
-  height: 24px;
-  background-color: $purple;
-  border-radius: 16px;
-  display: inline-block;
-  text-align: center;
-  line-height: 24px;
-}
-
 .iconHolder {
   text-align: right;
   padding-top: 5px;
-}
-
-.dateHolder {
-  text-align: right;
-  padding-right: 25px;
 }
 
 .reviewStarsGap {
@@ -308,11 +250,6 @@ a.nav-item.nav-link.active {
   margin-right: 10px;
 }
 
-.searchBarBackground {
-  width: 100%;
-  background-color: $white;
-}
-
 .signLink {
   text-align: right;
   margin-top: 28px;
@@ -322,13 +259,6 @@ a.nav-item.nav-link.active {
 .signLinkLanding {
   text-align: right;
   margin-right: 32px;
-}
-
-.landingBackground {
-  width: 100%;
-  min-height: 100vh;
-  background-image: linear-gradient(110deg, #50b996, #485ea7 100%);
-  padding-bottom: 50px;
 }
 
 #TagItem { 
@@ -349,32 +279,9 @@ a.nav-item.nav-link.active {
   height: 56px;
 }
 
-#landingPageCard {
-  font-family: museo-sans-rounded;
-  font-size: 32px;
-  font-weight: 500;
-  font-stretch: normal;
-  font-style: normal;
-  letter-spacing: normal;
-  text-align: center;
-  color: $white;
-}
-
-#landingPageEmptyRow {
-  min-height: 120px;
-}
-
-.landingPageAccountText {
-  color: $white;
-}
-
-.landingPageAccountText:hover {
-  color: $white;
-}
-
 #projectTitleEmptyRow {
   min-height: 24px;
-}
+}  
 
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
@@ -501,19 +408,6 @@ input[type='radio']:checked:after {
   border: solid 2px #d6d6d6;
 }
 
-.collection-card {
-  color: $gray-700;
-  font-size: 13px;
-  font-weight: 500;
-  &-user {
-    @extend .collection-card;
-  }
-  &-updated {
-    @extend .collection-card;
-    float:right;
-  }
-}
-
 .tabsBackground {
   width: 100%;
   background-color: $white !important;
@@ -539,30 +433,6 @@ input[type='radio']:checked:after {
   margin-left: 1px !important;
 }
 
-.tabList {
-  background-color: $white;
-  height: min-content;
-  position: -webkit-sticky; /* Safari */
-  position: sticky;
-  top: 36px;
-  width: 100%;
-  min-width: 110px;
-  margin-top: 36px;
-}
-
-.verticalNavBarHolder {
-  display: block !important;
-}
-
-.verticalNavBar {
-  padding: 15px 10px 15px 30px !important;
-}
-
-.verticalNavBar.active {
-  background-color: #f6f7f8;
-  border-right: 4px solid $teal !important;
-}
-
 svg:not(:root) {
   overflow: visible !important;
 }
@@ -583,29 +453,13 @@ svg:not(:root) {
   height: 24px;
 }
 
-.AccountSvgs {
-  width: 18px;
-  height: 18px;
-  /*   box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09); */
-}
-
 .badgeSvg {
   width: 12px;
   height: 12px;
 }
 
-.buttonSvg {
-  width: 10px;
-  height: 10px;
-}
-
 .addButton {
   font-size: 14px !important;
-}
-
-.smallAddButton {
-  width: 156px;
-  height: 40px;
 }
 
 .cancelButton {
@@ -616,12 +470,6 @@ svg:not(:root) {
 .publishButton {
   width: 79px;
   height: 40px;
-}
-
-.greyCancelButton {
-  min-width: 83px;
-  height: 40px;
-  background-color: $gray-200;
 }
 
 .linkButton {
@@ -693,11 +541,6 @@ textarea:focus {
   border: solid 0px $white !important;
 }
 
-.smallFormInput {
-  width: 100%;
-  max-width: 480px;
-}
-
 .hdfeedback {
   margin-top: 0.25rem;
   font-size: 0.875rem;
@@ -766,11 +609,6 @@ textarea:focus {
   height: 186px !important;
 }
 
-#addReviewButton {
-  width: 100%;
-  background-color: $gray-200;
-}
-
 .reviewReviewHolder {
   margin-top: 20px;
   border: 1px solid $gray-300;
@@ -832,40 +670,8 @@ textarea:focus {
   border-radius: none !important;
 }
 
-.landingPageInformationNumber {
-  font-family: museo-sans-rounded;
-  font-size: 40px;
-  font-weight: 500;
-  font-stretch: normal;
-  font-style: normal;
-  letter-spacing: normal;
-  text-align: center;
-  color: $white;
-}
-
-.landingPageInformationDetail {
-  font-family: museo-sans-rounded;
-  font-size: 16px;
-  font-weight: 300;
-  font-stretch: normal;
-  font-style: normal;
-  letter-spacing: normal;
-  text-align: center;
-  color: $white;
-}
-
 .accountDropDownGap {
   margin-left: 20px;
-}
-
-@media screen and (max-width: 1146px) {
-  #unselectButton {
-    margin-bottom: 1%;
-    width: 116px;
-  }
-  #addResources {
-    width: 116px;
-  }
 }
 
 .modal-dialog {
@@ -874,29 +680,6 @@ textarea:focus {
   top: 50%;
   left: 15%;
   transform: translate(-50%, -50%) ;
-}
-
-.relatedResourcesModal .modal-dialog {
-  margin: 0 auto !important;
-  top: 50% !important;
-  left: 15% !important;
-  transform: translate(-50%, -50%) !important;
-
-  @include mq('tablet-wide',max){
-    left: 20% !important;
-  }  
-
-  @include mq('tablet',max){
-    left: 30% !important;
-  }  
-  
-  @include mq('tablet-small',max){
-    left: 50% !important;
-  } 
-
-  @include mq('phablet',max){
-    left: 60% !important;
-  } 
 }
 
 @media screen and (max-width: 768px) {
@@ -940,20 +723,6 @@ textarea:focus {
 
 .rwt__tab:focus {
   background-color: #f6f7f8 !important;
-}
-
-.toolsButtons {
-  text-align: center;
-}
-
-.authorCardHolder {
-    padding: 0px 15px;
-}
-.authorCard {
-  height: 80px;
-  padding:10px;
-  border: 1px solid $gray-300;
-  background-color: #ffffff;
 }
 
 #underLinedLink {
@@ -1061,39 +830,8 @@ iframe#discourse-embed-frame {
   padding: 2px 16px;
 }
 
-.openAthensButton {
-  width: 200px;
-  background: $purple;
-  color: white;
-  padding: 8px 20px;
-  border-radius: 2px;
-  display: block;
-  margin: 0 auto;
-  position: relative;
-}
-
-.openAthensButton:hover {
-  text-decoration: none;
-  background: $purple;
-  color: white;
-}
-
 .btn-light {
   background-color: #e7e9ed !important;
-}
-
-.login-content {
-  position: relative;
-  background-color: #fefefe;
-  margin: auto;
-  padding: 0;
-  border: 1px solid #888;
-  max-width: 540px;
-}
-
-.login-body {
-  text-align: left;
-  padding: 2px 16px;
 }
 
 .descriptionWhiteSpace {
@@ -1544,353 +1282,10 @@ iframe#discourse-embed-frame {
 /* 
   #
   #
-  Collections CSS BELOW
-  #
-  #
-  */
-
-.resource-card {
-  margin-top: 16px;
-  margin-bottom: 48px;
-}
-
-.resource-card-row {
-  margin-top: 8px;
-}
-
-.collection-rectangle {
-  width: 100%;
-  box-shadow: 1px 1px 3px 0 #00000017;
-  background-color: $white;
-  padding: 24px 0 8px 0;
-}
-
-.collection-rectangleWithBorder {
-  width: 100%;
-  background-color: #ffffff;
-  padding: 24px 0 24px 0;
-  border: solid 1px #e2e2e2;
-}
-
-.collectionTitleText{
-  @include mq('tablet-wide',max){
-      font-size: 24px !important;
-  }
-}
-
-.collectionTitleCard{
-  @include mq('tablet-wide',max){
-      padding-left: 8% !important;
-  }
-  @include mq('tablet',max){
-      padding-left: 15% !important;
-  }
-  @include mq('phablet',max){
-      padding-left: 5% !important;
-  }
-  @include mq('phone-wide',max){
-      padding-left: 15% !important;
-  }
-  @include mq('phone',max){
-      padding-left: 25% !important;
-  }
-}
-
-.collectionDate{
-  @include mq('tablet-wide',max){
-      max-width: 100% !important;
-      flex: 0 0 100% !important;
-  }
-}
-
-.logoWidth{
-  @include mq('tablet-small', max){
-      width: 20% !important;
-  }
-  overflow: hidden;
-}
-
-.titleWidth{
-  @include mq('tablet-small', max){
-      width: 80% !important;
-  }
-}
-
-/* 
-  #
-  #
   NAVBAR CSS BELOW
   #
   #
   */
-
-.nav-wrapper {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  justify-content: flex-end;
-  width: 100%;
-  height: 100%;
-}
-
-#desktopSearchBar {
-  display: none;
-}
-
-#mobileSearchBar {
-  display: block;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-}
-
-.navBarNotificationSpacing {
-  position: relative;
-}
-
-.desktopNotificationMenu {
-  transform: translate(-380px, 23px) !important;
-  padding: 0 !important;
-}
-
-@media (min-width: 1020px) {
-  #desktopSearchBar {
-    display: block;
-  }
-
-  #mobileSearchBar {
-    display: none;
-  }
-}
-
-@media (min-width: 1260px) {
-  .navBarLogoSpacing {
-    vertical-align: middle;
-    display: inline-block;
-  }
-
-  .navBarLinkSpacing {
-    vertical-align: middle;
-    display: inline-block;
-    margin-top: 12px;
-    padding: 0px 0px 0px 40px;
-  }
-
-  .navBarLoginSpacing {
-    padding: 0px 40px 0px 0px;
-  }
-
-  .navBarNotificationSpacing {
-    padding: 0px 25px;
-  }
-
-  .navBarSearchBarSpacing {
-    width: 50%;
-    text-align: left;
-  }
-
-  .searchBarInputGrey {
-    border: 0;
-    background-color: #f6f7f8;
-    display: inline-block;
-    border-radius: 4px;
-    /* margin-top: 9px; */
-    padding: 5px;
-    width: 100%;
-  }
-
-  #searchInputSpanGrey {
-    display: inline-block;
-    width: 80%;
-    outline: none;
-    border: 0;
-    font-size: 16px;
-    background-color: #f6f7f8;
-    color: $gray-800;
-    padding-top: 7px;
-  }
-
-  .desktopLoginMenu {
-    width: 200px;
-    top: 28px !important;
-    left: -28px !important;
-  }
-
-  .desktopNotificationMenu {
-    overflow-x: hidden;
-    overflow-y: scroll;
-    max-height: 400px;
-    width: 400px;
-    top: 28px !important;
-    word-wrap: break-word;
-  }
-}
-
-@media (max-width: 1259px) {
-  .navBarLogoSpacing {
-    vertical-align: middle;
-    display: inline-block;
-  }
-
-  .navBarLinkSpacing {
-    vertical-align: middle;
-    display: inline-block;
-    margin-top: 12px;
-    padding: 0px 0px 0px 20px;
-  }
-
-  .navBarLoginSpacing {
-    padding: 0px 20px 0px 0px;
-  }
-
-  .navBarNotificationSpacing {
-    padding: 0px 15px 0px 15px;
-    display: flex;
-    flex-flow: row;
-    justify-content: center;
-    align-items: center;
-    align-self: stretch;
-    height: 100%;
-  }
-
-  .navBarSearchBarSpacing {
-    width: 50%;
-    text-align: left;
-  }
-
-  .searchBarInputGrey {
-    border: 0;
-    background-color: #f6f7f8;
-    display: inline-block;
-    border-radius: 4px;
-    padding: 5px;
-    width: 100%;
-  }
-
-  #searchInputSpanGrey {
-    display: inline-block;
-    width: 70%;
-    outline: none;
-    border: 0;
-    font-size: 16px;
-    background-color: #f6f7f8;
-    color: $gray-800;
-    padding-top: 7px;
-  }
-
-  .desktopLoginMenu {
-    width: 200px;
-    top: 29px !important;
-    left: -31px !important;
-  }
-
-  .desktopNotificationMenu {
-    overflow-x: hidden;
-    overflow-y: scroll;
-    max-height: 400px;
-    width: 400px;
-    word-wrap: break-word;
-    top: 28px !important;
-  }
-}
-
-@media (max-width: 991px) {
-  .navBarLogoSpacing {
-    vertical-align: middle;
-    display: inline-block;
-  }
-
-  .navBarLinkSpacing {
-    margin-top: 12px;
-    padding: 0px 0px 0px 20px;
-  }
-
-  .navBarLoginSpacing {
-    padding: 0px 20px 0px 0px;
-  }
-
-  .navBarNotificationSpacing {
-    margin-right: 30px;
-    padding: 0px 0px 0px 5px;
-  }
-
-  .navBarSearchBarSpacing {
-    width: 100%;
-    text-align: left;
-  }
-
-  .navBarSearchIconHolder {
-    float: right;
-    background-color: #f6f7f8;
-    padding: 10px 10px 5px 10px;
-    border-radius: 15px;
-    margin-top: 20px;
-  }
-
-  .navBarSearchIconHolderAlt {
-    float: right;
-    background-color: #f6f7f8;
-    padding: 10px 10px 5px 10px;
-    border-radius: 15px;
-    margin-top: 20px;
-    margin-right: 25px;
-  }
-
-  .searchBarInputGrey {
-    border: 0;
-    background-color: #f6f7f8;
-    display: inline-block;
-    border-radius: 4px;
-    margin-top: 16px;
-    padding: 5px;
-    width: 100%;
-  }
-
-  #searchInputSpanGrey {
-    display: inline-block;
-    width: 70%;
-    outline: none;
-    border: 0;
-    font-size: 16px;
-    background-color: #f6f7f8;
-    color: $gray-800;
-    padding-top: 7px;
-  }
-
-  .mobileLoginMenu {
-    width: 300px;
-    top: 16px !important;
-    left: -5px !important;
-  }
-
-  .mobileNotificationMenu {
-    top: 28px !important;
-    transform: translate3d(-290px, 24px, 0px) !important;
-    padding: 0 !important;
-    width: 320px;
-    max-height: 400px;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    word-wrap: break-word;
-  }
-}
-
-.searchBarBackground {
-  width: 100%;
-  background-color: $white;
-}
-
-.searchInputIconGrey {
-  float: left;
-  min-width: 40px;
-  padding: 10px 0px 0px 12px;
-}
-
-.searchInputClearGrey {
-  float: right;
-  padding: 8px 10px 0px 0px;
-}
 
 .searchIconGreyHolder {
   display: inline-block;
@@ -1903,24 +1298,8 @@ iframe#discourse-embed-frame {
   @include rounded(30px);
 }
 
-.hamBurgerHolder {
-  margin: 27px 0px 0px 27px;
-}
-
 .navBarNoficationHolder {
   margin: 27px 27px 0px 0px;
-}
-
-.showAllLoginOptionsButton {
-  width: 250px;
-  background: $purple;
-  color: white;
-  padding: 8px 20px;
-  border-radius: 2px;
-  display: block;
-  margin: 0 auto;
-  text-align: center;
-  font-size: 14px;
 }
 
 .wayfinder-container {
@@ -1930,69 +1309,8 @@ iframe#discourse-embed-frame {
   border-radius: 5px;
 }
 
-.navbarShown {
-  width: 100%;
-  position: fixed;
-  top: 0;
-  transition: top 0.3s;
-  z-index: 999;
-}
-
-.navbarHidden {
-  top: -500px !important;
-}
-
 .navBarGap {
   height: 79px;
-}
-
-.offlineNotificationGap {
-  vertical-align: middle;
-  display: inline-block;
-  margin-top: 15px;
-}
-
-.notificationReadBackground {
-  background-color: #f6f7f8;
-}
-
-.notificationDate {
-  padding: 10px 0px 5px 15px;
-  font-size: 13px;
-  font-weight: 500;
-  color: rgba(83, 87, 90, 0.8);
-}
-
-.notificationInfoHolder {
-  padding: 0px 0px 10px 15px;
-}
-
-.notificationInfo {
-  overflow: hidden;
-  font-size: 14px;
-  color: $gray-800;
-}
-
-#notificationsBell:hover {
-  background-size: 40px, 40px;
-  background: $gray-300;
-  @include rounded(70px);
-}
-
-.notificationsBell {
-  background-size: 40px, 40px;
-  background: $gray-300;
-  @include rounded(70px);
-}
-
-.noNotifications {
-  width: 100%;
-  box-shadow: 1px 1px 3px 0 #00000017;
-  background-color: $white;
-  padding-top: 40%;
-  padding-right: 20px;
-  padding-bottom: 40%;
-  padding-left: 20px;
 }
 
 .metadataQuality {
@@ -2054,22 +1372,6 @@ iframe#discourse-embed-frame {
   border: solid 4px $teal !important;
 }
 
-.resultsCardInput {
-  width: 100%;
-  height: 40px;
-  border: solid 2px $gray-400;
-  background-color: $white;
-  @include rounded(4px);
-}
-
-.resultsCardInput:focus {
-  width: 100%;
-  height: 40px;
-  border: solid 2px $teal !important;
-  outline: none;
-  @include rounded(4px);
-}
-
 .pixelGapTop {
   margin-top: 1px;
 }
@@ -2086,43 +1388,14 @@ iframe#discourse-embed-frame {
   margin-left: 1px;
 }
 
-.relatedModalBackground {
-  background-color: #f6f7f8;
-  position: relative;
-  height: 100%;
-}
-
 .relatedResourcesModal .modal-content {
   height: calc(100vh - 10px); 
-}
-
-.minHeightModal {
-  min-height: calc(100vh - 255px);
 }
 
 .modalWrapper {
   overflow-y: scroll;
   height: calc(100% - 72px);
   width: 70vw !important;
-}
-
-.relationshipBar {
-  width: 100%;
-  text-align: center;
-  border-bottom: 1px solid #d8d8d8;
-  line-height: 0.1em;
-  margin: 24px 0 8px;
-}
-
-.footerBottom {
-  position:relative;
-  z-index: 997;
-  width: '100%';
-  margin-top: -440px; /* negative value of footer height */
-  height: 440px;
-  clear: both;
-  background-image: linear-gradient(110deg, #50b996, #485ea7 100%);
-  padding: 48px;
 }
 
 .footerButton {
@@ -2166,36 +1439,6 @@ iframe#discourse-embed-frame {
 .icon-social {
   width: 17px;
   margin-right: 8px;
-}
-
-#imageToolTip {
-  position: absolute;
-  width: 326px;
-  height: 164px;
-  left: -50%;
-  top: 50%;
-} 
-
-.relationshipBar span {
-  font-family: museo-sans-rounded;
-  font-size: 13px;
-  color: #848e97 !important;
-  background: #fff;
-  padding: 0 10px;
-}
-
-.relationshipAnswer {
-  width: 100%;
-  background-color: #f6f7f8;
-  padding: 16px;
-  @include rounded(8px);
-}
-
-#collectionLogo {
-  max-height: 74px;
-  max-width: 74px;
-  min-height: 42px;
-  min-width: 42px;
 } 
  
 .floatRight{
@@ -2228,39 +1471,8 @@ iframe#discourse-embed-frame {
   top: 35%;
 }
 
-#dateDropdown input, select, optgroup, textarea {
-  font-family: inherit;
-  font-size: inherit !important;
-  color: inherit !important;
-}
-
 button a {
   cursor: pointer !important;
-}
-
-.dashboardPadding{
-  @include mq('tablet-small',max){
-    padding-left: 10% !important;
-  }
-  @include mq('phablet',max){
-    padding-left: 15% !important;
-  }
-  @include mq('phone-wide',max){
-    padding-left: 30% !important;
-  }
-}
-
-.filterCard {
-    box-shadow: 1px 1px 3px 0 #00000017;
-    background-color: $white;
-    padding: 10px;
-}
-
-.filterCardSelected {
-    box-shadow: 1px 1px 3px 0 #00000017;
-    background-color: $white;
-    padding: 10px;
-    border: 2px solid #3db28c
 }
 
 .adFilters {
@@ -2269,33 +1481,6 @@ button a {
     padding: 10px;
     max-height: 180px;
     overflow-y: scroll;
-}
-
-.filterHolder {
-    padding-top:8px;
-    position: fixed;
-    width:265px;
-    z-index:999;
-}
-
-.filterMenu {
-    top: -58px !important;
-    left: 275px !important;
-    max-height: 345px;
-    width: 480px;
-    box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03) !important;
-}
-
-.filterMenuInner {
-    overflow-x: hidden;
-    overflow-y: scroll;
-    word-wrap: break-word;
-    max-height: 285px;
-    padding:5px 20px;
-}
-
-.filterMenuHeader {
-    padding:10px 20px;
 }
 
 /* 
@@ -2458,11 +1643,6 @@ button a {
     line-height: 1.1 !important;
   }
 
-  .modal-close {
-    margin-right: -8px;
-    margin-top: -8px;
-  }
-
   .modal-header {
     padding-top: 32px !important;
     padding-left: 32px !important;
@@ -2484,48 +1664,6 @@ button a {
     justify-content: normal !important;
   }
 
-  
-.kpiCard {
-  height: 90px;
-  padding:10px;
-  box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
-  background-color: #ffffff;
-}
-
-.kpiCard{
-  @include mq('desktop',max){
-    height: 100px !important;
-    padding:10px !important;
-    box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09) !important;
-    background-color: #ffffff !important;
-  }
-  @include mq('tablet-wide',max){
-    height: 100px !important;
-    padding:5px !important;
-    box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09) !important;
-    background-color: #ffffff !important;
-  }
-} 
-
-.kpiClass {
-  @include mq('tablet',max){
-    flex: 0 0 50% !important;
-    max-width: 50% !important;
-  }
-  @include mq('phone-wide',max){
-    flex: 0 0 100% !important;
-    max-width: 100% !important;
-  }
-}
-
-.kpiContainer {
-  width: 100%;
-}
-
-.searchTermLink{
-  white-space: pre-wrap;
-}
-
 .collection-card {
   color: $gray-700;
   font-size: 13px;
@@ -2542,125 +1680,6 @@ button a {
 .col .widthAuto {
   width: auto !important;
   flex-grow: 0 !important;
-}
-
-.customLabel {
-  background-color: $light-teal !important;
-  border: none !important;
-  padding: 4px !important;
-  width: 84px;
-}
-
-.dataClassToolTip{
-  width: 275px;
-  border-radius: 8px;
-  background-color: $dark;
-  padding: 10px;
-  position: absolute;
-  left: 0%;
-  top: 80%;
-  z-index: 1;
-}
-
-.preprintToolTip{
-  width: 275px;
-  border-radius: 8px;
-  background-color: $dark;
-  padding: 10px;
-  position: absolute;
-  left: 80%;
-  top: 60%;
-  z-index: 1;
-
-  @include mq('tablet-wide', max){ 
-    left: 64%;
-    top: 70%;
-  }
-
-  @include mq('tablet-small', max){
-    left: 0%;
-    top: 75%;
-  }
-}
-
-.preprintFormToolTip {
-  width: 275px;
-  border-radius: 8px;
-  background-color: $dark;
-  padding: 10px;
-  position: absolute;
-  left: 5%;
-  top: 90%;
-  z-index: 1;
-}
-
-.heightVariable{
-  @include mq('tablet-wide'){
-    height: 56px !important;
-  }
-
-  @include mq('tablet-wide', max){
-    height: 62px !important;
-  }
-
-  @include mq('tablet-small', max){
-    height: 95px !important;
-  }
-
-  @include mq('phone-wide', max){
-    height: 115px !important;
-  }
-}
-
-.variablePadding{
-  @include mq('tablet-small', max){
-    padding-top: 40px !important;
-  }
-
-  @include mq('phone-wide', max){
-    padding-top: 50px !important;
-  }
-
-}
-
-.centerVariable{
-  position: absolute;
-  transform: translateY(-50%);
-  width: 95%;
-}
-
-.variableBox {
-    background-color: #fff;
-    padding: 30px;
-    margin-left: 8px;
-    margin-right: 8px;
-    border-bottom: #e7e9ed solid 1px;
-
-}
-
-.variableBox .collapseWait{
-  transition: transform 0.5s linear 0s;
-}
-
-.heightDataClass{ 
-  @include mq('tablet-wide'){
-    height: 114px !important;
-  }
-}
-
-.dataClassArrow{
-  @include mq('tablet-small',max){
-    transform: translate(-20px, 0px) !important;
-  }
-}
-
-.variableArrow{
-  @include mq('tablet-wide',max){
-    transform: translate(-25px, 0px) !important;
-  }
-  @include mq('tablet-wide'){
-    transform: translate(0px, -8px);
-  }
 }
 
 .dataClassX{
@@ -2771,32 +1790,6 @@ button a {
   }
 }
 
-.paperFormCheckbox {
-  width: 0% !important;
-}
-
-.paperFormSVG {
-  transform: translate(8px, 3px);
-}
-
-#preprintCheckCol {
-  margin-left: -36px; 
-  padding-left: 8px;
-
-  @include mq('tablet-wide',max){
-    margin-left: -15px;
-  }
-
-  @include mq('tablet',max){
-    margin-left: 0px;
-  }
-
-  @include mq('phablet',max){
-    margin-left: 35px;
-    margin-top: -13px;
-  }
-}
-
 .addToCollectionButton {
   width: 147px;
   height: 40px;
@@ -2806,53 +1799,6 @@ button a {
   box-shadow: none !important;
 }
 
-.addToCollectionDropdown {
-  width: 229px !important;
-  max-height: 176px !important;
-  box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03) !important;
-  background-color: $white !important;
-  overflow-x: hidden !important;
-  overflow-y: scroll !important;
-  margin-bottom: 24px !important;
-  padding-top: 0px !important;
-  padding-bottom: 12px !important;
-}
-
-.addToCollectionItem {
-  white-space: pre-wrap !important;
-  padding-left: 16px;
-  padding-right: 16px;
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-.addToCollectionItem:hover {
-  background-color: $gray-200 !important;
-}
-
-.checkSvg {
-  float: right;
-
-  // @include mq(575px,max){
-  @include mq("tablet-small",max) {
-    transform: translate(-5px, 0px) !important;
-  }
-  @include mq("phablet",max) {
-    transform: translate(0px, -20px) !important;
-  }
-  // transform: translate(0px, -20px) !important;
-}
-
-.addToCollectionHeader {
-  position: sticky;
-  top: 0;
-  background-color: $white;
-  z-index: 1;
-  padding-left: 16px;
-  padding-right: 16px;
-  padding-top: 16px;
-}
-
 .textUnderline {
   text-decoration: underline;
-}
+}      

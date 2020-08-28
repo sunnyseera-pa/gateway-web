@@ -1,9 +1,9 @@
 import React from 'react';
 import axios from 'axios';
 import { initGA } from '../../tracking';
-import moment from 'moment';
+import moment from 'moment'; 
 import { Container } from 'react-bootstrap';
-import SearchBar from '../commonComponents/SearchBar';
+import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading'
 import AddEditProjectForm from './AddEditProjectForm';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 

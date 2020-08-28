@@ -1,4 +1,4 @@
-// /ShowObjects.js
+// /ShowObjects.js 
 import React, { Component } from 'react';
 import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
@@ -16,8 +16,8 @@ import {
 import NotFound from '../commonComponents/NotFound';
 import Creators from '../commonComponents/Creators';
 import Loading from '../commonComponents/Loading';
-import RelatedObject from '../commonComponents/RelatedObject';
-import SearchBar from '../commonComponents/SearchBar';
+import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
+import SearchBar from '../commonComponents/searchBar/SearchBar';
 import 'react-tabs/style/react-tabs.css';
 import { baseURL } from '../../configs/url.config';
 import moment from 'moment';
@@ -25,6 +25,7 @@ import _ from 'lodash';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
+import './Collections.scss';
 
 var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
 
@@ -259,7 +260,7 @@ class CollectionPage extends Component {
 				</Container>
 			);
 		}
-
+ 
 		return (
 			<div>
 				<SearchBar
@@ -450,7 +451,8 @@ class CollectionPage extends Component {
 											data.relatedObjects.map((dat) => {
 												if (
 													dat.objectId === object.id ||
-													parseInt(dat.objectId) === object.id
+													parseInt(dat.objectId) === object.id || 
+													dat.objectId === object.datasetid
 												) {
 													reason = dat.reason;
 													updated = dat.updated;
@@ -486,7 +488,7 @@ class CollectionPage extends Component {
 											let showAnswer = false;
 											if (object.type === undefined) {
 												data.relatedObjects.map((dat) => {
-													if (dat.objectId === object.id) {
+													if (dat.objectId === object.datasetid) {
 														reason = dat.reason;
 														updated = dat.updated;
 														user = dat.user;

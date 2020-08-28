@@ -4,6 +4,8 @@ import React, { Component } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { ReactComponent as PersonPlaceholderSvg } from '../../images/person-placeholder.svg';
 import '../../css/styles.scss';
+import './CommonComponents.scss';  
+
 
 class  Creators extends Component {
   render() {
@@ -12,7 +14,7 @@ class  Creators extends Component {
       <span>
         <a data-testid="href" href={'/person/' + author.id} >
             <div className="authorCardHolder">
-            <Row className="authorCard">
+            <Row className="authorCard">  
                 <Col sm={2}>
                     <PersonPlaceholderSvg />
                 </Col>
@@ -30,4 +32,4 @@ class  Creators extends Component {
   }
 }
 
-export default Creators;
+export default Creators; 

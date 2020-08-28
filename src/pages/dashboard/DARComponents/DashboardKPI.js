@@ -4,6 +4,7 @@ import { Row, Col } from 'react-bootstrap';
 import { ReactComponent as PersonPlaceholderSvg } from '../../../images/person-placeholder.svg';
 import '../../../css/styles.scss';
 import SVGIcon from '../../../images/SVGIcon';
+import '../Dashboard.scss'; 
  
 
 class  DashboardKPI extends Component {

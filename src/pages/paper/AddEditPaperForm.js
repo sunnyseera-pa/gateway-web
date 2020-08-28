@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios'; 
+import axios from 'axios';  
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Typeahead } from 'react-bootstrap-typeahead';
@@ -7,14 +7,16 @@ import { Event } from '../../tracking';
 
 import {Form, Button, Row, Col} from 'react-bootstrap';
 import moment from 'moment';
-import RelatedResources from '../commonComponents/RelatedResources';
-import RelatedObject from '../commonComponents/RelatedObject';
+import RelatedResources from '../commonComponents/relatedResources/RelatedResources';
+import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import ActionBar from '../commonComponents/actionbar/ActionBar'; 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
 import ToolTip from '../../images/imageURL-ToolTip.gif';
 import { ReactComponent as InfoFillSVG } from "../../images/infofill.svg";
 import { ReactComponent as InfoSVG } from "../../images/info.svg";
+import './Paper.scss'; 
+
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -291,11 +293,11 @@ const AddEditPaperForm = (props) => {
                             checked={formik.values.isPreprint}
                             onChange={formik.handleChange}
                             value={formik.values.isPreprint}
-                            className="paperFormCheckbox"
+                            className="paperFormCheckbox" 
                             data-testid="isPreprint"
                           />
                         </Col>
-                        <Col sm={11} lg={11} id="preprintCheckCol">
+                        <Col sm={11} lg={11} id="preprintCheckCol"> 
                           <span className="gray800-14">
                             This article is a preprint
                           </span>
@@ -305,10 +307,10 @@ const AddEditPaperForm = (props) => {
                             onMouseEnter={() => setIsShown(true)}
                             onMouseLeave={() => setIsShown(false)}
                           >
-                            <InfoSVG className="paperFormSVG" />
+                            <InfoSVG className="paperFormSVG" /> 
                           </span>
                           {isShown && (
-                            <div className="preprintFormToolTip">
+                            <div className="preprintFormToolTip"> 
                               <span className="white-13-semibold">
                                 A preprint is a complete scientific manuscript
                                 that an author uploads on a public server for
@@ -450,7 +452,7 @@ const AddEditPaperForm = (props) => {
                     }}
                   />
                 </Form.Group>
-
+ 
                 <Form.Group>
                   <p className="gray800-14 margin-bottom-0 pad-bottom-4">
                     Domain (optional)

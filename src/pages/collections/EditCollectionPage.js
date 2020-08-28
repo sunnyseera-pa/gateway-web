@@ -6,10 +6,10 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 
 import {Form, Button, Row, Col, Container} from 'react-bootstrap';
 
-import SearchBar from '../commonComponents/SearchBar';
+import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
-import RelatedResources from '../commonComponents/RelatedResources';
-import RelatedObject from '../commonComponents/RelatedObject';
+import RelatedResources from '../commonComponents/relatedResources/RelatedResources';
+import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import moment from 'moment';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
@@ -19,6 +19,7 @@ import UserMessages from "../commonComponents/userMessages/UserMessages";
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
+import './Collections.scss';
 
 import { Event, initGA } from '../../tracking';
 
@@ -178,7 +179,7 @@ class EditCollectionPage extends React.Component {
 
     render() {
         const { data, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, paperData, summary, relatedObjects, didDelete, showDrawer, showModal, context } = this.state;
-
+ 
         if (isLoading) {
             return <Container><Loading /></Container>;
         }
@@ -363,7 +364,7 @@ const EditCollectionForm = (props) => {
                                 {formik.touched.imageLink && formik.errors.imageLink ? <div className="errorMessages">{formik.errors.imageLink}</div> : null}
                             </Form.Group>
                         </div>
-
+ 
                         <div className="rectangle mt-2">
                             <span className="black-20">Add resources</span> 
                             <br/>

@@ -1,8 +1,9 @@
-import React from 'react';
+import React from 'react'; 
 import { Row, Col, Tab, Tabs, Container, Pagination} from 'react-bootstrap';
 
-import SimpleSearchBar from './SimpleSearchBar';
-import RelatedObject from '../commonComponents/RelatedObject';
+import SimpleSearchBar from '../searchBar/SimpleSearchBar';
+import RelatedObject from '../relatedObject/RelatedObject';
+import './RelatedResourcesModal.scss';
 
 class RelatedResourcesModal extends React.Component {
 

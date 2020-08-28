@@ -7,7 +7,7 @@ var baseURL = require('../../commonComponents/BaseURL').getURL();
 class PersonTitle extends Component {
 
     constructor(props) {
-      super(props)
+      super(props) 
       this.state.data = props.data;
     }
   

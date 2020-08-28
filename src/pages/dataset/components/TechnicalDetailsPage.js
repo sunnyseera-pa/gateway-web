@@ -5,6 +5,7 @@ import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg'
 
 import { ReactComponent as TableSvg } from "../../../images/table.svg";
 import TechnicalMetadataVariables from "./TechnicalMetadataVariables";
+import '../Dataset.scss'; 
 
 class TechnicalDetailsPage extends React.Component {
   state = {

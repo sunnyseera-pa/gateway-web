@@ -2,8 +2,9 @@ import React from 'react';
 import {Row, Col, Alert} from 'react-bootstrap';
 import SVGIcon from "../../images/SVGIcon";
 import axios from 'axios';
-import Loading from './Loading'
+import Loading from './Loading' 
 import ReactMarkdown from 'react-markdown';
+import './CommonComponents.scss';  
 
 var baseURL = require('./BaseURL').getURL();
 
@@ -183,7 +184,7 @@ class Tool extends React.Component {
                                         return <a href={'/search?search=' + topic}><div className="badge-tag">{topic}</div></a>
                                     }
                                     else {
-                                        return <div className="badge-tag">{topic}</div>
+                                        return <div className="badge-tag">{topic}</div> 
                                     }
                                 })}
 

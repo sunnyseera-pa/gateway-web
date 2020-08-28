@@ -50,7 +50,7 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 			// 4. do normal operation
 			closed(showEnquiry);
 		}
-	};
+	}; 
 
 	return (
 		<Fragment>

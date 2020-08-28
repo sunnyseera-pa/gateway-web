@@ -1,0 +1,114 @@
+@import '../../css/styles.scss';
+
+.tabList {
+    background-color: $white;
+    height: min-content;
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 36px;
+    width: 100%;
+    min-width: 110px;
+    margin-top: 36px;
+  }
+
+.verticalNavBarHolder {
+  display: block !important;
+}
+
+.verticalNavBar {
+    padding: 15px 10px 15px 30px !important;
+  }
+  
+.verticalNavBar.active {
+   background-color: #f6f7f8;
+   border-right: 4px solid $teal !important;
+  }
+
+.AccountSvgs {
+  width: 18px;
+  height: 18px;
+}
+
+.dashboardPadding{
+    @include mq('tablet-small',max){
+      padding-left: 10% !important;
+    }
+    @include mq('phablet',max){
+      padding-left: 15% !important;
+    }
+    @include mq('phone-wide',max){
+      padding-left: 30% !important;
+    }
+  }
+
+.accountHeader { 
+      box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
+      background-color: $white;
+      width: 100%;
+      padding: 24px;
+      margin-top: 32px !important;
+    }
+
+.kpiContainer {
+  width: 100%;
+}
+
+.kpiClass {
+    @include mq('tablet',max){
+      flex: 0 0 50% !important;
+      max-width: 50% !important;
+    }
+    @include mq('phone-wide',max){
+      flex: 0 0 100% !important;
+      max-width: 100% !important;
+    }
+  }
+
+.dataAccessTabs {
+  align-items: center;
+  justify-content: center;
+  height: 47px;
+} 
+
+.toolsButtons {
+    text-align: center;
+  }
+
+.truncate {
+  width: 380px;
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.searchTermLink{
+    white-space: pre-wrap;
+  } 
+
+.kpiCard {
+  height: 90px;
+  padding:10px;
+  box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
+  background-color: #ffffff;
+}
+
+.kpiCard{
+  @include mq('desktop',max){
+    height: 100px !important;
+    padding:10px !important;
+    box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09) !important;
+    background-color: #ffffff !important;
+  }
+  @include mq('tablet-wide',max){
+    height: 100px !important;
+    padding:5px !important;
+    box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09) !important;
+    background-color: #ffffff !important;
+  }
+} 
+
+#dateDropdown input, select, optgroup, textarea {
+  font-family: inherit;
+  font-size: inherit !important;
+  color: inherit !important;
+} 

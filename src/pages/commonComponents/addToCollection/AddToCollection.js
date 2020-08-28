@@ -3,11 +3,14 @@ import axios from 'axios';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { Row, Col, Tabs, Tab, Container, Alert, Button, FormText } from "react-bootstrap";
 import moment from 'moment';
-import { ReactComponent as CheckSvg } from '../../images/check.svg';
-import ActionBar from '../commonComponents/actionbar/ActionBar';
+import { ReactComponent as CheckSvg } from '../../../images/check.svg';
+import SVGIcon from '../../../images/SVGIcon';
+import ActionBar from '../actionbar/ActionBar'; 
+import './AddToCollection.scss';
 
-var baseURL = require('./BaseURL').getURL();
-var cmsURL = require('./BaseURL').getCMSURL();
+
+var baseURL = require('../BaseURL').getURL();
+var cmsURL = require('../BaseURL').getCMSURL();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
   <a href="" ref={ref} onClick={e => { e.preventDefault(); onClick(e); }} >
@@ -132,7 +135,7 @@ updateCollection(dat){
                            <Row className="addToCollectionHeader"> <span className="gray800-14-bold addToCollectionItem">Add to collection</span> </Row>
                             {collectionsData.map((dat) => {
                                   return <div className="gray800-14 addToCollectionItem pointer" onClick={() => this.updateCollection(dat)}> 
-                                                <Row>
+                                                <Row> 
                                                     <Col sm={10} lg={10}>
                                                     {dat.name} 
                                                     </Col>
@@ -140,9 +143,9 @@ updateCollection(dat){
                                                     {this.state.resourceData.type === "dataset" ?  
                                                         dat.relatedObjects.some(e => e.objectId === this.state.resourceData.datasetid) ? <CheckSvg fill="#2c8267" className="checkSvg" /> : '' 
                                                     :
-                                                        dat.relatedObjects.some(e => e.objectId === this.state.resourceData.id.toString()) ? <CheckSvg fill="#2c8267" className="checkSvg" /> : '' 
+                                                        dat.relatedObjects.some(e => e.objectId === this.state.resourceData.id.toString()) ? <CheckSvg fill="#2c8267" className="checkSvg" /> : ''
                                                      }                                                    
-                                                    </Col>
+                                                    </Col> 
                                                 </Row>
                                             </div>
                                 })

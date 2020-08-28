@@ -6,8 +6,8 @@ import { Row, Col, Tabs, Tab, Container, Alert, Button } from "react-bootstrap";
 import NotFound from "../commonComponents/NotFound";
 import Creators from "../commonComponents/Creators";
 import Loading from "../commonComponents/Loading";
-import RelatedObject from "../commonComponents/RelatedObject";
-import SearchBar from "../commonComponents/SearchBar";
+import RelatedObject from "../commonComponents/relatedObject/RelatedObject";
+import SearchBar from "../commonComponents/searchBar/SearchBar";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
@@ -24,6 +24,7 @@ import moment from "moment";
 import _ from 'lodash';
 import { ReactComponent as InfoFillSVG } from "../../images/infofill.svg";
 import { ReactComponent as InfoSVG } from "../../images/info.svg";
+import './Paper.scss'; 
 
 class ToolDetail extends Component {
   // initialize our state
@@ -131,7 +132,7 @@ class ToolDetail extends Component {
       }).finally(() => {
         this.setState({ isLoading: false });
     });
-  };
+  }; 
 
   doSearch = e => {
     //fires on enter on searchbar
@@ -356,7 +357,7 @@ toggleHoverState(state) {
                     </span>
 
                     {this.state.isHovering && (
-                      <div className="preprintToolTip">
+                      <div className="preprintToolTip">  
                         <span className="white-13-semibold">
                           A preprint is a complete scientific manuscript that an author uploads on a public server for free viewing. Initially it is posted without peer review, but may acquire feedback or reviews as a preprint, and may eventually be published in a peer-reviewed journal. The posting of preprints on public servers allows almost immediate dissemination and scientific feedback early in the 'publication' process.
                         </span>

@@ -7,6 +7,8 @@ import { Row, Col, Button, Modal, Tabs, Tab, DropdownButton, Dropdown } from 're
 import DashboardKPI from './DARComponents/DashboardKPI';
 import Loading from '../commonComponents/Loading'
 import { Event, initGA } from '../../tracking';
+import './Dashboard.scss';  
+
  
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -218,8 +220,8 @@ class AccountAnalyticsDashboard extends React.Component {
            <div>
                 <Row>
                     <Col sm={1} lg={1}></Col> 
-                    <Col sm={10} lg={10} className="dashboardPadding">  
-                        <Row className="accountHeader mt-4">
+                    <Col sm={10} lg={10} className="dashboardPadding">   
+                        <Row className="accountHeader mt-4"> 
                             <Col sm={12} lg={12}>
                                 <Row >
                                     <Col sm={8} lg={8}>
@@ -248,7 +250,7 @@ class AccountAnalyticsDashboard extends React.Component {
                             </Col> 
                         </Row>
  
-                        <Row className="kpiContainer"> 
+                        <Row className="kpiContainer">  
 
                             <Col sm={3} lg={3} className="kpiClass"> 
                                 <DashboardKPI kpiText="total datasets" kpiValue={statsDataType.dataset}/>

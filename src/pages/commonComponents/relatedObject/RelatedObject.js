@@ -1,10 +1,12 @@
-import React from 'react';
+import React from 'react'; 
 import axios from 'axios';
 import { Row, Col, Button, Alert } from 'react-bootstrap';
-import Loading from './Loading'
-import SVGIcon from "../../images/SVGIcon"
+import Loading from '../Loading'
+import SVGIcon from '../../../images/SVGIcon'
+import './RelatedObject.scss'; 
 
-var baseURL = require('./BaseURL').getURL();
+ 
+var baseURL = require('../BaseURL').getURL();
 
 class RelatedObject extends React.Component {
     
@@ -33,7 +35,7 @@ class RelatedObject extends React.Component {
             this.state.data = props.data;
             //this.state.reviewData = this.state.data.reviews;
             this.state.isLoading = false;
-        }
+        } 
         else if (props.objectId) {
             this.state.relatedObject = props.relatedObject;
             this.state.reason = props.reason;

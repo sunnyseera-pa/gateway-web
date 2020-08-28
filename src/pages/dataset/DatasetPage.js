@@ -16,8 +16,8 @@ import {
 } from "react-bootstrap/";
 import NotFound from "../commonComponents/NotFound";
 import Loading from "../commonComponents/Loading";
-import RelatedObject from "../commonComponents/RelatedObject";
-import SearchBar from "../commonComponents/SearchBar";
+import RelatedObject from "../commonComponents/relatedObject/RelatedObject";
+import SearchBar from "../commonComponents/searchBar/SearchBar";
 import SVGIcon from "../../images/SVGIcon";
 import { ReactComponent as InfoFillSVG } from "../../images/infofill.svg";
 import { ReactComponent as InfoSVG } from "../../images/info.svg";
@@ -35,11 +35,14 @@ import TechnicalMetadata from "./components/TechnicalMetadata";
 import TechnicalDetailsPage from "./components/TechnicalDetailsPage";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
-import AddToCollection from "../commonComponents/AddToCollection"; 
+import AddToCollection from "../commonComponents/addToCollection/AddToCollection";
+
 import UserMessages from "../commonComponents/userMessages/UserMessages";
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
 import DataSetHelper from '../../utils/DataSetHelper.util';
 import "react-tabs/style/react-tabs.css";
+import './Dataset.scss';
+
 
 var baseURL = require("../commonComponents/BaseURL").getURL();
 
@@ -756,7 +759,7 @@ class DatasetDetail extends Component {
                     </Row> 
                   </Tab>
                   <Tab eventKey="TechDetails" title={`Technical details`}>
-                    <Row className="width-100" style={{ margin: "0%" }}>
+                    <Row className="width-100" style={{ margin: "0%" }}> 
                       {dataClassOpen === -1 ? (
                         <>
                           <Col

@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Row, Col, Container, Alert } from 'react-bootstrap';
-import SearchBar from '../commonComponents/SearchBar';
+import SearchBar from '../commonComponents/searchBar/SearchBar';
 import axios from 'axios';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
+import './Dashboard.scss'; 
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 

@@ -1,12 +1,12 @@
 import React from 'react';
 import axios from 'axios';
 import { PageView, initGA } from '../../tracking';
-import queryString from 'query-string';
+import queryString from 'query-string'; 
 
 import { Container, Row, Col, Tabs, Tab, Pagination } from 'react-bootstrap';
 
-import SearchBar from '../commonComponents/SearchBar';
-import RelatedObject from '../commonComponents/RelatedObject';
+import SearchBar from '../commonComponents/searchBar/SearchBar';
+import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import Loading from '../commonComponents/Loading'
 import Filters from './Filters';
 import NoResults from '../commonComponents/NoResults';
@@ -14,6 +14,7 @@ import { NotificationContainer } from 'react-notifications';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
+import './Search.scss'; 
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -489,7 +490,7 @@ class SearchPage extends React.Component {
                         {key !== 'People' ?
                             <Col sm={12} md={12} lg={3} className="mt-4">
                                 {key === 'Datasets' ? <>
-                                    <div className="filterHolder">
+                                    <div className="filterHolder"> 
 
 
                                         {publishersSelected.length !== 0 || licensesSelected.length !== 0 || keywordsSelected.length !== 0 || geoCoverageSelected.length !== 0 || sampleAvailabilitySelected.length !== 0 ? 

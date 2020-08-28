@@ -8,7 +8,7 @@ import ReactMarkdown from 'react-markdown';
 import TypeaheadCustom from './components/TypeaheadCustom';
 import TypeaheadUser from './components/TypeaheadUser';
 import DatePickerCustom from './components/DatepickerCustom';
-import SearchBar from '../commonComponents/SearchBar';
+import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
 import NavItem from './components/NavItem';
 import NavDropdown from './components/NavDropdown';

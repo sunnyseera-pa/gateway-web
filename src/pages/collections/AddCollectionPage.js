@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Typeahead } from 'react-bootstrap-typeahead';
+import { Typeahead } from 'react-bootstrap-typeahead'; 
 
 import {Form, Button, Row, Col, Container} from 'react-bootstrap';
 
-import SearchBar from '../commonComponents/SearchBar';
+import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
-import RelatedResources from '../commonComponents/RelatedResources';
-import RelatedObject from '../commonComponents/RelatedObject';
+import RelatedResources from '../commonComponents/relatedResources/RelatedResources';
+import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 
 import moment from 'moment';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
@@ -22,6 +22,7 @@ import UserMessages from "../commonComponents/userMessages/UserMessages";
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
+import './Collections.scss';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -111,7 +112,7 @@ class AddCollectionPage extends React.Component {
             })
         }
     }
-
+ 
     addToTempRelatedObjects = (id, type) => {
 
         if(this.state.tempRelatedObjectIds && this.state.tempRelatedObjectIds.some(object => object.objectId === id)){

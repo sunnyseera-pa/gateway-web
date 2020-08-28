@@ -1,13 +1,13 @@
 import React from 'react';
-import axios from 'axios';
+import axios from 'axios'; 
 import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import * as Yup from 'yup'; 
 import { Typeahead } from 'react-bootstrap-typeahead';
 import moment from 'moment';
 import {Form, Button, Row, Col} from 'react-bootstrap';
 
-import RelatedResources from '../commonComponents/RelatedResources';
-import RelatedObject from '../commonComponents/RelatedObject';
+import RelatedResources from '../commonComponents/relatedResources/RelatedResources';
+import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';

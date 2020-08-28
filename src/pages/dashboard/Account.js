@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import queryString from 'query-string';
 import { Row, Col, Nav, Tab } from 'react-bootstrap';
 //import { Tabs, Tab, TabPanel, TabList } from 'react-web-tabs';
-import SearchBar from '../commonComponents/SearchBar';
+import SearchBar from '../commonComponents/searchBar/SearchBar';
 import AccountTools from './AccountTools';
 import AccountProjects from './AccountProjects';
 import AccountPapers from './AccountPapers';
@@ -17,6 +17,8 @@ import SVGIcon from "../../images/SVGIcon";
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
+import './Dashboard.scss'; 
+
 
 class Account extends Component {
 

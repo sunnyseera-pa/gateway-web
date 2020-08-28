@@ -1,0 +1,39 @@
+@import '../../../css/styles.scss';
+
+.relatedResourcesModal .modal-dialog {
+      margin: 0 auto !important;
+      top: 50% !important;
+      left: 15% !important;
+      transform: translate(-50%, -50%) !important;
+    
+      @include mq('tablet-wide',max){
+        left: 20% !important;
+      }  
+    
+      @include mq('tablet',max){
+        left: 30% !important;
+      }  
+      
+      @include mq('tablet-small',max){
+        left: 50% !important;
+      } 
+    
+      @include mq('phablet',max){
+        left: 60% !important;
+      } 
+    }
+
+.modal-close {
+    margin-right: -8px;
+    margin-top: -8px;
+  }
+
+@media screen and (max-width: 1146px) {
+  #unselectButton {
+    margin-bottom: 1%;
+    width: 116px;
+  }
+  #addResources {
+    width: 116px;
+  }
+} 

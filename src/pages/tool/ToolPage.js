@@ -5,12 +5,12 @@ import queryString from "query-string";
 import { Row, Col, Tabs, Tab, Container, Alert, Button } from "react-bootstrap";
 import NotFound from "../commonComponents/NotFound";
 import Loading from "../commonComponents/Loading";
-import Reviews from "../commonComponents/Reviews";
-import RelatedObject from "../commonComponents/RelatedObject";
-import SearchBar from "../commonComponents/SearchBar";
+import Reviews from "../commonComponents/reviews/Reviews";
+import RelatedObject from "../commonComponents/relatedObject/RelatedObject";
+import SearchBar from "../commonComponents/searchBar/SearchBar";
 import Creators from "../commonComponents/Creators";
 import DiscourseTopic from "../discourse/DiscourseTopic";
-import "react-tabs/style/react-tabs.css";
+import "react-tabs/style/react-tabs.css"; 
 import { baseURL } from "../../configs/url.config";
 import { PageView, initGA } from "../../tracking";
 import ReactMarkdown from "react-markdown";
@@ -158,7 +158,7 @@ class ToolDetail extends Component {
     });
   
     await Promise.all(promises);
-  }
+  } 
     this.setState({ objects: tempObjects });
     
     this.getRelatedObjects();
