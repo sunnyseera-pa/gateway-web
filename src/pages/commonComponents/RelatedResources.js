@@ -1,7 +1,7 @@
 import React, {Fragment, useState} from 'react';
 import { Button, Modal, Row, Col, Tab, Tabs } from 'react-bootstrap';
 import RelatedResourcesModal from './RelatedResourceModal';
-import { ReactComponent as CloseButtonSvg } from '../../images/close.svg';  
+import { ReactComponent as CloseButtonSvg } from '../../images/close-alt.svg';   
 
 const RelatedResources =  React.forwardRef((props, ref) => {
 
@@ -39,7 +39,7 @@ const RelatedResources =  React.forwardRef((props, ref) => {
                         <br />
                         <span className="gray800-14">Link this to other papers, projects, datasets and tools. Resources must be added to the Gateway first.</span>
                     </Modal.Title>
-                    <CloseButtonSvg className="modal-close pointer" onClick={closeModal} />
+                    <CloseButtonSvg className="modal-close pointer" onClick={closeModal} width="24px" height="24px" fill="#475DA7" />
                 </Modal.Header>
                 <Modal.Body >
                    <RelatedResourcesModal toolid={props.toolid} projectid={props.projectid} paperid={props.paperid} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} paperData={props.paperData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} />
