@@ -3,7 +3,7 @@ import axios from 'axios';
 import { PageView, initGA } from '../../tracking';
 import queryString from 'query-string';
 
-import { Container, Row, Col, Tabs, Tab, Pagination } from 'react-bootstrap';
+import { Container, Row, Col, Tabs, Tab, Pagination, Dropdown } from 'react-bootstrap';
 
 import SearchBar from '../commonComponents/SearchBar';
 import RelatedObject from '../commonComponents/RelatedObject';
@@ -21,6 +21,11 @@ class SearchPage extends React.Component {
 
     state = {
         searchString: '',
+        datasetSort: '',
+        toolSort: '',
+        projectSort: '',
+        paperSort: '',
+        personSort: '',
         datasetIndex: 0,
         toolIndex: 0,
         projectIndex: 0,
@@ -118,7 +123,14 @@ class SearchPage extends React.Component {
                 || (((typeof values.datasetIndex === "undefined" && this.state.datasetIndex !== 0) || (typeof values.datasetIndex !== "undefined" && this.state.datasetIndex === 0)) && this.state.datasetIndex !== values.datasetIndex)
                 || (((typeof values.toolIndex === "undefined" && this.state.toolIndex !== 0) || (typeof values.toolIndex !== "undefined" && this.state.toolIndex === 0)) && this.state.toolIndex !== values.toolIndex)
                 || (((typeof values.projectIndex === "undefined" && this.state.projectIndex !== 0) || (typeof values.projectIndex !== "undefined" && this.state.projectIndex === 0)) && this.state.projectIndex !== values.projectIndex)
+                || (((typeof values.paperIndex === "undefined" && this.state.paperIndex !== 0) || (typeof values.paperIndex !== "undefined" && this.state.paperIndex === 0)) && this.state.paperIndex !== values.paperIndex)
                 || (((typeof values.personIndex === "undefined" && this.state.personIndex !== 0) || (typeof values.personIndex !== "undefined" && this.state.personIndex === 0)) && this.state.personIndex !== values.personIndex)
+
+                || (((typeof values.datasetSort === "undefined" && this.state.datasetSort !== '') || (typeof values.datasetSort !== "undefined" && this.state.datasetSort === '')) && this.state.datasetSort !== values.datasetSort)
+                || (((typeof values.toolSort === "undefined" && this.state.toolSort !== '') || (typeof values.toolSort !== "undefined" && this.state.toolSort === '')) && this.state.toolSort !== values.toolSort)
+                || (((typeof values.projectSort === "undefined" && this.state.projectSort !== '') || (typeof values.projectSort !== "undefined" && this.state.projectSort === '')) && this.state.projectSort !== values.projectSort)
+                || (((typeof values.paperSort === "undefined" && this.state.paperSort !== '') || (typeof values.paperSort !== "undefined" && this.state.paperSort === '')) && this.state.paperSort !== values.paperSort)
+                || (((typeof values.personSort === "undefined" && this.state.personSort !== '') || (typeof values.personSort !== "undefined" && this.state.personSort === '')) && this.state.personSort !== values.personSort)
             ) {
                 await Promise.all([
                     this.updateFilterStates(values)
@@ -182,7 +194,14 @@ class SearchPage extends React.Component {
         values.datasetIndex ? this.setState({ datasetIndex: values.datasetIndex }) : this.setState({ datasetIndex: 0 })
         values.toolIndex ? this.setState({ toolIndex: values.toolIndex }) : this.setState({ toolIndex: 0 })
         values.projectIndex ? this.setState({ projectIndex: values.projectIndex }) : this.setState({ projectIndex: 0 })
+        values.paperIndex ? this.setState({ paperIndex: values.paperIndex }) : this.setState({ projectIndex: 0 })
         values.personIndex ? this.setState({ personIndex: values.personIndex }) : this.setState({ personIndex: 0 })
+
+        values.datasetSort ? this.setState({ datasetSort: values.datasetSort }) : this.setState({ datasetSort: '' })
+        values.toolSort ? this.setState({ toolSort: values.toolSort }) : this.setState({ toolSort: '' })
+        values.projectSort ? this.setState({ projectSort: values.projectSort }) : this.setState({ projectSort: '' })
+        values.paperSort ? this.setState({ paperSort: values.paperSort }) : this.setState({ projectSort: '' })
+        values.personSort ? this.setState({ personSort: values.personSort }) : this.setState({ personSort: '' })
     }
 
     clearFilterStates() {
@@ -211,6 +230,12 @@ class SearchPage extends React.Component {
         this.setState({ projectIndex: 0 })
         this.setState({ paperIndex: 0 })
         this.setState({ personIndex: 0 })
+
+        this.setState({ datasetSort: '' })
+        this.setState({ toolSort: '' })
+        this.setState({ projectSort: '' })
+        this.setState({ paperSort: '' })
+        this.setState({ personSort: '' })
     }
 
     updateOnFilterBadge = async (filterGroup, filter) => {
@@ -275,6 +300,12 @@ class SearchPage extends React.Component {
         if (this.state.paperIndex > 0) searchURL += '&paperIndex=' + encodeURIComponent(this.state.paperIndex);
         if (this.state.personIndex > 0) searchURL += '&personIndex=' + encodeURIComponent(this.state.personIndex);
 
+        if (this.state.datasetSort !== '') searchURL += '&datasetSort=' + encodeURIComponent(this.state.datasetSort);
+        if (this.state.toolSort !== '') searchURL += '&toolSort=' + encodeURIComponent(this.state.toolSort);
+        if (this.state.projectSort !== '') searchURL += '&projectSort=' + encodeURIComponent(this.state.projectSort);
+        if (this.state.paperSort !== '') searchURL += '&paperSort=' + encodeURIComponent(this.state.paperSort);
+        if (this.state.personSort !== '') searchURL += '&personSort=' + encodeURIComponent(this.state.personSort);
+
         if (!skipHistory) { 
             if (this.state.key) searchURL += '&tab='+this.state.key
             this.props.history.push(`${window.location.pathname}?search=${this.state.searchString}` + searchURL);
@@ -318,6 +349,19 @@ class SearchPage extends React.Component {
         this.props.history.push(window.location.pathname + '?' + queryString.stringify(values))
         
         this.doSearchCall();   
+    }
+
+    handleSort = async (sort) => {
+        await new Promise ((resolve, reject) => {
+            if (this.state.key === "Datasets") this.setState({ datasetSort: sort, isResultsLoading: true })
+            else if (this.state.key === "Tools") this.setState({ toolSort: sort, isResultsLoading: true })
+            else if (this.state.key === "Projects") this.setState({ projectSort: sort, isResultsLoading: true })
+            else if (this.state.key === "Papers") this.setState({ paperSort: sort, isResultsLoading: true })
+            else if (this.state.key === "People") this.setState({ personSort: sort, isResultsLoading: true })
+            resolve()
+        });
+
+        this.doSearchCall();
     }
 
     handlePagination = async (type, page) => {
@@ -403,6 +447,12 @@ class SearchPage extends React.Component {
             projectIndex, 
             paperIndex, 
             personIndex,
+
+            datasetSort,
+            toolSort,
+            projectSort,
+            paperSort,
+            personSort,
             
             showDrawer,
             showModal,
@@ -549,10 +599,6 @@ class SearchPage extends React.Component {
                                     </div>
                                 </> : ''}
                                 
-                                
-                                
-                                
-                                
                                 {key === 'Tools' ? <>
                                     <div className="filterHolder">
                                         {toolCategoriesSelected.length !== 0 || languageSelected.length !== 0 || featuresSelected.length !== 0 || toolTopicsSelected.length !== 0 ? 
@@ -659,6 +705,44 @@ class SearchPage extends React.Component {
 
                         {!isResultsLoading ?
                             <Col sm={12} md={12} lg={9} className="mt-4">
+                                <Row>
+                                    <Col className="text-right">
+                                        <Dropdown alignRight onSelect={this.handleSort}>
+                                            <Dropdown.Toggle variant="info" id="dropdown-menu-align-right" className="gray800-14">
+                                                {(() => {   
+                                                    if (key === 'Datasets'){
+                                                        if (datasetSort === 'popularity') return 'Sort by popularity';
+                                                        else if (datasetSort === 'metadata') return 'Sort by metadata quality';
+                                                        else return 'Sort by relevance';
+                                                    }
+                                                    else if (key === 'Tools'){
+                                                        if (toolSort === 'popularity') return 'Sort by popularity';
+                                                        else return 'Sort by relevance';
+                                                    }
+                                                    else if (key === 'Projects'){
+                                                        if (projectSort === 'popularity') return 'Sort by popularity';
+                                                        else return 'Sort by relevance';
+                                                    }
+                                                    else if (key === 'Papers'){
+                                                        if (paperSort === 'popularity') return 'Sort by popularity';
+                                                        else return 'Sort by relevance';
+                                                    }
+                                                    else if (key === 'People'){
+                                                        if (personSort === 'popularity') return 'Sort by popularity';
+                                                        else return 'Sort by relevance';
+                                                    }
+                                                })()}
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            </Dropdown.Toggle>
+                                        
+                                            <Dropdown.Menu>
+                                                <Dropdown.Item eventKey="relevance" className="gray800-14 ">Sort by relevance</Dropdown.Item>
+                                                <Dropdown.Item eventKey="popularity" className="gray800-14">Sort by popularity</Dropdown.Item>
+                                                {key === 'Datasets' ? <Dropdown.Item eventKey="metadata" className="gray800-14">Sort by metadata quality</Dropdown.Item> : ''}
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                    </Col>
+                                </Row>
                                 
                                 {key === 'Datasets' ?
                                     datasetCount <= 0 && !isResultsLoading ? <NoResults type='datasets' searchString={searchString} />

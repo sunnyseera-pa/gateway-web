@@ -759,9 +759,7 @@ class DatasetDetail extends Component {
                         </div>
                       </Col>
                     </Row> 
-                                {(() => {
-                                    debugger
-})()}   
+
                     {data.datasetfields.phenotypes !== "undefined" && data.datasetfields.phenotypes.length > 0 ?
                         <Fragment>
                             <Row className="mt-2">
