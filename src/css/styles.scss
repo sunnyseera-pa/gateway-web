@@ -1422,35 +1422,9 @@ button a {
   box-shadow: none !important;
 }
 
-<<<<<<< HEAD
 .textUnderline {
   text-decoration: underline;
 }      
-=======
-.addToCollectionDropdown {
-  width: 229px !important;
-  max-height: 176px !important;
-  box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03) !important;
-  background-color: $white !important;
-  overflow-x: hidden !important;
-  overflow-y: scroll !important;
-  margin-bottom: 24px !important;
-  padding-top: 0px !important;
-  padding-bottom: 12px !important;
-}
-
-.addToCollectionItem {
-  white-space: pre-wrap !important;
-  padding-left: 16px;
-  padding-right: 16px;
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-.addToCollectionItem:hover {
-  background-color: $gray-200 !important;
-}
-
 .collectionCheckSvg {
   float: right;
 
@@ -1462,20 +1436,6 @@ button a {
   }
 }
 
-.addToCollectionHeader {
-  position: sticky;
-  top: 0;
-  background-color: $white;
-  z-index: 1;
-  padding-left: 16px;
-  padding-right: 16px;
-  padding-top: 16px;
-}
-
-.textUnderline {
-  text-decoration: underline;
-}
-
 @media (max-width: 576px) {
 
   .closeDataClass{
@@ -1483,4 +1443,3 @@ button a {
     }
 
 }
->>>>>>> dev
