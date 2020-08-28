@@ -45,7 +45,7 @@ class TechnicalMetadata extends React.Component {
               </Row>
               <Row className="mt-2">
                 <p className="gray800-14">
-                  {technicalMetadata
+                  {technicalMetadata && technicalMetadata.description !== null
                     ? technicalMetadata.description.substr(0, 220) +
                       (technicalMetadata.description.length > 220 ? "..." : "")
                     : ""}
