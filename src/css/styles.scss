@@ -272,6 +272,13 @@ a.nav-item.nav-link.active {
     color: $gray-800 !important;
   }
 
+  &-phenotype {
+    @extend .badge;
+    background-color: $orange-light;
+    color: $gray-800 !important;
+    font-weight: 500 !important;
+  }
+
   &-tag {
     @extend .badge;
     background-color: $gray-light;
@@ -784,6 +791,29 @@ textarea:focus {
 .btn-outline-secondary.focus {
   box-shadow: 0 0 0 0px !important;
 }
+
+.btn-info {
+    color: #2d2d2d !important;
+    font-size: 14px !important;
+    background-color: $gray-300 !important;
+    background-image: none;
+    border-color: $gray-300 !important;
+  }
+  
+  .btn-info:active,
+  .btn-info.active,
+  .show > .btn-info.dropdown-toggle {
+    color: #2d2d2d !important;
+    font-size: 14px !important;
+    background-color: $gray-300 !important;
+    background-image: none;
+    border-color: $gray-300 !important;
+  }
+  
+  .btn-info:focus,
+  .btn-info.focus {
+    box-shadow: 0 0 0 0px !important;
+  }
 
 .dropdown-menu {
   border: 1px solid $gray-400 !important;

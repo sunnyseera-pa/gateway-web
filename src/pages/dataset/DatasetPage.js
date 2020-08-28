@@ -68,6 +68,7 @@ class DatasetDetail extends Component {
     discoursePostCount: 0,
     searchString: "",
     isHovering: false,
+    isHoveringPhenotypes: false,
     objects: [
       {
         id: "",
@@ -195,7 +196,8 @@ class DatasetDetail extends Component {
 
   toggleHoverState(state) {
     return {
-      isHovering: !state.isHovering
+      isHovering: !state.isHovering,
+      isHoveringPhenotypes: !state.isHoveringPhenotypes
     };
   }
 
@@ -336,6 +338,9 @@ class DatasetDetail extends Component {
         if (data.datasetfields.metadataquality && typeof data.datasetfields.metadataquality.quality_rating !== "undefined") {
             rating = data.datasetfields.metadataquality.quality_rating;
         }
+        else {
+            return <Fragment><div style={{lineHeight: 1}}><MetadataNotRated className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Not rated</span></div></Fragment>
+        }
 
       return (
         <Fragment>
@@ -439,7 +444,7 @@ class DatasetDetail extends Component {
                       ? ""
                       : data.tags.features.map((keyword, index) => {
                           return (
-                            <a key={`tag-${index}`} href={"/search?search=" + keyword}>
+                            <a key={`tag-${index}`} href={"/search?search=&tab=Datasets&keywords=" + keyword}>
                               <div className="ml-2 badge-tag">{keyword}</div>
                             </a>
                           );
@@ -754,6 +759,53 @@ class DatasetDetail extends Component {
                         </div>
                       </Col>
                     </Row> 
+
+                    {data.datasetfields.phenotypes !== "undefined" && data.datasetfields.phenotypes.length > 0 ?
+                        <Fragment>
+                            <Row className="mt-2">
+                                <Col sm={12}>
+                                    <div className="rectangle">
+                                        <Row className="gray800-14-bold">
+                                            <Col sm={12}>
+                                                <span className="mr-3">Phenotypes</span>
+
+                                                <span onMouseEnter={this.handleMouseHover} onMouseLeave={this.handleMouseHover} >
+                                                    {this.state.isHoveringPhenotypes ? <InfoFillSVG /> : <InfoSVG />}
+                                                </span>
+
+                                                {this.state.isHoveringPhenotypes && (
+                                                    <div className="dataClassToolTip">
+                                                        <span className="white-13-semibold">
+                                                            When patients interact with physicians, or are admitted into hospital, information is collected electronically on their symptoms, diagnoses, laboratory test results, and prescriptions and stored in Electronic Health Records (EHR). EHR are a valuable resource for researchers and clinicians for improving health and healthcare. Phenotyping algorithms are complex computer programs that extract useful information from EHR so they can be used for health research.
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </Col>
+                                        </Row>
+
+
+                                        <Row className="mt-2">
+                                            <Col sm={12} className="gray800-14">
+                                                Below are the phenotypes identified in this dataset through a phenotyping algorithm.
+                                            </Col>
+                                        </Row>
+
+                                        {data.datasetfields.phenotypes.map((phenotype, index) => {
+                                            
+                                            return (<Row className={index === 0 ? "mt-3" : "mt-2"}>
+                                                <Col sm={3}>
+                                                    <a href={phenotype.url} rel="noopener noreferrer" target="_blank" className="purple-14">{phenotype.name}</a>
+                                                </Col>
+                                                <Col sm={9} className="gray800-14-opacity">
+                                                    {phenotype.type}
+                                                </Col>
+                                            </Row>)
+                                        })}
+                                    </div>
+                                </Col>
+                            </Row>
+                        </Fragment> : ''
+                    }
                   </Tab>
                   <Tab eventKey="TechDetails" title={`Technical details`}>
                     <Row className="width-100" style={{ margin: "0%" }}>
