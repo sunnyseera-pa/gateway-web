@@ -34,7 +34,7 @@ class TypaheadUser extends React.Component {
         this.setState({ options: data, value });
       })
       .catch(err => {
-        alert('Can not get users');
+        alert('Failed to fetch users');
       });
 }
 
@@ -69,7 +69,7 @@ class TypaheadUser extends React.Component {
         renderMenuItemChildren={(option, props) => (
           <div className="userOption">
             <div>{option.name}</div>
-            <div><span>{option.bio || 'Instituation not set'}</span> <span>{option.orcid || 'No ORCID'}</span></div>
+            <div><span>{option.bio || 'Institution not set'}</span> <span>{option.orcid || 'No ORCID'}</span></div>
           </div>
         )}
       />

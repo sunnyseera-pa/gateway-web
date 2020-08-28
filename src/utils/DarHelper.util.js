@@ -57,7 +57,7 @@ let modifyQuestionIds = (questionSet) => {
         if(typeof question.questionId !== undefined) {
             question.questionId = `${qValue.questionId.toLowerCase()}_${uniqueId}`;
         }
-        // 2. if qObj has input and input.options meaning potential nest, loop over nested options
+        // 4. if qObj has input and input.options meaning potential nest, loop over nested options
         if(typeof question.input === 'object' && typeof question.input.options !== 'undefined') {
             modifyNestedQuestionIds([...question.input.options], uniqueId);
         }

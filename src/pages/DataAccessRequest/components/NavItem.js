@@ -1,11 +1,13 @@
 import React, {useState, Fragment} from 'react'
 import { isEmpty } from 'lodash';
+import '../DataAccessRequest.scss'; 
+const NavItem = ({parentForm, questionPanels, onFormSwitchPanel, activePanelId, enabled}) => {
 
-const NavItem = ({parentForm, questionPanels, onFormSwitchPanel, activePanelId}) => {
-
-    const onClickItem = (e, panel, index) => {
+    const onClickItem = (e, panel) => {
         e.preventDefault();
-        onFormSwitchPanel(panel);
+        if(enabled) {
+            onFormSwitchPanel(panel);
+        }
     }
 
     const buildNavItem = () => {
@@ -13,14 +15,15 @@ const NavItem = ({parentForm, questionPanels, onFormSwitchPanel, activePanelId})
         const baseClasses = 'gray800-14 dar-nav-item';
         if(!isEmpty(qPanels)) {
             return qPanels.map((item, index) =>{
-                if (parentForm.pageId === item.pageId) {
+                if (parentForm.pageId === item.pageId && item.navHeader) {
                     let classes = item.panelId === activePanelId ? baseClasses + ' nav-item-active' : baseClasses;
+                    
                     return  (
                         <li 
                             className={classes} 
                             style={{cursor: 'pointer'}} 
                             key={index} 
-                            onClick={e => onClickItem(e, item, index)}>
+                            onClick={e => onClickItem(e, item)}>
                             {item.navHeader}
                         </li> 
                     )

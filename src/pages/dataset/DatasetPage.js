@@ -252,7 +252,7 @@ class DatasetDetail extends Component {
             const {data: { publisher : { dataRequestModalContent = {}, allowsMessaging = false }}} = response;
             const stateObj = { 
               requiresModal: !_.isEmpty(dataRequestModalContent) ? true : false,
-              allowNewMessage: _.isEmpty(dataRequestModalContent) ? true : false,
+              allowNewMessage: allowsMessaging && _.isEmpty(dataRequestModalContent) ? true : false,
               allowsMessaging,
               dataRequestModalContent
              }
@@ -293,7 +293,7 @@ class DatasetDetail extends Component {
     } else {
       this.topicContext = {
         ...this.topicContext,
-        allowNewMessage: true
+        allowNewMessage: false
       }
     }
   }
@@ -465,7 +465,7 @@ class DatasetDetail extends Component {
                             data.name,
                             data.datasetfields.contactPoint
                           )
-                        }>Request Access</button>
+                        }>Request access</button>
                       
                        : requiresModal ?
                         <button className="btn btn-primary addButton pointer float-right" onClick={() => { this.toggleModal()}}>How to request access</button>
@@ -473,7 +473,7 @@ class DatasetDetail extends Component {
                         <Fragment>
                           <Link className={`btn button-tertiary dark-14  ${allowsMessaging ? 'mr-2' : 'float-right'}`}
                             to={{ pathname: `/data-access-request/dataset/${data.datasetid}`}}
-                            onClick={() => Event("Buttons", "Click", "Request Access")}>Request Access
+                            onClick={() => Event("Buttons", "Click", "Request Access")}>Request access
                           </Link>
                           {
                             allowsMessaging ?
