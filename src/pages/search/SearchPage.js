@@ -493,6 +493,13 @@ class SearchPage extends React.Component {
             }
         }
 
+        var showSort = true;
+        if ((key === '' || key === 'Datasets') && datasetCount === 0) showSort = false;
+        if (key === 'Tools' && toolCount === 0) showSort = false;
+        if (key === 'Projects' && projectCount === 0) showSort = false;
+        if (key === 'Papers' && paperCount === 0) showSort = false;
+        if (key === 'People' && personCount === 0) showSort = false;
+
         let datasetPaginationItems = [];
         let toolPaginationItems = [];
         let projectPaginationItems = [];
@@ -706,44 +713,46 @@ class SearchPage extends React.Component {
 
                         {!isResultsLoading ?
                             <Col sm={12} md={12} lg={9} className="mt-4">
-                                <Row>
-                                    <Col className="text-right">
-                                        <Dropdown alignRight onSelect={this.handleSort}>
-                                            <Dropdown.Toggle variant="info" id="dropdown-menu-align-right" className="gray800-14">
-                                                {(() => {   
-                                                    if (key === 'Datasets'){
-                                                        if (datasetSort === 'popularity') return 'Sort by popularity';
-                                                        else if (datasetSort === 'metadata') return 'Sort by metadata quality';
-                                                        else return 'Sort by relevance';
-                                                    }
-                                                    else if (key === 'Tools'){
-                                                        if (toolSort === 'popularity') return 'Sort by popularity';
-                                                        else return 'Sort by relevance';
-                                                    }
-                                                    else if (key === 'Projects'){
-                                                        if (projectSort === 'popularity') return 'Sort by popularity';
-                                                        else return 'Sort by relevance';
-                                                    }
-                                                    else if (key === 'Papers'){
-                                                        if (paperSort === 'popularity') return 'Sort by popularity';
-                                                        else return 'Sort by relevance';
-                                                    }
-                                                    else if (key === 'People'){
-                                                        if (personSort === 'popularity') return 'Sort by popularity';
-                                                        else return 'Sort by relevance';
-                                                    }
-                                                })()}
-                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            </Dropdown.Toggle>
-                                        
-                                            <Dropdown.Menu>
-                                                <Dropdown.Item eventKey="relevance" className="gray800-14 ">Sort by relevance</Dropdown.Item>
-                                                <Dropdown.Item eventKey="popularity" className="gray800-14">Sort by popularity</Dropdown.Item>
-                                                {key === 'Datasets' ? <Dropdown.Item eventKey="metadata" className="gray800-14">Sort by metadata quality</Dropdown.Item> : ''}
-                                            </Dropdown.Menu>
-                                        </Dropdown>
-                                    </Col>
-                                </Row>
+                                {!showSort ? '' :
+                                    <Row>
+                                        <Col className="text-right">
+                                            <Dropdown alignRight onSelect={this.handleSort}>
+                                                <Dropdown.Toggle variant="info" id="dropdown-menu-align-right" className="gray800-14">
+                                                    {(() => {   
+                                                        if (key === 'Datasets'){
+                                                            if (datasetSort === 'popularity') return 'Sort by popularity';
+                                                            else if (datasetSort === 'metadata') return 'Sort by metadata quality';
+                                                            else return 'Sort by relevance';
+                                                        }
+                                                        else if (key === 'Tools'){
+                                                            if (toolSort === 'popularity') return 'Sort by popularity';
+                                                            else return 'Sort by relevance';
+                                                        }
+                                                        else if (key === 'Projects'){
+                                                            if (projectSort === 'popularity') return 'Sort by popularity';
+                                                            else return 'Sort by relevance';
+                                                        }
+                                                        else if (key === 'Papers'){
+                                                            if (paperSort === 'popularity') return 'Sort by popularity';
+                                                            else return 'Sort by relevance';
+                                                        }
+                                                        else if (key === 'People'){
+                                                            if (personSort === 'popularity') return 'Sort by popularity';
+                                                            else return 'Sort by relevance';
+                                                        }
+                                                    })()}
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                </Dropdown.Toggle>
+                                            
+                                                <Dropdown.Menu>
+                                                    <Dropdown.Item eventKey="relevance" className="gray800-14 ">Sort by relevance</Dropdown.Item>
+                                                    <Dropdown.Item eventKey="popularity" className="gray800-14">Sort by popularity</Dropdown.Item>
+                                                    {key === 'Datasets' ? <Dropdown.Item eventKey="metadata" className="gray800-14">Sort by metadata quality</Dropdown.Item> : ''}
+                                                </Dropdown.Menu>
+                                            </Dropdown>
+                                        </Col>
+                                    </Row>
+                                }
                                 
                                 {key === 'Datasets' ?
                                     datasetCount <= 0 && !isResultsLoading ? <NoResults type='datasets' searchString={searchString} />

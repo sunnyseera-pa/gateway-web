@@ -396,7 +396,9 @@ class RelatedObject extends React.Component {
                             }
                             else { //default to dataset
                                 var phenotypesSelected = queryString.parse(window.location.search).phenotypes ? queryString.parse(window.location.search).phenotypes.split("::") : [];
-                        
+                                var searchTerm = queryString.parse(window.location.search).search ? queryString.parse(window.location.search).search : '';
+                                var phenotypesSeached = data.datasetfields.phenotypes.filter(phenotype => phenotype.name.toLowerCase() === searchTerm.toLowerCase())
+                                
                                 return (
                                     <Row className="noMargin">
                                         <Col sm={10} lg={10} className="pad-left-24">
@@ -415,18 +417,35 @@ class RelatedObject extends React.Component {
                                                 <SVGIcon name="dataseticon" fill={'#ffffff'} className="badgeSvg mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Dataset</span>
                                             </span>
-                                            
-                                            {!phenotypesSelected || phenotypesSelected.length <= 0 ? '' : phenotypesSelected.map((phenotype) => {
-                                                if (activeLink===true){
-                                                    if (onSearchPage === true) { 
-                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('phenotypesSelected', phenotype)}><div className="badge-phenotype">Phenotype: {phenotype}</div></span>
+                                            {(() => {
+                                                if (phenotypesSeached.length > 0) {
+                                                    if (activeLink===true){
+                                                        if (onSearchPage === true) { 
+                                                            return <span className="pointer" onClick={event => this.updateOnFilterBadge('phenotypesSelected', phenotypesSeached[0].name)}><div className="badge-phenotype">Phenotype: {phenotypesSeached[0].name}</div></span>
+                                                        }
+                                                        else { 
+                                                            return <a href={'/search?search=&tab=Datasets&phenotypes==' + phenotypesSeached[0].name}><div className="badge-phenotype">Phenotype: {phenotypesSeached[0].name}</div></a>
+                                                        }
                                                     }
-                                                    else { 
-                                                        return <a href={'/search?search=&tab=Datasets&phenotypes==' + phenotype}><div className="badge-phenotype">Phenotype: {phenotype}</div></a>
+                                                    else {
+                                                        return <div className="badge-phenotype">Phenotype: {phenotypesSeached[0].name}</div>
                                                     }
                                                 }
-                                                else {
-                                                    return <div className="badge-phenotype">Phenotype: {phenotype}</div>
+                                            })()}
+
+                                            {!phenotypesSelected || phenotypesSelected.length <= 0 ? '' : phenotypesSelected.map((phenotype) => {
+                                                if (phenotypesSeached.length === 0 || phenotypesSeached[0].name !== phenotype) {
+                                                    if (activeLink===true){
+                                                        if (onSearchPage === true) { 
+                                                            return <span className="pointer" onClick={event => this.updateOnFilterBadge('phenotypesSelected', phenotype)}><div className="badge-phenotype">Phenotype: {phenotype}</div></span>
+                                                        }
+                                                        else { 
+                                                            return <a href={'/search?search=&tab=Datasets&phenotypes==' + phenotype}><div className="badge-phenotype">Phenotype: {phenotype}</div></a>
+                                                        }
+                                                    }
+                                                    else {
+                                                        return <div className="badge-phenotype">Phenotype: {phenotype}</div>
+                                                    }
                                                 }
                                             })}
 

@@ -99,7 +99,7 @@ class AddEditPaperPage extends React.Component {
 					'Stroke'
 				];
 
-				res.data.data.forEach((to) => {
+				res.data.data[0].forEach((to) => {
 					if (!tempTopicArray.includes(to) && to !== '') {
 						tempTopicArray.push(to);
 					}
@@ -169,7 +169,7 @@ class AddEditPaperPage extends React.Component {
 					'Yield Optimization'
 				];
 
-				res.data.data.forEach((fe) => {
+				res.data.data[0].forEach((fe) => {
 					if (!tempFeaturesArray.includes(fe) && fe !== '') {
 						tempFeaturesArray.push(fe);
 					}

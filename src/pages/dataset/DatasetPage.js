@@ -332,6 +332,11 @@ class DatasetDetail extends Component {
       data.relatedObjects = [];
     }
 
+    
+    if (data.datasetfields.phenotypes !== "undefined" && data.datasetfields.phenotypes.length > 0) {
+        data.datasetfields.phenotypes.sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0));
+    }
+
     function Metadata() {
         const [show, setShow] = useState(false);
         const target = useRef(null);

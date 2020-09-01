@@ -77,7 +77,7 @@ class AddEditProjectPage extends React.Component {
         return new Promise((resolve, reject) => {
             axios.get(baseURL + '/api/v1/search/filter/topic/project')
                 .then((res) => {
-                    this.setState({ combinedTopic: res.data.data.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
+                    this.setState({ combinedTopic: res.data.data[0].sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
                     resolve();
                 });
         });
@@ -87,7 +87,7 @@ class AddEditProjectPage extends React.Component {
         return new Promise((resolve, reject) => {
             axios.get(baseURL + '/api/v1/search/filter/feature/project')
                 .then((res) => {
-                    this.setState({ combinedFeatures: res.data.data.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
+                    this.setState({ combinedFeatures: res.data.data[0].sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
                     resolve();
                 });
         });
@@ -97,7 +97,7 @@ class AddEditProjectPage extends React.Component {
         return new Promise((resolve, reject) => {
             axios.get(baseURL + '/api/v1/search/filter/category/project')
                 .then((res) => {
-                    this.setState({ combinedCategories: res.data.data.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
+                    this.setState({ combinedCategories: res.data.data[0].sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
                     resolve();
                 });
         });
