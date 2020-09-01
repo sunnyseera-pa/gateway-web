@@ -1,10 +1,9 @@
 @import '../../../css/styles.scss';
 
-.relatedResourcesModal .modal-dialog {
+.relatedResourcesModal .modal-dialog { 
       margin: 0 auto !important;
       top: 50% !important;
-      left: 15% !important;
-      transform: translate(-50%, -50%) !important;
+      transform: translate(50%, -50%) !important;
     
       @include mq('tablet',max){
         left: -10% !important;
@@ -17,7 +16,7 @@
       @include mq('phablet',max){
         left: -25% !important;
       } 
-    }
+    } 
 
 .modal-close {
     margin-right: -8px;
