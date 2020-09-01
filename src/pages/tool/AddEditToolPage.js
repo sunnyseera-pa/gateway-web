@@ -104,11 +104,11 @@ class AddEditToolPage extends React.Component {
 					'Stroke'
 				];
 
-				res.data.data.forEach((to) => {
+				res.data.data[0].forEach((to) => {
 					if (!tempTopicArray.includes(to) && to !== '') {
 						tempTopicArray.push(to);
 					}
-				});
+                });
 				this.setState({
 					combinedTopic: tempTopicArray.sort(function (a, b) {
 						return a.toUpperCase() < b.toUpperCase()
@@ -174,7 +174,7 @@ class AddEditToolPage extends React.Component {
 					'Yield Optimization'
 				];
 
-				res.data.data.forEach((fe) => {
+				res.data.data[0].forEach((fe) => {
 					if (!tempFeaturesArray.includes(fe) && fe !== '') {
 						tempFeaturesArray.push(fe);
 					}
@@ -229,7 +229,7 @@ class AddEditToolPage extends React.Component {
 					'XML'
 				];
 
-				res.data.data.forEach((la) => {
+				res.data.data[0].forEach((la) => {
 					if (!tempLanguagesArray.includes(la) && la !== '') {
 						tempLanguagesArray.push(la);
 					}
@@ -272,7 +272,7 @@ class AddEditToolPage extends React.Component {
 					'Web application'
 				];
 
-				res.data.data.forEach((ca) => {
+				res.data.data[0].forEach((ca) => {
 					if (!tempCategoriesArray.includes(ca) && ca !== '') {
 						tempCategoriesArray.push(ca);
 					}
@@ -307,7 +307,7 @@ class AddEditToolPage extends React.Component {
 					'Eclipse Public License version 2.0'
 				];
 
-				res.data.data.forEach((li) => {
+				res.data.data[0].forEach((li) => {
 					if (!tempLicensesArray.includes(li) && li !== '') {
 						tempLicensesArray.push(li);
 					}
