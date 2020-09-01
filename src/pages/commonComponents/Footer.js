@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import Loading from './Loading'
+import './CommonComponents.scss';  
 
 var cmsURL = require('./BaseURL').getCMSURL();
 
@@ -47,5 +48,5 @@ class Footer extends React.Component {
         );
     }
 }
-
+ 
 export default Footer;

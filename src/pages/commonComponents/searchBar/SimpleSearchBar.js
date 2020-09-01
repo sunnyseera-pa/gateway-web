@@ -5,14 +5,13 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Alert from 'react-bootstrap/Alert';
 
-import SVGIcon from "../../images/SVGIcon";
-import { ReactComponent as ColourLogoSvg } from '../../images/colour.svg';
-import { ReactComponent as ClearButtonSvg } from '../../images/clear.svg';
+import SVGIcon from "../../../images/SVGIcon";
+import { ReactComponent as ColourLogoSvg } from '../../../images/colour.svg';
+import { ReactComponent as ClearButtonSvg } from '../../../images/clear.svg';
+import './SearchBar.scss'; 
 
-import UserMenu from './UserMenu';
-
-var baseURL = require('./BaseURL').getURL();
-var cmsURL = require('./BaseURL').getCMSURL();
+var baseURL = require('../BaseURL').getURL();
+var cmsURL = require('../BaseURL').getCMSURL();
 
 class SimpleSearchBar extends React.Component {
 

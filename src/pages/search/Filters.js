@@ -1,11 +1,12 @@
 import React, { Component, useState } from 'react';
 import { Row, Col, InputGroup, FormText, Dropdown } from 'react-bootstrap';
 import { ReactComponent as ChevronRight } from '../../images/chevron-right.svg';
+import './Search.scss'; 
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <a href="" ref={ref} onClick={e => { e.preventDefault(); onClick(e); }} >
         {children}
-    </a>
+    </a> 
 ));
 
 const CustomMenu = React.forwardRef(
@@ -99,7 +100,7 @@ class Filters extends Component {
     render() {
         const { data, selected, title, filterOpen, allFilters } = this.state;
 
-        var filterCard = 'filterCard mb-1';
+        var filterCard = 'filterCard mb-1'; 
         if (filterOpen) {
             filterCard = 'filterCardSelected mb-1';
         }
@@ -110,18 +111,18 @@ class Filters extends Component {
                     <div className={filterCard}>
                         <Row className=""  >
                             <Col xs={12}>
-                                <div className="inlineBlock"><span className="gray800-14-bold">{title}</span></div>
+                                <div className="inlineBlock"><span className="gray800-14-bold">{title}</span></div> 
                             
                                 <div className="floatRight"><ChevronRight /></div>
                                 {selected.length === 0 ? <span /> :
-                                    <div className="white-12-bold bubbleCount floatRight"> {selected.length} </div>
+                                    <div className="white-12-bold bubbleCount floatRight"> {selected.length} </div> 
                                 }
                                 
                             </Col>
                         </Row>
                     </div>
                 </Dropdown.Toggle>
-
+ 
                 <Dropdown.Menu as={CustomMenu} className="filterMenu" ref={filterHolder => this.filterHolder = filterHolder}>
                     <div className="filterMenuHeader" >
                         <div className="inlineBlock">

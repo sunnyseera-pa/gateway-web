@@ -1,23 +1,25 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, Fragment } from 'react'; 
 import axios from 'axios';
 import classnames from "classnames";
 
 import { Container, Row, Col, Dropdown } from 'react-bootstrap';
 import NotificationBadge from 'react-notification-badge';
 
-import SVGIcon from "../../images/SVGIcon";
-import { ReactComponent as ColourLogoSvg } from '../../images/colour.svg';
-import { ReactComponent as ClearButtonSvg } from '../../images/clear.svg';
-import { ReactComponent as NotificationsBellSvg } from '../../images/bell.svg'; 
-import { ReactComponent as HamBurgerSvg } from '../../images/hamburger.svg';
-import { ReactComponent as ArrowDownSvg } from '../../images/stock.svg';
-import { ReactComponent as WhiteArrowDownSvg } from '../../images/arrowDownWhite.svg';
+import SVGIcon from "../../../images/SVGIcon";
+import { ReactComponent as ColourLogoSvg } from '../../../images/colour.svg';
+import { ReactComponent as ClearButtonSvg } from '../../../images/clear.svg';
+import { ReactComponent as NotificationsBellSvg } from '../../../images/bell.svg'; 
+import { ReactComponent as HamBurgerSvg } from '../../../images/hamburger.svg';
+import { ReactComponent as ArrowDownSvg } from '../../../images/stock.svg';
+import { ReactComponent as WhiteArrowDownSvg } from '../../../images/arrowDownWhite.svg';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
+import './SearchBar.scss'; 
+
 
 import moment from 'moment';
-import { cmsURL } from '../../configs/url.config';
+import { cmsURL } from '../../../configs/url.config';
 
-var baseURL = require('./BaseURL').getURL();
+var baseURL = require('../BaseURL').getURL();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <a href="" ref={ref} onClick={e => { e.preventDefault(); onClick(e); }} >
@@ -232,7 +234,7 @@ class SearchBar extends React.Component {
       }
 
     render() {
-        const { userState, newData, isLoading, clearMessage, isHovering } = this.state;
+        const { userState, newData, isLoading, clearMessage, isHovering } = this.state; 
 
         if (isLoading) {
             return <></>;
@@ -426,7 +428,7 @@ class SearchBar extends React.Component {
                 </div>
 
                 <div id="mobileSearchBar" className={!this.state.visible ? "navbarHidden" : ""}>
-                    <div className="searchBarBackground">
+                    <div className="searchBarBackground"> 
                         <Row className="whiteBackground">
                             <Col xs={2}>
                                 <Dropdown>
@@ -650,7 +652,7 @@ class SearchBar extends React.Component {
                                         </Col>
                                     )
                                 }
-                            })()}
+                            })()} 
                         </Row>
                     </div>
                 </div>

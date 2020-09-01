@@ -4,6 +4,7 @@ import { Col, Row } from "react-bootstrap";
 import SVGIcon from "../../../images/SVGIcon";
 import { ReactComponent as TableSvg } from "../../../images/table.svg";
 import { ReactComponent as ChevronRightSvg } from "../../../images/chevron-right.svg";
+import '../Dataset.scss'; 
 
 
 var baseURL = require("../../commonComponents/BaseURL").getURL();
@@ -31,7 +32,7 @@ class TechnicalMetadata extends React.Component {
     return (
       <div>
         <div>
-          <Row className="entryBox heightDataClass alignCenter pad-bottom-24">
+          <Row className="entryBox heightDataClass alignCenter pad-bottom-24">  
             <Col sm={11} lg={11}>
               <Row>
                 <TableSvg className="margin-top-2" />

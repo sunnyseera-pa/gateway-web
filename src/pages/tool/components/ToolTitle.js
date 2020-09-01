@@ -6,7 +6,7 @@ import { Row, Col }  from 'react-bootstrap/';
 import { ReactComponent as EmptyStarIconSvg } from '../../../images/starempty.svg'
 import { ReactComponent as FullStarIconSvg } from '../../../images/star.svg';
 import { baseURL } from '../../../configs/url.config';
-import moment from 'moment';
+import moment from 'moment'; 
 
 class ToolTitle extends React.Component {
 

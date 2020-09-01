@@ -1,10 +1,10 @@
 
 import React from 'react';
-import Reviews from '../src/pages/commonComponents/Reviews';
-import ReviewButton from '../src/pages/commonComponents/Reviews';
-import AddReviewForm from '../src/pages/commonComponents/Reviews';
-import ReplyButton from '../src/pages/commonComponents/Reviews';
-import ReplyReviewForm from '../src/pages/commonComponents/Reviews';
+import Reviews from '../src/pages/commonComponents/reviews/Reviews';
+import ReviewButton from '../src/pages/commonComponents/reviews/Reviews';
+import AddReviewForm from '../src/pages/commonComponents/reviews/Reviews';
+import ReplyButton from '../src/pages/commonComponents/reviews/Reviews';
+import ReplyReviewForm from '../src/pages/commonComponents/reviews/Reviews';
 import {reviewsData} from './mocks/dataMock';
 
 beforeEach(() => {

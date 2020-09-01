@@ -1,5 +1,6 @@
 import React from 'react';
 import { Row, Col, Image } from 'react-bootstrap';
+import './CommonComponents.scss';  
 
 var baseURL = require('./BaseURL').getURL();
 
@@ -90,7 +91,7 @@ class Login extends React.Component {
                         <Col sm={10} lg={10}>
                             <div id="wayfinder">Loading...</div>
                         </Col>
-                        <Col sm={1} lg={1} />
+                        <Col sm={1} lg={1} /> 
                     </Row>
                 </div>
             </div >

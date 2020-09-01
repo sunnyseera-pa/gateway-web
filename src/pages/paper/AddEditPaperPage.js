@@ -3,12 +3,13 @@ import axios from 'axios';
 import { initGA } from '../../tracking';
 import moment from 'moment';
 import { Container } from 'react-bootstrap';
-import SearchBar from '../commonComponents/SearchBar';
+import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
 import AddEditPaperForm from './AddEditPaperForm';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
+import './Paper.scss'; 
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
@@ -348,7 +349,7 @@ class AddEditPaperPage extends React.Component {
 					doUpdateSearchString={this.updateSearchString}
 					doToggleDrawer={this.toggleDrawer}
 					userState={userState}
-				/>
+				/> 
 				<Container>
 					<AddEditPaperForm
 						data={data}

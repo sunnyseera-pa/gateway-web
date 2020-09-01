@@ -1,0 +1,88 @@
+@import '../../css/styles.scss';
+
+.dataClassToolTip{
+  width: 275px;
+  border-radius: 8px;
+  background-color: $dark;
+  padding: 10px;
+  position: absolute;
+  left: 0%;
+  top: 80%;
+  z-index: 1;
+}
+
+.variableBox {
+    background-color: #fff;
+    padding: 30px;
+    margin-left: 8px;
+    margin-right: 8px;
+    border-bottom: #e7e9ed solid 1px;
+
+}
+
+.variableBox .collapseWait{
+  transition: transform 0.5s linear 0s;
+}
+
+.heightDataClass{ 
+  @include mq('tablet-wide'){
+    height: 114px !important;
+  }
+}
+
+.dataClassArrow{
+    @include mq('tablet-small',max){
+      transform: translate(-20px, 0px) !important;
+    }
+  }
+
+.heightVariable{
+  @include mq('tablet-wide'){
+    height: 56px !important;
+  }
+
+  @include mq('tablet-wide', max){
+    height: 62px !important;
+  }
+
+  @include mq('tablet-small', max){
+    height: 95px !important;
+  }
+
+  @include mq('phone-wide', max){
+    height: 115px !important;
+  }
+}
+
+.centerVariable{
+    position: absolute;
+    transform: translateY(-50%);
+    width: 95%;
+  }
+
+.variablePadding{
+  @include mq('tablet-small', max){
+    padding-top: 40px !important;
+  }
+
+  @include mq('phone-wide', max){
+    padding-top: 50px !important;
+  }
+
+}
+
+.variableArrow{
+    @include mq('tablet-wide',max){
+      transform: translate(-25px, 0px) !important;
+    }
+    @include mq('tablet-wide'){
+      transform: translate(0px, -8px);
+    }
+  }
+
+.customLabel {
+  background-color: $light-teal !important;
+  border: none !important;
+  padding: 4px !important;
+  width: 84px;
+}

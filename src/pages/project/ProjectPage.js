@@ -3,13 +3,13 @@
 import React, { Component } from "react";
 import ReactMarkdown from "react-markdown";
 import axios from "axios";
-import _ from 'lodash';
+import _ from 'lodash'; 
 import queryString from "query-string";
 import { Container, Row, Col, Tabs, Tab, Alert, Button } from "react-bootstrap";
 import moment from "moment";
-import RelatedObject from "../commonComponents/RelatedObject";
+import RelatedObject from "../commonComponents/relatedObject/RelatedObject";
 import NotFound from "../commonComponents/NotFound";
-import SearchBar from "../commonComponents/SearchBar";
+import SearchBar from "../commonComponents/searchBar/SearchBar";
 import Loading from "../commonComponents/Loading";
 import Creators from "../commonComponents/Creators";
 import SVGIcon from "../../images/SVGIcon";
@@ -134,7 +134,7 @@ class ProjectDetail extends Component {
     axios.post(baseURL + "/api/v1/counter/update", { id, counter });
   };
 
-  getAdditionalObjectInfo = async data => {
+  getAdditionalObjectInfo = async data => { 
     let tempObjects = [];
     if(data){
     const promises = data.map(async (object, index) => {

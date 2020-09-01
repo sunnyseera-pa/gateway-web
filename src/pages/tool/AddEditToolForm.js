@@ -2,17 +2,18 @@ import React from 'react';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Typeahead } from 'react-bootstrap-typeahead';
+import { Typeahead } from 'react-bootstrap-typeahead'; 
 import { Event } from '../../tracking';
 import moment from 'moment';
 import {Form, Button, Row, Col} from 'react-bootstrap';
 
-import RelatedResources from '../commonComponents/RelatedResources';
-import RelatedObject from '../commonComponents/RelatedObject';
+import RelatedResources from '../commonComponents/relatedResources/RelatedResources';
+import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
+import './Tool.scss'; 
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -256,7 +257,7 @@ const AddEditToolForm = (props) => {
                                     <Form.Group>
                                         <p className="gray800-14 margin-bottom-0 pad-bottom-4">Version (optional)</p>
                                         <p className="gray700-13 margin-bottom-0">
-                                            i.e. 3.6.1
+                                            i.e. 3.6.1 
                                         </p>
                                         <Form.Control id="categories.programmingLanguageVersion" name="categories.programmingLanguageVersion" type="text" className="smallFormInput addFormInput" onChange={formik.handleChange} value={formik.values.categories.programmingLanguageVersion} onBlur={formik.handleBlur} />
                                     </Form.Group>

@@ -1,6 +1,6 @@
 import React from 'react';
 import CollectionPage from '../src/pages/collections/CollectionPage';
-import RelatedObject from '../src/pages/commonComponents/RelatedObject';
+import RelatedObject from '../src/pages/commonComponents/relatedObject/RelatedObject';
 import {userStateData, collectionPageData} from './mocks/dataMock';
 
 let wrapper;

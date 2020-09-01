@@ -3,6 +3,7 @@ import { Row, Col, Container } from 'react-bootstrap';
 import { ReactComponent as WhiteLogoSvg } from '../../../src/images/white.svg';
 import Login from '../commonComponents/Login';
 import axios from 'axios';
+import './SSOPage.scss'; 
 
 const baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -47,7 +48,7 @@ class SSOPage extends Component {
     const { renderPage } = this.state;
     return (
       renderPage && (
-        <div className='landingBackground'>
+        <div className='landingBackground'>  
           <Row className='pt-5 pl-5'>
             <Col xs={{ span: 6, order: 1 }} lg={{ span: 6, order: 1 }}>
               {' '}
@@ -55,7 +56,7 @@ class SSOPage extends Component {
             </Col>
           </Row>
           <Container>
-            <div className='login-content mt-4'>
+            <div className='login-content mt-4'> 
               <div className='login-body mb-4'>
                 <Row className='mt-4'>
                   <Col xs={1} md={1} />

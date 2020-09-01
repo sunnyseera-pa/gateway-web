@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import PersonTitle from './components/PersonTitle';
 import {Container, Row, Col, Tabs, Tab} from 'react-bootstrap';
-import SearchBar from '../commonComponents/SearchBar';
+import SearchBar from '../commonComponents/searchBar/SearchBar';
 import DataSet from '../commonComponents/DataSet';
 import Tool from '../commonComponents/Tool';
 import NotFound from '../commonComponents/NotFound';
@@ -12,7 +12,7 @@ import Project from '../commonComponents/Project';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
-import { PageView, initGA } from '../../tracking';
+import { PageView, initGA } from '../../tracking'; 
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
