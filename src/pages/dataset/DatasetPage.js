@@ -802,7 +802,7 @@ class DatasetDetail extends Component {
                                             
                                             return (<Row className={index === 0 ? "mt-3" : "mt-2"}>
                                                 <Col sm={3}>
-                                                    <a href={phenotype.url} rel="noopener noreferrer" target="_blank" className="purple-14">{phenotype.name}</a>
+                                                    <a href={phenotype.url} rel="noopener noreferrer" className="purple-14">{phenotype.name}</a>
                                                 </Col>
                                                 <Col sm={9} className="gray800-14-opacity">
                                                     {phenotype.type}

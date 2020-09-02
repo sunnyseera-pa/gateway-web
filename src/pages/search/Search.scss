@@ -24,8 +24,7 @@
   }
 
 .filterMenu {
-    top: -58px !important;
-    left: 275px !important;
+    transform: translate(275px, -2px) !important;
     max-height: 345px;
     width: 480px;
     box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03) !important;
@@ -44,9 +43,10 @@
 }
 
 .filterHolder {
-    padding-top:8px;
-    position: fixed;
+    position: -webkit-sticky !important; /* Safari */
+    position: sticky !important;
     width:265px;
     z-index:999;
-    margin-top: 37px;
+    margin-top: 45px;
+    top: 100px;
 }
