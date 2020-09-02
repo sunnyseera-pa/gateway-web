@@ -84,7 +84,8 @@ class DatasetDetail extends Component {
     requiresModal: false,
     allowsMessaging: false,
     allowNewMessage: false,
-    dataRequestModalContent: {}
+    dataRequestModalContent: {},
+    showAllPhenotype: false
   };
 
   topicContext = {};
@@ -300,6 +301,10 @@ class DatasetDetail extends Component {
     }
   }
 
+    showAllPhenotypes = () => {
+        this.setState({ showAllPhenotype: true });
+    };
+
   render() {
     const {
       searchString,
@@ -314,7 +319,8 @@ class DatasetDetail extends Component {
       showDrawer,
       showModal,
       requiresModal,
-      allowsMessaging
+      allowsMessaging,
+      showAllPhenotype
     } = this.state;
 
     if (isLoading) {
@@ -791,24 +797,48 @@ class DatasetDetail extends Component {
                                             </Col>
                                         </Row>
 
-
                                         <Row className="mt-2">
                                             <Col sm={12} className="gray800-14">
                                                 Below are the phenotypes identified in this dataset through a phenotyping algorithm.
                                             </Col>
                                         </Row>
 
-                                        {data.datasetfields.phenotypes.map((phenotype, index) => {
-                                            
-                                            return (<Row className={index === 0 ? "mt-3" : "mt-2"}>
-                                                <Col sm={3}>
-                                                    <a href={phenotype.url} rel="noopener noreferrer" className="purple-14">{phenotype.name}</a>
+                                        <Row className="mt-3">
+                                            {!showAllPhenotype ?
+                                                data.datasetfields.phenotypes.slice(0, 20).map((phenotype) => {
+                                                    return (
+                                                        <Fragment>
+                                                            <Col xs={6} lg={3} className='mb-2'>
+                                                                <a href={phenotype.url} rel="noopener noreferrer" className="purple-14">{phenotype.name}</a>
+                                                            </Col>
+                                                            <Col xs={6} lg={3} className="gray800-14-opacity">
+                                                                {phenotype.type}
+                                                            </Col>
+                                                        </Fragment>
+                                                    )
+                                                })
+                                                :
+                                                data.datasetfields.phenotypes.map((phenotype) => {
+                                                    return (
+                                                        <Fragment>
+                                                            <Col xs={6} lg={3} className='mb-2'>
+                                                                <a href={phenotype.url} rel="noopener noreferrer" className="purple-14">{phenotype.name}</a>
+                                                            </Col>
+                                                            <Col xs={6} lg={3} className="gray800-14-opacity">
+                                                                {phenotype.type}
+                                                            </Col>
+                                                        </Fragment>
+                                                    )
+                                                })}
+                                        </Row>
+                                        {!showAllPhenotype && data.datasetfields.phenotypes.length > 20 ?
+                                            <Row className="mt-3 text-center">
+                                                <Col sm={12} className="purple-14">
+                                                    <span onClick={() => this.showAllPhenotypes()} style={{ cursor: "pointer" }} >Show all phenotypes</span>
                                                 </Col>
-                                                <Col sm={9} className="gray800-14-opacity">
-                                                    {phenotype.type}
-                                                </Col>
-                                            </Row>)
-                                        })}
+                                            </Row>
+                                            :''
+                                        }
                                     </div>
                                 </Col>
                             </Row>
