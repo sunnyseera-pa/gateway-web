@@ -422,6 +422,21 @@ class ToolDetail extends Component {
                     </Row>
 
                     <Row className="mt-2">
+                      <Col sm={12} lg={12}>
+                        <div className="rectangle">
+                          <Row className="gray800-14-bold">
+                            <Col sm={12}>Results/Insights</Col>
+                          </Row>
+                          <Row className="mt-3">
+                            <Col sm={12} className="gray800-14">
+                              <ReactMarkdown source={data.resultsInsights} />
+                            </Col>
+                          </Row>
+                        </div>
+                      </Col>
+                    </Row>
+
+                    <Row className="mt-2">
                       <Col sm={12}>
                         <div className="rectangle">
                           <Row className="gray800-14-bold">

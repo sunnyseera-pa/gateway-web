@@ -30,6 +30,7 @@ const AddEditPaperForm = (props) => {
             journal: props.data.journal || '',
             journalYear: props.data.journalYear || '',
             description: props.data.description || '',
+            resultsInsights: props.data.resultsInsights || '',
             authors: props.data.authors || [props.userState[0].id],
             tags: props.data.tags || {
                 features: [],
@@ -47,6 +48,8 @@ const AddEditPaperForm = (props) => {
             description: Yup.string()
                 .max(3000, 'Maximum of 3,000 characters')
                 .required('This cannot be empty'),
+            resultsInsights: Yup.string()
+                .max(3000, 'Maximum of 3,000 characters'),
             authors: Yup.string().required('This cannot be empty'),
             isPreprint: Yup.bool(),
             journal: Yup.string()
@@ -151,6 +154,10 @@ const AddEditPaperForm = (props) => {
         var input = e.target.value;
         document.getElementById("currentCount").innerHTML=e.target.value.length
     }
+
+    function resultsInsightsCount(e) {
+      document.getElementById("resultsInsightsCount").innerHTML=e.target.value.length
+  }
 
     const [isShown, setIsShown] = useState(false);
 
@@ -420,6 +427,47 @@ const AddEditPaperForm = (props) => {
                   {formik.touched.description && formik.errors.description ? (
                     <div className="errorMessages">
                       {formik.errors.description}
+                    </div>
+                  ) : null}
+                </Form.Group>
+
+                <Form.Group>
+                  <div style={{ display: "inline-block" }}>
+                    <p className="gray800-14 margin-bottom-0 pad-bottom-4">
+                      Results/Insights
+                    </p>
+                    <p className="gray700-13 margin-bottom-0">
+                    Include any results or insights about the paper.
+                    </p>
+                  </div>
+                  <div style={{ display: "inline-block", float: "right" }}>
+                    <br />
+                    <span className="gray700-13">
+                      (
+                      <span id="resultsInsightsCount">
+                        {formik.values.resultsInsights.length || 0}
+                      </span>
+                      /3000)
+                    </span>
+                  </div>
+                  <Form.Control
+                    as="textarea"
+                    id="resultsInsights"
+                    name="resultsInsights"
+                    type="text"
+                    className={
+                      formik.touched.resultsInsights && formik.errors.resultsInsights
+                        ? "emptyFormInput addFormInput descriptionInput"
+                        : "addFormInput descriptionInput"
+                    }
+                    onKeyUp={resultsInsightsCount}
+                    onChange={formik.handleChange}
+                    value={formik.values.resultsInsights}
+                    onBlur={formik.handleBlur}
+                  />
+                  {formik.touched.resultsInsights && formik.errors.resultsInsights ? (
+                    <div className="errorMessages">
+                      {formik.errors.resultsInsights}
                     </div>
                   ) : null}
                 </Form.Group>
