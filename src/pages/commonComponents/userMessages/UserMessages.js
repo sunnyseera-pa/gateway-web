@@ -97,7 +97,10 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 				relatedObjectIds,
 				createdDate: 'New message',
 				active: true,
-				topicMessages: []
+				topicMessages: [],
+				requiresModal, 
+				dataRequestModalContent,
+				datasets
 			};
 			return topic;
 		}
@@ -163,7 +166,6 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 					let dataRequestModalContent = {};
 					let {data: { topic }} = res;
 					let {datasets: [publisherObj = {}, ...rest] = []} = topic;
-					console.log(publisherObj);
 					const {data: { publisher = {} }} = await getPublisherById(publisherObj.publisher);
 					if(!_.isEmpty(publisher)) {
 						({dataRequestModalContent} = publisher);
@@ -204,20 +206,15 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 	 */
 	const onRequestAccess = (e) => {
         e.preventDefault();
-		let id = '';
+		//let id = '';
 		if (!_.isEmpty(activeTopic)) {
             // remove scroll if in body
             if(document.body.classList.contains('no-scroll'))
                 document.body.classList.remove('no-scroll');
-
-			let { datasets: dS } = { ...activeTopic };
-			if (typeof dS !== 'undefined' && !_.isEmpty(dS)) {
-                id = dS[0].datasetId;
-			} else {
-                id = datasets[0].datasetId;
-			}
+			let { datasets } = { ...activeTopic };
 			closed();
-            history.push({pathname: `/data-access-request/dataset/${id}`});
+			const { publisher } = datasets[0];
+			history.push({ pathname: `/data-access-request/publisher/${publisher}`}, { datasets });
 		} 
 	};
 

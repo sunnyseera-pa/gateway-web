@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import _ from 'lodash';
@@ -10,17 +10,19 @@ import DataSetHelper from '../../../utils/DataSetHelper.util';
 import './DataSetModal.scss';
 
 const DataSetModal = ({ open, closed, context, userState }) => {
-
-	let datasets = [], datasetId = '', title = '', contactPoint = '', dataRequestModalContent = {header: '', body: ''} ;
-
-	if(typeof context !== 'undefined' && !_.isEmpty(context) && !_.isEmpty(context.datasets)) {
-		 ({datasets, title, contactPoint, dataRequestModalContent } = context);
-		 ({datasetId } = datasets[0]);
-	}
+	let datasets = [], title = '', contactPoint = '', dataRequestModalContent = {header: '', body: ''}, showActionButtons;
 
 	const { loggedIn: isLoggedIn } = userState;
+	const [screenData, setScreenData] = useState({});
 
 	let history = useHistory();
+
+	const initScreenData = () => {
+		if(typeof context !== 'undefined' && !_.isEmpty(context) && !_.isEmpty(context.datasets)) {
+			 ({ datasets, title, contactPoint, dataRequestModalContent, showActionButtons = true } = context);
+			setScreenData({ datasets, title, contactPoint, dataRequestModalContent, showActionButtons });
+		}
+	}
 
 	const onRequestAccess = (e) => {
 		// 1. stop default click
@@ -35,7 +37,9 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 			// 3. log google analytics event (Category-Action-Label)
 			Event('Buttons', 'Click', 'Request Access');
 			// 4. redirect to access request
-			history.push({ pathname: `/data-access-request/dataset/${datasetId}` }, { context });
+			debugger;
+			const { publisher } = context.datasets[0];
+			history.push({ pathname: `/data-access-request/publisher/${publisher}`}, { datasets: context.datasets });
 		}
 	};
 
@@ -51,6 +55,11 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 			closed(showEnquiry);
 		}
 	}; 
+
+	useEffect(() => {
+		if (open)
+			initScreenData();
+	}, [open, context]);
 
 	return (
 		<Fragment>
@@ -70,16 +79,17 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 								onClick={() => onCloseModal(false)}
 							/>
 						</div>
-						{ (!_.isEmpty(dataRequestModalContent) && typeof dataRequestModalContent.header !== 'undefined') ? <ReactMarkdown source={dataRequestModalContent.header}/> : ''}
+						{ (!_.isEmpty(screenData.dataRequestModalContent) && typeof screenData.dataRequestModalContent.header !== 'undefined') ? <ReactMarkdown source={screenData.dataRequestModalContent.header}/> : ''}
 					</div>
 				</div>
 
 
 				<div className='appModal-body'>
-					{ (!_.isEmpty(dataRequestModalContent) && typeof dataRequestModalContent.body !== 'undefined') ? <ReactMarkdown source={dataRequestModalContent.body} /> : '' }
+					{ (!_.isEmpty(screenData.dataRequestModalContent) && typeof screenData.dataRequestModalContent.body !== 'undefined') ? <ReactMarkdown source={screenData.dataRequestModalContent.body} /> : '' }
 				</div>
 
 				<div className='appModal-footer'>
+				{ screenData.showActionButtons ?
 					<div className='appModal-footer--wrap'>
 						<button
 							className='button-secondary mr-2'
@@ -94,6 +104,9 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 							Make an enquiry
 						</button>
 					</div>
+					:
+					null
+				}
 				</div>
 			</Modal>
 		</Fragment>

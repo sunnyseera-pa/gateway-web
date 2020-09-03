@@ -21,6 +21,14 @@ class TypeaheadDataset extends React.Component {
     this.getData();
   }
 
+  componentDidUpdate(prevProps) {
+		if (this.props.selectedDatasets !== prevProps.selectedDatasets) {
+      this.setState({
+        value: this.props.selectedDatasets
+      });
+		}
+	}
+
   getData() {
     if(this.props.selectedDatasets) {
       const { publisher } = this.props.selectedDatasets[0];
