@@ -4,13 +4,13 @@ import _ from 'lodash';
 const NavDropdown = ({ options, onFormSwitchPanel, enabled }) => {
     const { questionPanels } = options;
     const { pages } = options;
-    const { is5SafesForm } = options;
+    const { allowsMultipleDatasets } = options;
     const aboutNavItem = {
       "pageId":"about",
       "panelId":"about"
     }
 
-    if(is5SafesForm && !questionPanels.some(q => q.pageId === 'about')) {
+    if(allowsMultipleDatasets && !questionPanels.some(q => q.pageId === 'about')) {
       questionPanels.unshift(aboutNavItem);
     }
 
