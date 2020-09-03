@@ -148,8 +148,7 @@ class DataAccessRequest extends Component {
 			// 2. Destructure backend response for this context containing details of DAR including question set and current progress
 			let {
 				data: {
-					data: { jsonSchema, questionAnswers, _id, applicationStatus, aboutApplication = {} },
-					datasets,
+					data: { jsonSchema, questionAnswers, _id, applicationStatus, aboutApplication = {}, datasets }
 				},
 			} = response;
 			// 3. Set up the DAR
@@ -168,8 +167,7 @@ class DataAccessRequest extends Component {
 			);
 			const {
 				data: {
-					data: { jsonSchema, questionAnswers, _id, applicationStatus, aboutApplication = {} },
-					dataset
+					data: { jsonSchema, questionAnswers, _id, applicationStatus, aboutApplication = {}, dataset }
 				},
 			} = response;
 
@@ -193,8 +191,7 @@ class DataAccessRequest extends Component {
 			// 2. Destructure backend response for this context containing details of DAR including question set and current progress
 			let {
 				data: {
-					data: { jsonSchema, questionAnswers, _id, applicationStatus, aboutApplication = {} },
-					datasets,
+					data: { jsonSchema, questionAnswers, _id, applicationStatus, aboutApplication = {}, datasets, readOnly, userType }
 				},
 			} = response;
 			// 3. Set up the DAR
