@@ -37,7 +37,6 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 			// 3. log google analytics event (Category-Action-Label)
 			Event('Buttons', 'Click', 'Request Access');
 			// 4. redirect to access request
-			debugger;
 			const { publisher } = context.datasets[0];
 			history.push({ pathname: `/data-access-request/publisher/${publisher}`}, { datasets: context.datasets });
 		}
