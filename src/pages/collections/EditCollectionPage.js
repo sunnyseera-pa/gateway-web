@@ -173,7 +173,7 @@ class EditCollectionPage extends React.Component {
 
     toggleModal = (showEnquiry = false, context = {}) => {
         this.setState( ( prevState ) => {
-            return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
+            return { showModal: !prevState.showModal, context, showDrawer: showEnquiry }; 
         });
     }
 
@@ -350,7 +350,7 @@ const EditCollectionForm = (props) => {
                                     <Col sm={7} lg={9}>
                                         <p className="gray800-14 margin-bottom-0 pad-bottom-4">Image URL (optional)</p>
                                 <p className="gray700-13 margin-bottom-0">
-                                    You must have permission from the owner of the image before you add it to the gateway.
+                                    Paste an image address URL. Optimal image size: W700 x H466
                                 </p>
                                     </Col>
                                     <Col sm={5} lg={3} className="pl-4">

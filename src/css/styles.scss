@@ -1185,12 +1185,21 @@ button a {
     margin-top: 2px !important;
   }
 
+
   .margin-left-15 {
     margin-left: 15px !important;
   }
 
   .margin-right-15 {
     margin-right: 15px !important;
+  }
+
+  .margin-right-1 {
+    margin-right: 1px !important;
+  }
+
+  .margin-right-30 {
+    margin-right: 30px !important;
   }
 
   .margin-bottom-0 {
@@ -1365,7 +1374,7 @@ button a {
   &:hover, &:focus {
     opacity: 1;
   }
-}
+} 
 
 .notification-enter {
   visibility: hidden;

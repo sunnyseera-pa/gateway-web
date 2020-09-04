@@ -317,69 +317,48 @@ class CollectionPage extends Component {
 
 						<Row>
 							<Col sm={1} lg={1} />
+							
 							{!data.imageLink || data.imageLink === 'https://' ? (
-								''
+									<div id="defaultCollectionImage" className="margin-right-1" />
 							) : (
-								<Col sm={1} lg={1} className='logoWidth'>
 									<img
 										src={data.imageLink}
 										alt='collectionLogo'
-										id='collectionLogo'
+										id='collectionImage'
+										className="margin-right-1"
 									/>
-								</Col>
 							)}
+
 							<Col
-								sm={10}
-								lg={10}
-								className={
-									!data.imageLink || data.imageLink === 'https://'
-										? ''
-										: 'titleWidth'
-								}
-							>
+								className = 'titleWidth'
+							> 
 								<Row>
 									<Col
 										sm={9}
 										lg={9}
-										className={
-											!data.imageLink || data.imageLink === 'https://'
-												? ''
-												: 'collectionTitleCard'
-										}
+										className = 'collectionTitleCard'
 									>
 										<span className='black-28 collectionTitleText'>
 											{' '}
 											{data.name}{' '}
 										</span>
 									</Col>
-									{!data.imageLink || data.imageLink === 'https://' ? (
-										<Col sm={1} lg={1} />
-									) : (
-										''
-									)}
 									<Col
 										sm={2}
 										lg={2}
-										className={
-											!data.imageLink || data.imageLink === 'https://'
-												? 'collectionDate'
-												: 'collectionDate collectionTitleCard'
-										}
+										className = 'collectionDate collectionTitleCard'
 									>
 										<span className='gray700-13'>
 											Created {moment(data.createdAt).format('MMM YYYY')}{' '}
 										</span>
 									</Col>
 								</Row>
+
 								<Row>
 									<Col
 										sm={12}
 										lg={12}
-										className={
-											!data.imageLink || data.imageLink === 'https://'
-												? ''
-												: 'collectionTitleCard'
-										}
+										className = 'collectionTitleCard'
 									>
 										{data.persons.map((person, index) => {
 											if (index > 0) {
@@ -399,8 +378,8 @@ class CollectionPage extends Component {
 									</Col>
 								</Row>
 							</Col>
-							<Col sm={1} lg={10} />
 						</Row>
+
 						<Row className='pad-top-32'>
 							<Col sm={1} lg={1} />
 							<Col sm={10} lg={10} className='gray800-14'>
