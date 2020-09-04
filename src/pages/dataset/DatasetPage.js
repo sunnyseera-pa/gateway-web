@@ -672,7 +672,7 @@ class DatasetDetail extends Component {
                             </Col>
                             {data.datasetfields.geographicCoverage ? (
                               <Col sm={9} className="gray800-14">
-                                {data.datasetfields.geographicCoverage}
+                                {data.datasetfields.geographicCoverage.toString()}
                               </Col>
                             ) : (
                               <Col sm={9} className="gray800-14-opacity">
