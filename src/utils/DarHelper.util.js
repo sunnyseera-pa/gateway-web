@@ -10,13 +10,81 @@ let staticContent = {
 		active: true,
 		title: 'About this application',
 		description:
-			'Requesting access to data can be a lengthy process due the amount of checks needed in order to ensure the safe use of patient data. The steps below aim to clarify the process.',
+			'Requesting access to data can be a lengthy process due the amount of checks needed in order to ensure the safe use of patient data. The steps below aim to clarify the process.'
 	},
 	aboutPanel: {
 		panelId: 'about',
 		index: 0,
-		pageId: 'about',
-	},
+		pageId: 'about'
+	}
+};
+
+let configActionModal = (type = '') => {
+	let config = {};
+	if (!_.isEmpty(type)) {
+		switch (type.toUpperCase()) {
+			case 'APPROVE':
+				config = {
+					title: 'Application approval',
+					subTitle: 'Are you sure you want to approve this application?',
+					description: false,
+					buttons: {
+						cancel: {
+							label: 'No, nevermind',
+							action: 'cancel',
+							class: 'button-secondary mr-2'
+						},
+						confirmApproval: {
+							label: 'Confirm approval',
+							action: 'confirmApproval',
+							class: 'btn btn-primary addButton'
+						}
+					}
+				};
+				break;
+			case 'REJECT':
+				config = {
+					title: 'Application rejection',
+					subTitle:
+						'Are you sure you want to reject this application? If, so please provide the applicant with a reason for the failed request.',
+					description: true,
+					buttons: {
+						cancel: {
+							label: 'No, nevermind',
+							action: 'cancel',
+							class: 'button-secondary mr-2'
+						},
+						confirmReject: {
+							label: 'Confirm rejection',
+							action: 'confirmRejection',
+							class: 'btn btn-primary addButton'
+						}
+					}
+				};
+				break;
+			case 'APPROVEWITHCONDITIONS':
+				config = {
+					title: 'Application approval with conditions',
+					subTitle:
+						'Are you sure you want to apprive this application? If so, please provide the conditions of this approval to the applicant',
+					description: true,
+					buttons: {
+						cancel: {
+							label: 'No, nevermind',
+							action: 'cancel',
+							class: 'button-secondary mr-2'
+						},
+						confirmApprovalConditions: {
+							label: 'Confirm approval with conditions',
+							action: 'confirmApprovalConditions',
+							class: 'btn btn-primary addButton'
+						}
+					}
+				};
+		}
+	}
+
+	return config;
 };
 
 let autoComplete = (questionId, uniqueId, questionAnswers) => {
@@ -34,7 +102,7 @@ let autoComplete = (questionId, uniqueId, questionAnswers) => {
 
 		questionList = {
 			...questionList,
-			[`${key}`]: value,
+			[`${key}`]: value
 		};
 	});
 
@@ -50,7 +118,7 @@ let questionSetToDuplicate = (questionSetId, schema) => {
 	if (!_.isEmpty(qSet)) {
 		// 2. find the questionSet to duplicate for the qSet
 		let {
-			questions: [question],
+			questions: [question]
 		} = { ...qSet };
 		// 3. duplicate questionSet ensure we take a copy
 		let qSetDuplicate = [...questionSets].find(
@@ -95,16 +163,16 @@ let modifyQuestionIds = (questionSet) => {
 				action: 'removeApplicant',
 				panelId: `applicant`,
 				text: 'Remove Applicant',
-				class: 'btn btn-light',
+				class: 'btn btn-light'
 			},
 			question: '',
-			questionId: `removeApplicant_${uniqueId}`,
-		},
+			questionId: `removeApplicant_${uniqueId}`
+		}
 	];
 	return {
 		...questionSet,
 		questionSetId: questionSetId,
-		questions: questionsModified,
+		questions: questionsModified
 	};
 };
 
@@ -155,12 +223,12 @@ let insertSchemaUpdates = (questionSetId, duplicateQuestionSet, schema) => {
 	if (!_.isEmpty(qSet)) {
 		// 2. find the questionSet to duplicate for the qSet
 		let {
-			questions: [question],
+			questions: [question]
 		} = qSet;
 		// 3. get the questionSetId that need to insert into our questionPanel
 		if (typeof question.input.panelId !== undefined) {
 			let {
-				input: { panelId },
+				input: { panelId }
 			} = question;
 			// 4. find question panel
 			let questionPanel = findQuestionPanel(panelId, questionPanels) || {};
@@ -169,7 +237,7 @@ let insertSchemaUpdates = (questionSetId, duplicateQuestionSet, schema) => {
 				// 5. new questionSet to be pushed
 				let questionSet = {
 					index: 5,
-					questionSetId: duplicateQuestionSet.questionSetId,
+					questionSetId: duplicateQuestionSet.questionSetId
 				};
 				let idx = questionSets.length - 1;
 				// 6. push into preliminary position
@@ -178,7 +246,7 @@ let insertSchemaUpdates = (questionSetId, duplicateQuestionSet, schema) => {
 			return {
 				...schema,
 				questionSets,
-				questionPanels,
+				questionPanels
 			};
 		}
 	}
@@ -195,7 +263,7 @@ let removeQuestionReferences = (questionSetId, questionId, schema) => {
 	if (!_.isEmpty(question)) {
 		// 3. extract panelId
 		let {
-			input: { panelId },
+			input: { panelId }
 		} = question;
 		// 4. remove from questionSet
 		questionSets = questionSets.filter((qs) => {
@@ -209,7 +277,7 @@ let removeQuestionReferences = (questionSetId, questionId, schema) => {
 		return {
 			...schema,
 			questionPanels,
-			questionSets,
+			questionSets
 		};
 	}
 	return schema;
@@ -275,7 +343,11 @@ let removeQuestionSet = (
  * [TotalQuestionAnswered]
  * @desc - Sets total questions answered for each section
  */
-let totalQuestionsAnswered = (component, panelId = '', questionAnswers = {}) => {
+let totalQuestionsAnswered = (
+	component,
+	panelId = '',
+	questionAnswers = {}
+) => {
 	let totalQuestions = 0;
 	let totalAnsweredQuestions = 0;
 
@@ -292,13 +364,14 @@ let totalQuestionsAnswered = (component, panelId = '', questionAnswers = {}) => 
 		);
 		return {
 			totalAnsweredQuestions: applicationQuestionAnswers[0],
-			totalQuestions: applicationQuestionAnswers[1],
+			totalQuestions: applicationQuestionAnswers[1]
 		};
 	} else {
-		if (_.isEmpty(questionAnswers)) ({ questionAnswers } = { ...component.state });
+		if (_.isEmpty(questionAnswers))
+			({ questionAnswers } = { ...component.state });
 		// 1. deconstruct state
 		let {
-			jsonSchema: { questionSets },
+			jsonSchema: { questionSets }
 		} = { ...component.state };
 		// 2. omits out blank null, undefined, and [] values from this.state.answers
 		questionAnswers = _.pickBy(
@@ -345,122 +418,128 @@ let saveTime = () => {
  * @desc Returns the saved time for DAR
  */
 let getSavedAgo = (lastSaved) => {
-    if (!_.isEmpty(lastSaved)) return lastSaved;
-    else return ``;
+	if (!_.isEmpty(lastSaved)) return lastSaved;
+	else return ``;
 };
 
 let getActiveQuestion = (questionsArr, questionId) => {
-    let child;
+	let child;
 
-    if (!questionsArr) return;
+	if (!questionsArr) return;
 
-    for (const questionObj of questionsArr) {
-        if (questionObj.questionId === questionId) return questionObj;
+	for (const questionObj of questionsArr) {
+		if (questionObj.questionId === questionId) return questionObj;
 
-        if (
-            typeof questionObj.input === 'object' &&
-            typeof questionObj.input.options !== 'undefined'
-        ) {
-            questionObj.input.options
-                .filter((option) => {
-                    return (
-                        typeof option.conditionalQuestions !== 'undefined' &&
-                        option.conditionalQuestions.length > 0
-                    );
-                })
-                .forEach((option) => {
-                    child = getActiveQuestion(
-                        option.conditionalQuestions,
-                        questionId
-                    );
-                });
-        }
+		if (
+			typeof questionObj.input === 'object' &&
+			typeof questionObj.input.options !== 'undefined'
+		) {
+			questionObj.input.options
+				.filter((option) => {
+					return (
+						typeof option.conditionalQuestions !== 'undefined' &&
+						option.conditionalQuestions.length > 0
+					);
+				})
+				.forEach((option) => {
+					child = getActiveQuestion(option.conditionalQuestions, questionId);
+				});
+		}
 
-        if (child) return child;
-    }
-}
+		if (child) return child;
+	}
+};
 
 let calcAccordionClasses = (active, allowedNavigation) => {
-    let classes = ['black-16'];
-    if(!allowedNavigation) 
-        classes = [...classes, 'disabled'];
-    
-    if(active)
-        classes = [...classes, 'active'];
+	let classes = ['black-16'];
+	if (!allowedNavigation) classes = [...classes, 'disabled'];
 
-    return classes;
-}
+	if (active) classes = [...classes, 'active'];
+
+	return classes;
+};
 
 let createTopicContext = (datasets = []) => {
-    if(_.isEmpty(datasets))
-    {
-        return {
-            datasets: [],
-            tags: [],
-            relatedObjectIds: [],
-            subTitle: '',
-            allowNewMessage: false
-        }
-    }
-    let dataRequestModalContent = {}, allowsMessaging = false, requiresModal = false, allowNewMessage = false;
-    let { publisherObj = {}, contactPoint = '', publisher = '' } = datasets[0];
-    if(!_.isEmpty(publisherObj)) {
-        dataRequestModalContent = publisherObj.dataRequestModalContent;
-        allowsMessaging = publisherObj.allowsMessaging;
-        requiresModal = !_.isEmpty(publisherObj.dataRequestModalContent) ? true : false
-        allowNewMessage = publisherObj.allowsMessaging
-    }
-    return { 
-        requiresModal,
-        allowNewMessage,
-        allowsMessaging,
-        dataRequestModalContent,
-        datasets: datasets.map(dataset => { 
-            let { datasetId } = dataset;
-            return { datasetId, publisher};
-        }) || [],
-        tags: datasets.map(dataset => dataset.name) || [],
-        relatedObjectIds: datasets.map(dataset => dataset._id),
-        title: publisher || '', 
-        subTitle: datasets.map(dataset => dataset.name).join(' '),
-        contactPoint
-    };
-}
+	if (_.isEmpty(datasets)) {
+		return {
+			datasets: [],
+			tags: [],
+			relatedObjectIds: [],
+			subTitle: '',
+			allowNewMessage: false
+		};
+	}
+	let dataRequestModalContent = {},
+		allowsMessaging = false,
+		requiresModal = false,
+		allowNewMessage = false;
+	let { publisherObj = {}, contactPoint = '', publisher = '' } = datasets[0];
+	if (!_.isEmpty(publisherObj)) {
+		dataRequestModalContent = publisherObj.dataRequestModalContent;
+		allowsMessaging = publisherObj.allowsMessaging;
+		requiresModal = !_.isEmpty(publisherObj.dataRequestModalContent)
+			? true
+			: false;
+		allowNewMessage = publisherObj.allowsMessaging;
+	}
+	return {
+		requiresModal,
+		allowNewMessage,
+		allowsMessaging,
+		dataRequestModalContent,
+		datasets:
+			datasets.map((dataset) => {
+				let { datasetId } = dataset;
+				return { datasetId, publisher };
+			}) || [],
+		tags: datasets.map((dataset) => dataset.name) || [],
+		relatedObjectIds: datasets.map((dataset) => dataset._id),
+		title: publisher || '',
+		subTitle: datasets.map((dataset) => dataset.name).join(' '),
+		contactPoint
+	};
+};
 
 let createModalContext = (datasets = []) => {
-    let dataRequestModalContent = {}, allowsMessaging = false, requiresModal = false, allowNewMessage = false;
-    let { publisherObj = {}, contactPoint = '', publisher = '' } = datasets[0];
-    if(!_.isEmpty(publisherObj)) {
-        dataRequestModalContent = publisherObj.dataRequestModalContent;
-        allowsMessaging = publisherObj.allowsMessaging;
-        requiresModal = !_.isEmpty(publisherObj.dataRequestModalContent) ? true : false
-        allowNewMessage = publisherObj.allowsMessaging
-    }
-    return { 
-        requiresModal,
-        allowNewMessage,
-        allowsMessaging,
-        dataRequestModalContent,
-        datasets,
-        contactPoint,
-        title: publisher
-    };
-}
+	let dataRequestModalContent = {},
+		allowsMessaging = false,
+		requiresModal = false,
+		allowNewMessage = false;
+	let { publisherObj = {}, contactPoint = '', publisher = '' } = datasets[0];
+	if (!_.isEmpty(publisherObj)) {
+		dataRequestModalContent = publisherObj.dataRequestModalContent;
+		allowsMessaging = publisherObj.allowsMessaging;
+		requiresModal = !_.isEmpty(publisherObj.dataRequestModalContent)
+			? true
+			: false;
+		allowNewMessage = publisherObj.allowsMessaging;
+	}
+	return {
+		requiresModal,
+		allowNewMessage,
+		allowsMessaging,
+		dataRequestModalContent,
+		datasets,
+		contactPoint,
+		title: publisher
+	};
+};
 
 export default {
-	questionSetToDuplicate:     questionSetToDuplicate,
-	insertSchemaUpdates:        insertSchemaUpdates,
-	removeQuestionReferences:   removeQuestionReferences,
-	findQuestionSet:            findQuestionSet,
-	findQuestion:               findQuestion,
-	removeQuestionAnswers:      removeQuestionAnswers,
-	autoComplete:               autoComplete,
-    totalQuestionsAnswered:     totalQuestionsAnswered,
-    saveTime:                   saveTime,
-    getSavedAgo:                getSavedAgo,
-    getActiveQuestion:          getActiveQuestion,
-    calcAccordionClasses:       calcAccordionClasses,
-    createTopicContext:         createTopicContext,
-    createModalContext:         createModalContext,
-	staticContent:              staticContent
+	questionSetToDuplicate: questionSetToDuplicate,
+	insertSchemaUpdates: insertSchemaUpdates,
+	removeQuestionReferences: removeQuestionReferences,
+	findQuestionSet: findQuestionSet,
+	findQuestion: findQuestion,
+	removeQuestionAnswers: removeQuestionAnswers,
+	autoComplete: autoComplete,
+	totalQuestionsAnswered: totalQuestionsAnswered,
+	saveTime: saveTime,
+	getSavedAgo: getSavedAgo,
+	getActiveQuestion: getActiveQuestion,
+	calcAccordionClasses: calcAccordionClasses,
+	createTopicContext: createTopicContext,
+	createModalContext: createModalContext,
+	configActionModal: configActionModal,
+	staticContent: staticContent
 };

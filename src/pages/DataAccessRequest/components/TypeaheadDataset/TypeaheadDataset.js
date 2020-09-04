@@ -2,8 +2,8 @@ import React from 'react';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import axios from 'axios';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-import { baseURL } from '../../../configs/url.config';
 import _ from 'lodash'; 
+import { baseURL } from '../../../../configs/url.config';
 
 
 class TypeaheadDataset extends React.Component {
@@ -13,7 +13,8 @@ class TypeaheadDataset extends React.Component {
     this.state = {
       value: props.selectedDatasets,
       options: [],
-      id: props.id
+      id: props.id,
+      readOnly: props.readOnly || false
     };
   }
 
@@ -63,6 +64,7 @@ class TypeaheadDataset extends React.Component {
         minLength={3}
         filterBy={['name']}
         multiple
+        disabled={this.state.readOnly}
         defaultSelected={this.state.value}
         labelKey={options => `${options.name}`}
         renderMenuItemChildren={(option, props) => (

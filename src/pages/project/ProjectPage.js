@@ -5,7 +5,7 @@ import ReactMarkdown from "react-markdown";
 import axios from "axios";
 import _ from 'lodash'; 
 import queryString from "query-string";
-import { Container, Row, Col, Tabs, Tab, Alert, Button } from "react-bootstrap";
+import { Container, Row, Col, Tabs, Tab, Alert } from "react-bootstrap";
 import moment from "moment";
 import RelatedObject from "../commonComponents/relatedObject/RelatedObject";
 import NotFound from "../commonComponents/NotFound";

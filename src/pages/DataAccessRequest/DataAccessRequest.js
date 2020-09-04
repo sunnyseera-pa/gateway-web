@@ -4,14 +4,14 @@ import Winterfell from 'winterfell';
 import _ from 'lodash';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
-import TypeaheadCustom from './components/TypeaheadCustom';
-import TypeaheadUser from './components/TypeaheadUser';
-import TypeaheadDataset from './components/TypeaheadDataset';
-import DatePickerCustom from './components/DatepickerCustom';
+import TypeaheadCustom from './components/TypeaheadCustom/TypeaheadCustom';
+import TypeaheadUser from './components/TypeaheadUser/TypeaheadUser';
+import TypeaheadDataset from './components/TypeaheadDataset/TypeaheadDataset';
+import DatePickerCustom from './components/DatePickerCustom/DatepickerCustom';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
-import NavItem from './components/NavItem';
-import NavDropdown from './components/NavDropdown';
+import NavItem from './components/NavItem/NavItem';
+import NavDropdown from './components/NavDropdown/NavDropdown';
 import DarValidation from '../../utils/DarValidation.util';
 import DarHelper from '../../utils/DarHelper.util';
 import ModalHelper from '../../utils/ModalHelper.util';
@@ -27,8 +27,12 @@ import './DataAccessRequest.scss';
 import { Link } from 'react-router-dom';
 import SVGIcon from '../../images/SVGIcon';
 import moment from 'moment';
+import ApplicantActionButtons from './components/ApplicantActionButtons/ApplicantActionButtons';
+import CustodianActionButtons from './components/CustodianActionButtons/CustodianActionButtons';
+import ActionModal from './components/ActionModal/ActionModal';
 
 class DataAccessRequest extends Component {
+
 	constructor(props) {
 		super(props);
 		this.onFormSubmit = this.onFormSubmit.bind(this);
@@ -62,6 +66,9 @@ class DataAccessRequest extends Component {
 			showDrawer: false,
 			showModal: false,
 			showMrcModal: false,
+			showActionModal: false,
+			readOnly: false,
+			userType: '',
 			isWideForm: false,
 			allowsMultipleDatasets: false,
 			activeAccordionCard: 0,
@@ -76,8 +83,15 @@ class DataAccessRequest extends Component {
 				completedSubmitAdvice: false,
 				completedInviteCollaborators: false
 			},
-			context: {}
+			context: {},
+			actionModalConfig: {}
 		};
+	}
+
+	applicationState = {
+    CONFIRMAPPROVALCONDITIONS	: 'approved with conditions',
+    CONFIRMREJECTION					: 'rejected',
+    CONFIRMAPPROVAL						: 'approved'
 	}
 
 	async componentDidMount() {
@@ -195,7 +209,7 @@ class DataAccessRequest extends Component {
 				},
 			} = response;
 			// 3. Set up the DAR
-			this.setScreenData({ jsonSchema, questionAnswers, _id, applicationStatus, aboutApplication, datasets });
+			this.setScreenData({ jsonSchema, questionAnswers, _id, applicationStatus, aboutApplication, datasets, readOnly, userType });
 		} catch (error) {
 			this.setState({ isLoading: false });
 			console.error(error);
@@ -204,7 +218,7 @@ class DataAccessRequest extends Component {
 
 	setScreenData = async (context) => {
 		// 1. Destructure DAR context containing questions and any application progress
-		let { jsonSchema, questionAnswers, _id, applicationStatus, aboutApplication, datasets } = context;
+		let { jsonSchema, questionAnswers, _id, applicationStatus, aboutApplication, datasets, readOnly = false, userType = 'Applicant' } = context;
 		let { datasetfields: { publisher } } = datasets[0]; 
 
 		// 2. If about application is empty, this is a new data access request so set up state based on passed context
@@ -249,7 +263,9 @@ class DataAccessRequest extends Component {
 			publisher,
 			aboutApplication,
 			allowsMultipleDatasets,
-			context: modalContext
+			context: modalContext,
+			readOnly,
+			userType
 		});
 	}
 
@@ -624,6 +640,11 @@ class DataAccessRequest extends Component {
 		});
 	}
 
+	onCustodianAction = (e) => {
+		let {target: { value }} = e;
+		this.toggleActionModal(value);
+	}
+
 	toggleCard = (e, eventKey) => {
 		e.preventDefault();
 		// 1. Deconstruct current state
@@ -669,6 +690,37 @@ class DataAccessRequest extends Component {
 		});
 	}
 
+	toggleActionModal = (type = '') => {
+		let actionModalConfig = {}
+		// 1. get basic modal config
+		if(!_.isEmpty(type))
+			actionModalConfig = DarHelper.configActionModal(type);
+		// 2. set state for hide/show/config modal
+		this.setState((prevState) => {
+			return {
+					showActionModal: !prevState.showActionModal,
+					actionModalConfig
+				}
+		});
+	}
+
+	updateApplicationStatus = async (action = {}) => {
+		let {type, statusDesc} = action;
+		switch(type) {
+			case 'CONFIRMAPPROVALCONDITIONS':
+			case 'CONFIRMREJECTION':
+			case 'CONFIRMAPPROVAL':
+				let { _id } = this.state;
+				const body = { applicationStatus: this.applicationState[type], applicationStatusDesc: statusDesc};
+				// const response = await axios.put(`${baseURL}/api/v1/data-access-request/${_id}`, body);
+				// post to API
+				this.toggleActionModal();
+				break;
+			default:
+				this.toggleActionModal();
+		}
+	};
+
 	render() {
 		const {
 			lastSaved,
@@ -681,6 +733,7 @@ class DataAccessRequest extends Component {
 			showDrawer,
 			showModal,
 			showMrcModal,
+			showActionModal,
 			isWideForm,
 			activeAccordionCard,
 			allowedNavigation,
@@ -693,7 +746,10 @@ class DataAccessRequest extends Component {
 				completedSubmitAdvice, 
 				completedInviteCollaborators 
 			},
-			context
+			context,
+			readOnly,
+			userType,
+			actionModalConfig
 		} = this.state;
 		const { userState, location } = this.props;
 
@@ -712,12 +768,12 @@ class DataAccessRequest extends Component {
 						<Accordion.Collapse eventKey='0'>
 							<Card.Body className='gray800-14'>
 								<div className='margin-bottom-16'>
-									If you’re not sure, <Link id='messageLink' className={allowedNavigation ? '' : 'disabled'} onClick={e => this.toggleDrawer()}>send a message to the data custodian</Link> to clarify. The datasets you select may impact the questions being asked in this application form. You cannot change this later.
+									If you’re not sure, <Link id='messageLink' className={allowedNavigation && userType !== 'Custodian' ? '' : 'disabled'} onClick={e => this.toggleDrawer()}>send a message to the data custodian</Link> to clarify. The datasets you select may impact the questions being asked in this application form. You cannot change this later.
 								</div>
 								<div>
 									<span>Datasets</span>
 									<div className='form-group'>
-										<TypeaheadDataset selectedDatasets={selectedDatasets} onHandleDataSetChange={this.onHandleDataSetChange}/>
+										<TypeaheadDataset selectedDatasets={selectedDatasets} onHandleDataSetChange={this.onHandleDataSetChange} readOnly={readOnly}/>
 									</div>
 									{ 
 									_.isEmpty(selectedDatasets) ? 
@@ -727,13 +783,16 @@ class DataAccessRequest extends Component {
 									: null 
 									}
 									<div className='panConfirmDatasets'>
-										<button 
-											type='input' 
-											className={`button-primary ${allowedNavigation ? '' : 'disabled'}`} 
-											disabled={!allowedNavigation}
-											onClick={ () => { this.onNextStep(allowedNavigation) }}
-										>Confirm
-										</button>
+										{ userType === 'Applicant' ?
+											<button 
+												type='input' 
+												className={`button-primary ${allowedNavigation ? '' : 'disabled'}`} 
+												disabled={!allowedNavigation}
+												onClick={ () => { this.onNextStep(allowedNavigation) }}
+											>Confirm
+											</button>
+										: ''
+										}
 									</div>
 								</div>
 							</Card.Body>
@@ -755,9 +814,9 @@ class DataAccessRequest extends Component {
 										If you haven’t already, please make sure you have read the advice provided by the data custodian on how to request access to their datasets.
 									</div>
 									<div className="dar-form-check-group">
-										<input type="checkbox" id="chkReadAdvice" checked={completedReadAdvice} className='dar-form-check' onChange={e => {this.onNextStep(e.target.checked)}}/>
+										<input type="checkbox" id="chkReadAdvice" checked={completedReadAdvice} className='dar-form-check' disabled={readOnly} onChange={e => {this.onNextStep(e.target.checked)}}/>
 										<span className="dar-form-check-label">
-											I have read <Link id='howToRequestAccessLink' className={allowedNavigation ? '' : 'disabled'} onClick={e => this.toggleModal(false, {...this.state.context, showActionButtons: false})}>how to request access</Link>
+											I have read <Link id='howToRequestAccessLink' className={allowedNavigation && userType !== 'Custodian' ? '' : 'disabled'} onClick={e => this.toggleModal(false, {...this.state.context, showActionButtons: false})}>how to request access</Link>
 										</span>
 									</div>
 								</Fragment>
@@ -780,8 +839,11 @@ class DataAccessRequest extends Component {
 										The earlier you get in touch, the better. A lot of projects are not eligible for data access, so it’s important you clarify with the custodian whether they have the data you need, and whether you have a chance of getting access. If you've not done so yet, we recommend sending a message with a brief description of your project and the data you are interested in.
 									</div>
 									<div className="dar-form-check-group">
-										<button className="button-secondary" type='button' onClick={e => this.toggleDrawer()}>Send message</button>
-										<input type="checkbox" id="chkCommunicateAdvice" checked={completedCommunicateAdvice} className='dar-form-check' onChange={e => {this.onNextStep(e.target.checked)}}/>
+										{ userType !== 'Custodian' ? 										
+											<button className="button-secondary" type='button' onClick={e => this.toggleDrawer()}>Send message</button>
+											: ''
+										}
+										<input type="checkbox" id="chkCommunicateAdvice" checked={completedCommunicateAdvice} className='dar-form-check' disabled={readOnly ? true : false} onChange={e => {this.onNextStep(e.target.checked)}}/>
 										<span className="dar-form-check-label">
 											I have completed this step
 										</span>
@@ -807,7 +869,7 @@ class DataAccessRequest extends Component {
 									</div>
 									<div className="dar-form-check-group">
 										<button className="button-secondary" type='button' onClick={e => this.toggleMrcModal()}>MRC Health Data Access toolkit</button>
-										<input type="checkbox" id="chkApprovalAdvice" checked={completedApprovalsAdvice} className='dar-form-check' onChange={e => {this.onNextStep(e.target.checked)}}/>
+										<input type="checkbox" id="chkApprovalAdvice" checked={completedApprovalsAdvice} className='dar-form-check' disabled={readOnly ? true : false} onChange={e => {this.onNextStep(e.target.checked)}}/>
 										<span className="dar-form-check-label">
 											I have completed this step
 										</span>
@@ -840,7 +902,7 @@ class DataAccessRequest extends Component {
 										</ul>
 									</div>
 									<div className="dar-form-check-group">
-										<input type="checkbox" id="chkSubmitAdvice" checked={completedSubmitAdvice} className='dar-form-check' onChange={e => {this.onNextStep(e.target.checked)}}/>
+										<input type="checkbox" id="chkSubmitAdvice" checked={completedSubmitAdvice} className='dar-form-check' disabled={readOnly ? true : false} onChange={e => {this.onNextStep(e.target.checked)}}/>
 										<span className="dar-form-check-label">
 											I have completed this step
 										</span>
@@ -989,6 +1051,7 @@ class DataAccessRequest extends Component {
 									questionAnswers={this.state.questionAnswers}
 									panelId={this.state.activePanelId}
 									disableSubmit={true}
+									readOnly={readOnly}
 									validationErrors={validationErrors}
 									onQuestionFocus={this.onQuestionFocus}
 									onQuestionClick={this.onQuestionClick}
@@ -1071,8 +1134,17 @@ class DataAccessRequest extends Component {
 						<p>{totalQuestions}</p>
 					</div>
 					<div className="action-bar-actions">
-						<button className={`button-tertiary ${allowedNavigation ? '' : 'disabled'}`} style={{width:'156px'}} onClick={this.onFormSubmit}>Submit application</button>
-						<button className={`button-primary ${allowedNavigation ? '' : 'disabled'}`} style={{width:'62px'}} onClick={this.onNextClick}>Next</button>
+						{userType === 'Applicant' ?
+							<ApplicantActionButtons 
+								allowedNavigation 
+								onNextClick={this.onNextClick} 
+								onFormSubmit={this.onFormSubmit} />
+							:
+							<CustodianActionButtons 
+								allowedNavigation
+								onActionClick={this.onCustodianAction}
+								onNextClick={this.onNextClick} />
+						}
 					</div>
 				</div>
 
@@ -1086,15 +1158,22 @@ class DataAccessRequest extends Component {
 				</SideDrawer>
 
 				<DataSetModal 
-                    open={showModal} 
-                    context={context}
-                    closed={this.toggleModal}
-                    userState={userState[0]} 
+					open={showModal} 
+					context={context}
+					closed={this.toggleModal}
+					userState={userState[0]} 
+				/>
+
+				<ActionModal 
+					open={showActionModal}
+					context={actionModalConfig}
+					updateApplicationStatus={this.updateApplicationStatus}
+					close={this.toggleActionModal}
 				/>
 
 				<Modal show={showMrcModal} onHide={e => this.toggleMrcModal()} size="lg" aria-labelledby="contained-modal-title-vcenter" centered className="darModal" >
-                	<iframe src="https://hda-toolkit.org/story_html5.html" className="darIframe"> </iframe>
-            	</Modal>
+					<iframe src="https://hda-toolkit.org/story_html5.html" className="darIframe"> </iframe>
+				</Modal>
 			</div>
 		);
 	}

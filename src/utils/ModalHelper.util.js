@@ -27,7 +27,7 @@ let toggleMrcModal = (parentComponent) => {
 }
 
 export default {
-    toggleDrawer: 		toggleDrawer,
-	toggleModal: 		toggleModal,
-	toggleMrcModal:		toggleMrcModal
+  toggleDrawer	 : 	toggleDrawer,
+	toggleModal		 : 	toggleModal,
+	toggleMrcModal :	toggleMrcModal
 };
