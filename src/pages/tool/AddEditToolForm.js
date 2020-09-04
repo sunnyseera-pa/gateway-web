@@ -2,16 +2,18 @@ import React from 'react';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Typeahead } from 'react-bootstrap-typeahead';
+import { Typeahead } from 'react-bootstrap-typeahead'; 
 import { Event } from '../../tracking';
 import moment from 'moment';
 import {Form, Button, Row, Col} from 'react-bootstrap';
 
-import RelatedResources from '../commonComponents/RelatedResources';
-import RelatedObject from '../commonComponents/RelatedObject';
+import RelatedResources from '../commonComponents/relatedResources/RelatedResources';
+import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
+import ActionBar from '../commonComponents/actionbar/ActionBar';
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
+import './Tool.scss'; 
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -123,16 +125,18 @@ const AddEditToolForm = (props) => {
         var input = e.target.value;
         document.getElementById("currentCount").innerHTML=e.target.value.length
     }
+
+    const relatedResourcesRef = React.useRef()
     
     return (
         <div>
-            <Row className="mt-4">
+            <Row className="margin-top-32">  
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                     <div className="rectangle">
                         <Row>
                             <Col sm={10} lg={10}>
-                             <p className="black-20">{props.isEdit ? 'Edit your tool or resource' : 'Add a new tool or resource'}</p>
+                             <p className="black-20 margin-bottom-0 pad-bottom-8">{props.isEdit ? 'Edit your tool or resource' : 'Add a new tool or resource'}</p>
                             </Col>
                             <Col sm={2} lg={2} className="text-right">
                                 <span className="badge-tool"> 
@@ -141,11 +145,11 @@ const AddEditToolForm = (props) => {
                                 </span>
                             </Col>
                         </Row>
-                        <p className="gray800-14">Tools can be anything you or someone else created or used during a research project</p>
+                        <p className="gray800-14 margin-bottom-0">Tools can be anything you or someone else created or used during a research project</p>
                     </div>
                 </Col>
                 <Col sm={1} lg={10} />
-            </Row>
+            </Row> 
 
             <Row className="pixelGapTop">
                 <Col sm={1} lg={1} />
@@ -153,24 +157,22 @@ const AddEditToolForm = (props) => {
                     <Form onSubmit={formik.handleSubmit} onBlur={formik.handleBlur} autocomplete='off'>
                         <div className="rectangle">
                             <Form.Group>
+                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">Link</p>
+                                <p className="gray700-13 margin-bottom-0">Where can we find this tool or resource?</p>
+                                <Form.Control id="link" name="link" type="text" className={formik.touched.link && formik.errors.link ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.link} onBlur={formik.handleBlur} />
+                                {formik.touched.link && formik.errors.link ? <div className="errorMessages">{formik.errors.link}</div> : null}
+                            </Form.Group>
+
+                            <Form.Group>
                                 <span className="gray800-14">Name</span>
                                 <Form.Control id="name" name="name" type="text" className={formik.touched.name && formik.errors.name ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.name} onBlur={formik.handleBlur} />
                                 {formik.touched.name && formik.errors.name ? <div className="errorMessages">{formik.errors.name}</div> : null}
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="gray800-14">Link</span>
-                                <br />
-                                <span className="gray700-13">Where can we find this tool or resource?</span>
-                                <Form.Control id="link" name="link" type="text" className={formik.touched.link && formik.errors.link ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.link} onBlur={formik.handleBlur} />
-                                {formik.touched.link && formik.errors.link ? <div className="errorMessages">{formik.errors.link}</div> : null}
-                            </Form.Group>
-
-                            <Form.Group>
-                                <span className="gray800-14">Type</span>
-                                <br />
-                                <span className="gray700-13">Select from existing or enter a new one.</span>
-                                <Typeahead
+                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">Type</p>
+                                <p className="gray700-13 margin-bottom-0">Select from existing or enter a new one.</p>
+                                <Typeahead 
                                     id="categories.category"
                                     labelKey="category"
                                     allowNew
@@ -182,7 +184,7 @@ const AddEditToolForm = (props) => {
                                         selected.forEach((selectedItem) => {
                                             selectedItem.customOption === true ? tempSelected.push(selectedItem.category) : tempSelected.push(selectedItem);
                                         })
-                                        formik.values.categories.category = tempSelected[0];
+                                        tempSelected.length > 0 ? formik.values.categories.category = tempSelected[0] : formik.values.categories.category = ""
                                     }}
                                 />
                                 {formik.touched.categories && (formik.errors.categories && typeof formik.errors.categories.category !== "undefined")
@@ -191,9 +193,8 @@ const AddEditToolForm = (props) => {
 
                             <Form.Group>
                                 <div style={{ display: 'inline-block' }}>
-                                    <span className="gray800-14">Description</span>
-                                    <br />
-                                    <span className="gray700-13">Include the tool purpose and objective.</span>
+                                    <p className="gray800-14 margin-bottom-0 pad-bottom-4">Description</p>
+                                    <p className="gray700-13 margin-bottom-0">Include the tool purpose and objective.</p>
                                 </div>
                                 <div style={{ display: 'inline-block', float: 'right' }}>
                                     <br />
@@ -226,11 +227,10 @@ const AddEditToolForm = (props) => {
                             <Row className="mt-2">
                                 <Col sm={9}>
                                     <Form.Group>
-                                        <span className="gray800-14">Implementation</span>
-                                        <br />
-                                        <span className="gray700-13">
+                                        <p className="gray800-14 margin-bottom-0 pad-bottom-4">Implementation</p>
+                                        <p className="gray700-13 margin-bottom-0">
                                             Programming languages, formalisms or frameworks. E.g. Python, RDF, GATE
-                                        </span>
+                                        </p>
                                         <Typeahead
                                             id="categories.programmingLanguage"
                                             labelKey="programmingLanguage"
@@ -255,11 +255,10 @@ const AddEditToolForm = (props) => {
                                 <Col sm={3}>
 
                                     <Form.Group>
-                                        <span className="gray800-14">Version (optional)</span>
-                                        <br />
-                                        <span className="gray700-13">
-                                            i.e. 3.6.1
-                                        </span>
+                                        <p className="gray800-14 margin-bottom-0 pad-bottom-4">Version (optional)</p>
+                                        <p className="gray700-13 margin-bottom-0">
+                                            i.e. 3.6.1 
+                                        </p>
                                         <Form.Control id="categories.programmingLanguageVersion" name="categories.programmingLanguageVersion" type="text" className="smallFormInput addFormInput" onChange={formik.handleChange} value={formik.values.categories.programmingLanguageVersion} onBlur={formik.handleBlur} />
                                     </Form.Group>
                                     {/* <Col sm={2}></Col> */}
@@ -267,12 +266,11 @@ const AddEditToolForm = (props) => {
                             </Row>
                             
                             <Form.Group>
-                                <span className="gray800-14">License (optional)</span>
-                                <br />
-                                <span className="gray700-13">
+                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">License (optional)</p>
+                                <p className="gray700-13 margin-bottom-0">
                                     Select from existing or enter a new one
-                                </span>
-                                <Typeahead
+                                </p>
+                                <Typeahead 
                                     id="license"
                                     labelKey="license"
                                     allowNew
@@ -284,17 +282,16 @@ const AddEditToolForm = (props) => {
                                         selected.forEach((selectedItem) => {
                                             selectedItem.customOption === true ? tempSelected.push(selectedItem.license) : tempSelected.push(selectedItem);
                                         })
-                                        formik.values.license = tempSelected[0];
+                                        tempSelected.length > 0 ? formik.values.license = tempSelected[0] : formik.values.license = ""
                                     }}
                                 />
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="gray800-14">Keywords (optional)</span>
-                                <br />
-                                <span className="gray700-13">
+                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">Keywords (optional)</p>
+                                <p className="gray700-13 margin-bottom-0">
                                     Technological paradigms or other keywords. Eg. Rule-based, clustering, supervised machine learning
-                                </span>
+                                </p>
                                 <Typeahead
                                     id="tags.features"
                                     labelKey="features"
@@ -314,11 +311,10 @@ const AddEditToolForm = (props) => {
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="gray800-14">Domain (optional)</span>
-                                <br />
-                                <span className="gray700-13">
+                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">Domain (optional)</p>
+                                <p className="gray700-13 margin-bottom-0">
                                     E.g. Biogenomics, Nutrition, Blockchain
-                                </span>
+                                </p>
 
                                 <Typeahead
                                     id="tags.topics"
@@ -337,7 +333,7 @@ const AddEditToolForm = (props) => {
                                     }}
                                 />
                             </Form.Group>
-                        </div>
+                        </div> 
 
                         <div className="rectangle mt-2">
                             <span className="black-20">Related resources</span><span className="gray800-14"> (optional)</span>
@@ -359,26 +355,28 @@ const AddEditToolForm = (props) => {
                                 <Col sm={1} lg={1} />
                                 <Col sm={10} lg={10}>
                                     
-                                    <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} paperData={props.paperData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
+                                    <RelatedResources ref={relatedResourcesRef} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} paperData={props.paperData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                 </Col>
                                 <Col sm={1} lg={10} />
                             </Row>
                         </div>
 
-                        <Row className="mt-3">
-                            <Col xs={5} lg={9}>
+                        <ActionBar userState={props.userState}> 
                                 <a style={{ cursor: 'pointer' }} href={'/account?tab=tools'}>
-                                    <Button variant="medium" className="greyCancelButton dark-14 mr-2" >
+                                    <Button variant="medium" className="cancelButton dark-14 mr-2" >
                                         Cancel
                                     </Button>
-                                </a>
-                            </Col>
-                            <Col xs={7} lg={3} className="text-right">
-                                <Button variant="primary" className="white-14-semibold" type="submit" onClick={() => Event("Buttons", "Click", "Add tool form submitted")} >
+                                </a> 
+
+                                <Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className="techDetailButton mr-2">
+                                    + Add resource
+                                </Button>
+                                
+                                <Button variant="primary" className="publishButton white-14-semibold mr-2" type="submit" >
                                     {props.isEdit ? 'Update' : 'Publish'}
                                 </Button>
-                            </Col>
-                        </Row>
+                        </ActionBar> 
+
                     </Form>
                 </Col>
                 <Col sm={1} lg={10} />

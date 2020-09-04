@@ -24,6 +24,7 @@ import CompleteRegistration from './pages/registration/CompleteRegistration'
 import LoginModal from './pages/commonComponents/LoginModal';
 import Footer from './pages/commonComponents/Footer';
 import LoginErrorPage from './pages/commonComponents/LoginErrorPage';
+
 var baseURL = require('./pages/commonComponents/BaseURL').getURL();
 class HDRRouter extends Component {
     // initialize our state
@@ -92,16 +93,22 @@ class HDRRouter extends Component {
                         <Route path='/sso' render={(props) => <SSOPage {...props} userState={userState} />} />
                         <Route path='/account/unsubscribe/:userObjectID' render={(props) => <Unsubscribe {...props} userState={userState} />} />
                         {userState[0].loggedIn ? (<Route path='/data-access-request/dataset/:datasetId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
+                        {userState[0].loggedIn ? (<Route path='/data-access-request/publisher/:publisherId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
+                        {userState[0].loggedIn ? (<Route path='/data-access-request/:accessId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
+                                                
                         {userState[0].loggedIn ? (<Route path='/account' render={(props) => <Account {...props} userState={userState} />} />) : ''}
                         {userState[0].loggedIn ? (<Route path='/addcollection' render={(props) => <AddCollectionPage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/editcollection/:collectionID' render={(props) => <EditCollectionPage {...props} userState={userState} /> } />) : ''} 
                         <Route path='/collection/:collectionID' render={(props) => <CollectionPage {...props} userState={userState} />} />
+
                         {userState[0].loggedIn ? (<Route path='/tool/add' render={(props) => <AddEditToolPage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/tool/edit/:toolID' render={(props) => <AddEditToolPage {...props} userState={userState} isEdit="true" /> } />) : ''}
                         <Route path='/tool/:toolID' render={(props) => <ToolPage {...props} userState={userState} />} />
+                        
                         {userState[0].loggedIn ? (<Route path='/project/add' render={(props) => <AddEditProjectPage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/project/edit/:projectID' render={(props) => <AddEditProjectPage {...props} userState={userState} isEdit="true"  /> } />) : ''}
                         <Route path='/project/:projectID' render={(props) => <ProjectPage {...props} userState={userState} />} />
+                        
                         {userState[0].loggedIn ? (<Route path='/paper/add' render={(props) => <AddEditPaperPage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/paper/edit/:paperID' render={(props) => <AddEditPaperPage {...props} userState={userState} isEdit="true" /> } />) : ''}
                         <Route path='/paper/:paperID' render={(props) => <PaperPage {...props} userState={userState} />} />

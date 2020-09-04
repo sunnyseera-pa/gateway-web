@@ -1,8 +1,9 @@
-import React from 'react';
+import React from 'react'; 
 import { Row, Col, Tab, Tabs, Container, Pagination} from 'react-bootstrap';
 
-import SimpleSearchBar from './SimpleSearchBar';
-import RelatedObject from '../commonComponents/RelatedObject';
+import SimpleSearchBar from '../searchBar/SimpleSearchBar';
+import RelatedObject from '../relatedObject/RelatedObject';
+import './RelatedResourcesModal.scss';
 
 class RelatedResourcesModal extends React.Component {
 
@@ -31,13 +32,13 @@ class RelatedResourcesModal extends React.Component {
        }
 
     }
-
+ 
     constructor(props) {
         super(props);
         this.state.userState = props.userState;
         this.state.relatedObjects = props.relatedObjects;
         this.state.relatedObjectIds = [];
-    }
+    } 
 
 
     handleSelect = (key) => {
@@ -216,7 +217,7 @@ class RelatedResourcesModal extends React.Component {
                            </Tabs>
                         </div>
                     </div> 
-             : ''}
+             : ''} 
 
             <div className={typeof this.props.summary.datasets==='undefined' ? "minHeightModal" : "relatedModalBackground minHeightModal"} > 
                 <Container >
@@ -233,7 +234,7 @@ class RelatedResourcesModal extends React.Component {
                                     }
                                 })
                                 : ''}
- 
+  
                             {key === 'Tools' ?
                             !this.props.toolData ? '' :
                                 this.props.toolData.map((tool) => {

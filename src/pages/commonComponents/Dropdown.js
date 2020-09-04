@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; 
 import onClickOutside from 'react-onclickoutside';
 
 function Dropdown({ title, items, multiSelect = false }) {
@@ -31,7 +31,7 @@ function Dropdown({ title, items, multiSelect = false }) {
     }
 
     return (
-        <div className="dd-wrapper">
+        <div className="dd-wrapper"> 
             <div
                 tabIndex={0}
                 className="dd-header"

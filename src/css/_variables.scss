@@ -1,14 +1,15 @@
 /**
  * [Global Variables]
- * 
+ *  
  * - Generic Colours
  * - Fonts
- */
+ */ 
 
 // Generic colors
 $purple                 : #475da7;
 $green                  : #2c8267;
 $teal                   : #3db28c;
+$light-teal             : #e5f7f1;
 $indigo                 : #29235c;
 $yellow                 : #f0bb24;
 $red                    : #dc3645;
@@ -23,6 +24,7 @@ $gray-800               : #3c3c3b;
 $gray-900               : #262626;
 $gray-dark              : #2d2d2d;
 $soft-black             : #222222;
+$dark                   : #232f34;
 $orange-light           : #f9b475;
 $duck-egg               : #addad9;
 $gold                   : #ffc40c;
@@ -30,6 +32,7 @@ $platinum               : #4682b4;
 $orange                 : #e07410;
 $silver                 : #4bd0ea;
 $white                  : #fff;
+$black                  : #2d2d2d;
 $background             : #f6f7f8;
 
 // Fonts
@@ -38,3 +41,11 @@ $font-weight-light      : 300;
 $font-weight-normal     : 400;
 $font-weight-semibold   : 500;
 $font-weight-bold       : 700;
+
+// screen 
+$bp-largest: 1200px;     
+$bp-large: 1100px;    
+$bp-medium: 900px;   
+$bp-small: 600px;    
+$bp-smallest: 500px; 
+$bp-xs: 420px; 

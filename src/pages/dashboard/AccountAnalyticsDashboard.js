@@ -2,11 +2,14 @@ import React, { useState, Fragment } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import UnmetDemand from './DARComponents/UnmetDemand';
+import TopSearches from './TopSearches';
 import { Row, Col, Button, Modal, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
 import DashboardKPI from './DARComponents/DashboardKPI';
 import Loading from '../commonComponents/Loading'
 import { Event, initGA } from '../../tracking';
+import './Dashboard.scss';  
 
+ 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class AccountAnalyticsDashboard extends React.Component { 
@@ -16,6 +19,7 @@ class AccountAnalyticsDashboard extends React.Component {
         userState: [],
         key: 'Datasets',
         data: [],
+        topSearches: [],
         statsDataType: [],
         statsDataTime: [],
         totalGAUsers: 0,
@@ -41,6 +45,7 @@ class AccountAnalyticsDashboard extends React.Component {
         this.setState({ key: key },
             ()=>{
                 this.getUnmetDemand(this.state.selectedOption)
+                this.getTopSearches(this.state.selectedOption)
             });
     }
 
@@ -49,6 +54,7 @@ class AccountAnalyticsDashboard extends React.Component {
         if(eventKey === null) {eventKey = 0} 
         this.setState({ selectedOption: this.state.dates[eventKey] });
         this.getUnmetDemand(this.state.dates[eventKey]);
+        this.getTopSearches(this.state.dates[eventKey]);
         await Promise.all([
             this.getStats(),
             this.getTotalGAUsers(),
@@ -63,7 +69,8 @@ class AccountAnalyticsDashboard extends React.Component {
 
       async componentDidMount() {
         initGA('UA-166025838-1');
-        this.getUnmetDemand()
+        this.getUnmetDemand();
+        this.getTopSearches();
         await Promise.all([
             this.getStats(),
             this.getTotalGAUsers(),
@@ -81,7 +88,7 @@ class AccountAnalyticsDashboard extends React.Component {
         let date = new Date(selectedOption);
         let selectedMonth = date.getMonth(selectedOption) +1 || new Date().getMonth() +1;
         let selectedYear = date.getFullYear(selectedOption) || new Date().getFullYear();
-        axios.get(baseURL + '/api/v1/stats/unmet'+ this.state.key, {
+        axios.get(baseURL + '/api/v1/stats?rank=unmet&type='+ this.state.key, {
             params: {
                 month: selectedMonth,
                 year: selectedYear 
@@ -91,6 +98,22 @@ class AccountAnalyticsDashboard extends React.Component {
             this.setState({data: []});
             res.data.data.entity = this.state.key;
             this.setState({ data: res.data.data}); 
+        });
+    }
+
+    getTopSearches(selectedOption){
+        let date = new Date(selectedOption);
+        let selectedMonth = date.getMonth(selectedOption) +1 || new Date().getMonth() +1;
+        let selectedYear = date.getFullYear(selectedOption) || new Date().getFullYear();
+        axios.get(baseURL + '/api/v1/stats/topSearches', {
+            params: {
+                month: selectedMonth,
+                year: selectedYear 
+            }
+        }) 
+        .then((res) => {
+            this.setState({topSearches: []});
+            this.setState({ topSearches: res.data.data}); 
         });
     }
 
@@ -136,7 +159,7 @@ class AccountAnalyticsDashboard extends React.Component {
 
     getKPIs(selectedDate){
         return new Promise((resolve, reject) => {
-        axios.get(baseURL + '/api/v1/stats/kpis?kpi=searchanddar&selectedDate=' + selectedDate )
+        axios.get(baseURL + '/api/v1/kpis?kpi=searchanddar&selectedDate=' + selectedDate )
         .then((res) => {
             let haveResultsMonth = res.data.data.totalMonth - res.data.data.noResultsMonth;
             let searchesWithResults = (haveResultsMonth / res.data.data.totalMonth) * 100;
@@ -152,9 +175,9 @@ class AccountAnalyticsDashboard extends React.Component {
 
     getUptime(selectedDate){
         let currentDate = new Date()
-        
+
         return new Promise((resolve, reject) => {
-        axios.get(baseURL + '/api/v1/stats//kpis?kpi=uptime&selectedDate=' + currentDate )
+        axios.get(baseURL + '/api/v1/kpis?kpi=uptime&selectedDate=' + currentDate )
         .then((res) => {
             this.setState({ uptime: res.data.data});
             resolve();
@@ -166,7 +189,7 @@ class AccountAnalyticsDashboard extends React.Component {
 
     getDatasetsWithTechMetadata(){
         return new Promise((resolve, reject) => {
-        axios.get(baseURL + '/api/v1/stats/kpis?kpi=technicalmetadata')
+        axios.get(baseURL + '/api/v1/kpis?kpi=technicalmetadata')
         .then((res) => {
             let datasetsWithTechMetaData = (res.data.data.datasetsMetadata / res.data.data.totalDatasets) * 100;
             this.setState({ datasetsWithTechMetaData: datasetsWithTechMetaData});
@@ -178,7 +201,7 @@ class AccountAnalyticsDashboard extends React.Component {
     }
 
     render() {
-        const { key, isLoading, data, dates, statsDataType, gaUsers, searchesWithResults, accessRequests, datasetsWithTechMetaData, uptime, uniqueUsers } = this.state;
+        const { key, isLoading, data, topSearches, dates, statsDataType, gaUsers, searchesWithResults, accessRequests, datasetsWithTechMetaData, uptime, uniqueUsers } = this.state;
 
         if (isLoading) {
             return (
@@ -196,8 +219,8 @@ class AccountAnalyticsDashboard extends React.Component {
            <div>
                 <Row>
                     <Col sm={1} lg={1}></Col> 
-                    <Col sm={10} lg={10} className="dashboardPadding">  
-                        <Row className="accountHeader mt-4">
+                    <Col sm={10} lg={10} className="dashboardPadding">   
+                        <Row className="accountHeader mt-4"> 
                             <Col sm={12} lg={12}>
                                 <Row >
                                     <Col sm={8} lg={8}>
@@ -226,7 +249,7 @@ class AccountAnalyticsDashboard extends React.Component {
                             </Col> 
                         </Row>
  
-                        <Row className="kpiContainer"> 
+                        <Row className="kpiContainer">  
 
                             <Col sm={3} lg={3} className="kpiClass"> 
                                 <DashboardKPI kpiText="total datasets" kpiValue={statsDataType.dataset}/>
@@ -256,6 +279,36 @@ class AccountAnalyticsDashboard extends React.Component {
                                 <DashboardKPI kpiText="" kpiValue=""/> 
                             </Col> 
                         </Row>
+
+                        <Row className="accountHeader mt-4" style={{"margin-bottom":"0.5px"}}>
+                            <Col sm={12} lg={12}>
+                                <Row >
+                                    <Col sm={12} lg={12}>
+                                        <span className="black-20" >Top searches</span>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col sm={12} lg={12}>
+                                        <span className="gray700-13">Most popular search terms and results</span>
+                                    </Col>
+                                </Row>
+                            </Col> 
+                        </Row>
+
+                        <Fragment>
+                            <Row>
+                                <Col sm={12} lg={12}>
+                                <Row className="subHeader entrybox gray800-14-bold" style={{"height":"44px"}}>
+                                    <Col sm={5} lg={6}>Search term </Col >
+                                    <Col sm={2} lg={2}>Searches</Col>
+                                    <Col sm={5} lg={4}>Latest results</Col>
+                                </Row>
+                                    {topSearches.map((dat) => {
+                                        return <TopSearches data={dat} /> 
+                                    })}
+                                </Col>
+                            </Row>
+                        </Fragment> 
 
                         <Row className="accountHeader mt-4">
                             <Col sm={12} lg={12}>

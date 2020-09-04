@@ -6,6 +6,7 @@ import { Row, Col, Button, Modal, Tabs, Tab, DropdownButton, Dropdown } from 're
 
 import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading'
+import './Dashboard.scss'; 
 
 import { Event, initGA } from '../../tracking';
 
@@ -23,7 +24,11 @@ class AccountProjects extends React.Component {
         userState: [],
         key: 'active',
         data: [],
-        isLoading: true
+        isLoading: true,
+        activeCount: 0,
+        reviewCount: 0,
+        archiveCount: 0,
+        rejectedCount: 0
     };
 
     handleSelect = (key) => {
@@ -36,10 +41,28 @@ class AccountProjects extends React.Component {
     }
 
     doProjectsCall() {
+        this.setState({isLoading: true});
         axios.get(baseURL + '/api/v1/projects/getList')
             .then((res) => {
                 this.setState({ data: res.data.data, isLoading: false });
-            });
+
+                let activeCount = 0;
+                let reviewCount = 0;
+                let archiveCount = 0;
+                let rejectedCount = 0;
+            
+                res.data.data.forEach((project) => {
+                    if (project.activeflag === "active") activeCount++;
+                    else if (project.activeflag === "review") reviewCount++;
+                    else if (project.activeflag === "archive") archiveCount++;
+                    else if (project.activeflag === "rejected") rejectedCount++;
+                    });
+            
+                this.setState({ activeCount: activeCount});
+                this.setState({ reviewCount: reviewCount});
+                this.setState({ archiveCount: archiveCount});
+                this.setState({ rejectedCount: rejectedCount});
+            })
     }
 
     approveProject = (id) => {
@@ -47,12 +70,60 @@ class AccountProjects extends React.Component {
             activeflag: "active"
         })
         .then((res) => {
-            window.location.href = '/account?tab=projects&projectApproved=true';
+            this.doProjectsCall();
+            if(shouldChangeTab(this.state)){
+                this.setState({key: "active"});
+            }
+        });
+    }
+
+    updateCounters = (data) => {
+        let activeCount = 0;
+        let reviewCount = 0;
+        let archiveCount = 0;
+        let rejectedCount = 0;
+    
+        data.forEach((tool) => {
+            if (tool.activeflag === "active") activeCount++;
+            else if (tool.activeflag === "review") reviewCount++;
+            else if (tool.activeflag === "archive") archiveCount++;
+            else if (tool.activeflag === "rejected") rejectedCount++;
+        });
+    
+        this.setState({ activeCount: activeCount});
+        this.setState({ reviewCount: reviewCount});
+        this.setState({ archiveCount: archiveCount});
+        this.setState({ rejectedCount: rejectedCount});
+    }
+
+    rejectObject = (id) => {
+        axios.patch(baseURL + '/api/v1/projects/'+ id, {
+            id: id,
+            activeflag: "rejected"
+        })
+        .then((res) => {
+            this.approveProject();
+            if(shouldChangeTab(this.state)){
+                this.setState({key: "active"});
+            }
+        });
+    }
+
+    deleteObject = (id) => {
+        axios.patch(baseURL + '/api/v1/projects/'+ id, {
+            id: id,
+            activeflag: "archive"
+        })
+        .then((res) => {
+            this.approveProject();
+            if(shouldChangeTab(this.state)){
+                this.setState({key: "active"});
+            }
         });
     }
 
     render() {
-        const { userState, key, isLoading, data } = this.state;
+        const { userState, key, isLoading, data, activeCount, reviewCount, archiveCount, rejectedCount } = this.state;
 
         if (isLoading) {
             return (
@@ -66,24 +137,12 @@ class AccountProjects extends React.Component {
             );
         }
 
-        var activeCount = 0;
-        var reviewCount = 0;
-        var archiveCount = 0;
-        var rejectedCount = 0;
-
-        data.forEach((project) => {
-            if (project.activeflag === "active") activeCount++;
-            else if (project.activeflag === "review") reviewCount++;
-            else if (project.activeflag === "archive") archiveCount++;
-            else if (project.activeflag === "rejected") rejectedCount++;
-        });
-
         return (
             <div>
                 <Row>
                     <Col xs={1}></Col>
                     <Col xs={10}>
-                        <Row className="accountHeader mt-4">
+                        <Row className="accountHeader">
                             <Col xs={8}>
                                 <Row>
                                     <span className="black-20">Projects</span>
@@ -115,14 +174,19 @@ class AccountProjects extends React.Component {
                                 case "active":
                                     return (
                                         <div>
+                                            {activeCount <= 0 ? '' :
                                             <Row className="subHeader mt-3 gray800-14-bold">
                                                 <Col xs={2}>Updated</Col>
                                                 <Col xs={5}>Name</Col>
                                                 <Col xs={2}>Author</Col>
                                                 <Col xs={3}></Col>
-                                            </Row>
+                                            </Row>}
 
-                                            {activeCount <= 0 ? <NotFound word="projects" /> : data.map((dat) => {
+                                            {activeCount <= 0 ? 
+                                            <Row className="margin-right-15">
+                                                <NotFound word="projects" /> 
+                                            </Row>
+                                             : data.map((dat) => {
                                                 if (dat.activeflag !== "active") {
                                                     return (<></>)
                                                 }
@@ -140,7 +204,7 @@ class AccountProjects extends React.Component {
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
                                                                     <Dropdown.Item href={'/project/edit/' + dat.id} className="black-14">Edit</Dropdown.Item>
-                                                                    <DeleteButton id={dat.id} />
+                                                                    <DeleteButton id={dat.id} deleteObject={this.deleteObject}/>
                                                                 </DropdownButton>
                                                             </Col>
                                                         </Row>
@@ -153,14 +217,19 @@ class AccountProjects extends React.Component {
                                 case "pending":
                                     return (
                                         <div>
+                                            {reviewCount <= 0 ? '' :
                                             <Row className="subHeader mt-3 gray800-14-bold">
                                                 <Col xs={2}>Updated</Col>
                                                 <Col xs={5}>Name</Col>
                                                 <Col xs={2}>Author</Col>
                                                 <Col xs={3}></Col>
-                                            </Row>
+                                            </Row>}
 
-                                            {reviewCount <= 0 ? <NotFound word="projects" /> : data.map((dat) => {
+                                            {reviewCount <= 0 ? 
+                                            <Row className="margin-right-15">
+                                                <NotFound word="projects" /> 
+                                            </Row>
+                                             : data.map((dat) => {
                                                 if (dat.activeflag !== "review") {
                                                     return (<></>)
                                                 }
@@ -180,7 +249,7 @@ class AccountProjects extends React.Component {
                                                                     <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
                                                                         <Dropdown.Item href={'/project/edit/' + dat.id} className="black-14">Edit</Dropdown.Item>
                                                                         <Dropdown.Item href='#' onClick={() => this.approveProject(dat.id)} className="black-14">Approve</Dropdown.Item>
-                                                                        <RejectButton id={dat.id} />
+                                                                        <RejectButton id={dat.id} rejectObject={this.rejectObject}/>
                                                                     </DropdownButton>
                                                                     : ""}
                                                             </Col>
@@ -193,14 +262,19 @@ class AccountProjects extends React.Component {
                                 case "rejected":
                                     return (
                                         <div>
+                                            {rejectedCount <= 0 ? '' :
                                             <Row className="subHeader mt-3 gray800-14-bold">
                                                 <Col xs={2}>Updated</Col>
                                                 <Col xs={5}>Name</Col>
                                                 <Col xs={2}>Author</Col>
                                                 <Col xs={3}></Col>
-                                            </Row>
+                                            </Row>}
 
-                                            {rejectedCount <= 0 ? <NotFound word="projects" /> : data.map((dat) => {
+                                            {rejectedCount <= 0 ? 
+                                            <Row className="margin-right-15">
+                                                <NotFound word="projects" /> 
+                                            </Row>
+                                             : data.map((dat) => {
                                                 if (dat.activeflag !== "rejected") {
                                                     return (<></>)
                                                 }
@@ -224,18 +298,23 @@ class AccountProjects extends React.Component {
                                             })}
 
                                         </div>
-                                    );
+                                    ); 
                                 case "archive":
                                     return (
                                         <div>
+                                            {archiveCount <= 0 ? '' :
                                             <Row className="subHeader mt-3 gray800-14-bold">
                                                 <Col xs={2}>Updated</Col>
                                                 <Col xs={5}>Name</Col>
                                                 <Col xs={2}>Author</Col>
                                                 <Col xs={3}></Col>
-                                            </Row>
+                                            </Row> }
 
-                                            {archiveCount <= 0 ? <NotFound word="projects" /> : data.map((dat) => {
+                                            {archiveCount <= 0 ? 
+                                            <Row className="margin-right-15">
+                                                <NotFound word="projects" /> 
+                                            </Row>
+                                             : data.map((dat) => {
                                                 if (dat.activeflag !== "archive") {
                                                     return (<></>)
                                                 }
@@ -254,7 +333,7 @@ class AccountProjects extends React.Component {
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
                                                                     <Dropdown.Item href={'/project/edit/' + dat.id} className="black-14">Edit</Dropdown.Item>
                                                                     <Dropdown.Item href='#' onClick={() => this.approveProject(dat.id)} className="black-14">Approve</Dropdown.Item>
-                                                                    <RejectButton id={dat.id} />
+                                                                    <RejectButton id={dat.id} rejectObject={this.rejectObject}/>
                                                                 </DropdownButton>
                                                             </Col>
                                                         </Row>
@@ -280,14 +359,7 @@ function RejectButton(props) {
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    const rejectObject = () => {
-        axios.patch(baseURL + '/api/v1/projects/'+props.id, {
-            activeflag: "rejected"
-        })
-        .then((res) => {
-            window.location.href = '/account?tab=projects&projectRejected=true';
-        });
-    }
+    const rejectObject = () => props.rejectObject(props.id);
 
     return (
         <>
@@ -312,14 +384,7 @@ function DeleteButton(props) {
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    const deleteObject = () => {
-        axios.patch(baseURL + '/api/v1/projects/'+props.id, {
-            activeflag: "archive"
-        })
-        .then((res) => {
-            window.location.href = '/account?tab=projects&projectDeleted=true';
-        });
-    }
+    const deleteObject = () => props.deleteObject(props.id);
 
     return (
         <>
@@ -337,6 +402,10 @@ function DeleteButton(props) {
             </Modal>
         </>
     );
+}
+
+function shouldChangeTab(state){
+    return (state.key === 'pending' && state.reviewCount <= 1) || (state.key === 'archive' && state.archiveCount <= 1)? true : false;
 }
 
 export default AccountProjects;

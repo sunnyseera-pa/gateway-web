@@ -6,6 +6,7 @@ import { Row, Col, Button, Modal, Tabs, Tab, DropdownButton, Dropdown } from 're
 
 import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading'
+import './Dashboard.scss'; 
 
 import { Event, initGA } from '../../tracking';
 
@@ -44,7 +45,6 @@ class DataAccessRequestsNew extends React.Component {
 
     render() {
         const { userState, key, isLoading, data } = this.state;
-
         if (isLoading) {
             return (
                 <Row className="mt-4">
@@ -70,7 +70,7 @@ class DataAccessRequestsNew extends React.Component {
                 <Row>
                     <Col xs={1}></Col>
                     <Col xs={10}>
-                        <Row className="accountHeader mt-4">
+                        <Row className="accountHeader">
                             <Col xs={8}>
                                 <Row>
                                     <span className="black-20">Data access request applications</span>
@@ -98,27 +98,32 @@ class DataAccessRequestsNew extends React.Component {
                                 case "presubmission":
                                     return (
                                         <div>
+                                            {preSubmissionCount <= 0 ? '' :
                                             <Row className="subHeader mt-3 gray800-14-bold">
                                                 <Col xs={2}>Updated</Col>
-                                                <Col xs={5}>Dataset</Col>
+                                                <Col xs={5}>Dataset(s)</Col>
                                                 <Col xs={2}>Progress</Col> 
                                                 <Col xs={3}></Col>
-                                            </Row>
+                                            </Row>}
 
-                                            {preSubmissionCount <= 0 ? <NotFound word="data access requests" /> : data.map((dat) => {
-                                                if (dat.applicationStatus !== "inProgress") {
+                                            {preSubmissionCount <= 0 ? 
+                                            <Row className="margin-right-15">
+                                                <NotFound word="data access requests" /> 
+                                            </Row>
+                                            : data.map((app) => {
+                                                if (app.applicationStatus !== "inProgress") {
                                                     return (<></>)
-                                                }
+                                                } 
                                                 else {
                                                     return (
                                                         <Row className="entryBox">
-                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
-                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/dataset/' + dat.dataSetId} className="black-14">{dat.dataset[0].name}</a></Col>
+                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(app.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
+                                                            <Col sm={12} lg={5} className="pt-2"><a href={`/data-access-request/${app._id}`} className="black-14">{app.datasets.map(ds => ds.name).join(', ')}</a></Col>
                                                             <Col sm={12} lg={2} className="pt-2 gray800-14"></Col>
 
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
-                                                                    <Dropdown.Item href={'/data-access-request/dataset/' + dat.dataSetId} className="black-14">View</Dropdown.Item>
+                                                                    <Dropdown.Item href={`/data-access-request/${app._id}`} className="black-14">View</Dropdown.Item>
                                                                 </DropdownButton>
                                                             </Col>
                                                         </Row>
@@ -131,27 +136,32 @@ class DataAccessRequestsNew extends React.Component {
                                 case "inreview":
                                     return (
                                         <div>
+                                            {reviewCount <= 0 ? '' :
                                             <Row className="subHeader mt-3 gray800-14-bold">
                                                 <Col xs={2}>Updated</Col>
-                                                <Col xs={5}>Dataset</Col>
+                                                <Col xs={5}>Dataset(s)</Col>
                                                 <Col xs={2}>Progress</Col> 
                                                 <Col xs={3}></Col>
-                                            </Row>
+                                            </Row>}
 
-                                            {reviewCount <= 0 ? <NotFound word="data access requests" /> : data.map((dat) => {
-                                                if (dat.applicationStatus !== "submitted") {
+                                            {reviewCount <= 0 ? 
+                                            <Row className="margin-right-15">
+                                                <NotFound word="data access requests" /> 
+                                            </Row>
+                                            : data.map((app) => {
+                                                if (app.applicationStatus !== "submitted") {
                                                     return (<></>)
                                                 }
                                                 else {
                                                     return (
                                                         <Row className="entryBox">
-                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
-                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/dataset/' + dat.dataSetId} className="black-14">{dat.dataset[0].name}</a></Col>
+                                                            <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(app.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
+                                                            <Col sm={12} lg={5} className="pt-2"><a href={`/data-access-request/${app._id}`} className="black-14">{app.datasets.map(ds => ds.name).join(', ')}</a></Col>
                                                             <Col sm={12} lg={2} className="pt-2 gray800-14"></Col>
 
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
-                                                                    <Dropdown.Item href={'/data-access-request/dataset/' + dat.dataSetId} className="black-14">View</Dropdown.Item>
+                                                                    <Dropdown.Item href={`/data-access-request/${app._id}`} className="black-14">View</Dropdown.Item>
                                                                 </DropdownButton>
                                                             </Col>
                                                         </Row>

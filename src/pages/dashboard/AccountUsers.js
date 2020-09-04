@@ -6,6 +6,7 @@ import { Row, Col, Button, Modal, Tabs, Tab, DropdownButton, Dropdown } from 're
 
 import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading'
+import './Dashboard.scss'; 
 
 import { Event, initGA } from '../../tracking';
 
@@ -76,12 +77,12 @@ class AccountUsers extends React.Component {
             else if (user.role === "Admin") adminCount++;
         });
 
-        return (
+        return ( 
             <div>
                 <Row>
                     <Col xs={1}></Col>
                     <Col xs={10}>
-                        <Row className="accountHeader mt-4">
+                        <Row className="accountHeader">
                             <Col xs={8}>
                                 <Row>
                                     <span className="black-20">Users and roles</span>
@@ -108,14 +109,19 @@ class AccountUsers extends React.Component {
                                 case "user":
                                     return (
                                         <div>
+                                            {userCount <= 0 ? '' :
                                             <Row className="subHeader mt-3 gray800-14-bold">
                                                 <Col xs={2}>Account created</Col>
                                                 <Col xs={3}>Name</Col>
                                                 <Col xs={4}>Institution</Col>
                                                 <Col xs={3}></Col>
-                                            </Row>
+                                            </Row>}
 
-                                            {userCount <= 0 ? <NotFound word="users" /> : data.map((dat) => {
+                                            {userCount <= 0 ? 
+                                            <Row className="margin-right-15">
+                                                <NotFound word="users" /> 
+                                            </Row>
+                                             : data.map((dat) => {
                                                 if (dat.activeflag !== "active") {
                                                     return (<></>)
                                                 }

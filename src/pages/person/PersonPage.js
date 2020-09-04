@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import PersonTitle from './components/PersonTitle';
-
 import {Container, Row, Col, Tabs, Tab} from 'react-bootstrap';
-
-import SearchBar from '../commonComponents/SearchBar';
+import SearchBar from '../commonComponents/searchBar/SearchBar';
 import DataSet from '../commonComponents/DataSet';
-
 import Tool from '../commonComponents/Tool';
 import NotFound from '../commonComponents/NotFound';
 import ReviewsTitle from '../commonComponents/ReviewTitle';
 import Loading from '../commonComponents/Loading'
 import Project from '../commonComponents/Project';
-// import ReactGA from 'react-ga'; 
-import {PageView, initGA} from '../../tracking';
+import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
+import UserMessages from "../commonComponents/userMessages/UserMessages";
+import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
+import { PageView, initGA } from '../../tracking'; 
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -29,13 +28,18 @@ class PersonDetail extends Component {
       loggedIn: false,
       role: "Reader",
       id: null,
-      firstName: null
-    }]
+      firstName: null,
+      
+    }],
+    showDrawer: false,
+    showModal: false,
+    context: {}
   };
 
   constructor(props) {
     super(props);
     this.state.userState = props.userState;
+    this.searchBar = React.createRef();
   }
 
   // on loading of tool detail page
@@ -72,8 +76,23 @@ class PersonDetail extends Component {
     this.setState({ searchString: searchString });
   }
 
+  toggleDrawer = () => {
+    this.setState( ( prevState ) => {
+        if(prevState.showDrawer === true) {
+            this.searchBar.current.getNumberOfUnreadMessages();
+        }
+        return { showDrawer: !prevState.showDrawer };
+    });
+  }
+
+  toggleModal = (showEnquiry = false, context = {}) => {
+    this.setState( ( prevState ) => {
+        return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
+    });
+}
+
   render() {
-    const { searchString, data, isLoading, userState } = this.state;
+    const { searchString, data, isLoading, userState, showDrawer, showModal, context } = this.state;
 
     if (isLoading) {
       return <Container><Loading /></Container>;
@@ -88,10 +107,10 @@ class PersonDetail extends Component {
     
     if (data.tools.length > 0) {
         data.tools.forEach(object => {
-          if (object.type === 'tool' && object.activeflag === 'active') {
+          if (object.type === 'tool' && object.activeflag === 'active' || object.type === 'tool' && object.activeflag === 'review' && object.authors.includes(userState[0].id) ) {
             tools.push(object);
           } 
-          else if (object.type === 'project' && object.activeflag === 'active') {
+          else if (object.type === 'project' && object.activeflag === 'active' || object.type === 'project' && object.activeflag === 'review' && object.authors.includes(userState[0].id)) {
             projects.push(object)
           }
         });
@@ -99,7 +118,7 @@ class PersonDetail extends Component {
 
     return (
       <div>
-        <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
+        <SearchBar ref={this.searchBar} searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} doToggleDrawer={this.toggleDrawer} userState={userState} />
         <Container className="mb-5">
  
           <PersonTitle data={data} activeLink={true} />
@@ -135,6 +154,22 @@ class PersonDetail extends Component {
             <Col sm={1} lg={1} />
           </Row>
         </ Container>
+        <SideDrawer
+          open={showDrawer}
+          closed={this.toggleDrawer}>
+          <UserMessages 
+              closed={this.toggleDrawer}
+              toggleModal={this.toggleModal}
+              drawerIsOpen={this.state.showDrawer} 
+          />
+        </SideDrawer>
+
+        <DataSetModal 
+          open={showModal} 
+          context={context}
+          closed={this.toggleModal}
+          userState={userState[0]} 
+        />
       </div>
     );
   }

@@ -7,6 +7,7 @@ import { Row, Col, Button, Alert, Form, InputGroup } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import queryString from 'query-string';
 import Loading from '../commonComponents/Loading'
+import './Dashboard.scss'; 
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 

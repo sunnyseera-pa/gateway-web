@@ -1,22 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, Fragment } from 'react'; 
 import axios from 'axios';
 import classnames from "classnames";
 
 import { Container, Row, Col, Dropdown } from 'react-bootstrap';
 import NotificationBadge from 'react-notification-badge';
 
-import SVGIcon from "../../images/SVGIcon";
-import { ReactComponent as ColourLogoSvg } from '../../images/colour.svg';
-import { ReactComponent as ClearButtonSvg } from '../../images/clear.svg';
-import { ReactComponent as NotificationsBellSvg } from '../../images/bell.svg'; 
-import { ReactComponent as HamBurgerSvg } from '../../images/hamburger.svg';
-import { ReactComponent as ArrowDownSvg } from '../../images/stock.svg';
-import { ReactComponent as WhiteArrowDownSvg } from '../../images/arrowDownWhite.svg';
+import SVGIcon from "../../../images/SVGIcon";
+import { ReactComponent as ColourLogoSvg } from '../../../images/colour.svg';
+import { ReactComponent as ClearButtonSvg } from '../../../images/clear.svg';
+import { ReactComponent as NotificationsBellSvg } from '../../../images/bell.svg'; 
+import { ReactComponent as HamBurgerSvg } from '../../../images/hamburger.svg';
+import { ReactComponent as ArrowDownSvg } from '../../../images/stock.svg';
+import { ReactComponent as WhiteArrowDownSvg } from '../../../images/arrowDownWhite.svg';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
+import './SearchBar.scss'; 
+
 
 import moment from 'moment';
-import { cmsURL } from '../../configs/url.config';
+import { cmsURL } from '../../../configs/url.config';
 
-var baseURL = require('./BaseURL').getURL();
+var baseURL = require('../BaseURL').getURL();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <a href="" ref={ref} onClick={e => { e.preventDefault(); onClick(e); }} >
@@ -42,6 +45,7 @@ const CustomMenu = React.forwardRef(
 );
 
 class SearchBar extends React.Component {
+    _isMounted = false;
 
     state = {
         textValue: '',
@@ -54,22 +58,29 @@ class SearchBar extends React.Component {
         dropdownOpen: false,
         clearMessages: false,
         count: 0,
+        messageCount: 0,
         prevScrollpos: window.pageYOffset,
         visible: true,
+        showToast: true,
+        isHovering: false,
         isLoading: true
     }
 
     constructor(props) {
         super(props);
         this.state.userState = props.userState;
+        this.handleMouseHover = this.handleMouseHover.bind(this);
     }
 
     componentDidMount() {
+        this._isMounted = true;
+
         window.addEventListener("scroll", this.handleScroll);
         document.addEventListener('mousedown', this.handleClick, false);
 
         if (this.state.userState[0].loggedIn) {
             this.getNumberOfUnreadNotifications();
+            this.getNumberOfUnreadMessages();
             this.doMessagesCall();
         }
         else {
@@ -78,7 +89,9 @@ class SearchBar extends React.Component {
     }
 
     componentWillUnmount() {
+        this._isMounted = false;
         window.removeEventListener("scroll", this.handleScroll);
+        document.removeEventListener('mousedown', this.handleClick);
     }
 
     handleScroll = () => {
@@ -119,11 +132,13 @@ class SearchBar extends React.Component {
 
         axios.get(baseURL + apiToCall)
             .then((res) => {
-                this.setState({
-                    newData: res.data.newData,
-                    isLoading: false,
-                    isRead: res.data.isRead,
-                });
+                if(this._isMounted) {
+                    this.setState({
+                        newData: res.data.newData,
+                        isLoading: false,
+                        isRead: res.data.isRead,
+                    });
+                }
             })
     };
 
@@ -134,7 +149,18 @@ class SearchBar extends React.Component {
         }
         axios.get(baseURL + apiToCall)
             .then((res) => {
-                this.setState({ count: res.data.countUnreadMessages });
+                if (this._isMounted) {
+                    this.setState({ count: res.data.countUnreadMessages });
+                }
+            });
+    }
+
+    getNumberOfUnreadMessages() {
+        axios.get(`${baseURL}/api/v1/messages/unread/count`)
+            .then((res) => {
+                if (this._isMounted) {
+                    this.setState({ messageCount: res.data.count || 0 });
+                }
             });
     }
 
@@ -150,19 +176,21 @@ class SearchBar extends React.Component {
     }
 
     handleClick = (e) => {
-        try {
-            if (this.node.contains(e.target) || this.nodeMobile.contains(e.target)) {
-                this.setState({ dropdownOpen: true });
-            }
-            else {
-                if (this.state.dropdownOpen === true) {
-                    this.setNotificationsAsRead()
-                    this.setState({ count: 0, clearMessage: true });
+        if(this._isMounted) {
+            try {
+                if (this.node.contains(e.target) || this.nodeMobile.contains(e.target)) {
+                    this.setState({ dropdownOpen: true });
                 }
+                else {
+                    if (this.state.dropdownOpen === true) {
+                        this.setNotificationsAsRead()
+                        this.setState({ count: 0, clearMessage: true });
+                    }
+                    this.setState({ dropdownOpen: false });
+                }
+            } catch (e) {
                 this.setState({ dropdownOpen: false });
             }
-        } catch (e) {
-            this.setState({ dropdownOpen: false });
         }
     }
 
@@ -185,8 +213,28 @@ class SearchBar extends React.Component {
         }
     }
 
+    checkRedirectToast(){
+        if((window.localStorage.getItem('redirectMsg') != null )) {
+            //rerender the Search bar so Toast notification will appear
+            this.setState({showToast: true})
+            //Display Toast Notification based on local storage variable
+            NotificationManager.warning(window.localStorage.getItem('redirectMsg'), 'Page not found', 10000);
+            window.localStorage.removeItem('redirectMsg');
+        }
+    }
+
+    handleMouseHover() {
+        this.setState(this.toggleHoverState);
+      }
+    
+      toggleHoverState(state) {
+        return {
+          isHovering: !state.isHovering
+        };
+      }
+
     render() {
-        const { userState, newData, isLoading, clearMessage } = this.state;
+        const { userState, newData, isLoading, clearMessage, isHovering } = this.state; 
 
         if (isLoading) {
             return <></>;
@@ -195,6 +243,7 @@ class SearchBar extends React.Component {
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
         return (
+            <Fragment>
             <nav className={classnames("navbarShown", { "navbarHidden": !this.state.visible })}>
 
                 <div className="searchBarBackground" id="desktopSearchBar">
@@ -236,11 +285,16 @@ class SearchBar extends React.Component {
                                             </Col>
                                         </Row>
                                     </Container>
-                                </div>
+                                </div> 
 
                                 {(() => {
                                     if (userState[0].loggedIn === true) {
                                         return (
+                                        <Fragment key="userNotifications">
+                                            <div className="navBarNotificationSpacing" onClick={this.props.doToggleDrawer}>
+                                            <NotificationBadge count={this.state.messageCount} style={{ backgroundColor: '#29235c' }} />
+                                                <SVGIcon name="chat" fill={'#475da7'} width={20} height={20} id="notificationsBell" className={'pointer'} />
+                                            </div>
                                             <div className="navBarNotificationSpacing">
                                                 <Dropdown>
                                                     <Dropdown.Toggle as={CustomToggle} ref={node => this.node = node}>
@@ -257,26 +311,26 @@ class SearchBar extends React.Component {
                                                                     <p>We'll let you know when something important happens to your content or account.</p>
                                                                 </div>
                                                             </div>
-                                                            : newData.slice(0, 48).map((dat) => {
+                                                            : newData.slice(0, 48).map((dat, index) => {
                                                             let messageDateString = moment(dat.messageSent).format('D MMMM YYYY HH:mm');
 
-                                                                if (dat.messageType === 'add') {
-                                                                    return (
-                                                                        <>
-                                                                            <Row className={dat.isRead === 'true' || clearMessage ? "notificationReadBackground" : ''}>
-                                                                                <Col xs={10}>
-                                                                                    <div className="notificationDate">{messageDateString + '\n'}</div>
-                                                                                    {dat.tool.length &&  <div className="notificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="notificationInfo">{dat.messageDescription}</a></div> }
-                                                                                </Col>
-                                                                                <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
-                                                                            </Row>
-                                                                            <Dropdown.Divider style={{ margin: "0px" }} />
-                                                                    </>
+                                                             if (dat.messageType === 'add') {
+                                                                return (
+                                                                    <Fragment key={`message-${index}`}>
+                                                                        <Row className={dat.isRead === 'true' || clearMessage ? "notificationReadBackground" : ''}>
+                                                                            <Col xs={10}>
+                                                                                <div className="notificationDate">{messageDateString + '\n'}</div>
+                                                                                {dat.tool.length &&  <div className="notificationInfoHolder"><a href={'/' + dat.tool[0].type + '/' + dat.tool[0].id} class="notificationInfo">{dat.messageDescription}</a></div> }
+                                                                            </Col>
+                                                                            <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
+                                                                        </Row>
+                                                                        <Dropdown.Divider style={{ margin: "0px" }} />
+                                                                    </Fragment>
                                                                 )
                                                             }
                                                             else if(dat.messageType === 'data access request'){
                                                                 return (
-                                                                    <>
+                                                                    <Fragment key={`message-${index}`}>
                                                                         <Row className={dat.isRead === 'true' || clearMessage ? "notificationReadBackground" : ''}>
                                                                                 <Col xs={10}>
                                                                                     <div className="notificationDate">{messageDateString + '\n'}</div>
@@ -285,12 +339,12 @@ class SearchBar extends React.Component {
                                                                                 <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                             </Row>
                                                                             <Dropdown.Divider style={{ margin: "0px" }} />
-                                                                    </>
+                                                                    </Fragment>
                                                                 )
                                                             }
                                                             else if(dat.messageType === 'added collection'){
                                                                 return(
-                                                                    <>
+                                                                    <Fragment key={`message-${index}`}>
                                                                         <Row className={dat.isRead === 'true' || clearMessage ? "notificationReadBackground" : ''}>
                                                                              <Col xs={10}>
                                                                                 <div className="notificationDate">{messageDateString + '\n'}</div>
@@ -299,11 +353,11 @@ class SearchBar extends React.Component {
                                                                             <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                         </Row>
                                                                         <Dropdown.Divider style={{ margin: "0px" }} />
-                                                                    </>
+                                                                    </Fragment>
                                                                 )
                                                             } else {
                                                                 return (
-                                                                    <>
+                                                                    <Fragment key={`message-${index}`}>
                                                                         <Row className={dat.isRead === 'true' || clearMessage ? "notificationReadBackground" : ''}>
                                                                             <Col xs={10}>
                                                                                 <div className="notificationDate">{messageDateString + '\n'}</div>
@@ -312,19 +366,22 @@ class SearchBar extends React.Component {
                                                                             <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                         </Row>
                                                                         <Dropdown.Divider style={{ margin: "0px" }} />
-                                                                    </>
+                                                                    </Fragment>
                                                                 )
                                                             }
                                                         })}
                                                     </Dropdown.Menu>
                                             </Dropdown>
+                                            {this.checkRedirectToast()}
                                         </div>
+                                        </Fragment>               
                                     )
                                 }
                                 else {
                                     return (
                                         <div className="offlineNotificationGap">
                                             <WhiteArrowDownSvg width={50} height={50} />
+                                            {this.checkRedirectToast()}
                                         </div>
                                     )
                                 }
@@ -356,11 +413,11 @@ class SearchBar extends React.Component {
                                                     </Dropdown.Menu>
                                                 </Dropdown>
                                             )
-                                        }
+                                        } 
                                         else {
                                             return (<>
-                                                <span className="black-14" id="myBtn" onClick={e => { this.showLoginModal() }} >Sign in | Sign up</span>
-                                            </>
+                                                <span className={isHovering ? "black-14 textUnderline" : "black-14"} id="myBtn" style={{ cursor: 'pointer' }} onClick={e => { this.showLoginModal() }} onMouseEnter={this.handleMouseHover} onMouseLeave={this.handleMouseHover} > Sign in | Sign up </span>
+                                            </> 
                                             )
                                         }
                                     })()}
@@ -371,7 +428,7 @@ class SearchBar extends React.Component {
                 </div>
 
                 <div id="mobileSearchBar" className={!this.state.visible ? "navbarHidden" : ""}>
-                    <div className="searchBarBackground">
+                    <div className="searchBarBackground"> 
                         <Row className="whiteBackground">
                             <Col xs={2}>
                                 <Dropdown>
@@ -474,13 +531,13 @@ class SearchBar extends React.Component {
                                                                     <p>We'll let you know when something important happens to your content or account.</p>
                                                                 </div>
                                                             </div>
-                                                            : newData.slice(0, 48).map((dat) => {
+                                                            : newData.slice(0, 48).map((dat, index) => {
                                                                 let messageDate = new Date(dat.messageSent);
                                                                 let messageDateString = messageDate.getDate() + " " + monthNames[messageDate.getMonth()] + " " + messageDate.getFullYear() + " " + messageDate.getHours() + ":" + messageDate.getMinutes();
 
                                                                 if (dat.messageType === 'add') {
                                                                     return (
-                                                                        <>
+                                                                        <Fragment key={`notification-${index}`}>
                                                                             <Row className={dat.isRead === 'true' || clearMessage ? "notificationReadBackground" : ''}>
                                                                                 <Col xs={10}>
                                                                                     <div className="notificationDate">{messageDateString + '\n'}</div>
@@ -489,12 +546,12 @@ class SearchBar extends React.Component {
                                                                                 <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                             </Row>
                                                                             <Dropdown.Divider style={{ margin: "0px" }} />
-                                                                        </>
+                                                                        </Fragment>
                                                                     )
                                                                 }
                                                                 else if(dat.messageType === 'data access request'){
                                                                     return (
-                                                                        <>
+                                                                        <Fragment key={`notification-${index}`}>
                                                                             <Row className={dat.isRead === 'true' || clearMessage ? "notificationReadBackground" : ''}>
                                                                                     <Col xs={10}>
                                                                                         <div className="notificationDate">{messageDateString + '\n'}</div>
@@ -503,13 +560,13 @@ class SearchBar extends React.Component {
                                                                                     <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                                 </Row>
                                                                                 <Dropdown.Divider style={{ margin: "0px" }} />
-                                                                        </>
+                                                                        </Fragment>
                                                                     )
                                                                 }
                                                                 else {
                                                                     if (dat.messageTo === 0) {
                                                                         return (
-                                                                            <>
+                                                                            <Fragment key={`notification-${index}`}>
                                                                                 <Row className={dat.isRead === 'true' || clearMessage ? "notificationReadBackground" : ''}>
                                                                                     <Col xs={10}>
                                                                                         <div className="notificationDate">{messageDateString + '\n'}</div>
@@ -518,12 +575,12 @@ class SearchBar extends React.Component {
                                                                                     <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                                 </Row>
                                                                                 <Dropdown.Divider style={{ margin: "0px" }} />
-                                                                            </>
+                                                                            </Fragment>
                                                                         )
                                                                     }
                                                                     else {
                                                                         return (
-                                                                            <>
+                                                                            <Fragment key={`notification-${index}`}>
                                                                                 <Row className={dat.isRead === 'true' || clearMessage ? "notificationReadBackground" : ''}>
                                                                                     <Col xs={10}>
                                                                                         <div className="notificationDate">{messageDateString + '\n'}</div>
@@ -539,7 +596,7 @@ class SearchBar extends React.Component {
                                                                                     <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                                 </Row>
                                                                                 <Dropdown.Divider style={{ margin: "0px" }} />
-                                                                            </>
+                                                                            </Fragment>
                                                                         )
                                                                     }
                                                                 }
@@ -595,11 +652,12 @@ class SearchBar extends React.Component {
                                         </Col>
                                     )
                                 }
-                            })()}
+                            })()} 
                         </Row>
                     </div>
                 </div>
             </nav>
+            </Fragment>
         );
     }
 }

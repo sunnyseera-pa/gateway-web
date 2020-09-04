@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap/';
-import SearchBar from './SearchBar';
+import SearchBar from './searchBar/SearchBar';
+
 
 var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
 

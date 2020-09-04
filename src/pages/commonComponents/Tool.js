@@ -1,10 +1,10 @@
 import React from 'react';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import {Row, Col, Alert} from 'react-bootstrap';
 import SVGIcon from "../../images/SVGIcon";
 import axios from 'axios';
-import Loading from './Loading'
+import Loading from './Loading' 
 import ReactMarkdown from 'react-markdown';
+import './CommonComponents.scss';  
 
 var baseURL = require('./BaseURL').getURL();
 
@@ -47,7 +47,6 @@ class Tool extends React.Component {
 
     render() {
         const { data, isLoading, reviewData, activeLink } = this.state;
-
         if (isLoading) {
             return <Loading />;
         }
@@ -82,6 +81,15 @@ class Tool extends React.Component {
             <Row className="mt-2">
                 <Col>
                 <div className={this.props.tempRelatedObjectIds && this.props.tempRelatedObjectIds.some(object => object.objectId === data.id) ? "rectangle selectedBorder" : "rectangle"} onClick={() => !activeLink && this.props.doAddToTempRelatedObjects(data.id, data.type) } >   
+                       
+                {data.activeflag === 'review' ? 
+                            <Row >
+                                <Col sm={12} lg={12}>
+                                    <Alert variant="warning" className="ml-4 mr-4">This resource is under review. It won't be visible to others until it is approved.</Alert> 
+                                </Col>
+                            </Row>
+                : ''}  
+
                         <Row>
                             <Col xs={2} lg={1} className="iconHolder">
                                 <SVGIcon name="toolicon" width={18} height={18} fill={'#3db28c'} />
@@ -176,7 +184,7 @@ class Tool extends React.Component {
                                         return <a href={'/search?search=' + topic}><div className="badge-tag">{topic}</div></a>
                                     }
                                     else {
-                                        return <div className="badge-tag">{topic}</div>
+                                        return <div className="badge-tag">{topic}</div> 
                                     }
                                 })}
 

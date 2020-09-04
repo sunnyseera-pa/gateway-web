@@ -5,6 +5,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import NotFound from '../commonComponents/NotFound';
 import SVGIcon from "../../images/SVGIcon";
+import './Dashboard.scss'; 
 
 var baseURL = require('../commonComponents/BaseURL').getURL(); 
 

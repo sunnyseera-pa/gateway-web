@@ -6,14 +6,20 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 
 import {Form, Button, Row, Col, Container} from 'react-bootstrap';
 
-import SearchBar from '../commonComponents/SearchBar';
+import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
-import RelatedResources from '../commonComponents/RelatedResources';
-import RelatedObject from '../commonComponents/RelatedObject';
+import RelatedResources from '../commonComponents/relatedResources/RelatedResources';
+import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import moment from 'moment';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
 import ToolTip from '../../images/imageURL-ToolTip.gif';
+import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
+import UserMessages from "../commonComponents/userMessages/UserMessages";
+import ActionBar from '../commonComponents/actionbar/ActionBar';
+
+import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
+import './Collections.scss';
 
 import { Event, initGA } from '../../tracking';
 
@@ -25,6 +31,7 @@ class EditCollectionPage extends React.Component {
     constructor(props) {
         super(props)
         this.state.userState = props.userState;
+        this.searchBar = React.createRef();
     }
 
     // initialize our state
@@ -43,7 +50,10 @@ class EditCollectionPage extends React.Component {
         tempRelatedObjectIds: [],
         relatedObjectIds: [],
         relatedObjects: [],
-        didDelete: false
+        didDelete: false,
+        showDrawer: false,
+        showModal: false,
+        context: {}
     };
 
     async componentDidMount() {
@@ -97,7 +107,12 @@ class EditCollectionPage extends React.Component {
             if (type === 'project' && page > 0) searchURL += '&projectIndex=' + page;
             if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
         
-        axios.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL )
+        axios.get(baseURL + '/api/v1/search?search='+ this.state.searchString + searchURL, {
+            params: {
+                form: true,
+                userID: this.state.userState[0].id 
+            }
+        })  
             .then((res) => {
                 this.setState({
                     datasetData: res.data.datasetResults || [],
@@ -110,7 +125,7 @@ class EditCollectionPage extends React.Component {
                 });
             })
         }
-    }
+    } 
 
     addToTempRelatedObjects = (id, type) => {
 
@@ -128,7 +143,7 @@ class EditCollectionPage extends React.Component {
             this.state.relatedObjects.push({'objectId':object.objectId, 'reason':'', 'objectType':object.type, 'user':this.state.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
         })
 
-        this.setState({tempRelatedObjectIds: []}) 
+        this.setState({tempRelatedObjectIds: []})  
     }
 
     clearRelatedObjects = () => {
@@ -138,6 +153,7 @@ class EditCollectionPage extends React.Component {
     removeObject = (id) => {
         this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id);
         this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id.toString());
+
         this.setState({relatedObjects: this.state.relatedObjects})
         this.setState({didDelete: true});
     }
@@ -146,19 +162,50 @@ class EditCollectionPage extends React.Component {
         this.setState({didDelete: false});
     }
 
-    render() {
-        const { data, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, paperData, summary, relatedObjects, didDelete } = this.state;
+    toggleDrawer = () => {
+        this.setState( ( prevState ) => {
+            if(prevState.showDrawer === true) {
+                this.searchBar.current.getNumberOfUnreadMessages();
+            }
+            return { showDrawer: !prevState.showDrawer };
+        });
+    }
 
+    toggleModal = (showEnquiry = false, context = {}) => {
+        this.setState( ( prevState ) => {
+            return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
+        });
+    }
+
+    render() {
+        const { data, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, paperData, summary, relatedObjects, didDelete, showDrawer, showModal, context } = this.state;
+ 
         if (isLoading) {
             return <Container><Loading /></Container>;
         }
 
         return (
             <div>
-                <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
+                <SearchBar ref={this.searchBar} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} doToggleDrawer={this.toggleDrawer} userState={userState} />
                 <Container>
                     <EditCollectionForm data={data} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} paperData={paperData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
                 </Container>
+                <SideDrawer
+                    open={showDrawer}
+                    closed={this.toggleDrawer}>
+                    <UserMessages 
+                        closed={this.toggleDrawer}
+                        toggleModal={this.toggleModal}
+                        drawerIsOpen={this.state.showDrawer} 
+                    />
+                </SideDrawer>
+
+                <DataSetModal 
+                    open={showModal} 
+                    context={context}
+                    closed={this.toggleModal}
+                    userState={userState[0]} 
+                />
             </div>
         );
     }
@@ -237,18 +284,20 @@ const EditCollectionForm = (props) => {
 
     const [isShown, setIsShown] = useState(false);
 
+    const relatedResourcesRef = React.useRef()
+
     return (
         <div>
-            <Row className="mt-2">
+            <Row className="margin-top-32">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                     <div className="rectangle">
                         <Row>
                             <Col sm={12} lg={12}>
-                             <p className="black-20">Edit a collection</p>
+                             <p className="black-20 margin-bottom-0 pad-bottom-8">Edit a collection</p>
                             </Col>
                         </Row>
-                        <p className="gray800-14">Collections help collate varying resource types into one discovery space</p>
+                        <p className="gray800-14 margin-bottom-0">Collections help collate varying resource types into one discovery space</p>
                     </div>
                 </Col>
                 <Col sm={1} lg={10} />
@@ -266,21 +315,19 @@ const EditCollectionForm = (props) => {
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="gray800-14">Description</span>
-                                <br />
-                                <span className="gray700-13">
+                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">Description</p>
+                                <p className="gray700-13 margin-bottom-0">
                                     Up to 5,000 characters
-                                </span>
+                                </p>
                                 <Form.Control as="textarea" id="description" name="description" type="text" className={formik.touched.description && formik.errors.description ? "emptyFormInput addFormInput descriptionInput" : "addFormInput descriptionInput"} onChange={formik.handleChange} value={formik.values.description} onBlur={formik.handleBlur} />
                                 {formik.touched.description && formik.errors.description ? <div className="errorMessages">{formik.errors.description}</div> : null}
                             </Form.Group>
 
                             <Form.Group>
-                                <span className="gray800-14">Collection collaborators</span>
-                                <br />
-                                <span className="gray700-13">
+                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">Collection collaborators</p>
+                                <p className="gray700-13 margin-bottom-0">
                                     Anyone added will be able to add and remove resources to this collection.
-                                </span>
+                                </p> 
                                 <Typeahead
                                     id="authors"
                                     className="addFormInput"
@@ -301,11 +348,10 @@ const EditCollectionForm = (props) => {
                             <Form.Group>
                                 <Row>
                                     <Col sm={7} lg={9}>
-                                        <span className="gray800-14">Image URL (optional)</span>
-                                        <br />
-                                <span className="gray700-13">
+                                        <p className="gray800-14 margin-bottom-0 pad-bottom-4">Image URL (optional)</p>
+                                <p className="gray700-13 margin-bottom-0">
                                     You must have permission from the owner of the image before you add it to the gateway.
-                                </span>
+                                </p>
                                     </Col>
                                     <Col sm={5} lg={3} className="pl-4">
                                      <span className="purple-13" onMouseEnter={() => setIsShown(true)} onMouseLeave={() => setIsShown(false)}>  
@@ -318,9 +364,9 @@ const EditCollectionForm = (props) => {
                                 {formik.touched.imageLink && formik.errors.imageLink ? <div className="errorMessages">{formik.errors.imageLink}</div> : null}
                             </Form.Group>
                         </div>
-
+ 
                         <div className="rectangle mt-2">
-                            <span className="black-20">Add resources</span>
+                            <span className="black-20">Add resources</span> 
                             <br/>
                             <span className="gray800-14">Link resources in the gateway to your collection page.</span>
                         </div>
@@ -335,36 +381,38 @@ const EditCollectionForm = (props) => {
                              }) : ''}
                             
 
-                            <div className="flexCenter pt-3 pb-3">
+                            <div className="flexCenter pt-3 pb-3"> 
                                 <Row>
                                     <Col sm={1} lg={1} />
                                     <Col sm={10} lg={10}>
-                                        <RelatedResources searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} paperData={props.paperData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
+                                        <RelatedResources ref={relatedResourcesRef} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} paperData={props.paperData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                     </Col>
                                     <Col sm={1} lg={10} />
                                 </Row>
                             </div>
                         </div> 
 
-                        <Row className="mt-3"> 
-                            <Col xs={5} lg={9}/>
-                            <Col xs={7} lg={3} className="text-right">
-                                    <a style={{ cursor: 'pointer' }} href={'/account?tab=tools'}>
-                                        <Button variant="medium" className="cancelButton dark-14 mr-2" >
-                                            Cancel
-                                        </Button>
-                                    </a>
-                                <Button variant="primary" className="white-14-semibold" type="submit" onClick={() => Event("Buttons", "Click", "Add tool form submitted")} >
+                        <ActionBar userState={props.userState}>  
+                                <a style={{ cursor: 'pointer' }} href={'/account?tab=collections'}>
+                                    <Button variant="medium" className="cancelButton dark-14 mr-2" >
+                                        Cancel
+                                    </Button>
+                                </a>
+
+                                <Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className="techDetailButton mr-2">
+                                    + Add resource
+                                </Button>
+
+                                <Button variant="primary" className="publishButton white-14-semibold mr-2" type="submit" onClick={() => Event("Buttons", "Click", "Add tool form submitted")} >
                                     Publish
                                 </Button>
-                            </Col>
-                        </Row>
+                        </ActionBar> 
                     </Form>
                 </Col>
                 <Col sm={1} lg={10} />
             </Row>
             <Row>
-                <span className="formBottomGap"></span>
+                <span className="formBottomGap"></span> 
             </Row>
         </div>
     );

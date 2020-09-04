@@ -1,16 +1,15 @@
 import React from 'react';
 import axios from 'axios';
 import { initGA } from '../../tracking';
-import moment from 'moment';
+import moment from 'moment'; 
 import { Container } from 'react-bootstrap';
-import SearchBar from '../commonComponents/SearchBar';
+import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading'
 import AddEditProjectForm from './AddEditProjectForm';
-
-
+import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
+import UserMessages from "../commonComponents/userMessages/UserMessages";
+import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-
-
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -20,6 +19,7 @@ class AddEditProjectPage extends React.Component {
         super(props)
         this.state.userState = props.userState;
         if (props.isEdit ) this.state.isEdit = props.isEdit;
+        this.searchBar = React.createRef();
     }
 
     // initialize our state
@@ -42,7 +42,10 @@ class AddEditProjectPage extends React.Component {
         relatedObjectIds: [],
         relatedObjects: [],
         didDelete: false,
-        isEdit: false
+        isEdit: false,
+        showDrawer: false,
+        showModal: false,
+        context: {}
     };
 
     async componentDidMount() {
@@ -74,7 +77,7 @@ class AddEditProjectPage extends React.Component {
         return new Promise((resolve, reject) => {
             axios.get(baseURL + '/api/v1/search/filter/topic/project')
                 .then((res) => {
-                    this.setState({ combinedTopic: res.data.data.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
+                    this.setState({ combinedTopic: res.data.data[0].sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
                     resolve();
                 });
         });
@@ -84,7 +87,7 @@ class AddEditProjectPage extends React.Component {
         return new Promise((resolve, reject) => {
             axios.get(baseURL + '/api/v1/search/filter/feature/project')
                 .then((res) => {
-                    this.setState({ combinedFeatures: res.data.data.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
+                    this.setState({ combinedFeatures: res.data.data[0].sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
                     resolve();
                 });
         });
@@ -94,7 +97,7 @@ class AddEditProjectPage extends React.Component {
         return new Promise((resolve, reject) => {
             axios.get(baseURL + '/api/v1/search/filter/category/project')
                 .then((res) => {
-                    this.setState({ combinedCategories: res.data.data.sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
+                    this.setState({ combinedCategories: res.data.data[0].sort(function (a, b) { return (a.toUpperCase() < b.toUpperCase()) ? -1 : (a.toUpperCase() > b.toUpperCase()) ? 1 : 0; }) });
                     resolve();
                 });
         });
@@ -128,8 +131,13 @@ class AddEditProjectPage extends React.Component {
             if (type === 'tool' && page > 0) searchURL += '&toolIndex=' + page;
             if (type === 'project' && page > 0) searchURL += '&projectIndex=' + page;
             if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
-        
-        axios.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL )
+         
+        axios.get(baseURL + '/api/v1/search?search='+ this.state.searchString + searchURL, {
+            params: {
+                form: true,
+                userID: this.state.userState[0].id 
+            }
+        })  
             .then((res) => {
                 this.setState({
                     datasetData: res.data.datasetResults || [],
@@ -178,21 +186,50 @@ class AddEditProjectPage extends React.Component {
         this.setState({didDelete: false});
     }
 
+    toggleDrawer = () => {
+        this.setState( ( prevState ) => {
+            if(prevState.showDrawer === true) {
+                this.searchBar.current.getNumberOfUnreadMessages();
+            }
+            return { showDrawer: !prevState.showDrawer };
+        });
+    }
+
+    toggleModal = (showEnquiry = false, context = {}) => {
+        this.setState( ( prevState ) => {
+            return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
+        });
+    }
+
     render() {
-        const { data, isEdit, combinedTopic, combinedCategories, combinedUsers, combinedFeatures,
-            
-             isLoading, userState, searchString, datasetData, toolData, projectData, personData, paperData, summary, relatedObjects, didDelete } = this.state;
+        const { data, isEdit, combinedTopic, combinedCategories, combinedUsers, combinedFeatures, isLoading, userState, searchString, datasetData, toolData, projectData, personData, paperData, summary, relatedObjects, didDelete, showDrawer, showModal, context } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
         }
         return (
             <div>
-                <SearchBar doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
+                <SearchBar ref={this.searchBar} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} doToggleDrawer={this.toggleDrawer} userState={userState} />
                 <Container>
                     <AddEditProjectForm data={data} isEdit={isEdit} combinedTopic={combinedTopic} combinedCategories={combinedCategories} combinedUsers={combinedUsers} combinedFeatures={combinedFeatures}
                     userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} paperData={paperData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
                 </Container>
+                <SideDrawer
+                    open={showDrawer}
+                    closed={this.toggleDrawer}>
+                    <UserMessages 
+                        closed={this.toggleDrawer}
+                        toggleModal={this.toggleModal}
+                        drawerIsOpen={this.state.showDrawer} 
+                    />
+                </SideDrawer>
+
+                <DataSetModal 
+                    open={showModal} 
+                    context={context}
+                    closed={this.toggleModal}
+                    userState={userState[0]} 
+                />
             </div>
         );
     }

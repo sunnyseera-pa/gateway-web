@@ -1,24 +1,26 @@
 
 // /ShowObjects/Reviews.js
-import React, { Component, useState } from 'react';
+import React, { Component, useState } from 'react'; 
 import axios from 'axios';
 import {Row, Col} from 'react-bootstrap';
 import Rating from 'react-rating';
 import { useFormik } from 'formik';
 
-import { ReactComponent as EmptyStarIconSvg } from '../../images/starempty.svg';
-import { ReactComponent as FullStarIconSvg } from '../../images/star.svg';
+import { ReactComponent as EmptyStarIconSvg } from '../../../images/starempty.svg';
+import { ReactComponent as FullStarIconSvg } from '../../../images/star.svg';
 
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal'
 import Form from 'react-bootstrap/Form';
 import * as Yup from 'yup';
-import NotFound from './NotFound';
+import NotFound from '../NotFound';
 import Collapse from 'react-bootstrap/Collapse';
+import './Reviews.scss';  
+
 
 // import {ReviewButton, ReplyButton} from './ReviewComponents';
 
-var baseURL = require('./BaseURL').getURL();
+var baseURL = require('../BaseURL').getURL();
 
 class Reviews extends Component {
 
@@ -52,7 +54,13 @@ class Reviews extends Component {
           </Col>
         </Row>
 
-        {reviewData.length <= 0 ? <NotFound word="reviews" /> : reviewData.map((review,index) => {
+        {reviewData.length <= 0 ? 
+            <Row>
+                <Col xs={12} className="ml-3">
+                    <NotFound word="reviews" /> 
+                </Col>
+            </Row>
+            : reviewData.map((review,index) => {
           var updatedDate = new Date(review.date);;
           var updatedOnDate = updatedDate.getDate() + " " + monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
           return <div key={index}>

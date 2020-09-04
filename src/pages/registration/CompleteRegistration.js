@@ -2,29 +2,37 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-
 import { Row, Col, Container, Button, Alert, Form, InputGroup } from 'react-bootstrap';
-
-import SearchBar from '../commonComponents/SearchBar';
+import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
-
+import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
+import UserMessages from "../commonComponents/userMessages/UserMessages";
+import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
 import 'react-tabs/style/react-tabs.css';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class CompleteRegistration extends Component {
 
+    constructor(props) {
+        super(props);
+        this.searchBar = React.createRef();
+    }
+
     state = {
         searchString: '',
         id: '',
         userdata: [],
         isLoading: true,
+        showDrawer: false,
         userState: [{
             loggedIn: false,
             role: "Reader",
             id: null,
             name: null
-        }]
+        }],
+        showModal: false,
+        context: {}
     };
 
     doSearch = (e) => { //fires on enter on searchbar
@@ -33,6 +41,21 @@ class CompleteRegistration extends Component {
 
     updateSearchString = (searchString) => {
         this.setState({ searchString: searchString });
+    }
+
+    toggleDrawer = () => {
+        this.setState( ( prevState ) => {
+            if(prevState.showDrawer === true) {
+                this.searchBar.current.getNumberOfUnreadMessages();
+            }
+            return { showDrawer: !prevState.showDrawer };
+        });
+    }
+
+    toggleModal = (showEnquiry = false, context = {}) => {
+        this.setState( ( prevState ) => {
+            return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
+        });
     }
 
     componentDidMount() {
@@ -47,7 +70,7 @@ class CompleteRegistration extends Component {
     }
 
     render() {
-        const { isLoading, searchString, userState, userdata } = this.state;
+        const { isLoading, searchString, userState, userdata, showDrawer, showModal, context } = this.state;
         
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -55,7 +78,7 @@ class CompleteRegistration extends Component {
 
         return (
             <div>
-                <SearchBar searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} userState={userState} />
+                <SearchBar ref={this.searchBar} searchString={searchString} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} doToggleDrawer={this.toggleDrawer} userState={userState} />
 
                 <Container className="mb-5">
 
@@ -69,6 +92,22 @@ class CompleteRegistration extends Component {
                         <Col sm={1} lg={1} />
                     </Row>
                 </Container>
+                <SideDrawer
+                    open={showDrawer}
+                    closed={this.toggleDrawer}>
+                    <UserMessages 
+                        closed={this.toggleDrawer}
+                        toggleModal={this.toggleModal}
+                        drawerIsOpen={this.state.showDrawer} 
+                    />
+                </SideDrawer>
+
+                <DataSetModal 
+                    open={showModal} 
+                    context={context}
+                    closed={this.toggleModal}
+                    userState={userState[0]} 
+                />
             </div>
         );
     }

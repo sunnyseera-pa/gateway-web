@@ -1,12 +1,16 @@
 import React, {Fragment, useState} from 'react';
 import { Button, Modal, Row, Col, Tab, Tabs } from 'react-bootstrap';
-import RelatedResourcesModal from './RelatedResourceModal';
-import { ReactComponent as CloseButtonSvg } from '../../images/close.svg';  
+import RelatedResourcesModal from '../relatedResourcesModal/RelatedResourceModal';
+import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg';    
+import './RelatedResources.scss';   
 
+const RelatedResources =  React.forwardRef((props, ref) => {
 
-
-function RelatedResources(props) {
-
+    React.useImperativeHandle(ref, () => ({ 
+        showModal() {
+            handleShow();
+        }
+    }));
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -14,7 +18,7 @@ function RelatedResources(props) {
 
     function addResources() {
         handleClose();
-        props.doAddToRelatedObjects();
+        props.doAddToRelatedObjects(); 
 
     }
 
@@ -22,10 +26,10 @@ function RelatedResources(props) {
         handleClose();
         props.doClearRelatedObjects();
     }
-    
-    return (
-        <Fragment className="flexCenter">
-            <Button variant='white' href={''} target="_blank" className="techDetailButton mr-2" onClick={handleShow}>
+      
+    return ( 
+        <Fragment className="flexCenter" >
+            <Button variant='white' href={''} target="_blank" className="techDetailButton mr-2" onClick={handleShow} ref={ref}>
                 + Add resource
             </Button>
             <Modal show={show} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter" centered className="relatedResourcesModal" dialogClassName="modal-70w">
@@ -36,12 +40,12 @@ function RelatedResources(props) {
                         <br />
                         <span className="gray800-14">Link this to other papers, projects, datasets and tools. Resources must be added to the Gateway first.</span>
                     </Modal.Title>
-                    <CloseButtonSvg className="modal-close pointer" onClick={closeModal} />
+                    <CloseButtonSvg className="modal-close pointer" onClick={closeModal} width="24px" height="24px" fill="#475DA7" />
                 </Modal.Header>
                 <Modal.Body >
                    <RelatedResourcesModal toolid={props.toolid} projectid={props.projectid} paperid={props.paperid} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} paperData={props.paperData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} />
                 </Modal.Body>
-                </div>  
+                </div>   
                 <Modal.Footer>
                         <div class="flex-grow">
                             <span className="gray800-14" >{props.tempRelatedObjectIds.length} selected</span>
@@ -56,8 +60,9 @@ function RelatedResources(props) {
                         </div>
                 </Modal.Footer>
              </Modal>
-        </Fragment>
+        </Fragment> 
     )
 } 
+)
 
 export default RelatedResources;

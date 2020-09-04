@@ -1,0 +1,17 @@
+@import '../../../css/styles.scss';
+
+.greyCancelButton {
+    min-width: 83px;
+    height: 40px;
+    background-color: $gray-200;
+  }
+
+.smallAddButton {
+  width: 156px;
+  height: 40px;
+}
+
+#addReviewButton {
+  width: 100%;
+  background-color: $gray-200;
+} 

@@ -3,7 +3,7 @@
 
 h1,
 h2,
-h3,
+h3, 
 h4,
 h5,
 h6 {
@@ -27,7 +27,7 @@ h6 {
 
 .dark-14 {
   @include font-source(14px, $indigo, 500);
-}
+} 
 
 .soft-black-14 {
   @include font-source(14px, $soft-black, $font-weight-semibold);
@@ -37,8 +37,16 @@ h6 {
   @include font-source(14px, $gray-dark);
 }
 
+.black-14-bold {
+  @include font-source(14px, $gray-dark, $font-weight-bold);
+}
+
 .black-16 {
   @include font-source(16px, $gray-dark, $font-weight-bold);
+}
+
+.black-16-semibold {
+  @include font-source(16px, $gray-dark, $font-weight-semibold);
 }
 
 .black-bold-16 {
@@ -47,6 +55,10 @@ h6 {
 
 .black-bold-17 {
   @include font-source(17px, $gray-dark, $font-weight-bold);
+}
+
+.black-18 {
+  @include font-source(18px, $gray-dark, $font-weight-semibold);
 }
 
 .black-20 {
@@ -71,6 +83,10 @@ h6 {
 
 .white-12-bold {
   @include font-source(12px, $white, $font-weight-bold);
+}
+
+.white-13-semibold {
+  @include font-source(13px, $white, $font-weight-semibold);
 }
 
 .white-14-semibold {

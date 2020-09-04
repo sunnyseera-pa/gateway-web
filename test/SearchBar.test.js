@@ -1,6 +1,6 @@
 
 import React from 'react';
-import SearchBar from '../src/pages/commonComponents/SearchBar';
+import SearchBar from '../src/pages/commonComponents/searchBar/SearchBar';
 import { searchBarState } from './mocks/dataMock';
 import { searchBarStateLoggedIn } from './mocks/dataMock';
 

@@ -1,6 +1,8 @@
 import React from 'react';
 import {Col, Row, Button, Accordion } from 'react-bootstrap';
 import SVGIcon from "../../../images/SVGIcon"; 
+import '../Dashboard.scss'; 
+
 
 class UnmetDemand extends React.Component {
 
@@ -112,4 +114,4 @@ class UnmetDemand extends React.Component {
     }
 }
 
-export default UnmetDemand;
+export default UnmetDemand; 
