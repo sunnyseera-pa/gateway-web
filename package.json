@@ -44,7 +44,7 @@
     "semantic-ui-react": "^0.88.2",
     "snyk": "^1.360.0",
     "winterfell": "github:HDRUK/Winterfell",
-    "yup": "^0.28.1",
+    "yup": "^0.28.2",
     "snyk": "^1.360.0"
   },
   "scripts": {
