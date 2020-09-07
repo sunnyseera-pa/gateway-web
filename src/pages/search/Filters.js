@@ -37,7 +37,7 @@ class Filters extends Component {
 
     constructor(props) {
         super(props); 
-        this.state.data = props.data;
+        this.state.data = props.data || [];
         this.state.selected = props.selected;
         this.state.title = props.title;
         if (props.allFilters && props.allFilters.length !== 0) this.state.allFilters = props.allFilters;
@@ -45,7 +45,7 @@ class Filters extends Component {
     }
 
     componentWillReceiveProps(props) {
-        this.state.data = props.data;
+        this.state.data = props.data || [];
         this.state.selected = props.selected;
         this.state.title = props.title;
         if (props.allFilters && props.allFilters.length !== 0) this.state.allFilters = props.allFilters;
