@@ -554,24 +554,26 @@ toggleHoverState(state) {
                       </Col>
                     </Row>
                     
-                    <Row className="mt-2">
-                      <Col>
-                        <div className="rectangle">
-                          <Row>
-                            <Col>
-                              <span className="gray800-14-bold">Results/Insights</span>
-                            </Col>
-                          </Row>
-                          <Row className="mt-3">
-                            <Col>
-                              <span className="gray800-14">
-                                <ReactMarkdown source={data.resultsInsights} />
-                              </span>
-                            </Col>
-                          </Row>
-                        </div>
-                      </Col>
-                    </Row>
+                    {data.resultsInsights ? 
+                      <Row className="mt-2">
+                        <Col>
+                          <div className="rectangle">
+                            <Row>
+                              <Col>
+                                <span className="gray800-14-bold">Results/Insights</span>
+                              </Col>
+                            </Row>
+                            <Row className="mt-3">
+                              <Col>
+                                <span className="gray800-14">
+                                  <ReactMarkdown source={data.resultsInsights} />
+                                </span>
+                              </Col>
+                            </Row>
+                          </div>
+                        </Col>
+                      </Row>
+                    : null}
 
                     <Row className="mt-2">
                       <Col>

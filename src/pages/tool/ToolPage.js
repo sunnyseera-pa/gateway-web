@@ -421,6 +421,7 @@ class ToolDetail extends Component {
                       </Col>
                     </Row>
 
+                  {data.resultsInsights ? 
                     <Row className="mt-2">
                       <Col sm={12} lg={12}>
                         <div className="rectangle">
@@ -435,6 +436,7 @@ class ToolDetail extends Component {
                         </div>
                       </Col>
                     </Row>
+                  : null}
 
                     <Row className="mt-2">
                       <Col sm={12}>
