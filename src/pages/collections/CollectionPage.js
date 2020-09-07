@@ -19,6 +19,7 @@ import Loading from '../commonComponents/Loading';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import 'react-tabs/style/react-tabs.css';
+import DiscourseTopic from '../discourse/DiscourseTopic';
 import { baseURL } from '../../configs/url.config';
 import moment from 'moment';
 import _ from 'lodash';
@@ -56,6 +57,8 @@ class CollectionPage extends Component {
 		paperCount: 0,
 		collectionAdded: false,
 		collectionEdited: false,
+		discourseTopic: null,
+		discoursePostCount: 0,
 		showDrawer: false,
 		showModal: false,
 		context: {}
@@ -84,7 +87,8 @@ class CollectionPage extends Component {
 			)
 			.then((res) => {
 				this.setState({
-					data: res.data.data[0]
+					data: res.data.data[0],
+					discourseTopic: res.data.discourseTopic
 				});
 				this.getObjectData(res.data.data[0]);
 				this.setState({ isLoading: false });
@@ -216,6 +220,10 @@ class CollectionPage extends Component {
 		this.setState({ searchString: searchString });
 	};
 
+	updateDiscoursePostCount = (count) => {
+		this.setState({ discoursePostCount: count });
+	}
+
 	toggleDrawer = () => {
 		this.setState((prevState) => {
 			if (prevState.showDrawer === true) {
@@ -245,6 +253,7 @@ class CollectionPage extends Component {
 			paperCount,
 			collectionAdded,
 			collectionEdited,
+			discoursePostCount,
 			showDrawer,
 			showModal,
 			context
@@ -408,6 +417,21 @@ class CollectionPage extends Component {
 							title={'Projects (' + projectCount + ')'}
 						></Tab>
 						<Tab eventKey='People' title={'People (' + personCount + ')'}></Tab>
+						<Tab eventKey="Collaboration" title={`Discussion (${discoursePostCount})`}>
+							<Container className='resource-card'>
+								<Row>
+									<Col sm={1} lg={1} />
+									<Col sm={10} lg={10}>
+									<DiscourseTopic
+										collectionId={data.id}
+										topicId={data.discourseTopicId || 0}
+										userState={userState}
+										onUpdateDiscoursePostCount={this.updateDiscoursePostCount}>
+									</DiscourseTopic>
+									</Col>
+								</Row>
+							</Container>
+						</Tab>
 					</Tabs>
 				</div>
 

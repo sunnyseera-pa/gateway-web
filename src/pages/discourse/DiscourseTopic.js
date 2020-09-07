@@ -84,9 +84,10 @@ class DiscourseTopic extends Component {
       })
     } else {
       // 1. Assemble payload to create new post
-      let { topicId, toolId } = this.props;
+      let { topicId, toolId, collectionId } = this.props;
       let payload = { 
         toolId,
+        collectionId,
         topicId,
         comment: values.comment.trim()
       };
