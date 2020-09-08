@@ -27,28 +27,26 @@ const CustomMenu = React.forwardRef(
 );
 
 class Filters extends Component {
-    state = {
-        selected: [],
-        allFilters: [],
-        data: [],
-        title:'',
-        filterOpen: false,
-    }
-
+   
     constructor(props) {
         super(props); 
-        this.state.data = props.data;
-        this.state.selected = props.selected;
-        this.state.title = props.title;
-        if (props.allFilters && props.allFilters.length !== 0) this.state.allFilters = props.allFilters;
+        this.state = {
+            data: props.data || [],
+            selected: props.selected || [],
+            title : props.title || '',
+            allFilters: props.allFilters && props.length !== 0 ? props.allFilters : [],
+            filterOpen: false
+        }
         
     }
 
     componentWillReceiveProps(props) {
-        this.state.data = props.data;
-        this.state.selected = props.selected;
-        this.state.title = props.title;
-        if (props.allFilters && props.allFilters.length !== 0) this.state.allFilters = props.allFilters;
+        this.state = {
+            data: props.data || [],
+            selected: props.selected || [],
+            title : props.title || '',
+            allFilters: props.allFilters && props.length !== 0 ? props.allFilters : []
+        }
     }
 
     componentDidMount() {

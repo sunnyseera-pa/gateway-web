@@ -2,16 +2,17 @@ import React from 'react';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import axios from 'axios';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-import { baseURL } from '../../../configs/url.config';
+import { baseURL } from '../../../../configs/url.config';
 
 
 class TypaheadUser extends React.Component {
   constructor(props) {
-    super(props);    
+    super(props);  
     this.state = {
       value: [],
       options: [],
-      id: props.id
+      id: props.id,
+      readOnly: props.readOnly || false
     };
     this.handleChange = this.handleChange.bind(this);
     // this.handleBlur = this.handleBlur.bind(this);
@@ -64,6 +65,7 @@ class TypaheadUser extends React.Component {
         minLength={3}
         filterBy={['name']}
         multiple
+        disabled={this.state.readOnly}
         defaultSelected={this.state.value}
         labelKey={options => `${options.name}`}
         renderMenuItemChildren={(option, props) => (
