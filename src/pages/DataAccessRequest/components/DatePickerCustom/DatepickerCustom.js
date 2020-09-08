@@ -8,7 +8,7 @@ class DatePickerCustom extends React.Component {
   constructor(props) {
     super(props);    
     this.state = {
-      date: isEmpty(this.props.value) ? '' : moment(this.props.value).toDate(),
+      date: isEmpty(this.props.value) ? '' : moment(this.props.value).toDate()
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleFocus = this.handleFocus.bind(this);
@@ -37,6 +37,7 @@ class DatePickerCustom extends React.Component {
   render() {
     return (
         <DatePicker
+            disabled={this.props.readOnly || false}
             name={this.props.name || 'startdate'}
             dateFormat="dd/MM/yyyy"
             selected={this.state.date}

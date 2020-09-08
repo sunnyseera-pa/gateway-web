@@ -3,7 +3,6 @@ import { Row } from "react-bootstrap";
 import './ActionBar.scss'; 
 
 const ActionBar = (props) => {  
-    
     return (
         !props.userState[0].loggedIn ? (
             ""
