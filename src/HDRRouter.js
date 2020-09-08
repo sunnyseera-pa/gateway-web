@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import * as Sentry from '@sentry/react';
 
 import Container from 'react-bootstrap/Container';
 
@@ -29,6 +30,7 @@ import CompleteRegistration from './pages/registration/CompleteRegistration'
 import LoginModal from './pages/commonComponents/LoginModal';
 import Footer from './pages/commonComponents/Footer';
 import LoginErrorPage from './pages/commonComponents/LoginErrorPage';
+import ErrorModal from './pages/commonComponents/errorModal/ErrorModal';
 
 var baseURL = require('./pages/commonComponents/BaseURL').getURL();
 
@@ -43,7 +45,16 @@ class HDRRouter extends Component {
                 name: null
             }
         ],
-        isLoading: true
+        isLoading: true,
+        show: false
+    };
+
+    showModal = () => {
+        this.setState({ show: true });
+    };
+    
+    hideModal = () => {
+        this.setState({ show: false });
     };
 
     async componentDidMount() {
@@ -90,48 +101,50 @@ class HDRRouter extends Component {
         }
 
         return (
-            <Router>
-                <LoginModal userState={userState} />
-                <div className='navBarGap'></div>
-                <div className='mainWrap'>
-                    <Switch>
-                        <Route path='/search' render={(props) => <SearchPage {...props} userState={userState} />} />
-                        <Route path='/loginerror' render={(props) => <LoginErrorPage {...props} userState={userState} />} />
-                        <Route path='/person/:personID' render={(props) => <PersonPage {...props} userState={userState} />} />
-                        <Route path='/dataset/:datasetID' render={(props) => <DatasetPage {...props} userState={userState} />} />
-                        <Route path='/completeRegistration/:personID' render={(props) => <CompleteRegistration {...props} userState={userState} />} />
-                        <Route path='/sso' render={(props) => <SSOPage {...props} userState={userState} />} />
-                        <Route path='/account/unsubscribe/:userObjectID' render={(props) => <Unsubscribe {...props} userState={userState} />} />
-                        
-                        {userState[0].loggedIn ? (<Route path='/data-access-request/dataset/:datasetId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
-                        {userState[0].loggedIn ? (<Route path='/data-access-request/publisher/:publisherId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
-                        {userState[0].loggedIn ? (<Route path='/data-access-request/:accessId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
-                                                
-                        {userState[0].loggedIn ? (<Route path='/account' render={(props) => <Account {...props} userState={userState} />} />) : ''}
-                        
-                        {userState[0].loggedIn ? (<Route path='/addcollection' render={(props) => <AddCollectionPage {...props} userState={userState} /> } />) : ''}
-                        {userState[0].loggedIn ? (<Route path='/editcollection/:collectionID' render={(props) => <EditCollectionPage {...props} userState={userState} /> } />) : ''} 
-                        <Route path='/collection/:collectionID' render={(props) => <CollectionPage {...props} userState={userState} />} />
+            <Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
+                <Router>
+                    <LoginModal userState={userState} />
+                    <div className='navBarGap'></div>
+                    <div className='mainWrap'>
+                        <Switch>
+                            <Route path='/search' render={(props) => <SearchPage {...props} userState={userState} />} />
+                            <Route path='/loginerror' render={(props) => <LoginErrorPage {...props} userState={userState} />} />
+                            <Route path='/person/:personID' render={(props) => <PersonPage {...props} userState={userState} />} />
+                            <Route path='/dataset/:datasetID' render={(props) => <DatasetPage {...props} userState={userState} />} />
+                            <Route path='/completeRegistration/:personID' render={(props) => <CompleteRegistration {...props} userState={userState} />} />
+                            <Route path='/sso' render={(props) => <SSOPage {...props} userState={userState} />} />
+                            <Route path='/account/unsubscribe/:userObjectID' render={(props) => <Unsubscribe {...props} userState={userState} />} />
+                            
+                            {userState[0].loggedIn ? (<Route path='/data-access-request/dataset/:datasetId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
+                            {userState[0].loggedIn ? (<Route path='/data-access-request/publisher/:publisherId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
+                            {userState[0].loggedIn ? (<Route path='/data-access-request/:accessId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
+                                                    
+                            {userState[0].loggedIn ? (<Route path='/account' render={(props) => <Account {...props} userState={userState} />} />) : ''}
+                            
+                            {userState[0].loggedIn ? (<Route path='/addcollection' render={(props) => <AddCollectionPage {...props} userState={userState} /> } />) : ''}
+                            {userState[0].loggedIn ? (<Route path='/editcollection/:collectionID' render={(props) => <EditCollectionPage {...props} userState={userState} /> } />) : ''} 
+                            <Route path='/collection/:collectionID' render={(props) => <CollectionPage {...props} userState={userState} />} />
 
-                        {userState[0].loggedIn ? (<Route path='/tool/add' render={(props) => <AddEditToolPage {...props} userState={userState} /> } />) : ''}
-                        {userState[0].loggedIn ? (<Route path='/tool/edit/:toolID' render={(props) => <AddEditToolPage {...props} userState={userState} isEdit="true" /> } />) : ''}
-                        <Route path='/tool/:toolID' render={(props) => <ToolPage {...props} userState={userState} />} />
-                        
-                        {userState[0].loggedIn ? (<Route path='/project/add' render={(props) => <AddEditProjectPage {...props} userState={userState} /> } />) : ''}
-                        {userState[0].loggedIn ? (<Route path='/project/edit/:projectID' render={(props) => <AddEditProjectPage {...props} userState={userState} isEdit="true"  /> } />) : ''}
-                        <Route path='/project/:projectID' render={(props) => <ProjectPage {...props} userState={userState} />} />
-                        
-                        {userState[0].loggedIn ? (<Route path='/paper/add' render={(props) => <AddEditPaperPage {...props} userState={userState} /> } />) : ''}
-                        {userState[0].loggedIn ? (<Route path='/paper/edit/:paperID' render={(props) => <AddEditPaperPage {...props} userState={userState} isEdit="true" /> } />) : ''}
-                        <Route path='/paper/:paperID' render={(props) => <PaperPage {...props} userState={userState} />} />
-                        
+                            {userState[0].loggedIn ? (<Route path='/tool/add' render={(props) => <AddEditToolPage {...props} userState={userState} /> } />) : ''}
+                            {userState[0].loggedIn ? (<Route path='/tool/edit/:toolID' render={(props) => <AddEditToolPage {...props} userState={userState} isEdit="true" /> } />) : ''}
+                            <Route path='/tool/:toolID' render={(props) => <ToolPage {...props} userState={userState} />} />
+                            
+                            {userState[0].loggedIn ? (<Route path='/project/add' render={(props) => <AddEditProjectPage {...props} userState={userState} /> } />) : ''}
+                            {userState[0].loggedIn ? (<Route path='/project/edit/:projectID' render={(props) => <AddEditProjectPage {...props} userState={userState} isEdit="true"  /> } />) : ''}
+                            <Route path='/project/:projectID' render={(props) => <ProjectPage {...props} userState={userState} />} />
+                            
+                            {userState[0].loggedIn ? (<Route path='/paper/add' render={(props) => <AddEditPaperPage {...props} userState={userState} /> } />) : ''}
+                            {userState[0].loggedIn ? (<Route path='/paper/edit/:paperID' render={(props) => <AddEditPaperPage {...props} userState={userState} isEdit="true" /> } />) : ''}
+                            <Route path='/paper/:paperID' render={(props) => <PaperPage {...props} userState={userState} />} />
+                            
 
-                        {/* Catch all path */}
-                        <Redirect to="/search?search=" />
-                    </Switch>
-                </div>
-                <Footer />
-            </Router>
+                            {/* Catch all path */}
+                            <Redirect to="/search?search=" />
+                        </Switch>
+                    </div>
+                    <Footer />
+                </Router>
+            </Sentry.ErrorBoundary>
         );
     }
 }

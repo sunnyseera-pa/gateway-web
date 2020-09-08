@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import queryString from "query-string";
+import * as Sentry from '@sentry/react';
 import { Row, Col, Tabs, Tab, Container, Alert, Button } from "react-bootstrap";
 import NotFound from "../commonComponents/NotFound";
 import Creators from "../commonComponents/Creators";
@@ -14,6 +15,7 @@ import UserMessages from "../commonComponents/userMessages/UserMessages";
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
+import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 
 import "react-tabs/style/react-tabs.css";
 import { baseURL } from "../../configs/url.config";
@@ -260,393 +262,395 @@ toggleHoverState(state) {
     }
 
     return (
-      <div>
-        <SearchBar
-          searchString={searchString}
-          doSearchMethod={this.doSearch}
-          doUpdateSearchString={this.updateSearchString}
-          userState={userState}
-          doToggleDrawer={this.toggleDrawer}
-        />
-        <Container className="margin-bottom-48">
-          {paperAdded ? (
-            <Row className="">
-              <Col sm={1} lg={1} />
-              <Col sm={10} lg={10}>
-                <Alert variant="success" className="mt-3">
-                  Done! Someone will review your tool and let you know when it
-                  goes live
-                </Alert>
-              </Col>
-              <Col sm={1} lg={10} />
-            </Row>
-          ) : (
-            ""
-          )}
-
-          {paperEdited ? (
-            <Row className="">
-              <Col sm={1} lg={1} />
-              <Col sm={10} lg={10}>
-                <Alert variant="success" className="mt-3">
-                  Done! Your tool has been updated
-                </Alert>
-              </Col>
-              <Col sm={1} lg={10} />
-            </Row>
-          ) : (
-            ""
-          )}
-
-          {data.activeflag === "review" ? (
-            <Row className="">
-              <Col sm={1} lg={1} />
-              <Col sm={10} lg={10}>
-                <Alert variant="warning" className="mt-3">
-                  Your paper is pending review. Only you can see this page.
-                </Alert>
-              </Col>
-              <Col sm={1} lg={10} />
-            </Row>
-          ) : (
-            ""
-          )}
-
-          {reviewAdded ? (
-            <Row className="">
-              <Col sm={1} lg={1} />
-              <Col sm={10} lg={10}>
-                <Alert variant="warning" className="mt-3">
-                  Done! Your review is pending review.
-                </Alert>
-              </Col>
-              <Col sm={1} lg={10} />
-            </Row>
-          ) : (
-            ""
-          )}
-
-          {replyAdded ? (
-            <Row className="">
-              <Col sm={1} lg={1} />
-              <Col sm={10} lg={10}>
-                <Alert variant="success" className="mt-3">
-                  Done! Your reply has been added.
-                </Alert>
-              </Col>
-              <Col sm={1} lg={10} />
-            </Row>
-          ) : (
-            ""
-          )}
-
-          {data.isPreprint ? (
-            <Row className="">
-              <Col sm={1} lg={1} />
-              <Col sm={10} lg={10}>
-                  <Alert variant="warning" className="mt-3" data-testid="preprintAlert">
-                    This article is a preprint. It may not have been peer
-                    reviewed.
-
-                    <span
-                      onMouseEnter={this.handleMouseHover}
-                      onMouseLeave={this.handleMouseHover}
-                      className="floatRight"
-                    >
-                      <InfoSVG />
-                    </span>
-
-                    {this.state.isHovering && (
-                      <div className="preprintToolTip">  
-                        <span className="white-13-semibold">
-                          A preprint is a complete scientific manuscript that an author uploads on a public server for free viewing. Initially it is posted without peer review, but may acquire feedback or reviews as a preprint, and may eventually be published in a peer-reviewed journal. The posting of preprints on public servers allows almost immediate dissemination and scientific feedback early in the 'publication' process.
-                        </span>
-                      </div>
-                    )}
-
+      <Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
+        <div>
+          <SearchBar
+            searchString={searchString}
+            doSearchMethod={this.doSearch}
+            doUpdateSearchString={this.updateSearchString}
+            userState={userState}
+            doToggleDrawer={this.toggleDrawer}
+          />
+          <Container className="margin-bottom-48">
+            {paperAdded ? (
+              <Row className="">
+                <Col sm={1} lg={1} />
+                <Col sm={10} lg={10}>
+                  <Alert variant="success" className="mt-3">
+                    Done! Someone will review your tool and let you know when it
+                    goes live
                   </Alert>
+                </Col>
+                <Col sm={1} lg={10} />
+              </Row>
+            ) : (
+              ""
+            )}
+
+            {paperEdited ? (
+              <Row className="">
+                <Col sm={1} lg={1} />
+                <Col sm={10} lg={10}>
+                  <Alert variant="success" className="mt-3">
+                    Done! Your tool has been updated
+                  </Alert>
+                </Col>
+                <Col sm={1} lg={10} />
+              </Row>
+            ) : (
+              ""
+            )}
+
+            {data.activeflag === "review" ? (
+              <Row className="">
+                <Col sm={1} lg={1} />
+                <Col sm={10} lg={10}>
+                  <Alert variant="warning" className="mt-3">
+                    Your paper is pending review. Only you can see this page.
+                  </Alert>
+                </Col>
+                <Col sm={1} lg={10} />
+              </Row>
+            ) : (
+              ""
+            )}
+
+            {reviewAdded ? (
+              <Row className="">
+                <Col sm={1} lg={1} />
+                <Col sm={10} lg={10}>
+                  <Alert variant="warning" className="mt-3">
+                    Done! Your review is pending review.
+                  </Alert>
+                </Col>
+                <Col sm={1} lg={10} />
+              </Row>
+            ) : (
+              ""
+            )}
+
+            {replyAdded ? (
+              <Row className="">
+                <Col sm={1} lg={1} />
+                <Col sm={10} lg={10}>
+                  <Alert variant="success" className="mt-3">
+                    Done! Your reply has been added.
+                  </Alert>
+                </Col>
+                <Col sm={1} lg={10} />
+              </Row>
+            ) : (
+              ""
+            )}
+
+            {data.isPreprint ? (
+              <Row className="">
+                <Col sm={1} lg={1} />
+                <Col sm={10} lg={10}>
+                    <Alert variant="warning" className="mt-3" data-testid="preprintAlert">
+                      This article is a preprint. It may not have been peer
+                      reviewed.
+
+                      <span
+                        onMouseEnter={this.handleMouseHover}
+                        onMouseLeave={this.handleMouseHover}
+                        className="floatRight"
+                      >
+                        <InfoSVG />
+                      </span>
+
+                      {this.state.isHovering && (
+                        <div className="preprintToolTip">  
+                          <span className="white-13-semibold">
+                            A preprint is a complete scientific manuscript that an author uploads on a public server for free viewing. Initially it is posted without peer review, but may acquire feedback or reviews as a preprint, and may eventually be published in a peer-reviewed journal. The posting of preprints on public servers allows almost immediate dissemination and scientific feedback early in the 'publication' process.
+                          </span>
+                        </div>
+                      )}
+
+                    </Alert>
+                </Col>
+                <Col sm={1} lg={10} />
+              </Row>
+            ) : (
+              ""
+            )}
+
+            <Row className="mt-2">
+              <Col sm={1} lg={1} />
+              <Col sm={10} lg={10}>
+                <div className="rectangle">
+                  <Row>
+                    <Col xs={7} md={8}>
+                      <p>
+                        <span className="black-16" data-testid="title">
+                          {data.name}
+                        </span>
+                        <br />
+                        <span className="badge-paper">
+                          <SVGIcon
+                            name="projecticon"
+                            fill={"#3c3c3b"}
+                            className="badgeSvg mr-2"
+                          />
+                          Paper
+                        </span>
+                      </p>
+                    </Col>
+                    <Col xs={5} md={4} className="iconHolder"></Col>
+                  </Row>
+
+                  <Row>
+                    <Row>
+                      <Col className="ml-3">
+                        <span className="gray800-14">
+                          {data.counter === undefined ? 1 : data.counter + 1}
+                          {data.counter === undefined ? " view" : " views"}
+                        </span>
+                      </Col>
+                    </Row>
+                  </Row>
+                </div>
               </Col>
               <Col sm={1} lg={10} />
             </Row>
-          ) : (
-            ""
-          )}
 
-          <Row className="mt-2">
-            <Col sm={1} lg={1} />
-            <Col sm={10} lg={10}>
-              <div className="rectangle">
-                <Row>
-                  <Col xs={7} md={8}>
-                    <p>
-                      <span className="black-16" data-testid="title">
-                        {data.name}
-                      </span>
-                      <br />
-                      <span className="badge-paper">
-                        <SVGIcon
-                          name="projecticon"
-                          fill={"#3c3c3b"}
-                          className="badgeSvg mr-2"
-                        />
-                        Paper
-                      </span>
-                    </p>
-                  </Col>
-                  <Col xs={5} md={4} className="iconHolder"></Col>
-                </Row>
-
-                <Row>
-                  <Row>
-                    <Col className="ml-3">
-                      <span className="gray800-14">
-                        {data.counter === undefined ? 1 : data.counter + 1}
-                        {data.counter === undefined ? " view" : " views"}
-                      </span>
-                    </Col>
-                  </Row>
-                </Row>
-              </div>
-            </Col>
-            <Col sm={1} lg={10} />
-          </Row>
-
-          <Row>
-            <Col sm={1} lg={1} />
-            <Col sm={10} lg={10}>
-              <div>
-                <Tabs className="tabsBackground gray700-13">
-                  <Tab eventKey="about" title={"About"}>
-                    <Row className="mt-2">
-                      <Col>
-                        <div className="rectangle">
-                          <Row>
-                            <Col>
-                              <span className="gray800-14-bold">Details</span>
-                            </Col>
-                          </Row>
-                          <Row className="mt-2">
-                            <Col sm={2}>
-                              <span className="gray800-14">URL</span>
-                            </Col>
-                            <Col sm={10}>
-                              <a
-                                href={data.link}
-                                rel="noopener noreferrer"
-                                target="_blank"
-                                className="purple-14"
-                              >
-                                {data.link}
-                              </a>
-                            </Col>
-                          </Row>
-                          {data.isPreprint ? '' :
+            <Row>
+              <Col sm={1} lg={1} />
+              <Col sm={10} lg={10}>
+                <div>
+                  <Tabs className="tabsBackground gray700-13">
+                    <Tab eventKey="about" title={"About"}>
+                      <Row className="mt-2">
+                        <Col>
+                          <div className="rectangle">
+                            <Row>
+                              <Col>
+                                <span className="gray800-14-bold">Details</span>
+                              </Col>
+                            </Row>
                             <Row className="mt-2">
                               <Col sm={2}>
-                                <span className="gray800-14">Journal</span>
+                                <span className="gray800-14">URL</span>
+                              </Col>
+                              <Col sm={10}>
+                                <a
+                                  href={data.link}
+                                  rel="noopener noreferrer"
+                                  target="_blank"
+                                  className="purple-14"
+                                >
+                                  {data.link}
+                                </a>
+                              </Col>
+                            </Row>
+                            {data.isPreprint ? '' :
+                              <Row className="mt-2">
+                                <Col sm={2}>
+                                  <span className="gray800-14">Journal</span>
+                                </Col>
+                                <Col sm={10}>
+                                  <span className="gray800-14">
+                                    {data.journal} {data.journalYear}
+                                  </span>
+                                </Col>
+                              </Row>
+                            }
+                            <Row className="mt-2">
+                              <Col sm={2}>
+                                <span className="gray800-14">Last update</span>
                               </Col>
                               <Col sm={10}>
                                 <span className="gray800-14">
-                                  {data.journal} {data.journalYear}
+                                  {moment(data.updatedon).format("DD MMMM YYYY")}
                                 </span>
                               </Col>
                             </Row>
-                          }
-                          <Row className="mt-2">
-                            <Col sm={2}>
-                              <span className="gray800-14">Last update</span>
-                            </Col>
-                            <Col sm={10}>
-                              <span className="gray800-14">
-                                {moment(data.updatedon).format("DD MMMM YYYY")}
-                              </span>
-                            </Col>
-                          </Row>
-                          {data.uploader ? (
+                            {data.uploader ? (
+                              <Row className="mt-2">
+                                <Col sm={2} className="gray800-14">
+                                  Uploader
+                                </Col>
+                                <Col sm={10} className="gray800-14 overflowWrap">
+                                  {data.uploaderIs[0].firstname}{" "}
+                                  {data.uploaderIs[0].lastname}
+                                </Col>
+                              </Row>
+                            ) : (
+                              ""
+                            )}
                             <Row className="mt-2">
-                              <Col sm={2} className="gray800-14">
-                                Uploader
+                              <Col sm={2}>
+                                <span className="gray800-14">Keywords</span>
                               </Col>
-                              <Col sm={10} className="gray800-14 overflowWrap">
-                                {data.uploaderIs[0].firstname}{" "}
-                                {data.uploaderIs[0].lastname}
+                              <Col sm={10}>
+                                <span className="gray800-14">
+                                  {!data.tags.features ||
+                                  data.tags.features.length <= 0
+                                    ? ""
+                                    : data.tags.features.map((feature, i) => {
+                                        return (
+                                          <div className="badge-tag" key={i}>
+                                            <a
+                                              className="gray800-14"
+                                              href={
+                                                "/search?search=&tab=Papers&paperfeatures=" +
+                                                feature +
+                                                "&type=all"
+                                              }
+                                            >
+                                              {feature}
+                                            </a>
+                                          </div>
+                                        );
+                                      })}
+                                </span>
                               </Col>
                             </Row>
-                          ) : (
-                            ""
-                          )}
-                          <Row className="mt-2">
-                            <Col sm={2}>
-                              <span className="gray800-14">Keywords</span>
-                            </Col>
-                            <Col sm={10}>
-                              <span className="gray800-14">
-                                {!data.tags.features ||
-                                data.tags.features.length <= 0
-                                  ? ""
-                                  : data.tags.features.map((feature, i) => {
-                                      return (
-                                        <div className="badge-tag" key={i}>
-                                          <a
-                                            className="gray800-14"
-                                            href={
-                                              "/search?search=&tab=Papers&paperfeatures=" +
-                                              feature +
-                                              "&type=all"
-                                            }
-                                          >
-                                            {feature}
-                                          </a>
-                                        </div>
-                                      );
-                                    })}
-                              </span>
-                            </Col>
-                          </Row>
-                          <Row className="mt-2">
-                            <Col sm={2}>
-                              <span className="gray800-14">Domain</span>
-                            </Col>
-                            <Col sm={10}>
-                              <span className="gray800-14">
-                                {!data.tags.topics ||
-                                data.tags.topics.length <= 0
-                                  ? ""
-                                  : data.tags.topics.map((topic, i) => {
-                                      return (
-                                        <div className="badge-tag" key={i}>
-                                          <a
-                                            className="gray800-14"
-                                            href={
-                                              "/search?search=&tab=Papers&papertopics=" +
-                                              topic +
-                                              "&type=all"
-                                            }
-                                          >
-                                            {topic}
-                                          </a>
-                                        </div>
-                                      );
-                                    })}
-                              </span>
-                            </Col>
-                          </Row>
-                        </div>
-                      </Col>
-                    </Row>
-                    <Row className="mt-2">
-                      <Col>
-                        <div className="rectangle">
-                          <Row>
-                            <Col>
-                              <span className="gray800-14-bold">Abstract</span>
-                            </Col>
-                          </Row>
-                          <Row className="mt-3">
-                            <Col>
-                              <span className="gray800-14">
-                                <ReactMarkdown source={data.description} />
-                              </span>
-                            </Col>
-                          </Row>
-                        </div>
-
-                        
-                      </Col>
-                    </Row>
-                    
-                    <Row className="mt-2">
-                      <Col>
-                        <div className="rectangle">
-                          <Row>
-                            <Col>
-                              <span className="gray800-14-bold">Results/Insights</span>
-                            </Col>
-                          </Row>
-                          <Row className="mt-3">
-                            <Col>
-                              <span className="gray800-14">
-                                <ReactMarkdown source={data.resultsInsights} />
-                              </span>
-                            </Col>
-                          </Row>
-                        </div>
-                      </Col>
-                    </Row>
-
-                    <Row className="mt-2">
-                      <Col>
-                        <div className="rectangle">
-                          <Row>
-                            <Col>
-                              <span className="gray800-14-bold">Authors</span>
-                            </Col>
-                          </Row>
-                          <Row className="mt-3">
-                            {data.persons.map(author => (
-                              <Col sm={6} key={author.id}>
-                                <Creators key={author.id} author={author} />
+                            <Row className="mt-2">
+                              <Col sm={2}>
+                                <span className="gray800-14">Domain</span>
                               </Col>
-                            ))}
-                          </Row>
-                        </div>
-                      </Col>
-                    </Row>
-                  </Tab>
+                              <Col sm={10}>
+                                <span className="gray800-14">
+                                  {!data.tags.topics ||
+                                  data.tags.topics.length <= 0
+                                    ? ""
+                                    : data.tags.topics.map((topic, i) => {
+                                        return (
+                                          <div className="badge-tag" key={i}>
+                                            <a
+                                              className="gray800-14"
+                                              href={
+                                                "/search?search=&tab=Papers&papertopics=" +
+                                                topic +
+                                                "&type=all"
+                                              }
+                                            >
+                                              {topic}
+                                            </a>
+                                          </div>
+                                        );
+                                      })}
+                                </span>
+                              </Col>
+                            </Row>
+                          </div>
+                        </Col>
+                      </Row>
+                      <Row className="mt-2">
+                        <Col>
+                          <div className="rectangle">
+                            <Row>
+                              <Col>
+                                <span className="gray800-14-bold">Abstract</span>
+                              </Col>
+                            </Row>
+                            <Row className="mt-3">
+                              <Col>
+                                <span className="gray800-14">
+                                  <ReactMarkdown source={data.description} />
+                                </span>
+                              </Col>
+                            </Row>
+                          </div>
 
-                  <Tab
-                    eventKey="Collaboration"
-                    title={`Discussion (${discoursePostCount})`}
-                  >
-                    <DiscourseTopic
-                      toolId={data.id}
-                      topicId={data.discourseTopicId || 0}
-                      userState={userState}
-                      onUpdateDiscoursePostCount={this.updateDiscoursePostCount}
-                    />
-                  </Tab>
-                  <Tab
-                    eventKey="Projects"
-                    title={"Related resources (" + relatedObjects.length + ")"}
-                  >
-                    {relatedObjects.length <= 0 ? (
-                      <NotFound word="related resources" />
-                    ) : (
-                      relatedObjects.map(object => (
-                        <RelatedObject
-                          relatedObject={object}
-                          activeLink={true}
-                          showRelationshipAnswer={true}
-                        />
-                      ))
-                    )}
-                  </Tab>
-                </Tabs>
-              </div>
-            </Col>
-            <Col sm={1} lg={1} />
-          </Row>
-        </Container>
-        <SideDrawer open={showDrawer} closed={this.toggleDrawer}>
-          <UserMessages
-            closed={this.toggleDrawer}
-            toggleModal={this.toggleModal}
-            drawerIsOpen={this.state.showDrawer}
+                          
+                        </Col>
+                      </Row>
+                      
+                      <Row className="mt-2">
+                        <Col>
+                          <div className="rectangle">
+                            <Row>
+                              <Col>
+                                <span className="gray800-14-bold">Results/Insights</span>
+                              </Col>
+                            </Row>
+                            <Row className="mt-3">
+                              <Col>
+                                <span className="gray800-14">
+                                  <ReactMarkdown source={data.resultsInsights} />
+                                </span>
+                              </Col>
+                            </Row>
+                          </div>
+                        </Col>
+                      </Row>
+
+                      <Row className="mt-2">
+                        <Col>
+                          <div className="rectangle">
+                            <Row>
+                              <Col>
+                                <span className="gray800-14-bold">Authors</span>
+                              </Col>
+                            </Row>
+                            <Row className="mt-3">
+                              {data.persons.map(author => (
+                                <Col sm={6} key={author.id}>
+                                  <Creators key={author.id} author={author} />
+                                </Col>
+                              ))}
+                            </Row>
+                          </div>
+                        </Col>
+                      </Row>
+                    </Tab>
+
+                    <Tab
+                      eventKey="Collaboration"
+                      title={`Discussion (${discoursePostCount})`}
+                    >
+                      <DiscourseTopic
+                        toolId={data.id}
+                        topicId={data.discourseTopicId || 0}
+                        userState={userState}
+                        onUpdateDiscoursePostCount={this.updateDiscoursePostCount}
+                      />
+                    </Tab>
+                    <Tab
+                      eventKey="Projects"
+                      title={"Related resources (" + relatedObjects.length + ")"}
+                    >
+                      {relatedObjects.length <= 0 ? (
+                        <NotFound word="related resources" />
+                      ) : (
+                        relatedObjects.map(object => (
+                          <RelatedObject
+                            relatedObject={object}
+                            activeLink={true}
+                            showRelationshipAnswer={true}
+                          />
+                        ))
+                      )}
+                    </Tab>
+                  </Tabs>
+                </div>
+              </Col>
+              <Col sm={1} lg={1} />
+            </Row>
+          </Container>
+          <SideDrawer open={showDrawer} closed={this.toggleDrawer}>
+            <UserMessages
+              closed={this.toggleDrawer}
+              toggleModal={this.toggleModal}
+              drawerIsOpen={this.state.showDrawer}
+            />
+          </SideDrawer>
+
+          <ActionBar userState={userState}> 
+            <ResourcePageButtons data={data} userState={userState} /> 
+          </ActionBar> 
+        
+          <DataSetModal 
+            open={showModal} 
+            context={context}
+            closed={this.toggleModal}
+            userState={userState[0]} 
           />
-        </SideDrawer>
 
-        <ActionBar userState={userState}> 
-          <ResourcePageButtons data={data} userState={userState} /> 
-        </ActionBar> 
-      
-        <DataSetModal 
-          open={showModal} 
-          context={context}
-          closed={this.toggleModal}
-          userState={userState[0]} 
-        />
-
-      </div>
+        </div>
+      </Sentry.ErrorBoundary>
     );
   }
 }

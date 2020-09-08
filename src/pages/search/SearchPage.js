@@ -1,7 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import { PageView, initGA } from '../../tracking';
-import queryString from 'query-string'; 
+import queryString from 'query-string';
+import * as Sentry from '@sentry/react';
 
 import { Container, Row, Col, Tabs, Tab, Pagination, Dropdown } from 'react-bootstrap';
 
@@ -14,6 +15,7 @@ import { NotificationContainer } from 'react-notifications';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
+import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import './Search.scss'; 
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -533,315 +535,317 @@ class SearchPage extends React.Component {
         }
 
         return (
-            <div>
+            <Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
+                <div>
 
-                <SearchBar ref={this.searchBar} searchString={searchString} doSearchMethod={this.doSearch} onClearMethod={this.doClear} doUpdateSearchString={this.updateSearchString} doToggleDrawer={this.toggleDrawer} userState={userState} />
+                    <SearchBar ref={this.searchBar} searchString={searchString} doSearchMethod={this.doSearch} onClearMethod={this.doClear} doUpdateSearchString={this.updateSearchString} doToggleDrawer={this.toggleDrawer} userState={userState} />
 
-                <div className="searchTabsHolder">
-                        <div>
-                            <Tabs className='tabsBackground gray700-13' activeKey={key} onSelect={this.handleSelect}>
-                                <Tab eventKey="Datasets" title={'Datasets (' + datasetCount + ')'} />
-                                <Tab eventKey="Tools" title={'Tools (' + toolCount + ')'} />
-                                <Tab eventKey="Projects" title={'Projects (' + projectCount + ')'} />
-                                <Tab eventKey="Papers" title={'Papers (' + paperCount + ')'} />
-                                <Tab eventKey="People" title={'People (' + personCount + ')'}>
-                                    {personCount <= 0 && !isResultsLoading ? <NoResults type='profiles' searchString={searchString} /> : ''}
-                                </Tab>
-                            </Tabs>
-                        </div>
-                </div>
+                    <div className="searchTabsHolder">
+                            <div>
+                                <Tabs className='tabsBackground gray700-13' activeKey={key} onSelect={this.handleSelect}>
+                                    <Tab eventKey="Datasets" title={'Datasets (' + datasetCount + ')'} />
+                                    <Tab eventKey="Tools" title={'Tools (' + toolCount + ')'} />
+                                    <Tab eventKey="Projects" title={'Projects (' + projectCount + ')'} />
+                                    <Tab eventKey="Papers" title={'Papers (' + paperCount + ')'} />
+                                    <Tab eventKey="People" title={'People (' + personCount + ')'}>
+                                        {personCount <= 0 && !isResultsLoading ? <NoResults type='profiles' searchString={searchString} /> : ''}
+                                    </Tab>
+                                </Tabs>
+                            </div>
+                    </div>
 
-                <Container>
-                    <Row>
-                        {key !== 'People' ?
-                            <Col sm={12} md={12} lg={3} className="mt-4">
-                                {key === 'Datasets' ? <>
-                                    <div className="filterHolder"> 
+                    <Container>
+                        <Row>
+                            {key !== 'People' ?
+                                <Col sm={12} md={12} lg={3} className="mt-4">
+                                    {key === 'Datasets' ? <>
+                                        <div className="filterHolder"> 
 
 
-                                        {publishersSelected.length !== 0 || licensesSelected.length !== 0 || keywordsSelected.length !== 0 || geoCoverageSelected.length !== 0 || sampleAvailabilitySelected.length !== 0 || phenotypesSelected.length !== 0 ? 
-                                            <div className="filterCard mb-2">
-                                                <Row>
-                                                    <Col className="mb-2">
-                                                        <div className="inlineBlock">
-                                                            <div className="gray500-13">Showing:</div>
-                                                        </div>
-                                                        <div className="floatRight">
-                                                            <div className="purple-13 pointer" onClick={() => this.clearFilter('All')}>Clear all</div>
-                                                        </div>
-                                                    </Col>
-                                                </Row> 
+                                            {publishersSelected.length !== 0 || licensesSelected.length !== 0 || keywordsSelected.length !== 0 || geoCoverageSelected.length !== 0 || sampleAvailabilitySelected.length !== 0 || phenotypesSelected.length !== 0 ? 
+                                                <div className="filterCard mb-2">
+                                                    <Row>
+                                                        <Col className="mb-2">
+                                                            <div className="inlineBlock">
+                                                                <div className="gray500-13">Showing:</div>
+                                                            </div>
+                                                            <div className="floatRight">
+                                                                <div className="purple-13 pointer" onClick={() => this.clearFilter('All')}>Clear all</div>
+                                                            </div>
+                                                        </Col>
+                                                    </Row> 
+                                                    
+                                                    {!publishersSelected || publishersSelected.length <= 0 ? '' : publishersSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'publishersSelected')}>X</span></div>
+                                                    })}
+
+                                                    {!licensesSelected || licensesSelected.length <= 0 ? '' : licensesSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'licensesSelected')}>X</span></div>
+                                                    })}
+
+                                                    {!keywordsSelected || keywordsSelected.length <= 0 ? '' : keywordsSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'keywordsSelected')}>X</span></div>
+                                                    })}
+
+                                                    {!geoCoverageSelected || geoCoverageSelected.length <= 0 ? '' : geoCoverageSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'geoCoverageSelected')}>X</span></div>
+                                                    })}
+
+                                                    {!sampleAvailabilitySelected || sampleAvailabilitySelected.length <= 0 ? '' : sampleAvailabilitySelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'sampleAvailabilitySelected')}>X</span></div>
+                                                    })}
+
+                                                    {!phenotypesSelected || phenotypesSelected.length <= 0 ? '' : phenotypesSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'phenotypesSelected')}>X</span></div>
+                                                    })}
+                                                </div>
+                                            : ''}
+                                            <Filters data={filterOptions.publisherFilterOptions} allFilters={allFilters.publisherFilter} updateOnFilter={this.updateOnFilter} selected={publishersSelected} title="Publisher" />
+                                            <Filters data={filterOptions.licenseFilterOptions} allFilters={allFilters.licenseFilter} updateOnFilter={this.updateOnFilter} selected={licensesSelected} title="License" />
+                                            <Filters data={filterOptions.datasetFeaturesFilterOptions} allFilters={allFilters.datasetFeatureFilter} updateOnFilter={this.updateOnFilter} selected={keywordsSelected} title="Keywords" />
+                                            <Filters data={filterOptions.geographicCoverageFilterOptions} allFilters={allFilters.geographicCoverageFilter} updateOnFilter={this.updateOnFilter} selected={geoCoverageSelected} title="Geographic coverage" />
+                                            <Filters data={filterOptions.sampleFilterOptions} allFilters={allFilters.sampleFilter} updateOnFilter={this.updateOnFilter} selected={sampleAvailabilitySelected} title="Physical sample availability" /> 
+                                            <Filters data={filterOptions.phenotypesOptions} allFilters={allFilters.phenotypesFilter} updateOnFilter={this.updateOnFilter} selected={phenotypesSelected} title="Phenotype" /> 
+                                            {/* <Filters data={filterOptions.ageBandFilterOptions} updateOnFilter={this.updateOnFilter} selected={ageBandsSelected} title="Age Bands" /> */}
+                                        </div>
+                                    </> : ''}
+                                    
+                                    {key === 'Tools' ? <>
+                                        <div className="filterHolder">
+                                            {toolCategoriesSelected.length !== 0 || languageSelected.length !== 0 || featuresSelected.length !== 0 || toolTopicsSelected.length !== 0 ? 
+                                                <div className="filterCard mb-2">
+                                                    <Row>
+                                                        <Col className="mb-2">
+                                                            <div className="inlineBlock">
+                                                                <div className="gray500-13">Showing:</div>
+                                                            </div>
+                                                            <div className="floatRight">
+                                                                <div className="purple-13 pointer" onClick={() => this.clearFilter('All')}>Clear all</div>
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+                                                    
+                                                    {!toolCategoriesSelected || toolCategoriesSelected.length <= 0 ? '' : toolCategoriesSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'toolCategoriesSelected')}>X</span></div>
+                                                    })}
+
+                                                    {!languageSelected || languageSelected.length <= 0 ? '' : languageSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'languageSelected')}>X</span></div>
+                                                    })}
+
+                                                    {!featuresSelected || featuresSelected.length <= 0 ? '' : featuresSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'featuresSelected')}>X</span></div>
+                                                    })}
+
+                                                    {!toolTopicsSelected || toolTopicsSelected.length <= 0 ? '' : toolTopicsSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'toolTopicsSelected')}>X</span></div>
+                                                    })}
+                                                </div> 
+                                            : ''}
+                                            <Filters data={filterOptions.toolCategoriesFilterOptions} allFilters={allFilters.toolCategoryFilter} updateOnFilter={this.updateOnFilter} selected={toolCategoriesSelected} title="Type" />
+                                            <Filters data={filterOptions.programmingLanguageFilterOptions} allFilters={allFilters.toolLanguageFilter} updateOnFilter={this.updateOnFilter} selected={languageSelected} title="Programming language" />
+                                            <Filters data={filterOptions.featuresFilterOptions} allFilters={allFilters.toolFeatureFilter} updateOnFilter={this.updateOnFilter} selected={featuresSelected} title="Keywords" />
+                                            <Filters data={filterOptions.toolTopicsFilterOptions} allFilters={allFilters.toolTopicFilter} updateOnFilter={this.updateOnFilter} selected={toolTopicsSelected} title="Domain" />
+                                        </div>
+                                    </> : ''}
+
+                                    {key === 'Projects' ? <>
+                                        <div className="filterHolder">
+                                            {projectCategoriesSelected.length !== 0 || projectFeaturesSelected.length !== 0 || projectTopicsSelected.length !== 0 ? 
+                                                <div className="filterCard mb-2">
+                                                    <Row>
+                                                        <Col className="mb-2">
+                                                            <div className="inlineBlock">
+                                                                <div className="gray500-13">Showing:</div>
+                                                            </div>
+                                                            <div className="floatRight">
+                                                                <div className="purple-13 pointer" onClick={() => this.clearFilter('All')}>Clear all</div>
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+                                                    
+                                                    {!projectCategoriesSelected || projectCategoriesSelected.length <= 0 ? '' : projectCategoriesSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'projectCategoriesSelected')}>X</span></div>
+                                                    })}
+
+                                                    {!projectFeaturesSelected || projectFeaturesSelected.length <= 0 ? '' : projectFeaturesSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'projectFeaturesSelected')}>X</span></div>
+                                                    })}
+
+                                                    {!projectTopicsSelected || projectTopicsSelected.length <= 0 ? '' : projectTopicsSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'projectTopicsSelected')}>X</span></div>
+                                                    })}
+                                                </div> 
+                                            : ''}
+                                            <Filters data={filterOptions.projectCategoriesFilterOptions} allFilters={allFilters.projectCategoryFilter} updateOnFilter={this.updateOnFilter} selected={projectCategoriesSelected} title="Type" />
+                                            <Filters data={filterOptions.projectFeaturesFilterOptions} allFilters={allFilters.projectFeatureFilter} updateOnFilter={this.updateOnFilter} selected={projectFeaturesSelected} title="Keywords" />
+                                            <Filters data={filterOptions.projectTopicsFilterOptions} allFilters={allFilters.projectTopicFilter} updateOnFilter={this.updateOnFilter} selected={projectTopicsSelected} title="Domain" />
+                                        </div>
+                                    </> : ''}
+
+                                    {key === 'Papers' ? <>
+                                        <div className="filterHolder">
+                                            {paperFeaturesSelected.length !== 0 || paperTopicsSelected.length !== 0 ? 
+                                                <div className="filterCard mb-2">
+                                                    <Row>
+                                                        <Col className="mb-2">
+                                                            <div className="inlineBlock">
+                                                                <div className="gray500-13">Showing:</div>
+                                                            </div>
+                                                            <div className="floatRight">
+                                                                <div className="purple-13 pointer" onClick={() => this.clearFilter('All')}>Clear all</div>
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+                                                    
+                                                    {!paperFeaturesSelected || paperFeaturesSelected.length <= 0 ? '' : paperFeaturesSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'paperFeaturesSelected')}>X</span></div>
+                                                    })}
+
+                                                    {!paperTopicsSelected || paperTopicsSelected.length <= 0 ? '' : paperTopicsSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'paperTopicsSelected')}>X</span></div>
+                                                    })}
+                                                </div> 
+                                            : ''}
+                                            <Filters data={filterOptions.paperFeaturesFilterOptions} allFilters={allFilters.paperFeatureFilter} updateOnFilter={this.updateOnFilter} selected={paperFeaturesSelected} title="Keywords" />
+                                            <Filters data={filterOptions.paperTopicsFilterOptions} allFilters={allFilters.paperTopicFilter} updateOnFilter={this.updateOnFilter} selected={paperTopicsSelected} title="Domain" />
+                                        </div>
+                                    </> : ''}
+                                </Col>
+                                : <Col sm={12} md={12} lg={3} />}
+
+                            {!isResultsLoading ?
+                                <Col sm={12} md={12} lg={9} className="mt-4">
+                                    {!showSort ? '' :
+                                        <Row>
+                                            <Col className="text-right">
+                                                <Dropdown alignRight onSelect={this.handleSort}>
+                                                    <Dropdown.Toggle variant="info" id="dropdown-menu-align-right" className="gray800-14">
+                                                        {(() => {   
+                                                            if (key === 'Datasets'){
+                                                                if (datasetSort === 'popularity') return 'Sort by popularity';
+                                                                else if (datasetSort === 'metadata') return 'Sort by metadata quality';
+                                                                else return 'Sort by relevance';
+                                                            }
+                                                            else if (key === 'Tools'){
+                                                                if (toolSort === 'popularity') return 'Sort by popularity';
+                                                                else return 'Sort by relevance';
+                                                            }
+                                                            else if (key === 'Projects'){
+                                                                if (projectSort === 'popularity') return 'Sort by popularity';
+                                                                else return 'Sort by relevance';
+                                                            }
+                                                            else if (key === 'Papers'){
+                                                                if (paperSort === 'popularity') return 'Sort by popularity';
+                                                                else return 'Sort by relevance';
+                                                            }
+                                                            else if (key === 'People'){
+                                                                if (personSort === 'popularity') return 'Sort by popularity';
+                                                                else return 'Sort by relevance';
+                                                            }
+                                                        })()}
+                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    </Dropdown.Toggle>
                                                 
-                                                {!publishersSelected || publishersSelected.length <= 0 ? '' : publishersSelected.map((selected) => {
-                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'publishersSelected')}>X</span></div>
-                                                })}
-
-                                                {!licensesSelected || licensesSelected.length <= 0 ? '' : licensesSelected.map((selected) => {
-                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'licensesSelected')}>X</span></div>
-                                                })}
-
-                                                {!keywordsSelected || keywordsSelected.length <= 0 ? '' : keywordsSelected.map((selected) => {
-                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'keywordsSelected')}>X</span></div>
-                                                })}
-
-                                                {!geoCoverageSelected || geoCoverageSelected.length <= 0 ? '' : geoCoverageSelected.map((selected) => {
-                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'geoCoverageSelected')}>X</span></div>
-                                                })}
-
-                                                {!sampleAvailabilitySelected || sampleAvailabilitySelected.length <= 0 ? '' : sampleAvailabilitySelected.map((selected) => {
-                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'sampleAvailabilitySelected')}>X</span></div>
-                                                })}
-
-                                                {!phenotypesSelected || phenotypesSelected.length <= 0 ? '' : phenotypesSelected.map((selected) => {
-                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'phenotypesSelected')}>X</span></div>
-                                                })}
-                                            </div>
+                                                    <Dropdown.Menu>
+                                                        <Dropdown.Item eventKey="relevance" className="gray800-14 ">Sort by relevance</Dropdown.Item>
+                                                        <Dropdown.Item eventKey="popularity" className="gray800-14">Sort by popularity</Dropdown.Item>
+                                                        {key === 'Datasets' ? <Dropdown.Item eventKey="metadata" className="gray800-14">Sort by metadata quality</Dropdown.Item> : ''}
+                                                    </Dropdown.Menu>
+                                                </Dropdown>
+                                            </Col>
+                                        </Row>
+                                    }
+                                    
+                                    {key === 'Datasets' ?
+                                        datasetCount <= 0 && !isResultsLoading ? <NoResults type='datasets' searchString={searchString} />
+                                        : datasetData.map((dataset) => {
+                                            return <RelatedObject key={dataset.id} data={dataset} activeLink={true} onSearchPage={true} updateOnFilterBadge={this.updateOnFilterBadge} />
+                                        })
                                         : ''}
-                                        <Filters data={filterOptions.publisherFilterOptions} allFilters={allFilters.publisherFilter} updateOnFilter={this.updateOnFilter} selected={publishersSelected} title="Publisher" />
-                                        <Filters data={filterOptions.licenseFilterOptions} allFilters={allFilters.licenseFilter} updateOnFilter={this.updateOnFilter} selected={licensesSelected} title="License" />
-                                        <Filters data={filterOptions.datasetFeaturesFilterOptions} allFilters={allFilters.datasetFeatureFilter} updateOnFilter={this.updateOnFilter} selected={keywordsSelected} title="Keywords" />
-                                        <Filters data={filterOptions.geographicCoverageFilterOptions} allFilters={allFilters.geographicCoverageFilter} updateOnFilter={this.updateOnFilter} selected={geoCoverageSelected} title="Geographic coverage" />
-                                        <Filters data={filterOptions.sampleFilterOptions} allFilters={allFilters.sampleFilter} updateOnFilter={this.updateOnFilter} selected={sampleAvailabilitySelected} title="Physical sample availability" /> 
-                                        <Filters data={filterOptions.phenotypesOptions} allFilters={allFilters.phenotypesFilter} updateOnFilter={this.updateOnFilter} selected={phenotypesSelected} title="Phenotype" /> 
-                                        {/* <Filters data={filterOptions.ageBandFilterOptions} updateOnFilter={this.updateOnFilter} selected={ageBandsSelected} title="Age Bands" /> */}
-                                    </div>
-                                </> : ''}
-                                
-                                {key === 'Tools' ? <>
-                                    <div className="filterHolder">
-                                        {toolCategoriesSelected.length !== 0 || languageSelected.length !== 0 || featuresSelected.length !== 0 || toolTopicsSelected.length !== 0 ? 
-                                            <div className="filterCard mb-2">
-                                                <Row>
-                                                    <Col className="mb-2">
-                                                        <div className="inlineBlock">
-                                                            <div className="gray500-13">Showing:</div>
-                                                        </div>
-                                                        <div className="floatRight">
-                                                            <div className="purple-13 pointer" onClick={() => this.clearFilter('All')}>Clear all</div>
-                                                        </div>
-                                                    </Col>
-                                                </Row>
-                                                
-                                                {!toolCategoriesSelected || toolCategoriesSelected.length <= 0 ? '' : toolCategoriesSelected.map((selected) => {
-                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'toolCategoriesSelected')}>X</span></div>
-                                                })}
 
-                                                {!languageSelected || languageSelected.length <= 0 ? '' : languageSelected.map((selected) => {
-                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'languageSelected')}>X</span></div>
-                                                })}
-
-                                                {!featuresSelected || featuresSelected.length <= 0 ? '' : featuresSelected.map((selected) => {
-                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'featuresSelected')}>X</span></div>
-                                                })}
-
-                                                {!toolTopicsSelected || toolTopicsSelected.length <= 0 ? '' : toolTopicsSelected.map((selected) => {
-                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'toolTopicsSelected')}>X</span></div>
-                                                })}
-                                            </div> 
+                                    {key === 'Tools' ?
+                                        toolCount <= 0 && !isResultsLoading ? <NoResults type='tools' searchString={searchString} />
+                                        : toolData.map((tool) => {
+                                            return <RelatedObject key={tool.id} data={tool} activeLink={true} onSearchPage={true} updateOnFilterBadge={this.updateOnFilterBadge} />;
+                                        })
                                         : ''}
-                                        <Filters data={filterOptions.toolCategoriesFilterOptions} allFilters={allFilters.toolCategoryFilter} updateOnFilter={this.updateOnFilter} selected={toolCategoriesSelected} title="Type" />
-                                        <Filters data={filterOptions.programmingLanguageFilterOptions} allFilters={allFilters.toolLanguageFilter} updateOnFilter={this.updateOnFilter} selected={languageSelected} title="Programming language" />
-                                        <Filters data={filterOptions.featuresFilterOptions} allFilters={allFilters.toolFeatureFilter} updateOnFilter={this.updateOnFilter} selected={featuresSelected} title="Keywords" />
-                                        <Filters data={filterOptions.toolTopicsFilterOptions} allFilters={allFilters.toolTopicFilter} updateOnFilter={this.updateOnFilter} selected={toolTopicsSelected} title="Domain" />
-                                    </div>
-                                </> : ''}
 
-                                {key === 'Projects' ? <>
-                                    <div className="filterHolder">
-                                        {projectCategoriesSelected.length !== 0 || projectFeaturesSelected.length !== 0 || projectTopicsSelected.length !== 0 ? 
-                                            <div className="filterCard mb-2">
-                                                <Row>
-                                                    <Col className="mb-2">
-                                                        <div className="inlineBlock">
-                                                            <div className="gray500-13">Showing:</div>
-                                                        </div>
-                                                        <div className="floatRight">
-                                                            <div className="purple-13 pointer" onClick={() => this.clearFilter('All')}>Clear all</div>
-                                                        </div>
-                                                    </Col>
-                                                </Row>
-                                                
-                                                {!projectCategoriesSelected || projectCategoriesSelected.length <= 0 ? '' : projectCategoriesSelected.map((selected) => {
-                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'projectCategoriesSelected')}>X</span></div>
-                                                })}
-
-                                                {!projectFeaturesSelected || projectFeaturesSelected.length <= 0 ? '' : projectFeaturesSelected.map((selected) => {
-                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'projectFeaturesSelected')}>X</span></div>
-                                                })}
-
-                                                {!projectTopicsSelected || projectTopicsSelected.length <= 0 ? '' : projectTopicsSelected.map((selected) => {
-                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'projectTopicsSelected')}>X</span></div>
-                                                })}
-                                            </div> 
+                                    {key === 'Projects' ?
+                                        projectCount <= 0 && !isResultsLoading ? <NoResults type='projects' searchString={searchString} />
+                                        : projectData.map((project) => {
+                                            return <RelatedObject key={project.id} data={project} activeLink={true} onSearchPage={true} updateOnFilterBadge={this.updateOnFilterBadge} />
+                                        })
                                         : ''}
-                                        <Filters data={filterOptions.projectCategoriesFilterOptions} allFilters={allFilters.projectCategoryFilter} updateOnFilter={this.updateOnFilter} selected={projectCategoriesSelected} title="Type" />
-                                        <Filters data={filterOptions.projectFeaturesFilterOptions} allFilters={allFilters.projectFeatureFilter} updateOnFilter={this.updateOnFilter} selected={projectFeaturesSelected} title="Keywords" />
-                                        <Filters data={filterOptions.projectTopicsFilterOptions} allFilters={allFilters.projectTopicFilter} updateOnFilter={this.updateOnFilter} selected={projectTopicsSelected} title="Domain" />
-                                    </div>
-                                </> : ''}
-
-                                {key === 'Papers' ? <>
-                                    <div className="filterHolder">
-                                        {paperFeaturesSelected.length !== 0 || paperTopicsSelected.length !== 0 ? 
-                                            <div className="filterCard mb-2">
-                                                <Row>
-                                                    <Col className="mb-2">
-                                                        <div className="inlineBlock">
-                                                            <div className="gray500-13">Showing:</div>
-                                                        </div>
-                                                        <div className="floatRight">
-                                                            <div className="purple-13 pointer" onClick={() => this.clearFilter('All')}>Clear all</div>
-                                                        </div>
-                                                    </Col>
-                                                </Row>
-                                                
-                                                {!paperFeaturesSelected || paperFeaturesSelected.length <= 0 ? '' : paperFeaturesSelected.map((selected) => {
-                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'paperFeaturesSelected')}>X</span></div>
-                                                })}
-
-                                                {!paperTopicsSelected || paperTopicsSelected.length <= 0 ? '' : paperTopicsSelected.map((selected) => {
-                                                    return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'paperTopicsSelected')}>X</span></div>
-                                                })}
-                                            </div> 
+                                    
+                                    {key === 'Papers' ?
+                                        paperCount <= 0 && !isResultsLoading ? <NoResults type='papers' searchString={searchString} />
+                                        : paperData.map((paper) => {
+                                            return <RelatedObject key={paper.id} data={paper} activeLink={true} onSearchPage={true} updateOnFilterBadge={this.updateOnFilterBadge} />
+                                        })
                                         : ''}
-                                        <Filters data={filterOptions.paperFeaturesFilterOptions} allFilters={allFilters.paperFeatureFilter} updateOnFilter={this.updateOnFilter} selected={paperFeaturesSelected} title="Keywords" />
-                                        <Filters data={filterOptions.paperTopicsFilterOptions} allFilters={allFilters.paperTopicFilter} updateOnFilter={this.updateOnFilter} selected={paperTopicsSelected} title="Domain" />
-                                    </div>
-                                </> : ''}
-                            </Col>
-                            : <Col sm={12} md={12} lg={3} />}
 
-                        {!isResultsLoading ?
-                            <Col sm={12} md={12} lg={9} className="mt-4">
-                                {!showSort ? '' :
-                                    <Row>
-                                        <Col className="text-right">
-                                            <Dropdown alignRight onSelect={this.handleSort}>
-                                                <Dropdown.Toggle variant="info" id="dropdown-menu-align-right" className="gray800-14">
-                                                    {(() => {   
-                                                        if (key === 'Datasets'){
-                                                            if (datasetSort === 'popularity') return 'Sort by popularity';
-                                                            else if (datasetSort === 'metadata') return 'Sort by metadata quality';
-                                                            else return 'Sort by relevance';
-                                                        }
-                                                        else if (key === 'Tools'){
-                                                            if (toolSort === 'popularity') return 'Sort by popularity';
-                                                            else return 'Sort by relevance';
-                                                        }
-                                                        else if (key === 'Projects'){
-                                                            if (projectSort === 'popularity') return 'Sort by popularity';
-                                                            else return 'Sort by relevance';
-                                                        }
-                                                        else if (key === 'Papers'){
-                                                            if (paperSort === 'popularity') return 'Sort by popularity';
-                                                            else return 'Sort by relevance';
-                                                        }
-                                                        else if (key === 'People'){
-                                                            if (personSort === 'popularity') return 'Sort by popularity';
-                                                            else return 'Sort by relevance';
-                                                        }
-                                                    })()}
-                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                </Dropdown.Toggle>
-                                            
-                                                <Dropdown.Menu>
-                                                    <Dropdown.Item eventKey="relevance" className="gray800-14 ">Sort by relevance</Dropdown.Item>
-                                                    <Dropdown.Item eventKey="popularity" className="gray800-14">Sort by popularity</Dropdown.Item>
-                                                    {key === 'Datasets' ? <Dropdown.Item eventKey="metadata" className="gray800-14">Sort by metadata quality</Dropdown.Item> : ''}
-                                                </Dropdown.Menu>
-                                            </Dropdown>
-                                        </Col>
-                                    </Row>
-                                }
-                                
-                                {key === 'Datasets' ?
-                                    datasetCount <= 0 && !isResultsLoading ? <NoResults type='datasets' searchString={searchString} />
-                                    : datasetData.map((dataset) => {
-                                        return <RelatedObject key={dataset.id} data={dataset} activeLink={true} onSearchPage={true} updateOnFilterBadge={this.updateOnFilterBadge} />
-                                    })
-                                    : ''}
+                                    {key === 'People' ?
+                                        personData.map((person) => {
+                                            return <RelatedObject key={person.id} data={person} activeLink={true} onSearchPage={true} updateOnFilterBadge={this.updateOnFilterBadge}  />
+                                        })
+                                        : ''}
 
-                                {key === 'Tools' ?
-                                    toolCount <= 0 && !isResultsLoading ? <NoResults type='tools' searchString={searchString} />
-                                    : toolData.map((tool) => {
-                                        return <RelatedObject key={tool.id} data={tool} activeLink={true} onSearchPage={true} updateOnFilterBadge={this.updateOnFilterBadge} />;
-                                    })
-                                    : ''}
+                                    <div className='text-center'>
+                                    {key === 'Datasets' && datasetCount > maxResult ?
+                                        <Pagination>
+                                            {datasetPaginationItems}
+                                        </Pagination>
+                                        : ''}
 
-                                {key === 'Projects' ?
-                                    projectCount <= 0 && !isResultsLoading ? <NoResults type='projects' searchString={searchString} />
-                                    : projectData.map((project) => {
-                                        return <RelatedObject key={project.id} data={project} activeLink={true} onSearchPage={true} updateOnFilterBadge={this.updateOnFilterBadge} />
-                                    })
-                                    : ''}
-                                
-                                {key === 'Papers' ?
-                                    paperCount <= 0 && !isResultsLoading ? <NoResults type='papers' searchString={searchString} />
-                                    : paperData.map((paper) => {
-                                        return <RelatedObject key={paper.id} data={paper} activeLink={true} onSearchPage={true} updateOnFilterBadge={this.updateOnFilterBadge} />
-                                    })
-                                    : ''}
+                                    {key === 'Tools' && toolCount > maxResult ?
+                                        <Pagination>
+                                            {toolPaginationItems}
+                                        </Pagination>
+                                        : ''}
 
-                                {key === 'People' ?
-                                    personData.map((person) => {
-                                        return <RelatedObject key={person.id} data={person} activeLink={true} onSearchPage={true} updateOnFilterBadge={this.updateOnFilterBadge}  />
-                                    })
-                                    : ''}
+                                    {key === 'Projects' && projectCount > maxResult ?
+                                        <Pagination>
+                                            {projectPaginationItems}
+                                        </Pagination>
+                                        : ''}
 
-                                <div className='text-center'>
-                                {key === 'Datasets' && datasetCount > maxResult ?
-                                    <Pagination>
-                                        {datasetPaginationItems}
-                                    </Pagination>
-                                    : ''}
+                                    {key === 'Papers' && paperCount > maxResult ?
+                                        <Pagination>
+                                            {paperPaginationItems}
+                                        </Pagination>
+                                        : ''}
 
-                                {key === 'Tools' && toolCount > maxResult ?
-                                    <Pagination>
-                                        {toolPaginationItems}
-                                    </Pagination>
-                                    : ''}
+                                    {key === 'People' && personCount > maxResult ?
+                                        <Pagination>
+                                            {personPaginationItems}
+                                        </Pagination>
+                                        : ''}
+                                        </div>
+                                </Col>
+                            : <Col sm={12} md={12} lg={9}><Loading /></Col>
+                            }
+                        </Row>
+                    </Container>
+                    <NotificationContainer/>
+                    <SideDrawer
+                        open={showDrawer}
+                        closed={this.toggleDrawer}>
+                        <UserMessages 
+                            closed={this.toggleDrawer}
+                            toggleModal={this.toggleModal}
+                            drawerIsOpen={this.state.showDrawer} 
+                        />
+                    </SideDrawer>
 
-                                {key === 'Projects' && projectCount > maxResult ?
-                                    <Pagination>
-                                        {projectPaginationItems}
-                                    </Pagination>
-                                    : ''}
-
-                                {key === 'Papers' && paperCount > maxResult ?
-                                    <Pagination>
-                                        {paperPaginationItems}
-                                    </Pagination>
-                                    : ''}
-
-                                {key === 'People' && personCount > maxResult ?
-                                    <Pagination>
-                                        {personPaginationItems}
-                                    </Pagination>
-                                    : ''}
-                                    </div>
-                            </Col>
-                        : <Col sm={12} md={12} lg={9}><Loading /></Col>
-                        }
-                    </Row>
-                </Container>
-                <NotificationContainer/>
-                <SideDrawer
-                    open={showDrawer}
-                    closed={this.toggleDrawer}>
-                    <UserMessages 
-                        closed={this.toggleDrawer}
-                        toggleModal={this.toggleModal}
-                        drawerIsOpen={this.state.showDrawer} 
+                    <DataSetModal 
+                        open={showModal} 
+                        context={context}
+                        closed={this.toggleModal}
+                        userState={userState[0]} 
                     />
-                </SideDrawer>
-
-                <DataSetModal 
-                    open={showModal} 
-                    context={context}
-                    closed={this.toggleModal}
-                    userState={userState[0]} 
-                />
-            </div>
+                </div>
+            </Sentry.ErrorBoundary>
         );
     }
 }
