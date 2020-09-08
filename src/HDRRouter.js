@@ -46,7 +46,6 @@ class HDRRouter extends Component {
             }
         ],
         isLoading: true,
-        show: false
     };
 
     showModal = () => {

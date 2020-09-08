@@ -5,7 +5,6 @@ import 'core-js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import * as Sentry from "@sentry/react";
-import { Integrations } from '@sentry/react';
 import HDRRouter from './HDRRouter';
 // import * as serviceWorker from './serviceWorker';
 
