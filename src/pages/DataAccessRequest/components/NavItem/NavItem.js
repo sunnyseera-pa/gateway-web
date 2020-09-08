@@ -1,6 +1,6 @@
 import React, {useState, Fragment} from 'react'
 import { isEmpty } from 'lodash';
-import '../DataAccessRequest.scss'; 
+import '../../DataAccessRequest.scss'; 
 const NavItem = ({parentForm, questionPanels, onFormSwitchPanel, activePanelId, enabled}) => {
 
     const onClickItem = (e, panel) => {
