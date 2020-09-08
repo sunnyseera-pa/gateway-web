@@ -58,10 +58,12 @@ class AccountPapers extends React.Component {
                 else if (paper.activeflag === "rejected") rejectedCount++;
                 });
         
-            this.setState({ activeCount: activeCount});
-            this.setState({ reviewCount: reviewCount});
-            this.setState({ archiveCount: archiveCount});
-            this.setState({ rejectedCount: rejectedCount});
+            this.setState({ 
+                activeCount: activeCount,
+                reviewCount: reviewCount,
+                archiveCount: archiveCount,
+                rejectedCount: rejectedCount
+            });
         })
     }
 
@@ -90,10 +92,11 @@ class AccountPapers extends React.Component {
             else if (tool.activeflag === "rejected") rejectedCount++;
         });
     
-        this.setState({ activeCount: activeCount});
-        this.setState({ reviewCount: reviewCount});
-        this.setState({ archiveCount: archiveCount});
-        this.setState({ rejectedCount: rejectedCount});
+        this.setState({ 
+            activeCount: activeCount,
+            reviewCount: reviewCount,
+            archiveCount: archiveCount,
+            rejectedCount: rejectedCount});
     }
 
     rejectObject = (id) => {
@@ -127,7 +130,7 @@ class AccountPapers extends React.Component {
 
         if (isLoading) {
             return (
-                <Row className="mt-4">
+                <Row>
                     <Col xs={1}></Col>
                     <Col xs={10}>
                         <Loading />
@@ -188,13 +191,13 @@ class AccountPapers extends React.Component {
                                             <Row className="margin-right-15">
                                                 <NotFound word="papers" /> 
                                             </Row>
-                                            : data.map((dat) => {
+                                            : data.map((dat, i) => {
                                                 if (dat.activeflag !== "active") {
                                                     return (<></>)
                                                 }
                                                 else {
                                                     return (
-                                                        <Row className="entryBox">
+                                                        <Row className="entryBox" key={i}>
                                                             <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
                                                             <Col sm={12} lg={5} className="pt-2"><a href={'/paper/' + dat.id} className="black-14">{dat.name}</a></Col>
                                                             <Col sm={12} lg={2} className="pt-2 gray800-14">

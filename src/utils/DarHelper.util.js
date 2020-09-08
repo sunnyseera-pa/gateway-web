@@ -19,6 +19,56 @@ let staticContent = {
 	}
 };
 
+/**
+ * [applicationState acts like enum for generating Counts DAR dashboard]
+ *
+ */
+let applicationState = {
+	inProgress: 'preSubmissionCount',
+	submitted: 'inReviewCount',
+	approved: 'approvedCount',
+	'approved with comments': 'approvedCount',
+	rejected: 'rejectedCount'
+};
+
+
+/**
+ * [generateStatusCounts - Used in DataAccessRequest Dashboard for status counts]
+ *
+ * @param   {[data]}}  [DAR Objects]
+ * @return  {{counts}} [return counts]
+ */
+let generateStatusCounts = (data = []) => {
+	// 1. declare obj structure even if no data
+	let counts = {
+		approvedCount: 0,
+		rejectedCount: 0,
+		archivedCount: 0,
+		preSubmissionCount: 0,
+		inReviewCount: 0
+	};
+
+	if (!_.isEmpty(data)) {
+		// 2. reduce over data from API to generate structure as above counts
+		let totalCounts = [...data].reduce((obj, item) => {
+			// 3. take out applicationStatus ie, inProgress, submitted etc..
+			let { applicationStatus } = item;
+			// 4. if the applicationStatus not in our obj, set to 1 with key
+			if (!obj[applicationState[applicationStatus]]) {
+				obj[applicationState[applicationStatus]] = 1;
+			} else {
+				// 5. if found increment the count
+				obj[applicationState[applicationStatus]] = ++obj[applicationState[applicationStatus]];
+			}
+			// 6. return obj as count format
+			return obj;
+		}, {});
+		return {...counts, ...totalCounts};
+	}
+	// 7. return counts as default
+	return counts;
+}
+
 let configActionModal = (type = '') => {
 	let config = {};
 	if (!_.isEmpty(type)) {
@@ -541,5 +591,6 @@ export default {
 	createTopicContext: createTopicContext,
 	createModalContext: createModalContext,
 	configActionModal: configActionModal,
-	staticContent: staticContent
+	staticContent: staticContent,
+	generateStatusCounts: generateStatusCounts
 };
