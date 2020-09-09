@@ -1,24 +1,23 @@
 import React from "react";
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
 
 import "./ErrorModal.scss";
 
 const ErrorModal = ({ show, handleClose }) => {
-
 	let history = useHistory();
 
 	window.onclick = function (event) {
 		const modal = document.getElementById("errorModal");
 		if (event.target.childNodes[0] === modal) {
-			history.push({ pathname: '/'});
+			history.push({ pathname: "/" });
 		}
 	};
 
 	const onClose = () => {
 		handleClose(false);
-		history.push({ pathname: '/'});
-	}
+		history.push({ pathname: "/" });
+	};
 
 	return (
 		<Modal
@@ -37,8 +36,8 @@ const ErrorModal = ({ show, handleClose }) => {
 				This issue has been automatically reported to our team!
 			</Modal.Body>
 			<Modal.Footer>
-        		<Button onClick={onClose}>Close</Button>
-      		</Modal.Footer>
+				<Button onClick={onClose}>Close</Button>
+			</Modal.Footer>
 		</Modal>
 	);
 };

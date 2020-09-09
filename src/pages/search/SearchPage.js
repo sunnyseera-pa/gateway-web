@@ -63,6 +63,7 @@ class SearchPage extends React.Component {
         isResultsLoading: true,
         showDrawer: false,
         showModal: false,
+        showError: false,
         context: {},
         userState: [{
             loggedIn: false,
@@ -78,6 +79,14 @@ class SearchPage extends React.Component {
         this.state.searchString = props.searchString || null;
         this.searchBar = React.createRef();
     }
+
+    showModal = () => {
+        this.setState({ showError: true });
+    };
+    
+    hideModal = () => {
+        this.setState({ showError: false });
+    };
 
     async componentDidMount() { //fires on first time in or page is refreshed/url loaded
         if (!!window.location.search) {

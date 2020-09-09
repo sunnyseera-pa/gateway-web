@@ -63,6 +63,7 @@ class ToolDetail extends Component {
     discoursePostCount: 0,
     showDrawer: false,
     showModal: false,
+    showError: false,
     context: {}
   };
  
@@ -71,6 +72,14 @@ class ToolDetail extends Component {
     this.state.userState = props.userState;
     this.searchBar = React.createRef();
   }
+
+  showModal = () => {
+		this.setState({ showError: true });
+	};
+
+	hideModal = () => {
+		this.setState({ showError: false });
+	};
 
   // on loading of tool detail page
   componentDidMount() {
