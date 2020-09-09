@@ -489,7 +489,7 @@ class CollectionPage extends Component {
 											var updated = '';
 											var user = '';
 											let showAnswer = false;
-											if (object.type === undefined) {
+											if (object.type === "dataset") {
 												data.relatedObjects.map((dat) => {
 													if (dat.objectId === object.datasetid) {
 														reason = dat.reason;

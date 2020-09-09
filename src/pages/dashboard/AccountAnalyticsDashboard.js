@@ -53,35 +53,43 @@ class AccountAnalyticsDashboard extends React.Component {
         this.setState({isLoading: true})
         if(eventKey === null) {eventKey = 0} 
         this.setState({ selectedOption: this.state.dates[eventKey] });
-        this.getUnmetDemand(this.state.dates[eventKey]);
-        this.getTopSearches(this.state.dates[eventKey]);
         await Promise.all([
-            this.getStats(),
+            this.getUnmetDemand(this.state.dates[eventKey]),
+            this.getTopSearches(this.state.dates[eventKey])
+        ])
+
+        this.setState({isLoading: false})
+        
+        await Promise.all([
             this.getTotalGAUsers(),
             this.getGAUsers(moment(this.state.dates[eventKey]).startOf('month').format("YYYY-MM-DD"), moment(this.state.dates[eventKey]).endOf('month').format("YYYY-MM-DD")),
-            this.getKPIs(this.state.dates[eventKey]),
             this.getUptime(this.state.dates[eventKey]),
+            this.getStats(),
+            this.getKPIs(this.state.dates[eventKey]),
             this.getDatasetsWithTechMetadata()
         ])
         this.setState({uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100})
-        this.setState({isLoading: false})
       }
 
       async componentDidMount() {
         initGA('UA-166025838-1');
-        this.getUnmetDemand();
-        this.getTopSearches();
         await Promise.all([
-            this.getStats(),
+            this.getUnmetDemand(),
+            this.getTopSearches()
+        ])
+
+        this.setState({isLoading: false})
+        
+        await Promise.all([
             this.getTotalGAUsers(),
             this.getGAUsers(moment(this.state.selectedOption).startOf('month').format("YYYY-MM-DD"), moment(this.state.selectedOption).endOf('month').format("YYYY-MM-DD")),
-            this.getKPIs(this.state.selectedOption),
             this.getUptime(this.state.selectedOption),
+            this.getStats(),
+            this.getKPIs(this.state.selectedOption), 
             this.getDatasetsWithTechMetadata()
         ])
-        this.setState({uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100})
-        this.setState({isLoading: false})
 
+        this.setState({uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100})
     }
 
     getUnmetDemand(selectedOption){
