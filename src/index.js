@@ -22,9 +22,9 @@ if (urlEnv !== "local") {
 		// beforeSend(event, hint) {
 		//     if(event.exception) {
 		//         Sentry.showReportDialog({ eventId: event.event_id });
-		//     }
+        //     }
 		//     return event;
-		// },
+        // },
 	});
 }
 

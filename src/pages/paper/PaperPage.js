@@ -63,6 +63,7 @@ class ToolDetail extends Component {
     discoursePostCount: 0,
     showDrawer: false,
     showModal: false,
+    showError: false,
     isHovering: false,
     context: {}
   };
@@ -74,6 +75,14 @@ class ToolDetail extends Component {
     this.handleMouseHover = this.handleMouseHover.bind(this);
 
   }
+
+  showModal = () => {
+		this.setState({ showError: true });
+	};
+
+	hideModal = () => {
+		this.setState({ showError: false });
+	};
 
   // on loading of tool detail page
   componentDidMount() {

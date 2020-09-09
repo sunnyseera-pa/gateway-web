@@ -83,6 +83,7 @@ class DatasetDetail extends Component {
     ],
     showDrawer: false,
     showModal: false,
+    showError: false,
     requiresModal: false,
     allowsMessaging: false,
     allowNewMessage: false,
@@ -99,6 +100,14 @@ class DatasetDetail extends Component {
     this.handleMouseHover = this.handleMouseHover.bind(this);
     this.searchBar = React.createRef();
   }
+
+  showModal = () => {
+    this.setState({ showError: true });
+  };
+
+  hideModal = () => {
+      this.setState({ showError: false });
+  };
 
   // on loading of tool detail page
   async componentDidMount() {
