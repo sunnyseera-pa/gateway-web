@@ -176,7 +176,7 @@ a.nav-item.nav-link.active {
 
 .badge {
   display: inline-block !important;
-  padding: 2px 8px 3px 8px !important;
+  padding: 2px 8px 3px 8px;
   border-radius: 16px !important;
   font-family: museo-sans-rounded !important;
   font-size: 14px !important;
@@ -220,6 +220,19 @@ a.nav-item.nav-link.active {
     @extend .badge;
     background-color: $gray-light;
     color: $gray-800 !important;
+  }
+
+  &-version {
+    @extend .badge;
+    background-color: $gray-light;
+    color: $gray-800 !important;
+    span:first-child{
+      padding-right: 6px;
+      border-right: 1px solid $gray-400;
+     }
+    span:last-child{
+      padding-left: 5px;
+    }
   }
 
   &-comingSoon {
@@ -1441,4 +1454,27 @@ button a {
     transform: translate(90%, -100%);
     }
 
+}
+
+.plusMinusButton {
+  width: 32px;
+  height: 32px;
+  background-color: $gray-light;
+  border-radius: 16px;
+  border: 0px;
+  display: inline-block;
+  text-align: center;
+  line-height: 32px;
+  color: $plus-minus;
+  margin-right: 4px;
+  font-size: 25px;
+}
+
+.plusMinusButton:hover:enabled {
+  background-color: $plus-minus;
+  color: $gray-light
+}
+
+.plusMinusButton:disabled {
+  opacity: 20%;
 }
