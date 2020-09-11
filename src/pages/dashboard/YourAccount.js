@@ -122,7 +122,10 @@ const YourAccountForm = (props) => {
             sector: props.data.sector || "",
             organisation: props.data.organisation,
             showOrganisation: props.data.showOrganisation || false,
-            tags: props.data.tags.topics || null,
+            tags: props.data.tags || {
+                features: [],
+                topics: [],
+            },
         },
 
         validationSchema: Yup.object({
