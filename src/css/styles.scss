@@ -351,23 +351,12 @@ input[type='radio']:checked:after {
   margin-top: 1px;
 }
 
-.tabList {
-  background-color: $white;
-  height: min-content;
-  position: -webkit-sticky; /* Safari */
-  position: sticky;
-  top: 36px;
-  width: 100%;
-  min-width: 110px;
-  margin-top: 36px;
-}
-
 .verticalNavBarHolder {
   display: block !important;
 }
 
 .verticalNavBar {
-  padding: 15px 10px 15px 30px !important;
+  padding: 15px 10px 15px 30px;
 }
 
 .verticalNavBar.active {
