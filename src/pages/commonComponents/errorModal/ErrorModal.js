@@ -4,6 +4,8 @@ import { Modal, Button } from "react-bootstrap";
 
 import "./ErrorModal.scss";
 
+const cmsURL = require('../../commonComponents/BaseURL').getCMSURL();
+
 const ErrorModal = ({ show, handleClose }) => {
 	let history = useHistory();
 
@@ -33,7 +35,11 @@ const ErrorModal = ({ show, handleClose }) => {
 				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-				This issue has been automatically reported to our team!
+				<div className="gray800-14" style={{ textAlign: 'center' }}>
+					This issue has been automatically reported to our team!
+					<br/>
+					If this issue continues, please contact support by clicking <a href={cmsURL+'/HDRUKGatewaySupportPortal'}>here.</a> 
+				</div>
 			</Modal.Body>
 			<Modal.Footer>
 				<Button onClick={onClose}>Close</Button>
