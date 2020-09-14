@@ -66,6 +66,7 @@ class HDRRouter extends Component {
         axios.interceptors.response.use(function (response) {
             return response;
         }, function (error) {
+            Sentry.captureException(error);
             return Promise.reject(error).then(currentComponent.setState({showError: true}));
         });
 
