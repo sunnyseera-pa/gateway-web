@@ -260,6 +260,9 @@ class SearchBar extends React.Component {
                             <div className="navBarLinkSpacing">
                                 <a href={cmsURL + "/pages/community"} className="black-14">Community</a>
                             </div>
+                            <div className="navBarLinkSpacing">
+                                <a href={"/dashboard"} className="black-14">Dashboard</a>
+                            </div>
                         </Col>
 
                         <Col lg={8} className="text-right">

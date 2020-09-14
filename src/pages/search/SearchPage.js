@@ -91,6 +91,7 @@ class SearchPage extends React.Component {
     async componentDidMount() { //fires on first time in or page is refreshed/url loaded
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
+            if (this.state.userState[0].loggedIn === true && values.loginReferrer) window.location.href = values.loginReferrer;
 
             await Promise.all([
                 this.updateFilterStates(values)
@@ -317,6 +318,11 @@ class SearchPage extends React.Component {
         if (this.state.projectSort !== '') searchURL += '&projectSort=' + encodeURIComponent(this.state.projectSort);
         if (this.state.paperSort !== '') searchURL += '&paperSort=' + encodeURIComponent(this.state.paperSort);
         if (this.state.personSort !== '') searchURL += '&personSort=' + encodeURIComponent(this.state.personSort);
+
+        if (this.state.userState[0].loggedIn === false ) {
+            var values = queryString.parse(window.location.search);
+            if (values.showLogin === true && document.referrer === '') searchURL += '&loginReferrer=' + encodeURIComponent(document.referrer);
+        }
 
         if (!skipHistory) { 
             if (this.state.key) searchURL += '&tab='+this.state.key
