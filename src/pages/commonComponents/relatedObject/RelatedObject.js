@@ -172,13 +172,7 @@ class RelatedObject extends React.Component {
                                             {!data.programmingLanguage || data.programmingLanguage.length <= 0 ? '' : data.programmingLanguage.map((p, i) => {
                                                 if (activeLink===true){
                                                     if (onSearchPage === true) { 
-                                                        return (
-                                                            <a href={"/search?search=&tab=Tools&programmingLanguage=" + p.programmingLanguage} onClick={event => this.updateOnFilterBadge('languageSelected', p.programmingLanguage)}>
-                                                            <div className="badge-version" key={i}>
-                                                                <span>{p.programmingLanguage}</span><span>{p.version}</span>
-                                                            </div>
-                                                            </a>
-                                                        );
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('languageSelected', p.programmingLanguage)}><div className="badge-version" key={i}><span>{p.programmingLanguage}</span><span>{p.version}</span></div></span>
                                                     }
                                                     else {
                                                         return (
