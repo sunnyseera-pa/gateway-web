@@ -489,6 +489,7 @@ input[type=radio]:disabled {
 }
 .form-group .addFormInputTypeAhead {
 	height: min-content !important;
+	min-height: 40px;
 }
 
 .addFormInputTypeAhead .dropdown-item.active,
