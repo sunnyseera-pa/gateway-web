@@ -30,6 +30,7 @@ import CompleteRegistration from './pages/registration/CompleteRegistration'
 import LoginModal from './pages/commonComponents/LoginModal';
 import Footer from './pages/commonComponents/Footer';
 import LoginErrorPage from './pages/commonComponents/LoginErrorPage';
+import ErrorModal from './pages/commonComponents/errorModal/ErrorModal';
 
 var baseURL = require('./pages/commonComponents/BaseURL').getURL();
 
@@ -45,10 +46,29 @@ class HDRRouter extends Component {
             }
         ],
         isLoading: true,
+        showError: false,
+    };
+
+    showModal = () => {
+        this.setState({ showError: true });
+    };
+    
+    hideModal = () => {
+        this.setState({ showError: false });
     };
 
     async componentDidMount() {
+        let currentComponent = this;
+
         axios.defaults.withCredentials = true;
+        axios.defaults.timeout = 5000;
+
+        axios.interceptors.response.use(function (response) {
+            return response;
+        }, function (error) {
+            return Promise.reject(error).then(currentComponent.setState({showError: true}));
+        });
+
         axios
             .get(baseURL + '/api/v1/auth/status')
             .then((res) => {
@@ -77,17 +97,25 @@ class HDRRouter extends Component {
                     ],
                     isLoading: false
                 });
-            })
+            });
     }
 
     render() {
-        const { isLoading, userState } = this.state;
+        const { isLoading, userState, showError } = this.state;
 
         if (isLoading) {
             return (
                 <Container>
                     <Loading />
                 </Container>
+            );
+        }
+
+        if(showError) {
+            return (
+                <Router>
+                    <ErrorModal show={this.state.showError} handleClose={this.hideModal} />
+                </Router>
             );
         }
 
