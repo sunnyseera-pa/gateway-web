@@ -1,4 +1,5 @@
-@import '../../css/styles.scss';
+@import '../../css/variables';
+@import '../../css/mixins';
 
 .account-menu {
   background-color: $white;
@@ -111,7 +112,6 @@
 .dataAccessTabs {
   align-items: center;
   justify-content: center;
-  height: 47px;
 } 
 
 .toolsButtons {

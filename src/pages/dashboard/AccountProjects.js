@@ -143,7 +143,7 @@ class AccountProjects extends React.Component {
                     <Col xs={1}></Col>
                     <Col xs={10}>
                         <Row className="accountHeader">
-                            <Col xs={8}>
+                            <Col sm={12} md={8}>
                                 <Row>
                                     <span className="black-20">Projects</span>
                                 </Row>
@@ -151,7 +151,7 @@ class AccountProjects extends React.Component {
                                     <span className="gray700-13 ">Manage your existing projects or add new ones</span>
                                 </Row>
                             </Col>
-                            <Col xs={4} style={{ textAlign: "right" }}>
+                            <Col sm={12} md={4} style={{ textAlign: "right" }}>
                                 <Button variant="primary" href="/project/add" className="addButton" onClick={() => Event("Buttons", "Click", "Add a new project")} >
                                     + Add a new project
                                 </Button>

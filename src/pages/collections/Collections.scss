@@ -1,4 +1,5 @@
-@import '../../css/styles.scss';
+@import '../../css/mixins';
+@import '../../css/variables';
 
 .logoWidth{
     @include mq('tablet-small', max){

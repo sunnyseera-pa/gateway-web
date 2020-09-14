@@ -35,7 +35,7 @@ class RelatedObject extends React.Component {
             this.state.inCollection = props.inCollection;
         }
         if (props.data) {
-            this.state.data = props.data;
+            this.state.data = props.data || [];
             //this.state.reviewData = this.state.data.reviews;
             this.state.isLoading = false;
         } 
