@@ -31,8 +31,7 @@ const validateSchema = Yup.object().shape({
   programmingLanguage: Yup.array()
     .of(
       Yup.object().shape({
-        programmingLanguage: Yup.string().required("This cannot be empty"),
-        version: Yup.string().required("Please enter version")
+        programmingLanguage: Yup.string().required("This cannot be empty")
       })
     )
 });
@@ -81,8 +80,7 @@ const AddEditToolForm = (props) => {
             programmingLanguage: Yup.array()
                 .of(
                 Yup.object().shape({
-                    programmingLanguage: Yup.string().required('This cannot be empty'),
-                    version: Yup.string().required("Please enter version"),
+                    programmingLanguage: Yup.string().required('This cannot be empty')
       })
     ),
             authors: Yup.string().required('This cannot be empty')
