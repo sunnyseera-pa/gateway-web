@@ -14,6 +14,7 @@ import PaperPage from './pages/paper/PaperPage';
 import DatasetPage from './pages/dataset/DatasetPage';
 import SearchPage from './pages/search/SearchPage';
 import CollectionPage from './pages/collections/CollectionPage';
+import PublicAnalyticsDashboard from './pages/publicDashboard/PublicAnalyticsDashboard';
 
 import Account from './pages/dashboard/Account';
 import Unsubscribe from './pages/dashboard/Unsubscribe';
@@ -104,6 +105,7 @@ class HDRRouter extends Component {
                         <Route path='/completeRegistration/:personID' render={(props) => <CompleteRegistration {...props} userState={userState} />} />
                         <Route path='/sso' render={(props) => <SSOPage {...props} userState={userState} />} />
                         <Route path='/account/unsubscribe/:userObjectID' render={(props) => <Unsubscribe {...props} userState={userState} />} />
+                        <Route path='/dashboard' render={(props) => <PublicAnalyticsDashboard {...props} userState={userState} />} />
                         
                         {userState[0].loggedIn ? (<Route path='/data-access-request/dataset/:datasetId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
                         {userState[0].loggedIn ? (<Route path='/data-access-request/publisher/:publisherId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}

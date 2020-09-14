@@ -54,3 +54,19 @@
   text-align: right;
   padding-right: 25px;
 }
+
+.loginImageOff,
+.loginButtonHolder:hover .loginImageOn {
+    display: none;
+    margin-left:auto;
+    margin-right:auto;
+    width: 200px
+}
+
+.loginImageOn,
+.loginButtonHolder:hover .loginImageOff {
+    display: inline-block;
+    margin-left:auto;
+    margin-right:auto;
+    width: 200px
+}
