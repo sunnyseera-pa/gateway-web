@@ -3,8 +3,9 @@ import axios from 'axios';
 import * as Yup from 'yup';
 import { Row, Col, Button, Alert, Form, InputGroup } from 'react-bootstrap';
 import { useFormik } from 'formik';
+import { Typeahead } from 'react-bootstrap-typeahead';
 import queryString from 'query-string';
-import Loading from '../commonComponents/Loading'
+import Loading from '../commonComponents/Loading';
 import './Dashboard.scss'; 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -15,8 +16,10 @@ class YourAccount extends React.Component {
         data: [],
         userdata: [],
         userState: [],
+        topicData: [],
         isLoading: true,
         isUpdated: false,
+        showOrg: false,
     };
 
     constructor(props) {
@@ -29,6 +32,7 @@ class YourAccount extends React.Component {
             var values = queryString.parse(window.location.search);
             this.setState({ isUpdated: values.accountUpdated });
         }
+        this.doFilterCall();
         this.getAccountDetails();
     }
 
@@ -40,15 +44,36 @@ class YourAccount extends React.Component {
                         this.setState({
                             userdata: resUser.data.userdata[0],
                             data: res.data.data[0],
-                            isLoading: false
+                            isLoading: false,
                         });
+                        if(this.state.data.organisation !== "") {
+                            this.setState({showOrg: true});
+                        }
                     })
             })
     }
 
+    doFilterCall() {
+        axios.get(baseURL + '/api/v1/search/filter/topic/person')
+        .then((res) => {
+            this.setState({
+                topicData: res.data.data[0],
+            })
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    }
+
+    onShowOrgInput() {
+        this.setState( ( prevState ) => {
+            return { showOrg: !prevState.showOrg };
+        });
+    }
+
     render() {
-        const { data, isLoading, isUpdated, userdata } = this.state;
-        
+        const { data, isLoading, isUpdated, userdata, topicData, showOrg } = this.state;
+
         if (isLoading) {
             return (
                 <Row>
@@ -66,7 +91,7 @@ class YourAccount extends React.Component {
                 <Row>
                     <Col xs={1}></Col>
                     <Col xs={10}>
-                        <YourAccountForm data={data} userdata={userdata} isUpdated={isUpdated} />
+                        <YourAccountForm data={data} userdata={userdata} isUpdated={isUpdated} topicData={topicData} showOrg={showOrg} onShowOrgInput={() => {this.onShowOrgInput()}} />
                     </Col>
                     <Col xs={1}></Col>
                 </Row>    
@@ -74,6 +99,13 @@ class YourAccount extends React.Component {
         );
     }
 }
+
+const sectorSelect = [
+    "NHS",
+    "Industry",
+    "Academia",
+    "Public",
+];
 
 //Your Account Form
 
@@ -91,7 +123,14 @@ const YourAccountForm = (props) => {
             link: props.data.link,
             orcid: props.data.orcid,
             emailNotifications: props.data.emailNotifications || false, 
-            terms: props.data.terms || false
+            terms: props.data.terms || false,
+            sector: props.data.sector || "",
+            organisation: props.data.organisation,
+            showOrganisation: props.data.showOrganisation || false,
+            showOrg: props.showOrg,
+            tags: props.data.tags || {
+                topics: [],
+            },
         },
 
         validationSchema: Yup.object({
@@ -102,12 +141,17 @@ const YourAccountForm = (props) => {
             email: Yup.string()
                 .email('This must be a valid email')
                 .required('This cannot be empty'),
-            bio: Yup.string()
-                .required('This cannot be empty'),
-            terms: Yup.bool().oneOf([true], 'Accept Terms & Conditions is required')
+            terms: Yup.bool().oneOf([true], 'Accept Terms & Conditions is required'),
+            sector: Yup.string().required('Please select a sector'),
+            organisation: Yup.string().when("showOrg", {is: 'yes', then: Yup.string().required('This cannot be empty')})
+
         }),
 
         onSubmit: values => {
+            if(props.showOrg != true) {
+                values.organisation = "";
+            }
+
             axios.put(baseURL + '/api/v1/person', values)
                 .then((res) => {
                     window.location.href = '/account?tab=youraccount&accountUpdated=true';
@@ -149,11 +193,70 @@ const YourAccountForm = (props) => {
                             </Form.Group>
 
                             <Form.Group className="pb-2">
-                                <span className="gray800-14">Institution</span>
+                                <Form.Label className="gray800-14">Sector</Form.Label>
                                 <br />
-                                <span className="gray700-13">If you aren't part of an institution, please provide a short description of who you are</span>
+                                <span className="gray700-13">Select one of the sectors your work falls under below</span>
+                                <Form.Control id="sector" name="sector" as="select" className={formik.touched.sector && formik.errors.sector ? "emptyFormInput addFormInput" : "addFormInput", "gray700-13"} onChange={(selected) => {formik.setFieldValue("sector", selected.target.value); }} value={formik.values.sector} onBlur={() => formik.setFieldTouched("sector", true)} touched={formik.touched.sector} >
+                                    <option value=""></option>
+                                    {
+                                        sectorSelect.map((sec) => {
+                                            return <option value={sec}>{sec}</option>
+                                        })
+                                    };
+                                </Form.Control>
+                                {formik.touched.sector && formik.errors.sector ? <div className="errorMessages">{formik.errors.sector}</div> : null}
+                            </Form.Group>
+
+                            <Form.Group className="pb-2">
+                                <Form.Label className="gray800-14">Are you part of an organisation?</Form.Label>
+                                <br/>
+                                <InputGroup onChange={props.onShowOrgInput}>
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Radio id="partOfOrgYes" aria-label="Yes" name="partOfOrg" defaultChecked={props.data.organisation !== ""} onChange={(e) => {formik.setFieldValue("showOrg", "yes")}}/>
+                                        <span className="gray800-14 ml-4">Yes</span>
+                                        <br/>
+                                        <InputGroup.Radio id="partOfOrgNo" aria-label="No" name="partOfOrg" defaultChecked={props.data.organisation === ""} onChange={(e) => {formik.setFieldValue("showOrg", "no")}} />
+                                        <span className="gray800-14 ml-4">No</span>
+                                    </InputGroup.Prepend>
+                                </InputGroup>
+                                { props.showOrg ? 
+                                    <Fragment>
+                                        <span className="gray700-13">Please specify your affiliation or company</span>
+                                        <Form.Control id="organisation" name="organisation" type="text" className={formik.touched.organisation && formik.errors.organisation ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.organisation} onBlur={formik.handleBlur} />
+                                        {formik.touched.organisation && formik.errors.organisation ? <div className="errorMessages">{formik.errors.organisation}</div> : null}
+                                        <InputGroup.Checkbox aria-label="Checkbox for displaying organisation or not" name="showOrganisation" onChange={formik.handleChange} checked={formik.values.showOrganisation}/>
+                                        <span className="gray800-14 ml-4">Do not show my organisation</span>
+                                    </Fragment> : null
+                                }
+                            </Form.Group>
+                            
+                            <Form.Group className="pb-2">
+                                <Form.Label className="gray800-14">Bio (optional)</Form.Label>
+                                <br />
+                                <span className="gray700-13">Please provide a short description of who you are</span>
                                 <Form.Control id="bio" name="bio" type="text" className={formik.touched.bio && formik.errors.bio ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.bio} onBlur={formik.handleBlur} />
                                 {formik.touched.bio && formik.errors.bio ? <div className="errorMessages">{formik.errors.bio}</div> : null}
+                            </Form.Group>
+
+                            <Form.Group className="pb-2">
+                                <Form.Label className="gray800-14">Domain (optional)</Form.Label>
+                                <br />
+                                <Typeahead
+                                    id="tags.topics"
+                                    labelKey="topics"
+                                    allowNew
+                                    defaultSelected={formik.values.tags.topics}
+                                    multiple
+                                    options={props.topicData}
+                                    className="addFormInputTypeAhead"
+                                    onChange={(selected) => {
+                                        var tempSelected = [];
+                                        selected.forEach((selectedItem) => {
+                                            selectedItem.customOption === true ? tempSelected.push(selectedItem.topics) : tempSelected.push(selectedItem);
+                                        })
+                                        formik.values.tags.topics = tempSelected;
+                                    }}
+                                />
                             </Form.Group>
 
                             <Form.Group className="pb-2">
