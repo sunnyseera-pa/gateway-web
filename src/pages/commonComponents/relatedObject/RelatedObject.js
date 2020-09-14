@@ -169,17 +169,27 @@ class RelatedObject extends React.Component {
                                                         <a href={'/search?search=&tab=Tools&toolcategories=' + data.categories.category}><div className="badge-tag">{data.categories.category}</div></a> 
                                                     : <div className="badge-tag">{data.categories.category}</div> }
 
-                                            {!data.categories.programmingLanguage || data.categories.programmingLanguage.length <= 0 ? '' : data.categories.programmingLanguage.map((language) => {
+                                            {!data.programmingLanguage || data.programmingLanguage.length <= 0 ? '' : data.programmingLanguage.map((p, i) => {
                                                 if (activeLink===true){
                                                     if (onSearchPage === true) { 
-                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('languageSelected', language)}><div className="badge-tag">{language}</div></span>
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('languageSelected', p.programmingLanguage)}><div className="badge-version" key={i}><span>{p.programmingLanguage}</span><span>{p.version}</span></div></span>
                                                     }
                                                     else {
-                                                        return <a href={'/search?search=&tab=Tools&programmingLanguage=' + language}><div className="badge-tag">{language}</div></a>
+                                                        return (
+                                                            <a href={"/search?search=&tab=Tools&programmingLanguage=" + p.programmingLanguage}>
+                                                            <div className="badge-version" key={i}>
+                                                                <span>{p.programmingLanguage}</span><span>{p.version}</span>
+                                                            </div>
+                                                            </a>
+                                                        );
                                                     }
                                                 }
                                                 else {
-                                                    return <div className="badge-tag">{language}</div>
+                                                    return (
+                                                        <div className="badge-version" key={i}>
+                                                            <span>{p.programmingLanguage}</span><span>{p.version}</span>
+                                                        </div>
+                                                    );
                                                 }
                                             })}
 

@@ -1,23 +1,15 @@
-import React, {Fragment, useState} from 'react';
+import React, { Fragment } from 'react';
 import axios from 'axios';
 import * as Yup from 'yup';
-
 import { Row, Col, Button, Alert, Form, InputGroup } from 'react-bootstrap';
-
 import { useFormik } from 'formik';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import queryString from 'query-string';
 import Loading from '../commonComponents/Loading';
 import './Dashboard.scss'; 
-
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class YourAccount extends React.Component {
-
-    constructor(props) {
-        super(props)
-        this.state.userState = props.userState;
-    }
 
     // initialize our state
     state = {
@@ -30,16 +22,21 @@ class YourAccount extends React.Component {
         showOrg: false,
     };
 
+    constructor(props) {
+        super(props)
+        this.state.userState = props.userState;
+    }
+
     componentDidMount() {
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
             this.setState({ isUpdated: values.accountUpdated });
         }
-        this.doYourAccountCall();
         this.doFilterCall();
+        this.getAccountDetails();
     }
 
-    doYourAccountCall() {
+    getAccountDetails() {
         axios.get(baseURL + '/api/v1/person/' + this.state.userState[0].id)
             .then((res) => {
                 axios.get(baseURL + '/api/v1/users/' + this.state.userState[0].id)
@@ -79,7 +76,7 @@ class YourAccount extends React.Component {
 
         if (isLoading) {
             return (
-                <Row className="mt-4">
+                <Row>
                     <Col xs={1}></Col>
                     <Col xs={10}>
                         <Loading />
@@ -90,15 +87,15 @@ class YourAccount extends React.Component {
         }
 
         return (
-            <div>
-                <Row className="mt-4">
+            <Fragment>
+                <Row>
                     <Col xs={1}></Col>
                     <Col xs={10}>
                         <YourAccountForm data={data} userdata={userdata} isUpdated={isUpdated} topicData={topicData} showOrg={showOrg} onShowOrgInput={() => {this.onShowOrgInput()}} handleRadioButtonChange={() => {this.handleRadioButtonChange()}} />
                     </Col>
                     <Col xs={1}></Col>
                 </Row>    
-            </div>
+            </Fragment>
         );
     }
 }

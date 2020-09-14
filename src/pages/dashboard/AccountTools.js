@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 
@@ -141,7 +141,7 @@ class AccountTools extends React.Component {
 
         if (isLoading) {
             return (
-                <Row className="mt-4">
+                <Row>
                     <Col xs={1}></Col>
                     <Col xs={10}>
                         <Loading />
@@ -152,7 +152,7 @@ class AccountTools extends React.Component {
         }
 
         return (
-            <div>
+            <Fragment>
                 <Row>
                     <Col xs={1}></Col>
                     <Col xs={10}>
@@ -366,7 +366,7 @@ class AccountTools extends React.Component {
 
                     <Col xs={1}></Col>
                 </Row>
-            </div>
+            </Fragment>
         );
     }
 }

@@ -30,7 +30,6 @@ import CompleteRegistration from './pages/registration/CompleteRegistration'
 import LoginModal from './pages/commonComponents/LoginModal';
 import Footer from './pages/commonComponents/Footer';
 import LoginErrorPage from './pages/commonComponents/LoginErrorPage';
-import ErrorModal from './pages/commonComponents/errorModal/ErrorModal';
 
 var baseURL = require('./pages/commonComponents/BaseURL').getURL();
 

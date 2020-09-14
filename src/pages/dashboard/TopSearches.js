@@ -23,8 +23,8 @@ class TopSearches extends React.Component {
         return (
             <Fragment>
                 <Row className="entryBox"> 
-                        <Col sm={5} lg={6} className="gray800-14" style={{"float":"left", "padding-left":"0px"}}>
-                            <span style={{"float":"left", "padding-left":"15px"}} className="truncate">
+                        <Col sm={5} lg={6} className="gray800-14" style={{"float":"left", "paddingLeft":"0px"}}>
+                            <span style={{"float":"left", "paddingLeft":"15px"}} className="truncate">
                                 {!data || !data._id ? 'search term' : <a href={"/search?search="+data._id} className="searchTermLink truncate" > {data._id} </a>}
                             </span>                
                         </Col>
@@ -34,7 +34,7 @@ class TopSearches extends React.Component {
                             </span>
                         </Col> 
                         <Col sm={5} lg={4} className="gray800-14">
-                            <span style={{"padding-right":"0px"}}>
+                            <span style={{"paddingRight":"0px"}}>
                             {(data.datasets || 0) + ' datasets, ' + (data.tools || 0) + ' tools, ' + (data.projects || 0) + ' projects, ' + (data.papers || 0) + ' papers'}
                             </span>
                         </Col>

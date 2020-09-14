@@ -127,7 +127,7 @@ class AccountProjects extends React.Component {
 
         if (isLoading) {
             return (
-                <Row className="mt-4">
+                <Row>
                     <Col xs={1}></Col>
                     <Col xs={10}>
                         <Loading />
