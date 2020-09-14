@@ -169,11 +169,6 @@ const AddEditToolForm = (props) => {
     <Formik
       initialValues={initialValues}
       validationSchema={validateSchema}
-      onSubmit={values => {
-        setTimeout(() => {
-          alert(JSON.stringify(values, null, 2));
-        }, 500);
-      }}
       render={({ values, errors, touched, handleReset, setFieldValue }) => {
         return (
             <div>
