@@ -91,7 +91,7 @@ class YourAccount extends React.Component {
                 <Row>
                     <Col xs={1}></Col>
                     <Col xs={10}>
-                        <YourAccountForm data={data} userdata={userdata} isUpdated={isUpdated} topicData={topicData} showOrg={showOrg} onShowOrgInput={() => {this.onShowOrgInput()}} handleRadioButtonChange={() => {this.handleRadioButtonChange()}} />
+                        <YourAccountForm data={data} userdata={userdata} isUpdated={isUpdated} topicData={topicData} showOrg={showOrg} onShowOrgInput={() => {this.onShowOrgInput()}} />
                     </Col>
                     <Col xs={1}></Col>
                 </Row>    
