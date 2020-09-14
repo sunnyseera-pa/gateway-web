@@ -321,7 +321,10 @@ class SearchPage extends React.Component {
 
         if (this.state.userState[0].loggedIn === false ) {
             var values = queryString.parse(window.location.search);
-            if (values.showLogin === true && document.referrer !== '') searchURL += '&loginReferrer=' + encodeURIComponent(document.referrer);
+            if (values.showLogin === true && document.referrer !== '') {
+                var referrer = document.referrer;
+                searchURL += '&loginReferrer=' + encodeURIComponent(referrer);
+            }
         }
 
         if (!skipHistory) { 
