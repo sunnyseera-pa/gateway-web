@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React, { Fragment } from 'react';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { Row, Col, Button, Alert, Form, InputGroup } from 'react-bootstrap';
