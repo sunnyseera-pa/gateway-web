@@ -48,10 +48,6 @@ class HDRRouter extends Component {
         isLoading: true,
         showError: false,
     };
-
-    showModal = () => {
-        this.setState({ showError: true });
-    };
     
     hideModal = () => {
         this.setState({ showError: false });
