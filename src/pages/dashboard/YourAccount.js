@@ -7,7 +7,6 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import queryString from 'query-string';
 import Loading from '../commonComponents/Loading';
 import './Dashboard.scss'; 
-import { Typeahead } from 'react-bootstrap-typeahead';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
