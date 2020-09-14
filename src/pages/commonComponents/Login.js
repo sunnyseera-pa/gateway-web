@@ -1,5 +1,6 @@
 import React from 'react';
 import { Row, Col, Image } from 'react-bootstrap';
+import Loading from './Loading';
 import './CommonComponents.scss';  
 
 var baseURL = require('./BaseURL').getURL();
@@ -33,11 +34,9 @@ class Login extends React.Component {
                         <Col sm={1} lg={1} />
                         <Col sm={10} lg={10}>
                             <div className='gray800-14' style={{ textAlign: 'center' }}>
-                                <a href={baseURL + '/auth/linkedin'}>
-                                    <Image
-                                        style={{ width: '200px' }}
-                                        src={require('../../images/Linkedin-default.png')}
-                                    />
+                                <a href={baseURL + '/auth/linkedin'} className='loginButtonHolder'>
+                                    <Image className='loginImageOn' src={require('../../images/Linkedin-default.png')} />
+                                    <Image className='loginImageOff' src={require('../../images/Linkedin-hover.png')} />
                                 </a>
                             </div>
                         </Col>
@@ -48,11 +47,9 @@ class Login extends React.Component {
                         <Col sm={1} lg={1} />
                         <Col sm={10} lg={10}>
                             <div className='gray800-14' style={{ textAlign: 'center' }}>
-                                <a href={baseURL + '/auth/google'}>
-                                    <Image
-                                        style={{ width: '200px' }}
-                                        src={require('../../images/Google-default.png')}
-                                    />
+                                <a href={baseURL + '/auth/google'} className='loginButtonHolder'>
+                                    <Image className='loginImageOn' src={require('../../images/Google-default.png')} />
+                                    <Image className='loginImageOff' src={require('../../images/Google-hover.png')} />
                                 </a>
                             </div>
                         </Col>
@@ -63,11 +60,9 @@ class Login extends React.Component {
                         <Col sm={1} lg={1} />
                         <Col sm={10} lg={10}>
                             <div className='gray800-14' style={{ textAlign: 'center' }}>
-                                {/* <a href={baseURL + '/auth/oidc'} className='openAthensButton'>
-                                    Sign in with OpenAthens
-                                </a> */}
-                                <a href='#' onClick={this.showWayFinder} className='openAthensButton'>
-                                Sign in using your institution login
+                                <a href='#' onClick={this.showWayFinder} className='loginButtonHolder'>
+                                    <Image className='loginImageOn' src={require('../../images/open-athens-default.png')} />
+                                    <Image className='loginImageOff' src={require('../../images/open-athens-hover.png')} />
                                 </a>
                             </div>
                         </Col>
@@ -76,20 +71,31 @@ class Login extends React.Component {
                 </div>
 
                 <div id="loginWayFinder" style={{display:'none'}}>
-                    <Row className='mt-3'>
+                    <Row className='mt-3 text-center'>
                         <Col sm={1} lg={1} />
                         <Col sm={10} lg={10}>
-                            <a href='#' onClick={this.hideWayFinder} className='showAllLoginOptionsButton'>
+                            <a href='#' onClick={this.hideWayFinder} className='purple-14'>
                                 Show all login options
                             </a>
                         </Col>
                         <Col sm={1} lg={1} />
                     </Row>
 
-                    <Row className='mt-3'>
+                    <Row className='mt-4'>
                         <Col sm={1} lg={1} />
                         <Col sm={10} lg={10}>
-                            <div id="wayfinder">Loading...</div>
+                            <div id="wayfinder">
+                                <div className="gray800-14" style={{ textAlign: 'center' }}>
+                                    <Image src={require("../../images/Loader.gif")} />
+                                </div>
+                                <div className="gray800-14" style={{ textAlign: 'center' }}>
+                                    Loading...
+                                    <br />
+                                    <br />
+                                    <a href={baseURL + '/auth/oidc'} className='purple-14' >Click here if login screen does not load</a>
+                                </div>
+                                
+                            </div>
                         </Col>
                         <Col sm={1} lg={1} /> 
                     </Row>

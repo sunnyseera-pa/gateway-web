@@ -3,8 +3,9 @@ import axios from 'axios';
 import * as Yup from 'yup';
 import { Row, Col, Button, Alert, Form, InputGroup } from 'react-bootstrap';
 import { useFormik } from 'formik';
+import { Typeahead } from 'react-bootstrap-typeahead';
 import queryString from 'query-string';
-import Loading from '../commonComponents/Loading'
+import Loading from '../commonComponents/Loading';
 import './Dashboard.scss'; 
 import { Typeahead } from 'react-bootstrap-typeahead';
 
@@ -47,18 +48,25 @@ class YourAccount extends React.Component {
                             data: res.data.data[0],
                             isLoading: false,
                         });
+                        if(this.state.data.organisation !== "") {
+                            this.setState({showOrg: true});
+                        }
                     })
             })
     }
 
     doFilterCall() {
-        axios.get(baseURL + 'api/v1/search/topic/person')
+        axios.get(baseURL + '/api/v1/search/filter/topic/person')
         .then((res) => {
             this.setState({
                 topicData: res.data.data[0],
             })
         })
+        .catch(err => {
+            console.log(err);
+        });
     }
+
 
     onShowOrgInput() {
         this.setState( ( prevState ) => {
@@ -68,7 +76,7 @@ class YourAccount extends React.Component {
 
     render() {
         const { data, isLoading, isUpdated, userdata, topicData, showOrg } = this.state;
-        
+
         if (isLoading) {
             return (
                 <Row>
@@ -122,8 +130,8 @@ const YourAccountForm = (props) => {
             sector: props.data.sector || "",
             organisation: props.data.organisation,
             showOrganisation: props.data.showOrganisation || false,
+            showOrg: props.showOrg,
             tags: props.data.tags || {
-                features: [],
                 topics: [],
             },
         },
@@ -136,13 +144,16 @@ const YourAccountForm = (props) => {
             email: Yup.string()
                 .email('This must be a valid email')
                 .required('This cannot be empty'),
-            bio: Yup.string()
-                .required('This cannot be empty'),
             terms: Yup.bool().oneOf([true], 'Accept Terms & Conditions is required'),
-            sector: Yup.string().required('Please select a sector')
+            sector: Yup.string().required('Please select a sector'),
+            organisation: Yup.string().when("showOrg", {is: 'yes', then: Yup.string().required('This cannot be empty')})
         }),
 
         onSubmit: values => {
+            if(props.showOrg != true) {
+                values.organisation = "";
+            }
+
             axios.put(baseURL + '/api/v1/person', values)
                 .then((res) => {
                     window.location.href = '/account?tab=youraccount&accountUpdated=true';
@@ -187,7 +198,7 @@ const YourAccountForm = (props) => {
                                 <Form.Label className="gray800-14">Sector</Form.Label>
                                 <br />
                                 <span className="gray700-13">Select one of the sectors your work falls under below</span>
-                                <Form.Control as="select" className={formik.touched.sector && formik.errors.sector ? "emptyFormInput addFormInput" : "addFormInput", "gray700-13"} onChange={(selected) => {formik.values.sector = selected.target.value}} value={formik.values.sector} onBlur={formik.handleBlur}>
+                                <Form.Control id="sector" name="sector" as="select" className={formik.touched.sector && formik.errors.sector ? "emptyFormInput addFormInput" : "addFormInput", "gray700-13"} onChange={(selected) => {formik.setFieldValue("sector", selected.target.value); }} value={formik.values.sector} onBlur={() => formik.setFieldTouched("sector", true)} touched={formik.touched.sector} >
                                     <option value=""></option>
                                     {
                                         sectorSelect.map((sec) => {
@@ -203,10 +214,10 @@ const YourAccountForm = (props) => {
                                 <br/>
                                 <InputGroup onChange={props.onShowOrgInput}>
                                     <InputGroup.Prepend>
-                                        <InputGroup.Radio id="partOfOrgYes" aria-label="Yes" name="partOfOrg" />
+                                        <InputGroup.Radio id="partOfOrgYes" aria-label="Yes" name="partOfOrg" defaultChecked={props.data.organisation !== ""} onChange={(e) => {formik.setFieldValue("showOrg", "yes")}}/>
                                         <span className="gray800-14 ml-4">Yes</span>
                                         <br/>
-                                        <InputGroup.Radio id="partOfOrgNo" aria-label="No" name="partOfOrg" defaultChecked />
+                                        <InputGroup.Radio id="partOfOrgNo" aria-label="No" name="partOfOrg" defaultChecked={props.data.organisation === ""} onChange={(e) => {formik.setFieldValue("showOrg", "no")}} />
                                         <span className="gray800-14 ml-4">No</span>
                                     </InputGroup.Prepend>
                                 </InputGroup>
@@ -214,12 +225,13 @@ const YourAccountForm = (props) => {
                                     <Fragment>
                                         <span className="gray700-13">Please specify your affiliation or company</span>
                                         <Form.Control id="organisation" name="organisation" type="text" className={formik.touched.organisation && formik.errors.organisation ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.organisation} onBlur={formik.handleBlur} />
+
+                                        {formik.touched.organisation && formik.errors.organisation ? <div className="errorMessages">{formik.errors.organisation}</div> : null}
                                         <InputGroup.Checkbox aria-label="Checkbox for displaying organisation or not" name="showOrganisation" onChange={formik.handleChange} checked={formik.values.showOrganisation}/>
                                         <span className="gray800-14 ml-4">Do not show my organisation</span>
-                                    </Fragment> : null 
+                                    </Fragment> : null
                                 }
                             </Form.Group>
-
                             <Form.Group className="pb-2">
                                 <Form.Label className="gray800-14">Bio (optional)</Form.Label>
                                 <br />
@@ -231,15 +243,22 @@ const YourAccountForm = (props) => {
                             <Form.Group className="pb-2">
                                 <Form.Label className="gray800-14">Domain (optional)</Form.Label>
                                 <br />
-                                <Typeahead 
-                                    id="tags.topics" 
-                                    labelKey="topics" 
+                                <Typeahead
+                                    id="tags.topics"
+                                    labelKey="topics"
                                     allowNew
-                                    defaultSelected={[formik.values.tags.topics]}
+                                    defaultSelected={formik.values.tags.topics}
                                     multiple
                                     options={props.topicData}
-                                    className=""
-                                    />
+                                    className="addFormInputTypeAhead"
+                                    onChange={(selected) => {
+                                        var tempSelected = [];
+                                        selected.forEach((selectedItem) => {
+                                            selectedItem.customOption === true ? tempSelected.push(selectedItem.topics) : tempSelected.push(selectedItem);
+                                        })
+                                        formik.values.tags.topics = tempSelected;
+                                    }}
+                                />
                             </Form.Group>
 
                             <Form.Group className="pb-2">
