@@ -3,19 +3,22 @@ import axios from 'axios';
 import Loading from './Loading'
 import './CommonComponents.scss';  
 
-var cmsURL = require('./BaseURL').getCMSURL();
+const baseURL = require('./BaseURL');
+const cmsURL = baseURL.getCMSURL();
+const env = baseURL.getURLEnv();
+const local = "local";
 
 class Footer extends React.Component {
     
     state = {
         footer: '',
-        isLoading: true
+        isLoading: true,
     };
 
-
     async componentDidMount() {
+        let url = env === local ? "https://uatbeta.healthdatagateway.org" : cmsURL;
         axios
-            .get(cmsURL+'/footer', { withCredentials: false })
+            .get(url+'/footer', { withCredentials: false })
             .then((res) => {
                 this.setState({
                     footer: res.data,

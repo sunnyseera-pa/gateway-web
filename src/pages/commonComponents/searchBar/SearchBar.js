@@ -260,6 +260,9 @@ class SearchBar extends React.Component {
                             <div className="navBarLinkSpacing">
                                 <a href={cmsURL + "/pages/community"} className="black-14">Community</a>
                             </div>
+                            <div className="navBarLinkSpacing">
+                                <a href={"/dashboard"} className="black-14">Dashboard</a>
+                            </div>
                         </Col>
 
                         <Col lg={8} className="text-right">
@@ -439,6 +442,7 @@ class SearchBar extends React.Component {
                                     <Dropdown.Menu as={CustomMenu} className="mobileLoginMenu">
                                         <Dropdown.Item className="black-14" href={cmsURL + "/pages/about"}>About</Dropdown.Item>
                                         <Dropdown.Item className="black-14" href={cmsURL + "/pages/community"}>Community</Dropdown.Item>
+                                        <Dropdown.Item className="black-14" href={"/dashboard"}>Dashboard</Dropdown.Item>
                                         <Dropdown.Divider />
                                         {(() => {
                                             if (userState[0].loggedIn === true) {

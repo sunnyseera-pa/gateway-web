@@ -35,8 +35,8 @@ class YourAccount extends React.Component {
             var values = queryString.parse(window.location.search);
             this.setState({ isUpdated: values.accountUpdated });
         }
-        this.doFilterCall();
         this.getAccountDetails();
+        this.doFilterCall();
     }
 
     getAccountDetails() {
@@ -73,6 +73,7 @@ class YourAccount extends React.Component {
             console.log(err);
         });
     }
+
 
     onShowOrgInput() {
         this.setState( ( prevState ) => {
@@ -167,7 +168,7 @@ const YourAccountForm = (props) => {
                 });
         }
     });
-    
+
     return (
         <div>
             {props.isUpdated ? <Alert variant="success" className="mt-3">Done! Your account details have been updated</Alert> : ""}
@@ -232,13 +233,13 @@ const YourAccountForm = (props) => {
                                     <Fragment>
                                         <span className="gray700-13">Please specify your affiliation or company</span>
                                         <Form.Control id="organisation" name="organisation" type="text" className={formik.touched.organisation && formik.errors.organisation ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.organisation} onBlur={formik.handleBlur} />
+
                                         {formik.touched.organisation && formik.errors.organisation ? <div className="errorMessages">{formik.errors.organisation}</div> : null}
                                         <InputGroup.Checkbox aria-label="Checkbox for displaying organisation or not" name="showOrganisation" onChange={formik.handleChange} checked={formik.values.showOrganisation}/>
                                         <span className="gray800-14 ml-4">Do not show my organisation</span>
                                     </Fragment> : null
                                 }
                             </Form.Group>
-                            
                             <Form.Group className="pb-2">
                                 <Form.Label className="gray800-14">Bio (optional)</Form.Label>
                                 <br />

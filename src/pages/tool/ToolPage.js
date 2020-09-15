@@ -433,20 +433,21 @@ class ToolDetail extends Component {
                         </Col>
                       </Row>
 
-                      <Row className="mt-2">
-                        <Col sm={12} lg={12}>
-                          <div className="rectangle">
-                            <Row className="gray800-14-bold">
-                              <Col sm={12}>Results/Insights</Col>
-                            </Row>
-                            <Row className="mt-3">
-                              <Col sm={12} className="gray800-14">
-                                <ReactMarkdown source={data.resultsInsights} />
-                              </Col>
-                            </Row>
-                          </div>
-                        </Col>
-                      </Row>
+                      {!_.isEmpty(data.resultsInsights) ? (
+                        <Row className="mt-2">
+                          <Col sm={12} lg={12}>
+                            <div className="rectangle">
+                              <Row className="gray800-14-bold">
+                                <Col sm={12}>Results/Insights</Col>
+                              </Row>
+                              <Row className="mt-3">
+                                <Col sm={12} className="gray800-14">
+                                  <ReactMarkdown source={data.resultsInsights} />
+                                </Col>
+                              </Row>
+                            </div>
+                          </Col>
+                        </Row>): ""}
 
                       <Row className="mt-2">
                         <Col sm={12}>
@@ -524,7 +525,6 @@ class ToolDetail extends Component {
                             <Col sm={2} className="gray800-14">
                               Implementation
                             </Col>
-
                             <Col sm={10} className="gray800-14">
                               {!data.programmingLanguage ||
                               data.programmingLanguage.length <= 0
@@ -532,6 +532,7 @@ class ToolDetail extends Component {
                                 : data.programmingLanguage.map(
                                     (obj, i) => {
                                       return (
+                                        (obj.version !== "") ? 
                                         <div>
                                         <a href={"/search?search=&tab=Tools&programmingLanguage=" + obj.programmingLanguage}>
                                           <div className="badge-version" key={i}>
@@ -539,6 +540,13 @@ class ToolDetail extends Component {
                                           </div>
                                         </a>
                                       </div>
+                                      : <div>
+                                      <a href={"/search?search=&tab=Tools&programmingLanguage=" + obj.programmingLanguage}>
+                                        <div className="badge-tag" key={i}>
+                                          <span>{obj.programmingLanguage}</span>
+                                        </div>
+                                      </a>
+                                    </div>
                                       );
                                     }
                                   )}

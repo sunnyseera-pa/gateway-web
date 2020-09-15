@@ -214,6 +214,10 @@
 	background: #eee !important;
 }
 
+input[type=text]:disabled {
+	background: #eeeeee !important;
+}
+
 input[type=checkbox]:disabled {
 	&:after {
 		background-color: #eee !important;
