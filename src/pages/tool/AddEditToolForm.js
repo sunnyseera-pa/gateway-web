@@ -1,26 +1,45 @@
-import React from 'react';
+import React, { Fragment } from "react";
 import axios from 'axios';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+
+import { Formik, useFormik,  FieldArray } from "formik";
+import * as Yup from "yup";
 import { Typeahead } from 'react-bootstrap-typeahead'; 
-import { Event } from '../../tracking';
+import _ from "lodash";
 import moment from 'moment';
-import {Form, Button, Row, Col} from 'react-bootstrap';
+import { Form, Button, Row, Col} from 'react-bootstrap';
 
 import RelatedResources from '../commonComponents/relatedResources/RelatedResources';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 
-import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
 import './Tool.scss'; 
+
+const initialValues = {
+    programmingLanguage: [{programmingLanguage: "",
+    version: ""}]
+};
+
+class ProgrammingLanguage {
+  constructor() {
+    this.programmingLanguage = "";
+    this.version = "";
+  }
+}
+
+const validateSchema = Yup.object().shape({
+  programmingLanguage: Yup.array()
+    .of(
+      Yup.object().shape({
+        programmingLanguage: Yup.string().required("This cannot be empty")
+      })
+    )
+});
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const AddEditToolForm = (props) => {
-    // Pass the useFormik() hook initial form values and a submit function that will
-    // be called when the form is submitted
- 
+
     const formik = useFormik({
         initialValues: {
             id: props.data.id || '', 
@@ -30,10 +49,12 @@ const AddEditToolForm = (props) => {
             description: props.data.description || '',
             resultsInsights: props.data.resultsInsights || '',
             categories: props.data.categories  || { 
-                category: '',
-                programmingLanguage: [],
-                programmingLanguageVersion: ''
+                category: ''
             },
+            programmingLanguage: props.data.programmingLanguage || ([{
+                programmingLanguage: '',
+                version: ''
+            }]),
             license: props.data.license || '',
             authors: props.data.authors || [props.userState[0].id],
             tags: props.data.tags || {
@@ -55,8 +76,13 @@ const AddEditToolForm = (props) => {
                 .max(3000, 'Maximum of 3,000 characters'),
             categories: Yup.object().shape({
                 category: Yup.string().required('This cannot be empty'),
-                programmingLanguage: Yup.string().required('This cannot be empty'),
             }),
+            programmingLanguage: Yup.array()
+                .of(
+                Yup.object().shape({
+                    programmingLanguage: Yup.string().required('This cannot be empty')
+      })
+    ),
             authors: Yup.string().required('This cannot be empty')
         }),
 
@@ -134,9 +160,16 @@ const AddEditToolForm = (props) => {
     }
 
     const relatedResourcesRef = React.useRef()
+  
+   return (
+   <div className={"container"}>
     
-    return (
-        <div>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validateSchema}
+      render={({ values, errors, touched, handleReset, setFieldValue }) => {
+        return (
+            <div>
             <Row className="margin-top-32">  
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
@@ -157,7 +190,6 @@ const AddEditToolForm = (props) => {
                 </Col>
                 <Col sm={1} lg={10} />
             </Row> 
-
             <Row className="pixelGapTop">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
@@ -245,45 +277,92 @@ const AddEditToolForm = (props) => {
                             </Form.Group>
                             
                             <Row className="mt-2">
-                                <Col sm={9}>
-                                    <Form.Group>
+                                <Col sm={12} md={8}>
                                         <p className="gray800-14 margin-bottom-0 pad-bottom-4">Implementation</p>
                                         <p className="gray700-13 margin-bottom-0">
                                             Programming languages, formalisms or frameworks. E.g. Python, RDF, GATE
                                         </p>
-                                        <Typeahead
-                                            id="categories.programmingLanguage"
-                                            labelKey="programmingLanguage"
-                                            allowNew
-                                            defaultSelected={formik.values.categories.programmingLanguage}
-                                            multiple
-                                            options={props.combinedLanguages}
-                                            className={formik.touched.categories && (formik.errors.categories && typeof formik.errors.categories.programmingLanguage !== "undefined") ? "emptyFormInputTypeAhead addFormInputTypeAhead" : "addFormInputTypeAhead"}
-                                            onChange={(selected) => {
-                                                var tempSelected = [];
-                                                selected.forEach((selectedItem) => {
-                                                    selectedItem.customOption === true ? tempSelected.push(selectedItem.programmingLanguage) : tempSelected.push(selectedItem);
-
-                                                })
-                                                formik.values.categories.programmingLanguage = tempSelected;
-                                            }}
-                                        />
-                                        {formik.touched.categories && (formik.errors.categories && typeof formik.errors.categories.programmingLanguage !== "undefined")
-                                            ? <div className="errorMessages">{formik.errors.categories.programmingLanguage}</div> : null}
-                                    </Form.Group>
                                 </Col>
-                                <Col sm={3}>
-
-                                    <Form.Group>
+                                <Col sm={6} md={3}>
                                         <p className="gray800-14 margin-bottom-0 pad-bottom-4">Version (optional)</p>
                                         <p className="gray700-13 margin-bottom-0">
                                             i.e. 3.6.1 
                                         </p>
-                                        <Form.Control id="categories.programmingLanguageVersion" name="categories.programmingLanguageVersion" type="text" className="smallFormInput addFormInput" onChange={formik.handleChange} value={formik.values.categories.programmingLanguageVersion} onBlur={formik.handleBlur} />
-                                    </Form.Group>
-                                    {/* <Col sm={2}></Col> */}
                                 </Col>
                             </Row>
+
+                            <Row className="mt-2">
+                                    <FieldArray
+                                    name="programmingLanguage"
+                                    render={({ insert, remove, push }) => (
+                                        <Fragment >
+                                        {formik.values.programmingLanguage.length > 0 &&
+                                            formik.values.programmingLanguage.map((p, index) => (
+                                                <Fragment>
+                                                <Col sm={12} md={8}>
+
+                                                <Form.Group labelKey={`programmingLanguage.${index}.programmingLanguage`}>
+                                                    <Typeahead
+                                                    id={`programmingLanguage-${index}`}
+                                                    name={`programmingLanguage.${index}.programmingLanguage`}
+                                                    labelkey={`programmingLanguage.${index}.programmingLanguage`}
+                                                    options={props.combinedLanguages}
+                                                    selected={[formik.values.programmingLanguage[index].programmingLanguage]}
+                                                    allowNew
+                                                    className = { 
+                                                        (formik.values.programmingLanguage[index].programmingLanguage === "") && 
+                                                        (
+                                                            (formik.touched.programmingLanguage && formik.errors.programmingLanguage) 
+                                                            && (formik.errors.programmingLanguage[index] && typeof formik.errors.programmingLanguage[index] !== "undefined")
+                                                            && (formik.touched.programmingLanguage[index] && formik.touched.programmingLanguage[index].version)
+                                                        ) 
+                                                        ?( "emptyFormInputTypeAhead addFormInputTypeAhead" ) : "addFormInputTypeAhead"
+                                                    }
+                                                    onChange={(selected) => {
+                                                        var tempSelected = [];
+                                                        selected.forEach((selectedItem) => {
+                                                            selectedItem.customOption === true ? tempSelected.push(selectedItem.label) : tempSelected.push(selectedItem);
+                                                        })
+                                                        tempSelected.length > 0 ? formik.values.programmingLanguage[index].programmingLanguage = tempSelected[0] : formik.values.programmingLanguage[index].programmingLanguage = ""
+                                                    }}
+                                                    />
+                                                    {
+                                                        (formik.values.programmingLanguage[index].programmingLanguage === "") && 
+                                                        (
+                                                            (formik.touched.programmingLanguage && formik.errors.programmingLanguage) 
+                                                            && (formik.errors.programmingLanguage[index] && typeof formik.errors.programmingLanguage[index] !== "undefined")
+                                                            && (formik.touched.programmingLanguage[index] && formik.touched.programmingLanguage[index].version)
+                                                        ) 
+                                                        ? <div className="errorMessages">{formik.errors.programmingLanguage[index].programmingLanguage}</div> : null
+                                                    }
+                                                    </Form.Group>
+                                                    </Col>
+                                                    <Col sm={6} md={2} style={{paddingRight: "0px"}}>
+
+                                                <div className="">
+                                                    <Form.Control id={`programmingLanguage.${index}.version`} name={`programmingLanguage.${index}.version`} type="text" className="smallFormInput addFormInput" 
+                                                    onChange={formik.handleChange}  value={[formik.values.programmingLanguage[index].version]} onBlur={formik.handleBlur} />
+                                                </div>
+                                                </Col>
+
+                                                <Col style={{paddingRight: "0px"}} className="col-sm-6 col-md-2 d-flex justify-content-center align-items-center setHeight">
+
+                                                <button type="button" className="plusMinusButton" disabled={(formik.values.programmingLanguage.length<2)}    
+                                                    onClick={() => { 
+                                                            remove(index);
+                                                            formik.values.programmingLanguage.splice(index, 1);
+                                                            }}>-</button>
+                                                <button type="button" className="plusMinusButton" disabled={(formik.values.programmingLanguage.length>=5) || (index!==formik.values.programmingLanguage.length-1)} 
+                                                    onClick={() => {
+                                                        push(new ProgrammingLanguage()); formik.values.programmingLanguage.push({ programmingLanguage: "", version: "" })
+                                                        }}>+</button>
+                                                </Col>
+                                            </Fragment>
+                                            ))}
+                                        </Fragment>
+                                    )}
+                                    />
+                                    </Row>
                             
                             <Form.Group>
                                 <p className="gray800-14 margin-bottom-0 pad-bottom-4">License (optional)</p>
@@ -335,7 +414,6 @@ const AddEditToolForm = (props) => {
                                 <p className="gray700-13 margin-bottom-0">
                                     E.g. Biogenomics, Nutrition, Blockchain
                                 </p>
-
                                 <Typeahead
                                     id="tags.topics"
                                     labelKey="topics"
@@ -374,7 +452,6 @@ const AddEditToolForm = (props) => {
                             <Row>
                                 <Col sm={1} lg={1} />
                                 <Col sm={10} lg={10}>
-                                    
                                     <RelatedResources ref={relatedResourcesRef} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} paperData={props.paperData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                 </Col>
                                 <Col sm={1} lg={10} />
@@ -387,25 +464,25 @@ const AddEditToolForm = (props) => {
                                         Cancel
                                     </Button>
                                 </a> 
-
                                 <Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className="techDetailButton mr-2">
                                     + Add resource
                                 </Button>
-                                
                                 <Button variant="primary" className="publishButton white-14-semibold mr-2" type="submit" >
-                                    {props.isEdit ? 'Update' : 'Publish'}
+                                    {props.isEdit ? 'Update' : 'Publish'} 
                                 </Button>
                         </ActionBar> 
-
                     </Form>
                 </Col>
                 <Col sm={1} lg={10} />
             </Row>
-            <Row>
+          <Row>
                 <span className="formBottomGap"></span>
             </Row>
-        </div>
-    );
-}
+          </div>
+        );
+      }}
+    />
+  </div>
+)};
 
 export default AddEditToolForm;

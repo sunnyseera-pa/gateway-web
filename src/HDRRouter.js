@@ -14,6 +14,7 @@ import PaperPage from './pages/paper/PaperPage';
 import DatasetPage from './pages/dataset/DatasetPage';
 import SearchPage from './pages/search/SearchPage';
 import CollectionPage from './pages/collections/CollectionPage';
+import PublicAnalyticsDashboard from './pages/publicDashboard/PublicAnalyticsDashboard';
 
 import Account from './pages/dashboard/Account';
 import Unsubscribe from './pages/dashboard/Unsubscribe';
@@ -30,6 +31,7 @@ import CompleteRegistration from './pages/registration/CompleteRegistration'
 import LoginModal from './pages/commonComponents/LoginModal';
 import Footer from './pages/commonComponents/Footer';
 import LoginErrorPage from './pages/commonComponents/LoginErrorPage';
+import ErrorModal from './pages/commonComponents/errorModal/ErrorModal';
 
 var baseURL = require('./pages/commonComponents/BaseURL').getURL();
 
@@ -45,10 +47,26 @@ class HDRRouter extends Component {
             }
         ],
         isLoading: true,
+        showError: false,
+    };
+    
+    hideModal = () => {
+        this.setState({ showError: false });
     };
 
     async componentDidMount() {
+        let currentComponent = this;
+
         axios.defaults.withCredentials = true;
+        axios.defaults.timeout = 5000;
+
+        axios.interceptors.response.use(function (response) {
+            return response;
+        }, function (error) {
+            Sentry.captureException(error);
+            return Promise.reject(error).then(currentComponent.setState({showError: true}));
+        });
+
         axios
             .get(baseURL + '/api/v1/auth/status')
             .then((res) => {
@@ -77,17 +95,25 @@ class HDRRouter extends Component {
                     ],
                     isLoading: false
                 });
-            })
+            });
     }
 
     render() {
-        const { isLoading, userState } = this.state;
+        const { isLoading, userState, showError } = this.state;
 
         if (isLoading) {
             return (
                 <Container>
                     <Loading />
                 </Container>
+            );
+        }
+
+        if(showError) {
+            return (
+                <Router>
+                    <ErrorModal show={this.state.showError} handleClose={this.hideModal} />
+                </Router>
             );
         }
 
@@ -104,6 +130,7 @@ class HDRRouter extends Component {
                         <Route path='/completeRegistration/:personID' render={(props) => <CompleteRegistration {...props} userState={userState} />} />
                         <Route path='/sso' render={(props) => <SSOPage {...props} userState={userState} />} />
                         <Route path='/account/unsubscribe/:userObjectID' render={(props) => <Unsubscribe {...props} userState={userState} />} />
+                        <Route path='/dashboard' render={(props) => <PublicAnalyticsDashboard {...props} userState={userState} />} />
                         
                         {userState[0].loggedIn ? (<Route path='/data-access-request/dataset/:datasetId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
                         {userState[0].loggedIn ? (<Route path='/data-access-request/publisher/:publisherId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}

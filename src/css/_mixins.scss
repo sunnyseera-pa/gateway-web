@@ -20,7 +20,7 @@ Example
     font-family: $heading-font-family;
     @if $size { font-size: $size !important; }
     @if $colour { color: $colour !important; }
-    @if $weight { font-weight: $weight !important; }
+    @if $weight { font-weight: $weight; }
     @if $lh { line-height: $lh; }
     @if $opacity { opacity: $opacity; }
 }

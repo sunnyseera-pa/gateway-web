@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import queryString from 'query-string';
-
 import { Row, Col } from 'react-bootstrap';
 import Login from './Login';
 
@@ -28,8 +27,8 @@ const LoginModal = (props) => {
     };
 
     return (
-        <>
-            <div id="myModal" className="modal">
+        <Fragment>
+            <div id="myModal" className="modal login-modal">
                 <div className="modal-content">
                     <div className="modal-body mb-4">
                         <Row className="mt-3">
@@ -61,8 +60,7 @@ const LoginModal = (props) => {
 
                 </div>
             </div>
-
-        </>
+        </Fragment>
     );
 }
 

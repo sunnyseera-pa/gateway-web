@@ -35,7 +35,7 @@ class RelatedObject extends React.Component {
             this.state.inCollection = props.inCollection;
         }
         if (props.data) {
-            this.state.data = props.data;
+            this.state.data = props.data || [];
             //this.state.reviewData = this.state.data.reviews;
             this.state.isLoading = false;
         } 
@@ -169,17 +169,27 @@ class RelatedObject extends React.Component {
                                                         <a href={'/search?search=&tab=Tools&toolcategories=' + data.categories.category}><div className="badge-tag">{data.categories.category}</div></a> 
                                                     : <div className="badge-tag">{data.categories.category}</div> }
 
-                                            {!data.categories.programmingLanguage || data.categories.programmingLanguage.length <= 0 ? '' : data.categories.programmingLanguage.map((language) => {
+                                            {!data.programmingLanguage || data.programmingLanguage.length <= 0 ? '' : data.programmingLanguage.map((p, i) => {
                                                 if (activeLink===true){
                                                     if (onSearchPage === true) { 
-                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('languageSelected', language)}><div className="badge-tag">{language}</div></span>
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('languageSelected', p.programmingLanguage)}><div className="badge-version" key={i}><span>{p.programmingLanguage}</span><span>{p.version}</span></div></span>
                                                     }
                                                     else {
-                                                        return <a href={'/search?search=&tab=Tools&programmingLanguage=' + language}><div className="badge-tag">{language}</div></a>
+                                                        return (
+                                                            <a href={"/search?search=&tab=Tools&programmingLanguage=" + p.programmingLanguage}>
+                                                            <div className="badge-version" key={i}>
+                                                                <span>{p.programmingLanguage}</span><span>{p.version}</span>
+                                                            </div>
+                                                            </a>
+                                                        );
                                                     }
                                                 }
                                                 else {
-                                                    return <div className="badge-tag">{language}</div>
+                                                    return (
+                                                        <div className="badge-version" key={i}>
+                                                            <span>{p.programmingLanguage}</span><span>{p.version}</span>
+                                                        </div>
+                                                    );
                                                 }
                                             })}
 
@@ -424,7 +434,7 @@ class RelatedObject extends React.Component {
                                                             return <span className="pointer" onClick={event => this.updateOnFilterBadge('phenotypesSelected', phenotypesSeached[0].name)}><div className="badge-phenotype">Phenotype: {phenotypesSeached[0].name}</div></span>
                                                         }
                                                         else { 
-                                                            return <a href={'/search?search=&tab=Datasets&phenotypes==' + phenotypesSeached[0].name}><div className="badge-phenotype">Phenotype: {phenotypesSeached[0].name}</div></a>
+                                                            return <a href={'/search?search=&tab=Datasets&phenotypes=' + phenotypesSeached[0].name}><div className="badge-phenotype">Phenotype: {phenotypesSeached[0].name}</div></a>
                                                         }
                                                     }
                                                     else {
@@ -440,7 +450,7 @@ class RelatedObject extends React.Component {
                                                             return <span className="pointer" onClick={event => this.updateOnFilterBadge('phenotypesSelected', phenotype)}><div className="badge-phenotype">Phenotype: {phenotype}</div></span>
                                                         }
                                                         else { 
-                                                            return <a href={'/search?search=&tab=Datasets&phenotypes==' + phenotype}><div className="badge-phenotype">Phenotype: {phenotype}</div></a>
+                                                            return <a href={'/search?search=&tab=Datasets&phenotypes=' + phenotype}><div className="badge-phenotype">Phenotype: {phenotype}</div></a>
                                                         }
                                                     }
                                                     else {
@@ -455,7 +465,7 @@ class RelatedObject extends React.Component {
                                                         return <span className="pointer" onClick={event => this.updateOnFilterBadge('keywordsSelected', feature)}><div className="badge-tag">{feature}</div></span>
                                                     }
                                                     else { 
-                                                        return <a href={'/search?search=&tab=Datasets&keywords==' + feature}><div className="badge-tag">{feature}</div></a>
+                                                        return <a href={'/search?search=&tab=Datasets&keywords=' + feature}><div className="badge-tag">{feature}</div></a>
                                                     }
                                                 }
                                                 else {

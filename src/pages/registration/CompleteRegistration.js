@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import axios from 'axios';
 import { useFormik } from 'formik';
+import { Typeahead } from 'react-bootstrap-typeahead';
 import * as Yup from 'yup';
 import { Row, Col, Container, Button, Alert, Form, InputGroup } from 'react-bootstrap';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
@@ -23,6 +24,7 @@ class CompleteRegistration extends Component {
         searchString: '',
         id: '',
         userdata: [],
+        userState: [],
         isLoading: true,
         showDrawer: false,
         userState: [{
@@ -32,6 +34,7 @@ class CompleteRegistration extends Component {
             name: null
         }],
         showModal: false,
+        showOrg: false,
         context: {}
     };
 
@@ -58,8 +61,27 @@ class CompleteRegistration extends Component {
         });
     }
 
+    doFilterCall() {
+        axios.get(baseURL + '/api/v1/search/filter/topic/person')
+        .then((res) => {
+            this.setState({
+                topicData: res.data.data[0],
+            })
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    }
+
+    onShowOrgInput() {
+        this.setState( ( prevState ) => {
+            return { showOrg: !prevState.showOrg };
+        });
+    }
+
     componentDidMount() {
         this.setState({ isLoading: true });
+        this.doFilterCall();
         axios.get(baseURL + '/api/v1/auth/register/' + this.props.match.params.personID)
             .then((res) => {
             this.setState({
@@ -70,7 +92,7 @@ class CompleteRegistration extends Component {
     }
 
     render() {
-        const { isLoading, searchString, userState, userdata, showDrawer, showModal, context } = this.state;
+        const { isLoading, searchString, userState, userdata, showDrawer, showModal, context, topicData, showOrg } = this.state;
         
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -86,7 +108,7 @@ class CompleteRegistration extends Component {
                         <Col sm={1} lg={1} />
                         <Col sm={10} lg={10}>
                             <div>
-                                <YourAccountForm userdata={userdata} />
+                                <YourAccountForm userdata={userdata} topicData={topicData} showOrg={showOrg} onShowOrgInput={() => {this.onShowOrgInput()}} />
                             </div>
                         </Col>
                         <Col sm={1} lg={1} />
@@ -113,6 +135,13 @@ class CompleteRegistration extends Component {
     }
 }
 
+const sectorSelect = [
+    "NHS",
+    "Industry",
+    "Academia",
+    "Public",
+];
+
 //Your Account Form
 
 const YourAccountForm = (props) => {
@@ -129,7 +158,12 @@ const YourAccountForm = (props) => {
             orcid: '',
             redirectURL: props.userdata.redirectURL,
             emailNotifications: false,
-            terms: false
+            terms: false,
+            sector: '',
+            organisation: '',
+            showOrganisation: false,
+            showOrg: props.showOrg,
+            tags: { topics: [], },
         },
 
         validationSchema: Yup.object({
@@ -140,9 +174,9 @@ const YourAccountForm = (props) => {
             email: Yup.string()
                 .email('This must be a valid email')
                 .required('This cannot be empty'),
-            bio: Yup.string()
-                .required('This cannot be empty'),
-            terms: Yup.bool().oneOf([true], 'Accept Terms & Conditions is required')
+            terms: Yup.bool().oneOf([true], 'Accept Terms & Conditions is required'),
+            sector: Yup.string().required('Please select a sector'),
+            organisation: Yup.string().when("showOrg", {is: 'yes', then: Yup.string().required('This cannot be empty')})
         }),
         
         onSubmit: values => {
@@ -190,11 +224,70 @@ const YourAccountForm = (props) => {
                             </Form.Group>
 
                             <Form.Group className="pb-2">
-                                <span className="gray800-14">Institution</span>
+                                <Form.Label className="gray800-14">Sector</Form.Label>
                                 <br />
-                                <span className="gray700-13">If you aren't part of an institution, please provide a short description of who you are</span>
+                                <span className="gray700-13">Select one of the sectors your work falls under below</span>
+                                <Form.Control id="sector" name="sector" as="select" className={formik.touched.sector && formik.errors.sector ? "emptyFormInput addFormInput" : "addFormInput", "gray700-13"} onChange={(selected) => {formik.setFieldValue("sector", selected.target.value); }} value={formik.values.sector} onBlur={() => formik.setFieldTouched("sector", true)} touched={formik.touched.sector} >
+                                    <option value=""></option>
+                                    {
+                                        sectorSelect.map((sec) => {
+                                            return <option value={sec}>{sec}</option>
+                                        })
+                                    };
+                                </Form.Control>
+                                {formik.touched.sector && formik.errors.sector ? <div className="errorMessages">{formik.errors.sector}</div> : null}
+                            </Form.Group>
+
+                            <Form.Group className="pb-2">
+                                <Form.Label className="gray800-14">Are you part of an organisation?</Form.Label>
+                                <br/>
+                                <InputGroup onChange={props.onShowOrgInput}>
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Radio id="partOfOrgYes" aria-label="Yes" name="partOfOrg" onChange={(e) => {formik.setFieldValue("showOrg", "yes")}}/>
+                                        <span className="gray800-14 ml-4">Yes</span>
+                                        <br/>
+                                        <InputGroup.Radio id="partOfOrgNo" aria-label="No" name="partOfOrg" defaultChecked onChange={(e) => {formik.setFieldValue("showOrg", "no")}} />
+                                        <span className="gray800-14 ml-4">No</span>
+                                    </InputGroup.Prepend>
+                                </InputGroup>
+                                { props.showOrg ? 
+                                    <Fragment>
+                                        <span className="gray700-13">Please specify your affiliation or company</span>
+                                        <Form.Control id="organisation" name="organisation" type="text" className={formik.touched.organisation && formik.errors.organisation ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.organisation} onBlur={formik.handleBlur} />
+                                        {formik.touched.organisation && formik.errors.organisation ? <div className="errorMessages">{formik.errors.organisation}</div> : null}
+                                        <InputGroup.Checkbox aria-label="Checkbox for displaying organisation or not" name="showOrganisation" onChange={formik.handleChange} checked={formik.values.showOrganisation}/>
+                                        <span className="gray800-14 ml-4">Do not show my organisation</span>
+                                    </Fragment> : null
+                                }
+                            </Form.Group>
+
+                            <Form.Group className="pb-2">
+                                <span className="gray800-14">Bio (optional)</span>
+                                <br />
+                                <span className="gray700-13">Please provide a short description of who you are</span>
                                 <Form.Control id="bio" name="bio" type="text" className={formik.touched.bio && formik.errors.bio ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.bio} onBlur={formik.handleBlur} />
                                 {formik.touched.bio && formik.errors.bio ? <div className="errorMessages">{formik.errors.bio}</div> : null}
+                            </Form.Group>
+
+                            <Form.Group className="pb-2">
+                                <Form.Label className="gray800-14">Domain (optional)</Form.Label>
+                                <br />
+                                <Typeahead
+                                    id="tags.topics"
+                                    labelKey="topics"
+                                    allowNew
+                                    defaultSelected={formik.values.tags.topics}
+                                    multiple
+                                    options={props.topicData}
+                                    className="addFormInputTypeAhead"
+                                    onChange={(selected) => {
+                                        var tempSelected = [];
+                                        selected.forEach((selectedItem) => {
+                                            selectedItem.customOption === true ? tempSelected.push(selectedItem.topics) : tempSelected.push(selectedItem);
+                                        })
+                                        formik.values.tags.topics = tempSelected;
+                                    }}
+                                />
                             </Form.Group>
 
                             <Form.Group className="pb-2">

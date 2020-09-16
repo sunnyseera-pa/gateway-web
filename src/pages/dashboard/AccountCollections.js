@@ -122,7 +122,7 @@ class AccountCollections extends React.Component {
                     <Col xs={1}></Col>
                     <Col xs={10}>
                         <Row className="accountHeader">
-                            <Col xs={8}>
+                            <Col sm={12} md={8}>
                                 <Row>
                                     <span className="black-20">Collections</span>
                                 </Row>
@@ -130,7 +130,7 @@ class AccountCollections extends React.Component {
                                     <span className="gray700-13 ">Manage your existing collections or create new ones</span>
                                 </Row>
                             </Col>
-                            <Col xs={4} style={{ textAlign: "right" }}>
+                            <Col sm={12} md={4} style={{ textAlign: "right" }}>
                                 <Button variant="primary" href="/addcollection" className="addButton" onClick={() => Event("Buttons", "Click", "Add a new collection")} >
                                     + Create a collection
                                 </Button> 

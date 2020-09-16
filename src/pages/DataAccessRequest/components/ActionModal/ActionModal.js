@@ -33,15 +33,21 @@ const [formState, setFormState] = useState({statusDesc: '', invalid: false, inva
 					// 5. check state is valid / invalid
 					let isInvalid = isFormInvalid();
 					// 6. is valid pass back to DAR
-					if(!isInvalid) 
-						updateApplicationStatus({statusDesc, type});				
+					if(!isInvalid) {
+						updateApplicationStatus({statusDesc, type});
+						setFormState({statusDesc: '', invalid: false, invalidMessage: '', submitted: false});	
+						setCount(0);
+					}			
 					break;
 				case 'CONFIRMAPPROVAL': 
 					// 7. send approval to DAR
 					updateApplicationStatus({statusDesc, type});
+					setFormState({statusDesc: '', invalid: false, invalidMessage: '', submitted: false});
+					setCount(0);
 					break;
 				default:
 					setFormState({statusDesc: '', invalid: false, invalidMessage: '', submitted: false});
+					setCount(0);
 					close();
 			}
 		}
@@ -77,6 +83,7 @@ const [formState, setFormState] = useState({statusDesc: '', invalid: false, inva
 				size='lg'
 				aria-labelledby='contained-modal-title-vcenter'
 				centered
+				className='actionModal'
 			>
 				<div className='actionModal-header'>
 					<div className='actionModal-header--wrap'>

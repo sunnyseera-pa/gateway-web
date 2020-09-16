@@ -214,7 +214,7 @@ class AccountAnalyticsDashboard extends React.Component {
 
         if (isLoading) {
             return (
-                <Row className="mt-4">
+                <Row>
                     <Col xs={1}></Col>
                     <Col xs={10}>
                         <Loading data-testid="isLoading" />
@@ -225,11 +225,11 @@ class AccountAnalyticsDashboard extends React.Component {
         }
 
         return (
-           <div>
+           <Fragment>
                 <Row>
                     <Col sm={1} lg={1}></Col> 
                     <Col sm={10} lg={10} className="dashboardPadding">   
-                        <Row className="accountHeader mt-4"> 
+                        <Row className="accountHeader"> 
                             <Col sm={12} lg={12}>
                                 <Row >
                                     <Col sm={8} lg={8}>
@@ -289,7 +289,7 @@ class AccountAnalyticsDashboard extends React.Component {
                             </Col> 
                         </Row>
 
-                        <Row className="accountHeader mt-4" style={{"margin-bottom":"0.5px"}}>
+                        <Row className="accountHeader mt-4" style={{"marginBottom":"0.5px"}}>
                             <Col sm={12} lg={12}>
                                 <Row >
                                     <Col sm={12} lg={12}>
@@ -312,8 +312,8 @@ class AccountAnalyticsDashboard extends React.Component {
                                     <Col sm={2} lg={2}>Searches</Col>
                                     <Col sm={5} lg={4}>Latest results</Col>
                                 </Row>
-                                    {topSearches.map((dat) => {
-                                        return <TopSearches data={dat} /> 
+                                    {topSearches.map((dat, i) => {
+                                        return <TopSearches key={i} data={dat} /> 
                                     })}
                                 </Col>
                             </Row>
@@ -358,8 +358,8 @@ class AccountAnalyticsDashboard extends React.Component {
                                                     <Col sm={2} lg={2}>Searches</Col>
                                                     <Col sm={2} lg={2}>Dataset results</Col>
                                                 </Row>
-                                                    {data.map((dat) => {
-                                                        return <UnmetDemand data={dat} /> 
+                                                    {data.map((dat, i) => {
+                                                        return <UnmetDemand key={i} data={dat} /> 
                                                     })}
                                                 </Col>
                                             </Row>
@@ -437,7 +437,7 @@ class AccountAnalyticsDashboard extends React.Component {
                     </Col>
                     <Col sm={1} lg={10} />
                 </Row>
-            </div>
+            </Fragment>
         );
     }
 }
