@@ -146,7 +146,7 @@ class AccountPapers extends React.Component {
                     <Col xs={1}></Col>
                     <Col xs={10}>
                         <Row className="accountHeader">
-                            <Col xs={8}>
+                            <Col sm={12} md={8}>
                                 <Row>
                                     <span className="black-20">Papers</span>
                                 </Row>
@@ -154,7 +154,7 @@ class AccountPapers extends React.Component {
                                     <span className="gray700-13 ">Manage your existing papers or add new ones</span>
                                 </Row>
                             </Col>
-                            <Col xs={4} style={{ textAlign: "right" }}>
+                            <Col sm={12} md={4} style={{ textAlign: "right" }}>
                                 <Button variant="primary" href="/paper/add" className="addButton" onClick={() => Event("Buttons", "Click", "Add a new paper")} >
                                     + Add a new paper
                                 </Button>

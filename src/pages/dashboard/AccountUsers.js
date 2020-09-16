@@ -83,7 +83,7 @@ class AccountUsers extends React.Component {
                     <Col xs={1}></Col>
                     <Col xs={10}>
                         <Row className="accountHeader">
-                            <Col xs={8}>
+                            <Col sm={12} md={8}>
                                 <Row>
                                     <span className="black-20">Users and roles</span>
                                 </Row>
@@ -91,7 +91,7 @@ class AccountUsers extends React.Component {
                                     <span className="gray700-13 ">Manage permissions by changing user roles</span>
                                 </Row>
                             </Col>
-                            <Col xs={4}></Col>
+                            <Col sm={12} md={4}></Col>
                         </Row>
 
                         <Row className="tabsBackground">

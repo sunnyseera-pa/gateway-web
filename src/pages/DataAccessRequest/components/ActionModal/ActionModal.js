@@ -83,6 +83,7 @@ const [formState, setFormState] = useState({statusDesc: '', invalid: false, inva
 				size='lg'
 				aria-labelledby='contained-modal-title-vcenter'
 				centered
+				className='actionModal'
 			>
 				<div className='actionModal-header'>
 					<div className='actionModal-header--wrap'>

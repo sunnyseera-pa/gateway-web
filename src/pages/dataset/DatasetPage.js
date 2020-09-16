@@ -479,13 +479,13 @@ class DatasetDetail extends Component {
                   </Row>
 
                   <Row className="mt-2">
-                    <Col xs={8}>
+                    <Col sm={6}>
                       <span className="gray800-14">
                         {data.counter === undefined ? 1 : data.counter + 1}
                         {data.counter === undefined ? " view" : " views"}
                       </span>
                     </Col>
-                    <Col xs={4}>
+                    <Col sm={6} className="text-right">
                       { !userState[0].loggedIn ?
 
                           <button className="btn button-tertiary dark-14 float-right" onClick={() =>

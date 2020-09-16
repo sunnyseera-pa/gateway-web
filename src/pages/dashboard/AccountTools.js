@@ -157,7 +157,7 @@ class AccountTools extends React.Component {
                     <Col xs={1}></Col>
                     <Col xs={10}>
                         <Row className="accountHeader">
-                            <Col xs={8}>
+                            <Col sm={12} md={8}>
                                 <Row>
                                     <span className="black-20">Tools</span>
                                 </Row>
@@ -165,7 +165,7 @@ class AccountTools extends React.Component {
                                     <span className="gray700-13 ">Manage your existing tools or add new ones</span>
                                 </Row>
                             </Col>
-                            <Col xs={4} style={{ textAlign: "right" }}>
+                            <Col sm={12} md={4} style={{ textAlign: "right" }}>
                                 <Button variant="primary" href="/tool/add" className="addButton" onClick={() => Event("Buttons", "Click", "Add a new tool")} >
                                     + Add a new tool
                                 </Button>
@@ -404,10 +404,10 @@ function DeleteButton(props) {
     const deleteObject = () => props.deleteObject(props.id);
 
     return (
-        <>
+        <Fragment>
             <Dropdown.Item href="#" onClick={handleShow} className="black-14">Archive</Dropdown.Item>
 
-            <Modal show={show} onHide={handleClose}>
+            <Modal show={show} onHide={handleClose} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Archive this tool?</Modal.Title>
                 </Modal.Header>
@@ -417,7 +417,7 @@ function DeleteButton(props) {
                     <Button variant="primary" onClick={deleteObject}>Yes, archive</Button>
                 </Modal.Footer>
             </Modal>
-        </>
+        </Fragment>
     );
 }
 

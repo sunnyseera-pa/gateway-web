@@ -629,14 +629,6 @@ textarea:focus {
   margin-left: 20px;
 }
 
-.modal-dialog {
-  position: absolute;
-  margin: 0 auto !important;
-  top: 50%;
-  left: 15%;
-  transform: translate(-50%, -50%) ;
-}
-
 @media screen and (max-width: 768px) {
   .nav {
     padding-left: 2px;
@@ -709,36 +701,6 @@ iframe#discourse-embed-frame {
   overflow-y: scroll;
 }
 
-/* The Modal (background) */
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-//   padding-top: 100px; /* Location of the box */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0, 0, 0); /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-}
-
-/* Modal Content */
-.modal-content {
-  position: relative;
-  background-color: #fefefe;
-  margin: auto;
-  padding: 0;
-  border: 1px solid #888;
-  max-width: 540px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  -webkit-animation-name: animatetop;
-  -webkit-animation-duration: 0.4s;
-  animation-name: animatetop;
-  animation-duration: 0.4s;
-}
-
 /* Add Animation */
 @-webkit-keyframes animatetop {
   from {
@@ -776,10 +738,10 @@ iframe#discourse-embed-frame {
   cursor: pointer;
 }
 
-.modal-body {
-  text-align: left;
-  padding: 2px 16px;
-}
+// .modal-body {
+//   text-align: left;
+//   padding: 2px 16px;
+// }
 
 .btn-light {
   background-color: #e7e9ed !important;
@@ -970,27 +932,6 @@ iframe#discourse-embed-frame {
   background-image: linear-gradient(to left, #dfca5d, #bb9a30 50%);
 }
 
-.modal-70w {
-  padding-right: 50vw;
-}
-
-.modal-70w .modal-content {
-  width: 100%;
-}
-
-.modal-70w .modal-header, .modal-70w .modal-body {
-  background-color: $white;
-}
-
-.modal-70w .modal-footer {
-  width: 70vw !important;
-  background-color: $white;
-}
-
-.modal-70vw .modal-dialog {
-  margin: 0px !important;
-}
-
 .selectedBorder {
   border: solid 4px $teal !important;
 }
@@ -1009,16 +950,6 @@ iframe#discourse-embed-frame {
 
 .pixelGapLeft {
   margin-left: 1px;
-}
-
-.relatedResourcesModal .modal-content {
-  height: calc(100vh - 10px); 
-}
-
-.modalWrapper {
-  overflow-y: scroll;
-  height: calc(100% - 72px);
-  width: 70vw !important;
 }
 
 .footerButton {
@@ -1274,31 +1205,6 @@ button a {
     height: 16px !important;
   }
 
-  .modal-title {
-    line-height: 1.1 !important;
-  }
-
-  .modal-header {
-    padding-top: 32px !important;
-    padding-left: 32px !important;
-    padding-right: 32px !important;
-    align-items: normal !important;
-  }
-
-  .modal-body {
-    padding-left: 32px !important;
-    padding-right: 32px !important;
-  }
-
-  .modal-footer {
-    position: static;
-    bottom: 0;
-    height: 80px;
-    padding-left: 32px !important;
-    padding-right: 16px !important;
-    justify-content: normal !important;
-  }
-
 .collection-card {
   color: $gray-700;
   font-size: 13px;
@@ -1317,22 +1223,23 @@ button a {
   flex-grow: 0 !important;
 }
 
-.dataClassX{
+.dataClassX {
+
   @include mq('tablet-small',max){
     transform: translate(-20px, 0px) !important;
   }
 
   @include mq('phablet',max){
-  transform: translate(375px, -30px) !important;
-}
+    transform: translate(375px, -30px) !important;
+  }
 
-@include mq('phone-wide',max){
-  transform: translate(215px, -30px) !important;
-}
+  @include mq('phone-wide',max){
+    transform: translate(215px, -30px) !important;
+  }
 
-@include mq('phone',max){
-  transform: translate(-20px, 5px) !important;
-}
+  @include mq('phone',max){
+    transform: translate(-20px, 5px) !important;
+  }
 
 }
 
@@ -1437,7 +1344,9 @@ button a {
 .textUnderline {
   text-decoration: underline;
 }      
+
 .collectionCheckSvg {
+
   float: right;
 
   @include mq("tablet-small",max) {
@@ -1452,7 +1361,7 @@ button a {
 
   .closeDataClass{
     transform: translate(90%, -100%);
-    }
+  }
 
 }
 

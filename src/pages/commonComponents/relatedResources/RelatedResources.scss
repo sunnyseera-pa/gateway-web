@@ -1,27 +1,56 @@
-@import '../../../css/styles.scss';
+@import '../../../css/mixins';
+@import '../../../css/variables';
 
-.relatedResourcesModal .modal-dialog { 
-      margin: 0 auto !important;
-      top: 50% !important;
-      transform: translate(50%, -50%) !important;
-    
-      @include mq('tablet',max){
-        left: -10% !important;
-      }  
-      
-      @include mq('tablet-small',max){
-        left: -15% !important;
-      } 
-    
-      @include mq('phablet',max){
-        left: -25% !important;
-      } 
-    } 
+
+.relatedResourcesModal  {
+  height: calc(100% - 20px);
+  
+  .modal-dialog {
+    margin: 10px auto;
+    max-width: 1024px;
+    width: 100%;
+  }
+
+  .modal-body {
+    position: relative;
+  }
+
+  .related-search-wrap {
+    position: relative;
+    display: block;
+    min-height: 90px
+  }
+
+  .realted-search-body {
+    position: relative;
+    display: flex;
+    flex-flow: column nowrap;
+    height: 90px;
+  }
+
+  .searchBarBackground {
+    width: 100%;
+  }
+
+  .searchTabsHolder {
+    position: fixed;
+    top: 150px;
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+  }
+
+  .relatedModalBackground {
+    background: $gray-light;
+      overflow-y: auto;
+      height: calc(100vh - 320px);
+  }
+}
 
 .modal-close {
-    margin-right: -8px;
-    margin-top: -8px;
-  }
+    margin-top: -10px;
+}
 
 @media screen and (max-width: 1146px) {
   #unselectButton {
@@ -32,3 +61,5 @@
     width: 116px;
   }
 } 
+
+
