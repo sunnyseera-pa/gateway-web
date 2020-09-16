@@ -156,3 +156,42 @@
   font-size: inherit !important;
   color: inherit !important;
 } 
+
+#metadataButton {
+  width: 299px;
+  height: 40px;
+}
+
+#advancedSearchButton {
+  width: 240px;
+  height: 40px;
+}
+
+#userguideButton {
+  width: 105px;
+  height: 40px;
+}
+
+#userguideButton:focus { 
+  box-shadow: none !important;
+}
+
+#serviceDeskButton {
+  width: 116px;
+  height: 40px;
+}
+
+#serviceDeskButton:focus { 
+  box-shadow: none !important;
+}
+
+.noTextDecoration {
+  text-decoration: none;
+}
+
+#betaTag {
+  width: 48px;
+  height: 24px;
+  background-color: #3db28c;
+  border: none;
+}

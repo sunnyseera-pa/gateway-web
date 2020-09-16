@@ -2,8 +2,6 @@ import React from "react";
 
 const getViewBox = name => {
   switch (name) {
-    case "dataseticon":
-      return "0 0 20 26";
     case "projecticon":
       return "0 0 20 24";
     case "newnotificationicon":

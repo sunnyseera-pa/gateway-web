@@ -406,6 +406,7 @@ class SearchBar extends React.Component {
                                                         <Dropdown.Item href="/account?tab=tools" className="black-14">Tools</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=reviews" className="black-14">Reviews</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=projects" className="black-14">Projects</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=datasets" className="black-14">Datasets</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=papers" className="black-14">Papers</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=dataaccessrequests" className="black-14">Data access requests</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=collections" className="black-14">Collections</Dropdown.Item>
@@ -453,6 +454,7 @@ class SearchBar extends React.Component {
                                                         <Dropdown.Item href="/account?tab=tools" className="black-14">Tools</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=reviews" className="black-14">Reviews</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=projects" className="black-14">Projects</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=datasets" className="black-14">Datasets</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=papers" className="black-14">Papers</Dropdown.Item> 
                                                         <Dropdown.Item href="/account?tab=dataaccessrequests" className="black-14">Data access requests</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=collections" className="black-14">Collections</Dropdown.Item> 
