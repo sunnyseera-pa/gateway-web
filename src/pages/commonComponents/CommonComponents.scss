@@ -2,7 +2,7 @@
 
 .login-modal {
   background: rgba(0,0,0, 0.5);
-  
+
   .modal-content {
     max-width: 600px;
     margin: 0 auto;
@@ -12,10 +12,11 @@
     animation-name: animatetop;
     animation-duration: .4s;
   }
+  
 }
 
 .authorCardHolder {
-    padding: 0px 15px;
+  padding: 0px 15px;
 }
 
 .authorCard {
