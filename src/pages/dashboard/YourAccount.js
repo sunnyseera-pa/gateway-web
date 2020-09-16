@@ -6,6 +6,7 @@ import { useFormik } from 'formik';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import queryString from 'query-string';
 import Loading from '../commonComponents/Loading';
+import _ from 'lodash';
 import './Dashboard.scss'; 
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -21,6 +22,7 @@ class YourAccount extends React.Component {
         isLoading: true,
         isUpdated: false,
         showOrg: false,
+        showOrgVal: "",
     };
 
     constructor(props) {
@@ -42,14 +44,20 @@ class YourAccount extends React.Component {
             .then((res) => {
                 axios.get(baseURL + '/api/v1/users/' + this.state.userState[0].id)
                     .then((resUser) => {
+                        let showOrg = false;
+                        let showOrgVal = "";
+                        let { organisation } = res.data.data[0];
+                        if(!_.isEmpty(organisation) && !_.isUndefined(organisation)) {
+                            showOrg = true;
+                            showOrgVal = "yes";
+                        }
                         this.setState({
                             userdata: resUser.data.userdata[0],
                             data: res.data.data[0],
                             isLoading: false,
+                            showOrg,
+                            showOrgVal
                         });
-                        if(this.state.data.organisation !== "") {
-                            this.setState({showOrg: true});
-                        }
                     })
             })
     }
@@ -74,7 +82,7 @@ class YourAccount extends React.Component {
     }
 
     render() {
-        const { data, isLoading, isUpdated, userdata, topicData, showOrg } = this.state;
+        const { data, isLoading, isUpdated, userdata, topicData, showOrg, showOrgVal } = this.state;
 
         if (isLoading) {
             return (
@@ -93,7 +101,7 @@ class YourAccount extends React.Component {
                 <Row>
                     <Col xs={1}></Col>
                     <Col xs={10}>
-                        <YourAccountForm data={data} userdata={userdata} isUpdated={isUpdated} topicData={topicData} showOrg={showOrg} onShowOrgInput={() => {this.onShowOrgInput()}} />
+                        <YourAccountForm data={data} userdata={userdata} isUpdated={isUpdated} topicData={topicData} showOrg={showOrg} showOrgVal={showOrgVal} onShowOrgInput={() => {this.onShowOrgInput()}} />
                     </Col>
                     <Col xs={1}></Col>
                 </Row>    
@@ -127,9 +135,9 @@ const YourAccountForm = (props) => {
             emailNotifications: props.data.emailNotifications || false, 
             terms: props.data.terms || false,
             sector: props.data.sector || "",
-            organisation: props.data.organisation,
+            organisation: props.data.organisation || "",
             showOrganisation: props.data.showOrganisation || false,
-            showOrg: props.showOrg,
+            showOrgVal: props.showOrgVal,
             tags: props.data.tags || {
                 topics: [],
             },
@@ -145,7 +153,8 @@ const YourAccountForm = (props) => {
                 .required('This cannot be empty'),
             terms: Yup.bool().oneOf([true], 'Accept Terms & Conditions is required'),
             sector: Yup.string().required('Please select a sector'),
-            organisation: Yup.string().when("showOrg", {is: 'yes', then: Yup.string().required('This cannot be empty')})
+            organisation: Yup.string().when("showOrgVal", {is: 'yes', then: Yup.string().required('This cannot be empty')})
+
         }),
 
         onSubmit: values => {
@@ -213,10 +222,10 @@ const YourAccountForm = (props) => {
                                 <br/>
                                 <InputGroup onChange={props.onShowOrgInput}>
                                     <InputGroup.Prepend>
-                                        <InputGroup.Radio id="partOfOrgYes" aria-label="Yes" name="partOfOrg" defaultChecked={props.data.organisation !== ""} onChange={(e) => {formik.setFieldValue("showOrg", "yes")}}/>
+                                        <InputGroup.Radio id="partOfOrgYes" aria-label="Yes" name="partOfOrg" defaultChecked={props.showOrg == true} onChange={(e) => {formik.setFieldValue("showOrgVal", "yes")}}/>
                                         <span className="gray800-14 ml-4">Yes</span>
                                         <br/>
-                                        <InputGroup.Radio id="partOfOrgNo" aria-label="No" name="partOfOrg" defaultChecked={props.data.organisation === ""} onChange={(e) => {formik.setFieldValue("showOrg", "no")}} />
+                                        <InputGroup.Radio id="partOfOrgNo" aria-label="No" name="partOfOrg" defaultChecked={props.showOrg == false} onChange={(e) => {formik.setFieldValue("showOrgVal", "no")}} />
                                         <span className="gray800-14 ml-4">No</span>
                                     </InputGroup.Prepend>
                                 </InputGroup>
