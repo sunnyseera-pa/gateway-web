@@ -228,7 +228,6 @@
 	background: #eee !important;
 }
 
-
 input[type=text]:disabled {
 		background-color: #eee !important;
 	
@@ -434,8 +433,13 @@ input[type=radio]:disabled {
 	margin: -24px -24px 0 -24px;
 }
 
-.card.activeCard {
+.card .activeCard {
 	border-left: 4px solid $gray-400 !important;
+}
+
+.activeCard .button-primary {
+	background-color: #475da7;
+	color: $white;
 }
 
 .card {

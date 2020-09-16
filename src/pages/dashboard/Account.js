@@ -13,7 +13,7 @@ import AccountAnalyticsDashboard from './AccountAnalyticsDashboard';
 import AccountUsers from './AccountUsers';
 import ReviewTools from './ReviewTools';
 import YourAccount from './YourAccount';
-import DataAccessRequests from './DataAccessRequests';
+import DataAccessRequests from './DataAccessRequests/DataAccessRequests';
 import 'react-web-tabs/dist/react-web-tabs.css';
 import SVGIcon from '../../images/SVGIcon';
 import { ReactComponent as DatasetSVG } from "../../images/dataset.svg";

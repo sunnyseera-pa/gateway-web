@@ -1239,7 +1239,7 @@ class DataAccessRequest extends Component {
 						<p>{totalQuestions}</p>
 					</div>
 					<div className='action-bar-actions'>
-						{userType === 'Applicant' ? (
+						{userType.toUpperCase() === 'APPLICANT' ? (
 							<ApplicantActionButtons allowedNavigation onNextClick={this.onNextClick} onFormSubmit={this.onFormSubmit} />
 						) : (
 							<CustodianActionButtons allowedNavigation onActionClick={this.onCustodianAction} onNextClick={this.onNextClick} />

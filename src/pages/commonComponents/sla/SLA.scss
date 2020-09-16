@@ -1,0 +1,42 @@
+
+@import '../../../css/variables';
+@import '../../../css/typography';
+
+.sla {
+  margin: 0;
+  padding: 3px 12px;
+  border-radius: 15px;
+  @include font-source(14px, $white, 300);
+  margin: 0 5px 0 0;
+
+  &-default {
+    @extend .sla;
+    @include font-source(14px, $gray-800, 300);
+    background-color: $gray-light;
+  }
+
+  &-amber {
+    @extend .sla;
+    background-color: $orange;
+  }
+
+  &-indigo {
+    @extend .sla;
+    background-color: $indigo;
+  }
+
+  &-green {
+    @extend .sla;
+    background-color: $teal;
+  }
+
+  &-red {
+    @extend .sla;
+    background-color: $red;
+  }
+
+  &-gray {
+    @extend .sla;
+    background-color: $gray-600;
+  }
+}
