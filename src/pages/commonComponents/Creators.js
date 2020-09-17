@@ -20,7 +20,7 @@ class  Creators extends Component {
                 <Col sm={10} className="text-left ">
                     <span className="black-16" data-testid="name"> {author.firstname} {author.lastname} </span>
                     <br /> 
-                    <span className="gray700-13" data-testid="bio"> {author.bio} </span>
+                    <span className="gray700-13" data-testid="bio"> { (author.bio.length <= 44) ? author.bio : author.bio.slice(0, 44) + '...'} </span>
                 </Col>
                 <Col sm={2} />
             </Row>
