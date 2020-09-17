@@ -282,7 +282,7 @@ class AccountAnalyticsDashboard extends React.Component {
                                 <DashboardKPI kpiText="new access requests" kpiValue={accessRequests}/> 
                             </Col>
                             <Col sm={3} lg={3} className="kpiClass">
-                                <DashboardKPI kpiText="uptime this month" kpiValue={uptime.toFixed(2)} percentageFlag={true}/>
+                                <DashboardKPI kpiText="uptime this month" kpiValue={(uptime.toFixed(2) % 1 === 0) ? Math.trunc(uptime.toFixed(2)) : uptime.toFixed(2)} percentageFlag={true} />
                             </Col>
                             <Col sm={3} lg={3} className="kpiClass">                               
                                 <DashboardKPI kpiText="" kpiValue=""/> 
