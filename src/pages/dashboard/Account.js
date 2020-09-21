@@ -204,7 +204,7 @@ class Account extends Component {
         if (!_.isEmpty(tabId)) {
             // 3. need to check for teams returns {tabId: '', team: ''}; eg dataccessrequests&team=ALLIANCE
             let tab = this.generateTabObject(tabId);
-            console.log('tabId: ' + tabId)
+            
             // 4. check if user has teams and the current nav is dataaccessrequests, keep expanded
             if(!_.isEmpty(user.teams) && tab.tabId === 'dataaccessrequests') {
                 activeAccordion = '0';
