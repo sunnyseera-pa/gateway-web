@@ -227,7 +227,7 @@ class DiscourseTopic extends Component {
               ) }
           </div>
         ) : (
-            <Row>
+            <Row className='margin-top-16'>
                 <Col>
                     <NotFound text='Nothing yet.  Add a comment to start the discussion.' />
                 </Col>

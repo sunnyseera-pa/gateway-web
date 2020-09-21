@@ -156,7 +156,7 @@ class RelatedObject extends React.Component {
                                             {((this.props.showRelationshipAnswer && relatedObject.updated) || this.props.collectionUpdated) ? <span className="collection-card-updated">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
                                             {this.props.showRelationshipQuestion ? <Button variant="medium" className="soft-black-14" onClick={this.removeButton} ><SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />Remove</Button> : ''}
                                         </Col>
-                                        <Col className="pad-left-24 pad-right-24 pad-top-18">
+                                        <Col className="pad-left-24 pad-right-24 pad-top-8">
                                             <span className="badge-tool">
                                                 <SVGIcon name="newtoolicon" fill={'#ffffff'} className="badgeSvg mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Tool</span> 
@@ -260,7 +260,7 @@ class RelatedObject extends React.Component {
                                             {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="collection-card-updated">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
                                             {this.props.showRelationshipQuestion ? <Button variant="medium" className="soft-black-14" onClick={this.removeButton} ><SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />Remove</Button> : ''}
                                         </Col>
-                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-18">
+                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-8">
                                             <span className="badge-project">
                                                 <SVGIcon name="newestprojecticon" fill={'#ffffff'} className="badgeSvg mr-2" viewBox="-2 -2 22 22"/>
                                                 <span>Project</span> 
@@ -340,7 +340,7 @@ class RelatedObject extends React.Component {
                                             {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="collection-card-updated">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
                                             {this.props.showRelationshipQuestion ? <Button variant="medium" className="soft-black-14" onClick={this.removeButton} ><SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />Remove</Button> : ''}
                                         </Col>
-                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-18">
+                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-8">
                                             <span className="badge-paper">
                                                 <SVGIcon name="newprojecticon" fill={'#3c3c3b'} className="badgeSvg mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Paper</span> 
@@ -422,7 +422,7 @@ class RelatedObject extends React.Component {
                                             {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="collection-card-updated">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
                                             {this.props.showRelationshipQuestion ? <Button variant="medium" className="soft-black-14" onClick={this.removeButton} ><SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />Remove</Button> : ''}
                                         </Col>
-                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-18">
+                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-8">
                                             <span className="badge-dataset">
                                                 <SVGIcon name="dataseticon" fill={'#ffffff'} className="badgeSvg mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Dataset</span>

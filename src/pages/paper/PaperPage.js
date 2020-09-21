@@ -427,7 +427,7 @@ toggleHoverState(state) {
               <Col sm={1} lg={1} />
               <Col sm={10} lg={10}>
                 <div>
-                  <Tabs className="tabsBackground gray700-13">
+                  <Tabs className="tabsBackground gray700-13 margin-bottom-16">
                     <Tab eventKey="about" title={"About"}>
                       <Row className="mt-2">
                         <Col>
