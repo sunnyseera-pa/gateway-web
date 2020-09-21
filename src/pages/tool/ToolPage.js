@@ -416,7 +416,7 @@ class ToolDetail extends Component {
               <Col sm={1} />
               <Col sm={10}>
                 <div>
-                  <Tabs className="tabsBackground gray700-13">
+                  <Tabs className="tabsBackground gray700-13 margin-bottom-16">
                     <Tab eventKey="About" title={"About"}>
                       <Row className="mt-2">
                         <Col sm={12} lg={12}>
@@ -533,20 +533,16 @@ class ToolDetail extends Component {
                                     (obj, i) => {
                                       return (
                                         (obj.version !== "") ? 
-                                        <div>
                                         <a href={"/search?search=&tab=Tools&programmingLanguage=" + obj.programmingLanguage}>
                                           <div className="badge-version" key={i}>
                                             <span>{obj.programmingLanguage}</span><span>{obj.version}</span>
                                           </div>
                                         </a>
-                                      </div>
-                                      : <div>
-                                      <a href={"/search?search=&tab=Tools&programmingLanguage=" + obj.programmingLanguage}>
+                                      : <a href={"/search?search=&tab=Tools&programmingLanguage=" + obj.programmingLanguage}>
                                         <div className="badge-tag" key={i}>
                                           <span>{obj.programmingLanguage}</span>
                                         </div>
                                       </a>
-                                    </div>
                                       );
                                     }
                                   )}
@@ -597,99 +593,6 @@ class ToolDetail extends Component {
                         </div>
                       </Col>
                     </Row>
-                    <Row className="mt-2">
-                      <Col sm={12}>
-                        <div className="rectangle">
-                          <Row className="gray800-14-bold">
-                            <Col sm={12}>Authors</Col>
-                          </Row>
-                          <Row className="mt-3">
-                            {data.persons.map(author => (
-                              <Col sm={6} key={author.id}>
-                                <Creators key={author.id} author={author} />
-                              </Col>))}
-                            </Row>
-                            <Row className="mt-2">
-                              <Col sm={2} className="gray800-14">
-                                Implementation
-                              </Col>
-                              <Col sm={10} className="gray800-14">
-                                {!data.categories.programmingLanguage ||
-                                data.categories.programmingLanguage <= 0
-                                  ? ""
-                                  : data.categories.programmingLanguage.map(
-                                      (language, i) => {
-                                        return (
-                                          <a href={"/search?search=&tab=Tools&programmingLanguage=" + language}>
-                                            <div className="badge-tag" key={i}>
-                                              {language}
-                                            </div>
-                                          </a>
-                                        );
-                                      }
-                                    )}
-
-                                {!data.categories.programmingLanguageVersion ? (
-                                  ""
-                                ) : (
-                                  <a
-                                    href={
-                                      "/search?search=" +
-                                      data.categories.programmingLanguageVersion
-                                    }
-                                  >
-                                    <div className="badge-tag">
-                                      {data.categories.programmingLanguageVersion}
-                                    </div>
-                                  </a>
-                                )}
-                              </Col>
-                            </Row>
-                            <Row className="mt-2">
-                              <Col sm={2} className="gray800-14">
-                                Keywords
-                              </Col>
-                              <Col sm={10} className="gray800-14">
-                                {!data.tags.features ||
-                                data.tags.features.length <= 0 ? (
-                                  <span className="gray800-14-opacity">
-                                    Not specified
-                                  </span>
-                                ) : (
-                                  data.tags.features.map(keyword => {
-                                    return (
-                                      <a href={"/search?search=&tab=Tools&features=" + keyword}>
-                                        <div className="badge-tag">{keyword}</div>
-                                      </a>
-                                    );
-                                  })
-                                )}
-                              </Col>
-                            </Row>
-                            <Row className="mt-2">
-                              <Col sm={2} className="gray800-14">
-                                Domain
-                              </Col>
-                              <Col sm={10} className="gray800-14">
-                                {!data.tags.topics ||
-                                data.tags.topics.length <= 0 ? (
-                                  <span className="gray800-14-opacity">
-                                    Not specified
-                                  </span>
-                                ) : (
-                                  data.tags.topics.map(domain => {
-                                    return (
-                                      <a href={"/search?search=&tab=Tools&tooltopics=" + domain}>
-                                        <div className="badge-tag">{domain}</div>
-                                      </a>
-                                    );
-                                  })
-                                )}
-                              </Col>
-                            </Row>
-                          </div>
-                        </Col>
-                      </Row>
                       <Row className="mt-2">
                         <Col sm={12}>
                           <div className="rectangle">

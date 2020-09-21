@@ -339,7 +339,7 @@ class ProjectDetail extends Component {
               <Col sm={1} lg={1} />
               <Col sm={10} lg={10}>
                 <div>
-                  <Tabs className="tabsBackground gray700-13">
+                  <Tabs className="tabsBackground gray700-13 margin-bottom-16">
                     <Tab eventKey="About" title={"About"}>
                       <Row className="mt-2">
                         <Col sm={12} lg={12}>
@@ -479,7 +479,7 @@ class ProjectDetail extends Component {
                         <Col sm={12}>
                           <div className="rectangle">
                             <Row className="gray800-14-bold">
-                              <Col sm={12}>Authors</Col>
+                              <Col sm={12}>Collaborators</Col>
                             </Row>
                             <Row className="mt-3">
                               {data.persons.map(author => (

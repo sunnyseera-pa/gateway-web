@@ -521,7 +521,7 @@ class DatasetDetail extends Component {
               <Col sm={1} />
               <Col sm={10}>
                 <div>
-                  <Tabs className="tabsBackground gray700-13">
+                  <Tabs className="tabsBackground gray700-13 margin-bottom-16">
                     <Tab eventKey="About" title={"About"}>
 
                     {!data.datasetfields.abstract ? "" : 
@@ -864,7 +864,7 @@ class DatasetDetail extends Component {
                             <Col
                               sm={12}
                               lg={12}
-                              className="subHeader mt-3 gray800-14-bold pad-bottom-24 pad-top-24"
+                              className="subHeader gray800-14-bold pad-bottom-24 pad-top-24"
                             > 
                               <span className="black-16-semibold mr-3">
                                 Data Classes
