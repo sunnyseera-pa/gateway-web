@@ -154,6 +154,23 @@ button {
   padding: 28px !important;
 }
 
+
+.nav-tabs {
+  .nav-item {
+    margin-bottom: 0px !important;
+  }
+
+  .nav-link {
+    border: none !important;
+  }
+
+  .active {
+    border-bottom: 4px solid #3db28c !important;
+    border-radius: 0 !important;
+  }
+}
+
+
 a.nav-item.nav-link {
   color: $gray-700 !important;
 }

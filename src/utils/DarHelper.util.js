@@ -19,16 +19,52 @@ let staticContent = {
 	}
 };
 
+let darCommentTitle = {
+	approved 										: 'Conditions',
+	'approved with conditions'	: 'Conditions',
+	'rejected'									: 'Reason for rejection'
+}
+
+let darStatus  = {
+	all												: 'all',
+	inProgress								: 'inProgress',
+	submitted  								: 'submitted',
+	inReview  								: 'inReview',
+	approved   								: 'approved',
+	'approved with conditions': 'approved',
+	rejected    							: 'rejected'
+}
+
+let darSLAText = {
+	inProgress								: 	'Pre-submission',
+	submitted									: 	'Submitted',
+	inReview									: 	'In review',
+	approved									: 	'Approved',
+	'approved with conditions': 	'Approved',
+	rejected									: 	'Rejected',
+}
+
+let darStatusColours  = {
+	inProgress								: 'gray',
+	submitted  								: 'indigo',
+	inReview									: 'amber',
+	approved   								: 'green',
+	'approved with conditions': 'green',
+	rejected    							: 'red'
+}
+
 /**
  * [applicationState acts like enum for generating Counts DAR dashboard]
  *
  */
-let applicationState = {
-	inProgress: 'preSubmissionCount',
-	submitted: 'inReviewCount',
-	approved: 'approvedCount',
-	'approved with comments': 'approvedCount',
-	rejected: 'rejectedCount'
+let darStatusCounts = {
+	all													: 'allCount',
+	inProgress									: 'preSubmissionCount',
+	submitted										: 'submittedCount',
+	inReview										: 'inReviewCount',
+	approved										: 'approvedCount',
+	'approved with conditions'	: 'approvedCount',
+	rejected										: 'rejectedCount'
 };
 
 
@@ -41,25 +77,28 @@ let applicationState = {
 let generateStatusCounts = (data = []) => {
 	// 1. declare obj structure even if no data
 	let counts = {
+		allCount: 0,
 		approvedCount: 0,
 		rejectedCount: 0,
 		archivedCount: 0,
 		preSubmissionCount: 0,
-		inReviewCount: 0
+		inReviewCount: 0,
+		submittedCount: 0
 	};
 
 	if (!_.isEmpty(data)) {
 		// 2. reduce over data from API to generate structure as above counts
-		let totalCounts = [...data].reduce((obj, item) => {
+		let totalCounts = [...data].reduce((obj, item, i) => {
 			// 3. take out applicationStatus ie, inProgress, submitted etc..
 			let { applicationStatus } = item;
 			// 4. if the applicationStatus not in our obj, set to 1 with key
-			if (!obj[applicationState[applicationStatus]]) {
-				obj[applicationState[applicationStatus]] = 1;
+			if (!obj[darStatusCounts[applicationStatus]]) {
+				obj[darStatusCounts[applicationStatus]] = 1;
 			} else {
 				// 5. if found increment the count
-				obj[applicationState[applicationStatus]] = ++obj[applicationState[applicationStatus]];
+				obj[darStatusCounts[applicationStatus]] = ++obj[darStatusCounts[applicationStatus]];
 			}
+			obj['allCount'] = ++i;
 			// 6. return obj as count format
 			return obj;
 		}, {});
@@ -591,6 +630,10 @@ export default {
 	createTopicContext: createTopicContext,
 	createModalContext: createModalContext,
 	configActionModal: configActionModal,
+	generateStatusCounts: generateStatusCounts,
 	staticContent: staticContent,
-	generateStatusCounts: generateStatusCounts
+	darStatus : darStatus,
+	darStatusColours: darStatusColours,
+	darSLAText: darSLAText,
+	darCommentTitle: darCommentTitle
 };
