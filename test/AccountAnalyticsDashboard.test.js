@@ -1,7 +1,7 @@
 import React from 'react';
 import AccountAnalyticsDashboard from '../src/pages/dashboard/AccountAnalyticsDashboard';
 import DashboardKPI from '../src/pages/dashboard/DARComponents/DashboardKPI';
-import {userStateData} from './mocks/dataMock';
+import {userStateData} from './mocks/dataMock'; 
 
 let wrapper;
 
@@ -18,7 +18,7 @@ describe('<AccountAnalyticsDashboard /> rendering', () => {
     it('renders 7 <DashboardKPI /> components', () => {
         wrapper = shallow(<AccountAnalyticsDashboard UserState={userStateData} />);
         wrapper.setState({ isLoading: false });
-        expect(wrapper.find(DashboardKPI).length).toBe(7);
+        expect(wrapper.find(DashboardKPI).length).toBe(8);
     });
 
 });
