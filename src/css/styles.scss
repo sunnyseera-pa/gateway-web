@@ -1387,3 +1387,9 @@ button a {
 .plusMinusButton:disabled {
   opacity: 0.2;
 }
+
+.ellipsis {
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
