@@ -294,7 +294,7 @@ class Account extends Component {
                                 </Nav.Link>
                             </div>
                             
-                            <div className={`${tabId === 'datasets' ? 'activeCard' : ''}`}>
+                            <div className={`${tabId === 'datasets' || tabId === 'datasetsAdvancedSearch' ? 'activeCard' : ''}`}>
                                 <Accordion activeKey={datasetAccordion} onSelect={this.datasetAccordionClick}>
                                     <Fragment>
                                         <Accordion.Toggle variant='link' className='verticalNavBar gray700-13 navLinkButton' eventKey='0'>
