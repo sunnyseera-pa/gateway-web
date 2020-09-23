@@ -225,7 +225,7 @@ class DataAccessRequestsNew extends React.Component {
                                 <Row>
                                     <div className="black-20">Data access request applications {!_.isEmpty(team) ? team : ''}</div>
                                     <div className="gray700-13">Manage forms and applications</div>
-                                    {_.isEmpty(team) ? <div><Clock /> {`${avgDecisionTime > 0 ? avgDecisionTime : '-'} days`} <span className="gray700-13">average time from submission to descision</span></div> : ''}
+                                    <div><Clock /> {`${avgDecisionTime > 0 ? avgDecisionTime : '-'} days`} <span className="gray700-13">average time from submission to descision</span></div>
                                 </Row>
                             </Col>
                             <Col xs={4} style={{ textAlign: "right" }}>

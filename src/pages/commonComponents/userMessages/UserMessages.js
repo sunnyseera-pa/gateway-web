@@ -10,13 +10,13 @@ import MessageItem from './components/MessageItem';
 import MessageFooter from './components/MessageFooter';
 import './UserMessages.scss';
 
-const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false }) => {
+const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOpen = false }) => {
 	const defaultMessage =
 		'Use messages to clarify questions with the data custodian before starting your application to request access to the data. Provide a brief description of your project and what datasets you are interested in.';
 
-    let relatedObjectIds, title, subTitle, datasets, tags, allowNewMessage, requiresModal, dataRequestModalContent;
-    
-    let history = useHistory();
+	let relatedObjectIds, title, subTitle, datasets, tags, allowNewMessage, requiresModal, dataRequestModalContent;
+	
+	let history = useHistory();
 
 	if (typeof topicContext !== 'undefined')
 		({ relatedObjectIds = [], title = '', subTitle = '', datasets = [], tags = [], allowNewMessage = false, requiresModal = false, dataRequestModalContent = {} } = topicContext);
@@ -303,54 +303,62 @@ const UserMessages = ({ topicContext, closed, toggleModal, drawerIsOpen = false 
 	}, [drawerIsOpen, topicContext]);
 
 	return (
-		<Fragment>
-			<div className='sideDrawer-header'>
-				<div>Messages</div>
-				<CloseButtonSvg
-					className='sideDrawer-header--close'
-					onClick={() => onCloseDrawer()}
-				/>
-			</div>
-			<div className='sideDrawer-body'>
-				<TopicList topics={topics} onTopicClick={onTopicClick} />
-				<div className='messageArea'>
-					<div className='messageArea-header'>
-						{!_.isEmpty(activeTopic) ? (
-							<MessageHeader
-								topic={activeTopic}
-								modalRequired={modalRequired}
-								onRequestAccess={onRequestAccess}
-								onShowModal={onShowModal}
-							/>
-						) : (
-							''
-						)}
-					</div>
-					<div className='messageArea-body'>
-						{!_.isEmpty(activeTopic.topicMessages)
-							? activeTopic.topicMessages.map((message) => (
-                                    <MessageItem 
-                                        key={message._id} 
-                                        {...message} 
-                                    />
-							  ))
-							: ''}
-					</div>
-					<div className='messageArea-footer'>
-						{!_.isEmpty(activeTopic) ? (
-							<MessageFooter
-								value={messageDescription}
-								onSubmitMessage={onSubmitMessage}
-								onMessageChange={onMessageChange}
-							/>
-						) : (
-							''
-						)}
-						
-					</div>
+			<Fragment>
+				<div className='sideDrawer-header'>
+					<div>Messages</div>
+					<CloseButtonSvg
+						className='sideDrawer-header--close'
+						onClick={() => onCloseDrawer()}
+					/>
 				</div>
-			</div>
-		</Fragment>
+				{ topics.length > 0 ? 
+					<div className='sideDrawer-body'>
+						<TopicList topics={topics} onTopicClick={onTopicClick} />
+						<div className='messageArea'>
+							<div className='messageArea-header'>
+								{!_.isEmpty(activeTopic) ? (
+									<MessageHeader
+										userState={userState}
+										topic={activeTopic}
+										modalRequired={modalRequired}
+										onRequestAccess={onRequestAccess}
+										onShowModal={onShowModal}
+									/>
+								) : (
+									''
+								)}
+							</div>
+							<div className='messageArea-body'>
+								{!_.isEmpty(activeTopic.topicMessages)
+									? activeTopic.topicMessages.map((message) => (
+																				<MessageItem 
+																						key={message._id} 
+																						{...message} 
+																				/>
+										))
+									: ''}
+							</div>
+							<div className='messageArea-footer'>
+								{!_.isEmpty(activeTopic) ? (
+									<MessageFooter
+										value={messageDescription}
+										onSubmitMessage={onSubmitMessage}
+										onMessageChange={onMessageChange}
+									/>
+								) : (
+									''
+								)}
+								
+							</div>
+						</div>
+					</div>
+					: 
+						<div className='sideDrawer-noMessages'>
+							<div>No messages yet</div>
+							<div>Use messages to clarify questions with the data custodian before statring your application to request access to the data. Select a dataset and make an enquiry.</div>
+						</div>
+					}
+			</Fragment>
 	);
 };
 

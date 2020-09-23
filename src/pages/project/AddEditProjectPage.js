@@ -217,7 +217,8 @@ class AddEditProjectPage extends React.Component {
                 <SideDrawer
                     open={showDrawer}
                     closed={this.toggleDrawer}>
-                    <UserMessages 
+                    <UserMessages
+                        userState={userState[0]}
                         closed={this.toggleDrawer}
                         toggleModal={this.toggleModal}
                         drawerIsOpen={this.state.showDrawer} 

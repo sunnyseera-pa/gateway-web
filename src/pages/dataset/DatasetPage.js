@@ -969,6 +969,7 @@ class DatasetDetail extends Component {
               open={showDrawer}
               closed={this.toggleDrawer}>
               <UserMessages 
+                  userState={userState[0]}
                   closed={this.toggleDrawer}
                   toggleModal={this.toggleModal}
                   drawerIsOpen={showDrawer}

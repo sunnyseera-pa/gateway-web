@@ -1,6 +1,36 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
+import _ from 'lodash';
 
-const MessageHeader = ( {topic, modalRequired, onRequestAccess, onShowModal} ) => { 
+const MessageHeader = ({ userState, topic, modalRequired, onRequestAccess, onShowModal }) => { 
+
+    let [showDashboard, setShowDashboard] = useState(false);
+    let [publisher, setPubliser] = useState('');
+    let history = useHistory();
+
+    const showDashboardOption = () => {
+        ({ title: publisher} = topic);
+        setPubliser(publisher);
+        let { teams = []} = userState;
+        if(!_.isEmpty(teams)) {
+            const hasPublisher = [...teams]
+                                    .map(t => t.publisher.name)
+                                    .includes(publisher);
+            setShowDashboard(hasPublisher);
+        } else {
+            setShowDashboard(false);
+        }
+    }
+
+    const onRouteChange = (e) => {
+        e.preventDefault();
+        history.push({ pathname: `/account`, search: `?tab=dataaccessrequests&team=${publisher}`, state: { team: publisher }});
+    }
+
+    useEffect(() => {
+        showDashboardOption();
+    }, [topic])
+
     return (
         <Fragment>
             <div className="messageArea-header-desc">
@@ -10,10 +40,11 @@ const MessageHeader = ( {topic, modalRequired, onRequestAccess, onShowModal} ) =
                 )}
             </div>
             <div className="messageArea-header-action">
+                {showDashboard ? <button className="button-tertiary mr-2" onClick={e => onRouteChange(e)}>Show applications</button>  : ''}
                 { modalRequired ? 
-                    <button className="button-tertiary mr-2" onClick={e => onShowModal(e)}>How to request access</button> 
+                    <button className="button-tertiary" onClick={e => onShowModal(e)}>How to request access</button> 
                 :
-                    <button className="btn btn-primary addButton" onClick={e => onRequestAccess(e)}>Request access</button>
+                    <button className="btn btn-primary ml-2 addButton" onClick={e => onRequestAccess(e)}>Request access</button>
                 }
             </div>
         </Fragment>

@@ -11,9 +11,9 @@ import './Dashboard.scss';
 
  
 var baseURL = require('../commonComponents/BaseURL').getURL();
+let isMounted = false;
 
 class AccountAnalyticsDashboard extends React.Component { 
-
     // initialize our state
     state = {
         userState: [],
@@ -41,6 +41,31 @@ class AccountAnalyticsDashboard extends React.Component {
         this.state.selectedOption = this.state.dates[0];
     }
 
+    async componentDidMount() {
+        isMounted = true; 
+        initGA('UA-166025838-1');
+        await Promise.all([
+            this.getUnmetDemand(),
+            this.getTopSearches()
+        ]);
+        
+        await Promise.all([
+            this.getTotalGAUsers(),
+            this.getGAUsers(moment(this.state.selectedOption).startOf('month').format("YYYY-MM-DD"), moment(this.state.selectedOption).endOf('month').format("YYYY-MM-DD")),
+            this.getUptime(this.state.selectedOption),
+            this.getStats(),
+            this.getKPIs(this.state.selectedOption), 
+            this.getDatasetsWithTechMetadata()
+        ])
+
+        if(isMounted)
+            this.setState({uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100, isLoading: false})
+    }
+
+    componentWillUnmount() {
+        isMounted = false;
+    }
+
     handleSelect = (key) => {
         this.setState({ key: key },
             ()=>{
@@ -48,6 +73,8 @@ class AccountAnalyticsDashboard extends React.Component {
                 this.getTopSearches(this.state.selectedOption)
             });
     }
+
+    
 
     async handleDateSelect(eventKey, event) {
         this.setState({isLoading: true})
@@ -71,26 +98,7 @@ class AccountAnalyticsDashboard extends React.Component {
         this.setState({uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100})
       }
 
-      async componentDidMount() {
-        initGA('UA-166025838-1');
-        await Promise.all([
-            this.getUnmetDemand(),
-            this.getTopSearches()
-        ])
-
-        this.setState({isLoading: false})
-        
-        await Promise.all([
-            this.getTotalGAUsers(),
-            this.getGAUsers(moment(this.state.selectedOption).startOf('month').format("YYYY-MM-DD"), moment(this.state.selectedOption).endOf('month').format("YYYY-MM-DD")),
-            this.getUptime(this.state.selectedOption),
-            this.getStats(),
-            this.getKPIs(this.state.selectedOption), 
-            this.getDatasetsWithTechMetadata()
-        ])
-
-        this.setState({uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100})
-    }
+     
 
     getUnmetDemand(selectedOption){
         let date = new Date(selectedOption);
