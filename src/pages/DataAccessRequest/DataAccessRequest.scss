@@ -353,11 +353,21 @@ input[type=radio]:disabled {
 	box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.09);
 	z-index: 1000;
 
+	&-status {
+		display: inline-block;
+	}
+
 	&--questions {
-		flex: 0 0 30%;
+		flex: 0 0 70%;
 		@include font-source(14px, $gray-800, $font-weight-semibold);
 		p {
 			margin-bottom: 0;
+		}
+
+		.sla {
+			width: min-content;
+			display: inline-block;
+			margin-right: 24px;
 		}
 	}
 
@@ -549,10 +559,6 @@ input[type=radio]:disabled {
 	width: 100px;
 }
 
-.badge-comingSoon {
-	margin-left: 16px;
-}
-
 input[type='checkbox']:after {
 	width: 24px;
 	height: 24px;
@@ -564,7 +570,7 @@ input[type='checkbox']:after {
 	border: solid 2px #d6d6d6;
 }
 
-input[type='checkbox']:checked:after {
+.dar-form-check-group input[type='checkbox']:checked:after {
 	width: 24px;
 	height: 24px;
 	border: solid 2px #d6d6d6;
