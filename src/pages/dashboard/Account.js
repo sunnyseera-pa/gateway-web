@@ -368,7 +368,7 @@ class Account extends Component {
                         </div>
                     </div>
 
-                    <div className="col-sm-12 col-md-10 mt-5">
+                    <div className="col-sm-12 col-md-10 margin-top-32">
                         {tabId === 'dashboard' ? <AccountAnalyticsDashboard userState={userState} /> : ''}
 
                         {tabId === 'youraccount' ? <YourAccount userState={userState} /> : ''}
