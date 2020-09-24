@@ -3,64 +3,72 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import axios from 'axios';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { baseURL } from '../../../../configs/url.config';
+import _ from 'lodash';
 
 
-class TypaheadUser extends React.Component {
+class TypaheadMultiUser extends React.Component {
   constructor(props) {
     super(props);  
     this.state = {
-      value: [],
+      value: props.selectedContributors || [],
       options: [],
       id: props.id,
       readOnly: props.readOnly || false
     };
-    this.handleChange = this.handleChange.bind(this);
-    // this.handleBlur = this.handleBlur.bind(this);
   }
 
   componentDidMount() {
     this.getData();
   }
 
+  componentDidUpdate(prevProps) {
+		if (this.props.selectedContributors !== prevProps.selectedContributors) {
+      let { options } = this.state;
+      let value = [...options].filter((user)  => { 
+        return this.props.selectedContributors.includes(user.id);
+      });
+      this.setState({
+        value
+      });
+		}
+	}
+
   getData() {
     axios.get(`${baseURL}/api/v1/users`)
       .then((res) => {
-        let id;
-        let value = [];
         let {data: {data}} = res;
-        if(typeof this.props.value !== 'undefined') {
-          ({id} = this.props.value);
-          value = [...data].filter(d => d.id === id) ;
+        if(!_.isEmpty(this.props.currentUserId.toString())) {
+          data = data.filter((user) => { return user.id !== this.props.currentUserId });
         }
+        let value = [...data].filter((user)  => { 
+          return this.props.selectedContributors.includes(user.id);
+        });
         this.setState({ options: data, value });
       })
       .catch(err => {
+        console.error(err);
         alert('Failed to fetch users');
       });
   }
 
   handleChange(e) {
-    let user = '';
-    if(e.length > 0) 
-      [user] = e;
-  
+    this.props.onHandleContributorChange(e);
+    let { options } = this.state;
+    let value = [...options].filter((user)  => { 
+      return e.some(contributor => contributor.id === user.id);
+    });
     this.setState({
-      value: (user ? [user] : []),
-    }, this.props.onChange.bind(null, user));
+       value
+    });
   }
-
-  // handleBlur(e) {
-  //   console.log(e);
-  //   this.props.onBlur(this.props.value);
-  // }
 
   render() {
     return (
       <Typeahead
-        id={'test'}
+        id={'typeaheadMultiUser'}
         className={'addFormInputTypeAhead'}
         options={this.state.options}        
-        onChange={this.handleChange}
+        onChange={e => this.handleChange(e)}
         selected={this.state.value}
         minLength={3}
         filterBy={['name']}
@@ -79,7 +87,7 @@ class TypaheadUser extends React.Component {
   }
 }
 
-TypaheadUser.defaultProps = {
+TypaheadMultiUser.defaultProps = {
   id: '',
   options: [],
   onChange: () => {},
@@ -87,4 +95,4 @@ TypaheadUser.defaultProps = {
   onBlur: () => {}
 };
 
-export default TypaheadUser;
+export default TypaheadMultiUser;
