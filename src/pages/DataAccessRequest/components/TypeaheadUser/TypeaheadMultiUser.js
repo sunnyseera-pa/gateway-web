@@ -43,7 +43,6 @@ class TypaheadMultiUser extends React.Component {
         let value = [...data].filter((user)  => { 
           return this.props.selectedContributors.includes(user.id);
         });
-        debugger;
         this.setState({ options: data, value });
       })
       .catch(err => {
@@ -55,11 +54,9 @@ class TypaheadMultiUser extends React.Component {
   handleChange(e) {
     this.props.onHandleContributorChange(e);
     let { options } = this.state;
-    debugger;
     let value = [...options].filter((user)  => { 
       return e.some(contributor => contributor.id === user.id);
     });
-    debugger;
     this.setState({
        value
     });
