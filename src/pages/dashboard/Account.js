@@ -63,25 +63,19 @@ class Account extends Component {
             this.state.alert = props.location.state.alert;
             this.alertTimeOut = setTimeout(() => this.setState({ alert: {} }), 5000)
         }
-    }
 
-    componentWillMount() {
-        if (!!window.location.search) {
-            var values = queryString.parse(window.location.search);
-            if (values.tab !== this.state.tabId || typeof values.tab !== 'undefined') {
-                this.setState({ tabId: values.tab });
-                this.toggleNav(values.tab);
-            }
-        }
+        if(_.has(props, 'location.state.team')) 
+            this.state.team = props.location.state.team;
     }
 
     componentDidMount() {
-        if (!!window.location.search) {
-            var values = queryString.parse(window.location.search);
+        if (window.location.search) {
+            let tab = '';
+            let values = queryString.parse(window.location.search);
             if (values.tab !== this.state.tabId || typeof values.tab !== 'undefined'|| typeof values.tab !== null) {
-                this.toggleNav(values.tab);
+                tab = this.checkRedirect(values);
                 this.setState({ 
-                    tabId: values.tab,
+                    tabId: tab,
                     isDeleted: values.toolDeleted,
                     isApproved: values.toolApproved,
                     isRejected: values.toolRejected,
@@ -90,14 +84,20 @@ class Account extends Component {
                     isReviewApproved: values.reviewApproved,
                     isReviewRejected: values.reviewRejected
                 });
+                this.toggleNav(tab);
             }
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        if (!!window.location.search) {
-            var values = queryString.parse(window.location.search);
+        if (window.location.search) { 
+            let values = queryString.parse(window.location.search);
+            let team  =  '';
             if (values.tab !== this.state.tabId || typeof values.tab !== 'undefined' || typeof values.tab !== null) {
+                let hasTeam = _.has(nextProps, 'location.state.team');
+                if(hasTeam)
+                    team =  nextProps.location.state.team;
+                
                 this.setState({
                     tabId: values.tab,
                     isDeleted: values.accountDeleted,
@@ -106,11 +106,26 @@ class Account extends Component {
                     isProjectApproved: values.projectApproved,
                     isProjectRejected: values.projectRejected,
                     isReviewApproved: values.reviewApproved,
-                    isReviewRejected: values.reviewRejected
+                    isReviewRejected: values.reviewRejected,
+                    team,
+                    activeAccordion: values.tab === 'dataaccessrequests' ? '0' : -1
                 });
             }
         }
     }
+
+    checkRedirect = (values) => {
+        let { tab = '',  team = ''} = values;
+        if(!_.isEmpty(tab) && tab === 'dataaccessrequests') {
+            if(!_.isEmpty(team))
+                return `${tab}&team=${team}`;
+
+            return tab;  
+        }
+
+        return tab;
+    }
+            
 
     doSearch = (e) => {
         // 1. fires on enter on searchbar
@@ -154,7 +169,7 @@ class Account extends Component {
         });
     };
 
-    isPublisher() {
+    isPublisher = () => {
         let {userState} = this.state;
         let [user] = userState;
         if(!_.isEmpty(user.teams)) {
@@ -193,9 +208,7 @@ class Account extends Component {
     }
 
     toggleNav = (tabId = '') => {
-        let {alert, userState: [user]} = this.state;
-        let activeAccordion = -1;
-        let datasetAccordion = -1;
+        let {activeAccordion, datasetAccordion, alert, userState: [user]} = {...this.state};
         // 1. if alert set tabId as page has been redirected
         if(!_.isEmpty(alert)) {
             tabId = alert.nav;
@@ -206,7 +219,7 @@ class Account extends Component {
             let tab = this.generateTabObject(tabId);
             
             // 4. check if user has teams and the current nav is dataaccessrequests, keep expanded
-            if(!_.isEmpty(user.teams) && tab.tabId === 'dataaccessrequests') {
+            if(!_.isEmpty(user.teams) && tab.tabId === 'dataaccessrequests' && activeAccordion !== '0') {
                 activeAccordion = '0';
             }
 
@@ -216,13 +229,22 @@ class Account extends Component {
             }
 
             // 6. set state
-            this.setState({ tabId: tab.tabId, team: tab.team, activeKey: tab.tabId, alert: !_.isEmpty(alert) ? alert : {}, activeAccordion, datasetAccordion });
+            this.setState({ 
+                tabId: tab.tabId, 
+                team: tab.team, 
+                activeKey: tab.tabId, 
+                alert: !_.isEmpty(alert) ? alert : {}, 
+                activeAccordion, 
+                datasetAccordion 
+            });
             // 7. push state
-            this.props.history.push(window.location.pathname + '?tab=' + tab.tabId);
+            this.props.history.push({ pathname: window.location.pathname, search: `?tab=${tab.tabId}`, state: { team: tab.team }});
+
         }
     }
 
     accordionClick = () => {
+        debugger;
         this.setState({activeAccordion: '0'});
     }
 
@@ -324,7 +346,7 @@ class Account extends Component {
                                 </Nav.Link>
                             </div>
                             <div className={`${tabId === 'dataaccessrequests'  ? 'activeCard' : ''}`}>
-                                {this.isPublisher() ?
+                                {this.isPublisher()  ?
                                 <Accordion activeKey={activeAccordion} onSelect={this.accordionClick}>
                                     <Fragment>
                                         <Accordion.Toggle variant='link' className='verticalNavBar gray700-13 navLinkButton' eventKey='0'>
@@ -394,7 +416,11 @@ class Account extends Component {
                 </Row>
 
                 <SideDrawer open={showDrawer} closed={this.toggleDrawer}>
-                    <UserMessages closed={this.toggleDrawer} toggleModal={this.toggleModal} drawerIsOpen={this.state.showDrawer} />
+                    <UserMessages
+                        userState={userState[0]} 
+                        closed={this.toggleDrawer} 
+                        toggleModal={this.toggleModal} 
+                        drawerIsOpen={this.state.showDrawer} />
                 </SideDrawer>
 
                 <DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />

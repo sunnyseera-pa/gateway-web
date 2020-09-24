@@ -132,6 +132,7 @@ class Unsubscribe extends Component {
 					</Container>
 					<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
 						<UserMessages
+							userState={userState[0]}
 							closed={this.toggleDrawer}
 							toggleModal={this.toggleModal}
 							drawerIsOpen={this.state.showDrawer}

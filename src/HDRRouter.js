@@ -58,7 +58,7 @@ class HDRRouter extends Component {
         let currentComponent = this;
 
         axios.defaults.withCredentials = true;
-        axios.defaults.timeout = 5000;
+        axios.defaults.timeout = 60000;
 
         axios.interceptors.response.use(function (response) {
             return response;

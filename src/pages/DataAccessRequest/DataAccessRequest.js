@@ -1764,6 +1764,7 @@ class DataAccessRequest extends Component {
 
 				<SideDrawer open={showDrawer} closed={(e) => this.toggleDrawer()}>
 					<UserMessages
+						userState={userState[0]}
 						closed={(e) => this.toggleDrawer()}
 						toggleModal={this.toggleModal}
 						drawerIsOpen={this.state.showDrawer}

@@ -366,7 +366,7 @@ class ToolDetail extends Component {
                             placeholderRating={avgRating}
                             readonly="true"
                           />
-                          <span style={{ "padding-left": "20px" }}>
+                          <span style={{ "paddingLeft": "20px" }}>
                             {!!ratingsTotal && ratingsCount === 1
                               ? ratingsCount + " review"
                               : ratingsCount + " reviews"}
@@ -658,6 +658,7 @@ class ToolDetail extends Component {
           <SideDrawer open={showDrawer} closed={this.toggleDrawer}>
 
             <UserMessages
+              userState={userState[0]}
               closed={this.toggleDrawer}
               toggleModal={this.toggleModal}
               drawerIsOpen={this.state.showDrawer}

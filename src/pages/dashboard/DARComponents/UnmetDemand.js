@@ -66,13 +66,13 @@ class UnmetDemand extends React.Component {
                 <div>
                     <Row className="entryBox"> 
                         <Accordion defaultActiveKey="1" style={{"width":"100%"}}>
-                                <Accordion.Toggle as={Button} variant="link" eventKey="0" onClick={this.updateFlag} data-testid="accordion-toggle" style={{"width":"100%", "padding-left":"0px"}} >
+                                <Accordion.Toggle as={Button} variant="link" eventKey="0" onClick={this.updateFlag} data-testid="accordion-toggle" style={{"width":"100%", "paddingLeft":"0px"}} >
                                 <Row>
                                 <Col sm={1} lg={1} className="gray800-14">
                                 <SVGIcon name="chevronbottom" fill={'#475da7'} className={flagClosed===true ? "svg-24" : "svg-24 flipSVG"}/>
                             </Col>
-                            <Col sm={7} lg={7} className="gray800-14" style={{"float":"left", "padding-left":"0px"}}>
-                                <span style={{"float":"left", "padding-left":"0px"}}>
+                            <Col sm={7} lg={7} className="gray800-14" style={{"float":"left", "paddingLeft":"0px"}}>
+                                <span style={{"float":"left", "paddingLeft":"0px"}}>
                                     {!data || !data._id ? 'search term' : <a href={"/search?search="+data._id} className="searchTermLink"> {data._id} </a>}
                                 </span>                
                             </Col>
@@ -87,7 +87,7 @@ class UnmetDemand extends React.Component {
                             </Col>
                             </Row>
                                 </Accordion.Toggle>
-                                <Accordion.Collapse eventKey="0" style={{"padding-right":"20px"}}>
+                                <Accordion.Collapse eventKey="0" style={{"paddingRight":"20px"}}>
                                     <Row>
                                         <Col sm={10} lg={10} />
                                         <Col sm={2} lg={2} className="pl-4">
