@@ -38,7 +38,7 @@ class Account extends Component {
             name: null,
             teams: []
         }],
-        tabId: 'dashboard',
+        tabId: '',
         activeKey: '',
         team: '',
         alert: {},
