@@ -136,8 +136,7 @@ class DataAccessRequest extends Component {
 			//	b) Message Panel - route will contain only the 'publisherId' with historic state passed from the message panel component which includes datasetId(s)
 			// 	c/d) Data Access Request User Area / Direct Link - route will contain a data access request 'accessId' which specifically links all associated data to one application
 			const { datasetId, accessId, publisherId } = this.props.match.params;
-			let countedQuestionAnswers = {};
-			let totalQuestions = '';
+			let countedQuestionAnswers = {}, totalQuestions = '', showSubmit = false;
 
 			if (datasetId) {
 				// a) Dataset
@@ -160,6 +159,7 @@ class DataAccessRequest extends Component {
 				// Populate the question/answers count if still in progress, otherwise display project status and date last updated
 				const { applicationStatus, updatedAt } = this.state;
 				if (applicationStatus === 'inProgress') {
+					showSubmit = true;
 					countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this);
 					totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered`;
 				} else {
@@ -171,6 +171,7 @@ class DataAccessRequest extends Component {
 
 			// Update state to display question answer count
 			this.setState({
+				showSubmit,
 				totalQuestions,
 			});
 		} catch (error) {
@@ -920,17 +921,20 @@ class DataAccessRequest extends Component {
 
 	toggleContributorModal = () => {
 		this.setState((prevState) => {
-			return { showContributorModal: !prevState.showContributorModal };
+			return { 
+				showContributorModal: !prevState.showContributorModal 
+			};
 		});
 	};
 
 	updateContributors = (contributors) => {
-		let authorIds = [...contributors].map(user => user.id);
-		this.setState({ authorIds });
+		let updatedAuthorIds = [...contributors].map(user => user.id);
+		this.setState({ updatedAuthorIds });
 	}
 
 	submitContributors = async () => {
-		let { authorIds, _id } = this.state;
+		debugger;
+		let { updatedAuthorIds: authorIds, _id } = this.state;
 		const body = {
 			authorIds
 		};
@@ -939,6 +943,7 @@ class DataAccessRequest extends Component {
 			`${baseURL}/api/v1/data-access-request/${_id}`,
 			body
 		);
+		this.setState({ authorIds });
 	}
 	
 
@@ -1751,6 +1756,7 @@ class DataAccessRequest extends Component {
 								onNextClick={this.onNextClick}
 								onFormSubmit={this.onFormSubmit}
 								onShowContributorModal={this.toggleContributorModal}
+								showSubmit={this.state.showSubmit}
 							/>
 						) : (
 							<CustodianActionButtons
@@ -1796,6 +1802,7 @@ class DataAccessRequest extends Component {
 						onHandleContributorChange={this.updateContributors}
 						selectedContributors={this.state.authorIds} 
 						currentUserId={this.state.userId} 
+						readOnly={this.state.readOnly}
 				/>
 				</ContributorModal>
 
