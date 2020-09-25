@@ -136,7 +136,7 @@ class DataAccessRequest extends Component {
 			//	b) Message Panel - route will contain only the 'publisherId' with historic state passed from the message panel component which includes datasetId(s)
 			// 	c/d) Data Access Request User Area / Direct Link - route will contain a data access request 'accessId' which specifically links all associated data to one application
 			const { datasetId, accessId, publisherId } = this.props.match.params;
-			let countedQuestionAnswers = {}, totalQuestions = '', showSubmit = false;
+			let countedQuestionAnswers = {}, totalQuestions = '';
 
 			if (datasetId) {
 				// a) Dataset
@@ -159,7 +159,6 @@ class DataAccessRequest extends Component {
 				// Populate the question/answers count if still in progress, otherwise display project status and date last updated
 				const { applicationStatus, updatedAt } = this.state;
 				if (applicationStatus === 'inProgress') {
-					showSubmit = true;
 					countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this);
 					totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered`;
 				} else {
@@ -171,7 +170,6 @@ class DataAccessRequest extends Component {
 
 			// Update state to display question answer count
 			this.setState({
-				showSubmit,
 				totalQuestions,
 			});
 		} catch (error) {
@@ -333,6 +331,7 @@ class DataAccessRequest extends Component {
 			datasetfields: { publisher },
 		} = datasets[0];
 		let { firstname, lastname } = mainApplicant;
+		let showSubmit = false;
 
 
 		// 2. If about application is empty, this is a new data access request so set up state based on passed context
@@ -384,6 +383,11 @@ class DataAccessRequest extends Component {
 			formPanels: [initialPanel, ...rest],
 		} = jsonSchema;
 
+		// 6. Hide show submit application
+		if (applicationStatus === 'inProgress') {
+			showSubmit = true;
+		}
+
 		// 6. Set state
 		this.setState({
 			jsonSchema: { ...jsonSchema, ...classSchema },
@@ -404,7 +408,8 @@ class DataAccessRequest extends Component {
 			userId,
 			mainApplicant: `${firstname} ${lastname}${this.checkCurrentUser(userId) ? ' (you)':''}`,
 			authorIds,
-			projectId
+			projectId,
+			showSubmit
 		});
 	};
 
