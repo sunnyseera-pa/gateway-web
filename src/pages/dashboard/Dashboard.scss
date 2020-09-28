@@ -1,4 +1,5 @@
 @import '../../css/variables';
+@import '../../css/typography';
 @import '../../css/mixins';
 
 .account-menu {
@@ -228,3 +229,69 @@
 .datasetCard.card-body {
 	padding: 4px 0px 0px 45px !important;
 }
+
+.custom-dropdown{
+  max-width: 375px;
+  width: 100%;
+  background: none;
+  border: 2px solid rgba(0,0,0,0.15);
+  border-radius: 3px;
+  padding: 0.75rem 0.75rem;
+  &:focus-within{
+    border: solid 2px $teal;
+  }
+  
+  button {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    width: calc(100% - 15px);
+    background: transparent;
+    background-image: url(../../images/stock.svg);
+    background-position-x: 99%;
+    background-position-y: 45%;
+    background-repeat: no-repeat;
+
+    @include font-source(13px, $gray-700, $font-weight-semibold);
+    text-align: left;
+    border: 0;
+    outline: 0;
+    &:after {
+      margin-left: 90%;
+      display: none;
+    background-image: url(../../images/stock.svg);
+      
+    }
+    &:focus-within {
+      outline: 0;
+      box-shadow: none;
+      background-image: url(../../images/stock-rotated.svg);
+    }
+  }
+
+  .dropdown-menu {
+    width: 100%;
+  }
+
+  .dropdown-menu.show {
+    margin-left: -13px;
+    margin-top: 13px;
+  }
+}
+  .padding-right-0 {
+    padding-right: 0px;
+  }  
+
+  .sectorTypeahead{
+    &:focus-within {
+      border: solid 2px $teal !important;
+    }
+  }
+
+  .checker {
+    width: 0% !important;
+    margin-left: 15px;
+    margin-right: 12px;
+  }
