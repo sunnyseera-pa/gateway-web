@@ -588,25 +588,11 @@ class DatasetDetail extends Component {
                             </Row>
                             <Row className="mt-2">
                               <Col sm={2} className="gray800-14">
-                                License
+                                Periodicity
                               </Col>
-                              {data.license ? (
+                              {data.datasetfields.periodicity ? (
                                 <Col sm={10} className="gray800-14">
-                                  {data.license}
-                                </Col>
-                              ) : (
-                                <Col sm={10} className="gray800-14-opacity">
-                                  Not specified
-                                </Col>
-                              )}
-                            </Row>
-                            <Row className="mt-2">
-                              <Col sm={2} className="gray800-14">
-                                Request time
-                              </Col>
-                              {data.datasetfields.accessRequestDuration ? (
-                                <Col sm={10} className="gray800-14">
-                                  {data.datasetfields.accessRequestDuration}
+                                  {data.datasetfields.periodicity}
                                 </Col>
                               ) : (
                                 <Col sm={10} className="gray800-14-opacity">
@@ -647,6 +633,34 @@ class DatasetDetail extends Component {
                                   <Linkify properties={{ target: "_blank" }}>
                                     {data.datasetfields.accessRights}
                                   </Linkify>
+                                </Col>
+                              ) : (
+                                <Col sm={10} className="gray800-14-opacity">
+                                  Not specified
+                                </Col>
+                              )}
+                            </Row>
+                            <Row className="mt-2">
+                              <Col sm={2} className="gray800-14">
+                                License
+                              </Col>
+                              {data.license ? (
+                                <Col sm={10} className="gray800-14">
+                                  {data.license}
+                                </Col>
+                              ) : (
+                                <Col sm={10} className="gray800-14-opacity">
+                                  Not specified
+                                </Col>
+                              )}
+                            </Row>
+                            <Row className="mt-2">
+                              <Col sm={2} className="gray800-14">
+                                Request time
+                              </Col>
+                              {data.datasetfields.accessRequestDuration ? (
+                                <Col sm={10} className="gray800-14">
+                                  {data.datasetfields.accessRequestDuration}
                                 </Col>
                               ) : (
                                 <Col sm={10} className="gray800-14-opacity">
@@ -751,6 +765,20 @@ class DatasetDetail extends Component {
                               {data.datasetfields.ageBand ? (
                                 <Col sm={9} className="gray800-14">
                                   {data.datasetfields.ageBand}
+                                </Col>
+                              ) : (
+                                <Col sm={9} className="gray800-14-opacity">
+                                  Not specified
+                                </Col>
+                              )}
+                            </Row>
+                            <Row className="mt-2">
+                              <Col sm={3} className="gray800-14">
+                                Population size
+                              </Col>
+                              {data.datasetfields.populationSize ? (
+                                <Col sm={9} className="gray800-14 overflowWrap">
+                                  {data.datasetfields.populationSize}
                                 </Col>
                               ) : (
                                 <Col sm={9} className="gray800-14-opacity">
