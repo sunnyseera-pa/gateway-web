@@ -40,7 +40,7 @@ const MessageHeader = ({ userState, topic, modalRequired, onRequestAccess, onSho
                 )}
             </div>
             <div className="messageArea-header-action">
-                {showDashboard ? <button className="button-tertiary mr-2" onClick={e => onRouteChange(e)}>Show applications</button>  : ''}
+                {showDashboard ? <div className="purple-14 mr-2" onClick={e => onRouteChange(e)}>Show applications</div>  : ''}
                 { modalRequired ? 
                     <button className="button-tertiary" onClick={e => onShowModal(e)}>How to request access</button> 
                 :
