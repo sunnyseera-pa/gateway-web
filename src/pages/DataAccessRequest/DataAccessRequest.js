@@ -938,7 +938,6 @@ class DataAccessRequest extends Component {
 	}
 
 	submitContributors = async () => {
-		debugger;
 		let { updatedAuthorIds: authorIds, _id } = this.state;
 		const body = {
 			authorIds

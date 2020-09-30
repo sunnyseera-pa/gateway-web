@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import queryString from 'query-string';
-import { Row, Nav, Accordion, Card, Button } from 'react-bootstrap';
+import {  Nav, Accordion } from 'react-bootstrap';
 import _ from 'lodash';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import AccountTools from './AccountTools';
@@ -14,9 +14,9 @@ import AccountUsers from './AccountUsers';
 import ReviewTools from './ReviewTools';
 import YourAccount from './YourAccount';
 import DataAccessRequests from './DataAccessRequests/DataAccessRequests';
+import WorkflowDashboard from './Workflows/WorkflowDashboard';
 import 'react-web-tabs/dist/react-web-tabs.css';
 import SVGIcon from '../../images/SVGIcon';
-import { ReactComponent as DatasetSVG } from "../../images/dataset.svg";
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
@@ -108,7 +108,7 @@ class Account extends Component {
                     isReviewApproved: values.reviewApproved,
                     isReviewRejected: values.reviewRejected,
                     team,
-                    activeAccordion: values.tab === 'dataaccessrequests' ? '0' : -1
+                    activeAccordion: (values.tab === 'dataaccessrequests' || values.tab === 'workflows') ? '0' : -1
                 });
             }
         }
@@ -220,7 +220,7 @@ class Account extends Component {
             let tab = this.generateTabObject(tabId);
             
             // 4. check if user has teams and the current nav is dataaccessrequests, keep expanded
-            if(!_.isEmpty(user.teams) && tab.tabId === 'dataaccessrequests' && activeAccordion !== '0') {
+            if(!_.isEmpty(user.teams) && (tab.tabId === 'dataaccessrequests' || tab.tabId === 'workflows' || tab.tabId === 'addeditworkflow') && activeAccordion !== '0') {
                 activeAccordion = '0';
             }
 
@@ -228,6 +228,9 @@ class Account extends Component {
             if(tab.tabId === "datasets" || tab.tabId === "datasetsAdvancedSearch") {
                 datasetAccordion = '0';
             }
+
+            if(!_.isEmpty(tab.team)) 
+                localStorage.setItem('HDR_TEAM', tab.team);
 
             // 6. set state
             this.setState({ 
@@ -245,7 +248,6 @@ class Account extends Component {
     }
 
     accordionClick = () => {
-        debugger;
         this.setState({activeAccordion: '0'});
     }
 
@@ -283,7 +285,7 @@ class Account extends Component {
                     userState={userState}
                 />
 
-                <Row>
+                <div className="container-wrap">
                     <div className="col-sm-12 col-md-2">
                         <div className='account-menu'>
                             <div className={`${tabId === 'dashboard' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('dashboard')}>
@@ -346,7 +348,7 @@ class Account extends Component {
                                     <span className="navLinkItem">Papers</span>
                                 </Nav.Link>
                             </div>
-                            <div className={`${tabId === 'dataaccessrequests'  ? 'activeCard' : ''}`}>
+                            <div className={`${tabId === 'dataaccessrequests' || tabId === 'workflows' || tabId === 'addeditworkflow'  ? 'activeCard' : ''}`}>
                                 {this.isPublisher()  ?
                                 <Accordion activeKey={activeAccordion} onSelect={this.accordionClick}>
                                     <Fragment>
@@ -358,6 +360,9 @@ class Account extends Component {
                                             <div>
                                                 <Nav.Link onClick={(e) => this.toggleNav('dataaccessrequests')} bsPrefix="nav-block" className={`gray700-13 ${_.isEmpty(team) && tabId === 'dataaccessrequests' ? 'nav-item-active' : ''}`}>
                                                     <span className="subLinkItem">{userState[0].name || ''}</span>
+                                                </Nav.Link>
+                                                <Nav.Link onClick={(e) => this.toggleNav(`workflows`)} bsPrefix="nav-block" className={`gray700-13 ${tabId === 'workflows' ? 'nav-item-active' : ''}`}>
+                                                    <span className="subLinkItem">Workflows</span>
                                                 </Nav.Link>
                                                 {this.renderPublishers()}
                                             </div>
@@ -410,11 +415,13 @@ class Account extends Component {
 
                         {tabId === 'dataaccessrequests' ? <DataAccessRequests userState={userState} team={team} alert={alert} /> : ''}
 
+                        {tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}
+
                         {tabId === 'collections' ? <AccountCollections userState={userState} /> : ''}
 
                         {tabId === 'usersroles' ? <AccountUsers userState={userState} /> : ''}
                     </div>
-                </Row>
+                </div>
 
                 <SideDrawer open={showDrawer} closed={this.toggleDrawer}>
                     <UserMessages
