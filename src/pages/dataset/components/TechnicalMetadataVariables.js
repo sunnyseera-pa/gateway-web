@@ -71,7 +71,7 @@ class TechnicalMetadataVariables extends React.Component {
             <span className="gray800-14-opacity" style={{ float: "left" }}>
               {open
                 ? ""
-                : techMetadataVariables
+                : techMetadataVariables && techMetadataVariables.description !== null
                 ? techMetadataVariables.description.substr(0, 90) +
                   (techMetadataVariables.description.length > 90 ? "..." : "")
                 : ""}
