@@ -74,7 +74,14 @@ button {
     outline: 0;
     box-shadow: 0 0 0 3px rgba(71, 93, 167, 0.25);
   }
+
+  &teal {
+    @extend .button-;
+      background-color: $teal;
+      color: $white;
+    }
 }
+
 
 .form-input-label {
   font-family: Museo-Sans-Rounded;

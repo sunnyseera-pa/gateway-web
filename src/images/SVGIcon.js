@@ -20,6 +20,8 @@ const getViewBox = name => {
       return "0 0 16 16"
     case "check":
       return "0 0 24 22"
+    case "workflow":
+      return "0 0 24 24"
 
     default: 
       return "0 0 18 18";

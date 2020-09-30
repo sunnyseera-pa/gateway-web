@@ -2,6 +2,18 @@
 @import '../../css/typography';
 @import '../../css/mixins';
 
+
+.main-card {
+  background: $white;
+  box-sizing: border-box;
+  padding: 25px;
+}
+
+.container-wrap {
+  display: flex;
+  flex-wrap: wrap
+}
+
 .account-menu {
   background-color: $white;
   height: min-content;
