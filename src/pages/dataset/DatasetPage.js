@@ -772,20 +772,6 @@ class DatasetDetail extends Component {
                                 </Col>
                               )}
                             </Row>
-                            <Row className="mt-2">
-                              <Col sm={3} className="gray800-14">
-                                Population size
-                              </Col>
-                              {data.datasetfields.populationSize ? (
-                                <Col sm={9} className="gray800-14 overflowWrap">
-                                  {data.datasetfields.populationSize}
-                                </Col>
-                              ) : (
-                                <Col sm={9} className="gray800-14-opacity">
-                                  Not specified
-                                </Col>
-                              )}
-                            </Row>
                           </div>
                         </Col>
                       </Row>
