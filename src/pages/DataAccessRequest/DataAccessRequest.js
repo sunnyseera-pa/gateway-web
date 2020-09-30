@@ -1487,7 +1487,7 @@ class DataAccessRequest extends Component {
 									7
 								</div>
 							)}
-							Invite collaborators
+							Invite contributors
 						</Accordion.Toggle>
 						<Accordion.Collapse eventKey='6'>
 							<Card.Body className='gray800-14'>
