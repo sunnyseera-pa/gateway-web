@@ -336,6 +336,10 @@ class DataAccessRequest extends Component {
 		let { firstname, lastname } = mainApplicant;
 		let showSubmit = false;
 
+		let publisherId = '', workflowEnabled = false;
+		if(datasets[0].publisher) {
+			({ _id:publisherId, workflowEnabled } = datasets[0].publisher);
+		}
 
 		// 2. If about application is empty, this is a new data access request so set up state based on passed context
 		if (_.isEmpty(aboutApplication)) {
@@ -391,7 +395,7 @@ class DataAccessRequest extends Component {
 			showSubmit = true;
 		}
 
-		// 6. Set state
+		// 7. Set state
 		this.setState({
 			jsonSchema: { ...jsonSchema, ...classSchema },
 			datasets,
@@ -412,7 +416,9 @@ class DataAccessRequest extends Component {
 			mainApplicant: `${firstname} ${lastname}${this.checkCurrentUser(userId) ? ' (you)':''}`,
 			authorIds,
 			projectId,
-			showSubmit
+			showSubmit,
+			publisherId,
+			workflowEnabled
 		});
 	};
 
@@ -928,10 +934,11 @@ class DataAccessRequest extends Component {
 	};
 
 	toggleAssignWorkflowModal = async() => {
-		let response = await axios.get(`${baseURL}/api/v1/publishers/${this.state._id}/workflows`);
-		this.setState({workflows: response});
+		let response = await axios.get(`${baseURL}/api/v1/publishers/${this.state.publisherId}/workflows`);
+		let { workflows } = response.data;
 		this.setState((prevState) => {
 			return {
+				workflows,
 				showAssignWorkflowModal: !prevState.showAssignWorkflowModal,
 			};
 		});
@@ -1782,6 +1789,7 @@ class DataAccessRequest extends Component {
 								allowedNavigation={allowedNavigation}
 								onActionClick={this.onCustodianAction}
 								onNextClick={this.onNextClick}
+								workflowEnabled={this.state.workflowEnabled}
 							/>
 						)}
 					</div>
