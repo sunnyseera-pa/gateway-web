@@ -41,6 +41,7 @@ import ApplicantActionButtons from './components/ApplicantActionButtons/Applican
 import CustodianActionButtons from './components/CustodianActionButtons/CustodianActionButtons';
 import ActionModal from './components/ActionModal/ActionModal';
 import ContributorModal from './components/ContributorModal/ContributorModal';
+import AssignWorkflowModal from './components/AssignWorkflowModal/AssignWorkflowModal';
 import SLA from '../commonComponents/sla/SLA';
 
 class DataAccessRequest extends Component {
@@ -82,6 +83,7 @@ class DataAccessRequest extends Component {
 			showMrcModal: false,
 			showActionModal: false,
 			showContributorModal: false,
+			showAssignWorkflowModal: false,
 			readOnly: false,
 			userType: '',
 			isWideForm: false,
@@ -104,6 +106,7 @@ class DataAccessRequest extends Component {
 			},
 			context: {},
 			actionModalConfig: {},
+			workflows: []
 		};
 	}
 
@@ -866,7 +869,7 @@ class DataAccessRequest extends Component {
 		let {
 			target: { value },
 		} = e;
-		this.toggleActionModal(value);
+		value === 'AssignWorkflow' ? this.toggleAssignWorkflowModal() : this.toggleActionModal(value);
 	};
 
 	toggleCard = (e, eventKey) => {
@@ -924,6 +927,16 @@ class DataAccessRequest extends Component {
 		});
 	};
 
+	toggleAssignWorkflowModal = async() => {
+		let response = await axios.get(`${baseURL}/api/v1/publishers/${this.state._id}/workflows`);
+		this.setState({workflows: response});
+		this.setState((prevState) => {
+			return {
+				showAssignWorkflowModal: !prevState.showAssignWorkflowModal,
+			};
+		});
+	};
+
 	toggleContributorModal = () => {
 		this.setState((prevState) => {
 			return { 
@@ -938,7 +951,6 @@ class DataAccessRequest extends Component {
 	}
 
 	submitContributors = async () => {
-		debugger;
 		let { updatedAuthorIds: authorIds, _id } = this.state;
 		const body = {
 			authorIds
@@ -1003,6 +1015,7 @@ class DataAccessRequest extends Component {
 			showMrcModal,
 			showActionModal,
 			showContributorModal,
+			showAssignWorkflowModal,
 			isWideForm,
 			activeAccordionCard,
 			allowedNavigation,
@@ -1020,6 +1033,7 @@ class DataAccessRequest extends Component {
 				completedInviteCollaborators,
 			},
 			context,
+			workflows,
 			readOnly,
 			userType,
 			actionModalConfig,
@@ -1810,6 +1824,12 @@ class DataAccessRequest extends Component {
 						readOnly={this.state.readOnly}
 				/>
 				</ContributorModal>
+
+				<AssignWorkflowModal
+					open={showAssignWorkflowModal}
+					close={this.toggleAssignWorkflowModal}
+					workflows={this.state.workflows}
+				/>
 
 				<Modal
 					show={showMrcModal}
