@@ -1,10 +1,8 @@
-@import '../../../css/styles.scss';
+@import '../../../css/typography';
+@import '../../../css/mixins';
+@import '../../../css/variables';
 
 .modal {
-
-    h1,h2,h3,h4 {
-        @include font-source(14px, $gray-dark, $font-weight-bold);
-    }
 
     p, li, table {
         @include font-source(14px, $gray-dark);
@@ -25,23 +23,6 @@
             padding: 12px;
             border: 1px solid #dee2e6;
         }
-    }
-
-    &-lg {
-        max-width: 940px !important;
-        width: 100% !important;
-    }
-
-    &-dialog {
-        padding: 15px 15px;
-        left: 0% !important;
-        transform: translate(0%, -50%) !important;
-    }
-
-    &-content {
-        max-width: 940px !important;
-        width: 100%;
-        border-radius: 0px !important;
     }
 }
 

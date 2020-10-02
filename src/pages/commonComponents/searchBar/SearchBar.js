@@ -260,6 +260,9 @@ class SearchBar extends React.Component {
                             <div className="navBarLinkSpacing">
                                 <a href={cmsURL + "/pages/community"} className="black-14">Community</a>
                             </div>
+                            <div className="navBarLinkSpacing">
+                                <a href={"/dashboard"} className="black-14">Dashboard</a>
+                            </div>
                         </Col>
 
                         <Col lg={8} className="text-right">
@@ -312,7 +315,7 @@ class SearchBar extends React.Component {
                                                                 </div>
                                                             </div>
                                                             : newData.slice(0, 48).map((dat, index) => {
-                                                            let messageDateString = moment(dat.messageSent).format('D MMMM YYYY HH:mm');
+                                                            let messageDateString = moment(dat.createdDate).format('D MMMM YYYY HH:mm');
 
                                                              if (dat.messageType === 'add') {
                                                                 return (
@@ -334,7 +337,21 @@ class SearchBar extends React.Component {
                                                                         <Row className={dat.isRead === 'true' || clearMessage ? "notificationReadBackground" : ''}>
                                                                                 <Col xs={10}>
                                                                                     <div className="notificationDate">{messageDateString + '\n'}</div>
-                                                                                    <div className="notificationInfoHolder"><a class="notificationInfo">{dat.messageDescription}</a></div> 
+                                                                                    <div className="notificationInfoHolder"><a href={`/data-access-request/${dat.messageDataRequestID}`} class="notificationInfo">{dat.messageDescription}</a></div> 
+                                                                                </Col>
+                                                                                <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
+                                                                            </Row>
+                                                                            <Dropdown.Divider style={{ margin: "0px" }} />
+                                                                    </Fragment>
+                                                                )
+                                                            }
+                                                            else if(dat.messageType === 'data access request unlinked'){
+                                                                return (
+                                                                    <Fragment key={`message-${index}`}>
+                                                                        <Row className={dat.isRead === 'true' || clearMessage ? "notificationReadBackground" : ''}>
+                                                                                <Col xs={10}>
+                                                                                    <div className="notificationDate">{messageDateString + '\n'}</div>
+                                                                                    <div className="notificationInfoHolder"><span class="notificationInfo">{dat.messageDescription}</span></div> 
                                                                                 </Col>
                                                                                 <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
                                                                             </Row>
@@ -403,6 +420,7 @@ class SearchBar extends React.Component {
                                                         <Dropdown.Item href="/account?tab=tools" className="black-14">Tools</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=reviews" className="black-14">Reviews</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=projects" className="black-14">Projects</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=datasets" className="black-14">Datasets</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=papers" className="black-14">Papers</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=dataaccessrequests" className="black-14">Data access requests</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=collections" className="black-14">Collections</Dropdown.Item>
@@ -439,6 +457,7 @@ class SearchBar extends React.Component {
                                     <Dropdown.Menu as={CustomMenu} className="mobileLoginMenu">
                                         <Dropdown.Item className="black-14" href={cmsURL + "/pages/about"}>About</Dropdown.Item>
                                         <Dropdown.Item className="black-14" href={cmsURL + "/pages/community"}>Community</Dropdown.Item>
+                                        <Dropdown.Item className="black-14" href={"/dashboard"}>Dashboard</Dropdown.Item>
                                         <Dropdown.Divider />
                                         {(() => {
                                             if (userState[0].loggedIn === true) {
@@ -449,6 +468,7 @@ class SearchBar extends React.Component {
                                                         <Dropdown.Item href="/account?tab=tools" className="black-14">Tools</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=reviews" className="black-14">Reviews</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=projects" className="black-14">Projects</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=datasets" className="black-14">Datasets</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=papers" className="black-14">Papers</Dropdown.Item> 
                                                         <Dropdown.Item href="/account?tab=dataaccessrequests" className="black-14">Data access requests</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=collections" className="black-14">Collections</Dropdown.Item> 
@@ -532,8 +552,8 @@ class SearchBar extends React.Component {
                                                                 </div>
                                                             </div>
                                                             : newData.slice(0, 48).map((dat, index) => {
-                                                                let messageDate = new Date(dat.messageSent);
-                                                                let messageDateString = messageDate.getDate() + " " + monthNames[messageDate.getMonth()] + " " + messageDate.getFullYear() + " " + messageDate.getHours() + ":" + messageDate.getMinutes();
+
+                                                                let messageDateString = moment(dat.createdDate).format('D MMMM YYYY HH:mm');
 
                                                                 if (dat.messageType === 'add') {
                                                                     return (

@@ -1,4 +1,4 @@
-@import '../../../css/styles.scss';
+@import '../../../css/variables';
 
 .greyCancelButton {
     min-width: 83px;
@@ -13,5 +13,6 @@
 
 #addReviewButton {
   width: 100%;
-  background-color: $gray-200;
+  background-color: #e7e9ed;
+  height: 40px;
 } 

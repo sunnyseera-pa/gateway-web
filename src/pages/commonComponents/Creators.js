@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { ReactComponent as PersonPlaceholderSvg } from '../../images/person-placeholder.svg';
-import '../../css/styles.scss';
 import './CommonComponents.scss';  
 
 
@@ -14,16 +13,15 @@ class  Creators extends Component {
       <span>
         <a data-testid="href" href={'/person/' + author.id} >
             <div className="authorCardHolder">
-            <Row className="authorCard">  
-                <Col sm={2}>
+            <Row className="authorCard ellipsis">  
+                <Col xs={1} sm={3} md={2}>
                     <PersonPlaceholderSvg />
                 </Col>
-                <Col sm={10} className="text-left ">
+                <Col xs={11} sm={9} md={10} className="text-left ellipsis">
                     <span className="black-16" data-testid="name"> {author.firstname} {author.lastname} </span>
-                    <br /> 
-                    <span className="gray700-13" data-testid="bio"> {author.bio} </span>
+                    <br />
+                    <span className="gray700-13" data-testid="bio"> { (author.bio ? ((author.bio.length <= 44) ? author.bio : author.bio.slice(0, 44) + '...') : '')} </span>
                 </Col>
-                <Col sm={2} />
             </Row>
             </div>
         </a>

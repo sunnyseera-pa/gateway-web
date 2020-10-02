@@ -1,4 +1,5 @@
-@import '../../css/styles.scss';
+@import '../../css/mixins';
+@import '../../css/variables';
 
 .logoWidth{
     @include mq('tablet-small', max){
@@ -73,9 +74,13 @@
   top: 50%;
 } 
 
-#collectionLogo {
-  max-height: 74px;
-  max-width: 74px;
-  min-height: 42px;
-  min-width: 42px;
-} 
+#defaultCollectionImage {
+  width: 110px;
+  height: 73px;
+  background-image: linear-gradient(124deg, #50b996, #485ea7);
+}
+
+#collectionImage {
+  width: 110px !important;
+  height: 73px !important;
+}

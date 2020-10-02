@@ -1,80 +1,85 @@
 import React, { Component } from 'react';
-import { Row, Col, Container } from 'react-bootstrap';
-import { ReactComponent as WhiteLogoSvg } from '../../../src/images/white.svg';
-import Login from '../commonComponents/Login';
+import SearchBar from '../commonComponents/searchBar/SearchBar';
 import axios from 'axios';
-import './SSOPage.scss'; 
+import './SSOPage.scss';
 
 const baseURL = require('../commonComponents/BaseURL').getURL();
 
 class SSOPage extends Component {
-  state = {
-    userState: [
-      {
-        loggedIn: false,
-        role: 'Reader',
-        id: null,
-        name: null,
-      },
-    ],
-    isLoading: false,
-    renderPage: false,
-  };
+    state = {
+        userState: [
+            {
+                loggedIn: false,
+                role: 'Reader',
+                id: null,
+                name: null,
+            },
+        ],
+        isLoading: false,
+        renderPage: false,
+        searchString: ""
+    };
 
-  constructor(props) {
-    super(props);
-    if (props.userState) {
-      this.state.userState = props.userState;
+    constructor(props) {
+        super(props);
+        if (props.userState) {
+            this.state.userState = props.userState;
+        }
     }
-  }
 
-  componentDidMount() {
-    const url = `${window.location.search}`;
-    axios
-    .get(`${baseURL}/api/v1/auth/sso/discourse${url}`)
-    .then((res) => {
-      if (res.status === 200 && res.data.redirectUrl) {
-        window.location.href = res.data.redirectUrl;
-      } else {
-        this.setState({renderPage: true});
-      }
-    })
-    .catch(err => {
-        this.setState({renderPage: true});
-    })
-  }
+    componentDidMount() {
+        const url = `${window.location.search}`;
+        axios
+            .get(`${baseURL}/api/v1/auth/sso/discourse${url}`)
+            .then((res) => {
+                if (res.status === 200 && res.data.redirectUrl) {
+                    window.location.href = res.data.redirectUrl;
+                } else {
+                    this.setState({ renderPage: true });
+                    this.showLogin()
+                }
+            })
+            .catch(err => {
+                this.setState({ renderPage: true });
+                this.showLogin()
+            })
+    }
 
-  render() {
-    const { renderPage } = this.state;
-    return (
-      renderPage && (
-        <div className='landingBackground'>  
-          <Row className='pt-5 pl-5'>
-            <Col xs={{ span: 6, order: 1 }} lg={{ span: 6, order: 1 }}>
-              {' '}
-              <WhiteLogoSvg />{' '}
-            </Col>
-          </Row>
-          <Container>
-            <div className='login-content mt-4'> 
-              <div className='login-body mb-4'>
-                <Row className='mt-4'>
-                  <Col xs={1} md={1} />
-                  <Col xs={10} md={10}>
-                    <span className='black-20'>
-                      Sign in or create a new account
-                    </span>
-                  </Col>
-                  <Col xs={1} md={1}></Col>
-                </Row>
-                <Login />
-              </div>
-            </div>
-          </Container>
-        </div>
-      )
-    );
-  }
+    showLogin() {
+        document.getElementById("myModal").style.display = "block";
+        document.getElementById("loginWayFinder").style.display = "none";
+        document.getElementById("loginButtons").style.display = "block";
+        document.getElementById("loginModalTitle").innerHTML = "Sign in or create a new account";
+        document.getElementById("modalRequestSection").style.display = "none";
+    }
+
+    doSearch = (e) => {
+        //fires on enter on searchbar
+        if (e.key === 'Enter')
+            window.location.href = '/search?search=' + this.state.searchString;
+    };
+
+    updateSearchString = (searchString) => {
+        this.setState({ searchString: searchString });
+    };
+
+    render() {
+        const { renderPage, userState } = this.state;
+        return (
+            renderPage && (
+                <>
+                    <SearchBar
+                        ref={this.searchBar}
+                        doSearchMethod={this.doSearch}
+                        doUpdateSearchString={this.updateSearchString}
+                        doToggleDrawer={this.toggleDrawer}
+                        userState={userState}
+                    />
+                    <div className='landingBackground' />
+                </>
+            )
+        );
+    }
 }
 
 export default SSOPage;

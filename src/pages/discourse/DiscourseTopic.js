@@ -84,9 +84,10 @@ class DiscourseTopic extends Component {
       })
     } else {
       // 1. Assemble payload to create new post
-      let { topicId, toolId } = this.props;
+      let { topicId, toolId, collectionId } = this.props;
       let payload = { 
         toolId,
+        collectionId,
         topicId,
         comment: values.comment.trim()
       };
@@ -226,7 +227,7 @@ class DiscourseTopic extends Component {
               ) }
           </div>
         ) : (
-            <Row>
+            <Row className='margin-top-16'>
                 <Col>
                     <NotFound text='Nothing yet.  Add a comment to start the discussion.' />
                 </Col>

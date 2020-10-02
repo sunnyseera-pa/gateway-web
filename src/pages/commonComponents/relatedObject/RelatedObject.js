@@ -35,7 +35,7 @@ class RelatedObject extends React.Component {
             this.state.inCollection = props.inCollection;
         }
         if (props.data) {
-            this.state.data = props.data;
+            this.state.data = props.data || [];
             //this.state.reviewData = this.state.data.reviews;
             this.state.isLoading = false;
         } 
@@ -156,7 +156,7 @@ class RelatedObject extends React.Component {
                                             {((this.props.showRelationshipAnswer && relatedObject.updated) || this.props.collectionUpdated) ? <span className="collection-card-updated">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
                                             {this.props.showRelationshipQuestion ? <Button variant="medium" className="soft-black-14" onClick={this.removeButton} ><SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />Remove</Button> : ''}
                                         </Col>
-                                        <Col className="pad-left-24 pad-right-24 pad-top-18">
+                                        <Col className="pad-left-24 pad-right-24 pad-top-8">
                                             <span className="badge-tool">
                                                 <SVGIcon name="newtoolicon" fill={'#ffffff'} className="badgeSvg mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Tool</span> 
@@ -169,17 +169,27 @@ class RelatedObject extends React.Component {
                                                         <a href={'/search?search=&tab=Tools&toolcategories=' + data.categories.category}><div className="badge-tag">{data.categories.category}</div></a> 
                                                     : <div className="badge-tag">{data.categories.category}</div> }
 
-                                            {!data.categories.programmingLanguage || data.categories.programmingLanguage.length <= 0 ? '' : data.categories.programmingLanguage.map((language) => {
+                                            {!data.programmingLanguage || data.programmingLanguage.length <= 0 ? '' : data.programmingLanguage.map((p, i) => {
                                                 if (activeLink===true){
                                                     if (onSearchPage === true) { 
-                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('languageSelected', language)}><div className="badge-tag">{language}</div></span>
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('languageSelected', p.programmingLanguage)}><div className="badge-version" key={i}><span>{p.programmingLanguage}</span><span>{p.version}</span></div></span>
                                                     }
                                                     else {
-                                                        return <a href={'/search?search=&tab=Tools&programmingLanguage=' + language}><div className="badge-tag">{language}</div></a>
+                                                        return (
+                                                            <a href={"/search?search=&tab=Tools&programmingLanguage=" + p.programmingLanguage}>
+                                                            <div className="badge-version" key={i}>
+                                                                <span>{p.programmingLanguage}</span><span>{p.version}</span>
+                                                            </div>
+                                                            </a>
+                                                        );
                                                     }
                                                 }
                                                 else {
-                                                    return <div className="badge-tag">{language}</div>
+                                                    return (
+                                                        <div className="badge-version" key={i}>
+                                                            <span>{p.programmingLanguage}</span><span>{p.version}</span>
+                                                        </div>
+                                                    );
                                                 }
                                             })}
 
@@ -250,7 +260,7 @@ class RelatedObject extends React.Component {
                                             {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="collection-card-updated">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
                                             {this.props.showRelationshipQuestion ? <Button variant="medium" className="soft-black-14" onClick={this.removeButton} ><SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />Remove</Button> : ''}
                                         </Col>
-                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-18">
+                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-8">
                                             <span className="badge-project">
                                                 <SVGIcon name="newestprojecticon" fill={'#ffffff'} className="badgeSvg mr-2" viewBox="-2 -2 22 22"/>
                                                 <span>Project</span> 
@@ -330,7 +340,7 @@ class RelatedObject extends React.Component {
                                             {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="collection-card-updated">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
                                             {this.props.showRelationshipQuestion ? <Button variant="medium" className="soft-black-14" onClick={this.removeButton} ><SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />Remove</Button> : ''}
                                         </Col>
-                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-18">
+                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-8">
                                             <span className="badge-paper">
                                                 <SVGIcon name="newprojecticon" fill={'#3c3c3b'} className="badgeSvg mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Paper</span> 
@@ -412,7 +422,7 @@ class RelatedObject extends React.Component {
                                             {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="collection-card-updated">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
                                             {this.props.showRelationshipQuestion ? <Button variant="medium" className="soft-black-14" onClick={this.removeButton} ><SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />Remove</Button> : ''}
                                         </Col>
-                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-18">
+                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-8">
                                             <span className="badge-dataset">
                                                 <SVGIcon name="dataseticon" fill={'#ffffff'} className="badgeSvg mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Dataset</span>
@@ -424,7 +434,7 @@ class RelatedObject extends React.Component {
                                                             return <span className="pointer" onClick={event => this.updateOnFilterBadge('phenotypesSelected', phenotypesSeached[0].name)}><div className="badge-phenotype">Phenotype: {phenotypesSeached[0].name}</div></span>
                                                         }
                                                         else { 
-                                                            return <a href={'/search?search=&tab=Datasets&phenotypes==' + phenotypesSeached[0].name}><div className="badge-phenotype">Phenotype: {phenotypesSeached[0].name}</div></a>
+                                                            return <a href={'/search?search=&tab=Datasets&phenotypes=' + phenotypesSeached[0].name}><div className="badge-phenotype">Phenotype: {phenotypesSeached[0].name}</div></a>
                                                         }
                                                     }
                                                     else {
@@ -440,7 +450,7 @@ class RelatedObject extends React.Component {
                                                             return <span className="pointer" onClick={event => this.updateOnFilterBadge('phenotypesSelected', phenotype)}><div className="badge-phenotype">Phenotype: {phenotype}</div></span>
                                                         }
                                                         else { 
-                                                            return <a href={'/search?search=&tab=Datasets&phenotypes==' + phenotype}><div className="badge-phenotype">Phenotype: {phenotype}</div></a>
+                                                            return <a href={'/search?search=&tab=Datasets&phenotypes=' + phenotype}><div className="badge-phenotype">Phenotype: {phenotype}</div></a>
                                                         }
                                                     }
                                                     else {
@@ -455,7 +465,7 @@ class RelatedObject extends React.Component {
                                                         return <span className="pointer" onClick={event => this.updateOnFilterBadge('keywordsSelected', feature)}><div className="badge-tag">{feature}</div></span>
                                                     }
                                                     else { 
-                                                        return <a href={'/search?search=&tab=Datasets&keywords==' + feature}><div className="badge-tag">{feature}</div></a>
+                                                        return <a href={'/search?search=&tab=Datasets&keywords=' + feature}><div className="badge-tag">{feature}</div></a>
                                                     }
                                                 }
                                                 else {

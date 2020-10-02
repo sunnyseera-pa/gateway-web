@@ -28,6 +28,7 @@ const AddEditProjectForm = (props) => {
             name: props.data.name || '',
             link: props.data.link || '',
             description: props.data.description || '',
+            resultsInsights: props.data.resultsInsights || '',
             authors: props.data.authors || [props.userState[0].id],
             categories: props.data.categories  || {
                 category: ''
@@ -47,6 +48,8 @@ const AddEditProjectForm = (props) => {
             description: Yup.string()
                 .max(3000, 'Maximum of 3,000 characters')
                 .required('This cannot be empty'),
+            resultsInsights: Yup.string()
+                .max(3000, 'Maximum of 3,000 characters'),
             categories: Yup.object().shape({
                 category: Yup.string().required('This cannot be empty')
             }),
@@ -122,6 +125,10 @@ const AddEditProjectForm = (props) => {
         document.getElementById("currentCount").innerHTML=e.target.value.length   
     }
 
+    function resultsInsightsCount(e) {
+        document.getElementById("resultsInsightsCurrentCount").innerHTML=e.target.value.length
+    }
+
     const relatedResourcesRef = React.useRef()
 
     return (
@@ -191,7 +198,7 @@ const AddEditProjectForm = (props) => {
                             <Form.Group>
                                 <div style={{ display: 'inline-block' }}>
                                     <p className="gray800-14 margin-bottom-0 pad-bottom-4">Description</p>
-                                    <p className="gray700-13 margin-bottom-0">Include the tool purpose and objective.</p>
+                                    <p className="gray700-13 margin-bottom-0">Include the project purpose and objective.</p>
                                 </div>
                                 <div style={{ display: 'inline-block', float: 'right' }}>
                                     <br />
@@ -199,6 +206,19 @@ const AddEditProjectForm = (props) => {
                                 </div>
                                 <Form.Control as="textarea" id="description" name="description" type="text" className={formik.touched.description && formik.errors.description ? "emptyFormInput addFormInput descriptionInput" : "addFormInput descriptionInput"} onKeyUp={descriptionCount} onChange={formik.handleChange}  value={formik.values.description} onBlur={formik.handleBlur} />
                                 {formik.touched.description && formik.errors.description ? <div className="errorMessages">{formik.errors.description}</div> : null}
+                            </Form.Group>
+
+                            <Form.Group>
+                                <div style={{ display: 'inline-block' }}>
+                                    <p className="gray800-14 margin-bottom-0 pad-bottom-4">Results/Insights</p>
+                                    <p className="gray700-13 margin-bottom-0">Include any results or insights about the project.</p>
+                                </div>
+                                <div style={{ display: 'inline-block', float: 'right' }}>
+                                    <br />
+                                    <span className="gray700-13">(<span id="resultsInsightsCurrentCount">{formik.values.resultsInsights.length || 0}</span>/3000)</span>
+                                </div>
+                                <Form.Control as="textarea" id="resultsInsights" name="resultsInsights" type="text" className={formik.touched.resultsInsights && formik.errors.resultsInsights ? "emptyFormInput addFormInput descriptionInput" : "addFormInput descriptionInput"} onKeyUp={resultsInsightsCount} onChange={formik.handleChange}  value={formik.values.resultsInsights} onBlur={formik.handleBlur} />
+                                {formik.touched.resultsInsights && formik.errors.resultsInsights ? <div className="errorMessages">{formik.errors.resultsInsights}</div> : null}
                             </Form.Group>
 
                             <Form.Group>

@@ -48,15 +48,15 @@ class Reviews extends Component {
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
     return (
       <div>
-        <Row className="mt-4 mb-3">
-          <Col xs={12} md={12}>
-            <ReviewButton data={data} userState={userState} />
+        <Row className="margin-bottom-0">
+          <Col xs={12} md={12} className="margin-top-0">
+            <ReviewButton data={data} userState={userState} className="margin-bottom-0"/>
           </Col>
         </Row>
 
         {reviewData.length <= 0 ? 
             <Row>
-                <Col xs={12} className="ml-3">
+                <Col xs={12}>
                     <NotFound word="reviews" /> 
                 </Col>
             </Row>
@@ -64,7 +64,7 @@ class Reviews extends Component {
           var updatedDate = new Date(review.date);;
           var updatedOnDate = updatedDate.getDate() + " " + monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear();
           return <div key={index}>
-            <Row className="mt-2">
+            <Row className="margin-bottom-8">
               <Col>
                 <div className="rectangle">
                   <Row>
@@ -87,7 +87,7 @@ class Reviews extends Component {
             </Row>
 
             {review.reply ?
-              <Row className="mt-2">
+              <Row className="margin-bottom-8">
                 <Col md={2}></Col>
                 <Col md={10}>
                   <div className="rectangle">
@@ -138,13 +138,13 @@ const ReviewButton = (props) => {
         props.userState[0].loggedIn === true ?
           <>
             {props.data.authors.includes(props.userState[0].id) ? '' :
-              <Button variant="light" id="addReviewButton" className="mb-1" onClick={handleShow}>
+              <Button variant="light" id="addReviewButton" className="button-tertiary mb-3 addButton" onClick={handleShow}>
                 + Add a review
               </Button>
             }
           </>
           :
-          <Button variant="light" id="addReviewButton" className="mb-1" onClick={showLoginModal}>
+          <Button variant="light" id="addReviewButton" className="button-tertiary mb-3 addButton" onClick={showLoginModal}>
             + Add a review
           </Button>
       }

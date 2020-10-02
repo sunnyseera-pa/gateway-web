@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import queryString from "query-string";
+import * as Sentry from '@sentry/react';
 import { Row, Col, Tabs, Tab, Container, Alert, Button } from "react-bootstrap";
 import NotFound from "../commonComponents/NotFound";
 import Loading from "../commonComponents/Loading";
@@ -25,6 +26,7 @@ import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from "../commonComponents/userMessages/UserMessages";
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
+import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 
 class ToolDetail extends Component {
   // initialize our state
@@ -61,6 +63,7 @@ class ToolDetail extends Component {
     discoursePostCount: 0,
     showDrawer: false,
     showModal: false,
+    showError: false,
     context: {}
   };
  
@@ -69,6 +72,14 @@ class ToolDetail extends Component {
     this.state.userState = props.userState;
     this.searchBar = React.createRef();
   }
+
+  showModal = () => {
+		this.setState({ showError: true });
+	};
+
+	hideModal = () => {
+		this.setState({ showError: false });
+	};
 
   // on loading of tool detail page
   componentDidMount() {
@@ -253,230 +264,247 @@ class ToolDetail extends Component {
     const avgRating = reviewData.length > 0 ? ratingsTotal / ratingsCount : "";
 
     return (
-      <div>
-        <SearchBar
-          searchString={searchString}
-          doSearchMethod={this.doSearch}
-          doUpdateSearchString={this.updateSearchString}
-          userState={userState}
-          doToggleDrawer={this.toggleDrawer}
-        />
-        <Container className="margin-bottom-48">
-          {toolAdded ? (
-            <Row className="">
-              <Col sm={1} lg={1} />
-              <Col sm={10} lg={10}>
-                <Alert variant="success" className="mt-3">
-                  Done! Someone will review your tool and let you know when it
-                  goes live
-                </Alert>
-              </Col>
-              <Col sm={1} lg={10} />
-            </Row>
-          ) : (
-            ""
-          )}
+      <Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
+        <div>
+          <SearchBar
+            searchString={searchString}
+            doSearchMethod={this.doSearch}
+            doUpdateSearchString={this.updateSearchString}
+            userState={userState}
+            doToggleDrawer={this.toggleDrawer}
+          />
+          <Container className="margin-bottom-48">
+            {toolAdded ? (
+              <Row className="">
+                <Col sm={1} lg={1} />
+                <Col sm={10} lg={10}>
+                  <Alert variant="success" className="mt-3">
+                    Done! Someone will review your tool and let you know when it
+                    goes live
+                  </Alert>
+                </Col>
+                <Col sm={1} lg={10} />
+              </Row>
+            ) : (
+              ""
+            )}
 
-          {toolEdited ? (
-            <Row className="">
-              <Col sm={1} lg={1} />
-              <Col sm={10} lg={10}>
-                <Alert variant="success" className="mt-3">
-                  Done! Your tool has been updated
-                </Alert>
-              </Col>
-              <Col sm={1} lg={10} />
-            </Row>
-          ) : (
-            ""
-          )}
+            {toolEdited ? (
+              <Row className="">
+                <Col sm={1} lg={1} />
+                <Col sm={10} lg={10}>
+                  <Alert variant="success" className="mt-3">
+                    Done! Your tool has been updated
+                  </Alert>
+                </Col>
+                <Col sm={1} lg={10} />
+              </Row>
+            ) : (
+              ""
+            )}
 
-          {data.activeflag === "review" ? (
-            <Row className="">
-              <Col sm={1} lg={1} />
-              <Col sm={10} lg={10}>
-                <Alert variant="warning" className="mt-3">
-                  Your tool is pending review. Only you can see this page.
-                </Alert>
-              </Col>
-              <Col sm={1} lg={10} />
-            </Row>
-          ) : (
-            ""
-          )}
+            {data.activeflag === "review" ? (
+              <Row className="">
+                <Col sm={1} lg={1} />
+                <Col sm={10} lg={10}>
+                  <Alert variant="warning" className="mt-3">
+                    Your tool is pending review. Only you can see this page.
+                  </Alert>
+                </Col>
+                <Col sm={1} lg={10} />
+              </Row>
+            ) : (
+              ""
+            )}
 
-          {reviewAdded ? (
-            <Row className="">
-              <Col sm={1} lg={1} />
-              <Col sm={10} lg={10}>
-                <Alert variant="warning" className="mt-3">
-                  Done! Your review is pending review.
-                </Alert>
-              </Col>
-              <Col sm={1} lg={10} />
-            </Row>
-          ) : (
-            ""
-          )}
+            {reviewAdded ? (
+              <Row className="">
+                <Col sm={1} lg={1} />
+                <Col sm={10} lg={10}>
+                  <Alert variant="warning" className="mt-3">
+                    Done! Your review is pending review.
+                  </Alert>
+                </Col>
+                <Col sm={1} lg={10} />
+              </Row>
+            ) : (
+              ""
+            )}
 
-          {replyAdded ? (
-            <Row className="">
+            {replyAdded ? (
+              <Row className="">
+                <Col sm={1} lg={1} />
+                <Col sm={10} lg={10}>
+                  <Alert variant="success" className="mt-3">
+                    Done! Your reply has been added.
+                  </Alert>
+                </Col>
+                <Col sm={1} lg={10} />
+              </Row>
+            ) : (
+              ""
+            )}
+            <Row className="mt-4">
               <Col sm={1} lg={1} />
               <Col sm={10} lg={10}>
-                <Alert variant="success" className="mt-3">
-                  Done! Your reply has been added.
-                </Alert>
-              </Col>
-              <Col sm={1} lg={10} />
-            </Row>
-          ) : (
-            ""
-          )}
-          <Row className="mt-4">
-            <Col sm={1} lg={1} />
-            <Col sm={10} lg={10}>
-              <div className="rectangle">
-                <Row>
-                  <Col>
-                    <span className="black-20">{data.name}</span>
-                  </Col>
-                </Row>
-                {ratingsCount === 0 ? (
-                  ""
-                ) : (
-                  <Row className="mt-3">
+                <div className="rectangle">
+                  <Row>
                     <Col>
-                      <div className="gray500-13">
-                        <Rating
-                          emptySymbol={<EmptyStarIconSvg />}
-                          fullSymbol={<FullStarIconSvg />}
-                          placeholderSymbol={<FullStarIconSvg />}
-                          placeholderRating={avgRating}
-                          readonly="true"
-                        />
-                        <span style={{ "padding-left": "20px" }}>
-                          {!!ratingsTotal && ratingsCount === 1
-                            ? ratingsCount + " review"
-                            : ratingsCount + " reviews"}
-                          <span className="reviewTitleGap">·</span>
-                          {avgRating === 0
-                            ? "No average rating"
-                            : Math.round(avgRating * 10) / 10 + " average"}
-                        </span>
-                      </div>
+                      <span className="black-20">{data.name}</span>
                     </Col>
                   </Row>
-                )}
-                <Row className="mt-3">
-                  <Col xs={12}>
-                    <span className="badge-tool">
-                      <SVGIcon
-                        name="newtoolicon"
-                        fill={"#ffffff"}
-                        className="badgeSvg mr-2"
-                        viewBox="-2 -2 22 22"
-                      />
-                      <span>Tool</span>
-                    </span>
-
-                    <a href={"/search?search=&tab=Tools&toolcategories=" + data.categories.category}>
-                      <div className="badge-tag">
-                        {data.categories.category}
-                      </div>
-                    </a>
-                  </Col>
-                </Row>
-
-                <Row className="mt-2">
-                  <Col xs={12}>
-                    <span className="gray800-14">
-                      {data.counter === undefined ? 1 : data.counter + 1}
-                      {data.counter === undefined ? " view" : " views"}
-                    </span>
-                  </Col>
-                </Row>
-              </div>
-            </Col>
-            <Col sm={1} lg={10} />
-          </Row>
-
-          <Row>
-            <Col sm={1} />
-            <Col sm={10}>
-              <div>
-                <Tabs className="tabsBackground gray700-13">
-                  <Tab eventKey="About" title={"About"}>
-                    <Row className="mt-2">
-                      <Col sm={12} lg={12}>
-                        <div className="rectangle">
-                          <Row className="gray800-14-bold">
-                            <Col sm={12}>Description</Col>
-                          </Row>
-                          <Row className="mt-3">
-                            <Col sm={12} className="gray800-14">
-                              <ReactMarkdown source={data.description} />
-                            </Col>
-                          </Row>
+                  {ratingsCount === 0 ? (
+                    ""
+                  ) : (
+                    <Row className="mt-3">
+                      <Col>
+                        <div className="gray500-13">
+                          <Rating
+                            emptySymbol={<EmptyStarIconSvg />}
+                            fullSymbol={<FullStarIconSvg />}
+                            placeholderSymbol={<FullStarIconSvg />}
+                            placeholderRating={avgRating}
+                            readonly="true"
+                          />
+                          <span style={{ "paddingLeft": "20px" }}>
+                            {!!ratingsTotal && ratingsCount === 1
+                              ? ratingsCount + " review"
+                              : ratingsCount + " reviews"}
+                            <span className="reviewTitleGap">·</span>
+                            {avgRating === 0
+                              ? "No average rating"
+                              : Math.round(avgRating * 10) / 10 + " average"}
+                          </span>
                         </div>
                       </Col>
                     </Row>
+                  )}
+                  <Row className="mt-3">
+                    <Col xs={12}>
+                      <span className="badge-tool">
+                        <SVGIcon
+                          name="newtoolicon"
+                          fill={"#ffffff"}
+                          className="badgeSvg mr-2"
+                          viewBox="-2 -2 22 22"
+                        />
+                        <span>Tool</span>
+                      </span>
 
-                    <Row className="mt-2">
-                      <Col sm={12}>
-                        <div className="rectangle">
-                          <Row className="gray800-14-bold">
-                            <Col sm={12}>Details</Col>
-                          </Row>
-                          <Row className="mt-3">
-                            <Col sm={2} className="gray800-14">
-                              URL
-                            </Col>
-                            <Col sm={10} className="gray800-14">
-                              <a
-                                href={data.link}
-                                rel="noopener noreferrer"
-                                target="_blank"
-                                className="purple-14"
-                              >
-                                {data.link}
-                              </a>
-                            </Col>
-                          </Row>
-                          <Row className="mt-2">
-                            <Col sm={2} className="gray800-14">
-                              License
-                            </Col>
-                            {data.license ? (
-                              <Col sm={10} className="gray800-14">
-                                {data.license}
-                              </Col>
-                            ) : (
-                              <Col sm={10} className="gray800-14-opacity">
-                                Not specified
-                              </Col>
-                            )}
-                          </Row>
-                          <Row className="mt-2">
-                            <Col sm={2} className="gray800-14">
-                              Last update
-                            </Col>
-                            <Col sm={10} className="gray800-14">
-                              {moment(data.updatedon).format("DD MMM YYYY")}
-                            </Col>
-                          </Row>
-                          {data.uploader ? (
-                            <Row className="mt-2">
-                              <Col sm={2} className="gray800-14">
-                                Uploader
-                              </Col>
-                              <Col sm={10} className="gray800-14 overflowWrap">
-                                {data.uploaderIs[0].firstname}{" "}
-                                {data.uploaderIs[0].lastname}
+                      <a href={"/search?search=&tab=Tools&toolcategories=" + data.categories.category}>
+                        <div className="badge-tag">
+                          {data.categories.category}
+                        </div>
+                      </a>
+                    </Col>
+                  </Row>
+
+                  <Row className="mt-2">
+                    <Col xs={12}>
+                      <span className="gray800-14">
+                        {data.counter === undefined ? 1 : data.counter + 1}
+                        {data.counter === undefined ? " view" : " views"}
+                      </span>
+                    </Col>
+                  </Row>
+                </div>
+              </Col>
+              <Col sm={1} lg={10} />
+            </Row>
+
+            <Row>
+              <Col sm={1} />
+              <Col sm={10}>
+                <div>
+                  <Tabs className="tabsBackground gray700-13 margin-bottom-16">
+                    <Tab eventKey="About" title={"About"}>
+                      <Row className="mt-2">
+                        <Col sm={12} lg={12}>
+                          <div className="rectangle">
+                            <Row className="gray800-14-bold">
+                              <Col sm={12}>Description</Col>
+                            </Row>
+                            <Row className="mt-3">
+                              <Col sm={12} className="gray800-14">
+                                <ReactMarkdown source={data.description} />
                               </Col>
                             </Row>
-                          ) : (
-                            ""
-                          )}
+                          </div>
+                        </Col>
+                      </Row>
+
+                      {!_.isEmpty(data.resultsInsights) ? (
+                        <Row className="mt-2">
+                          <Col sm={12} lg={12}>
+                            <div className="rectangle">
+                              <Row className="gray800-14-bold">
+                                <Col sm={12}>Results/Insights</Col>
+                              </Row>
+                              <Row className="mt-3">
+                                <Col sm={12} className="gray800-14">
+                                  <ReactMarkdown source={data.resultsInsights} />
+                                </Col>
+                              </Row>
+                            </div>
+                          </Col>
+                        </Row>): ""}
+
+                      <Row className="mt-2">
+                        <Col sm={12}>
+                          <div className="rectangle">
+                            <Row className="gray800-14-bold">
+                              <Col sm={12}>Details</Col>
+                            </Row>
+                            <Row className="mt-3">
+                              <Col sm={2} className="gray800-14">
+                                URL
+                              </Col>
+                              <Col sm={10} className="gray800-14">
+                                <a
+                                  href={data.link}
+                                  rel="noopener noreferrer"
+                                  target="_blank"
+                                  className="purple-14"
+                                >
+                                  {data.link}
+                                </a>
+                              </Col>
+                            </Row>
+                            <Row className="mt-2">
+                              <Col sm={2} className="gray800-14">
+                                License
+                              </Col>
+                              {data.license ? (
+                                <Col sm={10} className="gray800-14">
+                                  {data.license}
+                                </Col>
+                              ) : (
+                                <Col sm={10} className="gray800-14-opacity">
+                                  Not specified
+                                </Col>
+                              )}
+                            </Row>
+                            <Row className="mt-2">
+                              <Col sm={2} className="gray800-14">
+                                Last update
+                              </Col>
+                              <Col sm={10} className="gray800-14">
+                                {moment(data.updatedon).format("DD MMM YYYY")}
+                              </Col>
+                            </Row>
+                            {data.uploader ? (
+                              <Row className="mt-2">
+                                <Col sm={2} className="gray800-14">
+                                  Uploader
+                                </Col>
+                                <Col sm={10} className="gray800-14 overflowWrap">
+                                  {data.uploaderIs[0].firstname}{" "}
+                                  {data.uploaderIs[0].lastname}
+                                </Col>
+                              </Row>
+                            ) : (
+                              ""
+                            )}
                           <Row className="mt-2">
                             <Col sm={2} className="gray800-14">
                               Type
@@ -498,35 +526,26 @@ class ToolDetail extends Component {
                               Implementation
                             </Col>
                             <Col sm={10} className="gray800-14">
-                              {!data.categories.programmingLanguage ||
-                              data.categories.programmingLanguage <= 0
+                              {!data.programmingLanguage ||
+                              data.programmingLanguage.length <= 0
                                 ? ""
-                                : data.categories.programmingLanguage.map(
-                                    (language, i) => {
+                                : data.programmingLanguage.map(
+                                    (obj, i) => {
                                       return (
-                                        <a href={"/search?search=&tab=Tools&programmingLanguage=" + language}>
-                                          <div className="badge-tag" key={i}>
-                                            {language}
+                                        (obj.version !== "") ? 
+                                        <a href={"/search?search=&tab=Tools&programmingLanguage=" + obj.programmingLanguage}>
+                                          <div className="badge-version" key={i}>
+                                            <span>{obj.programmingLanguage}</span><span>{obj.version}</span>
                                           </div>
                                         </a>
+                                      : <a href={"/search?search=&tab=Tools&programmingLanguage=" + obj.programmingLanguage}>
+                                        <div className="badge-tag" key={i}>
+                                          <span>{obj.programmingLanguage}</span>
+                                        </div>
+                                      </a>
                                       );
                                     }
                                   )}
-
-                              {!data.categories.programmingLanguageVersion ? (
-                                ""
-                              ) : (
-                                <a
-                                  href={
-                                    "/search?search=" +
-                                    data.categories.programmingLanguageVersion
-                                  }
-                                >
-                                  <div className="badge-tag">
-                                    {data.categories.programmingLanguageVersion}
-                                  </div>
-                                </a>
-                              )}
                             </Col>
                           </Row>
                           <Row className="mt-2">
@@ -574,88 +593,90 @@ class ToolDetail extends Component {
                         </div>
                       </Col>
                     </Row>
-                    <Row className="mt-2">
-                      <Col sm={12}>
-                        <div className="rectangle">
-                          <Row className="gray800-14-bold">
-                            <Col sm={12}>Authors</Col>
-                          </Row>
-                          <Row className="mt-3">
-                            {data.persons.map(author => (
-                              <Col sm={6} key={author.id}>
-                                <Creators key={author.id} author={author} />
-                              </Col>
-                            ))}
-                          </Row>
-                        </div>
-                      </Col>
-                    </Row>
-                  </Tab>
-                  <Tab
-                    eventKey="Reviews"
-                    title={"Reviews (" + reviewData.length + ")"}
-                  >
-                    <Reviews
-                      data={data}
-                      userState={userState}
-                      reviewData={reviewData}
-                    />
-                  </Tab>
-                  <Tab
-                    eventKey="Collaboration"
-                    title={`Discussion (${discoursePostCount})`}
-                  >
-                    <DiscourseTopic
-                      toolId={data.id}
-                      topicId={data.discourseTopicId || 0}
-                      userState={userState}
-                      onUpdateDiscoursePostCount={this.updateDiscoursePostCount}
-                    />
-                  </Tab>
-                  <Tab
-                    eventKey="Projects"
-                    title={
-                      "Related resources (" + relatedObjects.length + ")"
-                    }
-                  >
-                    {relatedObjects.length <= 0 ? (
-                      <NotFound word="related resources" />
-                    ) : (
-                      relatedObjects.map(object => (
-                        <RelatedObject
-                          relatedObject={object}
-                          activeLink={true}
-                          showRelationshipAnswer={true}
-                        />
-                      ))
-                    )}
-                  </Tab>
-                </Tabs>
-              </div>
-            </Col>
-            <Col sm={1} />
-          </Row>
-        </Container>
-    		<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
+                      <Row className="mt-2">
+                        <Col sm={12}>
+                          <div className="rectangle">
+                            <Row className="gray800-14-bold">
+                              <Col sm={12}>Authors</Col>
+                            </Row>
+                            <Row className="mt-3">
+                              {data.persons.map(author => (
+                                <Col sm={6} key={author.id}>
+                                  <Creators key={author.id} author={author} />
+                                </Col>
+                              ))}
+                            </Row>
+                          </div>
+                        </Col>
+                      </Row>
+                    </Tab>
+                    <Tab
+                      eventKey="Reviews"
+                      title={"Reviews (" + reviewData.length + ")"}
+                    >
+                      <Reviews
+                        data={data}
+                        userState={userState}
+                        reviewData={reviewData}
+                      />
+                    </Tab>
+                    <Tab
+                      eventKey="Collaboration"
+                      title={`Discussion (${discoursePostCount})`}
+                    >
+                      <DiscourseTopic
+                        toolId={data.id}
+                        topicId={data.discourseTopicId || 0}
+                        userState={userState}
+                        onUpdateDiscoursePostCount={this.updateDiscoursePostCount}
+                      />
+                    </Tab>
+                    <Tab
+                      eventKey="Projects"
+                      title={
+                        "Related resources (" + relatedObjects.length + ")"
+                      }
+                    >
+                      {relatedObjects.length <= 0 ? (
+                        <NotFound word="related resources" />
+                      ) : (
+                        relatedObjects.map(object => (
+                          <RelatedObject
+                            relatedObject={object}
+                            activeLink={true}
+                            showRelationshipAnswer={true}
+                          />
+                        ))
+                      )}
+                    </Tab>
+                  </Tabs>
+                </div>
+              </Col>
+              <Col sm={1} />
+            </Row>
+          </Container>
+          <SideDrawer open={showDrawer} closed={this.toggleDrawer}>
 
-					<UserMessages
-						closed={this.toggleDrawer}
-						toggleModal={this.toggleModal}
-						drawerIsOpen={this.state.showDrawer}
-					/>
-				</SideDrawer>
+            <UserMessages
+              userState={userState[0]}
+              closed={this.toggleDrawer}
+              toggleModal={this.toggleModal}
+              drawerIsOpen={this.state.showDrawer}
+            />
+          </SideDrawer>
 
-				<DataSetModal
-					open={showModal}
-          context={context}
-					closed={this.toggleModal}
-					userState={userState[0]}
-				/>
+          <DataSetModal
+            open={showModal}
+            context={context}
+            closed={this.toggleModal}
+            userState={userState[0]}
+          />
 
-        <ActionBar userState={userState}> 
-          <ResourcePageButtons data={data} userState={userState} />
-        </ActionBar>
-      </div>
+          <ActionBar userState={userState}> 
+            <ResourcePageButtons data={data} userState={userState} />
+          </ActionBar>
+        </div>
+      </Sentry.ErrorBoundary>
     );
   }
 }

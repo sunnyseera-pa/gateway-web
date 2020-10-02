@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import * as Sentry from '@sentry/react';
 import Container from 'react-bootstrap/Container';
 import SSOPage from './pages/sso/SSOPage';
 import ToolPage from './pages/tool/ToolPage';
@@ -11,6 +12,7 @@ import PaperPage from './pages/paper/PaperPage';
 import DatasetPage from './pages/dataset/DatasetPage';
 import SearchPage from './pages/search/SearchPage';
 import CollectionPage from './pages/collections/CollectionPage';
+import PublicAnalyticsDashboard from './pages/publicDashboard/PublicAnalyticsDashboard';
 import Account from './pages/dashboard/Account';
 import Unsubscribe from './pages/dashboard/Unsubscribe';
 import AddEditToolPage from './pages/tool/AddEditToolPage';
@@ -24,6 +26,7 @@ import CompleteRegistration from './pages/registration/CompleteRegistration'
 import LoginModal from './pages/commonComponents/LoginModal';
 import Footer from './pages/commonComponents/Footer';
 import LoginErrorPage from './pages/commonComponents/LoginErrorPage';
+import ErrorModal from './pages/commonComponents/errorModal/ErrorModal';
 
 var baseURL = require('./pages/commonComponents/BaseURL').getURL();
 class HDRRouter extends Component {
@@ -37,10 +40,26 @@ class HDRRouter extends Component {
                 name: null
             }
         ],
-        isLoading: true
+        isLoading: true,
+        showError: false,
+    };
+    
+    hideModal = () => {
+        this.setState({ showError: false });
     };
     async componentDidMount() {
+        let currentComponent = this;
+
         axios.defaults.withCredentials = true;
+        axios.defaults.timeout = 60000;
+
+        axios.interceptors.response.use(function (response) {
+            return response;
+        }, function (error) {
+            Sentry.captureException(error);
+            return Promise.reject(error).then(currentComponent.setState({showError: true}));
+        });
+
         axios
             .get(baseURL + '/api/v1/auth/status')
             .then((res) => {
@@ -50,7 +69,8 @@ class HDRRouter extends Component {
                             loggedIn: res.data.data[0].loggedIn,
                             role: res.data.data[0].role,
                             id: res.data.data[0].id,
-                            name: res.data.data[0].name
+                            name: res.data.data[0].name,
+                            teams: res.data.data[0].teams
                         }
                     ],
                     isLoading: false
@@ -68,10 +88,10 @@ class HDRRouter extends Component {
                     ],
                     isLoading: false
                 });
-            })
+            });
     }
     render() {
-        const { isLoading, userState } = this.state;
+        const { isLoading, userState, showError } = this.state;
         if (isLoading) {
             return (
                 <Container>
@@ -79,6 +99,15 @@ class HDRRouter extends Component {
                 </Container>
             );
         }
+
+        if(showError) {
+            return (
+                <Router>
+                    <ErrorModal show={this.state.showError} handleClose={this.hideModal} />
+                </Router>
+            );
+        }
+
         return (
             <Router>
                 <LoginModal userState={userState} />
@@ -92,6 +121,8 @@ class HDRRouter extends Component {
                         <Route path='/completeRegistration/:personID' render={(props) => <CompleteRegistration {...props} userState={userState} />} />
                         <Route path='/sso' render={(props) => <SSOPage {...props} userState={userState} />} />
                         <Route path='/account/unsubscribe/:userObjectID' render={(props) => <Unsubscribe {...props} userState={userState} />} />
+                        <Route path='/dashboard' render={(props) => <PublicAnalyticsDashboard {...props} userState={userState} />} />
+                        
                         {userState[0].loggedIn ? (<Route path='/data-access-request/dataset/:datasetId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
                         {userState[0].loggedIn ? (<Route path='/data-access-request/publisher/:publisherId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
                         {userState[0].loggedIn ? (<Route path='/data-access-request/:accessId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}

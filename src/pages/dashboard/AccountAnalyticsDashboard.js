@@ -11,9 +11,9 @@ import './Dashboard.scss';
 
  
 var baseURL = require('../commonComponents/BaseURL').getURL();
+let isMounted = false;
 
 class AccountAnalyticsDashboard extends React.Component { 
-
     // initialize our state
     state = {
         userState: [],
@@ -41,6 +41,31 @@ class AccountAnalyticsDashboard extends React.Component {
         this.state.selectedOption = this.state.dates[0];
     }
 
+    async componentDidMount() {
+        isMounted = true; 
+        initGA('UA-166025838-1');
+        await Promise.all([
+            this.getUnmetDemand(),
+            this.getTopSearches()
+        ]);
+        
+        await Promise.all([
+            this.getTotalGAUsers(),
+            this.getGAUsers(moment(this.state.selectedOption).startOf('month').format("YYYY-MM-DD"), moment(this.state.selectedOption).endOf('month').format("YYYY-MM-DD")),
+            this.getUptime(this.state.selectedOption),
+            this.getStats(),
+            this.getKPIs(this.state.selectedOption), 
+            this.getDatasetsWithTechMetadata()
+        ])
+
+        if(isMounted)
+            this.setState({uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100, isLoading: false})
+    }
+
+    componentWillUnmount() {
+        isMounted = false;
+    }
+
     handleSelect = (key) => {
         this.setState({ key: key },
             ()=>{
@@ -49,40 +74,31 @@ class AccountAnalyticsDashboard extends React.Component {
             });
     }
 
+    
+
     async handleDateSelect(eventKey, event) {
         this.setState({isLoading: true})
         if(eventKey === null) {eventKey = 0} 
         this.setState({ selectedOption: this.state.dates[eventKey] });
-        this.getUnmetDemand(this.state.dates[eventKey]);
-        this.getTopSearches(this.state.dates[eventKey]);
         await Promise.all([
-            this.getStats(),
+            this.getUnmetDemand(this.state.dates[eventKey]),
+            this.getTopSearches(this.state.dates[eventKey])
+        ])
+
+        this.setState({isLoading: false})
+        
+        await Promise.all([
             this.getTotalGAUsers(),
             this.getGAUsers(moment(this.state.dates[eventKey]).startOf('month').format("YYYY-MM-DD"), moment(this.state.dates[eventKey]).endOf('month').format("YYYY-MM-DD")),
-            this.getKPIs(this.state.dates[eventKey]),
             this.getUptime(this.state.dates[eventKey]),
+            this.getStats(),
+            this.getKPIs(this.state.dates[eventKey]),
             this.getDatasetsWithTechMetadata()
         ])
         this.setState({uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100})
-        this.setState({isLoading: false})
       }
 
-      async componentDidMount() {
-        initGA('UA-166025838-1');
-        this.getUnmetDemand();
-        this.getTopSearches();
-        await Promise.all([
-            this.getStats(),
-            this.getTotalGAUsers(),
-            this.getGAUsers(moment(this.state.selectedOption).startOf('month').format("YYYY-MM-DD"), moment(this.state.selectedOption).endOf('month').format("YYYY-MM-DD")),
-            this.getKPIs(this.state.selectedOption),
-            this.getUptime(this.state.selectedOption),
-            this.getDatasetsWithTechMetadata()
-        ])
-        this.setState({uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100})
-        this.setState({isLoading: false})
-
-    }
+     
 
     getUnmetDemand(selectedOption){
         let date = new Date(selectedOption);
@@ -205,7 +221,7 @@ class AccountAnalyticsDashboard extends React.Component {
 
         if (isLoading) {
             return (
-                <Row className="mt-4">
+                <Row>
                     <Col xs={1}></Col>
                     <Col xs={10}>
                         <Loading data-testid="isLoading" />
@@ -216,11 +232,11 @@ class AccountAnalyticsDashboard extends React.Component {
         }
 
         return (
-           <div>
+           <Fragment>
                 <Row>
                     <Col sm={1} lg={1}></Col> 
                     <Col sm={10} lg={10} className="dashboardPadding">   
-                        <Row className="accountHeader mt-4"> 
+                        <Row className="accountHeader"> 
                             <Col sm={12} lg={12}>
                                 <Row >
                                     <Col sm={8} lg={8}>
@@ -273,14 +289,14 @@ class AccountAnalyticsDashboard extends React.Component {
                                 <DashboardKPI kpiText="new access requests" kpiValue={accessRequests}/> 
                             </Col>
                             <Col sm={3} lg={3} className="kpiClass">
-                                <DashboardKPI kpiText="uptime this month" kpiValue={uptime.toFixed(2)} percentageFlag={true}/>
+                                <DashboardKPI kpiText="uptime this month" kpiValue={(uptime.toFixed(2) % 1 === 0) ? Math.trunc(uptime.toFixed(2)) : uptime.toFixed(2)} percentageFlag={true} />
                             </Col>
                             <Col sm={3} lg={3} className="kpiClass">                               
                                 <DashboardKPI kpiText="" kpiValue=""/> 
                             </Col> 
                         </Row>
 
-                        <Row className="accountHeader mt-4" style={{"margin-bottom":"0.5px"}}>
+                        <Row className="accountHeader mt-4" style={{"marginBottom":"0.5px"}}>
                             <Col sm={12} lg={12}>
                                 <Row >
                                     <Col sm={12} lg={12}>
@@ -303,8 +319,8 @@ class AccountAnalyticsDashboard extends React.Component {
                                     <Col sm={2} lg={2}>Searches</Col>
                                     <Col sm={5} lg={4}>Latest results</Col>
                                 </Row>
-                                    {topSearches.map((dat) => {
-                                        return <TopSearches data={dat} /> 
+                                    {topSearches.map((dat, i) => {
+                                        return <TopSearches key={i} data={dat} /> 
                                     })}
                                 </Col>
                             </Row>
@@ -349,8 +365,8 @@ class AccountAnalyticsDashboard extends React.Component {
                                                     <Col sm={2} lg={2}>Searches</Col>
                                                     <Col sm={2} lg={2}>Dataset results</Col>
                                                 </Row>
-                                                    {data.map((dat) => {
-                                                        return <UnmetDemand data={dat} /> 
+                                                    {data.map((dat, i) => {
+                                                        return <UnmetDemand key={i} data={dat} /> 
                                                     })}
                                                 </Col>
                                             </Row>
@@ -428,7 +444,7 @@ class AccountAnalyticsDashboard extends React.Component {
                     </Col>
                     <Col sm={1} lg={10} />
                 </Row>
-            </div>
+            </Fragment>
         );
     }
 }

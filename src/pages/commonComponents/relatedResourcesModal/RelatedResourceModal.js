@@ -1,4 +1,4 @@
-import React from 'react'; 
+import React, { Fragment } from 'react';
 import { Row, Col, Tab, Tabs, Container, Pagination} from 'react-bootstrap';
 
 import SimpleSearchBar from '../searchBar/SimpleSearchBar';
@@ -203,7 +203,11 @@ class RelatedResourcesModal extends React.Component {
         }
 
         return (
-            <div>
+            <Fragment>
+            <div class="related-search-wrap">
+                <div className="realted-search-body">
+
+                
               <SimpleSearchBar searchString={this.props.searchString} doSearchMethod={this.props.doSearchMethod} doUpdateSearchString={this.props.doUpdateSearchString} userState={this.props.userState} />
                 {typeof this.props.summary.datasets !== 'undefined' ? 
                     <div className="searchTabsHolder">
@@ -217,9 +221,11 @@ class RelatedResourcesModal extends React.Component {
                            </Tabs>
                         </div>
                     </div> 
-             : ''} 
+             : ''}
+             </div>
+            </div>
 
-            <div className={typeof this.props.summary.datasets==='undefined' ? "minHeightModal" : "relatedModalBackground minHeightModal"} > 
+            <div className="relatedModalBackground"> 
                 <Container >
                     <Row>
                         <Col sm={1} lg={1} />  
@@ -322,7 +328,7 @@ class RelatedResourcesModal extends React.Component {
                 </Container>
             </div>
 
-            </div>
+            </Fragment>
         )
     }
 }

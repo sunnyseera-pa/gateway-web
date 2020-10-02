@@ -1,5 +1,6 @@
 import React, { Component, useState } from 'react';
 import { Row, Col, InputGroup, FormText, Dropdown } from 'react-bootstrap';
+import _ from 'lodash';
 import { ReactComponent as ChevronRight } from '../../images/chevron-right.svg';
 import './Search.scss'; 
 
@@ -27,28 +28,26 @@ const CustomMenu = React.forwardRef(
 );
 
 class Filters extends Component {
-    state = {
-        selected: [],
-        allFilters: [],
-        data: [],
-        title:'',
-        filterOpen: false,
-    }
-
+   
     constructor(props) {
         super(props); 
-        this.state.data = props.data || [];
-        this.state.selected = props.selected;
-        this.state.title = props.title;
-        if (props.allFilters && props.allFilters.length !== 0) this.state.allFilters = props.allFilters;
+        this.state = {
+            data: props.data || [],
+            selected: props.selected || [],
+            title : props.title || '',
+            allFilters: props.allFilters && props.length !== 0 ? props.allFilters : [],
+            filterOpen: false
+        }
         
     }
 
     componentWillReceiveProps(props) {
-        this.state.data = props.data || [];
-        this.state.selected = props.selected;
-        this.state.title = props.title;
-        if (props.allFilters && props.allFilters.length !== 0) this.state.allFilters = props.allFilters;
+    this.state = {
+            data: props.data || [],
+            selected: props.selected || [],
+            title : props.title || '',
+            allFilters: props.allFilters && props.length !== 0 ? props.allFilters : []
+        }
     }
 
     componentDidMount() {
@@ -134,7 +133,7 @@ class Filters extends Component {
                     </div>
                 
                 <div className="filterMenuInner" >
-                    {!allFilters ? '' : allFilters.map((filter) => {
+                    {_.isEmpty(allFilters) ? '' : allFilters.map((filter) => {
                         var filterClass = 'gray800-14 ml-4 mt-2 mb-2 pb-1';
                         
                         if (!data.includes(filter)) filterClass = 'gray800-14-opacity ml-4 mt-2 mb-2 pb-1';

@@ -1,20 +1,30 @@
 import React, { Component, Fragment } from 'react';
-import { Container, Row, Col, Modal, Tabs, Tab, Accordion, Card } from 'react-bootstrap';
+import { History } from 'react-router';
+import {
+	Container,
+	Row,
+	Col,
+	Modal,
+	Tabs,
+	Tab,
+	Accordion,
+	Card,
+} from 'react-bootstrap';
 import Winterfell from 'winterfell';
 import _ from 'lodash';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
-import TypeaheadCustom from './components/TypeaheadCustom';
-import TypeaheadUser from './components/TypeaheadUser';
-import TypeaheadDataset from './components/TypeaheadDataset';
-import DatePickerCustom from './components/DatepickerCustom';
+import TypeaheadCustom from './components/TypeaheadCustom/TypeaheadCustom';
+import TypeaheadUser from './components/TypeaheadUser/TypeaheadUser';
+import TypeaheadMultiUser from './components/TypeaheadUser/TypeaheadMultiUser';
+import TypeaheadDataset from './components/TypeaheadDataset/TypeaheadDataset';
+import DatePickerCustom from './components/DatePickerCustom/DatepickerCustom';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
-import NavItem from './components/NavItem';
-import NavDropdown from './components/NavDropdown';
+import NavItem from './components/NavItem/NavItem';
+import NavDropdown from './components/NavDropdown/NavDropdown';
 import DarValidation from '../../utils/DarValidation.util';
 import DarHelper from '../../utils/DarHelper.util';
-import ModalHelper from '../../utils/ModalHelper.util';
 import SearchBarHelperUtil from '../../utils/SearchBarHelper.util';
 import { classSchema } from './classSchema';
 import { baseURL } from '../../configs/url.config';
@@ -27,6 +37,11 @@ import './DataAccessRequest.scss';
 import { Link } from 'react-router-dom';
 import SVGIcon from '../../images/SVGIcon';
 import moment from 'moment';
+import ApplicantActionButtons from './components/ApplicantActionButtons/ApplicantActionButtons';
+import CustodianActionButtons from './components/CustodianActionButtons/CustodianActionButtons';
+import ActionModal from './components/ActionModal/ActionModal';
+import ContributorModal from './components/ContributorModal/ContributorModal';
+import SLA from '../commonComponents/sla/SLA';
 
 class DataAccessRequest extends Component {
 	constructor(props) {
@@ -52,40 +67,64 @@ class DataAccessRequest extends Component {
 			lookup: ['fullname'],
 			isLoading: true,
 			formSubmitted: false,
-			datasets: [{
-				name: '',
-				datasetfields: {
-					publisher: ''
-				}
-			}],
+			datasets: [
+				{
+					name: '',
+					datasetfields: {
+						publisher: '',
+					},
+				},
+			],
 			publisher: '',
+			mainApplicant: '',
 			showDrawer: false,
 			showModal: false,
 			showMrcModal: false,
+			showActionModal: false,
+			showContributorModal: false,
+			readOnly: false,
+			userType: '',
 			isWideForm: false,
 			allowsMultipleDatasets: false,
 			activeAccordionCard: 0,
 			allowedNavigation: true,
+			projectNameValid: true,
 			topicContext: {},
+			authorIds: [],
+			projectId: '',
 			aboutApplication: {
+				projectName: '',
 				selectedDatasets: [],
 				completedDatasetSelection: false,
 				completedReadAdvice: false,
 				completedCommunicateAdvice: false,
 				completedApprovalsAdvice: false,
 				completedSubmitAdvice: false,
-				completedInviteCollaborators: false
+				completedInviteCollaborators: false,
 			},
-			context: {}
+			context: {},
+			actionModalConfig: {},
 		};
 	}
+
+	applicationState = {
+		CONFIRMAPPROVALCONDITIONS: 'approved with conditions',
+		CONFIRMREJECTION: 'rejected',
+		CONFIRMAPPROVAL: 'approved',
+	};
+
+	tabState = {
+		CONFIRMAPPROVALCONDITIONS: 'approved',
+		CONFIRMREJECTION: 'rejected',
+		CONFIRMAPPROVAL: 'approved',
+	};
 
 	async componentDidMount() {
 		await this.initPage();
 	}
 
 	async componentDidUpdate(prevProps) {
-		if ((this.props !== prevProps)) {
+		if (this.props !== prevProps) {
 			await this.initPage();
 		}
 	}
@@ -93,14 +132,13 @@ class DataAccessRequest extends Component {
 	async initPage() {
 		try {
 			// 1. Determine the entry point to the Data Access Request
-			//  a) Dataset - route will contain only the 'datasetId' from the dataset page from which they came 	
+			//  a) Dataset - route will contain only the 'datasetId' from the dataset page from which they came
 			//	b) Message Panel - route will contain only the 'publisherId' with historic state passed from the message panel component which includes datasetId(s)
 			// 	c/d) Data Access Request User Area / Direct Link - route will contain a data access request 'accessId' which specifically links all associated data to one application
 			const { datasetId, accessId, publisherId } = this.props.match.params;
-			let countedQuestionAnswers = {};
-			let totalQuestions = '';
+			let countedQuestionAnswers = {}, totalQuestions = '';
 
-			if(datasetId) {
+			if (datasetId) {
 				// a) Dataset
 				await this.loadSingleDatasetMode(datasetId);
 				// Populate the question/answers count
@@ -110,7 +148,7 @@ class DataAccessRequest extends Component {
 				// b) Message Panel/Modal
 				// Extract datasets passed from history (provided via request access click from modal)
 				const { datasets: datasetIds } = this.props.location.state;
-				const datasetIdsConcat = datasetIds.map(ds => ds.datasetId).join(',');
+				const datasetIdsConcat = datasetIds.map((ds) => ds.datasetId).join(',');
 				await this.loadMultipleDatasetMode(datasetIdsConcat);
 				// Populate the question/answers count
 				countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this);
@@ -120,19 +158,20 @@ class DataAccessRequest extends Component {
 				await this.loadDataAccessRequest(accessId);
 				// Populate the question/answers count if still in progress, otherwise display project status and date last updated
 				const { applicationStatus, updatedAt } = this.state;
-				if(applicationStatus === 'inProgress') {
+				if (applicationStatus === 'inProgress') {
 					countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this);
 					totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered`;
 				} else {
-					totalQuestions = `Application ${applicationStatus} - Last updated : ${moment(updatedAt).format('DD MMM YYYY HH:mm')}`;
+					totalQuestions = `Application ${applicationStatus} on ${moment(
+						updatedAt
+					).format('DD MMM YYYY HH:mm')}`;
 				}
 			}
 
 			// Update state to display question answer count
 			this.setState({
-				totalQuestions
+				totalQuestions,
 			});
-
 		} catch (error) {
 			this.setState({ isLoading: false });
 			console.error(error);
@@ -148,16 +187,38 @@ class DataAccessRequest extends Component {
 			// 2. Destructure backend response for this context containing details of DAR including question set and current progress
 			let {
 				data: {
-					data: { jsonSchema, questionAnswers, _id, applicationStatus, aboutApplication = {}, datasets }
+					data: {
+						jsonSchema,
+						questionAnswers,
+						_id,
+						applicationStatus,
+						aboutApplication = {},
+						datasets,
+						mainApplicant,
+						userId,
+						authorIds,
+						projectId
+					},
 				},
 			} = response;
 			// 3. Set up the DAR
-			this.setScreenData({ jsonSchema, questionAnswers, _id, applicationStatus, aboutApplication, datasets });
+			this.setScreenData({
+				jsonSchema,
+				questionAnswers,
+				_id,
+				applicationStatus,
+				aboutApplication,
+				datasets,
+				mainApplicant,
+				userId,
+				authorIds,
+				projectId
+			});
 		} catch (error) {
 			this.setState({ isLoading: false });
 			console.error(error);
 		}
-	}
+	};
 
 	loadSingleDatasetMode = async (datasetId) => {
 		try {
@@ -167,12 +228,34 @@ class DataAccessRequest extends Component {
 			);
 			const {
 				data: {
-					data: { jsonSchema, questionAnswers, _id, applicationStatus, aboutApplication = {}, dataset }
+					data: {
+						jsonSchema,
+						questionAnswers,
+						_id,
+						applicationStatus,
+						aboutApplication = {},
+						dataset,
+						mainApplicant,
+						userId,
+						authorIds,
+						projectId
+					},
 				},
 			} = response;
 
 			// 2. Set DAR form
-			this.setScreenData({ jsonSchema, questionAnswers, _id, applicationStatus, aboutApplication, datasets: [dataset] });
+			this.setScreenData({
+				jsonSchema,
+				questionAnswers,
+				_id,
+				applicationStatus,
+				aboutApplication,
+				datasets: [dataset],
+				mainApplicant,
+				userId,
+				authorIds,
+				projectId
+			});
 
 			// for local test uses formSchema.json
 			//  this.setState({jsonSchema: {...formSchema}, questionAnswers: {fullname: {"id":5385077600698822,"orcid":"12345678","name":"Paul McCafferty","bio":"Developer @ PA","email":"p*************y@p**************m"}, orcid:"12345678", email:"p*************y@p**************m"}, activePanelId: 'applicant', isLoading: false, applicationStatus: 'inProgress'});
@@ -180,7 +263,7 @@ class DataAccessRequest extends Component {
 			this.setState({ isLoading: false });
 			console.error(error);
 		}
-	}
+	};
 
 	loadDataAccessRequest = async (accessId) => {
 		try {
@@ -191,38 +274,103 @@ class DataAccessRequest extends Component {
 			// 2. Destructure backend response for this context containing details of DAR including question set and current progress
 			let {
 				data: {
-					data: { jsonSchema, questionAnswers, _id, applicationStatus, aboutApplication = {}, datasets, readOnly, userType }
+					data: {
+						jsonSchema,
+						questionAnswers,
+						_id,
+						applicationStatus,
+						aboutApplication = {},
+						datasets,
+						readOnly,
+						userType,
+						mainApplicant,
+						userId,
+						authorIds,
+						projectId
+					},
 				},
 			} = response;
 			// 3. Set up the DAR
-			this.setScreenData({ jsonSchema, questionAnswers, _id, applicationStatus, aboutApplication, datasets });
+			this.setScreenData({
+				jsonSchema,
+				questionAnswers,
+				_id,
+				applicationStatus,
+				aboutApplication,
+				datasets,
+				readOnly,
+				userType,
+				mainApplicant,
+				userId,
+				authorIds,
+				projectId
+			});
 		} catch (error) {
 			this.setState({ isLoading: false });
 			console.error(error);
 		}
-	}
+	};
 
 	setScreenData = async (context) => {
 		// 1. Destructure DAR context containing questions and any application progress
-		let { jsonSchema, questionAnswers, _id, applicationStatus, aboutApplication, datasets } = context;
-		let { datasetfields: { publisher } } = datasets[0]; 
+		let {
+			jsonSchema,
+			questionAnswers,
+			_id,
+			applicationStatus,
+			aboutApplication,
+			datasets,
+			readOnly = false,
+			userType = 'APPLICANT',
+			mainApplicant,
+			userId,
+			authorIds,
+			projectId
+		} = context;
+		let {
+			datasetfields: { publisher },
+		} = datasets[0];
+		let { firstname, lastname } = mainApplicant;
+		let showSubmit = false;
+
 
 		// 2. If about application is empty, this is a new data access request so set up state based on passed context
-		if(_.isEmpty(aboutApplication)) {
-			aboutApplication.selectedDatasets = datasets.map(dataset => {
-				let { _id: dataset_id, publisher:publisherObj, datasetid, name, description } = dataset;
-				let { datasetfields: { abstract, contactPoint } } = dataset;
-				return { _id: dataset_id, datasetId: datasetid, name, description, abstract, publisher, contactPoint, publisherObj };
+		if (_.isEmpty(aboutApplication)) {
+			aboutApplication.selectedDatasets = datasets.map((dataset) => {
+				let {
+					_id: dataset_id,
+					publisher: publisherObj,
+					datasetid,
+					name,
+					description,
+				} = dataset;
+				let {
+					datasetfields: { abstract, contactPoint },
+				} = dataset;
+				return {
+					_id: dataset_id,
+					datasetId: datasetid,
+					name,
+					description,
+					abstract,
+					publisher,
+					contactPoint,
+					publisherObj,
+				};
 			});
 		}
 
 		// 3. Set messaging and modal context
-		let topicContext = DarHelper.createTopicContext(aboutApplication.selectedDatasets);
-		let modalContext = DarHelper.createModalContext(aboutApplication.selectedDatasets);
+		let topicContext = DarHelper.createTopicContext(
+			aboutApplication.selectedDatasets
+		);
+		let modalContext = DarHelper.createModalContext(
+			aboutApplication.selectedDatasets
+		);
 		let allowsMultipleDatasets = topicContext.requiresModal || false;
 
 		// 4. If multiple datasets are allowed, append 'about this application' section
-		if(allowsMultipleDatasets) {
+		if (allowsMultipleDatasets) {
 			// Append 'about' panel and nav item
 			jsonSchema.pages[0].active = false;
 			jsonSchema.pages.unshift(DarHelper.staticContent.aboutPageNav);
@@ -234,6 +382,11 @@ class DataAccessRequest extends Component {
 		let {
 			formPanels: [initialPanel, ...rest],
 		} = jsonSchema;
+
+		// 6. Hide show submit application
+		if (applicationStatus === 'inProgress') {
+			showSubmit = true;
+		}
 
 		// 6. Set state
 		this.setState({
@@ -249,9 +402,16 @@ class DataAccessRequest extends Component {
 			publisher,
 			aboutApplication,
 			allowsMultipleDatasets,
-			context: modalContext
+			context: modalContext,
+			readOnly,
+			userType,
+			userId,
+			mainApplicant: `${firstname} ${lastname}${this.checkCurrentUser(userId) ? ' (you)':''}`,
+			authorIds,
+			projectId,
+			showSubmit
 		});
-	}
+	};
 
 	onQuestionFocus(questionId = '') {
 		let questions;
@@ -266,7 +426,10 @@ class DataAccessRequest extends Component {
 				) || []);
 			if (!_.isEmpty(questions)) {
 				// 2. loop over and find active question
-				let activeQuestion = DarHelper.getActiveQuestion([...questions], questionId);
+				let activeQuestion = DarHelper.getActiveQuestion(
+					[...questions],
+					questionId
+				);
 				if (!_.isEmpty(activeQuestion))
 					this.setState({ activeGuidance: activeQuestion.guidance });
 			}
@@ -295,7 +458,7 @@ class DataAccessRequest extends Component {
 			let countedQuestionAnswers = {};
 			let totalQuestions = '';
 
-			if(activePanelId === 'about') {
+			if (activePanelId === 'about') {
 				countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this);
 				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered`;
 			} else {
@@ -323,6 +486,13 @@ class DataAccessRequest extends Component {
 			this.updateApplication(dataObj);
 		}
 	}, 500);
+
+	checkCurrentUser = (userId) =>{
+		let {userState} = this.props;
+		let [user] = userState;
+		let {id}=user;
+		return id === userId;
+	};
 
 	/**
 	 * [Form Submit]
@@ -410,13 +580,13 @@ class DataAccessRequest extends Component {
 
 	onNextClick = () => {
 		// 1. If in the about panel, we go to the next step.  Otherwise next panel.
-		if(this.state.activePanelId === 'about') {
+		if (this.state.activePanelId === 'about') {
 			// 2. Pass no completed bool value to go to next step without modifying completed status
 			this.onNextStep();
 			// 3. If we have reached the end of the about accordion, reset active accordion so all are closed
-			if(this.state.activeAccordionCard >= 5) {
+			if (this.state.activeAccordionCard >= 5) {
 				this.setState({
-					activeAccordionCard: -1
+					activeAccordionCard: -1,
 				});
 				// 4. Move to the next step
 				this.onNextPanel();
@@ -424,20 +594,24 @@ class DataAccessRequest extends Component {
 		} else {
 			this.onNextPanel();
 		}
-	}
+	};
 
 	onNextPanel = () => {
 		// 1. Copy formpanels
 		let formPanels = [...this.state.jsonSchema.formPanels];
 		// 2. Get activeIdx
-		let activeIdx = formPanels.findIndex(p => p.panelId === this.state.activePanelId);
+		let activeIdx = formPanels.findIndex(
+			(p) => p.panelId === this.state.activePanelId
+		);
 		// 3. Increment idx
 		let nextIdx = ++activeIdx;
 		// 4. Get activePanel - make sure newIdx doesnt exceed panels length
-		let { panelId, pageId } = formPanels[nextIdx > formPanels.length - 1 ? 0 : nextIdx];
+		let { panelId, pageId } = formPanels[
+			nextIdx > formPanels.length - 1 ? 0 : nextIdx
+		];
 		// 5. Update the navigationState
 		this.updateNavigation({ panelId, pageId });
-	}
+	};
 
 	handleSelect = (key) => {
 		this.setState({ key: key });
@@ -448,7 +622,7 @@ class DataAccessRequest extends Component {
 	 * @desc - Update the navigation state sidebar
 	 */
 	updateNavigation = (newForm, validationErrors = {}) => {
-		if(this.state.allowedNavigation) {
+		if (this.state.allowedNavigation) {
 			// reset scroll to 0, 0
 			window.scrollTo(0, 0);
 			let panelId = '';
@@ -477,19 +651,28 @@ class DataAccessRequest extends Component {
 			let countedQuestionAnswers = {};
 			let totalQuestions = '';
 			// if in the about panel, retrieve question answers count for entire application
-			if(panelId === 'about') {
+			if (panelId === 'about') {
 				countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this);
-				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions || 0}/${countedQuestionAnswers.totalQuestions || 0}  questions answered`;
+				totalQuestions = `${
+					countedQuestionAnswers.totalAnsweredQuestions || 0
+				}/${countedQuestionAnswers.totalQuestions || 0}  questions answered`;
 			} else {
-				countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this, panelId);
-				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions || 0}/${countedQuestionAnswers.totalQuestions || 0}  questions answered in this section`;
+				countedQuestionAnswers = DarHelper.totalQuestionsAnswered(
+					this,
+					panelId
+				);
+				totalQuestions = `${
+					countedQuestionAnswers.totalAnsweredQuestions || 0
+				}/${
+					countedQuestionAnswers.totalQuestions || 0
+				}  questions answered in this section`;
 			}
 			this.setState({
 				jsonSchema: { ...this.state.jsonSchema, pages: newFormState },
 				activePanelId: panelId,
 				isWideForm: panelId === 'about',
 				totalQuestions: totalQuestions,
-				validationErrors
+				validationErrors,
 			});
 		}
 	};
@@ -553,24 +736,26 @@ class DataAccessRequest extends Component {
 		let { aboutApplication, allowedNavigation, topicContext } = this.state;
 
 		// 2. Update 'about application' state with selected datasets
-		aboutApplication.selectedDatasets = e
+		aboutApplication.selectedDatasets = e;
 
 		// 3. If no datasets are passed, set invalid and incomplete step, and update message context
-		if(_.isEmpty(e)) {
+		if (_.isEmpty(e)) {
 			let emptyTopicContext = DarHelper.createTopicContext();
 			aboutApplication.completedDatasetSelection = false;
 			allowedNavigation = false;
 			topicContext = {
 				...topicContext,
-				...emptyTopicContext
+				...emptyTopicContext,
 			};
 		} else {
-			let updatedTopicContext = DarHelper.createTopicContext(aboutApplication.selectedDatasets);
+			let updatedTopicContext = DarHelper.createTopicContext(
+				aboutApplication.selectedDatasets
+			);
 			allowedNavigation = true;
-			topicContext = { 
+			topicContext = {
 				...topicContext,
-				...updatedTopicContext
-			}
+				...updatedTopicContext,
+			};
 			// 4. Create data object to save
 			let dataObj = { key: 'aboutApplication', data: aboutApplication };
 			// 5. Update application
@@ -581,35 +766,88 @@ class DataAccessRequest extends Component {
 		this.setState({
 			allowedNavigation,
 			aboutApplication,
-			topicContext
+			topicContext,
+		});
+	};
+
+	onHandleProjectNameBlur = () => {
+		// 1. Deconstruct current state
+		let { aboutApplication, projectNameValid, allowedNavigation } = this.state;
+
+		// 2. Check if valid project name
+		if(_.isEmpty(aboutApplication.projectName.trim())) {
+			projectNameValid = false;
+			allowedNavigation = false;
+		} else {
+			projectNameValid = true;
+			allowedNavigation = true;
+			// 3. Create data object to save
+			let dataObj = { key: 'aboutApplication', data: aboutApplication };
+			// 4. Update application
+			this.updateApplication(dataObj);
+		}
+
+		// 5. Update state to reflect change
+		this.setState({
+			allowedNavigation,
+			projectNameValid
 		});
 	}
+
+	onHandleProjectNameChange = (projectName) => {
+		// 1. Deconstruct current state
+		let { aboutApplication, projectNameValid, allowedNavigation } = this.state;
+
+		// 2. Update 'about application' state with project name
+		aboutApplication.projectName = projectName;
+
+		// 3. Check if valid project name passed
+		if(_.isEmpty(projectName.trim())) {
+			projectNameValid = false;
+			allowedNavigation = false;
+		} else {
+			projectNameValid = true;
+			allowedNavigation = true;
+		}
+
+		// 4. Update state to reflect change
+		this.setState({
+			allowedNavigation,
+			projectNameValid,
+			aboutApplication
+		});
+	}
+
 
 	onNextStep = async (completed) => {
 		// 1. Deconstruct current state
 		let { aboutApplication, activeAccordionCard } = this.state;
 		// 2. If a completed flag has been passed, update step during navigation
-		if(!_.isUndefined(completed)) {
-			switch(activeAccordionCard) {
+		if (!_.isUndefined(completed)) {
+			switch (activeAccordionCard) {
 				case 0:
 					aboutApplication.completedDatasetSelection = completed;
 					break;
 				case 1:
-					aboutApplication.completedReadAdvice = completed;
+					// Do nothing, valid state for project name step handled by existence of text
 					break;
 				case 2:
-					aboutApplication.completedCommunicateAdvice = completed;
+					aboutApplication.completedReadAdvice = completed;
 					break;
 				case 3:
-					aboutApplication.completedApprovalsAdvice = completed;
+					aboutApplication.completedCommunicateAdvice = completed;
 					break;
 				case 4:
+					aboutApplication.completedApprovalsAdvice = completed;
+					break;
+				case 5:
 					aboutApplication.completedSubmitAdvice = completed;
-					// Temporary until feature is released
-					aboutApplication.completedInviteCollaborators = true;
+					break;
+				case 6:
+					aboutApplication.completedInviteCollaborators = completed;
 					break;
 				default:
-					console.error("Invalid step passed");
+					console.error('Invalid step passed');
 					break;
 			}
 		}
@@ -620,26 +858,30 @@ class DataAccessRequest extends Component {
 		// 4. Set new state
 		this.setState({
 			activeAccordionCard: ++activeAccordionCard,
-			aboutApplication
+			aboutApplication,
 		});
-	}
+	};
+
+	onCustodianAction = (e) => {
+		let {
+			target: { value },
+		} = e;
+		this.toggleActionModal(value);
+	};
 
 	toggleCard = (e, eventKey) => {
 		e.preventDefault();
 		// 1. Deconstruct current state
 		let { aboutApplication, activeAccordionCard } = this.state;
-		if(activeAccordionCard === eventKey) {
+		if (activeAccordionCard === eventKey) {
 			eventKey = -1;
 		}
-		// 2. Mark step 6 as completed when it is toggled (coming soon feature)
-		if(eventKey === 5 && !aboutApplication.completedInviteCollaborators)
-			aboutApplication.completedInviteCollaborators = true;
-		// 3. Set new state
+		// 2. Set new state
 		this.setState({
 			activeAccordionCard: eventKey,
-			aboutApplication
+			aboutApplication,
 		});
-	}
+	};
 
 	toggleDrawer = () => {
 		this.setState((prevState) => {
@@ -649,25 +891,103 @@ class DataAccessRequest extends Component {
 			return { showDrawer: !prevState.showDrawer };
 		});
 	};
-	
+
 	toggleModal = (showEnquiry = false, modalContext) => {
-		this.setState( ( prevState ) => {
-			return { 
+		this.setState((prevState) => {
+			return {
 				showModal: !prevState.showModal,
-				context: modalContext 
+				context: modalContext,
 			};
 		});
-	
-		if(showEnquiry) {
-		  this.toggleDrawer();
+
+		if (showEnquiry) {
+			this.toggleDrawer();
 		}
-	}
-	
+	};
+
 	toggleMrcModal = () => {
-		this.setState( ( prevState ) => {
+		this.setState((prevState) => {
 			return { showMrcModal: !prevState.showMrcModal };
 		});
+	};
+
+	toggleActionModal = (type = '') => {
+		let actionModalConfig = {};
+		// 1. get basic modal config
+		if (!_.isEmpty(type)) actionModalConfig = DarHelper.configActionModal(type);
+		// 2. set state for hide/show/config modal
+		this.setState((prevState) => {
+			return {
+				showActionModal: !prevState.showActionModal,
+				actionModalConfig,
+			};
+		});
+	};
+
+	toggleContributorModal = () => {
+		this.setState((prevState) => {
+			return { 
+				showContributorModal: !prevState.showContributorModal 
+			};
+		});
+	};
+
+	updateContributors = (contributors) => {
+		let updatedAuthorIds = [...contributors].map(user => user.id);
+		this.setState({ updatedAuthorIds });
 	}
+
+	submitContributors = async () => {
+		debugger;
+		let { updatedAuthorIds: authorIds, _id } = this.state;
+		const body = {
+			authorIds
+		};
+		// 1. Update action status
+		await axios.put(
+			`${baseURL}/api/v1/data-access-request/${_id}`,
+			body
+		);
+		this.setState({ authorIds });
+	}
+	
+
+	updateApplicationStatus = async (action = {}) => {
+		let { type, statusDesc } = action;
+		switch (type) {
+			case 'CONFIRMAPPROVALCONDITIONS':
+			case 'CONFIRMREJECTION':
+			case 'CONFIRMAPPROVAL':
+				let { _id } = this.state;
+				const body = {
+					applicationStatus: this.applicationState[type],
+					applicationStatusDesc: statusDesc,
+				};
+				// 1. Update action status
+				const response = await axios.put(
+					`${baseURL}/api/v1/data-access-request/${_id}`,
+					body
+				);
+				// 2. set alert object for screen
+				let alert = {
+					publisher: this.state.publisher || '',
+					nav: `dataaccessrequests&team=${this.state.publisher}`,
+					tab: this.tabState[type],
+					message: `You have ${this.tabState[type]} the data access request for ${this.state.publisher}`,
+				};
+				// 3. hide screen modal for approve, reject, approve with comments
+				this.toggleActionModal();
+				// 4. redirect with Publisher name, Status: reject, approved, key of tab: presubmission, inreview, approved, rejected
+				this.props.history.push({
+					pathname: `/account`,
+					search: '?tab=dataaccessrequests',
+					state: { alert },
+				});
+				break;
+			default:
+				this.toggleActionModal();
+		}
+	};
 
 	render() {
 		const {
@@ -681,109 +1001,245 @@ class DataAccessRequest extends Component {
 			showDrawer,
 			showModal,
 			showMrcModal,
+			showActionModal,
+			showContributorModal,
 			isWideForm,
 			activeAccordionCard,
 			allowedNavigation,
-			aboutApplication: { 
+			projectNameValid,
+			projectId,
+			applicationStatus,
+			aboutApplication: {
+				projectName = '',
 				selectedDatasets,
 				completedDatasetSelection,
-				completedReadAdvice, 
-				completedCommunicateAdvice, 
-				completedApprovalsAdvice, 
-				completedSubmitAdvice, 
-				completedInviteCollaborators 
+				completedReadAdvice,
+				completedCommunicateAdvice,
+				completedApprovalsAdvice,
+				completedSubmitAdvice,
+				completedInviteCollaborators,
 			},
-			context
+			context,
+			readOnly,
+			userType,
+			actionModalConfig,
 		} = this.state;
 		const { userState, location } = this.props;
 
 		const aboutForm = (
 			<div className='aboutAccordion'>
-				<Accordion defaultActiveKey='0' activeKey={activeAccordionCard.toString()}>
+				<Accordion
+					defaultActiveKey='0'
+					activeKey={activeAccordionCard.toString()}
+				>
 					<Card className={activeAccordionCard === 0 ? 'activeCard' : ''}>
-						<Accordion.Toggle as={Card.Header} className={DarHelper.calcAccordionClasses(activeAccordionCard === 0, allowedNavigation)} eventKey='0' onClick={e => this.toggleCard(e, 0)}>
-						{completedDatasetSelection ? 
-							<div className='stepNumber completed'><SVGIcon name="check" width={24} height={24} fill={'#ffffff'} /></div> 
-							:
-							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>1</div>
-						}
+						<Accordion.Toggle
+							as={Card.Header}
+							className={DarHelper.calcAccordionClasses(
+								activeAccordionCard === 0,
+								allowedNavigation
+							)}
+							eventKey='0'
+							onClick={(e) => this.toggleCard(e, 0)}
+						>
+							{completedDatasetSelection ? (
+								<div className='stepNumber completed'>
+									<SVGIcon
+										name='check'
+										width={24}
+										height={24}
+										fill={'#ffffff'}
+									/>
+								</div>
+							) : (
+								<div
+									className={`stepNumber ${
+										activeAccordionCard === 0 ? 'active' : ''
+									}`}
+								>
+									1
+								</div>
+							)}
 							Select the datasets you need
 						</Accordion.Toggle>
 						<Accordion.Collapse eventKey='0'>
 							<Card.Body className='gray800-14'>
 								<div className='margin-bottom-16'>
-									If you’re not sure, <Link id='messageLink' className={allowedNavigation ? '' : 'disabled'} onClick={e => this.toggleDrawer()}>send a message to the data custodian</Link> to clarify. The datasets you select may impact the questions being asked in this application form. You cannot change this later.
+									If you’re not sure,{' '}
+									<Link
+										id='messageLink'
+										className={
+											allowedNavigation && userType.toUpperCase() !== 'CUSTODIAN'
+												? ''
+												: 'disabled'
+										}
+										onClick={(e) => this.toggleDrawer()}
+									>
+										send a message to the data custodian
+									</Link>{' '}
+									to clarify. The datasets you select may impact the questions
+									being asked in this application form. You cannot change this
+									later.
 								</div>
 								<div>
 									<span>Datasets</span>
 									<div className='form-group'>
-										<TypeaheadDataset selectedDatasets={selectedDatasets} onHandleDataSetChange={this.onHandleDataSetChange}/>
+										<TypeaheadDataset
+											selectedDatasets={selectedDatasets}
+											onHandleDataSetChange={this.onHandleDataSetChange}
+											readOnly={readOnly}
+										/>
 									</div>
-									{ 
-									_.isEmpty(selectedDatasets) ? 
+									{_.isEmpty(selectedDatasets) ? (
 										<div className='errorMessages'>
 											You must select at least one dataset
-										</div> 
-									: null 
-									}
+										</div>
+									) : null}
 									<div className='panConfirmDatasets'>
-										<button 
-											type='input' 
-											className={`button-primary ${allowedNavigation ? '' : 'disabled'}`} 
-											disabled={!allowedNavigation}
-											onClick={ () => { this.onNextStep(allowedNavigation) }}
-										>Confirm
-										</button>
+										{userType.toUpperCase() === 'APPLICANT' ? (
+											<button
+												type='input'
+												className={`button-primary ${
+													allowedNavigation ? '' : 'disabled'
+												}`}
+												disabled={!allowedNavigation}
+												onClick={() => {
+													this.onNextStep(allowedNavigation);
+												}}
+											>
+												Confirm
+											</button>
+										) : (
+											''
+										)}
 									</div>
 								</div>
 							</Card.Body>
 						</Accordion.Collapse>
 					</Card>
 					<Card className={activeAccordionCard === 1 ? 'activeCard' : ''}>
-						<Accordion.Toggle as={Card.Header} className={DarHelper.calcAccordionClasses(activeAccordionCard === 1, allowedNavigation)} eventKey='1' onClick={e => this.toggleCard(e, 1)}>
-						{completedReadAdvice ? 
-							<div className='stepNumber completed'><SVGIcon name="check" width={24} height={24} fill={'#ffffff'} /></div> 
-							:
-							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>2</div>
-						}
-							Read the advice from the data custodian
+						<Accordion.Toggle
+							as={Card.Header}
+							className={DarHelper.calcAccordionClasses(
+								activeAccordionCard === 1,
+								allowedNavigation
+							)}
+							eventKey='1'
+							onClick={(e) => this.toggleCard(e, 1)}
+						>
+							{projectNameValid && !_.isEmpty(projectName.trim()) ? (
+								<div className='stepNumber completed'>
+									<SVGIcon
+										name='check'
+										width={24}
+										height={24}
+										fill={'#ffffff'}
+									/>
+								</div>
+							) : (
+								<div
+									className={`stepNumber ${
+										activeAccordionCard === 0 ? 'active' : ''
+									}`}
+								>
+									2
+								</div>
+							)}
+							Name your project
 						</Accordion.Toggle>
 						<Accordion.Collapse eventKey='1'>
 							<Card.Body className='gray800-14'>
-								<Fragment>
-									<div className='margin-bottom-16'>
-										If you haven’t already, please make sure you have read the advice provided by the data custodian on how to request access to their datasets.
+								<div className='margin-bottom-16'>
+									It is important to create a project title for yourself and your team.  You can edit this later.
+								</div>
+								<div>
+									<span>Project title</span>
+									<div className='form-group'>
+										<input 
+											className={`form-control ${!projectNameValid && _.isEmpty(projectName) ? 'emptyFormInput' : ''}`} 
+											name="projectName"
+											onBlur={() => this.onHandleProjectNameBlur()}
+											onChange={(e) => this.onHandleProjectNameChange(e.target.value)}
+											value={projectName}
+											disabled={readOnly}
+										/>
 									</div>
-									<div className="dar-form-check-group">
-										<input type="checkbox" id="chkReadAdvice" checked={completedReadAdvice} className='dar-form-check' onChange={e => {this.onNextStep(e.target.checked)}}/>
-										<span className="dar-form-check-label">
-											I have read <Link id='howToRequestAccessLink' className={allowedNavigation ? '' : 'disabled'} onClick={e => this.toggleModal(false, {...this.state.context, showActionButtons: false})}>how to request access</Link>
-										</span>
-									</div>
-								</Fragment>
+									{!projectNameValid && _.isEmpty(projectName) ? (
+										<div className='errorMessages'>
+											This cannot be empty
+										</div>
+									) : null}
+								</div>
 							</Card.Body>
 						</Accordion.Collapse>
 					</Card>
 					<Card className={activeAccordionCard === 2 ? 'activeCard' : ''}>
-						<Accordion.Toggle as={Card.Header} className={DarHelper.calcAccordionClasses(activeAccordionCard === 2, allowedNavigation)} eventKey='2' onClick={e => this.toggleCard(e, 2)}>
-						{completedCommunicateAdvice ? 
-							<div className='stepNumber completed'><SVGIcon name="check" width={24} height={24} fill={'#ffffff'} /></div> 
-							:
-							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>3</div>
-						}
-							Communicate with the data custodian
+						<Accordion.Toggle
+							as={Card.Header}
+							className={DarHelper.calcAccordionClasses(
+								activeAccordionCard === 2,
+								allowedNavigation
+							)}
+							eventKey='2'
+							onClick={(e) => this.toggleCard(e, 2)}
+						>
+							{completedReadAdvice ? (
+								<div className='stepNumber completed'>
+									<SVGIcon
+										name='check'
+										width={24}
+										height={24}
+										fill={'#ffffff'}
+									/>
+								</div>
+							) : (
+								<div
+									className={`stepNumber ${
+										activeAccordionCard === 0 ? 'active' : ''
+									}`}
+								>
+									3
+								</div>
+							)}
+							Read the advice from the data custodian
 						</Accordion.Toggle>
 						<Accordion.Collapse eventKey='2'>
 							<Card.Body className='gray800-14'>
 								<Fragment>
 									<div className='margin-bottom-16'>
-										The earlier you get in touch, the better. A lot of projects are not eligible for data access, so it’s important you clarify with the custodian whether they have the data you need, and whether you have a chance of getting access. If you've not done so yet, we recommend sending a message with a brief description of your project and the data you are interested in.
+										If you haven’t already, please make sure you have read the
+										advice provided by the data custodian on how to request
+										access to their datasets.
 									</div>
-									<div className="dar-form-check-group">
-										<button className="button-secondary" type='button' onClick={e => this.toggleDrawer()}>Send message</button>
-										<input type="checkbox" id="chkCommunicateAdvice" checked={completedCommunicateAdvice} className='dar-form-check' onChange={e => {this.onNextStep(e.target.checked)}}/>
-										<span className="dar-form-check-label">
-											I have completed this step
+									<div className='dar-form-check-group'>
+										<input
+											type='checkbox'
+											id='chkReadAdvice'
+											checked={completedReadAdvice}
+											className='dar-form-check'
+											disabled={readOnly}
+											onChange={(e) => {
+												this.onNextStep(e.target.checked);
+											}}
+										/>
+										<span className='dar-form-check-label'>
+											I have read{' '}
+											<Link
+												id='howToRequestAccessLink'
+												className={
+													allowedNavigation && userType.toUpperCase() !== 'CUSTODIAN'
+														? ''
+														: 'disabled'
+												}
+												onClick={(e) =>
+													this.toggleModal(false, {
+														...this.state.context,
+														showActionButtons: false,
+													})
+												}
+											>
+												how to request access
+											</Link>
 										</span>
 									</div>
 								</Fragment>
@@ -791,24 +1247,70 @@ class DataAccessRequest extends Component {
 						</Accordion.Collapse>
 					</Card>
 					<Card className={activeAccordionCard === 3 ? 'activeCard' : ''}>
-						<Accordion.Toggle as={Card.Header} className={DarHelper.calcAccordionClasses(activeAccordionCard === 3, allowedNavigation)} eventKey='3' onClick={e => this.toggleCard(e, 3)}>
-						{completedApprovalsAdvice ? 
-							<div className='stepNumber completed'><SVGIcon name="check" width={24} height={24} fill={'#ffffff'} /></div>  
-							:
-							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>4</div>
-						}
-							Check what approvals you might need
+						<Accordion.Toggle
+							as={Card.Header}
+							className={DarHelper.calcAccordionClasses(
+								activeAccordionCard === 3,
+								allowedNavigation
+							)}
+							eventKey='3'
+							onClick={(e) => this.toggleCard(e, 3)}
+						>
+							{completedCommunicateAdvice ? (
+								<div className='stepNumber completed'>
+									<SVGIcon
+										name='check'
+										width={24}
+										height={24}
+										fill={'#ffffff'}
+									/>
+								</div>
+							) : (
+								<div
+									className={`stepNumber ${
+										activeAccordionCard === 0 ? 'active' : ''
+									}`}
+								>
+									4
+								</div>
+							)}
+							Communicate with the data custodian
 						</Accordion.Toggle>
 						<Accordion.Collapse eventKey='3'>
 							<Card.Body className='gray800-14'>
 								<Fragment>
 									<div className='margin-bottom-16'>
-										The MRC Health Data Access tookit aims to help you understand what approvals might be necessary for your research. Many custodians request these approvals are in place before you start your application process.
+										The earlier you get in touch, the better. A lot of projects
+										are not eligible for data access, so it’s important you
+										clarify with the custodian whether they have the data you
+										need, and whether you have a chance of getting access. If
+										you've not done so yet, we recommend sending a message with
+										a brief description of your project and the data you are
+										interested in.
 									</div>
-									<div className="dar-form-check-group">
-										<button className="button-secondary" type='button' onClick={e => this.toggleMrcModal()}>MRC Health Data Access toolkit</button>
-										<input type="checkbox" id="chkApprovalAdvice" checked={completedApprovalsAdvice} className='dar-form-check' onChange={e => {this.onNextStep(e.target.checked)}}/>
-										<span className="dar-form-check-label">
+									<div className='dar-form-check-group'>
+										{userType.toUpperCase() !== 'CUSTODIAN' ? (
+											<button
+												className='button-secondary'
+												type='button'
+												onClick={(e) => this.toggleDrawer()}
+											>
+												Send message
+											</button>
+										) : (
+											''
+										)}
+										<input
+											type='checkbox'
+											id='chkCommunicateAdvice'
+											checked={completedCommunicateAdvice}
+											className='dar-form-check'
+											disabled={readOnly ? true : false}
+											onChange={(e) => {
+												this.onNextStep(e.target.checked);
+											}}
+										/>
+										<span className='dar-form-check-label'>
 											I have completed this step
 										</span>
 									</div>
@@ -817,31 +1319,63 @@ class DataAccessRequest extends Component {
 						</Accordion.Collapse>
 					</Card>
 					<Card className={activeAccordionCard === 4 ? 'activeCard' : ''}>
-						<Accordion.Toggle as={Card.Header} className={DarHelper.calcAccordionClasses(activeAccordionCard === 4, allowedNavigation)} eventKey='4' onClick={e => this.toggleCard(e, 4)}>
-						{completedSubmitAdvice ? 
-							<div className='stepNumber completed'><SVGIcon name="check" width={24} height={24} fill={'#ffffff'} /></div>  
-							:
-							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>5</div>
-						}
-							Understand what happens after you submit the application
+						<Accordion.Toggle
+							as={Card.Header}
+							className={DarHelper.calcAccordionClasses(
+								activeAccordionCard === 4,
+								allowedNavigation
+							)}
+							eventKey='4'
+							onClick={(e) => this.toggleCard(e, 4)}
+						>
+							{completedApprovalsAdvice ? (
+								<div className='stepNumber completed'>
+									<SVGIcon
+										name='check'
+										width={24}
+										height={24}
+										fill={'#ffffff'}
+									/>
+								</div>
+							) : (
+								<div
+									className={`stepNumber ${
+										activeAccordionCard === 0 ? 'active' : ''
+									}`}
+								>
+									5
+								</div>
+							)}
+							Check what approvals you might need
 						</Accordion.Toggle>
 						<Accordion.Collapse eventKey='4'>
 							<Card.Body className='gray800-14'>
 								<Fragment>
 									<div className='margin-bottom-16'>
-										After you have completed the form, you can submit the application.
+										The MRC Health Data Access tookit aims to help you
+										understand what approvals might be necessary for your
+										research. Many custodians request these approvals are in
+										place before you start your application process.
 									</div>
-									<div className='margin-bottom-16'>
-										<ul>
-											<li>Make sure to double-check everything before submitting</li>
-											<li>You will NOT be able to edit your responses via the Gateway after submission (for now)</li>
-											<li>If you do need to make any amendments, get in touch with the data custodian</li>
-											<li>Both you and the data custodian will receive an email with a copy of the information submitted using this form.</li>
-										</ul>
-									</div>
-									<div className="dar-form-check-group">
-										<input type="checkbox" id="chkSubmitAdvice" checked={completedSubmitAdvice} className='dar-form-check' onChange={e => {this.onNextStep(e.target.checked)}}/>
-										<span className="dar-form-check-label">
+									<div className='dar-form-check-group'>
+										<button
+											className='button-secondary'
+											type='button'
+											onClick={(e) => this.toggleMrcModal()}
+										>
+											MRC Health Data Access toolkit
+										</button>
+										<input
+											type='checkbox'
+											id='chkApprovalAdvice'
+											checked={completedApprovalsAdvice}
+											className='dar-form-check'
+											disabled={readOnly ? true : false}
+											onChange={(e) => {
+												this.onNextStep(e.target.checked);
+											}}
+										/>
+										<span className='dar-form-check-label'>
 											I have completed this step
 										</span>
 									</div>
@@ -850,20 +1384,149 @@ class DataAccessRequest extends Component {
 						</Accordion.Collapse>
 					</Card>
 					<Card className={activeAccordionCard === 5 ? 'activeCard' : ''}>
-						<Accordion.Toggle as={Card.Header} className={DarHelper.calcAccordionClasses(activeAccordionCard === 5, allowedNavigation)} eventKey='5' onClick={e => this.toggleCard(e, 5)}>
-						{completedInviteCollaborators ? 
-							<div className='stepNumber completed'><SVGIcon name="check" width={24} height={24} fill={'#ffffff'} /></div>  
-							:
-							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>6</div>
-						}
-							Invite collaborators
-							<div className="badge-comingSoon">Coming soon</div>
+						<Accordion.Toggle
+							as={Card.Header}
+							className={DarHelper.calcAccordionClasses(
+								activeAccordionCard === 5,
+								allowedNavigation
+							)}
+							eventKey='5'
+							onClick={(e) => this.toggleCard(e, 5)}
+						>
+							{completedSubmitAdvice ? (
+								<div className='stepNumber completed'>
+									<SVGIcon
+										name='check'
+										width={24}
+										height={24}
+										fill={'#ffffff'}
+									/>
+								</div>
+							) : (
+								<div
+									className={`stepNumber ${
+										activeAccordionCard === 0 ? 'active' : ''
+									}`}
+								>
+									6
+								</div>
+							)}
+							Understand what happens after you submit the application
 						</Accordion.Toggle>
 						<Accordion.Collapse eventKey='5'>
 							<Card.Body className='gray800-14'>
-								<div>
-									Applications are often a team effort, so you can add others to help. Collaborators can exchange private notes, make edits, message the data custodian, invite others and submit the application. If they’re named in the application, you can fill in some of their details automatically. You can do this later too.
+								<Fragment>
+									<div className='margin-bottom-16'>
+										After you have completed the form, you can submit the
+										application.
+									</div>
+									<div className='margin-bottom-16'>
+										<ul>
+											<li>
+												Make sure to double-check everything before submitting
+											</li>
+											<li>
+												You will NOT be able to edit your responses via the
+												Gateway after submission (for now)
+											</li>
+											<li>
+												If you do need to make any amendments, get in touch with
+												the data custodian
+											</li>
+											<li>
+												Both you and the data custodian will receive an email
+												with a copy of the information submitted using this
+												form.
+											</li>
+										</ul>
+									</div>
+									<div className='dar-form-check-group'>
+										<input
+											type='checkbox'
+											id='chkSubmitAdvice'
+											checked={completedSubmitAdvice}
+											className='dar-form-check'
+											disabled={readOnly ? true : false}
+											onChange={(e) => {
+												this.onNextStep(e.target.checked);
+											}}
+										/>
+										<span className='dar-form-check-label'>
+											I have completed this step
+										</span>
+									</div>
+								</Fragment>
+							</Card.Body>
+						</Accordion.Collapse>
+					</Card>
+					<Card className={activeAccordionCard === 6 ? 'activeCard' : ''}>
+						<Accordion.Toggle
+							as={Card.Header}
+							className={DarHelper.calcAccordionClasses(
+								activeAccordionCard === 6,
+								allowedNavigation
+							)}
+							eventKey='6'
+							onClick={(e) => this.toggleCard(e, 6)}
+						>
+							{completedInviteCollaborators ? (
+								<div className='stepNumber completed'>
+									<SVGIcon
+										name='check'
+										width={24}
+										height={24}
+										fill={'#ffffff'}
+									/>
 								</div>
+							) : (
+								<div
+									className={`stepNumber ${
+										activeAccordionCard === 0 ? 'active' : ''
+									}`}
+								>
+									7
+								</div>
+							)}
+							Invite contributors
+						</Accordion.Toggle>
+						<Accordion.Collapse eventKey='6'>
+							<Card.Body className='gray800-14'>
+								<Fragment>
+									<div className='margin-bottom-16'>
+										Applications are often a team effort, so you can add others
+										to help. Contributors can exchange private notes, make
+										edits, message the data custodian, invite others and submit
+										the application. If they’re named in the application, you
+										can fill in some of their details automatically. You can do
+										this later too.
+									</div>
+									<div className='dar-form-check-group'>
+										{userType.toUpperCase() !== 'CUSTODIAN' ? (
+											<button
+												className='button-secondary'
+												type='button'
+												onClick={(e) => this.toggleContributorModal()}
+											>
+												Add contributors
+											</button>
+										) : (
+											''
+										)}
+										<input
+											type='checkbox'
+											id='chkInviteContributors'
+											checked={completedInviteCollaborators}
+											className='dar-form-check'
+											disabled={readOnly}
+											onChange={(e) => {
+												this.onNextStep(e.target.checked);
+											}}
+										/>
+										<span className='dar-form-check-label'>
+											I have completed this step
+										</span>
+									</div>
+								</Fragment>
 							</Card.Body>
 						</Accordion.Collapse>
 					</Card>
@@ -888,28 +1551,37 @@ class DataAccessRequest extends Component {
 				<SearchBar
 					ref={this.searchBar}
 					searchString={searchString}
-					doSearchMethod={e => { SearchBarHelperUtil.doSearch(e, this)}}
-					doUpdateSearchString={e => { SearchBarHelperUtil.updateSearchString(e, this)}}
-					doToggleDrawer={e => this.toggleDrawer()}
+					doSearchMethod={(e) => {
+						SearchBarHelperUtil.doSearch(e, this);
+					}}
+					doUpdateSearchString={(e) => {
+						SearchBarHelperUtil.updateSearchString(e, this);
+					}}
+					doToggleDrawer={(e) => this.toggleDrawer()}
 					userState={userState}
 				/>
 				<Row className='banner'>
 					<Col sm={12} md={8} className='banner-left'>
 						<span className='white-20-semibold mr-5'>Data Access Request</span>
-						{this.state.allowsMultipleDatasets ? 
+						{this.state.allowsMultipleDatasets ? (
 							<span className='white-16-semibold pr-5'>
 								{datasets[0].datasetfields.publisher}
-							</span> :
+							</span>
+						) : (
 							<span className='white-16-semibold pr-5'>
 								{datasets[0].name} | {datasets[0].datasetfields.publisher}
 							</span>
-					  	}
+						)}
 					</Col>
 					<Col sm={12} md={4} className='banner-right'>
-						<span className='white-14-semibold'>{DarHelper.getSavedAgo(lastSaved)}</span>
+						<span className='white-14-semibold'>
+							{DarHelper.getSavedAgo(lastSaved)}
+						</span>
 						{
 							<a
-								className={`linkButton white-14-semibold ml-2 ${allowedNavigation ? '' : 'disabled'}`}
+								className={`linkButton white-14-semibold ml-2 ${
+									allowedNavigation ? '' : 'disabled'
+								}`}
 								onClick={this.onClickSave}
 								href='!#'
 							>
@@ -953,7 +1625,10 @@ class DataAccessRequest extends Component {
 					<div id='darCenterCol' className={isWideForm ? 'extended' : ''}>
 						<div id='darDropdownNav'>
 							<NavDropdown
-								options={{...this.state.jsonSchema, allowsMultipleDatasets: this.state.allowsMultipleDatasets}}
+								options={{
+									...this.state.jsonSchema,
+									allowsMultipleDatasets: this.state.allowsMultipleDatasets,
+								}}
 								onFormSwitchPanel={this.updateNavigation}
 								enabled={allowedNavigation}
 							/>
@@ -978,7 +1653,9 @@ class DataAccessRequest extends Component {
 								: ''}
 						</div>
 						<div
-							className={`dar__questions gray800-14 ${this.state.activePanelId === 'about' ? 'pad-bottom-0' : ''}`}
+							className={`dar__questions gray800-14 ${
+								this.state.activePanelId === 'about' ? 'pad-bottom-0' : ''
+							}`}
 							style={{ backgroundColor: '#ffffff' }}
 						>
 							{this.state.activePanelId === 'about' ? (
@@ -989,6 +1666,7 @@ class DataAccessRequest extends Component {
 									questionAnswers={this.state.questionAnswers}
 									panelId={this.state.activePanelId}
 									disableSubmit={true}
+									readOnly={readOnly}
 									validationErrors={validationErrors}
 									onQuestionFocus={this.onQuestionFocus}
 									onQuestionClick={this.onQuestionClick}
@@ -1067,34 +1745,87 @@ class DataAccessRequest extends Component {
 				</div>
 
 				<div className='action-bar'>
-					<div className="action-bar--questions">
-						<p>{totalQuestions}</p>
+					<div className='action-bar--questions'>
+						{ applicationStatus === 'inProgress' ? '' 
+						: 
+						<SLA 
+							classProperty={DarHelper.darStatusColours[applicationStatus]} 
+							text={DarHelper.darSLAText[applicationStatus]}/> 
+						}
+						<div className='action-bar-status'>{totalQuestions} &nbsp;|&nbsp; {projectId}</div>
 					</div>
-					<div className="action-bar-actions">
-						<button className={`button-tertiary ${allowedNavigation ? '' : 'disabled'}`} style={{width:'156px'}} onClick={this.onFormSubmit}>Submit application</button>
-						<button className={`button-primary ${allowedNavigation ? '' : 'disabled'}`} style={{width:'62px'}} onClick={this.onNextClick}>Next</button>
+					<div className='action-bar-actions'>
+						{userType.toUpperCase() === 'APPLICANT' ? (
+							<ApplicantActionButtons
+								allowedNavigation={allowedNavigation}
+								onNextClick={this.onNextClick}
+								onFormSubmit={this.onFormSubmit}
+								onShowContributorModal={this.toggleContributorModal}
+								showSubmit={this.state.showSubmit}
+							/>
+						) : (
+							<CustodianActionButtons
+								allowedNavigation={allowedNavigation}
+								onActionClick={this.onCustodianAction}
+								onNextClick={this.onNextClick}
+							/>
+						)}
 					</div>
 				</div>
 
-				<SideDrawer open={showDrawer} closed={e=> this.toggleDrawer()}>
+				<SideDrawer open={showDrawer} closed={(e) => this.toggleDrawer()}>
 					<UserMessages
-						closed={e => this.toggleDrawer()}
+						userState={userState[0]}
+						closed={(e) => this.toggleDrawer()}
 						toggleModal={this.toggleModal}
 						drawerIsOpen={this.state.showDrawer}
 						topicContext={this.state.topicContext}
 					/>
 				</SideDrawer>
 
-				<DataSetModal 
-                    open={showModal} 
-                    context={context}
-                    closed={this.toggleModal}
-                    userState={userState[0]} 
+				<DataSetModal
+					open={showModal}
+					context={context}
+					closed={this.toggleModal}
+					userState={userState[0]}
 				/>
 
-				<Modal show={showMrcModal} onHide={e => this.toggleMrcModal()} size="lg" aria-labelledby="contained-modal-title-vcenter" centered className="darModal" >
-                	<iframe src="https://hda-toolkit.org/story_html5.html" className="darIframe"> </iframe>
-            	</Modal>
+				<ActionModal
+					open={showActionModal}
+					context={actionModalConfig}
+					updateApplicationStatus={this.updateApplicationStatus}
+					close={this.toggleActionModal}
+				/>
+
+				<ContributorModal
+					open={showContributorModal}
+					close={this.toggleContributorModal}
+					mainApplicant={this.state.mainApplicant}
+					handleOnSaveChanges={this.submitContributors}
+				>
+					<TypeaheadMultiUser 
+						onHandleContributorChange={this.updateContributors}
+						selectedContributors={this.state.authorIds} 
+						currentUserId={this.state.userId} 
+						readOnly={this.state.readOnly}
+				/>
+				</ContributorModal>
+
+				<Modal
+					show={showMrcModal}
+					onHide={(e) => this.toggleMrcModal()}
+					size='lg'
+					aria-labelledby='contained-modal-title-vcenter'
+					centered
+					className='darModal'
+				>
+					<iframe
+						src='https://hda-toolkit.org/story_html5.html'
+						className='darIframe'
+					>
+						{' '}
+					</iframe>
+				</Modal>
 			</div>
 		);
 	}
