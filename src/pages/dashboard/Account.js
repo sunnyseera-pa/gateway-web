@@ -189,14 +189,15 @@ class Account extends Component {
         if(!_.isEmpty(user.teams)) {
             const filterPublishers = [...user.teams].filter(p => p.type === 'publisher');
             if(!_.isEmpty(filterPublishers)) {
-                let publishers = filterPublishers.map(p => p.publisher);
-                    return publishers.map((pub, index) =>{
-                        return  (
+                return filterPublishers.map((pub, index) =>{
+                    return  (
+                        <Fragment>
                             <Nav.Link key={index} bsPrefix="nav-block" onClick={(e) => this.toggleNav(`dataaccessrequests&team=${pub.name}`)} className={`gray700-13 ${pub.name === this.state.team ? 'nav-item-active' : ''}`}>
                                 <span className="subLinkItem">{pub.name}</span>
                             </Nav.Link>
-                        )
-                    });
+                        </Fragment>
+                    )
+                });
             }
             else {
                 return '';
