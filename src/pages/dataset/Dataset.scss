@@ -12,7 +12,7 @@
   z-index: 1;
 }
 
-.variableBox {
+.variableBox { 
     background-color: $white;
     padding: 30px;
     margin-left: 8px;
@@ -79,11 +79,145 @@
     @include mq('tablet-wide'){
       transform: translate(0px, -8px);
     }
-  }
+} 
 
 .customLabel {
   background-color: $light-teal !important;
   border: none !important;
   padding: 4px !important;
   width: 84px;
+}
+
+.dataUtilityModal  {
+  height: calc(100% - 20px);
+  
+  .modal-dialog {
+    margin: 10px auto;
+    max-width: 945px;
+    width: 100%;
+  }
+
+  .modal-body {
+    position: relative;
+  }
+
+  .dataUtilityModalBackground { 
+    // background: $gray-light;
+      overflow-y: auto;
+      height: calc(100vh - 320px);
+  }
+}
+
+.purpleHeader {
+  max-width: 897px;
+  height: 44px;
+  background-color: $purple;
+  padding: 12px 16px 12px 16px;
+}
+
+.greySubHeader {
+  max-width: 897px;
+  min-height: 31px;
+  background-color: $background;
+  border-bottom: #e7e9ed solid 1px;
+  padding: 8px 16px 8px 16px;
+}
+
+.dataUtilityBox { 
+  max-width: 897px;
+  background-color: $white;
+  // padding: 30px;
+  // margin-left: 8px;
+  // margin-right: 8px;
+  border-bottom: #e7e9ed solid 1px;
+
+}
+
+.topBorder {
+  border-top: #e7e9ed solid 1px;
+}
+
+.bottomBorder {
+  border-bottom: #e7e9ed solid 1px;
+}
+
+.dataUtilityCollapse .collapseWait{
+  transition: all 0s linear 0.5s;
+}
+
+.dataQualityCollapse .dataCollapseWait{
+  transition: all 0s linear 0.5s;
+  margin-left: 24px;
+  margin-right: 24px;
+  margin-bottom: 24px;
+}
+
+.dataUtilityClose {
+  float: right;
+  padding-top: 9px;
+  padding-right: 16px;
+}
+
+#dataUtilityHeader {
+  margin-top: 33px;
+  margin-left: 9px;
+  margin-right: 32px;
+}
+
+.expandAllBox {
+  width: 100%;
+  // box-shadow: 1px 1px 3px 0 #00000017;
+  background-color: $white;
+  padding: 16px 24px 16px 24px;
+  margin-bottom: 16px;
+}
+
+#expandAllModal {
+  position: absolute;
+  right: 24px;
+}
+
+.dataUtilityRow {  
+  height: 20px;
+}
+
+.dataUtilityChevron {
+  margin-top: auto;
+  margin-bottom: auto;
+  height: 100%;
+
+  @include mq('phone-wide',max){
+    transform: translate(-12px, 0px);
+  }  
+  @include mq('phone',max){
+    transform: translate(-20px, 0px);
+  }
+}
+
+.dataUtilityTitle {
+  transform: translate(-36px, 0px);
+}
+
+.dataUtilitySvg {
+  transform: translate(-50px, 0px);
+}
+
+.dataUtilityArrow{
+  @include mq('tablet-wide'){
+    transform: translate(-4px, -4px);
+  }
+} 
+
+.flippedDataUtilityArrow {
+  margin-right: 4px;
+  margin-left: -4px;
+  margin-top: 4px;
+}
+
+.dataQualityArrow{
+  transform: translate(0px, -8px);
+} 
+
+.dataFloatRight {
+  float: right;
 }
