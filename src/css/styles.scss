@@ -408,6 +408,12 @@ svg:not(:root) {
   height: 19px;
 }
 
+.svg-20 {
+  float: left;
+  width: 20px;
+  height: 20px;
+}
+
 .svg-24 {
   float: left;
   width: 24px;
@@ -1123,6 +1129,10 @@ button a {
     padding-bottom: 24px !important;
   }
 
+  .pad-bottom-32 {
+    padding-bottom: 32px !important;
+  }
+
   .margin-top-32 {
     margin-top: 32px !important;
   }
@@ -1140,16 +1150,16 @@ button a {
     margin-top: 16px !important;
   }
 
+  .margin-top-8 {
+    margin-top: 8px !important;
+  }
+
   .margin-top-2 {
     margin-top: 2px !important;
   }
 
   .margin-left-8 {
     margin-left: 8px !important;
-  }
-
-  .margin-top-8 {
-    margin-top: 8px !important;
   }
 
   .margin-left-15 {

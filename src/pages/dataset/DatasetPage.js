@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import _ from 'lodash';
 import axios from "axios";
-import * as Sentry from '@sentry/react';
+import * as Sentry from '@sentry/react'; 
 import {
   Row,
   Col,
@@ -22,11 +22,11 @@ import SearchBar from "../commonComponents/searchBar/SearchBar";
 import SVGIcon from "../../images/SVGIcon";
 import { ReactComponent as InfoFillSVG } from "../../images/infofill.svg";
 import { ReactComponent as InfoSVG } from "../../images/info.svg";
-import { ReactComponent as MetadataBronze } from "../../images/bronze.svg";
-import { ReactComponent as MetadataSilver } from "../../images/silver.svg";
-import { ReactComponent as MetadataGold } from "../../images/gold.svg";
-import { ReactComponent as MetadataPlatinum } from "../../images/platinum.svg";
-import { ReactComponent as MetadataNotRated } from "../../images/not-rated.svg";
+import { ReactComponent as MetadataBronze } from "../../images/bronzeNew.svg";
+import { ReactComponent as MetadataSilver } from "../../images/silverNew.svg";
+import { ReactComponent as MetadataGold } from "../../images/goldNew.svg";
+import { ReactComponent as MetadataPlatinum } from "../../images/platinumNew.svg";
+import { ReactComponent as MetadataNotRated } from "../../images/notRatedNew.svg";
 import { PageView, initGA } from "../../tracking";
 import { Event } from "../../tracking";
 import moment from "moment";
@@ -44,6 +44,8 @@ import DataSetHelper from '../../utils/DataSetHelper.util';
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import "react-tabs/style/react-tabs.css";
 import './Dataset.scss';
+import DataUtitlityFramework from "./components/DataUtilityFramework";
+import DataQuality from "./components/DataQuality";
 
 
 var baseURL = require("../commonComponents/BaseURL").getURL();
@@ -381,16 +383,13 @@ class DatasetDetail extends Component {
                         else if (rating === "Platinum") return <MetadataPlatinum />
                     })()}
                 </div>
-                <div style={{ lineHeight: 1 }}>
-                    <span className="gray800-14-opacity">{rating === "Not rated" ? rating : rating+" metadata"}</span>
-                </div>
             </div>
           </div>
 
           <Overlay target={target.current} show={show} placement="bottom">
             {props => (
               <Tooltip className="metadataOverlay" {...props}>
-                Metadata quality score: {Math.trunc(data.datasetfields.metadataquality.quality_score)}
+                Metadata richness score: {Math.trunc(data.datasetfields.metadataquality.quality_score)}
                 <br />
                 <br />
                 The score relates to the amount of information available about
@@ -417,7 +416,11 @@ class DatasetDetail extends Component {
     }
 
     return (
-      <Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
+      <Sentry.ErrorBoundary
+        fallback={
+          <ErrorModal show={this.showModal} handleClose={this.hideModal} />
+        }
+      >
         <div>
           {data.datasetfields.metadataschema !== "" ? (
             <DatasetSchema datasetSchema={data.datasetfields.metadataschema} />
@@ -447,7 +450,9 @@ class DatasetDetail extends Component {
                           {data.datasetfields.publisher}
                         </span>
                       ) : (
-                        <span className="gray800-14-opacity">Not specified</span>
+                        <span className="gray800-14-opacity">
+                          Not specified
+                        </span>
                       )}
                     </Col>
                     <Col xs={2} className="text-right">
@@ -470,7 +475,13 @@ class DatasetDetail extends Component {
                         ? ""
                         : data.tags.features.map((keyword, index) => {
                             return (
-                              <a key={`tag-${index}`} href={"/search?search=&tab=Datasets&keywords=" + keyword}>
+                              <a
+                                key={`tag-${index}`}
+                                href={
+                                  "/search?search=&tab=Datasets&keywords=" +
+                                  keyword
+                                }
+                              >
                                 <div className="ml-2 badge-tag">{keyword}</div>
                               </a>
                             );
@@ -486,30 +497,52 @@ class DatasetDetail extends Component {
                       </span>
                     </Col>
                     <Col sm={6} className="text-right">
-                      { !userState[0].loggedIn ?
-
-                          <button className="btn button-tertiary dark-14 float-right" onClick={() =>
+                      {!userState[0].loggedIn ? (
+                        <button
+                          className="btn button-tertiary dark-14 float-right"
+                          onClick={() =>
                             this.showLoginModal(
                               data.name,
                               data.datasetfields.contactPoint
                             )
-                          }>Request access</button>
-                        
-                        : requiresModal ?
-                          <button className="btn btn-primary addButton pointer float-right" onClick={() => { this.toggleModal()}}>How to request access</button>
-                          : 
-                          <Fragment>
-                            <Link className={`btn button-tertiary dark-14  ${allowsMessaging ? 'mr-2' : 'float-right'}`}
-                              to={{ pathname: `/data-access-request/dataset/${data.datasetid}`}}
-                              onClick={() => Event("Buttons", "Click", "Request Access")}>Request access
-                            </Link>
-                            {
-                              allowsMessaging ?
-                                <button className="btn button-primary addButton pointer" onClick={() => this.toggleDrawer()}>Make an enquiry</button> 
-                              : null
+                          }
+                        >
+                          Request access
+                        </button>
+                      ) : requiresModal ? (
+                        <button
+                          className="btn btn-primary addButton pointer float-right"
+                          onClick={() => {
+                            this.toggleModal();
+                          }}
+                        >
+                          How to request access
+                        </button>
+                      ) : (
+                        <Fragment>
+                          <Link
+                            className={`btn button-tertiary dark-14  ${
+                              allowsMessaging ? "mr-2" : "float-right"
+                            }`}
+                            to={{
+                              pathname: `/data-access-request/dataset/${data.datasetid}`
+                            }}
+                            onClick={() =>
+                              Event("Buttons", "Click", "Request Access")
                             }
-                          </Fragment>
-                      }
+                          >
+                            Request access
+                          </Link>
+                          {allowsMessaging ? (
+                            <button
+                              className="btn button-primary addButton pointer"
+                              onClick={() => this.toggleDrawer()}
+                            >
+                              Make an enquiry
+                            </button>
+                          ) : null}
+                        </Fragment>
+                      )}
                     </Col>
                   </Row>
                 </div>
@@ -523,9 +556,10 @@ class DatasetDetail extends Component {
                 <div>
                   <Tabs className="tabsBackground gray700-13 margin-bottom-16">
                     <Tab eventKey="About" title={"About"}>
-
-                    {!data.datasetfields.abstract ? "" : 
-                      <Row className="mt-2">
+                      {!data.datasetfields.abstract ? (
+                        ""
+                      ) : (
+                        <Row className="mt-2">
                           <Col sm={12}>
                             <div className="rectangle">
                               <Row className="gray800-14-bold">
@@ -533,36 +567,36 @@ class DatasetDetail extends Component {
                               </Row>
                               <Row className="mt-3">
                                 <Col sm={12} className="gray800-14">
-                                        <span className="gray800-14">
-                                          {data.datasetfields.abstract}
-                                        </span>
+                                  <span className="gray800-14">
+                                    {data.datasetfields.abstract}
+                                  </span>
                                 </Col>
                               </Row>
                             </div>
                           </Col>
                         </Row>
-                      }
+                      )}
 
-                    {!data.description ? "" : 
-                      <Row className="mt-2">
-                        <Col sm={12}>
-                          <div className="rectangle">
-                            <Row className="gray800-14-bold">
-                              <Col sm={12}>Description</Col>
-                            </Row>
-                            <Row className="mt-3">
-                              <Col sm={12} className="gray800-14">
-                                      <span className="gray800-14">
-                                        <ReactMarkdown
-                                          source={data.description}
-                                        />
-                                      </span>
-                              </Col>
-                            </Row>
-                          </div>
-                        </Col>
-                      </Row>
-                    }
+                      {!data.description ? (
+                        ""
+                      ) : (
+                        <Row className="mt-2">
+                          <Col sm={12}>
+                            <div className="rectangle">
+                              <Row className="gray800-14-bold">
+                                <Col sm={12}>Description</Col>
+                              </Row>
+                              <Row className="mt-3">
+                                <Col sm={12} className="gray800-14">
+                                  <span className="gray800-14">
+                                    <ReactMarkdown source={data.description} />
+                                  </span>
+                                </Col>
+                              </Row>
+                            </div>
+                          </Col>
+                        </Row>
+                      )}
 
                       <Row className="mt-2">
                         <Col sm={12}>
@@ -576,9 +610,9 @@ class DatasetDetail extends Component {
                               </Col>
                               {data.datasetfields.releaseDate ? (
                                 <Col sm={10} className="gray800-14">
-                                  {moment(data.datasetfields.releaseDate).format(
-                                    "DD MMMM YYYY"
-                                  )}
+                                  {moment(
+                                    data.datasetfields.releaseDate
+                                  ).format("DD MMMM YYYY")}
                                 </Col>
                               ) : (
                                 <Col sm={10} className="gray800-14-opacity">
@@ -605,7 +639,10 @@ class DatasetDetail extends Component {
                                 Standard
                               </Col>
                               {data.datasetfields.conformsTo ? (
-                                <Col sm={10} className="gray800-14 overflowWrap">
+                                <Col
+                                  sm={10}
+                                  className="gray800-14 overflowWrap"
+                                >
                                   {data.datasetfields.conformsTo}
                                 </Col>
                               ) : (
@@ -737,7 +774,7 @@ class DatasetDetail extends Component {
                           </div>
                         </Col>
                       </Row>
-  
+
                       <Row className="mt-2">
                         <Col sm={12}>
                           <div className="rectangle">
@@ -788,7 +825,10 @@ class DatasetDetail extends Component {
                               </Col>
                               {data.datasetfields.physicalSampleAvailability ? (
                                 <Col sm={9} className="gray800-14">
-                                  {data.datasetfields.physicalSampleAvailability}
+                                  {
+                                    data.datasetfields
+                                      .physicalSampleAvailability
+                                  }
                                 </Col>
                               ) : (
                                 <Col sm={9} className="gray800-14-opacity">
@@ -798,95 +838,160 @@ class DatasetDetail extends Component {
                             </Row>
                           </div>
                         </Col>
-                      </Row> 
+                      </Row>
 
-                      {data.datasetfields.phenotypes !== "undefined" && data.datasetfields.phenotypes.length > 0 ?
-                          <Fragment>
-                              <Row className="mt-2">
+                      {data.datasetfields.phenotypes !== "undefined" &&
+                      data.datasetfields.phenotypes.length > 0 ? (
+                        <Fragment>
+                          <Row className="mt-2">
+                            <Col sm={12}>
+                              <div className="rectangle">
+                                <Row className="gray800-14-bold">
                                   <Col sm={12}>
-                                      <div className="rectangle">
-                                          <Row className="gray800-14-bold">
-                                              <Col sm={12}>
-                                                  <span className="mr-3">Phenotypes</span>
+                                    <span className="mr-3">Phenotypes</span>
 
-                                                  <span onMouseEnter={this.handleMouseHover} onMouseLeave={this.handleMouseHover} >
-                                                      {this.state.isHoveringPhenotypes ? <InfoFillSVG /> : <InfoSVG />}
-                                                  </span>
+                                    <span
+                                      onMouseEnter={this.handleMouseHover}
+                                      onMouseLeave={this.handleMouseHover}
+                                    >
+                                      {this.state.isHoveringPhenotypes ? (
+                                        <InfoFillSVG />
+                                      ) : (
+                                        <InfoSVG />
+                                      )}
+                                    </span>
 
-                                                  {this.state.isHoveringPhenotypes && (
-                                                      <div className="dataClassToolTip">
-                                                          <span className="white-13-semibold">
-                                                              When patients interact with physicians, or are admitted into hospital, information is collected electronically on their symptoms, diagnoses, laboratory test results, and prescriptions and stored in Electronic Health Records (EHR). EHR are a valuable resource for researchers and clinicians for improving health and healthcare. Phenotyping algorithms are complex computer programs that extract useful information from EHR so they can be used for health research.
-                                                          </span>
-                                                      </div>
-                                                  )}
-                                              </Col>
-                                          </Row>
-
-                                          <Row className="mt-2">
-                                              <Col sm={12} className="gray800-14">
-                                                  Below are the phenotypes identified in this dataset through a phenotyping algorithm.
-                                              </Col>
-                                          </Row>
-
-                                          <Row className="mt-3">
-                                              {!showAllPhenotype ?
-                                                  data.datasetfields.phenotypes.slice(0, 20).map((phenotype) => {
-                                                      return (
-                                                          <Fragment>
-                                                              <Col xs={6} lg={3} className='mb-2'>
-                                                                  <a href={phenotype.url} rel="noopener noreferrer" className="purple-14">{phenotype.name}</a>
-                                                              </Col>
-                                                              <Col xs={6} lg={3} className="gray800-14-opacity">
-                                                                  {phenotype.type}
-                                                              </Col>
-                                                          </Fragment>
-                                                      )
-                                                  })
-                                                  :
-                                                  data.datasetfields.phenotypes.map((phenotype) => {
-                                                      return (
-                                                          <Fragment>
-                                                              <Col xs={6} lg={3} className='mb-2'>
-                                                                  <a href={phenotype.url} rel="noopener noreferrer" className="purple-14">{phenotype.name}</a>
-                                                              </Col>
-                                                              <Col xs={6} lg={3} className="gray800-14-opacity">
-                                                                  {phenotype.type}
-                                                              </Col>
-                                                          </Fragment>
-                                                      )
-                                                  })}
-                                          </Row>
-                                          {!showAllPhenotype && data.datasetfields.phenotypes.length > 20 ?
-                                              <Row className="mt-3 text-center">
-                                                  <Col sm={12} className="purple-14">
-                                                      <span onClick={() => this.showAllPhenotypes()} style={{ cursor: "pointer" }} >Show all phenotypes</span>
-                                                  </Col>
-                                              </Row>
-                                              :''
-                                          }
+                                    {this.state.isHoveringPhenotypes && (
+                                      <div className="dataClassToolTip">
+                                        <span className="white-13-semibold">
+                                          When patients interact with
+                                          physicians, or are admitted into
+                                          hospital, information is collected
+                                          electronically on their symptoms,
+                                          diagnoses, laboratory test results,
+                                          and prescriptions and stored in
+                                          Electronic Health Records (EHR). EHR
+                                          are a valuable resource for
+                                          researchers and clinicians for
+                                          improving health and healthcare.
+                                          Phenotyping algorithms are complex
+                                          computer programs that extract useful
+                                          information from EHR so they can be
+                                          used for health research.
+                                        </span>
                                       </div>
+                                    )}
                                   </Col>
-                              </Row>
-                          </Fragment> : ''
-                      }
+                                </Row>
+
+                                <Row className="mt-2">
+                                  <Col sm={12} className="gray800-14">
+                                    Below are the phenotypes identified in this
+                                    dataset through a phenotyping algorithm.
+                                  </Col>
+                                </Row>
+
+                                <Row className="mt-3">
+                                  {!showAllPhenotype
+                                    ? data.datasetfields.phenotypes
+                                        .slice(0, 20)
+                                        .map(phenotype => {
+                                          return (
+                                            <Fragment>
+                                              <Col
+                                                xs={6}
+                                                lg={3}
+                                                className="mb-2"
+                                              >
+                                                <a
+                                                  href={phenotype.url}
+                                                  rel="noopener noreferrer"
+                                                  className="purple-14"
+                                                >
+                                                  {phenotype.name}
+                                                </a>
+                                              </Col>
+                                              <Col
+                                                xs={6}
+                                                lg={3}
+                                                className="gray800-14-opacity"
+                                              >
+                                                {phenotype.type}
+                                              </Col>
+                                            </Fragment>
+                                          );
+                                        })
+                                    : data.datasetfields.phenotypes.map(
+                                        phenotype => {
+                                          return (
+                                            <Fragment>
+                                              <Col
+                                                xs={6}
+                                                lg={3}
+                                                className="mb-2"
+                                              >
+                                                <a
+                                                  href={phenotype.url}
+                                                  rel="noopener noreferrer"
+                                                  className="purple-14"
+                                                >
+                                                  {phenotype.name}
+                                                </a>
+                                              </Col>
+                                              <Col
+                                                xs={6}
+                                                lg={3}
+                                                className="gray800-14-opacity"
+                                              >
+                                                {phenotype.type}
+                                              </Col>
+                                            </Fragment>
+                                          );
+                                        }
+                                      )}
+                                </Row>
+                                {!showAllPhenotype &&
+                                data.datasetfields.phenotypes.length > 20 ? (
+                                  <Row className="mt-3 text-center">
+                                    <Col sm={12} className="purple-14">
+                                      <span
+                                        onClick={() => this.showAllPhenotypes()}
+                                        style={{ cursor: "pointer" }}
+                                      >
+                                        Show all phenotypes
+                                      </span>
+                                    </Col>
+                                  </Row>
+                                ) : (
+                                  ""
+                                )}
+                              </div>
+                            </Col>
+                          </Row>
+                        </Fragment>
+                      ) : (
+                        ""
+                      )}
                     </Tab>
+
+
+
                     <Tab eventKey="TechDetails" title={`Technical details`}>
-                      <Row className="width-100" style={{ margin: "0%" }}> 
+                      <Row className="width-100" style={{ margin: "0%" }}>
                         {dataClassOpen === -1 ? (
                           <>
                             <Col
                               sm={12}
                               lg={12}
                               className="subHeader gray800-14-bold pad-bottom-24 pad-top-24"
-                            > 
+                            >
                               <span className="black-16-semibold mr-3">
                                 Data Classes
                               </span>
                               <span
                                 onMouseEnter={this.handleMouseHover}
                                 onMouseLeave={this.handleMouseHover}
-                              > 
+                              >
                                 {this.state.isHovering ? (
                                   <InfoFillSVG />
                                 ) : (
@@ -900,32 +1005,43 @@ class DatasetDetail extends Component {
                                     A Dataset contains a number of Data Classes:
                                     groupings or collections of data points that
                                     share some common context: for example
-                                    appearing in the same table of a database, or
-                                    the same section in a form. A data class has a
-                                    name, a description, some aliases, and may
-                                    contain further (sub-) data classes.
+                                    appearing in the same table of a database,
+                                    or the same section in a form. A data class
+                                    has a name, a description, some aliases, and
+                                    may contain further (sub-) data classes.
                                   </span>
                                 </div>
                               )}
                             </Col>
 
                             <Row style={{ width: "-webkit-fill-available" }}>
-                              <Col sm={12} lg={12} className={technicalMetadata && technicalMetadata.length > 0 ? "margin-left-15 width-100" : "width-100"}>
-                                {technicalMetadata && technicalMetadata.length > 0 ?
-                                technicalMetadata.map((techMetadata, index) => (
-                                  <TechnicalMetadata
-                                    key={`techMetadata-${index}`}
-                                    technicalMetadata={techMetadata}
-                                    index={index}
-                                    doUpdateDataClassOpen={
-                                      this.doUpdateDataClassOpen
-                                    }
-                                  />
-                                ))
-                                :
-                                <NotFound word='technical details' />
+                              <Col
+                                sm={12}
+                                lg={12}
+                                className={
+                                  technicalMetadata &&
+                                  technicalMetadata.length > 0
+                                    ? "margin-left-15 width-100"
+                                    : "width-100"
                                 }
-
+                              >
+                                {technicalMetadata &&
+                                technicalMetadata.length > 0 ? (
+                                  technicalMetadata.map(
+                                    (techMetadata, index) => (
+                                      <TechnicalMetadata 
+                                        key={`techMetadata-${index}`}
+                                        technicalMetadata={techMetadata}
+                                        index={index}
+                                        doUpdateDataClassOpen={
+                                          this.doUpdateDataClassOpen
+                                        }
+                                      />
+                                    )
+                                  )
+                                ) : (
+                                  <NotFound word="technical details" />
+                                )}
                               </Col>
                             </Row>
                           </>
@@ -936,7 +1052,9 @@ class DatasetDetail extends Component {
                                 technicalMetadata={
                                   technicalMetadata[dataClassOpen]
                                 }
-                                doUpdateDataClassOpen={this.doUpdateDataClassOpen}
+                                doUpdateDataClassOpen={
+                                  this.doUpdateDataClassOpen
+                                }
                               />
                             </Col>
                           </Row>
@@ -944,23 +1062,93 @@ class DatasetDetail extends Component {
                       </Row>
                     </Tab>
 
+
+
+                    <Tab eventKey="DataUtility" title={`Data utility`}>
+                      <Row className="mt-2">
+                        <Col sm={12}>
+                          <div className="rectangle pad-bottom-16">
+
+                            <Row className="ml-2">
+                              <Col sm={12} lg={12} className="pad-left-0">
+                                <span className="pad-top-24 pad-bottom-16  gray800-14-bold mr-3">
+                                  Data utility
+                                </span>
+
+                                <DataUtitlityFramework />
+                              </Col>
+                            </Row>
+
+                            <Row className="mt-3">
+                              <Col sm={12} className="gray-deep-14">
+                                <span className="gray-deep-14">
+                                  The Data Utility Framework scores datasets on
+                                  5 categories and 23 dimensions, and is used to
+                                  refer to the usefulness of a dataset for a
+                                  given purpose. This framework enables:
+                                </span>
+                                {/* <br /> */}
+                                <ul className="gray-deep-14 margin-top-8">
+                                  <li>
+                                    Data custodians to communicate the utility
+                                    of their dataset, and improvements made in
+                                    the dataset
+                                  </li>
+                                  <li>
+                                    Users to identify datasets that meet the
+                                    minimum requirements for their specific
+                                    purpose
+                                  </li>
+                                  <li>
+                                    Systems leaders and funders to identify
+                                    where to invest in data utility
+                                    improvements, and to evaluate what
+                                    improvements have happened as a result of
+                                    their investments
+                                  </li>
+                                </ul>
+                                {/* <br /> */}
+                                <span>
+                                  Some datasets will not yet have a data utility
+                                  rating and some may only have a rating for
+                                  metadata richness
+                                </span>
+                              </Col>
+                            </Row>
+                          </div>
+
+                          <div className="rectangle">
+                            {/* //TODO - DataQuality will go here */}
+                            <DataQuality />
+                          </div>
+
+                        </Col>
+                      </Row>
+                    </Tab>
+
+
+
                     <Tab
                       eventKey="Collaboration"
                       title={`Discussion (${discoursePostCount})`}
                     >
-                      <DiscourseTopic 
-                      toolId={data.id} 
-                      topicId={data.discourseTopicId || 0} 
-                      userState={userState} 
-                      onUpdateDiscoursePostCount={this.updateDiscoursePostCount}
+                      <DiscourseTopic
+                        toolId={data.id}
+                        topicId={data.discourseTopicId || 0}
+                        userState={userState}
+                        onUpdateDiscoursePostCount={
+                          this.updateDiscoursePostCount
+                        }
                       />
                     </Tab>
                     <Tab
                       eventKey="Projects"
-                      title={"Related resources (" + relatedObjects.length + ")"}
+                      title={
+                        "Related resources (" + relatedObjects.length + ")"
+                      }
                     >
-
-                      {data.relatedObjects && data.relatedObjects.length <= 0 ? (
+                      {data.relatedObjects &&
+                      data.relatedObjects.length <= 0 ? (
                         <NotFound word="related resources" />
                       ) : (
                         relatedObjects.map(object => (
@@ -979,30 +1167,32 @@ class DatasetDetail extends Component {
             </Row>
           </Container>
 
-          <SideDrawer
-              open={showDrawer}
-              closed={this.toggleDrawer}>
-              <UserMessages 
-                  userState={userState[0]}
-                  closed={this.toggleDrawer}
-                  toggleModal={this.toggleModal}
-                  drawerIsOpen={showDrawer}
-                  topicContext={this.topicContext} />
+          <SideDrawer open={showDrawer} closed={this.toggleDrawer}>
+            <UserMessages
+              userState={userState[0]}
+              closed={this.toggleDrawer}
+              toggleModal={this.toggleModal}
+              drawerIsOpen={showDrawer}
+              topicContext={this.topicContext}
+            />
           </SideDrawer>
 
           {!userState[0].loggedIn ? (
             ""
           ) : (
-            <AddToCollection className="addToCollectionButton" data={data} userState={userState} />
+            <AddToCollection
+              className="addToCollectionButton"
+              data={data}
+              userState={userState}
+            />
           )}
 
-          <DataSetModal 
-            open={showModal} 
+          <DataSetModal
+            open={showModal}
             closed={this.toggleModal}
             context={this.topicContext}
             userState={userState[0]}
           />
-
         </div>
       </Sentry.ErrorBoundary>
     );
