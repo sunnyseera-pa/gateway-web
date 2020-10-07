@@ -53,7 +53,6 @@ const AssignWorkflowModal = ({open, close, workflows, publisher, applicationId})
             const workflow = [...workflowsArr].find(el => el.selected === true) || {};
             // next if workflow is not empty
             if(!_.isEmpty(workflow)) {
-                debugger;
                 axios.put(baseURL + `/api/v1/data-access-request/${applicationId}/assignworkflow`, {
                     "workflowId": workflow._id
                 })
