@@ -41,6 +41,7 @@ import ApplicantActionButtons from './components/ApplicantActionButtons/Applican
 import CustodianActionButtons from './components/CustodianActionButtons/CustodianActionButtons';
 import ActionModal from './components/ActionModal/ActionModal';
 import ContributorModal from './components/ContributorModal/ContributorModal';
+import AssignWorkflowModal from './components/AssignWorkflowModal/AssignWorkflowModal';
 import SLA from '../commonComponents/sla/SLA';
 
 class DataAccessRequest extends Component {
@@ -82,6 +83,7 @@ class DataAccessRequest extends Component {
 			showMrcModal: false,
 			showActionModal: false,
 			showContributorModal: false,
+			showAssignWorkflowModal: false,
 			readOnly: false,
 			userType: '',
 			isWideForm: false,
@@ -104,6 +106,7 @@ class DataAccessRequest extends Component {
 			},
 			context: {},
 			actionModalConfig: {},
+			workflows: []
 		};
 	}
 
@@ -333,6 +336,10 @@ class DataAccessRequest extends Component {
 		let { firstname, lastname } = mainApplicant;
 		let showSubmit = false;
 
+		let publisherId = '', workflowEnabled = false;
+		if(datasets[0].publisher) {
+			({ _id:publisherId, workflowEnabled } = datasets[0].publisher);
+		}
 
 		// 2. If about application is empty, this is a new data access request so set up state based on passed context
 		if (_.isEmpty(aboutApplication)) {
@@ -388,7 +395,7 @@ class DataAccessRequest extends Component {
 			showSubmit = true;
 		}
 
-		// 6. Set state
+		// 7. Set state
 		this.setState({
 			jsonSchema: { ...jsonSchema, ...classSchema },
 			datasets,
@@ -409,7 +416,9 @@ class DataAccessRequest extends Component {
 			mainApplicant: `${firstname} ${lastname}${this.checkCurrentUser(userId) ? ' (you)':''}`,
 			authorIds,
 			projectId,
-			showSubmit
+			showSubmit,
+			publisherId,
+			workflowEnabled
 		});
 	};
 
@@ -866,7 +875,7 @@ class DataAccessRequest extends Component {
 		let {
 			target: { value },
 		} = e;
-		this.toggleActionModal(value);
+		value === 'AssignWorkflow' ? this.toggleAssignWorkflowModal() : this.toggleActionModal(value);
 	};
 
 	toggleCard = (e, eventKey) => {
@@ -924,6 +933,17 @@ class DataAccessRequest extends Component {
 		});
 	};
 
+	toggleAssignWorkflowModal = async() => {
+		let response = await axios.get(`${baseURL}/api/v1/publishers/${this.state.publisherId}/workflows`);
+		let { workflows } = response.data;
+		this.setState((prevState) => {
+			return {
+				workflows,
+				showAssignWorkflowModal: !prevState.showAssignWorkflowModal,
+			};
+		});
+	};
+
 	toggleContributorModal = () => {
 		this.setState((prevState) => {
 			return { 
@@ -938,7 +958,6 @@ class DataAccessRequest extends Component {
 	}
 
 	submitContributors = async () => {
-		debugger;
 		let { updatedAuthorIds: authorIds, _id } = this.state;
 		const body = {
 			authorIds
@@ -1003,6 +1022,7 @@ class DataAccessRequest extends Component {
 			showMrcModal,
 			showActionModal,
 			showContributorModal,
+			showAssignWorkflowModal,
 			isWideForm,
 			activeAccordionCard,
 			allowedNavigation,
@@ -1020,6 +1040,7 @@ class DataAccessRequest extends Component {
 				completedInviteCollaborators,
 			},
 			context,
+			workflows,
 			readOnly,
 			userType,
 			actionModalConfig,
@@ -1487,7 +1508,7 @@ class DataAccessRequest extends Component {
 									7
 								</div>
 							)}
-							Invite collaborators
+							Invite contributors
 						</Accordion.Toggle>
 						<Accordion.Collapse eventKey='6'>
 							<Card.Body className='gray800-14'>
@@ -1768,6 +1789,7 @@ class DataAccessRequest extends Component {
 								allowedNavigation={allowedNavigation}
 								onActionClick={this.onCustodianAction}
 								onNextClick={this.onNextClick}
+								workflowEnabled={this.state.workflowEnabled}
 							/>
 						)}
 					</div>
@@ -1810,6 +1832,14 @@ class DataAccessRequest extends Component {
 						readOnly={this.state.readOnly}
 				/>
 				</ContributorModal>
+
+				<AssignWorkflowModal
+					open={showAssignWorkflowModal}
+					close={this.toggleAssignWorkflowModal}
+					applicationId={this.state._id}
+					publisher={datasets[0].publisher.name}
+					workflows={this.state.workflows}
+				/>
 
 				<Modal
 					show={showMrcModal}
