@@ -1,16 +1,82 @@
-import React, {Fragment, useState} from 'react';
-import { Button, Modal, Row, Col, Tab, Tabs } from 'react-bootstrap';
+import React, {Fragment, useState, useEffect} from 'react';
+import { Modal } from 'react-bootstrap';
 import WorkflowsModal from './WorkflowsModal';
 import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';    
-// import '../../../commonComponents/relatedResourcesModal/' '../../../commonComponents/relatedResourcesModal/RelatedResources.scss';
+import { useHistory } from 'react-router-dom';
+import _ from 'lodash';
+import axios from 'axios';
+import { baseURL } from '../../../../configs/url.config';
 
-const AssignWorkflowModal = ({open, close, workflows}) => {
+
+const AssignWorkflowModal = ({open, close, workflows, publisher, applicationId}) => {
+    // workflow(s) state // this.state.steps = [];
+    const [workflowsArr, setWorkflow] = useState([]);
+    // state for workflow has been selected
+    const [isWorkflowSelected, setSelectedWorkflow] = useState(false);
+
+    let history = useHistory();
+
+    const modifyWorkflows = () => {
+        if(!_.isEmpty(workflows)) {
+            let workflowsArr = workflows.map((item) => {
+                return {
+                    ...item,
+                    selected: false
+                }
+            });
+            setWorkflow(workflowsArr);
+        }
+        return [];
+    }
+
+    const toggleSelected = (_id) => {
+        let workflows = workflowsArr.map((item) => {
+            return {
+                ...item,
+                selected: item._id === _id ? !item.selected : false
+            }
+        });
+        // set workflow is Selected flag .find { selected: true, workflowId etc} 
+        let isWorkflowSelected = [...workflows].some(el => el.selected === true);
+        // do we have a selected workflow
+        let selected = isWorkflowSelected ? true : false;
+        //set workflow selected state
+        setSelectedWorkflow(selected);
+        // set update to workflows array
+        setWorkflow(workflows);
+    }
+
+    const assignNotify = () => {
+        // check if workflows is not empty ![]
+        if( !_.isEmpty(workflowsArr) ) {
+            // get the selected workflow default to empty object incase of undefined return
+            const workflow = [...workflowsArr].find(el => el.selected === true) || {};
+            // next if workflow is not empty
+            if(!_.isEmpty(workflow)) {
+                debugger;
+                axios.put(baseURL + `/api/v1/data-access-request/${applicationId}/assignworkflow`, {
+                    "workflowId": workflow._id
+                })
+                .then((res) => {
+                    let alert = {
+                        publisher: publisher,
+                        nav: `dataaccessrequests&team=${publisher}`,
+                        tab: "inReview",
+                        message: `You have successfully assigned a workflow`,
+                    };
+                    //redirect to dashboard with alert
+                    history.push({ pathname: `/account`, search: `?tab=dataaccessrequests&team=`, state: { alert }});
+                });
+            }
+        }
+    }
+
+    useEffect(() => {
+        modifyWorkflows();
+    }, [workflows]);
 
     return ( 
-        <Fragment className="flexCenter" >
-             {/* <Button variant='white' href={''} target="_blank" className="techDetailButton mr-2" onClick={handleShow} ref={ref}> */}
-                 {/* + Add resource */}
-             {/* </Button> */}
+        <Fragment className="flexCenter assignNotifyModal" >
         <Modal show={open} onHide={close} aria-labelledby="contained-modal-title-vcenter" className="relatedResourcesModal">
                 <Modal.Header>
                     <Modal.Title >
@@ -21,29 +87,22 @@ const AssignWorkflowModal = ({open, close, workflows}) => {
                     <CloseButtonSvg className="modal-close pointer" onClick={close} width="24px" height="24px" fill="#475DA7" />
                 </Modal.Header>
                 <Modal.Body >
-                    <div>body stuff</div>
-                   <WorkflowsModal workflows={workflows}  />
-                   {/* <WorkflowsModal searchString={epilepsy} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} paperData={props.paperData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} /> */}
+                   <WorkflowsModal 
+                        workflows={workflowsArr}
+                        toggleSelected={toggleSelected}
+                    />
+                    {
+                    isWorkflowSelected ? 
+                        <div className='assignNotify'>
+                            <div className="assignNotifyAction">
+                                    <button className="button-primary" value="Reject" onClick={e => assignNotify()}>Assign and notify</button> 
+                                </div>
+                        </div> : ''
+                    }
                 </Modal.Body>
-                <Modal.Footer>
-                        <div class="flex-grow">
-                            <span className="gray800-14" >{5} selected</span>
-                        </div>
-                        <div> 
-                            {/* <Button variant='white' className="techDetailButton mr-2" id="unselectButton" onClick={props.doClearRelatedObjects} >
-                                Unselect all
-                            </Button>
-                            <Button variant="primary" className="white-14-semibold" id="addResources" onClick={addResources} >
-                                Add resources
-                            </Button>  */}
-                        </div>
-                </Modal.Footer>
              </Modal>
          </Fragment> 
     )
 };
- 
-
-
 
 export default AssignWorkflowModal;

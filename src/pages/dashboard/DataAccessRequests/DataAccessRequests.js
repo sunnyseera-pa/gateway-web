@@ -141,11 +141,11 @@ class DataAccessRequestsNew extends React.Component {
             return (
                 <Row className='mt-3'>
                     <Col xs={1}></Col>
-                    <div className="col-sm-10 row">
-                        <Alert variant={"success"} className="col-sm-12">
-                            <CheckSvg fill="#2c8267" /> {message}
-                        </Alert>
-                    </div>
+                    <Col xs={10}>
+                            <Alert variant={"success"} className="col-sm-12">
+                                <CheckSvg fill="#2C8267" /> {message}
+                            </Alert>
+                    </Col>
                     <Col xs={1}></Col>
                 </Row>
             )

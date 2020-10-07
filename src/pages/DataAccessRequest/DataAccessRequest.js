@@ -1836,6 +1836,8 @@ class DataAccessRequest extends Component {
 				<AssignWorkflowModal
 					open={showAssignWorkflowModal}
 					close={this.toggleAssignWorkflowModal}
+					applicationId={this.state._id}
+					publisher={datasets[0].publisher.name}
 					workflows={this.state.workflows}
 				/>
 
