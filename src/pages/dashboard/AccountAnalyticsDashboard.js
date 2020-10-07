@@ -63,7 +63,7 @@ class AccountAnalyticsDashboard extends React.Component {
     }
 
     componentWillUnmount() {
-        isMounted = false;
+        isMounted = false; 
     }
 
     handleSelect = (key) => {
