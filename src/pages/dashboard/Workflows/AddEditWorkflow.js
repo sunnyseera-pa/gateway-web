@@ -259,7 +259,7 @@ const AddEditWorkflow = (props) => {
                                           selectedContributors={[...values.steps[index].reviewers]}
                                           typeaheadId={`steps[${index}].reviewers`}
                                           typeaheadName={`steps[${index}].reviewers`}
-                                          typeaheadClass={`${hasErrors(touched, errors, index, 'reviewers') ? 'is-invalid' : ''}`}
+                                          typeaheadClass={`${hasErrors(touched, errors, index, 'reviewers') ? 'addFormInputTypeAhead is-invalid' : ''}`}
                                           />
                                           {hasErrors(touched, errors, index, 'reviewers') ? <div className="errorMessages">{errors.steps[index].reviewers}</div> : null }
                                       </div>
