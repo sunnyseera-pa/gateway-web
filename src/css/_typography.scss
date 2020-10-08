@@ -121,6 +121,10 @@ h6 {
   @include font-source(14px, $gray-200, $font-weight-semibold);
 }
 
+.gray200-14 {
+  @include font-source(14px, $gray-500, $font-weight-semibold);
+}
+
 .gray500-13 {
   @include font-source(13px, $gray-700, $font-weight-semibold);
 }
