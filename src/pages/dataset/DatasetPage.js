@@ -1119,7 +1119,7 @@ class DatasetDetail extends Component {
 
                           <div className="rectangle">
                             {/* //TODO - DataQuality will go here */}
-                            <DataQuality />
+                            <DataQuality datasetUtility= {data.datasetfields.datautility} />
                           </div>
 
                         </Col>
