@@ -9,6 +9,7 @@ import {
 	Tab,
 	Accordion,
 	Card,
+	Alert,
 } from 'react-bootstrap';
 import Winterfell from 'winterfell';
 import _ from 'lodash';
@@ -293,7 +294,9 @@ class DataAccessRequest extends Component {
 						mainApplicant,
 						userId,
 						authorIds,
-						projectId
+						projectId,
+						inReviewMode,
+						reviewSections
 					},
 				},
 			} = response;
@@ -310,7 +313,9 @@ class DataAccessRequest extends Component {
 				mainApplicant,
 				userId,
 				authorIds,
-				projectId
+				projectId,
+				inReviewMode,
+				reviewSections
 			});
 		} catch (error) {
 			this.setState({ isLoading: false });
@@ -332,7 +337,9 @@ class DataAccessRequest extends Component {
 			mainApplicant,
 			userId,
 			authorIds,
-			projectId
+			projectId,
+			inReviewMode = false,
+			reviewSections = [],
 		} = context;
 		let {
 			datasetfields: { publisher },
@@ -394,6 +401,13 @@ class DataAccessRequest extends Component {
 			formPanels: [initialPanel, ...rest],
 		} = jsonSchema;
 
+		if(inReviewMode){
+			jsonSchema.pages = jsonSchema.pages.map((page) => {
+				let inReview = reviewSections.includes(page.title.toLowerCase().replace(' ','')) || page.pageId === 'about';
+				return {...page, inReview};
+			})
+		}
+
 		// 6. Hide show submit application
 		if (applicationStatus === 'inProgress') {
 			showSubmit = true;
@@ -422,7 +436,8 @@ class DataAccessRequest extends Component {
 			projectId,
 			showSubmit,
 			publisherId,
-			workflowEnabled
+			workflowEnabled,
+			inReviewMode
 		});
 	};
 
@@ -645,6 +660,7 @@ class DataAccessRequest extends Component {
 			const newPageindex = pages.findIndex(
 				(page) => page.pageId === newForm.pageId
 			);
+			let reviewWarning = !pages[newPageindex].inReview && this.state.inReviewMode;
 			// reset the current state of active to false for all pages
 			const newFormState = [...this.state.jsonSchema.pages].map((item) => {
 				return { ...item, active: false };
@@ -686,6 +702,7 @@ class DataAccessRequest extends Component {
 				isWideForm: panelId === 'about',
 				totalQuestions: totalQuestions,
 				validationErrors,
+				reviewWarning
 			});
 		}
 	};
@@ -1635,14 +1652,15 @@ class DataAccessRequest extends Component {
 								className={`${item.active ? 'active-border' : ''}`}
 							>
 								<div>
-									<h1
-										className={`black-16 ${
-											item.active ? 'section-header-active' : 'section-header'
-										} ${this.state.allowedNavigation ? '' : 'disabled'}`}
+									<h3
+										className={
+										`${!this.state.inReviewMode ? 'black-16' : item.inReview ? 'black-16' : 'section-not-inreview'}
+										${item.active ? 'section-header-active' : 'section-header'} 
+										${this.state.allowedNavigation ? '' : 'disabled'}`}
 										onClick={(e) => this.updateNavigation(item)}
 									>
 										{item.title}
-									</h1>
+									</h3>
 									{item.active && (
 										<ul className='list-unstyled section-subheader'>
 											<NavItem
@@ -1651,6 +1669,7 @@ class DataAccessRequest extends Component {
 												onFormSwitchPanel={this.updateNavigation}
 												activePanelId={this.state.activePanelId}
 												enabled={allowedNavigation}
+												notForReview={!item.inReview && this.state.inReviewMode}
 											/>
 										</ul>
 									)}
@@ -1659,6 +1678,7 @@ class DataAccessRequest extends Component {
 						))}
 					</div>
 					<div id='darCenterCol' className={isWideForm ? 'extended' : ''}>
+					{this.state.reviewWarning ? <Alert variant="warning" className=""><SVGIcon name='attention' width={24} height={24} fill={'#f0bb24'} viewBox="2 -9 22 22"></SVGIcon>You are not assigned to this section but can still view the form</Alert> : ''}
 						<div id='darDropdownNav'>
 							<NavDropdown
 								options={{
