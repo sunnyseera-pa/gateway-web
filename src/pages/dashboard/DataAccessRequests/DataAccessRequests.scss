@@ -101,6 +101,11 @@
 
         &-deadline {
           color: $red;
+          margin-left: auto;
+        }
+
+        &-review {
+          margin-left: auto;
         }
 
         &:nth-child(3),

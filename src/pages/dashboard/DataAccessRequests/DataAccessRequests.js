@@ -18,6 +18,7 @@ import './DataAccessRequests.scss';
 class DataAccessRequestsNew extends React.Component {
 
     durationLookups = ['inProgress', 'submitted'];
+    finalDurationLookups = ['rejected', 'approved', 'approved with conditions'];
 
 	state = {
 		userState: [],
@@ -151,9 +152,14 @@ class DataAccessRequestsNew extends React.Component {
             )
     }
 
-    renderComment = (status = '', applicationStatus = '') => {
+    renderComment = (status = '', decisionComments = '', applicationStatus = '') => {
         if(!_.isEmpty(status) && !_.isEmpty(applicationStatus)) {
-            return <CommentItem text={status} title={DarHelperUtil.darCommentTitle[applicationStatus]}/>
+            if(this.finalDurationLookups.includes(applicationStatus)) {
+                return <CommentItem text={status} title={DarHelperUtil.darCommentTitle[applicationStatus]}/>
+            }
+            if(this.durationLookups.includes(applicationStatus)) {
+                return <CommentItem text={decisionComments} title={DarHelperUtil.darCommentTitle[applicationStatus]}/>
+            }
         }
         return '';
     }
@@ -161,8 +167,6 @@ class DataAccessRequestsNew extends React.Component {
     renderDuration = (accessRequest, team = {}) => {
         let { applicationStatus = '', createdAt, dateSubmitted, decisionDuration = 0 } = accessRequest;
         let diff = 0;
-        let finalDurationLookups = ['rejected', 'approved', 'approved with conditions'];
-
         if(this.durationLookups.includes(applicationStatus)) {
             if(applicationStatus === DarHelperUtil.darStatus.inProgress) {
                 diff = this.calculateTimeDifference(createdAt);
@@ -174,8 +178,7 @@ class DataAccessRequestsNew extends React.Component {
                 return <TimeDuration text={`${diff} days since submission`} />;
             }
         }
-
-        if(finalDurationLookups.includes(applicationStatus) && team) {
+        if(this.finalDurationLookups.includes(applicationStatus) && team) {
             if(!_.isEmpty(decisionDuration.toString())) {
                 return <TimeDuration text={`${decisionDuration} days total`} />
             }
@@ -273,14 +276,18 @@ class DataAccessRequestsNew extends React.Component {
                                 applicationStatus, 
                                 applicationStatusDesc='', 
                                 projectName = '',
+                                workflow = {},
                                 workflowName = '',
                                 workflowCompleted = false,
                                 reviewStatus = '',
                                 deadlinePassed = false,
+                                decisionComments = '',
+                                decisionStatus = '',
+                                decisionMade = false,
+                                isReviewer = false,
                                 activeStepName = '',
                                 remainingActioners = []
                             } = request;
-                            console.log(request);
                             return (
                                 <Row 
                                     key={`request_${i}`} 
@@ -308,15 +315,19 @@ class DataAccessRequestsNew extends React.Component {
                                                     applicants={applicants}
                                                     dateSubmitted={dateSubmitted}
                                                     team={team}
+                                                    workflow={workflow}
                                                     workflowName={workflowName}
                                                     workflowCompleted={workflowCompleted}
                                                     reviewStatus={reviewStatus}
                                                     deadlinePassed={deadlinePassed}
+                                                    decisionStatus={decisionStatus}
+                                                    decisionMade={decisionMade}
+                                                    isReviewer={isReviewer}
                                                     activeStepName={activeStepName}
                                                     remainingActioners={remainingActioners}
                                                     navigateToLocation={this.navigateToLocation} />
                                             </div>
-                                            {this.renderComment(applicationStatusDesc, applicationStatus)}
+                                            {this.renderComment(applicationStatusDesc, decisionComments, applicationStatus)}
                                         </div>
                                     </div>
                                 </Row>
