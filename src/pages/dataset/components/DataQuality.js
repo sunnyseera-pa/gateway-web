@@ -141,7 +141,7 @@ class DataQuality extends React.Component {
   };
 
   render() {
-    const { allOpen, displayOption } = this.state;
+    const { displayOption } = this.state;
 
     return (
       <>
