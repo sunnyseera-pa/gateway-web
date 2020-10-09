@@ -11,75 +11,117 @@ const AccessActivity = ({
   updatedAt, 
   applicants = '',
   dateSubmitted = '', 
+  team = '',
   publisher = '', 
   applicationStatus,
   navigateToLocation,
+  workflow = {},
   workflowName = '',
   workflowCompleted = false,
   reviewStatus = '',
   deadlinePassed = false,
+  decisionStatus = '',
+  decisionMade = false,
+  isReviewer = false,
   activeStepName = '',
   remainingActioners = [] }) =>{
 
   const setActivityMeta = () => {
-    // Determine return for Deadline or final decision and color
-    if(workflowCompleted && applicationStatus === DarHelperUtil.darStatus.inReview) {
-      return <WorkflowDecision text={reviewStatus} icon='flag'/>
-    } else if(deadlinePassed) {
-      return <div className="box-deadline">{reviewStatus}</div>
-    } else {
-      return <div>{reviewStatus}</div>
-    }
-  }
+	  let reviewDecision;
+		// Determine return for Deadline or final decision and color
+		if (workflowCompleted && applicationStatus === DarHelperUtil.darStatus.inReview) {
+			reviewDecision = <WorkflowDecision text={reviewStatus} icon='flag' />
+		} else if (deadlinePassed) {
+			reviewDecision = <div className="box-deadline">{reviewStatus}</div>
+		}
 
-  const buildAccessRequest = () => {
-    const hasWorkflow = !_.isEmpty(workflowName) ? true : false;
-    return (
-      <Fragment>
-        <div className="box gray800-14">Datasets</div>
-        <div className="box">
-          {datasets.map((d, i) => {
-            return (
-              <SLA
-                key={i}
-                classProperty='default'
-                text={d.name} />
-            )
-          })}
-        </div>
-        <div className="box">Custodian</div>
-        <div className="box">{publisher}</div>
-        <div className="box">Applicants</div>
-        <div className="box">{!_.isEmpty(applicants) ? applicants : '-'}</div>
-        {hasWorkflow == true ?
-          <Fragment>
-            <div className="box">Workflow</div> 
-            <div id="workflow" className="box box-link" onClick={e => navigateToLocation(e)}>
-              { !_.isEmpty(workflowName) ? workflowName : '-' } | { !_.isEmpty(activeStepName) ? activeStepName : '-' }
-            </div>
-          </Fragment> : ''
-        }
-        <div className="box">Action required by</div>
-        <div className="box">{!_.isEmpty(remainingActioners) ? <Fragment>{remainingActioners.firstName}</Fragment> : '-'}</div>
-        <div className="box">Submitted</div>
-        <div className="box">{!_.isEmpty(dateSubmitted) ? moment(dateSubmitted).format('D MMMM YYYY HH:mm') : '-'}</div>
-        <div className="box">Last activity</div>
-        <div className="box">
-          {moment(updatedAt).format('D MMMM YYYY HH:mm')} 
-          {applicationStatus === DarHelperUtil.darStatus.submitted ? 
-            <button className="button-primary">Submitted</button> 
-            : 
-            setActivityMeta()
-          }
-        </div>
-      </Fragment>
-    )
-}
 
+		if(isReviewer && decisionMade) {
+			return <WorkflowDecision decisionMade={decisionMade} decisionText={decisionStatus} icon='check' />
+		}
+
+		if(isReviewer && deadlinePassed) {
+			reviewDecision = <WorkflowDecision classProperty="box-deadline" text={reviewStatus} decisionText={decisionStatus} icon='flag' />
+		} else if(isReviewer && !decisionMade) {
+			reviewDecision = <WorkflowDecision text={reviewStatus} decisionText={decisionStatus} icon='flag' />
+		} else {
+			reviewDecision = <WorkflowDecision text={reviewStatus} decisionText={decisionStatus} icon='check' />
+		}
+
+		return reviewDecision;
+	};
+
+	const buildAccessRequest = () => {	
+		const hasWorkflow = !_.isEmpty(workflowName) ? true : false;
+		const isTeam = !_.isEmpty(team) ? true : false;
+		return (
+			<Fragment>
+				<div className='box gray800-14'>Datasets</div>
+				<div className='box'>
+					{datasets.map((d, i) => {
+						return <SLA key={i} classProperty='default' text={d.name} />;
+					})}
+				</div>
+				<div className='box'>Custodian</div>
+				<div className='box'>{publisher}</div>
+				<div className='box'>Applicants</div>
+				<div className='box'>{!_.isEmpty(applicants) ? applicants : "-"}</div>
+				{hasWorkflow == true ? (
+					<Fragment>
+						<div className='box'>Workflow</div>
+						<div
+							id='workflow'
+							className='box box-link'
+							onClick={(e) => navigateToLocation(e)}
+						>
+							{!_.isEmpty(workflowName) ? workflowName : "-"}
+							{!_.isEmpty(activeStepName) ? `| ${activeStepName}`: ""}
+						</div>
+					</Fragment>
+				) : (
+					""
+				)}
+				{isTeam == true ? (
+					<Fragment>
+						<div className='box'>Action required by</div>
+						<div className='box'>
+							{!_.isEmpty(remainingActioners) ? (
+								<Fragment>{remainingActioners}</Fragment>
+							) : (
+								"-"
+							)}
+						</div>
+					</Fragment>
+				) : (
+					""
+				)}
+				<div className='box'>Submitted</div>
+				<div className='box'>
+					{!_.isEmpty(dateSubmitted)
+						? moment(dateSubmitted).format("D MMMM YYYY HH:mm")
+						: "-"}
+				</div>
+				<div className='box'>Last activity</div>
+				<div className='box'>
+					{moment(updatedAt).format("D MMMM YYYY HH:mm")}
+					{isTeam == true ? (
+						<Fragment>
+							{applicationStatus === DarHelperUtil.darStatus.submitted ? (
+								<button className='button-primary'>Start Review</button>
+							) : (
+								setActivityMeta()
+							)}
+						</Fragment>
+					) : (
+						""
+					)}
+				</div>
+			</Fragment>
+		);
+	};
   return (
     <Fragment>{buildAccessRequest()}</Fragment>
   )
-  
 }
 
 export default AccessActivity;

@@ -1,9 +1,10 @@
 import React from 'react';
+import _ from 'lodash';
 import { ReactComponent as Flag } from "../../../images/flag.svg";
 import { ReactComponent as Check } from "../../../images/check.svg";
 import './WorkflowDecision.scss';
 
-export default ({text = '', icon = ''}) => {
+export default ({text = '', decisionText = '', decisionMade = false, icon = ''}) => {
 
   const getIcon = () => {
 		switch (icon) {
@@ -20,6 +21,10 @@ export default ({text = '', icon = ''}) => {
 	};
 
   return (
-    <div className="status-text">{ getIcon() } {text}</div>
+    <div className="status-text">
+      { getIcon() }
+      {!_.isEmpty(decisionText) ? decisionText : ""}
+      {!decisionMade ? " | " : ""} 
+      {!_.isEmpty(text) ? text : ""} </div>
   )
 }
