@@ -1,6 +1,6 @@
 @import '../../css/variables';
 @import '../../css/mixins';
-
+ 
 .dataClassToolTip{
   width: 275px;
   border-radius: 8px;
@@ -220,4 +220,27 @@
 
 .dataFloatRight {
   float: right;
+}
+
+#notYetRatedRow {
+  text-align: center;
+}
+
+.metaRichRectangle {
+  width: 100%;
+  box-shadow: 1px 1px 3px 0 #00000017;
+  background-color: $white;
+  padding: 16px 24px 32px 24px;
+}
+
+.notRatedRectangle {
+  width: 100%;
+  box-shadow: 1px 1px 3px 0 #00000017;
+  background-color: $white;
+  padding: 24px 24px 32px 24px;
+}
+
+.greyedOutChevron {    
+  margin-top: 3.5px;
+  margin-bottom: 3.5px;
 }

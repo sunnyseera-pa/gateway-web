@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"; 
 import { Col, Row, Collapse } from "react-bootstrap";
 import SVGIcon from "../../../images/SVGIcon";
 import "../Dataset.scss";
@@ -15,7 +15,6 @@ class DataUtilityModalInfo extends React.Component {
   };
 
   constructor(props) {
-    console.log(`props: ${JSON.stringify(props, null, 2)}`);
     super(props);
     this.state.open = props.open;
     this.updateFlag = this.updateFlag.bind(this);
@@ -54,11 +53,6 @@ class DataUtilityModalInfo extends React.Component {
       case "Documentation":
         return (
           <div className="dataUtilityCollapse">
-            {/* <div className="purpleHeader white-14-semibold  mt-1 pointer"    
-                onClick={() =>
-                this.setState({ open: !open, flagClosed: !flagClosed })
-                }
-            > */}
             <Row
               className="purpleHeader white-14-semibold pointer"
               onClick={() =>
@@ -78,7 +72,6 @@ class DataUtilityModalInfo extends React.Component {
                 Documentation
               </span>
             </Row>
-            {/* </div> */}
 
             <Collapse in={this.state.open} className="collapseWait pad-bottom-8">
               <div>
@@ -277,19 +270,12 @@ class DataUtilityModalInfo extends React.Component {
       case "TechQuality":
         return (
           <div className="dataUtilityCollapse">
-            {/* <div className="purpleHeader white-14-semibold  mt-1 pointer"    
-                onClick={() =>
-                    this.setState({ open: !open, flagClosed: !flagClosed })
-                }
-            > */}
             <Row
               className="purpleHeader margin-top-8 white-14-semibold pointer" 
               onClick={() =>
                 this.setState({ open: !open, flagClosed: !flagClosed })
               }
             >
-              {/* <Col> */}
-              {/* <div className="dataUtilityChevron"> */}
                   <SVGIcon
                     name="chevronbottom"
                     fill={'#ffffff'}
@@ -299,13 +285,10 @@ class DataUtilityModalInfo extends React.Component {
                         : "svg-20 flipSVG flippedDataUtilityArrow"
                     }
                   />
-              {/* </div> */}
-              {/* </Col> */}
               <span className="margin-left-8">
                 Technical quality
               </span>
             </Row>
-            {/* </div> */} 
 
             <Collapse in={this.state.open} className="collapseWait pad-bottom-8">
               <div>
@@ -369,11 +352,6 @@ class DataUtilityModalInfo extends React.Component {
         case "Access":
             return (
               <div className="dataUtilityCollapse">
-                {/* <div className="purpleHeader white-14-semibold  mt-1 pointer"    
-                    onClick={() =>
-                    this.setState({ open: !open, flagClosed: !flagClosed })
-                    }
-                > */}
                 <Row
                   className="purpleHeader margin-top-8 white-14-semibold pointer"
                   onClick={() =>
@@ -393,7 +371,6 @@ class DataUtilityModalInfo extends React.Component {
                     Access & provision
                   </span>
                 </Row>
-                {/* </div> */}
     
                 <Collapse in={this.state.open} className="collapseWait pad-bottom-8">
                   <div>
@@ -583,11 +560,6 @@ class DataUtilityModalInfo extends React.Component {
             case "Value":
                 return (
                   <div className="dataUtilityCollapse">
-                    {/* <div className="purpleHeader white-14-semibold mt-1 pointer"    
-                        onClick={() =>
-                        this.setState({ open: !open, flagClosed: !flagClosed })
-                        }
-                    > */}
                     <Row
                       className="purpleHeader margin-top-8 white-14-semibold pointer"
                       onClick={() =>
@@ -607,7 +579,6 @@ class DataUtilityModalInfo extends React.Component {
                         Value & interest
                       </span>
                     </Row>
-                    {/* </div> */}
         
                     <Collapse in={this.state.open} className="collapseWait pad-bottom-8">
                       <div>
@@ -707,11 +678,6 @@ class DataUtilityModalInfo extends React.Component {
                 case "Coverage":
                     return (
                       <div className="dataUtilityCollapse">
-                        {/* <div className="purpleHeader white-14-semibold mt-1 pointer"    
-                            onClick={() =>
-                            this.setState({ open: !open, flagClosed: !flagClosed })
-                            }
-                        > */}
                         <Row
                           className="purpleHeader margin-top-8 white-14-semibold pointer"
                           onClick={() =>
@@ -731,7 +697,6 @@ class DataUtilityModalInfo extends React.Component {
                           Coverage
                         </span>
                         </Row>
-                        {/* </div> */}
             
                         <Collapse in={this.state.open} className="collapseWait pad-bottom-8">
                           <div>
@@ -829,9 +794,6 @@ class DataUtilityModalInfo extends React.Component {
                       </div>
                     );
     }
-    // })()}
-
-    // );
   }
 }
 
