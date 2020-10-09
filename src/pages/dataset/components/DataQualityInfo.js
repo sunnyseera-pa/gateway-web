@@ -345,11 +345,8 @@ class DataQualityInfo extends React.Component {
             return <GoldSVG />
         case "Silver":
             return <SilverSVG />
-        case "Bronze":
-            return <BronzeSVG />
         default:
-            return ""
-            // <span className="gray800-14">Not yet rated</span>
+            return <BronzeSVG />
     }
   }
 
