@@ -158,9 +158,11 @@ class DataAccessRequestsNew extends React.Component {
         return '';
     }
 
-    renderDuration = (accessRequest = {}) => {
-        let { applicationStatus = '', createdAt, dateSubmitted } = accessRequest;
+    renderDuration = (accessRequest, team = {}) => {
+        let { applicationStatus = '', createdAt, dateSubmitted, decisionDuration = 0 } = accessRequest;
         let diff = 0;
+        let finalDurationLookups = ['rejected', 'approved', 'approved with conditions'];
+
         if(this.durationLookups.includes(applicationStatus)) {
             if(applicationStatus === DarHelperUtil.darStatus.inProgress) {
                 diff = this.calculateTimeDifference(createdAt);
@@ -172,7 +174,22 @@ class DataAccessRequestsNew extends React.Component {
                 return <TimeDuration text={`${diff} days since submission`} />;
             }
         }
+
+        if(finalDurationLookups.includes(applicationStatus) && team) {
+            if(!_.isEmpty(decisionDuration.toString())) {
+                return <TimeDuration text={`${decisionDuration} days total`} />
+            }
+        }
         return '';
+    }
+
+    navigateToLocation = (e, request) => {
+        e.stopPropagation();
+        if(e.currentTarget.id === 'workflow') {
+            alert('show popup');
+        } else {
+            window.location.href=`/data-access-request/${request._id}`
+        }
     }
 
     renderAverageSubmission = () => {
@@ -237,7 +254,7 @@ class DataAccessRequestsNew extends React.Component {
                             <Col sm={12} lg={12}>
                                 <Tabs className='dataAccessTabs gray700-13' activeKey={this.state.key} onSelect={this.onTabChange}>
                                     <Tab eventKey="all"         title={"All (" + allCount + ")"}></Tab>
-                                    <Tab eventKey="inProgress"  title={"Pre-submission (" + preSubmissionCount + ")"}></Tab>
+                                    { !(team) ? <Tab eventKey="inProgress"  title={"Pre-submission (" + preSubmissionCount + ")"}></Tab> : '' }
                                     <Tab eventKey="submitted"   title={"Submitted (" + submittedCount + ")"}></Tab>
                                     <Tab eventKey="inReview"    title={"In review (" + inReviewCount + ")"}></Tab>
                                     <Tab eventKey="approved"    title={"Approved (" + approvedCount + ")"}></Tab>
@@ -250,17 +267,25 @@ class DataAccessRequestsNew extends React.Component {
                             let {
                                 datasets = [], 
                                 updatedAt, 
-                                applicants = '', 
+                                applicants = '',
                                 publisher = '', 
                                 dateSubmitted = new Date(), 
                                 applicationStatus, 
                                 applicationStatusDesc='', 
-                                projectName = ''
+                                projectName = '',
+                                workflowName = '',
+                                workflowCompleted = false,
+                                reviewStatus = '',
+                                deadlinePassed = false,
+                                activeStepName = '',
+                                remainingActioners = []
                             } = request;
+                            console.log(request);
                             return (
                                 <Row 
                                     key={`request_${i}`} 
-                                    onClick={event =>  window.location.href=`/data-access-request/${request._id}`}>
+                                    // onClick={event =>  window.location.href=`/data-access-request/${request._id}`}>
+                                    onClick={e =>  this.navigateToLocation(e, request)}>
                                     <div className="col-md-12">
                                         <div className="layoutCard">
                                             <div className="header">
@@ -268,7 +293,7 @@ class DataAccessRequestsNew extends React.Component {
                                                     <h1>{projectName}</h1>
                                                 </div>
                                                 <div className="header-status">
-                                                    {this.renderDuration(request)}
+                                                    {this.renderDuration(request, team)}
                                                     <SLA 
                                                         classProperty={DarHelperUtil.darStatusColours[request.applicationStatus]} 
                                                         text={DarHelperUtil.darSLAText[request.applicationStatus]}/>
@@ -277,11 +302,19 @@ class DataAccessRequestsNew extends React.Component {
                                             <div className="body">
                                                 <AccessActivity 
                                                     datasets={datasets}  
+                                                    applicationStatus={applicationStatus}
                                                     publisher={publisher}
                                                     updatedAt={updatedAt} 
                                                     applicants={applicants}
                                                     dateSubmitted={dateSubmitted}
-                                                    team={team} />
+                                                    team={team}
+                                                    workflowName={workflowName}
+                                                    workflowCompleted={workflowCompleted}
+                                                    reviewStatus={reviewStatus}
+                                                    deadlinePassed={deadlinePassed}
+                                                    activeStepName={activeStepName}
+                                                    remainingActioners={remainingActioners}
+                                                    navigateToLocation={this.navigateToLocation} />
                                             </div>
                                             {this.renderComment(applicationStatusDesc, applicationStatus)}
                                         </div>
