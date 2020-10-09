@@ -35,17 +35,14 @@ const AccessActivity = ({
 			reviewDecision = <div className="box-deadline">{reviewStatus}</div>
 		}
 
-
-		if(isReviewer && decisionMade) {
-			return <WorkflowDecision decisionMade={decisionMade} decisionText={decisionStatus} icon='check' />
-		}
-
 		if(isReviewer && deadlinePassed) {
 			reviewDecision = <WorkflowDecision classProperty="box-deadline" text={reviewStatus} decisionText={decisionStatus} icon='flag' />
 		} else if(isReviewer && !decisionMade) {
 			reviewDecision = <WorkflowDecision text={reviewStatus} decisionText={decisionStatus} icon='flag' />
-		} else {
-			reviewDecision = <WorkflowDecision text={reviewStatus} decisionText={decisionStatus} icon='check' />
+		}
+
+		if(isReviewer && decisionMade) {
+			return <WorkflowDecision decisionMade={decisionMade} decisionText={decisionStatus} icon='check' />
 		}
 
 		return reviewDecision;
@@ -76,6 +73,7 @@ const AccessActivity = ({
 						>
 							{!_.isEmpty(workflowName) ? workflowName : "-"}
 							{!_.isEmpty(activeStepName) ? `| ${activeStepName}`: ""}
+							{workflowCompleted ? ' complete' : ""}
 						</div>
 					</Fragment>
 				) : (
@@ -107,7 +105,7 @@ const AccessActivity = ({
 					{isTeam == true ? (
 						<Fragment>
 							{applicationStatus === DarHelperUtil.darStatus.submitted ? (
-								<button className='button-primary'>Start Review</button>
+								<button className='button-primary' onClick=''>Start Review</button>
 							) : (
 								setActivityMeta()
 							)}

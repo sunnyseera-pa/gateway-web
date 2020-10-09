@@ -191,7 +191,9 @@ class DataAccessRequestsNew extends React.Component {
         if(e.currentTarget.id === 'workflow') {
             alert('show popup');
         } else {
-            window.location.href=`/data-access-request/${request._id}`
+            if(request.applicationStatus !== DarHelperUtil.darStatus.submitted) {
+                window.location.href=`/data-access-request/${request._id}`
+            }
         }
     }
 
