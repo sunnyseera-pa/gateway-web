@@ -19,7 +19,7 @@ import NotFound from "../commonComponents/NotFound";
 import Loading from "../commonComponents/Loading";
 import RelatedObject from "../commonComponents/relatedObject/RelatedObject";
 import SearchBar from "../commonComponents/searchBar/SearchBar";
-import SVGIcon from "../../images/SVGIcon";
+import SVGIcon from "../../images/SVGIcon"; 
 import { ReactComponent as InfoFillSVG } from "../../images/infofill.svg";
 import { ReactComponent as InfoSVG } from "../../images/info.svg";
 import { ReactComponent as MetadataBronze } from "../../images/bronzeNew.svg";
@@ -463,7 +463,7 @@ class DatasetDetail extends Component {
                   <Row className="mt-2">
                     <Col xs={12}>
                       <span className="badge-dataset">
-                        <SVGIcon
+                        <SVGIcon 
                           name="dataseticon"
                           fill={"#ffffff"}
                           className="badgeSvg mr-2"
@@ -1069,8 +1069,8 @@ class DatasetDetail extends Component {
                         <Col sm={12}>
                           <div className="rectangle pad-bottom-16">
 
-                            <Row className="ml-2">
-                              <Col sm={12} lg={12} className="pad-left-0">
+                            <Row>
+                              <Col sm={12} lg={12} className="pad-left-14">
                                 <span className="pad-top-24 pad-bottom-16  gray800-14-bold mr-3">
                                   Data utility
                                 </span>
@@ -1087,7 +1087,6 @@ class DatasetDetail extends Component {
                                   refer to the usefulness of a dataset for a
                                   given purpose. This framework enables:
                                 </span>
-                                {/* <br /> */}
                                 <ul className="gray-deep-14 margin-top-8">
                                   <li>
                                     Data custodians to communicate the utility
@@ -1107,7 +1106,6 @@ class DatasetDetail extends Component {
                                     their investments
                                   </li>
                                 </ul>
-                                {/* <br /> */}
                                 <span>
                                   Some datasets will not yet have a data utility
                                   rating and some may only have a rating for
@@ -1117,10 +1115,7 @@ class DatasetDetail extends Component {
                             </Row>
                           </div>
 
-                          <div className="rectangle">
-                            {/* //TODO - DataQuality will go here */}
-                            <DataQuality datasetUtility= {data.datasetfields.datautility} />
-                          </div>
+                          <DataQuality datasetUtility= {data.datasetfields.datautility} />
 
                         </Col>
                       </Row>

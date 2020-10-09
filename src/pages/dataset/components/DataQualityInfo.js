@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"; 
 import { Col, Row, Collapse } from "react-bootstrap";
 import SVGIcon from "../../../images/SVGIcon";
 import "../Dataset.scss";
@@ -11,11 +11,25 @@ import { ReactComponent as SilverSVG } from "../../../images/silverUtility.svg";
 import { ReactComponent as GoldSVG } from "../../../images/goldUtility.svg";
 import { ReactComponent as PlatinumSVG } from "../../../images/platinumUtility.svg";
 
+
 class DataQualityInfo extends React.Component {
   state = {
     open: false,
     flagClosed: true,
     section: "",
+    datasetUtility: null,
+    documentationWeight: null,
+    technicalQualityWeight: null,
+    accessProvisionWeight: null,
+    valueInterestWeight: null,
+    coverageWeight: null,
+    metadataRichnessOnly: true,
+    documentSection: true,
+    techQualitySection: true,
+    accessProvisionSection: true,
+    valueInterestSection: true,
+    coverageSection: true, 
+
     ratings: [
         {
             dimension: "Additional documentation and support",
@@ -277,18 +291,25 @@ class DataQualityInfo extends React.Component {
             rating: "Platinum",
             response: "The data includes derived fields or enriched data from a national report. "
         }
-]
-
-
-
+    ]
   };
 
   constructor(props) {
-    console.log(`props: ${JSON.stringify(props, null, 2)}`);
     super(props);
     this.state.open = props.open;
     this.updateFlag = this.updateFlag.bind(this);
     this.state.section = props.section;
+    this.state.datasetUtility = props.datasetUtility;
+    this.state.documentationWeight = props.documentationWeight;
+    this.state.technicalQualityWeight = props.technicalQualityWeight;
+    this.state.accessProvisionWeight = props.accessProvisionWeight;
+    this.state.valueInterestWeight = props.valueInterestWeight;
+    this.state.coverageWeight = props.coverageWeight;
+    this.state.dataModelRating = props.dataModelRating;
+  }
+
+  async componentWillMount() {    
+    await this.updateSections(this.props.datasetUtility);
   }
 
   componentDidUpdate(prevProps) {
@@ -315,190 +336,340 @@ class DataQualityInfo extends React.Component {
       this.setState({ flagClosed: true });
     }
   }
+ 
+  getSectionRating(rating) {
+    switch (rating) {
+        case "Platinum":
+            return <PlatinumSVG />
+        case "Gold":
+            return <GoldSVG />
+        case "Silver":
+            return <SilverSVG />
+        case "Bronze":
+            return <BronzeSVG />
+        default:
+            return ""
+            // <span className="gray800-14">Not yet rated</span>
+    }
+  }
+
+  getSubSectionRating(rating) {
+    switch (rating) {
+        case "Platinum":
+            return <SubPlatinumSVG />
+        case "Gold":
+            return <SubGoldSVG />
+        case "Silver":
+            return <SubSilverSVG />
+        case "Bronze":
+            return <SubBronzeSVG />
+        default:
+            return ""
+    } 
+  }
+
+  async updateSections(datasetUtility){
+    if(datasetUtility.metadata_richness.trim() === "Not Rated"){
+        this.setState({metadataRichnessOnly: false})
+    }
+
+    if(!datasetUtility.availability_of_additional_documentation_and_support && !datasetUtility.data_model && !datasetUtility.data_dictionary && !datasetUtility.provenance){
+        this.setState({documentSection: false})
+    } 
+
+    if(!datasetUtility.data_quality_management_process && !datasetUtility.dama_quality_dimensions){
+      this.setState({techQualitySection: false})
+    } 
+
+    if(!datasetUtility.allowable_uses && !datasetUtility.research_environment && !datasetUtility.time_lag && !datasetUtility.timeliness){
+      this.setState({accessProvisionSection: false})
+    } 
+
+    if(!datasetUtility.linkages && !datasetUtility.data_enrichments){
+      this.setState({valueInterestSection: false})
+    } 
+
+    if(!datasetUtility.pathway_coverage && !datasetUtility.length_of_follow_up){
+      this.setState({coverageSection: false})
+    } 
+  }
 
   render() {
-    const { open, flagClosed, section, ratings } = this.state;
+    const { open, flagClosed, section, ratings, datasetUtility, documentationWeight, technicalQualityWeight, accessProvisionWeight, valueInterestWeight, coverageWeight, metadataRichnessOnly, documentSection, techQualitySection, accessProvisionSection, valueInterestSection, coverageSection} = this.state;
 
-    //Need to replace "Gold" with the rating got from the dataset cache
-    // ratings.map((rating) => {
-    //     if (rating.dimension === "Additional documentation and support" && rating.rating === "Gold") {
-    //         console.log(`ratings: ${rating.response}`)
-    //         return (<></>)
-    //     }
-    // })
-    
     switch (section) {
       case "Documentation":
-        return (
-          <div className="dataQualityCollapse">
-            <Row
-              className="pointer dataUtilityRow" 
-              onClick={() =>
-                this.setState({ open: !open, flagClosed: !flagClosed })
-              }
-            >
-              <Col xs={2} sm={2} m={1} lg={1} className="dataUtilityChevron">
-                  <SVGIcon
-                    name="chevronbottom"
-                    fill={"#475DA7"}
-                    className={
-                      flagClosed === true
-                        ? "svg-20 dataQualityArrow" 
-                        : "svg-20 flipSVG dataQualityArrow"
+        if(documentSection === true ){
+            return (
+                <div className="dataQualityCollapse">
+                    <Row
+                    className="pointer dataUtilityRow" 
+                    onClick={() =>
+                        this.setState({ open: !open, flagClosed: !flagClosed })
                     }
-                  />
-              </Col>
-              <Col xs={8} sm={5} md={4} lg={3} xl={2} className="gray800-14 dataUtilityTitle">
-                Documentation
-              </Col>
-              <Col xs={2} sm={5} md={5} lg={8} xl={9} className="dataUtilitySvg">
-                <BronzeSVG />
-              </Col>
-            </Row>
+                    >
+                    <Col xs={2} sm={2} m={1} lg={1} className="dataUtilityChevron">
+                        <SVGIcon
+                            name="chevronbottom"
+                            fill={"#475DA7"}
+                            className={
+                            flagClosed === true
+                                ? "svg-20 dataQualityArrow" 
+                                : "svg-20 flipSVG dataQualityArrow"
+                            }
+                        />
+                    </Col>
+                    <Col xs={8} sm={5} md={4} lg={3} xl={2} className="gray800-14 dataUtilityTitle">
+                        Documentation 
+                    </Col>
+                    <Col xs={2} sm={5} md={5} lg={8} xl={9} className="dataUtilitySvg">
+                        {this.getSectionRating(documentationWeight)}
+                    </Col>
+                    </Row>
 
-            <Collapse in={this.state.open} className="dataCollapseWait pad-top-8">
-              <div>
-                    <Row className="dataUtilityBox topBorder">
-                        <Col sm={3} lg={3}>
-                            <span className="gray800-13-opacity">Metadata richness</span>
-                        </Col>
-                        <Col sm={8} lg={8}>
-                            <span className="gray800-13">Element calculated separately</span>
-                        </Col>
-                        <Col sm={1} lg={1}>
-                            <span><SubBronzeSVG /></span>
-                        </Col>
-                    </Row>
-                    <Row className="dataUtilityBox">
-                        <Col sm={3} lg={3}>
-                            <span className="gray800-13-opacity">Additional documentation & support</span>
-                        </Col>
-                        <Col sm={8} lg={8}>
-                            {    ratings.map((rating) => {
-                                    if (rating.dimension === "Additional documentation and support" && rating.rating === "Gold") {
-                                        return (<span className="gray800-13"> {rating.response} </span>)
+                    <Collapse in={this.state.open} className="dataCollapseWait pad-top-8">
+                    <div>
+                            <Row className="dataUtilityBox topBorder">
+                                <Col sm={3} lg={3}>
+                                    <span className="gray800-13-opacity">Metadata richness</span>
+                                </Col>
+                                <Col sm={8} lg={8}>
+                                    <span className="gray800-13">Element calculated separately</span>
+                                </Col>
+                                <Col sm={1} lg={1}>
+                                    <span>
+                                        {this.getSubSectionRating(datasetUtility.metadata_richness.trim())}
+                                    </span>
+                                </Col>
+                            </Row>
+                            <Row className="dataUtilityBox">
+                                <Col sm={3} lg={3}>
+                                    <span className="gray800-13-opacity">Additional documentation & support</span>
+                                </Col>
+                                <Col sm={8} lg={8}>
+                                    {    ratings.map((rating) => {
+                                            if (rating.dimension === "Additional documentation and support" && rating.rating === datasetUtility.availability_of_additional_documentation_and_support.trim()) {
+                                                return (<span className="gray800-13"> {rating.response} </span>)
+                                            }
+                                        })
                                     }
-                                })
-                            }
-                        </Col>
-                        <Col sm={1} lg={1}>
-                            <span><SubSilverSVG /></span>
-                        </Col>
-                    </Row>
-                    <Row className="dataUtilityBox">
-                        <Col sm={3} lg={3}>
-                            <span className="gray800-13-opacity">Data model</span>
-                        </Col>
-                       <Col sm={8} lg={8}>
-                            {    ratings.map((rating) => {
-                                    if (rating.dimension === "Data Model" && rating.rating === "Gold") {
-                                        return (<span className="gray800-13"> {rating.response} </span>)
+                                </Col>
+                                <Col sm={1} lg={1}>
+                                    <span>
+                                        {this.getSubSectionRating(datasetUtility.availability_of_additional_documentation_and_support.trim())}
+                                    </span>
+                                </Col>
+                            </Row>
+                            <Row className="dataUtilityBox">
+                                <Col sm={3} lg={3}>
+                                    <span className="gray800-13-opacity">Data model</span>
+                                </Col>
+                            <Col sm={8} lg={8}>
+                                    {    ratings.map((rating) => {
+                                            if (rating.dimension === "Data Model" && rating.rating === datasetUtility.data_model.trim()) {
+                                                return (<span className="gray800-13"> {rating.response} </span>)
+                                            }
+                                        })
                                     }
-                                })
-                            }
+                                </Col> 
+                                <Col sm={1} lg={1}>
+                                    <span>
+                                        <dataModelRating />
+                                        {this.getSubSectionRating(datasetUtility.data_model.trim())}
+                                    </span>
+                                </Col>
+                            </Row>
+                            <Row className="dataUtilityBox">
+                                <Col sm={3} lg={3}>
+                                    <span className="gray800-13-opacity">Data dictionary</span>
+                                </Col>
+                                <Col sm={8} lg={8}>
+                                    {    ratings.map((rating) => {
+                                            if (rating.dimension === "Data Dictionary" && rating.rating === datasetUtility.data_dictionary.trim()) {
+                                                return (<span className="gray800-13"> {rating.response} </span>)
+                                            }
+                                        })
+                                    }
+                                </Col>
+                                <Col sm={1} lg={1}>
+                                    <span>
+                                        {this.getSubSectionRating(datasetUtility.data_dictionary.trim())}
+                                    </span>
+                                </Col>
+                            </Row>
+                            <Row className="dataUtilityBox">
+                                <Col sm={3} lg={3}>
+                                    <span className="gray800-13-opacity">Provenance</span>
+                                </Col>
+                                <Col sm={8} lg={8}>
+                                    {    ratings.map((rating) => {
+                                            if (rating.dimension === "Provenance" && rating.rating === datasetUtility.provenance.trim()) {
+                                                return (<span className="gray800-13"> {rating.response} </span>)
+                                            }
+                                        })
+                                    }
+                                </Col>
+                                <Col sm={1} lg={1}>
+                                    <span>
+                                        {this.getSubSectionRating(datasetUtility.provenance.trim())}
+                                    </span>
+                                </Col>
+                            </Row>
+                    </div>
+                    </Collapse>
+                </div>
+            );
+        }
+        if(documentSection === false && metadataRichnessOnly === false ){
+            return (
+                <div className="dataQualityCollapse">
+                    <Row
+                        className="pointer dataUtilityRow margin-top-8"
+                        >
+                        <Col xs={2} sm={2} m={1} lg={1} className="dataUtilityChevron greyedOutChevron">
+                            <SVGIcon
+                                name="chevronbottom"
+                                fill={"#d0d3d4"}
+                                className= "svg-20 dataQualityArrow"
+                            />
+                        </Col>
+                        <Col xs={8} sm={5} md={4} lg={3} xl={2} className="gray800-14-opacity dataUtilityTitle"> 
+                            Documentation
+                        </Col>
+                        <Col xs={2} sm={5} md={5} lg={8} xl={9} className="gray800-14-opacity dataUtilityTitle pad-left-0">
+                            <span className="gray800-14">Not yet rated</span>
                         </Col> 
-                        <Col sm={1} lg={1}>
-                            <span><SubGoldSVG /></span>
+                    </Row>
+                </div>
+            )
+        }
+        if(documentSection === false && metadataRichnessOnly === true ){
+            return (
+                <div className="dataQualityCollapse">
+                    <Row
+                        className="pointer dataUtilityRow margin-bottom-8 pad-left-24 margin-left-6" 
+                    >
+                        <Col xs={8} sm={5} md={4} lg={3} xl={2} className="gray800-14 dataUtilityTitle">
+                            Documentation 
+                        </Col>
+                        <Col xs={2} sm={5} md={5} lg={8} xl={9} className="dataUtilitySvg">
+                            {this.getSectionRating(datasetUtility.metadata_richness.trim())}
                         </Col>
                     </Row>
-                    <Row className="dataUtilityBox">
-                        <Col sm={3} lg={3}>
-                            <span className="gray800-13-opacity">Data dictionary</span>
-                        </Col>
-                        <Col sm={8} lg={8}>
-                            {    ratings.map((rating) => {
-                                    if (rating.dimension === "Data Model" && rating.rating === "Gold") {
-                                        return (<span className="gray800-13"> {rating.response} </span>)
-                                    }
-                                })
-                            }
-                        </Col>
-                        <Col sm={1} lg={1}>
-                            <span><SubPlatinumSVG /></span>
-                        </Col>
-                    </Row>
-                    <Row className="dataUtilityBox">
-                        <Col sm={3} lg={3}>
-                            <span className="gray800-13-opacity">Provenance</span>
-                        </Col>
-                        <Col sm={8} lg={8}>
-                            {    ratings.map((rating) => {
-                                    if (rating.dimension === "Data Model" && rating.rating === "Gold") {
-                                        return (<span className="gray800-13"> {rating.response} </span>)
-                                    }
-                                })
-                            }
-                        </Col>
-                        <Col sm={1} lg={1}>
-                            <span><SubPlatinumSVG /></span>
-                        </Col>
-                    </Row>
-              </div>
-            </Collapse>
-          </div>
-        );
-      case "TechQuality":
-        return (
-          <div className="dataQualityCollapse">
-            <Row
-              className="pointer dataUtilityRow margin-top-8"
-              onClick={() =>
-                this.setState({ open: !open, flagClosed: !flagClosed })
-              }
-            >
-              <Col xs={2} sm={2} m={1} lg={1} className="dataUtilityChevron">
-                  <SVGIcon
-                    name="chevronbottom"
-                    fill={"#475DA7"}
-                    className={
-                      flagClosed === true
-                        ? "svg-20 dataQualityArrow"
-                        : "svg-20 flipSVG dataQualityArrow"
-                    }
-                  />
-              </Col>
-              <Col xs={8} sm={5} md={4} lg={3} xl={2} className="gray800-14 dataUtilityTitle">
-                Technical quality
-              </Col>
-              <Col xs={2} sm={5} md={5} lg={8} xl={9} className="dataUtilitySvg">
-                <SilverSVG />
-              </Col>
-            </Row>
+                
+                    <div className="pad-left-24 pad-right-24">
+                        <Row className="dataUtilityBox topBorder">
+                            <Col sm={3} lg={3}>
+                                <span className="gray800-13-opacity">Metadata richness</span>
+                            </Col>
+                            <Col sm={8} lg={8}>
+                                <span className="gray800-13">Element calculated separately</span>
+                            </Col>
+                            <Col sm={1} lg={1}>
+                                <span>
+                                    {this.getSubSectionRating(datasetUtility.metadata_richness.trim())}
+                                </span>
+                            </Col>
+                        </Row>
+                    </div>
+                </div>
+            )
+        }
 
-            <Collapse in={this.state.open} className="dataCollapseWait pad-top-8">
-              <div>
-                    <Row className="dataUtilityBox topBorder">
-                        <Col sm={3} lg={3}>
-                            <span className="gray800-13-opacity">Data Quality Management Process</span>
-                        </Col>
-                        <Col sm={8} lg={8}>
-                            {    ratings.map((rating) => {
-                                    if (rating.dimension === "Data Model" && rating.rating === "Gold") {
-                                        return (<span className="gray800-13"> {rating.response} </span>)
-                                    }
-                                })
+      case "TechQuality":
+        if(techQualitySection === true ){
+            return (
+                <div className="dataQualityCollapse">
+
+                    <Row
+                    className="pointer dataUtilityRow margin-top-8"
+                    onClick={() =>
+                        this.setState({ open: !open, flagClosed: !flagClosed })
+                    }
+                    >
+                    <Col xs={2} sm={2} m={1} lg={1} className="dataUtilityChevron">
+                        <SVGIcon
+                            name="chevronbottom"
+                            fill={"#475DA7"}
+                            className={
+                            flagClosed === true
+                                ? "svg-20 dataQualityArrow"
+                                : "svg-20 flipSVG dataQualityArrow"
                             }
-                        </Col>
-                        <Col sm={1} lg={1}>
-                            <span><SubBronzeSVG /></span>
-                        </Col>
+                        />
+                    </Col>
+                    <Col xs={8} sm={5} md={4} lg={3} xl={2} className="gray800-14 dataUtilityTitle"> 
+                        Technical quality
+                    </Col>
+                    <Col xs={2} sm={5} md={5} lg={8} xl={9} className="dataUtilitySvg">
+                        {this.getSectionRating(technicalQualityWeight)}
+                    </Col>
                     </Row>
-                    <Row className="dataUtilityBox">
-                        <Col sm={3} lg={3}>
-                            <span className="gray800-13-opacity">DAMA quality dimensions</span>
+
+                    <Collapse in={this.state.open} className="dataCollapseWait pad-top-8">
+                    <div>
+                            <Row className="dataUtilityBox topBorder">
+                                <Col sm={3} lg={3}>
+                                    <span className="gray800-13-opacity">Data Quality Management Process</span>
+                                </Col>
+                                <Col sm={8} lg={8}>
+                                    {    ratings.map((rating) => {
+                                            if (rating.dimension === "Data Quality Management Process" && rating.rating === datasetUtility.data_quality_management_process.trim()) {
+                                                return (<span className="gray800-13"> {rating.response} </span>)
+                                            }
+                                        })
+                                    }
+                                </Col>
+                                <Col sm={1} lg={1}>
+                                    <span>
+                                        {this.getSubSectionRating(datasetUtility.data_quality_management_process.trim())}
+                                    </span>
+                                </Col>
+                            </Row>
+                            <Row className="dataUtilityBox">
+                                <Col sm={3} lg={3}>
+                                    <span className="gray800-13-opacity">DAMA quality dimensions</span>
+                                </Col>
+                                <Col sm={8} lg={8}>
+                                    <span className="gray800-13">Element calculated separately</span>
+                                </Col>
+                                <Col sm={1} lg={1}>
+                                    <span>
+                                        {this.getSubSectionRating(datasetUtility.dama_quality_dimensions.trim())}
+                                    </span>
+                                </Col>
+                            </Row>
+                    </div>
+                    </Collapse>
+                </div>
+            );
+        }
+        if(techQualitySection === false ){
+            return (
+                <div className="dataQualityCollapse">
+                    <Row
+                        className="pointer dataUtilityRow margin-top-8"
+                        >
+                        <Col xs={2} sm={2} m={1} lg={1} className="dataUtilityChevron greyedOutChevron">
+                            <SVGIcon
+                                name="chevronbottom"
+                                fill={"#d0d3d4"}
+                                className= "svg-20 dataQualityArrow"
+                            />
                         </Col>
-                        <Col sm={8} lg={8}>
-                            <span className="gray800-13">Element calculated separately</span>
+                        <Col xs={8} sm={5} md={4} lg={3} xl={2} className="gray800-14-opacity dataUtilityTitle"> 
+                            Technical quality
                         </Col>
-                        <Col sm={1} lg={1}>
-                            <span><SubSilverSVG /></span>
-                        </Col>
+                        <Col xs={2} sm={5} md={5} lg={8} xl={9} className="gray800-14-opacity dataUtilityTitle pad-left-0">
+                            <span className="gray800-14">Not yet rated</span>
+                        </Col> 
                     </Row>
-              </div>
-            </Collapse>
-          </div>
-        );
-        case "Access":
+                </div>
+            )
+        }
+
+      case "Access":
+        if(accessProvisionSection === true ){
             return (
               <div className="dataQualityCollapse">
                 <Row
@@ -522,7 +693,7 @@ class DataQualityInfo extends React.Component {
                         Access & provision
                     </Col>
                     <Col xs={2} sm={5} md={5} lg={8} xl={9} className="dataUtilitySvg">
-                        <GoldSVG />
+                        {this.getSectionRating(accessProvisionWeight)}
                     </Col>
                 </Row>
     
@@ -534,14 +705,16 @@ class DataQualityInfo extends React.Component {
                         </Col>
                         <Col sm={8} lg={8}>
                             {    ratings.map((rating) => {
-                                    if (rating.dimension === "Data Model" && rating.rating === "Gold") {
+                                    if (rating.dimension === "Allowable uses" && rating.rating === datasetUtility.allowable_uses.trim()) {
                                         return (<span className="gray800-13"> {rating.response} </span>)
                                     }
                                 })
                             }
                         </Col>
                         <Col sm={1} lg={1}>
-                            <span><SubBronzeSVG /></span>
+                            <span>
+                                {this.getSubSectionRating(datasetUtility.allowable_uses.trim())}
+                            </span>
                         </Col>
                     </Row>
                     <Row className="dataUtilityBox">
@@ -550,14 +723,16 @@ class DataQualityInfo extends React.Component {
                         </Col>
                         <Col sm={8} lg={8}>
                             {    ratings.map((rating) => {
-                                    if (rating.dimension === "Data Model" && rating.rating === "Gold") {
+                                    if (rating.dimension === "Research environment" && rating.rating === datasetUtility.research_environment.trim()) {
                                         return (<span className="gray800-13"> {rating.response} </span>)
                                     }
                                 })
                             }
                         </Col>
                         <Col sm={1} lg={1}>
-                            <span><SubSilverSVG /></span>
+                            <span>
+                                {this.getSubSectionRating(datasetUtility.research_environment.trim())}
+                            </span>
                         </Col>
                     </Row>
                     <Row className="dataUtilityBox">
@@ -566,14 +741,16 @@ class DataQualityInfo extends React.Component {
                         </Col>
                         <Col sm={8} lg={8}>
                             {    ratings.map((rating) => {
-                                    if (rating.dimension === "Data Model" && rating.rating === "Gold") {
+                                    if (rating.dimension === "Time Lag" && rating.rating === datasetUtility.time_lag.trim()) {
                                         return (<span className="gray800-13"> {rating.response} </span>)
                                     }
                                 })
                             }
                         </Col>
                         <Col sm={1} lg={1}>
-                            <span><SubGoldSVG /></span>
+                            <span>
+                                {this.getSubSectionRating(datasetUtility.time_lag.trim())}
+                            </span>
                         </Col>
                     </Row>
                     <Row className="dataUtilityBox">
@@ -582,23 +759,51 @@ class DataQualityInfo extends React.Component {
                         </Col>
                         <Col sm={8} lg={8}>
                             {    ratings.map((rating) => {
-                                    if (rating.dimension === "Data Model" && rating.rating === "Gold") {
+                                    if (rating.dimension === "Timeliness" && rating.rating === datasetUtility.timeliness.trim()) {
                                         return (<span className="gray800-13"> {rating.response} </span>)
                                     }
                                 })
                             }
                         </Col>
                         <Col sm={1} lg={1}>
-                            <span><SubPlatinumSVG /></span>
+                            <span>
+                                {this.getSubSectionRating(datasetUtility.timeliness.trim())}
+                            </span>
                         </Col>
                     </Row>
                   </div>
                 </Collapse>
               </div>
             );
-            case "Value":
-                return (
-                  <div className="dataQualityCollapse">
+        }
+        if(accessProvisionSection === false ){
+            return (
+                <div className="dataQualityCollapse">
+                    <Row
+                        className="pointer dataUtilityRow margin-top-8"
+                        >
+                        <Col xs={2} sm={2} m={1} lg={1} className="dataUtilityChevron greyedOutChevron">
+                            <SVGIcon
+                                name="chevronbottom"
+                                fill={"#d0d3d4"}
+                                className= "svg-20 dataQualityArrow"
+                            />
+                        </Col>
+                        <Col xs={8} sm={5} md={4} lg={3} xl={2} className="gray800-14-opacity dataUtilityTitle"> 
+                            Access & provision
+                        </Col>
+                        <Col xs={2} sm={5} md={5} lg={8} xl={9} className="gray800-14-opacity dataUtilityTitle pad-left-0">
+                            <span>Not yet rated</span>
+                        </Col> 
+                    </Row>
+                </div>
+            )
+        }
+
+      case "Value":
+        if(valueInterestSection === true ){
+            return (
+                <div className="dataQualityCollapse">
                     <Row
                       className="pointer dataUtilityRow margin-top-8"
                       onClick={() =>
@@ -620,7 +825,7 @@ class DataQualityInfo extends React.Component {
                             Value & interest
                         </Col>
                         <Col xs={2} sm={5} md={5} lg={8} xl={9} className="dataUtilitySvg">
-                            <PlatinumSVG />
+                            {this.getSectionRating(valueInterestWeight)}
                         </Col>
                     </Row>
         
@@ -632,14 +837,16 @@ class DataQualityInfo extends React.Component {
                                 </Col>
                                 <Col sm={8} lg={8}>
                                     {    ratings.map((rating) => {
-                                            if (rating.dimension === "Data Model" && rating.rating === "Gold") {
+                                            if (rating.dimension === "Linkages" && rating.rating === datasetUtility.linkages.trim()) {
                                                 return (<span className="gray800-13"> {rating.response} </span>)
                                             }
                                         })
                                     }
                                 </Col>
                                 <Col sm={1} lg={1}>
-                                    <span><SubBronzeSVG /></span>
+                                    <span>
+                                        {this.getSubSectionRating(datasetUtility.linkages.trim())}
+                                    </span>
                                 </Col>
                             </Row>
                             <Row className="dataUtilityBox">
@@ -648,86 +855,142 @@ class DataQualityInfo extends React.Component {
                                 </Col>
                                 <Col sm={8} lg={8}>
                                     {    ratings.map((rating) => {
-                                            if (rating.dimension === "Data Model" && rating.rating === "Gold") {
+                                            if (rating.dimension === "Data Enrichments" && rating.rating === datasetUtility.data_enrichments.trim()) {
                                                 return (<span className="gray800-13"> {rating.response} </span>)
                                             }
                                         })
                                     }
                                 </Col>
                                 <Col sm={1} lg={1}>
-                                    <span><SubSilverSVG /></span>
+                                    <span>
+                                        {this.getSubSectionRating(datasetUtility.data_enrichments.trim())}
+                                    </span>
                                 </Col>
                             </Row>
                       </div>
                     </Collapse>
-                  </div>
-                );
-                case "Coverage":
-                    return (
-                      <div className="dataQualityCollapse">
-                        <Row
-                          className="pointer dataUtilityRow margin-top-8"
-                          onClick={() =>
-                            this.setState({ open: !open, flagClosed: !flagClosed })
-                          }
+                </div>
+            ); 
+        }
+        if(valueInterestSection === false ){
+            return (
+                <div className="dataQualityCollapse">
+                    <Row
+                        className="pointer dataUtilityRow margin-top-8"
                         >
-                            <Col xs={2} sm={2} m={1} lg={1} className="dataUtilityChevron">
-                                <SVGIcon
-                                    name="chevronbottom"
-                                    fill={"#475DA7"}
-                                    className={
-                                    flagClosed === true
-                                        ? "svg-20 dataQualityArrow"
-                                        : "svg-20 flipSVG dataQualityArrow"
-                                    }
-                                />
-                            </Col>
-                            <Col xs={8} sm={5} md={4} lg={3} xl={2} className="gray800-14 dataUtilityTitle">
-                                Coverage
-                            </Col>
-                            <Col xs={2} sm={5} md={5} lg={8} xl={9} className="dataUtilitySvg">
-                                <PlatinumSVG />
-                            </Col>
-                        </Row>
+                        <Col xs={2} sm={2} m={1} lg={1} className="dataUtilityChevron greyedOutChevron">
+                            <SVGIcon
+                                name="chevronbottom"
+                                fill={"#d0d3d4"}
+                                className= "svg-20 dataQualityArrow"
+                            />
+                        </Col>
+                        <Col xs={8} sm={5} md={4} lg={3} xl={2} className="gray800-14-opacity dataUtilityTitle"> 
+                            Value & interest
+                        </Col>
+                        <Col xs={2} sm={5} md={5} lg={8} xl={9} className="gray800-14-opacity dataUtilityTitle pad-left-0">
+                            <span className="gray800-14">Not yet rated</span>
+                         </Col> 
+                    </Row>
+                </div>
+            )
+        }
+
+      case "Coverage":
+        if(coverageSection === true ){
+            return (
+                <div className="dataQualityCollapse">
+                    <Row
+                        className="pointer dataUtilityRow margin-top-8"
+                      onClick={() =>
+                        this.setState({ open: !open, flagClosed: !flagClosed })
+                      }
+                    >
+                        <Col xs={2} sm={2} m={1} lg={1} className="dataUtilityChevron">
+                            <SVGIcon
+                                name="chevronbottom"
+                                fill={"#475DA7"}
+                                className={
+                                flagClosed === true
+                                    ? "svg-20 dataQualityArrow"
+                                    : "svg-20 flipSVG dataQualityArrow"
+                                }
+                            />
+                        </Col>
+                        <Col xs={8} sm={5} md={4} lg={3} xl={2} className="gray800-14 dataUtilityTitle">
+                            Coverage
+                        </Col>
+                        <Col xs={2} sm={5} md={5} lg={8} xl={9} className="dataUtilitySvg">
+                            {this.getSectionRating(coverageWeight)}
+                        </Col>
+                    </Row>
             
-                        <Collapse in={this.state.open} className="dataCollapseWait pad-top-8">
-                          <div>
-                                <Row className="dataUtilityBox topBorder"> 
-                                    <Col sm={3} lg={3}>
-                                        <span className="gray800-13-opacity">Pathway coverage</span>
-                                    </Col>
-                                    <Col sm={8} lg={8}>
-                                        {    ratings.map((rating) => {
-                                                if (rating.dimension === "Data Model" && rating.rating === "Gold") {
-                                                    return (<span className="gray800-13"> {rating.response} </span>)
-                                                }
-                                            })
-                                        }
-                                    </Col>
-                                    <Col sm={1} lg={1}>
-                                        <span><SubBronzeSVG /></span>
-                                    </Col>
-                                </Row>
-                                <Row className="dataUtilityBox">
-                                    <Col sm={3} lg={3}>
-                                        <span className="gray800-13-opacity">Length of follow up</span>
-                                    </Col>
-                                    <Col sm={8} lg={8}>
-                                        {    ratings.map((rating) => {
-                                                if (rating.dimension === "Data Model" && rating.rating === "Gold") {
-                                                    return (<span className="gray800-13"> {rating.response} </span>)
-                                                }
-                                            })
-                                        }
-                                    </Col>
-                                    <Col sm={1} lg={1}>
-                                        <span><SubSilverSVG /></span>
-                                    </Col>
-                                </Row>
-                          </div>
-                        </Collapse>
-                      </div>
-                    );
+                    <Collapse in={this.state.open} className="dataCollapseWait pad-top-8">
+                        <div>
+                            <Row className="dataUtilityBox topBorder"> 
+                                <Col sm={3} lg={3}>
+                                    <span className="gray800-13-opacity">Pathway coverage</span>
+                                </Col>
+                                <Col sm={8} lg={8}>
+                                    {    ratings.map((rating) => {
+                                            if (rating.dimension === "Pathway coverage" && rating.rating === datasetUtility.pathway_coverage.trim()) {
+                                                return (<span className="gray800-13"> {rating.response} </span>)
+                                            }
+                                        })
+                                    }
+                                </Col>
+                                <Col sm={1} lg={1}>
+                                    <span>
+                                        {this.getSubSectionRating(datasetUtility.pathway_coverage.trim())}
+                                    </span>
+                                </Col>
+                            </Row>
+                            <Row className="dataUtilityBox">
+                                <Col sm={3} lg={3}>
+                                    <span className="gray800-13-opacity">Length of follow up</span>
+                                </Col>
+                                <Col sm={8} lg={8}>
+                                    {    ratings.map((rating) => {
+                                            if (rating.dimension === "Length of follow up" && rating.rating === datasetUtility.length_of_follow_up.trim()) {
+                                                return (<span className="gray800-13"> {rating.response} </span>)
+                                            }
+                                        })
+                                    }
+                                </Col>
+                                <Col sm={1} lg={1}>
+                                    <span>
+                                        {this.getSubSectionRating(datasetUtility.length_of_follow_up.trim())}
+                                    </span>
+                                </Col>
+                            </Row>
+                        </div>
+                    </Collapse>
+                </div>
+            );
+        }
+        if(coverageSection === false ){
+            return (
+                <div className="dataQualityCollapse">
+                    <Row
+                        className="pointer dataUtilityRow margin-top-8"
+                    >
+                        <Col xs={2} sm={2} m={1} lg={1} className="dataUtilityChevron greyedOutChevron">
+                            <SVGIcon
+                                name="chevronbottom"
+                                fill={"#d0d3d4"}
+                                className= "svg-20 dataQualityArrow"
+                            />
+                        </Col>
+                        <Col xs={8} sm={5} md={4} lg={3} xl={2} className="gray800-14-opacity dataUtilityTitle"> 
+                            Coverage
+                        </Col>
+                        <Col xs={2} sm={5} md={5} lg={8} xl={9} className="gray800-14-opacity dataUtilityTitle pad-left-0">
+                            <span className="gray800-14">Not yet rated</span>
+                        </Col> 
+                    </Row>
+                </div>
+            )
+        }    
     }
   }
 }

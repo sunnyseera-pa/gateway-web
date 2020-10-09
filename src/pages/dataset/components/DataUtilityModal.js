@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment } from 'react'; 
 import { Row, Col, Container} from 'react-bootstrap';
 import DataUtilityModalInfo from './DataUtilityModalInfo';
 import '../Dataset.scss';
@@ -39,16 +39,7 @@ class DataUtilityModal extends React.Component {
             </Row>
             <div className="dataUtilityModalBackground">
               <Container>
-                {/* <Row>   
-                        <span
-                            className="purple-14 floatRight pointer"
-                            onClick={() => this.updateAllOpen(allOpen)}
-                        >
-                            {allOpen ? "Hide all" : "Expand all"} 
-                        </span>
-                    </Row> */}
                 <Row>
-                  {/* <Col sm={1} lg={1} />   */}
                   <Col sm={12} lg={12} className="mt-2 mb-3">
                     <DataUtilityModalInfo
                       section={"Documentation"}
@@ -66,7 +57,6 @@ class DataUtilityModal extends React.Component {
 
                     <DataUtilityModalInfo section={"Coverage"} open={allOpen} />
                   </Col>
-                  {/* <Col sm={2} lg={2} /> */}
                 </Row>
               </Container>
             </div>

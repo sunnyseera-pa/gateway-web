@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState} from 'react'; 
 import { Modal, Row, Col } from "react-bootstrap";
 import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg'; 
 import DataUtilityModal from './DataUtilityModal';
