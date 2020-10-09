@@ -9,6 +9,10 @@
 	margin-bottom: 16px;
 }
 
+.section-not-inreview {
+	color: $gray-600 !important;
+}
+
 .section-header-active {
 	cursor: pointer !important;
 	opacity: 1 !important;
