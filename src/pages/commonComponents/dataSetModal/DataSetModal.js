@@ -32,7 +32,7 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 		// 3. check user loggedIn status if not make user login
 		if (!isLoggedIn) {
 			// 3a. Show the loginPanel
-			DataSetHelper.showLoginPanel(window, title, contactPoint);
+			DataSetHelper.showLoginPanel(window, title); 
 		} else {
 			// 3. log google analytics event (Category-Action-Label)
 			Event('Buttons', 'Click', 'Request Access');
@@ -48,7 +48,7 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 			// 2. close modal and do not show enquiry - false;
 			closed(false);
 			// 3. Show the loginPanel
-			DataSetHelper.showLoginPanel(window, title, contactPoint);
+			DataSetHelper.showLoginPanel(window, title);
 		} else {
 			// 4. do normal operation
 			closed(showEnquiry);

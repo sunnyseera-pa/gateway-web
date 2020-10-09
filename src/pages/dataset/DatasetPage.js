@@ -283,8 +283,8 @@ class DatasetDetail extends Component {
           });
   } 
 
-  showLoginModal = (title, contactPoint) => {
-    DataSetHelper.showLoginPanel(window, title, contactPoint);
+  showLoginModal = (title) => {
+    DataSetHelper.showLoginPanel(window, title);
   }
 
   toggleDrawer = () => {
@@ -502,8 +502,7 @@ class DatasetDetail extends Component {
                           className="btn button-tertiary dark-14 float-right"
                           onClick={() =>
                             this.showLoginModal(
-                              data.name,
-                              data.datasetfields.contactPoint
+                              data.name
                             )
                           }
                         >
