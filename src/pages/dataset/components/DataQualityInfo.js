@@ -292,7 +292,7 @@ class DataQualityInfo extends React.Component {
             response: "The data includes derived fields or enriched data from a national report. "
         }
     ]
-  };
+  }; 
 
   constructor(props) {
     super(props);
@@ -305,7 +305,6 @@ class DataQualityInfo extends React.Component {
     this.state.accessProvisionWeight = props.accessProvisionWeight;
     this.state.valueInterestWeight = props.valueInterestWeight;
     this.state.coverageWeight = props.coverageWeight;
-    this.state.dataModelRating = props.dataModelRating;
   }
 
   async componentWillMount() {    
@@ -471,7 +470,6 @@ class DataQualityInfo extends React.Component {
                                 </Col> 
                                 <Col sm={1} lg={1}>
                                     <span>
-                                        <dataModelRating />
                                         {this.getSubSectionRating(datasetUtility.data_model.trim())}
                                     </span>
                                 </Col>

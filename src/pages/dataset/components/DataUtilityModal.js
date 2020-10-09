@@ -6,9 +6,7 @@ import '../Dataset.scss';
 class DataUtilityModal extends React.Component {
 
     state = {
-        allOpen: false,
-        key: "Tools"
-
+        allOpen: false
     }
  
     constructor(props) {
@@ -24,7 +22,7 @@ class DataUtilityModal extends React.Component {
       };
  
     render() {
-        const {allOpen, key} = this.state; 
+        const {allOpen} = this.state; 
 
         return (
           <Fragment>

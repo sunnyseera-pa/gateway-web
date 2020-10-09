@@ -1,5 +1,5 @@
 import React, {useState} from 'react'; 
-import { Modal, Row, Col } from "react-bootstrap";
+import { Modal, Row } from "react-bootstrap";
 import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg'; 
 import DataUtilityModal from './DataUtilityModal';
 import '../Dataset.scss';
@@ -9,20 +9,6 @@ const DataUtitlityFramework = (props) => {
   
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true); 
-  
-    const showLoginModal = () => {
-        var modalID="myModal"
-        if (props.isRequest) {
-            modalID="myModalRequest";
-        }
-        document.getElementById(modalID).style.display = "block";
-        
-        window.onclick = function (event) {
-            if (event.target === document.getElementById(modalID)) {
-                document.getElementById(modalID).style.display = "none";
-            }
-        }
-    };
   
     return (
       <>
