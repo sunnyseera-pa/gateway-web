@@ -161,6 +161,7 @@ class DataAccessRequestsNew extends React.Component {
         decisionApproved = false,
         decisionDate
 	) => {
+        const decisionApprovedType = decisionApproved ? 'No issues found:' : "Issues found:";
 		if (!_.isEmpty(applicationStatusDesc) && !_.isEmpty(applicationStatus)) {
 			if (this.finalDurationLookups.includes(applicationStatus)) {
 				return (
@@ -171,12 +172,12 @@ class DataAccessRequestsNew extends React.Component {
 				);
 			} 
         }
-        else if (decisionMade && !this.finalDurationLookups.includes(applicationStatus) && !decisionApproved) {
+        else if (decisionMade && !this.finalDurationLookups.includes(applicationStatus)) {
             return (
                 <CommentItem
                     text={decisionComments}
                     title={"Phase decision"}
-                    subtitle={`Issues found: ${reviewPanels}`}
+                    subtitle={`${decisionApprovedType} ${reviewPanels}`}
                     decisionDate={decisionDate}
                 />
             );
