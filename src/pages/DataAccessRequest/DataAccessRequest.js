@@ -24,6 +24,7 @@ import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
 import NavItem from './components/NavItem/NavItem';
 import NavDropdown from './components/NavDropdown/NavDropdown';
+import WorkflowReviewModal from '../commonComponents/workflowReviewModal/WorkflowReviewModal';
 import DarValidation from '../../utils/DarValidation.util';
 import DarHelper from '../../utils/DarHelper.util';
 import SearchBarHelperUtil from '../../utils/SearchBarHelper.util';
@@ -58,6 +59,7 @@ class DataAccessRequest extends Component {
 			_id: '',
 			jsonSchema: {},
 			questionAnswers: {},
+			workflow: {},
 			applicationStatus: '',
 			activePanelId: '',
 			activeGuidance: '',
@@ -83,6 +85,7 @@ class DataAccessRequest extends Component {
 			showModal: false,
 			showMrcModal: false,
 			showActionModal: false,
+			showWorkflowReviewModal: false,
 			showContributorModal: false,
 			showAssignWorkflowModal: false,
 			readOnly: false,
@@ -191,6 +194,7 @@ class DataAccessRequest extends Component {
 			let response = await axios.get(
 				`${baseURL}/api/v1/data-access-request/datasets/${datasetIds}`
 			);
+			debugger;
 			// 2. Destructure backend response for this context containing details of DAR including question set and current progress
 			let {
 				data: {
@@ -204,7 +208,8 @@ class DataAccessRequest extends Component {
 						mainApplicant,
 						userId,
 						authorIds,
-						projectId
+						projectId,
+						workflow
 					},
 				},
 			} = response;
@@ -220,7 +225,8 @@ class DataAccessRequest extends Component {
 				mainApplicant,
 				userId,
 				authorIds,
-				projectId
+				projectId,
+				workflow
 			});
 		} catch (error) {
 			this.setState({ isLoading: false });
@@ -234,6 +240,7 @@ class DataAccessRequest extends Component {
 			let response = await axios.get(
 				`${baseURL}/api/v1/data-access-request/dataset/${datasetId}`
 			);
+			debugger;
 			const {
 				data: {
 					data: {
@@ -246,7 +253,8 @@ class DataAccessRequest extends Component {
 						mainApplicant,
 						userId,
 						authorIds,
-						projectId
+						projectId,
+						workflow
 					},
 				},
 			} = response;
@@ -262,7 +270,8 @@ class DataAccessRequest extends Component {
 				mainApplicant,
 				userId,
 				authorIds,
-				projectId
+				projectId,
+				workflow
 			});
 
 			// for local test uses formSchema.json
@@ -279,6 +288,7 @@ class DataAccessRequest extends Component {
 			let response = await axios.get(
 				`${baseURL}/api/v1/data-access-request/${accessId}` 
 			);
+			debugger;
 			// 2. Destructure backend response for this context containing details of DAR including question set and current progress
 			let {
 				data: {
@@ -296,7 +306,8 @@ class DataAccessRequest extends Component {
 						authorIds,
 						projectId,
 						inReviewMode,
-						reviewSections
+						reviewSections,
+						workflow
 					},
 				},
 			} = response;
@@ -315,7 +326,8 @@ class DataAccessRequest extends Component {
 				authorIds,
 				projectId,
 				inReviewMode,
-				reviewSections
+				reviewSections,
+				workflow
 			});
 		} catch (error) {
 			this.setState({ isLoading: false });
@@ -340,6 +352,7 @@ class DataAccessRequest extends Component {
 			projectId,
 			inReviewMode = false,
 			reviewSections = [],
+			workflow
 		} = context;
 		let {
 			datasetfields: { publisher },
@@ -437,7 +450,8 @@ class DataAccessRequest extends Component {
 			showSubmit,
 			publisherId,
 			workflowEnabled,
-			inReviewMode
+			inReviewMode,
+			workflow
 		});
 	};
 
@@ -978,6 +992,14 @@ class DataAccessRequest extends Component {
 			};
 		});
 	};
+
+	toggleWorkflowReviewModal = () => {
+		this.setState((prevState) => {
+			return { 
+				showWorkflowReviewModal: !prevState.showWorkflowReviewModal 
+			};
+		});
+	}
 
 	updateContributors = (contributors) => {
 		let updatedAuthorIds = [...contributors].map(user => user.id);
@@ -1830,6 +1852,7 @@ class DataAccessRequest extends Component {
 							<CustodianActionButtons
 								allowedNavigation={allowedNavigation}
 								onActionClick={this.onCustodianAction}
+								onWorkflowReview={this.toggleWorkflowReviewModal}
 								onNextClick={this.onNextClick}
 								workflowEnabled={this.state.workflowEnabled}
 								workflowAssigned={false}
@@ -1863,6 +1886,12 @@ class DataAccessRequest extends Component {
 					updateApplicationStatus={this.updateApplicationStatus}
 					close={this.toggleActionModal}
 				/> 
+
+				<WorkflowReviewModal
+					open={this.state.showWorkflowReviewModal}
+					close={this.toggleWorkflowReviewModal}
+					workflow={this.state.workflow}
+				/>
 
 				<ContributorModal
 					open={showContributorModal}

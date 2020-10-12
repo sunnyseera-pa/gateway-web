@@ -1,0 +1,54 @@
+@import '../../../css/variables';
+@import '../../../css/typography';
+
+
+.workflowModal {
+  box-sizing: border-box;
+
+  .modal-dialog {
+    max-width: 940px;
+    width: 100%;
+    transform: translate(0%, 50%) !important;
+  }
+
+  &-header {
+      display: flex;
+      flex-flow: column nowrap;    
+      width: 100%;    
+      padding: 32px 32px 0 32px;
+
+      &--wrap {
+          padding-bottom: 12px;
+
+          p {
+              margin-bottom: 0;
+              color: $gray-800;
+              font-size: 14px;
+          }
+      
+      }
+  }
+
+  &-head {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+      margin-bottom: 10px;
+
+      &--close {
+          width: 20px;
+          height: 20px;
+          fill: $indigo;
+          &:hover {
+              cursor: pointer;
+          }
+      }
+  }
+
+    &-body {
+      background-color: $background;
+        width: 100%;
+        padding: 10px 32px 20px 32px;
+    }
+
+}
