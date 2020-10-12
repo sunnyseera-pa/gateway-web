@@ -129,7 +129,6 @@ class DataAccessRequestsNew extends React.Component {
 		if (!_.isEmpty(data)) {
 			return [...data].reduce((arr, item) => {
 				let { applicationStatus } = item;
-				//console.log(DarHelperUtil.darStatus[`${applicationStatus}`]);
 				return [
 					...arr,
 					{
@@ -167,11 +166,12 @@ class DataAccessRequestsNew extends React.Component {
 
 	renderComment = (
         applicationStatusDesc = '',
+        applicationStatus = '',
         decisionComments = '',
         reviewPanels = '',
         decisionMade = false,
         decisionApproved = false,
-        applicationStatus = ''
+        decisionDate
 	) => {
 		if (!_.isEmpty(applicationStatusDesc) && !_.isEmpty(applicationStatus)) {
 			if (this.finalDurationLookups.includes(applicationStatus)) {
@@ -189,6 +189,7 @@ class DataAccessRequestsNew extends React.Component {
                     text={decisionComments}
                     title={"Phase decision"}
                     subtitle={`Issues found: ${reviewPanels}`}
+                    decisionDate={decisionDate}
                 />
             );
         }
@@ -373,7 +374,8 @@ class DataAccessRequestsNew extends React.Component {
 								isReviewer = false,
 								stepName = "",
 								remainingActioners = [],
-								_id,
+                                _id,
+                                decisionDate
 							} = request;
 							return (
 								<Row
@@ -429,12 +431,13 @@ class DataAccessRequestsNew extends React.Component {
 												/>
 											</div>
 											{this.renderComment(
-												applicationStatusDesc,
+                                                applicationStatusDesc,
+                                                applicationStatus,
                                                 decisionComments,
                                                 reviewPanels,
                                                 decisionMade,
                                                 decisionApproved,
-												applicationStatus
+                                                decisionDate
 											)}
 										</div>
 									</div>
