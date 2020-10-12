@@ -1,22 +1,32 @@
 import React, { useState, Fragment } from 'react';
 import _ from 'lodash';
 import { Modal } from 'react-bootstrap';
-import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
+import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg';
 
 import './ActionModal.scss';
 
-const ActionModal = ({ open, close, context, updateApplicationStatus }) => {
+const ActionModal = ({ id, open, close, context, updateApplicationStatus }) => {
 
 const [count, setCount] = useState(0);
-const [formState, setFormState] = useState({statusDesc: '', invalid: false, invalidMessage: '', submitted: false});
+const [formState, setFormState] = useState({statusDesc: '', invalid: false, invalidMessage: '', submitted: false, showActionModal: false,});
 
 	let {
 		title = '',
-		subTitle = '',
-		buttons = {},
-    description = false
+		subTitle = 'Let the person who added this know know why their submission is being rejected, especially if there’s anything in particular they should correct before re-submitting.',
+		buttons = {
+			cancel: {
+				label: 'Cancel',
+				action: 'cancel',
+				class: 'button-secondary mr-2'
+			},
+			confirmReject: {
+				label: 'Reject and send message',
+				action: 'confirmRejection',
+				class: 'btn btn-primary addButton'
+			}
+		},
   } = context;
-  
+
   const onClickAction = (e, action) => {
 		e.preventDefault();
 		// 1. set form to be submitted
@@ -28,22 +38,15 @@ const [formState, setFormState] = useState({statusDesc: '', invalid: false, inva
 			// 4. deconstruct properties
 			let {statusDesc} = formState;
 			switch(type) {
-				case 'CONFIRMAPPROVALCONDITIONS':
 				case 'CONFIRMREJECTION':
 					// 5. check state is valid / invalid
 					let isInvalid = isFormInvalid();
 					// 6. is valid pass back to DAR
 					if(!isInvalid) {
-						updateApplicationStatus({statusDesc, type});
+						updateApplicationStatus(id, statusDesc);
 						setFormState({statusDesc: '', invalid: false, invalidMessage: '', submitted: false});	
 						setCount(0);
 					}			
-					break;
-				case 'CONFIRMAPPROVAL': 
-					// 7. send approval to DAR
-					updateApplicationStatus({statusDesc, type});
-					setFormState({statusDesc: '', invalid: false, invalidMessage: '', submitted: false});
-					setCount(0);
 					break;
 				default:
 					setFormState({statusDesc: '', invalid: false, invalidMessage: '', submitted: false});
@@ -59,8 +62,8 @@ const [formState, setFormState] = useState({statusDesc: '', invalid: false, inva
 		setFormState({
 			...formState, 
 			[name]: value, 
-			invalid: (value.length > 1500 || _.isEmpty(value)), 
-			invalidMessage: (value.length > 1500 ? 'Description can not exceed 1500 characters' : _.isEmpty(value) ? 'Description must not be blank' : '')
+			invalid: (value.length > 1000 || _.isEmpty(value)), 
+			invalidMessage: (value.length > 1000 ? 'Description can not exceed 1000 characters' : _.isEmpty(value) ? 'Description must not be blank' : '')
 		});
 	}
 
@@ -69,10 +72,10 @@ const [formState, setFormState] = useState({statusDesc: '', invalid: false, inva
 		setFormState({
 			...formState, 
 			submitted: true,
-			invalid: (statusDesc.length > 1500 || _.isEmpty(statusDesc)), 
-			invalidMessage: (statusDesc.length > 1500 ? 'Description can not exceed 1500 characters' : _.isEmpty(statusDesc) ? 'Description must not be blank' : '') 
+			invalid: (statusDesc.length > 1000 || _.isEmpty(statusDesc)), 
+			invalidMessage: (statusDesc.length > 1000 ? 'Description can not exceed 1000 characters' : _.isEmpty(statusDesc) ? 'Description must not be blank' : '') 
 		});
-		return (statusDesc.length > 1500 || _.isEmpty(statusDesc));
+		return (statusDesc.length > 1000 || _.isEmpty(statusDesc));
 	}
 
 	return (
@@ -99,23 +102,19 @@ const [formState, setFormState] = useState({statusDesc: '', invalid: false, inva
 				</div>
 
 				<div className='actionModal-body'>
-				{ description ? 
-							<form>
-								<div className="form-group">
-									<label htmlFor="decription" className="gray800-14"><span>Description</span> <span>{count}/1500</span></label>
-									<textarea 
-										className={`form-control ${formState.invalid && formState.submitted ? `is-invalid` : ''}`} 
-										name="statusDesc"
-										onChange={handleChange}
-										value={formState.statusDesc}
-										rows="8"
-									></textarea>
-									<div className="invalid-feedback">{formState.invalidMessage}</div>
-								</div>
-							</form>
-					 : 
-          ''
-        }
+					<form>
+						<div className="form-group">
+							<label htmlFor="decription" className="gray800-14"><span>Description</span> <span>{count}/1000</span></label>
+							<textarea 
+								className={`form-control ${formState.invalid && formState.submitted ? `is-invalid` : ''}`} 
+								name="statusDesc"
+								onChange={handleChange}
+								value={formState.statusDesc}
+								rows="8"
+							></textarea>
+							<div className="invalid-feedback">{formState.invalidMessage}</div>
+						</div>
+					</form>
 				</div>
 
 				<div className='actionModal-footer'>
