@@ -36,7 +36,7 @@ h6 {
 .black-14 {
   @include font-source(14px, $gray-dark);
 }
-
+ 
 .black-14-bold {
   @include font-source(14px, $gray-dark, $font-weight-bold);
 }
@@ -66,6 +66,10 @@ h6 {
 }
 
 .black-20-semibold {
+  @include font-source(20px, $gray-dark, $font-weight-semibold);
+}
+
+.black-24 {
   @include font-source(20px, $gray-dark, $font-weight-semibold);
 }
 
@@ -137,12 +141,24 @@ h6 {
   @include font-source(13px, $gray-700, $font-weight-semibold);
 }
 
-.gray700-13-bold {
+.gray700-13-bold { 
   @include font-source(13px, $gray-700, $font-weight-bold);
 }
 
 .gray700-14 {
   @include font-source(14px, $gray-700, $font-weight-semibold);
+}
+
+.gray800-13-bold { 
+  @include font-source(13px, $gray-800, $font-weight-bold);
+}
+
+.gray800-13 { 
+  @include font-source(13px, $gray-800, $font-weight-semibold);
+}
+
+.gray800-13-opacity {
+  @include font-source(13px, $gray-800, $font-weight-semibold, null, 0.7);
 }
 
 .gray800-14 {
@@ -159,4 +175,12 @@ h6 {
 
 .gray800-15 {
   @include font-source(15px, $gray-800, $font-weight-semibold);
+}
+
+.gray-deep-13-bold {
+  @include font-source(13px, $gray-deep , $font-weight-bold); 
+}
+
+.gray-deep-14 {
+  @include font-source(14px, $gray-deep , $font-weight-semibold); 
 }
