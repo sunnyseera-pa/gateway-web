@@ -312,11 +312,12 @@ class DataQualityInfo extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.open !== this.props.open) {
-      this.setState({
-        open: this.props.open
+    var isOpen = this.props.open
+    if (prevProps.open !== isOpen) {
+        this.setState({
+        open: isOpen
       });
-      if (this.props.open) {
+      if (isOpen) {
         this.setState({
           flagClosed: false
         });
