@@ -1,4 +1,4 @@
-import React, from 'react';
+import React from 'react';
 import _ from 'lodash';
 import { ReactComponent as Flag } from "../../../images/flag.svg";
 import { ReactComponent as Check } from "../../../images/check.svg";
