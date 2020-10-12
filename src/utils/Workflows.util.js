@@ -88,7 +88,7 @@ export const toggleWorkflowStep = (workflows = [], step = {}) => {
   return [];
 }
 
-const updateStepToggle = (steps, step) => {
+export const updateStepToggle = (steps, step) => {
   return steps.map((el) => {
     return {
       ...el,
