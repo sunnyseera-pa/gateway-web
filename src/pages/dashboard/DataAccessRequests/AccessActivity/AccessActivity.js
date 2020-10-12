@@ -3,11 +3,10 @@ import _ from 'lodash';
 import moment from 'moment';
 import SLA from '../../../commonComponents/sla/SLA';
 import DarHelperUtil from '../../../../utils/DarHelper.util';
-import { Button } from 'react-bootstrap';
 import WorkflowDecision from '../../../commonComponents/workflowDecision/WorkflowDecision';
 
 const AccessActivity = ({
-  datasets = [], 
+  datasets = [],
   updatedAt, 
   applicants = '',
   dateSubmitted = '', 
@@ -15,7 +14,6 @@ const AccessActivity = ({
   publisher = '', 
   applicationStatus,
   navigateToLocation,
-  workflow = {},
   workflowName = '',
   workflowCompleted = false,
   reviewStatus = '',
@@ -23,8 +21,9 @@ const AccessActivity = ({
   decisionStatus = '',
   decisionMade = false,
   isReviewer = false,
-  activeStepName = '',
-  remainingActioners = [] }) =>{
+  stepName = '',
+  remainingActioners = [],
+  applicationId }) =>{
 
   const setActivityMeta = () => {
 	  let reviewDecision;
@@ -42,11 +41,15 @@ const AccessActivity = ({
 		}
 
 		if(isReviewer && decisionMade) {
-			return <WorkflowDecision decisionMade={decisionMade} decisionText={decisionStatus} icon='check' />
+			reviewDecision = <WorkflowDecision decisionMade={decisionMade} decisionText={decisionStatus} icon='check' />
 		}
 
 		return reviewDecision;
 	};
+
+	const onClickStartReview = (e) => {
+		navigateToLocation(e, applicationId, applicationStatus);
+	}
 
 	const buildAccessRequest = () => {	
 		const hasWorkflow = !_.isEmpty(workflowName) ? true : false;
@@ -69,10 +72,10 @@ const AccessActivity = ({
 						<div
 							id='workflow'
 							className='box box-link'
-							onClick={(e) => navigateToLocation(e)}
+							onClick={(e) => {navigateToLocation(e)}}
 						>
 							{!_.isEmpty(workflowName) ? workflowName : "-"}
-							{!_.isEmpty(activeStepName) ? `| ${activeStepName}`: ""}
+							{!_.isEmpty(stepName) ? ` | ${stepName}`: ""}
 							{workflowCompleted ? ' complete' : ""}
 						</div>
 					</Fragment>
@@ -105,7 +108,7 @@ const AccessActivity = ({
 					{isTeam == true ? (
 						<Fragment>
 							{applicationStatus === DarHelperUtil.darStatus.submitted ? (
-								<button className='button-primary' onClick=''>Start Review</button>
+								<button id="startReview" className='button-primary' onClick={(e) => {onClickStartReview(e)}}>Start review</button>
 							) : (
 								setActivityMeta()
 							)}
