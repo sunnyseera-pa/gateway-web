@@ -290,23 +290,17 @@ class DataAccessRequestsNew extends React.Component {
 		return (
 			<Fragment>
 				<Fragment>{!_.isEmpty(alert) ? this.generateAlert() : ""}</Fragment>
-
 				<Row>
 					<Col xs={1}></Col>
 					<div className='col-sm-10'>
 						<div className='accountHeader dataAccessHeader'>
 							<Col xs={8}>
 								<Row>
-									<div className='black-20'>
-										Data access request applications{" "}
-										{!_.isEmpty(team) ? team : ""}
-									</div>
-									<div className='gray700-13'>
-										Manage forms and applications
-									</div>
+									<div className='black-20'>Data access request applications{!_.isEmpty(team) ? team : ""}</div>
+									<div className='gray700-13'>Manage forms and applications</div>
 									<div>
-										<Clock />{" "}
-										{`${avgDecisionTime > 0 ? avgDecisionTime : "-"} days`}{" "}
+										<Clock />
+										{`${avgDecisionTime > 0 ? avgDecisionTime : "-"} days`}
 										<span className='gray700-13'>
 											average time from submission to descision
 										</span>

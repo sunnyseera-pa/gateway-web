@@ -74,7 +74,14 @@ button {
     outline: 0;
     box-shadow: 0 0 0 3px rgba(71, 93, 167, 0.25);
   }
+
+  &teal {
+    @extend .button-;
+      background-color: $teal;
+      color: $white;
+    }
 }
+
 
 .form-input-label {
   font-family: Museo-Sans-Rounded;
@@ -259,6 +266,15 @@ a.nav-item.nav-link.active {
     font-weight: bold;
     font-size: 16px;
   }
+
+  &-notRated { 
+    @extend .badge;
+    background-color: $orange-light;
+    color: $med-black !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    margin: 0px !important;
+  }
 }
 
 .iconHolder {
@@ -406,6 +422,12 @@ svg:not(:root) {
 .svg-19 {
   width: 19px;
   height: 19px;
+}
+
+.svg-20 {
+  float: left;
+  width: 20px;
+  height: 20px;
 }
 
 .svg-24 {
@@ -1123,6 +1145,10 @@ button a {
     padding-bottom: 24px !important;
   }
 
+  .pad-bottom-32 {
+    padding-bottom: 32px !important;
+  }
+
   .margin-top-32 {
     margin-top: 32px !important;
   }
@@ -1140,16 +1166,20 @@ button a {
     margin-top: 16px !important;
   }
 
+  .margin-top-8 {
+    margin-top: 8px !important;
+  }
+
   .margin-top-2 {
     margin-top: 2px !important;
   }
 
-  .margin-left-8 {
-    margin-left: 8px !important;
+  .margin-left-6 {
+    margin-left: 6px !important;
   }
 
-  .margin-top-8 {
-    margin-top: 8px !important;
+  .margin-left-8 {
+    margin-left: 8px !important;
   }
 
   .margin-left-15 {
@@ -1220,6 +1250,10 @@ button a {
 
   .pad-left-8 {
     padding-left: 8px !important;
+  }
+
+  .pad-left-14 {
+    padding-left: 14 !important;
   }
 
   .pad-right-8 {

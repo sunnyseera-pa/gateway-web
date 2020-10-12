@@ -12,7 +12,12 @@ class TypaheadMultiUser extends React.Component {
     this.state = {
       value: props.selectedContributors || [],
       options: [],
-      id: props.id,
+      id: props.id || '',
+      apiCall: props.apiCall || 'users' ,
+      team: props.team || '',
+      typeaheadId: props.typeaheadId || 'typeaheadMultiUser',
+      typeaheadName: props.typeaheadName || 'typeaheadMultiUser',
+      typeaheadClass: `addFormInputTypeAhead ${!_.isEmpty(props.typeaheadClass) ? props.typeaheadClass : ''}`,
       readOnly: props.readOnly || false
     };
   }
@@ -22,64 +27,102 @@ class TypaheadMultiUser extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
+    let { options } = {...this.state};
+
 		if (this.props.selectedContributors !== prevProps.selectedContributors) {
-      let { options } = this.state;
-      let value = [...options].filter((user)  => { 
-        return this.props.selectedContributors.includes(user.id);
+      let value = [...options].filter((user)  => {
+        const userId = _.isEmpty(this.props.team) ? user.id : user._id;
+        return this.props.selectedContributors.includes(userId);
       });
-      this.setState({
-        value
-      });
-		}
+      this.setState({ value });
+    }
+
+    if(this.props.typeaheadClass !== prevProps.typeaheadClass) {
+      this.setState({ typeaheadClass: this.props.typeaheadClass });
+    }
 	}
 
   getData() {
-    axios.get(`${baseURL}/api/v1/users`)
-      .then((res) => {
-        let {data: {data}} = res;
-        if(!_.isEmpty(this.props.currentUserId.toString())) {
-          data = data.filter((user) => { return user.id !== this.props.currentUserId });
-        }
-        let value = [...data].filter((user)  => { 
-          return this.props.selectedContributors.includes(user.id);
-        });
-        this.setState({ options: data, value });
-      })
-      .catch(err => {
-        console.error(err);
-        alert('Failed to fetch users');
-      });
+    switch(this.state.apiCall) {
+      case 'users':
+        axios.get(`${baseURL}/api/v1/users`)
+          .then((res) => {
+            let {data: {data}} = res;
+            if(!_.isEmpty(this.props.currentUserId.toString())) {
+              data = data.filter((user) => { return user.id !== this.props.currentUserId });
+            }
+            let value = [...data].filter((user)  => { 
+              return this.props.selectedContributors.includes(user.id);
+            });
+
+            this.setState({ options: data, value });
+          })
+          .catch(err => {
+            console.error(err);
+            alert('Failed to fetch users');
+          });
+        break;
+      case 'teams':
+        axios.get(`${baseURL}/api/v1/teams/${this.state.team}/members`)
+          .then((res) => {
+            let {data: {members}} = res;
+            // map out new array and include name key for typeahead
+            let membersLists =  members.map((member) => {
+              return {
+                ...member,
+                name: `${member.firstname} ${member.lastname}`
+              }
+            });
+            // find _.id in membersList arr
+            let value = [...membersLists].filter((user)  => { 
+              return this.props.selectedContributors.includes(user._id);
+            });
+            this.setState({ options: membersLists, value });
+          })
+          .catch(err => {
+            console.error(err);
+            alert('Failed to fetch users');
+          });
+        break;
+    }
   }
 
   handleChange(e) {
-    this.props.onHandleContributorChange(e);
+    let value;
+    let selected = [...e];
     let { options } = this.state;
-    let value = [...options].filter((user)  => { 
-      return e.some(contributor => contributor.id === user.id);
-    });
-    this.setState({
-       value
-    });
+   
+    if(_.isEmpty(this.state.team)) {
+      this.props.onHandleContributorChange(selected);
+      value = [...options].filter((user)  => { 
+        return e.some(contributor => contributor.id === user.id);
+      });
+      this.setState({value});
+    } else {
+      let userIds = selected.map(u => u._id);
+      this.props.onHandleContributorChange(userIds);
+    }
   }
 
   render() {
     return (
       <Typeahead
-        id={'typeaheadMultiUser'}
-        className={'addFormInputTypeAhead'}
+        id={this.state.typeaheadId}
+        name={this.state.typeaheadName}
+        className={this.state.typeaheadClass}
+        labelKey={options => `${options.name}`}
         options={this.state.options}        
         onChange={e => this.handleChange(e)}
         selected={this.state.value}
+        disabled={this.state.readOnly}
         minLength={3}
+        inputProps={{ required: (!_.isEmpty(this.props.typeaheadClass) ? true : false) }}
         filterBy={['name']}
         multiple
-        disabled={this.state.readOnly}
-        defaultSelected={this.state.value}
-        labelKey={options => `${options.name}`}
         renderMenuItemChildren={(option, props) => (
           <div className="userOption">
-            <div>{option.name}</div>
-            <div><span>{option.bio || 'Institution not set'}</span> <span>{option.orcid || 'No ORCID'}</span></div>
+            <div>{option.name ? option.name : `${option.firstname} ${option.lastname}`}</div>
+            {_.isEmpty(this.state.team) ? <div><span>{option.bio || 'Institution not set'}</span> <span>{option.orcid || 'No ORCID'}</span></div> : ''}
           </div>
         )}
       />
