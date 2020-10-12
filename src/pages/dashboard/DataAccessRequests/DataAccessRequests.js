@@ -76,7 +76,7 @@ class DataAccessRequestsNew extends React.Component {
         }
         // 2. check which API to call the user or custodian if a team and use team name
         const teamExists = !_.isEmpty(dataProps.team) ? true : false;        
-        if(teamExists) {
+        if(teamExists && dataProps.team !== 'user') {
             const response = await axios.get(`${baseURL}/api/v1/publishers/${dataProps.team}/dataaccessrequests`);
             ({ data: { data, avgDecisionTime }} = response);
          } else {
@@ -223,7 +223,7 @@ class DataAccessRequestsNew extends React.Component {
                         <div className="accountHeader dataAccessHeader">
                             <Col xs={8}>
                                 <Row>
-                                    <div className="black-20">Data access request applications {!_.isEmpty(team) ? team : ''}</div>
+                                    <div className="black-20">Data access request applications {!_.isEmpty(team) && team !== 'user' ? team : ''}</div>
                                     <div className="gray700-13">Manage forms and applications</div>
                                     <div><Clock /> {`${avgDecisionTime > 0 ? avgDecisionTime : '-'} days`} <span className="gray700-13">average time from submission to descision</span></div>
                                 </Row>
