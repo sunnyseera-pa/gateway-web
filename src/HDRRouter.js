@@ -60,12 +60,12 @@ class HDRRouter extends Component {
         axios.defaults.withCredentials = true;
         axios.defaults.timeout = 60000;
 
-        axios.interceptors.response.use(function (response) {
+        /* axios.interceptors.response.use(function (response) {
             return response;
         }, function (error) {
             Sentry.captureException(error);
             return Promise.reject(error).then(currentComponent.setState({showError: true}));
-        });
+        }); */
 
         axios
             .get(baseURL + '/api/v1/auth/status')
