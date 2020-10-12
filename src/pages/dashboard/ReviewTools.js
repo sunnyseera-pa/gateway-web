@@ -379,10 +379,10 @@ function RejectButton(props) {
                 <Modal.Header closeButton>
                     <Modal.Title>Reject this review?</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Let the person who added this know know why their review is being rejected.</Modal.Body>
+                <Modal.Body>Are you sure you want to reject this review?</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>Cancel</Button>
-                    <Button variant="primary" onClick={rejectObject}>Reject and send message</Button>
+                    <Button variant="primary" onClick={rejectObject}>Reject</Button>
                 </Modal.Footer>
             </Modal>
         </>
