@@ -3,6 +3,7 @@ import axios from 'axios';
 import moment from 'moment';
 import UnmetDemand from './DARComponents/UnmetDemand';
 import TopSearches from './TopSearches';
+import TopDatasets from './TopDatasets';
 import { Row, Col, Button, Modal, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
 import DashboardKPI from './DARComponents/DashboardKPI';
 import Loading from '../commonComponents/Loading'
@@ -173,7 +174,7 @@ class AccountAnalyticsDashboard extends React.Component {
 
     } 
 
-    getKPIs(selectedDate){
+    getKPIs(selectedDate){ 
         return new Promise((resolve, reject) => {
         axios.get(baseURL + '/api/v1/kpis?kpi=searchanddar&selectedDate=' + selectedDate )
         .then((res) => {
@@ -219,6 +220,8 @@ class AccountAnalyticsDashboard extends React.Component {
 
     render() {
         const { key, isLoading, data, topSearches, dates, statsDataType, gaUsers, searchesWithResults, accessRequests, datasetsWithTechMetaData, uptime, uniqueUsers } = this.state;
+
+        let topDARs = [1,2,3,4,5];
 
         if (isLoading) {
             return (
@@ -275,7 +278,7 @@ class AccountAnalyticsDashboard extends React.Component {
                                 <DashboardKPI kpiText="datasets with technical metadata" kpiValue={datasetsWithTechMetaData.toFixed(0)} percentageFlag={true}/>
                             </Col>
                             <Col sm={3} lg={3} className="kpiClass">
-                                <DashboardKPI kpiText="unique users this month" kpiValue={gaUsers}/>
+                                <DashboardKPI kpiText="unique users this month" kpiValue={gaUsers}/> 
                             </Col>
                             <Col sm={3} lg={3} className="kpiClass">                               
                                 <DashboardKPI kpiText="unique registered users" kpiValue={uniqueUsers.toFixed(0)} percentageFlag={true}/> 
@@ -296,6 +299,43 @@ class AccountAnalyticsDashboard extends React.Component {
                                 <DashboardKPI kpiText="" kpiValue=""/> 
                             </Col> 
                         </Row>
+
+                        {/* TODO */}
+                        <Row className="accountHeader mt-4" style={{"marginBottom":"0.5px"}}>
+                            <Col sm={12} lg={12}>
+                                <Row >
+                                    <Col sm={12} lg={12}>
+                                        <span className="black-20" >Data access request</span>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col sm={12} lg={12}>
+                                        <span className="gray700-13">Most popular datasets based on the number of data access requests</span>
+                                    </Col>
+                                </Row>
+                            </Col> 
+                        </Row>
+
+                        <Fragment>
+                            <Row>
+                                <Col sm={12} lg={12}>
+                                <Row className="subHeader entrybox gray800-14-bold" style={{"height":"44px"}}>
+                                    <Col sm={5} lg={6}>Dataset </Col >
+                                    <Col sm={2} lg={2}>Custodian</Col>
+                                    <Col sm={5} lg={4}>Requests</Col>
+                                </Row>
+                                    {topDARs.map((dat, i) => {
+                                        return <TopDatasets key={i} data={dat} />    
+                                    })}
+   
+                                    {/* // {topSearches.map((dat, i) => { */}
+                                    {/* //     return <TopDatasets key={i} data={dat} />   */}
+                                    {/* // })} */}
+                                </Col>
+                            </Row>
+                        </Fragment> 
+                        {/* TODO */}
+
 
                         <Row className="accountHeader mt-4" style={{"marginBottom":"0.5px"}}>
                             <Col sm={12} lg={12}>
