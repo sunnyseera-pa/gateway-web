@@ -33,7 +33,7 @@ const WorkflowStep = ({steps, toggleSection}) => {
                   <div className="box gray800-14">{renderReviewers(step.reviewers)}</div>
                   <div className="box gray200-14">Sections</div>
                   <div className="box gray800-14">{renderSections(step.sections)}</div>
-                  <div className="box gray200-14">Dealine</div>
+                  <div className="box gray200-14">Deadline</div>
                   <div className="box gray800-14">{step.deadline} days after the start of the phase</div>
               </div>
             </SlideDown>
