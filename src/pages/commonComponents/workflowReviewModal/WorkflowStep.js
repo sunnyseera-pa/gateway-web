@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import { SlideDown } from 'react-slidedown';
 import SLA from '../sla/SLA';
 import TimeDuration from '../timeDuration/TimeDuration';
+import SVGIcon from "../../../images/SVGIcon"; 
 
 const WorkflowStep = ({key, index, step, toggleStep, toggleReview }) => {
   return (
