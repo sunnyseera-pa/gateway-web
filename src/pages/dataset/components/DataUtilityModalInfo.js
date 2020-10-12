@@ -76,19 +76,19 @@ class DataUtilityModalInfo extends React.Component {
             <Collapse in={this.state.open} className="collapseWait pad-bottom-8">
               <div>
                 <Row className="greySubHeader">
-                  <Col sm={3} lg={3}>
+                  <Col sm={3} lg={3} className="pad-left-0">
                     <span className="gray-deep-13-bold">Metadata richness</span>
                   </Col>
-                  <Col sm={9} lg={9}>
+                  <Col sm={9} lg={9} className="pad-left-8">
                     <span className="gray800-13-bold">This element will be calculated separately</span>
                   </Col>
                 </Row>
 
                 <Row className="greySubHeader">
-                  <Col sm={3} lg={3}>
+                  <Col sm={3} lg={3} className="pad-left-0">
                     <span className="gray-deep-13-bold">Additional <br/> documentation & support</span>
                   </Col>
-                  <Col sm={9} lg={9}>
+                  <Col sm={9} lg={9} className="pad-left-8">
                     <span className="gray800-13-bold">Available dataset documentation in addition to the data dictionary</span>
                   </Col>
                 </Row>
@@ -130,10 +130,10 @@ class DataUtilityModalInfo extends React.Component {
                     </Row>
 
                 <Row className="greySubHeader">
-                  <Col sm={3} lg={3}>
+                  <Col sm={3} lg={3} className="pad-left-0">
                     <span className="gray-deep-13-bold">Data model</span>
                   </Col>
-                  <Col sm={9} lg={9}>
+                  <Col sm={9} lg={9} className="pad-left-8">
                     <span className="gray800-13-bold">Availability of clear, documented data model</span>
                   </Col>
                 </Row>
@@ -175,10 +175,10 @@ class DataUtilityModalInfo extends React.Component {
                     </Row>
 
                 <Row className="greySubHeader">
-                  <Col sm={3} lg={3}>
+                  <Col sm={3} lg={3} className="pad-left-0">
                     <span className="gray-deep-13-bold">Data dictionary</span>
                   </Col>
-                  <Col sm={9} lg={9}>
+                  <Col sm={9} lg={9} className="pad-left-8">
                     <span className="gray800-13-bold">Provided documented data dictionary and terminologies</span>
                   </Col>
                 </Row>
@@ -220,10 +220,10 @@ class DataUtilityModalInfo extends React.Component {
                     </Row>
                     
                 <Row className="greySubHeader">
-                  <Col sm={3} lg={3}>
+                  <Col sm={3} lg={3} className="pad-left-0">
                     <span className="gray-deep-13-bold">Provenance</span>
                   </Col>
-                  <Col sm={9} lg={9}>
+                  <Col sm={9} lg={9} className="pad-left-8">
                     <span className="gray800-13-bold">Clear descriptions of source and history of the dataset, providing a ‘transparent data pipeline’</span>
                   </Col>
                 </Row>
@@ -293,10 +293,10 @@ class DataUtilityModalInfo extends React.Component {
             <Collapse in={this.state.open} className="collapseWait pad-bottom-8">
               <div>
                 <Row className="greySubHeader">
-                  <Col sm={3} lg={3}>
+                  <Col sm={3} lg={3} className="pad-left-0">
                     <span className="gray-deep-13-bold">Data Quality Management Process</span>
                   </Col>
-                  <Col sm={9} lg={9}>
+                  <Col sm={9} lg={9} className="pad-left-8">
                     <span className="gray800-13-bold">The level of maturity of the data quality management process</span>
                   </Col>
                 </Row>
@@ -338,10 +338,10 @@ class DataUtilityModalInfo extends React.Component {
                     </Row>
 
                 <Row className="greySubHeader">
-                  <Col sm={3} lg={3}>
+                  <Col sm={3} lg={3} className="pad-left-0">
                     <span className="gray-deep-13-bold">Data Management Association (DAMA) Quality Dimensions</span>
                   </Col>
-                  <Col sm={9} lg={9}>
+                  <Col sm={9} lg={9} className="pad-left-8">
                     <span className="gray800-13-bold">This element will be calculated separately</span>
                   </Col>
                 </Row>
@@ -375,10 +375,10 @@ class DataUtilityModalInfo extends React.Component {
                 <Collapse in={this.state.open} className="collapseWait pad-bottom-8">
                   <div>
                   <Row className="greySubHeader">
-                    <Col sm={3} lg={3}>
+                    <Col sm={3} lg={3} className="pad-left-0">
                       <span className="gray-deep-13-bold">Allowable uses</span>
                     </Col>
-                    <Col sm={9} lg={9}>
+                    <Col sm={9} lg={9} className="pad-left-8">
                       <span className="gray800-13-bold">Allowable dataset usages as per the licencing agreement</span>
                     </Col>
                 </Row>
@@ -420,10 +420,10 @@ class DataUtilityModalInfo extends React.Component {
                     </Row>
 
                 <Row className="greySubHeader">
-                  <Col sm={3} lg={3}>
+                  <Col sm={3} lg={3} className="pad-left-0">
                     <span className="gray-deep-13-bold">Research environment</span>
                   </Col>
-                  <Col sm={9} lg={9}>
+                  <Col sm={9} lg={9} className="pad-left-8">
                     <span className="gray800-13-bold">Access, tooling and environment (once approved)</span>
                   </Col>
                 </Row>
@@ -465,10 +465,10 @@ class DataUtilityModalInfo extends React.Component {
                     </Row>
 
                 <Row className="greySubHeader">
-                  <Col sm={3} lg={3}>
+                  <Col sm={3} lg={3} className="pad-left-0">
                     <span className="gray-deep-13-bold">Time lag</span>
                   </Col>
-                  <Col sm={9} lg={9}>
+                  <Col sm={9} lg={9} className="pad-left-8">
                     <span className="gray800-13-bold">Lag between the data being collected and added to the dataset</span>
                   </Col>
                 </Row>
@@ -510,10 +510,10 @@ class DataUtilityModalInfo extends React.Component {
                     </Row>
 
                 <Row className="greySubHeader">
-                  <Col sm={3} lg={3}>
+                  <Col sm={3} lg={3} className="pad-left-0">
                     <span className="gray-deep-13-bold">Timeliness</span>
                   </Col>
-                  <Col sm={9} lg={9}>
+                  <Col sm={9} lg={9} className="pad-left-8">
                     <span className="gray800-13-bold">Average data access request timeframe</span>
                   </Col>
                 </Row>
@@ -583,10 +583,10 @@ class DataUtilityModalInfo extends React.Component {
                     <Collapse in={this.state.open} className="collapseWait pad-bottom-8">
                       <div>
                         <Row className="greySubHeader">
-                          <Col sm={3} lg={3}>
-                            <span className="gray-deep-13-bold">Linkages</span>
+                          <Col sm={3} lg={3} className="pad-left-0">
+                            <span className="gray-deep-13-bold">Linkages</span> 
                           </Col>
-                          <Col sm={9} lg={9}>
+                          <Col sm={9} lg={9} className="pad-left-8">
                             <span className="gray800-13-bold">Ability to link with other datasets</span>
                           </Col>
                         </Row>
@@ -628,10 +628,10 @@ class DataUtilityModalInfo extends React.Component {
                             </Row>
 
                         <Row className="greySubHeader">
-                          <Col sm={3} lg={3}>
+                          <Col sm={3} lg={3} className="pad-left-0">
                             <span className="gray-deep-13-bold">Data Enrichments</span>
                           </Col>
-                          <Col sm={9} lg={9}>
+                          <Col sm={9} lg={9} className="pad-left-8">
                             <span className="gray800-13-bold">Data sources enriched with annotations, image labels, phenomes, derivations, NLP derived data labels</span>
                           </Col>
                         </Row>
@@ -701,10 +701,10 @@ class DataUtilityModalInfo extends React.Component {
                         <Collapse in={this.state.open} className="collapseWait pad-bottom-8">
                           <div>
                             <Row className="greySubHeader">
-                              <Col sm={3} lg={3}>
+                              <Col sm={3} lg={3} className="pad-left-0">
                                 <span className="gray-deep-13-bold">Pathway coverage</span>
                               </Col>
-                              <Col sm={9} lg={9}>
+                              <Col sm={9} lg={9} className="pad-left-8">
                                 <span className="gray800-13-bold">Representation of multi-disciplinary healthcare data</span>
                               </Col>
                             </Row>
@@ -746,10 +746,10 @@ class DataUtilityModalInfo extends React.Component {
                                 </Row>
 
                             <Row className="greySubHeader">
-                              <Col sm={3} lg={3}>
+                              <Col sm={3} lg={3} className="pad-left-0">
                                 <span className="gray-deep-13-bold">Length of follow up</span>
                               </Col>
-                              <Col sm={9} lg={9}>
+                              <Col sm={9} lg={9} className="pad-left-8">
                                 <span className="gray800-13-bold">Average timeframe in which a patient appears in a dataset (follow up period)</span>
                               </Col>
                             </Row>
