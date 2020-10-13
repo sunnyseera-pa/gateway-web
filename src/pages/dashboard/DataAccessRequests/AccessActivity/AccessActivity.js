@@ -41,7 +41,7 @@ const AccessActivity = ({
 		}
 
 		if(isReviewer && decisionMade) {
-			reviewDecision = <WorkflowDecision decisionMade={decisionMade} decisionText={decisionStatus} icon='check' />
+			reviewDecision = <WorkflowDecision classProperty="box-check" decisionMade={decisionMade} decisionText={decisionStatus} icon='check' />
 		}
 
 		return reviewDecision;
