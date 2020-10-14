@@ -9,13 +9,15 @@ const ResourcePageButtons = (props) => {
             ""
         ) : (
             <>
-                <Button 
-                variant="white" 
-                href={"/" + props.data.type + "/edit/" + props.data.id}
-                className="techDetailButton mr-2"
-                >
-                    Edit
-                </Button> 
+                {props.data.authors.includes(props.userState[0].id) ?
+                    <Button 
+                    variant="white" 
+                    href={"/" + props.data.type + "/edit/" + props.data.id}
+                    className="techDetailButton mr-2"
+                    >
+                        Edit
+                    </Button> 
+                : ''}
                 
                 <AddToCollection className="addToCollectionButton" data={props.data} userState={props.userState} />
             </>
