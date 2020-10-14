@@ -166,8 +166,7 @@ class AccountAdvancedSearch extends React.Component {
         <ActionBar userState={userState}>
           <Button
             variant="primary"
-            href=""
-            target="_blank"
+            href="https://atlas-test.uksouth.cloudapp.azure.com/bcrquest/"
             id="advancedSearchButton"
             className="white-14-semibold margin-right-16"
           >
