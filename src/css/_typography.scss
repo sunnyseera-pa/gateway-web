@@ -117,6 +117,10 @@ h6 {
   @include font-source(13px, $purple, $font-weight-semibold);
 }
 
+.purple-blue-14 {
+  @include font-source(14px, $purple-blue, $font-weight-semibold);
+}
+
 .errorMessages {
   @include font-source(14px, $red, $font-weight-semibold);
 }

@@ -282,7 +282,7 @@ const EditCollectionForm = (props) => {
             props.relatedObjects.push({'objectId':id, 'reason':reason, 'objectType': type, 'user': props.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
         }
     }
-
+ 
     const [isShown, setIsShown] = useState(false);
 
     const relatedResourcesRef = React.useRef()
@@ -298,7 +298,12 @@ const EditCollectionForm = (props) => {
                              <p className="black-20 margin-bottom-0 pad-bottom-8">Edit a collection</p>
                             </Col>
                         </Row>
-                        <p className="gray800-14 margin-bottom-0">Collections help collate varying resource types into one discovery space</p>
+                        <p className="gray800-14 margin-bottom-0">
+                            Collections allow you to display any number of datasets and other resources in a single space. After saving, anyone with the link will be able to see your collection, but it will not be discoverable on the Gateway. 
+                            <br/><br/>
+                            Certain collections are featured on the homepage, where anyone can find them. If you’d like to display yours, 
+                            <a className="purple-blue-14" href="https://hdruk.atlassian.net/servicedesk/customer/portal/1/group/1/create/7" target="_blank"> please submit a feature request ticket. </a> 
+                        </p>
                     </div>
                 </Col>
                 <Col sm={1} lg={10} />
@@ -405,7 +410,7 @@ const EditCollectionForm = (props) => {
                                 </Button>
 
                                 <Button variant="primary" className="publishButton white-14-semibold mr-2" type="submit" onClick={() => Event("Buttons", "Click", "Add tool form submitted")} >
-                                    Publish
+                                    Save
                                 </Button>
                         </ActionBar> 
                     </Form>
