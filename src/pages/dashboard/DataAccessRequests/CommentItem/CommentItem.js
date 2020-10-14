@@ -1,16 +1,22 @@
-import React from 'react';
+import React, { Fragment } from 'react';
+import _ from 'lodash';
+import moment from 'moment';
 
-export default ({text, title}) => {
+export default ({text, title, subtitle, decisionDate}) => {
   return (
     <div className="comment">
-      <h1>{title}</h1>
+      <h1 className="gray700-alt-13" >{title}</h1>
       <div className="comment-wrapper">
           <div className="comment-item">
-              <div className="comment-item-header">
-                  {/* <h2>Gauthier Drewitt</h2>
-                  <div>03 Jun 2020</div> */}
+              <div className="comment-item-header gray700-alt-13-bold">
+                  {!_.isEmpty(subtitle) ? 
+                    <Fragment>
+                      <h2>{subtitle}</h2>
+                      <div className="gray500-13">{moment(decisionDate).format('DD MM YYYY')}</div>
+                    </Fragment> 
+                  : ""}
               </div>
-              <div className="comment-item-body">
+              <div className="comment-item-body gray800-14">
                   {text}
               </div>
           </div>

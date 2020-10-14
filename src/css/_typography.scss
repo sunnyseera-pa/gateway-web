@@ -145,6 +145,14 @@ h6 {
   @include font-source(13px, $gray-700, $font-weight-bold);
 }
 
+.gray700-alt-13 {
+  @include font-source(13px, $gray-700-alt, $font-weight-semibold);
+}
+
+.gray700-alt-13-bold {
+  @include font-source(13px, $gray-700-alt, $font-weight-bold);
+}
+
 .gray700-14 {
   @include font-source(14px, $gray-700, $font-weight-semibold);
 }
