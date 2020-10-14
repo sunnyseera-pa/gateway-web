@@ -92,7 +92,7 @@ export const updateStepToggle = (steps, step) => {
   return steps.map((el) => {
     return {
       ...el,
-      closed: el._id === step._id ? !el.closed : el.closed
+      closed: (el._id === step._id ? !el.closed : el.closed)
     }
   });
 }

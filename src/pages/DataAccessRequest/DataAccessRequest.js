@@ -194,7 +194,6 @@ class DataAccessRequest extends Component {
 			let response = await axios.get(
 				`${baseURL}/api/v1/data-access-request/datasets/${datasetIds}`
 			);
-			debugger;
 			// 2. Destructure backend response for this context containing details of DAR including question set and current progress
 			let {
 				data: {
@@ -240,7 +239,6 @@ class DataAccessRequest extends Component {
 			let response = await axios.get(
 				`${baseURL}/api/v1/data-access-request/dataset/${datasetId}`
 			);
-			debugger;
 			const {
 				data: {
 					data: {
@@ -288,7 +286,6 @@ class DataAccessRequest extends Component {
 			let response = await axios.get(
 				`${baseURL}/api/v1/data-access-request/${accessId}` 
 			);
-			debugger;
 			// 2. Destructure backend response for this context containing details of DAR including question set and current progress
 			let {
 				data: {

@@ -3,12 +3,12 @@ import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg'
 
 const ModalHeader = ({workflowName= '', onClickAction}) => {
   return (
-    <div className='workflowModal-header'>
-      <div className='workflowModal-header--wrap'>
-        <div className='workflowModal-head'>
+    <div className='workflowReview-header'>
+      <div className='workflowReview-header--wrap'>
+        <div className='workflowReview-head'>
           <h1 className='black-20-semibold'>{workflowName}</h1>
           <CloseButtonSvg
-            className='workflowModal-head--close'
+            className='workflowReview-head--close'
             onClick={(e) => onClickAction(e, 'cancel')}
           />
         </div>

@@ -1,25 +1,25 @@
 @import '../../../css/variables';
 @import '../../../css/typography';
 
+.reviewWrap {
+    padding: 15px 25px;
+}
 
-.workflowModal {
+.workflowReview {
   box-sizing: border-box;
 
   .modal-dialog {
     max-width: 940px;
     width: 100%;
-    transform: translate(0%, 50%) !important;
   }
 
   &-header {
       display: flex;
       flex-flow: column nowrap;    
       width: 100%;    
-      padding: 32px 32px 0 32px;
+      padding: 32px;
 
       &--wrap {
-          padding-bottom: 12px;
-
           p {
               margin-bottom: 0;
               color: $gray-800;
@@ -33,11 +33,10 @@
       display: flex;
       flex-flow: row nowrap;
       justify-content: space-between;
-      margin-bottom: 10px;
 
       &--close {
-          width: 20px;
-          height: 20px;
+          width: 16px;
+          height: 16px;
           fill: $indigo;
           &:hover {
               cursor: pointer;
@@ -46,9 +45,95 @@
   }
 
     &-body {
-      background-color: $background;
+        background-color: $background;
         width: 100%;
         padding: 10px 32px 20px 32px;
     }
 
 }
+
+.step {
+    position: relative;
+    width: 100%;
+    background: $white;
+    box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
+    margin-bottom: 15px;
+    cursor: pointer;
+
+    &-header {
+        display: flex;
+        flex-flow: column nowrap;
+        width: 100%;
+        border-bottom: 1px solid $gray-300;
+        @media (min-width: $bp-small) {
+            flex-flow: row nowrap;
+        }
+
+        &-title {
+            display: flex;
+            flex-flow: column wrap;
+            margin-right: auto
+        }
+
+        &-status {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            margin-top: 10px;
+            @media (min-width: $bp-small) {
+                margin-top: 0;
+            }
+
+            .sla {
+                margin-right: 25px;
+            }
+        }
+    }
+
+    &-body {
+        padding: 12px 25px;
+    }
+
+    &-review {
+       
+        &-wrap {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            width: 100%;
+            padding: 12px 0;
+            border-bottom: 1px solid $gray-300;
+            
+
+            &--reviewer {
+                position: relative;
+                width: 85%;
+
+                div {
+                    padding-left: 30px;
+                }
+
+                svg {
+                    position: absolute;
+                    top: 2px;
+                    left: 0;
+                }
+            }
+    
+            &--decision {
+                position: relative;
+            }
+        }
+
+    }
+}
+
+.chevron {
+    position: absolute;
+    top: 20px;
+    right: 15px;
+    @media (min-width: $bp-small) {
+        top: 33px;
+    }
+}
+
