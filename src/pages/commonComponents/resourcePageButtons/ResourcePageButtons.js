@@ -9,7 +9,7 @@ const ResourcePageButtons = (props) => {
             ""
         ) : (
             <>
-                {props.data.authors.includes(props.userState[0].id) ?
+                {props.data.authors.includes(props.userState[0].id || props.userState[0].role === 'Admin') ?
                     <Button 
                     variant="white" 
                     href={"/" + props.data.type + "/edit/" + props.data.id}
