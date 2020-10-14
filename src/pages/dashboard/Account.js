@@ -91,7 +91,7 @@ class Account extends Component {
             this.state.team = props.location.state.team;
             localStorage.setItem('HDR_TEAM', props.location.state.team);
         }
-        else if (localStorage.getItem('HDR_TEAM') !== '') {
+        else if (localStorage.getItem('HDR_TEAM') && localStorage.getItem('HDR_TEAM') !== '') {
             this.state.team = localStorage.getItem('HDR_TEAM');
         }
         else {
@@ -263,7 +263,8 @@ class Account extends Component {
 
             if(!_.isEmpty(tab.team)) {
                 localStorage.setItem('HDR_TEAM', tab.team);
-                tab.tabId = 'dataaccessrequests'
+                if (tab.team !== 'user')
+                    tab.tabId = 'dataaccessrequests'
             }
             else if (localStorage.getItem('HDR_TEAM') == '')
                 localStorage.setItem('HDR_TEAM', 'user');
@@ -331,7 +332,7 @@ class Account extends Component {
                                 </Dropdown.Toggle>
 
                                 <Dropdown.Menu as={CustomMenu} className="teamSelectorMenu">
-                                    <Dropdown.Item className="gray700-13" onClick={(e) => this.toggleNav(`dataaccessrequests&team=user`)}>{userState[0].name || ''}</Dropdown.Item>
+                                    <Dropdown.Item className="gray700-13" onClick={(e) => this.toggleNav(`youraccount&team=user`)}>{userState[0].name || ''}</Dropdown.Item>
                                     {this.renderPublishers()}
                                 </Dropdown.Menu>
                             </Dropdown>
