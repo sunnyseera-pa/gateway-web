@@ -15,7 +15,7 @@ import ReviewTools from './ReviewTools';
 import YourAccount from './YourAccount';
 import DataAccessRequests from './DataAccessRequests/DataAccessRequests';
 import WorkflowDashboard from './Workflows/WorkflowDashboard';
-import WorkflowHelp from './Workflows/WorkflowHelp';
+import TeamHelp from './TeamHelp/TeamHelp';
 import 'react-web-tabs/dist/react-web-tabs.css';
 import SVGIcon from '../../images/SVGIcon';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
@@ -510,7 +510,7 @@ class Account extends Component {
 
                         {tabId === 'usersroles' ? <AccountUsers userState={userState} /> : ''}
 
-                        {tabId === 'help' ? <WorkflowHelp/> : ''}
+                        {tabId === 'help' ? <TeamHelp/> : ''}
                     </div>
                 </div>
 
