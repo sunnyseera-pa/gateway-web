@@ -74,8 +74,6 @@ const ActivePhaseModal = ({ open, close, workflow = {}, projectName = '', dataSe
         <div className="meta gray800-14-opacity">Deadline</div>
         <div className="meta gray800-14">{renderDeadline()}</div>
       </div>
-
-      
       <div className="activePhase-footer">
         <button className="button-secondary" onClick={e => onClickAction(e, 'cancel')}>No, nevermind</button>
         <button className="button-primary"  onClick={e => onClickAction(e, 'completePhase')}>Complete phase</button>

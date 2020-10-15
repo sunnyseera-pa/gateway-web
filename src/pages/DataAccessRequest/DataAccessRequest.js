@@ -114,6 +114,7 @@ class DataAccessRequest extends Component {
 			context: {},
 			actionModalConfig: {},
 			workflows: [],
+			workflowAssigned: false,
 			roles: []
 		};
 	}
@@ -451,7 +452,8 @@ class DataAccessRequest extends Component {
 			publisherId,
 			workflowEnabled,
 			inReviewMode,
-			workflow
+			workflow,
+			workflowAssigned: !_.isEmpty(workflow) ? true : false
 		});
 	};
 
@@ -1876,7 +1878,7 @@ class DataAccessRequest extends Component {
 								onWorkflowReview={this.toggleWorkflowReviewModal}
 								onNextClick={this.onNextClick}
 								workflowEnabled={this.state.workflowEnabled}
-								workflowAssigned={false}
+								workflowAssigned={this.state.workflowAssigned}
 								applicationStatus={applicationStatus}
 								roles={roles}
 							/>
