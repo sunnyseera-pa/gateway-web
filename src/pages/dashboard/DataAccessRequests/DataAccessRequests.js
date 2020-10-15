@@ -16,54 +16,54 @@ import DarHelperUtil from '../../../utils/DarHelper.util';
 import './DataAccessRequests.scss';
 
 class DataAccessRequestsNew extends React.Component {
-	durationLookups = ["inProgress", "submitted"];
-	finalDurationLookups = ["rejected", "approved", "approved with conditions"];
+  durationLookups = ["inProgress", "submitted"];
+  finalDurationLookups = ["rejected", "approved", "approved with conditions"];
 
-	state = {
-		userState: [],
-		key: "all",
-		data: [],
-		screenData: [],
-		isLoading: true,
-		allCount: 0,
-		approvedCount: 0,
-		rejectedCount: 0,
-		archivedCount: 0,
-		preSubmissionCount: 0,
-		submittedCount: 0,
-		inReviewCount: 0,
-		team: "",
-		avgDecisionTime: 0,
-		alert: {},
-	};
+  state = {
+    userState: [],
+    key: "all",
+    data: [],
+    screenData: [],
+    isLoading: true,
+    allCount: 0,
+    approvedCount: 0,
+    rejectedCount: 0,
+    archivedCount: 0,
+    preSubmissionCount: 0,
+    submittedCount: 0,
+    inReviewCount: 0,
+    team: "",
+    avgDecisionTime: 0,
+    alert: {}
+  };
 
-	constructor(props) {
-		super(props);
-		this.state.userState = props.userState;
-		this.state.team = props.team || "";
-		if (!_.isEmpty(props.alert)) {
-			this.state.alert = props.alert;
-			this.state.team = props.alert.publisher;
-		}
+  constructor(props) {
+    super(props);
+    this.state.userState = props.userState;
+    this.state.team = props.team || "";
+    if (!_.isEmpty(props.alert)) {
+      this.state.alert = props.alert; 
+      this.state.team = props.alert.publisher;
+    }
+  }
+
+  componentDidMount() {
+    initGA("UA-166025838-1");
+    this.fetchDataAccessRequests(this.state);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.team !== this.props.team) {
+      this.setState({ isLoading: true });
+      this.fetchDataAccessRequests(nextProps);
 	}
+	
+    this.setState({ alert: nextProps.alert });
+  }
 
-	componentDidMount() {
-		initGA("UA-166025838-1");
-		this.fetchDataAccessRequests(this.state);
-	}
-
-	componentWillReceiveProps(nextProps) {
-		if (nextProps.team !== this.props.team) {
-			this.setState({ isLoading: true });
-			this.fetchDataAccessRequests(nextProps);
-		}
-
-		this.setState({ alert: nextProps.alert });
-	}
-
-	componentWillUnmount() {
-		clearTimeout(this.alertTimeOut);
-	}
+  componentWillUnmount() {
+    clearTimeout(this.alertTimeOut);
+  }
 
 
 	async fetchDataAccessRequests(nextProps) {
@@ -106,27 +106,26 @@ class DataAccessRequestsNew extends React.Component {
 		this.onTabChange(dataProps.key);
 	}
 
-	
 
 	onTabChange = (key) => {
 		let statusKey = DarHelperUtil.darStatus[key];
 		let { data } = this.state;
 
-		if (statusKey === "all")
-			this.setState({ key, screenData: data, allCount: data.length });
+    if (statusKey === "all")
+      this.setState({ key, screenData: data, allCount: data.length });
 
-		if (statusKey !== "all") {
-			let screenData = [...data].reduce((arr, item) => {
-				if (statusKey === item.applicationStatus) {
-					arr.push({
-						...item,
-					});
-				}
-				return arr;
-			}, []);
-			this.setState({ key: key, screenData });
-		}
-	};
+    if (statusKey !== "all") {
+      let screenData = [...data].reduce((arr, item) => {
+        if (statusKey === item.applicationStatus) {
+          arr.push({
+            ...item
+          });
+        }
+        return arr;
+      }, []);
+      this.setState({ key: key, screenData });
+    }
+  };
 
 	generateAlert = () => {
 		let { alert: { message = '' } } = this.state;
@@ -159,140 +158,145 @@ class DataAccessRequestsNew extends React.Component {
 		return [];
 	};
 
-	calculateTimeDifference = (startTime) => {
-		let start = moment(startTime);
-		let end = moment();
-		return end.diff(start, "days");
-	};
+  calculateTimeDifference = startTime => {
+    let start = moment(startTime);
+    let end = moment();
+    return end.diff(start, "days");
+  };
 
 
-	renderComment = (
-        applicationStatusDesc = '',
-        applicationStatus = '',
-        decisionComments = '',
-        reviewPanels = '',
-        decisionMade = false,
-        decisionApproved = false,
-        decisionDate
-	) => {
-        const decisionApprovedType = decisionApproved ? 'No issues found:' : "Issues found:";
-		if (!_.isEmpty(applicationStatusDesc) && !_.isEmpty(applicationStatus)) {
-			if (this.finalDurationLookups.includes(applicationStatus)) {
-				return (
-					<CommentItem
-						text={applicationStatusDesc}
-						title={DarHelperUtil.darCommentTitle[applicationStatus]}
-					/>
-				);
-			} 
+  renderComment = (
+    applicationStatusDesc = "",
+    applicationStatus = "",
+    decisionComments = "",
+    reviewPanels = "",
+    decisionMade = false,
+    decisionApproved = false,
+    decisionDate
+  ) => {
+    const decisionApprovedType = decisionApproved
+      ? "No issues found:"
+      : "Issues found:";
+    if (!_.isEmpty(applicationStatusDesc) && !_.isEmpty(applicationStatus)) {
+      if (this.finalDurationLookups.includes(applicationStatus)) {
+        return (
+          <CommentItem
+            text={applicationStatusDesc}
+            title={DarHelperUtil.darCommentTitle[applicationStatus]}
+          />
+        );
+      }
+    } else if (
+      decisionMade &&
+      !this.finalDurationLookups.includes(applicationStatus)
+    ) {
+      return (
+        <CommentItem
+          text={decisionComments}
+          title={"Phase decision"}
+          subtitle={`${decisionApprovedType} ${reviewPanels}`}
+          decisionDate={decisionDate}
+        />
+      );
+    }
+    return "";
+  };
+
+  renderDuration = (accessRequest, team = {}) => {
+    let {
+      applicationStatus = "",
+      createdAt,
+      dateSubmitted,
+      decisionDuration = 0
+    } = accessRequest;
+    let diff = 0;
+    if (this.durationLookups.includes(applicationStatus)) {
+      if (applicationStatus === DarHelperUtil.darStatus.inProgress) {
+        diff = this.calculateTimeDifference(createdAt);
+        return <TimeDuration text={`${diff} days since start`} />;
+      }
+
+      if (applicationStatus === DarHelperUtil.darStatus.submitted) {
+        diff = this.calculateTimeDifference(dateSubmitted);
+        return <TimeDuration text={`${diff} days since submission`} />;
+      }
+    }
+    if (this.finalDurationLookups.includes(applicationStatus) && team) {
+      if (!_.isEmpty(decisionDuration.toString())) {
+        return <TimeDuration text={`${decisionDuration} days total`} />;
+      }
+    }
+    return "";
+  };
+
+  navigateToLocation = (e, applicationId, applicationStatus) => {
+    e.stopPropagation();
+
+    switch (e.currentTarget.id) {
+      case "workflow":
+        alert("show popup");
+        break;
+      case "startReview":
+        this.startWorkflowReview(applicationId);
+        break;
+      default:
+        if (applicationStatus !== DarHelperUtil.darStatus.submitted) {
+          window.location.href = `/data-access-request/${applicationId}`;
         }
-        else if (decisionMade && !this.finalDurationLookups.includes(applicationStatus)) {
-            return (
-                <CommentItem
-                    text={decisionComments}
-                    title={"Phase decision"}
-                    subtitle={`${decisionApprovedType} ${reviewPanels}`}
-                    decisionDate={decisionDate}
-                />
-            );
-        }
-		return "";
-	};
+        break;
+    }
+  };
 
-	renderDuration = (accessRequest, team = {}) => {
-		let {
-			applicationStatus = "",
-			createdAt,
-			dateSubmitted,
-			decisionDuration = 0,
-		} = accessRequest;
-		let diff = 0;
-		if (this.durationLookups.includes(applicationStatus)) {
-			if (applicationStatus === DarHelperUtil.darStatus.inProgress) {
-				diff = this.calculateTimeDifference(createdAt);
-				return <TimeDuration text={`${diff} days since start`} />;
-			}
+  startWorkflowReview = async applicationId => {
+    await axios
+      .put(`${baseURL}/api/v1/data-access-request/${applicationId}/startreview`)
+      .then(() => {
+        window.location.href = `/data-access-request/${applicationId}`;
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  };
 
-			if (applicationStatus === DarHelperUtil.darStatus.submitted) {
-				diff = this.calculateTimeDifference(dateSubmitted);
-				return <TimeDuration text={`${diff} days since submission`} />;
-			}
-		}
-		if (this.finalDurationLookups.includes(applicationStatus) && team) {
-			if (!_.isEmpty(decisionDuration.toString())) {
-				return <TimeDuration text={`${decisionDuration} days total`} />;
-			}
-		}
-		return "";
-	};
+  renderAverageSubmission = () => {
+    return (
+      <Clock />
+    )`${this.state.avgDecisionTime} average time from submission to descision`;
+  };
 
-	navigateToLocation = (e, applicationId, applicationStatus) => {
-		e.stopPropagation();
+  render() {
+    const {
+      key,
+      isLoading,
+      data,
+      approvedCount,
+      rejectedCount,
+      archivedCount,
+      preSubmissionCount,
+      submittedCount,
+      inReviewCount,
+      allCount,
+      team,
+      alert,
+      screenData,
+      avgDecisionTime
+    } = this.state;
 
-		switch (e.currentTarget.id) {
-			case "workflow":
-				alert("show popup");
-				break;
-			case "startReview":
-				this.startWorkflowReview(applicationId);
-				break;
-			default:
-				if (applicationStatus !== DarHelperUtil.darStatus.submitted) {
-					window.location.href = `/data-access-request/${applicationId}`;
-				}
-				break;
-		}
-	};
-
-	startWorkflowReview = async (applicationId) => {
-		await axios
-			.put(`${baseURL}/api/v1/data-access-request/${applicationId}/startreview`)
-			.then(() => {
-				window.location.href = `/data-access-request/${applicationId}`;
-            })
-            .catch((err) => { console.error(err) });
-	};
-
-	renderAverageSubmission = () => {
-		return (
-			<Clock />
-		)`${this.state.avgDecisionTime} average time from submission to descision`;
-	};
-
-	render() {
-		const {
-			key,
-			isLoading,
-			data,
-			approvedCount,
-			rejectedCount,
-			archivedCount,
-			preSubmissionCount,
-			submittedCount,
-			inReviewCount,
-			allCount,
-			team,
-			alert,
-			screenData,
-			avgDecisionTime,
-		} = this.state;
-
-		if (isLoading) {
-			return (
-				<Row>
-					<Col xs={1}></Col>
-					<Col xs={10}>
-						<Loading />
-					</Col>
-					<Col xs={1}></Col>
-				</Row>
-			);
-		}
+    if (isLoading) {
+      return (
+        <Row>
+          <Col xs={1}></Col>
+          <Col xs={10}>
+            <Loading />
+          </Col>
+          <Col xs={1}></Col>
+        </Row>
+      );
+    }
 
 		return (
 			<Fragment>
 				<Fragment>{!_.isEmpty(alert) ? this.generateAlert() : ""}</Fragment>
-
 				<Row>
 						<Col xs={1}></Col>
 						<div className="col-sm-10">
@@ -309,41 +313,41 @@ class DataAccessRequestsNew extends React.Component {
 										</Col>
 								</div>
 
-						<div className='tabsBackground'>
-							<Col sm={12} lg={12}>
-								<Tabs
-									className='dataAccessTabs gray700-13'
-									activeKey={this.state.key}
-									onSelect={this.onTabChange}
-								>
-									<Tab eventKey='all' title={"All (" + allCount + ")"}></Tab>
-									{!team ? (
-										<Tab
-											eventKey='inProgress'
-											title={"Pre-submission (" + preSubmissionCount + ")"}
-										></Tab>
-									) : (
-										""
-									)}
-									<Tab
-										eventKey='submitted'
-										title={"Submitted (" + submittedCount + ")"}
-									></Tab>
-									<Tab
-										eventKey='inReview'
-										title={"In review (" + inReviewCount + ")"}
-									></Tab>
-									<Tab
-										eventKey='approved'
-										title={"Approved (" + approvedCount + ")"}
-									></Tab>
-									<Tab
-										eventKey='rejected'
-										title={"Rejected (" + rejectedCount + ")"}
-									></Tab>
-								</Tabs>
-							</Col>
-						</div>
+            <div className="tabsBackground">
+              <Col sm={12} lg={12}>
+                <Tabs
+                  className="dataAccessTabs gray700-13"
+                  activeKey={this.state.key}
+                  onSelect={this.onTabChange}
+                >
+                  <Tab eventKey="all" title={"All (" + allCount + ")"}></Tab>
+                  {!team ? (
+                    <Tab
+                      eventKey="inProgress"
+                      title={"Pre-submission (" + preSubmissionCount + ")"}
+                    ></Tab>
+                  ) : (
+                    ""
+                  )}
+                  <Tab
+                    eventKey="submitted"
+                    title={"Submitted (" + submittedCount + ")"}
+                  ></Tab>
+                  <Tab
+                    eventKey="inReview"
+                    title={"In review (" + inReviewCount + ")"}
+                  ></Tab>
+                  <Tab
+                    eventKey="approved"
+                    title={"Approved (" + approvedCount + ")"}
+                  ></Tab>
+                  <Tab
+                    eventKey="rejected"
+                    title={"Rejected (" + rejectedCount + ")"}
+                  ></Tab>
+                </Tabs>
+              </Col>
+            </div>
 
 						{screenData.map((request, i) => {
 							let {
