@@ -82,16 +82,16 @@ class Account extends Component {
         this.state.userState = props.userState;
         this.searchBar = React.createRef();
         // 1. used for DAR custodian update status of application
-        if(_.has(props, 'location.state.alert')) {
+        if(_.has(props, 'location.state.alert')) {   
             this.state.alert = props.location.state.alert;
-            this.alertTimeOut = setTimeout(() => this.setState({ alert: {} }), 5000)
+            this.alertTimeOut = setTimeout(() => this.setState({ alert: {} }), 10000)
         }
         
         if(_.has(props, 'location.state.team') && props.location.state.team !== '') {
             this.state.team = props.location.state.team;
             localStorage.setItem('HDR_TEAM', props.location.state.team);
         }
-        else if (localStorage.getItem('HDR_TEAM') !== '') {
+        else if (localStorage.getItem('HDR_TEAM') !== '') { 
             this.state.team = localStorage.getItem('HDR_TEAM');
         }
         else {
@@ -493,7 +493,7 @@ class Account extends Component {
 
                         {tabId === 'papers' ? <AccountPapers userState={userState} /> : ''}
 
-                        {tabId === 'dataaccessrequests' ? <DataAccessRequests userState={userState} team={team} alert={alert} /> : ''}
+                        {tabId === 'dataaccessrequests' ? <DataAccessRequests userState={userState} team={team} alert={alert} /> : ''}  
 
                         {tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}
 
