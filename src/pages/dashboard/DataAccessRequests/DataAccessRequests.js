@@ -76,7 +76,7 @@ class DataAccessRequestsNew extends React.Component {
 		}
 		// 2. check which API to call the user or custodian if a team and use team name
 		const teamExists = !_.isEmpty(dataProps.team) ? true : false;
-		if (teamExists) {
+		if (teamExists && dataProps.team !== "user") {
 			const response = await axios.get(
 				`${baseURL}/api/v1/publishers/${dataProps.team}/dataaccessrequests`
 			);
