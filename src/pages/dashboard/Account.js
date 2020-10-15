@@ -15,6 +15,7 @@ import ReviewTools from './ReviewTools';
 import YourAccount from './YourAccount';
 import DataAccessRequests from './DataAccessRequests/DataAccessRequests';
 import WorkflowDashboard from './Workflows/WorkflowDashboard';
+import WorkflowHelp from './Workflows/WorkflowHelp';
 import 'react-web-tabs/dist/react-web-tabs.css';
 import SVGIcon from '../../images/SVGIcon';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
@@ -473,6 +474,14 @@ class Account extends Component {
                                     : ''
                                 : ''
                             }
+                            {team !== 'user' ? 
+                            <div className={`${tabId === 'help' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('help')}>
+                                <Nav.Link className="verticalNavBar gray700-13">
+                                    <SVGIcon name='info' fill={'#b3b8bd'} className='accountSvgs' />
+                                    <span className="navLinkItem">Help</span>
+                                </Nav.Link>
+                            </div> : ''
+                            }
                         </div>
                     </div>
 
@@ -500,6 +509,8 @@ class Account extends Component {
                         {tabId === 'collections' ? <AccountCollections userState={userState} /> : ''}
 
                         {tabId === 'usersroles' ? <AccountUsers userState={userState} /> : ''}
+
+                        {tabId === 'help' ? <WorkflowHelp/> : ''}
                     </div>
                 </div>
 
