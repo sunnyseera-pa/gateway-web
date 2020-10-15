@@ -61,38 +61,52 @@ class DataAccessRequestsNew extends React.Component {
 		this.setState({ alert: nextProps.alert });
 	}
 
-	async fetchDataAccessRequests(nextProps) {
-        let data = [];
-        let avgDecisionTime = 0;
-        let dataProps = {...nextProps, key: 'all'};
-        // 1. if there is an alert set team and correct tab so it can display on the UI
-        if(!_.isEmpty(this.state.alert)) {
-            dataProps.team = this.state.alert.publisher;
-            dataProps.key = this.state.alert.tab;
-        }
-        // 2. check which API to call the user or custodian if a team and use team name
-        const teamExists = !_.isEmpty(dataProps.team) ? true : false;        
-        if(teamExists && dataProps.team !== 'user') {
-            const response = await axios.get(`${baseURL}/api/v1/publishers/${dataProps.team}/dataaccessrequests`);
-            ({ data: { data, avgDecisionTime }} = response);
-         } else {
-            const response = await axios.get(`${baseURL}/api/v1/data-access-request`);
-            ({ data: { data, avgDecisionTime }} = response);
-        }
-        // 3. modifies approve with conditions to approved
-        let screenData = this.formatScreenData(data);
-        // 4. count stats
-        let counts = DarHelperUtil.generateStatusCounts(screenData);
-        // 5. set state
-        this.setState({ data: screenData, isLoading: false, team: dataProps.team, avgDecisionTime, ...counts });        
-        // 6. set tab
-        this.onTabChange(dataProps.key);
-    }
-    
-
 	componentWillUnmount() {
 		clearTimeout(this.alertTimeOut);
 	}
+
+
+	async fetchDataAccessRequests(nextProps) {
+		let data = [];
+		let avgDecisionTime = 0;
+		let dataProps = { ...nextProps, key: "all" };
+		// 1. if there is an alert set team and correct tab so it can display on the UI
+		if (!_.isEmpty(this.state.alert)) {
+			dataProps.team = this.state.alert.publisher;
+			dataProps.key = this.state.alert.tab;
+		}
+		// 2. check which API to call the user or custodian if a team and use team name
+		const teamExists = !_.isEmpty(dataProps.team) ? true : false;
+		if (teamExists && dataProps.team !== "user") {
+			const response = await axios.get(
+				`${baseURL}/api/v1/publishers/${dataProps.team}/dataaccessrequests`
+			);
+			({
+				data: { data, avgDecisionTime },
+			} = response);
+		} else {
+			const response = await axios.get(`${baseURL}/api/v1/data-access-request`);
+			({
+				data: { data, avgDecisionTime },
+			} = response);
+		}
+		// 3. modifies approve with conditions to approved
+		let screenData = this.formatScreenData(data);
+		// 4. count stats
+		let counts = DarHelperUtil.generateStatusCounts(screenData);
+		// 5. set state
+		this.setState({
+			data: screenData,
+			isLoading: false,
+			team: dataProps.team,
+			avgDecisionTime,
+			...counts,
+		});
+		// 6. set tab
+		this.onTabChange(dataProps.key);
+	}
+
+	
 
 	onTabChange = (key) => {
 		let statusKey = DarHelperUtil.darStatus[key];
