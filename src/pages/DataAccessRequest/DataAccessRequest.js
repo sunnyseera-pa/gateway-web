@@ -25,6 +25,7 @@ import Loading from '../commonComponents/Loading';
 import NavItem from './components/NavItem/NavItem';
 import NavDropdown from './components/NavDropdown/NavDropdown';
 import WorkflowReviewModal from '../commonComponents/workflowReviewModal/WorkflowReviewModal';
+import ActivePhaseModal from '../commonComponents/workflowActivePhase/ActivePhaseModal';
 import DarValidation from '../../utils/DarValidation.util';
 import DarHelper from '../../utils/DarHelper.util';
 import SearchBarHelperUtil from '../../utils/SearchBarHelper.util';
@@ -60,6 +61,7 @@ class DataAccessRequest extends Component {
 			jsonSchema: {},
 			questionAnswers: {},
 			workflow: {},
+			activeWorkflow: {},
 			applicationStatus: '',
 			activePanelId: '',
 			activeGuidance: '',
@@ -86,6 +88,7 @@ class DataAccessRequest extends Component {
 			showMrcModal: false,
 			showActionModal: false,
 			showWorkflowReviewModal: false,
+			showActivePhaseModal: false,
 			showContributorModal: false,
 			showAssignWorkflowModal: false,
 			readOnly: false,
@@ -481,6 +484,7 @@ class DataAccessRequest extends Component {
 	 * @desc Callback from Winterfell sets totalQuestionsAnswered + saveTime
 	 */
 	onFormUpdate = _.debounce((id = '', questionAnswers = {}) => {
+		debugger;
 		if (!_.isEmpty(id) && !_.isEmpty(questionAnswers)) {
 			let { applicationStatus, lookup, activePanelId } = this.state;
 			// 1. check for auto complete
@@ -916,6 +920,17 @@ class DataAccessRequest extends Component {
 		value === 'AssignWorkflow' ? this.toggleAssignWorkflowModal() : this.toggleActionModal(value);
 	};
 
+	completeActivePhase = async () => {
+		await axios.put(`${baseURL}/api/v1/data-access-request/${this.state._id}/stepoverride`)
+			.then((response) => {
+				this.loadDataAccessRequest(this.state._id);
+				this.toggleWorkflowReviewModal();
+			})
+			.catch(error => {
+				console.log(error);
+			});
+	}
+
 	toggleCard = (e, eventKey) => {
 		e.preventDefault();
 		// 1. Deconstruct current state
@@ -990,10 +1005,19 @@ class DataAccessRequest extends Component {
 		});
 	};
 
-	toggleWorkflowReviewModal = () => {
+	toggleActivePhaseModal = () => {
 		this.setState((prevState) => {
 			return { 
-				showWorkflowReviewModal: !prevState.showWorkflowReviewModal 
+				showActivePhaseModal: !prevState.showActivePhaseModal 
+			};
+		});
+	}
+
+	toggleWorkflowReviewModal = (e, activePhase = false) => {
+		this.setState((prevState) => {
+			return { 
+				showWorkflowReviewModal: !prevState.showWorkflowReviewModal,
+				showActivePhaseModal: activePhase 
 			};
 		});
 	}
@@ -1888,6 +1912,15 @@ class DataAccessRequest extends Component {
 					open={this.state.showWorkflowReviewModal}
 					close={this.toggleWorkflowReviewModal}
 					workflow={this.state.workflow}
+				/>
+
+				<ActivePhaseModal
+					open={this.state.showActivePhaseModal}
+					close={this.toggleActivePhaseModal}
+					workflow={this.state.workflow}
+					projectName={projectName}
+					dataSets={selectedDatasets}
+					completeActivePhase={this.completeActivePhase}
 				/>
 
 				<ContributorModal

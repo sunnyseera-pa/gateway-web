@@ -1,6 +1,10 @@
 @import '../../../css/variables';
 @import '../../../css/typography';
 
+.app-red {
+    color: $red;
+}
+
 .reviewWrap {
     padding: 15px 25px;
 }
@@ -13,41 +17,57 @@
     width: 100%;
   }
 
-  &-header {
-      display: flex;
-      flex-flow: column nowrap;    
-      width: 100%;    
-      padding: 32px;
-
-      &--wrap {
-          p {
-              margin-bottom: 0;
-              color: $gray-800;
-              font-size: 14px;
-          }
-      
-      }
+  .modal-content {
+    border-radius: 0;
   }
 
-  &-head {
-      display: flex;
-      flex-flow: row nowrap;
-      justify-content: space-between;
+    &-header {
+        display: flex;
+        flex-flow: column nowrap;    
+        width: 100%;    
+        padding: 32px;
 
-      &--close {
-          width: 16px;
-          height: 16px;
-          fill: $indigo;
-          &:hover {
-              cursor: pointer;
-          }
-      }
-  }
+        &--wrap {
+            p {
+                margin-bottom: 0;
+                color: $gray-800;
+                font-size: 14px;
+            }
+        
+        }
+    }
+
+    &-head {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        position: relative;
+
+        &--close {
+            position: absolute;
+            top: -16px;
+            right: -16px;
+            width: 16px;
+            height: 16px;
+            fill: $indigo;
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+    }
 
     &-body {
         background-color: $background;
         width: 100%;
-        padding: 10px 32px 20px 32px;
+        padding: 25px 32px;
+    }
+
+    &-footer {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: flex-end;
+        padding: 15px;
     }
 
 }
@@ -62,11 +82,17 @@
 
     &-header {
         display: flex;
+        position: relative;
         flex-flow: column nowrap;
+        align-items: center;
         width: 100%;
         border-bottom: 1px solid $gray-300;
         @media (min-width: $bp-small) {
             flex-flow: row nowrap;
+        }
+
+        svg {
+            transform-origin: 0 13px;
         }
 
         &-title {
@@ -85,7 +111,7 @@
             }
 
             .sla {
-                margin-right: 25px;
+                margin-right: 25px;;
             }
         }
     }
@@ -95,16 +121,15 @@
     }
 
     &-review {
-       
+        border-bottom: 1px solid $gray-300;
+
         &-wrap {
             display: flex;
             flex-flow: row nowrap;
             align-items: center;
             width: 100%;
             padding: 12px 0;
-            border-bottom: 1px solid $gray-300;
             
-
             &--reviewer {
                 position: relative;
                 width: 85%;
@@ -115,7 +140,8 @@
 
                 svg {
                     position: absolute;
-                    top: 2px;
+                    transform-origin: 0 13px;
+                    top: -3px;
                     left: 0;
                 }
             }
@@ -124,6 +150,11 @@
                 position: relative;
             }
         }
+
+        &-comment {
+            padding: 0 30px 15px;
+        }
+
 
     }
 }

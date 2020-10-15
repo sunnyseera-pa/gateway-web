@@ -12,9 +12,10 @@ const WorkflowStep = ({index, step, toggleStep, toggleReview }) => {
   let {
     stepName,
     sections,
-    reviewers,
+    reviews,
+    closed,
+    deadlinePassed,
     reviewStatus = '',
-    recommendations
   } = step;
 
   const renderSections = () => {
@@ -47,15 +48,15 @@ const WorkflowStep = ({index, step, toggleStep, toggleReview }) => {
     <div className="step">
         <div className="step-header reviewWrap" onClick={e => toggleStep(step)}>
           <div className="step-header-title">
-            <h1 className="black-16-semibold">{++index}. {step.stepName}</h1>
+            <h1 className="black-16-semibold">{++index}. {stepName}</h1>
             <span className="gray700-13">{renderSections()}</span>
           </div>
           <div className="step-header-status">
-           {renderReviewStatus()}
+           <div className={deadlinePassed ? 'app-red': '' }>{renderReviewStatus()}</div>
            {renderSLA(step)}
           </div>
+          <SVGIcon width='20px' height='20px' name="chevronbottom" fill={'#475da7'} className={closed ? '' : 'flip180'} />
         </div>
-        <SVGIcon width='16px' height='16px' name="chevronbottom" fill={'#475da7'} className={step.closed ? 'chevron' : 'chevron flip180'} />
         <SlideDown closed={step.closed}>
           <div className="step-body">
             <div className="step-review">
@@ -68,8 +69,8 @@ const WorkflowStep = ({index, step, toggleStep, toggleReview }) => {
                 </div>
                 </div>
             </div>
-           {step.reviews.length > 0 &&
-            step.reviews.map((review, i) => {
+           {reviews.length > 0 &&
+            reviews.map((review, i) => {
               return <WorkflowReview 
                         key={`review-${i}`}
                         review={review}

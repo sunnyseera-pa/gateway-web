@@ -9,7 +9,7 @@ const ModalHeader = ({workflowName= '', onClickAction}) => {
           <h1 className='black-20-semibold'>{workflowName}</h1>
           <CloseButtonSvg
             className='workflowReview-head--close'
-            onClick={(e) => onClickAction(e, 'cancel')}
+            onClick={(e) => onClickAction(e)}
           />
         </div>
         <p>View this application assigned workflow and phase recommendations</p>

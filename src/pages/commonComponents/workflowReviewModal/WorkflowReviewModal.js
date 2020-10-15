@@ -3,16 +3,14 @@ import _ from 'lodash';
 import { Modal } from 'react-bootstrap';
 import ModalHeader from './ModalHeader';
 import WorkflowStep from './WorkflowStep';
-import { 
-  updateStepToggle
-} from '../../../utils/Workflows.util';
-
+import { updateStepToggle } from '../../../utils/Workflows.util';
 import './WorkflowReviewModal.scss';
 
 const WorkflowReviewModal = ({ open, close, workflow = {} }) => {
+
 	const [workflowObj, setWorkflow] = useState({});
 
-  const onClickAction = (e, action) => {
+  const onClickAction = (e, action = false) => {
 		e.preventDefault();
     close('', action);
 	}
@@ -60,7 +58,7 @@ const WorkflowReviewModal = ({ open, close, workflow = {} }) => {
 	const buildReviews = (stepId = '', reviewers = [], recommendations = []) => {
 		if(!_.isEmpty(reviewers)) {
 			return [...reviewers].map((rev) => {
-				let comment = {approved: false, comments: '', createdDate: ''};
+				let comment = {approved: null, comments: '', createdDate: ''};
 				let review = recommendations.find(r => r.reviewer === rev._id) || {};
 				if(!_.isEmpty(review)) 
 					comment = review;
@@ -97,24 +95,35 @@ const WorkflowReviewModal = ({ open, close, workflow = {} }) => {
 	}
 
 	const setToggleReview = (review = {}) => {
+		let { steps } = workflowObj;
+		let modifiedSteps = [...steps].reduce((arr, step) => {
+			let modifiedReviews = [];
+			let { reviews } = { ...step };
+			if(!_.isEmpty(reviews)) {
+				modifiedReviews  = mapToggleReviews(reviews, review);
+			}
+			arr.push({
+				...step, 
+				reviews: modifiedReviews
+			});
+			return arr;
+		}, []);
+		
+		return modifiedSteps;
+	}
+
+	const mapToggleReviews = (reviews = [], review) => {
+		if(!_.isEmpty(reviews) && !_.isEmpty(review)) {
+			return [...reviews].map((r) => {
+				if(r._id === review._id) 
+					r.closed = !r.closed;
+				
+				return {
+					...r
+				};
+			});
+		}
 		return [];
-		// return [...workflowObj.steps].reduce((arr, item) => {
-		// 	let {  reviews } = {...item};
-		// 	if (step._id === review.stepId) {
-		// 		reviews = [...reviews].map((r) => {
-		// 			if(r._id === review._id) {
-		// 				r.closed = !r.closed
-		// 			}
-		// 			return {...r};
-		// 		});
-		// 	}
-
-	
-
-		// 	arr.push({...step, reviews});
-
-		// 	return arr;
-		// }, []);
 	}
 
 	const renderSteps = () => {
@@ -136,7 +145,7 @@ const WorkflowReviewModal = ({ open, close, workflow = {} }) => {
 	useEffect(() => {
 		if(!_.isEmpty(workflow)) 
 			buildWorkflow()
-  }, []);
+  }, [workflow]);
 
 	return (
 		<Fragment>
@@ -155,6 +164,13 @@ const WorkflowReviewModal = ({ open, close, workflow = {} }) => {
 				<div className='workflowReview-body'>
 					{renderSteps()}
 				</div>
+
+				{ workflowObj.canOverrideStep ?
+					<div className="workflowReview-footer">
+						<button className="button-tertiary" onClick={e => onClickAction(e, true)}>Complete and skip to the next phase</button>
+					</div>
+					: ''
+				}
 			</Modal>
 		</Fragment>
 	);
