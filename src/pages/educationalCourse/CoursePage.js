@@ -496,7 +496,7 @@ class CourseDetail extends Component {
                                     Course duration
                                 </Col>
                                 <Col sm={10} className="gray-deep-14 overflowWrap">
-                                    Course delivery goes here
+                                    Full-time  |  1 year
                                 </Col>
                                 </Row>
                                 <Row className="pad-top-16">
@@ -504,7 +504,8 @@ class CourseDetail extends Component {
                                     Course fees
                                 </Col>
                                 <Col sm={10} className="gray-deep-14 overflowWrap">
-                                    Course location goes here
+                                    {/* TODO MAP FOR EACH COURSE FEE OPTION */}
+                                    Full-time Home (UK) and EU students  |  £12,000 per year <br/>
                                 </Col>
                                 </Row>
                             </div>
@@ -519,10 +520,10 @@ class CourseDetail extends Component {
                               <Col sm={12}>Requirements and certifications</Col>
                             </Row>
                             <Row className="pad-top-16">
-                              <Col sm={2} className="gray800-14">
+                              <Col sm={3} className="gray800-14">
                                 Entry requirements
                               </Col>
-                              <Col sm={10} className="gray800-14">
+                              <Col sm={9} className="gray800-14">
                                 {!data.tags.topics ||
                                 data.tags.topics.length <= 0 ? (
                                   <span className="gray800-14-opacity">
@@ -540,10 +541,10 @@ class CourseDetail extends Component {
                               </Col>
                             </Row>                            
                             <Row className="pad-top-16">
-                              <Col sm={2} className="gray800-14">
+                              <Col sm={3} className="gray800-14">
                                 Restrictions
                               </Col>
-                              <Col sm={10} className="gray800-14">
+                              <Col sm={9} className="gray800-14">
                                 {!data.tags.topics ||
                                 data.tags.topics.length <= 0 ? (
                                   <span className="gray800-14-opacity">
@@ -561,10 +562,10 @@ class CourseDetail extends Component {
                               </Col>
                             </Row>                           
                             <Row className="pad-top-16">
-                              <Col sm={2} className="gray800-14">
+                              <Col sm={3} className="gray800-14">
                                 Award
                               </Col>
-                              <Col sm={10} className="gray800-14">
+                              <Col sm={9} className="gray800-14">
                                 {!data.tags.topics ||
                                 data.tags.topics.length <= 0 ? (
                                   <span className="gray800-14-opacity">
@@ -582,10 +583,10 @@ class CourseDetail extends Component {
                               </Col>
                             </Row>
                             <Row className="pad-top-16">
-                              <Col sm={2} className="gray800-14">
+                              <Col sm={3} className="gray800-14">
                                 Competency framework
                               </Col>
-                              <Col sm={10} className="gray800-14">
+                              <Col sm={9} className="gray800-14">
                                 {!data.tags.topics ||
                                 data.tags.topics.length <= 0 ? (
                                   <span className="gray800-14-opacity">
@@ -603,10 +604,10 @@ class CourseDetail extends Component {
                               </Col>
                             </Row>
                             <Row className="pad-top-16">
-                              <Col sm={2} className="gray800-14">
+                              <Col sm={3} className="gray800-14">
                                 National priority areas
                               </Col>
-                              <Col sm={10} className="gray800-14">
+                              <Col sm={9} className="gray800-14">
                                 {!data.tags.topics ||
                                 data.tags.topics.length <= 0 ? (
                                   <span className="gray800-14-opacity">
