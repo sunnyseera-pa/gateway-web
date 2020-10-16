@@ -106,6 +106,7 @@ class DataAccessRequest extends Component {
 			projectId: '',
 			aboutApplication: {
 				projectName: '',
+				isNationalCoreStudies: false,
 				selectedDatasets: [],
 				completedDatasetSelection: false,
 				completedReadAdvice: false,
@@ -152,7 +153,7 @@ class DataAccessRequest extends Component {
 			// 	c/d) Data Access Request User Area / Direct Link - route will contain a data access request 'accessId' which specifically links all associated data to one application
 			const { datasetId, accessId, publisherId } = this.props.match.params;
 			let countedQuestionAnswers = {}, totalQuestions = '';
-
+			
 			if (datasetId) {
 				// a) Dataset
 				await this.loadSingleDatasetMode(datasetId);
@@ -185,13 +186,15 @@ class DataAccessRequest extends Component {
 
 			// Update state to display question answer count
 			this.setState({
-				totalQuestions,
+				totalQuestions
 			});
 		} catch (error) {
 			this.setState({ isLoading: false });
 			console.error(error);
 		} finally {
-			this.getRole(this.state.roles)
+			this.setState({
+				roles: this.getUserRoles()
+			});
 		}
 	}
 
@@ -489,7 +492,6 @@ class DataAccessRequest extends Component {
 	 * @desc Callback from Winterfell sets totalQuestionsAnswered + saveTime
 	 */
 	onFormUpdate = _.debounce((id = '', questionAnswers = {}) => {
-		debugger;
 		if (!_.isEmpty(id) && !_.isEmpty(questionAnswers)) {
 			let { applicationStatus, lookup, activePanelId } = this.state;
 			// 1. check for auto complete
@@ -828,10 +830,10 @@ class DataAccessRequest extends Component {
 
 	onHandleProjectNameBlur = () => {
 		// 1. Deconstruct current state
-		let { aboutApplication, projectNameValid, allowedNavigation } = this.state;
+		let { aboutApplication, aboutApplication: { projectName = '' }, projectNameValid, allowedNavigation } = this.state;
 
 		// 2. Check if valid project name
-		if(_.isEmpty(aboutApplication.projectName.trim())) {
+		if(_.isEmpty(projectName.trim())) {
 			projectNameValid = false;
 			allowedNavigation = false;
 		} else {
@@ -1028,7 +1030,6 @@ class DataAccessRequest extends Component {
 	}
 
 	toggleWorkflowReviewDecisionModal = (type = '') => {
-		debugger;
 		this.setState((prevState) => {
 			return { 
 				showWorkflowReviewDecisionModal: !prevState.showWorkflowReviewDecisionModal,
@@ -1093,14 +1094,13 @@ class DataAccessRequest extends Component {
 		}
 	};
 
-	async getRole(roles) { 
-		let thisteam = [];
-
-		thisteam = this.props.userState[0].teams.filter(team => team.name === this.state.datasets[0].datasetfields.publisher);
-
-		this.setState({
-			roles : thisteam[0].roles
-		});
+	getUserRoles() {
+		let { teams } = this.props.userState[0];
+		let foundTeam = teams.filter(team => team.name === this.state.datasets[0].datasetfields.publisher);
+		if (_.isEmpty(teams) || _.isEmpty(foundTeam)) {
+			return ['applicant'];
+		}
+		return foundTeam[0].roles;
 	}
 
 	render() {
@@ -1126,6 +1126,7 @@ class DataAccessRequest extends Component {
 			applicationStatus,
 			aboutApplication: {
 				projectName = '',
+				isNationalCoreStudies,
 				selectedDatasets,
 				completedDatasetSelection,
 				completedReadAdvice,
@@ -1262,15 +1263,15 @@ class DataAccessRequest extends Component {
 									2
 								</div>
 							)}
-							Name your project
+							Name your application
 						</Accordion.Toggle>
 						<Accordion.Collapse eventKey='1'>
 							<Card.Body className='gray800-14'>
 								<div className='margin-bottom-16'>
-									It is important to create a project title for yourself and your team.  You can edit this later.
+									This can be your project name or anything that helps the custodian identify your application.
 								</div>
 								<div>
-									<span>Project title</span>
+									<span>Application title</span>
 									<div className='form-group'>
 										<input 
 											className={`form-control ${!projectNameValid && _.isEmpty(projectName) ? 'emptyFormInput' : ''}`} 
@@ -1280,8 +1281,28 @@ class DataAccessRequest extends Component {
 											value={projectName}
 											disabled={readOnly}
 										/>
+										{!projectNameValid && _.isEmpty(projectName) ? (
+										<div className='errorMessages'>
+											This cannot be empty
+										</div>
+									) : null}
 									</div>
-									{!projectNameValid && _.isEmpty(projectName) ? (
+									<div className='dar-form-check-group margin-top-8'>
+											<input
+												type='checkbox'
+												id='chkNationalCoreStudies'
+												checked={isNationalCoreStudies}
+												className='dar-form-check'
+												disabled={!allowedNavigation || readOnly}
+												onChange={(e) => {
+													this.setState({ aboutApplication: { ...this.state.aboutApplication, isNationalCoreStudies: e.target.checked }});
+												}}
+											/>
+										<span className='dar-form-check-label'>
+											This application is part of a National Core Studies project
+										</span>
+									</div>
+									{isNationalCoreStudies ? (
 										<div className='errorMessages'>
 											This cannot be empty
 										</div>
@@ -1967,7 +1988,7 @@ class DataAccessRequest extends Component {
 					open={showAssignWorkflowModal}
 					close={this.toggleAssignWorkflowModal}
 					applicationId={this.state._id}
-					publisher={datasets[0].publisher.name}
+					publisher={datasets[0].datasetfields.publisher}
 					workflows={this.state.workflows}
 				/>
 
