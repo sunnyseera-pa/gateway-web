@@ -1,5 +1,5 @@
-// /ShowObjects.js
-
+ // /ShowObjects.js
+ 
 import React, { Component } from "react";
 import ReactMarkdown from "react-markdown";
 import axios from "axios";
@@ -20,6 +20,7 @@ import UserMessages from "../commonComponents/userMessages/UserMessages";
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
+import './Course.scss';
 
 // import ReactGA from 'react-ga';
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
@@ -27,7 +28,7 @@ import { PageView, initGA } from "../../tracking";
 
 var baseURL = require("../commonComponents/BaseURL").getURL();
 
-class ProjectDetail extends Component {
+class CourseDetail extends Component {
   // initialize our state
   state = {
     searchString: "",
@@ -282,7 +283,7 @@ class ProjectDetail extends Component {
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                   <Alert variant="warning" className="mt-3">
-                    Your project is pending review. Only you can see this page.
+                    Your course is pending review. Only you can see this page.
                   </Alert>
                 </Col>
                 <Col sm={1} lg={10} />
@@ -304,14 +305,14 @@ class ProjectDetail extends Component {
                   </Row>
                   <Row className="mt-3">
                     <Col xs={12}>
-                      <span className="badge-project"> 
+                      <span className="badge-course">
                         <SVGIcon
-                          name="newestprojecticon"
+                          name="educationicon"
                           fill={"#ffffff"}
                           className="badgeSvg mr-2"
                           viewBox="-2 -2 22 22"
-                        />
-                        <span>Project</span>
+                        /> 
+                        <span>Course</span>
                       </span>
 
                       <a href={"/search?search=&tab=Projects&projectcategories=" + data.categories.category}>
@@ -341,7 +342,7 @@ class ProjectDetail extends Component {
                 <div>
                   <Tabs className="tabsBackground gray700-13 margin-bottom-16">
                     <Tab eventKey="About" title={"About"}>
-                      <Row className="mt-2">
+                      <Row>
                         <Col sm={12} lg={12}>
                           <div className="rectangle">
                             <Row className="gray800-14-bold">
@@ -372,13 +373,13 @@ class ProjectDetail extends Component {
                           </Col>
                         </Row>): ""}
 
-                      <Row className="mt-2">
+                      <Row className="margin-top-8">
                         <Col sm={12}>
                           <div className="rectangle">
-                            <Row className="gray800-14-bold">
+                            <Row className="gray800-14-bold pad-bottom-8">
                               <Col sm={12}>Details</Col>
                             </Row>
-                            <Row className="mt-3">
+                            <Row className="pad-top-16">
                               <Col sm={2} className="gray800-14">
                                 URL
                               </Col>
@@ -393,43 +394,45 @@ class ProjectDetail extends Component {
                                 </a>
                               </Col>
                             </Row>
-                            <Row className="mt-2">
+                            <Row className="pad-top-16">
                               <Col sm={2} className="gray800-14">
-                                Last update
+                                Course provider
                               </Col>
-                              <Col sm={10} className="gray800-14">
-                                {moment(data.updatedon).format("DD MMM YYYY")}
+                              <Col sm={10} className="gray-deep-14 overflowWrap">
+                                Course provider goes here
                               </Col>
                             </Row>
-                            {data.uploader ? (
-                              <Row className="mt-2">
+                            <Row className="pad-top-16">
                                 <Col sm={2} className="gray800-14">
                                   Uploader
                                 </Col>
-                                <Col sm={10} className="gray800-14 overflowWrap">
-                                  {data.uploader}
-                                </Col>
-                              </Row>
-                            ) : (
-                              ""
-                            )}
-                            <Row className="mt-2">
-                              <Col sm={2} className="gray800-14">
-                                Type
-                              </Col>
-                              <Col sm={10} className="gray800-14">
+                                <Col sm={10} className="purple-14 overflowWrap">
                                 <a
-                                  href={
-                                    "/search?search=&tab=Projects&projectcategories=" + data.categories.category
-                                  }
+                                  href=""
+                                  target="_blank"
+                                  className="purple-14"
                                 >
-                                  <div className="badge-tag">
-                                    {data.categories.category}
-                                  </div>
+                                  Uploader goes here (link)
                                 </a>
+                                </Col>
+                            </Row>
+                            <Row className="pad-top-16">
+                              <Col sm={2} className="gray800-14">
+                                Course delivery
+                              </Col>
+                              <Col sm={10} className="gray-deep-14 overflowWrap">
+                                Course delivery goes here
                               </Col>
                             </Row>
-                            <Row className="mt-2">
+                            <Row className="pad-top-16">
+                              <Col sm={2} className="gray800-14">
+                                Course location
+                              </Col>
+                              <Col sm={10} className="gray-deep-14 overflowWrap">
+                                Course location goes here
+                              </Col>
+                            </Row>
+                            <Row className="pad-top-16">
                               <Col sm={2} className="gray800-14">
                                 Keywords
                               </Col>
@@ -450,7 +453,7 @@ class ProjectDetail extends Component {
                                 )}
                               </Col>
                             </Row>
-                            <Row className="mt-2">
+                            <Row className="pad-top-16">
                               <Col sm={2} className="gray800-14">
                                 Domain
                               </Col>
@@ -473,24 +476,157 @@ class ProjectDetail extends Component {
                             </Row>
                           </div>
                         </Col>
-                      </Row>
+                      </Row> 
 
-                      <Row className="mt-2">
+            
+                      <Row className="margin-top-8">
+                      {/* gray800-14-opacity */}
                         <Col sm={12}>
                           <div className="rectangle">
                             <Row className="gray800-14-bold">
-                              <Col sm={12}>Collaborators</Col>
+                              <Col sm={12}>Dates and costs</Col>
                             </Row>
-                            <Row className="mt-3">
-                              {data.persons.map(author => (
-                                <Col sm={6} key={author.id}>
-                                  <Creators key={author.id} author={author} />
+                            {/* TODO - MAP THROUGH THE ENTRIES IN DATE AND COSTS AND FOR EACH RETURN THE BELOW 3 ROWS */}
+                            <div className="margin-top-24">
+                                <Row className="gray800-14-opacity">
+                                <Col sm={12}>Course date goes here</Col>
+                                </Row>
+                                <Row className="pad-top-16">
+                                <Col sm={2} className="gray800-14">
+                                    Course duration
                                 </Col>
-                              ))}
+                                <Col sm={10} className="gray-deep-14 overflowWrap">
+                                    Course delivery goes here
+                                </Col>
+                                </Row>
+                                <Row className="pad-top-16">
+                                <Col sm={2} className="gray800-14">
+                                    Course fees
+                                </Col>
+                                <Col sm={10} className="gray-deep-14 overflowWrap">
+                                    Course location goes here
+                                </Col>
+                                </Row>
+                            </div>
+                          </div>
+                        </Col>
+                      </Row> 
+
+                      <Row className="margin-top-8">
+                        <Col sm={12}>
+                          <div className="rectangle">
+                            <Row className="gray800-14-bold pad-bottom-8">
+                              <Col sm={12}>Requirements and certifications</Col>
+                            </Row>
+                            <Row className="pad-top-16">
+                              <Col sm={2} className="gray800-14">
+                                Entry requirements
+                              </Col>
+                              <Col sm={10} className="gray800-14">
+                                {!data.tags.topics ||
+                                data.tags.topics.length <= 0 ? (
+                                  <span className="gray800-14-opacity">
+                                    Not specified
+                                  </span>
+                                ) : (
+                                  data.tags.topics.map(domain => {
+                                    return (
+                                      <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
+                                        <div className="badge-version" ><span>Level</span><span>Subject</span></div>
+                                      </a>
+                                    );
+                                  })
+                                )}
+                              </Col>
+                            </Row>                            
+                            <Row className="pad-top-16">
+                              <Col sm={2} className="gray800-14">
+                                Restrictions
+                              </Col>
+                              <Col sm={10} className="gray800-14">
+                                {!data.tags.topics ||
+                                data.tags.topics.length <= 0 ? (
+                                  <span className="gray800-14-opacity">
+                                    Not specified
+                                  </span>
+                                ) : (
+                                  data.tags.topics.map(domain => {
+                                    return (
+                                      <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
+                                        <div className="badge-tag">{domain}</div>
+                                      </a>
+                                    );
+                                  })
+                                )}
+                              </Col>
+                            </Row>                           
+                            <Row className="pad-top-16">
+                              <Col sm={2} className="gray800-14">
+                                Award
+                              </Col>
+                              <Col sm={10} className="gray800-14">
+                                {!data.tags.topics ||
+                                data.tags.topics.length <= 0 ? (
+                                  <span className="gray800-14-opacity">
+                                    Not specified
+                                  </span>
+                                ) : (
+                                  data.tags.topics.map(domain => {
+                                    return (
+                                      <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
+                                        <div className="badge-tag">{domain}</div>
+                                      </a>
+                                    );
+                                  })
+                                )}
+                              </Col>
+                            </Row>
+                            <Row className="pad-top-16">
+                              <Col sm={2} className="gray800-14">
+                                Competency framework
+                              </Col>
+                              <Col sm={10} className="gray800-14">
+                                {!data.tags.topics ||
+                                data.tags.topics.length <= 0 ? (
+                                  <span className="gray800-14-opacity">
+                                    Not specified
+                                  </span>
+                                ) : (
+                                  data.tags.topics.map(domain => {
+                                    return (
+                                      <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
+                                        <div className="badge-tag">{domain}</div>
+                                      </a>
+                                    );
+                                  })
+                                )}
+                              </Col>
+                            </Row>
+                            <Row className="pad-top-16">
+                              <Col sm={2} className="gray800-14">
+                                National priority areas
+                              </Col>
+                              <Col sm={10} className="gray800-14">
+                                {!data.tags.topics ||
+                                data.tags.topics.length <= 0 ? (
+                                  <span className="gray800-14-opacity">
+                                    Not specified
+                                  </span>
+                                ) : (
+                                  data.tags.topics.map(domain => {
+                                    return (
+                                      <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
+                                        <div className="badge-tag">{domain}</div>
+                                      </a>
+                                    );
+                                  })
+                                )}
+                              </Col>
                             </Row>
                           </div>
                         </Col>
                       </Row>
+
                     </Tab>
 
                     <Tab eventKey="Collaboration" title={`Discussion (${discoursePostCount})`}>
@@ -547,4 +683,4 @@ class ProjectDetail extends Component {
   }
 }
 
-export default ProjectDetail;
+export default CourseDetail;

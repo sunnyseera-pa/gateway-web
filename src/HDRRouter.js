@@ -14,6 +14,7 @@ import PaperPage from './pages/paper/PaperPage';
 import DatasetPage from './pages/dataset/DatasetPage';
 import SearchPage from './pages/search/SearchPage';
 import CollectionPage from './pages/collections/CollectionPage';
+import CoursePage from './pages/educationalCourse/CoursePage';
 import PublicAnalyticsDashboard from './pages/publicDashboard/PublicAnalyticsDashboard';
 
 import Account from './pages/dashboard/Account';
@@ -106,7 +107,7 @@ class HDRRouter extends Component {
                 <Container>
                     <Loading />
                 </Container>
-            );
+            ); 
         }
 
         if(showError) {
@@ -153,6 +154,8 @@ class HDRRouter extends Component {
                         {userState[0].loggedIn ? (<Route path='/paper/add' render={(props) => <AddEditPaperPage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/paper/edit/:paperID' render={(props) => <AddEditPaperPage {...props} userState={userState} isEdit="true" /> } />) : ''}
                         <Route path='/paper/:paperID' render={(props) => <PaperPage {...props} userState={userState} />} />
+
+                        <Route path='/course/:projectID' render={(props) => <CoursePage {...props} userState={userState} />} />
                         
 
                         {/* Catch all path */}

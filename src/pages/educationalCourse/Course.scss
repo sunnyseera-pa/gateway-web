@@ -1,0 +1,10 @@
+@import '../../css/variables'; 
+@import '../../css/mixins'; 
+
+.pillDivider {
+  width: 1px;
+  height: 25px;
+  background-color: $gray-400;
+  padding: 0px;
+  margin: 0px;
+}
