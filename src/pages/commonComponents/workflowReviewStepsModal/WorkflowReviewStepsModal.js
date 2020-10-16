@@ -2,11 +2,11 @@ import React, { useState, useEffect, Fragment } from 'react';
 import _ from 'lodash';
 import { Modal } from 'react-bootstrap';
 import ModalHeader from './ModalHeader';
-import WorkflowStep from './WorkflowStep';
+import WorkflowReviewStep from './WorkflowReviewStep';
 import { updateStepToggle } from '../../../utils/Workflows.util';
-import './WorkflowReviewModal.scss';
+import './WorkflowReviewStepsModal.scss';
 
-const WorkflowReviewModal = ({ open, close, workflow = {} }) => {
+const WorkflowReviewStepsModal = ({ open, close, workflow = {} }) => {
 
 	const [workflowObj, setWorkflow] = useState({});
 
@@ -130,7 +130,7 @@ const WorkflowReviewModal = ({ open, close, workflow = {} }) => {
 		let {steps = []} = workflowObj;
 		if (!_.isEmpty(steps)) {
 			return steps.map((step, i) => {
-				return <WorkflowStep 
+				return <WorkflowReviewStep 
 									key={`step-${i}`}
 									index={i}
 									step={step}
@@ -176,4 +176,4 @@ const WorkflowReviewModal = ({ open, close, workflow = {} }) => {
 	);
 };
 
-export default WorkflowReviewModal;
+export default WorkflowReviewStepsModal;

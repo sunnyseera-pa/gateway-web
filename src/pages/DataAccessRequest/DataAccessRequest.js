@@ -24,8 +24,9 @@ import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
 import NavItem from './components/NavItem/NavItem';
 import NavDropdown from './components/NavDropdown/NavDropdown';
-import WorkflowReviewModal from '../commonComponents/workflowReviewModal/WorkflowReviewModal';
+import WorkflowReviewStepsModal from '../commonComponents/workflowReviewStepsModal/WorkflowReviewStepsModal';
 import ActivePhaseModal from '../commonComponents/workflowActivePhase/ActivePhaseModal';
+import WorkflowReviewDecisionModal from '../commonComponents/workflowReviewDecision/WorkflowReviewDecisionModal';
 import DarValidation from '../../utils/DarValidation.util';
 import DarHelper from '../../utils/DarHelper.util';
 import SearchBarHelperUtil from '../../utils/SearchBarHelper.util';
@@ -88,6 +89,8 @@ class DataAccessRequest extends Component {
 			showMrcModal: false,
 			showActionModal: false,
 			showWorkflowReviewModal: false,
+			showWorkflowReviewDecisionModal: false,
+			workflowReviewDecisionType: '',
 			showActivePhaseModal: false,
 			showContributorModal: false,
 			showAssignWorkflowModal: false,
@@ -417,7 +420,7 @@ class DataAccessRequest extends Component {
 
 		if(inReviewMode){
 			jsonSchema.pages = jsonSchema.pages.map((page) => {
-				let inReview = reviewSections.includes(page.title.toLowerCase().replace(' ','')) || page.pageId === 'about';
+				let inReview = reviewSections.includes(page.pageId.toLowerCase()) || page.pageId === 'about';
 				return {...page, inReview};
 			})
 		}
@@ -1020,6 +1023,16 @@ class DataAccessRequest extends Component {
 			return { 
 				showWorkflowReviewModal: !prevState.showWorkflowReviewModal,
 				showActivePhaseModal: activePhase 
+			};
+		});
+	}
+
+	toggleWorkflowReviewDecisionModal = (type = '') => {
+		debugger;
+		this.setState((prevState) => {
+			return { 
+				showWorkflowReviewDecisionModal: !prevState.showWorkflowReviewDecisionModal,
+				workflowReviewDecisionType: type
 			};
 		});
 	}
@@ -1876,9 +1889,11 @@ class DataAccessRequest extends Component {
 								allowedNavigation={allowedNavigation}
 								onActionClick={this.onCustodianAction}
 								onWorkflowReview={this.toggleWorkflowReviewModal}
+								onWorkflowReviewDecisionClick={this.toggleWorkflowReviewDecisionModal}
 								onNextClick={this.onNextClick}
 								workflowEnabled={this.state.workflowEnabled}
 								workflowAssigned={this.state.workflowAssigned}
+								inReviewMode={this.state.inReviewMode}
 								applicationStatus={applicationStatus}
 								roles={roles}
 							/>
@@ -1910,7 +1925,7 @@ class DataAccessRequest extends Component {
 					close={this.toggleActionModal}
 				/> 
 
-				<WorkflowReviewModal
+				<WorkflowReviewStepsModal
 					open={this.state.showWorkflowReviewModal}
 					close={this.toggleWorkflowReviewModal}
 					workflow={this.state.workflow}
@@ -1923,6 +1938,15 @@ class DataAccessRequest extends Component {
 					projectName={projectName}
 					dataSets={selectedDatasets}
 					completeActivePhase={this.completeActivePhase}
+				/>
+
+				<WorkflowReviewDecisionModal
+					open={this.state.showWorkflowReviewDecisionModal}
+					close={this.toggleWorkflowReviewDecisionModal}
+					type={this.state.workflowReviewDecisionType}
+					workflow={this.state.workflow}
+					projectName={projectName}
+					dataSets={selectedDatasets}
 				/>
 
 				<ContributorModal

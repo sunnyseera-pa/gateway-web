@@ -75,7 +75,7 @@ const AssignWorkflowModal = ({open, close, workflows, publisher, applicationId})
     }, [workflows]);
 
     return ( 
-        <Fragment className="flexCenter assignNotifyModal" >
+        <div className="flexCenter assignNotifyModal" >
         <Modal show={open} onHide={close} aria-labelledby="contained-modal-title-vcenter" className="relatedResourcesModal">
                 <Modal.Header>
                     <Modal.Title >
@@ -100,7 +100,7 @@ const AssignWorkflowModal = ({open, close, workflows, publisher, applicationId})
                     }
                 </Modal.Body>
              </Modal>
-         </Fragment> 
+         </div> 
     )
 };
 

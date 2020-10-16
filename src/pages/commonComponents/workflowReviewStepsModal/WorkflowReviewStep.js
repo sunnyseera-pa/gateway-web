@@ -7,7 +7,7 @@ import SVGIcon from "../../../images/SVGIcon";
 import DarHelper from '../../../utils/DarHelper.util';
 import WorkflowReview from './WorkflowReview';
 
-const WorkflowStep = ({index, step, toggleStep, toggleReview }) => {
+const WorkflowReviewStep = ({index, step, toggleStep, toggleReview }) => {
 
   let {
     stepName,
@@ -46,7 +46,7 @@ const WorkflowStep = ({index, step, toggleStep, toggleReview }) => {
 
   return (
     <div className="step">
-        <div className="step-header reviewWrap" onClick={e => toggleStep(step)}>
+        <div className="step-header reviewWrap" onClick={e => toggleStep(step)} data-testid={`step-header-${index}`}>
           <div className="step-header-title">
             <h1 className="black-16-semibold">{++index}. {stepName}</h1>
             <span className="gray700-13">{renderSections()}</span>
@@ -83,4 +83,4 @@ const WorkflowStep = ({index, step, toggleStep, toggleReview }) => {
   )
 }
 
-export default WorkflowStep;
+export default WorkflowReviewStep;
