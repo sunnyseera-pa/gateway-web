@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import _ from 'lodash';
+import uniqid from 'uniqid';
 import { Modal } from 'react-bootstrap';
 import ModalHeader from './ModalHeader';
 import WorkflowReviewStep from './WorkflowReviewStep';
@@ -66,6 +67,7 @@ const WorkflowReviewStepsModal = ({ open, close, workflow = {} }) => {
 				return {
 					...rev,
 					...comment,
+					id: uniqid(),
 					stepId,
 					closed: true,
 				}
@@ -95,6 +97,7 @@ const WorkflowReviewStepsModal = ({ open, close, workflow = {} }) => {
 	}
 
 	const setToggleReview = (review = {}) => {
+		debugger;
 		let { steps } = workflowObj;
 		let modifiedSteps = [...steps].reduce((arr, step) => {
 			let modifiedReviews = [];
@@ -115,11 +118,9 @@ const WorkflowReviewStepsModal = ({ open, close, workflow = {} }) => {
 	const mapToggleReviews = (reviews = [], review) => {
 		if(!_.isEmpty(reviews) && !_.isEmpty(review)) {
 			return [...reviews].map((r) => {
-				if(r._id === review._id) 
-					r.closed = !r.closed;
-				
 				return {
-					...r
+					...r,
+					closed: r.id === review.id ? !r.closed : r.closed
 				};
 			});
 		}

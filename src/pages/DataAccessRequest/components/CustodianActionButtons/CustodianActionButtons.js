@@ -14,6 +14,7 @@ const CustodianActionButtons = ({
   workflowEnabled = false,
   workflowAssigned, 
   onWorkflowReview, 
+  hasRecommended = false,
   onWorkflowReviewDecisionClick}) => {
 
   const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -24,7 +25,7 @@ const CustodianActionButtons = ({
 
   return (
     <Fragment>
-      {inReviewMode || (workflowAssigned && roles.includes('manager')) ?
+      {inReviewMode && !hasRecommended || (workflowAssigned && roles.includes('manager')) ?
         <Dropdown>
           <Dropdown.Toggle as={CustomToggle} >
             <button className={applicationStatus==="submitted" ? "dark-14" : "button-secondary"} >
@@ -33,17 +34,17 @@ const CustodianActionButtons = ({
           </Dropdown.Toggle>
 
             <Dropdown.Menu className="makeADecisionDropdown">  
-              { inReviewMode ?
+              { inReviewMode && !hasRecommended ?
                 <div className="review-phase">
                   <Row className="makeADecisionHeader"> 
                     <span className="gray800-14-bold mb-1">
                       Review this phase
                     </span> 
                   </Row>
-                  <option className="gray800-14 pointer" onClick={e => onWorkflowReviewDecisionClick('Issues found')}> 
+                  <option className="gray800-14 pointer" onClick={e => onWorkflowReviewDecisionClick(false)}> 
                     Issues found 
                   </option>
-                  <option className="gray800-14 pointer" onClick={e => onWorkflowReviewDecisionClick('No issues found')}> 
+                  <option className="gray800-14 pointer" onClick={e => onWorkflowReviewDecisionClick(true)}> 
                     No issues found 
                   </option> 
                 </div>

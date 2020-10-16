@@ -1,10 +1,10 @@
 import React from 'react'
 import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg';
 
-const WorkflowReviewDecisionHeader = ({onClickAction, type}) => {
+const WorkflowReviewDecisionHeader = ({onClickAction, approved}) => {
   return (
     <div className='reviewDecision-head'>
-      <h1 className='black-20-semibold'>Review decision: {type}</h1>
+      <h1 className='black-20-semibold'>Review decision: {approved ? 'No issues found' : 'Issues found'}</h1>
       <CloseButtonSvg
         className='reviewDecision-head--close'
         onClick={(e) => onClickAction(e, 'cancel')}

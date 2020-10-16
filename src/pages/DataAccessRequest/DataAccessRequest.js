@@ -63,6 +63,7 @@ class DataAccessRequest extends Component {
 			questionAnswers: {},
 			workflow: {},
 			activeWorkflow: {},
+			hasRecommended: false,
 			applicationStatus: '',
 			activePanelId: '',
 			activeGuidance: '',
@@ -90,7 +91,7 @@ class DataAccessRequest extends Component {
 			showActionModal: false,
 			showWorkflowReviewModal: false,
 			showWorkflowReviewDecisionModal: false,
-			workflowReviewDecisionType: '',
+			workflowReviewDecisionType: false,
 			showActivePhaseModal: false,
 			showContributorModal: false,
 			showAssignWorkflowModal: false,
@@ -191,7 +192,9 @@ class DataAccessRequest extends Component {
 			this.setState({ isLoading: false });
 			console.error(error);
 		} finally {
-			this.getRole(this.state.roles)
+			this.setState({
+				roles: this.getUserRoles()
+			});
 		}
 	}
 
@@ -300,6 +303,7 @@ class DataAccessRequest extends Component {
 						jsonSchema,
 						questionAnswers,
 						_id,
+						hasRecommended,
 						applicationStatus,
 						aboutApplication = {},
 						datasets,
@@ -320,6 +324,7 @@ class DataAccessRequest extends Component {
 				jsonSchema,
 				questionAnswers,
 				_id,
+				hasRecommended,
 				applicationStatus,
 				aboutApplication,
 				datasets,
@@ -345,6 +350,7 @@ class DataAccessRequest extends Component {
 			jsonSchema,
 			questionAnswers,
 			_id,
+			hasRecommended,
 			applicationStatus,
 			aboutApplication,
 			datasets,
@@ -436,6 +442,7 @@ class DataAccessRequest extends Component {
 			datasets,
 			questionAnswers,
 			_id,
+			hasRecommended,
 			applicationStatus,
 			activePanelId: initialPanel.panelId,
 			isWideForm: initialPanel.panelId === 'about',
@@ -936,6 +943,36 @@ class DataAccessRequest extends Component {
 			});
 	}
 
+
+	onDecisionReview = async (approved, comments) => {
+		let params = {
+			approved,
+			comments
+		}
+		await axios.put(`${baseURL}/api/v1/data-access-request/${this.state._id}/vote`, params)
+			.then((response) => {
+				this.loadDataAccessRequest(this.state._id);
+				this.toggleWorkflowReviewDecisionModal();
+				// redirect to dashboard with message
+				let alert = {
+					publisher: this.state.publisher || '',
+					nav: `dataaccessrequests&team=${this.state.publisher}`, 
+					tab: 'inReview',
+					message: `You have successfully sent your recommendation for your assigned phase of ${this.state.aboutApplication.projectName} project`,
+				};
+				// 4. redirect with Publisher name, Status: reject, approved, key of tab: presubmission, inreview, approved, rejected
+				this.props.history.push({
+					pathname: `/account`,
+					search: '?tab=dataaccessrequests',
+					state: { alert },
+				});
+
+			})
+			.catch(error => {
+				alert(error.message);
+			});
+	}
+
 	toggleCard = (e, eventKey) => {
 		e.preventDefault();
 		// 1. Deconstruct current state
@@ -1027,8 +1064,7 @@ class DataAccessRequest extends Component {
 		});
 	}
 
-	toggleWorkflowReviewDecisionModal = (type = '') => {
-		debugger;
+	toggleWorkflowReviewDecisionModal = (type = false) => {
 		this.setState((prevState) => {
 			return { 
 				showWorkflowReviewDecisionModal: !prevState.showWorkflowReviewDecisionModal,
@@ -1093,14 +1129,13 @@ class DataAccessRequest extends Component {
 		}
 	};
 
-	async getRole(roles) { 
-		let thisteam = [];
-
-		thisteam = this.props.userState[0].teams.filter(team => team.name === this.state.datasets[0].datasetfields.publisher);
-
-		this.setState({
-			roles : thisteam[0].roles
-		});
+	getUserRoles() {
+		let { teams } = this.props.userState[0];
+		let foundTeam = teams.filter(team => team.name === this.state.datasets[0].datasetfields.publisher);
+		if (_.isEmpty(teams) || _.isEmpty(foundTeam)) {
+			return ['applicant'];
+		}
+		return foundTeam[0].roles;
 	}
 
 	render() {
@@ -1894,6 +1929,7 @@ class DataAccessRequest extends Component {
 								workflowEnabled={this.state.workflowEnabled}
 								workflowAssigned={this.state.workflowAssigned}
 								inReviewMode={this.state.inReviewMode}
+								hasRecommended={this.state.hasRecommended}
 								applicationStatus={applicationStatus}
 								roles={roles}
 							/>
@@ -1943,7 +1979,8 @@ class DataAccessRequest extends Component {
 				<WorkflowReviewDecisionModal
 					open={this.state.showWorkflowReviewDecisionModal}
 					close={this.toggleWorkflowReviewDecisionModal}
-					type={this.state.workflowReviewDecisionType}
+					onDecisionReview={this.onDecisionReview}
+					approved={this.state.workflowReviewDecisionType}
 					workflow={this.state.workflow}
 					projectName={projectName}
 					dataSets={selectedDatasets}
