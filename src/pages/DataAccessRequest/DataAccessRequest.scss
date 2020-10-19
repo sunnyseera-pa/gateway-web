@@ -522,12 +522,12 @@ input[type=radio]:disabled {
 	text-decoration: underline !important;
 }
 
-.panConfirmDatasets {
+.panConfirm {
 	text-align: right;
-	margin-top: 8px;
+	margin-top: 16px;
 }
 
-.panConfirmDatasets > button {
+.panConfirm > button {
 	height: 40px;
 	width: 85px;
 }
