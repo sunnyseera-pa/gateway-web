@@ -51,6 +51,7 @@ class DataAccessRequestsNew extends React.Component {
     initGA("UA-166025838-1");
     this.fetchDataAccessRequests(this.state);
   }
+<<<<<<< HEAD
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.team !== this.props.team) {
@@ -114,6 +115,69 @@ class DataAccessRequestsNew extends React.Component {
     if (statusKey === "all")
       this.setState({ key, screenData: data, allCount: data.length });
 
+=======
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.team !== this.props.team) {
+      this.setState({ isLoading: true });
+      this.fetchDataAccessRequests(nextProps);
+	}
+	
+    this.setState({ alert: nextProps.alert });
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.alertTimeOut);
+  }
+
+  async fetchDataAccessRequests(nextProps) {
+    let data = [];
+    let avgDecisionTime = 0;
+    let dataProps = { ...nextProps, key: "all" };
+    // 1. if there is an alert set team and correct tab so it can display on the UI
+    if (!_.isEmpty(this.state.alert)) {
+      dataProps.team = this.state.alert.publisher;
+      dataProps.key = this.state.alert.tab;
+    }
+    // 2. check which API to call the user or custodian if a team and use team name
+    const teamExists = !_.isEmpty(dataProps.team) ? true : false;
+    if (teamExists && dataProps.team !== "user") {
+      const response = await axios.get(
+        `${baseURL}/api/v1/publishers/${dataProps.team}/dataaccessrequests`
+      );
+      ({
+        data: { data, avgDecisionTime }
+      } = response);
+    } else {
+      const response = await axios.get(`${baseURL}/api/v1/data-access-request`);
+      ({
+        data: { data, avgDecisionTime }
+      } = response);
+    }
+    // 3. modifies approve with conditions to approved
+    let screenData = this.formatScreenData(data);
+    // 4. count stats
+    let counts = DarHelperUtil.generateStatusCounts(screenData);
+    // 5. set state
+    this.setState({
+      data: screenData,
+      isLoading: false,
+      team: dataProps.team,
+      avgDecisionTime,
+      ...counts
+    });
+    // 6. set tab
+    this.onTabChange(dataProps.key);
+  }
+
+  onTabChange = key => {
+    let statusKey = DarHelperUtil.darStatus[key];
+    let { data } = this.state;
+
+    if (statusKey === "all")
+      this.setState({ key, screenData: data, allCount: data.length });
+
+>>>>>>> dev
     if (statusKey !== "all") {
       let screenData = [...data].reduce((arr, item) => {
         if (statusKey === item.applicationStatus) {
@@ -126,6 +190,7 @@ class DataAccessRequestsNew extends React.Component {
       this.setState({ key: key, screenData });
     }
   };
+<<<<<<< HEAD
 
 	generateAlert = () => {
 		let { alert: { message = '' } } = this.state;
@@ -165,6 +230,48 @@ class DataAccessRequestsNew extends React.Component {
   };
 
 
+=======
+
+  formatScreenData = (data = []) => {
+    if (!_.isEmpty(data)) {
+      return [...data].reduce((arr, item) => {
+        let { applicationStatus } = item;
+        return [
+          ...arr,
+          {
+            ...item,
+            applicationStatus: DarHelperUtil.darStatus[`${applicationStatus}`]
+          }
+        ];
+      }, []);
+    }
+    return [];
+  };
+
+  calculateTimeDifference = startTime => {
+    let start = moment(startTime);
+    let end = moment();
+    return end.diff(start, "days");
+  };
+
+  generateAlert = () => {
+    let {
+      alert: { message = "" }
+    } = this.state;
+    return (
+      <Row className="mt-3">
+        <Col xs={1}></Col>
+        <Col xs={10}>
+          <Alert variant={"success"} className="col-sm-12">
+            <CheckSvg fill="#2C8267" /> {message}
+          </Alert>
+        </Col>
+        <Col xs={1}></Col>
+      </Row>
+    );
+  };
+
+>>>>>>> dev
   renderComment = (
     applicationStatusDesc = "",
     applicationStatus = "",
@@ -261,7 +368,11 @@ class DataAccessRequestsNew extends React.Component {
   renderAverageSubmission = () => {
     return (
       <Clock />
+<<<<<<< HEAD
     )`${this.state.avgDecisionTime} average time from submission to decision`;
+=======
+    )`${this.state.avgDecisionTime} average time from submission to descision`;
+>>>>>>> dev
   };
 
   render() {
@@ -294,6 +405,7 @@ class DataAccessRequestsNew extends React.Component {
       );
     }
 
+<<<<<<< HEAD
 		return (
 			<Fragment>
 				<Fragment>{!_.isEmpty(alert) ? this.generateAlert() : ""}</Fragment>
@@ -312,6 +424,35 @@ class DataAccessRequestsNew extends React.Component {
 												
 										</Col>
 								</div>
+=======
+    return (
+      <Fragment>
+        <Fragment>{!_.isEmpty(alert) ? this.generateAlert() : ""}</Fragment>
+        <Row>
+          <Col xs={1}></Col>
+          <div className="col-sm-10">
+            <div className="accountHeader dataAccessHeader">
+              <Col xs={8}>
+                <Row>
+                  <div className="black-20">
+                    Data access request applications
+                    {!_.isEmpty(team) ? team : ""}
+                  </div>
+                  <div className="gray700-13">
+                    Manage forms and applications
+                  </div>
+                  <div>
+                    <Clock />
+                    {`${avgDecisionTime > 0 ? avgDecisionTime : "-"} days`}
+                    <span className="gray700-13">
+                      average time from submission to descision
+                    </span>
+                  </div>
+                </Row>
+              </Col>
+              <Col xs={4} style={{ textAlign: "right" }}></Col>
+            </div>
+>>>>>>> dev
 
             <div className="tabsBackground">
               <Col sm={12} lg={12}>
@@ -349,6 +490,7 @@ class DataAccessRequestsNew extends React.Component {
               </Col>
             </div>
 
+<<<<<<< HEAD
 						{screenData.map((request, i) => {
 							let {
 								datasets = [],
@@ -447,6 +589,107 @@ class DataAccessRequestsNew extends React.Component {
 			</Fragment>
 		);
 	}
+=======
+            {screenData.map((request, i) => {
+              let {
+                datasets = [],
+                updatedAt,
+                applicants = "",
+                publisher = "",
+                dateSubmitted = new Date(),
+                applicationStatus,
+                applicationStatusDesc = "",
+                projectName = "",
+                workflow = {},
+                workflowName = "",
+                workflowCompleted = false,
+                reviewStatus = "",
+                deadlinePassed = false,
+                decisionComments = "",
+                decisionStatus = "",
+                decisionMade = false,
+                decisionApproved = false,
+                reviewPanels = "",
+                isReviewer = false,
+                stepName = "",
+                remainingActioners = [],
+                _id,
+                decisionDate
+              } = request;
+              return (
+                <Row
+                  key={`request_${i}`}
+                  // onClick={event =>  window.location.href=`/data-access-request/${request._id}`}>
+                  onClick={e =>
+                    this.navigateToLocation(e, _id, applicationStatus)
+                  }
+                >
+                  <div className="col-md-12">
+                    <div className="layoutCard">
+                      <div className="header">
+                        <div className="header-title">
+                          <h1>{projectName}</h1>
+                        </div>
+                        <div className="header-status">
+                          {this.renderDuration(request, team)}
+                          <SLA
+                            classProperty={
+                              DarHelperUtil.darStatusColours[
+                                request.applicationStatus
+                              ]
+                            }
+                            text={
+                              DarHelperUtil.darSLAText[
+                                request.applicationStatus
+                              ]
+                            }
+                          />
+                        </div>
+                      </div>
+                      <div className="body">
+                        <AccessActivity
+                          datasets={datasets}
+                          applicationStatus={applicationStatus}
+                          publisher={publisher}
+                          updatedAt={updatedAt}
+                          applicants={applicants}
+                          dateSubmitted={dateSubmitted}
+                          team={team}
+                          workflow={workflow}
+                          workflowName={workflowName}
+                          workflowCompleted={workflowCompleted}
+                          reviewStatus={reviewStatus}
+                          deadlinePassed={deadlinePassed}
+                          decisionStatus={decisionStatus}
+                          decisionMade={decisionMade}
+                          isReviewer={isReviewer}
+                          stepName={stepName}
+                          remainingActioners={remainingActioners}
+                          navigateToLocation={this.navigateToLocation}
+                          applicationId={_id}
+                        />
+                      </div>
+                      {this.renderComment(
+                        applicationStatusDesc,
+                        applicationStatus,
+                        decisionComments,
+                        reviewPanels,
+                        decisionMade,
+                        decisionApproved,
+                        decisionDate
+                      )}
+                    </div>
+                  </div>
+                </Row>
+              );
+            })}
+          </div>
+          <Col xs={1}></Col>
+        </Row>
+      </Fragment>
+    );
+  }
+>>>>>>> dev
 }
 
 export default DataAccessRequestsNew;

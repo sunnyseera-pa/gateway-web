@@ -1138,14 +1138,14 @@ class DataAccessRequest extends Component {
 					applicationStatusDesc: statusDesc,
 				};
 				// 1. Update action status
-				const response = await axios.put(
+				const response = await axios.put( 
 					`${baseURL}/api/v1/data-access-request/${_id}`,
 					body
 				);
 				// 2. set alert object for screen
 				let alert = {
 					publisher: this.state.publisher || '',
-					nav: `dataaccessrequests&team=${this.state.publisher}`,
+					nav: `dataaccessrequests&team=${this.state.publisher}`, 
 					tab: this.tabState[type],
 					message: `You have ${this.tabState[type]} the data access request for ${this.state.publisher}`,
 				};
@@ -1836,7 +1836,7 @@ class DataAccessRequest extends Component {
 				</Container>
 			);
 		}
-
+ 
 		return (
 			<div>
 				<SearchBar
@@ -2120,7 +2120,7 @@ class DataAccessRequest extends Component {
 					context={actionModalConfig}
 					updateApplicationStatus={this.updateApplicationStatus}
 					close={this.toggleActionModal}
-				/>
+				/> 
 
 				<WorkflowReviewStepsModal
 					open={this.state.showWorkflowReviewModal}

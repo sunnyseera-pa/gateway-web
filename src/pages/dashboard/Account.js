@@ -91,7 +91,12 @@ class Account extends Component {
             this.state.team = props.location.state.team;
             localStorage.setItem('HDR_TEAM', props.location.state.team);
         }
+<<<<<<< HEAD
         else if (!_.isEmpty(localStorage.getItem('HDR_TEAM'))) {
+=======
+
+        else if (localStorage.getItem('HDR_TEAM') && localStorage.getItem('HDR_TEAM') !== '') {
+>>>>>>> dev
             this.state.team = localStorage.getItem('HDR_TEAM');
         }
         else {

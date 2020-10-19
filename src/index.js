@@ -15,6 +15,7 @@ import './css/styles.scss';
 const urlEnv = require('./pages/commonComponents/BaseURL').getURLEnv();
 
 // TODO: Revisit using sentry's dialog feedback
+<<<<<<< HEAD
 // if (urlEnv !== "local") {
 // 	Sentry.init({
 // 		dsn:"https://c7c564a153884dc0a6b676943b172121@o444579.ingest.sentry.io/5419637",
@@ -27,6 +28,20 @@ const urlEnv = require('./pages/commonComponents/BaseURL').getURLEnv();
 //         },
 // 	});
 // }
+=======
+if (urlEnv !== "local") {
+	Sentry.init({
+		dsn:"https://c7c564a153884dc0a6b676943b172121@o444579.ingest.sentry.io/5419637",
+		environment: urlEnv,
+		/* beforeSend(event, hint) {
+		    if(event.exception) {
+		        Sentry.showReportDialog({ eventId: event.event_id });
+            }
+		    return event;
+        }, */
+	});
+}
+>>>>>>> dev
 
 ReactDOM.render(<HDRRouter />, document.getElementById('root'));
 
