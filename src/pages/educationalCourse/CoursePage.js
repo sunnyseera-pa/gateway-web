@@ -43,8 +43,8 @@ class CourseDetail extends Component {
         name: null
       }
     ],
-    projectAdded: false,
-    projectEdited: false,
+    courseAdded: false,
+    courseEdited: false,
     discourseTopic: null,
     objects: [
       {
@@ -79,8 +79,8 @@ class CourseDetail extends Component {
   componentDidMount() {
     if (!!window.location.search) {
       var values = queryString.parse(window.location.search);
-      this.setState({ projectAdded: values.projectAdded });
-      this.setState({ projectEdited: values.projectEdited });
+      this.setState({ courseAdded: values.courseAdded });
+      this.setState({ courseEdited: values.courseEdited });
     }
     this.getDataSearchFromDb();
     initGA("UA-166025838-1");
@@ -213,8 +213,8 @@ class CourseDetail extends Component {
       searchString,
       data,
       isLoading,
-      projectAdded,
-      projectEdited,
+      courseAdded,
+      courseEdited,
       userState,
       relatedObjects,
       discoursePostCount,
@@ -249,12 +249,12 @@ class CourseDetail extends Component {
             userState={userState}
           />
           <Container className="margin-bottom-48">
-            {projectAdded ? (
+            {courseAdded ? (
               <Row className="">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                   <Alert variant="success" className="mt-3">
-                    Done! Someone will review your project and let you know when
+                    Done! Someone will review your course and let you know when
                     it goes live
                   </Alert>
                 </Col>
@@ -264,12 +264,12 @@ class CourseDetail extends Component {
               ""
             )}
 
-            {projectEdited ? (
+            {courseEdited ? (
               <Row className="">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                   <Alert variant="success" className="mt-3">
-                    Done! Your project has been updated
+                    Done! Your course has been updated
                   </Alert>
                 </Col>
                 <Col sm={1} lg={10} />
@@ -292,7 +292,7 @@ class CourseDetail extends Component {
               ""
             )}
 
-            {/* <ProjectTitle data={data} activeLink={true}/> */}
+            {/* <ProjectTitle data={data} activeLink={true}/> */} 
 
             <Row className="mt-4">
               <Col sm={1} lg={1} />
