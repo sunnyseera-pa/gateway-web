@@ -171,7 +171,7 @@ class AccountCourses extends React.Component {
                                 </Row>
                             </Col>
                             <Col sm={12} md={4} style={{ textAlign: "right" }}>
-                                <Button variant="primary" href="/paper/add" className="addButton" onClick={() => Event("Buttons", "Click", "Add a new course")} >
+                                <Button variant="primary" href="/course/add" className="addButton" onClick={() => Event("Buttons", "Click", "Add a new course")} >
                                     + Add a new course
                                 </Button>
                             </Col>
@@ -224,6 +224,7 @@ class AccountCourses extends React.Component {
 
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
+                                                                    <Dropdown.Item href={'/course/' + dat.id} className="black-14">View</Dropdown.Item>
                                                                     <Dropdown.Item href={'/course/edit/' + dat.id} className="black-14">Edit</Dropdown.Item>
                                                                     <DeleteButton id={dat.id} deleteObject={this.deleteObject}/>
                                                                 </DropdownButton>
@@ -380,7 +381,7 @@ function DeleteButton(props) {
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    const deleteObject = () => props.deleteObject(props.id);
+    const deleteObject = () => props.deleteObject(props.id); 
 
     return (
         <>

@@ -422,7 +422,7 @@ class Account extends Component {
                             {team === 'user' ?
                                 <div className={`${tabId === 'courses' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('courses')}>
                                     <Nav.Link eventKey={'courses'} className="verticalNavBar gray700-13">
-                                        <SVGIcon name='educationicon' fill={'#b3b8bd'} className='accountSvgs' />
+                                        <SVGIcon name='educationicon' fill={'#b3b8bd'} className='svg-20' />
                                         <span className="navLinkItem">Courses</span>
                                     </Nav.Link>
                                 </div>
