@@ -8,6 +8,7 @@ import AccountProjects from './AccountProjects';
 import AccountDatasets from './AccountDatasets';
 import AccountAdvancedSearch from './AccountAdvancedSearch';
 import AccountPapers from './AccountPapers';
+import AccountCourses from './AccountCourses';
 import AccountCollections from './AccountCollections';
 import AccountAnalyticsDashboard from './AccountAnalyticsDashboard';
 import AccountUsers from './AccountUsers';
@@ -417,11 +418,20 @@ class Account extends Component {
                                     </Nav.Link>
                                 </div>
                                 : ''
+                            } 
+                            {team === 'user' ?
+                                <div className={`${tabId === 'courses' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('courses')}>
+                                    <Nav.Link eventKey={'courses'} className="verticalNavBar gray700-13">
+                                        <SVGIcon name='educationicon' fill={'#b3b8bd'} className='accountSvgs' />
+                                        <span className="navLinkItem">Courses</span>
+                                    </Nav.Link>
+                                </div>
+                                : ''
                             }
                             {team === 'user' ?
                                 <div className={`${tabId === 'dataaccessrequests' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('dataaccessrequests')}>
                                     <Nav.Link eventKey={'dataaccessrequests'} className="verticalNavBar gray700-13">
-                                        <SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
+                                        <SVGIcon name='dataaccessicon' fill={'#b3b8bd'} className='accountSvgs' />
                                         <span className="navLinkItem">Data access requests</span>
                                     </Nav.Link>
                                 </div>
@@ -463,7 +473,7 @@ class Account extends Component {
                                     </Nav.Link>
                                 </div>
                                 : ''
-                            }
+                            } 
                             {team === 'user' ?
                                 userState[0].role === 'Admin' ? 
                                     <div className={`${tabId === 'usersroles' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('usersroles')}>
@@ -494,6 +504,8 @@ class Account extends Component {
                         {tabId === 'datasetsAdvancedSearch' ? <AccountAdvancedSearch userState={userState} /> : ''}
 
                         {tabId === 'papers' ? <AccountPapers userState={userState} /> : ''}
+
+                        {tabId === 'courses' ? <AccountCourses userState={userState} /> : ''} 
 
                         {tabId === 'dataaccessrequests' ? <DataAccessRequests userState={userState} team={team} alert={alert} /> : ''}  
 
