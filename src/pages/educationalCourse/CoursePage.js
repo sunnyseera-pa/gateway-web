@@ -13,7 +13,7 @@ import NotFound from "../commonComponents/NotFound";
 import SearchBar from "../commonComponents/searchBar/SearchBar";
 import Loading from "../commonComponents/Loading";
 import Creators from "../commonComponents/Creators";
-import SVGIcon from "../../images/SVGIcon";
+import SVGIcon from "../../images/SVGIcon"; 
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
@@ -143,7 +143,7 @@ class CourseDetail extends Component {
   };
 
   updateCounter = (id, counter) => {
-    axios.post(baseURL + "/api/v1/counter/update", { id, counter });
+    axios.post(baseURL + "/api/v1/counter/update", { id, counter }); 
   };
 
   getAdditionalObjectInfo = async data => { 
@@ -151,7 +151,7 @@ class CourseDetail extends Component {
     if(data){
     const promises = data.map(async (object, index) => {
       await axios
-        .get(baseURL + "/api/v1/relatedobject/" + object.objectId)
+        .get(baseURL + "/api/v1/relatedobject/" + object.objectId) 
         .then(res => {
           tempObjects.push({
             id: object.objectId,
@@ -292,8 +292,6 @@ class CourseDetail extends Component {
               ""
             )}
 
-            {/* <ProjectTitle data={data} activeLink={true}/> */} 
-
             <Row className="mt-4">
               <Col sm={1} lg={1} />
               <Col sm={10} lg={10}>
@@ -315,6 +313,7 @@ class CourseDetail extends Component {
                         <span>Course</span>
                       </span>
 
+                      {/* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */}
                       <a href={"/search?search=&tab=Projects&projectcategories=" + data.categories.category}>
                         <div className="badge-tag">
                           {data.categories.category}
@@ -445,6 +444,7 @@ class CourseDetail extends Component {
                                 ) : (
                                   data.tags.features.map(keyword => {
                                     return (
+                                      /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
                                       <a href={"/search?search=&tab=Projects&projectfeatures=" + keyword}>
                                         <div className="badge-tag">{keyword}</div>
                                       </a>
@@ -466,6 +466,7 @@ class CourseDetail extends Component {
                                 ) : (
                                   data.tags.topics.map(domain => {
                                     return (
+                                      /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
                                       <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
                                         <div className="badge-tag">{domain}</div>
                                       </a>
@@ -532,6 +533,7 @@ class CourseDetail extends Component {
                                 ) : (
                                   data.tags.topics.map(domain => {
                                     return (
+                                      /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
                                       <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
                                         <div className="badge-version" ><span>Level</span><span>Subject</span></div>
                                       </a>
@@ -553,6 +555,7 @@ class CourseDetail extends Component {
                                 ) : (
                                   data.tags.topics.map(domain => {
                                     return (
+                                      /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
                                       <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
                                         <div className="badge-tag">{domain}</div>
                                       </a>
@@ -574,6 +577,7 @@ class CourseDetail extends Component {
                                 ) : (
                                   data.tags.topics.map(domain => {
                                     return (
+                                      /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
                                       <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
                                         <div className="badge-tag">{domain}</div>
                                       </a>
@@ -595,6 +599,7 @@ class CourseDetail extends Component {
                                 ) : (
                                   data.tags.topics.map(domain => {
                                     return (
+                                      /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
                                       <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
                                         <div className="badge-tag">{domain}</div>
                                       </a>
@@ -616,6 +621,7 @@ class CourseDetail extends Component {
                                 ) : (
                                   data.tags.topics.map(domain => {
                                     return (
+                                      /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
                                       <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
                                         <div className="badge-tag">{domain}</div>
                                       </a>
