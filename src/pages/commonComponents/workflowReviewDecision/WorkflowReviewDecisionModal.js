@@ -42,8 +42,10 @@ const WorkflowReviewDecisionModal = ({ open, close, workflow = {}, projectName =
   const getActivePhase = () => {
     if(!_.isEmpty(workflow)) {
       let { steps } = workflow;
-      let activeStep = [...steps].find(s => s.active) || {};
-      setPhase(activeStep);
+      if(!_.isEmpty(steps)) {
+        let activeStep = [...steps].find(s => s.active) || {};
+        setPhase(activeStep);
+      }
     }
   }
 
