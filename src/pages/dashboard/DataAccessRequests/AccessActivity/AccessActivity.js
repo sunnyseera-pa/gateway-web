@@ -13,7 +13,8 @@ const AccessActivity = ({
   team = '',
   publisher = '', 
   applicationStatus,
-  navigateToLocation,
+	navigateToLocation,
+	workflow = {},
   workflowName = '',
   workflowCompleted = false,
   reviewStatus = '',
@@ -48,7 +49,8 @@ const AccessActivity = ({
 	};
 
 	const onClickStartReview = (e) => {
-		navigateToLocation(e, applicationId, applicationStatus);
+		debugger;
+		navigateToLocation(e, applicationId, applicationStatus, workflow);
 	}
 
 	const buildAccessRequest = () => {	
@@ -70,7 +72,7 @@ const AccessActivity = ({
 					<Fragment>
 						<div className='box'>Workflow</div>
 						<div
-							id='workflow'
+							id={`workflow_${workflow._id}`}
 							className='box box-link'
 							onClick={(e) => {navigateToLocation(e)}}
 						>

@@ -2,12 +2,13 @@ import React, { Fragment } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
 import moment from 'moment';
-import { Row, Col, Tabs, Tab, DropdownButton, Dropdown, Alert } from 'react-bootstrap';
+import { Row, Col, Tabs, Tab, Alert } from 'react-bootstrap';
 import { ReactComponent as CheckSvg } from '../../../images/check.svg';
 import { ReactComponent as Clock } from "../../../images/clock.svg";
 import Loading from '../../commonComponents/Loading';
 import SLA from '../../commonComponents/sla/SLA';
 import TimeDuration from '../../commonComponents/timeDuration/TimeDuration';
+import WorkflowReviewStepsModal from '../../commonComponents/workflowReviewStepsModal/WorkflowReviewStepsModal';
 import CommentItem from './CommentItem/CommentItem';
 import AccessActivity from './AccessActivity/AccessActivity';
 import { initGA } from "../../../tracking";
@@ -24,6 +25,7 @@ class DataAccessRequestsNew extends React.Component {
     key: "all",
     data: [],
     screenData: [],
+    workflows: [],
     isLoading: true,
     allCount: 0,
     approvedCount: 0,
@@ -34,7 +36,8 @@ class DataAccessRequestsNew extends React.Component {
     inReviewCount: 0,
     team: "",
     avgDecisionTime: 0,
-    alert: {}
+    alert: {},
+    showWorkflowReviewModal: false
   };
 
   constructor(props) {
@@ -104,6 +107,14 @@ class DataAccessRequestsNew extends React.Component {
 		});
 		// 6. set tab
 		this.onTabChange(dataProps.key);
+  }
+  
+  toggleWorkflowReviewModal = (e) => {
+		this.setState((prevState) => {
+			return { 
+				showWorkflowReviewModal: !prevState.showWorkflowReviewModal,
+			};
+		});
 	}
 
 
@@ -229,12 +240,26 @@ class DataAccessRequestsNew extends React.Component {
     return "";
   };
 
-  navigateToLocation = (e, applicationId, applicationStatus) => {
+  navigateToLocation = (e, applicationId, applicationStatus, workflow = {}) => {
     e.stopPropagation();
-
-    switch (e.currentTarget.id) {
+    // 1. split the id up into two parts
+    let [id, uniqueId] = e.currentTarget.id.split('_');
+    // 2. test what Id we have clicked on
+    switch (id) {
       case "workflow":
-        alert("show popup");
+        // 3. get workflows removed undefined values from map
+        const workflows = _.without([...this.state.screenData].map(d =>  d.workflow),  undefined) ;
+        // 4. if workflows in array
+        if(!_.isEmpty(workflows)) {
+          // 5. find the workflow
+          const workflow = workflows.find(w => w._id === uniqueId) || {};
+          if(!_.isEmpty(workflow)) {
+            // 6. set state
+            this.setState({ workflow });
+            // 7. display showWorkflowReviewModal
+            this.toggleWorkflowReviewModal();
+          }
+        }
         break;
       case "startReview":
         this.startWorkflowReview(applicationId);
@@ -380,7 +405,7 @@ class DataAccessRequestsNew extends React.Component {
 									key={`request_${i}`}
 									// onClick={event =>  window.location.href=`/data-access-request/${request._id}`}>
 									onClick={(e) =>
-										this.navigateToLocation(e, _id, applicationStatus)
+										this.navigateToLocation(e, _id, applicationStatus, workflow)
 									}
 								>
 									<div className='col-md-12'>
@@ -444,7 +469,17 @@ class DataAccessRequestsNew extends React.Component {
 					</div>{/*CLOSE col-sm-10 */}
 					<Col xs={1}></Col>
 				</Row>
+
+        <WorkflowReviewStepsModal
+          open={this.state.showWorkflowReviewModal}
+          close={this.toggleWorkflowReviewModal}
+          workflow={this.state.workflow}
+        />
+
 			</Fragment>
+
+
+
 		);
 	}
 }

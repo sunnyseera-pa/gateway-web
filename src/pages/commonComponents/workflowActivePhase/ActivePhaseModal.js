@@ -20,7 +20,6 @@ const ActivePhaseModal = ({ open, close, workflow = {}, projectName = '', dataSe
     if(!_.isEmpty(workflow)) {
       let { steps } = workflow;
       if(!_.isEmpty(steps)) {
-        debugger;
         let activeStep = [...steps].find(s => s.active) || {};
         setPhase(activeStep);
       }

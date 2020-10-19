@@ -40,11 +40,13 @@ const WorkflowReviewStepsModal = ({ open, close, workflow = {} }) => {
 						reviewers, 
 						recommendations,
 						_id,
+						active
 						} = step;
+						debugger;
 					// 2. each item add expand state and reviewers expand
 					let item = {
 						...step,
-						closed: true,
+						closed: active ? false : true,
 						reviews: buildReviews(_id, reviewers, recommendations)
 					}
 					// 3. return new array
@@ -97,7 +99,6 @@ const WorkflowReviewStepsModal = ({ open, close, workflow = {} }) => {
 	}
 
 	const setToggleReview = (review = {}) => {
-		debugger;
 		let { steps } = workflowObj;
 		let modifiedSteps = [...steps].reduce((arr, step) => {
 			let modifiedReviews = [];

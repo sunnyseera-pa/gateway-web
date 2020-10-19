@@ -496,7 +496,6 @@ class DataAccessRequest extends Component {
 	 * @desc Callback from Winterfell sets totalQuestionsAnswered + saveTime
 	 */
 	onFormUpdate = _.debounce((id = '', questionAnswers = {}) => {
-		debugger;
 		if (!_.isEmpty(id) && !_.isEmpty(questionAnswers)) {
 			let { applicationStatus, lookup, activePanelId } = this.state;
 			// 1. check for auto complete
