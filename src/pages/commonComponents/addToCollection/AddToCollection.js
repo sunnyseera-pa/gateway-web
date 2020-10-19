@@ -117,7 +117,7 @@ class AddToCollection extends Component {
                                                 Add to collection  
                                             </Button>
                                         </Dropdown.Toggle>
-                                        <Button variant='white' href={'https://metadata-catalogue.org/hdruk/#/catalogue/dataModel/' + this.state.resourceData.datasetid} target="_blank" className="techDetailButton mr-2">Technical details</Button>
+                                        <Button variant='medium' href={'https://metadata-catalogue.org/hdruk/#/catalogue/dataModel/' + this.state.resourceData.datasetid} target="_blank" className="linkToTechnicalDetails dark-14 mr-2">Technical details</Button>
                                 </ActionBar>
                                 : 
                                 <Dropdown.Toggle as={CustomToggle} >
@@ -155,7 +155,7 @@ class AddToCollection extends Component {
         } else {
             return (
                 <ActionBar userState={userState}>
-                    <Button variant='white' href={'https://metadata-catalogue.org/hdruk/#/catalogue/dataModel/' + this.state.resourceData.datasetid} target="_blank" className="techDetailButton mr-2">Technical details</Button>
+                    <Button variant='medium' href={'https://metadata-catalogue.org/hdruk/#/catalogue/dataModel/' + this.state.resourceData.datasetid} target="_blank" className="linkToTechnicalDetails dark-14 mr-2">Technical details</Button>
                 </ActionBar>
             ) 
         }
