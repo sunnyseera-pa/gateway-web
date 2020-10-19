@@ -4,15 +4,11 @@ import './ActionBar.scss';
 
 const ActionBar = (props) => {  
     return (
-        !props.userState[0].loggedIn ? (
-            ""
-        ) : (
-            <div className="actionBar"> 
-                <Row className="floatRight">
-                    {props.children}
-                </Row>
-            </div>
-        )
+        <div className="actionBar"> 
+            <Row className="floatRight">
+                {props.children}
+            </Row>
+        </div>
     );
 };
 
