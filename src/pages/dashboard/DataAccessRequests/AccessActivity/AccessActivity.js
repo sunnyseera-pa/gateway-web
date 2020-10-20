@@ -55,7 +55,7 @@ const AccessActivity = ({
 
 	const buildAccessRequest = () => {	
 		const hasWorkflow = !_.isEmpty(workflowName) ? true : false;
-		const isTeam = !_.isEmpty(team) ? true : false;
+		const isTeam = team !== 'user' ? true : false;
 		return (
 			<Fragment>
 				<div className='box gray800-14'>Datasets</div>
