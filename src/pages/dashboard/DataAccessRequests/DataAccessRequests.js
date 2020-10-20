@@ -244,10 +244,10 @@ class DataAccessRequestsNew extends React.Component {
     e.stopPropagation();
     // 1. split the id up into two parts
     let [id, uniqueId] = e.currentTarget.id.split('_');
-    // 2. test what Id we have clicked on
+    // 2. test the Id we have clicked on
     switch (id) {
       case "workflow":
-        // 3. get workflows removed undefined values from map
+        // 3. get workflows remove undefined values from map
         const workflows = _.without([...this.state.screenData].map(d =>  d.workflow),  undefined) ;
         // 4. if workflows in array
         if(!_.isEmpty(workflows)) {

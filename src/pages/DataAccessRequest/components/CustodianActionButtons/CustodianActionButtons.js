@@ -25,7 +25,7 @@ const CustodianActionButtons = ({
 
   return (
     <Fragment>
-      {inReviewMode && !hasRecommended || (workflowAssigned && roles.includes('manager')) ?
+      {inReviewMode && !hasRecommended || (roles.includes('manager')) ?
         <Dropdown>
           <Dropdown.Toggle as={CustomToggle} >
             <button className={applicationStatus==="submitted" ? "dark-14" : "button-secondary"} >
@@ -34,7 +34,7 @@ const CustodianActionButtons = ({
           </Dropdown.Toggle>
 
             <Dropdown.Menu className="makeADecisionDropdown">  
-              { inReviewMode && !hasRecommended ?
+              { inReviewMode && !hasRecommended && workflowAssigned ?
                 <div className="review-phase">
                   <Row className="makeADecisionHeader"> 
                     <span className="gray800-14-bold mb-1">

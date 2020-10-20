@@ -294,9 +294,9 @@ const AddEditWorkflow = (props) => {
                                           <Field 
                                             type="checkbox" 
                                             name={`steps[${index}].sections`}
-                                            value="safeoutput"
+                                            value="safeoutputs"
                                             className={`checker ${hasErrors(touched, errors, index, 'sections') ? 'is-invalid' : ''}`}  />
-                                          <span className="gray800-14 ml-4">Safe output</span>
+                                          <span className="gray800-14 ml-4">Safe outputs</span>
                                         </div>
                                         <div className="row mb-2">
                                           <Field 
