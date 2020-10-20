@@ -187,7 +187,7 @@ const AddEditWorkflow = (props) => {
                     .required('You must select at least one section'),
                   deadline: Yup.string()
                     .trim()
-                    .matches(/^[0-9]+$/, 'Must only be a number')
+                    .matches(/^(?:[4-9]|[12]\d)\d*$/, 'Must only be a number and be greater than 3')
                     .required('This cannot be empty')
                 })
               )
