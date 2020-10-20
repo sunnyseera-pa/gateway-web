@@ -12,9 +12,10 @@ const MessageHeader = ({ userState, topic, modalRequired, onRequestAccess, onSho
         ({ title: publisher} = topic);
         setPubliser(publisher);
         let { teams = []} = userState;
+        debugger;
         if(!_.isEmpty(teams)) {
             const hasPublisher = [...teams]
-                                    .map(t => t.publisher.name)
+                                    .map(t => t.name)
                                     .includes(publisher);
             setShowDashboard(hasPublisher);
         } else {
@@ -40,7 +41,7 @@ const MessageHeader = ({ userState, topic, modalRequired, onRequestAccess, onSho
                 )}
             </div>
             <div className="messageArea-header-action">
-                {showDashboard ? <div className="purple-14 mr-2" onClick={e => onRouteChange(e)}>Show applications</div>  : ''}
+                {showDashboard ? <div className="purple-14 mr-2 pointer" onClick={e => onRouteChange(e)}>Show applications</div>  : ''}
                 { modalRequired ? 
                     <button className="button-tertiary" onClick={e => onShowModal(e)}>How to request access</button> 
                 :
