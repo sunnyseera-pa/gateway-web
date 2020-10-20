@@ -265,7 +265,7 @@ class DataAccessRequestsNew extends React.Component {
         this.startWorkflowReview(applicationId);
         break;
       default:
-        if (applicationStatus !== DarHelperUtil.darStatus.submitted || team === "user") {
+        if (applicationStatus !== DarHelperUtil.darStatus.submitted || this.state.team === "user") {
           window.location.href = `/data-access-request/${applicationId}`;
         }
         break;
