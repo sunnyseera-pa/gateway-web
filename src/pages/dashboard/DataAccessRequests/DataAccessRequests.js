@@ -240,7 +240,7 @@ class DataAccessRequestsNew extends React.Component {
     return "";
   };
 
-  navigateToLocation = (e, applicationId, applicationStatus, workflow = {}) => {
+  navigateToLocation = (e, applicationId, applicationStatus) => {
     e.stopPropagation();
     // 1. split the id up into two parts
     let [id, uniqueId] = e.currentTarget.id.split('_');
@@ -265,7 +265,7 @@ class DataAccessRequestsNew extends React.Component {
         this.startWorkflowReview(applicationId);
         break;
       default:
-        if (applicationStatus !== DarHelperUtil.darStatus.submitted) {
+        if (applicationStatus !== DarHelperUtil.darStatus.submitted || team === "user") {
           window.location.href = `/data-access-request/${applicationId}`;
         }
         break;
@@ -405,7 +405,7 @@ class DataAccessRequestsNew extends React.Component {
 									key={`request_${i}`}
 									// onClick={event =>  window.location.href=`/data-access-request/${request._id}`}>
 									onClick={(e) =>
-										this.navigateToLocation(e, _id, applicationStatus, workflow)
+										this.navigateToLocation(e, _id, applicationStatus)
 									}
 								>
 									<div className='col-md-12'>

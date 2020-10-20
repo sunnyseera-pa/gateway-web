@@ -25,10 +25,10 @@ const CustodianActionButtons = ({
 
   return (
     <Fragment>
-      {inReviewMode && !hasRecommended || (roles.includes('manager')) ?
+      {inReviewMode && !hasRecommended || ((roles.includes('manager')) && (applicationStatus === 'inReview' || applicationStatus === 'submitted')) ?
         <Dropdown>
           <Dropdown.Toggle as={CustomToggle} >
-            <button className={applicationStatus==="submitted" ? "dark-14" : "button-secondary"} >
+            <button className="button-secondary">
               Make a decision
             </button>
           </Dropdown.Toggle>

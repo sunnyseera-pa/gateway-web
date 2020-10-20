@@ -12,7 +12,7 @@ const WorkflowsModal = ({workflows, toggleSelected}) => {
                             <Col sm={1} lg={1} />  
                             <Col sm={10} lg={10} className="mt-2 mb-3" >
                                 <Row>
-                                {workflows.map((workflow, i) => {  
+                                { workflows.map((workflow, i) => {  
                                     return <WorkflowObject
                                                 key={`workflow-${i}`}
                                                 workflow={workflow}
