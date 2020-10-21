@@ -22,7 +22,8 @@ const TeamHelp = () => {
         try {
             setLoading(true);
             let response = await axios.get(`${baseURL}/api/v1/help/team`);
-            setHelp(response.data.data.map(r => ({ ...r, closed: true })));
+            let helpFAQ = (response.data.help.map(r => ({ ...r, closed: true })));
+            setHelp(helpFAQ);
             setLoading(false);
         } catch (err) {
             console.log(`Error fetching team help ${err}`);
