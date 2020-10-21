@@ -346,7 +346,7 @@ class DataAccessRequestsNew extends React.Component {
                   onSelect={this.onTabChange}
                 >
                   <Tab eventKey="all" title={"All (" + allCount + ")"}></Tab>
-                  {!team ? (
+                  {team === 'user' ? (
                     <Tab
                       eventKey="inProgress"
                       title={"Pre-submission (" + preSubmissionCount + ")"}

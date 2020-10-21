@@ -617,7 +617,8 @@ class DataAccessRequest extends Component {
 
 				let alert = {
 					tab: "submitted",
-					message: "Your application was submitted successfully"
+					message: "Your application was submitted successfully",
+					publisher: "user"
 				};
 				this.props.history.push({
 					pathname: '/account',
