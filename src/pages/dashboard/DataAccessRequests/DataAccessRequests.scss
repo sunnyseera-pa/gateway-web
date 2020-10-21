@@ -5,6 +5,12 @@
   margin-bottom: 15px;
 }
 
+.main-alert {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+}
+
 .dataAccessHeader {
   div {
     display: block;
