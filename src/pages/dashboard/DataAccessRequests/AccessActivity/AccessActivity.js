@@ -13,8 +13,8 @@ const AccessActivity = ({
   team = '',
   publisher = '', 
   applicationStatus,
-	navigateToLocation,
-	workflow = {},
+  navigateToLocation,
+  workflow = {},
   workflowName = '',
   workflowCompleted = false,
   reviewStatus = '',
@@ -43,6 +43,10 @@ const AccessActivity = ({
 
 		if(isReviewer && decisionMade) {
 			reviewDecision = <WorkflowDecision classProperty="box-check" decisionMade={decisionMade} decisionText={decisionStatus} icon='check' />
+		}
+
+		if(_.isEmpty(reviewStatus)) {
+			return "";
 		}
 
 		return reviewDecision;
