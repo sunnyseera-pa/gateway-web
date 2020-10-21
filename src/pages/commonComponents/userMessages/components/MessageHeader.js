@@ -12,7 +12,6 @@ const MessageHeader = ({ userState, topic, modalRequired, onRequestAccess, onSho
         ({ title: publisher} = topic);
         setPubliser(publisher);
         let { teams = []} = userState;
-        debugger;
         if(!_.isEmpty(teams)) {
             const hasPublisher = [...teams]
                                     .map(t => t.name)

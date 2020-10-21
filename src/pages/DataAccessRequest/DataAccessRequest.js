@@ -121,6 +121,8 @@ class DataAccessRequest extends Component {
 			workflowAssigned: false,
 			roles: []
 		};
+
+		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
 	}
 
 	applicationState = {
@@ -495,7 +497,7 @@ class DataAccessRequest extends Component {
 	 * @param {obj: questionAnswers}
 	 * @desc Callback from Winterfell sets totalQuestionsAnswered + saveTime
 	 */
-	onFormUpdate = _.debounce((id = '', questionAnswers = {}) => {
+	onFormUpdate = (id = '', questionAnswers = {}) => {
 		if (!_.isEmpty(id) && !_.isEmpty(questionAnswers)) {
 			let { applicationStatus, lookup, activePanelId } = this.state;
 			// 1. check for auto complete
@@ -512,6 +514,7 @@ class DataAccessRequest extends Component {
 			let countedQuestionAnswers = {};
 			let totalQuestions = '';
 
+			// 3. total questions answered
 			if (activePanelId === 'about') {
 				countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this);
 				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered`;
@@ -524,22 +527,44 @@ class DataAccessRequest extends Component {
 				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered in this section`;
 			}
 
+			// 4. set totalQuestionAnswered
 			this.setState({ totalQuestions });
 
 			if (applicationStatus === 'submitted')
 				return alert('Your application has already been submitted.');
 
-			// 3. remove blank vals from questionAnswers
+			// 5. remove blank vals from questionAnswers
 			let data = _.pickBy(
 				{ ...this.state.questionAnswers, ...questionAnswers },
 				_.identity
 			);
-			// 4. create dataObject
+			const lastSaved = DarHelper.saveTime();
+			// 6. create dataObject
 			let dataObj = { key: 'questionAnswers', data };
-			// 5. update application
-			this.updateApplication(dataObj);
+			// 7. Immediately update the state
+			this.setState({ [`${dataObj.key}`]: { ...dataObj.data }, lastSaved });
+			// 8. Execute the debounced onChange method API CALL
+			this.onChangeDebounced(dataObj);
 		}
-	}, 500);
+	};
+
+
+	onChangeDebounced = (obj = {}) => {
+		try {
+			let { _id: id } = this.state;
+			// 1. deconstruct
+			let { key, data = {} } = obj;
+			// 2. set body params
+			let params = {
+				[`${key}`]: JSON.stringify(data),
+			};
+			// 3. API Patch call
+			axios.patch(`${baseURL}/api/v1/data-access-request/${id}`, params);
+		} catch (error) {
+			console.log(`API PUT ERROR ${error}`);
+		}
+	};
+
 
 	checkCurrentUser = (userId) =>{
 		let {userState} = this.props;
@@ -614,6 +639,7 @@ class DataAccessRequest extends Component {
 		}
 	};
 
+
 	updateApplication = async (obj = {}) => {
 		try {
 			// 1. Data = {key: jsonSchema || questionAnswers, data: { object of data}}
@@ -624,6 +650,7 @@ class DataAccessRequest extends Component {
 			let params = {
 				[`${key}`]: JSON.stringify(data),
 			};
+			debugger;
 			// 4. PATCH the data
 			const response = await axios.patch(
 				`${baseURL}/api/v1/data-access-request/${id}`,
@@ -637,7 +664,7 @@ class DataAccessRequest extends Component {
 			console.log(err);
 		}
 	};
-
+	
 	onNextClick = () => {
 		// 1. If in the about panel, we go to the next step.  Otherwise next panel.
 		if (this.state.activePanelId === 'about') {
@@ -755,6 +782,7 @@ class DataAccessRequest extends Component {
 			let {
 				input: { action },
 			} = DarHelper.findQuestion(questionId, questionSet);
+			debugger;
 			switch (action) {
 				case 'addApplicant':
 					let duplicateQuestionSet = DarHelper.questionSetToDuplicate(

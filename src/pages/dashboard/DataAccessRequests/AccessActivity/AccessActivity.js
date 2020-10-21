@@ -49,8 +49,7 @@ const AccessActivity = ({
 	};
 
 	const onClickStartReview = (e) => {
-		debugger;
-		navigateToLocation(e, applicationId, applicationStatus, workflow);
+		navigateToLocation(e, applicationId, applicationStatus);
 	}
 
 	const buildAccessRequest = () => {	
@@ -84,7 +83,7 @@ const AccessActivity = ({
 				) : (
 					""
 				)}
-				{isTeam == true ? (
+				{isTeam == true && (applicationStatus === DarHelperUtil.darStatus.submitted || applicationStatus === DarHelperUtil.darStatus.inReview) ? (
 					<Fragment>
 						<div className='box'>Action required by</div>
 						<div className='box'>
@@ -101,7 +100,7 @@ const AccessActivity = ({
 				<div className='box'>Submitted</div>
 				<div className='box'>
 					{!_.isEmpty(dateSubmitted)
-						? moment(dateSubmitted).format("D MMMM YYYY HH:mm")
+						? moment(dateSubmitted).format("D MMMM YYYY")
 						: "-"}
 				</div>
 				<div className='box'>Last activity</div>

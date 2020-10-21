@@ -194,8 +194,6 @@ let autoComplete = (questionId, uniqueId, questionAnswers) => {
 			[`${key}`]: value
 		};
 	});
-
-	// questionAnswers = {...questionAnswers, ...questionList};
 	// return questionAnswers
 	return { ...questionAnswers, ...questionList };
 };

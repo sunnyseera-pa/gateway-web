@@ -42,7 +42,6 @@ const WorkflowReviewStepsModal = ({ open, close, workflow = {} }) => {
 						_id,
 						active
 						} = step;
-						debugger;
 					// 2. each item add expand state and reviewers expand
 					let item = {
 						...step,

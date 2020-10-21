@@ -3,7 +3,7 @@ import axios from 'axios';
 import _ from 'lodash';
 import moment from 'moment';
 import { Row, Col, Tabs, Tab, Alert } from 'react-bootstrap';
-import { ReactComponent as CheckSvg } from '../../../images/check.svg';
+import SVGIcon from "../../../images/SVGIcon";
 import { ReactComponent as Clock } from "../../../images/clock.svg";
 import Loading from '../../commonComponents/Loading';
 import SLA from '../../commonComponents/sla/SLA';
@@ -145,7 +145,7 @@ class DataAccessRequestsNew extends React.Component {
 						<Col xs={1}></Col>
 						<Col xs={10}>
 							<Alert variant={"success"} className="col-sm-12">
-								<CheckSvg fill="#2C8267" />{message}
+                <SVGIcon name="check" width={18} height={18} fill={'#2C8267'} />
 							</Alert>
 						</Col>
 						<Col xs={1}></Col>
