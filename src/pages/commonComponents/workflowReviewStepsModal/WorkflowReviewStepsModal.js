@@ -18,7 +18,7 @@ const WorkflowReviewStepsModal = ({ open, close, workflow = {} }) => {
 
 	const buildWorkflow = () => {
 		// 1. deconstruct workflow
-		let { workflowName = '', steps = [], isCompleted = false } = workflow;
+		let { steps = [] } = workflow;
 		if(!_.isEmpty(steps)) {
 			const stepsArr = formatSteps(steps);
 			let workflowObj = {

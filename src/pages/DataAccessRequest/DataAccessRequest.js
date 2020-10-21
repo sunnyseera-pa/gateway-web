@@ -1194,7 +1194,6 @@ class DataAccessRequest extends Component {
 				completedInviteCollaborators,
 			},
 			context,
-			workflows,
 			readOnly,
 			userType,
 			actionModalConfig,
