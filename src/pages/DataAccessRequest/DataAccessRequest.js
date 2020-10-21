@@ -651,7 +651,6 @@ class DataAccessRequest extends Component {
 			let params = {
 				[`${key}`]: JSON.stringify(data),
 			};
-			debugger;
 			// 4. PATCH the data
 			const response = await axios.patch(
 				`${baseURL}/api/v1/data-access-request/${id}`,
@@ -665,7 +664,7 @@ class DataAccessRequest extends Component {
 			console.log(err);
 		}
 	};
-	
+
 	onNextClick = () => {
 		// 1. If in the about panel, we go to the next step.  Otherwise next panel.
 		if (this.state.activePanelId === 'about') {
@@ -783,7 +782,6 @@ class DataAccessRequest extends Component {
 			let {
 				input: { action },
 			} = DarHelper.findQuestion(questionId, questionSet);
-			debugger;
 			switch (action) {
 				case 'addApplicant':
 					let duplicateQuestionSet = DarHelper.questionSetToDuplicate(

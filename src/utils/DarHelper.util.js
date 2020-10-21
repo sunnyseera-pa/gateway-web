@@ -312,7 +312,7 @@ let insertSchemaUpdates = (questionSetId, duplicateQuestionSet, schema) => {
 		let {
 			questions: [question]
 		} = qSet;
-		// 3. get the questionSetId that need to insert into our questionPanel
+		// 3. get the questionSetId that we need to insert into our questionPanel
 		if (typeof question.input.panelId !== undefined) {
 			let {
 				input: { panelId }
