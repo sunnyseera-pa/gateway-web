@@ -145,7 +145,7 @@ class DataAccessRequestsNew extends React.Component {
 						<Col xs={1}></Col>
 						<Col xs={10}>
 							<Alert variant={"success"} className="col-sm-12">
-                <SVGIcon name="check" width={18} height={18} fill={'#2C8267'} />
+                <SVGIcon name="check" width={18} height={18} fill={'#2C8267'} /> {message}
 							</Alert>
 						</Col>
 						<Col xs={1}></Col>
