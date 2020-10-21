@@ -1842,6 +1842,7 @@ class DataAccessRequest extends Component {
 							{this.state.activePanelId === 'about' ? (
 								aboutForm
 							) : (
+								
 								<Winterfell
 									schema={this.state.jsonSchema}
 									questionAnswers={this.state.questionAnswers}
