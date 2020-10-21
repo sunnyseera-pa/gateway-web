@@ -548,7 +548,6 @@ class DataAccessRequest extends Component {
 		}
 	};
 
-
 	onChangeDebounced = (obj = {}) => {
 		try {
 			let { _id: id } = this.state;
@@ -564,7 +563,6 @@ class DataAccessRequest extends Component {
 			console.log(`API PUT ERROR ${error}`);
 		}
 	};
-
 
 	checkCurrentUser = (userId) =>{
 		let {userState} = this.props;

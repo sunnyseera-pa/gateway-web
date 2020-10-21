@@ -117,7 +117,6 @@ class DataAccessRequestsNew extends React.Component {
 		});
 	}
 
-
 	onTabChange = (key) => {
 		let statusKey = DarHelperUtil.darStatus[key];
 		let { data } = this.state;

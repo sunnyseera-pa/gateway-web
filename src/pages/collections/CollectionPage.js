@@ -285,9 +285,9 @@ class CollectionPage extends Component {
 						{collectionAdded ? (
 							<Row>
 								<Col sm={1} lg={1} />
-								<Col sm={10} lg={10}>
-									<Alert variant='success' className='mt-3'>
-										This collection is now live. Share the collection link to allow anyone to view this page.
+								<Col sm={10} lg={10} className="pad-left-0">
+									<Alert variant='success' className='mt-3'> 
+										This collection is now live. Anyone with the link can see this page.
 									</Alert>
 								</Col>
 								<Col sm={1} lg={10} />
@@ -324,7 +324,7 @@ class CollectionPage extends Component {
 							''
 						)}
 
-						<Row>
+						<Row className="margin-top-16">
 							<Col sm={1} lg={1} />
 							
 							{!data.imageLink || data.imageLink === 'https://' ? (
@@ -365,8 +365,8 @@ class CollectionPage extends Component {
 
 								<Row>
 									<Col
-										sm={12}
-										lg={12}
+										sm={10}
+										lg={10}
 										className = 'collectionTitleCard'
 									>
 										{data.persons.map((person, index) => {
