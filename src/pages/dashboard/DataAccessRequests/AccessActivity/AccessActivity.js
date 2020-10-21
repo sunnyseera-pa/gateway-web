@@ -107,13 +107,13 @@ const AccessActivity = ({
 				<div className='box'>
 					{moment(updatedAt).format("D MMMM YYYY HH:mm")}
 					{isTeam == true ? (
-						<Fragment>
+						<div className="box-meta">
 							{applicationStatus === DarHelperUtil.darStatus.submitted ? (
 								<button id="startReview" className='button-primary' onClick={(e) => {onClickStartReview(e)}}>Start review</button>
 							) : (
 								setActivityMeta()
 							)}
-						</Fragment>
+						</div>
 					) : (
 						""
 					)}

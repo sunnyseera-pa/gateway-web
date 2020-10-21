@@ -397,8 +397,8 @@ class DataAccessRequestsNew extends React.Component {
 								isReviewer = false,
 								stepName = "",
 								remainingActioners = [],
-                                _id,
-                                decisionDate
+                _id,
+                decisionDate
 							} = request;
 							return (
 								<Row
@@ -455,11 +455,12 @@ class DataAccessRequestsNew extends React.Component {
 											</div>
 											{this.renderComment(
 												applicationStatusDesc,
+												applicationStatus,
 												decisionComments,
 												reviewPanels,
 												decisionMade,
-												decisionApproved,
-												applicationStatus
+                        decisionApproved,
+                        decisionDate
 											)}
 										</div>
 									</div>
