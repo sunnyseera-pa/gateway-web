@@ -27,26 +27,43 @@ const AccessActivity = ({
   applicationId }) =>{
 
   const setActivityMeta = () => {
-	  let reviewDecision;
+		let reviewDecision;
+
 		// Determine return for Deadline or final decision and color
 		if (workflowCompleted && applicationStatus === DarHelperUtil.darStatus.inReview) {
-			reviewDecision = <WorkflowDecision text={reviewStatus} icon='flag' />
+			reviewDecision = <WorkflowDecision text={reviewStatus} icon='flag' />;
 		} else if (deadlinePassed) {
-			reviewDecision = <div className="box-deadline">{reviewStatus}</div>
+			reviewDecision = <div className='box-deadline'>{reviewStatus}</div>;
 		}
 
-		if(isReviewer && deadlinePassed) {
-			reviewDecision = <WorkflowDecision classProperty="box-deadline" text={reviewStatus} decisionText={decisionStatus} icon='flag' />
-		} else if(isReviewer && !decisionMade) {
-			reviewDecision = <WorkflowDecision text={reviewStatus} decisionText={decisionStatus} icon='flag' />
+		if (isReviewer && deadlinePassed) {
+			reviewDecision = (
+				<WorkflowDecision
+					classProperty='box-deadline'
+					text={reviewStatus}
+					decisionText={decisionStatus}
+					icon='flag'
+				/>
+			);
+		} else if (isReviewer && !decisionMade) {
+			reviewDecision = (
+				<WorkflowDecision
+					text={reviewStatus}
+					decisionText={decisionStatus}
+					icon='flag'
+				/>
+			);
 		}
 
-		if(isReviewer && decisionMade) {
-			reviewDecision = <WorkflowDecision classProperty="box-check" decisionMade={decisionMade} decisionText={decisionStatus} icon='check' />
-		}
-
-		if(_.isEmpty(reviewStatus)) {
-			return "";
+		if (isReviewer && decisionMade) {
+			reviewDecision = (
+				<WorkflowDecision
+					classProperty='box-check'
+					decisionMade={decisionMade}
+					decisionText={decisionStatus}
+					icon='check'
+				/>
+			);
 		}
 
 		return reviewDecision;
@@ -115,7 +132,7 @@ const AccessActivity = ({
 							{applicationStatus === DarHelperUtil.darStatus.submitted ? (
 								<button id="startReview" className='button-primary' onClick={(e) => {onClickStartReview(e)}}>Start review</button>
 							) : (
-								setActivityMeta()
+								!_.isEmpty(reviewStatus) ? setActivityMeta() : ''
 							)}
 						</div>
 					) : (
