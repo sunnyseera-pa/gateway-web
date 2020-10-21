@@ -1,10 +1,9 @@
 import 'react-app-polyfill/ie11';
 import 'react-app-polyfill/stable';
 import 'core-js';
-
 import React from 'react';
 import ReactDOM from 'react-dom';
-// import * as Sentry from "@sentry/react";
+import * as Sentry from "@sentry/react";
 import HDRRouter from './HDRRouter';
 // import * as serviceWorker from './serviceWorker';
 
