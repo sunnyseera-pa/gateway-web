@@ -47,7 +47,6 @@ import './Dataset.scss';
 import DataUtitlityFramework from "./components/DataUtilityFramework";
 import DataQuality from "./components/DataQuality";
 
-
 var baseURL = require("../commonComponents/BaseURL").getURL();
 
 class DatasetDetail extends Component {
@@ -973,8 +972,6 @@ class DatasetDetail extends Component {
                       )}
                     </Tab>
 
-
-
                     <Tab eventKey="TechDetails" title={`Technical details`}>
                       <Row className="width-100" style={{ margin: "0%" }}>
                         {dataClassOpen === -1 ? (
@@ -1061,8 +1058,6 @@ class DatasetDetail extends Component {
                       </Row>
                     </Tab>
 
-
-
                     <Tab eventKey="DataUtility" title={`Data utility`}>
                       <Row className="mt-2">
                         <Col sm={12}>
@@ -1120,8 +1115,6 @@ class DatasetDetail extends Component {
                       </Row>
                     </Tab>
 
-
-
                     <Tab
                       eventKey="Collaboration"
                       title={`Discussion (${discoursePostCount})`}
@@ -1171,15 +1164,11 @@ class DatasetDetail extends Component {
             />
           </SideDrawer>
 
-          {!userState[0].loggedIn ? (
-            ""
-          ) : (
-            <AddToCollection
-              className="addToCollectionButton"
-              data={data}
-              userState={userState}
-            />
-          )}
+          <AddToCollection
+            className="addToCollectionButton"
+            data={data}
+            userState={userState}
+          />
 
           <DataSetModal
             open={showModal}
