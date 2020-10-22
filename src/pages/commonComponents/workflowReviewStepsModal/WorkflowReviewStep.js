@@ -65,7 +65,7 @@ const WorkflowReviewStep = ({index, step, toggleStep, toggleReview }) => {
                   <h2 className="gray800-14-bold">Reviewer</h2>
                 </div>
                 <div className="step-review-wrap--decision">
-                  <h2 className="gray800-14-bold">Decision</h2>
+                  <h2 className="gray800-14-bold">Recommendation</h2>
                 </div>
                 </div>
             </div>

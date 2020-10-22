@@ -24,6 +24,9 @@ const CustodianActionButtons = ({
 
   return (
     <Fragment>
+      { applicationStatus === "inReview" && workflowAssigned ? 
+          <button className="button-tertiary mr-1" onClick={e => onWorkflowReview(e)}>View recommendations</button> 
+        : ''}
       {inReviewMode && !hasRecommended || ((roles.includes('manager')) && (applicationStatus === 'inReview' || applicationStatus === 'submitted')) ?
         <Dropdown>
           <Dropdown.Toggle as={CustomToggle} >
@@ -76,10 +79,7 @@ const CustodianActionButtons = ({
             </Dropdown.Menu>
           </Dropdown>
         : ''}
-      
-      { applicationStatus === "inReview" && workflowAssigned ? 
-          <button className="button-secondary mr-1" onClick={e => onWorkflowReview(e)}>View decisions</button> 
-        : ''}
+
       { applicationStatus === "inReview" && roles.includes('manager') && workflowEnabled && !workflowAssigned ? 
         <button className="button-secondary" onClick={e => onActionClick(e)} value="AssignWorkflow">Assign a workflow</button> 
       : ''}
