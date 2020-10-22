@@ -218,7 +218,7 @@ class AccountAnalyticsDashboard extends React.Component {
 
     }
 
-    render() {
+    render() { 
         const { key, isLoading, data, topSearches, dates, statsDataType, gaUsers, searchesWithResults, accessRequests, datasetsWithTechMetaData, uptime, uniqueUsers } = this.state;
 
         let topDARs = [1,2,3,4,5];
@@ -309,7 +309,7 @@ class AccountAnalyticsDashboard extends React.Component {
                                     </Col>
                                 </Row>
                                 <Row>
-                                    <Col sm={12} lg={12}>
+                                    <Col sm={12} lg={12}> 
                                         <span className="gray700-13">Most popular datasets based on the number of data access requests</span>
                                     </Col>
                                 </Row>
@@ -324,6 +324,7 @@ class AccountAnalyticsDashboard extends React.Component {
                                     <Col sm={2} lg={2}>Custodian</Col>
                                     <Col sm={5} lg={4}>Requests</Col>
                                 </Row>
+                                {/* TODO UPDATE REPLACE THE DATA PROP WITH THE VARIABLE THAT HOLDS THE DATASETS WITH HIGHEST REQUESTS DATA */}
                                     {topDARs.map((dat, i) => {
                                         return <TopDatasets key={i} data={dat} />    
                                     })}
@@ -361,7 +362,7 @@ class AccountAnalyticsDashboard extends React.Component {
                                     <Col sm={5} lg={4}>Latest results</Col>
                                 </Row>
                                     {topSearches.map((dat, i) => {
-                                        return <TopSearches key={i} data={dat} /> 
+                                        return <TopSearches key={i} data={dat} />  
                                     })}
                                 </Col>
                             </Row>
