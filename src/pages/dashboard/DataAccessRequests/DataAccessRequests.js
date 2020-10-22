@@ -60,7 +60,7 @@ class DataAccessRequestsNew extends React.Component {
       this.setState({ isLoading: true });
       this.fetchDataAccessRequests(nextProps);
 	}
-	
+
     this.setState({ alert: nextProps.alert });
   }
 
@@ -108,7 +108,7 @@ class DataAccessRequestsNew extends React.Component {
 		// 6. set tab
 		this.onTabChange(dataProps.key);
   }
-  
+
   toggleWorkflowReviewModal = (e) => {
 		this.setState((prevState) => {
 			return { 
@@ -151,7 +151,7 @@ class DataAccessRequestsNew extends React.Component {
 				</Row>
 			)
 		}
-		
+
 	formatScreenData = (data = []) => {
 		if (!_.isEmpty(data)) {
 			return [...data].reduce((arr, item) => {
@@ -475,11 +475,8 @@ class DataAccessRequestsNew extends React.Component {
           close={this.toggleWorkflowReviewModal}
           workflow={this.state.workflow}
         />
-
+​
 			</Fragment>
-
-
-
 		);
 	}
 }

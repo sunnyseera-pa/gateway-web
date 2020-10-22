@@ -111,7 +111,6 @@ const WorkflowDashboard = ({userState, team}) => {
         break;
         default:
           return '';
-        break;
       }
     }
   }
