@@ -90,7 +90,7 @@ class CourseDetail extends Component {
   // on loading of tool detail page were id is different
   componentDidUpdate() {
     if (
-      this.props.match.params.projectID !== this.state.id &&
+      this.props.match.params.courseID !== this.state.id &&
       this.state.id !== "" &&
       !this.state.isLoading
     ) {
@@ -101,24 +101,25 @@ class CourseDetail extends Component {
   getDataSearchFromDb = () => {
     this.setState({ isLoading: true });
     axios
-      .get(baseURL + "/api/v1/projects/" + this.props.match.params.projectID) 
+      .get(baseURL + "/api/v1/course/" + this.props.match.params.courseID) 
       .then( async (res) => {
         this.setState({
           data: res.data.data[0],
           discourseTopic: res.data.discourseTopic
         });
-        document.title = res.data.data[0].name.trim();
+        document.title = res.data.data[0].title.trim();
 
         let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
-        this.updateCounter(this.props.match.params.projectID, counter);
+        this.updateCounter(this.props.match.params.courseID, counter);
 
         if(!_.isUndefined(res.data.data[0].relatedObjects)) {
           await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
         }
       })
       .catch((err) => {
-          //check if request is for a ProjectID or a different route such as /add
-          if(!isNaN(this.props.match.params.projectID)){
+          debugger
+          //check if request is for a courseID or a different route such as /add
+          if(!isNaN(this.props.match.params.courseID)){
             window.localStorage.setItem('redirectMsg', err.response.data);  
           }
           this.props.history.push({pathname: "/search?search=", search:""});
@@ -314,11 +315,11 @@ class CourseDetail extends Component {
                       </span>
 
                       {/* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */}
-                      <a href={"/search?search=&tab=Projects&projectcategories=" + data.categories.category}>
+                      {/* <a href={"/search?search=&tab=Courses&projectcategories=" + data.categories.category}>
                         <div className="badge-tag">
                           {data.categories.category}
                         </div>
-                      </a>
+                      </a> */}
                     </Col>
                   </Row>
 

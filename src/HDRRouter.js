@@ -15,7 +15,6 @@ import CoursePage from './pages/course/CoursePage';
 import DatasetPage from './pages/dataset/DatasetPage';
 import SearchPage from './pages/search/SearchPage';
 import CollectionPage from './pages/collections/CollectionPage';
-import CoursePage from './pages/educationalCourse/CoursePage';
 import PublicAnalyticsDashboard from './pages/publicDashboard/PublicAnalyticsDashboard';
 
 import Account from './pages/dashboard/Account';
