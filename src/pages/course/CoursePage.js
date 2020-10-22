@@ -1,42 +1,39 @@
-// /ShowObjects.js
+ // /ShowObjects.js
+ 
 import React, { Component } from "react";
-import axios from "axios";
-import queryString from "query-string";
-import * as Sentry from '@sentry/react';
-import { Row, Col, Tabs, Tab, Container, Alert, Button } from "react-bootstrap";
-import NotFound from "../commonComponents/NotFound";
-import Loading from "../commonComponents/Loading";
-import Reviews from "../commonComponents/reviews/Reviews";
-import RelatedObject from "../commonComponents/relatedObject/RelatedObject";
-import SearchBar from "../commonComponents/searchBar/SearchBar";
-import Creators from "../commonComponents/Creators";
-import DiscourseTopic from "../discourse/DiscourseTopic";
-import "react-tabs/style/react-tabs.css"; 
-import { baseURL } from "../../configs/url.config";
-import { PageView, initGA } from "../../tracking";
 import ReactMarkdown from "react-markdown";
-import Rating from "react-rating";
+import axios from "axios";
+import * as Sentry from '@sentry/react';
+import _ from 'lodash'; 
+import queryString from "query-string";
+import { Container, Row, Col, Tabs, Tab, Alert } from "react-bootstrap";
 import moment from "moment";
-import _ from 'lodash';
-import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
-import SVGIcon from "../../images/SVGIcon";
-import { ReactComponent as EmptyStarIconSvg } from "../../images/starempty.svg";
-import { ReactComponent as FullStarIconSvg } from "../../images/star.svg";
+import RelatedObject from "../commonComponents/relatedObject/RelatedObject";
+import NotFound from "../commonComponents/NotFound";
+import SearchBar from "../commonComponents/searchBar/SearchBar";
+import Loading from "../commonComponents/Loading";
+import Creators from "../commonComponents/Creators";
+import SVGIcon from "../../images/SVGIcon"; 
+import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
+import './Course.scss';
 
-class ToolDetail extends Component {
+// import ReactGA from 'react-ga';
+import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
+import { PageView, initGA } from "../../tracking";
+
+var baseURL = require("../commonComponents/BaseURL").getURL();
+
+class CourseDetail extends Component {
   // initialize our state
   state = {
+    searchString: "",
     id: "",
     data: [],
-    reviewData: [],
-    key: "Reviews",
-    activeKey: false,
-    selectedItem: "tab-1",
     isLoading: true,
     userState: [
       {
@@ -46,12 +43,9 @@ class ToolDetail extends Component {
         name: null
       }
     ],
-    toolAdded: false,
-    toolEdited: false,
-    reviewAdded: false,
-    replyAdded: false,
+    courseAdded: false,
+    courseEdited: false,
     discourseTopic: null,
-    searchString: "",
     objects: [
       {
         id: "",
@@ -66,13 +60,13 @@ class ToolDetail extends Component {
     showError: false,
     context: {}
   };
- 
+
   constructor(props) {
     super(props);
     this.state.userState = props.userState;
     this.searchBar = React.createRef();
   }
-
+  
   showModal = () => {
 		this.setState({ showError: true });
 	};
@@ -85,22 +79,18 @@ class ToolDetail extends Component {
   componentDidMount() {
     if (!!window.location.search) {
       var values = queryString.parse(window.location.search);
-      this.setState({ toolAdded: values.toolAdded });
-      this.setState({ toolEdited: values.toolEdited });
-      this.setState({ reviewAdded: values.reviewAdded });
-      this.setState({ replyAdded: values.replyAdded });
+      this.setState({ courseAdded: values.courseAdded });
+      this.setState({ courseEdited: values.courseEdited });
     }
-
+    this.getDataSearchFromDb();
     initGA("UA-166025838-1");
     PageView();
-
-    this.getDataSearchFromDb();
   }
 
   // on loading of tool detail page were id is different
   componentDidUpdate() {
     if (
-      this.props.match.params.toolID !== this.state.id &&
+      this.props.match.params.projectID !== this.state.id &&
       this.state.id !== "" &&
       !this.state.isLoading
     ) {
@@ -111,29 +101,28 @@ class ToolDetail extends Component {
   getDataSearchFromDb = () => {
     this.setState({ isLoading: true });
     axios
-      .get(baseURL + "/api/v1/tools/" + this.props.match.params.toolID)
+      .get(baseURL + "/api/v1/projects/" + this.props.match.params.projectID) 
       .then( async (res) => {
         this.setState({
           data: res.data.data[0],
-          reviewData: res.data.reviewData,
           discourseTopic: res.data.discourseTopic
         });
         document.title = res.data.data[0].name.trim();
 
-        let counter = !this.state.data.counter
-          ? 1
-          : this.state.data.counter + 1;
-        this.updateCounter(this.props.match.params.toolID, counter);
+        let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
+        this.updateCounter(this.props.match.params.projectID, counter);
+
         if(!_.isUndefined(res.data.data[0].relatedObjects)) {
-            await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+          await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
         }
-      }).catch((err) => {
-        //check if request is for a ToolID or a different route such as /add
-        if(!isNaN(this.props.match.params.toolID)){
-            window.localStorage.setItem('redirectMsg', err.response.data);
+      })
+      .catch((err) => {
+          //check if request is for a ProjectID or a different route such as /add
+          if(!isNaN(this.props.match.params.projectID)){
+            window.localStorage.setItem('redirectMsg', err.response.data);  
           }
-        this.props.history.push({pathname: "/search?search=", search:""});
-    }).finally(() => {
+          this.props.history.push({pathname: "/search?search=", search:""});
+      }).finally(() => {
         this.setState({ isLoading: false });
     });
   };
@@ -144,21 +133,25 @@ class ToolDetail extends Component {
       window.location.href = "/search?search=" + this.state.searchString;
   };
 
+
   updateSearchString = searchString => {
     this.setState({ searchString: searchString });
   };
 
-  updateCounter = (id, counter) => {
-    axios.post(baseURL + "/api/v1/counter/update", { id, counter });
+ updateDiscoursePostCount = (count) => {
+      this.setState({ discoursePostCount: count });
   };
 
-  getAdditionalObjectInfo = async data => {
-    let tempObjects = [];
+  updateCounter = (id, counter) => {
+    axios.post(baseURL + "/api/v1/counter/update", { id, counter }); 
+  };
 
+  getAdditionalObjectInfo = async data => { 
+    let tempObjects = [];
     if(data){
     const promises = data.map(async (object, index) => {
       await axios
-        .get(baseURL + "/api/v1/relatedobject/" + object.objectId)
+        .get(baseURL + "/api/v1/relatedobject/" + object.objectId) 
         .then(res => {
           tempObjects.push({
             id: object.objectId,
@@ -167,14 +160,12 @@ class ToolDetail extends Component {
           });
         });
     });
-  
     await Promise.all(promises);
-  } 
+  }
     this.setState({ objects: tempObjects });
-    
-    this.getRelatedObjects();
-  
-  }; 
+
+    this.getRelatedObjects(); 
+  };
 
   getRelatedObjects() {
     let tempRelatedObjects = [];
@@ -202,36 +193,29 @@ class ToolDetail extends Component {
     this.setState({ relatedObjects: tempRelatedObjects });
   }
 
-  updateDiscoursePostCount = count => {
-    this.setState({ discoursePostCount: count });
-  };
+  toggleDrawer = () => {
+    this.setState( ( prevState ) => {
+        if(prevState.showDrawer === true) {
+            this.searchBar.current.getNumberOfUnreadMessages();
+        }
+        return { showDrawer: !prevState.showDrawer };
+    });
+  }
 
-    toggleDrawer = () => {
-        this.setState( ( prevState ) => {
-            if(prevState.showDrawer === true) {
-                this.searchBar.current.getNumberOfUnreadMessages();
-            }
-            return { showDrawer: !prevState.showDrawer };
-        });
-    }
-    
   toggleModal = (showEnquiry = false, context = {}) => {
-		this.setState( ( prevState ) => {
-			return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
-		});
-	}
+    this.setState( ( prevState ) => {
+        return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
+    });
+}
 
   render() {
     const {
       searchString,
       data,
       isLoading,
+      courseAdded,
+      courseEdited,
       userState,
-      toolAdded,
-      toolEdited,
-      reviewAdded,
-      replyAdded,
-      reviewData,
       relatedObjects,
       discoursePostCount,
       showDrawer,
@@ -254,15 +238,6 @@ class ToolDetail extends Component {
       data.relatedObjects = [];
     }
 
-    let ratingsTotal = 0;
-    if (reviewData && reviewData.length) {
-      reviewData.forEach(review => {
-        ratingsTotal = ratingsTotal + review.rating;
-      });
-    }
-    const ratingsCount = reviewData ? reviewData.length : 0;
-    const avgRating = reviewData.length > 0 ? ratingsTotal / ratingsCount : "";
-
     return (
       <Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
         <div>
@@ -270,17 +245,17 @@ class ToolDetail extends Component {
             searchString={searchString}
             doSearchMethod={this.doSearch}
             doUpdateSearchString={this.updateSearchString}
-            userState={userState}
             doToggleDrawer={this.toggleDrawer}
+            userState={userState}
           />
           <Container className="margin-bottom-48">
-            {toolAdded ? (
+            {courseAdded ? (
               <Row className="">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                   <Alert variant="success" className="mt-3">
-                    Done! Someone will review your tool and let you know when it
-                    goes live
+                    Done! Someone will review your course and let you know when
+                    it goes live
                   </Alert>
                 </Col>
                 <Col sm={1} lg={10} />
@@ -289,12 +264,12 @@ class ToolDetail extends Component {
               ""
             )}
 
-            {toolEdited ? (
+            {courseEdited ? (
               <Row className="">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                   <Alert variant="success" className="mt-3">
-                    Done! Your tool has been updated
+                    Done! Your course has been updated
                   </Alert>
                 </Col>
                 <Col sm={1} lg={10} />
@@ -308,7 +283,7 @@ class ToolDetail extends Component {
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                   <Alert variant="warning" className="mt-3">
-                    Your tool is pending review. Only you can see this page.
+                    Your course is pending review. Only you can see this page.
                   </Alert>
                 </Col>
                 <Col sm={1} lg={10} />
@@ -317,33 +292,6 @@ class ToolDetail extends Component {
               ""
             )}
 
-            {reviewAdded ? (
-              <Row className="">
-                <Col sm={1} lg={1} />
-                <Col sm={10} lg={10}>
-                  <Alert variant="warning" className="mt-3">
-                    Done! Your review is pending review.
-                  </Alert>
-                </Col>
-                <Col sm={1} lg={10} />
-              </Row>
-            ) : (
-              ""
-            )}
-
-            {replyAdded ? (
-              <Row className="">
-                <Col sm={1} lg={1} />
-                <Col sm={10} lg={10}>
-                  <Alert variant="success" className="mt-3">
-                    Done! Your reply has been added.
-                  </Alert>
-                </Col>
-                <Col sm={1} lg={10} />
-              </Row>
-            ) : (
-              ""
-            )}
             <Row className="mt-4">
               <Col sm={1} lg={1} />
               <Col sm={10} lg={10}>
@@ -353,45 +301,20 @@ class ToolDetail extends Component {
                       <span className="black-20">{data.name}</span>
                     </Col>
                   </Row>
-                  {ratingsCount === 0 ? (
-                    ""
-                  ) : (
-                    <Row className="mt-3">
-                      <Col>
-                        <div className="gray500-13">
-                          <Rating
-                            emptySymbol={<EmptyStarIconSvg />}
-                            fullSymbol={<FullStarIconSvg />}
-                            placeholderSymbol={<FullStarIconSvg />}
-                            placeholderRating={avgRating}
-                            readonly="true"
-                          />
-                          <span style={{ "paddingLeft": "20px" }}>
-                            {!!ratingsTotal && ratingsCount === 1
-                              ? ratingsCount + " review"
-                              : ratingsCount + " reviews"}
-                            <span className="reviewTitleGap">·</span>
-                            {avgRating === 0
-                              ? "No average rating"
-                              : Math.round(avgRating * 10) / 10 + " average"}
-                          </span>
-                        </div>
-                      </Col>
-                    </Row>
-                  )}
                   <Row className="mt-3">
                     <Col xs={12}>
-                      <span className="badge-tool">
+                      <span className="badge-course">
                         <SVGIcon
-                          name="newtoolicon"
+                          name="educationicon"
                           fill={"#ffffff"}
                           className="badgeSvg mr-2"
                           viewBox="-2 -2 22 22"
-                        />
-                        <span>Tool</span>
+                        /> 
+                        <span>Course</span>
                       </span>
 
-                      <a href={"/search?search=&tab=Tools&toolcategories=" + data.categories.category}>
+                      {/* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */}
+                      <a href={"/search?search=&tab=Projects&projectcategories=" + data.categories.category}>
                         <div className="badge-tag">
                           {data.categories.category}
                         </div>
@@ -401,7 +324,7 @@ class ToolDetail extends Component {
 
                   <Row className="mt-2">
                     <Col xs={12}>
-                      <span className="gray800-14">
+                      <span className="gray700-13">
                         {data.counter === undefined ? 1 : data.counter + 1}
                         {data.counter === undefined ? " view" : " views"}
                       </span>
@@ -413,12 +336,12 @@ class ToolDetail extends Component {
             </Row>
 
             <Row>
-              <Col sm={1} />
-              <Col sm={10}>
+              <Col sm={1} lg={1} />
+              <Col sm={10} lg={10}>
                 <div>
                   <Tabs className="tabsBackground gray700-13 margin-bottom-16">
                     <Tab eventKey="About" title={"About"}>
-                      <Row className="mt-2">
+                      <Row>
                         <Col sm={12} lg={12}>
                           <div className="rectangle">
                             <Row className="gray800-14-bold">
@@ -432,7 +355,7 @@ class ToolDetail extends Component {
                           </div>
                         </Col>
                       </Row>
-
+                      
                       {!_.isEmpty(data.resultsInsights) ? (
                         <Row className="mt-2">
                           <Col sm={12} lg={12}>
@@ -449,13 +372,13 @@ class ToolDetail extends Component {
                           </Col>
                         </Row>): ""}
 
-                      <Row className="mt-2">
+                      <Row className="margin-top-8">
                         <Col sm={12}>
                           <div className="rectangle">
-                            <Row className="gray800-14-bold">
+                            <Row className="gray800-14-bold pad-bottom-8">
                               <Col sm={12}>Details</Col>
                             </Row>
-                            <Row className="mt-3">
+                            <Row className="pad-top-16">
                               <Col sm={2} className="gray800-14">
                                 URL
                               </Col>
@@ -470,172 +393,255 @@ class ToolDetail extends Component {
                                 </a>
                               </Col>
                             </Row>
-                            <Row className="mt-2">
+                            <Row className="pad-top-16">
                               <Col sm={2} className="gray800-14">
-                                License
+                                Course provider
                               </Col>
-                              {data.license ? (
-                                <Col sm={10} className="gray800-14">
-                                  {data.license}
-                                </Col>
-                              ) : (
-                                <Col sm={10} className="gray800-14-opacity">
-                                  Not specified
-                                </Col>
-                              )}
-                            </Row>
-                            <Row className="mt-2">
-                              <Col sm={2} className="gray800-14">
-                                Last update
-                              </Col>
-                              <Col sm={10} className="gray800-14">
-                                {moment(data.updatedon).format("DD MMM YYYY")}
+                              <Col sm={10} className="gray-deep-14 overflowWrap">
+                                Course provider goes here
                               </Col>
                             </Row>
-                            {data.uploader ? (
-                              <Row className="mt-2">
+                            <Row className="pad-top-16">
                                 <Col sm={2} className="gray800-14">
                                   Uploader
                                 </Col>
-                                <Col sm={10} className="gray800-14 overflowWrap">
-                                  {data.uploaderIs[0].firstname}{" "}
-                                  {data.uploaderIs[0].lastname}
+                                <Col sm={10} className="purple-14 overflowWrap">
+                                <a
+                                  href=""
+                                  target="_blank"
+                                  className="purple-14"
+                                >
+                                  Uploader goes here (link)
+                                </a>
                                 </Col>
-                              </Row>
-                            ) : (
-                              ""
-                            )}
-                          <Row className="mt-2">
-                            <Col sm={2} className="gray800-14">
-                              Type
-                            </Col>
-                            <Col sm={10} className="gray800-14">
-                              <a
-                                href={
-                                  "/search?search=&tab=Tools&toolcategories=" + data.categories.category
-                                }
-                              >
-                                <div className="badge-tag">
-                                  {data.categories.category}
-                                </div>
-                              </a>
-                            </Col>
-                          </Row>
-                          <Row className="mt-2">
-                            <Col sm={2} className="gray800-14">
-                              Implementation
-                            </Col>
-                            <Col sm={10} className="gray800-14">
-                              {!data.programmingLanguage ||
-                              data.programmingLanguage.length <= 0
-                                ? ""
-                                : data.programmingLanguage.map(
-                                    (obj, i) => {
-                                      return (
-                                        (obj.version !== "") ? 
-                                        <a href={"/search?search=&tab=Tools&programmingLanguage=" + obj.programmingLanguage}>
-                                          <div className="badge-version" key={i}>
-                                            <span>{obj.programmingLanguage}</span><span>{obj.version}</span>
-                                          </div>
-                                        </a>
-                                      : <a href={"/search?search=&tab=Tools&programmingLanguage=" + obj.programmingLanguage}>
-                                        <div className="badge-tag" key={i}>
-                                          <span>{obj.programmingLanguage}</span>
-                                        </div>
+                            </Row>
+                            <Row className="pad-top-16">
+                              <Col sm={2} className="gray800-14">
+                                Course delivery
+                              </Col>
+                              <Col sm={10} className="gray-deep-14 overflowWrap">
+                                Course delivery goes here
+                              </Col>
+                            </Row>
+                            <Row className="pad-top-16">
+                              <Col sm={2} className="gray800-14">
+                                Course location
+                              </Col>
+                              <Col sm={10} className="gray-deep-14 overflowWrap">
+                                Course location goes here
+                              </Col>
+                            </Row>
+                            <Row className="pad-top-16">
+                              <Col sm={2} className="gray800-14">
+                                Keywords
+                              </Col>
+                              <Col sm={10} className="gray800-14">
+                                {!data.tags.features ||
+                                data.tags.features.length <= 0 ? (
+                                  <span className="gray800-14-opacity">
+                                    Not specified
+                                  </span>
+                                ) : (
+                                  data.tags.features.map(keyword => {
+                                    return (
+                                      /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
+                                      <a href={"/search?search=&tab=Projects&projectfeatures=" + keyword}>
+                                        <div className="badge-tag">{keyword}</div>
                                       </a>
-                                      );
-                                    }
-                                  )}
-                            </Col>
-                          </Row>
-                          <Row className="mt-2">
-                            <Col sm={2} className="gray800-14">
-                              Keywords
-                            </Col>
-                            <Col sm={10} className="gray800-14">
-                              {!data.tags.features ||
-                              data.tags.features.length <= 0 ? (
-                                <span className="gray800-14-opacity">
-                                  Not specified
-                                </span>
-                              ) : (
-                                data.tags.features.map(keyword => {
-                                  return (
-                                    <a href={"/search?search=&tab=Tools&features=" + keyword}>
-                                      <div className="badge-tag">{keyword}</div>
-                                    </a>
-                                  );
-                                })
-                              )}
-                            </Col>
-                          </Row>
-                          <Row className="mt-2">
-                            <Col sm={2} className="gray800-14">
-                              Domain
-                            </Col>
-                            <Col sm={10} className="gray800-14">
-                              {!data.tags.topics ||
-                              data.tags.topics.length <= 0 ? (
-                                <span className="gray800-14-opacity">
-                                  Not specified
-                                </span>
-                              ) : (
-                                data.tags.topics.map(domain => {
-                                  return (
-                                    <a href={"/search?search=&tab=Tools&tooltopics=" + domain}>
-                                      <div className="badge-tag">{domain}</div>
-                                    </a>
-                                  );
-                                })
-                              )}
-                            </Col>
-                          </Row>
-                        </div>
-                      </Col>
-                    </Row>
-                      <Row className="mt-2">
+                                    );
+                                  })
+                                )}
+                              </Col>
+                            </Row>
+                            <Row className="pad-top-16">
+                              <Col sm={2} className="gray800-14">
+                                Domain
+                              </Col>
+                              <Col sm={10} className="gray800-14">
+                                {!data.tags.topics ||
+                                data.tags.topics.length <= 0 ? (
+                                  <span className="gray800-14-opacity">
+                                    Not specified
+                                  </span>
+                                ) : (
+                                  data.tags.topics.map(domain => {
+                                    return (
+                                      /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
+                                      <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
+                                        <div className="badge-tag">{domain}</div>
+                                      </a>
+                                    );
+                                  })
+                                )}
+                              </Col>
+                            </Row>
+                          </div>
+                        </Col>
+                      </Row> 
+
+            
+                      <Row className="margin-top-8">
+                      {/* gray800-14-opacity */}
                         <Col sm={12}>
                           <div className="rectangle">
                             <Row className="gray800-14-bold">
-                              <Col sm={12}>Authors</Col>
+                              <Col sm={12}>Dates and costs</Col>
                             </Row>
-                            <Row className="mt-3">
-                              {data.persons.map(author => (
-                                <Col sm={6} key={author.id}>
-                                  <Creators key={author.id} author={author} />
+                            {/* TODO - MAP THROUGH THE ENTRIES IN DATE AND COSTS AND FOR EACH RETURN THE BELOW 3 ROWS */}
+                            <div className="margin-top-24">
+                                <Row className="gray800-14-opacity">
+                                <Col sm={12}>Course date goes here</Col>
+                                </Row>
+                                <Row className="pad-top-16">
+                                <Col sm={2} className="gray800-14">
+                                    Course duration
                                 </Col>
-                              ))}
+                                <Col sm={10} className="gray-deep-14 overflowWrap">
+                                    Full-time  |  1 year
+                                </Col>
+                                </Row>
+                                <Row className="pad-top-16">
+                                <Col sm={2} className="gray800-14">
+                                    Course fees
+                                </Col>
+                                <Col sm={10} className="gray-deep-14 overflowWrap">
+                                    {/* TODO MAP FOR EACH COURSE FEE OPTION */}
+                                    Full-time Home (UK) and EU students  |  £12,000 per year <br/>
+                                </Col>
+                                </Row>
+                            </div>
+                          </div>
+                        </Col>
+                      </Row> 
+
+                      <Row className="margin-top-8">
+                        <Col sm={12}>
+                          <div className="rectangle">
+                            <Row className="gray800-14-bold pad-bottom-8">
+                              <Col sm={12}>Requirements and certifications</Col>
+                            </Row>
+                            <Row className="pad-top-16">
+                              <Col sm={3} className="gray800-14">
+                                Entry requirements
+                              </Col>
+                              <Col sm={9} className="gray800-14">
+                                {!data.tags.topics ||
+                                data.tags.topics.length <= 0 ? (
+                                  <span className="gray800-14-opacity">
+                                    Not specified
+                                  </span>
+                                ) : (
+                                  data.tags.topics.map(domain => {
+                                    return (
+                                      /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
+                                      <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
+                                        <div className="badge-version" ><span>Level</span><span>Subject</span></div>
+                                      </a>
+                                    );
+                                  })
+                                )}
+                              </Col>
+                            </Row>                            
+                            <Row className="pad-top-16">
+                              <Col sm={3} className="gray800-14">
+                                Restrictions
+                              </Col>
+                              <Col sm={9} className="gray800-14">
+                                {!data.tags.topics ||
+                                data.tags.topics.length <= 0 ? (
+                                  <span className="gray800-14-opacity">
+                                    Not specified
+                                  </span>
+                                ) : (
+                                  data.tags.topics.map(domain => {
+                                    return (
+                                      /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
+                                      <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
+                                        <div className="badge-tag">{domain}</div>
+                                      </a>
+                                    );
+                                  })
+                                )}
+                              </Col>
+                            </Row>                           
+                            <Row className="pad-top-16">
+                              <Col sm={3} className="gray800-14">
+                                Award
+                              </Col>
+                              <Col sm={9} className="gray800-14">
+                                {!data.tags.topics ||
+                                data.tags.topics.length <= 0 ? (
+                                  <span className="gray800-14-opacity">
+                                    Not specified
+                                  </span>
+                                ) : (
+                                  data.tags.topics.map(domain => {
+                                    return (
+                                      /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
+                                      <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
+                                        <div className="badge-tag">{domain}</div>
+                                      </a>
+                                    );
+                                  })
+                                )}
+                              </Col>
+                            </Row>
+                            <Row className="pad-top-16">
+                              <Col sm={3} className="gray800-14">
+                                Competency framework
+                              </Col>
+                              <Col sm={9} className="gray800-14">
+                                {!data.tags.topics ||
+                                data.tags.topics.length <= 0 ? (
+                                  <span className="gray800-14-opacity">
+                                    Not specified
+                                  </span>
+                                ) : (
+                                  data.tags.topics.map(domain => {
+                                    return (
+                                      /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
+                                      <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
+                                        <div className="badge-tag">{domain}</div>
+                                      </a>
+                                    );
+                                  })
+                                )}
+                              </Col>
+                            </Row>
+                            <Row className="pad-top-16">
+                              <Col sm={3} className="gray800-14">
+                                National priority areas
+                              </Col>
+                              <Col sm={9} className="gray800-14">
+                                {!data.tags.topics ||
+                                data.tags.topics.length <= 0 ? (
+                                  <span className="gray800-14-opacity">
+                                    Not specified
+                                  </span>
+                                ) : (
+                                  data.tags.topics.map(domain => {
+                                    return (
+                                      /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
+                                      <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
+                                        <div className="badge-tag">{domain}</div>
+                                      </a>
+                                    );
+                                  })
+                                )}
+                              </Col>
                             </Row>
                           </div>
                         </Col>
                       </Row>
+
                     </Tab>
-                    <Tab
-                      eventKey="Reviews"
-                      title={"Reviews (" + reviewData.length + ")"}
-                    >
-                      <Reviews
-                        data={data}
-                        userState={userState}
-                        reviewData={reviewData}
-                      />
-                    </Tab>
-                    <Tab
-                      eventKey="Collaboration"
-                      title={`Discussion (${discoursePostCount})`}
-                    >
-                      <DiscourseTopic
-                        toolId={data.id}
-                        topicId={data.discourseTopicId || 0}
-                        userState={userState}
-                        onUpdateDiscoursePostCount={this.updateDiscoursePostCount}
-                      />
+
+                    <Tab eventKey="Collaboration" title={`Discussion (${discoursePostCount})`}>
+                      <DiscourseTopic toolId={data.id} topicId={data.discourseTopicId || 0} userState={userState} onUpdateDiscoursePostCount={this.updateDiscoursePostCount}/>
                     </Tab>
                     <Tab
                       eventKey="Projects"
-                      title={
-                        "Related resources (" + relatedObjects.length + ")"
-                      }
+                      title={"Related resources (" + relatedObjects.length + ")"}
                     >
                       {relatedObjects.length <= 0 ? (
                         <NotFound word="related resources" />
@@ -652,33 +658,36 @@ class ToolDetail extends Component {
                   </Tabs>
                 </div>
               </Col>
-              <Col sm={1} />
+              <Col sm={1} lg={1} />
             </Row>
           </Container>
-          <SideDrawer open={showDrawer} closed={this.toggleDrawer}>
 
+          <SideDrawer
+            open={showDrawer}
+            closed={this.toggleDrawer}>
             <UserMessages
-              userState={userState[0]}
-              closed={this.toggleDrawer}
-              toggleModal={this.toggleModal}
-              drawerIsOpen={this.state.showDrawer}
+                userState={userState[0]}
+                closed={this.toggleDrawer}
+                toggleModal={this.toggleModal}
+                drawerIsOpen={this.state.showDrawer}
             />
-          </SideDrawer>
-
-          <DataSetModal
-            open={showModal}
-            context={context}
-            closed={this.toggleModal}
-            userState={userState[0]}
-          />
+          </SideDrawer>  
 
           <ActionBar userState={userState}> 
             <ResourcePageButtons data={data} userState={userState} />
-          </ActionBar>
+          </ActionBar> 
+
+          <DataSetModal 
+            open={showModal} 
+            context={context}
+            closed={this.toggleModal}
+            userState={userState[0]} 
+          />
+
         </div>
       </Sentry.ErrorBoundary>
     );
   }
 }
 
-export default ToolDetail;
+export default CourseDetail;

@@ -15,6 +15,7 @@ import CoursePage from './pages/course/CoursePage';
 import DatasetPage from './pages/dataset/DatasetPage';
 import SearchPage from './pages/search/SearchPage';
 import CollectionPage from './pages/collections/CollectionPage';
+import CoursePage from './pages/educationalCourse/CoursePage';
 import PublicAnalyticsDashboard from './pages/publicDashboard/PublicAnalyticsDashboard';
 
 import Account from './pages/dashboard/Account';
@@ -155,7 +156,7 @@ class HDRRouter extends Component {
                         {userState[0].loggedIn ? (<Route path='/paper/add' render={(props) => <AddEditPaperPage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/paper/edit/:paperID' render={(props) => <AddEditPaperPage {...props} userState={userState} isEdit="true" /> } />) : ''}
                         <Route path='/paper/:paperID' render={(props) => <PaperPage {...props} userState={userState} />} />
-                        
+
                         {userState[0].loggedIn ? (<Route path='/course/add' render={(props) => <AddEditCoursePage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/course/edit/:courseID' render={(props) => <AddEditCoursePage {...props} userState={userState} isEdit="true" /> } />) : ''}
                         <Route path='/course/:courseID' render={(props) => <CoursePage {...props} userState={userState} />} />

@@ -100,7 +100,7 @@ class ProjectDetail extends Component {
   getDataSearchFromDb = () => {
     this.setState({ isLoading: true });
     axios
-      .get(baseURL + "/api/v1/projects/" + this.props.match.params.projectID)
+      .get(baseURL + "/api/v1/projects/" + this.props.match.params.projectID) 
       .then( async (res) => {
         this.setState({
           data: res.data.data[0],
@@ -304,7 +304,7 @@ class ProjectDetail extends Component {
                   </Row>
                   <Row className="mt-3">
                     <Col xs={12}>
-                      <span className="badge-project">
+                      <span className="badge-project"> 
                         <SVGIcon
                           name="newestprojecticon"
                           fill={"#ffffff"}

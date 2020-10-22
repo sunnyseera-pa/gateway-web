@@ -3,7 +3,7 @@ import axios from 'axios';
 import queryString from 'query-string';
 import { Row, Col, Button, Alert } from 'react-bootstrap';
 import Loading from '../Loading'
-import SVGIcon from '../../../images/SVGIcon'
+import SVGIcon from '../../../images/SVGIcon' 
 import './RelatedObject.scss'; 
 
  
@@ -162,7 +162,7 @@ class RelatedObject extends React.Component {
                                                 <span>Tool</span> 
                                             </span>
 
-                                            {!data.categories.category ? '' :  
+                                            {!data.categories.category ? '' :   
                                                 activeLink === true ? 
                                                     onSearchPage === true ?
                                                         <span className="pointer" onClick={event => this.updateOnFilterBadge('toolCategoriesSelected', data.categories.category)}><div className="badge-tag">{data.categories.category}</div></span> :
@@ -402,6 +402,77 @@ class RelatedObject extends React.Component {
                                             {this.props.showRelationshipQuestion ? <Button variant="medium" className="soft-black-14" onClick={this.removeButton} ><SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />Remove</Button> : ''}
                                         </Col>
                                     </Row>
+                                );
+                            }
+                            else if (data.type === 'course') {
+                                return(
+                                    <Row className="noMargin">
+                                        <Col sm={10} lg={10} className="pad-left-24">
+                                            {activeLink===true ?
+                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/course/' + data.id} >Course title</a>
+                                            : <span className="black-bold-16">Course title</span> }
+                                            <br />
+                                            <span className="gray800-14">Course provider</span>
+                                            {/* TODO ADD CALENDAR ICON HERE */}
+                                            <Row className="margin-top-8">
+                                                <Col sm={12} lg={12}>
+                                            <SVGIcon name="workflow" fill={"#868e96"} className="mr-2 calendarSVG" width={20} height={18} />
+                                            <span className="gray800-14">
+                                                Start date  |  Map - study modes 
+                                            </span>
+                                            </Col>
+                                            </Row>
+                                        </Col> 
+                                        <Col sm={2} lg={2} className="pad-right-24">
+                                            {this.props.showRelationshipQuestion ? <Button variant="medium" className="soft-black-14" onClick={this.removeButton} ><SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />Remove</Button> : ''}
+                                        </Col>
+                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-16">
+                                            <span className="badge-course">
+                                                <SVGIcon name="educationicon" fill={"#ffffff"} className="badgeSvg mr-2" viewBox="-2 -2 22 22" /> 
+                                                <span>Course</span>
+                                            </span>
+                                            
+                                            {!data.categories.category ? '' :  
+                                                activeLink === true ? 
+                                                    onSearchPage === true ?
+                                                        <span className="pointer" onClick={event => this.updateOnFilterBadge('projectCategoriesSelected', data.categories.category)}><div className="badge-tag">{data.categories.category}</div></span> :
+                                                        <a href={'/search?search=&tab=Projects&projectcategories=' + data.categories.category}><div className="badge-tag">{data.categories.category}</div></a> 
+                                                    : <div className="badge-tag">{data.categories.category}</div> }
+
+                                            {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
+                                                if (activeLink===true){
+                                                    if (onSearchPage === true) { 
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('projectFeaturesSelected', feature)}><div className="badge-tag">{feature}</div></span>
+                                                    }
+                                                    else { 
+                                                        return <a href={'/search?search=&tab=Projects&projectfeatures=' + feature}><div className="badge-tag">{feature}</div></a>
+                                                    }
+                                                }
+                                                else {
+                                                    return <div className="badge-tag">{feature}</div>
+                                                }
+                                            })}
+
+                                            {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
+                                                if (activeLink===true){
+                                                    if (onSearchPage === true) {
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('projectTopicsSelected', topic)}><div className="badge-tag">{topic}</div></span>
+                                                    }
+                                                    else {
+                                                        return <a href={'/search?search=&tab=Projects&projecttopics=' + topic}><div className="badge-tag">{topic}</div></a>
+                                                    }
+                                                }
+                                                else {
+                                                    return <div className="badge-tag">{topic}</div>
+                                                }
+                                            })}
+                                        </Col>  
+                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-24 pad-bottom-16">
+                                            <span className="gray800-14">
+                                                {data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}
+                                            </span>
+                                        </Col> 
+                                    </Row>  
                                 );
                             }
                             else { //default to dataset
