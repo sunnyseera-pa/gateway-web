@@ -16,7 +16,6 @@ class TypaheadUser extends React.Component {
       readOnly: props.readOnly || false
     };
     this.handleChange = this.handleChange.bind(this);
-    // this.handleBlur = this.handleBlur.bind(this);
   }
 
   componentDidMount() {
@@ -49,15 +48,6 @@ class TypaheadUser extends React.Component {
       value: (user ? [user] : []),
     }, this.props.onChange.bind(null, user));
   }
-
-  // handleBlur(e) {
-  //   let user = '';
-  //   let {value} = this.state;
-  //   if(!_.isEmpty(value)) {
-  //     [user] = value;
-  //   }
-  //   this.props.onBlur(null, user);
-  // }
 
   render() {
     return (
