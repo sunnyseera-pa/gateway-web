@@ -187,7 +187,7 @@ const AddEditWorkflow = (props) => {
                     .required('You must select at least one section'),
                   deadline: Yup.string()
                     .trim()
-                    .matches(/^[0-9]+$/, 'Must only be a number')
+                    .matches(/^(?:[4-9]|[12]\d)\d*$/, 'Must only be a number and be greater than 3')
                     .required('This cannot be empty')
                 })
               )
@@ -294,9 +294,9 @@ const AddEditWorkflow = (props) => {
                                           <Field 
                                             type="checkbox" 
                                             name={`steps[${index}].sections`}
-                                            value="safeoutput"
+                                            value="safeoutputs"
                                             className={`checker ${hasErrors(touched, errors, index, 'sections') ? 'is-invalid' : ''}`}  />
-                                          <span className="gray800-14 ml-4">Safe output</span>
+                                          <span className="gray800-14 ml-4">Safe outputs</span>
                                         </div>
                                         <div className="row mb-2">
                                           <Field 

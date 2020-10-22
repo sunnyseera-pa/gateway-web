@@ -14,6 +14,7 @@ const AccessActivity = ({
   publisher = '', 
   applicationStatus,
   navigateToLocation,
+  workflow = {},
   workflowName = '',
   workflowCompleted = false,
   reviewStatus = '',
@@ -26,22 +27,43 @@ const AccessActivity = ({
   applicationId }) =>{
 
   const setActivityMeta = () => {
-	  let reviewDecision;
+		let reviewDecision;
+
 		// Determine return for Deadline or final decision and color
 		if (workflowCompleted && applicationStatus === DarHelperUtil.darStatus.inReview) {
-			reviewDecision = <WorkflowDecision text={reviewStatus} icon='flag' />
+			reviewDecision = <WorkflowDecision text={reviewStatus} icon='flag' />;
 		} else if (deadlinePassed) {
-			reviewDecision = <div className="box-deadline">{reviewStatus}</div>
+			reviewDecision = <div className='box-deadline'>{reviewStatus}</div>;
 		}
 
-		if(isReviewer && deadlinePassed) {
-			reviewDecision = <WorkflowDecision classProperty="box-deadline" text={reviewStatus} decisionText={decisionStatus} icon='flag' />
-		} else if(isReviewer && !decisionMade) {
-			reviewDecision = <WorkflowDecision text={reviewStatus} decisionText={decisionStatus} icon='flag' />
+		if (isReviewer && deadlinePassed) {
+			reviewDecision = (
+				<WorkflowDecision
+					classProperty='box-deadline'
+					text={reviewStatus}
+					decisionText={decisionStatus}
+					icon='flag'
+				/>
+			);
+		} else if (isReviewer && !decisionMade) {
+			reviewDecision = (
+				<WorkflowDecision
+					text={reviewStatus}
+					decisionText={decisionStatus}
+					icon='flag'
+				/>
+			);
 		}
 
-		if(isReviewer && decisionMade) {
-			reviewDecision = <WorkflowDecision classProperty="box-check" decisionMade={decisionMade} decisionText={decisionStatus} icon='check' />
+		if (isReviewer && decisionMade) {
+			reviewDecision = (
+				<WorkflowDecision
+					classProperty='box-check'
+					decisionMade={decisionMade}
+					decisionText={decisionStatus}
+					icon='check'
+				/>
+			);
 		}
 
 		return reviewDecision;
@@ -53,7 +75,7 @@ const AccessActivity = ({
 
 	const buildAccessRequest = () => {	
 		const hasWorkflow = !_.isEmpty(workflowName) ? true : false;
-		const isTeam = !_.isEmpty(team) ? true : false;
+		const isTeam = team !== 'user' ? true : false;
 		return (
 			<Fragment>
 				<div className='box gray800-14'>Datasets</div>
@@ -70,7 +92,7 @@ const AccessActivity = ({
 					<Fragment>
 						<div className='box'>Workflow</div>
 						<div
-							id='workflow'
+							id={`workflow_${workflow._id}`}
 							className='box box-link'
 							onClick={(e) => {navigateToLocation(e)}}
 						>
@@ -82,7 +104,7 @@ const AccessActivity = ({
 				) : (
 					""
 				)}
-				{isTeam == true ? (
+				{isTeam == true && (applicationStatus === DarHelperUtil.darStatus.submitted || applicationStatus === DarHelperUtil.darStatus.inReview) ? (
 					<Fragment>
 						<div className='box'>Action required by</div>
 						<div className='box'>
@@ -99,20 +121,20 @@ const AccessActivity = ({
 				<div className='box'>Submitted</div>
 				<div className='box'>
 					{!_.isEmpty(dateSubmitted)
-						? moment(dateSubmitted).format("D MMMM YYYY HH:mm")
+						? moment(dateSubmitted).format("D MMMM YYYY")
 						: "-"}
 				</div>
 				<div className='box'>Last activity</div>
 				<div className='box'>
 					{moment(updatedAt).format("D MMMM YYYY HH:mm")}
 					{isTeam == true ? (
-						<Fragment>
+						<div className="box-meta">
 							{applicationStatus === DarHelperUtil.darStatus.submitted ? (
 								<button id="startReview" className='button-primary' onClick={(e) => {onClickStartReview(e)}}>Start review</button>
 							) : (
-								setActivityMeta()
+								!_.isEmpty(reviewStatus) ? setActivityMeta() : ''
 							)}
-						</Fragment>
+						</div>
 					) : (
 						""
 					)}

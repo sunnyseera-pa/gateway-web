@@ -1030,7 +1030,7 @@ iframe#discourse-embed-frame {
 }
 .text-color-lightest :hover {
   color: $white;
-}
+} 
 .footerLogo {
   height: 60px;
 }
@@ -1483,4 +1483,8 @@ button a {
   white-space: nowrap !important;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.buttonHeight40 {
+  height: 40px;
 }

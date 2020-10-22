@@ -5,6 +5,12 @@
   margin-bottom: 15px;
 }
 
+.main-alert {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+}
+
 .dataAccessHeader {
   div {
     display: block;
@@ -26,7 +32,7 @@
 .layoutCard {
     width: 100%;
     box-sizing: border-box;
-    margin: 5px 0;
+    margin: 5px 0 10px 0;
     box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.1);
     background: $white;
 
@@ -83,16 +89,25 @@
         flex-flow: wrap;
         align-items: flex-start;
         @include font-source(14px, $gray-800, $font-weight-semibold);
-        opacity: 0.7;
         padding-bottom: 10px;
         word-break: break-word;
+        position: relative;
+
+        &:nth-child(odd) {
+          opacity: 0.7;
+        }
+
+        &-meta {
+          position: absolute;
+          right: 0;
+
+          & > button {
+            margin-top: -21px;
+          }
+        }
 
         @media (min-width: $bp-largest) {
           align-items: center;
-        }
-
-        button {
-          margin-left: auto;
         }
 
         &-link {

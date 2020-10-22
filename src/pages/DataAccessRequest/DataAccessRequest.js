@@ -24,6 +24,9 @@ import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
 import NavItem from './components/NavItem/NavItem';
 import NavDropdown from './components/NavDropdown/NavDropdown';
+import WorkflowReviewStepsModal from '../commonComponents/workflowReviewStepsModal/WorkflowReviewStepsModal';
+import ActivePhaseModal from '../commonComponents/workflowActivePhase/ActivePhaseModal';
+import WorkflowReviewDecisionModal from '../commonComponents/workflowReviewDecision/WorkflowReviewDecisionModal';
 import DarValidation from '../../utils/DarValidation.util';
 import DarHelper from '../../utils/DarHelper.util';
 import SearchBarHelperUtil from '../../utils/SearchBarHelper.util';
@@ -42,6 +45,7 @@ import ApplicantActionButtons from './components/ApplicantActionButtons/Applican
 import CustodianActionButtons from './components/CustodianActionButtons/CustodianActionButtons';
 import ActionModal from './components/ActionModal/ActionModal';
 import ContributorModal from './components/ContributorModal/ContributorModal';
+import AssignWorkflowModal from './components/AssignWorkflowModal/AssignWorkflowModal';
 import SLA from '../commonComponents/sla/SLA';
 
 class DataAccessRequest extends Component {
@@ -57,6 +61,9 @@ class DataAccessRequest extends Component {
 			_id: '',
 			jsonSchema: {},
 			questionAnswers: {},
+			workflow: {},
+			activeWorkflow: {},
+			hasRecommended: false,
 			applicationStatus: '',
 			activePanelId: '',
 			activeGuidance: '',
@@ -82,7 +89,12 @@ class DataAccessRequest extends Component {
 			showModal: false,
 			showMrcModal: false,
 			showActionModal: false,
+			showWorkflowReviewModal: false,
+			showWorkflowReviewDecisionModal: false,
+			workflowReviewDecisionType: false,
+			showActivePhaseModal: false,
 			showContributorModal: false,
+			showAssignWorkflowModal: false,
 			readOnly: false,
 			userType: '',
 			isWideForm: false,
@@ -105,7 +117,12 @@ class DataAccessRequest extends Component {
 			},
 			context: {},
 			actionModalConfig: {},
+			workflows: [],
+			workflowAssigned: false,
+			roles: []
 		};
+
+		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
 	}
 
 	applicationState = {
@@ -176,6 +193,10 @@ class DataAccessRequest extends Component {
 		} catch (error) {
 			this.setState({ isLoading: false });
 			console.error(error);
+		} finally {
+			this.setState({
+				roles: this.getUserRoles()
+			});
 		}
 	}
 
@@ -198,10 +219,12 @@ class DataAccessRequest extends Component {
 						mainApplicant,
 						userId,
 						authorIds,
-						projectId
+						projectId,
+						workflow
 					},
 				},
 			} = response;
+
 			// 3. Set up the DAR
 			this.setScreenData({
 				jsonSchema,
@@ -213,7 +236,8 @@ class DataAccessRequest extends Component {
 				mainApplicant,
 				userId,
 				authorIds,
-				projectId
+				projectId,
+				workflow
 			});
 		} catch (error) {
 			this.setState({ isLoading: false });
@@ -239,7 +263,8 @@ class DataAccessRequest extends Component {
 						mainApplicant,
 						userId,
 						authorIds,
-						projectId
+						projectId,
+						workflow
 					},
 				},
 			} = response;
@@ -255,7 +280,8 @@ class DataAccessRequest extends Component {
 				mainApplicant,
 				userId,
 				authorIds,
-				projectId
+				projectId,
+				workflow
 			});
 
 			// for local test uses formSchema.json
@@ -266,11 +292,11 @@ class DataAccessRequest extends Component {
 		}
 	};
 
-	loadDataAccessRequest = async (accessId) => {
+	loadDataAccessRequest = async (accessId) => { 
 		try {
 			// 1. Make API call to find and return the application form schema and answers matching this Id
 			let response = await axios.get(
-				`${baseURL}/api/v1/data-access-request/${accessId}`
+				`${baseURL}/api/v1/data-access-request/${accessId}` 
 			);
 			// 2. Destructure backend response for this context containing details of DAR including question set and current progress
 			let {
@@ -279,6 +305,7 @@ class DataAccessRequest extends Component {
 						jsonSchema,
 						questionAnswers,
 						_id,
+						hasRecommended,
 						applicationStatus,
 						aboutApplication = {},
 						datasets,
@@ -289,7 +316,8 @@ class DataAccessRequest extends Component {
 						authorIds,
 						projectId,
 						inReviewMode,
-						reviewSections
+						reviewSections,
+						workflow
 					},
 				},
 			} = response;
@@ -298,6 +326,7 @@ class DataAccessRequest extends Component {
 				jsonSchema,
 				questionAnswers,
 				_id,
+				hasRecommended,
 				applicationStatus,
 				aboutApplication,
 				datasets,
@@ -308,7 +337,8 @@ class DataAccessRequest extends Component {
 				authorIds,
 				projectId,
 				inReviewMode,
-				reviewSections
+				reviewSections,
+				workflow
 			});
 		} catch (error) {
 			this.setState({ isLoading: false });
@@ -322,6 +352,7 @@ class DataAccessRequest extends Component {
 			jsonSchema,
 			questionAnswers,
 			_id,
+			hasRecommended,
 			applicationStatus,
 			aboutApplication,
 			datasets,
@@ -333,13 +364,18 @@ class DataAccessRequest extends Component {
 			projectId,
 			inReviewMode = false,
 			reviewSections = [],
+			workflow
 		} = context;
 		let {
 			datasetfields: { publisher },
-		} = datasets[0];
+		} = datasets[0]
 		let { firstname, lastname } = mainApplicant;
 		let showSubmit = false;
 
+		let publisherId = '', workflowEnabled = false;
+		if(datasets[0].publisher) {
+			({ _id:publisherId, workflowEnabled } = datasets[0].publisher);
+		}
 
 		// 2. If about application is empty, this is a new data access request so set up state based on passed context
 		if (_.isEmpty(aboutApplication)) {
@@ -392,7 +428,7 @@ class DataAccessRequest extends Component {
 
 		if(inReviewMode){
 			jsonSchema.pages = jsonSchema.pages.map((page) => {
-				let inReview = reviewSections.includes(page.title.toLowerCase().replace(' ','')) || page.pageId === 'about';
+				let inReview = reviewSections.includes(page.pageId.toLowerCase()) || page.pageId === 'about';
 				return {...page, inReview};
 			})
 		}
@@ -402,13 +438,13 @@ class DataAccessRequest extends Component {
 			showSubmit = true;
 		}
 
-
-		// 6. Set state
+		// 7. Set state
 		this.setState({
 			jsonSchema: { ...jsonSchema, ...classSchema },
 			datasets,
 			questionAnswers,
 			_id,
+			hasRecommended,
 			applicationStatus,
 			activePanelId: initialPanel.panelId,
 			isWideForm: initialPanel.panelId === 'about',
@@ -425,7 +461,11 @@ class DataAccessRequest extends Component {
 			authorIds,
 			projectId,
 			showSubmit,
-			inReviewMode
+			publisherId,
+			workflowEnabled,
+			inReviewMode,
+			workflow,
+			workflowAssigned: !_.isEmpty(workflow) ? true : false
 		});
 	};
 
@@ -457,7 +497,7 @@ class DataAccessRequest extends Component {
 	 * @param {obj: questionAnswers}
 	 * @desc Callback from Winterfell sets totalQuestionsAnswered + saveTime
 	 */
-	onFormUpdate = _.debounce((id = '', questionAnswers = {}) => {
+	onFormUpdate = (id = '', questionAnswers = {}) => {
 		if (!_.isEmpty(id) && !_.isEmpty(questionAnswers)) {
 			let { applicationStatus, lookup, activePanelId } = this.state;
 			// 1. check for auto complete
@@ -474,6 +514,7 @@ class DataAccessRequest extends Component {
 			let countedQuestionAnswers = {};
 			let totalQuestions = '';
 
+			// 3. total questions answered
 			if (activePanelId === 'about') {
 				countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this);
 				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered`;
@@ -486,22 +527,42 @@ class DataAccessRequest extends Component {
 				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered in this section`;
 			}
 
+			// 4. set totalQuestionAnswered
 			this.setState({ totalQuestions });
 
 			if (applicationStatus === 'submitted')
 				return alert('Your application has already been submitted.');
 
-			// 3. remove blank vals from questionAnswers
+			// 5. remove blank vals from questionAnswers
 			let data = _.pickBy(
 				{ ...this.state.questionAnswers, ...questionAnswers },
 				_.identity
 			);
-			// 4. create dataObject
+			const lastSaved = DarHelper.saveTime();
+			// 6. create dataObject
 			let dataObj = { key: 'questionAnswers', data };
-			// 5. update application
-			this.updateApplication(dataObj);
+			// 7. Immediately update the state
+			this.setState({ [`${dataObj.key}`]: { ...dataObj.data }, lastSaved });
+			// 8. Execute the debounced onChange method API CALL
+			this.onChangeDebounced(dataObj);
 		}
-	}, 500);
+	};
+
+	onChangeDebounced = (obj = {}) => {
+		try {
+			let { _id: id } = this.state;
+			// 1. deconstruct
+			let { key, data = {} } = obj;
+			// 2. set body params
+			let params = {
+				[`${key}`]: JSON.stringify(data),
+			};
+			// 3. API Patch call
+			axios.patch(`${baseURL}/api/v1/data-access-request/${id}`, params);
+		} catch (error) {
+			console.log(`API PUT ERROR ${error}`);
+		}
+	};
 
 	checkCurrentUser = (userId) =>{
 		let {userState} = this.props;
@@ -554,7 +615,8 @@ class DataAccessRequest extends Component {
 
 				let alert = {
 					tab: "submitted",
-					message: "Your application was submitted successfully"
+					message: "Your application was submitted successfully",
+					publisher: "user"
 				};
 				this.props.history.push({
 					pathname: '/account',
@@ -575,6 +637,7 @@ class DataAccessRequest extends Component {
 			);
 		}
 	};
+
 
 	updateApplication = async (obj = {}) => {
 		try {
@@ -890,8 +953,49 @@ class DataAccessRequest extends Component {
 		let {
 			target: { value },
 		} = e;
-		this.toggleActionModal(value);
+		value === 'AssignWorkflow' ? this.toggleAssignWorkflowModal() : this.toggleActionModal(value);
 	};
+
+	completeActivePhase = async () => {
+		await axios.put(`${baseURL}/api/v1/data-access-request/${this.state._id}/stepoverride`)
+			.then((response) => {
+				this.loadDataAccessRequest(this.state._id);
+				this.toggleWorkflowReviewModal();
+			})
+			.catch(error => {
+				console.log(error);
+			});
+	}
+
+
+	onDecisionReview = async (approved, comments) => {
+		let params = {
+			approved,
+			comments
+		}
+		await axios.put(`${baseURL}/api/v1/data-access-request/${this.state._id}/vote`, params)
+			.then((response) => {
+				this.loadDataAccessRequest(this.state._id);
+				this.toggleWorkflowReviewDecisionModal();
+				// redirect to dashboard with message
+				let alert = {
+					publisher: this.state.publisher || '',
+					nav: `dataaccessrequests&team=${this.state.publisher}`, 
+					tab: 'inReview',
+					message: `You have successfully sent your recommendation for your assigned phase of ${this.state.aboutApplication.projectName} project`,
+				};
+				// 4. redirect with Publisher name, Status: reject, approved, key of tab: presubmission, inreview, approved, rejected
+				this.props.history.push({
+					pathname: `/account`,
+					search: '?tab=dataaccessrequests',
+					state: { alert },
+				});
+
+			})
+			.catch(error => {
+				alert(error.message);
+			});
+	}
 
 	toggleCard = (e, eventKey) => {
 		e.preventDefault();
@@ -948,6 +1052,17 @@ class DataAccessRequest extends Component {
 		});
 	};
 
+	toggleAssignWorkflowModal = async() => {
+		let response = await axios.get(`${baseURL}/api/v1/publishers/${this.state.publisherId}/workflows`);
+		let { workflows } = response.data;
+		this.setState((prevState) => {
+			return {
+				workflows,
+				showAssignWorkflowModal: !prevState.showAssignWorkflowModal,
+			};
+		});
+	};
+
 	toggleContributorModal = () => {
 		this.setState((prevState) => {
 			return { 
@@ -955,6 +1070,32 @@ class DataAccessRequest extends Component {
 			};
 		});
 	};
+
+	toggleActivePhaseModal = () => {
+		this.setState((prevState) => {
+			return { 
+				showActivePhaseModal: !prevState.showActivePhaseModal 
+			};
+		});
+	}
+
+	toggleWorkflowReviewModal = (e, activePhase = false) => {
+		this.setState((prevState) => {
+			return { 
+				showWorkflowReviewModal: !prevState.showWorkflowReviewModal,
+				showActivePhaseModal: activePhase 
+			};
+		});
+	}
+
+	toggleWorkflowReviewDecisionModal = (type = false) => {
+		this.setState((prevState) => {
+			return { 
+				showWorkflowReviewDecisionModal: !prevState.showWorkflowReviewDecisionModal,
+				workflowReviewDecisionType: type
+			};
+		});
+	}
 
 	updateContributors = (contributors) => {
 		let updatedAuthorIds = [...contributors].map(user => user.id);
@@ -1012,6 +1153,15 @@ class DataAccessRequest extends Component {
 		}
 	};
 
+	getUserRoles() {
+		let { teams } = this.props.userState[0];
+		let foundTeam = teams.filter(team => team.name === this.state.datasets[0].datasetfields.publisher);
+		if (_.isEmpty(teams) || _.isEmpty(foundTeam)) {
+			return ['applicant'];
+		}
+		return foundTeam[0].roles;
+	}
+
 	render() {
 		const {
 			lastSaved,
@@ -1026,6 +1176,7 @@ class DataAccessRequest extends Component {
 			showMrcModal,
 			showActionModal,
 			showContributorModal,
+			showAssignWorkflowModal,
 			isWideForm,
 			activeAccordionCard,
 			allowedNavigation,
@@ -1046,6 +1197,7 @@ class DataAccessRequest extends Component {
 			readOnly,
 			userType,
 			actionModalConfig,
+			roles
 		} = this.state;
 		const { userState, location } = this.props;
 
@@ -1557,7 +1709,7 @@ class DataAccessRequest extends Component {
 			</div>
 		);
 
-		Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
+		Winterfell.addInputType('typeaheadCustom', TypeaheadCustom); 
 		Winterfell.addInputType('datePickerCustom', DatePickerCustom);
 		Winterfell.addInputType('typeaheadUser', TypeaheadUser);
 
@@ -1687,6 +1839,7 @@ class DataAccessRequest extends Component {
 							{this.state.activePanelId === 'about' ? (
 								aboutForm
 							) : (
+								
 								<Winterfell
 									schema={this.state.jsonSchema}
 									questionAnswers={this.state.questionAnswers}
@@ -1781,8 +1934,9 @@ class DataAccessRequest extends Component {
 						<div className='action-bar-status'>{totalQuestions} &nbsp;|&nbsp; {projectId}</div>
 					</div>
 					<div className='action-bar-actions'>
+
 						{userType.toUpperCase() === 'APPLICANT' ? (
-							<ApplicantActionButtons
+							<ApplicantActionButtons 
 								allowedNavigation={allowedNavigation}
 								onNextClick={this.onNextClick}
 								onFormSubmit={this.onFormSubmit}
@@ -1793,7 +1947,15 @@ class DataAccessRequest extends Component {
 							<CustodianActionButtons
 								allowedNavigation={allowedNavigation}
 								onActionClick={this.onCustodianAction}
+								onWorkflowReview={this.toggleWorkflowReviewModal}
+								onWorkflowReviewDecisionClick={this.toggleWorkflowReviewDecisionModal}
 								onNextClick={this.onNextClick}
+								workflowEnabled={this.state.workflowEnabled}
+								workflowAssigned={this.state.workflowAssigned}
+								inReviewMode={this.state.inReviewMode}
+								hasRecommended={this.state.hasRecommended}
+								applicationStatus={applicationStatus}
+								roles={roles}
 							/>
 						)}
 					</div>
@@ -1823,6 +1985,31 @@ class DataAccessRequest extends Component {
 					close={this.toggleActionModal}
 				/> 
 
+				<WorkflowReviewStepsModal
+					open={this.state.showWorkflowReviewModal}
+					close={this.toggleWorkflowReviewModal}
+					workflow={this.state.workflow}
+				/>
+
+				<ActivePhaseModal
+					open={this.state.showActivePhaseModal}
+					close={this.toggleActivePhaseModal}
+					workflow={this.state.workflow}
+					projectName={projectName}
+					dataSets={selectedDatasets}
+					completeActivePhase={this.completeActivePhase}
+				/>
+
+				<WorkflowReviewDecisionModal
+					open={this.state.showWorkflowReviewDecisionModal}
+					close={this.toggleWorkflowReviewDecisionModal}
+					onDecisionReview={this.onDecisionReview}
+					approved={this.state.workflowReviewDecisionType}
+					workflow={this.state.workflow}
+					projectName={projectName}
+					dataSets={selectedDatasets}
+				/>
+
 				<ContributorModal
 					open={showContributorModal}
 					close={this.toggleContributorModal}
@@ -1836,6 +2023,14 @@ class DataAccessRequest extends Component {
 						readOnly={this.state.readOnly}
 				/>
 				</ContributorModal>
+
+				<AssignWorkflowModal
+					open={showAssignWorkflowModal}
+					close={this.toggleAssignWorkflowModal}
+					applicationId={this.state._id}
+					publisher={this.state.publisher}
+					workflows={this.state.workflows}
+				/>
 
 				<Modal
 					show={showMrcModal}
