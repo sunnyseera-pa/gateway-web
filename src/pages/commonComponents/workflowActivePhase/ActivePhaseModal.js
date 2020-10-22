@@ -18,10 +18,11 @@ const ActivePhaseModal = ({ open, close, workflow = {}, projectName = '', dataSe
 
   const getActivePhase = () => {
     if(!_.isEmpty(workflow)) {
-      console.log(workflow);
       let { steps } = workflow;
-      let activeStep = [...steps].find(s => s.active) || {};
-      setPhase(activeStep);
+      if(!_.isEmpty(steps)) {
+        let activeStep = [...steps].find(s => s.active) || {};
+        setPhase(activeStep);
+      }
     }
   }
 

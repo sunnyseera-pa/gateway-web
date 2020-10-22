@@ -6,26 +6,27 @@ const WorkflowsModal = ({workflows, toggleSelected}) => {
 
         return (
             <Fragment>
-            <div className="relatedModalBackground"> 
-                <Container >
-                    <Row>
-                        <Col sm={1} lg={1} />  
-                        <Col sm={10} lg={10} className="mt-2 mb-3" >
-                            <Row>
-                            {workflows.map((workflow) => {  
-                                    return <WorkflowObject 
+                <div className="relatedModalBackground"> 
+                    <Container>
+                        <Row>
+                            <Col sm={1} lg={1} />  
+                            <Col sm={10} lg={10} className="mt-2 mb-3" >
+                                <Row>
+                                { workflows.map((workflow, i) => {  
+                                    return <WorkflowObject
+                                                key={`workflow-${i}`}
                                                 workflow={workflow}
                                                 toggleSelected={toggleSelected}
                                             />
                                 })}
-                            </Row>
-                            <Row>
-                                <div style={{height: "50px"}}></div>
-                            </Row>
-                        </Col>
-                    </Row>
-                </Container>
-            </div>
+                                </Row>
+                                <Row>
+                                    <div style={{height: "50px"}}></div>
+                                </Row>
+                            </Col>
+                        </Row>
+                    </Container>
+                </div>
             </Fragment>
         )
 }

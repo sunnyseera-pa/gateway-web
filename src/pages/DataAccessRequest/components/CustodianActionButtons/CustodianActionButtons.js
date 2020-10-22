@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
 import '../../DataAccessRequest.scss';  
 import Dropdown from 'react-bootstrap/Dropdown';
-import DARHelperUtil from '../../../../utils/DarHelper.util';
 import { Row } from "react-bootstrap";
 
 const CustodianActionButtons = ({
@@ -14,6 +13,7 @@ const CustodianActionButtons = ({
   workflowEnabled = false,
   workflowAssigned, 
   onWorkflowReview, 
+  hasRecommended = false,
   onWorkflowReviewDecisionClick}) => {
 
   const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -24,26 +24,29 @@ const CustodianActionButtons = ({
 
   return (
     <Fragment>
-      {inReviewMode || (workflowAssigned && roles.includes('manager')) ?
+      { applicationStatus === "inReview" && workflowAssigned ? 
+          <button className="button-tertiary mr-1" onClick={e => onWorkflowReview(e)}>View recommendations</button> 
+        : ''}
+      {inReviewMode && !hasRecommended || ((roles.includes('manager')) && (applicationStatus === 'inReview' || applicationStatus === 'submitted')) ?
         <Dropdown>
           <Dropdown.Toggle as={CustomToggle} >
-            <button className={applicationStatus==="submitted" ? "dark-14" : "button-secondary"} >
+            <button className="button-secondary">
               Make a decision
             </button>
           </Dropdown.Toggle>
 
             <Dropdown.Menu className="makeADecisionDropdown">  
-              { inReviewMode ?
+              { inReviewMode && !hasRecommended && workflowAssigned ?
                 <div className="review-phase">
                   <Row className="makeADecisionHeader"> 
                     <span className="gray800-14-bold mb-1">
                       Review this phase
                     </span> 
                   </Row>
-                  <option className="gray800-14 pointer" onClick={e => onWorkflowReviewDecisionClick('Issues found')}> 
+                  <option className="gray800-14 pointer" onClick={e => onWorkflowReviewDecisionClick(false)}> 
                     Issues found 
                   </option>
-                  <option className="gray800-14 pointer" onClick={e => onWorkflowReviewDecisionClick('No issues found')}> 
+                  <option className="gray800-14 pointer" onClick={e => onWorkflowReviewDecisionClick(true)}> 
                     No issues found 
                   </option> 
                 </div>
@@ -76,10 +79,7 @@ const CustodianActionButtons = ({
             </Dropdown.Menu>
           </Dropdown>
         : ''}
-      
-      { applicationStatus === "inReview" && workflowAssigned ? 
-          <button className="button-secondary mr-1" onClick={e => onWorkflowReview(e)}>View decisions</button> 
-        : ''}
+
       { applicationStatus === "inReview" && roles.includes('manager') && workflowEnabled && !workflowAssigned ? 
         <button className="button-secondary" onClick={e => onActionClick(e)} value="AssignWorkflow">Assign a workflow</button> 
       : ''}

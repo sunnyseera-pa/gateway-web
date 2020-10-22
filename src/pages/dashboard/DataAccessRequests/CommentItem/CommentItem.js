@@ -12,7 +12,7 @@ export default ({text, title, subtitle, decisionDate}) => {
                   {!_.isEmpty(subtitle) ? 
                     <Fragment>
                       <h2>{subtitle}</h2>
-                      <div className="gray500-13">{moment(decisionDate).format('DD MM YYYY')}</div>
+                      <div className="gray500-13">{moment(decisionDate).format('DD MMM YYYY')}</div>
                     </Fragment> 
                   : ""}
               </div>

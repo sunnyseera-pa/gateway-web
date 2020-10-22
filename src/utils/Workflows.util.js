@@ -88,19 +88,11 @@ export const toggleWorkflowStep = (workflows = [], step = {}) => {
   return [];
 }
 
-<<<<<<< HEAD
 export const updateStepToggle = (steps, step) => {
   return steps.map((el) => {
     return {
       ...el,
       closed: (el._id === step._id ? !el.closed : el.closed)
-=======
-const updateStepToggle = (steps, step) => {
-  return steps.map((el) => {
-    return {
-      ...el,
-      closed: el._id === step._id ? !el.closed : el.closed
->>>>>>> dev
     }
   });
 }

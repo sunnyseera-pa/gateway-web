@@ -1,4 +1,4 @@
-import React, {Fragment, useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Modal } from 'react-bootstrap';
 import WorkflowsModal from './WorkflowsModal';
 import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';    

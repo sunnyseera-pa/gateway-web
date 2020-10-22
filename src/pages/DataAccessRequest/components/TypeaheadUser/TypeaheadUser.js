@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import axios from 'axios';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
@@ -15,7 +16,6 @@ class TypaheadUser extends React.Component {
       readOnly: props.readOnly || false
     };
     this.handleChange = this.handleChange.bind(this);
-    // this.handleBlur = this.handleBlur.bind(this);
   }
 
   componentDidMount() {
@@ -48,11 +48,6 @@ class TypaheadUser extends React.Component {
       value: (user ? [user] : []),
     }, this.props.onChange.bind(null, user));
   }
-
-  // handleBlur(e) {
-  //   console.log(e);
-  //   this.props.onBlur(this.props.value);
-  // }
 
   render() {
     return (

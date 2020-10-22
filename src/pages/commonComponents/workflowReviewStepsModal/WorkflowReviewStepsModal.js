@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import _ from 'lodash';
+import uniqid from 'uniqid';
 import { Modal } from 'react-bootstrap';
 import ModalHeader from './ModalHeader';
 import WorkflowReviewStep from './WorkflowReviewStep';
@@ -17,7 +18,7 @@ const WorkflowReviewStepsModal = ({ open, close, workflow = {} }) => {
 
 	const buildWorkflow = () => {
 		// 1. deconstruct workflow
-		let { workflowName = '', steps = [], isCompleted = false } = workflow;
+		let { steps = [] } = workflow;
 		if(!_.isEmpty(steps)) {
 			const stepsArr = formatSteps(steps);
 			let workflowObj = {
@@ -39,11 +40,12 @@ const WorkflowReviewStepsModal = ({ open, close, workflow = {} }) => {
 						reviewers, 
 						recommendations,
 						_id,
+						active
 						} = step;
 					// 2. each item add expand state and reviewers expand
 					let item = {
 						...step,
-						closed: true,
+						closed: active ? false : true,
 						reviews: buildReviews(_id, reviewers, recommendations)
 					}
 					// 3. return new array
@@ -66,6 +68,7 @@ const WorkflowReviewStepsModal = ({ open, close, workflow = {} }) => {
 				return {
 					...rev,
 					...comment,
+					id: uniqid(),
 					stepId,
 					closed: true,
 				}
@@ -115,11 +118,9 @@ const WorkflowReviewStepsModal = ({ open, close, workflow = {} }) => {
 	const mapToggleReviews = (reviews = [], review) => {
 		if(!_.isEmpty(reviews) && !_.isEmpty(review)) {
 			return [...reviews].map((r) => {
-				if(r._id === review._id) 
-					r.closed = !r.closed;
-				
 				return {
-					...r
+					...r,
+					closed: r.id === review.id ? !r.closed : r.closed
 				};
 			});
 		}

@@ -4,33 +4,57 @@ import _ from 'lodash';
 import WorkflowReviewDecisionHeader from './WorkflowReviewDecisionHeader';
 import './WorkflowReviewDecision.scss';
 
-const WorkflowReviewDecisionModal = ({ open, close, workflow = {}, projectName = '', dataSets = [], type = '' }) => {
-
+const WorkflowReviewDecisionModal = ({ open, close, workflow = {}, projectName = '', dataSets = [], approved = false, onDecisionReview }) => {
   const [activePhase, setPhase] = useState({});
   const [wordCount, setWordCount] = useState(0);
-  const [decision, setDecision] = useState('');
+  const [errors, setErrors] = useState(false);
+  const [comments, setComments] = useState('');
 
   const onClickAction = (e, action = '') => {
     e.preventDefault();
+    // 1. check for errors
     if(action == 'reviewDecision') {
-      // do api call inside DAR
+      if(_.isEmpty(comments))
+        return setErrors(true)
+      
+      if(wordCount >= 1500)
+        return setErrors(true);
+
+      // 2. no errors - set false
+      setErrors(false);
+      // 3. call API in DAR for decision
+      onDecisionReview(approved, comments);
+      // 4. reset
+      reset();
+    } else {
+      // 5. reset 
+      reset();
+      // 6. close modal
+      close('', action);
     }
-    close('', action);
   }
 
-  const onMessageChange = () => {
-    
+  const onTextChange = (e) => {
+    setComments(e.currentTarget.value);
+    setWordCount(e.currentTarget.value.length);
   }
 
   const getActivePhase = () => {
     if(!_.isEmpty(workflow)) {
-      console.log(workflow);
       let { steps } = workflow;
-      let activeStep = [...steps].find(s => s.active) || {};
-      setPhase(activeStep);
+      if(!_.isEmpty(steps)) {
+        let activeStep = [...steps].find(s => s.active) || {};
+        setPhase(activeStep);
+      }
     }
   }
 
+  const reset = () => {
+    setComments('');
+    setWordCount('');
+  }
+
+  
   const renderList = (node, primKey = '', secKey = '') => {
     if(!_.isEmpty(node) && !_.isEmpty(primKey) && !_.isEmpty(secKey)) 
       return [...node].map(n => `${n[primKey]} ${n[secKey]}`).join(', ');
@@ -50,9 +74,7 @@ const WorkflowReviewDecisionModal = ({ open, close, workflow = {}, projectName =
   }
 
   const generateWordCount = () => {
-    console.log('test');
-    return `${wordCount}/1500`;
-
+    return (<div className={wordCount >= 1500 ? 'app-red' : ''}>{`${wordCount} /1500`}</div>);
   }
 
   useEffect(() => {
@@ -70,7 +92,7 @@ const WorkflowReviewDecisionModal = ({ open, close, workflow = {}, projectName =
       className='reviewDecision'
     >
       <WorkflowReviewDecisionHeader 
-        type={type}
+        approved={approved}
         onClickAction={onClickAction} />
 
       <div className='reviewDecision-body'>
@@ -91,16 +113,19 @@ const WorkflowReviewDecisionModal = ({ open, close, workflow = {}, projectName =
         </div>
 
         <div className="reviewDecision-body-desc">
-          <div>
+          <div className="reviewDecision-body-head">
             <span className="gray800-14">Description</span> 
             <span className="gray800-14">{generateWordCount()}</span>
           </div>
-          <textarea className="form-control" rows="8" type="text" value={decision} name="decision" onChange={e => {onMessageChange(e)}} />
+          <div className={errors ? 'form-group was-validated' : 'form-group'}>
+            <textarea className="form-control" rows="8" type="text" value={comments} name="comments" onChange={e => {onTextChange(e)}} required />
+            <div className="invalid-feedback">Description needed</div>
+          </div>
         </div>
       </div>
       <div className="reviewDecision-footer">
         <button className="button-secondary" onClick={e => onClickAction(e, 'cancel')}>No, nevermind</button>
-        <button className="button-primary"  onClick={e => onClickAction(e, 'completePhase')}>Send review decision</button>
+        <button className="button-primary"  onClick={e => onClickAction(e, 'reviewDecision')}>Send review decision</button>
       </div>
     </Modal>
   </Fragment>

@@ -365,8 +365,8 @@ class CollectionPage extends Component {
 
 								<Row>
 									<Col
-										sm={12}
-										lg={12}
+										sm={10}
+										lg={10}
 										className = 'collectionTitleCard'
 									>
 										{data.persons.map((person, index) => {

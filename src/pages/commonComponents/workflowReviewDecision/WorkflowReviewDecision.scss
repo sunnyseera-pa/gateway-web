@@ -50,18 +50,18 @@
       grid-template-columns: 135px 1fr;
     }
 
+    &-head {
+      margin-bottom: 10px;
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+      align-items: center;
+    }
+
     &-desc {
       display: flex;
       flex-flow: column;
       width: 100%;
-
-      & > div {
-        margin-bottom: 10px;
-        display: flex;
-        flex-flow: row nowrap;
-        justify-content: space-between;
-        align-items: center;
-      }
     }
   }
   
