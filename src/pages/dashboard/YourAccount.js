@@ -149,7 +149,7 @@ class YourAccount extends React.Component {
                 <Row>
                     <Col xs={1}></Col>
                     <Col xs={10}>
-                        <YourAccountForm data={data} userdata={userdata} isUpdated={isUpdated} topicData={topicData} combinedOrganisations={combinedOrganisations} showOrg={showOrg} showOrganisation={showOrganisation} showOrgVal={showOrgVal} showBio={showBio} showSector={showSector} showDomain={showDomain} showSector={showSector} showLink={showLink} showOrcid={showOrcid} onShowOrgInput={() => {this.onShowOrgInput()}} />
+                        <YourAccountForm data={data} userdata={userdata} isUpdated={isUpdated} topicData={topicData} combinedOrganisations={combinedOrganisations} showOrg={showOrg} showOrganisation={showOrganisation} showOrgVal={showOrgVal} showBio={showBio} showSector={showSector} showDomain={showDomain} showLink={showLink} showOrcid={showOrcid} onShowOrgInput={() => {this.onShowOrgInput()}} />
                     </Col>
                     <Col xs={1}></Col>
                 </Row>    

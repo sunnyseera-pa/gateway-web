@@ -151,7 +151,7 @@ class CompleteRegistration extends Component {
                         <Col sm={1} lg={1} />
                         <Col sm={10} lg={10}>
                             <div>
-                                <YourAccountForm userdata={userdata} topicData={topicData} showOrg={showOrg} showOrganisation={showOrganisation} showBio={showBio} showSector={showSector} showDomain={showDomain} showSector={showSector} showLink={showLink} showOrcid={showOrcid} combinedOrganisations={combinedOrganisations} onShowOrgInput={() => {this.onShowOrgInput()}} />
+                                <YourAccountForm userdata={userdata} topicData={topicData} showOrg={showOrg} showOrganisation={showOrganisation} showBio={showBio} showSector={showSector} showDomain={showDomain} showLink={showLink} showOrcid={showOrcid} combinedOrganisations={combinedOrganisations} onShowOrgInput={() => {this.onShowOrgInput()}} />
                             </div>
                         </Col>
                         <Col sm={1} lg={1} />
@@ -437,7 +437,7 @@ const YourAccountForm = (props) => {
                                                 name="organisation"
                                                 labelKey="organisation"
                                                 allowNew
-                                                defaultSelected={[formik.values.organisation] || ""}
+                                                defaultSelected={formik.values.organisation ? [formik.values.organisation] : ""}
                                                 options={props.combinedOrganisations}
                                                 className={(props.showOrg && ((formik.touched.organisation && formik.values.organisation === "") && ( formik.errors.organisation && typeof formik.errors.organisation !== "undefined"))) ? "sectorTypeahead emptyFormInput addFormInput margin-bottom-8 margin-top-8" : "sectorTypeahead addFormInput margin-bottom-8 margin-top-8"} 
                                                 onBlur={ formik.handleBlur }
