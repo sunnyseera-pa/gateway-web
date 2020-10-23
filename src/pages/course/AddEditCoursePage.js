@@ -68,7 +68,7 @@ class AddEditCoursePage extends React.Component {
 		//need to handle error if no id is found
 		this.setState({ isLoading: true });
 		axios
-			.get(baseURL + '/api/v1/tools/edit/' + this.props.match.params.toolID)
+			.get(baseURL + '/api/v1/course/edit/' + this.props.match.params.courseID)
 			.then((res) => {
 				this.setState({
 					data: res.data.data[0],

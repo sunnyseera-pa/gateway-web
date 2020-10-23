@@ -431,39 +431,32 @@ class RelatedObject extends React.Component {
                                                 <SVGIcon name="educationicon" fill={"#ffffff"} className="badgeSvg mr-2" viewBox="-2 -2 22 22" /> 
                                                 <span>Course</span>
                                             </span>
-                                            
-                                            {!data.categories.category ? '' :  
-                                                activeLink === true ? 
-                                                    onSearchPage === true ?
-                                                        <span className="pointer" onClick={event => this.updateOnFilterBadge('projectCategoriesSelected', data.categories.category)}><div className="badge-tag">{data.categories.category}</div></span> :
-                                                        <a href={'/search?search=&tab=Projects&projectcategories=' + data.categories.category}><div className="badge-tag">{data.categories.category}</div></a> 
-                                                    : <div className="badge-tag">{data.categories.category}</div> }
 
-                                            {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
+                                            {!data.keywords || data.keywords.length <= 0 ? '' : data.keywords.map((keyword) => {
                                                 if (activeLink===true){
                                                     if (onSearchPage === true) { 
-                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('projectFeaturesSelected', feature)}><div className="badge-tag">{feature}</div></span>
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('courseKeywordsSelected', keyword)}><div className="badge-tag">{keyword}</div></span>
                                                     }
                                                     else { 
-                                                        return <a href={'/search?search=&tab=Projects&projectfeatures=' + feature}><div className="badge-tag">{feature}</div></a>
+                                                        return <a href={'/search?search=&tab=Courses&coursekeywords=' + keyword}><div className="badge-tag">{keyword}</div></a>
                                                     }
                                                 }
                                                 else {
-                                                    return <div className="badge-tag">{feature}</div>
+                                                    return <div className="badge-tag">{keyword}</div>
                                                 }
                                             })}
 
-                                            {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
+                                            {!data.domains || data.domains.length <= 0 ? '' : data.domains.map((domain) => {
                                                 if (activeLink===true){
                                                     if (onSearchPage === true) {
-                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('projectTopicsSelected', topic)}><div className="badge-tag">{topic}</div></span>
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('courseDomainsSelected', domain)}><div className="badge-tag">{domain}</div></span>
                                                     }
                                                     else {
-                                                        return <a href={'/search?search=&tab=Projects&projecttopics=' + topic}><div className="badge-tag">{topic}</div></a>
+                                                        return <a href={'/search?search=&tab=Courses&coursedomains=' + domain}><div className="badge-tag">{domain}</div></a>
                                                     }
                                                 }
                                                 else {
-                                                    return <div className="badge-tag">{topic}</div>
+                                                    return <div className="badge-tag">{domain}</div>
                                                 }
                                             })}
                                         </Col>  

@@ -122,7 +122,7 @@ const AddEditCourseForm = (props) => {
                     ]
                 }
             ],
-            entries: [
+            entries: props.data.entries || [
                 { 
                     level: '',
                     subject: ''
@@ -162,18 +162,18 @@ const AddEditCourseForm = (props) => {
         onSubmit: values => {
             if (values.courseDelivery === 'online') values.location = '';
             values.relatedObjects = props.relatedObjects
-            /* if (props.isEdit) {
-                axios.put(baseURL + '/api/v1/tools/' + props.data.id, values) 
+            if (props.isEdit) {
+                axios.put(baseURL + '/api/v1/course/' + props.data.id, values) 
                     .then((res) => {
-                        window.location.href = window.location.search + '/tool/' + props.data.id + '/?toolEdited=true';
+                        window.location.href = window.location.search + '/course/' + props.data.id + '/?courseEdited=true';
                     });
             }
-            else { */
+            else {
                 axios.post(baseURL + '/api/v1/course', values) 
                     .then((res) => {
                         window.location.href = window.location.search + '/course/' + res.data.response.id + '/?courseAdded=true';
                     });
-            // }
+            }
             console.log(values) 
         }
     });
@@ -195,34 +195,6 @@ const AddEditCourseForm = (props) => {
     const [phaseIndex, setPhaseIndex] = useState(-1);
 
     var listOfAuthors = [];
-
-    if (props.isEdit) {
-        props.data.authors.forEach((author) => {
-            props.combinedUsers.forEach((user) => {
-                if (user.id === author) {
-                    if (props.userState[0].id === user.id) {
-                        listOfAuthors.push({ id: user.id, name: user.name + " (You)" })
-                        if (!user.name.includes('(You)')) {
-                            user.name = user.name + " (You)";
-                        }
-                    }
-                    else {
-                        listOfAuthors.push({ id: user.id, name: user.name })
-                    }
-                }
-            });
-        });
-    }
-    else {
-        props.combinedUsers.forEach((user) => {
-            if (user.id === props.userState[0].id) {
-                listOfAuthors.push({ id: user.id, name: user.name + " (You)" })
-                if (!user.name.includes('(You)')) {
-                    user.name = user.name + " (You)";
-                }
-            }
-        });
-    }
 
     function updateReason(id, reason, type) {
         let inRelatedObject = false;
@@ -500,15 +472,15 @@ const AddEditCourseForm = (props) => {
                                                                                     <Row className="mt-2">
                                                                                         <Col sm={4}>
                                                                                             <Form.Control id={`courseOptions[${index}].studyMode`} name={`courseOptions[${index}].studyMode`} type="text" className="smallFormInput addFormInput"
-                                                                                                onChange={formik.handleChange} value={formik.values.studyMode} onBlur={formik.handleBlur} />
+                                                                                                onChange={formik.handleChange} value={formik.values.courseOptions[index].studyMode} onBlur={formik.handleBlur} />
                                                                                         </Col>
                                                                                         <Col sm={4}>
                                                                                             <Form.Control id={`courseOptions[${index}].studyDurationNumber`} name={`courseOptions[${index}].studyDurationNumber`} type="text" className="smallFormInput addFormInput"
-                                                                                                onChange={formik.handleChange} value={formik.values.studyDurationNumber} onBlur={formik.handleBlur} />
+                                                                                                onChange={formik.handleChange} value={formik.values.courseOptions[index].studyDurationNumber} onBlur={formik.handleBlur} />
                                                                                         </Col>
                                                                                         <Col sm={4}>
                                                                                             <Form.Control id={`courseOptions[${index}].studyDurationMeasure`} name={`courseOptions[${index}].studyDurationMeasure`} type="text" className="smallFormInput addFormInput"
-                                                                                                onChange={formik.handleChange} value={formik.values.studyDurationMeasure} onBlur={formik.handleBlur} />
+                                                                                                onChange={formik.handleChange} value={formik.values.courseOptions[index].studyDurationMeasure} onBlur={formik.handleBlur} />
                                                                                         </Col>
                                                                                     </Row>
 
@@ -534,9 +506,6 @@ const AddEditCourseForm = (props) => {
                                                                                             name="fees"
                                                                                             render={({ insert, remove, push }) => (
                                                                                                 <Fragment>
-                                                                                                    {(() => {
-                                                                                                        console.log(values.courseOptions) 
-                                                                                                    })()}
                                                                                                     {formik.values.courseOptions[index].fees.length > 0 &&
                                                                                                     formik.values.courseOptions[index].fees.map((p, indexB) => (
                                                                                                         <Fragment>
