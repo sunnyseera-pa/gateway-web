@@ -180,7 +180,7 @@ class EditCollectionPage extends React.Component {
 
     render() {
         const { data, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, paperData, summary, relatedObjects, didDelete, showDrawer, showModal, context } = this.state;
-
+console.log(`edit data: ${JSON.stringify(data, null, 2)}`)
         if (isLoading) {
             return <Container><Loading /></Container>;
         }
@@ -188,7 +188,7 @@ class EditCollectionPage extends React.Component {
         return (
             <div>
                 <SearchBar ref={this.searchBar} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} doToggleDrawer={this.toggleDrawer} userState={userState} />
-                <Container>
+                <Container>  
                     <EditCollectionForm data={data} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} paperData={paperData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
                 </Container>
                 <SideDrawer
@@ -381,9 +381,11 @@ const EditCollectionForm = (props) => {
 
                         <div className="relatedResourcesRectangle mt-1">
                             {props.relatedObjects ? props.relatedObjects.map((object) => {
+                                                    console.log(`object is: ${JSON.stringify(object.objectType, null, 2)}`)
+
                                 return (
                                     <div className="relatedObjectRectangle">
-                                        <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} inCollection={true}/>
+                                        <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} objectType={object.objectType} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} inCollection={true}/>
                                     </div>   
                                 )
                              }) : ''}

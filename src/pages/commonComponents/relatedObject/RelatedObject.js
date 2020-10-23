@@ -24,7 +24,9 @@ class RelatedObject extends React.Component {
         inCollection: false
     };
 
-    constructor(props) {
+    constructor(props) { 
+        console.log(`props.objectId: ${props.objectId}`)
+        console.log(`main props: ${JSON.stringify(props, null, 2)}`)
         super(props)
         this.state.activeLink = props.activeLink;
         this.state.onSearchPage = props.onSearchPage;
@@ -40,37 +42,55 @@ class RelatedObject extends React.Component {
             this.state.isLoading = false;
         } 
         else if (props.objectId) {
+            console.log(`HERE IT IS - ${JSON.stringify(props, null, 2)}`)
+            console.log(`type: ${props.objectType}`)
+
             this.state.relatedObject = props.relatedObject;
             this.state.reason = props.reason;
             // this.state.user = props.userState[0].name;
             // this.state.updated = moment().format("DD MMM YYYY");
-            this.getRelatedObjectFromDb(props.objectId);
+
+            this.getRelatedObjectFromDb(props.objectId, props.objectType);
         }
         else {
             this.state.relatedObject = props.relatedObject;
-            this.getRelatedObjectFromDb(this.state.relatedObject.objectId); 
+            console.log(`type: ${this.state.relatedObject.type}`)
+            this.getRelatedObjectFromDb(this.state.relatedObject.objectId, this.state.relatedObject.objectType); 
         }
     }
 
-    removeCard = (id, reason) => {
+    removeCard = (id, reason, type) => {
         this.setState({
              reason: reason
         });
     
-        this.getRelatedObjectFromDb(id);
+        this.getRelatedObjectFromDb(id, type);
     }
 
  
-    getRelatedObjectFromDb = (id) => {
+    getRelatedObjectFromDb = (id, type) => {
+        console.log(`in getRelatedObjectFromDb - ${type}`)
         //need to handle error if no id is found
         this.setState({ isLoading: true });
-        axios.get(baseURL + '/api/v1/relatedobject/' + id)
+
+        if(type === 'course'){
+            axios.get(baseURL + '/api/v1/relatedobject/course/' + id)
             .then((res) => { 
                 this.setState({
                     data: res.data.data[0],
                     isLoading: false
                 });
             }) 
+        } else{
+            axios.get(baseURL + '/api/v1/relatedobject/' + id)
+            .then((res) => { 
+                this.setState({
+                    data: res.data.data[0],
+                    isLoading: false
+                });
+            }) 
+        }
+
     };
  
     removeButton = () => {
@@ -92,14 +112,15 @@ class RelatedObject extends React.Component {
  
     render() {
         const { data, isLoading, activeLink, onSearchPage, relatedObject, inCollection } = this.state; 
-        
+
         if (isLoading) {
             return <Loading />;
         }
 
         if(this.props.didDelete){
             this.props.updateDeleteFlag()
-            this.removeCard(this.props.objectId, this.props.reason)
+            console.log(`delete: ${JSON.stringify(this.props, null, 2)}`)
+            this.removeCard(this.props.objectId, this.props.reason, this.props.objectType)
         }
         
 

@@ -729,9 +729,13 @@ const AddEditCourseForm = (props) => {
                                             <span className="gray800-14">Show relationships to papers, projects, datasets, tools and courses. Resources must be added to the Gateway first.</span>
                                         </div>
 
+                                        {console.log(`props.relatedObjects is: ${JSON.stringify(props.relatedObjects, null, 2)}`)}
+
+
                                         {props.relatedObjects.length === 0 ? '' :
                                             <div className="rectangle">
                                                 {props.relatedObjects.map((object) => {
+                                                    console.log(`object is: ${JSON.stringify(object, null, 2)}`)
                                                     return (
                                                         <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} />
                                                     )
@@ -741,7 +745,7 @@ const AddEditCourseForm = (props) => {
                                         <div className="rectangle flexCenter pixelGapTop">
                                             <Row>
                                                 <Col sm={1} lg={1} />
-                                                <Col sm={10} lg={10}>
+                                                <Col sm={10} lg={10}> 
                                                     <RelatedResources ref={relatedResourcesRef} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} paperData={props.paperData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                                 </Col>
                                                 <Col sm={1} lg={10} />
