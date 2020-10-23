@@ -317,11 +317,16 @@
 
 .teamSelectorMenu {
     width: 100%;
-    transform: translate(0px, 53px) !important;
+    transform: translate(0px, 50px) !important;
+    box-sizing: content-box;
 }
 
 .teamSelectorHeader {
-    padding: 15px 10px 15px 20px;
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 16px 13px 16px;
     border-bottom: 1px solid #e7e9ed;
     border-top: 1px solid #e7e9ed
 }

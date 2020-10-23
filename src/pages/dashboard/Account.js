@@ -21,6 +21,7 @@ import SVGIcon from '../../images/SVGIcon';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
+import { ReactComponent as ChevronRightSvg } from "../../images/chevron-bottom.svg";
 import './Dashboard.scss';
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -119,7 +120,17 @@ class Account extends Component {
                 });
                 this.toggleNav(tab);
             }
-        }   
+        }  
+        window.addEventListener('beforeunload', this.componentCleanup);
+    }
+
+    componentCleanup (){
+        localStorage.setItem('HDR_TEAM', 'user');
+    };
+
+    componentWillUnmount() {
+        this.componentCleanup();
+        window.removeEventListener('beforeunload', this.componentCleanup);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -327,8 +338,12 @@ class Account extends Component {
                         <div className='account-menu'>
                             <Dropdown> 
                                 <Dropdown.Toggle as={CustomToggle}>
-                                    <div className="teamSelectorHeader pixelGapBottom">
+                                    <div className="teamSelectorHeader">
                                         <span className="gray700-13">{team === 'user' ? userState[0].name : team}</span>
+                                        <ChevronRightSvg
+                                            fill={"#475da7"}
+                                            className="dataClassArrow pointer" 
+                                        />
                                     </div>
                                 </Dropdown.Toggle>
 
@@ -463,17 +478,6 @@ class Account extends Component {
                                         </Fragment>
                                     }
                                 </div>
-                            }
-                            {team === 'user' ?
-                                userState[0].role === 'Admin' ? 
-                                    <div className={`${tabId === 'usersroles' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('usersroles')}>
-                                        <Nav.Link eventKey={'usersroles'} className="verticalNavBar gray700-13">
-                                            <SVGIcon name='rolesicon' fill={'#b3b8bd'} className='accountSvgs' />
-                                            <span className="navLinkItem">Users and roles</span>
-                                        </Nav.Link>
-                                    </div>
-                                    : ''
-                                : ''
                             }
                             {team !== 'user' ? 
                             <div className={`${tabId === 'help' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('help')}>
