@@ -434,11 +434,13 @@ class RelatedObject extends React.Component {
                                                 : 
                                                     <span> Flexible dates </span>
                                                 }
-                                                |  
+
+                                                {data.courseOptions[0].startDate && data.courseOptions[0].studyMode ?  '|' : ''}
+
                                                 {data.courseOptions.map((courseOption, index) => { 
                                                     return(
                                                         <>
-                                                          {index > 0 ? <span> ,{courseOption.studyMode} </span> : <span> {courseOption.studyMode} </span> }
+                                                          {index > 0 ? <span> ,{courseOption.studyMode} </span> :  <span> {courseOption.studyMode} </span> }
                                                         </>
                                                     )
                                                 })}

@@ -108,7 +108,8 @@ class EditCollectionPage extends React.Component {
             if (type === 'tool' && page > 0) searchURL += '&toolIndex=' + page;
             if (type === 'project' && page > 0) searchURL += '&projectIndex=' + page;
             if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
-        
+            if (type === 'course' && page > 0) searchURL += '&courseIndex=' + page; 
+            
         axios.get(baseURL + '/api/v1/search?search='+ this.state.searchString + searchURL, {
             params: {
                 form: true,
@@ -383,7 +384,7 @@ const EditCollectionForm = (props) => {
 
                         <div className="relatedResourcesRectangle mt-1">
                             {props.relatedObjects ? props.relatedObjects.map((object) => {
-                                return (
+                                return ( 
                                     <div className="relatedObjectRectangle">
                                         <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} objectType={object.objectType} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} inCollection={true}/>
                                     </div>   

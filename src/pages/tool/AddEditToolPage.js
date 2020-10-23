@@ -356,7 +356,8 @@ class AddEditToolPage extends React.Component {
 			if (type === 'project' && page > 0) searchURL += '&projectIndex=' + page;
 			if (type === 'paper' && page > 0) searchURL += '&paperIndex=' + page;
 			if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
-
+			if (type === 'course' && page > 0) searchURL += '&courseIndex=' + page; 
+			
 			axios
 				.get(
 					baseURL +

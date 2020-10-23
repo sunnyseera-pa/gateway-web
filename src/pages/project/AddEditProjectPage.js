@@ -132,7 +132,8 @@ class AddEditProjectPage extends React.Component {
             if (type === 'tool' && page > 0) searchURL += '&toolIndex=' + page;
             if (type === 'project' && page > 0) searchURL += '&projectIndex=' + page;
             if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
-         
+            if (type === 'course' && page > 0) searchURL += '&courseIndex=' + page; 
+            
         axios.get(baseURL + '/api/v1/search?search='+ this.state.searchString + searchURL, {
             params: {
                 form: true,
