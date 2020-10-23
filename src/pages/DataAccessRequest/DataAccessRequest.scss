@@ -595,13 +595,12 @@ input[type='checkbox']:after {
 }
 
 .makeADecisionDropdown {
-		position: relative;
+	position: relative;
     width: 320px !important;
     max-height: 314px !important;	
     box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03) !important;
     background-color: $white !important;
-    margin-bottom: 25px !important;
-		padding: 12px 16px 12px 16px !important;
+	padding: 12px 16px 12px 16px !important;
 
 	option {
 		padding: 4px 0;
