@@ -151,6 +151,7 @@ class CourseDetail extends Component {
     let tempObjects = [];
     if(data){
     const promises = data.map(async (object, index) => {
+
       await axios
         .get(baseURL + "/api/v1/relatedobject/" + object.objectId) 
         .then(res => {
@@ -428,11 +429,11 @@ class CourseDetail extends Component {
                                 </Col>
                                 <Col sm={10} className="purple-14 overflowWrap">
                                 <a
-                                  href=""
+                                  href={'/person/' + data.creator[0].id}
                                   target="_blank"
                                   className="purple-14"
                                 >
-                                  Uploader goes here (link)
+                                  {data.creator[0].firstname} {data.creator[0].lastname}
                                 </a>
                                 </Col>
                             </Row>
@@ -526,7 +527,9 @@ class CourseDetail extends Component {
                               return(
                                 <div className="margin-top-24">
                                 <Row className="gray800-14-opacity">
-                                <Col sm={12}>Course date goes here</Col>
+                                <Col sm={12}>
+                                  {moment(courseOption.startDate).format("dddd Do MMMM YYYY")}
+                                </Col>
                                 </Row>
                                 <Row className="pad-top-16">
                                 <Col sm={2} className="gray800-14">
@@ -717,7 +720,7 @@ class CourseDetail extends Component {
           </SideDrawer>  
 
           <ActionBar userState={userState}> 
-            <ResourcePageButtons data={data} userState={userState} />
+            <ResourcePageButtons data={data} userState={userState} /> 
           </ActionBar> 
 
           <DataSetModal 

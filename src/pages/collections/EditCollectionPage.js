@@ -74,6 +74,7 @@ class EditCollectionPage extends React.Component {
               data: res.data.data[0],
               relatedObjects: res.data.data[0].relatedObjects ? res.data.data[0].relatedObjects : []
             });
+
             this.setState({isLoading: false})
           });
       };
@@ -179,7 +180,7 @@ class EditCollectionPage extends React.Component {
 
     render() {
         const { data, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, paperData, summary, relatedObjects, didDelete, showDrawer, showModal, context } = this.state;
- 
+
         if (isLoading) {
             return <Container><Loading /></Container>;
         }
@@ -228,6 +229,7 @@ const EditCollectionForm = (props) => {
             relatedObjects: props.relatedObjects
         },
     
+        
 
         validationSchema: Yup.object({
             name: Yup.string()

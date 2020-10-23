@@ -5,7 +5,7 @@ import { Row, Col, Button, Alert } from 'react-bootstrap';
 import Loading from '../Loading'
 import SVGIcon from '../../../images/SVGIcon' 
 import './RelatedObject.scss'; 
-
+import moment from "moment";
  
 var baseURL = require('../BaseURL').getURL();
 
@@ -17,7 +17,7 @@ class RelatedObject extends React.Component {
         // user: '',
         // updated: '' ,
         data: [],
-        activeLink: true,
+        activeLink: true, 
         onSearchPage: false,
         isLoading: true,
         didDelete: false,
@@ -65,12 +65,12 @@ class RelatedObject extends React.Component {
         //need to handle error if no id is found
         this.setState({ isLoading: true });
         axios.get(baseURL + '/api/v1/relatedobject/' + id)
-            .then((res) => {
+            .then((res) => { 
                 this.setState({
                     data: res.data.data[0],
                     isLoading: false
                 });
-            })
+            }) 
     };
  
     removeButton = () => {
@@ -92,7 +92,7 @@ class RelatedObject extends React.Component {
  
     render() {
         const { data, isLoading, activeLink, onSearchPage, relatedObject, inCollection } = this.state; 
-
+        
         if (isLoading) {
             return <Loading />;
         }
@@ -109,7 +109,7 @@ class RelatedObject extends React.Component {
         }
         else if (this.props.showRelationshipQuestion) {
             rectangleClassName= 'collection-rectangleWithBorder';
-        }
+        } 
         
         return (
             <Row className="resource-card-row"> 
@@ -404,21 +404,37 @@ class RelatedObject extends React.Component {
                                     </Row>
                                 );
                             }
-                            else if (data.type === 'course') {
+                            else if (data.type === 'course') { 
                                 return(
                                     <Row className="noMargin">
                                         <Col sm={10} lg={10} className="pad-left-24">
                                             {activeLink===true ?
-                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/course/' + data.id} >Course title</a>
-                                            : <span className="black-bold-16">Course title</span> }
+                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/course/' + data.id} >{data.title}</a>
+                                            : <span className="black-bold-16">{data.title}</span> }
                                             <br />
-                                            <span className="gray800-14">Course provider</span>
+                                            <span className="gray800-14">{data.provider}</span>
                                             {/* TODO ADD CALENDAR ICON HERE */}
                                             <Row className="margin-top-8">
                                                 <Col sm={12} lg={12}>
                                             <SVGIcon name="workflow" fill={"#868e96"} className="mr-2 calendarSVG" width={20} height={18} />
                                             <span className="gray800-14">
-                                                Start date  |  Map - study modes 
+                                                Starts 
+                                                {data.courseOptions.map((courseOption, index) => {
+                                                    return(
+                                                        courseOption.startDate ?
+                                                            <span> Flexible dates </span>
+                                                        :
+                                                            index > 0 ? <span> ,{moment(courseOption.startDate).format("dddd Do MMMM YYYY")} </span> : <span> {moment(courseOption.startDate).format("dddd Do MMMM YYYY")} </span> 
+                                                    )
+                                                    })}
+                                                |  
+                                                {data.courseOptions.map((courseOption, index) => { 
+                                                    return(
+                                                        <>
+                                                          {index > 0 ? <span> ,{courseOption.studyMode} </span> : <span> {courseOption.studyMode} </span> }
+                                                        </>
+                                                    )
+                                                })}
                                             </span>
                                             </Col>
                                             </Row>
@@ -432,38 +448,38 @@ class RelatedObject extends React.Component {
                                                 <span>Course</span>
                                             </span>
                                             
-                                            {!data.categories.category ? '' :  
+                                            {/* {!data.categories.category ? '' :  
                                                 activeLink === true ? 
                                                     onSearchPage === true ?
                                                         <span className="pointer" onClick={event => this.updateOnFilterBadge('projectCategoriesSelected', data.categories.category)}><div className="badge-tag">{data.categories.category}</div></span> :
                                                         <a href={'/search?search=&tab=Projects&projectcategories=' + data.categories.category}><div className="badge-tag">{data.categories.category}</div></a> 
-                                                    : <div className="badge-tag">{data.categories.category}</div> }
+                                                    : <div className="badge-tag">{data.categories.category}</div> } */}
 
-                                            {!data.tags.features || data.tags.features.length <= 0 ? '' : data.tags.features.map((feature) => {
+                                            {!data.keywords || data.keywords.length <= 0 ? '' : data.keywords.map((keyword) => {
                                                 if (activeLink===true){
                                                     if (onSearchPage === true) { 
-                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('projectFeaturesSelected', feature)}><div className="badge-tag">{feature}</div></span>
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('projectFeaturesSelected', keyword)}><div className="badge-tag">{keyword}</div></span>
                                                     }
                                                     else { 
-                                                        return <a href={'/search?search=&tab=Projects&projectfeatures=' + feature}><div className="badge-tag">{feature}</div></a>
+                                                        return <a href={'/search?search=&tab=Projects&projectfeatures=' + keyword}><div className="badge-tag">{keyword}</div></a>
                                                     }
                                                 }
                                                 else {
-                                                    return <div className="badge-tag">{feature}</div>
+                                                    return <div className="badge-tag">{keyword}</div>
                                                 }
                                             })}
 
-                                            {!data.tags.topics || data.tags.topics.length <= 0 ? '' : data.tags.topics.map((topic) => {
+                                            {!data.domains || data.domainslength <= 0 ? '' : data.domains.map((domain) => {
                                                 if (activeLink===true){
                                                     if (onSearchPage === true) {
-                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('projectTopicsSelected', topic)}><div className="badge-tag">{topic}</div></span>
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('projectTopicsSelected', domain)}><div className="badge-tag">{domain}</div></span>
                                                     }
                                                     else {
-                                                        return <a href={'/search?search=&tab=Projects&projecttopics=' + topic}><div className="badge-tag">{topic}</div></a>
+                                                        return <a href={'/search?search=&tab=Projects&projecttopics=' + domain}><div className="badge-tag">{domain}</div></a>
                                                     }
                                                 }
                                                 else {
-                                                    return <div className="badge-tag">{topic}</div>
+                                                    return <div className="badge-tag">{domain}</div>
                                                 }
                                             })}
                                         </Col>  
