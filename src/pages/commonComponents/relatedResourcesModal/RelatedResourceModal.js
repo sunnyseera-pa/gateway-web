@@ -241,10 +241,9 @@ class RelatedResourcesModal extends React.Component {
                                 <Tab eventKey="Datasets" title={'Datasets (' + (!this.props.summary.datasets ? '0' : this.props.summary.datasets - this.state.selected.datasets) + ')'} />
                                 <Tab eventKey="Tools" title={'Tools (' + (!this.props.summary.tools ? '0' : this.props.summary.tools - this.state.selected.tools - editingObjectTool) + ')'} />
                                 <Tab eventKey="Projects" title={'Projects (' + (!this.props.summary.projects ? '0' : this.props.summary.projects - this.state.selected.projects - editingObjectProject) + ')'} />
+                                <Tab eventKey="Course" title={'Courses (' + (!this.props.summary.courses ? '0' : this.props.summary.courses - this.state.selected.courses) + ')'} />
                                 <Tab eventKey="Papers" title={'Papers (' + (!this.props.summary.papers ? '0' : this.props.summary.papers - this.state.selected.papers) + ')'} />
                                 <Tab eventKey="People" title={'People (' + (!this.props.summary.persons ? '0' : this.props.summary.persons - this.state.selected.persons) + ')'} />
-                                <Tab eventKey="Course" title={'Course (' + (!this.props.summary.courses ? '0' : this.props.summary.courses - this.state.selected.courses) + ')'} />
-
                            </Tabs>
                         </div>
                     </div> 

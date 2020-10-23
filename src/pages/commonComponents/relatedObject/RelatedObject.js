@@ -3,9 +3,10 @@ import axios from 'axios';
 import queryString from 'query-string';
 import { Row, Col, Button, Alert } from 'react-bootstrap';
 import Loading from '../Loading'
-import SVGIcon from '../../../images/SVGIcon' 
-import './RelatedObject.scss'; 
+import SVGIcon from '../../../images/SVGIcon'  
+import './RelatedObject.scss';  
 import moment from "moment";
+import { ReactComponent as CalendarSvg } from '../../../images/calendaricon.svg'; 
  
 var baseURL = require('../BaseURL').getURL();
 
@@ -35,7 +36,7 @@ class RelatedObject extends React.Component {
             this.state.inCollection = props.inCollection;
         }
         if (props.data) {
-            this.state.data = props.data || [];
+            this.state.data = props.data || []
             //this.state.reviewData = this.state.data.reviews;
             this.state.isLoading = false;
         } 
@@ -424,20 +425,15 @@ class RelatedObject extends React.Component {
                                             : <span className="black-bold-16">{data.title}</span> }
                                             <br />
                                             <span className="gray800-14">{data.provider}</span>
-                                            {/* TODO ADD CALENDAR ICON HERE */}
                                             <Row className="margin-top-8">
                                                 <Col sm={12} lg={12}>
-                                            <SVGIcon name="workflow" fill={"#868e96"} className="mr-2 calendarSVG" width={20} height={18} />
-                                            <span className="gray800-14">
-                                                Starts 
-                                                {data.courseOptions.map((courseOption, index) => {
-                                                    return(
-                                                        courseOption.startDate ?
-                                                            <span> Flexible dates </span>
-                                                        :
-                                                            index > 0 ? <span> ,{moment(courseOption.startDate).format("dddd Do MMMM YYYY")} </span> : <span> {moment(courseOption.startDate).format("dddd Do MMMM YYYY")} </span> 
-                                                    )
-                                                    })}
+                                            <CalendarSvg className="calendarSVG"/>
+                                            <span className="gray800-14 margin-left-10">
+                                                {data.courseOptions[0].startDate ? 
+                                                    <span> Starts {moment(data.courseOptions.startDate).format("dddd Do MMMM YYYY")} </span>
+                                                : 
+                                                    <span> Flexible dates </span>
+                                                }
                                                 |  
                                                 {data.courseOptions.map((courseOption, index) => { 
                                                     return(
