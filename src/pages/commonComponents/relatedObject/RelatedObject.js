@@ -5,7 +5,7 @@ import { Row, Col, Button, Alert } from 'react-bootstrap';
 import Loading from '../Loading'
 import SVGIcon from '../../../images/SVGIcon' 
 import './RelatedObject.scss'; 
-
+import moment from "moment";
  
 var baseURL = require('../BaseURL').getURL();
 
@@ -17,7 +17,7 @@ class RelatedObject extends React.Component {
         // user: '',
         // updated: '' ,
         data: [],
-        activeLink: true,
+        activeLink: true, 
         onSearchPage: false,
         isLoading: true,
         didDelete: false,
@@ -65,12 +65,12 @@ class RelatedObject extends React.Component {
         //need to handle error if no id is found
         this.setState({ isLoading: true });
         axios.get(baseURL + '/api/v1/relatedobject/' + id)
-            .then((res) => {
+            .then((res) => { 
                 this.setState({
                     data: res.data.data[0],
                     isLoading: false
                 });
-            })
+            }) 
     };
  
     removeButton = () => {
@@ -92,7 +92,7 @@ class RelatedObject extends React.Component {
  
     render() {
         const { data, isLoading, activeLink, onSearchPage, relatedObject, inCollection } = this.state; 
-
+        
         if (isLoading) {
             return <Loading />;
         }
@@ -109,7 +109,7 @@ class RelatedObject extends React.Component {
         }
         else if (this.props.showRelationshipQuestion) {
             rectangleClassName= 'collection-rectangleWithBorder';
-        }
+        } 
         
         return (
             <Row className="resource-card-row"> 
@@ -404,21 +404,37 @@ class RelatedObject extends React.Component {
                                     </Row>
                                 );
                             }
-                            else if (data.type === 'course') {
+                            else if (data.type === 'course') { 
                                 return(
                                     <Row className="noMargin">
                                         <Col sm={10} lg={10} className="pad-left-24">
                                             {activeLink===true ?
-                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/course/' + data.id} >Course title</a>
-                                            : <span className="black-bold-16">Course title</span> }
+                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/course/' + data.id} >{data.title}</a>
+                                            : <span className="black-bold-16">{data.title}</span> }
                                             <br />
-                                            <span className="gray800-14">Course provider</span>
+                                            <span className="gray800-14">{data.provider}</span>
                                             {/* TODO ADD CALENDAR ICON HERE */}
                                             <Row className="margin-top-8">
                                                 <Col sm={12} lg={12}>
                                             <SVGIcon name="workflow" fill={"#868e96"} className="mr-2 calendarSVG" width={20} height={18} />
                                             <span className="gray800-14">
-                                                Start date  |  Map - study modes 
+                                                Starts 
+                                                {data.courseOptions.map((courseOption, index) => {
+                                                    return(
+                                                        courseOption.startDate ?
+                                                            <span> Flexible dates </span>
+                                                        :
+                                                            index > 0 ? <span> ,{moment(courseOption.startDate).format("dddd Do MMMM YYYY")} </span> : <span> {moment(courseOption.startDate).format("dddd Do MMMM YYYY")} </span> 
+                                                    )
+                                                    })}
+                                                |  
+                                                {data.courseOptions.map((courseOption, index) => { 
+                                                    return(
+                                                        <>
+                                                          {index > 0 ? <span> ,{courseOption.studyMode} </span> : <span> {courseOption.studyMode} </span> }
+                                                        </>
+                                                    )
+                                                })}
                                             </span>
                                             </Col>
                                             </Row>

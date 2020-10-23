@@ -20,7 +20,7 @@ import UserMessages from "../commonComponents/userMessages/UserMessages";
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
-import './Course.scss';
+import './Course.scss'; 
 
 // import ReactGA from 'react-ga';
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
@@ -126,7 +126,7 @@ class CourseDetail extends Component {
       }).finally(() => {
         this.setState({ isLoading: false });
     });
-  };
+  }; 
 
   doSearch = e => {
     //fires on enter on searchbar
@@ -143,14 +143,15 @@ class CourseDetail extends Component {
       this.setState({ discoursePostCount: count });
   };
 
-  updateCounter = (id, counter) => {
-    axios.post(baseURL + "/api/v1/counter/update", { id, counter }); 
+  updateCounter = (id, counter) => { 
+    axios.post(baseURL + "/api/v1/coursecounter/update", { id, counter });  
   };
 
   getAdditionalObjectInfo = async data => { 
     let tempObjects = [];
     if(data){
     const promises = data.map(async (object, index) => {
+
       await axios
         .get(baseURL + "/api/v1/relatedobject/" + object.objectId) 
         .then(res => {
@@ -284,7 +285,7 @@ class CourseDetail extends Component {
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                   <Alert variant="warning" className="mt-3">
-                    Your course is pending review. Only you can see this page.
+                    Your course is pending review. Only you can see this page. 
                   </Alert>
                 </Col>
                 <Col sm={1} lg={10} />
@@ -299,7 +300,12 @@ class CourseDetail extends Component {
                 <div className="rectangle">
                   <Row>
                     <Col>
-                      <span className="black-20">{data.name}</span>
+                      <span className="gray3a-20">{data.title}</span>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <span className="gray800-14">{data.provider}</span>
                     </Col>
                   </Row>
                   <Row className="mt-3">
@@ -314,12 +320,27 @@ class CourseDetail extends Component {
                         <span>Course</span>
                       </span>
 
-                      {/* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */}
-                      {/* <a href={"/search?search=&tab=Courses&projectcategories=" + data.categories.category}>
-                        <div className="badge-tag">
-                          {data.categories.category}
-                        </div>
-                      </a> */}
+                      {data.award ? (
+                        data.award.map(award => {
+                          return (
+                            /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
+                            <a href={"/search?search=&tab=Projects&projecttopics=" + award}>
+                              <div className="badge-tag">{award}</div>
+                            </a>
+                          );
+                        })
+                      ) : ''}
+
+                      {data.domains ? (
+                        data.domains.map(domain => {
+                          return (
+                            /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
+                            <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
+                              <div className="badge-tag">{domain}</div>
+                            </a>
+                          );
+                        })
+                      ) : ''}
                     </Col>
                   </Row>
 
@@ -399,7 +420,7 @@ class CourseDetail extends Component {
                                 Course provider
                               </Col>
                               <Col sm={10} className="gray-deep-14 overflowWrap">
-                                Course provider goes here
+                                {data.provider}
                               </Col>
                             </Row>
                             <Row className="pad-top-16">
@@ -408,11 +429,11 @@ class CourseDetail extends Component {
                                 </Col>
                                 <Col sm={10} className="purple-14 overflowWrap">
                                 <a
-                                  href=""
+                                  href={'/person/' + data.creator[0].id}
                                   target="_blank"
                                   className="purple-14"
                                 >
-                                  Uploader goes here (link)
+                                  {data.creator[0].firstname} {data.creator[0].lastname}
                                 </a>
                                 </Col>
                             </Row>
@@ -421,7 +442,13 @@ class CourseDetail extends Component {
                                 Course delivery
                               </Col>
                               <Col sm={10} className="gray-deep-14 overflowWrap">
-                                Course delivery goes here
+                                {data.courseDelivery ?
+                                  data.courseDelivery
+                                : 
+                                  <span className="gray800-14-opacity">
+                                    Not specified
+                                  </span>
+                                }
                               </Col>
                             </Row>
                             <Row className="pad-top-16">
@@ -429,7 +456,13 @@ class CourseDetail extends Component {
                                 Course location
                               </Col>
                               <Col sm={10} className="gray-deep-14 overflowWrap">
-                                Course location goes here
+                                {data.location ?
+                                  data.location
+                                : 
+                                  <span className="gray800-14-opacity">
+                                    Not specified
+                                  </span>
+                                }
                               </Col>
                             </Row>
                             <Row className="pad-top-16">
@@ -437,13 +470,13 @@ class CourseDetail extends Component {
                                 Keywords
                               </Col>
                               <Col sm={10} className="gray800-14">
-                                {!data.tags.features ||
-                                data.tags.features.length <= 0 ? (
+                                {!data.keywords ||
+                                data.keywords.length <= 0 ? (
                                   <span className="gray800-14-opacity">
                                     Not specified
                                   </span>
                                 ) : (
-                                  data.tags.features.map(keyword => {
+                                  data.keywords.map(keyword => {
                                     return (
                                       /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
                                       <a href={"/search?search=&tab=Projects&projectfeatures=" + keyword}>
@@ -459,13 +492,13 @@ class CourseDetail extends Component {
                                 Domain
                               </Col>
                               <Col sm={10} className="gray800-14">
-                                {!data.tags.topics ||
-                                data.tags.topics.length <= 0 ? (
+                                {!data.domains ||
+                                data.domains.length <= 0 ? (
                                   <span className="gray800-14-opacity">
                                     Not specified
                                   </span>
                                 ) : (
-                                  data.tags.topics.map(domain => {
+                                  data.domains.map(domain => {
                                     return (
                                       /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
                                       <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
@@ -488,29 +521,58 @@ class CourseDetail extends Component {
                             <Row className="gray800-14-bold">
                               <Col sm={12}>Dates and costs</Col>
                             </Row>
-                            {/* TODO - MAP THROUGH THE ENTRIES IN DATE AND COSTS AND FOR EACH RETURN THE BELOW 3 ROWS */}
-                            <div className="margin-top-24">
+                            {/* TODO - MAP THROUGH THE ENTRIES IN DATE AND COSTS AND FOR EACH RETURN THE BELOW 3 ROWS WRAPPED IN TH TOP24 DIV */}
+                            {/* courseOptions */}
+                            {data.courseOptions.map((courseOption) => {
+                              return(
+                                <div className="margin-top-24">
                                 <Row className="gray800-14-opacity">
-                                <Col sm={12}>Course date goes here</Col>
+                                <Col sm={12}>
+                                  {moment(courseOption.startDate).format("dddd Do MMMM YYYY")}
+                                </Col>
                                 </Row>
                                 <Row className="pad-top-16">
                                 <Col sm={2} className="gray800-14">
                                     Course duration
                                 </Col>
-                                <Col sm={10} className="gray-deep-14 overflowWrap">
-                                    Full-time  |  1 year
-                                </Col>
+                                  {courseOption.studyMode && courseOption.studyDurationNumber ?
+                                    <Col sm={10} className="gray-deep-14 overflowWrap">
+                                      {courseOption.studyMode}  |  {courseOption.studyDurationNumber} {courseOption.studyDurationNumber > 1 ? courseOption.studyDurationMeasure + 's' : courseOption.studyDurationMeasure }
+                                    </Col>
+                                  :
+                                    <Col sm={10} className="gray-deep-14 overflowWrap">
+                                      <span className="gray800-14-opacity">
+                                        Not specified
+                                      </span>
+                                    </Col>
+                                  }
                                 </Row>
                                 <Row className="pad-top-16">
                                 <Col sm={2} className="gray800-14">
                                     Course fees
                                 </Col>
-                                <Col sm={10} className="gray-deep-14 overflowWrap">
-                                    {/* TODO MAP FOR EACH COURSE FEE OPTION */}
-                                    Full-time Home (UK) and EU students  |  £12,000 per year <br/>
-                                </Col>
+                                {courseOption.fees ?
+                                  courseOption.fees.map((fee, index) => {
+                                    return(
+                                      <>
+                                        {index > 0 ? <Col sm={2} /> : ''}
+                                        <Col sm={10} className="gray-deep-14 overflowWrap">
+                                          {fee.feeDescription} | {fee.feeAmount}
+                                        </Col>
+                                      </>
+                                    )
+                                  })
+                                :
+                                  <Col sm={10} className="gray-deep-14 overflowWrap">
+                                    <span className="gray800-14-opacity">
+                                      Not specified
+                                    </span>
+                                  </Col>
+                                }
                                 </Row>
-                            </div>
+                                </div>
+                              )
+                            })}
                           </div>
                         </Col>
                       </Row> 
@@ -526,17 +588,16 @@ class CourseDetail extends Component {
                                 Entry requirements
                               </Col>
                               <Col sm={9} className="gray800-14">
-                                {!data.tags.topics ||
-                                data.tags.topics.length <= 0 ? (
+                                {!data.entries || data.entries <= 0 ? (
                                   <span className="gray800-14-opacity">
                                     Not specified
                                   </span>
                                 ) : (
-                                  data.tags.topics.map(domain => {
+                                  data.entries.map(entry => {
                                     return (
-                                      /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
-                                      <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
-                                        <div className="badge-version" ><span>Level</span><span>Subject</span></div>
+                                      // TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES 
+                                      <a href={"/search?search=&tab=Projects&projecttopics=" + entry}>
+                                        <div className="badge-version" ><span>{entry.level}</span><span>{entry.subject}</span></div>
                                       </a>
                                     );
                                   })
@@ -548,21 +609,16 @@ class CourseDetail extends Component {
                                 Restrictions
                               </Col>
                               <Col sm={9} className="gray800-14">
-                                {!data.tags.topics ||
-                                data.tags.topics.length <= 0 ? (
-                                  <span className="gray800-14-opacity">
-                                    Not specified
-                                  </span>
-                                ) : (
-                                  data.tags.topics.map(domain => {
-                                    return (
-                                      /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
-                                      <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
-                                        <div className="badge-tag">{domain}</div>
-                                      </a>
-                                    );
-                                  })
-                                )}
+                                {!data.restrictions ? 
+                                    <span className="gray800-14-opacity">
+                                      Not specified
+                                    </span>
+                                :
+                                /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
+                                    <a href={"/search?search=&tab=Projects&projecttopics=" + data.restrictions}>
+                                      <div className="badge-tag">{data.restrictions}</div>
+                                    </a>
+                                }
                               </Col>
                             </Row>                           
                             <Row className="pad-top-16">
@@ -570,17 +626,16 @@ class CourseDetail extends Component {
                                 Award
                               </Col>
                               <Col sm={9} className="gray800-14">
-                                {!data.tags.topics ||
-                                data.tags.topics.length <= 0 ? (
+                                {!data.award || data.award.length <= 0 ? (
                                   <span className="gray800-14-opacity">
                                     Not specified
                                   </span>
                                 ) : (
-                                  data.tags.topics.map(domain => {
+                                  data.award.map(award => {
                                     return (
                                       /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
-                                      <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
-                                        <div className="badge-tag">{domain}</div>
+                                      <a href={"/search?search=&tab=Projects&projecttopics=" + award}>
+                                        <div className="badge-tag">{award}</div>
                                       </a>
                                     );
                                   })
@@ -592,21 +647,16 @@ class CourseDetail extends Component {
                                 Competency framework
                               </Col>
                               <Col sm={9} className="gray800-14">
-                                {!data.tags.topics ||
-                                data.tags.topics.length <= 0 ? (
-                                  <span className="gray800-14-opacity">
-                                    Not specified
-                                  </span>
-                                ) : (
-                                  data.tags.topics.map(domain => {
-                                    return (
-                                      /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
-                                      <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
-                                        <div className="badge-tag">{domain}</div>
-                                      </a>
-                                    );
-                                  })
-                                )}
+                                {!data.competencyFramework ? 
+                                    <span className="gray800-14-opacity">
+                                      Not specified
+                                    </span>
+                                :
+                                /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
+                                    <a href={"/search?search=&tab=Projects&projecttopics=" + data.competencyFramework}>
+                                      <div className="badge-tag">{data.competencyFramework}</div>
+                                    </a>
+                                }
                               </Col>
                             </Row>
                             <Row className="pad-top-16">
@@ -614,21 +664,16 @@ class CourseDetail extends Component {
                                 National priority areas
                               </Col>
                               <Col sm={9} className="gray800-14">
-                                {!data.tags.topics ||
-                                data.tags.topics.length <= 0 ? (
-                                  <span className="gray800-14-opacity">
-                                    Not specified
-                                  </span>
-                                ) : (
-                                  data.tags.topics.map(domain => {
-                                    return (
-                                      /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
-                                      <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
-                                        <div className="badge-tag">{domain}</div>
-                                      </a>
-                                    );
-                                  })
-                                )}
+                                {!data.nationalPriority ? 
+                                    <span className="gray800-14-opacity">
+                                      Not specified
+                                    </span>
+                                :
+                                /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
+                                    <a href={"/search?search=&tab=Projects&projecttopics=" + data.nationalPriority}>
+                                      <div className="badge-tag">{data.nationalPriority}</div>
+                                    </a>
+                                }
                               </Col>
                             </Row>
                           </div>
@@ -675,7 +720,7 @@ class CourseDetail extends Component {
           </SideDrawer>  
 
           <ActionBar userState={userState}> 
-            <ResourcePageButtons data={data} userState={userState} />
+            <ResourcePageButtons data={data} userState={userState} /> 
           </ActionBar> 
 
           <DataSetModal 
