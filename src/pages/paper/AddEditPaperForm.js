@@ -547,6 +547,7 @@ const AddEditPaperForm = (props) => {
                       <RelatedObject
                         showRelationshipQuestion={true}
                         objectId={object.objectId}
+                        objectType={object.objectType}
                         doRemoveObject={props.doRemoveObject}
                         doUpdateReason={updateReason}
                         reason={object.reason}

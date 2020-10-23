@@ -443,7 +443,7 @@ const AddEditToolForm = (props) => {
                         <div className="rectangle">
                             {props.relatedObjects.map((object) => {
                                 return (
-                                    <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag}/>
+                                    <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} objectType={object.objectType} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag}/>
                                 )
                             })}
                         </div>}
