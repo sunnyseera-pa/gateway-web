@@ -38,6 +38,7 @@ class AddEditToolPage extends React.Component {
 		projectData: [],
 		paperData: [],
 		personData: [],
+		courseData: [],
 		summary: [],
 		tempRelatedObjectIds: [],
 		relatedObjectIds: [],
@@ -376,6 +377,7 @@ class AddEditToolPage extends React.Component {
 						projectData: res.data.projectResults || [],
 						paperData: res.data.paperResults || [],
 						personData: res.data.personResults || [],
+						courseData: res.data.courseResults || [],
 						summary: res.data.summary || [],
 						isLoading: false
 					});
@@ -463,6 +465,7 @@ class AddEditToolPage extends React.Component {
 			projectData,
 			paperData,
 			personData,
+			courseData,
 			summary,
 			relatedObjects,
 			didDelete,
@@ -479,7 +482,7 @@ class AddEditToolPage extends React.Component {
 			);
 		}
 
-		return (
+		return ( 
 			<div>
 				<SearchBar
 					ref={this.searchBar}
@@ -507,6 +510,7 @@ class AddEditToolPage extends React.Component {
 						projectData={projectData}
 						paperData={paperData}
 						personData={personData}
+						courseData={courseData}
 						summary={summary}
 						doAddToTempRelatedObjects={this.addToTempRelatedObjects}
 						tempRelatedObjectIds={this.state.tempRelatedObjectIds}

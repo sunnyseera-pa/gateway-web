@@ -21,6 +21,7 @@ class RelatedResourcesModal extends React.Component {
         projectIndex: 0,
         paperIndex: 0,
         personIndex: 0,
+        courseIndex: 0,
         relatedObjectIds: [],
         relatedObjects: [],
         selected:{
@@ -29,6 +30,7 @@ class RelatedResourcesModal extends React.Component {
             projects:0,
             papers:0,
             persons:0,
+            courses:0
        }
 
     }
@@ -71,11 +73,16 @@ class RelatedResourcesModal extends React.Component {
                 this.setState({ personIndex: page })
             ])
         }
+        else if (type === 'course') {
+            await Promise.all([
+                this.setState({ courseIndex: page })
+            ])
+        }
         this.props.doSearchMethod(e, type, page)
     }
 
     render() {
-        const { userState, datasetIndex, toolIndex, projectIndex, paperIndex, personIndex} = this.state;
+        const { userState, datasetIndex, toolIndex, projectIndex, paperIndex, personIndex, courseIndex} = this.state;
         var { key } = this.state;
 
         var datasetCount = this.props.summary.datasets || 0;
@@ -83,6 +90,7 @@ class RelatedResourcesModal extends React.Component {
         var projectCount = this.props.summary.projects || 0;
         var paperCount = this.props.summary.papers || 0;
         var personCount = this.props.summary.persons || 0;
+        var courseCount = this.props.summary.courses || 0;
         
         if (key === '' || typeof key === "undefined") {
             if (datasetCount > 0) {
@@ -99,6 +107,9 @@ class RelatedResourcesModal extends React.Component {
             }
             else if (personCount > 0) {
                 key = 'People'
+            }
+            else if (courseCount > 0) {
+                key = 'Course'
             }
             else {
                 key = 'Datasets'
@@ -136,6 +147,12 @@ class RelatedResourcesModal extends React.Component {
                 <Pagination.Item key={i} active={i === (personIndex/maxResult)+1} onClick={(e) => {this.handlePagination("person", ((i-1)*(maxResult)), "click")}}>{i}</Pagination.Item>,
             );
         }
+        for (let i = 1; i <= Math.ceil(courseCount / maxResult); i++) {
+            personPaginationItems.push(
+                <Pagination.Item key={i} active={i === (courseIndex/maxResult)+1} onClick={(e) => {this.handlePagination("course", ((i-1)*(maxResult)), "click")}}>{i}</Pagination.Item>,
+            );
+        }
+
 
         var editingObjectProject = 0;
         var editingObjectTool = 0;
@@ -152,10 +169,10 @@ class RelatedResourcesModal extends React.Component {
         this.state.selected.projects = 0;
         this.state.selected.papers = 0;
         this.state.selected.persons = 0;
+        this.state.selected.courses = 0;
 
        if(this.props.relatedObjects) {
             this.props.relatedObjects.map((object) => {
-
                 this.state.relatedObjectIds.push(object.objectId) 
                 
                 switch (object.objectType) {
@@ -198,6 +215,14 @@ class RelatedResourcesModal extends React.Component {
                                 }
                             })
                         break;
+                    case 'course':
+                            this.props.courseData.map((course) => {
+                                if(object.objectId === course.id || object.objectId === JSON.stringify(course.id)) {
+                                 
+                                    this.state.selected.courses++
+                                }
+                            })
+                        break;
                 }
             })
         }
@@ -218,6 +243,8 @@ class RelatedResourcesModal extends React.Component {
                                 <Tab eventKey="Projects" title={'Projects (' + (!this.props.summary.projects ? '0' : this.props.summary.projects - this.state.selected.projects - editingObjectProject) + ')'} />
                                 <Tab eventKey="Papers" title={'Papers (' + (!this.props.summary.papers ? '0' : this.props.summary.papers - this.state.selected.papers) + ')'} />
                                 <Tab eventKey="People" title={'People (' + (!this.props.summary.persons ? '0' : this.props.summary.persons - this.state.selected.persons) + ')'} />
+                                <Tab eventKey="Course" title={'Course (' + (!this.props.summary.courses ? '0' : this.props.summary.courses - this.state.selected.courses) + ')'} />
+
                            </Tabs>
                         </div>
                     </div> 
@@ -291,6 +318,19 @@ class RelatedResourcesModal extends React.Component {
                                 })
                                 : ''} 
 
+                            {key === 'Course' ?
+                              !this.props.courseData ? '' :
+                                this.props.courseData.map((course) => {
+                                    if(this.state.relatedObjectIds.includes(course.id) || this.state.relatedObjectIds.includes(JSON.stringify(course.id))){
+                                    
+                                        return ''
+                                    }
+                                    else {
+                                       return <RelatedObject key={course.id} data={course} activeLink={false} doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects} tempRelatedObjectIds={this.props.tempRelatedObjectIds} />
+                                    }
+                                })
+                                : ''} 
+
                             <div className='text-center'>
                             {key === 'Datasets' && datasetCount > maxResult ?
                                 <Pagination>
@@ -321,6 +361,13 @@ class RelatedResourcesModal extends React.Component {
                                     {personPaginationItems}
                                 </Pagination>
                                 : ''} 
+
+                            {key === 'Course' && courseCount > maxResult ?
+                                <Pagination>
+                                    {personPaginationItems}
+                                </Pagination>
+                                : ''} 
+                                
                             </div>
                         </Col>
                         <Col sm={2} lg={2} />

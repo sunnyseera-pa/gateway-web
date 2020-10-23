@@ -37,6 +37,7 @@ class AddEditProjectPage extends React.Component {
         projectData: [],
         personData: [],
         paperData: [],
+        courseData: [],
         summary: [],
         tempRelatedObjectIds: [],
         relatedObjectIds: [],
@@ -145,6 +146,7 @@ class AddEditProjectPage extends React.Component {
                     projectData: res.data.projectResults || [],
                     personData: res.data.personResults || [],
                     paperData: res.data.paperResults || [],
+                    courseData: res.data.courseResults || [],
                     summary: res.data.summary || [],
                     isLoading: false
                 });
@@ -202,7 +204,7 @@ class AddEditProjectPage extends React.Component {
     }
 
     render() {
-        const { data, isEdit, combinedTopic, combinedCategories, combinedUsers, combinedFeatures, isLoading, userState, searchString, datasetData, toolData, projectData, personData, paperData, summary, relatedObjects, didDelete, showDrawer, showModal, context } = this.state;
+        const { data, isEdit, combinedTopic, combinedCategories, combinedUsers, combinedFeatures, isLoading, userState, searchString, datasetData, toolData, projectData, personData, paperData, courseData, summary, relatedObjects, didDelete, showDrawer, showModal, context } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -212,7 +214,7 @@ class AddEditProjectPage extends React.Component {
                 <SearchBar ref={this.searchBar} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} doToggleDrawer={this.toggleDrawer} userState={userState} />
                 <Container>
                     <AddEditProjectForm data={data} isEdit={isEdit} combinedTopic={combinedTopic} combinedCategories={combinedCategories} combinedUsers={combinedUsers} combinedFeatures={combinedFeatures}
-                    userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} paperData={paperData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
+                    userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} paperData={paperData} courseData={courseData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
                 </Container>
                 <SideDrawer
                     open={showDrawer}
