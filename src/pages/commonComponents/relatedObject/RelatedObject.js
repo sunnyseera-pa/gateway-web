@@ -44,33 +44,44 @@ class RelatedObject extends React.Component {
             this.state.reason = props.reason;
             // this.state.user = props.userState[0].name;
             // this.state.updated = moment().format("DD MMM YYYY");
-            this.getRelatedObjectFromDb(props.objectId);
+            this.getRelatedObjectFromDb(props.objectId, props.objectType);
         }
         else {
             this.state.relatedObject = props.relatedObject;
-            this.getRelatedObjectFromDb(this.state.relatedObject.objectId); 
+            this.getRelatedObjectFromDb(this.state.relatedObject.objectId, this.state.relatedObject.objectType); 
         }
     }
 
-    removeCard = (id, reason) => {
+    removeCard = (id, reason, type) => {
         this.setState({
              reason: reason
         });
     
-        this.getRelatedObjectFromDb(id);
+        this.getRelatedObjectFromDb(id, type);
     }
 
  
-    getRelatedObjectFromDb = (id) => {
+    getRelatedObjectFromDb = (id, type) => {
         //need to handle error if no id is found
         this.setState({ isLoading: true });
-        axios.get(baseURL + '/api/v1/relatedobject/' + id)
+
+        if(type === 'course'){
+            axios.get(baseURL + '/api/v1/relatedobject/course/' + id)
             .then((res) => { 
                 this.setState({
                     data: res.data.data[0],
                     isLoading: false
                 });
             }) 
+        } else{
+            axios.get(baseURL + '/api/v1/relatedobject/' + id)
+            .then((res) => { 
+                this.setState({
+                    data: res.data.data[0],
+                    isLoading: false
+                });
+            }) 
+        }
     };
  
     removeButton = () => {
@@ -99,7 +110,7 @@ class RelatedObject extends React.Component {
 
         if(this.props.didDelete){
             this.props.updateDeleteFlag()
-            this.removeCard(this.props.objectId, this.props.reason)
+            this.removeCard(this.props.objectId, this.props.reason, this.props.objectType)
         }
         
 
