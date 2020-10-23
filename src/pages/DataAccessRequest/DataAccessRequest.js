@@ -189,7 +189,7 @@ class DataAccessRequest extends Component {
 					countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this);
 					totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered`;
 				} else {
-					totalQuestions = `Application ${applicationStatus} on ${moment(
+					totalQuestions = `Application ${DarHelper.darSLAText[applicationStatus]} on ${moment(
 						updatedAt
 					).format('DD MMM YYYY HH:mm')}`;
 				}
