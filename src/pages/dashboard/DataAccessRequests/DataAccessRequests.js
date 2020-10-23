@@ -37,7 +37,8 @@ class DataAccessRequestsNew extends React.Component {
     team: "",
     avgDecisionTime: 0,
     alert: {},
-    showWorkflowReviewModal: false
+    showWorkflowReviewModal: false,
+    canViewSubmitted: false
   };
 
   constructor(props) {
@@ -70,8 +71,7 @@ class DataAccessRequestsNew extends React.Component {
 
 
 	async fetchDataAccessRequests(nextProps) {
-		let data = [];
-		let avgDecisionTime = 0;
+		let data = [], avgDecisionTime = 0, canViewSubmitted = false;
 		let dataProps = { ...nextProps, key: "all" };
 		// 1. if there is an alert set team and correct tab so it can display on the UI
 		if (!_.isEmpty(this.state.alert)) {
@@ -85,12 +85,12 @@ class DataAccessRequestsNew extends React.Component {
 				`${baseURL}/api/v1/publishers/${dataProps.team}/dataaccessrequests`
 			);
 			({
-				data: { data, avgDecisionTime },
+				data: { data, avgDecisionTime, canViewSubmitted },
 			} = response);
 		} else {
 			const response = await axios.get(`${baseURL}/api/v1/data-access-request`);
 			({
-				data: { data, avgDecisionTime },
+				data: { data, avgDecisionTime, canViewSubmitted },
 			} = response);
 		}
 		// 3. modifies approve with conditions to approved
@@ -102,7 +102,8 @@ class DataAccessRequestsNew extends React.Component {
 			data: screenData,
 			isLoading: false,
 			team: dataProps.team,
-			avgDecisionTime,
+      avgDecisionTime,
+      canViewSubmitted,
 			...counts,
 		});
 		// 6. set tab
@@ -303,7 +304,8 @@ class DataAccessRequestsNew extends React.Component {
       team,
       alert,
       screenData,
-      avgDecisionTime
+      avgDecisionTime,
+      canViewSubmitted
     } = this.state;
 
     if (isLoading) {
@@ -353,10 +355,14 @@ class DataAccessRequestsNew extends React.Component {
                   ) : (
                     ""
                   )}
+                  {canViewSubmitted ? (
                   <Tab
                     eventKey="submitted"
                     title={"Submitted (" + submittedCount + ")"}
                   ></Tab>
+                  ) : (
+                    ""
+                  )}
                   <Tab
                     eventKey="inReview"
                     title={"In review (" + inReviewCount + ")"}
