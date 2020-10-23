@@ -1383,7 +1383,7 @@ class DataAccessRequest extends Component {
 							eventKey='1'
 							onClick={(e) => this.toggleCard(e, 1)}
 						>
-							{projectNameValid && ncsValid ? (
+							{projectNameValid && ncsValid && !_.isEmpty(projectName.trim()) ? (
 								<div className='stepNumber completed'>
 									<SVGIcon
 										name='check'
