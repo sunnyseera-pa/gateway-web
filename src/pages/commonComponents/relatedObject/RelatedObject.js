@@ -3,9 +3,10 @@ import axios from 'axios';
 import queryString from 'query-string';
 import { Row, Col, Button, Alert } from 'react-bootstrap';
 import Loading from '../Loading'
-import SVGIcon from '../../../images/SVGIcon' 
-import './RelatedObject.scss'; 
+import SVGIcon from '../../../images/SVGIcon'  
+import './RelatedObject.scss';  
 import moment from "moment";
+import { ReactComponent as CalendarSvg } from '../../../images/calendaricon.svg'; 
  
 var baseURL = require('../BaseURL').getURL();
 
@@ -37,7 +38,7 @@ class RelatedObject extends React.Component {
             this.state.inCollection = props.inCollection;
         }
         if (props.data) {
-            this.state.data = props.data || [];
+            this.state.data = props.data || []
             //this.state.reviewData = this.state.data.reviews;
             this.state.isLoading = false;
         } 
@@ -49,12 +50,10 @@ class RelatedObject extends React.Component {
             this.state.reason = props.reason;
             // this.state.user = props.userState[0].name;
             // this.state.updated = moment().format("DD MMM YYYY");
-
             this.getRelatedObjectFromDb(props.objectId, props.objectType);
         }
         else {
             this.state.relatedObject = props.relatedObject;
-            console.log(`type: ${this.state.relatedObject.type}`)
             this.getRelatedObjectFromDb(this.state.relatedObject.objectId, this.state.relatedObject.objectType); 
         }
     }
@@ -69,7 +68,10 @@ class RelatedObject extends React.Component {
 
  
     getRelatedObjectFromDb = (id, type) => {
+<<<<<<< HEAD
         console.log(`in getRelatedObjectFromDb - ${type}`)
+=======
+>>>>>>> IG-834b
         //need to handle error if no id is found
         this.setState({ isLoading: true });
 
@@ -90,7 +92,10 @@ class RelatedObject extends React.Component {
                 });
             }) 
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> IG-834b
     };
  
     removeButton = () => {
@@ -119,7 +124,10 @@ class RelatedObject extends React.Component {
 
         if(this.props.didDelete){
             this.props.updateDeleteFlag()
+<<<<<<< HEAD
             console.log(`delete: ${JSON.stringify(this.props, null, 2)}`)
+=======
+>>>>>>> IG-834b
             this.removeCard(this.props.objectId, this.props.reason, this.props.objectType)
         }
         
@@ -434,25 +442,22 @@ class RelatedObject extends React.Component {
                                             : <span className="black-bold-16">{data.title}</span> }
                                             <br />
                                             <span className="gray800-14">{data.provider}</span>
-                                            {/* TODO ADD CALENDAR ICON HERE */}
                                             <Row className="margin-top-8">
                                                 <Col sm={12} lg={12}>
-                                            <SVGIcon name="workflow" fill={"#868e96"} className="mr-2 calendarSVG" width={20} height={18} />
-                                            <span className="gray800-14">
-                                                Starts 
-                                                {data.courseOptions.map((courseOption, index) => {
-                                                    return(
-                                                        courseOption.startDate ?
-                                                            <span> Flexible dates </span>
-                                                        :
-                                                            index > 0 ? <span> ,{moment(courseOption.startDate).format("dddd Do MMMM YYYY")} </span> : <span> {moment(courseOption.startDate).format("dddd Do MMMM YYYY")} </span> 
-                                                    )
-                                                    })}
-                                                |  
+                                            <CalendarSvg className="calendarSVG"/>
+                                            <span className="gray800-14 margin-left-10">
+                                                {data.courseOptions[0].startDate ? 
+                                                    <span> Starts {moment(data.courseOptions.startDate).format("dddd Do MMMM YYYY")} </span>
+                                                : 
+                                                    <span> Flexible dates </span>
+                                                }
+
+                                                {data.courseOptions[0].startDate && data.courseOptions[0].studyMode ?  '|' : ''}
+
                                                 {data.courseOptions.map((courseOption, index) => { 
                                                     return(
                                                         <>
-                                                          {index > 0 ? <span> ,{courseOption.studyMode} </span> : <span> {courseOption.studyMode} </span> }
+                                                          {index > 0 ? <span> ,{courseOption.studyMode} </span> :  <span> {courseOption.studyMode} </span> }
                                                         </>
                                                     )
                                                 })}
@@ -468,21 +473,14 @@ class RelatedObject extends React.Component {
                                                 <SVGIcon name="educationicon" fill={"#ffffff"} className="badgeSvg mr-2" viewBox="-2 -2 22 22" /> 
                                                 <span>Course</span>
                                             </span>
-                                            
-                                            {/* {!data.categories.category ? '' :  
-                                                activeLink === true ? 
-                                                    onSearchPage === true ?
-                                                        <span className="pointer" onClick={event => this.updateOnFilterBadge('projectCategoriesSelected', data.categories.category)}><div className="badge-tag">{data.categories.category}</div></span> :
-                                                        <a href={'/search?search=&tab=Projects&projectcategories=' + data.categories.category}><div className="badge-tag">{data.categories.category}</div></a> 
-                                                    : <div className="badge-tag">{data.categories.category}</div> } */}
 
                                             {!data.keywords || data.keywords.length <= 0 ? '' : data.keywords.map((keyword) => {
                                                 if (activeLink===true){
                                                     if (onSearchPage === true) { 
-                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('projectFeaturesSelected', keyword)}><div className="badge-tag">{keyword}</div></span>
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('courseKeywordsSelected', keyword)}><div className="badge-tag">{keyword}</div></span>
                                                     }
                                                     else { 
-                                                        return <a href={'/search?search=&tab=Projects&projectfeatures=' + keyword}><div className="badge-tag">{keyword}</div></a>
+                                                        return <a href={'/search?search=&tab=Courses&coursekeywords=' + keyword}><div className="badge-tag">{keyword}</div></a>
                                                     }
                                                 }
                                                 else {
@@ -490,13 +488,13 @@ class RelatedObject extends React.Component {
                                                 }
                                             })}
 
-                                            {!data.domains || data.domainslength <= 0 ? '' : data.domains.map((domain) => {
+                                            {!data.domains || data.domains.length <= 0 ? '' : data.domains.map((domain) => {
                                                 if (activeLink===true){
                                                     if (onSearchPage === true) {
-                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('projectTopicsSelected', domain)}><div className="badge-tag">{domain}</div></span>
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('courseDomainsSelected', domain)}><div className="badge-tag">{domain}</div></span>
                                                     }
                                                     else {
-                                                        return <a href={'/search?search=&tab=Projects&projecttopics=' + domain}><div className="badge-tag">{domain}</div></a>
+                                                        return <a href={'/search?search=&tab=Courses&coursedomains=' + domain}><div className="badge-tag">{domain}</div></a>
                                                     }
                                                 }
                                                 else {

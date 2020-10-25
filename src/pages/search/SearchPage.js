@@ -29,16 +29,19 @@ class SearchPage extends React.Component {
         projectSort: '',
         paperSort: '',
         personSort: '',
+        courseSort: '',
         datasetIndex: 0,
         toolIndex: 0,
         projectIndex: 0,
         paperIndex: 0,
         personIndex: 0,
+        courseIndex: 0,
         datasetData: [],
         toolData: [],
         projectData: [],
         paperData: [],
         personData: [],
+        courseData: [],
         filterOptions: [],
         allFilters: [],
         licensesSelected: [],
@@ -92,6 +95,12 @@ class SearchPage extends React.Component {
         if (!!window.location.search) {
             var values = queryString.parse(window.location.search);
             if (this.state.userState[0].loggedIn === true && values.loginReferrer) window.location.href = values.loginReferrer;
+            else if (this.state.userState[0].loggedIn === true && values.logout === 'true') {
+                axios.get(baseURL + '/api/v1/auth/logout')
+                .then((res) => {
+                    window.location.reload();
+                });
+            }
 
             await Promise.all([
                 this.updateFilterStates(values)
@@ -138,12 +147,14 @@ class SearchPage extends React.Component {
                 || (((typeof values.projectIndex === "undefined" && this.state.projectIndex !== 0) || (typeof values.projectIndex !== "undefined" && this.state.projectIndex === 0)) && this.state.projectIndex !== values.projectIndex)
                 || (((typeof values.paperIndex === "undefined" && this.state.paperIndex !== 0) || (typeof values.paperIndex !== "undefined" && this.state.paperIndex === 0)) && this.state.paperIndex !== values.paperIndex)
                 || (((typeof values.personIndex === "undefined" && this.state.personIndex !== 0) || (typeof values.personIndex !== "undefined" && this.state.personIndex === 0)) && this.state.personIndex !== values.personIndex)
+                || (((typeof values.courseIndex === "undefined" && this.state.courseIndex !== 0) || (typeof values.courseIndex !== "undefined" && this.state.courseIndex === 0)) && this.state.courseIndex !== values.courseIndex)
 
                 || (((typeof values.datasetSort === "undefined" && this.state.datasetSort !== '') || (typeof values.datasetSort !== "undefined" && this.state.datasetSort === '')) && this.state.datasetSort !== values.datasetSort)
                 || (((typeof values.toolSort === "undefined" && this.state.toolSort !== '') || (typeof values.toolSort !== "undefined" && this.state.toolSort === '')) && this.state.toolSort !== values.toolSort)
                 || (((typeof values.projectSort === "undefined" && this.state.projectSort !== '') || (typeof values.projectSort !== "undefined" && this.state.projectSort === '')) && this.state.projectSort !== values.projectSort)
                 || (((typeof values.paperSort === "undefined" && this.state.paperSort !== '') || (typeof values.paperSort !== "undefined" && this.state.paperSort === '')) && this.state.paperSort !== values.paperSort)
                 || (((typeof values.personSort === "undefined" && this.state.personSort !== '') || (typeof values.personSort !== "undefined" && this.state.personSort === '')) && this.state.personSort !== values.personSort)
+                || (((typeof values.courseSort === "undefined" && this.state.courseSort !== '') || (typeof values.courseSort !== "undefined" && this.state.courseSort === '')) && this.state.courseSort !== values.courseSort)
             ) {
                 await Promise.all([
                     this.updateFilterStates(values)
@@ -207,14 +218,16 @@ class SearchPage extends React.Component {
         values.datasetIndex ? this.setState({ datasetIndex: values.datasetIndex }) : this.setState({ datasetIndex: 0 })
         values.toolIndex ? this.setState({ toolIndex: values.toolIndex }) : this.setState({ toolIndex: 0 })
         values.projectIndex ? this.setState({ projectIndex: values.projectIndex }) : this.setState({ projectIndex: 0 })
-        values.paperIndex ? this.setState({ paperIndex: values.paperIndex }) : this.setState({ projectIndex: 0 })
+        values.paperIndex ? this.setState({ paperIndex: values.paperIndex }) : this.setState({ paperIndex: 0 })
         values.personIndex ? this.setState({ personIndex: values.personIndex }) : this.setState({ personIndex: 0 })
+        values.courseIndex ? this.setState({ courseIndex: values.courseIndex }) : this.setState({ projectIndex: 0 })
 
         values.datasetSort ? this.setState({ datasetSort: values.datasetSort }) : this.setState({ datasetSort: '' })
         values.toolSort ? this.setState({ toolSort: values.toolSort }) : this.setState({ toolSort: '' })
         values.projectSort ? this.setState({ projectSort: values.projectSort }) : this.setState({ projectSort: '' })
-        values.paperSort ? this.setState({ paperSort: values.paperSort }) : this.setState({ projectSort: '' })
+        values.paperSort ? this.setState({ paperSort: values.paperSort }) : this.setState({ paperSort: '' })
         values.personSort ? this.setState({ personSort: values.personSort }) : this.setState({ personSort: '' })
+        values.courseSort ? this.setState({ courseSort: values.courseSort }) : this.setState({ courseSort: '' })
     }
 
     clearFilterStates() {
@@ -243,12 +256,14 @@ class SearchPage extends React.Component {
         this.setState({ projectIndex: 0 })
         this.setState({ paperIndex: 0 })
         this.setState({ personIndex: 0 })
+        this.setState({ courseIndex: 0 })
 
         this.setState({ datasetSort: '' })
         this.setState({ toolSort: '' })
         this.setState({ projectSort: '' })
         this.setState({ paperSort: '' })
         this.setState({ personSort: '' })
+        this.setState({ courseSort: '' })
     }
 
     updateOnFilterBadge = async (filterGroup, filter) => {
@@ -264,7 +279,8 @@ class SearchPage extends React.Component {
             this.setState({ toolIndex: 0 }),
             this.setState({ projectIndex: 0 }),
             this.setState({ paperIndex: 0 }),
-            this.setState({ personIndex: 0 })
+            this.setState({ personIndex: 0 }),
+            this.setState({ courseIndex: 0 })
         ])
         this.doSearchCall();
         this.setState({ isResultsLoading: true });
@@ -312,12 +328,14 @@ class SearchPage extends React.Component {
         if (this.state.projectIndex > 0) searchURL += '&projectIndex=' + encodeURIComponent(this.state.projectIndex);
         if (this.state.paperIndex > 0) searchURL += '&paperIndex=' + encodeURIComponent(this.state.paperIndex);
         if (this.state.personIndex > 0) searchURL += '&personIndex=' + encodeURIComponent(this.state.personIndex);
+        if (this.state.courseIndex > 0) searchURL += '&courseIndex=' + encodeURIComponent(this.state.courseIndex);
 
         if (this.state.datasetSort !== '') searchURL += '&datasetSort=' + encodeURIComponent(this.state.datasetSort);
         if (this.state.toolSort !== '') searchURL += '&toolSort=' + encodeURIComponent(this.state.toolSort);
         if (this.state.projectSort !== '') searchURL += '&projectSort=' + encodeURIComponent(this.state.projectSort);
         if (this.state.paperSort !== '') searchURL += '&paperSort=' + encodeURIComponent(this.state.paperSort);
         if (this.state.personSort !== '') searchURL += '&personSort=' + encodeURIComponent(this.state.personSort);
+        if (this.state.courseSort !== '') searchURL += '&courseSort=' + encodeURIComponent(this.state.courseSort);
 
         if (this.state.userState[0].loggedIn === false ) {
             var values = queryString.parse(window.location.search);
@@ -348,6 +366,7 @@ class SearchPage extends React.Component {
                     projectData: res.data.projectResults || [],
                     paperData: res.data.paperResults || [],
                     personData: res.data.personResults || [],
+                    courseData: res.data.courseResults || [],
                     summary: res.data.summary || [],
                     isLoading: false,
                     isResultsLoading: false
@@ -377,6 +396,7 @@ class SearchPage extends React.Component {
             else if (this.state.key === "Projects") this.setState({ projectSort: sort, isResultsLoading: true })
             else if (this.state.key === "Papers") this.setState({ paperSort: sort, isResultsLoading: true })
             else if (this.state.key === "People") this.setState({ personSort: sort, isResultsLoading: true })
+            else if (this.state.key === "Courses") this.setState({ courseSort: sort, isResultsLoading: true })
             resolve()
         });
 
@@ -409,6 +429,11 @@ class SearchPage extends React.Component {
                 this.setState({ personIndex: page })
             ])
         }
+        else if (type === 'course') {
+            await Promise.all([
+                this.setState({ courseIndex: page })
+            ])
+        }
         this.doSearchCall()
     }
 
@@ -436,6 +461,7 @@ class SearchPage extends React.Component {
             projectData, 
             paperData, 
             personData, 
+            courseData, 
             filterOptions, 
             allFilters,
             userState, 
@@ -466,12 +492,14 @@ class SearchPage extends React.Component {
             projectIndex, 
             paperIndex, 
             personIndex,
+            courseIndex, 
 
             datasetSort,
             toolSort,
             projectSort,
             paperSort,
             personSort,
+            courseSort,
             
             showDrawer,
             showModal,
@@ -489,6 +517,7 @@ class SearchPage extends React.Component {
         var projectCount = summary.projects || 0;
         var paperCount = summary.papers || 0;
         var personCount = summary.persons || 0;
+        var courseCount = summary.courses || 0;
 
         if (key === '' || typeof key === "undefined") {
             if (datasetCount > 0) {
@@ -506,6 +535,9 @@ class SearchPage extends React.Component {
             else if (personCount > 0) {
                 key = 'People'
             }
+            else if (courseCount > 0) {
+                key = 'Course'
+            }
             else {
                 key = 'Datasets'
             }
@@ -517,12 +549,14 @@ class SearchPage extends React.Component {
         if (key === 'Projects' && projectCount === 0) showSort = false;
         if (key === 'Papers' && paperCount === 0) showSort = false;
         if (key === 'People' && personCount === 0) showSort = false;
+        if (key === 'Courses') showSort = false;
 
         let datasetPaginationItems = [];
         let toolPaginationItems = [];
         let projectPaginationItems = [];
         let paperPaginationItems = [];
         let personPaginationItems = [];
+        let coursePaginationItems = [];
         var maxResult = 40;
         for (let i = 1; i <= Math.ceil(datasetCount / maxResult); i++) {
             datasetPaginationItems.push(
@@ -549,6 +583,11 @@ class SearchPage extends React.Component {
                 <Pagination.Item key={i} active={i === (personIndex/maxResult)+1} onClick={() => this.handlePagination("person", ((i-1)*(maxResult)))}>{i}</Pagination.Item>,
             );
         }
+        for (let i = 1; i <= Math.ceil(courseCount / maxResult); i++) {
+            coursePaginationItems.push(
+                <Pagination.Item key={i} active={i === (courseIndex/maxResult)+1} onClick={() => this.handlePagination("course", ((i-1)*(maxResult)))}>{i}</Pagination.Item>,
+            );
+        }
 
         return (
             <Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
@@ -562,6 +601,7 @@ class SearchPage extends React.Component {
                                     <Tab eventKey="Datasets" title={'Datasets (' + datasetCount + ')'} />
                                     <Tab eventKey="Tools" title={'Tools (' + toolCount + ')'} />
                                     <Tab eventKey="Projects" title={'Projects (' + projectCount + ')'} />
+                                    <Tab eventKey="Courses" title={'Courses (' + courseCount + ')'} />
                                     <Tab eventKey="Papers" title={'Papers (' + paperCount + ')'} />
                                     <Tab eventKey="People" title={'People (' + personCount + ')'}>
                                         {personCount <= 0 && !isResultsLoading ? <NoResults type='profiles' searchString={searchString} /> : ''}
@@ -727,6 +767,35 @@ class SearchPage extends React.Component {
                                             <Filters data={filterOptions.paperTopicsFilterOptions} allFilters={allFilters.paperTopicFilter} updateOnFilter={this.updateOnFilter} selected={paperTopicsSelected} title="Domain" />
                                         </div>
                                     </> : ''}
+
+                                    {key === 'Courses' ? <>
+                                        <div className="filterHolder">
+                                            {paperFeaturesSelected.length !== 0 || paperTopicsSelected.length !== 0 ? 
+                                                <div className="filterCard mb-2">
+                                                    <Row>
+                                                        <Col className="mb-2">
+                                                            <div className="inlineBlock">
+                                                                <div className="gray500-13">Showing:</div>
+                                                            </div>
+                                                            <div className="floatRight">
+                                                                <div className="purple-13 pointer" onClick={() => this.clearFilter('All')}>Clear all</div>
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+                                                    
+                                                    {!paperFeaturesSelected || paperFeaturesSelected.length <= 0 ? '' : paperFeaturesSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'paperFeaturesSelected')}>X</span></div>
+                                                    })}
+
+                                                    {!paperTopicsSelected || paperTopicsSelected.length <= 0 ? '' : paperTopicsSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'paperTopicsSelected')}>X</span></div>
+                                                    })}
+                                                </div> 
+                                            : ''}
+                                            <Filters data={filterOptions.paperFeaturesFilterOptions} allFilters={allFilters.paperFeatureFilter} updateOnFilter={this.updateOnFilter} selected={paperFeaturesSelected} title="Keywords" />
+                                            <Filters data={filterOptions.paperTopicsFilterOptions} allFilters={allFilters.paperTopicFilter} updateOnFilter={this.updateOnFilter} selected={paperTopicsSelected} title="Domain" />
+                                        </div>
+                                    </> : ''}
                                 </Col>
                                 : <Col sm={12} md={12} lg={3} />}
 
@@ -807,6 +876,13 @@ class SearchPage extends React.Component {
                                         })
                                         : ''}
 
+                                    {key === 'Courses' ?
+                                        courseCount <= 0 && !isResultsLoading ? <NoResults type='courses' searchString={searchString} />
+                                        : courseData.map((course) => {
+                                            return <RelatedObject key={course.id} data={course} activeLink={true} onSearchPage={true} updateOnFilterBadge={this.updateOnFilterBadge} />
+                                        })
+                                        : ''}
+
                                     <div className='text-center'>
                                     {key === 'Datasets' && datasetCount > maxResult ?
                                         <Pagination>
@@ -835,6 +911,12 @@ class SearchPage extends React.Component {
                                     {key === 'People' && personCount > maxResult ?
                                         <Pagination>
                                             {personPaginationItems}
+                                        </Pagination>
+                                        : ''}
+                                    
+                                    {key === 'Courses' && courseCount > maxResult ?
+                                        <Pagination>
+                                            {coursePaginationItems}
                                         </Pagination>
                                         : ''}
                                         </div>

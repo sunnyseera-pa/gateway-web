@@ -46,6 +46,7 @@ class AddCollectionPage extends React.Component {
         projectData: [],
         personData: [],
         paperData: [],
+        courseData: [],
         summary: [],
         tempRelatedObjectIds: [],
         relatedObjectIds: [],
@@ -80,9 +81,9 @@ class AddCollectionPage extends React.Component {
 
     updateSearchString = (searchString) => {
         this.setState({ searchString: searchString });
-    }
+    } 
 
-    doModalSearch = (e, type, page) => {
+    doModalSearch = (e, type, page) => { 
 
         if (e.key === 'Enter' || e === 'click') {
 
@@ -92,20 +93,22 @@ class AddCollectionPage extends React.Component {
             if (type === 'tool' && page > 0) searchURL += '&toolIndex=' + page;
             if (type === 'project' && page > 0) searchURL += '&projectIndex=' + page;
             if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
+            if (type === 'course' && page > 0) searchURL += '&courseIndex=' + page; 
          
         axios.get(baseURL + '/api/v1/search?search='+ this.state.searchString + searchURL, {
             params: {
                 form: true,
-                userID: this.state.userState[0].id 
+                userID: this.state.userState[0].id  
             }
         })  
             .then((res) => {
-                this.setState({
+                this.setState({ 
                     datasetData: res.data.datasetResults || [],
                     toolData: res.data.toolResults || [],
                     projectData: res.data.projectResults || [],
                     personData: res.data.personResults || [],
                     paperData: res.data.paperResults || [],
+                    courseData: res.data.courseResults || [],
                     summary: res.data.summary || [],
                     isLoading: false
                 });
@@ -152,7 +155,7 @@ class AddCollectionPage extends React.Component {
                 this.searchBar.current.getNumberOfUnreadMessages();
             }
             return { showDrawer: !prevState.showDrawer };
-        });
+        }); 
     }
 
     toggleModal = (showEnquiry = false, context = {}) => {
@@ -162,7 +165,7 @@ class AddCollectionPage extends React.Component {
     }
 
     render() {
-        const { data, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, paperData, summary, relatedObjects, didDelete, showDrawer, showModal, context } = this.state;
+        const { data, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, paperData, courseData, summary, relatedObjects, didDelete, showDrawer, showModal, context } = this.state;
 
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -172,7 +175,7 @@ class AddCollectionPage extends React.Component {
             <div>
                 <SearchBar ref={this.searchBar} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} doToggleDrawer={this.toggleDrawer} userState={userState} />
                 <Container>
-                    <AddCollectionForm data={data} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} paperData={paperData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
+                    <AddCollectionForm data={data} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} paperData={paperData} courseData={courseData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
                 </Container>
                 <SideDrawer
                     open={showDrawer}
@@ -363,10 +366,10 @@ const AddCollectionForm = (props) => {
                             })}
 
                             <div className="flexCenter pt-3 pb-3">
-                                <Row>
+                                <Row> 
                                     <Col sm={1} lg={1} />
                                     <Col sm={10} lg={10}> 
-                                        <RelatedResources ref={relatedResourcesRef} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} paperData={props.paperData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
+                                        <RelatedResources ref={relatedResourcesRef} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} paperData={props.paperData} courseData={props.courseData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                     </Col>
                                     <Col sm={1} lg={10} />
                                 </Row>

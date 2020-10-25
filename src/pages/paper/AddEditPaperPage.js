@@ -36,6 +36,7 @@ class AddEditPaperPage extends React.Component {
 		toolData: [],
 		projectData: [],
 		personData: [],
+		courseData: [],
 		summary: [],
 		tempRelatedObjectIds: [],
 		relatedObjectIds: [],
@@ -217,7 +218,8 @@ class AddEditPaperPage extends React.Component {
 			if (type === 'project' && page > 0) searchURL += '&projectIndex=' + page;
 			if (type === 'paper' && page > 0) searchURL += '&paperIndex=' + page;
 			if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
-
+			if (type === 'course' && page > 0) searchURL += '&courseIndex=' + page; 
+			
 			axios
 				.get(
 					baseURL +
@@ -238,6 +240,7 @@ class AddEditPaperPage extends React.Component {
 						projectData: res.data.projectResults || [],
 						paperData: res.data.paperResults || [],
 						personData: res.data.personResults || [],
+						courseData: res.data.courseResults || [],
 						summary: res.data.summary || [],
 						isLoading: false
 					});
@@ -325,6 +328,7 @@ class AddEditPaperPage extends React.Component {
 			projectData,
 			paperData,
 			personData,
+			courseData,
 			summary,
 			relatedObjects,
 			didDelete,
@@ -369,6 +373,7 @@ class AddEditPaperPage extends React.Component {
 						projectData={projectData}
 						paperData={paperData}
 						personData={personData}
+						courseData={courseData}
 						summary={summary}
 						doAddToTempRelatedObjects={this.addToTempRelatedObjects}
 						tempRelatedObjectIds={this.state.tempRelatedObjectIds}

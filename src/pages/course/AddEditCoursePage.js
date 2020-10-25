@@ -68,7 +68,7 @@ class AddEditCoursePage extends React.Component {
 		//need to handle error if no id is found
 		this.setState({ isLoading: true });
 		axios
-			.get(baseURL + '/api/v1/tools/edit/' + this.props.match.params.toolID)
+			.get(baseURL + '/api/v1/course/edit/' + this.props.match.params.courseID)
 			.then((res) => {
 				this.setState({
 					data: res.data.data[0],
@@ -356,7 +356,8 @@ class AddEditCoursePage extends React.Component {
 			if (type === 'project' && page > 0) searchURL += '&projectIndex=' + page;
 			if (type === 'paper' && page > 0) searchURL += '&paperIndex=' + page;
 			if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
-
+			if (type === 'course' && page > 0) searchURL += '&courseIndex=' + page; 
+			
 			axios
 				.get(
 					baseURL +
@@ -377,6 +378,7 @@ class AddEditCoursePage extends React.Component {
 						projectData: res.data.projectResults || [],
 						paperData: res.data.paperResults || [],
 						personData: res.data.personResults || [],
+						courseData: res.data.courseResults || [],
 						summary: res.data.summary || [],
 						isLoading: false
 					});
@@ -464,6 +466,7 @@ class AddEditCoursePage extends React.Component {
 			projectData,
 			paperData,
 			personData,
+			courseData,
 			summary,
 			relatedObjects,
 			didDelete,
@@ -508,6 +511,7 @@ class AddEditCoursePage extends React.Component {
 						projectData={projectData}
 						paperData={paperData}
 						personData={personData}
+						courseData={courseData}
 						summary={summary}
 						doAddToTempRelatedObjects={this.addToTempRelatedObjects}
 						tempRelatedObjectIds={this.state.tempRelatedObjectIds}

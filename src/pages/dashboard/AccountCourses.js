@@ -43,12 +43,12 @@ class AccountCourses extends React.Component {
 
     componentDidMount() {
         initGA('UA-166025838-1');
-        this.doPapersCall();
+        this.doCoursesCall();
     }
 
-    doPapersCall() {
+    doCoursesCall() {
         this.setState({isLoading: true});
-        axios.get(baseURL + '/api/v1/papers/getList')
+        axios.get(baseURL + '/api/v1/course/getList')
         .then((res) => {
             this.setState({ data: res.data.data, isLoading: false });
 
@@ -57,11 +57,11 @@ class AccountCourses extends React.Component {
             let archiveCount = 0;
             let rejectedCount = 0;
         
-            res.data.data.forEach((paper) => {
-                if (paper.activeflag === "active") activeCount++;
-                else if (paper.activeflag === "review") reviewCount++;
-                else if (paper.activeflag === "archive") archiveCount++;
-                else if (paper.activeflag === "rejected") rejectedCount++;
+            res.data.data.forEach((course) => {
+                if (course.activeflag === "active") activeCount++;
+                else if (course.activeflag === "review") reviewCount++;
+                else if (course.activeflag === "archive") archiveCount++;
+                else if (course.activeflag === "rejected") rejectedCount++;
                 });
         
             this.setState({ 
@@ -73,12 +73,12 @@ class AccountCourses extends React.Component {
         })
     }
 
-    approvePaper = (id) => {
-        axios.patch(baseURL + '/api/v1/papers/' + id, {
+    approveCourse = (id) => {
+        axios.patch(baseURL + '/api/v1/course/' + id, {
             activeflag: "active"
         })
         .then((res) => {
-            this.doPapersCall();
+            this.doCoursesCall();
             if(shouldChangeTab(this.state)){
                 this.setState({key: "active"});
             }
@@ -91,11 +91,11 @@ class AccountCourses extends React.Component {
         let archiveCount = 0;
         let rejectedCount = 0;
     
-        data.forEach((tool) => {
-            if (tool.activeflag === "active") activeCount++;
-            else if (tool.activeflag === "review") reviewCount++;
-            else if (tool.activeflag === "archive") archiveCount++;
-            else if (tool.activeflag === "rejected") rejectedCount++;
+        data.forEach((course) => {
+            if (course.activeflag === "active") activeCount++;
+            else if (course.activeflag === "review") reviewCount++;
+            else if (course.activeflag === "archive") archiveCount++;
+            else if (course.activeflag === "rejected") rejectedCount++;
         });
     
         this.setState({ 
@@ -106,13 +106,13 @@ class AccountCourses extends React.Component {
     }
 
     rejectObject = (id, rejectionReason) => {
-        axios.patch(baseURL + '/api/v1/papers/'+ id, {
+        axios.patch(baseURL + '/api/v1/course/'+ id, {
             id: id,
             activeflag: "rejected",
             rejectionReason: rejectionReason
         })
         .then((res) => {
-            this.doPapersCall();
+            this.doCoursesCall();
             if(shouldChangeTab(this.state)){
                 this.setState({key: "active"});
             }
@@ -120,12 +120,12 @@ class AccountCourses extends React.Component {
     }
 
     deleteObject = (id) => {
-        axios.patch(baseURL + '/api/v1/papers/'+ id, {
+        axios.patch(baseURL + '/api/v1/course/'+ id, {
             id: id,
             activeflag: "archive"
         })
         .then((res) => {
-            this.doPapersCall();
+            this.doCoursesCall();
             if(shouldChangeTab(this.state)){
                 this.setState({key: "active"});
             }
@@ -215,7 +215,7 @@ class AccountCourses extends React.Component {
                                                     return (
                                                         <Row className="entryBox" key={i}>
                                                             <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
-                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/course/' + dat.id} className="black-14">{dat.name}</a></Col>
+                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/course/' + dat.id} className="black-14">{dat.title}</a></Col>
                                                             <Col sm={12} lg={2} className="pt-2 gray800-14">
                                                                 {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
                                                                     return <span>{person.firstname} {person.lastname} <br /></span>
@@ -259,7 +259,7 @@ class AccountCourses extends React.Component {
                                                     return (
                                                         <Row className="entryBox">
                                                             <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
-                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/course/' + dat.id} className="black-14">{dat.name}</a></Col>
+                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/course/' + dat.id} className="black-14">{dat.title}</a></Col>
                                                             <Col sm={12} lg={2} className="pt-2 gray800-14">
                                                                 {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
                                                                     return <span>{person.firstname} {person.lastname} <br /></span>
@@ -270,7 +270,7 @@ class AccountCourses extends React.Component {
                                                                 {userState[0].role === 'Admin' ?
                                                                     <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
                                                                         <Dropdown.Item href={'/course/edit/' + dat.id} className="black-14">Edit</Dropdown.Item>
-                                                                        <Dropdown.Item href='#' onClick={() => this.approvePaper(dat.id)} className="black-14">Approve</Dropdown.Item>
+                                                                        <Dropdown.Item href='#' onClick={() => this.approveCourse(dat.id)} className="black-14">Approve</Dropdown.Item>
                                                                         <Dropdown.Item href='#' onClick={() => this.toggleActionModal()} className="black-14">Reject</Dropdown.Item>
                                                                         <ActionModal id={dat.id} open={showActionModal} context={actionModalConfig}  updateApplicationStatus={this.rejectObject} close={this.toggleActionModal}/>
                                                                     </DropdownButton>
@@ -306,7 +306,7 @@ class AccountCourses extends React.Component {
                                                     return (
                                                         <Row className="entryBox">
                                                             <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
-                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/course/' + dat.id} className="black-14">{dat.name}</a></Col>
+                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/course/' + dat.id} className="black-14">{dat.title}</a></Col>
                                                             <Col sm={12} lg={2} className="pt-2 gray800-14">
                                                                 {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
                                                                     return <span>{person.firstname} {person.lastname} <br /></span>
@@ -345,7 +345,7 @@ class AccountCourses extends React.Component {
                                                     return (
                                                         <Row className="entryBox">
                                                             <Col sm={12} lg={2} className="pt-2 gray800-14">{moment(dat.updatedAt).format('D MMMM YYYY HH:mm')}</Col>
-                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/course/' + dat.id} className="black-14">{dat.name}</a></Col>
+                                                            <Col sm={12} lg={5} className="pt-2"><a href={'/course/' + dat.id} className="black-14">{dat.title}</a></Col>
                                                             <Col sm={12} lg={2} className="pt-2 gray800-14">
                                                                 {dat.persons <= 0 ? 'Author not listed' : dat.persons.map((person) => {
                                                                     return <span>{person.firstname} {person.lastname} <br /></span>
@@ -355,7 +355,7 @@ class AccountCourses extends React.Component {
                                                             <Col sm={12} lg={3} style={{ textAlign: "right" }} className="toolsButtons">
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
                                                                     <Dropdown.Item href={'/course/edit/' + dat.id} className="black-14">Edit</Dropdown.Item>
-                                                                    <Dropdown.Item href='#' onClick={() => this.approvePaper(dat.id)} className="black-14">Approve</Dropdown.Item>
+                                                                    <Dropdown.Item href='#' onClick={() => this.approveCourse(dat.id)} className="black-14">Approve</Dropdown.Item>
                                                                     <Dropdown.Item href='#' onClick={() => this.toggleActionModal()} className="black-14">Reject</Dropdown.Item>
                                                                     <ActionModal id={dat.id} open={showActionModal} context={actionModalConfig}  updateApplicationStatus={this.rejectObject} close={this.toggleActionModal}/>
                                                                 </DropdownButton>
