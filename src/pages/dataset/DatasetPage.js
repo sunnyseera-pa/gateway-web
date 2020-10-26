@@ -585,7 +585,7 @@ class DatasetDetail extends Component {
                                 <Col sm={12}>Description</Col>
                               </Row>
                               <Row className="mt-3">
-                                <Col sm={12} className="gray800-14">
+                                <Col sm={12} className="gray800-14 overflowWrap">
                                   <span className="gray800-14">
                                     <ReactMarkdown source={data.description} />
                                   </span>
