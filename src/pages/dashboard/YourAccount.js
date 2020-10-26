@@ -226,7 +226,7 @@ const YourAccountForm = (props) => {
             sector: props.data.sector || "",
             organisation: props.data.organisation || "",
             showOrgVal: props.showOrgVal,
-            tags: props.data.tags || {
+            tags: { topics: props.data.tags.topics } || {
                 topics: [],
             },
             showSector: showingSector,
