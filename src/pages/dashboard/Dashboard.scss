@@ -330,3 +330,26 @@
     border-bottom: 1px solid #e7e9ed;
     border-top: 1px solid #e7e9ed
 }
+
+.eyeColumn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eye {
+  background: white;
+  height: 25px;
+  width: 27px;
+  padding: 0px;
+  outline: none;
+  border-style: none;
+}
+
+.eye:focus {
+  outline: 0;
+}
+
+.eyeFaded {
+  opacity: 0.7;
+}
