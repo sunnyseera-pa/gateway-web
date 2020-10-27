@@ -337,8 +337,7 @@ class CourseDetail extends Component {
                       {data.award ? (
                         data.award.map(award => {
                           return (
-                            /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
-                            <a href={"/search?search=&tab=Projects&projecttopics=" + award}>
+                            <a href={"/search?search=&tab=Courses&courseaward=" + award}>
                               <div className="badge-tag">{award}</div>
                             </a>
                           );
@@ -348,8 +347,7 @@ class CourseDetail extends Component {
                       {data.domains ? (
                         data.domains.map(domain => {
                           return (
-                            /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
-                            <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
+                            <a href={"/search?search=&tab=Courses&coursedomains=" + domain}>
                               <div className="badge-tag">{domain}</div>
                             </a>
                           );
@@ -457,7 +455,7 @@ class CourseDetail extends Component {
                               </Col>
                               <Col sm={10} className="gray-deep-14 overflowWrap">
                                 {data.courseDelivery ?
-                                  data.courseDelivery
+                                  data.courseDelivery === 'campus' ? 'On campus' : 'Online'
                                 : 
                                   <span className="gray800-14-opacity">
                                     Not specified
@@ -492,8 +490,7 @@ class CourseDetail extends Component {
                                 ) : (
                                   data.keywords.map(keyword => {
                                     return (
-                                      /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
-                                      <a href={"/search?search=&tab=Projects&projectfeatures=" + keyword}>
+                                      <a href={"/search?search=&tab=Courses&coursekeywords=" + keyword}>
                                         <div className="badge-tag">{keyword}</div>
                                       </a>
                                     );
@@ -514,8 +511,7 @@ class CourseDetail extends Component {
                                 ) : (
                                   data.domains.map(domain => {
                                     return (
-                                      /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
-                                      <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
+                                      <a href={"/search?search=&tab=Courses&coursedomains=" + domain}>
                                         <div className="badge-tag">{domain}</div>
                                       </a>
                                     );
@@ -542,7 +538,7 @@ class CourseDetail extends Component {
                                 <div className="margin-top-24">
                                 <Row className="gray800-14-opacity">
                                 <Col sm={12}>
-                                  {moment(courseOption.startDate).format("dddd Do MMMM YYYY")}
+                                  {courseOption.flexibleDates ? 'Flexible' : moment(courseOption.startDate).format("dddd Do MMMM YYYY")}
                                 </Col>
                                 </Row>
                                 <Row className="pad-top-16">
@@ -565,16 +561,18 @@ class CourseDetail extends Component {
                                 <Col sm={2} className="gray800-14">
                                     Course fees
                                 </Col>
-                                {courseOption.fees ?
+                                {courseOption.fees && courseOption.fees[0].feeDescription && courseOption.fees[0].feeAmount  ?
                                   courseOption.fees.map((fee, index) => {
-                                    return(
-                                      <>
-                                        {index > 0 ? <Col sm={2} /> : ''}
-                                        <Col sm={10} className="gray-deep-14 overflowWrap">
-                                          {fee.feeDescription} | {fee.feeAmount}
-                                        </Col>
-                                      </>
-                                    )
+                                    if (fee.feeDescription && fee.feeAmount) {
+                                        return (
+                                            <>
+                                                {index > 0 ? <Col sm={2} /> : ''}
+                                                <Col sm={10} className="gray-deep-14 overflowWrap">
+                                                    {fee.feeDescription} | £{fee.feeAmount} per {fee.feePer.toLowerCase()}
+                                                </Col>
+                                            </>
+                                        )
+                                    }
                                   })
                                 :
                                   <Col sm={10} className="gray-deep-14 overflowWrap">
@@ -602,20 +600,21 @@ class CourseDetail extends Component {
                                 Entry requirements
                               </Col>
                               <Col sm={9} className="gray800-14">
-                                {!data.entries || data.entries <= 0 ? (
-                                  <span className="gray800-14-opacity">
-                                    Not specified
-                                  </span>
-                                ) : (
-                                  data.entries.map(entry => {
-                                    return (
-                                      // TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES 
-                                      <a href={"/search?search=&tab=Projects&projecttopics=" + entry}>
-                                        <div className="badge-version" ><span>{entry.level}</span><span>{entry.subject}</span></div>
-                                      </a>
-                                    );
+                                {data.entries && data.entries[0].level && data.entries[0].subject  ?
+                                  data.entries.map((entry, index) => {
+                                    if (entry.level && entry.subject) {
+                                        return (
+                                            <a href={"/search?search=&tab=Courses&courseentrylevel=" + entry.level}>
+                                              <div className="badge-version" ><span>{entry.level}</span><span>{entry.subject}</span></div>
+                                            </a>
+                                          );
+                                    }
                                   })
-                                )}
+                                :
+                                    <span className="gray800-14-opacity">
+                                        Not specified
+                                    </span>
+                                }
                               </Col>
                             </Row>                            
                             <Row className="pad-top-16">
@@ -628,10 +627,7 @@ class CourseDetail extends Component {
                                       Not specified
                                     </span>
                                 :
-                                /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
-                                    <a href={"/search?search=&tab=Projects&projecttopics=" + data.restrictions}>
-                                      <div className="badge-tag">{data.restrictions}</div>
-                                    </a>
+                                    <div className="badge-tag">{data.restrictions}</div>
                                 }
                               </Col>
                             </Row>                           
@@ -647,8 +643,7 @@ class CourseDetail extends Component {
                                 ) : (
                                   data.award.map(award => {
                                     return (
-                                      /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
-                                      <a href={"/search?search=&tab=Projects&projecttopics=" + award}>
+                                      <a href={"/search?search=&tab=Courses&courseaward=" + award}>
                                         <div className="badge-tag">{award}</div>
                                       </a>
                                     );
@@ -666,8 +661,7 @@ class CourseDetail extends Component {
                                       Not specified
                                     </span>
                                 :
-                                /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
-                                    <a href={"/search?search=&tab=Projects&projecttopics=" + data.competencyFramework}>
+                                    <a href={"/search?search=&tab=Courses&courseframework=" + data.competencyFramework}>
                                       <div className="badge-tag">{data.competencyFramework}</div>
                                     </a>
                                 }
@@ -683,8 +677,7 @@ class CourseDetail extends Component {
                                       Not specified
                                     </span>
                                 :
-                                /* TODO - UPDATE TO THE COURSES TAB & THE FILTER NAME USED FOR COURSES VALUES */
-                                    <a href={"/search?search=&tab=Projects&projecttopics=" + data.nationalPriority}>
+                                    <a href={"/search?search=&tab=Courses&coursepriority=" + data.nationalPriority}>
                                       <div className="badge-tag">{data.nationalPriority}</div>
                                     </a>
                                 }

@@ -26,8 +26,6 @@ class RelatedObject extends React.Component {
     };
 
     constructor(props) { 
-        console.log(`props.objectId: ${props.objectId}`)
-        console.log(`main props: ${JSON.stringify(props, null, 2)}`)
         super(props)
         this.state.activeLink = props.activeLink;
         this.state.onSearchPage = props.onSearchPage;
@@ -39,17 +37,11 @@ class RelatedObject extends React.Component {
         }
         if (props.data) {
             this.state.data = props.data || []
-            //this.state.reviewData = this.state.data.reviews;
             this.state.isLoading = false;
         } 
         else if (props.objectId) {
-            console.log(`HERE IT IS - ${JSON.stringify(props, null, 2)}`)
-            console.log(`type: ${props.objectType}`)
-
             this.state.relatedObject = props.relatedObject;
             this.state.reason = props.reason;
-            // this.state.user = props.userState[0].name;
-            // this.state.updated = moment().format("DD MMM YYYY");
             this.getRelatedObjectFromDb(props.objectId, props.objectType);
         }
         else {
@@ -68,10 +60,6 @@ class RelatedObject extends React.Component {
 
  
     getRelatedObjectFromDb = (id, type) => {
-<<<<<<< HEAD
-        console.log(`in getRelatedObjectFromDb - ${type}`)
-=======
->>>>>>> IG-834b
         //need to handle error if no id is found
         this.setState({ isLoading: true });
 
@@ -92,10 +80,6 @@ class RelatedObject extends React.Component {
                 });
             }) 
         }
-<<<<<<< HEAD
-
-=======
->>>>>>> IG-834b
     };
  
     removeButton = () => {
@@ -124,10 +108,6 @@ class RelatedObject extends React.Component {
 
         if(this.props.didDelete){
             this.props.updateDeleteFlag()
-<<<<<<< HEAD
-            console.log(`delete: ${JSON.stringify(this.props, null, 2)}`)
-=======
->>>>>>> IG-834b
             this.removeCard(this.props.objectId, this.props.reason, this.props.objectType)
         }
         
@@ -446,8 +426,10 @@ class RelatedObject extends React.Component {
                                                 <Col sm={12} lg={12}>
                                             <CalendarSvg className="calendarSVG"/>
                                             <span className="gray800-14 margin-left-10">
+
+                                            {(() => {console.log(data.courseOptions[0].startDate) })()}
                                                 {data.courseOptions[0].startDate ? 
-                                                    <span> Starts {moment(data.courseOptions.startDate).format("dddd Do MMMM YYYY")} </span>
+                                                    <span> Starts {moment(data.courseOptions[0].startDate).format("dddd Do MMMM YYYY")} </span>
                                                 : 
                                                     <span> Flexible dates </span>
                                                 }
@@ -474,17 +456,17 @@ class RelatedObject extends React.Component {
                                                 <span>Course</span>
                                             </span>
 
-                                            {!data.keywords || data.keywords.length <= 0 ? '' : data.keywords.map((keyword) => {
+                                            {!data.award || data.award.length <= 0 ? '' : data.award.map((award) => {
                                                 if (activeLink===true){
                                                     if (onSearchPage === true) { 
-                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('courseKeywordsSelected', keyword)}><div className="badge-tag">{keyword}</div></span>
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('courseAwardSelected', award)}><div className="badge-tag">{award}</div></span>
                                                     }
                                                     else { 
-                                                        return <a href={'/search?search=&tab=Courses&coursekeywords=' + keyword}><div className="badge-tag">{keyword}</div></a>
+                                                        return <a href={'/search?search=&tab=Courses&courseaward=' + award}><div className="badge-tag">{award}</div></a>
                                                     }
                                                 }
                                                 else {
-                                                    return <div className="badge-tag">{keyword}</div>
+                                                    return <div className="badge-tag">{award}</div>
                                                 }
                                             })}
 

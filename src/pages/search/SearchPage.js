@@ -3,6 +3,7 @@ import axios from 'axios';
 import { PageView, initGA } from '../../tracking';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
+import moment from 'moment';
 
 import { Container, Row, Col, Tabs, Tab, Pagination, Dropdown } from 'react-bootstrap';
 
@@ -60,6 +61,16 @@ class SearchPage extends React.Component {
         projectTopicsSelected: [],
         paperFeaturesSelected: [],
         paperTopicsSelected: [],
+        courseStartDatesSelected: [],
+        courseProviderSelected: [],
+        courseLocationSelected: [],
+        courseStudyModeSelected: [],
+        courseAwardSelected: [],
+        courseEntryLevelSelected: [],
+        courseDomainsSelected: [],
+        courseKeywordsSelected: [],
+        courseFrameworkSelected: [],
+        coursePrioritySelected: [],
         summary: [],
         key: 'Datasets',
         isLoading: true,
@@ -142,6 +153,17 @@ class SearchPage extends React.Component {
                 || (((typeof values.paperfeatures === "undefined" && this.state.paperFeaturesSelected.length !== 0) || (typeof values.paperfeatures !== "undefined" && this.state.paperFeaturesSelected.length === 0)) && !this.state.paperFeaturesSelected.includes(values.paperfeatures))
                 || (((typeof values.papertopics === "undefined" && this.state.paperTopicsSelected.length !== 0) || (typeof values.papertopics !== "undefined" && this.state.paperTopicsSelected.length === 0)) && !this.state.paperTopicsSelected.includes(values.papertopics))
                 
+                || (((typeof values.coursestartdates === "undefined" && this.state.courseStartDatesSelected.length !== 0) || (typeof values.coursestartdates !== "undefined" && this.state.courseStartDatesSelected.length === 0)) && !this.state.courseStartDatesSelected.includes(values.coursestartdates))
+                || (((typeof values.courseprovider === "undefined" && this.state.courseProviderSelected.length !== 0) || (typeof values.courseprovider !== "undefined" && this.state.courseProviderSelected.length === 0)) && !this.state.courseProviderSelected.includes(values.courseprovider))
+                || (((typeof values.courselocation === "undefined" && this.state.courseLocationSelected.length !== 0) || (typeof values.courselocation !== "undefined" && this.state.courseLocationSelected.length === 0)) && !this.state.courseLocationSelected.includes(values.courselocation))
+                || (((typeof values.coursestudymode === "undefined" && this.state.courseStudyModeSelected.length !== 0) || (typeof values.coursestudymode !== "undefined" && this.state.courseStudyModeSelected.length === 0)) && !this.state.courseStudyModeSelected.includes(values.coursestudymode))
+                || (((typeof values.courseaward === "undefined" && this.state.courseAwardSelected.length !== 0) || (typeof values.courseaward !== "undefined" && this.state.courseAwardSelected.length === 0)) && !this.state.courseAwardSelected.includes(values.courseaward))
+                || (((typeof values.courseentrylevel === "undefined" && this.state.courseEntryLevelSelected.length !== 0) || (typeof values.courseentrylevel !== "undefined" && this.state.courseEntryLevelSelected.length === 0)) && !this.state.courseEntryLevelSelected.includes(values.courseentrylevel))
+                || (((typeof values.coursedomains === "undefined" && this.state.courseDomainsSelected.length !== 0) || (typeof values.coursedomains !== "undefined" && this.state.courseDomainsSelected.length === 0)) && !this.state.courseDomainsSelected.includes(values.coursedomains))
+                || (((typeof values.coursekeywords === "undefined" && this.state.courseKeywordsSelected.length !== 0) || (typeof values.coursekeywords !== "undefined" && this.state.courseKeywordsSelected.length === 0)) && !this.state.courseKeywordsSelected.includes(values.coursekeywords))
+                || (((typeof values.courseframework === "undefined" && this.state.courseFrameworkSelected.length !== 0) || (typeof values.courseframework !== "undefined" && this.state.courseFrameworkSelected.length === 0)) && !this.state.courseFrameworkSelected.includes(values.courseframework))
+                || (((typeof values.coursepriority === "undefined" && this.state.coursePrioritySelected.length !== 0) || (typeof values.coursepriority !== "undefined" && this.state.coursePrioritySelected.length === 0)) && !this.state.coursePrioritySelected.includes(values.coursepriority))
+
                 || (((typeof values.datasetIndex === "undefined" && this.state.datasetIndex !== 0) || (typeof values.datasetIndex !== "undefined" && this.state.datasetIndex === 0)) && this.state.datasetIndex !== values.datasetIndex)
                 || (((typeof values.toolIndex === "undefined" && this.state.toolIndex !== 0) || (typeof values.toolIndex !== "undefined" && this.state.toolIndex === 0)) && this.state.toolIndex !== values.toolIndex)
                 || (((typeof values.projectIndex === "undefined" && this.state.projectIndex !== 0) || (typeof values.projectIndex !== "undefined" && this.state.projectIndex === 0)) && this.state.projectIndex !== values.projectIndex)
@@ -213,6 +235,17 @@ class SearchPage extends React.Component {
 
         values.paperfeatures ? this.setState({ paperFeaturesSelected: values.paperfeatures.split("::") }) : this.setState({ paperFeaturesSelected: [] })
         values.papertopics ? this.setState({ paperTopicsSelected: values.papertopics.split("::") }) : this.setState({ paperTopicsSelected: [] })
+        
+        values.coursestartdates ? this.setState({ courseStartDatesSelected: values.coursestartdates.split("::") }) : this.setState({ courseStartDatesSelected: [] })
+        values.courseprovider ? this.setState({ coursePrioritySelected: values.courseprovider.split("::") }) : this.setState({ coursePrioritySelected: [] })
+        values.courselocation ? this.setState({ courseLocationSelected: values.courselocation.split("::") }) : this.setState({ courseLocationSelected: [] })
+        values.coursestudymode ? this.setState({ courseStudyModeSelected: values.coursestudymode.split("::") }) : this.setState({ courseStudyModeSelected: [] })
+        values.courseaward ? this.setState({ courseAwardSelected: values.courseaward.split("::") }) : this.setState({ courseAwardSelected: [] })
+        values.courseentrylevel ? this.setState({ courseEntryLevelSelected: values.courseentrylevel.split("::") }) : this.setState({ courseEntryLevelSelected: [] })
+        values.coursedomains ? this.setState({ courseDomainsSelected: values.coursedomains.split("::") }) : this.setState({ courseDomainsSelected: [] })
+        values.coursekeywords ? this.setState({ courseKeywordsSelected: values.coursekeywords.split("::") }) : this.setState({ courseKeywordsSelected: [] })
+        values.courseframework ? this.setState({ courseFrameworkSelected: values.courseframework.split("::") }) : this.setState({ courseFrameworkSelected: [] })
+        values.coursepriority ? this.setState({ coursePrioritySelected: values.coursepriority.split("::") }) : this.setState({ coursePrioritySelected: [] })
 
         values.tab ? this.setState({ key: values.tab }) : this.setState({ key: 'Datasets' })
         values.datasetIndex ? this.setState({ datasetIndex: values.datasetIndex }) : this.setState({ datasetIndex: 0 })
@@ -250,6 +283,17 @@ class SearchPage extends React.Component {
         
         this.setState({ paperFeaturesSelected: [] })
         this.setState({ paperTopicsSelected: [] })
+
+        this.setState({ courseStartDatesSelected: [] })
+        this.setState({ courseProviderSelected: [] })
+        this.setState({ courseLocationSelected: [] })
+        this.setState({ courseStudyModeSelected: [] })
+        this.setState({ courseAwardSelected: [] })
+        this.setState({ courseEntryLevelSelected: [] })
+        this.setState({ courseDomainsSelected: [] })
+        this.setState({ courseKeywordsSelected: [] })
+        this.setState({ courseFrameworkSelected: [] })
+        this.setState({ coursePrioritySelected: [] })
 
         this.setState({ datasetIndex: 0 })
         this.setState({ toolIndex: 0 })
@@ -322,6 +366,17 @@ class SearchPage extends React.Component {
         
         if (this.state.paperFeaturesSelected.length > 0) searchURL += '&paperfeatures=' + encodeURIComponent(this.state.paperFeaturesSelected.toString().split(',').join('::'));
         if (this.state.paperTopicsSelected.length > 0) searchURL += '&papertopics=' + encodeURIComponent(this.state.paperTopicsSelected.toString().split(',').join('::'));
+
+        if (this.state.courseStartDatesSelected.length > 0) searchURL += '&coursestartdates=' + encodeURIComponent(this.state.courseStartDatesSelected.toString().split(',').join('::'));
+        if (this.state.courseProviderSelected.length > 0) searchURL += '&courseprovider=' + encodeURIComponent(this.state.courseProviderSelected.toString().split(',').join('::'));
+        if (this.state.courseLocationSelected.length > 0) searchURL += '&courslocation=' + encodeURIComponent(this.state.courseLocationSelected.toString().split(',').join('::'));
+        if (this.state.courseStudyModeSelected.length > 0) searchURL += '&coursestudymode=' + encodeURIComponent(this.state.courseStudyModeSelected.toString().split(',').join('::'));
+        if (this.state.courseAwardSelected.length > 0) searchURL += '&courseaward=' + encodeURIComponent(this.state.courseAwardSelected.toString().split(',').join('::'));
+        if (this.state.courseEntryLevelSelected.length > 0) searchURL += '&courseentrylevel=' + encodeURIComponent(this.state.courseEntryLevelSelected.toString().split(',').join('::'));
+        if (this.state.courseDomainsSelected.length > 0) searchURL += '&coursedomains=' + encodeURIComponent(this.state.courseDomainsSelected.toString().split(',').join('::'));
+        if (this.state.courseKeywordsSelected.length > 0) searchURL += '&coursekeywords=' + encodeURIComponent(this.state.courseKeywordsSelected.toString().split(',').join('::'));
+        if (this.state.courseFrameworkSelected.length > 0) searchURL += '&courseframework=' + encodeURIComponent(this.state.courseFrameworkSelected.toString().split(',').join('::'));
+        if (this.state.coursePrioritySelected.length > 0) searchURL += '&coursepriority=' + encodeURIComponent(this.state.coursePrioritySelected.toString().split(',').join('::'));
 
         if (this.state.datasetIndex > 0) searchURL += '&datasetIndex=' + encodeURIComponent(this.state.datasetIndex);
         if (this.state.toolIndex > 0) searchURL += '&toolIndex=' + encodeURIComponent(this.state.toolIndex);
@@ -486,6 +541,17 @@ class SearchPage extends React.Component {
             
             paperFeaturesSelected, 
             paperTopicsSelected, 
+
+            courseStartDatesSelected,
+            courseProviderSelected,
+            courseLocationSelected,
+            courseStudyModeSelected,
+            courseAwardSelected,
+            courseEntryLevelSelected,
+            courseDomainsSelected,
+            courseKeywordsSelected,
+            courseFrameworkSelected,
+            coursePrioritySelected,
             
             datasetIndex, 
             toolIndex, 
@@ -770,7 +836,7 @@ class SearchPage extends React.Component {
 
                                     {key === 'Courses' ? <>
                                         <div className="filterHolder">
-                                            {paperFeaturesSelected.length !== 0 || paperTopicsSelected.length !== 0 ? 
+                                            {courseStartDatesSelected.length !== 0 ||  courseProviderSelected.length !== 0 ||  courseLocationSelected.length !== 0 ||  courseStudyModeSelected.length !== 0 ||  courseAwardSelected.length !== 0 ||  courseEntryLevelSelected.length !== 0 ||  courseDomainsSelected.length !== 0 || courseKeywordsSelected.length !== 0 || courseFrameworkSelected.length !== 0 || coursePrioritySelected.length !== 0 ? 
                                                 <div className="filterCard mb-2">
                                                     <Row>
                                                         <Col className="mb-2">
@@ -783,17 +849,57 @@ class SearchPage extends React.Component {
                                                         </Col>
                                                     </Row>
                                                     
-                                                    {!paperFeaturesSelected || paperFeaturesSelected.length <= 0 ? '' : paperFeaturesSelected.map((selected) => {
-                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'paperFeaturesSelected')}>X</span></div>
+                                                    {!courseStartDatesSelected || courseStartDatesSelected.length <= 0 ? '' : courseStartDatesSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'courseStartDatesSelected')}>X</span></div>
                                                     })}
 
-                                                    {!paperTopicsSelected || paperTopicsSelected.length <= 0 ? '' : paperTopicsSelected.map((selected) => {
-                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'paperTopicsSelected')}>X</span></div>
+                                                    {!courseProviderSelected || courseProviderSelected.length <= 0 ? '' : courseProviderSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'courseProviderSelected')}>X</span></div>
+                                                    })}
+
+                                                    {!courseLocationSelected || courseLocationSelected.length <= 0 ? '' : courseLocationSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'courseLocationSelected')}>X</span></div>
+                                                    })}
+
+                                                    {!courseStudyModeSelected || courseStudyModeSelected.length <= 0 ? '' : courseStudyModeSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'courseStudyModeSelected')}>X</span></div>
+                                                    })}
+
+                                                    {!courseAwardSelected || courseAwardSelected.length <= 0 ? '' : courseAwardSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'courseAwardSelected')}>X</span></div>
+                                                    })}
+
+                                                    {!courseEntryLevelSelected || courseEntryLevelSelected.length <= 0 ? '' : courseEntryLevelSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'courseEntryLevelSelected')}>X</span></div>
+                                                    })}
+
+                                                    {!courseDomainsSelected || courseDomainsSelected.length <= 0 ? '' : courseDomainsSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'courseDomainsSelected')}>X</span></div>
+                                                    })}
+
+                                                    {!courseKeywordsSelected || courseKeywordsSelected.length <= 0 ? '' : courseKeywordsSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'courseKeywordsSelected')}>X</span></div>
+                                                    })}
+
+                                                    {!courseFrameworkSelected || courseFrameworkSelected.length <= 0 ? '' : courseFrameworkSelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'courseFrameworkSelected')}>X</span></div>
+                                                    })}
+
+                                                    {!coursePrioritySelected || coursePrioritySelected.length <= 0 ? '' : coursePrioritySelected.map((selected) => {
+                                                        return <div className="badge-tag">{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''} <span className="gray800-14-opacity pointer" onClick={() => this.clearFilter(selected, 'coursePrioritySelected')}>X</span></div>
                                                     })}
                                                 </div> 
                                             : ''}
-                                            <Filters data={filterOptions.paperFeaturesFilterOptions} allFilters={allFilters.paperFeatureFilter} updateOnFilter={this.updateOnFilter} selected={paperFeaturesSelected} title="Keywords" />
-                                            <Filters data={filterOptions.paperTopicsFilterOptions} allFilters={allFilters.paperTopicFilter} updateOnFilter={this.updateOnFilter} selected={paperTopicsSelected} title="Domain" />
+                                            <Filters data={filterOptions.courseStartDatesFilterOptions} allFilters={allFilters.courseStartDatesFilter} updateOnFilter={this.updateOnFilter} selected={courseStartDatesSelected} title="Start date" />
+                                            <Filters data={filterOptions.courseProviderFilterOptions} allFilters={allFilters.courseProviderFilter} updateOnFilter={this.updateOnFilter} selected={courseProviderSelected} title="Provider" />
+                                            <Filters data={filterOptions.courseLocationFilterOptions} allFilters={allFilters.courseLocationFilter} updateOnFilter={this.updateOnFilter} selected={courseLocationSelected} title="Location" />
+                                            <Filters data={filterOptions.courseStudyModeFilterOptions} allFilters={allFilters.courseStudyModeFilter} updateOnFilter={this.updateOnFilter} selected={courseStudyModeSelected} title="Study mode" />
+                                            <Filters data={filterOptions.courseAwardFilterOptions} allFilters={allFilters.courseAwardFilter} updateOnFilter={this.updateOnFilter} selected={courseAwardSelected} title="Award" />
+                                            <Filters data={filterOptions.courseEntryLevelFilterOptions} allFilters={allFilters.courseEntryLevelFilter} updateOnFilter={this.updateOnFilter} selected={courseEntryLevelSelected} title="Entry requirements" />
+                                            <Filters data={filterOptions.courseDomainsFilterOptions} allFilters={allFilters.courseDomainsFilter} updateOnFilter={this.updateOnFilter} selected={courseDomainsSelected} title="Domain" />
+                                            <Filters data={filterOptions.courseKeywordsFilterOptions} allFilters={allFilters.courseKeywordsFilter} updateOnFilter={this.updateOnFilter} selected={courseKeywordsSelected} title="Keywords" />
+                                            <Filters data={filterOptions.courseFrameworkFilterOptions} allFilters={allFilters.courseFrameworkFilter} updateOnFilter={this.updateOnFilter} selected={courseFrameworkSelected} title="Competency framework" />
+                                            <Filters data={filterOptions.coursePriorityFilterOptions} allFilters={allFilters.coursePriorityFilter} updateOnFilter={this.updateOnFilter} selected={coursePrioritySelected} title="National priority areas" />
                                         </div>
                                     </> : ''}
                                 </Col>
@@ -876,12 +982,49 @@ class SearchPage extends React.Component {
                                         })
                                         : ''}
 
-                                    {key === 'Courses' ?
-                                        courseCount <= 0 && !isResultsLoading ? <NoResults type='courses' searchString={searchString} />
-                                        : courseData.map((course) => {
-                                            return <RelatedObject key={course.id} data={course} activeLink={true} onSearchPage={true} updateOnFilterBadge={this.updateOnFilterBadge} />
-                                        })
-                                        : ''}
+                                    {(() => {
+                                        if (key === 'Courses')  {
+                                            let courseRender = []
+                                            if (courseCount <= 0 && !isResultsLoading) return <NoResults type='courses' searchString={searchString} />
+                                            else {
+                                                let currentHeader = '';
+                                                courseData.map((course) => {
+                                                    let showHeader = false;
+                                                    course.courseOptions.map((option) => {
+                                                        if (!showHeader && option.flexibleDates && currentHeader !== "Flexible") {
+                                                            currentHeader = "Flexible"
+                                                            showHeader = true;
+                                                            
+                                                        }
+                                                        else if (!showHeader && option.startDate && currentHeader !== moment(option.startDate).format("MMMM")) {
+                                                            currentHeader = moment(option.startDate).format("MMMM")
+                                                            showHeader = true;
+                                                        }
+                                                        
+                                                    })
+                                                    
+                                                    
+                                                    if (showHeader) {
+                                                    courseRender.push(
+                                                        <Row className="courseDateHeader">
+                                                            <Col>
+                                                                <span className="black-20-semibold ">{currentHeader}</span>
+                                                            </Col>
+                                                        </Row>
+                                                    )
+                                                    }
+
+                                                    courseRender.push(<RelatedObject key={course.id} data={course} activeLink={true} onSearchPage={true} updateOnFilterBadge={this.updateOnFilterBadge} />)
+                                                    
+                                                })
+                                            }
+                                            return <>{courseRender}</>
+                                        }
+                                    })()}
+
+
+
+                                    
 
                                     <div className='text-center'>
                                     {key === 'Datasets' && datasetCount > maxResult ?
