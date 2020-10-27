@@ -220,8 +220,19 @@ class DatasetDetail extends Component {
   getAdditionalObjectInfo = async data => {
     let tempObjects = [];
     const promises = data.map(async (object, index) => {
+      if(object.objectType === 'course'){
+        await axios
+        .get(baseURL + "/api/v1/relatedobject/course/" + object.objectId) 
+        .then(res => {
+          tempObjects.push({
+            id: object.objectId,
+            activeflag: res.data.data[0].activeflag
+          });
+        });
+
+      } else {
       await axios
-        .get(baseURL + "/api/v1/relatedobject/" + object.objectId)
+        .get(baseURL + "/api/v1/relatedobject/" + object.objectId) 
         .then(res => {
           tempObjects.push({
             id: object.objectId,
@@ -229,6 +240,7 @@ class DatasetDetail extends Component {
             activeflag: res.data.data[0].activeflag
           });
         });
+      }
     });
     await Promise.all(promises);
     this.setState({ objects: tempObjects });

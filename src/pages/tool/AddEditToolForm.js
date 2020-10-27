@@ -431,7 +431,7 @@ const AddEditToolForm = (props) => {
                                     }}
                                 />
                             </Form.Group>
-                        </div> 
+                        </div>  
 
                         <div className="rectangle mt-2">
                             <span className="black-20">Related resources</span><span className="gray800-14"> (optional)</span>
@@ -443,7 +443,7 @@ const AddEditToolForm = (props) => {
                         <div className="rectangle">
                             {props.relatedObjects.map((object) => {
                                 return (
-                                    <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag}/>
+                                    <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} objectType={object.objectType} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag}/>
                                 )
                             })}
                         </div>}
@@ -452,7 +452,7 @@ const AddEditToolForm = (props) => {
                             <Row>
                                 <Col sm={1} lg={1} />
                                 <Col sm={10} lg={10}>
-                                    <RelatedResources ref={relatedResourcesRef} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} paperData={props.paperData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
+                                    <RelatedResources ref={relatedResourcesRef} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} paperData={props.paperData} personData={props.personData} courseData={props.courseData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                 </Col>
                                 <Col sm={1} lg={10} />
                             </Row>

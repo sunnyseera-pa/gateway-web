@@ -1,21 +1,19 @@
 import React from 'react';
 import axios from 'axios';
 import { initGA } from '../../tracking';
-import moment from 'moment';
+import moment from 'moment'; 
 import { Container } from 'react-bootstrap';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
-import AddEditPaperForm from './AddEditPaperForm';
+import AddEditCourseForm from './AddEditCourseForm';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
-import './Paper.scss'; 
-
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
-class AddEditPaperPage extends React.Component {
+class AddEditCoursePage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state.userState = props.userState;
@@ -28,6 +26,9 @@ class AddEditPaperPage extends React.Component {
 		data: [],
 		combinedTopic: [],
 		combinedFeatures: [],
+		combinedLanguages: [],
+		combinedCategories: [],
+		combinedLicenses: [],
 		combinedUsers: [],
 		isLoading: true,
 		userState: [],
@@ -35,8 +36,9 @@ class AddEditPaperPage extends React.Component {
 		datasetData: [],
 		toolData: [],
 		projectData: [],
-		personData: [],
-		courseData: [],
+		paperData: [],
+        personData: [],
+        courseData: [],
 		summary: [],
 		tempRelatedObjectIds: [],
 		relatedObjectIds: [],
@@ -53,17 +55,20 @@ class AddEditPaperPage extends React.Component {
 		await Promise.all([
 			this.doGetTopicsCall(),
 			this.doGetFeaturesCall(),
+			this.doGetLanguagesCall(),
+			this.doGetCategoriesCall(),
+			this.doGetLicensesCall(),
 			this.doGetUsersCall()
 		]);
-		if (this.state.isEdit) this.getPaperFromDb();
+		if (this.state.isEdit) this.getToolFromDb();
 		else this.setState({ isLoading: false });
 	}
 
-	getPaperFromDb = () => {
+	getToolFromDb = () => {
 		//need to handle error if no id is found
 		this.setState({ isLoading: true });
 		axios
-			.get(baseURL + '/api/v1/papers/edit/' + this.props.match.params.paperID)
+			.get(baseURL + '/api/v1/course/edit/' + this.props.match.params.courseID)
 			.then((res) => {
 				this.setState({
 					data: res.data.data[0],
@@ -77,7 +82,7 @@ class AddEditPaperPage extends React.Component {
 
 	doGetTopicsCall() {
 		return new Promise((resolve, reject) => {
-			axios.get(baseURL + '/api/v1/search/filter/topic/paper').then((res) => {
+			axios.get(baseURL + '/api/v1/search/filter/topic/tool').then((res) => {
 				var tempTopicArray = [
 					'Blood',
 					'Cancer and neoplasms',
@@ -104,7 +109,7 @@ class AddEditPaperPage extends React.Component {
 					if (!tempTopicArray.includes(to) && to !== '') {
 						tempTopicArray.push(to);
 					}
-				});
+                });
 				this.setState({
 					combinedTopic: tempTopicArray.sort(function (a, b) {
 						return a.toUpperCase() < b.toUpperCase()
@@ -121,7 +126,7 @@ class AddEditPaperPage extends React.Component {
 
 	doGetFeaturesCall() {
 		return new Promise((resolve, reject) => {
-			axios.get(baseURL + '/api/v1/search/filter/feature/paper').then((res) => {
+			axios.get(baseURL + '/api/v1/search/filter/feature/tool').then((res) => {
 				var tempFeaturesArray = [
 					'Arbitrage',
 					'Association Rules',
@@ -185,7 +190,140 @@ class AddEditPaperPage extends React.Component {
 							: 0;
 					})
 				});
-				resolve(); 
+				resolve();
+			});
+		});
+	}
+
+	doGetLanguagesCall() {
+		return new Promise((resolve, reject) => {
+			axios.get(baseURL + '/api/v1/search/filter/language/tool').then((res) => {
+				var tempLanguagesArray = [
+					'No coding required',
+					'.net',
+					'AJAX',
+					'ASP.NET',
+					'C',
+					'C#',
+					'C++',
+					'CSS',
+					'Django',
+					'HTML',
+					'Java',
+					'Javascript',
+					'jQuery',
+					'JSON',
+					'Matlab',
+					'MySQL',
+					'Node.js',
+					'Objective C',
+					'PHP',
+					'Python',
+					'R',
+					'React JS',
+					'Regex',
+					'Ruby',
+					'Ruby on Rails',
+					'SQL',
+					'SQL server',
+					'Swift',
+					'XML'
+				];
+
+				res.data.data[0].forEach((la) => {
+					if (!tempLanguagesArray.includes(la) && la !== '') {
+						tempLanguagesArray.push(la);
+					}
+				});
+
+				this.setState({
+					combinedLanguages: tempLanguagesArray.sort(function (a, b) {
+						return a.toUpperCase() < b.toUpperCase()
+							? -1
+							: a.toUpperCase() > b.toUpperCase()
+							? 1
+							: 0;
+					})
+				});
+				resolve();
+			});
+		});
+	}
+
+	doGetCategoriesCall() {
+		return new Promise((resolve, reject) => {
+			axios.get(baseURL + '/api/v1/search/filter/category/tool').then((res) => {
+				var tempCategoriesArray = [
+					'API',
+					'Code snippet',
+					'Container image',
+					'Dashboard',
+					'Developer stack',
+					'Directory',
+					'Docker app',
+					'Kubernetes app',
+					'Library',
+					'Notebook',
+					'Package',
+					'Platform',
+					'Repository',
+					'Service',
+					'Software',
+					'Virtual machine',
+					'Web application'
+				];
+
+				res.data.data[0].forEach((ca) => {
+					if (!tempCategoriesArray.includes(ca) && ca !== '') {
+						tempCategoriesArray.push(ca);
+					}
+				});
+
+				this.setState({
+					combinedCategories: tempCategoriesArray.sort(function (a, b) {
+						return a.toUpperCase() < b.toUpperCase()
+							? -1
+							: a.toUpperCase() > b.toUpperCase()
+							? 1
+							: 0;
+					})
+				});
+				resolve();
+			});
+		});
+	}
+
+	doGetLicensesCall() {
+		return new Promise((resolve, reject) => {
+			axios.get(baseURL + '/api/v1/search/filter/license/tool').then((res) => {
+				var tempLicensesArray = [
+					'Apache License 2.0',
+					'BSD 3-Clause "New" or "Revised" license',
+					'BSD 2-Clause "Simplified" or "FreeBSD" license',
+					'GNU General Public License (GPL)',
+					'GNU Library or "Lesser" General Public License (LGPL)',
+					'MIT license',
+					'Mozilla Public License 2.0',
+					'Common Development and Distribution License',
+					'Eclipse Public License version 2.0'
+				];
+
+				res.data.data[0].forEach((li) => {
+					if (!tempLicensesArray.includes(li) && li !== '') {
+						tempLicensesArray.push(li);
+					}
+				});
+
+				this.setState({
+					combinedLicenses: tempLicensesArray.sort(function (a, b) {
+						return a.toUpperCase() < b.toUpperCase()
+							? -1
+							: a.toUpperCase() > b.toUpperCase()
+							? 1
+							: 0;
+					})
+				});
+				resolve();
 			});
 		});
 	}
@@ -305,10 +443,10 @@ class AddEditPaperPage extends React.Component {
 	};
 
 	toggleModal = (showEnquiry = false, context = {}) => {
-        this.setState( ( prevState ) => {
-            return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
-        });
-    }
+		this.setState( ( prevState ) => {
+			return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
+		});
+	  }
 
 	render() {
 		const {
@@ -353,9 +491,9 @@ class AddEditPaperPage extends React.Component {
 					doUpdateSearchString={this.updateSearchString}
 					doToggleDrawer={this.toggleDrawer}
 					userState={userState}
-				/> 
+				/>
 				<Container>
-					<AddEditPaperForm
+					<AddEditCourseForm
 						data={data}
 						isEdit={isEdit}
 						combinedTopic={combinedTopic}
@@ -405,4 +543,4 @@ class AddEditPaperPage extends React.Component {
 	}
 }
 
-export default AddEditPaperPage;
+export default AddEditCoursePage;

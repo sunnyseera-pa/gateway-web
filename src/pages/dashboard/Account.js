@@ -8,6 +8,7 @@ import AccountProjects from './AccountProjects';
 import AccountDatasets from './AccountDatasets';
 import AccountAdvancedSearch from './AccountAdvancedSearch';
 import AccountPapers from './AccountPapers';
+import AccountCourses from './AccountCourses';
 import AccountCollections from './AccountCollections';
 import AccountAnalyticsDashboard from './AccountAnalyticsDashboard';
 import AccountUsers from './AccountUsers';
@@ -353,7 +354,6 @@ class Account extends Component {
                                 </Dropdown.Menu>
                             </Dropdown>
 
-
                             { team === 'user' ?
                                 <Fragment>
                                     <div className={`${tabId === 'dashboard' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('dashboard')}>
@@ -421,6 +421,13 @@ class Account extends Component {
                                                 <span className="navLinkItem">Papers</span>
                                             </Nav.Link>
                                         </div>
+
+                                    <div className={`${tabId === 'courses' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('courses')}>
+                                        <Nav.Link eventKey={'courses'} className="verticalNavBar gray700-13">
+                                            <SVGIcon name='educationicon' fill={'#b3b8bd'} className='svg-20' />
+                                            <span className="navLinkItem">Courses</span>
+                                        </Nav.Link>
+                                    </div>
 
                                     <div className={`${tabId === 'dataaccessrequests' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('dataaccessrequests')}>
                                         <Nav.Link eventKey={'dataaccessrequests'} className="verticalNavBar gray700-13">
@@ -506,6 +513,8 @@ class Account extends Component {
                         {tabId === 'datasetsAdvancedSearch' ? <AccountAdvancedSearch userState={userState} /> : ''}
 
                         {tabId === 'papers' ? <AccountPapers userState={userState} /> : ''}
+
+                        {tabId === 'courses' ? <AccountCourses userState={userState} /> : ''} 
 
                         {tabId === 'dataaccessrequests' ? <DataAccessRequests userState={userState} team={team} alert={alert} /> : ''}  
 
