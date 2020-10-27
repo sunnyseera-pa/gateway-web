@@ -35,7 +35,6 @@ class CompleteRegistration extends Component {
             name: null
         }],
         showModal: false,
-        // showOrg: false,
         context: {},
         combinedOrganisations: [],
         showSector: false,
