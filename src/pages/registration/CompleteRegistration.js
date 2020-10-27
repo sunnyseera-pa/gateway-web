@@ -35,7 +35,7 @@ class CompleteRegistration extends Component {
             name: null
         }],
         showModal: false,
-        showOrg: false,
+        // showOrg: false,
         context: {},
         combinedOrganisations: [],
         showSector: false,
@@ -115,12 +115,6 @@ class CompleteRegistration extends Component {
 		});
 	}
 
-    onShowOrgInput() {
-        this.setState( ( prevState ) => {
-            return { showOrg: !prevState.showOrg };
-        });
-    }
-
     componentDidMount() {
         this.setState({ isLoading: true });
         this.doFilterCall();
@@ -135,7 +129,7 @@ class CompleteRegistration extends Component {
     }
 
     render() {
-        const { isLoading, searchString, userState, userdata, showDrawer, showModal, context, topicData, showOrg, showBio, showSector, showDomain, showLink, showOrcid, showOrganisation, combinedOrganisations} = this.state;
+        const { isLoading, searchString, userState, userdata, showDrawer, showModal, context, topicData, showBio, showSector, showDomain, showLink, showOrcid, showOrganisation, combinedOrganisations} = this.state;
         
         if (isLoading) {
             return <Container><Loading /></Container>;
@@ -151,7 +145,7 @@ class CompleteRegistration extends Component {
                         <Col sm={1} lg={1} />
                         <Col sm={10} lg={10}>
                             <div>
-                                <YourAccountForm userdata={userdata} topicData={topicData} showOrg={showOrg} showOrganisation={showOrganisation} showBio={showBio} showSector={showSector} showDomain={showDomain} showLink={showLink} showOrcid={showOrcid} combinedOrganisations={combinedOrganisations} onShowOrgInput={() => {this.onShowOrgInput()}} />
+                                <YourAccountForm userdata={userdata} topicData={topicData} showOrganisation={showOrganisation} showBio={showBio} showSector={showSector} showDomain={showDomain} showLink={showLink} showOrcid={showOrcid} combinedOrganisations={combinedOrganisations} />
                             </div>
                         </Col>
                         <Col sm={1} lg={1} />
@@ -268,8 +262,7 @@ const YourAccountForm = (props) => {
             bio: Yup.string()
                 .max(500, 'Maximum of 500 characters'),
             terms: Yup.bool().oneOf([true], 'Accept Terms & Conditions is required'),
-            sector: Yup.string().required('Please select a sector'),
-            organisation: Yup.string().when("showOrg", {is: 'yes', then: Yup.string().required('This cannot be empty')})
+            sector: Yup.string().required('Please select a sector')
         }),
         
         onSubmit: values => {
@@ -412,21 +405,8 @@ const YourAccountForm = (props) => {
                             </Form.Group>
 
                             <Form.Group className="margin-bottom-0">
-                                <Form.Label className="gray800-14">Are you part of an organisation?</Form.Label>
+                                <Form.Label className="gray800-14">Organisation (optional)</Form.Label>
                                 <br/>
-                                <InputGroup onChange={props.onShowOrgInput}>
-                                    <InputGroup.Prepend>
-                                        <Row className="margin-bottom-8">
-                                            <InputGroup.Radio id="partOfOrgYes" className="ml-3" aria-label="Yes" name="partOfOrg" onChange={(e) => {formik.setFieldValue("showOrg", "yes")}}/>
-                                            <span className="gray800-14 ml-3">Yes</span>
-                                        </Row>
-                                        <Row className="margin-bottom-12">
-                                            <InputGroup.Radio id="partOfOrgNo" className="ml-3" aria-label="No" name="partOfOrg" defaultChecked onChange={(e) => {formik.setFieldValue("showOrg", "no")}} />
-                                            <span className="gray800-14 ml-3">No</span>
-                                        </Row>
-                                    </InputGroup.Prepend>
-                                </InputGroup>
-                                { props.showOrg ? 
                                     <Fragment>
                                         <span className="gray700-13">Please specify your affiliation or company</span>
                                         <Form.Group>
@@ -439,7 +419,7 @@ const YourAccountForm = (props) => {
                                                 allowNew
                                                 defaultSelected={formik.values.organisation ? [formik.values.organisation] : ""}
                                                 options={props.combinedOrganisations}
-                                                className={(props.showOrg && ((formik.touched.organisation && formik.values.organisation === "") && ( formik.errors.organisation && typeof formik.errors.organisation !== "undefined"))) ? "sectorTypeahead emptyFormInput addFormInput margin-bottom-8 margin-top-8" : "sectorTypeahead addFormInput margin-bottom-8 margin-top-8"} 
+                                                className={"sectorTypeahead addFormInput margin-bottom-8 margin-top-8"} 
                                                 onBlur={ formik.handleBlur }
                                                 onChange={(selected) => {
                                                     var tempSelected = [];
@@ -466,10 +446,8 @@ const YourAccountForm = (props) => {
                                                 </button>
                                             </Col>
                                         </Row>
-                                        {props.showOrg && (formik.touched.organisation && formik.values.organisation === "" && (formik.errors.organisation && typeof formik.errors.organisation !== "undefined")) ? <div className="errorMessages">{formik.errors.organisation}</div> : ''}
                                         </Form.Group>
-                                    </Fragment> : null
-                                }
+                                    </Fragment>
                             </Form.Group>
 
                             <Form.Group className="pb-2">
