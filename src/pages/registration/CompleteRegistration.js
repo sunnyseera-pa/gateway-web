@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import * as Yup from 'yup';
-import { Row, Col, Container, Button, Alert, Form, InputGroup, DropdownButton, Dropdown } from 'react-bootstrap';
+import { Row, Col, Container, Button, Alert, Form, DropdownButton, Dropdown } from 'react-bootstrap';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
