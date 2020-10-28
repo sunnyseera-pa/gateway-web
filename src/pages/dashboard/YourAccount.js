@@ -212,9 +212,8 @@ const YourAccountForm = (props) => {
             terms: props.data.terms || false,
             sector: props.data.sector || "",
             organisation: props.data.organisation || "",
-            tags: props.data.tags || {
-                topics: [],
-            },
+            showOrgVal: props.showOrgVal,
+            tags: props.data.tags.topics ? { topics: props.data.tags.topics } : { topics: [] },
             showSector: showingSector,
             showOrganisation: showingOrg,
             showBio: showingBio,
