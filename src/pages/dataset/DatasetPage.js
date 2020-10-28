@@ -13,8 +13,7 @@ import {
   Tab,
   Alert,
   Tooltip,
-  Overlay,
-  Button
+  Overlay
 } from "react-bootstrap/";
 import NotFound from "../commonComponents/NotFound";
 import Loading from "../commonComponents/Loading";
@@ -37,7 +36,6 @@ import TechnicalMetadata from "./components/TechnicalMetadata";
 import TechnicalDetailsPage from "./components/TechnicalDetailsPage";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
-import AddToCollection from "../commonComponents/addToCollection/AddToCollection";
 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";

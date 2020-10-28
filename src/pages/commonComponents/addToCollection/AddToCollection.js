@@ -1,16 +1,12 @@
 import React, { Component, useState } from 'react';
 import axios from 'axios';
 import Dropdown from 'react-bootstrap/Dropdown';
-import { Row, Col, Tabs, Tab, Container, Alert, Button, FormText } from "react-bootstrap";
+import { Row, Col, Button } from "react-bootstrap";
 import moment from 'moment';
 import { ReactComponent as CheckSvg } from '../../../images/check.svg';
-import SVGIcon from '../../../images/SVGIcon';
-import ActionBar from '../actionbar/ActionBar'; 
 import './AddToCollection.scss';
 
-
 var baseURL = require('../BaseURL').getURL();
-var cmsURL = require('../BaseURL').getCMSURL();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
   <a href="" ref={ref} onClick={e => { e.preventDefault(); onClick(e); }} >
@@ -110,13 +106,11 @@ class AddToCollection extends Component {
                     if (userState[0].loggedIn === true) {
                         return (
                             <Dropdown>
-
                                 <Dropdown.Toggle as={CustomToggle} >
                                     <Button variant="medium" className="addToCollectionButton dark-14 mr-2" >
                                         Add to collection  
                                     </Button>
                                 </Dropdown.Toggle>
-                        
                                 <Dropdown.Menu as={CustomMenu} className="addToCollectionDropdown"> 
                                     <Row className="addToCollectionHeader"> <span className="gray800-14-bold addToCollectionItem">Add to collection</span> </Row>
                                         {collectionsData.map((dat) => {
