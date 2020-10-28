@@ -37,12 +37,12 @@ class CompleteRegistration extends Component {
         showModal: false,
         context: {},
         combinedOrganisations: [],
-        showSector: false,
-        showOrganisation: false,
-        showBio: false,
-        showDomain: false,
-        showLink: false,
-        showOrcid: false
+        showSector: true,
+        showOrganisation: true,
+        showBio: true,
+        showDomain: true,
+        showLink: true,
+        showOrcid: true
     };
 
     doSearch = (e) => { //fires on enter on searchbar
@@ -407,7 +407,7 @@ const YourAccountForm = (props) => {
                                 <Form.Label className="gray800-14">Organisation (optional)</Form.Label>
                                 <br/>
                                     <Fragment>
-                                        <span className="gray700-13">Please specify your affiliation or company</span>
+                                        <span className="gray700-13">Your affiliation or company, if applicable</span>
                                         <Form.Group>
                                         <Row>
                                             <Col sm={11} lg={11}> 

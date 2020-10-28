@@ -22,14 +22,14 @@ class YourAccount extends React.Component {
         topicData: [],
         isLoading: true,
         isUpdated: false,
-        showOrg: false,
+        showOrg: true,
         combinedOrganisations: [],
-        showSector: false,
-        showOrganisation: false,
-        showBio: false,
-        showDomain: false,
-        showLink: false,
-        showOrcid: false
+        showSector: true,
+        showOrganisation: true,
+        showBio: true,
+        showDomain: true,
+        showLink: true,
+        showOrcid: true
     };
 
     constructor(props) {
@@ -52,19 +52,19 @@ class YourAccount extends React.Component {
             .then((res) => {
                 axios.get(baseURL + '/api/v1/users/' + this.state.userState[0].id)
                     .then((resUser) => {
-                        let showOrg = false;
-                        let { organisation } = res.data.data[0];
+                        let showOrg = true;
                         this.setState({
                             userdata: resUser.data.userdata[0],
                             data: res.data.data[0],
                             isLoading: false,
                             showOrg,
-                            showSector: res.data.data[0].showSector,
-                            showOrganisation: res.data.data[0].showOrganisation,
-                            showBio: res.data.data[0].showBio,
-                            showDomain: res.data.data[0].showDomain,
-                            showLink: res.data.data[0].showLink,
-                            showOrcid: res.data.data[0].showOrcid
+                            //we want undefined to default to true
+                            showSector: res.data.data[0].showSector === false ? false : true,
+                            showOrganisation: res.data.data[0].showOrganisation === false ? false : true,
+                            showBio: res.data.data[0].showBio === false ? false : true,
+                            showDomain: res.data.data[0].showDomain === false ? false : true,
+                            showLink: res.data.data[0].showLink === false ? false : true,
+                            showOrcid: res.data.data[0].showOrcid === false ? false : true
                         });
                     })
             })
@@ -379,7 +379,7 @@ const YourAccountForm = (props) => {
                                 <Form.Label className="gray800-14">Organisation (optional)</Form.Label>
                                 <br/>
                                     <Fragment>
-                                        <span className="gray700-13">Please specify your affiliation or company</span>
+                                        <span className="gray700-13">Your affiliation or company, if applicable</span>
                                         <Form.Group>
                                         <Row>
                                             <Col sm={11} lg={11}> 
