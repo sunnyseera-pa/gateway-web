@@ -286,7 +286,7 @@ const AddEditCourseForm = (props) => {
     ];
     
     const level = [
-        "A-level","PhD", "Bachelor\'s with Honours", "Bachelor\'s"
+        "A-level", "PhD", "Bachelor\'s with Honours", "Bachelor\'s"
     ];
 
     return (
@@ -441,8 +441,8 @@ const AddEditCourseForm = (props) => {
                                                     name="courseOptions"
                                                     render={({ push }) => (
                                                         <div>
-                                                            {formik.values.courseOptions.length > 0 &&
-                                                                formik.values.courseOptions.map((node, index) => {
+                                                            {values.courseOptions.length > 0 &&
+                                                                values.courseOptions.map((node, index) => {
                                                                     return (
                                                                         <div key={`courseOptions-${index}`} className="main-accordion">
                                                                             <div className="main-accordion-header" onClick={(e) => {
