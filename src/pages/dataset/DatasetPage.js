@@ -13,7 +13,8 @@ import {
   Tab,
   Alert,
   Tooltip,
-  Overlay
+  Overlay,
+  Button
 } from "react-bootstrap/";
 import NotFound from "../commonComponents/NotFound";
 import Loading from "../commonComponents/Loading";
@@ -46,6 +47,7 @@ import "react-tabs/style/react-tabs.css";
 import './Dataset.scss';
 import DataUtitlityFramework from "./components/DataUtilityFramework";
 import DataQuality from "./components/DataQuality";
+import ActionBar from "../commonComponents/actionbar/ActionBar";
 
 var baseURL = require("../commonComponents/BaseURL").getURL();
 
@@ -1169,6 +1171,14 @@ class DatasetDetail extends Component {
             data={data}
             userState={userState}
           />
+
+          {userState[0].loggedIn === false ?
+          <div className="actionBar"> 
+              <Row className="floatRight">
+                <Button variant='medium' href={'https://metadata-catalogue.org/hdruk/#/catalogue/dataModel/' + this.state.data.datasetid} target="_blank" className="linkToTechnicalDetails dark-14 mr-2">Technical details</Button> 
+              </Row>
+          </div>
+          : "" }
 
           <DataSetModal
             open={showModal}
