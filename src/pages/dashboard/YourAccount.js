@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import axios from 'axios';
 import * as Yup from 'yup';
-import { Row, Col, Button, Alert, Form, InputGroup, DropdownButton, Dropdown } from 'react-bootstrap';
+import { Row, Col, Button, Alert, Form, DropdownButton, Dropdown } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import queryString from 'query-string';
@@ -9,7 +9,6 @@ import Loading from '../commonComponents/Loading';
 import _ from 'lodash';
 import './Dashboard.scss';
 import SVGIcon from '../../images/SVGIcon'; 
-
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -23,15 +22,14 @@ class YourAccount extends React.Component {
         topicData: [],
         isLoading: true,
         isUpdated: false,
-        showOrg: false,
-        showOrgVal: "",
+        showOrg: true,
         combinedOrganisations: [],
-        showSector: false,
-        showOrganisation: false,
-        showBio: false,
-        showDomain: false,
-        showLink: false,
-        showOrcid: false
+        showSector: true,
+        showOrganisation: true,
+        showBio: true,
+        showDomain: true,
+        showLink: true,
+        showOrcid: true
     };
 
     constructor(props) {
@@ -54,24 +52,19 @@ class YourAccount extends React.Component {
             .then((res) => {
                 axios.get(baseURL + '/api/v1/users/' + this.state.userState[0].id)
                     .then((resUser) => {
-                        let showOrg = false;
-                        let showOrgVal = "";
-                        let { organisation } = res.data.data[0];
-                        if(!_.isEmpty(organisation) && !_.isUndefined(organisation)) {
-                            showOrgVal = "yes";
-                        }
+                        let showOrg = true;
                         this.setState({
                             userdata: resUser.data.userdata[0],
                             data: res.data.data[0],
                             isLoading: false,
                             showOrg,
-                            showOrgVal,
-                            showSector: res.data.data[0].showSector,
-                            showOrganisation: res.data.data[0].showOrganisation,
-                            showBio: res.data.data[0].showBio,
-                            showDomain: res.data.data[0].showDomain,
-                            showLink: res.data.data[0].showLink,
-                            showOrcid: res.data.data[0].showOrcid
+                            //we want undefined to default to true
+                            showSector: res.data.data[0].showSector === false ? false : true,
+                            showOrganisation: res.data.data[0].showOrganisation === false ? false : true,
+                            showBio: res.data.data[0].showBio === false ? false : true,
+                            showDomain: res.data.data[0].showDomain === false ? false : true,
+                            showLink: res.data.data[0].showLink === false ? false : true,
+                            showOrcid: res.data.data[0].showOrcid === false ? false : true
                         });
                     })
             })
@@ -123,14 +116,8 @@ class YourAccount extends React.Component {
 		});
 	}
 
-    onShowOrgInput() {
-        this.setState( ( prevState ) => {
-            return { showOrg: !prevState.showOrg };
-        });
-    }
-
     render() {
-        const { data, isLoading, isUpdated, userdata, topicData, showOrg, showOrgVal, combinedOrganisations, showBio, showSector, showDomain, showLink, showOrcid, showOrganisation} = this.state;
+        const { data, isLoading, isUpdated, userdata, topicData, showOrg, combinedOrganisations, showBio, showSector, showDomain, showLink, showOrcid, showOrganisation} = this.state;
 
         if (isLoading) {
             return (
@@ -149,7 +136,7 @@ class YourAccount extends React.Component {
                 <Row>
                     <Col xs={1}></Col>
                     <Col xs={10}>
-                        <YourAccountForm data={data} userdata={userdata} isUpdated={isUpdated} topicData={topicData} combinedOrganisations={combinedOrganisations} showOrg={showOrg} showOrganisation={showOrganisation} showOrgVal={showOrgVal} showBio={showBio} showSector={showSector} showDomain={showDomain} showLink={showLink} showOrcid={showOrcid} onShowOrgInput={() => {this.onShowOrgInput()}} />
+                        <YourAccountForm data={data} userdata={userdata} isUpdated={isUpdated} topicData={topicData} combinedOrganisations={combinedOrganisations} showOrg={showOrg} showOrganisation={showOrganisation} showBio={showBio} showSector={showSector} showDomain={showDomain} showLink={showLink} showOrcid={showOrcid} />
                     </Col>
                     <Col xs={1}></Col>
                 </Row>    
@@ -246,8 +233,7 @@ const YourAccountForm = (props) => {
             bio: Yup.string()
                 .max(500, 'Maximum of 500 characters'),
             terms: Yup.bool().oneOf([true], 'Accept Terms & Conditions is required'),
-            sector: Yup.string().required('Please select a sector'),
-            organisation: Yup.string().when("showOrgVal", {is: 'yes', then: Yup.string().required('This cannot be empty')})
+            sector: Yup.string().required('Please select a sector')
         }),
 
         onSubmit: values => {
@@ -390,23 +376,10 @@ const YourAccountForm = (props) => {
                             </Form.Group>
 
                             <Form.Group className="margin-bottom-0">
-                                <Form.Label className="gray800-14">Are you part of an organisation?</Form.Label>
+                                <Form.Label className="gray800-14">Organisation (optional)</Form.Label>
                                 <br/>
-                                <InputGroup onChange={props.onShowOrgInput}>
-                                    <InputGroup.Prepend>
-                                        <Row className="margin-bottom-8">
-                                            <InputGroup.Radio id="partOfOrgYes" className="ml-3" aria-label="Yes" name="partOfOrg" defaultChecked={props.showOrg == true} onChange={(e) => {formik.setFieldValue("showOrgVal", "yes")}}/>
-                                            <span className="gray800-14 ml-3">Yes</span>
-                                        </Row>
-                                        <Row className="margin-bottom-12">
-                                            <InputGroup.Radio id="partOfOrgNo" className="ml-3" aria-label="No" name="partOfOrg" defaultChecked={props.showOrg == false} onChange={(e) => {formik.setFieldValue("showOrgVal", "no")}} />
-                                            <span className="gray800-14 ml-3">No</span>
-                                        </Row>
-                                    </InputGroup.Prepend>
-                                </InputGroup>
-                                { props.showOrg ? 
                                     <Fragment>
-                                        <span className="gray700-13">Please specify your affiliation or company</span>
+                                        <span className="gray700-13">Your affiliation or company, if applicable</span>
                                         <Form.Group>
                                         <Row>
                                             <Col sm={11} lg={11}> 
@@ -417,7 +390,7 @@ const YourAccountForm = (props) => {
                                                 allowNew
                                                 defaultSelected={[formik.values.organisation] || ""}
                                                 options={props.combinedOrganisations}
-                                                className={(props.showOrg && ((formik.touched.organisation && formik.values.organisation === "") && ( formik.errors.organisation && typeof formik.errors.organisation !== "undefined"))) ? "sectorTypeahead emptyFormInput addFormInput margin-bottom-8 margin-top-8" : "sectorTypeahead addFormInput margin-bottom-8 margin-top-8"} 
+                                                className={"sectorTypeahead addFormInput margin-bottom-8 margin-top-8"} 
                                                 onBlur={ formik.handleBlur }
                                                 onChange={(selected) => {
                                                     var tempSelected = [];
@@ -446,8 +419,7 @@ const YourAccountForm = (props) => {
                                         </Row>
                                         {props.showOrg && (formik.touched.organisation && formik.values.organisation === "" && (formik.errors.organisation && typeof formik.errors.organisation !== "undefined")) ? <div className="errorMessages">{formik.errors.organisation}</div> : ''}
                                         </Form.Group>
-                                    </Fragment> : null
-                                }
+                                    </Fragment>
                             </Form.Group>
                             <Form.Group className="pb-2">
                                 <Form.Label className="gray800-14">Bio (optional)</Form.Label>
