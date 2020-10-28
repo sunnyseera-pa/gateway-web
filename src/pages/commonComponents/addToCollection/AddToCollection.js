@@ -110,23 +110,13 @@ class AddToCollection extends Component {
                     if (userState[0].loggedIn === true) {
                         return (
                             <Dropdown>
-                                {this.state.resourceData.type === "dataset" ?
-                                <ActionBar userState={userState}> 
-                                        <Dropdown.Toggle as={CustomToggle} >
-                                            <Button variant="medium" className="addToCollectionButton dark-14 mr-2" >
-                                                Add to collection  
-                                            </Button>
-                                        </Dropdown.Toggle>
-                                        <Button variant='medium' href={'https://metadata-catalogue.org/hdruk/#/catalogue/dataModel/' + this.state.resourceData.datasetid} target="_blank" className="linkToTechnicalDetails dark-14 mr-2">Technical details</Button>
-                                </ActionBar>
-                                : 
+
                                 <Dropdown.Toggle as={CustomToggle} >
                                     <Button variant="medium" className="addToCollectionButton dark-14 mr-2" >
                                         Add to collection  
                                     </Button>
                                 </Dropdown.Toggle>
-                                }
-                                
+                        
                                 <Dropdown.Menu as={CustomMenu} className="addToCollectionDropdown"> 
                                     <Row className="addToCollectionHeader"> <span className="gray800-14-bold addToCollectionItem">Add to collection</span> </Row>
                                         {collectionsData.map((dat) => {
@@ -153,15 +143,7 @@ class AddToCollection extends Component {
                 </>
             );
         } else {
-            if(collectionsData.length === 0 && this.state.resourceData.type === "dataset") {
-                return (
-                    <ActionBar userState={userState}>
-                        <Button variant='white' href={'https://metadata-catalogue.org/hdruk/#/catalogue/dataModel/' + this.state.resourceData.datasetid} target="_blank" className="techDetailButton mr-2">Technical details</Button>
-                    </ActionBar>
-                )
-            } else {
-                return null;
-            }
+            return null;
         }
     }
 }
