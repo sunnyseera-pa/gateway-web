@@ -110,7 +110,7 @@ const AboutApplication = (props) => {
 						eventKey='1'
 						onClick={(e) => toggleCard(e, 1)}
 					>
-						{projectNameValid && ncsValid && !_.isEmpty(projectName.trim()) ? (
+						{projectNameValid && ncsValid && !_.isEmpty(projectName) ? (
 							<div className='stepNumber completed'>
 								<SVGIcon name='check' width={24} height={24} fill={'#ffffff'} />
 							</div>

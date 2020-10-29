@@ -191,7 +191,7 @@ Max 10MB per file.</span>
       }
       { allFiles.length > 0 && 
         <AllFiles
-          id={id} 
+          id={id}
           allFiles={allFiles}
           downloadFile={downloadFile}
         />
