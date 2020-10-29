@@ -1,7 +1,6 @@
 import React from "react";
-import { Col, Row, Button, Accordion, Card } from "react-bootstrap";
+import { Col, Row, Accordion, Card } from "react-bootstrap";
 import "./Dashboard.scss";
-import ActionBar from "../commonComponents/actionbar/ActionBar";
 
 class AccountAdvancedSearch extends React.Component {
   // initialize our state
@@ -31,7 +30,7 @@ class AccountAdvancedSearch extends React.Component {
   };
 
   render() {
-    const { userState, activeAccordionCard } = this.state;
+    const { activeAccordionCard } = this.state;
 
     return (
       <div>

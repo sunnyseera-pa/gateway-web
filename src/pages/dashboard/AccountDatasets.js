@@ -1,5 +1,5 @@
 import React from "react";
-import { Col, Row, Button, Accordion, Card } from "react-bootstrap";
+import { Col, Row, Accordion, Card } from "react-bootstrap";
 import "./Dashboard.scss";
 
 class AccountDatasets extends React.Component {
@@ -30,7 +30,7 @@ class AccountDatasets extends React.Component {
   };
 
   render() {
-    const { userState, activeAccordionCard } = this.state;
+    const { activeAccordionCard } = this.state;
 
     return (
       <div>
