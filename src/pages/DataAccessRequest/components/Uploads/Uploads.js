@@ -10,6 +10,7 @@ import { baseURL } from '../../../../configs/url.config';
 import './Uploads.scss';
 import UploadFiles from './UploadFiles';
 import AllFiles from './AllFiles';
+import NoFiles from './NoFiles';
 
 const Uploads = ({ id, files }) => {
   // 10mb - 10485760
@@ -174,6 +175,10 @@ Max 10MB per file.</span>
       </div>
       </div>
       <div className="files-area">
+      { uploadFiles.length == 0 && 
+        allFiles.length == 0 &&
+        <NoFiles />
+      }  
       { uploadFiles.length > 0 &&
         <UploadFiles 
           uploadFiles={uploadFiles}

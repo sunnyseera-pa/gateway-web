@@ -229,3 +229,12 @@
     }
   }
 }
+
+.no-files {
+  margin-top: 20px;
+  padding: 20px 0;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+}
