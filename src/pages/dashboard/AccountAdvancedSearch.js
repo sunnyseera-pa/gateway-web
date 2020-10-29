@@ -162,17 +162,6 @@ class AccountAdvancedSearch extends React.Component {
           </Col>
           <Col sm={1} lg={1} />
         </Row>
-
-        <ActionBar userState={userState}>
-          <Button
-            variant="primary"
-            href="https://atlas-test.uksouth.cloudapp.azure.com/bcrquest/"
-            id="advancedSearchButton"
-            className="white-14-semibold margin-right-16"
-          >
-            Access the advanced search tool
-          </Button>
-        </ActionBar>
       </div>
     );
   }

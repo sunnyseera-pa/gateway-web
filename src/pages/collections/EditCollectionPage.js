@@ -187,9 +187,8 @@ class EditCollectionPage extends React.Component {
         return (
             <div>
                 <SearchBar ref={this.searchBar} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} doToggleDrawer={this.toggleDrawer} userState={userState} />
-                <Container>
-                    <EditCollectionForm data={data} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} paperData={paperData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
-                </Container>
+                <EditCollectionForm data={data} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} paperData={paperData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
+                
                 <SideDrawer
                     open={showDrawer}
                     closed={this.toggleDrawer}>
@@ -289,137 +288,139 @@ const EditCollectionForm = (props) => {
 
     return (
         <div>
-            <Row className="margin-top-32">
-                <Col sm={1} lg={1} />
-                <Col sm={10} lg={10}>
-                    <div className="rectangle">
-                        <Row>
-                            <Col sm={12} lg={12}>
-                             <p className="black-20 margin-bottom-0 pad-bottom-8">Edit a collection</p>
-                            </Col>
-                        </Row>
-                        <p className="gray800-14 margin-bottom-0">
-                            Collections allow you to display any number of datasets and other resources in a single space. After saving, anyone with the link will be able to see your collection, but it will not be discoverable on the Gateway. 
-                            <br/><br/>
-                            Certain collections are featured on the homepage, where anyone can find them. If you’d like to display yours, 
-                            <a className="purple-blue-14" href="https://hdruk.atlassian.net/servicedesk/customer/portal/1/group/1/create/7" target="_blank"> please submit a feature request ticket. </a> 
-                        </p>
-                    </div>
-                </Col>
-                <Col sm={1} lg={10} />
-            </Row>
-
-            <Row className="mt-2">
-                <Col sm={1} lg={1} />
-                <Col sm={10} lg={10}>
-                    <Form onSubmit={formik.handleSubmit} onBlur={formik.handleBlur} autocomplete='off'>
+            <Container>
+                <Row className="margin-top-32">
+                    <Col sm={1} lg={1} />
+                    <Col sm={10} lg={10}>
                         <div className="rectangle">
-                            <Form.Group>
-                                <span className="gray800-14">Collection name</span>
-                                <Form.Control id="name" name="name" type="text" className={formik.touched.name && formik.errors.name ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.name} onBlur={formik.handleBlur} />
-                                {formik.touched.name && formik.errors.name ? <div className="errorMessages">{formik.errors.name}</div> : null}
-                            </Form.Group>
-
-                            <Form.Group>
-                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">Description</p>
-                                <p className="gray700-13 margin-bottom-0">
-                                    Up to 5,000 characters
-                                </p>
-                                <Form.Control as="textarea" id="description" name="description" type="text" className={formik.touched.description && formik.errors.description ? "emptyFormInput addFormInput descriptionInput" : "addFormInput descriptionInput"} onChange={formik.handleChange} value={formik.values.description} onBlur={formik.handleBlur} />
-                                {formik.touched.description && formik.errors.description ? <div className="errorMessages">{formik.errors.description}</div> : null}
-                            </Form.Group>
-
-                            <Form.Group>
-                                <p className="gray800-14 margin-bottom-0 pad-bottom-4">Collection collaborators</p>
-                                <p className="gray700-13 margin-bottom-0">
-                                    Anyone added will be able to add and remove resources to this collection.
-                                </p> 
-                                <Typeahead
-                                    id="authors"
-                                    className="addFormInput"
-                                    labelKey={authors => `${authors.name}`}
-                                    defaultSelected={listOfAuthors}
-                                    multiple
-                                    options={props.combinedUsers}
-                                    onChange={(selected) => {
-                                        var tempSelected = [];
-                                        selected.forEach((selectedItem) => {
-                                            tempSelected.push(selectedItem.id);
-                                        })
-                                        formik.values.authors = tempSelected;
-                                    }}
-                                />
-                            </Form.Group>
-
-                            <Form.Group>
-                                <Row>
-                                    <Col sm={7} lg={9}>
-                                        <p className="gray800-14 margin-bottom-0 pad-bottom-4">Image URL (optional)</p>
-                                <p className="gray700-13 margin-bottom-0">
-                                    Paste an image address URL. Optimal image size: W700 x H466
-                                </p>
-                                    </Col>
-                                    <Col sm={5} lg={3} className="pl-4">
-                                     <span className="purple-13" onMouseEnter={() => setIsShown(true)} onMouseLeave={() => setIsShown(false)}>  
-                                        How to get an image URL
-                                     </span>
-                                     {isShown && ( <img src={ToolTip} alt="" id="imageToolTip" /> )}
-                                     </Col>
-                                </Row>
-                                <Form.Control id="imageLink" name="imageLink" type="text" className={formik.touched.imageLink && formik.errors.imageLink ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.imageLink} onBlur={formik.handleBlur} />
-                                {formik.touched.imageLink && formik.errors.imageLink ? <div className="errorMessages">{formik.errors.imageLink}</div> : null}
-                            </Form.Group>
+                            <Row>
+                                <Col sm={12} lg={12}>
+                                <p className="black-20 margin-bottom-0 pad-bottom-8">Edit a collection</p>
+                                </Col>
+                            </Row>
+                            <p className="gray800-14 margin-bottom-0">
+                                Collections allow you to display any number of datasets and other resources in a single space. After saving, anyone with the link will be able to see your collection, but it will not be discoverable on the Gateway. 
+                                <br/><br/>
+                                Certain collections are featured on the homepage, where anyone can find them. If you’d like to display yours, 
+                                <a className="purple-blue-14" href="https://hdruk.atlassian.net/servicedesk/customer/portal/1/group/1/create/7" target="_blank"> please submit a feature request ticket. </a> 
+                            </p>
                         </div>
- 
-                        <div className="rectangle mt-2">
-                            <span className="black-20">Add resources</span> 
-                            <br/>
-                            <span className="gray800-14">Link resources in the gateway to your collection page.</span>
-                        </div>
+                    </Col>
+                    <Col sm={1} lg={10} />
+                </Row>
 
-                        <div className="relatedResourcesRectangle mt-1">
-                            {props.relatedObjects ? props.relatedObjects.map((object) => {
-                                return (
-                                    <div className="relatedObjectRectangle">
-                                        <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} inCollection={true}/>
-                                    </div>   
-                                )
-                             }) : ''}
-                            
+                <Row className="mt-2">
+                    <Col sm={1} lg={1} />
+                    <Col sm={10} lg={10}>
+                        <Form onSubmit={formik.handleSubmit} onBlur={formik.handleBlur} autocomplete='off'>
+                            <div className="rectangle">
+                                <Form.Group>
+                                    <span className="gray800-14">Collection name</span>
+                                    <Form.Control id="name" name="name" type="text" className={formik.touched.name && formik.errors.name ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.name} onBlur={formik.handleBlur} />
+                                    {formik.touched.name && formik.errors.name ? <div className="errorMessages">{formik.errors.name}</div> : null}
+                                </Form.Group>
 
-                            <div className="flexCenter pt-3 pb-3"> 
-                                <Row>
-                                    <Col sm={1} lg={1} />
-                                    <Col sm={10} lg={10}>
-                                        <RelatedResources ref={relatedResourcesRef} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} paperData={props.paperData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
-                                    </Col>
-                                    <Col sm={1} lg={10} />
-                                </Row>
+                                <Form.Group>
+                                    <p className="gray800-14 margin-bottom-0 pad-bottom-4">Description</p>
+                                    <p className="gray700-13 margin-bottom-0">
+                                        Up to 5,000 characters
+                                    </p>
+                                    <Form.Control as="textarea" id="description" name="description" type="text" className={formik.touched.description && formik.errors.description ? "emptyFormInput addFormInput descriptionInput" : "addFormInput descriptionInput"} onChange={formik.handleChange} value={formik.values.description} onBlur={formik.handleBlur} />
+                                    {formik.touched.description && formik.errors.description ? <div className="errorMessages">{formik.errors.description}</div> : null}
+                                </Form.Group>
+
+                                <Form.Group>
+                                    <p className="gray800-14 margin-bottom-0 pad-bottom-4">Collection collaborators</p>
+                                    <p className="gray700-13 margin-bottom-0">
+                                        Anyone added will be able to add and remove resources to this collection.
+                                    </p> 
+                                    <Typeahead
+                                        id="authors"
+                                        className="addFormInput"
+                                        labelKey={authors => `${authors.name}`}
+                                        defaultSelected={listOfAuthors}
+                                        multiple
+                                        options={props.combinedUsers}
+                                        onChange={(selected) => {
+                                            var tempSelected = [];
+                                            selected.forEach((selectedItem) => {
+                                                tempSelected.push(selectedItem.id);
+                                            })
+                                            formik.values.authors = tempSelected;
+                                        }}
+                                    />
+                                </Form.Group>
+
+                                <Form.Group>
+                                    <Row>
+                                        <Col sm={7} lg={9}>
+                                            <p className="gray800-14 margin-bottom-0 pad-bottom-4">Image URL (optional)</p>
+                                    <p className="gray700-13 margin-bottom-0">
+                                        Paste an image address URL. Optimal image size: W700 x H466
+                                    </p>
+                                        </Col>
+                                        <Col sm={5} lg={3} className="pl-4">
+                                        <span className="purple-13" onMouseEnter={() => setIsShown(true)} onMouseLeave={() => setIsShown(false)}>  
+                                            How to get an image URL
+                                        </span>
+                                        {isShown && ( <img src={ToolTip} alt="" id="imageToolTip" /> )}
+                                        </Col>
+                                    </Row>
+                                    <Form.Control id="imageLink" name="imageLink" type="text" className={formik.touched.imageLink && formik.errors.imageLink ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.imageLink} onBlur={formik.handleBlur} />
+                                    {formik.touched.imageLink && formik.errors.imageLink ? <div className="errorMessages">{formik.errors.imageLink}</div> : null}
+                                </Form.Group>
                             </div>
-                        </div> 
+    
+                            <div className="rectangle mt-2">
+                                <span className="black-20">Add resources</span> 
+                                <br/>
+                                <span className="gray800-14">Link resources in the gateway to your collection page.</span>
+                            </div>
 
-                        <ActionBar userState={props.userState}>  
-                                <a style={{ cursor: 'pointer' }} href={'/account?tab=collections'}>
-                                    <Button variant="medium" className="cancelButton dark-14 mr-2" >
-                                        Cancel
-                                    </Button>
-                                </a>
+                            <div className="relatedResourcesRectangle mt-1">
+                                {props.relatedObjects ? props.relatedObjects.map((object) => {
+                                    return (
+                                        <div className="relatedObjectRectangle">
+                                            <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} inCollection={true}/>
+                                        </div>   
+                                    )
+                                }) : ''}
+                                
 
-                                <Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className="techDetailButton mr-2">
-                                    + Add resource
-                                </Button>
+                                <div className="flexCenter pt-3 pb-3"> 
+                                    <Row>
+                                        <Col sm={1} lg={1} />
+                                        <Col sm={10} lg={10}>
+                                            <RelatedResources ref={relatedResourcesRef} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} paperData={props.paperData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
+                                        </Col>
+                                        <Col sm={1} lg={10} />
+                                    </Row>
+                                </div>
+                            </div> 
+                        </Form>
+                    </Col>
+                    <Col sm={1} lg={10} />
+                </Row>
+                <Row>
+                    <span className="formBottomGap"></span> 
+                </Row>
+            </Container>
 
-                                <Button variant="primary" className="publishButton white-14-semibold mr-2" type="submit" onClick={() => Event("Buttons", "Click", "Add tool form submitted")} >
-                                    Save
-                                </Button>
-                        </ActionBar> 
-                    </Form>
-                </Col>
-                <Col sm={1} lg={10} />
-            </Row>
-            <Row>
-                <span className="formBottomGap"></span> 
-            </Row>
+            <ActionBar userState={props.userState}>  
+                <a style={{ cursor: 'pointer' }} href={'/account?tab=collections'}>
+                    <Button variant="medium" className="cancelButton dark-14 mr-2" >
+                        Cancel
+                    </Button>
+                </a>
+
+                <Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className="techDetailButton mr-2">
+                    + Add resource
+                </Button>
+
+                <Button variant="primary" className="publishButton white-14-semibold mr-2" type="submit" onClick={() => Event("Buttons", "Click", "Add tool form submitted"), formik.handleSubmit} >
+                    Save
+                </Button>
+            </ActionBar>
         </div>
     );
 }

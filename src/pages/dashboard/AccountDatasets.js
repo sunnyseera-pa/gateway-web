@@ -1,7 +1,6 @@
 import React from "react";
 import { Col, Row, Button, Accordion, Card } from "react-bootstrap";
 import "./Dashboard.scss";
-import ActionBar from "../commonComponents/actionbar/ActionBar";
 
 class AccountDatasets extends React.Component {
   // initialize our state
@@ -209,40 +208,6 @@ class AccountDatasets extends React.Component {
           </Col>
           <Col sm={1} lg={1} />
         </Row>
-
-        <ActionBar userState={userState}>
-          <Button
-            variant="medium"
-            href="https://metadata.atlassian.net/servicedesk/customer/portal/4"
-            target="_blank"
-            id="serviceDeskButton"
-            className="dark-14 margin-right-8"
-            data-testid="servicedesk-button"
-          >
-            Service desk
-          </Button>
-
-          <Button
-            variant="medium"
-            href="https://metadata.atlassian.net/wiki/spaces/HDR/overview"
-            target="_blank"
-            id="userguideButton"
-            className="dark-14 margin-right-8"
-            data-testid="userguide-button"
-          >
-            User guide
-          </Button>
-
-          <Button
-            variant="primary"
-            href=""
-            target="_blank"
-            id="metadataButton"
-            className="white-14-semibold margin-right-16"
-          >
-            Access the metadata onboarding platform
-          </Button>
-        </ActionBar>
       </div>
     );
   }
