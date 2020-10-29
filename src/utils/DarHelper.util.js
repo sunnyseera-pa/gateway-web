@@ -16,7 +16,18 @@ let staticContent = {
 		panelId: 'about',
 		index: 0,
 		pageId: 'about'
-	}
+	},
+	filesNav: {
+		pageId: 'files',
+		active: false,
+		title: 'Files',
+		description: 'Applicant should add any files requested here, as well as any additional files that could support the application. A description should be included to clarify the purpose of each document.'
+	},
+	filesPanel: {
+		panelId: 'files',
+		index: 10,
+		pageId: 'files'
+	},
 };
 
 let darCommentTitle = {
