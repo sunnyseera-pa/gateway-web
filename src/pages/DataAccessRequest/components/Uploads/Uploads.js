@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import _ from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
@@ -155,7 +155,7 @@ const Uploads = ({ id, files }) => {
   }, [])
 
   // dropzone setup
-  const { getRootProps, getInputProps, acceptedFiles, rejectedFiles } = useDropzone({
+  const { getRootProps, getInputProps } = useDropzone({
     noDrop: true,
     onDropAccepted,
     onDropRejected,
