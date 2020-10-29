@@ -40,14 +40,14 @@ export const AllFiles = ({ allFiles, downloadFile}) => {
   }
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      console.log('This will run after 1 second!');
-      setDownload(true);
-    }, 45000);
-    return () =>  {
-      clearTimeout(timer)
-      setDownload(false);
-    };
+      const timer = setTimeout(() => {
+        console.log('This will run after 1 second!');
+        setDownload(true);
+      }, 45000);
+      return () =>  {
+        clearTimeout(timer)
+        setDownload(false);
+      };
   }, [allFiles])
   
   return (
