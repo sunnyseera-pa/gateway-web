@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import { Typeahead } from 'react-bootstrap-typeahead';
 import _ from "lodash";
 import moment from 'moment';
-import { Form, Button, Row, Col, InputGroup, DropdownButton, Dropdown } from 'react-bootstrap';
+import { Form, Button, Row, Col, InputGroup, DropdownButton, Dropdown, Container } from 'react-bootstrap';
 import { SlideDown } from 'react-slidedown';
 import DatePicker from "react-datepicker";
 
@@ -192,6 +192,7 @@ const AddEditCourseForm = (props) => {
 
     return (
         <div className={"container"}>
+            <Container>
             <Formik
                 enableReinitialize
                 innerRef={formRef}
@@ -666,20 +667,6 @@ const AddEditCourseForm = (props) => {
                                                 <Col sm={1} lg={10} />
                                             </Row>
                                         </div>
-
-                                        <ActionBar userState={props.userState}>
-                                            <a style={{ cursor: 'pointer' }} href={'/account?tab=courses'}>
-                                                <Button variant="medium" className="cancelButton dark-14 mr-2" >
-                                                    Cancel
-                                                </Button>
-                                            </a>
-                                            <Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className="techDetailButton mr-2">
-                                                + Add resource
-                                            </Button>
-                                            <Button variant="primary" className="publishButton white-14-semibold mr-2" type="submit" >
-                                                {props.isEdit ? 'Update' : 'Publish'}
-                                            </Button>
-                                        </ActionBar>
                                     </Form>
                                 </Col>
                                 <Col sm={1} lg={10} />
@@ -691,6 +678,20 @@ const AddEditCourseForm = (props) => {
                     );
                 }}
             />
+            </Container>
+            <ActionBar userState={props.userState}>
+                <a style={{ cursor: 'pointer' }} href={'/account?tab=courses'}>
+                    <Button variant="medium" className="cancelButton dark-14 mr-2" >
+                        Cancel
+                    </Button>
+                </a>
+                <Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className="techDetailButton mr-2">
+                    + Add resource
+                </Button>
+                <Button variant="primary" className="publishButton white-14-semibold mr-2" type="submit" >
+                    {props.isEdit ? 'Update' : 'Publish'}
+                </Button>
+            </ActionBar>
         </div>
     )
 };
