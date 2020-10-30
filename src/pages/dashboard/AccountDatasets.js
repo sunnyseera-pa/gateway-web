@@ -235,7 +235,7 @@ class AccountDatasets extends React.Component {
 
           <Button
             variant="primary"
-            href=""
+            href="https://hdr.auth.metadata.works/oauth/login/healthdatagateway"
             target="_blank"
             id="metadataButton"
             className="white-14-semibold margin-right-16"

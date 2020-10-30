@@ -36,7 +36,6 @@ import TechnicalMetadata from "./components/TechnicalMetadata";
 import TechnicalDetailsPage from "./components/TechnicalDetailsPage";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
-import AddToCollection from "../commonComponents/addToCollection/AddToCollection";
 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
@@ -46,6 +45,8 @@ import "react-tabs/style/react-tabs.css";
 import './Dataset.scss';
 import DataUtitlityFramework from "./components/DataUtilityFramework";
 import DataQuality from "./components/DataQuality";
+import ActionBar from "../commonComponents/actionbar/ActionBar";
+import ResourcePageButtons from "../commonComponents/resourcePageButtons/ResourcePageButtons";
 
 var baseURL = require("../commonComponents/BaseURL").getURL();
 
@@ -1176,11 +1177,9 @@ class DatasetDetail extends Component {
             />
           </SideDrawer>
 
-          <AddToCollection
-            className="addToCollectionButton"
-            data={data}
-            userState={userState}
-          />
+          <ActionBar userState={userState} showOverride={true}> 
+            <ResourcePageButtons data={data} userState={userState} />
+          </ActionBar>
 
           <DataSetModal
             open={showModal}
