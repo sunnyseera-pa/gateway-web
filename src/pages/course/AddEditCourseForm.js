@@ -119,6 +119,7 @@ const AddEditCourseForm = (props) => {
                     Yup.object().shape({
                         startDate: Yup.string()
                             .when("flexibleDates", { is: false, then: Yup.string().required('This cannot be empty') })
+                            .nullable()
                     })
                 ),
         }),
@@ -688,7 +689,7 @@ const AddEditCourseForm = (props) => {
                 <Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className="techDetailButton mr-2">
                     + Add resource
                 </Button>
-                <Button variant="primary" className="publishButton white-14-semibold mr-2" type="submit" >
+                <Button variant="primary" className="publishButton white-14-semibold mr-2" type="submit" onClick={formik.handleSubmit}>
                     {props.isEdit ? 'Update' : 'Publish'}
                 </Button>
             </ActionBar>
