@@ -24,12 +24,9 @@ class AddEditCoursePage extends React.Component {
 	// initialize our state
 	state = {
 		data: [],
-		combinedTopic: [],
-		combinedFeatures: [],
-		combinedLanguages: [],
-		combinedCategories: [],
-		combinedLicenses: [],
-		combinedUsers: [],
+		combinedDomains: [],
+		combinedKeywords: [],
+		combinedAwards: [],
 		isLoading: true,
 		userState: [],
 		searchString: '',
@@ -53,12 +50,9 @@ class AddEditCoursePage extends React.Component {
 	async componentDidMount() {
 		initGA('UA-166025838-1');
 		await Promise.all([
-			this.doGetTopicsCall(),
-			this.doGetFeaturesCall(),
-			this.doGetLanguagesCall(),
-			this.doGetCategoriesCall(),
-			this.doGetLicensesCall(),
-			this.doGetUsersCall()
+			this.doGetDomainsCall(),
+			this.doGetKeywordsCall(),
+			this.doGetAwardsCall()
 		]);
 		if (this.state.isEdit) this.getToolFromDb();
 		else this.setState({ isLoading: false });
@@ -80,38 +74,20 @@ class AddEditCoursePage extends React.Component {
 			});
 	};
 
-	doGetTopicsCall() {
+	doGetDomainsCall() {
 		return new Promise((resolve, reject) => {
-			axios.get(baseURL + '/api/v1/search/filter/topic/tool').then((res) => {
-				var tempTopicArray = [
-					'Blood',
-					'Cancer and neoplasms',
-					'Cardiovascular',
-					'Congenital disorders',
-					'Ear',
-					'Eye',
-					'Infection',
-					'Inflammatory and immune system',
-					'Injuries and accidents',
-					'Mental health',
-					'Metabolic and Endocrine',
-					'Musculoskeletal',
-					'Neurological',
-					'Oral and Gastrointestinal',
-					'Renal and Urogenital',
-					'Reproductive health and childbirth',
-					'Respiratory',
-					'Skin',
-					'Stroke'
+			axios.get(baseURL + '/api/v1/search/filter/domains/course').then((res) => {
+				var tempDomainsArray = [
+					/* 'Blood'*/
 				];
 
-				res.data.data[0].forEach((to) => {
-					if (!tempTopicArray.includes(to) && to !== '') {
-						tempTopicArray.push(to);
+				res.data.data[0].forEach((dat) => {
+					if (!tempDomainsArray.includes(dat) && dat !== '') {
+						tempDomainsArray.push(dat);
 					}
                 });
 				this.setState({
-					combinedTopic: tempTopicArray.sort(function (a, b) {
+					combinedDomains: tempDomainsArray.sort(function (a, b) {
 						return a.toUpperCase() < b.toUpperCase()
 							? -1
 							: a.toUpperCase() > b.toUpperCase()
@@ -124,65 +100,21 @@ class AddEditCoursePage extends React.Component {
 		});
 	}
 
-	doGetFeaturesCall() {
+	doGetKeywordsCall() {
 		return new Promise((resolve, reject) => {
-			axios.get(baseURL + '/api/v1/search/filter/feature/tool').then((res) => {
-				var tempFeaturesArray = [
-					'Arbitrage',
-					'Association Rules',
-					'Attribution Modeling',
-					'Bayesian Statistics',
-					'Clustering',
-					'Collaborative Filtering',
-					'Confidence Interval',
-					'Cross-Validation',
-					'Decision Trees',
-					'Deep Learning',
-					'Density Estimation',
-					'Ensembles',
-					'Experimental Design',
-					'Feature Selection',
-					'Game Theory',
-					'Geospatial Modeling',
-					'Graphs',
-					'Imputation',
-					'Indexation / Cataloguing',
-					'Jackknife Regression',
-					'Lift Modeling',
-					'Linear Regression',
-					'Linkage Analysis',
-					'Logistic Regression',
-					'Model Fitting',
-					'Monte-Carlo Simulation',
-					'Naive Bayes',
-					'Nearest Neighbors - (k-NN)',
-					'Neural Networks',
-					'Pattern Recognition',
-					'Predictive Modeling',
-					'Principal Component Analysis - (PCA)',
-					'Random Numbers',
-					'Recommendation Engine',
-					'Relevancy Algorithm',
-					'Rule System',
-					'Scoring Engine',
-					'Search Engine',
-					'Segmentation',
-					'Supervised Learning',
-					'Support Vector Machine - (SVM)',
-					'Survival Analysis',
-					'Test of Hypotheses',
-					'Time Series',
-					'Yield Optimization'
+			axios.get(baseURL + '/api/v1/search/filter/keywords/course').then((res) => {
+				var tempKeywordsArray = [
+					/* 'Arbitrage' */
 				];
 
-				res.data.data[0].forEach((fe) => {
-					if (!tempFeaturesArray.includes(fe) && fe !== '') {
-						tempFeaturesArray.push(fe);
+				res.data.data[0].forEach((dat) => {
+					if (!tempKeywordsArray.includes(dat) && dat !== '') {
+						tempKeywordsArray.push(dat);
 					}
 				});
 
 				this.setState({
-					combinedFeatures: tempFeaturesArray.sort(function (a, b) {
+					combinedKeywords: tempKeywordsArray.sort(function (a, b) {
 						return a.toUpperCase() < b.toUpperCase()
 							? -1
 							: a.toUpperCase() > b.toUpperCase()
@@ -195,49 +127,21 @@ class AddEditCoursePage extends React.Component {
 		});
 	}
 
-	doGetLanguagesCall() {
+	doGetAwardsCall() {
 		return new Promise((resolve, reject) => {
-			axios.get(baseURL + '/api/v1/search/filter/language/tool').then((res) => {
-				var tempLanguagesArray = [
-					'No coding required',
-					'.net',
-					'AJAX',
-					'ASP.NET',
-					'C',
-					'C#',
-					'C++',
-					'CSS',
-					'Django',
-					'HTML',
-					'Java',
-					'Javascript',
-					'jQuery',
-					'JSON',
-					'Matlab',
-					'MySQL',
-					'Node.js',
-					'Objective C',
-					'PHP',
-					'Python',
-					'R',
-					'React JS',
-					'Regex',
-					'Ruby',
-					'Ruby on Rails',
-					'SQL',
-					'SQL server',
-					'Swift',
-					'XML'
+			axios.get(baseURL + '/api/v1/search/filter/awards/course').then((res) => {
+				var tempAwardsArray = [
+					/* 'No coding required' */
 				];
 
-				res.data.data[0].forEach((la) => {
-					if (!tempLanguagesArray.includes(la) && la !== '') {
-						tempLanguagesArray.push(la);
+				res.data.data[0].forEach((dat) => {
+					if (!tempAwardsArray.includes(dat) && dat !== '') {
+						tempAwardsArray.push(dat);
 					}
 				});
 
 				this.setState({
-					combinedLanguages: tempLanguagesArray.sort(function (a, b) {
+					combinedAwards: tempAwardsArray.sort(function (a, b) {
 						return a.toUpperCase() < b.toUpperCase()
 							? -1
 							: a.toUpperCase() > b.toUpperCase()
@@ -245,93 +149,6 @@ class AddEditCoursePage extends React.Component {
 							: 0;
 					})
 				});
-				resolve();
-			});
-		});
-	}
-
-	doGetCategoriesCall() {
-		return new Promise((resolve, reject) => {
-			axios.get(baseURL + '/api/v1/search/filter/category/tool').then((res) => {
-				var tempCategoriesArray = [
-					'API',
-					'Code snippet',
-					'Container image',
-					'Dashboard',
-					'Developer stack',
-					'Directory',
-					'Docker app',
-					'Kubernetes app',
-					'Library',
-					'Notebook',
-					'Package',
-					'Platform',
-					'Repository',
-					'Service',
-					'Software',
-					'Virtual machine',
-					'Web application'
-				];
-
-				res.data.data[0].forEach((ca) => {
-					if (!tempCategoriesArray.includes(ca) && ca !== '') {
-						tempCategoriesArray.push(ca);
-					}
-				});
-
-				this.setState({
-					combinedCategories: tempCategoriesArray.sort(function (a, b) {
-						return a.toUpperCase() < b.toUpperCase()
-							? -1
-							: a.toUpperCase() > b.toUpperCase()
-							? 1
-							: 0;
-					})
-				});
-				resolve();
-			});
-		});
-	}
-
-	doGetLicensesCall() {
-		return new Promise((resolve, reject) => {
-			axios.get(baseURL + '/api/v1/search/filter/license/tool').then((res) => {
-				var tempLicensesArray = [
-					'Apache License 2.0',
-					'BSD 3-Clause "New" or "Revised" license',
-					'BSD 2-Clause "Simplified" or "FreeBSD" license',
-					'GNU General Public License (GPL)',
-					'GNU Library or "Lesser" General Public License (LGPL)',
-					'MIT license',
-					'Mozilla Public License 2.0',
-					'Common Development and Distribution License',
-					'Eclipse Public License version 2.0'
-				];
-
-				res.data.data[0].forEach((li) => {
-					if (!tempLicensesArray.includes(li) && li !== '') {
-						tempLicensesArray.push(li);
-					}
-				});
-
-				this.setState({
-					combinedLicenses: tempLicensesArray.sort(function (a, b) {
-						return a.toUpperCase() < b.toUpperCase()
-							? -1
-							: a.toUpperCase() > b.toUpperCase()
-							? 1
-							: 0;
-					})
-				});
-				resolve();
-			});
-		});
-	}
-
-	doGetUsersCall() {
-		return new Promise((resolve, reject) => {
-			axios.get(baseURL + '/api/v1/users').then((res) => {
-				this.setState({ combinedUsers: res.data.data });
 				resolve();
 			});
 		});
@@ -452,12 +269,9 @@ class AddEditCoursePage extends React.Component {
 		const {
 			data,
 			isEdit,
-			combinedTopic,
-			combinedFeatures,
-			combinedLanguages,
-			combinedCategories,
-			combinedLicenses,
-			combinedUsers,
+			combinedDomains,
+			combinedKeywords,
+			combinedAwards,
 			isLoading,
 			userState,
 			searchString,
@@ -496,12 +310,9 @@ class AddEditCoursePage extends React.Component {
 					<AddEditCourseForm
 						data={data}
 						isEdit={isEdit}
-						combinedTopic={combinedTopic}
-						combinedFeatures={combinedFeatures}
-						combinedLanguages={combinedLanguages}
-						combinedCategories={combinedCategories}
-						combinedLicenses={combinedLicenses}
-						combinedUsers={combinedUsers}
+						combinedDomains={combinedDomains}
+						combinedKeywords={combinedKeywords}
+						combinedAwards={combinedAwards}
 						userState={userState}
 						searchString={searchString}
 						doSearchMethod={this.doModalSearch}

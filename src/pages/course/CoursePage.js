@@ -568,7 +568,7 @@ class CourseDetail extends Component {
                                             <>
                                                 {index > 0 ? <Col sm={2} /> : ''}
                                                 <Col sm={10} className="gray-deep-14 overflowWrap">
-                                                    {fee.feeDescription} | £{fee.feeAmount} per {fee.feePer.toLowerCase()}
+                                                    {fee.feeDescription} | £{fee.feeAmount} {fee.feePer ? <>per {fee.feePer.toLowerCase()}</> :''}
                                                 </Col>
                                             </>
                                         )

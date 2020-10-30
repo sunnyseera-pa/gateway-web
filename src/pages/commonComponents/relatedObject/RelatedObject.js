@@ -426,23 +426,38 @@ class RelatedObject extends React.Component {
                                                 <Col sm={12} lg={12}>
                                             <CalendarSvg className="calendarSVG"/>
                                             <span className="gray800-14 margin-left-10">
-
-                                            {(() => {console.log(data.courseOptions[0].startDate) })()}
-                                                {data.courseOptions[0].startDate ? 
-                                                    <span> Starts {moment(data.courseOptions[0].startDate).format("dddd Do MMMM YYYY")} </span>
-                                                : 
-                                                    <span> Flexible dates </span>
+                                            
+                                            {(() => {
+                                                let courseRender = []
+                                                if (onSearchPage === true) { 
+                                                    if (data.courseOptions.startDate) {
+                                                        courseRender.push(<span> Starts {moment(data.courseOptions.startDate).format("dddd Do MMMM YYYY")} </span>);
+                                                    }
+                                                    else {
+                                                        courseRender.push(<span> Flexible dates </span>)
+                                                    }
+                                                    if (data.courseOptions.startDate && data.courseOptions.studyMode) courseRender.push(<span> | {data.courseOptions.studyMode} </span>);
                                                 }
+                                                else {
+                                                    if (data.courseOptions[0].startDate) {
+                                                        courseRender.push(<span> Starts {moment(data.courseOptions[0].startDate).format("dddd Do MMMM YYYY")} </span>);
+                                                    }
+                                                    else {
+                                                        courseRender.push(<span> Flexible dates </span>)
+                                                    }
+                                                    if (data.courseOptions[0].startDate && data.courseOptions[0].studyMode) courseRender.push('|');
 
-                                                {data.courseOptions[0].startDate && data.courseOptions[0].studyMode ?  '|' : ''}
-
-                                                {data.courseOptions.map((courseOption, index) => { 
-                                                    return(
-                                                        <>
-                                                          {index > 0 ? <span> ,{courseOption.studyMode} </span> :  <span> {courseOption.studyMode} </span> }
-                                                        </>
-                                                    )
-                                                })}
+                                                    data.courseOptions.map((courseOption, index) => { 
+                                                        courseRender.push(
+                                                            <>
+                                                              {index > 0 ? <span> ,{courseOption.studyMode} </span> :  <span> {courseOption.studyMode} </span> }
+                                                            </>
+                                                        )
+                                                    })
+                                                }
+                                                return <>{courseRender}</>
+                                             })()}
+            
                                             </span>
                                             </Col>
                                             </Row>

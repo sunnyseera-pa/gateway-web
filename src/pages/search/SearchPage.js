@@ -369,7 +369,7 @@ class SearchPage extends React.Component {
 
         if (this.state.courseStartDatesSelected.length > 0) searchURL += '&coursestartdates=' + encodeURIComponent(this.state.courseStartDatesSelected.toString().split(',').join('::'));
         if (this.state.courseProviderSelected.length > 0) searchURL += '&courseprovider=' + encodeURIComponent(this.state.courseProviderSelected.toString().split(',').join('::'));
-        if (this.state.courseLocationSelected.length > 0) searchURL += '&courslocation=' + encodeURIComponent(this.state.courseLocationSelected.toString().split(',').join('::'));
+        if (this.state.courseLocationSelected.length > 0) searchURL += '&courselocation=' + encodeURIComponent(this.state.courseLocationSelected.toString().split(',').join('::'));
         if (this.state.courseStudyModeSelected.length > 0) searchURL += '&coursestudymode=' + encodeURIComponent(this.state.courseStudyModeSelected.toString().split(',').join('::'));
         if (this.state.courseAwardSelected.length > 0) searchURL += '&courseaward=' + encodeURIComponent(this.state.courseAwardSelected.toString().split(',').join('::'));
         if (this.state.courseEntryLevelSelected.length > 0) searchURL += '&courseentrylevel=' + encodeURIComponent(this.state.courseEntryLevelSelected.toString().split(',').join('::'));
@@ -990,19 +990,16 @@ class SearchPage extends React.Component {
                                                 let currentHeader = '';
                                                 courseData.map((course) => {
                                                     let showHeader = false;
-                                                    course.courseOptions.map((option) => {
-                                                        if (!showHeader && option.flexibleDates && currentHeader !== "Flexible") {
-                                                            currentHeader = "Flexible"
-                                                            showHeader = true;
-                                                            
-                                                        }
-                                                        else if (!showHeader && option.startDate && currentHeader !== moment(option.startDate).format("MMMM")) {
-                                                            currentHeader = moment(option.startDate).format("MMMM")
-                                                            showHeader = true;
-                                                        }
+                                    
+                                                    if (!showHeader && course.courseOptions.flexibleDates && currentHeader !== "Flexible") {
+                                                        currentHeader = "Flexible"
+                                                        showHeader = true;
                                                         
-                                                    })
-                                                    
+                                                    }
+                                                    else if (!showHeader && course.courseOptions.startDate && currentHeader !== moment(course.courseOptions.startDate).format("MMMM")) {
+                                                        currentHeader = moment(course.courseOptions.startDate).format("MMMM")
+                                                        showHeader = true;
+                                                    }
                                                     
                                                     if (showHeader) {
                                                     courseRender.push(
