@@ -354,37 +354,37 @@ class AddEditPaperPage extends React.Component {
 					doToggleDrawer={this.toggleDrawer}
 					userState={userState}
 				/> 
-				<Container>
-					<AddEditPaperForm
-						data={data}
-						isEdit={isEdit}
-						combinedTopic={combinedTopic}
-						combinedFeatures={combinedFeatures}
-						combinedLanguages={combinedLanguages}
-						combinedCategories={combinedCategories}
-						combinedLicenses={combinedLicenses}
-						combinedUsers={combinedUsers}
-						userState={userState}
-						searchString={searchString}
-						doSearchMethod={this.doModalSearch}
-						doUpdateSearchString={this.updateSearchString}
-						datasetData={datasetData}
-						toolData={toolData}
-						projectData={projectData}
-						paperData={paperData}
-						personData={personData}
-						courseData={courseData}
-						summary={summary}
-						doAddToTempRelatedObjects={this.addToTempRelatedObjects}
-						tempRelatedObjectIds={this.state.tempRelatedObjectIds}
-						doClearRelatedObjects={this.clearRelatedObjects}
-						doAddToRelatedObjects={this.addToRelatedObjects}
-						doRemoveObject={this.removeObject}
-						relatedObjects={relatedObjects}
-						didDelete={didDelete}
-						updateDeleteFlag={this.updateDeleteFlag}
-					/>
-				</Container>
+
+				<AddEditPaperForm
+					data={data}
+					isEdit={isEdit}
+					combinedTopic={combinedTopic}
+					combinedFeatures={combinedFeatures}
+					combinedLanguages={combinedLanguages}
+					combinedCategories={combinedCategories}
+					combinedLicenses={combinedLicenses}
+					combinedUsers={combinedUsers}
+					userState={userState}
+					searchString={searchString}
+					doSearchMethod={this.doModalSearch}
+					doUpdateSearchString={this.updateSearchString}
+					datasetData={datasetData}
+					toolData={toolData}
+					projectData={projectData}
+					paperData={paperData}
+					personData={personData}
+          courseData={courseData}
+					summary={summary}
+					doAddToTempRelatedObjects={this.addToTempRelatedObjects}
+					tempRelatedObjectIds={this.state.tempRelatedObjectIds}
+					doClearRelatedObjects={this.clearRelatedObjects}
+					doAddToRelatedObjects={this.addToRelatedObjects}
+					doRemoveObject={this.removeObject}
+					relatedObjects={relatedObjects}
+					didDelete={didDelete}
+					updateDeleteFlag={this.updateDeleteFlag}
+				/>
+
 				<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
 					<UserMessages
 						userState={userState[0]}

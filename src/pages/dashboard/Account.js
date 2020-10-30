@@ -1,6 +1,6 @@
 import React, { Component, Fragment, useState } from 'react';
 import queryString from 'query-string';
-import {  Nav, Accordion, Dropdown } from 'react-bootstrap';
+import {  Nav, Accordion, Dropdown, Button } from 'react-bootstrap';
 import _ from 'lodash';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import AccountTools from './AccountTools';
@@ -22,6 +22,7 @@ import SVGIcon from '../../images/SVGIcon';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
+import ActionBar from "../commonComponents/actionbar/ActionBar";
 import { ReactComponent as ChevronRightSvg } from "../../images/chevron-bottom.svg";
 import './Dashboard.scss';
 
@@ -526,7 +527,57 @@ class Account extends Component {
 
                         {tabId === 'help' ? <TeamHelp/> : ''}
                     </div>
-            </div>
+                </div>
+
+                {tabId === 'datasets' ? (
+                    <>
+                        <ActionBar userState={userState}>
+                            <Button
+                                variant="medium"
+                                href="https://metadata.atlassian.net/servicedesk/customer/portal/4"
+                                target="_blank"
+                                id="serviceDeskButton"
+                                className="dark-14 margin-right-8"
+                                data-testid="servicedesk-button"
+                            >
+                                Service desk
+                            </Button>
+
+                            <Button
+                                variant="medium"
+                                href="https://metadata.atlassian.net/wiki/spaces/HDR/overview"
+                                target="_blank"
+                                id="userguideButton"
+                                className="dark-14 margin-right-8"
+                                data-testid="userguide-button"
+                            >
+                                User guide
+                            </Button>
+
+                            <Button
+                                variant="primary"
+                                href="https://hdr.auth.metadata.works/oauth/login/healthdatagateway"
+                                id="metadataButton"
+                                className="white-14-semibold margin-right-16"
+                            >
+                                Access the metadata onboarding platform
+                            </Button>
+                        </ActionBar>
+                    </>
+                ): ''}
+
+                {tabId === 'datasetsAdvancedSearch'  ? (
+                            <ActionBar userState={userState}>
+                            <Button
+                              variant="primary"
+                              href="https://atlas-test.uksouth.cloudapp.azure.com/bcrquest/"
+                              id="advancedSearchButton"
+                              className="white-14-semibold margin-right-16"
+                            >
+                              Access the advanced search tool
+                            </Button>
+                          </ActionBar>
+                ) : ''}
 
                 <SideDrawer open={showDrawer} closed={this.toggleDrawer}>
                     <UserMessages
