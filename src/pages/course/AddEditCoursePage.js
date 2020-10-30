@@ -38,7 +38,6 @@ class AddEditCoursePage extends React.Component {
         courseData: [],
 		summary: [],
 		tempRelatedObjectIds: [],
-		relatedObjectIds: [],
 		relatedObjects: [],
 		didDelete: false,
 		isEdit: false,
@@ -208,9 +207,9 @@ class AddEditCoursePage extends React.Component {
 			this.state.tempRelatedObjectIds &&
 			this.state.tempRelatedObjectIds.some((object) => object.objectId === id)
 		) {
-			this.state.tempRelatedObjectIds = this.state.tempRelatedObjectIds.filter(
+			this.setState({tempRelatedObjectIds: this.state.tempRelatedObjectIds.filter(
 				(object) => object.objectId !== id
-			);
+			)})
 		} else {
 			this.state.tempRelatedObjectIds.push({ objectId: id, type: type });
 		}
@@ -236,12 +235,12 @@ class AddEditCoursePage extends React.Component {
 	};
 
 	removeObject = (id) => {
-		this.state.relatedObjects = this.state.relatedObjects.filter(
+		this.setState({relatedObjects: this.state.relatedObjects.filter(
 			(obj) => obj.objectId !== id
-		);
-		this.state.relatedObjects = this.state.relatedObjects.filter(
+		)});
+		this.setState({relatedObjects: this.state.relatedObjects.filter(
 			(obj) => obj.objectId !== id.toString()
-		);
+        )});
 		this.setState({ relatedObjects: this.state.relatedObjects });
 		this.setState({ didDelete: true });
 	};

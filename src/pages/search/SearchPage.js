@@ -565,7 +565,6 @@ class SearchPage extends React.Component {
             projectSort,
             paperSort,
             personSort,
-            courseSort,
             
             showDrawer,
             showModal,

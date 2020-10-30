@@ -9,12 +9,8 @@ import {
 	Tabs,
 	Tab,
 	Container,
-	Alert,
-	Nav,
-	Navbar
+	Alert
 } from 'react-bootstrap';
-import NotFound from '../commonComponents/NotFound';
-import Creators from '../commonComponents/Creators';
 import Loading from '../commonComponents/Loading';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
@@ -27,8 +23,6 @@ import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import './Collections.scss';
-
-var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
 
 class CollectionPage extends Component {
 	// initialize our state

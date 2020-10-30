@@ -12,7 +12,6 @@ import RelatedObject from "../commonComponents/relatedObject/RelatedObject";
 import NotFound from "../commonComponents/NotFound";
 import SearchBar from "../commonComponents/searchBar/SearchBar";
 import Loading from "../commonComponents/Loading";
-import Creators from "../commonComponents/Creators";
 import SVGIcon from "../../images/SVGIcon"; 
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
@@ -442,6 +441,7 @@ class CourseDetail extends Component {
                                 <Col sm={10} className="purple-14 overflowWrap">
                                 <a
                                   href={'/person/' + data.creator[0].id}
+                                  rel="noopener noreferrer"
                                   target="_blank"
                                   className="purple-14"
                                 >
