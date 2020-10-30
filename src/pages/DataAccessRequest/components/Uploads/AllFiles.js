@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState} from 'react';
+import React, { Fragment, useEffect} from 'react';
 import _ from 'lodash';
 import { concatFileName, fileStatus, readableFileSize } from './files.util';
 import { ReactComponent as PaperSVG } from '../../../../images/paper.svg';
@@ -6,9 +6,8 @@ import { ReactComponent as ArrowDownSVG } from '../../../../images/arrow-down.sv
 import { ReactComponent as SmallAttentionSVG } from '../../../../images/small-attention.svg';
 import Image from 'react-bootstrap/Image';
 
-export const AllFiles = ({ allFiles, downloadFile}) => {
+export const AllFiles = ({ files, downloadFile, download}) => {
 
-  const [showDownload, setDownload] = useState(false);
 
   const getOwner = (file) =>{
     let { owner } = file;
@@ -39,17 +38,6 @@ export const AllFiles = ({ allFiles, downloadFile}) => {
     }
   }
 
-  useEffect(() => {
-      const timer = setTimeout(() => {
-        console.log('This will run after 1 second!');
-        setDownload(true);
-      }, 45000);
-      return () =>  {
-        clearTimeout(timer)
-        setDownload(false);
-      };
-  }, [allFiles])
-  
   return (
     <div className="all-files">
       <h1 className="black-20-semibold">All Files</h1>
@@ -59,8 +47,8 @@ export const AllFiles = ({ allFiles, downloadFile}) => {
         <div className="column gray800-14-bold">Uploaded by</div>
       </div>
       <Fragment>
-        { allFiles.length > 0 &&
-          allFiles.map((file, index) => (
+        { files.length > 0 &&
+          files.map((file, index) => (
             <div className="all-files file-table" key={`all-files-${index}`}>
               <div className="column all-files-file">
                 <PaperSVG />
@@ -84,7 +72,7 @@ export const AllFiles = ({ allFiles, downloadFile}) => {
               </div>
               <div className="column all-files-user">
                 {file.status === fileStatus.ERROR ? '' : getOwner(file)}
-                {showDownload ? renderDownload(file) : renderScan()}
+                {download ? renderDownload(file) : renderScan()  }
               </div>
           </div>
           ))}
