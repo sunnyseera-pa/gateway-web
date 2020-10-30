@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect} from 'react';
+import React, { Fragment } from 'react';
 import _ from 'lodash';
 import { concatFileName, fileStatus, readableFileSize } from './files.util';
 import { ReactComponent as PaperSVG } from '../../../../images/paper.svg';
