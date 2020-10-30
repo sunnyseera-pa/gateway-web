@@ -46,6 +46,7 @@ class EditCollectionPage extends React.Component {
         projectData: [],
         personData: [],
         paperData: [],
+        courseData: [],
         summary: [],
         tempRelatedObjectIds: [],
         relatedObjectIds: [],
@@ -74,6 +75,7 @@ class EditCollectionPage extends React.Component {
               data: res.data.data[0],
               relatedObjects: res.data.data[0].relatedObjects ? res.data.data[0].relatedObjects : []
             });
+
             this.setState({isLoading: false})
           });
       };
@@ -106,7 +108,8 @@ class EditCollectionPage extends React.Component {
             if (type === 'tool' && page > 0) searchURL += '&toolIndex=' + page;
             if (type === 'project' && page > 0) searchURL += '&projectIndex=' + page;
             if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
-        
+            if (type === 'course' && page > 0) searchURL += '&courseIndex=' + page; 
+            
         axios.get(baseURL + '/api/v1/search?search='+ this.state.searchString + searchURL, {
             params: {
                 form: true,
@@ -120,6 +123,7 @@ class EditCollectionPage extends React.Component {
                     projectData: res.data.projectResults || [],
                     personData: res.data.personResults || [],
                     paperData: res.data.paperResults || [],
+                    courseData: res.data.courseResults || [],
                     summary: res.data.summary || [],
                     isLoading: false
                 });
@@ -160,7 +164,7 @@ class EditCollectionPage extends React.Component {
 
     updateDeleteFlag = () => {
         this.setState({didDelete: false});
-    }
+    } 
 
     toggleDrawer = () => {
         this.setState( ( prevState ) => {
@@ -178,8 +182,8 @@ class EditCollectionPage extends React.Component {
     }
 
     render() {
-        const { data, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, paperData, summary, relatedObjects, didDelete, showDrawer, showModal, context } = this.state;
- 
+        const { data, combinedUsers, isLoading, userState, searchString, datasetData, toolData, projectData, personData, paperData, courseData, summary, relatedObjects, didDelete, showDrawer, showModal, context } = this.state;
+
         if (isLoading) {
             return <Container><Loading /></Container>;
         }
@@ -187,8 +191,9 @@ class EditCollectionPage extends React.Component {
         return (
             <div>
                 <SearchBar ref={this.searchBar} doSearchMethod={this.doSearch} doUpdateSearchString={this.updateSearchString} doToggleDrawer={this.toggleDrawer} userState={userState} />
-                <EditCollectionForm data={data} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} paperData={paperData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
-                
+
+                <EditCollectionForm data={data} combinedUsers={combinedUsers} userState={userState} searchString={searchString} doSearchMethod={this.doModalSearch} doUpdateSearchString={this.updateSearchString} datasetData={datasetData} toolData={toolData} projectData={projectData} personData={personData} paperData={paperData} courseData={courseData} summary={summary} doAddToTempRelatedObjects={this.addToTempRelatedObjects} tempRelatedObjectIds={this.state.tempRelatedObjectIds} doClearRelatedObjects={this.clearRelatedObjects} doAddToRelatedObjects={this.addToRelatedObjects} doRemoveObject={this.removeObject} relatedObjects={relatedObjects} didDelete={didDelete} updateDeleteFlag={this.updateDeleteFlag}/>
+
                 <SideDrawer
                     open={showDrawer}
                     closed={this.toggleDrawer}>
@@ -227,6 +232,7 @@ const EditCollectionForm = (props) => {
             relatedObjects: props.relatedObjects
         },
     
+        
 
         validationSchema: Yup.object({
             name: Yup.string()
@@ -391,7 +397,7 @@ const EditCollectionForm = (props) => {
                                     <Row>
                                         <Col sm={1} lg={1} />
                                         <Col sm={10} lg={10}>
-                                            <RelatedResources ref={relatedResourcesRef} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} paperData={props.paperData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
+                                            <RelatedResources ref={relatedResourcesRef} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} paperData={props.paperData} courseData={props.courseData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                         </Col>
                                         <Col sm={1} lg={10} />
                                     </Row>

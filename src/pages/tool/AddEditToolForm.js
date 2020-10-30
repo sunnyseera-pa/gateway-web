@@ -529,6 +529,7 @@ const AddEditToolForm = (props) => {
 															projectData={props.projectData}
 															paperData={props.paperData}
 															personData={props.personData}
+                              courseData={props.courseData}
 															summary={props.summary}
 															doAddToTempRelatedObjects={props.doAddToTempRelatedObjects}
 															tempRelatedObjectIds={props.tempRelatedObjectIds}

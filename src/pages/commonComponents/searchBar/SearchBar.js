@@ -422,6 +422,7 @@ class SearchBar extends React.Component {
                                                         <Dropdown.Item href="/account?tab=projects" className="black-14">Projects</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=datasets" className="black-14">Datasets</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=papers" className="black-14">Papers</Dropdown.Item>
+                                                        <Dropdown.Item href="/account?tab=courses" className="black-14">Courses</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=dataaccessrequests" className="black-14">Data access requests</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=collections" className="black-14">Collections</Dropdown.Item>
                                                         {userState[0].role === "Admin" ?
@@ -470,6 +471,7 @@ class SearchBar extends React.Component {
                                                         <Dropdown.Item href="/account?tab=projects" className="black-14">Projects</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=datasets" className="black-14">Datasets</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=papers" className="black-14">Papers</Dropdown.Item> 
+                                                        <Dropdown.Item href="/account?tab=courses" className="black-14">Courses</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=dataaccessrequests" className="black-14">Data access requests</Dropdown.Item>
                                                         <Dropdown.Item href="/account?tab=collections" className="black-14">Collections</Dropdown.Item> 
                                                         {userState[0].role === "Admin" ?

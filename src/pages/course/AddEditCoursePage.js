@@ -1,21 +1,19 @@
 import React from 'react';
 import axios from 'axios';
 import { initGA } from '../../tracking';
-import moment from 'moment';
+import moment from 'moment'; 
 import { Container } from 'react-bootstrap';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
-import AddEditPaperForm from './AddEditPaperForm';
+import AddEditCourseForm from './AddEditCourseForm';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
-import './Paper.scss'; 
-
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
-class AddEditPaperPage extends React.Component {
+class AddEditCoursePage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state.userState = props.userState;
@@ -26,20 +24,20 @@ class AddEditPaperPage extends React.Component {
 	// initialize our state
 	state = {
 		data: [],
-		combinedTopic: [],
-		combinedFeatures: [],
-		combinedUsers: [],
+		combinedDomains: [],
+		combinedKeywords: [],
+		combinedAwards: [],
 		isLoading: true,
 		userState: [],
 		searchString: '',
 		datasetData: [],
 		toolData: [],
 		projectData: [],
-		personData: [],
-		courseData: [],
+		paperData: [],
+        personData: [],
+        courseData: [],
 		summary: [],
 		tempRelatedObjectIds: [],
-		relatedObjectIds: [],
 		relatedObjects: [],
 		didDelete: false,
 		isEdit: false,
@@ -51,19 +49,19 @@ class AddEditPaperPage extends React.Component {
 	async componentDidMount() {
 		initGA('UA-166025838-1');
 		await Promise.all([
-			this.doGetTopicsCall(),
-			this.doGetFeaturesCall(),
-			this.doGetUsersCall()
+			this.doGetDomainsCall(),
+			this.doGetKeywordsCall(),
+			this.doGetAwardsCall()
 		]);
-		if (this.state.isEdit) this.getPaperFromDb();
+		if (this.state.isEdit) this.getToolFromDb();
 		else this.setState({ isLoading: false });
 	}
 
-	getPaperFromDb = () => {
+	getToolFromDb = () => {
 		//need to handle error if no id is found
 		this.setState({ isLoading: true });
 		axios
-			.get(baseURL + '/api/v1/papers/edit/' + this.props.match.params.paperID)
+			.get(baseURL + '/api/v1/course/edit/' + this.props.match.params.courseID)
 			.then((res) => {
 				this.setState({
 					data: res.data.data[0],
@@ -75,38 +73,20 @@ class AddEditPaperPage extends React.Component {
 			});
 	};
 
-	doGetTopicsCall() {
+	doGetDomainsCall() {
 		return new Promise((resolve, reject) => {
-			axios.get(baseURL + '/api/v1/search/filter/topic/paper').then((res) => {
-				var tempTopicArray = [
-					'Blood',
-					'Cancer and neoplasms',
-					'Cardiovascular',
-					'Congenital disorders',
-					'Ear',
-					'Eye',
-					'Infection',
-					'Inflammatory and immune system',
-					'Injuries and accidents',
-					'Mental health',
-					'Metabolic and Endocrine',
-					'Musculoskeletal',
-					'Neurological',
-					'Oral and Gastrointestinal',
-					'Renal and Urogenital',
-					'Reproductive health and childbirth',
-					'Respiratory',
-					'Skin',
-					'Stroke'
+			axios.get(baseURL + '/api/v1/search/filter/domains/course').then((res) => {
+				var tempDomainsArray = [
+					/* 'Blood'*/
 				];
 
-				res.data.data[0].forEach((to) => {
-					if (!tempTopicArray.includes(to) && to !== '') {
-						tempTopicArray.push(to);
+				res.data.data[0].forEach((dat) => {
+					if (!tempDomainsArray.includes(dat) && dat !== '') {
+						tempDomainsArray.push(dat);
 					}
-				});
+                });
 				this.setState({
-					combinedTopic: tempTopicArray.sort(function (a, b) {
+					combinedDomains: tempDomainsArray.sort(function (a, b) {
 						return a.toUpperCase() < b.toUpperCase()
 							? -1
 							: a.toUpperCase() > b.toUpperCase()
@@ -119,65 +99,21 @@ class AddEditPaperPage extends React.Component {
 		});
 	}
 
-	doGetFeaturesCall() {
+	doGetKeywordsCall() {
 		return new Promise((resolve, reject) => {
-			axios.get(baseURL + '/api/v1/search/filter/feature/paper').then((res) => {
-				var tempFeaturesArray = [
-					'Arbitrage',
-					'Association Rules',
-					'Attribution Modeling',
-					'Bayesian Statistics',
-					'Clustering',
-					'Collaborative Filtering',
-					'Confidence Interval',
-					'Cross-Validation',
-					'Decision Trees',
-					'Deep Learning',
-					'Density Estimation',
-					'Ensembles',
-					'Experimental Design',
-					'Feature Selection',
-					'Game Theory',
-					'Geospatial Modeling',
-					'Graphs',
-					'Imputation',
-					'Indexation / Cataloguing',
-					'Jackknife Regression',
-					'Lift Modeling',
-					'Linear Regression',
-					'Linkage Analysis',
-					'Logistic Regression',
-					'Model Fitting',
-					'Monte-Carlo Simulation',
-					'Naive Bayes',
-					'Nearest Neighbors - (k-NN)',
-					'Neural Networks',
-					'Pattern Recognition',
-					'Predictive Modeling',
-					'Principal Component Analysis - (PCA)',
-					'Random Numbers',
-					'Recommendation Engine',
-					'Relevancy Algorithm',
-					'Rule System',
-					'Scoring Engine',
-					'Search Engine',
-					'Segmentation',
-					'Supervised Learning',
-					'Support Vector Machine - (SVM)',
-					'Survival Analysis',
-					'Test of Hypotheses',
-					'Time Series',
-					'Yield Optimization'
+			axios.get(baseURL + '/api/v1/search/filter/keywords/course').then((res) => {
+				var tempKeywordsArray = [
+					/* 'Arbitrage' */
 				];
 
-				res.data.data[0].forEach((fe) => {
-					if (!tempFeaturesArray.includes(fe) && fe !== '') {
-						tempFeaturesArray.push(fe);
+				res.data.data[0].forEach((dat) => {
+					if (!tempKeywordsArray.includes(dat) && dat !== '') {
+						tempKeywordsArray.push(dat);
 					}
 				});
 
 				this.setState({
-					combinedFeatures: tempFeaturesArray.sort(function (a, b) {
+					combinedKeywords: tempKeywordsArray.sort(function (a, b) {
 						return a.toUpperCase() < b.toUpperCase()
 							? -1
 							: a.toUpperCase() > b.toUpperCase()
@@ -185,15 +121,33 @@ class AddEditPaperPage extends React.Component {
 							: 0;
 					})
 				});
-				resolve(); 
+				resolve();
 			});
 		});
 	}
 
-	doGetUsersCall() {
+	doGetAwardsCall() {
 		return new Promise((resolve, reject) => {
-			axios.get(baseURL + '/api/v1/users').then((res) => {
-				this.setState({ combinedUsers: res.data.data });
+			axios.get(baseURL + '/api/v1/search/filter/awards/course').then((res) => {
+				var tempAwardsArray = [
+					'CPD', 'Fellowship', 'PhD', 'CPE', 'PGCert', 'PGDip', 'MSc', 'DPhil', 'BSc'
+				];
+
+				res.data.data[0].forEach((dat) => {
+					if (!tempAwardsArray.includes(dat) && dat !== '') {
+						tempAwardsArray.push(dat);
+					}
+				});
+
+				this.setState({
+					combinedAwards: tempAwardsArray.sort(function (a, b) {
+						return a.toUpperCase() < b.toUpperCase()
+							? -1
+							: a.toUpperCase() > b.toUpperCase()
+							? 1
+							: 0;
+					})
+				});
 				resolve();
 			});
 		});
@@ -253,9 +207,9 @@ class AddEditPaperPage extends React.Component {
 			this.state.tempRelatedObjectIds &&
 			this.state.tempRelatedObjectIds.some((object) => object.objectId === id)
 		) {
-			this.state.tempRelatedObjectIds = this.state.tempRelatedObjectIds.filter(
+			this.setState({tempRelatedObjectIds: this.state.tempRelatedObjectIds.filter(
 				(object) => object.objectId !== id
-			);
+			)})
 		} else {
 			this.state.tempRelatedObjectIds.push({ objectId: id, type: type });
 		}
@@ -281,12 +235,12 @@ class AddEditPaperPage extends React.Component {
 	};
 
 	removeObject = (id) => {
-		this.state.relatedObjects = this.state.relatedObjects.filter(
+		this.setState({relatedObjects: this.state.relatedObjects.filter(
 			(obj) => obj.objectId !== id
-		);
-		this.state.relatedObjects = this.state.relatedObjects.filter(
+		)});
+		this.setState({relatedObjects: this.state.relatedObjects.filter(
 			(obj) => obj.objectId !== id.toString()
-		);
+        )});
 		this.setState({ relatedObjects: this.state.relatedObjects });
 		this.setState({ didDelete: true });
 	};
@@ -305,21 +259,18 @@ class AddEditPaperPage extends React.Component {
 	};
 
 	toggleModal = (showEnquiry = false, context = {}) => {
-        this.setState( ( prevState ) => {
-            return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
-        });
-    }
+		this.setState( ( prevState ) => {
+			return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
+		});
+	  }
 
 	render() {
 		const {
 			data,
 			isEdit,
-			combinedTopic,
-			combinedFeatures,
-			combinedLanguages,
-			combinedCategories,
-			combinedLicenses,
-			combinedUsers,
+			combinedDomains,
+			combinedKeywords,
+			combinedAwards,
 			isLoading,
 			userState,
 			searchString,
@@ -353,38 +304,35 @@ class AddEditPaperPage extends React.Component {
 					doUpdateSearchString={this.updateSearchString}
 					doToggleDrawer={this.toggleDrawer}
 					userState={userState}
-				/> 
-
-				<AddEditPaperForm
-					data={data}
-					isEdit={isEdit}
-					combinedTopic={combinedTopic}
-					combinedFeatures={combinedFeatures}
-					combinedLanguages={combinedLanguages}
-					combinedCategories={combinedCategories}
-					combinedLicenses={combinedLicenses}
-					combinedUsers={combinedUsers}
-					userState={userState}
-					searchString={searchString}
-					doSearchMethod={this.doModalSearch}
-					doUpdateSearchString={this.updateSearchString}
-					datasetData={datasetData}
-					toolData={toolData}
-					projectData={projectData}
-					paperData={paperData}
-					personData={personData}
-          courseData={courseData}
-					summary={summary}
-					doAddToTempRelatedObjects={this.addToTempRelatedObjects}
-					tempRelatedObjectIds={this.state.tempRelatedObjectIds}
-					doClearRelatedObjects={this.clearRelatedObjects}
-					doAddToRelatedObjects={this.addToRelatedObjects}
-					doRemoveObject={this.removeObject}
-					relatedObjects={relatedObjects}
-					didDelete={didDelete}
-					updateDeleteFlag={this.updateDeleteFlag}
 				/>
-
+				<Container>
+					<AddEditCourseForm
+						data={data}
+						isEdit={isEdit}
+						combinedDomains={combinedDomains}
+						combinedKeywords={combinedKeywords}
+						combinedAwards={combinedAwards}
+						userState={userState}
+						searchString={searchString}
+						doSearchMethod={this.doModalSearch}
+						doUpdateSearchString={this.updateSearchString}
+						datasetData={datasetData}
+						toolData={toolData}
+						projectData={projectData}
+						paperData={paperData}
+						personData={personData}
+						courseData={courseData}
+						summary={summary}
+						doAddToTempRelatedObjects={this.addToTempRelatedObjects}
+						tempRelatedObjectIds={this.state.tempRelatedObjectIds}
+						doClearRelatedObjects={this.clearRelatedObjects}
+						doAddToRelatedObjects={this.addToRelatedObjects}
+						doRemoveObject={this.removeObject}
+						relatedObjects={relatedObjects}
+						didDelete={didDelete}
+						updateDeleteFlag={this.updateDeleteFlag}
+					/>
+				</Container>
 				<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
 					<UserMessages
 						userState={userState[0]}
@@ -405,4 +353,4 @@ class AddEditPaperPage extends React.Component {
 	}
 }
 
-export default AddEditPaperPage;
+export default AddEditCoursePage;

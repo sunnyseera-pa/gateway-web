@@ -9,12 +9,8 @@ import {
 	Tabs,
 	Tab,
 	Container,
-	Alert,
-	Nav,
-	Navbar
+	Alert
 } from 'react-bootstrap';
-import NotFound from '../commonComponents/NotFound';
-import Creators from '../commonComponents/Creators';
 import Loading from '../commonComponents/Loading';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
@@ -27,8 +23,6 @@ import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import './Collections.scss';
-
-var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
 
 class CollectionPage extends Component {
 	// initialize our state
@@ -55,6 +49,7 @@ class CollectionPage extends Component {
 		personCount: 0,
 		projectCount: 0,
 		paperCount: 0,
+		courseCount: 0,
 		collectionAdded: false,
 		collectionEdited: false,
 		discourseTopic: null,
@@ -107,6 +102,9 @@ class CollectionPage extends Component {
 				this.getDatasetData(object.objectId);
 			} else if (object.objectType === 'paper') {
 				this.getPaperData(object.objectId);
+			}
+			else if (object.objectType === 'course') {
+				this.getCourseData(object.objectId);
 			}
 		});
 		this.setState({ isLoading: false });
@@ -197,6 +195,22 @@ class CollectionPage extends Component {
 		this.setState({ objectData: this.state.objectData });
 	};
 
+	getCourseData = async (courseID) => {
+		this.setState({ isLoading: true });
+		await Promise.all([
+			axios.get(baseURL + '/api/v1/course/' + courseID).then((res) => {
+				this.state.objectData.push(res.data.data[0]);
+				if (
+					res.data.data[0].activeflag === 'active' ||
+					(res.data.data[0].activeflag === 'review' && res.data.data[0].creator[0].id === this.state.userState[0].id)
+				) {
+					this.state.courseCount++;
+				}
+			})
+		]);
+		this.setState({ objectData: this.state.objectData });
+	};
+
 	doGetUsersCall() {
 		return new Promise((resolve, reject) => {
 			axios.get(baseURL + '/api/v1/users').then((res) => {
@@ -251,6 +265,7 @@ class CollectionPage extends Component {
 			personCount,
 			projectCount,
 			paperCount,
+			courseCount,
 			collectionAdded,
 			collectionEdited,
 			discoursePostCount,
@@ -260,7 +275,7 @@ class CollectionPage extends Component {
 		} = this.state;
 		var { key } = this.state;
 		var allCount =
-			toolCount + datasetCount + personCount + projectCount + paperCount;
+			toolCount + datasetCount + personCount + projectCount + paperCount + courseCount;
 
 		if (isLoading) {
 			return (
@@ -417,6 +432,7 @@ class CollectionPage extends Component {
 							title={'Projects (' + projectCount + ')'}
 						></Tab>
 						<Tab eventKey='People' title={'People (' + personCount + ')'}></Tab>
+						<Tab eventKey='Course' title={'Course (' + courseCount + ')'}></Tab>
 						<Tab eventKey="Collaboration" title={`Discussion (${discoursePostCount})`}>
 							<Container className='resource-card'>
 								<Row>
@@ -442,9 +458,9 @@ class CollectionPage extends Component {
 							{key === 'All'
 								? objectData.map((object) => {
 										if (
-											object.activeflag === 'active' ||
-											(object.activeflag === 'review' &&
-												object.authors.includes(userState[0].id))
+											object.activeflag === 'active' 
+											|| (object.type === 'course' && object.activeflag === 'review' && object.creator[0].id === userState[0].id)
+											|| (object.type !== 'course' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
 										) {
 											var reason = '';
 											var updated = '';
@@ -482,7 +498,7 @@ class CollectionPage extends Component {
 								? objectData.map((object) => {
 										if (
 											object.activeflag === 'active' ||
-											(object.activeflag === 'review' &&
+											(object.type === 'dataset' && object.activeflag === 'review' &&
 												object.authors.includes(userState[0].id))
 										) {
 											var reason = '';
@@ -518,7 +534,7 @@ class CollectionPage extends Component {
 								? objectData.map((object) => {
 										if (
 											object.activeflag === 'active' ||
-											(object.activeflag === 'review' &&
+											(object.type === 'tool' && object.activeflag === 'review' &&
 												object.authors.includes(userState[0].id))
 										) {
 											var reason = '';
@@ -554,7 +570,7 @@ class CollectionPage extends Component {
 								? objectData.map((object) => {
 										if (
 											object.activeflag === 'active' ||
-											(object.activeflag === 'review' &&
+											(object.type === 'project' && object.activeflag === 'review' &&
 												object.authors.includes(userState[0].id))
 										) {
 											var reason = '';
@@ -590,7 +606,7 @@ class CollectionPage extends Component {
 								? objectData.map((object) => {
 										if (
 											object.activeflag === 'active' ||
-											(object.activeflag === 'review' &&
+											(object.type === 'paper' && object.activeflag === 'review' &&
 												object.authors.includes(userState[0].id))
 										) {
 											var reason = '';
@@ -627,7 +643,7 @@ class CollectionPage extends Component {
 								? objectData.map((object) => {
 										if (
 											object.activeflag === 'active' ||
-											(object.activeflag === 'review' &&
+											(object.type === 'person' && object.activeflag === 'review' &&
 												object.authors.includes(userState[0].id))
 										) {
 											var reason = '';
@@ -635,6 +651,42 @@ class CollectionPage extends Component {
 											var user = '';
 											let showAnswer = false;
 											if (object.type === 'person') {
+												data.relatedObjects.map((dat) => {
+													if (parseInt(dat.objectId) === object.id) {
+														reason = dat.reason;
+														updated = dat.updated;
+														user = dat.user;
+														showAnswer = !_.isEmpty(reason);
+													}
+												});
+												return (
+													<RelatedObject
+														key={object.id}
+														data={object}
+														activeLink={true}
+														showRelationshipAnswer={showAnswer}
+														collectionReason={reason}
+														collectionUpdated={updated}
+														collectionUser={user}
+													/>
+												);
+											}
+										}
+								  })
+								: ''}
+
+							{key === 'Course'
+								? objectData.map((object) => {
+										if (
+											object.activeflag === 'active' ||
+											(object.type === 'course' && object.activeflag === 'review' 
+												&& object.creator[0].id === userState[0].id)
+										) {
+											var reason = '';
+											var updated = '';
+											var user = '';
+											let showAnswer = false;
+											if (object.type === 'course') {
 												data.relatedObjects.map((dat) => {
 													if (parseInt(dat.objectId) === object.id) {
 														reason = dat.reason;
