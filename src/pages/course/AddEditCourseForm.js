@@ -187,7 +187,7 @@ const AddEditCourseForm = (props) => {
     ];
 
     const level = [
-        "A-level", "PhD", "Bachelor\'s with Honours", "Bachelor\'s"
+        'Bachelors', 'Masters', 'PhD', 'Honours', 'A level'
     ];
 
     return (

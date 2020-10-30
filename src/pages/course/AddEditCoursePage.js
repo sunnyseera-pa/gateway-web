@@ -130,7 +130,7 @@ class AddEditCoursePage extends React.Component {
 		return new Promise((resolve, reject) => {
 			axios.get(baseURL + '/api/v1/search/filter/awards/course').then((res) => {
 				var tempAwardsArray = [
-					/* 'No coding required' */
+					'CPD', 'Fellowship', 'PhD', 'CPE', 'PGCert', 'PGDip', 'MSc', 'DPhil', 'BSc'
 				];
 
 				res.data.data[0].forEach((dat) => {
