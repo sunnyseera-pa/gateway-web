@@ -190,6 +190,10 @@ const AddEditCourseForm = (props) => {
     const level = [
         'Bachelors', 'Masters', 'PhD', 'Honours', 'A level'
     ];
+    
+    const priority = [
+        'Understanding the causes of disease', 'Clinical trials', 'Improving Public Health', 'Better Care'
+    ];
 
     return (
         <div className={"container"}>
@@ -544,11 +548,11 @@ const AddEditCourseForm = (props) => {
                                                 </Col>
                                                 <Col sm={5}>
                                                     <p className="gray800-14 margin-bottom-0 pad-bottom-4">Entry level</p>
-                                                    <p className="gray700-13 margin-bottom-0">E.g. PhD, Bachelor's with Honours, Bachelor's</p>
+                                                    <p className="gray700-13 margin-bottom-0">E.g. PhD, Bachelor's</p>
                                                 </Col>
                                                 <Col sm={7}>
                                                     <p className="gray800-14 margin-bottom-0 pad-bottom-4">Entry subject</p>
-                                                    <p className="gray700-13 margin-bottom-0">E.g. Maths, Biology, Science</p>
+                                                    <p className="gray700-13 margin-bottom-0">E.g. Maths, Biology, Science, STEM</p>
                                                 </Col>
                                             </Row>
 
@@ -632,14 +636,27 @@ const AddEditCourseForm = (props) => {
 
                                             <Form.Group>
                                                 <p className="gray800-14 margin-bottom-0 pad-bottom-4">Competency framework (optional)</p>
-                                                <p className="gray700-13 margin-bottom-0">E.g. </p>
                                                 <Form.Control id="competencyFramework" name="competencyFramework" type="text" className="addFormInput" onChange={formik.handleChange} value={formik.values.competencyFramework} onBlur={formik.handleBlur} />
                                             </Form.Group>
 
                                             <Form.Group>
                                                 <p className="gray800-14 margin-bottom-0 pad-bottom-4">National priority areas (optional)</p>
-                                                <p className="gray700-13 margin-bottom-0">E.g. </p>
-                                                <Form.Control id="nationalPriority" name="nationalPriority" type="text" className="addFormInput" onChange={formik.handleChange} value={formik.values.nationalPriority} onBlur={formik.handleBlur} />
+                                                <p className="gray700-13 margin-bottom-0">E.g. Understanding the causes of disease, Clinical trials, Improving Public Health and Better Care</p>
+                                                <DropdownButton variant="white"
+                                                    title={formik.values.nationalPriority || <option disabled selected value></option>}
+                                                    className="gray700-13 custom-dropdown padding-right-0"
+                                                    style={{ width: '100%' }}
+                                                    onChange={formik.handleChange}
+                                                    value={formik.values.nationalPriority}
+                                                    onBlur={formik.handleBlur}
+                                                    onSelect={(selected) => formik.values.nationalPriority = selected}>
+
+                                                    {priority.map((l, i) => (
+                                                        <Dropdown.Item className="gray800-14 width-100" key={l} eventKey={l}>
+                                                            {l}
+                                                        </Dropdown.Item>
+                                                    ))}
+                                                </DropdownButton>
                                             </Form.Group>
                                         </div>
 
