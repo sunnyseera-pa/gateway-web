@@ -87,11 +87,16 @@ class AccountDatasets extends React.Component {
                 <Accordion.Collapse eventKey="0">
                   <Card.Body className="datasetCard gray800-14">
                     <ul className="gray800-14">
-                      <li>
-                        You can access the metadata onboarding platform using
-                        the button below
-                      </li>
-                      <li>Use your Innovation Gateway credentials to login</li>
+                        <li>
+                            If you have an account on the <a href="https://hdr.auth.metadata.works/auth" rel="noopener noreferrer" className="purple-14">HDR UK Onboarding Platform (HOP)</a>, you can access the metadata onboarding platform using the button below
+                        </li>
+                        <li>
+                            If you do have an account on HOP, please request it by submitting a request <a href="https://metadata.atlassian.net/servicedesk/customer/portal/4/group/8/create/56" rel="noopener noreferrer" target="_blank" className="purple-14">here</a>.
+                        </li>
+                        <li>
+                            Use your Innovation Gateway credentials to log in
+                        </li>
+                      
                       <li>
                         You’ll be asked to provide details about the datasets,
                         ranging from basic to technical details

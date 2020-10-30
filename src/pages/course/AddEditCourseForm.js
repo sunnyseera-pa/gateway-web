@@ -440,10 +440,10 @@ const AddEditCourseForm = (props) => {
                                                                                         <Col sm={6}>
                                                                                             <p className="gray800-14 margin-bottom-0 pad-bottom-4">Description</p>
                                                                                         </Col>
-                                                                                        <Col sm={3}>
+                                                                                        <Col sm={2}>
                                                                                             <p className="gray800-14 margin-bottom-0 pad-bottom-4">Fee (GBP)</p>
                                                                                         </Col>
-                                                                                        <Col sm={3}>
+                                                                                        <Col sm={4}>
                                                                                             <p className="gray800-14 margin-bottom-0 pad-bottom-4">Per</p>
                                                                                         </Col>
                                                                                     </Row>
