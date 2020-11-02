@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup'; 
 import { Typeahead } from 'react-bootstrap-typeahead';
 import moment from 'moment';
-import {Form, Button, Row, Col} from 'react-bootstrap';
+import {Form, Button, Row, Col, Container} from 'react-bootstrap';
 
 import RelatedResources from '../commonComponents/relatedResources/RelatedResources';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
@@ -134,6 +134,7 @@ const AddEditProjectForm = (props) => {
     return (
 
         <div>
+            <Container>
             <Row className="margin-top-32">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
@@ -315,23 +316,6 @@ const AddEditProjectForm = (props) => {
                                 <Col sm={1} lg={10} />
                             </Row>
                         </div>
-
-                        <ActionBar userState={props.userState}>   
-                                <a style={{ cursor: 'pointer' }} href={'/account?tab=projects'}>
-                                    <Button variant="medium" className="cancelButton dark-14 mr-2" >
-                                        Cancel
-                                    </Button>
-                                </a> 
-
-                                <Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className="techDetailButton mr-2">
-                                    + Add resource
-                                </Button>
-                                
-                                <Button variant="primary" className="publishButton white-14-semibold mr-2" type="submit" >
-                                    {props.isEdit ? 'Update' : 'Publish'}
-                                </Button>
-                        </ActionBar> 
-
                     </Form>
                 </Col>
                 <Col sm={1} lg={10} />
@@ -339,6 +323,23 @@ const AddEditProjectForm = (props) => {
             <Row>
                 <span className="formBottomGap"></span>
             </Row>
+            </Container>
+
+            <ActionBar userState={props.userState}>   
+                <a style={{ cursor: 'pointer' }} href={'/account?tab=projects'}>
+                    <Button variant="medium" className="cancelButton dark-14 mr-2" >
+                        Cancel
+                    </Button>
+                </a> 
+
+                <Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className="techDetailButton mr-2">
+                    + Add resource
+                </Button>
+                
+                <Button variant="primary" className="publishButton white-14-semibold mr-2" type="submit" onClick={formik.handleSubmit}>
+                    {props.isEdit ? 'Update' : 'Publish'}
+                </Button>
+            </ActionBar> 
         </div>
     );
 }
