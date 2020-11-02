@@ -21,6 +21,7 @@ class Fees {
     constructor() {
         this.feeDescription = "";
         this.feeAmount = "";
+        this.feePer = "";
     }
 }
 
@@ -31,14 +32,19 @@ class Entries {
     }
 }
 
-const validateSchema = Yup.object().shape({
-    programmingLanguage: Yup.array()
-        .of(
-            Yup.object().shape({
-                programmingLanguage: Yup.string().required("This cannot be empty")
-            })
-        )
-});
+const initialValues = {
+    courseOptions: [{
+        fees: [{ 
+            feeDescription: '',
+            feeAmount: '',
+            feePer: ''
+        }],
+    }],
+    entries: [{ 
+        level: '',
+        subject: ''
+    }]
+};
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -119,7 +125,14 @@ const AddEditCourseForm = (props) => {
                     Yup.object().shape({
                         startDate: Yup.string()
                             .when("flexibleDates", { is: false, then: Yup.string().required('This cannot be empty') })
-                            .nullable()
+                            .nullable(),
+                        studyDurationNumber: Yup.number().typeError("Please enter a number"),
+                        fees: Yup.array()
+                            .of(
+                                Yup.object().shape({
+                                    feeAmount: Yup.number().typeError("Please enter a number"),
+                                })
+                            )
                     })
                 ),
         }),
@@ -190,14 +203,18 @@ const AddEditCourseForm = (props) => {
     const level = [
         'Bachelors', 'Masters', 'PhD', 'Honours', 'A level'
     ];
+    
+    const priority = [
+        'Understanding the causes of disease', 'Clinical trials', 'Improving Public Health', 'Better Care'
+    ];
 
     return (
-        <div className={"container"}>
+        <div>
             <Container>
             <Formik
                 enableReinitialize
+                initialValues={initialValues}
                 innerRef={formRef}
-                validationSchema={validateSchema}
                 render={() => {
                     return (
                         <div>
@@ -227,7 +244,7 @@ const AddEditCourseForm = (props) => {
                                     <Form onSubmit={formik.handleSubmit} onBlur={formik.handleBlur} autocomplete='off'>
                                         <div className="rectangle">
                                             <Form.Group>
-                                                <span className="gray800-14">Course Title</span>
+                                                <span className="gray800-14">Course title</span>
                                                 <Form.Control id="title" name="title" type="text" className={formik.touched.title && formik.errors.title ? "emptyFormInput addFormInput" : "addFormInput"} onChange={formik.handleChange} value={formik.values.title} onBlur={formik.handleBlur} />
                                                 {formik.touched.title && formik.errors.title ? <div className="errorMessages">{formik.errors.title}</div> : null}
                                             </Form.Group>
@@ -409,8 +426,10 @@ const AddEditCourseForm = (props) => {
                                                                                             </DropdownButton>
                                                                                         </Col>
                                                                                         <Col sm={4} className="pad-right-0">
-                                                                                            <Form.Control id={`courseOptions[${index}].studyDurationNumber`} name={`courseOptions[${index}].studyDurationNumber`} type="text" className="smallFormInput addFormInput"
-                                                                                                onChange={formik.handleChange} value={formik.values.courseOptions[index].studyDurationNumber} onBlur={formik.handleBlur} />
+                                                                                            <Form.Control id={`courseOptions[${index}].studyDurationNumber`} name={`courseOptions[${index}].studyDurationNumber`} type="text" 
+                                                                                            className={formik.touched.courseOptions && formik.touched.courseOptions[index] && formik.errors.courseOptions && formik.errors.courseOptions[index] && formik.touched.courseOptions[index].studyDurationNumber && formik.errors.courseOptions[index].studyDurationNumber ? "emptySmallFormInput addFormInput" : "smallFormInput addFormInput"}
+                                                                                            onChange={formik.handleChange} value={formik.values.courseOptions[index].studyDurationNumber} onBlur={formik.handleBlur} />
+                                                                                            {formik.touched.courseOptions && formik.touched.courseOptions[index] && formik.errors.courseOptions && formik.errors.courseOptions[index] && formik.touched.courseOptions[index].studyDurationNumber && formik.errors.courseOptions[index].studyDurationNumber ? <div className="errorMessages">{formik.errors.courseOptions[index].studyDurationNumber}</div> : null}                                                
                                                                                         </Col>
                                                                                         <Col sm={4}>
                                                                                             <DropdownButton variant="white"
@@ -465,8 +484,10 @@ const AddEditCourseForm = (props) => {
                                                                                                                 <Col sm={2} className="pad-right-0 pad-bottom-4">
 
                                                                                                                     <div className="">
-                                                                                                                        <Form.Control id={`courseOptions[${index}].fees[${indexB}].feeAmount`} name={`courseOptions[${index}].fees[${indexB}].feeAmount`} type="text" className="smallFormInput addFormInput"
-                                                                                                                            onChange={formik.handleChange} value={formik.values.courseOptions[index].fees[indexB].feeAmount} onBlur={formik.handleBlur} />
+                                                                                                                        <Form.Control id={`courseOptions[${index}].fees[${indexB}].feeAmount`} name={`courseOptions[${index}].fees[${indexB}].feeAmount`} type="text" 
+                                                                                                                        className={formik.touched.courseOptions && formik.touched.courseOptions[index] && formik.errors.courseOptions && formik.errors.courseOptions[index] && formik.touched.courseOptions[index].fees && formik.errors.courseOptions[index].fees && formik.touched.courseOptions[index].fees[indexB] && formik.errors.courseOptions[index].fees[indexB] && formik.touched.courseOptions[index].fees[indexB].feeAmount && formik.errors.courseOptions[index].fees[indexB].feeAmount ? "emptySmallFormInput addFormInput" : "smallFormInput addFormInput"}
+                                                                                                                        onChange={formik.handleChange} value={formik.values.courseOptions[index].fees[indexB].feeAmount} onBlur={formik.handleBlur} />
+                                                                                                                        {formik.touched.courseOptions && formik.touched.courseOptions[index] && formik.errors.courseOptions && formik.errors.courseOptions[index] && formik.touched.courseOptions[index].fees && formik.errors.courseOptions[index].fees && formik.touched.courseOptions[index].fees[indexB] && formik.errors.courseOptions[index].fees[indexB] && formik.touched.courseOptions[index].fees[indexB].feeAmount && formik.errors.courseOptions[index].fees[indexB].feeAmount ? <div className="errorMessages">{formik.errors.courseOptions[index].fees[indexB].feeAmount}</div> : null}
                                                                                                                     </div>
                                                                                                                 </Col>
                                                                                                                 <Col sm={2} className="pad-right-0 pad-bottom-4">
@@ -508,7 +529,8 @@ const AddEditCourseForm = (props) => {
                                                                                     </Row>
 
                                                                                     <div className="form-group phase-action" style={{ paddingTop: "10px" }}>
-                                                                                        <button className="button-tertiary" onClick={async (e) => {
+                                                                                        <button className="button-tertiary" disabled={(formik.values.courseOptions.length < 2)}
+                                                                                        onClick={async (e) => {
                                                                                             e.preventDefault();
                                                                                             removePhase(index)
                                                                                         }}>
@@ -544,18 +566,18 @@ const AddEditCourseForm = (props) => {
                                                 </Col>
                                                 <Col sm={5}>
                                                     <p className="gray800-14 margin-bottom-0 pad-bottom-4">Entry level</p>
-                                                    <p className="gray700-13 margin-bottom-0">E.g. PhD, Bachelor's with Honours, Bachelor's</p>
+                                                    <p className="gray700-13 margin-bottom-0">E.g. PhD, Bachelor's</p>
                                                 </Col>
                                                 <Col sm={7}>
                                                     <p className="gray800-14 margin-bottom-0 pad-bottom-4">Entry subject</p>
-                                                    <p className="gray700-13 margin-bottom-0">E.g. Maths, Biology, Science</p>
+                                                    <p className="gray700-13 margin-bottom-0">E.g. Maths, Biology, Science, STEM</p>
                                                 </Col>
                                             </Row>
 
                                             <Row className="mt-2">
                                                 <FieldArray
                                                     name="entry"
-                                                    render={({ insert, remove, push }) => (
+                                                    render={({ remove, push }) => (
                                                         <Fragment>
                                                             {formik.values.entries.length > 0 &&
                                                                 formik.values.entries.map((p, indexC) => (
@@ -632,14 +654,27 @@ const AddEditCourseForm = (props) => {
 
                                             <Form.Group>
                                                 <p className="gray800-14 margin-bottom-0 pad-bottom-4">Competency framework (optional)</p>
-                                                <p className="gray700-13 margin-bottom-0">E.g. </p>
                                                 <Form.Control id="competencyFramework" name="competencyFramework" type="text" className="addFormInput" onChange={formik.handleChange} value={formik.values.competencyFramework} onBlur={formik.handleBlur} />
                                             </Form.Group>
 
                                             <Form.Group>
                                                 <p className="gray800-14 margin-bottom-0 pad-bottom-4">National priority areas (optional)</p>
-                                                <p className="gray700-13 margin-bottom-0">E.g. </p>
-                                                <Form.Control id="nationalPriority" name="nationalPriority" type="text" className="addFormInput" onChange={formik.handleChange} value={formik.values.nationalPriority} onBlur={formik.handleBlur} />
+                                                <p className="gray700-13 margin-bottom-0">E.g. Understanding the causes of disease, Clinical trials, Improving Public Health and Better Care</p>
+                                                <DropdownButton variant="white"
+                                                    title={formik.values.nationalPriority || <option disabled selected value></option>}
+                                                    className="gray700-13 custom-dropdown padding-right-0"
+                                                    style={{ width: '100%' }}
+                                                    onChange={formik.handleChange}
+                                                    value={formik.values.nationalPriority}
+                                                    onBlur={formik.handleBlur}
+                                                    onSelect={(selected) => formik.values.nationalPriority = selected}>
+
+                                                    {priority.map((l, i) => (
+                                                        <Dropdown.Item className="gray800-14 width-100" key={l} eventKey={l}>
+                                                            {l}
+                                                        </Dropdown.Item>
+                                                    ))}
+                                                </DropdownButton>
                                             </Form.Group>
                                         </div>
 
