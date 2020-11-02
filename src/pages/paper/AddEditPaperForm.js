@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { Event } from '../../tracking';
 
-import {Form, Button, Row, Col} from 'react-bootstrap';
+import {Form, Button, Row, Col, Container} from 'react-bootstrap';
 import moment from 'moment';
 import RelatedResources from '../commonComponents/relatedResources/RelatedResources';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
@@ -167,6 +167,7 @@ const AddEditPaperForm = (props) => {
 
     return (
       <div>
+        <Container>
         <Row className="margin-top-32">
           <Col sm={1} lg={1} />
           <Col sm={10} lg={10}>
@@ -547,6 +548,7 @@ const AddEditPaperForm = (props) => {
                       <RelatedObject
                         showRelationshipQuestion={true}
                         objectId={object.objectId}
+                        objectType={object.objectType}
                         doRemoveObject={props.doRemoveObject}
                         doUpdateReason={updateReason}
                         reason={object.reason}
@@ -562,28 +564,11 @@ const AddEditPaperForm = (props) => {
                   <Row>
                       <Col sm={1} lg={1} />
                       <Col sm={10} lg={10}>
-                          <RelatedResources ref={relatedResourcesRef} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} paperData={props.paperData} personData={props.personData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
+                          <RelatedResources ref={relatedResourcesRef} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} paperData={props.paperData} personData={props.personData} courseData={props.courseData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                       </Col>
                       <Col sm={1} lg={10} />
                   </Row>
-              </div>
-
-              <ActionBar userState={props.userState}>  
-                      <a style={{ cursor: 'pointer' }} href={'/account?tab=papers'}>
-                          <Button variant="medium" className="cancelButton dark-14 mr-2" >
-                              Cancel
-                          </Button>
-                      </a> 
-
-                      <Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className="techDetailButton mr-2">
-                          + Add resource
-                      </Button>
-
-                      <Button variant="primary" className="publishButton white-14-semibold mr-2" type="submit" >
-                          {props.isEdit ? 'Update' : 'Publish'}
-                      </Button>
-              </ActionBar>                
-
+              </div>              
             </Form>
           </Col>
           <Col sm={1} lg={10} />
@@ -591,6 +576,23 @@ const AddEditPaperForm = (props) => {
         <Row>
           <span className="formBottomGap"></span>
         </Row>
+        </Container>
+
+        <ActionBar userState={props.userState}>
+          <a style={{ cursor: 'pointer' }} href={'/account?tab=papers'}>
+            <Button variant="medium" className="cancelButton dark-14 mr-2" >
+              Cancel
+            </Button>
+          </a> 
+          
+          <Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className="techDetailButton mr-2">
+            + Add resource
+          </Button>
+          
+          <Button variant="primary" className="publishButton white-14-semibold mr-2" type="submit" onClick={formik.handleSubmit}>
+            {props.isEdit ? 'Update' : 'Publish'}
+            </Button>
+        </ActionBar>  
       </div>
     );
 }

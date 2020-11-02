@@ -4,9 +4,8 @@ let showLoginPanel = (window, title, contactPoint) => {
     document.getElementById("myModal").style.display = "block";
     document.getElementById("loginWayFinder").style.display = "none";
     document.getElementById("loginButtons").style.display = "block";
-    document.getElementById("loginModalTitle").innerHTML = "You must be signed in to request access";
+    document.getElementById("loginModalTitle").innerHTML = "You must be signed in to request access"; 
     document.getElementById("modalRequestDetails").innerHTML = title;
-    document.getElementById("modalRequestContact").innerHTML = contactPoint;
     document.getElementById("modalRequestSection").style.display = "block";
 
     window.onclick = function(event) {
@@ -18,5 +17,5 @@ let showLoginPanel = (window, title, contactPoint) => {
 
 
 export default {
-    showLoginPanel   : showLoginPanel
+    showLoginPanel   : showLoginPanel 
 };
