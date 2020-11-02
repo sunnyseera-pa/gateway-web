@@ -236,12 +236,10 @@ class AddEditCoursePage extends React.Component {
 
 	removeObject = (id) => {
         let updatedRelatedObjects
+        debugger
 		updatedRelatedObjects = this.state.relatedObjects.filter(
 			(obj) => obj.objectId !== id
 		);
-		updatedRelatedObjects = this.state.relatedObjects.filter(
-			(obj) => obj.objectId !== id.toString()
-        );
 		this.setState({ relatedObjects: updatedRelatedObjects, didDelete: true });
 	};
 
