@@ -15,6 +15,12 @@
     height: 44px;
   }
 
+.emptySmallFormInput,
+.emptySmallFormInput:focus {
+    @include rounded(4px);
+    border: solid 2px $red !important;
+}
+
   .setHeight {
     height: 40px;
   }
@@ -35,4 +41,8 @@
 
   .main-accordion-body {
       padding-bottom:10px !important
+  }
+
+  .button-tertiary:disabled {
+    opacity: 0.2;
   }
