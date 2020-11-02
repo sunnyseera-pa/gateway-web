@@ -209,7 +209,7 @@ const AddEditCourseForm = (props) => {
     ];
 
     return (
-        <div className={"container"}>
+        <div>
             <Container>
             <Formik
                 enableReinitialize
