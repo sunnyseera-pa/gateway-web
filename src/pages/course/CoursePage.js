@@ -547,7 +547,7 @@ class CourseDetail extends Component {
                                 </Col>
                                   {courseOption.studyMode && courseOption.studyDurationNumber ?
                                     <Col sm={10} className="gray-deep-14 overflowWrap">
-                                      {courseOption.studyMode}  |  {courseOption.studyDurationNumber} {courseOption.studyDurationNumber > 1 ? courseOption.studyDurationMeasure + 's' : courseOption.studyDurationMeasure }
+                                      {courseOption.studyMode}  |  {courseOption.studyDurationNumber} {courseOption.studyDurationMeasure}
                                     </Col>
                                   :
                                     <Col sm={10} className="gray-deep-14 overflowWrap">

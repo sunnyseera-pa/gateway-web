@@ -3,10 +3,9 @@ import { Button } from "react-bootstrap";
 import AddToCollection from "../addToCollection/AddToCollection";
 
 const ResourcePageButtons = (props) => {  
-    
     return ( 
             <>
-                {props.userState[0].loggedIn && props.data.type !== "dataset" && ((props.data.authors && props.data.authors.includes(props.userState[0].id)) || props.data.creator === props.userState[0].id || props.userState[0].role === 'Admin')  ?
+                {props.userState[0].loggedIn && props.data.type !== "dataset" && ((props.data.authors && props.data.authors.includes(props.userState[0].id)) || props.data.creator[0].id === props.userState[0].id || props.userState[0].role === 'Admin')  ?
                     <Button 
                     variant="white" 
                     href={"/" + props.data.type + "/edit/" + props.data.id}
