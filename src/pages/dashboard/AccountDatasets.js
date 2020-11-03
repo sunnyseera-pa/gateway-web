@@ -1,7 +1,6 @@
 import React from "react";
-import { Col, Row, Button, Accordion, Card } from "react-bootstrap";
+import { Col, Row, Accordion, Card } from "react-bootstrap";
 import "./Dashboard.scss";
-import ActionBar from "../commonComponents/actionbar/ActionBar";
 
 class AccountDatasets extends React.Component {
   // initialize our state
@@ -31,7 +30,7 @@ class AccountDatasets extends React.Component {
   };
 
   render() {
-    const { userState, activeAccordionCard } = this.state;
+    const { activeAccordionCard } = this.state;
 
     return (
       <div>
@@ -87,11 +86,16 @@ class AccountDatasets extends React.Component {
                 <Accordion.Collapse eventKey="0">
                   <Card.Body className="datasetCard gray800-14">
                     <ul className="gray800-14">
-                      <li>
-                        You can access the metadata onboarding platform using
-                        the button below
-                      </li>
-                      <li>Use your Innovation Gateway credentials to login</li>
+                        <li>
+                            If you have an account on the <a href="https://hdr.auth.metadata.works/auth" rel="noopener noreferrer" className="purple-14">HDR UK Onboarding Platform (HOP)</a>, you can access the metadata onboarding platform using the button below
+                        </li>
+                        <li>
+                            If you do have an account on HOP, please request it by submitting a request <a href="https://metadata.atlassian.net/servicedesk/customer/portal/4/group/8/create/56" rel="noopener noreferrer" target="_blank" className="purple-14">here</a>.
+                        </li>
+                        <li>
+                            Use your Innovation Gateway credentials to log in
+                        </li>
+                      
                       <li>
                         You’ll be asked to provide details about the datasets,
                         ranging from basic to technical details
@@ -209,40 +213,6 @@ class AccountDatasets extends React.Component {
           </Col>
           <Col sm={1} lg={1} />
         </Row>
-
-        <ActionBar userState={userState}>
-          <Button
-            variant="medium"
-            href="https://metadata.atlassian.net/servicedesk/customer/portal/4"
-            target="_blank"
-            id="serviceDeskButton"
-            className="dark-14 margin-right-8"
-            data-testid="servicedesk-button"
-          >
-            Service desk
-          </Button>
-
-          <Button
-            variant="medium"
-            href="https://metadata.atlassian.net/wiki/spaces/HDR/overview"
-            target="_blank"
-            id="userguideButton"
-            className="dark-14 margin-right-8"
-            data-testid="userguide-button"
-          >
-            User guide
-          </Button>
-
-          <Button
-            variant="primary"
-            href=""
-            target="_blank"
-            id="metadataButton"
-            className="white-14-semibold margin-right-16"
-          >
-            Access the metadata onboarding platform
-          </Button>
-        </ActionBar>
       </div>
     );
   }

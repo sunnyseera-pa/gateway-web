@@ -32,6 +32,10 @@ h6 {
 .soft-black-14 {
   @include font-source(14px, $soft-black, $font-weight-semibold);
 }
+ 
+.gray3a-20 {
+  @include font-source(20px, $gray-3a, $font-weight-semibold);
+}
 
 .black-14 {
   @include font-source(14px, $gray-dark);
