@@ -14,7 +14,6 @@ const WorkflowModal = ({ open, close, context }) => {
   const onClickAction = (e, action) => {
 		e.preventDefault();
 		if(!_.isEmpty(action)) {
-      console.log(action);
       close('', action);
 		}
 	}

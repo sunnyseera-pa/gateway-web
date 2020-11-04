@@ -116,6 +116,41 @@ button {
   } 
 }
 
+.form-input-dropdown {
+  height: 40px;
+  width: 100%;
+  border-radius: 4px;
+  border: 2px solid $gray-400;
+  background-color: #ffffff;
+  padding-left: 8px;
+  padding-right: 8px;
+  font-family: Museo-Sans-Rounded;
+  font-size: 14px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: $gray-800;
+  display: block;
+}
+
+.tool-tip {
+  border-radius: 8px;
+  background-color: $dark;
+  opacity: 1 !important;
+  margin-bottom: 8px;
+
+  .tooltip-inner {
+    @include font-source(13px, $white, $font-weight-semibold);
+    background-color: $dark;
+  }
+
+  .arrow::before {
+    border-top-color: $dark !important;
+  }
+}
+
 /* Style Guide Components end */
 
 .mainWrap {
@@ -233,6 +268,12 @@ a.nav-item.nav-link.active {
     color: $gray-800 !important;
   }
 
+  &-course {
+    @extend .badge;
+    background-color: $indigo;
+    color: $white !important;
+  }
+
   &-phenotype {
     @extend .badge;
     background-color: $orange-light;
@@ -265,6 +306,15 @@ a.nav-item.nav-link.active {
     color: $gray-dark !important;
     font-weight: bold;
     font-size: 16px;
+  }
+
+  &-notRated { 
+    @extend .badge;
+    background-color: $orange-light;
+    color: $med-black !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    margin: 0px !important;
   }
 }
 
@@ -413,6 +463,12 @@ svg:not(:root) {
 .svg-19 {
   width: 19px;
   height: 19px;
+}
+
+.svg-20 {
+  float: left;
+  width: 20px;
+  height: 20px;
 }
 
 .svg-24 {
@@ -580,6 +636,10 @@ textarea:focus {
 
 .descriptionInput {
   height: 186px !important;
+  font-family: museo-sans-rounded !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: $gray-700 !important;
 }
 
 .flexCenter {
@@ -1015,7 +1075,7 @@ iframe#discourse-embed-frame {
 }
 .text-color-lightest :hover {
   color: $white;
-}
+} 
 .footerLogo {
   height: 60px;
 }
@@ -1130,6 +1190,10 @@ button a {
     padding-bottom: 24px !important;
   }
 
+  .pad-bottom-32 {
+    padding-bottom: 32px !important;
+  }
+
   .margin-top-32 {
     margin-top: 32px !important;
   }
@@ -1147,16 +1211,28 @@ button a {
     margin-top: 16px !important;
   }
 
+  .margin-top-8 {
+    margin-top: 8px !important;
+  }
+
+  .margin-top-6 {
+    margin-top: 6px !important;
+  }
+
   .margin-top-2 {
     margin-top: 2px !important;
+  }
+
+  .margin-left-6 {
+    margin-left: 6px !important;
   }
 
   .margin-left-8 {
     margin-left: 8px !important;
   }
 
-  .margin-top-8 {
-    margin-top: 8px !important;
+  .margin-left-10 {
+    margin-left: 10px !important;
   }
 
   .margin-left-15 {
@@ -1227,6 +1303,10 @@ button a {
 
   .pad-left-8 {
     padding-left: 8px !important;
+  }
+
+  .pad-left-14 {
+    padding-left: 14 !important;
   }
 
   .pad-right-8 {
@@ -1452,4 +1532,23 @@ button a {
   white-space: nowrap !important;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.accountClassToolTip{
+  width: 275px;
+  border-radius: 8px;
+  background-color: $dark;
+  padding: 10px;
+  position: absolute;
+  line-height: 14px;
+  left: -140px;
+  top: -50px;
+  z-index: 1;
+}
+
+.accountSectorToolTip{
+  top: -42px;
+}
+.buttonHeight40 {
+  height: 40px;
 }

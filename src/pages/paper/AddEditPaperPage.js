@@ -36,6 +36,7 @@ class AddEditPaperPage extends React.Component {
 		toolData: [],
 		projectData: [],
 		personData: [],
+		courseData: [],
 		summary: [],
 		tempRelatedObjectIds: [],
 		relatedObjectIds: [],
@@ -217,7 +218,8 @@ class AddEditPaperPage extends React.Component {
 			if (type === 'project' && page > 0) searchURL += '&projectIndex=' + page;
 			if (type === 'paper' && page > 0) searchURL += '&paperIndex=' + page;
 			if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
-
+			if (type === 'course' && page > 0) searchURL += '&courseIndex=' + page; 
+			
 			axios
 				.get(
 					baseURL +
@@ -238,6 +240,7 @@ class AddEditPaperPage extends React.Component {
 						projectData: res.data.projectResults || [],
 						paperData: res.data.paperResults || [],
 						personData: res.data.personResults || [],
+						courseData: res.data.courseResults || [],
 						summary: res.data.summary || [],
 						isLoading: false
 					});
@@ -325,6 +328,7 @@ class AddEditPaperPage extends React.Component {
 			projectData,
 			paperData,
 			personData,
+			courseData,
 			summary,
 			relatedObjects,
 			didDelete,
@@ -350,36 +354,37 @@ class AddEditPaperPage extends React.Component {
 					doToggleDrawer={this.toggleDrawer}
 					userState={userState}
 				/> 
-				<Container>
-					<AddEditPaperForm
-						data={data}
-						isEdit={isEdit}
-						combinedTopic={combinedTopic}
-						combinedFeatures={combinedFeatures}
-						combinedLanguages={combinedLanguages}
-						combinedCategories={combinedCategories}
-						combinedLicenses={combinedLicenses}
-						combinedUsers={combinedUsers}
-						userState={userState}
-						searchString={searchString}
-						doSearchMethod={this.doModalSearch}
-						doUpdateSearchString={this.updateSearchString}
-						datasetData={datasetData}
-						toolData={toolData}
-						projectData={projectData}
-						paperData={paperData}
-						personData={personData}
-						summary={summary}
-						doAddToTempRelatedObjects={this.addToTempRelatedObjects}
-						tempRelatedObjectIds={this.state.tempRelatedObjectIds}
-						doClearRelatedObjects={this.clearRelatedObjects}
-						doAddToRelatedObjects={this.addToRelatedObjects}
-						doRemoveObject={this.removeObject}
-						relatedObjects={relatedObjects}
-						didDelete={didDelete}
-						updateDeleteFlag={this.updateDeleteFlag}
-					/>
-				</Container>
+
+				<AddEditPaperForm
+					data={data}
+					isEdit={isEdit}
+					combinedTopic={combinedTopic}
+					combinedFeatures={combinedFeatures}
+					combinedLanguages={combinedLanguages}
+					combinedCategories={combinedCategories}
+					combinedLicenses={combinedLicenses}
+					combinedUsers={combinedUsers}
+					userState={userState}
+					searchString={searchString}
+					doSearchMethod={this.doModalSearch}
+					doUpdateSearchString={this.updateSearchString}
+					datasetData={datasetData}
+					toolData={toolData}
+					projectData={projectData}
+					paperData={paperData}
+					personData={personData}
+          courseData={courseData}
+					summary={summary}
+					doAddToTempRelatedObjects={this.addToTempRelatedObjects}
+					tempRelatedObjectIds={this.state.tempRelatedObjectIds}
+					doClearRelatedObjects={this.clearRelatedObjects}
+					doAddToRelatedObjects={this.addToRelatedObjects}
+					doRemoveObject={this.removeObject}
+					relatedObjects={relatedObjects}
+					didDelete={didDelete}
+					updateDeleteFlag={this.updateDeleteFlag}
+				/>
+
 				<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
 					<UserMessages
 						userState={userState[0]}

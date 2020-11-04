@@ -109,6 +109,8 @@ const WorkflowDashboard = ({userState, team}) => {
             toggleModal(modalactions.DELETEWORKFLOW);
           }
         break;
+        default:
+          return '';
       }
     }
   }

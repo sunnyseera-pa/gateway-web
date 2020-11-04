@@ -47,10 +47,8 @@ const LoginModal = (props) => {
                             <Row className="mb-3">
                                 <Col sm={1} lg={1} />
                                 <Col sm={10} lg={10} >
-                                    <div className="gray800-14" style={{ textAlign: 'center' }}>
-                                        <br />Alternatively, you can contact the data custodian directly.<br /><br />
-                                        <strong>Dataset selected:</strong> <span id="modalRequestDetails">{props.requestDetails}</span><br />
-                                        <strong>Contact details:</strong> <span id="modalRequestContact">{props.requestContact}</span>
+                                    <div className="gray800-14" style={{ textAlign: 'center' }}> 
+                                        <br/><strong>Dataset selected:</strong> <span id="modalRequestDetails">{props.requestDetails}</span><br />
                                     </div>
                                 </Col>
                                 <Col sm={1} lg={1} />
