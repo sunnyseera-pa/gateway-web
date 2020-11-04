@@ -314,7 +314,7 @@ const AddEditWorkflow = (props) => {
                                       </div>
                                       <div className="form-group">
                                         <label htmlFor={`node[${index}].deadline`} className="form-label">Deadline</label>
-                                        <small className="form-text mb-2">Reviewers will be notified 1 day before before the deadline. The manager can progress the application to the next phase at any time.</small>
+                                        <small className="form-text mb-2">Reviewers will be notified 3 day before before the deadline. The manager can progress the application to the next phase at any time.</small>
                                         <div className="form-inline">
                                           <Field 
                                             type="text" 
