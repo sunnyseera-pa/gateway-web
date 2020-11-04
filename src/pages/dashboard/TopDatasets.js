@@ -23,21 +23,24 @@ class TopDatasets extends React.Component {
         
         return (
             <Fragment> 
-                <Row className="entryBox"> 
-                        <Col sm={5} lg={6} className="gray800-14" style={{"float":"left", "paddingLeft":"0px"}}>
+                <Row 
+                // className="entryBox"
+                className="resultBox"
+                > 
+                        <Col sm={5} lg={6} className="gray800-14 noPadding" style={{"float":"left", "paddingLeft":"0px"}}>
                             <a href={"/dataset/" + data[0]}  > 
-                                <span className="colOneTerm gray800-14 pointer">
+                                <span className="colOneTerm gray800-14 pointer noPadding">
                                     {data[1].name}
                                 </span>  
                             </a> 
                         </Col>
-                        <Col sm={4} lg={4} className="gray800-14">
-                            <span style={{"float":"left"}}>
+                        <Col sm={4} lg={4} className="gray800-14 noPadding">
+                            <span style={{"float":"left"}} className="noPadding">
                                 {data[1].publisher}
                             </span>
                         </Col> 
-                        <Col sm={3} lg={2} className="gray800-14">
-                            <span className="pad-right-0">
+                        <Col sm={3} lg={2} className="gray800-14 noPadding">
+                            <span className="pad-right-0 noPadding">
                                 {data[1].requests}
                             </span>
                         </Col>

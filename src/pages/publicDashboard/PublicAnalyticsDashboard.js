@@ -335,44 +335,51 @@ class PublicAnalyticsDashboard extends React.Component {
                                 </Col>
                             </Row>
 
-                            <Row className="accountHeader mt-4" style={{"marginBottom":"0.5px"}}>
-                            <Col sm={12} lg={12}>
-                                <Row >
-                                    <Col sm={12} lg={12}>
-                                        <span className="black-20" >Data access request</span> 
-                                    </Col>
-                                </Row>
-                                <Row> 
-                                    <Col sm={12} lg={12}> 
-                                        <span className="gray700-13">Most popular datasets based on the number of data access requests</span>
-                                    </Col>
-                                </Row>
-                            </Col> 
-                        </Row>
-
-                        <Fragment>
-                            <Row>
-                                <Col sm={12} lg={12}>
-                                {topDatasets.length === 0 ?
-                                    <Row className="subHeader entrybox gray800-14" style={{"text-align": "center"}} >
-                                        <Col sm={12} lg={12}>There were no data access requests this month </Col >
+                            <Row className="accountHeader margin-top-16">
+                                <Col sm={12} lg={12} className="noPadding">
+                                    <Row >
+                                        <Col sm={12} lg={12}>
+                                            <span className="black-20">Data access request</span> 
+                                        </Col>
                                     </Row>
-                                :
-                                    <>
-                                        <Row className="subHeader entrybox gray800-14-bold">
-                                            <Col sm={5} lg={6}>Dataset </Col >
-                                            <Col sm={4} lg={4}>Custodian</Col>
-                                            <Col sm={3} lg={2}>Requests</Col>
-                                        </Row>
-
-                                        {topDatasets.map((dat, i) => {
-                                            return <TopDatasets key={i} data={dat} />    
-                                        })}
-                                    </>
-                                }
-                                </Col>
+                                    <Row> 
+                                        <Col sm={12} lg={12}> 
+                                            <span className="gray700-13">Most popular datasets based on the number of data access requests</span>
+                                        </Col>
+                                    </Row>
+                                </Col> 
                             </Row>
-                        </Fragment> 
+
+                            <Fragment>
+                                <Row>
+                                    <Col sm={12} lg={12}>
+                                    {topDatasets.length === 0 ?
+                                        <Row className="subHeader entrybox gray800-14 noDars" >
+                                            <Col sm={12} lg={12}>There were no data access requests this month </Col >
+                                        </Row>
+                                    : "" }
+                                    </Col>
+                                </Row>
+                            </Fragment> 
+
+                            {topDatasets.length === 0 ? "" :       
+                                <Row className="entryBox noPadding">
+                                    <Col sm={12} lg={12} className="resultsPadding">
+                                        <Row className="dashboardHeader entrybox gray800-14-bold">
+                                            <Col sm={5} lg={6} className="noPadding">Dataset </Col >
+                                            <Col sm={4} lg={4} className="noPadding">Custodian</Col>
+                                            <Col sm={3} lg={2} className="noPadding">Requests</Col>
+                                        </Row>
+                                        <Row>
+                                            <Col sm={12} lg={12}>
+                                            { topDatasets.map((dat, i) => {
+                                                        return <TopDatasets key={i} data={dat} />    
+                                                })}
+                                            </Col>
+                                        </Row>
+                                    </Col>
+                                </Row>
+                            }
 
                             <Row className="accountHeader mt-4" style={{ "margin-bottom": "0.5px" }}>
                                 <Col sm={12} lg={12}>
