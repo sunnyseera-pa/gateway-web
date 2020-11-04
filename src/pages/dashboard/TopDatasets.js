@@ -1,12 +1,12 @@
 import React, { Fragment } from 'react';
 import {Col, Row, Button, Accordion } from 'react-bootstrap';
-import './Dashboard.scss'; 
-
+import './Dashboard.scss';  
+ 
 class TopDatasets extends React.Component { 
 
-    state = {
+    state = { 
         data: '',
-     };
+     }; 
 
     constructor(props) {
         super(props)
@@ -20,22 +20,23 @@ class TopDatasets extends React.Component {
  
     render() {
         const {data} = this.state;
+        
         return (
-            <Fragment>
+            <Fragment> 
                 <Row className="entryBox"> 
                         <Col sm={5} lg={6} className="gray800-14" style={{"float":"left", "paddingLeft":"0px"}}>
-                            <span style={{"float":"left", "paddingLeft":"15px"}} className="truncate">
-                                dataset name
+                            <span className="colOneTerm">
+                                {data[1].name}
                             </span>                
                         </Col>
-                        <Col sm={2} lg={2} className="gray800-14">
+                        <Col sm={4} lg={4} className="gray800-14">
                             <span style={{"float":"left"}}>
-                                custodian name 
+                                {data[1].publisher}
                             </span>
                         </Col> 
-                        <Col sm={5} lg={4} className="gray800-14">
-                            <span style={{"paddingRight":"0px"}}>
-                                number of requests
+                        <Col sm={3} lg={2} className="gray800-14">
+                            <span className="pad-right-0">
+                                {data[1].requests}
                             </span>
                         </Col>
                 </Row>

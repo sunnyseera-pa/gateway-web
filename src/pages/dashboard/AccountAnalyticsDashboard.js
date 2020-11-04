@@ -8,7 +8,7 @@ import { Row, Col, Button, Modal, Tabs, Tab, DropdownButton, Dropdown } from 're
 import DashboardKPI from './DARComponents/DashboardKPI';
 import Loading from '../commonComponents/Loading'
 import { Event, initGA } from '../../tracking';
-import './Dashboard.scss';  
+import './Dashboard.scss';   
 
  
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -28,6 +28,7 @@ class AccountAnalyticsDashboard extends React.Component {
         searchesWithResults: 0,
         accessRequests: 0,
         uptime: 0,
+        topDatasets: [],
         uniqueUsers: 0,
         datasetsWithTechMetaData: 0,
         dates: getDatesForDropdown(),
@@ -56,7 +57,8 @@ class AccountAnalyticsDashboard extends React.Component {
             this.getUptime(this.state.selectedOption),
             this.getStats(),
             this.getKPIs(this.state.selectedOption), 
-            this.getDatasetsWithTechMetadata()
+            this.getDatasetsWithTechMetadata(),
+            this.getTopDatasets(this.state.selectedOption)
         ])
 
         if(isMounted)
@@ -94,7 +96,9 @@ class AccountAnalyticsDashboard extends React.Component {
             this.getUptime(this.state.dates[eventKey]),
             this.getStats(),
             this.getKPIs(this.state.dates[eventKey]),
-            this.getDatasetsWithTechMetadata()
+            this.getDatasetsWithTechMetadata(),
+            this.getTopDatasets(this.state.dates[eventKey])
+
         ])
         this.setState({uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100})
       }
@@ -190,6 +194,17 @@ class AccountAnalyticsDashboard extends React.Component {
 
     }
 
+    getTopDatasets(selectedDate){
+        return new Promise((resolve, reject) => {
+            axios.get(baseURL + '/api/v1/kpis?kpi=topdatasets&selectedDate=' + selectedDate )
+            .then((res) => {
+                this.setState({ topDatasets: []});
+                this.setState({ topDatasets: res.data.data});
+                resolve();
+            });     
+        });
+    }
+
     getUptime(selectedDate){
         let currentDate = new Date()
 
@@ -219,13 +234,11 @@ class AccountAnalyticsDashboard extends React.Component {
     }
 
     render() { 
-        const { key, isLoading, data, topSearches, dates, statsDataType, gaUsers, searchesWithResults, accessRequests, datasetsWithTechMetaData, uptime, uniqueUsers } = this.state;
-
-        let topDARs = [1,2,3,4,5];
+        const { key, isLoading, data, topSearches, dates, statsDataType, gaUsers, searchesWithResults, accessRequests, datasetsWithTechMetaData, uptime, uniqueUsers, topDatasets } = this.state;
 
         if (isLoading) {
             return (
-                <Row>
+                <Row> 
                     <Col xs={1}></Col>
                     <Col xs={10}>
                         <Loading data-testid="isLoading" />
@@ -300,12 +313,11 @@ class AccountAnalyticsDashboard extends React.Component {
                             </Col> 
                         </Row>
 
-                        {/* TODO */}
                         <Row className="accountHeader mt-4" style={{"marginBottom":"0.5px"}}>
                             <Col sm={12} lg={12}>
                                 <Row >
                                     <Col sm={12} lg={12}>
-                                        <span className="black-20" >Data access request</span>
+                                        <span className="black-20" >Data access request</span> 
                                     </Col>
                                 </Row>
                                 <Row>
@@ -319,24 +331,26 @@ class AccountAnalyticsDashboard extends React.Component {
                         <Fragment>
                             <Row>
                                 <Col sm={12} lg={12}>
-                                <Row className="subHeader entrybox gray800-14-bold" style={{"height":"44px"}}>
-                                    <Col sm={5} lg={6}>Dataset </Col >
-                                    <Col sm={2} lg={2}>Custodian</Col>
-                                    <Col sm={5} lg={4}>Requests</Col>
-                                </Row>
-                                {/* TODO UPDATE REPLACE THE DATA PROP WITH THE VARIABLE THAT HOLDS THE DATASETS WITH HIGHEST REQUESTS DATA */}
-                                    {topDARs.map((dat, i) => {
-                                        return <TopDatasets key={i} data={dat} />    
-                                    })}
-   
-                                    {/* // {topSearches.map((dat, i) => { */}
-                                    {/* //     return <TopDatasets key={i} data={dat} />   */}
-                                    {/* // })} */}
+                                {topDatasets.length === 0 ?
+                                    <Row className="subHeader entrybox gray800-14" style={{"text-align": "center"}} >
+                                        <Col sm={12} lg={12}>There were no data access requests this month </Col >
+                                    </Row>
+                                :
+                                    <>
+                                        <Row className="subHeader entrybox gray800-14-bold">
+                                            <Col sm={5} lg={6}>Dataset </Col >
+                                            <Col sm={4} lg={4}>Custodian</Col>
+                                            <Col sm={3} lg={2}>Requests</Col>
+                                        </Row>
+
+                                        {topDatasets.map((dat, i) => {
+                                            return <TopDatasets key={i} data={dat} />    
+                                        })}
+                                    </>
+                                }
                                 </Col>
                             </Row>
                         </Fragment> 
-                        {/* TODO */}
-
 
                         <Row className="accountHeader mt-4" style={{"marginBottom":"0.5px"}}>
                             <Col sm={12} lg={12}>
@@ -356,7 +370,7 @@ class AccountAnalyticsDashboard extends React.Component {
                         <Fragment>
                             <Row>
                                 <Col sm={12} lg={12}>
-                                <Row className="subHeader entrybox gray800-14-bold" style={{"height":"44px"}}>
+                                <Row className="subHeader entrybox gray800-14-bold" >
                                     <Col sm={5} lg={6}>Search term </Col >
                                     <Col sm={2} lg={2}>Searches</Col>
                                     <Col sm={5} lg={4}>Latest results</Col>
@@ -402,7 +416,7 @@ class AccountAnalyticsDashboard extends React.Component {
                                         <div>
                                             <Row>
                                                 <Col sm={12} lg={12}>
-                                                <Row className="subHeader mt-3 gray800-14-bold">
+                                                <Row className="subHeader gray800-14-bold">
                                                     <Col sm={8} lg={8}>Search term </Col>
                                                     <Col sm={2} lg={2}>Searches</Col>
                                                     <Col sm={2} lg={2}>Dataset results</Col>
