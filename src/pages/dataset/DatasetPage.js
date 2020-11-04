@@ -985,7 +985,7 @@ class DatasetDetail extends Component {
                       )}
                     </Tab>
 
-                    <Tab eventKey="TechDetails" title={`Technical details`}>
+                    <Tab eventKey="TechDetails" title={`Technical details`}> 
                       <Row className="width-100" style={{ margin: "0%" }}>
                         {dataClassOpen === -1 ? (
                           <>
@@ -1145,6 +1145,25 @@ class DatasetDetail extends Component {
                       eventKey="Projects"
                       title={
                         "Related resources (" + relatedObjects.length + ")"
+                      }
+                    >
+                      {data.relatedObjects &&
+                      data.relatedObjects.length <= 0 ? (
+                        <NotFound word="related resources" />
+                      ) : (
+                        relatedObjects.map(object => (
+                          <RelatedObject
+                            relatedObject={object}
+                            activeLink={true}
+                            showRelationshipAnswer={true}
+                          />
+                        ))
+                      )}
+                    </Tab>
+                    <Tab
+                      eventKey="Collections"
+                      title={
+                        "Collections (" + relatedObjects.length + ")"
                       }
                     >
                       {data.relatedObjects &&
