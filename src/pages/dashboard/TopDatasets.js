@@ -25,9 +25,11 @@ class TopDatasets extends React.Component {
             <Fragment> 
                 <Row className="entryBox"> 
                         <Col sm={5} lg={6} className="gray800-14" style={{"float":"left", "paddingLeft":"0px"}}>
-                            <span className="colOneTerm">
-                                {data[1].name}
-                            </span>                
+                            <a href={"/dataset/" + data[0]}  > 
+                                <span className="colOneTerm gray800-14 pointer">
+                                    {data[1].name}
+                                </span>  
+                            </a> 
                         </Col>
                         <Col sm={4} lg={4} className="gray800-14">
                             <span style={{"float":"left"}}>
