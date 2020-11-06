@@ -126,13 +126,6 @@ const AddEditCourseForm = (props) => {
                         startDate: Yup.string()
                             .when("flexibleDates", { is: false, then: Yup.string().required('This cannot be empty') })
                             .nullable(),
-                        studyDurationNumber: Yup.number().typeError("Please enter a number"),
-                        fees: Yup.array()
-                            .of(
-                                Yup.object().shape({
-                                    feeAmount: Yup.number().typeError("Please enter a number"),
-                                })
-                            )
                     })
                 ),
         }),
@@ -190,10 +183,10 @@ const AddEditCourseForm = (props) => {
         "Full-time",
         "Part-time",
         "Self-taught"
-    ];
+    ]; 
 
     const studyDurationMeasure = [
-        "Day(s)", "Week(s)", "Month(s)", "Year(s)"
+        "Hour(s)", "Day(s)", "Week(s)", "Month(s)", "Year(s)"
     ];
 
     const feePer = [
@@ -201,7 +194,7 @@ const AddEditCourseForm = (props) => {
     ];
 
     const level = [
-        'Bachelors', 'Masters', 'PhD', 'Honours', 'A level'
+        'No Entry Requirements', 'Bachelors', 'Masters', 'PhD', 'Honours', 'A level'
     ];
     
     const priority = [
@@ -691,7 +684,7 @@ const AddEditCourseForm = (props) => {
                                                         <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} objectType={object.objectType} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} />
                                                     )
                                                 })}
-                                            </div>}
+                                            </div>} 
 
                                         <div className="rectangle flexCenter pixelGapTop">
                                             <Row>
