@@ -18,6 +18,7 @@ import {
 import NotFound from "../commonComponents/NotFound";
 import Loading from "../commonComponents/Loading";
 import RelatedObject from "../commonComponents/relatedObject/RelatedObject";
+import CollectionCard from "../commonComponents/collectionCard/CollectionCard";
 import SearchBar from "../commonComponents/searchBar/SearchBar";
 import SVGIcon from "../../images/SVGIcon"; 
 import { ReactComponent as InfoFillSVG } from "../../images/infofill.svg";
@@ -56,6 +57,7 @@ class DatasetDetail extends Component {
     id: "",
     data: {},
     technicalMetadata: [],
+    collections: [],
     dataClassOpen: -1,
     relatedObjects: [],
     datarequest: [],
@@ -139,6 +141,7 @@ class DatasetDetail extends Component {
           isLoading: false
         });
         this.getTechnicalMetadata();
+        this.getCollections();
         document.title = res.data.data[0].name.trim();
         let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
       
@@ -175,6 +178,17 @@ class DatasetDetail extends Component {
       .then(res => {
         this.setState({
           technicalMetadata: res.data.data[0].datasetfields.technicaldetails || []
+        });
+      });
+  }
+
+  getCollections() {
+    this.setState({ isLoading: true });
+    axios
+      .get(baseURL + "/api/v1/collections/datasetid/" + this.state.data.datasetid)
+      .then(res => {
+        this.setState({
+          collections: res.data.data || []
         });
       });
   }
@@ -345,7 +359,8 @@ class DatasetDetail extends Component {
       showModal,
       requiresModal,
       allowsMessaging,
-      showAllPhenotype
+      showAllPhenotype,
+      collections
     } = this.state;
 
     if (isLoading) {
@@ -1163,27 +1178,33 @@ class DatasetDetail extends Component {
                     <Tab
                       eventKey="Collections"
                       title={
-                        "Collections (" + relatedObjects.length + ")"
+                        "Collections (" + collections.length + ")"
                       }
                     >
-                      {data.relatedObjects &&
-                      data.relatedObjects.length <= 0 ? (
-                        <NotFound word="related resources" />
+                      {!collections ||
+                      collections.length <= 0 ? (
+                        <NotFound text="This dataset has not been featured on any collections yet."/> 
                       ) : (
-                        relatedObjects.map(object => (
-                          <RelatedObject
-                            relatedObject={object}
-                            activeLink={true}
-                            showRelationshipAnswer={true}
-                          />
-                        ))
+                        <>
+                          <NotFound text="This dataset appears on the collections below. A collection can be a group of resources on the same theme or a Trusted Research Environment where this dataset can be accessed."/> 
+
+                          <Row >
+                            {
+                              collections.map((collection) => (
+                                <Col sm={12} md={12} lg={6} style={{"text-align": "-webkit-center"}}>
+                                  <CollectionCard data={collection} />
+                                </Col>
+                              ))
+                            }
+                          </Row>
+                        </>
                       )}
                     </Tab>
                   </Tabs>
                 </div>
               </Col>
               <Col sm={1} />
-            </Row>
+            </Row> 
           </Container>
 
           <SideDrawer open={showDrawer} closed={this.toggleDrawer}>
