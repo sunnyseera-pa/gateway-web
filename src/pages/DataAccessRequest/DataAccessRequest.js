@@ -54,6 +54,7 @@ class DataAccessRequest extends Component {
 			workflow: {},
 			activeWorkflow: {},
 			files: [],
+			initialFilesLoad: true,
 			hasRecommended: false,
 			applicationStatus: '',
 			activePanelId: '',
@@ -971,6 +972,10 @@ class DataAccessRequest extends Component {
 			});
 	};
 
+	onFilesUpdate = (files, initialFilesLoad) => {
+		this.setState({ files, initialFilesLoad });
+	}
+
 	toggleCard = (e, eventKey) => {
 		e.preventDefault();
 		// 1. Deconstruct current state
@@ -1172,7 +1177,12 @@ class DataAccessRequest extends Component {
 				/>
 			);
 		} else if (activePanelId === 'files') {
-			return <Uploads id={this.state._id} files={this.state.files} />;
+			return (<Uploads 
+							onFilesUpdate={this.onFilesUpdate}
+							id={this.state._id} 
+							files={this.state.files}
+							initialFilesLoad={this.state.initialFilesLoad} />
+						);
 		} else {
 			return (
 				<Winterfell
