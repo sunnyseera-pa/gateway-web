@@ -12,15 +12,16 @@ import UploadFiles from './UploadFiles';
 import AllFiles from './AllFiles';
 import NoFiles from './NoFiles';
 
-const Uploads = ({ id, files }) => {
+const Uploads = ({ id, files, onFilesUpdate, initialFilesLoad }) => {
   // 10mb - 10485760
   // 2mb - 2097152
   const maxSize = 10485760;
   // name, size, location, id
   const [uploadFiles, setUploadFiles] = useState([]);
-  const [allFiles, setAllFiles] = useState([]);
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [download, showDownload] = useState(true);
+
 
   const onRemoveFile = (file) => {
     const newFiles = [...uploadFiles].filter((f) => {
@@ -117,8 +118,11 @@ const Uploads = ({ id, files }) => {
           let {data: {mediaFiles = []}} = response;
           // update file state
           if(!_.isEmpty(mediaFiles)) {
-            setAllFiles(mediaFiles);
+            // returned files and initialFilesLoad = false
+            onFilesUpdate(mediaFiles, false);
+            // wipe upload false
             setUploadFiles([]);
+            // set loading false
             setLoading(false);
           }
         })
@@ -149,10 +153,25 @@ const Uploads = ({ id, files }) => {
     }
   }
 
+  const updateDARFileState = (files, initalLoading) => {
+    onFilesUpdate(files, initalLoading);
+  }
+ 
   useEffect(() => {
-    if(!_.isEmpty(files)) 
-      setAllFiles(files);
-  }, [])
+    let timer;
+    if(!initialFilesLoad) {
+      showDownload(false);
+      timer = setTimeout(() => {
+        showDownload(true);
+        updateDARFileState(files, false);
+       }, 45000);
+      }
+      return () =>  {
+        if(!initialFilesLoad) {
+          clearTimeout(timer);
+        }
+      };
+  }, [files, initialFilesLoad])
 
   // dropzone setup
   const { getRootProps, getInputProps } = useDropzone({
@@ -176,7 +195,7 @@ Max 10MB per file.</span>
       </div>
       <div className="files-area">
       { uploadFiles.length == 0 && 
-        allFiles.length == 0 &&
+        files.length == 0 &&
         <NoFiles />
       }  
       { uploadFiles.length > 0 &&
@@ -189,10 +208,10 @@ Max 10MB per file.</span>
           onDescriptionChange={onDescriptionChange}
         />
       }
-      { allFiles.length > 0 && 
+      { files.length > 0 && 
         <AllFiles
-          id={id}
-          allFiles={allFiles}
+          files={files}
+          download={download}
           downloadFile={downloadFile}
         />
       }
