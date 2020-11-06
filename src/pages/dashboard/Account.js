@@ -11,6 +11,7 @@ import AccountPapers from './AccountPapers';
 import AccountCollections from './AccountCollections';
 import AccountAnalyticsDashboard from './AccountAnalyticsDashboard';
 import AccountUsers from './AccountUsers';
+import AccountMembers from './AccountMembers';
 import ReviewTools from './ReviewTools';
 import YourAccount from './YourAccount';
 import DataAccessRequests from './DataAccessRequests/DataAccessRequests';
@@ -22,7 +23,9 @@ import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import { ReactComponent as ChevronRightSvg } from "../../images/chevron-bottom.svg";
+import { ReactComponent as MembersSvg } from "../../images/members.svg";
 import './Dashboard.scss';
+import { ReactComponent as SubBronzeSVG } from "../../images/sub_bronze.svg";
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <a href="" ref={ref} onClick={e => { e.preventDefault(); onClick(e); }} >
@@ -66,6 +69,7 @@ class Account extends Component {
         tabId: '',
         activeKey: '',
         team: 'user',
+        teamId: '',
         alert: {},
         isDeleted: false,
         isApproved: false,
@@ -88,7 +92,7 @@ class Account extends Component {
             this.state.alert = props.location.state.alert;
             this.alertTimeOut = setTimeout(() => this.setState({ alert: {} }), 10000)
         }
-        
+
         if(_.has(props, 'location.state.team') && props.location.state.team !== '') {
             this.state.team = props.location.state.team;
             localStorage.setItem('HDR_TEAM', props.location.state.team);
@@ -239,7 +243,12 @@ class Account extends Component {
             if(!_.isEmpty(filterPublishers)) {
                 return filterPublishers.map((pub, index) =>{
                     return  (
-                        <Dropdown.Item className="gray700-13" onClick={(e) => this.toggleNav(`${this.state.tabId}&team=${pub.name}`)}>{pub.name}</Dropdown.Item>
+                        <Dropdown.Item className="gray700-13" 
+                        onClick={(e) => {
+                            this.toggleNav(`${this.state.tabId}&team=${pub.name}`)
+                            this.setState({teamId: pub._id});
+                        }}
+                        >{pub.name}</Dropdown.Item>
                     )
                 });
             }
@@ -309,11 +318,11 @@ class Account extends Component {
             data,
             userState,
             tabId,
-            activeKey,
             showDrawer,
             showModal,
             context,
             team,
+            teamId,
             alert,
             activeAccordion,
             datasetAccordion
@@ -480,12 +489,20 @@ class Account extends Component {
                                 </div>
                             }
                             {team !== 'user' ? 
-                            <div className={`${tabId === 'help' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('help')}>
-                                <Nav.Link className="verticalNavBar gray700-13">
-                                    <SVGIcon name='info' fill={'#b3b8bd'} className='accountSvgs' />
-                                    <span className="navLinkItem">Help</span>
-                                </Nav.Link>
-                            </div> : ''
+                            <Fragment>
+                                <div className={`${tabId === 'members' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('members')}>
+                                    <Nav.Link className="verticalNavBar gray700-13">
+                                        <MembersSvg className='membersSvg'/>
+                                        <span style={{'margin-left': '11px'}}>Members</span>
+                                    </Nav.Link>
+                                </div>
+                                <div className={`${tabId === 'help' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('help')}>
+                                    <Nav.Link className="verticalNavBar gray700-13">
+                                        <SVGIcon name='info' fill={'#b3b8bd'} className='accountSvgs' />
+                                        <span className="navLinkItem">Help</span>
+                                    </Nav.Link>
+                                </div> 
+                            </Fragment> : ''
                             }
                         </div>
                     </div>
@@ -514,6 +531,8 @@ class Account extends Component {
                         {tabId === 'collections' ? <AccountCollections userState={userState} /> : ''}
 
                         {tabId === 'usersroles' ? <AccountUsers userState={userState} /> : ''}
+
+                        {tabId === 'members' ? <AccountMembers userState={userState} team={team} teamId={teamId}/> : ''}
 
                         {tabId === 'help' ? <TeamHelp/> : ''}
                     </div>
