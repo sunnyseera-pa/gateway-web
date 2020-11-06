@@ -45,7 +45,8 @@ class HDRRouter extends Component {
                 loggedIn: false,
                 role: 'Reader',
                 id: null,
-                name: null
+                name: null,
+                profileComplete: false
             }
         ],
         isLoading: true,
@@ -70,9 +71,9 @@ class HDRRouter extends Component {
              return Promise.reject(error).then(currentComponent.setState({showError: true}));
         });
 
-        axios
-            .get(baseURL + '/api/v1/auth/status')
-            .then((res) => {
+        axios.get(baseURL + '/api/v1/auth/status')
+            .then(async(res) => {
+                let person = await axios.get(baseURL + '/api/v1/person/' + res.data.data[0].id);
                 this.setState({
                     userState: [
                         {
@@ -80,7 +81,8 @@ class HDRRouter extends Component {
                             role: res.data.data[0].role,
                             id: res.data.data[0].id,
                             name: res.data.data[0].name,
-                            teams: res.data.data[0].teams
+                            teams: res.data.data[0].teams,
+                            profileComplete: person.data.data[0].profileComplete
                         }
                     ],
                     isLoading: false
@@ -126,6 +128,8 @@ class HDRRouter extends Component {
                 <div className='navBarGap'></div>
                 <div className='mainWrap'>
                     <Switch>
+                        {userState[0].loggedIn && !userState[0].profileComplete ? (<Route render={(props) => <Account {...props} userState={userState} profileComplete={false}/>} />) : ''} 
+
                         <Route path='/search' render={(props) => <SearchPage {...props} userState={userState} />} />
                         <Route path='/loginerror' render={(props) => <LoginErrorPage {...props} userState={userState} />} />
                         <Route path='/person/:personID' render={(props) => <PersonPage {...props} userState={userState} />} />
