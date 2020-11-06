@@ -27,7 +27,6 @@ import ActionBar from "../commonComponents/actionbar/ActionBar";
 import { ReactComponent as ChevronRightSvg } from "../../images/chevron-bottom.svg";
 import { ReactComponent as MembersSvg } from "../../images/members.svg";
 import './Dashboard.scss';
-import { ReactComponent as SubBronzeSVG } from "../../images/sub_bronze.svg";
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <a href="" ref={ref} onClick={e => { e.preventDefault(); onClick(e); }} >

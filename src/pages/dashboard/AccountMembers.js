@@ -16,15 +16,14 @@ class AccountMembers extends React.Component {
     constructor(props) {
         super(props)
         this.state.userState = props.userState;
-        this.state.team = props.team;
-        this.state.teamId = props.teamId;
+        this.accountMembers = props.team;
+        this.accountMembersId = props.teamId;
     }
 
     // initialize our state
     state = {
         userState: [],
         isLoading: true,
-        team: "",
         teamId: "",
         members: [],
         userIsManager: false,
@@ -37,9 +36,9 @@ class AccountMembers extends React.Component {
     }
 
     async doMembersCall() {
-        if(this.state.teamId){
+        if(this.accountMembersId){
             this.setState({isLoading: true});
-            await axios.get(baseURL + `/api/v1/teams/${this.state.teamId}/members`)
+            await axios.get(baseURL + `/api/v1/teams/${this.accountMembersId}/members`)
                 .then(async(res) => {
                     this.setState({members: res.data.members});
                     
@@ -139,7 +138,7 @@ class AccountMembers extends React.Component {
                                     <AccountMembersModal
                                         open={showAccountAddMemberModal}
                                         close={this.onShowAccountMembersModal}
-                                        teamId={this.state.teamId}
+                                        teamId={this.accountMembersId}
                                         onMemberAdded={this.onMemberAdded}
                                     >
                                     </AccountMembersModal>
