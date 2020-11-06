@@ -1,7 +1,6 @@
 import React from "react";
-import { Col, Row, Button, Accordion, Card } from "react-bootstrap";
+import { Col, Row, Accordion, Card } from "react-bootstrap";
 import "./Dashboard.scss";
-import ActionBar from "../commonComponents/actionbar/ActionBar";
 
 class AccountAdvancedSearch extends React.Component {
   // initialize our state
@@ -31,7 +30,7 @@ class AccountAdvancedSearch extends React.Component {
   };
 
   render() {
-    const { userState, activeAccordionCard } = this.state;
+    const { activeAccordionCard } = this.state;
 
     return (
       <div>
@@ -162,17 +161,6 @@ class AccountAdvancedSearch extends React.Component {
           </Col>
           <Col sm={1} lg={1} />
         </Row>
-
-        <ActionBar userState={userState}>
-          <Button
-            variant="primary"
-            href="https://atlas-test.uksouth.cloudapp.azure.com/bcrquest/"
-            id="advancedSearchButton"
-            className="white-14-semibold margin-right-16"
-          >
-            Access the advanced search tool
-          </Button>
-        </ActionBar>
       </div>
     );
   }

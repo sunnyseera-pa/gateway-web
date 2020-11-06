@@ -25,7 +25,7 @@ class Login extends React.Component {
                         <Col sm={10} lg={10}>
                             <span className='gray800-14'>
                                 You can sign in or create a new account using your existing
-                                Linkedin, Google or OpenAthens account.
+                                Linkedin, Google or institution account.
                             </span>
                         </Col>
                         <Col sm={1} lg={1} />
