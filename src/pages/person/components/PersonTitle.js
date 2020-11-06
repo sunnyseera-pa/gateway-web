@@ -9,22 +9,21 @@ class PersonTitle extends Component {
 
     constructor(props) {
       super(props) 
-      this.state.data = props.data;
     }
   
     // initialize our state
     state = {
-      data: [],
+      data: this.props.data || [],
       id: this.props.data.id,
-      counter: this.props.data.counter
+      counter: this.props.data.counter || 1
     };
   
     componentDidMount(props) {
       let counter = !this.props.data.counter ? 1 : this.props.data.counter + 1;
-      this.UpdateCounter(this.props.data.id, counter);
+      this.updateCounter(this.props.data.id, counter);
     }
   
-    UpdateCounter = (id, counter) => {
+    updateCounter = (id, counter) => {
       axios.post(baseURL + '/api/v1/counter/update', { id: id, counter: counter });
     }
   
