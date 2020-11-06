@@ -46,6 +46,8 @@ class SSOPage extends Component {
     }
 
     showLogin() {
+        document.body.classList.add("home");
+
         document.getElementById("myModal").style.display = "block";
         document.getElementById("loginWayFinder").style.display = "none";
         document.getElementById("loginButtons").style.display = "block";
