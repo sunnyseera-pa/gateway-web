@@ -11,6 +11,7 @@ import ToolPage from './pages/tool/ToolPage';
 import PersonPage from './pages/person/PersonPage';
 import ProjectPage from './pages/project/ProjectPage';
 import PaperPage from './pages/paper/PaperPage';
+import CoursePage from './pages/course/CoursePage';
 import DatasetPage from './pages/dataset/DatasetPage';
 import SearchPage from './pages/search/SearchPage';
 import CollectionPage from './pages/collections/CollectionPage';
@@ -22,6 +23,7 @@ import Unsubscribe from './pages/dashboard/Unsubscribe';
 import AddEditToolPage from './pages/tool/AddEditToolPage';
 import AddEditProjectPage from './pages/project/AddEditProjectPage';
 import AddEditPaperPage from './pages/paper/AddEditPaperPage';
+import AddEditCoursePage from './pages/course/AddEditCoursePage';
 import AddCollectionPage from './pages/collections/AddCollectionPage';
 import EditCollectionPage from './pages/collections/EditCollectionPage';
 
@@ -158,7 +160,10 @@ class HDRRouter extends Component {
                         {userState[0].loggedIn ? (<Route path='/paper/add' render={(props) => <AddEditPaperPage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/paper/edit/:paperID' render={(props) => <AddEditPaperPage {...props} userState={userState} isEdit="true" /> } />) : ''}
                         <Route path='/paper/:paperID' render={(props) => <PaperPage {...props} userState={userState} />} />
-                        
+
+                        {userState[0].loggedIn ? (<Route path='/course/add' render={(props) => <AddEditCoursePage {...props} userState={userState} /> } />) : ''}
+                        {userState[0].loggedIn ? (<Route path='/course/edit/:courseID' render={(props) => <AddEditCoursePage {...props} userState={userState} isEdit="true" /> } />) : ''}
+                        <Route path='/course/:courseID' render={(props) => <CoursePage {...props} userState={userState} />} />
 
                         {/* Catch all path */}
                         <Redirect to="/search?search=" />

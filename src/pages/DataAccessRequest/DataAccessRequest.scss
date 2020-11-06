@@ -347,7 +347,8 @@ input[type=radio]:disabled {
 	flex-flow: row nowrap;
 	align-items: center;
 	box-sizing: border-box;
-	position: fixed;
+	position: sticky !important;
+	margin-bottom: -30px;
 	padding: 0 24px;
 	left: 0;
 	bottom: 0;
@@ -600,7 +601,7 @@ input[type='checkbox']:after {
     max-height: 314px !important;	
     box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03) !important;
     background-color: $white !important;
-	padding: 12px 16px 12px 16px !important;
+		padding: 12px 16px 12px 16px !important;
 
 	option {
 		padding: 4px 0;

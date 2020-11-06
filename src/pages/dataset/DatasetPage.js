@@ -36,7 +36,6 @@ import TechnicalMetadata from "./components/TechnicalMetadata";
 import TechnicalDetailsPage from "./components/TechnicalDetailsPage";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
-import AddToCollection from "../commonComponents/addToCollection/AddToCollection";
 
 import UserMessages from "../commonComponents/userMessages/UserMessages";
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
@@ -46,6 +45,8 @@ import "react-tabs/style/react-tabs.css";
 import './Dataset.scss';
 import DataUtitlityFramework from "./components/DataUtilityFramework";
 import DataQuality from "./components/DataQuality";
+import ActionBar from "../commonComponents/actionbar/ActionBar";
+import ResourcePageButtons from "../commonComponents/resourcePageButtons/ResourcePageButtons";
 
 var baseURL = require("../commonComponents/BaseURL").getURL();
 
@@ -220,8 +221,19 @@ class DatasetDetail extends Component {
   getAdditionalObjectInfo = async data => {
     let tempObjects = [];
     const promises = data.map(async (object, index) => {
+      if(object.objectType === 'course'){
+        await axios
+        .get(baseURL + "/api/v1/relatedobject/course/" + object.objectId) 
+        .then(res => {
+          tempObjects.push({
+            id: object.objectId,
+            activeflag: res.data.data[0].activeflag
+          });
+        });
+
+      } else {
       await axios
-        .get(baseURL + "/api/v1/relatedobject/" + object.objectId)
+        .get(baseURL + "/api/v1/relatedobject/" + object.objectId) 
         .then(res => {
           tempObjects.push({
             id: object.objectId,
@@ -229,6 +241,7 @@ class DatasetDetail extends Component {
             activeflag: res.data.data[0].activeflag
           });
         });
+      }
     });
     await Promise.all(promises);
     this.setState({ objects: tempObjects });
@@ -1164,11 +1177,9 @@ class DatasetDetail extends Component {
             />
           </SideDrawer>
 
-          <AddToCollection
-            className="addToCollectionButton"
-            data={data}
-            userState={userState}
-          />
+          <ActionBar userState={userState} showOverride={true}> 
+            <ResourcePageButtons data={data} userState={userState} />
+          </ActionBar>
 
           <DataSetModal
             open={showModal}
