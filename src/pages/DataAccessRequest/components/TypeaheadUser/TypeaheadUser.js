@@ -13,7 +13,8 @@ class TypaheadUser extends React.Component {
       value: [],
       options: [],
       id: props.id,
-      readOnly: props.readOnly || false
+      readOnly: props.readOnly || false,
+      className: `addFormInputTypeAhead ${!_.isEmpty(props.className) ? props.className : ''}`,
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -21,6 +22,12 @@ class TypaheadUser extends React.Component {
   componentDidMount() {
     this.getData();
   }
+
+  componentDidUpdate(prevProps) {
+    if(this.props.className !== prevProps.className) {
+      this.setState({ className: `addFormInputTypeAhead ${this.props.className}` });
+    }
+	}
 
   getData() {
     axios.get(`${baseURL}/api/v1/users`)
@@ -53,7 +60,7 @@ class TypaheadUser extends React.Component {
     return (
       <Typeahead
         id={'test'}
-        className={'addFormInputTypeAhead'}
+        className={this.state.className}
         options={this.state.options}        
         onChange={this.handleChange}
         selected={this.state.value}
