@@ -79,7 +79,7 @@ class Account extends Component {
         activeAccordion: -1,
         datasetAccordion: -1,
         context: {},
-        profileComplete: null
+        profileComplete: true
     };
 
     constructor(props) {
