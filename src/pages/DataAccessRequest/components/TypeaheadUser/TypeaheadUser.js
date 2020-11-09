@@ -25,7 +25,8 @@ class TypaheadUser extends React.Component {
 
   componentDidUpdate(prevProps) {
     if(this.props.className !== prevProps.className) {
-      this.setState({ className: `addFormInputTypeAhead ${this.props.className}` });
+      let classes = `${prevProps.className} ${this.props.className}`;
+      this.setState({ className: classes });
     }
 	}
 

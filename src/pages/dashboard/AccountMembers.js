@@ -24,7 +24,6 @@ class AccountMembers extends React.Component {
     state = {
         userState: [],
         isLoading: true,
-        teamId: "",
         members: [],
         userIsManager: false,
         showAccountAddMemberModal: false
