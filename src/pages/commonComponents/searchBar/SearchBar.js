@@ -200,6 +200,9 @@ class SearchBar extends React.Component {
     } 
 
     showLoginModal() {
+        // 1. add class to body to stop background scroll
+        document.body.classList.add("modal-open");
+
         document.getElementById("myModal").style.display = "block";
         document.getElementById("loginWayFinder").style.display = "none";
         document.getElementById("loginButtons").style.display = "block";
@@ -208,6 +211,8 @@ class SearchBar extends React.Component {
 
         window.onclick = function (event) {
             if (event.target === document.getElementById("myModal")) {
+                // 2. remove class modal-open from body
+                document.body.classList.remove("modal-open");
                 document.getElementById("myModal").style.display = "none";
             }
         }
@@ -248,7 +253,7 @@ class SearchBar extends React.Component {
 
                 <div className="searchBarBackground" id="desktopSearchBar">
                     <Row className="whiteBackground">
-                        <Col lg={4}>
+                        <Col lg={5}>
                             <div className="navBarLogoSpacing">
                                 <a style={{ cursor: 'pointer' }} href={cmsURL} >
                                     <ColourLogoSvg className="ml-4 mt-3" />
@@ -265,7 +270,7 @@ class SearchBar extends React.Component {
                             </div>
                         </Col>
 
-                        <Col lg={8} className="text-right">
+                        <Col lg={7} className="text-right">
                             <div className="nav-wrapper">
                                 <div className="navBarSearchBarSpacing">
                                     <Container>
@@ -347,6 +352,20 @@ class SearchBar extends React.Component {
                                                                 )
                                                             }
                                                             else if(dat.messageType === 'data access request unlinked'){
+                                                                return (
+                                                                    <Fragment key={`message-${index}`}>
+                                                                        <Row className={dat.isRead === 'true' || clearMessage ? "notificationReadBackground" : ''}>
+                                                                                <Col xs={10}>
+                                                                                    <div className="notificationDate">{messageDateString + '\n'}</div>
+                                                                                    <div className="notificationInfoHolder"><span class="notificationInfo">{dat.messageDescription}</span></div> 
+                                                                                </Col>
+                                                                                <Col xs={2}>{dat.isRead === 'false' && !clearMessage ? <SVGIcon name="newnotificationicon" width={20} height={20} visble='true' style={{ float: "right", fill: "#3db28c", paddingRight: "0px", marginRight: "10px", marginTop: "5px" }} fill={"#3db28c"} stroke='none' /> : null}</Col>
+                                                                            </Row>
+                                                                            <Dropdown.Divider style={{ margin: "0px" }} />
+                                                                    </Fragment>
+                                                                )
+                                                            }
+                                                            else if(dat.messageType === 'team unlinked'){
                                                                 return (
                                                                     <Fragment key={`message-${index}`}>
                                                                         <Row className={dat.isRead === 'true' || clearMessage ? "notificationReadBackground" : ''}>
