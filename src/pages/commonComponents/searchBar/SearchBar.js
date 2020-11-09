@@ -200,6 +200,9 @@ class SearchBar extends React.Component {
     } 
 
     showLoginModal() {
+        // 1. add class to body to stop background scroll
+        document.body.classList.add("modal-open");
+
         document.getElementById("myModal").style.display = "block";
         document.getElementById("loginWayFinder").style.display = "none";
         document.getElementById("loginButtons").style.display = "block";
@@ -208,6 +211,8 @@ class SearchBar extends React.Component {
 
         window.onclick = function (event) {
             if (event.target === document.getElementById("myModal")) {
+                // 2. remove class modal-open from body
+                document.body.classList.remove("modal-open");
                 document.getElementById("myModal").style.display = "none";
             }
         }
@@ -248,7 +253,7 @@ class SearchBar extends React.Component {
 
                 <div className="searchBarBackground" id="desktopSearchBar">
                     <Row className="whiteBackground">
-                        <Col lg={4}>
+                        <Col lg={5}>
                             <div className="navBarLogoSpacing">
                                 <a style={{ cursor: 'pointer' }} href={cmsURL} >
                                     <ColourLogoSvg className="ml-4 mt-3" />
@@ -265,7 +270,7 @@ class SearchBar extends React.Component {
                             </div>
                         </Col>
 
-                        <Col lg={8} className="text-right">
+                        <Col lg={7} className="text-right">
                             <div className="nav-wrapper">
                                 <div className="navBarSearchBarSpacing">
                                     <Container>
