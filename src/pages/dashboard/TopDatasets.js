@@ -32,7 +32,7 @@ class TopDatasets extends React.Component {
                             </span>
                         </Col> 
                         <Col sm={3} lg={2} className="gray800-14 noPadding">
-                            <span className="pad-right-0 noPadding">
+                            <span className="pad-right-0 pad-left-16">
                                 {data[1].requests}
                             </span>
                         </Col>
