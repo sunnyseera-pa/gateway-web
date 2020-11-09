@@ -25,22 +25,33 @@ class CollectionCard extends React.Component {
  
     getCounts= async () => {
 
+        let tempDatasetCount = this.state.datasetCount;
+        let tempProjectCount = this.state.projectCount;
+        let tempPaperCount = this.state.paperCount;
+        let tempToolCount = this.state.toolCount;
+        let tempCourseCount = this.state.courseCount;
+
         for (let relatedObject in this.props.data.relatedObjects) { 
             switch (this.props.data.relatedObjects[relatedObject].objectType) {
                 case "dataset":
-                    this.state.datasetCount++
+                    tempDatasetCount++
+                    this.setState({datasetCount: tempDatasetCount})
                 break;
                 case "project":
-                    this.state.projectCount++
+                    tempProjectCount++
+                    this.setState({projectCount: tempProjectCount})
                 break;
                 case "paper":
-                    this.state.paperCount++
+                    tempPaperCount++
+                    this.setState({paperCount: tempPaperCount})
                 break;
                 case "tool":
-                    this.state.toolCount++
+                    tempToolCount++
+                    this.setState({toolCount: tempToolCount})
                 break;
                 case "course":
-                    this.state.courseCount++
+                    tempCourseCount++
+                    this.setState({courseCount: tempCourseCount})
                 break;
                 
             }
