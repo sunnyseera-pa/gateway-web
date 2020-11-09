@@ -9,6 +9,10 @@
 	margin-bottom: 16px;
 }
 
+.section-not-inreview {
+	color: $gray-600 !important;
+}
+
 .section-header-active {
 	cursor: pointer !important;
 	opacity: 1 !important;
@@ -343,7 +347,8 @@ input[type=radio]:disabled {
 	flex-flow: row nowrap;
 	align-items: center;
 	box-sizing: border-box;
-	position: fixed;
+	position: sticky !important;
+	margin-bottom: -30px;
 	padding: 0 24px;
 	left: 0;
 	bottom: 0;
@@ -365,7 +370,7 @@ input[type=radio]:disabled {
 		}
 
 		.sla {
-			width: min-content;
+			width: max-content;
 			display: inline-block;
 			margin-right: 24px;
 		}
@@ -376,6 +381,10 @@ input[type=radio]:disabled {
 		justify-content: flex-end;
 		flex: 1 0 0;
 		margin-left: auto;
+
+		& > * {
+			margin-right: 6px;
+		}
 	}
 
 	&-actions > button {
@@ -514,12 +523,12 @@ input[type=radio]:disabled {
 	text-decoration: underline !important;
 }
 
-.panConfirmDatasets {
+.panConfirm {
 	text-align: right;
-	margin-top: 8px;
+	margin-top: 16px;
 }
 
-.panConfirmDatasets > button {
+.panConfirm > button {
 	height: 40px;
 	width: 85px;
 }
@@ -584,4 +593,47 @@ input[type='checkbox']:after {
 	visibility: visible;
 	border: solid 2px #d6d6d6;
 	content: '';
+}
+
+.makeADecisionDropdown {
+	position: relative;
+    width: 320px !important;
+    max-height: 314px !important;	
+    box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03) !important;
+    background-color: $white !important;
+		padding: 12px 16px 12px 16px !important;
+
+	option {
+		padding: 4px 0;
+	}
+}
+
+.makeADecisionHeader {
+	position: sticky;
+	top: 0;
+	background-color: $white;
+	z-index: 1;
+	padding-left: 16px;
+	padding-right: 16px;
+
+}
+
+.review-phase {
+	margin-bottom: 20px;
+	position: relative;
+
+	option {
+		padding: 4px 0;
+	}
+
+	&:after {
+		position: absolute;
+    bottom: -8px;
+    left: -15px;
+    height: 1px;
+		background: $gray-pale;
+		width: 316px;
+		z-index: 1000;
+		content: '';
+	}
 }

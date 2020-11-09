@@ -6,7 +6,9 @@ import { Row, Col, Button, Modal, Tabs, Tab, DropdownButton, Dropdown } from 're
 
 import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading'
+import ActionModal from '../commonComponents/ActionModal/ActionModal'
 import './Dashboard.scss'; 
+import _ from 'lodash';
 
 import { Event, initGA } from '../../tracking';
 
@@ -28,7 +30,11 @@ class AccountProjects extends React.Component {
         activeCount: 0,
         reviewCount: 0,
         archiveCount: 0,
-        rejectedCount: 0
+        rejectedCount: 0,
+		actionModalConfig: {
+            id: '',
+            title: 'Reject this Project?'
+        }
     };
 
     handleSelect = (key) => {
@@ -96,10 +102,11 @@ class AccountProjects extends React.Component {
         this.setState({ rejectedCount: rejectedCount});
     }
 
-    rejectObject = (id) => {
+    rejectObject = (id, rejectionReason) => {
         axios.patch(baseURL + '/api/v1/projects/'+ id, {
             id: id,
-            activeflag: "rejected"
+            activeflag: "rejected",
+            rejectionReason: rejectionReason
         })
         .then((res) => {
             this.approveProject();
@@ -122,8 +129,17 @@ class AccountProjects extends React.Component {
         });
     }
 
+    toggleActionModal = () => {
+		this.setState((prevState) => {
+			return {
+				showActionModal: !prevState.showActionModal,
+				actionModalConfig: this.state.actionModalConfig
+			};
+		});
+	};
+
     render() {
-        const { userState, key, isLoading, data, activeCount, reviewCount, archiveCount, rejectedCount } = this.state;
+        const { userState, key, isLoading, data, activeCount, reviewCount, archiveCount, rejectedCount, showActionModal, actionModalConfig } = this.state;
 
         if (isLoading) {
             return (
@@ -249,7 +265,8 @@ class AccountProjects extends React.Component {
                                                                     <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
                                                                         <Dropdown.Item href={'/project/edit/' + dat.id} className="black-14">Edit</Dropdown.Item>
                                                                         <Dropdown.Item href='#' onClick={() => this.approveProject(dat.id)} className="black-14">Approve</Dropdown.Item>
-                                                                        <RejectButton id={dat.id} rejectObject={this.rejectObject}/>
+                                                                        <Dropdown.Item href='#' onClick={() => this.toggleActionModal()} className="black-14">Reject</Dropdown.Item>
+                                                                        <ActionModal id={dat.id} open={showActionModal} context={actionModalConfig}  updateApplicationStatus={this.rejectObject} close={this.toggleActionModal}/>
                                                                     </DropdownButton>
                                                                     : ""}
                                                             </Col>
@@ -333,7 +350,8 @@ class AccountProjects extends React.Component {
                                                                 <DropdownButton variant="outline-secondary" alignRight title="Actions" className="floatRight">
                                                                     <Dropdown.Item href={'/project/edit/' + dat.id} className="black-14">Edit</Dropdown.Item>
                                                                     <Dropdown.Item href='#' onClick={() => this.approveProject(dat.id)} className="black-14">Approve</Dropdown.Item>
-                                                                    <RejectButton id={dat.id} rejectObject={this.rejectObject}/>
+                                                                    <Dropdown.Item href='#' onClick={() => this.toggleActionModal()} className="black-14">Reject</Dropdown.Item>
+                                                                    <ActionModal id={dat.id} open={showActionModal} context={actionModalConfig}  updateApplicationStatus={this.rejectObject} close={this.toggleActionModal}/>
                                                                 </DropdownButton>
                                                             </Col>
                                                         </Row>
@@ -346,37 +364,11 @@ class AccountProjects extends React.Component {
                             }
                         })()}
                     </Col>
-
                     <Col xs={1}></Col>
                 </Row>
             </div>
         );
     }
-}
-
-function RejectButton(props) {
-    const [show, setShow] = useState(false);
-
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-    const rejectObject = () => props.rejectObject(props.id);
-
-    return (
-        <>
-            <Dropdown.Item href="#" onClick={handleShow} className="black-14">Reject</Dropdown.Item>
-
-            <Modal show={show} onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Reject this project?</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>Let the person who added this know know why their submission is being rejected, especially if there’s anything in particular they should correct before re-submitting.</Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>Cancel</Button>
-                    <Button variant="primary" onClick={rejectObject}>Reject and send message</Button>
-                </Modal.Footer>
-            </Modal>
-        </>
-    );
 }
 
 function DeleteButton(props) {

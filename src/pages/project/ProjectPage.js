@@ -100,7 +100,7 @@ class ProjectDetail extends Component {
   getDataSearchFromDb = () => {
     this.setState({ isLoading: true });
     axios
-      .get(baseURL + "/api/v1/projects/" + this.props.match.params.projectID)
+      .get(baseURL + "/api/v1/projects/" + this.props.match.params.projectID) 
       .then( async (res) => {
         this.setState({
           data: res.data.data[0],
@@ -149,8 +149,20 @@ class ProjectDetail extends Component {
     let tempObjects = [];
     if(data){
     const promises = data.map(async (object, index) => {
+
+      if(object.objectType === 'course'){
+        await axios
+        .get(baseURL + "/api/v1/relatedobject/course/" + object.objectId) 
+        .then(res => {
+          tempObjects.push({
+            id: object.objectId,
+            activeflag: res.data.data[0].activeflag
+          });
+        });
+
+      } else {
       await axios
-        .get(baseURL + "/api/v1/relatedobject/" + object.objectId)
+        .get(baseURL + "/api/v1/relatedobject/" + object.objectId) 
         .then(res => {
           tempObjects.push({
             id: object.objectId,
@@ -158,6 +170,7 @@ class ProjectDetail extends Component {
             activeflag: res.data.data[0].activeflag
           });
         });
+      }
     });
     await Promise.all(promises);
   }
@@ -304,7 +317,7 @@ class ProjectDetail extends Component {
                   </Row>
                   <Row className="mt-3">
                     <Col xs={12}>
-                      <span className="badge-project">
+                      <span className="badge-project"> 
                         <SVGIcon
                           name="newestprojecticon"
                           fill={"#ffffff"}

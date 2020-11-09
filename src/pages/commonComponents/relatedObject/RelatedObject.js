@@ -3,9 +3,10 @@ import axios from 'axios';
 import queryString from 'query-string';
 import { Row, Col, Button, Alert } from 'react-bootstrap';
 import Loading from '../Loading'
-import SVGIcon from '../../../images/SVGIcon'
-import './RelatedObject.scss'; 
-
+import SVGIcon from '../../../images/SVGIcon'  
+import './RelatedObject.scss';  
+import moment from "moment";
+import { ReactComponent as CalendarSvg } from '../../../images/calendaricon.svg'; 
  
 var baseURL = require('../BaseURL').getURL();
 
@@ -17,14 +18,14 @@ class RelatedObject extends React.Component {
         // user: '',
         // updated: '' ,
         data: [],
-        activeLink: true,
+        activeLink: true, 
         onSearchPage: false,
         isLoading: true,
         didDelete: false,
         inCollection: false
     };
 
-    constructor(props) {
+    constructor(props) { 
         super(props)
         this.state.activeLink = props.activeLink;
         this.state.onSearchPage = props.onSearchPage;
@@ -35,42 +36,50 @@ class RelatedObject extends React.Component {
             this.state.inCollection = props.inCollection;
         }
         if (props.data) {
-            this.state.data = props.data || [];
-            //this.state.reviewData = this.state.data.reviews;
+            this.state.data = props.data || []
             this.state.isLoading = false;
         } 
         else if (props.objectId) {
             this.state.relatedObject = props.relatedObject;
             this.state.reason = props.reason;
-            // this.state.user = props.userState[0].name;
-            // this.state.updated = moment().format("DD MMM YYYY");
-            this.getRelatedObjectFromDb(props.objectId);
+            this.getRelatedObjectFromDb(props.objectId, props.objectType);
         }
         else {
             this.state.relatedObject = props.relatedObject;
-            this.getRelatedObjectFromDb(this.state.relatedObject.objectId); 
+            this.getRelatedObjectFromDb(this.state.relatedObject.objectId, this.state.relatedObject.objectType); 
         }
     }
 
-    removeCard = (id, reason) => {
+    removeCard = (id, reason, type) => {
         this.setState({
              reason: reason
         });
     
-        this.getRelatedObjectFromDb(id);
+        this.getRelatedObjectFromDb(id, type);
     }
 
  
-    getRelatedObjectFromDb = (id) => {
+    getRelatedObjectFromDb = (id, type) => {
         //need to handle error if no id is found
         this.setState({ isLoading: true });
-        axios.get(baseURL + '/api/v1/relatedobject/' + id)
-            .then((res) => {
+
+        if(type === 'course'){
+            axios.get(baseURL + '/api/v1/relatedobject/course/' + id)
+            .then((res) => { 
                 this.setState({
                     data: res.data.data[0],
                     isLoading: false
                 });
-            })
+            }) 
+        } else{
+            axios.get(baseURL + '/api/v1/relatedobject/' + id)
+            .then((res) => { 
+                this.setState({
+                    data: res.data.data[0],
+                    isLoading: false
+                });
+            }) 
+        }
     };
  
     removeButton = () => {
@@ -99,7 +108,7 @@ class RelatedObject extends React.Component {
 
         if(this.props.didDelete){
             this.props.updateDeleteFlag()
-            this.removeCard(this.props.objectId, this.props.reason)
+            this.removeCard(this.props.objectId, this.props.reason, this.props.objectType)
         }
         
 
@@ -109,7 +118,7 @@ class RelatedObject extends React.Component {
         }
         else if (this.props.showRelationshipQuestion) {
             rectangleClassName= 'collection-rectangleWithBorder';
-        }
+        } 
         
         return (
             <Row className="resource-card-row"> 
@@ -162,7 +171,7 @@ class RelatedObject extends React.Component {
                                                 <span>Tool</span> 
                                             </span>
 
-                                            {!data.categories.category ? '' :  
+                                            {!data.categories.category ? '' :   
                                                 activeLink === true ? 
                                                     onSearchPage === true ?
                                                         <span className="pointer" onClick={event => this.updateOnFilterBadge('toolCategoriesSelected', data.categories.category)}><div className="badge-tag">{data.categories.category}</div></span> :
@@ -404,6 +413,100 @@ class RelatedObject extends React.Component {
                                     </Row>
                                 );
                             }
+                            else if (data.type === 'course') { 
+                                return(
+                                    <Row className="noMargin">
+                                        <Col sm={10} lg={10} className="pad-left-24">
+                                            {activeLink===true ?
+                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/course/' + data.id} >{data.title}</a>
+                                            : <span className="black-bold-16">{data.title}</span> }
+                                            <br />
+                                            <span className="gray800-14">{data.provider}</span>
+                                            <Row className="margin-top-8">
+                                                <Col sm={12} lg={12}>
+                                            <CalendarSvg className="calendarSVG"/>
+                                            <span className="gray800-14 margin-left-10">
+                                            
+                                            {(() => {
+                                                let courseRender = []
+                                                if (onSearchPage === true) { 
+                                                    if (data.courseOptions.startDate) {
+                                                        courseRender.push(<span> Starts {moment(data.courseOptions.startDate).format("dddd Do MMMM YYYY")} </span>);
+                                                    }
+                                                    else {
+                                                        courseRender.push(<span> Flexible dates </span>)
+                                                    }
+                                                    if (data.courseOptions.startDate && data.courseOptions.studyMode) courseRender.push(<span> | {data.courseOptions.studyMode} </span>);
+                                                }
+                                                else {
+                                                    if (data.courseOptions[0].startDate) {
+                                                        courseRender.push(<span> Starts {moment(data.courseOptions[0].startDate).format("dddd Do MMMM YYYY")} </span>);
+                                                    }
+                                                    else {
+                                                        courseRender.push(<span> Flexible dates </span>)
+                                                    }
+                                                    if (data.courseOptions[0].startDate && data.courseOptions[0].studyMode) courseRender.push('|');
+
+                                                    data.courseOptions.map((courseOption, index) => { 
+                                                        courseRender.push(
+                                                            <>
+                                                              {index > 0 ? <span> ,{courseOption.studyMode} </span> :  <span> {courseOption.studyMode} </span> }
+                                                            </>
+                                                        )
+                                                    })
+                                                }
+                                                return <>{courseRender}</>
+                                             })()}
+            
+                                            </span>
+                                            </Col>
+                                            </Row>
+                                        </Col> 
+                                        <Col sm={2} lg={2} className="pad-right-24">
+                                            {this.props.showRelationshipQuestion ? <Button variant="medium" className="soft-black-14" onClick={this.removeButton} ><SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />Remove</Button> : ''}
+                                        </Col>
+                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-16">
+                                            <span className="badge-course">
+                                                <SVGIcon name="educationicon" fill={"#ffffff"} className="badgeSvg mr-2" viewBox="-2 -2 22 22" /> 
+                                                <span>Course</span>
+                                            </span>
+
+                                            {!data.award || data.award.length <= 0 ? '' : data.award.map((award) => {
+                                                if (activeLink===true){
+                                                    if (onSearchPage === true) { 
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('courseAwardSelected', award)}><div className="badge-tag">{award}</div></span>
+                                                    }
+                                                    else { 
+                                                        return <a href={'/search?search=&tab=Courses&courseaward=' + award}><div className="badge-tag">{award}</div></a>
+                                                    }
+                                                }
+                                                else {
+                                                    return <div className="badge-tag">{award}</div>
+                                                }
+                                            })}
+
+                                            {!data.domains || data.domains.length <= 0 ? '' : data.domains.map((domain) => {
+                                                if (activeLink===true){
+                                                    if (onSearchPage === true) {
+                                                        return <span className="pointer" onClick={event => this.updateOnFilterBadge('courseDomainsSelected', domain)}><div className="badge-tag">{domain}</div></span>
+                                                    }
+                                                    else {
+                                                        return <a href={'/search?search=&tab=Courses&coursedomains=' + domain}><div className="badge-tag">{domain}</div></a>
+                                                    }
+                                                }
+                                                else {
+                                                    return <div className="badge-tag">{domain}</div>
+                                                }
+                                            })}
+                                        </Col>  
+                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-24 pad-bottom-16">
+                                            <span className="gray800-14">
+                                                {data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}
+                                            </span>
+                                        </Col> 
+                                    </Row>  
+                                );
+                            }
                             else { //default to dataset
                                 var phenotypesSelected = queryString.parse(window.location.search).phenotypes ? queryString.parse(window.location.search).phenotypes.split("::") : [];
                                 var searchTerm = queryString.parse(window.location.search).search ? queryString.parse(window.location.search).search : '';
@@ -444,7 +547,7 @@ class RelatedObject extends React.Component {
                                             })()}
 
                                             {!phenotypesSelected || phenotypesSelected.length <= 0 ? '' : phenotypesSelected.map((phenotype) => {
-                                                if (phenotypesSeached.length === 0 || phenotypesSeached[0].name !== phenotype) {
+                                                if (data.datasetfields.phenotypes.find(phenotypeCheck => phenotypeCheck.name.toLowerCase() === phenotype.toLowerCase())) {
                                                     if (activeLink===true){
                                                         if (onSearchPage === true) { 
                                                             return <span className="pointer" onClick={event => this.updateOnFilterBadge('phenotypesSelected', phenotype)}><div className="badge-phenotype">Phenotype: {phenotype}</div></span>

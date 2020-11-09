@@ -35,7 +35,7 @@ class TopSearches extends React.Component {
                         </Col> 
                         <Col sm={5} lg={4} className="gray800-14">
                             <span style={{"paddingRight":"0px"}}>
-                            {(data.datasets || 0) + ' datasets, ' + (data.tools || 0) + ' tools, ' + (data.projects || 0) + ' projects, ' + (data.papers || 0) + ' papers'}
+                            {(data.datasets || 0) + ' datasets, ' + (data.tools || 0) + ' tools, ' + (data.projects || 0) + ' projects, ' + (data.courses || 0) + ' courses, ' + (data.papers || 0) + ' papers'}
                             </span>
                         </Col>
                 </Row>

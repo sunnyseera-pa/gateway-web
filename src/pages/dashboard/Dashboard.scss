@@ -2,15 +2,33 @@
 @import '../../css/typography';
 @import '../../css/mixins';
 
+
+.main-card {
+  background: $white;
+  box-sizing: border-box;
+  padding: 25px;
+}
+
+.container-wrap {
+  display: flex;
+  flex-wrap: wrap
+}
+
 .account-menu {
   background-color: $white;
   height: min-content;
   position: -webkit-sticky; /* Safari */
   position: sticky;
-  top: 46px;
+  top: 81px;
   width: 100%;
   min-width: 110px;
-  margin-top: 46px;
+}
+
+.accountMenuHolder {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+    background-color: $white;
+    height: 100v
 }
 
 
@@ -58,7 +76,7 @@
 
 .verticalNavBar {
   margin: 0;
-  padding: 15px 10px 15px 15px !important;
+  padding: 15px 10px 15px 20px !important;
   background: #fff;
   border: 0;
 }
@@ -295,3 +313,43 @@
     margin-left: 15px;
     margin-right: 12px;
   }
+
+
+.teamSelectorMenu {
+    width: 100%;
+    transform: translate(0px, 50px) !important;
+    box-sizing: border-box;
+}
+
+.teamSelectorHeader {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 16px 13px 16px;
+    border-bottom: 1px solid #e7e9ed;
+    border-top: 1px solid #e7e9ed
+}
+
+.eyeColumn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eye {
+  background: white;
+  height: 25px;
+  width: 27px;
+  padding: 0px;
+  outline: none;
+  border-style: none;
+}
+
+.eye:focus {
+  outline: 0;
+}
+
+.eyeFaded {
+  opacity: 0.7;
+}

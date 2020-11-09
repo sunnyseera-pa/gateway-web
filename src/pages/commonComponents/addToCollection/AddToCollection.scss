@@ -33,7 +33,7 @@
   
 .addToCollectionItem:hover {
     background-color: $gray-200 !important;
-  }
+}
 
 .checkSvg {
   float: right;
@@ -45,4 +45,8 @@
   @include mq("phablet",max) {
     transform: translate(0px, -20px) !important;
   }
+}
+
+.linkToTechnicalDetails {
+  background: $gray-200;
 }
