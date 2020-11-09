@@ -325,6 +325,34 @@
     margin-right: 12px;
   }
 
+  .colOneTerm{
+    float: left;
+    padding-left: 15px; 
+  }
+
+  .resultBox {
+    width: 100%;
+    background-color: $white;
+    padding: 12px;
+    margin-left: 0px !important;
+    border-top: #e7e9ed solid 1px;
+  }
+
+  .resultsPadding {
+    padding: 12px 12px 12px 12px !important;
+  }
+
+  .dashboardHeader {
+    background-color: $white;
+    width: 100%;
+    padding: 12px 12px;
+    margin-left: 0px !important;
+  }
+
+  .noDars{
+    text-align: center;
+    margin-top: 0.5px;
+  }
 
 .teamSelectorMenu {
     width: 100%;
