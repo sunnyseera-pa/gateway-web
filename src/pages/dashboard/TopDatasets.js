@@ -10,12 +10,7 @@ class TopDatasets extends React.Component {
 
     constructor(props) {
         super(props)
-        //binding the method to be able to use state
         this.state.data = props.data;
-    }
- 
-    componentDidMount(){
-        this.setState({state:this.state})
     }
  
     render() {
@@ -23,10 +18,7 @@ class TopDatasets extends React.Component {
         
         return (
             <Fragment> 
-                <Row 
-                // className="entryBox"
-                className="resultBox"
-                > 
+                <Row className="resultBox"> 
                         <Col sm={5} lg={6} className="gray800-14 noPadding" style={{"float":"left", "paddingLeft":"0px"}}>
                             <a href={"/dataset/" + data[0]}  > 
                                 <span className="colOneTerm gray800-14 pointer noPadding">
