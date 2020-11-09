@@ -30,44 +30,40 @@ class TechnicalMetadata extends React.Component {
     const { technicalMetadata } = this.state;
 
     return (
-      <div>
-        <div>
-          <Row className="entryBox heightDataClass alignCenter pad-bottom-24">  
-            <Col sm={11} lg={11}>
-              <Row>
-                <TableSvg className="margin-top-2" />
+      <Row className="entryBox heightDataClass alignCenter pad-bottom-24">  
+        <Col sm={11} lg={11}>
+          <Row>
+            <TableSvg className="margin-top-2" />
 
-                <span className="pad-left-8 black-18 pointer"                 
-                onClick={() =>
-                  this.props.doUpdateDataClassOpen(this.state.index)
-                }>
-                  {technicalMetadata ? technicalMetadata.label : ""}
-                </span>
-              </Row>
-              <Row className="mt-2">
-                <p className="gray800-14">
-                  {technicalMetadata && technicalMetadata.description && technicalMetadata.description !== null
-                    ? technicalMetadata.description.substr(0, 220) +
-                      (technicalMetadata.description.length > 220 ? "..." : "")
-                    : ""}
-                </p>
-              </Row>
-            </Col>
-            <Col sm={1} lg={1} className="alignSelfCenter">
-              <span
-                onClick={() =>
-                  this.props.doUpdateDataClassOpen(this.state.index)
-                }
-              >
-                <ChevronRightSvg
-                  fill={"#475da7"}
-                  className="dataClassArrow pointer" 
-                   />
-              </span>
-            </Col>
+            <span className="pad-left-8 black-18 pointer"                 
+            onClick={() =>
+              this.props.doUpdateDataClassOpen(this.state.index)
+            }>
+              {technicalMetadata ? technicalMetadata.label : ""}
+            </span>
           </Row>
-        </div>
-      </div>
+          <Row className="mt-2">
+            <p className="gray800-14">
+              {technicalMetadata && technicalMetadata.description && technicalMetadata.description !== null
+                ? technicalMetadata.description.substr(0, 220) +
+                  (technicalMetadata.description.length > 220 ? "..." : "")
+                : ""}
+            </p>
+          </Row>
+        </Col>
+        <Col sm={1} lg={1} className="alignSelfCenter">
+          <span
+            onClick={() =>
+              this.props.doUpdateDataClassOpen(this.state.index)
+            }
+          >
+            <ChevronRightSvg
+              fill={"#475da7"}
+              className="dataClassArrow pointer" 
+                />
+          </span>
+        </Col>
+      </Row>
     );
   }
 }
