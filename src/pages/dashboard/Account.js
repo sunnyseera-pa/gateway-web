@@ -78,7 +78,8 @@ class Account extends Component {
         showModal: false,
         activeAccordion: -1,
         datasetAccordion: -1,
-        context: {}
+        context: {},
+        profileComplete: null
     };
 
     constructor(props) {
@@ -102,6 +103,9 @@ class Account extends Component {
             this.state.team = 'user';
             localStorage.setItem('HDR_TEAM', 'user');
         }
+        if(_.has(props, 'profileComplete')){
+            this.state.profileComplete = props.profileComplete;
+        }
     }
 
     componentDidMount() {
@@ -123,6 +127,9 @@ class Account extends Component {
                 this.toggleNav(tab);
             }
         }  
+        if (!this.state.profileComplete){
+            this.setState({tabId: 'youraccount'})
+        }
         window.addEventListener('beforeunload', this.componentCleanup);
     }
 
@@ -161,6 +168,9 @@ class Account extends Component {
                     activeAccordion: (values.tab === 'dataaccessrequests' || values.tab === 'workflows') ? '0' : -1
                 });
             }
+        }
+        if (!this.state.profileComplete){
+            this.setState({tabId: 'youraccount'})
         }
     }
 
