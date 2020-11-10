@@ -367,8 +367,8 @@ class PublicAnalyticsDashboard extends React.Component {
                                     <Col sm={12} lg={12} className="resultsPadding">
                                         <Row className="dashboardHeader entrybox gray800-14-bold">
                                             <Col sm={5} lg={6} className="noPadding">Dataset </Col >
-                                            <Col sm={4} lg={4} className="noPadding">Custodian</Col>
-                                            <Col sm={3} lg={2} className="noPadding">Requests</Col>
+                                            <Col sm={4} lg={4} className="pad-right-0 pad-left-16">Custodian</Col>
+                                            <Col sm={3} lg={2} className="pad-right-0 pad-left-16">Requests</Col>
                                         </Row>
                                         <Row>
                                             <Col sm={12} lg={12}>
