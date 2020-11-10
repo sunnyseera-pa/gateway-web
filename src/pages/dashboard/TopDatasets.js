@@ -27,7 +27,7 @@ class TopDatasets extends React.Component {
                             </a> 
                         </Col>
                         <Col sm={4} lg={4} className="gray800-14 noPadding">
-                            <span style={{"float":"left"}} className="noPadding">
+                            <span style={{"float":"left"}} className="pad-right-0 pad-left-16">
                                 {data[1].publisher}
                             </span>
                         </Col> 
