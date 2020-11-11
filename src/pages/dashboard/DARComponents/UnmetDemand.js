@@ -43,6 +43,9 @@ class UnmetDemand extends React.Component {
             case 'project':
                 numResults = data.maxProjects || 0;
                 break;
+            case 'course':
+                numResults = data.maxCourses || 0;
+                break;
             case 'paper':
                 numResults = data.maxPapers || 0;
                 break;
@@ -99,7 +102,9 @@ class UnmetDemand extends React.Component {
                                             {data.entity == 'tool' ? null : <br />}
                                             {data.entity == 'project' ? null : <span className="gray700-13">{data.maxProjects || 0} projects</span>}
                                             {data.entity == 'project' ? null : <br />}
-                                            {data.entity == 'paper' ? null : <span className="gray700-13">{data.maxPapers || 0} paper</span>}
+                                            {data.entity == 'course' ? null : <span className="gray700-13">{data.maxCourses || 0} courses</span>}
+                                            {data.entity == 'course' ? null : <br />}
+                                            {data.entity == 'paper' ? null : <span className="gray700-13">{data.maxPapers || 0} papers</span>}
                                             {data.entity == 'paper' ? null : <br />}
                                             {data.entity == 'person' ? null : <span className="gray700-13">{data.maxPeople || 0} people</span>}
                                         </Col>
