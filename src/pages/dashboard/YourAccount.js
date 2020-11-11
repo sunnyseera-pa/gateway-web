@@ -213,7 +213,7 @@ const YourAccountForm = (props) => {
             firstname: props.data.firstname,
             lastname: props.data.lastname,
             email: props.userdata.email,
-            bio: props.data.bio,
+            bio: props.data.bio || [],
             link: props.data.link,
             orcid: props.data.orcid,
             emailNotifications: initialEmailNotifications, 
