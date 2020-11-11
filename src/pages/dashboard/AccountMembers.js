@@ -83,7 +83,7 @@ class AccountMembers extends React.Component {
                     <Col xs={1}></Col>
                     <Col xs={10}>
                         <Row className="accountHeader">
-                            <Col sm={12} md={8}>
+                            <Col sm={12} md={9}>
                                 <Row className="">
                                     <span className="black-20">Members</span>
                                 </Row>
@@ -101,7 +101,7 @@ class AccountMembers extends React.Component {
                                 </Row>
                             </Col>
 
-                            <Col sm={12} md={4} style={{ textAlign: "right" }}>
+                            <Col sm={12} md={3} style={{ textAlign: "right" }}>
                                 {this.state.userIsManager ? <Button variant="primary" className="addButton" onClick={e => this.onShowAccountMembersModal()} >
                                     + Add a new member
                                 </Button> : ''}
