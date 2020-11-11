@@ -80,7 +80,7 @@ class CollectionCard extends React.Component {
                             </Row>
 
                             <Row className="noMargin">
-                                <span className="gray800-14">{people.length <= 48 ? people : people.slice(0, 48) + '...'}</span> 
+                                <span className="gray800-14">{people.length <= 40 ? people : people.slice(0, 40) + '...'}</span> 
                             </Row>
                         </div>
 

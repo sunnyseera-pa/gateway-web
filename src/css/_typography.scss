@@ -11,7 +11,7 @@ h6 {
 }
 
 h1 {
-  font-size: 18px;
+  font-size: 18px !important;
 }
 
 h2,
@@ -141,8 +141,8 @@ h6 {
   @include font-source(13px, $gray-700, $font-weight-semibold);
 }
 
-.gray600-14 {
-  @include font-source(14px, $gray-600, $font-weight-semibold);
+.gray-600-14 {
+  @include font-source(14px, $gray-600 , $font-weight-semibold); 
 }
 
 .gray700-12 {
