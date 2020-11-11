@@ -6,7 +6,6 @@ import Loading from '../commonComponents/Loading';
 import '../../css/styles.scss'
 import './Dashboard.scss'; 
 import AccountMembersModal from './AccountMemberModal'
-import _ from 'lodash';
 import { initGA } from '../../tracking';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();

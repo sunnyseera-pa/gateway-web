@@ -364,7 +364,7 @@ input[type='checkbox']:checked:after {
   border: solid 2px #d6d6d6;
   background-color: $white;
   position: relative;
-  padding-left: 3px;
+  // padding-left: 3px;
   content: url(../images/wee-square.svg);
   display: inline-block;
   visibility: visible;
