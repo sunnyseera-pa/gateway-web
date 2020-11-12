@@ -48,6 +48,7 @@ import DataUtitlityFramework from "./components/DataUtilityFramework";
 import DataQuality from "./components/DataQuality";
 import ActionBar from "../commonComponents/actionbar/ActionBar";
 import ResourcePageButtons from "../commonComponents/resourcePageButtons/ResourcePageButtons";
+import DatasetAboutCard from './components/DatasetAboutCard';
 
 var baseURL = require("../commonComponents/BaseURL").getURL();
 
@@ -56,6 +57,7 @@ class DatasetDetail extends Component {
   state = {
     id: "",
     data: {},
+    v2data: {},
     technicalMetadata: [],
     collections: [],
     dataClassOpen: -1,
@@ -83,7 +85,7 @@ class DatasetDetail extends Component {
         id: "",
         authors: [],
         activeflag: ""
-      }
+      } 
     ],
     showDrawer: false,
     showModal: false,
@@ -138,6 +140,7 @@ class DatasetDetail extends Component {
       .then( async (res) => {
         this.setState({
           data: res.data.data[0],
+          v2data: res.data.data[0].datasetv2,
           isLoading: false
         });
         this.getTechnicalMetadata();
@@ -348,6 +351,7 @@ class DatasetDetail extends Component {
     const {
       searchString,
       data,
+      v2data,
       technicalMetadata,
       isLoading,
       userState,
@@ -370,6 +374,8 @@ class DatasetDetail extends Component {
         </Container>
       );
     }
+
+    // console.log(`v2data: - ${JSON.stringify(v2data, null, 2)}`)
 
     if (
       data.relatedObjects === null ||
@@ -624,7 +630,19 @@ class DatasetDetail extends Component {
                         </Row>
                       )}
 
-                      <Row className="mt-2">
+                        {/* V2 DATASETS */}
+                      <DatasetAboutCard section='Details' v2data={v2data}/>
+                      {/* <DatasetAboutCard section='Coverage' v2data={v2data}/>
+                      <DatasetAboutCard section='Formats and standards' v2data={v2data}/>
+                      <DatasetAboutCard section='Provenance' v2data={v2data}/>
+                      <DatasetAboutCard section='Data access request' v2data={v2data}/>
+                      <DatasetAboutCard section='Related resources' v2data={v2data}/> */}
+
+
+
+
+
+                      {/* <Row className="mt-2">
                         <Col sm={12}>
                           <div className="rectangle">
                             <Row className="gray800-14-bold">
@@ -679,9 +697,9 @@ class DatasetDetail extends Component {
                             </Row>
                           </div>
                         </Col>
-                      </Row>
+                      </Row> */}
 
-                      <Row className="mt-2">
+                      {/* <Row className="mt-2">
                         <Col sm={12}>
                           <div className="rectangle">
                             <Row className="gray800-14-bold">
@@ -733,9 +751,9 @@ class DatasetDetail extends Component {
                             </Row>
                           </div>
                         </Col>
-                      </Row>
+                      </Row> */}
 
-                      <Row className="mt-2">
+                      {/* <Row className="mt-2">
                         <Col sm={12}>
                           <div className="rectangle">
                             <Row className="gray800-14-bold">
@@ -799,9 +817,11 @@ class DatasetDetail extends Component {
                             </Row>
                           </div>
                         </Col>
-                      </Row>
+                      </Row> */}
 
-                      <Row className="mt-2">
+
+
+                      {/* <Row className="mt-2">
                         <Col sm={12}>
                           <div className="rectangle">
                             <Row className="gray800-14-bold">
@@ -864,8 +884,9 @@ class DatasetDetail extends Component {
                             </Row>
                           </div>
                         </Col>
-                      </Row>
+                      </Row> */}
 
+{/* {console.log(`here - ${JSON.stringify(data.datasetfields, null, 2)}`)} */}
                       {data.datasetfields.phenotypes !== "undefined" &&
                       data.datasetfields.phenotypes.length > 0 ? (
                         <Fragment>
@@ -997,7 +1018,7 @@ class DatasetDetail extends Component {
                         </Fragment>
                       ) : (
                         ""
-                      )}
+                      )} 
                     </Tab>
 
                     <Tab eventKey="TechDetails" title={`Technical details`}> 
@@ -1072,7 +1093,7 @@ class DatasetDetail extends Component {
                         ) : (
                           <Row style={{ width: "-webkit-fill-available" }}>
                             <Col sm={12} lg={12}>
-                              <TechnicalDetailsPage
+                              <TechnicalDetailsPage 
                                 technicalMetadata={
                                   technicalMetadata[dataClassOpen]
                                 }

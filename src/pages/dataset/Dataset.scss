@@ -12,6 +12,17 @@
   z-index: 1;
 }
 
+.datasetToolTip{
+  width: 275px;
+    border-radius: 8px;
+    background-color: #232f34;
+    padding: 8px;
+    margin: 10px 0 16.5px 42px;
+    position: absolute;
+    top: 0%;
+    z-index: 1;
+}
+
 .variableBox { 
     background-color: $white;
     padding: 30px;
