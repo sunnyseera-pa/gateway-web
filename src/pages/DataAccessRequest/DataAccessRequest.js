@@ -574,18 +574,13 @@ class DataAccessRequest extends Component {
 			try {
 				let { _id } = this.state;
 				// 1. POST
-				const response = await axios.post(`${baseURL}/api/v1/data-access-request/${_id}`, {});
+				await axios.post(`${baseURL}/api/v1/data-access-request/${_id}`, {});
 				const lastSaved = DarHelper.saveTime();
 				this.setState({ lastSaved });
-				let message = {
-					type: 'success',
-					message: 'Done! Your application was submitted successfully'
-				};
-				window.localStorage.setItem('alert', JSON.stringify(message));
 
 				let alert = {
 					tab: 'submitted',
-					message: 'Your application was submitted successfully',
+					message: this.state.applicationStatus === 'inProgress' ? 'Your application was submitted successfully' : `You have successfully saved amendments to '${this.state.projectName || this.state.datasets[0].name}' application`,
 					publisher: 'user'
 				};
 				this.props.history.push({
