@@ -367,6 +367,8 @@ class DataAccessRequest extends Component {
 		} = datasets[0];
 		let { firstname, lastname } = mainApplicant;
 		let showSubmit = false;
+		let showEdit = false;
+		let submitButtonText = 'Submit application';
 
 		let publisherId = '',
 			workflowEnabled = false;
@@ -429,9 +431,11 @@ class DataAccessRequest extends Component {
 			});
 		}
 
-		// 8. Hide show submit application
+		// 8. Set up action buttons based on context
 		if (applicationStatus === 'inProgress') {
 			showSubmit = true;
+		} else if (applicationStatus === 'inReview' || applicationStatus === 'submitted') {
+			showEdit = true;
 		}
 
 		// 9. Set state
@@ -457,6 +461,8 @@ class DataAccessRequest extends Component {
 			authorIds,
 			projectId,
 			showSubmit,
+			submitButtonText,
+			showEdit,
 			publisherId,
 			workflowEnabled,
 			inReviewMode,
@@ -503,7 +509,6 @@ class DataAccessRequest extends Component {
 			// 2. get totalQuestionAnswered
 			let countedQuestionAnswers = {};
 			let totalQuestions = '';
-
 			// 3. total questions answered
 			if (activePanelId === 'about' || activePanelId === 'files') {
 				countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this);
@@ -512,12 +517,8 @@ class DataAccessRequest extends Component {
 				countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this, this.state.activePanelId, questionAnswers);
 				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered in this section`;
 			}
-
 			// 4. set totalQuestionAnswered
 			this.setState({ totalQuestions });
-
-			if (applicationStatus === 'submitted') return alert('Your application has already been submitted.');
-
 			// 5. remove blank vals from questionAnswers
 			let data = _.pickBy({ ...this.state.questionAnswers, ...questionAnswers }, _.identity);
 			const lastSaved = DarHelper.saveTime();
@@ -568,7 +569,6 @@ class DataAccessRequest extends Component {
 		let inValidMessages = DarValidation.buildInvalidMessages(Winterfell, invalidQuestions);
 		let errors = DarValidation.formatValidationObj(inValidMessages, [...this.state.jsonSchema.questionPanels]);
 		let isValid = Object.keys(errors).length ? false : true;
-		if (this.state.applicationStatus === 'submitted') return alert('Your application has already been submitted.');
 
 		if (isValid) {
 			try {
@@ -1042,6 +1042,15 @@ class DataAccessRequest extends Component {
 		});
 	};
 
+	onEditForm = async () => {
+		this.setState({
+			readOnly: false,
+			showEdit: false,
+			showSubmit: true,
+			submitButtonText: 'Save amendments'
+		});
+	};
+
 	toggleContributorModal = () => {
 		this.setState((prevState) => {
 			return {
@@ -1416,7 +1425,10 @@ class DataAccessRequest extends Component {
 								onNextClick={this.onNextClick}
 								onFormSubmit={this.onFormSubmit}
 								onShowContributorModal={this.toggleContributorModal}
+								onEditForm={this.onEditForm}
 								showSubmit={this.state.showSubmit}
+								submitButtonText={this.state.submitButtonText}
+								showEdit={this.state.showEdit}
 							/>
 						) : (
 							<CustodianActionButtons
