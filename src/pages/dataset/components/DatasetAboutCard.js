@@ -11,24 +11,26 @@ class DatasetAboutCard extends React.Component {
     v2data: {},
     section: '',
     isHovering: false,
-    isHovering1: false,
+    isHovering1: null,
     isHovering2: false
   };
 
   constructor(props) {
-    super(props);
+    console.log(`props - ${JSON.stringify(props.isHovering1, null, 2)}`)
+    super(props); 
     this.state.v2data = props.v2data;
     this.state.section = props.section;
+    this.state.isHovering1 = props.isHovering1;
     this.handleMouseHover = this.handleMouseHover.bind(this);
   }
 
-  // TODO - ADD TOOLTIP TEXT HERE
-  renderRow(label, description, tooltip, hover, hoverkey) {
-    //TODO CHECK IF ITS A STRING OR NOT TO DETERMINE HOW IT SHOULD BE RETURNED
-    // console.log(`description - ${JSON.stringify(description, null, 2)}`)
-    // console.log(`description type - ${typeof description}`)
-    console.log(`hover - ${hover} - ${hoverkey}`)
-    {this.try('isHovering1')}
+  // componentDidUpdate(prevProps) {
+  //   if(this.props.isHovering1 !== prevProps.isHovering1) 
+  //   this.setState({isHovering1 : this.props.isHovering1})
+  // } 
+
+  renderRow(label, description, tooltip, hover, hoverkey) { 
+    // console.log(`hover - ${hover} - ${hoverkey}`)
     return(
       <Row className="mt-2">
         <Col sm={2} className="gray800-14">
@@ -36,11 +38,14 @@ class DatasetAboutCard extends React.Component {
         </Col>
 
         <Col sm={1}> 
+          {/* <InfoSVG />  */}
           {/* <InfoSVG onMouseEnter={this.handleMouseHover} onMouseLeave={this.handleMouseHover} />  */}
           <InfoSVG onMouseEnter={this.handleMouseHover(hover, hoverkey)} onMouseLeave={this.handleMouseHover(hover, hoverkey)} /> 
+          {/* <InfoSVG onMouseEnter={this.props.handleMouseHover} onMouseLeave={this.props.handleMouseHover} />  */}
         </Col>
 
-        {this.state.isHovering && (
+        {/* {this.state.isHovering && ( */}
+        {this.state.isHovering1 && (
           <div className="datasetToolTip">
             <span className="white-13-semibold">
               {tooltip}
@@ -77,7 +82,8 @@ class DatasetAboutCard extends React.Component {
 
   handleMouseHover(hover, hoverkey) {
     console.log(`in mouse hover - ${hover} - ${hoverkey}`)
-    this.setState(this.toggleHoverState(hover, hoverkey));
+    // this.setState(this.toggleHoverState(hover, hoverkey));
+    // this.setState({isHovering1: true })
     // this.toggleHoverState(hover, hoverkey);
   }
 
@@ -102,16 +108,11 @@ class DatasetAboutCard extends React.Component {
   //   };
   // }
 
-  try(hoverkey){
-    console.log(`In try - ${hoverkey}`)
-    // this.setState({isHovering1: true})
-  }
 
   render() {
-    const { v2data, section, isHovering1, isHovering2 } = this.state;
+    const { v2data, section, isHovering1 } = this.state;
 
     console.log(`isHovering1: ${isHovering1}`)
-    console.log(`isHovering2: ${isHovering2}`)
 
     let temporalCoverage = v2data.provenance.temporal.startDate + ' - ' + v2data.provenance.temporal.endDate;
  
@@ -142,13 +143,15 @@ class DatasetAboutCard extends React.Component {
                       )}
                     </Row> */}
                     {/* TODO - ADD EXTRA PADDING BELOW THE SECTION HEADING AS THE TOP ROW IS NOW MT-2 LIKE THE OTHER FIELDS, NOT MT-3 */}
-                    {this.renderRow("DOI", v2data.summary.doiName, "This is not the DOI of the publication(s) associated with the dataset, but rather the DOI of the metadata describing the dataset.", isHovering1, "isHovering1")}
-                    {this.renderRow("Lastest datset release date", v2data.provenance.temporal.distributionReleaseDate, "Date of the latest release of the dataset.", isHovering2, "isHovering2")}
-                    {/* {this.renderRow("Publishing frequency", v2data.provenance.temporal.accrualPeriodicity, "The frequency of publishing new data for this dataset.")}
+                    {this.renderRow("DOI", v2data.summary.doiName, "This is not the DOI of the publication(s) associated with the dataset, but rather the DOI of the metadata describing the dataset.")}
+                    {/* {this.renderRow("DOI", v2data.summary.doiName, "This is not the DOI of the publication(s) associated with the dataset, but rather the DOI of the metadata describing the dataset.", isHovering1, "isHovering1")} */}
+                    {this.renderRow("Lastest datset release date", v2data.provenance.temporal.distributionReleaseDate, "Date of the latest release of the dataset.")}
+                    {/* {this.renderRow("Lastest datset release date", v2data.provenance.temporal.distributionReleaseDate, "Date of the latest release of the dataset.", isHovering2, "isHovering2")} */}
+                    {this.renderRow("Publishing frequency", v2data.provenance.temporal.accrualPeriodicity, "The frequency of publishing new data for this dataset.")}
                     {this.renderRow("Creation Date", v2data.issued, "Date when the information about this dataset was added to our database.")}
                     {this.renderRow("Last updated ", v2data.modified, "The last date when the information about this dataset was upodated.")}
                     {this.renderRow("Version", v2data.version, "Dataset metadata version")}
-                    {this.renderRow("Resource creator", v2data.accessibility.usage.resourceCreator, "Any citation that credits this dataset.")} */}
+                    {this.renderRow("Resource creator", v2data.accessibility.usage.resourceCreator, "Any citation that credits this dataset.")}
                   </div>
                 </Col>
               </Row>
@@ -226,7 +229,15 @@ class DatasetAboutCard extends React.Component {
                 <Col sm={12}>
                   <div className="rectangle">
                     <Row className="gray800-14-bold">
-                      <Col sm={12}>{section}</Col>
+                      <Col sm={12}>
+                        {section}
+                        
+                        {this.props.requiresModal ?
+                          <span className="purple-14 pointer float-right" onClick={this.props.toggleModal}>How to request access</span>
+                        :
+                          ''
+                        }
+                      </Col>
                     </Row>
                     {/* TODO - ADD EXTRA PADDING BELOW THE SECTION HEADING AS THE TOP ROW IS NOW MT-2 LIKE THE OTHER FIELDS, NOT MT-3 */}
                     {this.renderRow("Access information", v2data.summary.publisher.accessRights)}

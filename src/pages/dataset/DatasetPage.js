@@ -28,6 +28,7 @@ import { ReactComponent as MetadataSilver } from "../../images/silverNew.svg";
 import { ReactComponent as MetadataGold } from "../../images/goldNew.svg";
 import { ReactComponent as MetadataPlatinum } from "../../images/platinumNew.svg";
 import { ReactComponent as MetadataNotRated } from "../../images/notRatedNew.svg";
+import { ReactComponent as ShieldSVG } from "../../images/shield.svg";
 import { PageView, initGA } from "../../tracking";
 import { Event } from "../../tracking";
 import moment from "moment";
@@ -80,6 +81,7 @@ class DatasetDetail extends Component {
     searchString: "",
     isHovering: false,
     isHoveringPhenotypes: false,
+    isHoveringShield: false,
     objects: [
       {
         id: "",
@@ -94,7 +96,8 @@ class DatasetDetail extends Component {
     allowsMessaging: false,
     allowNewMessage: false,
     dataRequestModalContent: {},
-    showAllPhenotype: false
+    showAllPhenotype: false,
+    // isHovering1: false
   };
 
   topicContext = {};
@@ -229,9 +232,12 @@ class DatasetDetail extends Component {
   }
 
   toggleHoverState(state) {
+    // console.log(`toggle parent - ${state.isHovering1}`)
     return {
       isHovering: !state.isHovering,
-      isHoveringPhenotypes: !state.isHoveringPhenotypes
+      isHoveringPhenotypes: !state.isHoveringPhenotypes,
+      isHoveringShield: !state.isHoveringShield,
+      // isHovering1: !state.isHovering1 
     };
   }
 
@@ -478,15 +484,38 @@ class DatasetDetail extends Component {
                     <Col xs={10}>
                       <span className="black-20">{data.name} </span>
                       <br />
-                      {data.datasetfields.publisher ? (
-                        <span className="gray800-14">
-                          {data.datasetfields.publisher}
-                        </span>
-                      ) : (
-                        <span className="gray800-14-opacity">
-                          Not specified
-                        </span>
-                      )}
+
+                      {!_.isEmpty(v2data) ?
+                        (
+                          <>
+                            <ShieldSVG onMouseEnter={this.handleMouseHover} onMouseLeave={this.handleMouseHover} />
+
+                            {this.state.isHoveringShield && (
+                                      <div className="dataClassToolTip">
+                                      <span className="white-13-semibold">
+                                        {v2data.summary.publisher.memberOf}
+                                      </span>
+                                    </div>
+                            )}
+
+                            <span className="gray800-14">
+                              {v2data.summary.publisher.name}
+                            </span>
+                          </>
+                        )
+                      :
+                        (
+                          data.datasetfields.publisher ? (
+                            <span className="gray800-14">
+                              {data.datasetfields.publisher}
+                            </span>
+                          ) : (
+                            <span className="gray800-14-opacity">
+                              Not specified
+                            </span>
+                          )
+                        )
+                      }
                     </Col>
                     <Col xs={2} className="text-right">
                       <Metadata />
@@ -530,6 +559,7 @@ class DatasetDetail extends Component {
                       </span>
                     </Col>
                     <Col sm={6} className="text-right">
+                      {console.log(`data.name - ${data.name}`)}
                       {!userState[0].loggedIn ? (
                         <button
                           className="btn button-tertiary dark-14 float-right"
@@ -630,263 +660,269 @@ class DatasetDetail extends Component {
                         </Row>
                       )}
 
-                        {/* V2 DATASETS */}
-                      <DatasetAboutCard section='Details' v2data={v2data}/>
-                      {/* <DatasetAboutCard section='Coverage' v2data={v2data}/>
-                      <DatasetAboutCard section='Formats and standards' v2data={v2data}/>
-                      <DatasetAboutCard section='Provenance' v2data={v2data}/>
-                      <DatasetAboutCard section='Data access request' v2data={v2data}/>
-                      <DatasetAboutCard section='Related resources' v2data={v2data}/> */}
-
-
-
-
-
-                      {/* <Row className="mt-2">
-                        <Col sm={12}>
-                          <div className="rectangle">
-                            <Row className="gray800-14-bold">
-                              <Col sm={12}>Details</Col>
-                            </Row>
-                            <Row className="mt-3">
-                              <Col sm={2} className="gray800-14">
-                                Release date
-                              </Col>
-                              {data.datasetfields.releaseDate ? (
-                                <Col sm={10} className="gray800-14">
-                                  {moment(
-                                    data.datasetfields.releaseDate
-                                  ).format("DD MMMM YYYY")}
-                                </Col>
-                              ) : (
-                                <Col sm={10} className="gray800-14-opacity">
-                                  Not specified
-                                </Col>
-                              )}
-                            </Row>
+                      {/* V2 DATASETS  */}
+                      {_.isEmpty(v2data) ? console.log('EMPTY') : console.log(`FULL - ${v2data.documentation.isPartOf}`) }
+                      {!_.isEmpty(v2data) ? 
+                        (
+                          <>
+                            <DatasetAboutCard section='Details' v2data={v2data}/>
+                            <DatasetAboutCard section='Coverage' v2data={v2data}/>
+                            <DatasetAboutCard section='Formats and standards' v2data={v2data}/>
+                            <DatasetAboutCard section='Provenance' v2data={v2data}/>
+                            <DatasetAboutCard section='Data access request' v2data={v2data} requiresModal={this.state.requiresModal} toggleModal={this.toggleModal}/>
+                            <DatasetAboutCard section='Related resources' v2data={v2data}/>
+                          </>
+                        )
+                      
+                      : 
+                        ( 
+                          <>      
                             <Row className="mt-2">
-                              <Col sm={2} className="gray800-14">
-                                Periodicity
+                              <Col sm={12}>
+                                <div className="rectangle">
+                                  <Row className="gray800-14-bold">
+                                    <Col sm={12}>Details</Col>
+                                  </Row>
+                                  <Row className="mt-3">
+                                    <Col sm={2} className="gray800-14">
+                                      Release date
+                                    </Col>
+                                    {data.datasetfields.releaseDate ? (
+                                      <Col sm={10} className="gray800-14">
+                                        {moment(
+                                          data.datasetfields.releaseDate
+                                        ).format("DD MMMM YYYY")}
+                                      </Col>
+                                    ) : (
+                                      <Col sm={10} className="gray800-14-opacity">
+                                        Not specified
+                                      </Col>
+                                    )}
+                                  </Row>
+                                  <Row className="mt-2">
+                                    <Col sm={2} className="gray800-14">
+                                      Periodicity
+                                    </Col>
+                                    {data.datasetfields.periodicity ? (
+                                      <Col sm={10} className="gray800-14">
+                                        {data.datasetfields.periodicity}
+                                      </Col>
+                                    ) : (
+                                      <Col sm={10} className="gray800-14-opacity">
+                                        Not specified
+                                      </Col>
+                                    )}
+                                  </Row>
+                                  <Row className="mt-2">
+                                    <Col sm={2} className="gray800-14">
+                                      Standard
+                                    </Col>
+                                    {data.datasetfields.conformsTo ? (
+                                      <Col
+                                        sm={10}
+                                        className="gray800-14 overflowWrap"
+                                      >
+                                        {data.datasetfields.conformsTo}
+                                      </Col>
+                                    ) : (
+                                      <Col sm={10} className="gray800-14-opacity">
+                                        Not specified
+                                      </Col>
+                                    )}
+                                  </Row>
+                                </div>
                               </Col>
-                              {data.datasetfields.periodicity ? (
-                                <Col sm={10} className="gray800-14">
-                                  {data.datasetfields.periodicity}
-                                </Col>
-                              ) : (
-                                <Col sm={10} className="gray800-14-opacity">
-                                  Not specified
-                                </Col>
-                              )}
                             </Row>
-                            <Row className="mt-2">
-                              <Col sm={2} className="gray800-14">
-                                Standard
-                              </Col>
-                              {data.datasetfields.conformsTo ? (
-                                <Col
-                                  sm={10}
-                                  className="gray800-14 overflowWrap"
-                                >
-                                  {data.datasetfields.conformsTo}
-                                </Col>
-                              ) : (
-                                <Col sm={10} className="gray800-14-opacity">
-                                  Not specified
-                                </Col>
-                              )}
-                            </Row>
-                          </div>
-                        </Col>
-                      </Row> */}
 
-                      {/* <Row className="mt-2">
-                        <Col sm={12}>
-                          <div className="rectangle">
-                            <Row className="gray800-14-bold">
-                              <Col sm={12}>Data access</Col>
-                            </Row>
-                            <Row className="mt-3">
-                              <Col sm={2} className="gray800-14">
-                                Access rights
-                              </Col>
-                              {data.datasetfields.accessRights ? (
-                                <Col sm={10} className="gray800-14">
-                                  <Linkify properties={{ target: "_blank" }}>
-                                    {data.datasetfields.accessRights}
-                                  </Linkify>
-                                </Col>
-                              ) : (
-                                <Col sm={10} className="gray800-14-opacity">
-                                  Not specified
-                                </Col>
-                              )}
-                            </Row>
                             <Row className="mt-2">
-                              <Col sm={2} className="gray800-14">
-                                License
+                              <Col sm={12}>
+                                <div className="rectangle">
+                                  <Row className="gray800-14-bold">
+                                    <Col sm={12}>Data access</Col>
+                                  </Row>
+                                  <Row className="mt-3">
+                                    <Col sm={2} className="gray800-14">
+                                      Access rights
+                                    </Col>
+                                    {data.datasetfields.accessRights ? (
+                                      <Col sm={10} className="gray800-14">
+                                        <Linkify properties={{ target: "_blank" }}>
+                                          {data.datasetfields.accessRights}
+                                        </Linkify>
+                                      </Col>
+                                    ) : (
+                                      <Col sm={10} className="gray800-14-opacity">
+                                        Not specified
+                                      </Col>
+                                    )}
+                                  </Row>
+                                  <Row className="mt-2">
+                                    <Col sm={2} className="gray800-14">
+                                      License
+                                    </Col>
+                                    {data.license ? (
+                                      <Col sm={10} className="gray800-14">
+                                        {data.license}
+                                      </Col>
+                                    ) : (
+                                      <Col sm={10} className="gray800-14-opacity">
+                                        Not specified
+                                      </Col>
+                                    )}
+                                  </Row>
+                                  <Row className="mt-2">
+                                    <Col sm={2} className="gray800-14">
+                                      Request time
+                                    </Col>
+                                    {data.datasetfields.accessRequestDuration ? (
+                                      <Col sm={10} className="gray800-14">
+                                        {data.datasetfields.accessRequestDuration}
+                                      </Col>
+                                    ) : (
+                                      <Col sm={10} className="gray800-14-opacity">
+                                        Not specified
+                                      </Col>
+                                    )}
+                                  </Row>
+                                </div>
                               </Col>
-                              {data.license ? (
-                                <Col sm={10} className="gray800-14">
-                                  {data.license}
-                                </Col>
-                              ) : (
-                                <Col sm={10} className="gray800-14-opacity">
-                                  Not specified
-                                </Col>
-                              )}
                             </Row>
+
                             <Row className="mt-2">
-                              <Col sm={2} className="gray800-14">
-                                Request time
+                              <Col sm={12}>
+                                <div className="rectangle">
+                                  <Row className="gray800-14-bold">
+                                    <Col sm={10}>Coverage</Col>
+                                  </Row>
+                                  <Row className="mt-3">
+                                    <Col sm={3} className="gray800-14">
+                                      Jurisdiction
+                                    </Col>
+                                    {data.datasetfields.jurisdiction ? (
+                                      <Col sm={9} className="gray800-14">
+                                        {data.datasetfields.jurisdiction}
+                                      </Col>
+                                    ) : (
+                                      <Col sm={9} className="gray800-14-opacity">
+                                        Not specified
+                                      </Col>
+                                    )}
+                                  </Row>
+                                  <Row className="mt-2">
+                                    <Col sm={3} className="gray800-14">
+                                      Geographic coverage
+                                    </Col>
+                                    {data.datasetfields.geographicCoverage ? (
+                                      <Col sm={9} className="gray800-14">
+                                        {data.datasetfields.geographicCoverage.toString()}
+                                      </Col>
+                                    ) : (
+                                      <Col sm={9} className="gray800-14-opacity">
+                                        Not specified
+                                      </Col>
+                                    )}
+                                  </Row>
+                                  <Row className="mt-2">
+                                    <Col sm={3} className="gray800-14">
+                                      Dataset start date
+                                    </Col>
+                                    {data.datasetfields.datasetStartDate ? (
+                                      <Col sm={9} className="gray800-14">
+                                        {data.datasetfields.datasetStartDate}
+                                      </Col>
+                                    ) : (
+                                      <Col sm={9} className="gray800-14-opacity">
+                                        Not specified
+                                      </Col>
+                                    )}
+                                  </Row>
+                                  <Row className="mt-2">
+                                    <Col sm={3} className="gray800-14">
+                                      Dataset end date
+                                    </Col>
+                                    {data.datasetfields.datasetEndDate ? (
+                                      <Col sm={9} className="gray800-14">
+                                        {data.datasetfields.datasetEndDate}
+                                      </Col>
+                                    ) : (
+                                      <Col sm={9} className="gray800-14-opacity">
+                                        Not specified
+                                      </Col>
+                                    )}
+                                  </Row>
+                                </div>
                               </Col>
-                              {data.datasetfields.accessRequestDuration ? (
-                                <Col sm={10} className="gray800-14">
-                                  {data.datasetfields.accessRequestDuration}
-                                </Col>
-                              ) : (
-                                <Col sm={10} className="gray800-14-opacity">
-                                  Not specified
-                                </Col>
-                              )}
                             </Row>
-                          </div>
-                        </Col>
-                      </Row> */}
 
-                      {/* <Row className="mt-2">
-                        <Col sm={12}>
-                          <div className="rectangle">
-                            <Row className="gray800-14-bold">
-                              <Col sm={10}>Coverage</Col>
-                            </Row>
-                            <Row className="mt-3">
-                              <Col sm={3} className="gray800-14">
-                                Jurisdiction
-                              </Col>
-                              {data.datasetfields.jurisdiction ? (
-                                <Col sm={9} className="gray800-14">
-                                  {data.datasetfields.jurisdiction}
-                                </Col>
-                              ) : (
-                                <Col sm={9} className="gray800-14-opacity">
-                                  Not specified
-                                </Col>
-                              )}
-                            </Row>
                             <Row className="mt-2">
-                              <Col sm={3} className="gray800-14">
-                                Geographic coverage
+                              <Col sm={12}>
+                                <div className="rectangle">
+                                  <Row className="gray800-14-bold">
+                                    <Col sm={12}>Demographics</Col>
+                                  </Row>
+                                  <Row className="mt-3">
+                                    <Col sm={3} className="gray800-14">
+                                      Statistical population
+                                    </Col>
+                                    {data.datasetfields.statisticalPopulation ? (
+                                      <Col sm={9} className="gray800-14">
+                                        {data.datasetfields.statisticalPopulation}
+                                      </Col>
+                                    ) : (
+                                      <Col sm={9} className="gray800-14-opacity">
+                                        Not specified
+                                      </Col>
+                                    )}
+                                  </Row>
+                                  <Row className="mt-2">
+                                    <Col sm={3} className="gray800-14">
+                                      Age band
+                                    </Col>
+                                    {data.datasetfields.ageBand ? (
+                                      <Col sm={9} className="gray800-14">
+                                        {data.datasetfields.ageBand}
+                                      </Col>
+                                    ) : (
+                                      <Col sm={9} className="gray800-14-opacity">
+                                        Not specified
+                                      </Col>
+                                    )}
+                                  </Row>
+                                </div>
                               </Col>
-                              {data.datasetfields.geographicCoverage ? (
-                                <Col sm={9} className="gray800-14">
-                                  {data.datasetfields.geographicCoverage.toString()}
-                                </Col>
-                              ) : (
-                                <Col sm={9} className="gray800-14-opacity">
-                                  Not specified
-                                </Col>
-                              )}
                             </Row>
+
                             <Row className="mt-2">
-                              <Col sm={3} className="gray800-14">
-                                Dataset start date
+                              <Col sm={12}>
+                                <div className="rectangle">
+                                  <Row className="gray800-14-bold">
+                                    <Col sm={12}>Related resources</Col>
+                                  </Row>
+                                  <Row className="mt-3">
+                                    <Col sm={3} className="gray800-14">
+                                      Physical sample availability
+                                    </Col>
+                                    {data.datasetfields.physicalSampleAvailability ? (
+                                      <Col sm={9} className="gray800-14">
+                                        {
+                                          data.datasetfields
+                                            .physicalSampleAvailability
+                                        }
+                                      </Col>
+                                    ) : (
+                                      <Col sm={9} className="gray800-14-opacity">
+                                        Not specified
+                                      </Col>
+                                    )}
+                                  </Row>
+                                </div>
                               </Col>
-                              {data.datasetfields.datasetStartDate ? (
-                                <Col sm={9} className="gray800-14">
-                                  {data.datasetfields.datasetStartDate}
-                                </Col>
-                              ) : (
-                                <Col sm={9} className="gray800-14-opacity">
-                                  Not specified
-                                </Col>
-                              )}
                             </Row>
-                            <Row className="mt-2">
-                              <Col sm={3} className="gray800-14">
-                                Dataset end date
-                              </Col>
-                              {data.datasetfields.datasetEndDate ? (
-                                <Col sm={9} className="gray800-14">
-                                  {data.datasetfields.datasetEndDate}
-                                </Col>
-                              ) : (
-                                <Col sm={9} className="gray800-14-opacity">
-                                  Not specified
-                                </Col>
-                              )}
-                            </Row>
-                          </div>
-                        </Col>
-                      </Row> */}
+                          </>
+                        )
+                    }
 
-
-
-                      {/* <Row className="mt-2">
-                        <Col sm={12}>
-                          <div className="rectangle">
-                            <Row className="gray800-14-bold">
-                              <Col sm={12}>Demographics</Col>
-                            </Row>
-                            <Row className="mt-3">
-                              <Col sm={3} className="gray800-14">
-                                Statistical population
-                              </Col>
-                              {data.datasetfields.statisticalPopulation ? (
-                                <Col sm={9} className="gray800-14">
-                                  {data.datasetfields.statisticalPopulation}
-                                </Col>
-                              ) : (
-                                <Col sm={9} className="gray800-14-opacity">
-                                  Not specified
-                                </Col>
-                              )}
-                            </Row>
-                            <Row className="mt-2">
-                              <Col sm={3} className="gray800-14">
-                                Age band
-                              </Col>
-                              {data.datasetfields.ageBand ? (
-                                <Col sm={9} className="gray800-14">
-                                  {data.datasetfields.ageBand}
-                                </Col>
-                              ) : (
-                                <Col sm={9} className="gray800-14-opacity">
-                                  Not specified
-                                </Col>
-                              )}
-                            </Row>
-                          </div>
-                        </Col>
-                      </Row>
-
-                      <Row className="mt-2">
-                        <Col sm={12}>
-                          <div className="rectangle">
-                            <Row className="gray800-14-bold">
-                              <Col sm={12}>Related resources</Col>
-                            </Row>
-                            <Row className="mt-3">
-                              <Col sm={3} className="gray800-14">
-                                Physical sample availability
-                              </Col>
-                              {data.datasetfields.physicalSampleAvailability ? (
-                                <Col sm={9} className="gray800-14">
-                                  {
-                                    data.datasetfields
-                                      .physicalSampleAvailability
-                                  }
-                                </Col>
-                              ) : (
-                                <Col sm={9} className="gray800-14-opacity">
-                                  Not specified
-                                </Col>
-                              )}
-                            </Row>
-                          </div>
-                        </Col>
-                      </Row> */}
-
-{/* {console.log(`here - ${JSON.stringify(data.datasetfields, null, 2)}`)} */}
+                      {/* {console.log(`here - ${JSON.stringify(data.datasetfields, null, 2)}`)} */}
                       {data.datasetfields.phenotypes !== "undefined" &&
                       data.datasetfields.phenotypes.length > 0 ? (
                         <Fragment>
