@@ -3,10 +3,13 @@
 .login-modal {
   background: rgba(0,0,0, 0.5);
 
+  .modal-dialog {
+    margin: 10% auto 0 auto;
+  }
+
   .modal-content {
     max-width: 600px;
     margin: 0 auto;
-    transform: translate(0, 50%);
     webkit-animation-name: animatetop;
     -webkit-animation-duration: .4s;
     animation-name: animatetop;

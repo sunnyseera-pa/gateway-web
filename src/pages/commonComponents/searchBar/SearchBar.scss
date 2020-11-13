@@ -1,6 +1,10 @@
 @import '../../../css/variables';
 @import '../../../css/mixins';
 
+body.modal-open {
+  overflow: hidden;
+}
+
 .navbarShown {
       width: 100%;
       position: fixed;
