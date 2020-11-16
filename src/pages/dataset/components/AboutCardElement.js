@@ -77,12 +77,12 @@ class AboutCardElement extends React.Component {
 
             {/* {this.state.isHovering && ( */}
             {isHovering && (
-            <div className="datasetToolTip">
-                <span className="white-13-semibold">
-                    {tooltip} 
-                </span>
-            </div>
-            )} 
+                <div className="datasetToolTip">
+                    <span className="white-13-semibold">
+                        {tooltip} 
+                    </span>
+                </div>
+            )}   
 
             {!description || typeof description === 'object' && _.isEmpty(description) ? 
             ( 

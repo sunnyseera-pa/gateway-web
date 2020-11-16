@@ -473,7 +473,7 @@ class DatasetDetail extends Component {
             <DatasetSchema datasetSchema={data.datasetfields.metadataschema} />
           ) : null}
           <SearchBar
-            ref={this.searchBar}
+            ref={this.searchBar} 
             searchString={searchString}
             doSearchMethod={this.doSearch}
             doUpdateSearchString={this.updateSearchString}
@@ -493,20 +493,27 @@ class DatasetDetail extends Component {
                       <span className="black-20">{data.name} </span>
                       <br />
 
-                      {!_.isEmpty(v2data) ?
+                    {/* TODO - UPDATE TO SHIELD WITH CHECK */}
+                      {!_.isEmpty(v2data) ? 
                         (
                           <>
-                          {/* TODO - ADD BACK IN */}
-                            {/* <ShieldSVG onMouseEnter={this.handleMouseHoverShield} onMouseLeave={this.handleMouseHoverShield} /> */}
-                            {/* <ShieldSVG /> */}
+                            <span onMouseEnter={this.handleMouseHoverShield} onMouseLeave={this.handleMouseHoverShield}>
+                            <SVGIcon 
+                              name="shield"
+                              fill={"#475da7"} 
+                              className="svg-16 mr-2"
+                              viewBox="0 0 16 16"
+                            />
+                            </span>
 
                             {this.state.isHoveringShield && (
-                                      <div className="dataClassToolTip">
+                                      <div className="dataShieldToolTip">
                                       <span className="white-13-semibold">
-                                        {v2data.summary.publisher.memberOf}
+                                        {v2data.summary.publisher.memberOf.charAt(0).toUpperCase() + v2data.summary.publisher.memberOf.slice(1).toLowerCase()} member
+                                        {/* {v2data.summary.publisher.memberOf} */}
                                       </span>
                                     </div>
-                            )}
+                            )} 
 
                             <span className="gray800-14">
                               {v2data.summary.publisher.name}
@@ -1065,6 +1072,8 @@ class DatasetDetail extends Component {
                       ) : (
                         ""
                       )} 
+
+
                     </Tab>
 
                     <Tab eventKey="TechDetails" title={`Technical details`}> 
