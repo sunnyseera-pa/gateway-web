@@ -6,7 +6,7 @@ import _ from 'lodash';
 import axios from "axios";
 import * as Sentry from '@sentry/react'; 
 import {
-  Row,
+  Row, 
   Col,
   Container,
   Tabs,
@@ -96,8 +96,7 @@ class DatasetDetail extends Component {
     allowsMessaging: false,
     allowNewMessage: false,
     dataRequestModalContent: {},
-    showAllPhenotype: false,
-    // isHovering1: false
+    showAllPhenotype: false
   };
 
   topicContext = {};
@@ -232,12 +231,10 @@ class DatasetDetail extends Component {
   }
 
   toggleHoverState(state) {
-    // console.log(`toggle parent - ${state.isHovering1}`)
     return {
       isHovering: !state.isHovering,
       isHoveringPhenotypes: !state.isHoveringPhenotypes,
-      isHoveringShield: !state.isHoveringShield,
-      // isHovering1: !state.isHovering1 
+      // isHoveringShield: !state.isHoveringShield,
     };
   }
 
@@ -488,7 +485,8 @@ class DatasetDetail extends Component {
                       {!_.isEmpty(v2data) ?
                         (
                           <>
-                            <ShieldSVG onMouseEnter={this.handleMouseHover} onMouseLeave={this.handleMouseHover} />
+                          {/* TODO - ADD BACK IN */}
+                            {/* <ShieldSVG onMouseEnter={this.handleMouseHover} onMouseLeave={this.handleMouseHover} /> */}
 
                             {this.state.isHoveringShield && (
                                       <div className="dataClassToolTip">
@@ -559,7 +557,7 @@ class DatasetDetail extends Component {
                       </span>
                     </Col>
                     <Col sm={6} className="text-right">
-                      {console.log(`data.name - ${data.name}`)}
+                      {/* {console.log(`data.name - ${data.name}`)} */}
                       {!userState[0].loggedIn ? (
                         <button
                           className="btn button-tertiary dark-14 float-right"
@@ -661,7 +659,7 @@ class DatasetDetail extends Component {
                       )}
 
                       {/* V2 DATASETS  */}
-                      {_.isEmpty(v2data) ? console.log('EMPTY') : console.log(`FULL - ${v2data.documentation.isPartOf}`) }
+                      {/* {_.isEmpty(v2data) ? console.log('EMPTY') : console.log(`FULL - ${v2data.documentation.isPartOf}`) } */}
                       {!_.isEmpty(v2data) ? 
                         (
                           <>
