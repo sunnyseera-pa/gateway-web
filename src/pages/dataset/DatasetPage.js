@@ -28,7 +28,7 @@ import { ReactComponent as MetadataSilver } from "../../images/silverNew.svg";
 import { ReactComponent as MetadataGold } from "../../images/goldNew.svg";
 import { ReactComponent as MetadataPlatinum } from "../../images/platinumNew.svg";
 import { ReactComponent as MetadataNotRated } from "../../images/notRatedNew.svg";
-import { ReactComponent as ShieldSVG } from "../../images/shield.svg";
+// import { ReactComponent as ShieldSVG } from "../../images/shield.svg";
 import { PageView, initGA } from "../../tracking";
 import { Event } from "../../tracking";
 import moment from "moment";
@@ -50,6 +50,7 @@ import DataQuality from "./components/DataQuality";
 import ActionBar from "../commonComponents/actionbar/ActionBar";
 import ResourcePageButtons from "../commonComponents/resourcePageButtons/ResourcePageButtons";
 import DatasetAboutCard from './components/DatasetAboutCard';
+import { ReactComponent as ShieldSVG } from "../../images/shield.svg";
 
 var baseURL = require("../commonComponents/BaseURL").getURL();
 
@@ -106,6 +107,7 @@ class DatasetDetail extends Component {
     this.doUpdateDataClassOpen = this.doUpdateDataClassOpen.bind(this);
     this.state.userState = props.userState;
     this.handleMouseHover = this.handleMouseHover.bind(this);
+    this.handleMouseHoverShield = this.handleMouseHoverShield.bind(this);
     this.searchBar = React.createRef();
   }
 
@@ -233,8 +235,17 @@ class DatasetDetail extends Component {
   toggleHoverState(state) {
     return {
       isHovering: !state.isHovering,
-      isHoveringPhenotypes: !state.isHoveringPhenotypes,
-      // isHoveringShield: !state.isHoveringShield,
+      isHoveringPhenotypes: !state.isHoveringPhenotypes
+    };
+  }
+
+  handleMouseHoverShield() {
+    this.setState(this.toggleHoverStateShield);
+  }
+
+  toggleHoverStateShield(state) {
+    return {
+      isHoveringShield: !state.isHoveringShield
     };
   }
 
@@ -486,7 +497,8 @@ class DatasetDetail extends Component {
                         (
                           <>
                           {/* TODO - ADD BACK IN */}
-                            {/* <ShieldSVG onMouseEnter={this.handleMouseHover} onMouseLeave={this.handleMouseHover} /> */}
+                            {/* <ShieldSVG onMouseEnter={this.handleMouseHoverShield} onMouseLeave={this.handleMouseHoverShield} /> */}
+                            {/* <ShieldSVG /> */}
 
                             {this.state.isHoveringShield && (
                                       <div className="dataClassToolTip">
