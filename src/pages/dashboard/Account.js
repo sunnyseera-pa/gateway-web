@@ -392,7 +392,7 @@ class Account extends Component {
                                             </Nav.Link>
                                         </div>
                                         
-                                    {/* <div className={`${tabId === 'datasets' || tabId === 'datasetsAdvancedSearch' ? 'activeCard' : ''}`}>
+                                    <div className={`${tabId === 'datasets' || tabId === 'datasetsAdvancedSearch' ? 'activeCard' : ''}`}>
                                             <Accordion activeKey={datasetAccordion} onSelect={this.datasetAccordionClick}>
                                                 <Fragment>
                                                     <Accordion.Toggle variant='link' className='verticalNavBar gray700-13 navLinkButton' eventKey='0'>
@@ -405,16 +405,16 @@ class Account extends Component {
                                                             bsPrefix="nav-block" className={`gray700-13 ${tabId === 'datasets' ? 'nav-item-active' : ''}`}>
                                                                 <span className="subLinkItem">Datasets</span>
                                                             </Nav.Link>
-                                                            <Nav.Link 
+                                                            {/* <Nav.Link 
                                                             onClick={(e) => this.toggleNav('datasetsAdvancedSearch')}
                                                             bsPrefix="nav-block" className={`gray700-13 ${tabId === 'datasetsAdvancedSearch' ? 'nav-item-active' : ''}`}>
                                                                 <span className="subLinkItem">Advanced search</span>
-                                                            </Nav.Link>
+                                                            </Nav.Link> */}
                                                         </div>
                                                     </Accordion.Collapse>
                                                 </Fragment>
                                             </Accordion>
-                                        </div> */}
+                                        </div>
                                     
                                     <div className={`${tabId === 'papers' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('papers')}>
                                             <Nav.Link eventKey={'papers'} className="verticalNavBar gray700-13">
@@ -556,7 +556,7 @@ class Account extends Component {
 
                             <Button
                                 variant="primary"
-                                href="https://hdr.auth.metadata.works/oauth/login/healthdatagateway"
+                                href="https://hdruk-auth.metadata.works/oauth/callback/healthdatagateway"
                                 id="metadataButton"
                                 className="white-14-semibold margin-right-16"
                             >
