@@ -49,8 +49,8 @@
     "snyk": "^1.425.4",
     "uniqid": "^5.2.0",
     "uuid": "^8.3.1",
-    "winterfell": "github:HDRUK/Winterfell",
-    "yup": "^0.28.2"
+    "winterfell": "github:HDRUK/Winterfell#HDWIN-008-FlagsHover",
+    "yup": "^0.28.1"
   },
   "scripts": {
     "start": "react-scripts start",
