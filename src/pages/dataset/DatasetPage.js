@@ -13,7 +13,8 @@ import {
   Tab,
   Alert,
   Tooltip,
-  Overlay
+  Overlay,
+  Button
 } from "react-bootstrap/";
 import NotFound from "../commonComponents/NotFound";
 import Loading from "../commonComponents/Loading";
@@ -97,7 +98,15 @@ class DatasetDetail extends Component {
     allowsMessaging: false,
     allowNewMessage: false,
     dataRequestModalContent: {},
-    showAllPhenotype: false
+    showAllPhenotype: false,
+    showEmpty: false,
+    emptyFlagDetails: false,
+    emptyFlagCoverage: false,
+    emptyFlagFormats: false,
+    emptyFlagProvenance: false,
+    emptyFlagDAR: false,
+    emptyFlagRelRes: false,
+    emptyFieldsCount: 0
   };
 
   topicContext = {};
@@ -149,6 +158,10 @@ class DatasetDetail extends Component {
         });
         this.getTechnicalMetadata();
         this.getCollections();
+        if(!_.isEmpty(res.data.data[0].datasetv2)){
+          this.updateV2Flags(res.data.data[0].datasetv2)
+          this.getEmptyFieldsCount(res.data.data[0].datasetv2)
+        } 
         document.title = res.data.data[0].name.trim();
         let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
       
@@ -198,6 +211,69 @@ class DatasetDetail extends Component {
           collections: res.data.data || []
         });
       });
+  }
+
+  updateV2Flags(v2data) {
+    if( _.isEmpty(v2data.summary.doiName) && _.isEmpty(v2data.provenance.temporal.distributionReleaseDate) && _.isEmpty(v2data.provenance.temporal.accrualPeriodicity) && _.isEmpty(v2data.issued) && _.isEmpty(v2data.modified) && _.isEmpty(v2data.version) && _.isEmpty(v2data.accessibility.usage.resourceCreator) ) {
+      this.setState({emptyFlagDetails: true})
+    }
+
+    if( _.isEmpty(v2data.provenance.temporal.startDate) && _.isEmpty(v2data.provenance.temporal.endDate) && _.isEmpty(v2data.provenance.temporal.timeLag) && _.isEmpty(v2data.coverage.spatial) && _.isEmpty(v2data.coverage.typicalAgeRange) && _.isEmpty(v2data.coverage.physicalSampleAvailability) && _.isEmpty(v2data.coverage.followup) && _.isEmpty(v2data.coverage.pathway) ) {
+      this.setState({emptyFlagCoverage: true})
+    }
+
+    if( _.isEmpty(v2data.accessibility.formatAndStandards.vocabularyEncodingScheme) && _.isEmpty(v2data.accessibility.formatAndStandards.conformsTo) && _.isEmpty(v2data.accessibility.formatAndStandards.language) && _.isEmpty(v2data.accessibility.formatAndStandards.format) ) {
+      this.setState({emptyFlagFormats: true})
+    }
+
+    if( _.isEmpty(v2data.provenance.origin.purpose) && _.isEmpty(v2data.provenance.source) && _.isEmpty(v2data.provenance.collectionSituation) && _.isEmpty(v2data.enrichmentAndLinkage.derivation) && _.isEmpty(v2data.observations.observedNode) && _.isEmpty(v2data.observations.disambiguatingDescription) && _.isEmpty(v2data.observations.measuredValue) && _.isEmpty(v2data.observations.measuredProperty) && _.isEmpty(v2data.observations.observationDate) ) {
+      this.setState({emptyFlagProvenance: true})
+    }
+
+    if( _.isEmpty(v2data.summary.publisher.accessRights) && _.isEmpty(v2data.summary.publisher.deliveryLeadTime) && _.isEmpty(v2data.summary.publisher.accessRequestCost) && _.isEmpty(v2data.summary.publisher.accessService) && _.isEmpty(v2data.accessibility.access.jurisdiction) && _.isEmpty(v2data.summary.publisher.accessService.dataUseLimitation) && _.isEmpty(v2data.summary.publisher.accessService.dataUseRequirements) && _.isEmpty(v2data.accessibility.access.dataController) && _.isEmpty(v2data.accessibility.access.dataProcessor) ) {
+      this.setState({emptyFlagDAR: true})
+    }
+    
+    if( _.isEmpty(v2data.accessibility.usage.isReferencedBy) && _.isEmpty(v2data.enrichmentAndLinkage.tools) && _.isEmpty(v2data.accessibility.usage.investigations) ) {
+      this.setState({emptyFlagRelRes: true})
+    }
+
+    this.setState({ showEmpty: false})
+  }
+
+  getEmptyFieldsCount(v2data){
+    let temporalCoverage = v2data.provenance.temporal.startDate + ' - ' + v2data.provenance.temporal.endDate;
+    let requiredFieldsArray = [
+                                v2data.summary.doiName, v2data.provenance.temporal.distributionReleaseDate, v2data.provenance.temporal.accrualPeriodicity, v2data.issued, v2data.modified, v2data.version, v2data.accessibility.usage.resourceCreator, 
+                                temporalCoverage, v2data.provenance.temporal.timeLag, v2data.coverage.spatial, v2data.coverage.typicalAgeRange, v2data.coverage.physicalSampleAvailability, v2data.coverage.followup, v2data.coverage.pathway, 
+                                v2data.accessibility.formatAndStandards.vocabularyEncodingScheme, v2data.accessibility.formatAndStandards.conformsTo, v2data.accessibility.formatAndStandards.language, v2data.accessibility.formatAndStandards.format,
+                                v2data.provenance.origin.purpose, v2data.provenance.source, v2data.provenance.collectionSituation, v2data.enrichmentAndLinkage.derivation, v2data.observations.observedNode, v2data.observations.disambiguatingDescription, v2data.observations.measuredValue, v2data.observations.measuredProperty, v2data.observations.observationDate,
+                                v2data.summary.publisher.accessRights, v2data.summary.publisher.deliveryLeadTime, v2data.summary.publisher.accessRequestCost, v2data.summary.publisher.accessService, v2data.accessibility.access.jurisdiction, v2data.summary.publisher.accessService.dataUseLimitation, v2data.summary.publisher.accessService.dataUseRequirements, v2data.accessibility.access.dataController, v2data.accessibility.access.dataProcessor,
+                                v2data.accessibility.usage.isReferencedBy, v2data.enrichmentAndLinkage.tools, v2data.accessibility.usage.investigations
+                              ];
+    let emptyFieldsArray = requiredFieldsArray.filter((field) => _.isEmpty(field))
+    let tempEmptyFieldsCount = emptyFieldsArray.length;
+
+    this.setState({ emptyFieldsCount: tempEmptyFieldsCount })
+  }
+
+  showHideAllEmpty() {
+    if(this.state.showEmpty === false) {
+      this.setState({
+        emptyFlagDetails: false,
+        emptyFlagCoverage: false,
+        emptyFlagFormats: false,
+        emptyFlagProvenance: false,
+        emptyFlagDAR: false,
+        emptyFlagRelRes: false,
+        showEmpty: true
+      })
+    }
+
+    if(this.state.showEmpty === true) {
+      this.updateV2Flags(this.state.v2data) 
+    }
+
   }
 
   doUpdateDataClassOpen(index) {
@@ -378,7 +454,15 @@ class DatasetDetail extends Component {
       requiresModal,
       allowsMessaging,
       showAllPhenotype,
-      collections
+      collections,
+      emptyFlagDetails,
+      emptyFlagCoverage,
+      emptyFlagFormats,
+      emptyFlagProvenance,
+      emptyFlagDAR,
+      emptyFlagRelRes,
+      showEmpty,
+      emptyFieldsCount
     } = this.state;
 
     if (isLoading) {
@@ -388,8 +472,6 @@ class DatasetDetail extends Component {
         </Container>
       );
     }
-
-    // console.log(`v2data: - ${JSON.stringify(v2data, null, 2)}`)
 
     if (
       data.relatedObjects === null ||
@@ -678,16 +760,15 @@ class DatasetDetail extends Component {
                       )}
 
                       {/* V2 DATASETS  */}
-                      {/* {_.isEmpty(v2data) ? console.log('EMPTY') : console.log(`FULL - ${v2data.documentation.isPartOf}`) } */}
                       {!_.isEmpty(v2data) ? 
                         (
                           <>
-                            <DatasetAboutCard section='Details' v2data={v2data}/>
-                            <DatasetAboutCard section='Coverage' v2data={v2data}/>
-                            <DatasetAboutCard section='Formats and standards' v2data={v2data}/>
-                            <DatasetAboutCard section='Provenance' v2data={v2data}/>
-                            <DatasetAboutCard section='Data access request' v2data={v2data} requiresModal={this.state.requiresModal} toggleModal={this.toggleModal}/>
-                            <DatasetAboutCard section='Related resources' v2data={v2data}/>
+                            { emptyFlagDetails === false ? <DatasetAboutCard section='Details' v2data={v2data} showEmpty={showEmpty}/> : '' }
+                            { emptyFlagCoverage === false ? <DatasetAboutCard section='Coverage' v2data={v2data} showEmpty={showEmpty}/> : '' }
+                            { emptyFlagFormats === false ? <DatasetAboutCard section='Formats and standards' v2data={v2data} showEmpty={showEmpty}/> : '' }
+                            { emptyFlagProvenance === false ? <DatasetAboutCard section='Provenance' v2data={v2data} showEmpty={showEmpty}/> : '' }
+                            { emptyFlagDAR === false ? <DatasetAboutCard section='Data access request' v2data={v2data} requiresModal={this.state.requiresModal} toggleModal={this.toggleModal} showEmpty={showEmpty}/> : '' }
+                            { emptyFlagRelRes === false ? <DatasetAboutCard section='Related resources' v2data={v2data} showEmpty={showEmpty}/> : '' }
                           </>
                         )
                       
@@ -1073,6 +1154,32 @@ class DatasetDetail extends Component {
                         ""
                       )} 
 
+                    {!_.isEmpty(v2data) ? 
+                      (
+                        <>
+                          <Row>
+                            <Col sm={12} lg={12} className="gray800-14 datasetEmptyInfo"> 
+                            Data custodians are responsible for providing information about each dataset. Not all fields have been completed in this case. We hide empty fields to make the page easier to read, but you can choose to view them.
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col sm={12} lg={12} className="centerText">
+                              <Button
+                                onClick={() =>
+                                  this.showHideAllEmpty()
+                                }
+                                variant="medium" 
+                                className="datasetEmptyButton dark-14 mr-2"
+                                >
+                                {showEmpty===false ? `Show all empty fields (${emptyFieldsCount})` : `Hide all empty fields (${emptyFieldsCount})` }
+                              </Button>
+                            </Col>
+                          </Row>
+                        </>
+                      )
+                    :
+                      ""
+                    }
 
                     </Tab>
 
