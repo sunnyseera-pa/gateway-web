@@ -564,7 +564,7 @@ class DatasetDetail extends Component {
                               className="btn button-primary addButton pointer"
                               onClick={() => this.toggleDrawer()}
                             >
-                              Make an enquiry
+                              Send a message to the custodian
                             </button>
                           ) : null}
                         </Fragment>

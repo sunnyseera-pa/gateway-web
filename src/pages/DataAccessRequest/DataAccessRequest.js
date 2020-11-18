@@ -567,10 +567,11 @@ class DataAccessRequest extends Component {
 			// 3. API Patch call
 			axios.patch(`${baseURL}/api/v1/data-access-request/${id}`, params).then((response) => {
 				let { data: { unansweredAmendments = 0, answeredAmendments = 0 } } = response;
+				let { applicationStatus } = this.state;
 				this.setState({
 					unansweredAmendments,
 					answeredAmendments,
-					showSubmit: answeredAmendments > 0
+					showSubmit: applicationStatus === DarHelper.darStatus.inProgress || answeredAmendments > 0
 				});
 			});
 		} catch (error) {
