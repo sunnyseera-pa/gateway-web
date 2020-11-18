@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import '../../DataAccessRequest.scss'; 
 
-const ApplicantActionButtons = ({allowedNavigation = false, onFormSubmit, onNextClick, onShowContributorModal, onEditForm, showSubmit, submitButtonText, showEdit, answeredAmendemnts, unansweredAmendments}) => {
+const ApplicantActionButtons = ({allowedNavigation = false, onFormSubmit, onNextClick, onShowContributorModal, onEditForm, showSubmit, submitButtonText, showEdit}) => {
   return (
     <Fragment>
       <button className={`button-tertiary ${allowedNavigation ? '' : 'disabled'}`} onClick={e => onShowContributorModal()}>Contributors</button>

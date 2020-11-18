@@ -381,6 +381,7 @@ input[type=radio]:disabled {
 		justify-content: flex-end;
 		flex: 1 0 0;
 		margin-left: auto;
+		align-items: center;
 
 		& > * {
 			margin-right: 6px;
@@ -394,6 +395,10 @@ input[type=radio]:disabled {
 	&-actions > button:last-child {
 		margin-right: 0px;
 	}
+}
+
+.amendment-count {
+	@include font-source(14px, $gray-800, $font-weight-semibold);
 }
 
 .userOption {
