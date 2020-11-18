@@ -89,6 +89,8 @@ class DataAccessRequest extends Component {
 			showAssignWorkflowModal: false,
 			readOnly: false,
 			userType: '',
+			answeredAmendments: 0,
+			unansweredAmendments: 0,
 			isWideForm: false,
 			allowsMultipleDatasets: false,
 			activeAccordionCard: 0,
@@ -177,7 +179,7 @@ class DataAccessRequest extends Component {
 					countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this);
 					totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered`;
 				} else {
-					totalQuestions = `Application ${applicationStatus} on ${moment(updatedAt).format('DD MMM YYYY HH:mm')}`;
+					totalQuestions = `Application ${DarHelper.darSLAText[applicationStatus]} on ${moment(updatedAt).format('DD MMM YYYY HH:mm')}`;
 				}
 			}
 
@@ -292,49 +294,9 @@ class DataAccessRequest extends Component {
 			// 1. Make API call to find and return the application form schema and answers matching this Id
 			let response = await axios.get(`${baseURL}/api/v1/data-access-request/${accessId}`);
 			// 2. Destructure backend response for this context containing details of DAR including question set and current progress
-			let {
-				data: {
-					data: {
-						jsonSchema,
-						questionAnswers,
-						_id,
-						hasRecommended,
-						applicationStatus,
-						aboutApplication = {},
-						datasets,
-						readOnly,
-						userType,
-						mainApplicant,
-						userId,
-						authorIds,
-						projectId,
-						inReviewMode,
-						reviewSections,
-						workflow,
-						files
-					}
-				}
-			} = response;
+			let { data: { data } } = response;
 			// 3. Set up the DAR
-			this.setScreenData({
-				jsonSchema,
-				questionAnswers,
-				_id,
-				hasRecommended,
-				applicationStatus,
-				aboutApplication,
-				datasets,
-				readOnly,
-				userType,
-				mainApplicant,
-				userId,
-				authorIds,
-				projectId,
-				inReviewMode,
-				reviewSections,
-				workflow,
-				files
-			});
+			this.setScreenData({ ...data });
 		} catch (error) {
 			this.setState({ isLoading: false });
 			console.error(error);
@@ -353,6 +315,8 @@ class DataAccessRequest extends Component {
 			datasets,
 			readOnly = false,
 			userType = 'APPLICANT',
+			unansweredAmendments = 0,
+			answeredAmendments = 0,
 			mainApplicant,
 			userId,
 			authorIds,
@@ -431,11 +395,16 @@ class DataAccessRequest extends Component {
 			});
 		}
 
-		// 8. Set up action buttons based on context
+		// 8. Set up action bar based on context
 		if (applicationStatus === 'inProgress') {
 			showSubmit = true;
 		} else if (applicationStatus === 'inReview' || applicationStatus === 'submitted') {
-			showEdit = true;
+			if(readOnly) {
+				showEdit = true;
+			} else {
+				showSubmit = true;
+				submitButtonText = 'Submit updates';
+			}
 		}
 
 		// 9. Set state
@@ -455,6 +424,8 @@ class DataAccessRequest extends Component {
 			allowsMultipleDatasets,
 			context: modalContext,
 			readOnly,
+			answeredAmendments,
+			unansweredAmendments,
 			userType,
 			userId,
 			mainApplicant: `${firstname} ${lastname}${this.checkCurrentUser(userId) ? ' (you)' : ''}`,
@@ -527,18 +498,19 @@ class DataAccessRequest extends Component {
 			// 7. Immediately update the state
 			this.setState({ [`${dataObj.key}`]: { ...dataObj.data }, lastSaved });
 			// 8. Execute the debounced onChange method API CALL
-			this.onChangeDebounced(dataObj);
+			this.onChangeDebounced(dataObj, id);
 		}
 	};
 
-	onChangeDebounced = (obj = {}) => {
+	onChangeDebounced = (obj = {}, updatedQuestionId) => {
 		try {
 			let { _id: id } = this.state;
 			// 1. deconstruct
 			let { key, data = {} } = obj;
 			// 2. set body params
 			let params = {
-				[`${key}`]: JSON.stringify(data)
+				[`${key}`]: JSON.stringify(data),
+				updatedQuestionId
 			};
 			// 3. API Patch call
 			axios.patch(`${baseURL}/api/v1/data-access-request/${id}`, params);
@@ -580,7 +552,7 @@ class DataAccessRequest extends Component {
 
 				let alert = {
 					tab: 'submitted',
-					message: this.state.applicationStatus === 'inProgress' ? 'Your application was submitted successfully' : `You have successfully saved amendments to '${this.state.projectName || this.state.datasets[0].name}' application`,
+					message: this.state.applicationStatus === 'inProgress' ? 'Your application was submitted successfully' : `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
 					publisher: 'user'
 				};
 				this.props.history.push({
@@ -1042,7 +1014,7 @@ class DataAccessRequest extends Component {
 			readOnly: false,
 			showEdit: false,
 			showSubmit: true,
-			submitButtonText: 'Save amendments'
+			submitButtonText: 'Submit updates'
 		});
 	};
 
@@ -1424,6 +1396,8 @@ class DataAccessRequest extends Component {
 								showSubmit={this.state.showSubmit}
 								submitButtonText={this.state.submitButtonText}
 								showEdit={this.state.showEdit}
+								answeredAmendments={this.state.answeredAmendments}
+								unansweredAmendments={this.state.unansweredAmendments}
 							/>
 						) : (
 							<CustodianActionButtons
