@@ -35,29 +35,12 @@ class DatasetAboutCard extends React.Component {
       case "Details":
           return (
             <div >
-              <Row className="mt-2">
+              <Row className="mt-1">
                 <Col sm={12}>
                   <div className="rectangle">
                     <Row className="gray800-14-bold">
-                      <Col sm={12}>{section}</Col>
+                      <Col sm={12} className="mb-1">{section}</Col>
                     </Row>
-
-
-                    {/* <Row className="mt-3">
-                      <Col sm={2} className="gray800-14">
-                        DOI
-                      </Col>
-                      {v2data.summary.doiName ? (
-                        <Col sm={10} className="gray800-14">
-                          {v2data.summary.doiName}
-                        </Col>
-                      ) : (
-                        <Col sm={10} className="gray800-14-opacity">
-                          Not specified
-                        </Col>
-                      )}
-                    </Row> */}
-                    {/* TODO - ADD EXTRA PADDING BELOW THE SECTION HEADING AS THE TOP ROW IS NOW MT-2 LIKE THE OTHER FIELDS, NOT MT-3 */}
                     {showEmpty===false && _.isEmpty(v2data.summary.doiName) ? 'v2data.summary.doiName' : <AboutCardElement label={"DOI"} description={v2data.summary.doiName} tooltip={"This is not the DOI of the publication(s) associated with the dataset, but rather the DOI of the metadata describing the dataset."} />}
                     {showEmpty===false && _.isEmpty(v2data.provenance.temporal.distributionReleaseDate) ? '' : <AboutCardElement label={"Lastest datset release date"} description={v2data.provenance.temporal.distributionReleaseDate} tooltip={"Date of the latest release of the dataset."} />}
                     {showEmpty===false && _.isEmpty(v2data.provenance.temporal.accrualPeriodicity) ? '' : <AboutCardElement label={"Publishing frequency"} description={v2data.provenance.temporal.accrualPeriodicity} tooltip={"The frequency of publishing new data for this dataset."} />}
@@ -73,13 +56,12 @@ class DatasetAboutCard extends React.Component {
       case "Coverage":
           return (
             <div >
-              <Row className="mt-2">
+              <Row className="mt-1">
                 <Col sm={12}>
                   <div className="rectangle">
                     <Row className="gray800-14-bold">
-                      <Col sm={12}>{section}</Col>
+                      <Col sm={12} className="mb-1">{section}</Col>
                     </Row>
-                    {/* TODO - ADD EXTRA PADDING BELOW THE SECTION HEADING AS THE TOP ROW IS NOW MT-2 LIKE THE OTHER FIELDS, NOT MT-3 */}
                     {showEmpty===false && _.isEmpty(temporalCoverage) ? '' : <AboutCardElement label={"Temporal coverage"} description={temporalCoverage} tooltip={"The start and end date of the time period that the dataset provides coverage for. End date may be empty depending on publishing frequency."} />}
                     {showEmpty===false && _.isEmpty(v2data.provenance.temporal.timeLag) ? '' : <AboutCardElement label={"Dataset time lag"} description={v2data.provenance.temporal.timeLag} tooltip={"Please indicate the typical time-lag between an event and the data for that event appearing in the dataset."} />}
                     {showEmpty===false && _.isEmpty(v2data.coverage.spatial) ? '' : <AboutCardElement label={"Geographical coverage"} description={v2data.coverage.spatial} tooltip={"The geographical area covered by the dataset."} />}
@@ -95,13 +77,12 @@ class DatasetAboutCard extends React.Component {
       case "Formats and standards":
           return (
             <div >
-              <Row className="mt-2">
+              <Row className="mt-1">
                 <Col sm={12}>
                   <div className="rectangle">
                     <Row className="gray800-14-bold">
-                      <Col sm={12}>{section}</Col>
+                      <Col sm={12} className="mb-1">{section}</Col>
                     </Row>
-                    {/* TODO - ADD EXTRA PADDING BELOW THE SECTION HEADING AS THE TOP ROW IS NOW MT-2 LIKE THE OTHER FIELDS, NOT MT-3 */}
                     {showEmpty===false && _.isEmpty(v2data.accessibility.formatAndStandards.vocabularyEncodingScheme) ? '' : <AboutCardElement label={"Semantic Annotations"} description={v2data.accessibility.formatAndStandards.vocabularyEncodingScheme} tooltip={"Relevant terminologies / ontologies / controlled vocabularies, such as ICD 10 Codes, NHS Data Dictionary National Codes or SNOMED CT International, that are being used by the dataset."} />}
                     {showEmpty===false && _.isEmpty(v2data.accessibility.formatAndStandards.conformsTo) ? '' : <AboutCardElement label={"Data models"} description={v2data.accessibility.formatAndStandards.conformsTo} tooltip={"Standardised data models that the dataset has been stored in or transformed to, such as OMOP or FHIR,or if the data is only available in a local format."} />}
                     {showEmpty===false && _.isEmpty(v2data.accessibility.formatAndStandards.language) ? '' : <AboutCardElement label={"Language"} description={v2data.accessibility.formatAndStandards.language} tooltip={"All the languages in which the dataset metadata and underlying data is made available."} />}
@@ -114,13 +95,12 @@ class DatasetAboutCard extends React.Component {
       case "Provenance":
           return (
             <div >
-              <Row className="mt-2">
+              <Row className="mt-1">
                 <Col sm={12}>
                   <div className="rectangle">
                     <Row className="gray800-14-bold">
-                      <Col sm={12}>{section}</Col>
+                      <Col sm={12} className="mb-1">{section}</Col>
                     </Row>
-                    {/* TODO - ADD EXTRA PADDING BELOW THE SECTION HEADING AS THE TOP ROW IS NOW MT-2 LIKE THE OTHER FIELDS, NOT MT-3 */}
                     {showEmpty===false && _.isEmpty(v2data.provenance.origin.purpose) ? '' : <AboutCardElement label={"Purpose"} description={v2data.provenance.origin.purpose} tooltip={"The purpose(s) for which the dataset was collected."} />}
                     {showEmpty===false && _.isEmpty(v2data.provenance.source) ? '' : <AboutCardElement label={"Source"} description={v2data.provenance.source} tooltip={"The source of the data extraction."} />}
                     {showEmpty===false && _.isEmpty(v2data.provenance.collectionSituation) ? '' : <AboutCardElement label={"Collection situation"} description={v2data.provenance.collectionSituation} tooltip={"The setting(s) where data was collected. Multiple settings may be provided"} />}
@@ -138,11 +118,11 @@ class DatasetAboutCard extends React.Component {
       case "Data access request":
           return (
             <div >
-              <Row className="mt-2">
+              <Row className="mt-1">
                 <Col sm={12}>
                   <div className="rectangle">
                     <Row className="gray800-14-bold">
-                      <Col sm={12}>
+                      <Col sm={12} className="mb-1">
                         {section}
                         
                         {this.props.requiresModal ?
@@ -152,7 +132,6 @@ class DatasetAboutCard extends React.Component {
                         }
                       </Col>
                     </Row>
-                    {/* TODO - ADD EXTRA PADDING BELOW THE SECTION HEADING AS THE TOP ROW IS NOW MT-2 LIKE THE OTHER FIELDS, NOT MT-3 */}
                     {showEmpty===false && _.isEmpty(v2data.summary.publisher.accessRights) ? '' : <AboutCardElement label={"Access information"} description={v2data.summary.publisher.accessRights} tooltip={"The URL of a webpage where the data access request process and/or guidance is provided."} />}
                     {showEmpty===false && _.isEmpty(v2data.summary.publisher.deliveryLeadTime) ? '' : <AboutCardElement label={"Processing time"} description={v2data.summary.publisher.deliveryLeadTime} tooltip={"An indication of the typical processing times based on the types of requests typically received."} />}
                     {showEmpty===false && _.isEmpty(v2data.summary.publisher.accessRequestCost) ? '' : <AboutCardElement label={"Access request cost"} description={v2data.summary.publisher.accessRequestCost} tooltip={"Indication of cost (in GBP) for processing each data access request by the data custodian."} />}
@@ -170,13 +149,12 @@ class DatasetAboutCard extends React.Component {
       case "Related resources":
           return (
             <div >
-              <Row className="mt-2">
+              <Row className="mt-1">
                 <Col sm={12}>
                   <div className="rectangle">
                     <Row className="gray800-14-bold">
-                      <Col sm={12}>{section}</Col>
+                      <Col sm={12} className="mb-1">{section}</Col>
                     </Row>
-                    {/* TODO - ADD EXTRA PADDING BELOW THE SECTION HEADING AS THE TOP ROW IS NOW MT-2 LIKE THE OTHER FIELDS, NOT MT-3 */}
                     {showEmpty===false && _.isEmpty(v2data.accessibility.usage.isReferencedBy) ? '' : <AboutCardElement label={"Papers"} description={v2data.accessibility.usage.isReferencedBy} tooltip={"The keystone paper associated with the dataset"} />}
                     {showEmpty===false && _.isEmpty(v2data.accessibility.usage.investigations) ? '' : <AboutCardElement label={"Projects"} description={v2data.accessibility.usage.investigations} tooltip={"Any active projects that are using the dataset."} />}
                     {showEmpty===false && _.isEmpty(v2data.enrichmentAndLinkage.tools) ? '' : <AboutCardElement label={"Tools"} description={v2data.enrichmentAndLinkage.tools} tooltip={"Any analysis tools or models that have been created for this dataset and are available for further use."} />}

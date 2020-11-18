@@ -38,7 +38,7 @@ class AboutCardElement extends React.Component {
     return (
         <div>
             <Row className="mt-2">
-                <Col sm={2} className="gray800-14">
+                <Col sm={3} className="gray800-14">
                 {label}
                 </Col>
 
@@ -47,7 +47,7 @@ class AboutCardElement extends React.Component {
                         onMouseEnter={this.handleMouseHover}
                         onMouseLeave={this.handleMouseHover}
                     >
-                        <InfoSVG /> 
+                        <InfoSVG id="datasetTooltipSvg" /> 
                     </span>
                 </Col>
 
@@ -61,25 +61,27 @@ class AboutCardElement extends React.Component {
 
                 {!description || typeof description === 'object' && _.isEmpty(description)? 
                     ( 
-                        <Col sm={9} >
+                        <Col sm={8} className="v2Value">
                             <span className="gray800-14-opacity"> Not specified </span>
                         </Col>
                     )        
                 :
 
                     (
-                        <Col sm={9} className="gray800-14">
+                        <Col sm={8} className="gray800-14 v2Value">
 
-                            {typeof description === 'object' ?  
+                            {
+                            typeof description === 'object' ?  
                             description.map((item, index) => (
-                                <span> {index !== 0 ? ', ' : ''} {item}</span>                
+                                <span className="overflowWrap"> {index !== 0 ? ', ' : ''} {item}</span>                
                             ))
                             : 
-                            <span> {description} </span> 
+                            <span className="overflowWrap"> {description} </span> 
                             }
                         </Col>
                     ) 
                 }
+
             </Row>
         </div>
     )

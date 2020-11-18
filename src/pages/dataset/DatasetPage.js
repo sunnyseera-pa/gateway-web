@@ -29,7 +29,6 @@ import { ReactComponent as MetadataSilver } from "../../images/silverNew.svg";
 import { ReactComponent as MetadataGold } from "../../images/goldNew.svg";
 import { ReactComponent as MetadataPlatinum } from "../../images/platinumNew.svg";
 import { ReactComponent as MetadataNotRated } from "../../images/notRatedNew.svg";
-// import { ReactComponent as ShieldSVG } from "../../images/shield.svg";
 import { PageView, initGA } from "../../tracking";
 import { Event } from "../../tracking";
 import moment from "moment";
@@ -51,7 +50,6 @@ import DataQuality from "./components/DataQuality";
 import ActionBar from "../commonComponents/actionbar/ActionBar";
 import ResourcePageButtons from "../commonComponents/resourcePageButtons/ResourcePageButtons";
 import DatasetAboutCard from './components/DatasetAboutCard';
-import { ReactComponent as ShieldSVG } from "../../images/shield.svg";
 
 var baseURL = require("../commonComponents/BaseURL").getURL();
 
@@ -106,7 +104,8 @@ class DatasetDetail extends Component {
     emptyFlagProvenance: false,
     emptyFlagDAR: false,
     emptyFlagRelRes: false,
-    emptyFieldsCount: 0
+    emptyFieldsCount: 0,
+    linkedDatasets: []
   };
 
   topicContext = {};
@@ -162,6 +161,15 @@ class DatasetDetail extends Component {
           this.updateV2Flags(res.data.data[0].datasetv2)
           this.getEmptyFieldsCount(res.data.data[0].datasetv2)
         } 
+        if(!_.isEmpty(res.data.data[0].datasetv2) && !_.isEmpty(res.data.data[0].datasetv2.enrichmentAndLinkage.qualifiedRelation) ){
+          //TODO - REPLACE myQualifiedRelation.map WITH res.data.data[0].datasetv2.enrichmentAndLinkage.qualifiedRelation.map TO USE ACTUAL VALUES RATHER THAN MY TEST VALUES - DELETE let myQualifiedRelation
+          let myQualifiedRelation = ["CPRD Gold Dataset", "https://cprd.com/linked-data#National%20Radiotherapy%20Dataset%20(RTDS)", "https://web.www.healthdatagateway.org/dataset/6951e949-6aa3-4670-ad05-db8e954b3524", "https://web.www.healthdatagateway.org/dataset/172242ce-a1c5-4915-9c71-686f6e7d5789", "https://en.wikipedia.org/wiki/Bob_Ross", "Ciara's Dataset", "https://web.www.healthdatagateway.org/dataset/756daeaa-6e47-4269-9df5-477c01cdd271", "https://web.www.healthdatagateway.org/dataset/c29c3fbe-700e-4f85-8943-5557c30c1dfa", "ANother Dataset", "https://web.www.healthdatagateway.org/dataset/505318b6-609c-4baf-9dea-2e3532f936f8", "https://web.www.healthdatagateway.org/dataset/662ed97c-23bf-43dc-88ba-2206d110d119" ];
+
+          // res.data.data[0].datasetv2.enrichmentAndLinkage.qualifiedRelation.map((relation) => {
+          myQualifiedRelation.map((relation) => {
+           this.getLinkedDatasets(relation)
+          })
+        }
         document.title = res.data.data[0].name.trim();
         let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
       
@@ -239,6 +247,36 @@ class DatasetDetail extends Component {
     }
 
     this.setState({ showEmpty: false})
+  }
+
+  getLinkedDatasets = async (relation) => {
+    let linkedDatasets = this.state.linkedDatasets; 
+
+    if(relation.match(/\bhttps?:\/\/\S+/gi) && relation.slice(0,46)==="https://web.www.healthdatagateway.org/dataset/"){    
+      await axios.get(baseURL + '/api/v1/relatedobject/' + relation.slice(46))
+      .then(async (res) => { 
+        linkedDatasets.push({
+          title: res.data.data[0].name,
+          info: res.data.data[0].datasetfields.publisher,
+          type: 'gatewaylink',
+          id: relation.slice(46)
+        })
+      })
+    } else if (relation.match(/\bhttps?:\/\/\S+/gi) && relation.slice(0,46)!=="https://web.www.healthdatagateway.org/dataset/"){
+      linkedDatasets.push({
+        title: relation,
+        info: 'Dataset not on the gateway',
+        type: 'externallink'
+      })
+    } else {
+      linkedDatasets.push({
+        title: relation,
+        info: 'Unrecognised dataset title',
+        type: 'text'
+      })
+    }
+
+    this.setState({linkedDatasets: linkedDatasets})
   }
 
   getEmptyFieldsCount(v2data){
@@ -462,7 +500,8 @@ class DatasetDetail extends Component {
       emptyFlagDAR,
       emptyFlagRelRes,
       showEmpty,
-      emptyFieldsCount
+      emptyFieldsCount,
+      linkedDatasets
     } = this.state;
 
     if (isLoading) {
@@ -574,9 +613,7 @@ class DatasetDetail extends Component {
                     <Col xs={10}>
                       <span className="black-20">{data.name} </span>
                       <br />
-
-                    {/* TODO - UPDATE TO SHIELD WITH CHECK */}
-                      {!_.isEmpty(v2data) ? 
+                      {!_.isEmpty(v2data) && !_.isEmpty(v2data.summary.publisher.memberOf) ? 
                         (
                           <>
                             <span onMouseEnter={this.handleMouseHoverShield} onMouseLeave={this.handleMouseHoverShield}>
@@ -592,7 +629,6 @@ class DatasetDetail extends Component {
                                       <div className="dataShieldToolTip">
                                       <span className="white-13-semibold">
                                         {v2data.summary.publisher.memberOf.charAt(0).toUpperCase() + v2data.summary.publisher.memberOf.slice(1).toLowerCase()} member
-                                        {/* {v2data.summary.publisher.memberOf} */}
                                       </span>
                                     </div>
                             )} 
@@ -658,7 +694,6 @@ class DatasetDetail extends Component {
                       </span>
                     </Col>
                     <Col sm={6} className="text-right">
-                      {/* {console.log(`data.name - ${data.name}`)} */}
                       {!userState[0].loggedIn ? (
                         <button
                           className="btn button-tertiary dark-14 float-right"
@@ -720,7 +755,7 @@ class DatasetDetail extends Component {
                       {!data.datasetfields.abstract ? (
                         ""
                       ) : (
-                        <Row className="mt-2">
+                        <Row className="mt-1">
                           <Col sm={12}>
                             <div className="rectangle">
                               <Row className="gray800-14-bold">
@@ -741,7 +776,7 @@ class DatasetDetail extends Component {
                       {!data.description ? (
                         ""
                       ) : (
-                        <Row className="mt-2">
+                        <Row className="mt-1">
                           <Col sm={12}>
                             <div className="rectangle">
                               <Row className="gray800-14-bold">
@@ -775,7 +810,7 @@ class DatasetDetail extends Component {
                       : 
                         ( 
                           <>      
-                            <Row className="mt-2">
+                            <Row className="mt-1">
                               <Col sm={12}>
                                 <div className="rectangle">
                                   <Row className="gray800-14-bold">
@@ -832,7 +867,7 @@ class DatasetDetail extends Component {
                               </Col>
                             </Row>
 
-                            <Row className="mt-2">
+                            <Row className="mt-1">
                               <Col sm={12}>
                                 <div className="rectangle">
                                   <Row className="gray800-14-bold">
@@ -886,7 +921,7 @@ class DatasetDetail extends Component {
                               </Col>
                             </Row>
 
-                            <Row className="mt-2">
+                            <Row className="mt-1">
                               <Col sm={12}>
                                 <div className="rectangle">
                                   <Row className="gray800-14-bold">
@@ -952,7 +987,7 @@ class DatasetDetail extends Component {
                               </Col>
                             </Row>
 
-                            <Row className="mt-2">
+                            <Row className="mt-1">
                               <Col sm={12}>
                                 <div className="rectangle">
                                   <Row className="gray800-14-bold">
@@ -990,7 +1025,7 @@ class DatasetDetail extends Component {
                               </Col>
                             </Row>
 
-                            <Row className="mt-2">
+                            <Row className="mt-1">
                               <Col sm={12}>
                                 <div className="rectangle">
                                   <Row className="gray800-14-bold">
@@ -1020,139 +1055,208 @@ class DatasetDetail extends Component {
                         )
                     }
 
-                      {/* {console.log(`here - ${JSON.stringify(data.datasetfields, null, 2)}`)} */}
-                      {data.datasetfields.phenotypes !== "undefined" &&
-                      data.datasetfields.phenotypes.length > 0 ? (
-                        <Fragment>
-                          <Row className="mt-2">
-                            <Col sm={12}>
-                              <div className="rectangle">
-                                <Row className="gray800-14-bold">
-                                  <Col sm={12}>
-                                    <span className="mr-3">Phenotypes</span>
+                    {data.datasetfields.phenotypes !== "undefined" &&
+                    data.datasetfields.phenotypes.length > 0 ? (
+                      <Fragment>
+                        <Row className="mt-1">
+                          <Col sm={12}>
+                            <div className="rectangle">
+                              <Row className="gray800-14-bold">
+                                <Col sm={12}>
+                                  <span className="mr-3">Phenotypes</span>
 
-                                    <span
-                                      onMouseEnter={this.handleMouseHover}
-                                      onMouseLeave={this.handleMouseHover}
-                                    >
-                                      {this.state.isHoveringPhenotypes ? (
-                                        <InfoFillSVG />
-                                      ) : (
-                                        <InfoSVG />
-                                      )}
-                                    </span>
-
-                                    {this.state.isHoveringPhenotypes && (
-                                      <div className="dataClassToolTip">
-                                        <span className="white-13-semibold">
-                                          When patients interact with
-                                          physicians, or are admitted into
-                                          hospital, information is collected
-                                          electronically on their symptoms,
-                                          diagnoses, laboratory test results,
-                                          and prescriptions and stored in
-                                          Electronic Health Records (EHR). EHR
-                                          are a valuable resource for
-                                          researchers and clinicians for
-                                          improving health and healthcare.
-                                          Phenotyping algorithms are complex
-                                          computer programs that extract useful
-                                          information from EHR so they can be
-                                          used for health research.
-                                        </span>
-                                      </div>
+                                  <span
+                                    onMouseEnter={this.handleMouseHover}
+                                    onMouseLeave={this.handleMouseHover}
+                                  >
+                                    {this.state.isHoveringPhenotypes ? (
+                                      <InfoFillSVG />
+                                    ) : (
+                                      <InfoSVG />
                                     )}
-                                  </Col>
-                                </Row>
+                                  </span>
 
-                                <Row className="mt-2">
-                                  <Col sm={12} className="gray800-14">
-                                    Below are the phenotypes identified in this
-                                    dataset through a phenotyping algorithm.
-                                  </Col>
-                                </Row>
-
-                                <Row className="mt-3">
-                                  {!showAllPhenotype
-                                    ? data.datasetfields.phenotypes
-                                        .slice(0, 20)
-                                        .map(phenotype => {
-                                          return (
-                                            <Fragment>
-                                              <Col
-                                                xs={6}
-                                                lg={3}
-                                                className="mb-2"
-                                              >
-                                                <a
-                                                  href={phenotype.url}
-                                                  rel="noopener noreferrer"
-                                                  className="purple-14"
-                                                >
-                                                  {phenotype.name}
-                                                </a>
-                                              </Col>
-                                              <Col
-                                                xs={6}
-                                                lg={3}
-                                                className="gray800-14-opacity"
-                                              >
-                                                {phenotype.type}
-                                              </Col>
-                                            </Fragment>
-                                          );
-                                        })
-                                    : data.datasetfields.phenotypes.map(
-                                        phenotype => {
-                                          return (
-                                            <Fragment>
-                                              <Col
-                                                xs={6}
-                                                lg={3}
-                                                className="mb-2"
-                                              >
-                                                <a
-                                                  href={phenotype.url}
-                                                  rel="noopener noreferrer"
-                                                  className="purple-14"
-                                                >
-                                                  {phenotype.name}
-                                                </a>
-                                              </Col>
-                                              <Col
-                                                xs={6}
-                                                lg={3}
-                                                className="gray800-14-opacity"
-                                              >
-                                                {phenotype.type}
-                                              </Col>
-                                            </Fragment>
-                                          );
-                                        }
-                                      )}
-                                </Row>
-                                {!showAllPhenotype &&
-                                data.datasetfields.phenotypes.length > 20 ? (
-                                  <Row className="mt-3 text-center">
-                                    <Col sm={12} className="purple-14">
-                                      <span
-                                        onClick={() => this.showAllPhenotypes()}
-                                        style={{ cursor: "pointer" }}
-                                      >
-                                        Show all phenotypes
+                                  {this.state.isHoveringPhenotypes && (
+                                    <div className="dataClassToolTip">
+                                      <span className="white-13-semibold">
+                                        When patients interact with
+                                        physicians, or are admitted into
+                                        hospital, information is collected
+                                        electronically on their symptoms,
+                                        diagnoses, laboratory test results,
+                                        and prescriptions and stored in
+                                        Electronic Health Records (EHR). EHR
+                                        are a valuable resource for
+                                        researchers and clinicians for
+                                        improving health and healthcare.
+                                        Phenotyping algorithms are complex
+                                        computer programs that extract useful
+                                        information from EHR so they can be
+                                        used for health research.
                                       </span>
-                                    </Col>
-                                  </Row>
-                                ) : (
-                                  ""
-                                )}
-                              </div>
-                            </Col>
-                          </Row>
+                                    </div>
+                                  )}
+                                </Col>
+                              </Row>
+
+                              <Row className="mt-2">
+                                <Col sm={12} className="gray800-14">
+                                  Below are the phenotypes identified in this
+                                  dataset through a phenotyping algorithm.
+                                </Col>
+                              </Row>
+
+                              <Row className="mt-3">
+                                {!showAllPhenotype
+                                  ? data.datasetfields.phenotypes
+                                      .slice(0, 20)
+                                      .map(phenotype => {
+                                        return (
+                                          <Fragment>
+                                            <Col
+                                              xs={6}
+                                              lg={3}
+                                              className="mb-2"
+                                            >
+                                              <a
+                                                href={phenotype.url}
+                                                rel="noopener noreferrer"
+                                                className="purple-14"
+                                              >
+                                                {phenotype.name}
+                                              </a>
+                                            </Col>
+                                            <Col
+                                              xs={6}
+                                              lg={3}
+                                              className="gray800-14-opacity"
+                                            >
+                                              {phenotype.type}
+                                            </Col>
+                                          </Fragment>
+                                        );
+                                      })
+                                  : data.datasetfields.phenotypes.map(
+                                      phenotype => {
+                                        return (
+                                          <Fragment>
+                                            <Col
+                                              xs={6}
+                                              lg={3}
+                                              className="mb-2"
+                                            >
+                                              <a
+                                                href={phenotype.url}
+                                                rel="noopener noreferrer"
+                                                className="purple-14"
+                                              >
+                                                {phenotype.name}
+                                              </a>
+                                            </Col>
+                                            <Col
+                                              xs={6}
+                                              lg={3}
+                                              className="gray800-14-opacity"
+                                            >
+                                              {phenotype.type}
+                                            </Col>
+                                          </Fragment>
+                                        );
+                                      }
+                                    )}
+                              </Row>
+                              {!showAllPhenotype &&
+                              data.datasetfields.phenotypes.length > 20 ? (
+                                <Row className="mt-3 text-center">
+                                  <Col sm={12} className="purple-14">
+                                    <span
+                                      onClick={() => this.showAllPhenotypes()}
+                                      style={{ cursor: "pointer" }}
+                                    >
+                                      Show all phenotypes
+                                    </span>
+                                  </Col>
+                                </Row>
+                              ) : (
+                                ""
+                              )}
+                            </div>
+                          </Col>
+                        </Row>
+                      </Fragment>
+                    ) : (
+                      "" 
+                    )} 
+ 
+                    {!_.isEmpty(v2data) && !_.isEmpty(v2data.enrichmentAndLinkage.qualifiedRelation) ? 
+                      (
+                        <Fragment>
+                        <Row className="mt-1">
+                          <Col sm={12}>
+                            <div className="rectangle">
+                              <Row className="gray800-14-bold">
+                                <Col sm={12}>
+                                  <span className="gray800-14-bold">Linked datasets</span>
+                                </Col>
+                              </Row>
+                            </div>
+                          </Col>
+                        </Row> 
+
+                        {linkedDatasets.map((relation) => (
+                           <Row className="pixelGapTop">
+                           <Col sm={12} m={12}>
+                             <div className="rectangle">
+                               <Row className="gray800-14-bold"> 
+                                 <Col sm={9} m={9} lg={9}>
+                                    <Row>
+                                      <Col sm={1} m={1} lg={1}>
+                                        {/* TODO - UPDATE SHIELD ICON TO CORRECT LINK ICON ONCE I HAVE THE SVG */}
+                                        <SVGIcon 
+                                          name = {relation.type === "gatewaylink" ? "dataseticon" : relation.type === "externallink" ? "shield" : "searchicon" }
+                                          fill={"#475da7"} 
+                                          className="svg-16 mr-2"
+                                          viewBox="-2 -2 20 20"
+                                        />
+                                      </Col>
+                                      <Col sm={11} m={11} lg={11} className="datasetLinked">
+                                        { relation.type === "gatewaylink" ?
+                                            <span><a href={"/dataset/"+relation.id} target="_blank" className="gray800-14-bold pointer overflowWrap">{relation.title}</a></span> 
+                                          : 
+                                            relation.type === "externallink"?
+                                              <span><a href={relation.title} target="_blank" className="gray800-14-bold pointer overflowWrap">{relation.title}</a></span>
+                                            :
+                                              <span className="gray800-14-bold overflowWrap">{relation.title}</span>
+                                        } 
+                                      </Col>
+                                    </Row>
+                                    <Row>
+                                      <Col sm={1} m={1} lg={1}/>
+                                      <Col sm={11} m={11} lg={11} className="datasetLinked">
+                                        <span className="gray800-14">{relation.info}</span>  
+                                      </Col>
+                                    </Row>
+                                 </Col>
+                                 <Col sm={3} m={3} lg={3}> 
+                                    {relation.type === "text" ?
+                                      <Button variant='white'  href={'/search?search='+relation.title} target="_blank" className="gatewaySearchButton floatRightLinkedDataset">
+                                        Search on gateway 
+                                      </Button>
+                                    : 
+                                        ""
+                                    }
+                                 </Col>
+                               </Row>
+                             </div>
+                           </Col>
+                         </Row>
+                          ))
+                        }
                         </Fragment>
-                      ) : (
+                      )
+                    :
                         ""
-                      )} 
+                    }
 
                     {!_.isEmpty(v2data) ? 
                       (

@@ -27,16 +27,24 @@
 }
 
 .datasetToolTip{
-    min-width: 275px;
-    max-width: 680px;
+    max-width: 636px;
     border-radius: 8px;
     background-color: #232f34;
     padding: 8px;
     margin: 10px 0 16.5px 42px;
     position: absolute;
-    left: 20%;
+    left: 26%;
     z-index: 1;
     transform: translate(0px, -20px);
+
+    @include mq('phablet',max){
+      left: 6%;
+      transform: translate(0px, 8px);
+    }
+}
+
+#datasetTooltipSvg {
+  transform: translate(0px, 2px);
 }
 
 .datasetEmptyInfo{
@@ -47,6 +55,53 @@
 .datasetEmptyButton {
   width: 198px;
   height: 40px;
+}
+
+.gatewaySearchButton {
+  height: 40px;
+  width: 153px;
+  border: 2px solid $teal !important;
+  border-radius: 4px !important;
+  background-color: $white;
+  color: $indigo;
+  font-family: museo-sans-rounded;
+  font-size: 14px !important;
+}
+
+.v2Value {
+  margin-left: -45px;
+
+  @include mq('desktop',max){
+    margin-left: -32px;
+  }
+
+  @include mq('tablet-wide',max){
+    margin-left: -16px;
+  }
+
+  @include mq('tablet',max){
+    margin-left: 0px;
+  }
+}
+
+.datasetLinked {
+  margin-left: -32px;
+
+  @include mq('desktop',max){
+    margin-left: -24px;
+  }
+
+  @include mq('tablet-wide',max){
+    margin-left: -12px;
+  }
+
+  @include mq('tablet',max){
+    margin-left: -8px;
+  }
+
+  @include mq('phablet',max){
+    margin-left: 0px;
+  }  
 }
 
 .variableBox { 
@@ -278,4 +333,8 @@
 .greyedOutChevron {    
   margin-top: 3.5px;
   margin-bottom: 3.5px;
+}
+
+.floatRightLinkedDataset{
+  float: right;
 }
