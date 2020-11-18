@@ -194,6 +194,15 @@ class DatasetDetail extends Component {
           await this.getPublisherById(publisherId);
         }
 
+        if(!res.data.isLatestVersion){
+          this.setState({
+            alert: {
+                type: 'warning', 
+                message: <Fragment>You are viewing an old version of this dataset.  Click <a href={'/dataset/' + res.data.data[0].pid}>here</a> for the latest version.</Fragment>
+              }
+          })
+        }
+
         this.setState({ isLoading: false });
       });
 
