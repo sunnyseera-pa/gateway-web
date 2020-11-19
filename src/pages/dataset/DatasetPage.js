@@ -163,7 +163,7 @@ class DatasetDetail extends Component {
         } 
         if(!_.isEmpty(res.data.data[0].datasetv2) && !_.isEmpty(res.data.data[0].datasetv2.enrichmentAndLinkage.qualifiedRelation) ){
           res.data.data[0].datasetv2.enrichmentAndLinkage.qualifiedRelation.map((relation) => {
-           this.getLinkedDatasets(relation)
+           this.getLinkedDatasets(relation) 
           })
         }
         document.title = res.data.data[0].name.trim();
@@ -1212,9 +1212,8 @@ class DatasetDetail extends Component {
                                  <Col sm={9} m={9} lg={9}>
                                     <Row>
                                       <Col sm={1} m={1} lg={1}>
-                                        {/* TODO - UPDATE SHIELD ICON TO CORRECT LINK ICON ONCE I HAVE THE SVG */}
                                         <SVGIcon 
-                                          name = {relation.type === "gatewaylink" ? "dataseticon" : relation.type === "externallink" ? "shield" : "searchicon" }
+                                          name = {relation.type === "gatewaylink" ? "dataseticon" : relation.type === "externallink" ? "externallink" : "searchicon" }
                                           fill={"#475da7"} 
                                           className="svg-16 mr-2"
                                           viewBox="-2 -2 20 20"
