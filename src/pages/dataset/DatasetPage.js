@@ -51,7 +51,7 @@ import ActionBar from "../commonComponents/actionbar/ActionBar";
 import ResourcePageButtons from "../commonComponents/resourcePageButtons/ResourcePageButtons";
 import DatasetAboutCard from './components/DatasetAboutCard';
 
-var baseURL = require("../commonComponents/BaseURL").getURL();
+var baseURL = require("../commonComponents/BaseURL").getURL(); 
 
 class DatasetDetail extends Component {
   // initialize our state
@@ -611,7 +611,31 @@ class DatasetDetail extends Component {
                 ) : null}
                 <div className="rectangle">
                   <Row>
-                    <Col xs={10}>
+                    <Col xs={2}>
+                      {/* TODO */}
+                      <div className="datasetImageCircle">
+                      {/* {!_.isEmpty(v2data) && !_.isEmpty(v2data.summary.publisher.name) ?
+                        "IMAGE"
+                      : */}
+                        {/* <SVGIcon 
+                                name="dataseticon"
+                                fill={"#b3b8bd"} 
+                                width="18px"
+                                height="22px"
+                                className="defaultDatasetIcon"
+                              /> */}
+                       {/* } */}
+                       <img 
+                        alt="logo"
+                        // src={"http://uatbeta.healthdatagateway.org" + "/images/publisher/" + v2data.summary.publisher.name}
+                        src={"http://uatbeta.healthdatagateway.org" + "/images/publisher/" + v2data.summary.publisher.name}
+                        // className={styles.iconButton} 
+                       />
+                      </div> 
+                    </Col>
+                    {/* <Col xs={10}> */}
+
+                    <Col xs={8}>
                       <span className="black-20">{data.name} </span>
                       <br />
                       {!_.isEmpty(v2data) && !_.isEmpty(v2data.summary.publisher.memberOf) ? 
