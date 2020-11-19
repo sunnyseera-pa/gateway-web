@@ -1,5 +1,5 @@
-@import '../../../css/variables';
 @import '../../../css/typography';
+@import '../../../css/variables';
 
 .tabsBackground {
   margin-bottom: 15px;
@@ -60,6 +60,7 @@
         }
 
         h1 {
+          font-size: 18px;
           line-height: 22px;
         }
       }

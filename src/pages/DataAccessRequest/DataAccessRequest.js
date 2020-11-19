@@ -37,6 +37,7 @@ import 'react-tabs/style/react-tabs.css';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import './DataAccessRequest.scss';
 import SVGIcon from '../../images/SVGIcon';
+import { ReactComponent as CloseButtonSvg } from '../../images/close-alt.svg';
 import moment from 'moment';
 import AmendmentCount from './components/AmendmentCount/AmendmentCount';
 import ApplicantActionButtons from './components/ApplicantActionButtons/ApplicantActionButtons';
@@ -128,6 +129,7 @@ class DataAccessRequest extends Component {
 			workflowAssigned: false,
 			roles: [],
 			nationalCoreStudiesProjects: [],
+			inReviewMode: false
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -403,13 +405,22 @@ class DataAccessRequest extends Component {
 
 		// 5. If multiple datasets are allowed, append 'about this application' section
 		if (allowsMultipleDatasets) {
-			// Append 'about' panel and nav item
-			jsonSchema.pages[0].active = false;
-			jsonSchema.pages.unshift(DarHelper.staticContent.aboutPageNav);
-			jsonSchema.pages.push(DarHelper.staticContent.filesNav);
-			// Add form panel
-			jsonSchema.formPanels.unshift(DarHelper.staticContent.aboutPanel);
-			jsonSchema.formPanels.push(DarHelper.staticContent.filesPanel);
+			let { pages } = {...jsonSchema};
+			// see if the schema has about already injected
+			let navElementsExist = [...pages].find(page => page.pageId === DarHelper.darStaticPageIds.ABOUT) || false;
+
+			if(!navElementsExist) {
+				// Append 'about' panel and nav item
+				jsonSchema.pages[0].active = false;
+				jsonSchema.pages.unshift(DarHelper.staticContent.aboutPageNav);
+				jsonSchema.pages.push(DarHelper.staticContent.filesNav);
+				// Add form panel
+				jsonSchema.formPanels.unshift(DarHelper.staticContent.aboutPanel);
+				jsonSchema.formPanels.push(DarHelper.staticContent.filesPanel);
+			} else {
+				// set default page active state
+				jsonSchema.pages[0].active = true;
+			}
 		}
 
 		// 6. Get the first active panel
@@ -418,22 +429,19 @@ class DataAccessRequest extends Component {
 		} = jsonSchema;
 
 		// 7. Append review sections to jsonSchema if in review mode
-		if (inReviewMode) {
-			jsonSchema.pages = jsonSchema.pages.map((page) => {
-				let inReview =
-					reviewSections.includes(page.pageId.toLowerCase()) ||
-					page.pageId === 'about' ||
-					page.pageId === 'files';
-				return { ...page, inReview };
-			});
-		}
+		jsonSchema.pages = [...jsonSchema.pages].map((page) => {
+			let inReview = [...reviewSections].includes(page.pageId.toLowerCase()) || page.pageId === DarHelper.darStaticPageIds.ABOUT || page.pageId === DarHelper.darStaticPageIds.FILES;
+			return { ...page, inReview: (inReviewMode && inReview) };
+		});
 
-		// 8. Set up action bar based on context
-		if (applicationStatus === 'inProgress') {
+		console.log(jsonSchema.pages);
+
+		// 8. Hide show submit application
+		if (applicationStatus === DarHelper.darStatus.inProgress) {
 			showSubmit = true;
 		} else if (
-			applicationStatus === 'inReview' ||
-			applicationStatus === 'submitted'
+			applicationStatus === DarHelper.darStatus.inReview ||
+			applicationStatus === DarHelper.darStatus.submitted
 		) {
 			if (readOnly) {
 				showEdit = true;
@@ -452,7 +460,7 @@ class DataAccessRequest extends Component {
 			hasRecommended,
 			applicationStatus,
 			activePanelId: initialPanel.panelId,
-			isWideForm: initialPanel.panelId === 'about',
+			isWideForm: initialPanel.panelId === DarHelper.darStaticPageIds.ABOUT,
 			isLoading: false,
 			topicContext,
 			publisher,
@@ -717,17 +725,15 @@ class DataAccessRequest extends Component {
 	 */
 	updateNavigation = (newForm, validationErrors = {}) => {
 		if (this.state.allowedNavigation) {
+			let reviewWarning = false;
 			// reset scroll to 0, 0
 			window.scrollTo(0, 0);
 			let panelId = '';
 			// copy state pages
 			const pages = [...this.state.jsonSchema.pages];
 			// get the index of new form
-			const newPageindex = pages.findIndex(
-				(page) => page.pageId === newForm.pageId
-			);
-			let reviewWarning =
-				!pages[newPageindex].inReview && this.state.inReviewMode;
+			const newPageindex = pages.findIndex((page) => page.pageId === newForm.pageId);			
+			reviewWarning = !pages[newPageindex].inReview && this.state.inReviewMode;
 			// reset the current state of active to false for all pages
 			const newFormState = [...this.state.jsonSchema.pages].map((item) => {
 				return { ...item, active: false };
@@ -782,44 +788,33 @@ class DataAccessRequest extends Component {
 
 	onQuestionClick = async (questionSetId = '', questionId = '') => {
 		let questionSet, jsonSchema, questionAnswers, data;
-		questionSet = DarHelper.findQuestionSet(questionSetId, {
-			...this.state.jsonSchema,
-		});
+		
+		questionSet = DarHelper.findQuestionSet(questionSetId, {...this.state.jsonSchema});
 
 		if (!_.isEmpty(questionSet) && !_.isEmpty(questionId)) {
-			let {
-				input: { action },
+
+			// remove about and files from pages to stop duplicate, about / files added to DAR on init
+			let schema = DarHelper.removeStaticPages({...this.state.jsonSchema});
+
+			let { 
+				input: { 
+					action 
+				} 
 			} = DarHelper.findQuestion(questionId, questionSet);
 			switch (action) {
 				case 'addApplicant':
-					let duplicateQuestionSet = DarHelper.questionSetToDuplicate(
-						questionSetId,
-						{ ...this.state.jsonSchema }
-					);
-					jsonSchema = DarHelper.insertSchemaUpdates(
-						questionSetId,
-						duplicateQuestionSet,
-						{ ...this.state.jsonSchema }
-					);
+					let duplicateQuestionSet = DarHelper.questionSetToDuplicate(questionSetId, { ...schema });
+					jsonSchema = DarHelper.insertSchemaUpdates(questionSetId, duplicateQuestionSet, { ...schema });
 					data = { key: 'jsonSchema', data: jsonSchema };
 					// post to API to do of new jsonSchema
 					await this.updateApplication(data);
 					break;
 				case 'removeApplicant':
-					jsonSchema = DarHelper.removeQuestionReferences(
-						questionSetId,
-						questionId,
-						{ ...this.state.jsonSchema }
-					);
-					questionAnswers = DarHelper.removeQuestionAnswers(questionId, {
-						...this.state.questionAnswers,
-					});
+					jsonSchema = DarHelper.removeQuestionReferences(questionSetId, questionId, { ...schema });
+					questionAnswers = DarHelper.removeQuestionAnswers(questionId, { ...this.state.questionAnswers});
 					// post to API of new jsonSchema
 					await this.updateApplication({ key: 'jsonSchema', data: jsonSchema });
-					await this.updateApplication({
-						key: 'questionAnswers',
-						data: questionAnswers,
-					});
+					await this.updateApplication({ key: 'questionAnswers', data: questionAnswers });
 					break;
 				default:
 					console.log(questionSetId);
@@ -828,15 +823,14 @@ class DataAccessRequest extends Component {
 		}
 	};
 
-	onHandleDataSetChange = async (e) => {
+	onHandleDataSetChange = (value = []) => {
 		// 1. Deconstruct current state
-		let { aboutApplication, allowedNavigation, topicContext } = this.state;
+		let { aboutApplication, allowedNavigation, topicContext } = {...this.state};
 
-		// 2. Update 'about application' state with selected datasets
-		aboutApplication.selectedDatasets = e;
-
+		aboutApplication.selectedDatasets = [...value];
+		
 		// 3. If no datasets are passed, set invalid and incomplete step, and update message context
-		if (_.isEmpty(e)) {
+		if (_.isEmpty(value)) {
 			let emptyTopicContext = DarHelper.createTopicContext();
 			aboutApplication.completedDatasetSelection = false;
 			allowedNavigation = false;
@@ -856,7 +850,7 @@ class DataAccessRequest extends Component {
 			// 4. Create data object to save
 			let dataObj = { key: 'aboutApplication', data: aboutApplication };
 			// 5. Update application
-			await this.updateApplication(dataObj);
+			this.updateApplication(dataObj);
 		}
 
 		// 6. Update state to reflect change
@@ -1189,6 +1183,14 @@ class DataAccessRequest extends Component {
 		this.setState({ authorIds });
 	};
 
+	redirectDashboard = (e) => {
+		e.preventDefault();
+		this.props.history.push({
+			pathname: `/account`,
+			search: '?tab=dataaccessrequests'
+		});
+	};
+
 	updateApplicationStatus = async (action = {}) => {
 		let { type, statusDesc } = action;
 		switch (type) {
@@ -1242,6 +1244,8 @@ class DataAccessRequest extends Component {
 			{props}
 		</Tooltip>
 	);
+
+	
 
 	renderApp = () => {
 		let { activePanelId } = this.state;
@@ -1311,6 +1315,7 @@ class DataAccessRequest extends Component {
 					disableSubmit={true}
 					readOnly={this.state.readOnly}
 					validationErrors={this.state.validationErrors}
+					renderRequiredAsterisk={() => <span>{'*'}</span>} 				
 					onQuestionFocus={this.onQuestionFocus}
 					onQuestionClick={this.onQuestionClick}
 					onUpdate={this.onFormUpdate}
@@ -1385,10 +1390,8 @@ class DataAccessRequest extends Component {
 							</span>
 						)}
 					</Col>
-					<Col sm={12} md={4} className='banner-right'>
-						<span className='white-14-semibold'>
-							{DarHelper.getSavedAgo(lastSaved)}
-						</span>
+					<Col sm={12} md={4} className='d-flex justify-content-end align-items-center banner-right'>
+						<span className='white-14-semibold'>{DarHelper.getSavedAgo(lastSaved)}</span>
 						{
 							<a
 								className={`linkButton white-14-semibold ml-2 ${
@@ -1400,6 +1403,7 @@ class DataAccessRequest extends Component {
 								Save now
 							</a>
 						}
+						<CloseButtonSvg width="16px" height="16px" fill="#fff" onClick={(e) => this.redirectDashboard(e)}/>
 					</Col>
 				</Row>
 
@@ -1483,12 +1487,10 @@ class DataAccessRequest extends Component {
 											''
 										)
 								  )
-								: ''}
+							: ''}
 						</div>
 						<div
-							className={`dar__questions gray800-14 ${
-								this.state.activePanelId === 'about' ? 'pad-bottom-0' : ''
-							}`}
+							className={`dar__questions ${this.state.activePanelId === 'about' ? 'pad-bottom-0' : ''}`}
 							style={{ backgroundColor: '#ffffff' }}
 						>
 							{this.renderApp()}
@@ -1503,13 +1505,8 @@ class DataAccessRequest extends Component {
 							>
 								<Tab eventKey='guidance' title='Guidance'>
 									<div className='darTab'>
-										<Col md={12} className='gray700-13 text-center'>
-											<span>
-												{activeGuidance
-													? activeGuidance
-													: 'Active guidance for questions'}
-												.
-											</span>
+										<Col md={12} className='gray700-14'>
+											<span>{activeGuidance ? activeGuidance : 'Active guidance for questions'}.</span>
 										</Col>
 									</div>
 								</Tab>
