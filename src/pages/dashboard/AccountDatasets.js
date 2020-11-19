@@ -87,7 +87,7 @@ class AccountDatasets extends React.Component {
                   <Card.Body className="datasetCard gray800-14">
                     <ul className="gray800-14">
                         <li>
-                            If you have an account on the <a href="https://hdr.auth.metadata.works/auth" rel="noopener noreferrer" className="purple-14">HDR UK Onboarding Platform (HOP)</a>, you can access the metadata onboarding platform using the button below
+                            If you have an account on the <a href="https://hdruk-auth.metadata.works/auth" rel="noopener noreferrer" className="purple-14">HDR UK Onboarding Platform (HOP)</a>, you can access the metadata onboarding platform using the button below
                         </li>
                         <li>
                             If you do have an account on HOP, please request it by submitting a request <a href="https://metadata.atlassian.net/servicedesk/customer/portal/4/group/8/create/56" rel="noopener noreferrer" target="_blank" className="purple-14">here</a>.

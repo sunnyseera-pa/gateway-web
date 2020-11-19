@@ -387,7 +387,7 @@ const EditCollectionForm = (props) => {
                                 {props.relatedObjects ? props.relatedObjects.map((object) => {
                                     return (
                                         <div className="relatedObjectRectangle">
-                                            <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} inCollection={true}/>
+                                            <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} objectType={object.objectType} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} inCollection={true}/>
                                         </div>   
                                     )
                                 }) : ''}
