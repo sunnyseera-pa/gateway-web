@@ -162,11 +162,7 @@ class DatasetDetail extends Component {
           this.getEmptyFieldsCount(res.data.data[0].datasetv2)
         } 
         if(!_.isEmpty(res.data.data[0].datasetv2) && !_.isEmpty(res.data.data[0].datasetv2.enrichmentAndLinkage.qualifiedRelation) ){
-          //TODO - REPLACE myQualifiedRelation.map WITH res.data.data[0].datasetv2.enrichmentAndLinkage.qualifiedRelation.map TO USE ACTUAL VALUES RATHER THAN MY TEST VALUES - DELETE let myQualifiedRelation
-          let myQualifiedRelation = ["CPRD Gold Dataset", "https://cprd.com/linked-data#National%20Radiotherapy%20Dataset%20(RTDS)", "https://web.www.healthdatagateway.org/dataset/6951e949-6aa3-4670-ad05-db8e954b3524", "https://web.www.healthdatagateway.org/dataset/172242ce-a1c5-4915-9c71-686f6e7d5789", "https://en.wikipedia.org/wiki/Bob_Ross", "Ciara's Dataset", "https://web.www.healthdatagateway.org/dataset/756daeaa-6e47-4269-9df5-477c01cdd271", "https://web.www.healthdatagateway.org/dataset/c29c3fbe-700e-4f85-8943-5557c30c1dfa", "ANother Dataset", "https://web.www.healthdatagateway.org/dataset/505318b6-609c-4baf-9dea-2e3532f936f8", "https://web.www.healthdatagateway.org/dataset/662ed97c-23bf-43dc-88ba-2206d110d119" ];
-
-          // res.data.data[0].datasetv2.enrichmentAndLinkage.qualifiedRelation.map((relation) => {
-          myQualifiedRelation.map((relation) => {
+          res.data.data[0].datasetv2.enrichmentAndLinkage.qualifiedRelation.map((relation) => {
            this.getLinkedDatasets(relation)
           })
         }
@@ -280,7 +276,12 @@ class DatasetDetail extends Component {
   }
 
   getEmptyFieldsCount(v2data){
-    let temporalCoverage = v2data.provenance.temporal.startDate + ' - ' + v2data.provenance.temporal.endDate;
+
+    let temporalCoverage = '';
+    if(!_.isEmpty(v2data.provenance.temporal.startDate) && !_.isEmpty(v2data.provenance.temporal.endDate)){
+      temporalCoverage = v2data.provenance.temporal.startDate + ' - ' + v2data.provenance.temporal.endDate;
+    }
+
     let requiredFieldsArray = [
                                 v2data.summary.doiName, v2data.provenance.temporal.distributionReleaseDate, v2data.provenance.temporal.accrualPeriodicity, v2data.issued, v2data.modified, v2data.version, v2data.accessibility.usage.resourceCreator, 
                                 temporalCoverage, v2data.provenance.temporal.timeLag, v2data.coverage.spatial, v2data.coverage.typicalAgeRange, v2data.coverage.physicalSampleAvailability, v2data.coverage.followup, v2data.coverage.pathway, 

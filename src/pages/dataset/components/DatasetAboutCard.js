@@ -29,7 +29,12 @@ class DatasetAboutCard extends React.Component {
 
   render() {
     const { v2data, section, showEmpty } = this.state;
-    let temporalCoverage = v2data.provenance.temporal.startDate + ' - ' + v2data.provenance.temporal.endDate;
+
+    let temporalCoverage = '';
+
+    if(!_.isEmpty(v2data.provenance.temporal.startDate) && !_.isEmpty(v2data.provenance.temporal.endDate)){
+      temporalCoverage = v2data.provenance.temporal.startDate + ' - ' + v2data.provenance.temporal.endDate;
+    }
  
     switch (section) {
       case "Details":
@@ -41,7 +46,7 @@ class DatasetAboutCard extends React.Component {
                     <Row className="gray800-14-bold">
                       <Col sm={12} className="mb-1">{section}</Col>
                     </Row>
-                    {showEmpty===false && _.isEmpty(v2data.summary.doiName) ? 'v2data.summary.doiName' : <AboutCardElement label={"DOI"} description={v2data.summary.doiName} tooltip={"This is not the DOI of the publication(s) associated with the dataset, but rather the DOI of the metadata describing the dataset."} />}
+                    {showEmpty===false && _.isEmpty(v2data.summary.doiName) ? '' : <AboutCardElement label={"DOI"} description={v2data.summary.doiName} tooltip={"This is not the DOI of the publication(s) associated with the dataset, but rather the DOI of the metadata describing the dataset."} />}
                     {showEmpty===false && _.isEmpty(v2data.provenance.temporal.distributionReleaseDate) ? '' : <AboutCardElement label={"Lastest datset release date"} description={v2data.provenance.temporal.distributionReleaseDate} tooltip={"Date of the latest release of the dataset."} />}
                     {showEmpty===false && _.isEmpty(v2data.provenance.temporal.accrualPeriodicity) ? '' : <AboutCardElement label={"Publishing frequency"} description={v2data.provenance.temporal.accrualPeriodicity} tooltip={"The frequency of publishing new data for this dataset."} />}
                     {showEmpty===false && _.isEmpty(v2data.issued) ? '' : <AboutCardElement label={"Creation Date"} description={v2data.issued} tooltip={"Date when the information about this dataset was added to our database."} />}
@@ -70,7 +75,7 @@ class DatasetAboutCard extends React.Component {
                     {showEmpty===false && _.isEmpty(v2data.coverage.followup) ? '' : <AboutCardElement label={"Follow-up"} description={v2data.coverage.followup} tooltip={"The typical time span that a patient appears in the dataset (follow-up period)"} />}
                     {showEmpty===false && _.isEmpty(v2data.coverage.pathway) ? '' : <AboutCardElement label={"Pathway"} description={v2data.coverage.pathway} tooltip={"Indicates if the dataset is representative of the patient pathway and any limitations the dataset may have with respect to pathway coverage. This could include if the dataset is from a single speciality or area, a single tier of care, linked across two tiers (e.g. primary and secondary care), or an integrated care record covering the whole patient pathway."} />}
                   </div>
-                </Col>
+                </Col> 
               </Row>
             </div>
       );
