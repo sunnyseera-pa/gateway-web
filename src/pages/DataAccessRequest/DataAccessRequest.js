@@ -333,7 +333,7 @@ class DataAccessRequest extends Component {
 			_id,
 			hasRecommended,
 			applicationStatus,
-			aboutApplication,
+			aboutApplication = {},
 			datasets,
 			readOnly = false,
 			userType = 'APPLICANT',
@@ -361,7 +361,6 @@ class DataAccessRequest extends Component {
 		if (datasets[0].publisher) {
 			({ _id: publisherId, workflowEnabled } = datasets[0].publisher);
 		}
-
 		// 2. If about application is empty, this is a new data access request so set up state based on passed context
 		if (_.isEmpty(aboutApplication)) {
 			aboutApplication.selectedDatasets = datasets.map((dataset) => {
