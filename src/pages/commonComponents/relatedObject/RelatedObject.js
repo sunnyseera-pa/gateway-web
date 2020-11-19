@@ -517,7 +517,7 @@ class RelatedObject extends React.Component {
                                     <Row className="noMargin">
                                         <Col sm={10} lg={10} className="pad-left-24">
                                             {activeLink===true ?
-                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/dataset/' + data.datasetid} >{data.name}</a>
+                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/dataset/' + data.pid} >{data.name}</a>
                                             : <span className="black-bold-16"> {data.name} </span> }
                                             <br />
                                             {!_.isEmpty(data.datasetv2) ?
