@@ -1429,33 +1429,33 @@ class DatasetDetail extends Component {
                               <Col sm={12} className="gray-deep-14">
                                 <span className="gray-deep-14">
                                   The Data Utility Framework scores datasets on
-                                  5 categories and 23 dimensions, and is used to
+                                  5 categories and a range of dimensions, and is used to
                                   refer to the usefulness of a dataset for a
                                   given purpose. This framework enables:
                                 </span>
                                 <ul className="gray-deep-14 margin-top-8">
                                   <li>
-                                    Data custodians to communicate the utility
-                                    of their dataset, and improvements made in
+                                    Data custodians to communicate the utility 
+                                    of their dataset, and improvements made in 
                                     the dataset
                                   </li>
                                   <li>
-                                    Users to identify datasets that meet the
-                                    minimum requirements for their specific
+                                    Users to identify datasets that meet the 
+                                    minimum requirements for their specific 
                                     purpose
                                   </li>
                                   <li>
-                                    Systems leaders and funders to identify
-                                    where to invest in data utility
-                                    improvements, and to evaluate what
-                                    improvements have happened as a result of
-                                    their investments
+                                    Systems leaders and funders to identify 
+                                    where to invest in data utility 
+                                    improvements, and to evaluate what 
+                                    improvements have happened as a result 
+                                    of their investments
                                   </li>
                                 </ul>
                                 <span>
-                                  Some datasets will not yet have a data utility
-                                  rating and some may only have a rating for
-                                  metadata richness
+                                Some datasets will not yet have a data utility 
+                                rating and some may only have a rating for 
+                                metadata richness.
                                 </span>
                               </Col>
                             </Row>
