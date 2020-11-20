@@ -532,7 +532,10 @@ input[type=radio]:disabled {
 }
 
 #messageLink,
-#howToRequestAccessLink {
+#howToRequestAccessLink,
+#approvedResearcherLink,
+#infoGovernanceLink,
+#dsptLink {
 	color: $purple !important;
 	text-decoration: underline !important;
 }
