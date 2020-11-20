@@ -116,7 +116,6 @@ class CourseDetail extends Component {
         }
       })
       .catch((err) => {
-          debugger
           //check if request is for a courseID or a different route such as /add
           if(!isNaN(this.props.match.params.courseID)){
             window.localStorage.setItem('redirectMsg', err.response.data);  

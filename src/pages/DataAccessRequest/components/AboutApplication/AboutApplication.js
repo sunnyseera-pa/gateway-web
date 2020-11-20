@@ -78,7 +78,7 @@ const AboutApplication = (props) => {
 								<div className='form-group'>
 									<TypeaheadDataset
 										selectedDatasets={selectedDatasets}
-										onHandleDataSetChange={(e) => onHandleDataSetChange()}
+										onHandleDataSetChange={(e) => onHandleDataSetChange(e)}
 										readOnly={readOnly}
 									/>
 								</div>

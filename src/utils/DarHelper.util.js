@@ -25,7 +25,7 @@ let staticContent = {
 	},
 	filesPanel: {
 		panelId: 'files',
-		index: 10,
+		index: 100,
 		pageId: 'files'
 	},
 };
@@ -77,6 +77,11 @@ let darStatusCounts = {
 	'approved with conditions'	: 'approvedCount',
 	rejected										: 'rejectedCount'
 };
+
+let darStaticPageIds = {
+	ABOUT: 'about',
+	FILES: 'files'
+}
 
 
 /**
@@ -623,26 +628,48 @@ let createModalContext = (datasets = []) => {
 	};
 };
 
+/**
+ * [removeStaticPages]
+ * @desc 		Removes the static pageId to stop Nav from duplicating
+ * @param   {[object]}  schema  [schema]
+ * @return  {[object]}          [return schema]
+ */
+let removeStaticPages = (schema = {}) => {
+	let { pages, formPanels } = {...schema};
+	// filter pageId within pages
+	let originalPages 			= _.uniqBy(pages, 'pageId');
+	// unique panelId within form panels
+	let originalFormPanels 	= _.uniqBy(formPanels, 'panelId');
+	// return updated schema
+	return {
+		...schema,
+		pages: originalPages,
+		formPanels: originalFormPanels
+	}
+}
+
 export default {
-	questionSetToDuplicate: questionSetToDuplicate,
-	insertSchemaUpdates: insertSchemaUpdates,
-	removeQuestionReferences: removeQuestionReferences,
-	findQuestionSet: findQuestionSet,
-	findQuestion: findQuestion,
-	removeQuestionAnswers: removeQuestionAnswers,
-	autoComplete: autoComplete,
-	totalQuestionsAnswered: totalQuestionsAnswered,
-	saveTime: saveTime,
-	getSavedAgo: getSavedAgo,
-	getActiveQuestion: getActiveQuestion,
-	calcAccordionClasses: calcAccordionClasses,
-	createTopicContext: createTopicContext,
-	createModalContext: createModalContext,
-	configActionModal: configActionModal,
-	generateStatusCounts: generateStatusCounts,
-	staticContent: staticContent,
-	darStatus : darStatus,
-	darStatusColours: darStatusColours,
-	darSLAText: darSLAText,
-	darCommentTitle: darCommentTitle
+	questionSetToDuplicate			: questionSetToDuplicate,
+	insertSchemaUpdates					: insertSchemaUpdates,
+	removeQuestionReferences		: removeQuestionReferences,
+	findQuestionSet							: findQuestionSet,
+	findQuestion								: findQuestion,
+	removeQuestionAnswers				: removeQuestionAnswers,
+	autoComplete								: autoComplete,
+	totalQuestionsAnswered			: totalQuestionsAnswered,
+	saveTime										: saveTime,
+	getSavedAgo									: getSavedAgo,
+	getActiveQuestion						: getActiveQuestion,
+	calcAccordionClasses				: calcAccordionClasses,
+	createTopicContext					: createTopicContext,
+	createModalContext					: createModalContext,
+	configActionModal						: configActionModal,
+	generateStatusCounts				: generateStatusCounts,
+	staticContent								: staticContent,
+	darStatus 									: darStatus,
+	darStatusColours						: darStatusColours,
+	darSLAText									: darSLAText,
+	darCommentTitle							: darCommentTitle,
+	darStaticPageIds						: darStaticPageIds,
+	removeStaticPages 					: removeStaticPages
 };
