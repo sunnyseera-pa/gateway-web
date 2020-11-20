@@ -86,9 +86,11 @@ class RelatedObject extends React.Component {
  
     removeButton = () => {
         if(this.state.data.type === 'dataset') {
-            this.props.doRemoveObject(this.state.data.datasetid, this.state.data.type) 
+            // if removing an archived dataset, use the old datasetId for deletion
+            let datasetId = this.state.data.oldDatasetId ? this.state.data.oldDatasetId : this.state.data.datasetid;
+            this.props.doRemoveObject(this.state.data.pid, this.state.data.type, datasetId);
         } else{
-            this.props.doRemoveObject(this.state.data.id, this.state.data.type) 
+            this.props.doRemoveObject(this.state.data.id, this.state.data.type);
         }
     }
 
@@ -125,8 +127,7 @@ class RelatedObject extends React.Component {
         return (
             <Row className="resource-card-row"> 
                 <Col>
-                    <div className={rectangleClassName} onClick={() => !activeLink && !this.props.showRelationshipQuestion && !this.props.showRelationshipAnswer && this.props.doAddToTempRelatedObjects(data.type === "dataset" ? data.datasetid : data.id, data.type) } >
-                       
+                    <div className={rectangleClassName} onClick={() => !activeLink && !this.props.showRelationshipQuestion && !this.props.showRelationshipAnswer && this.props.doAddToTempRelatedObjects(data.type === "dataset" ? data.datasetid : data.id, data.type, data.pid) } >
                        {data.activeflag === 'review' ? 
                             <Row >
                                 <Col sm={12} lg={12}>
