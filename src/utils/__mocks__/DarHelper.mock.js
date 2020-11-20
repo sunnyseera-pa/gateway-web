@@ -22,14 +22,14 @@ export const formSchema = {
 			active: false,
 			title: 'About this application',
 			description:
-				'Requesting access to data can be a lengthy process due the amount of checks needed in order to ensure the safe use of patient data. The steps below aim to clarify the process.'
+				'Preparation is key to a successful data access request. You need to be able to demonstrate how you will ensure safe use of patient data and the potential for public benefit. The steps below are intended to help you get off to a good start.'
 		},
 		{
 			pageId: 'about',
 			active: false,
 			title: 'About this application',
 			description:
-				'Requesting access to data can be a lengthy process due the amount of checks needed in order to ensure the safe use of patient data. The steps below aim to clarify the process.'
+				'Preparation is key to a successful data access request. You need to be able to demonstrate how you will ensure safe use of patient data and the potential for public benefit. The steps below are intended to help you get off to a good start.'
 		},
 		{
 			pageId: 'safepeople',
@@ -2006,7 +2006,7 @@ export const uniquePages = [
     active: false,
     title: 'About this application',
     description:
-      'Requesting access to data can be a lengthy process due the amount of checks needed in order to ensure the safe use of patient data. The steps below aim to clarify the process.'
+      'Preparation is key to a successful data access request. You need to be able to demonstrate how you will ensure safe use of patient data and the potential for public benefit. The steps below are intended to help you get off to a good start.'
   },
   {
     pageId: 'safepeople',
@@ -2229,7 +2229,7 @@ export const uniqueSchema = {
 			active: false,
 			title: 'About this application',
 			description:
-				'Requesting access to data can be a lengthy process due the amount of checks needed in order to ensure the safe use of patient data. The steps below aim to clarify the process.'
+				'Preparation is key to a successful data access request. You need to be able to demonstrate how you will ensure safe use of patient data and the potential for public benefit. The steps below are intended to help you get off to a good start.'
 		},
 		{
 			pageId: 'safepeople',

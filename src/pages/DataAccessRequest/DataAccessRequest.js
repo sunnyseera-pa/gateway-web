@@ -433,8 +433,6 @@ class DataAccessRequest extends Component {
 			return { ...page, inReview: (inReviewMode && inReview) };
 		});
 
-		console.log(jsonSchema.pages);
-
 		// 8. Hide show submit application
 		if (applicationStatus === DarHelper.darStatus.inProgress) {
 			showSubmit = true;
