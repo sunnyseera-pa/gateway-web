@@ -1,5 +1,5 @@
 import React from "react";
-import { Col, Row, Accordion, Card } from "react-bootstrap";
+import { Col, Row, Accordion, Card, Button } from "react-bootstrap";
 import "./Dashboard.scss";
 
 class AccountAdvancedSearch extends React.Component {
@@ -158,6 +158,16 @@ class AccountAdvancedSearch extends React.Component {
                 </Accordion.Collapse>
               </Card>
             </Accordion>
+            <div className="rectangle text-right">
+            <Button
+                variant="primary"
+                href="https://atlas-test.uksouth.cloudapp.azure.com/bcrquest/"
+                id="advancedSearchButton"
+                className="white-14-semibold margin-right-16"
+            >
+                Access the advanced search tool
+            </Button>
+            </div>
           </Col>
           <Col sm={1} lg={1} />
         </Row>
