@@ -332,11 +332,11 @@ class DatasetDetail extends Component {
 			);
 		}
 
-		if (data.relatedObjects === null || typeof data.relatedObjects === 'undefined') {
-			data.relatedObjects = [];
-		}
+    if (_.isNil(data.relatedObjects)) { 
+      data.relatedObjects = []; 
+    }
 
-		if (data.datasetfields.phenotypes !== 'undefined' && data.datasetfields.phenotypes.length > 0) {
+		if (!_.isNil(data.datasetfields.phenotypes) && data.datasetfields.phenotypes.length > 0) {
 			data.datasetfields.phenotypes.sort((a, b) =>
 				a.name.toLowerCase() > b.name.toLowerCase() ? 1 : b.name.toLowerCase() > a.name.toLowerCase() ? -1 : 0
 			);
@@ -346,10 +346,10 @@ class DatasetDetail extends Component {
 			const [show, setShow] = useState(false);
 			const target = useRef(null);
 
-			var rating = 'Not Rated';
+			let rating = 'Not Rated';
 
-			if (data.datasetfields.metadataquality && typeof data.datasetfields.metadataquality.quality_rating !== 'undefined') {
-				rating = data.datasetfields.metadataquality.quality_rating;
+      if (data.datasetfields.metadataquality && !_.isNil(data.datasetfields.metadataquality.quality_rating)) {				
+        rating = data.datasetfields.metadataquality.quality_rating;
 			} else {
 				return (
 					<Fragment>
@@ -787,7 +787,7 @@ class DatasetDetail extends Component {
 												</Col>
 											</Row>
 
-											{data.datasetfields.phenotypes !== 'undefined' && data.datasetfields.phenotypes.length > 0 ? (
+											{!_.isNil(data.datasetfields.phenotypes) && data.datasetfields.phenotypes.length > 0 ? (
 												<Fragment>
 													<Row className='mt-2'>
 														<Col sm={12}>
