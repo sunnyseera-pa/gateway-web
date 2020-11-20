@@ -177,6 +177,7 @@ const sectorSelect = [
     "Industry",
     "Academia",
     "Public",
+    "Charity/Non-profit"
 ];
 
 //Your Account Form
@@ -232,11 +233,12 @@ const YourAccountForm = (props) => {
             firstname: props.userdata.firstname,
             lastname: props.userdata.lastname,
             email: props.userdata.email,
+            profileComplete: true,
             bio: '',
             link: '',
             orcid: '',
             redirectURL: props.userdata.redirectURL,
-            emailNotifications: false,
+            emailNotifications: true,
             terms: false,
             sector: '',
             organisation: '',
@@ -288,7 +290,7 @@ const YourAccountForm = (props) => {
                 <Col>
                     <div className="rectangle">
                         <p className="black-20">Your details</p>
-                        <p className="gray800-14">We need some more details to create your account</p>
+                        <p className="gray800-14">You can control what appears on your profile using the icons. Your details are also used when you make a data access request application.</p>
                     </div>
                 </Col>
             </Row>

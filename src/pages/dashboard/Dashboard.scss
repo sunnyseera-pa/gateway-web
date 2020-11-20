@@ -94,6 +94,15 @@
   height: 18px;
 }
 
+.membersSvg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  padding-left: 0px;
+  padding-top: 0px;
+  margin-left: 1px;
+}
+
 .dashboardPadding{
     @include mq('tablet-small',max){
       padding-left: 10% !important;
@@ -112,6 +121,17 @@
       width: 100%;
       padding: 24px;
     }
+  
+  .accountBanner {
+    background-color: $red-light;
+    color: $dark-red;
+    border-radius: 4px;
+    width: 100%;
+    min-height: 40px;
+    margin-left: 0px !important;
+    margin-bottom: 16px !important;
+    align-content: center;
+  }
 
 .kpiContainer {
   width: 100%;
@@ -314,6 +334,34 @@
     margin-right: 12px;
   }
 
+  .colOneTerm{
+    float: left;
+    padding-left: 15px; 
+  }
+
+  .resultBox {
+    width: 100%;
+    background-color: $white;
+    padding: 12px;
+    margin-left: 0px !important;
+    border-top: #e7e9ed solid 1px;
+  }
+
+  .resultsPadding {
+    padding: 12px 12px 12px 12px !important;
+  }
+
+  .dashboardHeader {
+    background-color: $white;
+    width: 100%;
+    padding: 12px 12px;
+    margin-left: 0px !important;
+  }
+
+  .noDars{
+    text-align: center;
+    margin-top: 0.5px;
+  }
 
 .teamSelectorMenu {
     width: 100%;

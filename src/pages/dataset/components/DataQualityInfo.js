@@ -1,5 +1,6 @@
 import React from "react"; 
 import { Col, Row, Collapse } from "react-bootstrap";
+import _ from 'lodash';
 import SVGIcon from "../../../images/SVGIcon";
 import "../Dataset.scss";
 import { ReactComponent as SubBronzeSVG } from "../../../images/sub_bronze.svg";
@@ -17,7 +18,7 @@ class DataQualityInfo extends React.Component {
     open: false,
     flagClosed: true,
     section: "",
-    datasetUtility: null,
+    datasetUtility: {},
     documentationWeight: null,
     technicalQualityWeight: null,
     accessProvisionWeight: null,
@@ -49,7 +50,7 @@ class DataQualityInfo extends React.Component {
         {
             dimension: "Additional documentation and support",
             rating: "Platinum",
-            response: "Extensive supplementary documentation and support, including personnel support"
+            response: "As Gold, plus support personnel available to answer questions"
         },
         {
             dimension: "Data Model",
@@ -109,7 +110,7 @@ class DataQualityInfo extends React.Component {
         {
             dimension: "Provenance",
             rating: "Platinum",
-            response: "View earlier versions, ‘raw’ dataset and review impact of each stage of data cleaning"
+            response: "Ability to view earlier versions, including versions before any transformations have been applied data (in line with deidentification and IG approval) and review the impact of each stage of data cleaning"
         },
         {
             dimension: "Data Quality Management Process",
@@ -149,7 +150,7 @@ class DataQualityInfo extends React.Component {
         {
             dimension: "Pathway coverage",
             rating: "Platinum",
-            response: "Contains data across the whole pathway of care"
+            response: "Contains data across more than two tiers"
         },
         {
             dimension: "Length of follow up",
@@ -234,22 +235,22 @@ class DataQualityInfo extends React.Component {
         {
             dimension: "Timeliness",
             rating: "Bronze",
-            response: "More than 12 months"
+            response: "Less than 6 months"
         },
         {
             dimension: "Timeliness",
             rating: "Silver",
-            response: "Less than 12 months"
+            response: "Less than 3 months"
         },
         {
             dimension: "Timeliness",
             rating: "Gold",
-            response: "Less than 6 months"
+            response: "Less than 1 month"
         },        
         {
             dimension: "Timeliness",
             rating: "Platinum",
-            response: "Less than 3 months"
+            response: "Less than 2 weeks"
         },
         {
             dimension: "Linkages",
@@ -299,7 +300,7 @@ class DataQualityInfo extends React.Component {
     this.state.open = props.open;
     this.updateFlag = this.updateFlag.bind(this);
     this.state.section = props.section;
-    this.state.datasetUtility = props.datasetUtility;
+    this.state.datasetUtility = props.datasetUtility || {};
     this.state.documentationWeight = props.documentationWeight;
     this.state.technicalQualityWeight = props.technicalQualityWeight;
     this.state.accessProvisionWeight = props.accessProvisionWeight;
@@ -308,7 +309,9 @@ class DataQualityInfo extends React.Component {
   }
 
   async componentWillMount() {    
-    await this.updateSections(this.props.datasetUtility);
+      if(!_.isEmpty(this.props.datasetUtility)) {
+        await this.updateSections(this.props.datasetUtility);
+      }
   }
 
   componentDidUpdate(prevProps) {
@@ -365,30 +368,33 @@ class DataQualityInfo extends React.Component {
     } 
   }
 
-  async updateSections(datasetUtility){
-    if(datasetUtility.metadata_richness.trim() === "Not Rated"){
-        this.setState({metadataRichnessOnly: false})
+  async updateSections(datasetUtility = {}){
+    if(!_.isEmpty(datasetUtility)) {
+
+        if(datasetUtility.metadata_richness.trim() === "Not Rated"){
+            this.setState({metadataRichnessOnly: false})
+        }
+
+        if(!datasetUtility.availability_of_additional_documentation_and_support && !datasetUtility.data_model && !datasetUtility.data_dictionary && !datasetUtility.provenance){
+            this.setState({documentSection: false})
+        } 
+
+        if(!datasetUtility.data_quality_management_process && !datasetUtility.dama_quality_dimensions){
+        this.setState({techQualitySection: false})
+        } 
+
+        if(!datasetUtility.allowable_uses && !datasetUtility.research_environment && !datasetUtility.time_lag && !datasetUtility.timeliness){
+        this.setState({accessProvisionSection: false})
+        } 
+
+        if(!datasetUtility.linkages && !datasetUtility.data_enrichments){
+        this.setState({valueInterestSection: false})
+        } 
+
+        if(!datasetUtility.pathway_coverage && !datasetUtility.length_of_follow_up){
+        this.setState({coverageSection: false})
+        } 
     }
-
-    if(!datasetUtility.availability_of_additional_documentation_and_support && !datasetUtility.data_model && !datasetUtility.data_dictionary && !datasetUtility.provenance){
-        this.setState({documentSection: false})
-    } 
-
-    if(!datasetUtility.data_quality_management_process && !datasetUtility.dama_quality_dimensions){
-      this.setState({techQualitySection: false})
-    } 
-
-    if(!datasetUtility.allowable_uses && !datasetUtility.research_environment && !datasetUtility.time_lag && !datasetUtility.timeliness){
-      this.setState({accessProvisionSection: false})
-    } 
-
-    if(!datasetUtility.linkages && !datasetUtility.data_enrichments){
-      this.setState({valueInterestSection: false})
-    } 
-
-    if(!datasetUtility.pathway_coverage && !datasetUtility.length_of_follow_up){
-      this.setState({coverageSection: false})
-    } 
   }
 
   render() {

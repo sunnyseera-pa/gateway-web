@@ -1,6 +1,6 @@
 import React, { Component, Fragment, useState } from 'react';
 import queryString from 'query-string';
-import {  Nav, Accordion, Dropdown, Button } from 'react-bootstrap';
+import {  Nav, Accordion, Dropdown } from 'react-bootstrap';
 import _ from 'lodash';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import AccountTools from './AccountTools';
@@ -12,6 +12,7 @@ import AccountCourses from './AccountCourses';
 import AccountCollections from './AccountCollections';
 import AccountAnalyticsDashboard from './AccountAnalyticsDashboard';
 import AccountUsers from './AccountUsers';
+import AccountMembers from './AccountMembers';
 import ReviewTools from './ReviewTools';
 import YourAccount from './YourAccount';
 import DataAccessRequests from './DataAccessRequests/DataAccessRequests';
@@ -22,8 +23,8 @@ import SVGIcon from '../../images/SVGIcon';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
-import ActionBar from "../commonComponents/actionbar/ActionBar";
 import { ReactComponent as ChevronRightSvg } from "../../images/chevron-bottom.svg";
+import { ReactComponent as MembersSvg } from "../../images/members.svg";
 import './Dashboard.scss';
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -68,6 +69,7 @@ class Account extends Component {
         tabId: '',
         activeKey: '',
         team: 'user',
+        teamId: '',
         alert: {},
         isDeleted: false,
         isApproved: false,
@@ -78,7 +80,8 @@ class Account extends Component {
         showModal: false,
         activeAccordion: -1,
         datasetAccordion: -1,
-        context: {}
+        context: {},
+        profileComplete: true
     };
 
     constructor(props) {
@@ -90,7 +93,7 @@ class Account extends Component {
             this.state.alert = props.location.state.alert;
             this.alertTimeOut = setTimeout(() => this.setState({ alert: {} }), 10000)
         }
-        
+
         if(_.has(props, 'location.state.team') && props.location.state.team !== '') {
             this.state.team = props.location.state.team;
             localStorage.setItem('HDR_TEAM', props.location.state.team);
@@ -101,6 +104,9 @@ class Account extends Component {
         else {
             this.state.team = 'user';
             localStorage.setItem('HDR_TEAM', 'user');
+        }
+        if(_.has(props, 'profileComplete')){
+            this.state.profileComplete = props.profileComplete;
         }
     }
 
@@ -123,6 +129,9 @@ class Account extends Component {
                 this.toggleNav(tab);
             }
         }  
+        if (!this.state.profileComplete){
+            this.setState({tabId: 'youraccount'})
+        }
         window.addEventListener('beforeunload', this.componentCleanup);
     }
 
@@ -161,6 +170,9 @@ class Account extends Component {
                     activeAccordion: (values.tab === 'dataaccessrequests' || values.tab === 'workflows') ? '0' : -1
                 });
             }
+        }
+        if (!this.state.profileComplete){
+            this.setState({tabId: 'youraccount'})
         }
     }
 
@@ -241,7 +253,12 @@ class Account extends Component {
             if(!_.isEmpty(filterPublishers)) {
                 return filterPublishers.map((pub, index) =>{
                     return  (
-                        <Dropdown.Item className="gray700-13" onClick={(e) => this.toggleNav(`${this.state.tabId}&team=${pub.name}`)}>{pub.name}</Dropdown.Item>
+                        <Dropdown.Item className="gray700-13" 
+                        onClick={(e) => {
+                            this.toggleNav(`${this.state.tabId}&team=${pub.name}`)
+                            this.setState({teamId: pub._id});
+                        }}
+                        >{pub.name}</Dropdown.Item>
                     )
                 });
             }
@@ -311,11 +328,11 @@ class Account extends Component {
             data,
             userState,
             tabId,
-            activeKey,
             showDrawer,
             showModal,
             context,
             team,
+            teamId,
             alert,
             activeAccordion,
             datasetAccordion
@@ -488,12 +505,20 @@ class Account extends Component {
                                 </div>
                             }
                             {team !== 'user' ? 
-                            <div className={`${tabId === 'help' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('help')}>
-                                <Nav.Link className="verticalNavBar gray700-13">
-                                    <SVGIcon name='info' fill={'#b3b8bd'} className='accountSvgs' />
-                                    <span className="navLinkItem">Help</span>
-                                </Nav.Link>
-                            </div> : ''
+                            <Fragment>
+                                <div className={`${tabId === 'members' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('members')}>
+                                    <Nav.Link className="verticalNavBar gray700-13">
+                                        <MembersSvg className='membersSvg'/>
+                                        <span style={{'margin-left': '11px'}}>Members</span>
+                                    </Nav.Link>
+                                </div>
+                                <div className={`${tabId === 'help' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('help')}>
+                                    <Nav.Link className="verticalNavBar gray700-13">
+                                        <SVGIcon name='info' fill={'#b3b8bd'} className='accountSvgs' />
+                                        <span className="navLinkItem">Help</span>
+                                    </Nav.Link>
+                                </div> 
+                            </Fragment> : ''
                             }
                         </div>
                     </div>
@@ -525,59 +550,11 @@ class Account extends Component {
 
                         {tabId === 'usersroles' ? <AccountUsers userState={userState} /> : ''}
 
+                        {tabId === 'members' ? <AccountMembers userState={userState} team={team} teamId={teamId}/> : ''}
+
                         {tabId === 'help' ? <TeamHelp/> : ''}
                     </div>
                 </div>
-
-                {tabId === 'datasets' ? (
-                    <>
-                        <ActionBar userState={userState}>
-                            <Button
-                                variant="medium"
-                                href="https://metadata.atlassian.net/servicedesk/customer/portal/4"
-                                target="_blank"
-                                id="serviceDeskButton"
-                                className="dark-14 margin-right-8"
-                                data-testid="servicedesk-button"
-                            >
-                                Service desk
-                            </Button>
-
-                            <Button
-                                variant="medium"
-                                href="https://metadata.atlassian.net/wiki/spaces/HDR/overview"
-                                target="_blank"
-                                id="userguideButton"
-                                className="dark-14 margin-right-8"
-                                data-testid="userguide-button"
-                            >
-                                User guide
-                            </Button>
-
-                            <Button
-                                variant="primary"
-                                href="https://hdr.auth.metadata.works/oauth/login/healthdatagateway"
-                                id="metadataButton"
-                                className="white-14-semibold margin-right-16"
-                            >
-                                Access the metadata onboarding platform
-                            </Button>
-                        </ActionBar>
-                    </>
-                ): ''}
-
-                {tabId === 'datasetsAdvancedSearch'  ? (
-                            <ActionBar userState={userState}>
-                            <Button
-                              variant="primary"
-                              href="https://atlas-test.uksouth.cloudapp.azure.com/bcrquest/"
-                              id="advancedSearchButton"
-                              className="white-14-semibold margin-right-16"
-                            >
-                              Access the advanced search tool
-                            </Button>
-                          </ActionBar>
-                ) : ''}
 
                 <SideDrawer open={showDrawer} closed={this.toggleDrawer}>
                     <UserMessages
