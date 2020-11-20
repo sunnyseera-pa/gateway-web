@@ -1,11 +1,12 @@
 import React from "react";
 import { Col, Row } from "react-bootstrap";
+import _ from 'lodash';
 import '../Dataset.scss'; 
 import DataQualityInfo from "./DataQualityInfo";
 
 class DataQuality extends React.Component {
   state = {
-    datasetUtility: null,
+    datasetUtility: {},
     allOpen: false,
     displayOption: "",
     documentationWeight: "",
@@ -17,15 +18,15 @@ class DataQuality extends React.Component {
 
   constructor(props) { 
     super(props);
-    this.state.datasetUtility = props.datasetUtility;
+    this.state.datasetUtility = props.datasetUtility || {};
   }
 
   async componentWillMount() {    
-    await this.displaySections(this.props.datasetUtility);
+    if(!_.isEmpty(this.props.datasetUtility))
+      await this.displaySections(this.props.datasetUtility);
   }
 
-  async displaySections(datasetUtility){
-
+  async displaySections(datasetUtility = {}){
     if(datasetUtility.metadata_richness && datasetUtility.metadata_richness.trim() === "Not Rated" && !datasetUtility.availability_of_additional_documentation_and_support && !datasetUtility.data_model && !datasetUtility.data_dictionary && !datasetUtility.provenance && !datasetUtility.data_quality_management_process && !datasetUtility.dama_quality_dimensions && !datasetUtility.allowable_uses && !datasetUtility.research_environment && !datasetUtility.time_lag && !datasetUtility.timeliness && !datasetUtility.linkages && !datasetUtility.data_enrichments && !datasetUtility.pathway_coverage && !datasetUtility.length_of_follow_up){
         this.setState({displayOption: "none"})
     } else if(datasetUtility.metadata_richness && datasetUtility.metadata_richness.trim() !== "Not Rated" && !datasetUtility.availability_of_additional_documentation_and_support && !datasetUtility.data_model && !datasetUtility.data_dictionary && !datasetUtility.provenance && !datasetUtility.data_quality_management_process && !datasetUtility.dama_quality_dimensions && !datasetUtility.allowable_uses && !datasetUtility.research_environment && !datasetUtility.time_lag && !datasetUtility.timeliness && !datasetUtility.linkages && !datasetUtility.data_enrichments && !datasetUtility.pathway_coverage && !datasetUtility.length_of_follow_up){
@@ -38,38 +39,38 @@ class DataQuality extends React.Component {
   }
 
 
-  async getWeights(datasetUtility) {
+  async getWeights(datasetUtility = {}) {
+    if(!_.isEmpty(datasetUtility)) {
+      let weights = ["","Bronze","Silver","Gold","Platinum"] 
 
-    let weights = ["","Bronze","Silver","Gold","Platinum"] 
+      let documentationWeight = weights[Math.floor((weights.indexOf(datasetUtility.metadata_richness.trim())
+          +weights.indexOf(datasetUtility.availability_of_additional_documentation_and_support.trim())
+          +weights.indexOf(datasetUtility.data_model.trim())
+          +weights.indexOf(datasetUtility.data_dictionary.trim())
+          +weights.indexOf(datasetUtility.provenance.trim()))/5)];
 
-    let documentationWeight = weights[Math.floor((weights.indexOf(datasetUtility.metadata_richness.trim())
-        +weights.indexOf(datasetUtility.availability_of_additional_documentation_and_support.trim())
-        +weights.indexOf(datasetUtility.data_model.trim())
-        +weights.indexOf(datasetUtility.data_dictionary.trim())
-        +weights.indexOf(datasetUtility.provenance.trim()))/5)];
+      let technicalQualityWeight = weights[Math.floor((weights.indexOf(datasetUtility.data_quality_management_process.trim())
+          +weights.indexOf(datasetUtility.dama_quality_dimensions.trim()))/2)];
 
-    let technicalQualityWeight = weights[Math.floor((weights.indexOf(datasetUtility.data_quality_management_process.trim())
-        +weights.indexOf(datasetUtility.dama_quality_dimensions.trim()))/2)];
+      let accessProvisionWeight = weights[Math.floor((weights.indexOf(datasetUtility.allowable_uses.trim())
+          +weights.indexOf(datasetUtility.research_environment.trim())
+          +weights.indexOf(datasetUtility.time_lag.trim())
+          +weights.indexOf(datasetUtility.timeliness.trim()))/4)];
 
-    let accessProvisionWeight = weights[Math.floor((weights.indexOf(datasetUtility.allowable_uses.trim())
-        +weights.indexOf(datasetUtility.research_environment.trim())
-        +weights.indexOf(datasetUtility.time_lag.trim())
-        +weights.indexOf(datasetUtility.timeliness.trim()))/4)];
+      let valueInterestWeight = weights[Math.floor((weights.indexOf(datasetUtility.linkages.trim())
+          +weights.indexOf(datasetUtility.data_enrichments.trim()))/2)];
+      
+      let coverageWeight = weights[Math.floor((weights.indexOf(datasetUtility.pathway_coverage.trim())
+          +weights.indexOf(datasetUtility.length_of_follow_up.trim()))/2)];
 
-    let valueInterestWeight = weights[Math.floor((weights.indexOf(datasetUtility.linkages.trim())
-        +weights.indexOf(datasetUtility.data_enrichments.trim()))/2)];
-    
-    let coverageWeight = weights[Math.floor((weights.indexOf(datasetUtility.pathway_coverage.trim())
-        +weights.indexOf(datasetUtility.length_of_follow_up.trim()))/2)];
-
-    this.setState({
-      documentationWeight: documentationWeight,
-      technicalQualityWeight: technicalQualityWeight,
-      accessProvisionWeight: accessProvisionWeight,
-      valueInterestWeight: valueInterestWeight,
-      coverageWeight: coverageWeight
-    })
-
+      this.setState({
+        documentationWeight: documentationWeight,
+        technicalQualityWeight: technicalQualityWeight,
+        accessProvisionWeight: accessProvisionWeight,
+        valueInterestWeight: valueInterestWeight,
+        coverageWeight: coverageWeight
+      });
+    }
   }
 
   renderDataQualityInfo(displayOption) {
