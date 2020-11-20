@@ -17,7 +17,7 @@ class DataQualityInfo extends React.Component {
     open: false,
     flagClosed: true,
     section: "",
-    datasetUtility: null,
+    datasetUtility: {},
     documentationWeight: null,
     technicalQualityWeight: null,
     accessProvisionWeight: null,
@@ -299,7 +299,7 @@ class DataQualityInfo extends React.Component {
     this.state.open = props.open;
     this.updateFlag = this.updateFlag.bind(this);
     this.state.section = props.section;
-    this.state.datasetUtility = props.datasetUtility;
+    this.state.datasetUtility = props.datasetUtility || {};
     this.state.documentationWeight = props.documentationWeight;
     this.state.technicalQualityWeight = props.technicalQualityWeight;
     this.state.accessProvisionWeight = props.accessProvisionWeight;
@@ -308,7 +308,9 @@ class DataQualityInfo extends React.Component {
   }
 
   async componentWillMount() {    
-    await this.updateSections(this.props.datasetUtility);
+      if(!_.isEmpty(this.props.datasetUtility)) {
+        await this.updateSections(this.props.datasetUtility);
+      }
   }
 
   componentDidUpdate(prevProps) {
@@ -365,30 +367,33 @@ class DataQualityInfo extends React.Component {
     } 
   }
 
-  async updateSections(datasetUtility){
-    if(datasetUtility.metadata_richness.trim() === "Not Rated"){
-        this.setState({metadataRichnessOnly: false})
+  async updateSections(datasetUtility = {}){
+    if(!_.isEmpty(datasetUtility)) {
+
+        if(datasetUtility.metadata_richness.trim() === "Not Rated"){
+            this.setState({metadataRichnessOnly: false})
+        }
+
+        if(!datasetUtility.availability_of_additional_documentation_and_support && !datasetUtility.data_model && !datasetUtility.data_dictionary && !datasetUtility.provenance){
+            this.setState({documentSection: false})
+        } 
+
+        if(!datasetUtility.data_quality_management_process && !datasetUtility.dama_quality_dimensions){
+        this.setState({techQualitySection: false})
+        } 
+
+        if(!datasetUtility.allowable_uses && !datasetUtility.research_environment && !datasetUtility.time_lag && !datasetUtility.timeliness){
+        this.setState({accessProvisionSection: false})
+        } 
+
+        if(!datasetUtility.linkages && !datasetUtility.data_enrichments){
+        this.setState({valueInterestSection: false})
+        } 
+
+        if(!datasetUtility.pathway_coverage && !datasetUtility.length_of_follow_up){
+        this.setState({coverageSection: false})
+        } 
     }
-
-    if(!datasetUtility.availability_of_additional_documentation_and_support && !datasetUtility.data_model && !datasetUtility.data_dictionary && !datasetUtility.provenance){
-        this.setState({documentSection: false})
-    } 
-
-    if(!datasetUtility.data_quality_management_process && !datasetUtility.dama_quality_dimensions){
-      this.setState({techQualitySection: false})
-    } 
-
-    if(!datasetUtility.allowable_uses && !datasetUtility.research_environment && !datasetUtility.time_lag && !datasetUtility.timeliness){
-      this.setState({accessProvisionSection: false})
-    } 
-
-    if(!datasetUtility.linkages && !datasetUtility.data_enrichments){
-      this.setState({valueInterestSection: false})
-    } 
-
-    if(!datasetUtility.pathway_coverage && !datasetUtility.length_of_follow_up){
-      this.setState({coverageSection: false})
-    } 
   }
 
   render() {
