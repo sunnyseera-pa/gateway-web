@@ -584,7 +584,7 @@ class Account extends Component {
 
                             <Button
                                 variant="primary"
-                                href="https://hdr.auth.metadata.works/oauth/login/healthdatagateway"
+                                href="https://hdruk-preprod-auth.metadata.works/auth"
                                 id="metadataButton"
                                 className="white-14-semibold margin-right-16"
                             >
