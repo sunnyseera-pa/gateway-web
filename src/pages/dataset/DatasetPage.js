@@ -836,7 +836,7 @@ class DatasetDetail extends Component {
                               </Row>
                             </div>
                           </Col>
-                        </Row>
+                        </Row> 
                       )}
 
                       {/* V2 DATASETS  */}
@@ -1265,10 +1265,10 @@ class DatasetDetail extends Component {
                                       </Col>
                                       <Col sm={11} m={11} lg={11} className="datasetLinked">
                                         { relation.type === "gatewaylink" ?
-                                            <span><a href={"/dataset/"+relation.id} target="_blank" className="gray800-14-bold pointer overflowWrap">{relation.title}</a></span> 
+                                            <span><a href={"/dataset/"+relation.id} target="_blank" rel="noopener noreferrer" className="gray800-14-bold pointer overflowWrap">{relation.title}</a></span> 
                                           : 
                                             relation.type === "externallink"?
-                                              <span><a href={relation.title} target="_blank" className="gray800-14-bold pointer overflowWrap">{relation.title}</a></span>
+                                              <span><a href={relation.title} target="_blank" rel="noopener noreferrer" className="gray800-14-bold pointer overflowWrap">{relation.title}</a></span>
                                             :
                                               <span className="gray800-14-bold overflowWrap">{relation.title}</span>
                                         } 
