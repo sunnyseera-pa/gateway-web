@@ -7,6 +7,8 @@ import SVGIcon from '../../../images/SVGIcon'
 import './RelatedObject.scss';  
 import moment from "moment";
 import { ReactComponent as CalendarSvg } from '../../../images/calendaricon.svg'; 
+import _ from 'lodash';
+
  
 var baseURL = require('../BaseURL').getURL();
 
@@ -18,7 +20,7 @@ class RelatedObject extends React.Component {
         // user: '',
         // updated: '' ,
         data: [],
-        activeLink: true, 
+        activeLink: true,  
         onSearchPage: false,
         isLoading: true,
         didDelete: false,
@@ -72,7 +74,7 @@ class RelatedObject extends React.Component {
                 });
             }) 
         } else{
-            axios.get(baseURL + '/api/v1/relatedobject/' + id)
+            axios.get(baseURL + '/api/v1/relatedobject/' + id) 
             .then((res) => { 
                 this.setState({
                     data: res.data.data[0],
@@ -80,7 +82,7 @@ class RelatedObject extends React.Component {
                 });
             }) 
         }
-    };
+    }; 
  
     removeButton = () => {
         if(this.state.data.type === 'dataset') {
@@ -511,7 +513,6 @@ class RelatedObject extends React.Component {
                                 var phenotypesSelected = queryString.parse(window.location.search).phenotypes ? queryString.parse(window.location.search).phenotypes.split("::") : [];
                                 var searchTerm = queryString.parse(window.location.search).search ? queryString.parse(window.location.search).search : '';
                                 var phenotypesSeached = data.datasetfields.phenotypes.filter(phenotype => phenotype.name.toLowerCase() === searchTerm.toLowerCase())
-                                
                                 return (
                                     <Row className="noMargin">
                                         <Col sm={10} lg={10} className="pad-left-24">
@@ -519,7 +520,24 @@ class RelatedObject extends React.Component {
                                             <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/dataset/' + data.datasetid} >{data.name}</a>
                                             : <span className="black-bold-16"> {data.name} </span> }
                                             <br />
-                                            <span className="gray800-14"> {data.datasetfields.publisher} </span>
+                                            {!_.isEmpty(data.datasetv2) ?
+                                                ( <>
+                                                    {!_.isEmpty(data.datasetv2.summary.publisher.memberOf) ?
+                                                        <span>
+                                                                <SVGIcon 
+                                                            name="shield"
+                                                            fill={"#475da7"} 
+                                                            className="svg-16 mr-2"
+                                                            viewBox="0 0 16 16"
+                                                            />
+                                                        </span>
+                                                    : ""
+                                                    }
+                                                    <span className="gray800-14"> {data.datasetv2.summary.publisher.name} </span>
+                                                </>)
+                                            :
+                                                <span className="gray800-14"> {data.datasetfields.publisher} </span>
+                                            }   
                                         </Col>
                                         <Col sm={2} lg={2} className="pad-right-24">
                                             {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="collection-card-updated">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
@@ -547,7 +565,7 @@ class RelatedObject extends React.Component {
                                             })()}
 
                                             {!phenotypesSelected || phenotypesSelected.length <= 0 ? '' : phenotypesSelected.map((phenotype) => {
-                                                if (phenotypesSeached.length === 0 || phenotypesSeached[0].name !== phenotype) {
+                                                if (data.datasetfields.phenotypes.find(phenotypeCheck => phenotypeCheck.name.toLowerCase() === phenotype.toLowerCase())) {
                                                     if (activeLink===true){
                                                         if (onSearchPage === true) { 
                                                             return <span className="pointer" onClick={event => this.updateOnFilterBadge('phenotypesSelected', phenotype)}><div className="badge-phenotype">Phenotype: {phenotype}</div></span>

@@ -196,6 +196,17 @@ button {
   padding: 28px !important;
 }
 
+.padding-left-4 {
+  padding-left: 4px !important;
+}
+.padding-right-4 {
+  padding-right: 4px !important;
+}
+
+.padding-left-20 {
+  padding-left: 20px !important;
+}
+
 
 .nav-tabs {
   .nav-item {
@@ -353,7 +364,7 @@ input[type='checkbox']:checked:after {
   border: solid 2px #d6d6d6;
   background-color: $white;
   position: relative;
-  padding-left: 3px;
+  // padding-left: 3px;
   content: url(../images/wee-square.svg);
   display: inline-block;
   visibility: visible;
@@ -1309,6 +1320,10 @@ button a {
     padding-left: 14 !important;
   }
 
+  .pad-left-16 {
+    padding-left: 16 !important;
+  }
+
   .pad-right-8 {
     padding-right: 8px !important;
   }
@@ -1551,4 +1566,8 @@ button a {
 }
 .buttonHeight40 {
   height: 40px;
+}
+
+.centerText{
+  text-align: center;
 }

@@ -116,7 +116,6 @@ class CourseDetail extends Component {
         }
       })
       .catch((err) => {
-          debugger
           //check if request is for a courseID or a different route such as /add
           if(!isNaN(this.props.match.params.courseID)){
             window.localStorage.setItem('redirectMsg', err.response.data);  
@@ -600,7 +599,7 @@ class CourseDetail extends Component {
                                 Entry requirements
                               </Col>
                               <Col sm={9} className="gray800-14">
-                                {data.entries && data.entries[0].level && data.entries[0].subject  ?
+                                {data.entries && data.entries[0].level  ?
                                   data.entries.map((entry, index) => {
                                     if (entry.level && entry.subject) {
                                         return (
@@ -608,6 +607,12 @@ class CourseDetail extends Component {
                                               <div className="badge-version" ><span>{entry.level}</span><span>{entry.subject}</span></div>
                                             </a>
                                           );
+                                    } else if(entry.level && !entry.subject) {
+                                      return (
+                                        <a href={"/search?search=&tab=Courses&courseentrylevel=" + entry.level}>
+                                          <div className="badge-tag" ><span>{entry.level}</span></div> 
+                                        </a>
+                                      );
                                     }
                                   })
                                 :

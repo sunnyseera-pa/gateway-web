@@ -3,6 +3,8 @@ import axios from 'axios';
 import moment from 'moment';
 import UnmetDemand from '../dashboard/DARComponents/UnmetDemand';
 import TopSearches from '../dashboard/TopSearches';
+import TopDatasets from '../dashboard/TopDatasets';
+
 import { Container, Row, Col, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
 import DashboardKPI from '../dashboard/DARComponents/DashboardKPI';
 import Loading from '../commonComponents/Loading'
@@ -29,6 +31,7 @@ class PublicAnalyticsDashboard extends React.Component {
         searchesWithResults: 0,
         accessRequests: 0,
         uptime: 0,
+        topDatasets: [],
         uniqueUsers: 0,
         datasetsWithTechMetaData: 0,
         dates: getDatesForDropdown(),
@@ -72,7 +75,8 @@ class PublicAnalyticsDashboard extends React.Component {
             this.getUptime(this.state.dates[eventKey]),
             this.getStats(),
             this.getKPIs(this.state.dates[eventKey]),
-            this.getDatasetsWithTechMetadata()
+            this.getDatasetsWithTechMetadata(),
+            this.getTopDatasets(this.state.dates[eventKey])
         ])
         this.setState({ uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100 })
     }
@@ -92,7 +96,8 @@ class PublicAnalyticsDashboard extends React.Component {
             this.getUptime(this.state.selectedOption),
             this.getStats(),
             this.getKPIs(this.state.selectedOption),
-            this.getDatasetsWithTechMetadata()
+            this.getDatasetsWithTechMetadata(),
+            this.getTopDatasets(this.state.selectedOption)
         ])
 
         this.setState({ uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100 })
@@ -181,6 +186,17 @@ class PublicAnalyticsDashboard extends React.Component {
         });
     }
 
+    getTopDatasets(selectedDate){
+        return new Promise((resolve, reject) => {
+            axios.get(baseURL + '/api/v1/kpis?kpi=topdatasets&selectedDate=' + selectedDate )
+            .then((res) => {
+                this.setState({ topDatasets: []});
+                this.setState({ topDatasets: res.data.data});
+                resolve();
+            });     
+        });
+    }
+
     getUptime(selectedDate) {
         let currentDate = new Date()
 
@@ -232,7 +248,7 @@ class PublicAnalyticsDashboard extends React.Component {
     }
 
     render() {
-        const { userState, key, isLoading, data, topSearches, dates, statsDataType, gaUsers, searchesWithResults, accessRequests, datasetsWithTechMetaData, uptime, uniqueUsers, showDrawer, showModal, context } = this.state;
+        const { userState, key, isLoading, data, topSearches, dates, statsDataType, gaUsers, searchesWithResults, accessRequests, datasetsWithTechMetaData, uptime, uniqueUsers, showDrawer, showModal, context, topDatasets } = this.state;
 
         if (isLoading) {
             return (
@@ -319,6 +335,52 @@ class PublicAnalyticsDashboard extends React.Component {
                                 </Col>
                             </Row>
 
+                            <Row className="accountHeader margin-top-16">
+                                <Col sm={12} lg={12} className="noPadding">
+                                    <Row >
+                                        <Col sm={12} lg={12}>
+                                            <span className="black-20">Data access request</span> 
+                                        </Col>
+                                    </Row>
+                                    <Row> 
+                                        <Col sm={12} lg={12}> 
+                                            <span className="gray700-13">Most popular datasets based on the number of data access requests</span>
+                                        </Col>
+                                    </Row>
+                                </Col> 
+                            </Row>
+
+                            <Fragment>
+                                <Row>
+                                    <Col sm={12} lg={12}>
+                                    {topDatasets.length === 0 ?
+                                        <Row className="subHeader entrybox gray800-14 noDars" >
+                                            <Col sm={12} lg={12}>There were no data access requests this month </Col >
+                                        </Row>
+                                    : "" }
+                                    </Col>
+                                </Row>
+                            </Fragment> 
+
+                            {topDatasets.length === 0 ? "" :       
+                                <Row className="entryBox noPadding">
+                                    <Col sm={12} lg={12} className="resultsPadding">
+                                        <Row className="dashboardHeader entrybox gray800-14-bold">
+                                            <Col sm={5} lg={6} className="noPadding">Dataset </Col >
+                                            <Col sm={4} lg={4} className="pad-right-0 pad-left-16">Custodian</Col>
+                                            <Col sm={3} lg={2} className="pad-right-0 pad-left-16">Requests</Col>
+                                        </Row>
+                                        <Row>
+                                            <Col sm={12} lg={12}>
+                                            { topDatasets.map((dat, i) => {
+                                                        return <TopDatasets key={i} data={dat} />    
+                                                })}
+                                            </Col>
+                                        </Row>
+                                    </Col>
+                                </Row>
+                            }
+
                             <Row className="accountHeader mt-4" style={{ "margin-bottom": "0.5px" }}>
                                 <Col sm={12} lg={12}>
                                     <Row >
@@ -370,6 +432,7 @@ class PublicAnalyticsDashboard extends React.Component {
                                         <Tab eventKey="Datasets" title={'Datasets'}></Tab>
                                         <Tab eventKey="Tools" title={'Tools'}></Tab>
                                         <Tab eventKey="Projects" title={'Projects'}></Tab>
+                                        <Tab eventKey="Courses" title={'Courses'}></Tab>
                                         <Tab eventKey="Papers" title={'Papers'}></Tab>
                                         <Tab eventKey="People" title={'People'}></Tab>
                                     </Tabs>
@@ -413,6 +476,23 @@ class PublicAnalyticsDashboard extends React.Component {
                                             </div>
                                         );
                                     case "Projects":
+                                        return (
+                                            <div>
+                                                <Row>
+                                                    <Col sm={12} lg={12}>
+                                                        <Row className="subHeader mt-3 gray800-14-bold">
+                                                            <Col sm={8} lg={8}>Search term </Col>
+                                                            <Col sm={2} lg={2}>Searches</Col>
+                                                            <Col sm={2} lg={2}>Project results</Col>
+                                                        </Row>
+                                                        {data.map((dat) => {
+                                                            return <UnmetDemand data={dat} />
+                                                        })}
+                                                    </Col>
+                                                </Row>
+                                            </div>
+                                        );
+                                    case "Courses":
                                         return (
                                             <div>
                                                 <Row>

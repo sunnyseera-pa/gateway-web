@@ -8,7 +8,7 @@ class TopSearches extends React.Component {
         data: '',
      };
 
-    constructor(props) {
+    constructor(props) { 
         super(props)
         //binding the method to be able to use state
         this.state.data = props.data;
@@ -24,7 +24,7 @@ class TopSearches extends React.Component {
             <Fragment>
                 <Row className="entryBox"> 
                         <Col sm={5} lg={6} className="gray800-14" style={{"float":"left", "paddingLeft":"0px"}}>
-                            <span style={{"float":"left", "paddingLeft":"15px"}} className="truncate">
+                            <span className="truncate colOneTerm">
                                 {!data || !data._id ? 'search term' : <a href={"/search?search="+data._id} className="searchTermLink truncate" > {data._id} </a>}
                             </span>                
                         </Col>
@@ -35,7 +35,7 @@ class TopSearches extends React.Component {
                         </Col> 
                         <Col sm={5} lg={4} className="gray800-14">
                             <span style={{"paddingRight":"0px"}}>
-                            {(data.datasets || 0) + ' datasets, ' + (data.tools || 0) + ' tools, ' + (data.projects || 0) + ' projects, ' + (data.papers || 0) + ' papers'}
+                            {(data.datasets || 0) + ' datasets, ' + (data.tools || 0) + ' tools, ' + (data.projects || 0) + ' projects, ' + (data.courses || 0) + ' courses, ' + (data.papers || 0) + ' papers'}
                             </span>
                         </Col>
                 </Row>

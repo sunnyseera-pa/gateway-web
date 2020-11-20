@@ -3,10 +3,13 @@
 .login-modal {
   background: rgba(0,0,0, 0.5);
 
+  .modal-dialog {
+    margin: 10% auto 0 auto;
+  }
+
   .modal-content {
     max-width: 600px;
     margin: 0 auto;
-    transform: translate(0, 50%);
     webkit-animation-name: animatetop;
     -webkit-animation-duration: .4s;
     animation-name: animatetop;
@@ -26,12 +29,12 @@
   background-color: #ffffff;
 }
 
-.footerBottom {
+.footerBottom {   
   position:relative;
   z-index: 997;
   width: '100%';
-  margin-top: -440px; /* negative value of footer height */
-  height: 440px;
+  margin-top: -360px; /* negative value of footer height */
+  min-height: 360px;
   clear: both;
   background-image: linear-gradient(110deg, #50b996, #485ea7 100%);
   padding: 48px;

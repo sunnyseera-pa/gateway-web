@@ -31,18 +31,18 @@ class TypeaheadDataset extends React.Component {
 	}
 
   getData() {
-    if(this.props.selectedDatasets) {
+    // if(this.props.selectedDatasets) {
       const { publisher } = this.props.selectedDatasets[0];
       axios.get(`${baseURL}/api/v1/publishers/${publisher}/datasets`)
         .then((res) => {
           const { data: { datasets }} = res;
           let value = [...this.state.value];
-          this.setState({ options: datasets, value });
+          this.setState({ options: [...datasets], value });
         })
         .catch(err => {
           alert('Failed to fetch publisher datasets');
         });
-    }
+    // }
 }
 
   handleChange(e) {
@@ -58,10 +58,10 @@ class TypeaheadDataset extends React.Component {
       <Typeahead
         id={'typeaheadDataset'}
         className={`addFormInputTypeAhead ${_.isEmpty(this.state.value) ? 'emptyFormInputTypeAhead' : '' }`}
-        options={this.state.options}        
-        onChange={e => {this.handleChange(e)}}
+        options={this.state.options}  
+        ref={(typeahead) => this._typeahead = typeahead}
+        onChange={e => { this.handleChange(e) }}
         selected={this.state.value}
-        minLength={3}
         filterBy={['name']}
         multiple
         disabled={this.state.readOnly}
