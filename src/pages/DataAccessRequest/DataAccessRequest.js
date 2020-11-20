@@ -518,7 +518,7 @@ class DataAccessRequest extends Component {
 	 */
 	onFormUpdate = (id = '', questionAnswers = {}) => {
 		if (!_.isEmpty(id) && !_.isEmpty(questionAnswers) && this.state.readOnly === false) {
-			let { applicationStatus, lookup, activePanelId } = this.state;
+			let { lookup, activePanelId } = this.state;
 			// 1. check for auto complete
 			if (typeof id === 'string') {
 				let [questionId, uniqueId] = id.split('_');
