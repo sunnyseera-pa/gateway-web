@@ -15,14 +15,13 @@
 .dataShieldToolTip {
   width: 117px;
   min-height: 31px;
-  // margin: 10px 0 16.5px 42px;
   padding: 8px;
   border-radius: 8px;
   background-color: $dark;
   position: absolute;
   z-index: 1;
-  left: -4%;
-  top: -12px;
+  left: -2%;
+  top: -2%;
   text-align: center;
 }
 
@@ -337,4 +336,36 @@
 
 .floatRightLinkedDataset{
   float: right;
+}
+
+.datasetImageCircle {
+  width: 80px;
+  height: 80px;
+  margin: 0 5px 16px 0;
+  padding: 8px;
+  border: solid 2px $gray-300;
+  background-color: #ffffff; 
+  border-radius: 50%;
+}
+
+.defaultDatasetIcon {
+  margin-top: -3px;
+  margin-left: -2px;
+}
+
+.datasetTitle {
+  padding-left: 32px !important;
+  padding-top: 8px;
+
+  @include mq('desktop',max){ 
+    padding-left: 44px !important;
+  }
+
+  @include mq('tablet-wide',max){
+    padding-left: 60px !important;
+  }
+
+  @include mq('tablet',max){
+    padding-left: 72px !important;
+  }
 }

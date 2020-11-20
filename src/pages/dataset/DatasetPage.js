@@ -51,10 +51,12 @@ import ActionBar from "../commonComponents/actionbar/ActionBar";
 import ResourcePageButtons from "../commonComponents/resourcePageButtons/ResourcePageButtons";
 import DatasetAboutCard from './components/DatasetAboutCard';
 
-var baseURL = require("../commonComponents/BaseURL").getURL();
+var baseURL = require("../commonComponents/BaseURL").getURL(); 
+var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
+const env = require('../commonComponents/BaseURL').getURLEnv();
 
 class DatasetDetail extends Component {
-  // initialize our state
+  // initialize our state 
   state = {
     id: "",
     data: {},
@@ -105,7 +107,8 @@ class DatasetDetail extends Component {
     emptyFlagDAR: false,
     emptyFlagRelRes: false,
     emptyFieldsCount: 0,
-    linkedDatasets: []
+    linkedDatasets: [],
+    publisherLogoURL: ''
   };
 
   topicContext = {};
@@ -160,6 +163,7 @@ class DatasetDetail extends Component {
         if(!_.isEmpty(res.data.data[0].datasetv2)){
           this.updateV2Flags(res.data.data[0].datasetv2)
           this.getEmptyFieldsCount(res.data.data[0].datasetv2)
+          this.updatePublisherLogo(res.data.data[0].datasetv2.summary.publisher.name)
         } 
         if(!_.isEmpty(res.data.data[0].datasetv2) && !_.isEmpty(res.data.data[0].datasetv2.enrichmentAndLinkage.qualifiedRelation) ){
           res.data.data[0].datasetv2.enrichmentAndLinkage.qualifiedRelation.map((relation) => {
@@ -294,6 +298,13 @@ class DatasetDetail extends Component {
     let tempEmptyFieldsCount = emptyFieldsArray.length;
 
     this.setState({ emptyFieldsCount: tempEmptyFieldsCount })
+  }
+
+  updatePublisherLogo(publisher){
+    let url = env === "local" ? "https://uatbeta.healthdatagateway.org" : cmsURL;
+    let publisherLogoURL = url + "/images/publisher/" + publisher; 
+
+    this.setState({ publisherLogoURL: publisherLogoURL})
   }
 
   showHideAllEmpty() {
@@ -502,8 +513,11 @@ class DatasetDetail extends Component {
       emptyFlagRelRes,
       showEmpty,
       emptyFieldsCount,
-      linkedDatasets
+      linkedDatasets,
+      publisherLogoURL
     } = this.state;
+
+    let publisherLogo = !_.isEmpty(v2data) && !_.isEmpty(v2data.summary.publisher.logo) ? v2data.summary.publisher.logo : publisherLogoURL;
 
     if (isLoading) {
       return (
@@ -611,53 +625,84 @@ class DatasetDetail extends Component {
                 ) : null}
                 <div className="rectangle">
                   <Row>
-                    <Col xs={10}>
-                      <span className="black-20">{data.name} </span>
-                      <br />
-                      {!_.isEmpty(v2data) && !_.isEmpty(v2data.summary.publisher.memberOf) ? 
-                        (
-                          <>
-                            <span onMouseEnter={this.handleMouseHoverShield} onMouseLeave={this.handleMouseHoverShield}>
-                            <SVGIcon 
-                              name="shield"
-                              fill={"#475da7"} 
-                              className="svg-16 mr-2"
-                              viewBox="0 0 16 16"
-                            />
-                            </span>
-
-                            {this.state.isHoveringShield && (
-                                      <div className="dataShieldToolTip">
+                    {!_.isEmpty(v2data) ?
+                      <>
+                        <Col xs={1}>
+                          <div
+                            className="datasetImageCircle"
+                            style={{
+                              backgroundImage: `url('${publisherLogo}')`,
+                              backgroundRepeat: 'no-repeat',
+                              backgroundPosition: 'center',
+                              backgroundSize: "contain",
+                              backgroundOrigin: "content-box",
+                            }}
+                          />
+                          </Col>
+                          <Col xs={9} className="datasetTitle" >
+                          <span className="black-20"> {data.name} </span>
+                          <br />
+                          <span >
+                            {!_.isEmpty(v2data.summary.publisher.memberOf) ? 
+                              (
+                                <>
+                                  <span onMouseEnter={this.handleMouseHoverShield} onMouseLeave={this.handleMouseHoverShield}>
+                                  <SVGIcon 
+                                    name="shield"
+                                    fill={"#475da7"} 
+                                    className="svg-16 mr-2"
+                                    viewBox="0 0 16 16"
+                                  />
+                                  </span>
+                              
+                                  {this.state.isHoveringShield && (
+                                    <div className="dataShieldToolTip"> 
                                       <span className="white-13-semibold">
                                         {v2data.summary.publisher.memberOf.charAt(0).toUpperCase() + v2data.summary.publisher.memberOf.slice(1).toLowerCase()} member
                                       </span>
-                                    </div>
-                            )} 
-
+                                    </div> 
+                                  )}  
+                                </>
+                              )
+                            :
+                            ""
+                            }
+                            {!_.isEmpty(v2data.summary.publisher.name) ?
+                              <span className="gray800-14">
+                                {v2data.summary.publisher.name}
+                              </span> 
+                            :
+                              <span className="gray800-14-opacity">
+                                  Not specified
+                                </span>
+                            }
+                          </span>
+                      </Col>
+                      <Col xs={2} className="text-right">
+                        <Metadata />
+                      </Col>
+                      </>
+                    : 
+                      <>
+                        <Col xs={10}>
+                        <span className="black-20">{data.name} </span>
+                        <br />
+                          {data.datasetfields.publisher ? (
                             <span className="gray800-14">
-                              {v2data.summary.publisher.name}
-                            </span>
-                          </>
-                        )
-                      :
-                        (
-                          data.datasetfields.publisher ? (
-                            <span className="gray800-14">
-                              {data.datasetfields.publisher}
-                            </span>
-                          ) : (
-                            <span className="gray800-14-opacity">
+                                {data.datasetfields.publisher}
+                            </span>) 
+                          : 
+                            (<span className="gray800-14-opacity">
                               Not specified
-                            </span>
-                          )
-                        )
-                      }
-                    </Col>
-                    <Col xs={2} className="text-right">
-                      <Metadata />
-                    </Col>
+                            </span> )
+                          }
+                        </Col>
+                        <Col xs={2} className="text-right">
+                          <Metadata />
+                        </Col>
+                      </>
+                    }
                   </Row>
-
                   <Row className="mt-2">
                     <Col xs={12}>
                       <span className="badge-dataset">
@@ -686,7 +731,6 @@ class DatasetDetail extends Component {
                           })}
                     </Col>
                   </Row>
-
                   <Row className="mt-2">
                     <Col sm={6}>
                       <span className="gray800-14">
