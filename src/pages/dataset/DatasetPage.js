@@ -1325,9 +1325,8 @@ class DatasetDetail extends Component {
                     </Tab>
 
                     <Tab eventKey="TechDetails" title={`Technical details`}> 
-                      <Fragment>
                         {dataClassOpen === -1 ? (
-                          <>
+                          <Fragment>
                             <Col
                               sm={12}
                               lg={12}
@@ -1392,7 +1391,7 @@ class DatasetDetail extends Component {
                                 )}
                               </Col>
                             </Row>
-                          </>
+                          </Fragment>
                         ) : (
                           <Row style={{ width: "-webkit-fill-available" }}>
                             <Col sm={12} lg={12}>
@@ -1407,7 +1406,6 @@ class DatasetDetail extends Component {
                             </Col>
                           </Row>
                         )}
-                      </Fragment>
                     </Tab>
 
                     <Tab eventKey="DataUtility" title={`Data utility`}>
