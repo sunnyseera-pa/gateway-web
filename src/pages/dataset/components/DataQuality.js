@@ -2,6 +2,7 @@ import React from "react";
 import { Col, Row } from "react-bootstrap";
 import '../Dataset.scss'; 
 import DataQualityInfo from "./DataQualityInfo";
+import _ from 'lodash';
 
 class DataQuality extends React.Component {
   state = {
@@ -25,7 +26,7 @@ class DataQuality extends React.Component {
       await this.displaySections(this.props.datasetUtility);
   }
 
-  async displaySections(datasetUtility = {}){
+  async displaySections(datasetUtility = {}) {
     if(datasetUtility.metadata_richness && datasetUtility.metadata_richness.trim() === "Not Rated" && !datasetUtility.availability_of_additional_documentation_and_support && !datasetUtility.data_model && !datasetUtility.data_dictionary && !datasetUtility.provenance && !datasetUtility.data_quality_management_process && !datasetUtility.dama_quality_dimensions && !datasetUtility.allowable_uses && !datasetUtility.research_environment && !datasetUtility.time_lag && !datasetUtility.timeliness && !datasetUtility.linkages && !datasetUtility.data_enrichments && !datasetUtility.pathway_coverage && !datasetUtility.length_of_follow_up){
         this.setState({displayOption: "none"})
     } else if(datasetUtility.metadata_richness && datasetUtility.metadata_richness.trim() !== "Not Rated" && !datasetUtility.availability_of_additional_documentation_and_support && !datasetUtility.data_model && !datasetUtility.data_dictionary && !datasetUtility.provenance && !datasetUtility.data_quality_management_process && !datasetUtility.dama_quality_dimensions && !datasetUtility.allowable_uses && !datasetUtility.research_environment && !datasetUtility.time_lag && !datasetUtility.timeliness && !datasetUtility.linkages && !datasetUtility.data_enrichments && !datasetUtility.pathway_coverage && !datasetUtility.length_of_follow_up){

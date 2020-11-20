@@ -1,5 +1,6 @@
 import React from "react"; 
 import { Col, Row, Collapse } from "react-bootstrap";
+import _ from 'lodash';
 import SVGIcon from "../../../images/SVGIcon";
 import "../Dataset.scss";
 import { ReactComponent as SubBronzeSVG } from "../../../images/sub_bronze.svg";
