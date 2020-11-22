@@ -38,6 +38,7 @@ const AboutApplication = (props) => {
 		nationalCoreStudiesProjectId,
 		toggleMrcModal,
 		toggleContributorModal
+		applicationStatus
 	} = props;
 
 	return (
@@ -135,7 +136,7 @@ const AboutApplication = (props) => {
 										onBlur={(e) => onHandleProjectNameBlur()}
 										onChange={(e) => onHandleProjectNameChange(e.target.value)}
 										value={projectName}
-										disabled={readOnly}
+										disabled={readOnly || applicationStatus !== DarHelper.darStatus.inProgress}
 									/>
 									{!projectNameValid && _.isEmpty(projectName) ? <div className='errorMessages'>This cannot be empty</div> : null}
 								</div>

@@ -1280,6 +1280,7 @@ class DataAccessRequest extends Component {
 					nationalCoreStudiesProjectId={
 						this.state.aboutApplication.nationalCoreStudiesProjectId
 					}
+					applicationStatus={this.state.applicationStatus}
 					toggleCard={this.toggleCard}
 					toggleDrawer={this.toggleDrawer}
 					onHandleDataSetChange={this.onHandleDataSetChange}
