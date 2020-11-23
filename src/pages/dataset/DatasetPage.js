@@ -235,7 +235,7 @@ class DatasetDetail extends Component {
       this.setState({emptyFlagDetails: true})
     }
 
-    if( _.isEmpty(v2data.provenance.temporal.startDate) && _.isEmpty(v2data.provenance.temporal.endDate) && _.isEmpty(v2data.provenance.temporal.timeLag) && _.isEmpty(v2data.coverage.spatial) && _.isEmpty(v2data.coverage.typicalAgeRange) && _.isEmpty(v2data.coverage.physicalSampleAvailability) && _.isEmpty(v2data.coverage.followup) && _.isEmpty(v2data.coverage.pathway) ) {
+    if( ( (_.isEmpty(v2data.provenance.temporal.startDate) || _.isEmpty(v2data.provenance.temporal.endDate)) ) && _.isEmpty(v2data.provenance.temporal.timeLag) && _.isEmpty(v2data.coverage.spatial) && _.isEmpty(v2data.coverage.typicalAgeRange) && _.isEmpty(v2data.coverage.physicalSampleAvailability) && _.isEmpty(v2data.coverage.followup) && _.isEmpty(v2data.coverage.pathway) ) {
       this.setState({emptyFlagCoverage: true})
     }
 
@@ -474,7 +474,7 @@ class DatasetDetail extends Component {
     });
   } 
 
-  toggleModal = (showEnquiry = false, context = {}) => {
+  toggleModal = (showEnquiry = false, context = {}) => { 
     this.setState( ( prevState ) => {
         return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
     });
@@ -495,6 +495,7 @@ class DatasetDetail extends Component {
     showAllPhenotypes = () => {
         this.setState({ showAllPhenotype: true });
     };
+
 
   render() {
     const {
@@ -527,6 +528,10 @@ class DatasetDetail extends Component {
     } = this.state;
 
     let publisherLogo = !_.isEmpty(v2data) && !_.isEmpty(v2data.summary.publisher.logo) ? v2data.summary.publisher.logo : publisherLogoURL;
+
+    const componentDecorator = (href, text, key) => (
+      <span><a href={href} key={key} target="_blank" rel="noopener noreferrer" className="gray800-14-bold pointer overflowWrap"> {text}</a></span>
+    );
 
     if (isLoading) {
       return (
@@ -1270,7 +1275,9 @@ class DatasetDetail extends Component {
                                             <span><a href={"/dataset/"+relation.id} target="_blank" rel="noopener noreferrer" className="gray800-14-bold pointer overflowWrap">{relation.title}</a></span> 
                                           : 
                                             relation.type === "externallink"?
-                                              <span><a href={relation.title} target="_blank" rel="noopener noreferrer" className="gray800-14-bold pointer overflowWrap">{relation.title}</a></span>
+                                              <Linkify componentDecorator={componentDecorator}>
+                                                {relation.title}
+                                              </Linkify>
                                             :
                                               <span className="gray800-14-bold overflowWrap">{relation.title}</span>
                                         } 
