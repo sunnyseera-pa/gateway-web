@@ -166,17 +166,22 @@ class AddEditProjectPage extends React.Component {
     }
 
     addToRelatedObjects = () => {
-        this.state.tempRelatedObjectIds.map((object) => {
-            if(object.type === 'dataset'){
-                this.state.relatedObjects.push({'objectId':object.pid, 'reason':'', 'objectType':object.type, 'user':this.state.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
-            }
-            else{
-                this.state.relatedObjects.push({'objectId':object.objectId, 'reason':'', 'objectType':object.type, 'user':this.state.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
-            }
-        })
+        let {userState: [user = {}]} = this.state;
+        let relatedObjectIds = [...this.state.tempRelatedObjectIds]; 
+        let relatedObjects = [...this.state.relatedObjects];
 
-        this.setState({tempRelatedObjectIds: []})
-    }
+        let newRelatedObjects = relatedObjectIds.map((relatedObject) => { 
+            let newRelatedObject = { 
+                ...relatedObject, 
+                objectId: relatedObject.type === 'dataset' ? relatedObject.pid : relatedObject.objectId, 
+                user: user.name, 
+                updated: moment().format('DD MM YYYY') 
+            };
+            return newRelatedObject; 
+        });
+        this.setState({relatedObjects: [...relatedObjects, ...newRelatedObjects]});
+        this.setState({ tempRelatedObjectIds: [] });
+    };
 
     clearRelatedObjects = () => {
         this.setState({tempRelatedObjectIds: [] })

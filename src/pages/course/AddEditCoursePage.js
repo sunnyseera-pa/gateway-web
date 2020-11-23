@@ -217,28 +217,21 @@ class AddEditCoursePage extends React.Component {
 	};
 
 	addToRelatedObjects = () => {
-		this.state.tempRelatedObjectIds.map((object) => {
-			if(object.type === 'dataset'){
-				this.state.relatedObjects.push({
-					objectId: object.pid, 
-					reason: '',
-					objectType: object.type,
-					user: this.state.userState[0].name,
-					updated: moment().format('DD MMM YYYY')
-				});
-			}
-			else{
-				this.state.relatedObjects.push({
-					objectId: object.objectId,
-					reason: '',
-					objectType: object.type,
-					user: this.state.userState[0].name,
-					updated: moment().format('DD MMM YYYY')
-				});
-			}
+		let {userState: [user = {}]} = this.state;
+		let relatedObjectIds = [...this.state.tempRelatedObjectIds]; 
+		let relatedObjects = [...this.state.relatedObjects];
+
+		let newRelatedObjects = relatedObjectIds.map((relatedObject) => { 
+			let newRelatedObject = { 
+				...relatedObject, 
+				objectId: relatedObject.type === 'dataset' ? relatedObject.pid : relatedObject.objectId, 
+				user: user.name, 
+				updated: moment().format('DD MM YYYY') 
+			};
+			return newRelatedObject; 
 		});
 
-		this.setState({ tempRelatedObjectIds: [] });
+		this.setState({relatedObjects: [...relatedObjects, ...newRelatedObjects]});
 	};
 
 	clearRelatedObjects = () => {
@@ -248,9 +241,8 @@ class AddEditCoursePage extends React.Component {
 	removeObject = (id, type, datasetid) => {
 
 		let countOfRelatedObjects = this.state.relatedObjects.length;
-		let updatedRelatedObjects;
 		
-		updatedRelatedObjects = this.state.relatedObjects.filter(
+		let updatedRelatedObjects = [...this.state.relatedObjects].filter(
 			(obj) => (obj.objectId !== id && obj.objectId !== id.toString())
 		);
 
