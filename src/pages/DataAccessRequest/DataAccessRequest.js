@@ -1254,7 +1254,7 @@ class DataAccessRequest extends Component {
 					allowedNavigation={this.state.allowedNavigation}
 					userType={this.state.userType}
 					selectedDatasets={this.state.aboutApplication.selectedDatasets}
-					readOnly={this.state.readOnly}
+					readOnly={this.state.readOnly || this.state.applicationStatus !== DarHelper.darStatus.inProgress}
 					projectNameValid={this.state.projectNameValid}
 					projectName={this.state.aboutApplication.projectName}
 					nationalCoreStudiesProjects={this.state.nationalCoreStudiesProjects}
