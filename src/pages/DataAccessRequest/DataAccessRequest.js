@@ -683,7 +683,7 @@ class DataAccessRequest extends Component {
 			// 2. Pass no completed bool value to go to next step without modifying completed status
 			this.onNextStep();
 			// 3. If we have reached the end of the about accordion, reset active accordion so all are closed
-			if (this.state.activeAccordionCard >= 5) {
+			if (this.state.activeAccordionCard >= 6) {
 				this.setState({
 					activeAccordionCard: -1,
 				});
@@ -965,20 +965,21 @@ class DataAccessRequest extends Component {
 					// Do nothing, valid state for project name step handled by existence of text
 					break;
 				case 2:
-					aboutApplication.completedReadAdvice = completed;
-					break;
-				case 3:
-					aboutApplication.completedCommunicateAdvice = completed;
-					break;
-				case 4:
-					aboutApplication.completedApprovalsAdvice = completed;
-					break;
-				case 5:
-					aboutApplication.completedSubmitAdvice = completed;
-					break;
-				case 6:
 					aboutApplication.completedInviteCollaborators = completed;
 					break;
+				case 3:
+					aboutApplication.completedReadAdvice = completed;
+					break;
+				case 4:
+					aboutApplication.completedCommunicateAdvice = completed;
+					break;
+				case 5:
+					aboutApplication.completedApprovalsAdvice = completed;
+					break;
+				case 6:
+					aboutApplication.completedSubmitAdvice = completed;
+					break;
+				
 				default:
 					console.error('Invalid step passed');
 					break;
@@ -1280,6 +1281,7 @@ class DataAccessRequest extends Component {
 					nationalCoreStudiesProjectId={
 						this.state.aboutApplication.nationalCoreStudiesProjectId
 					}
+					context={this.state.context}
 					toggleCard={this.toggleCard}
 					toggleDrawer={this.toggleDrawer}
 					onHandleDataSetChange={this.onHandleDataSetChange}
