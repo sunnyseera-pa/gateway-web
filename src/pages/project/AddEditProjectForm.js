@@ -12,6 +12,7 @@ import ActionBar from '../commonComponents/actionbar/ActionBar';
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
+import _ from 'lodash';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -301,9 +302,11 @@ const AddEditProjectForm = (props) => {
                         {props.relatedObjects.length === 0 ? '' :               
                         <div className="rectangle">
                             {props.relatedObjects.map((object) => {
-                                return (
-                                    <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} objectType={object.objectType} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} />
-                                )
+                                if(!_.isNil(object.objectId)){
+                                    return (
+                                        <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} objectType={object.objectType} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} />
+                                    )
+                                };
                             })}
                         </div>}
 
