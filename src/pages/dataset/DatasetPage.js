@@ -137,12 +137,12 @@ class DatasetDetail extends Component {
     await axios.get(baseURL + '/api/v1/datasets/' + this.props.match.params.datasetID)
       .then( async (res) => {
         this.setState({
-          data: res.data.data[0],
+          data: res.data.data,
           isLoading: false
         });
         this.getTechnicalMetadata();
         this.getCollections();
-        document.title = res.data.data[0].name.trim();
+        document.title = res.data.data.name.trim();
         let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
       
         this.topicContext = { 
@@ -157,8 +157,8 @@ class DatasetDetail extends Component {
 
         this.updateCounter(this.props.match.params.datasetID, counter);
         
-        if(!_.isUndefined(res.data.data[0].relatedObjects)) {
-          await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+        if(!_.isUndefined(res.data.data.relatedObjects)) {
+          await this.getAdditionalObjectInfo(res.data.data.relatedObjects);
         }
 
         if(!_.isEmpty(this.topicContext.title)) {
@@ -170,7 +170,7 @@ class DatasetDetail extends Component {
           this.setState({
             alert: {
                 type: 'warning', 
-                message: <Fragment>You are viewing an old version of this dataset.  Click <a href={'/dataset/' + res.data.data[0].pid}>here</a> for the latest version.</Fragment>
+                message: <Fragment>You are viewing an old version of this dataset.  Click <a href={'/dataset/' + res.data.data.pid}>here</a> for the latest version.</Fragment>
               }
           })
         }
@@ -186,7 +186,7 @@ class DatasetDetail extends Component {
       .get(baseURL + "/api/v1/datasets/" + this.state.data.datasetid)
       .then(res => {
         this.setState({
-          technicalMetadata: res.data.data[0].datasetfields.technicaldetails || []
+          technicalMetadata: res.data.data.datasetfields.technicaldetails || []
         });
       });
   }
