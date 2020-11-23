@@ -37,7 +37,8 @@ const AboutApplication = (props) => {
 		isNationalCoreStudies,
 		nationalCoreStudiesProjectId,
 		toggleMrcModal,
-		toggleContributorModal
+		toggleContributorModal,
+		context
 	} = props;
 
 	return (
@@ -296,7 +297,7 @@ const AboutApplication = (props) => {
 											className={allowedNavigation && userType.toUpperCase() !== 'CUSTODIAN' ? '' : 'disabled'}
 											onClick={(e) =>
 												toggleModal(false, {
-													...this.state.context,
+													...context,
 													showActionButtons: false
 												})
 											}
