@@ -160,12 +160,12 @@ class DatasetDetail extends Component {
         });
         this.getTechnicalMetadata();
         this.getCollections();
-        if(!_.isEmpty(res.data.data[0].datasetv2)){
+        if(!_.isNil(res.data.data[0].datasetv2)){
           this.updateV2Flags(res.data.data[0].datasetv2)
           this.getEmptyFieldsCount(res.data.data[0].datasetv2)
           this.updatePublisherLogo(res.data.data[0].datasetv2.summary.publisher.name)
         } 
-        if(!_.isEmpty(res.data.data[0].datasetv2) && !_.isEmpty(res.data.data[0].datasetv2.enrichmentAndLinkage.qualifiedRelation) ){
+        if(!_.isNil(res.data.data[0].datasetv2) && !_.isEmpty(res.data.data[0].datasetv2.enrichmentAndLinkage.qualifiedRelation) ){
           res.data.data[0].datasetv2.enrichmentAndLinkage.qualifiedRelation.map((relation) => {
            this.getLinkedDatasets(relation) 
           })
@@ -226,7 +226,7 @@ class DatasetDetail extends Component {
       this.setState({emptyFlagDetails: true})
     }
 
-    if( _.isEmpty(v2data.provenance.temporal.startDate) && _.isEmpty(v2data.provenance.temporal.endDate) && _.isEmpty(v2data.provenance.temporal.timeLag) && _.isEmpty(v2data.coverage.spatial) && _.isEmpty(v2data.coverage.typicalAgeRange) && _.isEmpty(v2data.coverage.physicalSampleAvailability) && _.isEmpty(v2data.coverage.followup) && _.isEmpty(v2data.coverage.pathway) ) {
+    if( ( (_.isEmpty(v2data.provenance.temporal.startDate) || _.isEmpty(v2data.provenance.temporal.endDate)) ) && _.isEmpty(v2data.provenance.temporal.timeLag) && _.isEmpty(v2data.coverage.spatial) && _.isEmpty(v2data.coverage.typicalAgeRange) && _.isEmpty(v2data.coverage.physicalSampleAvailability) && _.isEmpty(v2data.coverage.followup) && _.isEmpty(v2data.coverage.pathway) ) {
       this.setState({emptyFlagCoverage: true})
     }
 
@@ -465,7 +465,7 @@ class DatasetDetail extends Component {
     });
   } 
 
-  toggleModal = (showEnquiry = false, context = {}) => {
+  toggleModal = (showEnquiry = false, context = {}) => { 
     this.setState( ( prevState ) => {
         return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
     });
