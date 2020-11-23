@@ -443,7 +443,8 @@ input[type=radio]:disabled {
 	padding: 0 10px;
 	h3 {
 		padding: 0 15px;
-		@include font-source(20px, $gray-dark, $font-weight-semibold);
+		@include font-source(14px, $gray-dark, $font-weight-semibold);
+		line-height: 21px;
 	}
 
 	h4 {
