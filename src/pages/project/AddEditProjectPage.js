@@ -184,26 +184,21 @@ class AddEditProjectPage extends React.Component {
 
     removeObject = (id, type, datasetid) => {
 
-        let countOfRelatedObjects = this.state.relatedObjects.length;
-
-        this.state.relatedObjects = this.state.relatedObjects.filter(
-            obj => obj.objectId !== id
-        );
-        this.state.relatedObjects = this.state.relatedObjects.filter(
-            obj => obj.objectId !== id.toString()
-        );
-        //if an item was not removed try removing by datasetid for retro linkages 
-		if((countOfRelatedObjects <= this.state.relatedObjects.length) && type === 'dataset'){
-			this.state.relatedObjects = this.state.relatedObjects.filter(
-				(obj) => obj.objectId !== datasetid
-			);
-			this.state.relatedObjects = this.state.relatedObjects.filter(
-				(obj) => obj.objectId !== datasetid.toString()
+		let countOfRelatedObjects = this.state.relatedObjects.length;
+		let newRelatedObjects = this.state.relatedObjects.filter(
+			(obj) => (obj.objectId !== id && obj.objectId !== id.toString())
+		);
+		
+		//if an item was not removed try removing by datasetid for retro linkages 
+		if((countOfRelatedObjects <= newRelatedObjects.length) && type === 'dataset'){
+			
+			newRelatedObjects = this.state.relatedObjects.filter(
+				(obj) => (obj.objectId !== datasetid && obj.objectId !== datasetid.toString())
 			);
 		}
-        this.setState({relatedObjects: this.state.relatedObjects})
-        this.setState({didDelete: true});
-    }
+		this.setState({relatedObjects: newRelatedObjects});
+		this.setState({ didDelete: true });
+	};
 
     updateDeleteFlag = () => {
         this.setState({didDelete: false});

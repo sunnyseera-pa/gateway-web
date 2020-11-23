@@ -166,7 +166,7 @@ class DatasetDetail extends Component {
           this.updatePublisherLogo(res.data.data.datasetv2.summary.publisher.name)
         } 
         if(!_.isEmpty(res.data.data.datasetv2) && !_.isEmpty(res.data.data.datasetv2.enrichmentAndLinkage.qualifiedRelation) ){
-          res.data.data[0].datasetv2.enrichmentAndLinkage.qualifiedRelation.map((relation) => {
+          res.data.data.datasetv2.enrichmentAndLinkage.qualifiedRelation.map((relation) => {
            this.getLinkedDatasets(relation) 
           })
         }

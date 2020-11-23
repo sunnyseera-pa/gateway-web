@@ -251,19 +251,13 @@ class AddEditCoursePage extends React.Component {
 		let updatedRelatedObjects;
 		
 		updatedRelatedObjects = this.state.relatedObjects.filter(
-			(obj) => obj.objectId !== id
-		);
-		updatedRelatedObjects = this.state.relatedObjects.filter(
-			(obj) => obj.objectId !== id.toString()
+			(obj) => (obj.objectId !== id && obj.objectId !== id.toString())
 		);
 
 		//if an item was not removed try removing by datasetid for retro linkages 
 		if((countOfRelatedObjects <= updatedRelatedObjects.length) && type === 'dataset'){
 			updatedRelatedObjects = this.state.relatedObjects.filter(
-				(obj) => obj.objectId !== datasetid
-			);
-			updatedRelatedObjects = this.state.relatedObjects.filter(
-				(obj) => obj.objectId !== datasetid.toString()
+				(obj) => (obj.objectId !== datasetid && obj.objectId !== datasetid.toString())
 			);
 		}
 
