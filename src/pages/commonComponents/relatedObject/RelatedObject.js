@@ -522,7 +522,7 @@ class RelatedObject extends React.Component {
                                             <br />
                                             {!_.isEmpty(data.datasetv2) ?
                                                 ( <>
-                                                    {!_.isEmpty(data.datasetv2.summary.publisher.memberOf) ?
+                                                    {!_.isNil(data.datasetv2.summary.publisher.memberOf) ?
                                                         <span>
                                                                 <SVGIcon 
                                                             name="shield"
