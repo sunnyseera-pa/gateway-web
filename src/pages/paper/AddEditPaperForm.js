@@ -16,6 +16,7 @@ import ToolTip from '../../images/imageURL-ToolTip.gif';
 import { ReactComponent as InfoFillSVG } from "../../images/infofill.svg";
 import { ReactComponent as InfoSVG } from "../../images/info.svg";
 import './Paper.scss'; 
+import _ from 'lodash';
 
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -544,18 +545,20 @@ const AddEditPaperForm = (props) => {
               ) : (
                 <div className="rectangle">
                   {props.relatedObjects.map(object => {
-                    return (
-                      <RelatedObject
-                        showRelationshipQuestion={true}
-                        objectId={object.objectId}
-                        objectType={object.objectType}
-                        doRemoveObject={props.doRemoveObject}
-                        doUpdateReason={updateReason}
-                        reason={object.reason}
-                        didDelete={props.didDelete}
-                        updateDeleteFlag={props.updateDeleteFlag}
-                      />
-                    );
+                    if(!_.isNil(object.objectId)){
+                      return (
+                        <RelatedObject
+                          showRelationshipQuestion={true}
+                          objectId={object.objectId}
+                          objectType={object.objectType}
+                          doRemoveObject={props.doRemoveObject}
+                          doUpdateReason={updateReason}
+                          reason={object.reason}
+                          didDelete={props.didDelete}
+                          updateDeleteFlag={props.updateDeleteFlag}
+                        />
+                      );
+                    }
                   })}
                 </div>
               )}
