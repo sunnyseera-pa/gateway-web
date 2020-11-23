@@ -165,12 +165,12 @@ class DatasetDetail extends Component {
           this.getEmptyFieldsCount(res.data.data.datasetv2)
           this.updatePublisherLogo(res.data.data.datasetv2.summary.publisher.name)
         } 
-        if(!_.isEmpty(res.data.data[0].datasetv2) && !_.isEmpty(res.data.data[0].datasetv2.enrichmentAndLinkage.qualifiedRelation) ){
+        if(!_.isEmpty(res.data.data.datasetv2) && !_.isEmpty(res.data.data.datasetv2.enrichmentAndLinkage.qualifiedRelation) ){
           res.data.data[0].datasetv2.enrichmentAndLinkage.qualifiedRelation.map((relation) => {
            this.getLinkedDatasets(relation) 
           })
         }
-        document.title = res.data.data[0].name.trim();
+        document.title = res.data.data.name.trim();
         let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
       
         this.topicContext = { 
