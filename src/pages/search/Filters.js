@@ -42,7 +42,7 @@ class Filters extends Component {
     }
 
     componentWillReceiveProps(props) {
-        this.state = {
+    this.state = {
             data: props.data || [],
             selected: props.selected || [],
             title : props.title || '',

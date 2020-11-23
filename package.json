@@ -17,7 +17,7 @@
     "dotenv": "^8.2.0",
     "form-data": "^3.0.0",
     "formik": "^2.1.4",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.20",
     "moment": "^2.25.3",
     "node-sass": "^4.14.1",
     "randomstring": "^1.1.5",
@@ -50,7 +50,8 @@
     "uniqid": "^5.2.0",
     "uuid": "^8.3.1",
     "winterfell": "github:HDRUK/Winterfell",
-    "yup": "^0.28.1"
+    "yup": "^0.28.2",
+    "snyk": "^1.360.0"
   },
   "scripts": {
     "start": "react-scripts start",

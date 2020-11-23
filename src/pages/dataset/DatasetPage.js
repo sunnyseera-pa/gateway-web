@@ -38,7 +38,6 @@ import TechnicalMetadata from "./components/TechnicalMetadata";
 import TechnicalDetailsPage from "./components/TechnicalDetailsPage";
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
-
 import UserMessages from "../commonComponents/userMessages/UserMessages";
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
 import DataSetHelper from '../../utils/DataSetHelper.util';

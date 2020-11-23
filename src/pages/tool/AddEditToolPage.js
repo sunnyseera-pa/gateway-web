@@ -110,6 +110,7 @@ class AddEditToolPage extends React.Component {
 						tempTopicArray.push(to);
 					}
                 });
+
 				this.setState({
 					combinedTopic: tempTopicArray.sort(function (a, b) {
 						return a.toUpperCase() < b.toUpperCase()

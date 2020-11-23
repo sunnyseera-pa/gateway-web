@@ -3,9 +3,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
-
 import Container from 'react-bootstrap/Container';
-
 import SSOPage from './pages/sso/SSOPage';
 import ToolPage from './pages/tool/ToolPage';
 import PersonPage from './pages/person/PersonPage';
@@ -16,17 +14,14 @@ import DatasetPage from './pages/dataset/DatasetPage';
 import SearchPage from './pages/search/SearchPage';
 import CollectionPage from './pages/collections/CollectionPage';
 import PublicAnalyticsDashboard from './pages/publicDashboard/PublicAnalyticsDashboard';
-
 import Account from './pages/dashboard/Account';
 import Unsubscribe from './pages/dashboard/Unsubscribe';
-
 import AddEditToolPage from './pages/tool/AddEditToolPage';
 import AddEditProjectPage from './pages/project/AddEditProjectPage';
 import AddEditPaperPage from './pages/paper/AddEditPaperPage';
 import AddEditCoursePage from './pages/course/AddEditCoursePage';
 import AddCollectionPage from './pages/collections/AddCollectionPage';
 import EditCollectionPage from './pages/collections/EditCollectionPage';
-
 import DataAccessRequest from './pages/DataAccessRequest/DataAccessRequest';
 import Loading from './pages/commonComponents/Loading'
 import CompleteRegistration from './pages/registration/CompleteRegistration'
@@ -36,7 +31,6 @@ import LoginErrorPage from './pages/commonComponents/LoginErrorPage';
 import ErrorModal from './pages/commonComponents/errorModal/ErrorModal';
 
 var baseURL = require('./pages/commonComponents/BaseURL').getURL();
-
 class HDRRouter extends Component {
     // initialize our state
     state = {
@@ -56,7 +50,6 @@ class HDRRouter extends Component {
     hideModal = () => {
         this.setState({ showError: false });
     };
-
     async componentDidMount() {
         let currentComponent = this;
 
@@ -102,10 +95,8 @@ class HDRRouter extends Component {
                 });
             });
     }
-
     render() {
         const { isLoading, userState, showError } = this.state;
-
         if (isLoading) {
             return (
                 <Container>
@@ -144,7 +135,6 @@ class HDRRouter extends Component {
                         {userState[0].loggedIn ? (<Route path='/data-access-request/:accessId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
                                                 
                         {userState[0].loggedIn ? (<Route path='/account' render={(props) => <Account {...props} userState={userState} />} />) : ''}
-                        
                         {userState[0].loggedIn ? (<Route path='/addcollection' render={(props) => <AddCollectionPage {...props} userState={userState} /> } />) : ''}
                         {userState[0].loggedIn ? (<Route path='/editcollection/:collectionID' render={(props) => <EditCollectionPage {...props} userState={userState} /> } />) : ''} 
                         <Route path='/collection/:collectionID' render={(props) => <CollectionPage {...props} userState={userState} />} />
@@ -174,5 +164,4 @@ class HDRRouter extends Component {
         );
     }
 }
-
 export default HDRRouter;
