@@ -554,15 +554,23 @@ input[type=radio]:disabled {
 }
 
 .action-control {
+	display: flex;
+	flex-flow: row;
+	align-items: center;
+	padding: 8px;
 	position: absolute;
-	top: -7px;
+	top: -19px;
 	right: 25px;
 	visibility: hidden;
 	cursor: pointer;
 	min-width: 32px;
 	height: 32px;
 	opacity:0;
-  transition: visibility 0.65s linear, opacity 0.4s ease-in-out;
+	transition: visibility 0.65s linear, opacity 0.4s ease-in-out;
+	
+	& > i {
+		padding: 0 5px;
+	}
 }
 
 .form-group .addFormInputTypeAhead {

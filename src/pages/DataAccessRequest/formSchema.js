@@ -1984,5 +1984,8 @@ export const formSchema = {
         "guidance": "Some safe project guidance."
       }]
     }
-  ]
+  ],
+  questionActions: {
+    
+  }
 };
