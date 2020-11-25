@@ -820,6 +820,10 @@ class DataAccessRequest extends Component {
 		}
 	};
 
+	onQuestionAction = (questionSetId = '', questionId = '', key = '') => {
+		console.log(questionSetId, questionId, key);
+	}
+
 	onHandleDataSetChange = (value = []) => {
 		// 1. Deconstruct current state
 		let { aboutApplication, allowedNavigation, topicContext } = {...this.state};
@@ -1317,6 +1321,7 @@ class DataAccessRequest extends Component {
 					renderRequiredAsterisk={() => <span>{'*'}</span>} 				
 					onQuestionFocus={this.onQuestionFocus}
 					onQuestionClick={this.onQuestionClick}
+					onQuestionAction={this.onQuestionAction}
 					onUpdate={this.onFormUpdate}
 					onSubmit={this.onFormSubmit}
 				/>

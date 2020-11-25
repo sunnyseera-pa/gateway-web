@@ -1985,7 +1985,5 @@ export const formSchema = {
       }]
     }
   ],
-  questionActions: {
-    
-  }
+  "questionActions": []
 };
