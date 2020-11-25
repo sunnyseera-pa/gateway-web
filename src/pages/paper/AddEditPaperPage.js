@@ -248,7 +248,7 @@ class AddEditPaperPage extends React.Component {
 		}
 	};
 
-	addToTempRelatedObjects = (id, type) => {
+	addToTempRelatedObjects = (id, type, pid) => {
 		if (
 			this.state.tempRelatedObjectIds &&
 			this.state.tempRelatedObjectIds.some((object) => object.objectId === id)
@@ -257,37 +257,48 @@ class AddEditPaperPage extends React.Component {
 				(object) => object.objectId !== id
 			);
 		} else {
-			this.state.tempRelatedObjectIds.push({ objectId: id, type: type });
+			this.state.tempRelatedObjectIds.push({ objectId: id, type: type, pid: pid });
 		}
 		this.setState({ tempRelatedObjectIds: this.state.tempRelatedObjectIds });
 	};
 
 	addToRelatedObjects = () => {
-		this.state.tempRelatedObjectIds.map((object) => {
-			this.state.relatedObjects.push({
-				objectId: object.objectId,
-				reason: '',
-				objectType: object.type,
-				user: this.state.userState[0].name,
-				updated: moment().format('DD MMM YYYY')
-			});
-		});
+			let {userState: [user = {}]} = this.state;
+			let relatedObjectIds = [...this.state.tempRelatedObjectIds]; 
+			let relatedObjects = [...this.state.relatedObjects];
 
-		this.setState({ tempRelatedObjectIds: [] });
+			let newRelatedObjects = relatedObjectIds.map((relatedObject) => { 
+				let newRelatedObject = { 
+					...relatedObject, 
+					objectId: relatedObject.type === 'dataset' ? relatedObject.pid : relatedObject.objectId, 
+					user: user.name, 
+					updated: moment().format('DD MM YYYY') 
+				};
+				return newRelatedObject; 
+			});
+			this.setState({relatedObjects: [...relatedObjects, ...newRelatedObjects]});
+			this.setState({ tempRelatedObjectIds: [] });
 	};
 
 	clearRelatedObjects = () => {
 		this.setState({ tempRelatedObjectIds: [] });
 	};
 
-	removeObject = (id) => {
-		this.state.relatedObjects = this.state.relatedObjects.filter(
-			(obj) => obj.objectId !== id
+	removeObject = (id, type, datasetid) => {
+
+		let countOfRelatedObjects = this.state.relatedObjects.length;
+		let newRelatedObjects = [...this.state.relatedObjects].filter(
+			(obj) => (obj.objectId !== id && obj.objectId !== id.toString())
 		);
-		this.state.relatedObjects = this.state.relatedObjects.filter(
-			(obj) => obj.objectId !== id.toString()
-		);
-		this.setState({ relatedObjects: this.state.relatedObjects });
+		
+		//if an item was not removed try removing by datasetid for retro linkages 
+		if((countOfRelatedObjects <= newRelatedObjects.length) && type === 'dataset'){
+			
+			newRelatedObjects = [...this.state.relatedObjects].filter(
+				(obj) => (obj.objectId !== datasetid && obj.objectId !== datasetid.toString())
+			);
+		}
+		this.setState({relatedObjects: newRelatedObjects});
 		this.setState({ didDelete: true });
 	};
 

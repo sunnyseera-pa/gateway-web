@@ -29,7 +29,8 @@ class YourAccount extends React.Component {
         showBio: true,
         showDomain: true,
         showLink: true,
-        showOrcid: true
+        showOrcid: true,
+        profileComplete: null
     };
 
     constructor(props) {
@@ -56,6 +57,7 @@ class YourAccount extends React.Component {
                         this.setState({
                             userdata: resUser.data.userdata[0],
                             data: res.data.data[0],
+                            profileComplete: res.data.data[0].profileComplete,
                             isLoading: false,
                             showOrg,
                             //we want undefined to default to true
@@ -117,7 +119,7 @@ class YourAccount extends React.Component {
 	}
 
     render() {
-        const { data, isLoading, isUpdated, userdata, topicData, showOrg, combinedOrganisations, showBio, showSector, showDomain, showLink, showOrcid, showOrganisation} = this.state;
+        const { data, isLoading, isUpdated, userdata, profileComplete, topicData, showOrg, combinedOrganisations, showBio, showSector, showDomain, showLink, showOrcid, showOrganisation} = this.state;
 
         if (isLoading) {
             return (
@@ -136,7 +138,7 @@ class YourAccount extends React.Component {
                 <Row>
                     <Col xs={1}></Col>
                     <Col xs={10}>
-                        <YourAccountForm data={data} userdata={userdata} isUpdated={isUpdated} topicData={topicData} combinedOrganisations={combinedOrganisations} showOrg={showOrg} showOrganisation={showOrganisation} showBio={showBio} showSector={showSector} showDomain={showDomain} showLink={showLink} showOrcid={showOrcid} />
+                        <YourAccountForm data={data} userdata={userdata} isUpdated={isUpdated} profileComplete={profileComplete} topicData={topicData} combinedOrganisations={combinedOrganisations} showOrg={showOrg} showOrganisation={showOrganisation} showBio={showBio} showSector={showSector} showDomain={showDomain} showLink={showLink} showOrcid={showOrcid} />
                     </Col>
                     <Col xs={1}></Col>
                 </Row>    
@@ -150,6 +152,7 @@ const sectorSelect = [
     "Industry",
     "Academia",
     "Public",
+    "Charity/Non-profit"
 ];
 
 //Your Account Form
@@ -162,6 +165,10 @@ const YourAccountForm = (props) => {
     let showDomain = props.showDomain;
     let showLink = props.showLink;
     let showOrcid = props.showOrcid;
+
+    let profileComplete = props.profileComplete;
+    let initialEmailNotifications = profileComplete ? (props.data.emailNotifications || false) : true;
+    let initialTerms = profileComplete ? (props.data.terms || false) : false;
 
     //tool tips for eyes
     const mandatoryShowFieldMsg = "This will be visible to others. You cannot change this.";
@@ -202,14 +209,15 @@ const YourAccountForm = (props) => {
         initialValues: {
             id: props.data.id,
             type: 'person',
+            profileComplete: true,
             firstname: props.data.firstname,
             lastname: props.data.lastname,
             email: props.userdata.email,
-            bio: props.data.bio,
-            link: props.data.link,
-            orcid: props.data.orcid,
-            emailNotifications: props.data.emailNotifications || false, 
-            terms: props.data.terms || false,
+            bio: props.data.bio || "",
+            link: props.data.link || "",
+            orcid: props.data.orcid || "",
+            emailNotifications: initialEmailNotifications || false, 
+            terms: initialTerms || false,
             sector: props.data.sector || "",
             organisation: props.data.organisation || "",
             showOrgVal: props.showOrgVal,
@@ -254,6 +262,10 @@ const YourAccountForm = (props) => {
 
     return (
         <div>
+            {props.profileComplete ? '' : 
+            <Row className='accountBanner'>
+                <Col className='pad-left-24'>Please accept the updated Terms and Conditions and update your profile details. You can now control the visibility of certain fields.</Col>
+            </Row>}
             {props.isUpdated ? <Alert variant="success" className="mt-3">Done! Your account details have been updated</Alert> : ""}
             <Row className="pixelGapBottom">
                 <Col>
@@ -546,14 +558,17 @@ const YourAccountForm = (props) => {
                             </Form.Group>
                             <Form.Group className="pb-2">
                                <Row className="mt-2">
-                                <Form.Control type="checkbox" className="checker" id="emailNotficiations" name="emailNotifications" checked={formik.values.emailNotifications} onChange={formik.handleChange} />
+                                <Form.Control type="checkbox" className="checker" id="emailNotficiations" name="emailNotifications" 
+                                    // defaultChecked={profileComplete ? formik.values.emailNotifications : true} 
+                                    checked={formik.values.emailNotifications} 
+                                    onChange={formik.handleChange} />
                                 <span className="gray800-14 ml-4 margin-top-2">I want to receive email notifications about activity relating to my account or content</span>
                                 </Row>
                             </Form.Group>
                             
                             <Form.Group className="pb-2">
                                <Row className="mt-2">
-                                <Form.Control type="checkbox" className="checker" id="terms" name="terms" checked={formik.values.terms} onChange={formik.handleChange} />
+                                <Form.Control type="checkbox" className="checker" id="terms" name="terms" default={profileComplete ? formik.values.emailNotifications : false} checked={formik.values.terms} onChange={formik.handleChange} />
                                 <span className="gray800-14 ml-4 margin-top-2">I agree to the HDRUK <a href='https://www.hdruk.ac.uk/infrastructure/gateway/terms-and-conditions/' target="_blank">Terms and Conditions</a></span>
                                 </Row>
                                 <Row className="mt-2">

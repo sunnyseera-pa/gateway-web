@@ -3,11 +3,12 @@ import axios from 'axios';
 import moment from 'moment';
 import UnmetDemand from './DARComponents/UnmetDemand';
 import TopSearches from './TopSearches';
+import TopDatasets from './TopDatasets';
 import { Row, Col, Button, Modal, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
 import DashboardKPI from './DARComponents/DashboardKPI';
 import Loading from '../commonComponents/Loading'
 import { Event, initGA } from '../../tracking';
-import './Dashboard.scss';  
+import './Dashboard.scss';   
 
  
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -27,6 +28,7 @@ class AccountAnalyticsDashboard extends React.Component {
         searchesWithResults: 0,
         accessRequests: 0,
         uptime: 0,
+        topDatasets: [],
         uniqueUsers: 0,
         datasetsWithTechMetaData: 0,
         dates: getDatesForDropdown(),
@@ -55,7 +57,8 @@ class AccountAnalyticsDashboard extends React.Component {
             this.getUptime(this.state.selectedOption),
             this.getStats(),
             this.getKPIs(this.state.selectedOption), 
-            this.getDatasetsWithTechMetadata()
+            this.getDatasetsWithTechMetadata(),
+            this.getTopDatasets(this.state.selectedOption)
         ])
 
         if(isMounted)
@@ -93,7 +96,9 @@ class AccountAnalyticsDashboard extends React.Component {
             this.getUptime(this.state.dates[eventKey]),
             this.getStats(),
             this.getKPIs(this.state.dates[eventKey]),
-            this.getDatasetsWithTechMetadata()
+            this.getDatasetsWithTechMetadata(),
+            this.getTopDatasets(this.state.dates[eventKey])
+
         ])
         this.setState({uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100})
       }
@@ -173,7 +178,7 @@ class AccountAnalyticsDashboard extends React.Component {
 
     } 
 
-    getKPIs(selectedDate){
+    getKPIs(selectedDate){ 
         return new Promise((resolve, reject) => {
         axios.get(baseURL + '/api/v1/kpis?kpi=searchanddar&selectedDate=' + selectedDate )
         .then((res) => {
@@ -187,6 +192,17 @@ class AccountAnalyticsDashboard extends React.Component {
 
     });
 
+    }
+
+    getTopDatasets(selectedDate){
+        return new Promise((resolve, reject) => {
+            axios.get(baseURL + '/api/v1/kpis?kpi=topdatasets&selectedDate=' + selectedDate )
+            .then((res) => {
+                this.setState({ topDatasets: []});
+                this.setState({ topDatasets: res.data.data});
+                resolve();
+            });     
+        });
     }
 
     getUptime(selectedDate){
@@ -216,12 +232,12 @@ class AccountAnalyticsDashboard extends React.Component {
 
     }
 
-    render() {
-        const { key, isLoading, data, topSearches, dates, statsDataType, gaUsers, searchesWithResults, accessRequests, datasetsWithTechMetaData, uptime, uniqueUsers } = this.state;
+    render() { 
+        const { key, isLoading, data, topSearches, dates, statsDataType, gaUsers, searchesWithResults, accessRequests, datasetsWithTechMetaData, uptime, uniqueUsers, topDatasets } = this.state;
 
         if (isLoading) {
             return (
-                <Row>
+                <Row> 
                     <Col xs={1}></Col>
                     <Col xs={10}>
                         <Loading data-testid="isLoading" />
@@ -274,7 +290,7 @@ class AccountAnalyticsDashboard extends React.Component {
                                 <DashboardKPI kpiText="datasets with technical metadata" kpiValue={datasetsWithTechMetaData.toFixed(0)} percentageFlag={true}/>
                             </Col>
                             <Col sm={3} lg={3} className="kpiClass">
-                                <DashboardKPI kpiText="unique users this month" kpiValue={gaUsers}/>
+                                <DashboardKPI kpiText="unique users this month" kpiValue={gaUsers}/> 
                             </Col>
                             <Col sm={3} lg={3} className="kpiClass">                               
                                 <DashboardKPI kpiText="unique registered users" kpiValue={uniqueUsers.toFixed(0)} percentageFlag={true}/> 
@@ -296,7 +312,53 @@ class AccountAnalyticsDashboard extends React.Component {
                             </Col> 
                         </Row>
 
-                        <Row className="accountHeader mt-4" style={{"marginBottom":"0.5px"}}>
+                        <Row className="accountHeader margin-top-16">
+                                <Col sm={12} lg={12} className="noPadding">
+                                    <Row >
+                                        <Col sm={12} lg={12}>
+                                            <span className="black-20">Data access request</span> 
+                                        </Col>
+                                    </Row>
+                                    <Row> 
+                                        <Col sm={12} lg={12}> 
+                                            <span className="gray700-13">Most popular datasets based on the number of data access requests</span>
+                                        </Col>
+                                    </Row>
+                                </Col> 
+                            </Row>
+
+                        <Fragment>
+                            <Row>
+                                <Col sm={12} lg={12}>
+                                {topDatasets.length === 0 ?
+                                    <Row className="subHeader entrybox gray800-14 noDars" >
+                                        <Col sm={12} lg={12}>There were no data access requests this month </Col >
+                                    </Row>
+                                : "" }
+                                </Col>
+                            </Row>
+                        </Fragment> 
+
+                        {topDatasets.length === 0 ? "" :       
+                            <Row className="entryBox noPadding">
+                                <Col sm={12} lg={12} className="resultsPadding">
+                                    <Row className="dashboardHeader entrybox gray800-14-bold">
+                                        <Col sm={5} lg={6} className="noPadding">Dataset </Col >
+                                        <Col sm={4} lg={4} className="pad-right-0 pad-left-16">Custodian</Col>
+                                        <Col sm={3} lg={2} className="pad-right-0 pad-left-16">Requests</Col> 
+                                    </Row>
+                                    <Row>
+                                        <Col sm={12} lg={12}>
+                                        { topDatasets.map((dat, i) => {
+                                                    return <TopDatasets key={i} data={dat} />    
+                                            })}
+                                        </Col>
+                                    </Row>
+                                </Col>
+                            </Row>
+                        }
+
+                        <Row className="accountHeader margin-top-16" style={{"marginBottom":"0.5px"}}>
                             <Col sm={12} lg={12}>
                                 <Row >
                                     <Col sm={12} lg={12}>
@@ -314,19 +376,19 @@ class AccountAnalyticsDashboard extends React.Component {
                         <Fragment>
                             <Row>
                                 <Col sm={12} lg={12}>
-                                <Row className="subHeader entrybox gray800-14-bold" style={{"height":"44px"}}>
+                                <Row className="subHeader entrybox gray800-14-bold" >
                                     <Col sm={5} lg={6}>Search term </Col >
                                     <Col sm={2} lg={2}>Searches</Col>
                                     <Col sm={5} lg={4}>Latest results</Col>
                                 </Row>
                                     {topSearches.map((dat, i) => {
-                                        return <TopSearches key={i} data={dat} /> 
+                                        return <TopSearches key={i} data={dat} />  
                                     })}
                                 </Col>
                             </Row>
                         </Fragment> 
 
-                        <Row className="accountHeader mt-4">
+                        <Row className="accountHeader margin-top-16">
                             <Col sm={12} lg={12}>
                                 <Row >
                                     <Col sm={12} lg={12}>
@@ -360,7 +422,7 @@ class AccountAnalyticsDashboard extends React.Component {
                                         <div>
                                             <Row>
                                                 <Col sm={12} lg={12}>
-                                                <Row className="subHeader mt-3 gray800-14-bold">
+                                                <Row className="subHeader gray800-14-bold">
                                                     <Col sm={8} lg={8}>Search term </Col>
                                                     <Col sm={2} lg={2}>Searches</Col>
                                                     <Col sm={2} lg={2}>Dataset results</Col>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import {Row, Col} from 'react-bootstrap';
+import '../../../css/styles.scss'
 
 var baseURL = require('../../commonComponents/BaseURL').getURL();
 
@@ -8,30 +9,26 @@ class PersonTitle extends Component {
 
     constructor(props) {
       super(props) 
-      this.state.data = props.data;
     }
   
     // initialize our state
     state = {
-      data: [],
+      data: this.props.data || [],
       id: this.props.data.id,
-      counter: this.props.data.counter
+      counter: this.props.data.counter || 1
     };
   
     componentDidMount(props) {
       let counter = !this.props.data.counter ? 1 : this.props.data.counter + 1;
-      this.UpdateCounter(this.props.data.id, counter);
+      this.updateCounter(this.props.data.id, counter);
     }
   
-    UpdateCounter = (id, counter) => {
+    updateCounter = (id, counter) => {
       axios.post(baseURL + '/api/v1/counter/update', { id: id, counter: counter });
     }
   
-    // here is our UI
-    // it is easy to understand their functions when you
-    // see them render into our screen
     render() {
-      const { data } = this.state;
+      const { firstname, lastname, tags, organisation, bio, orcid, link, sector, counter, showOrganisation, showBio, showDomain, showOrcid, showLink, showSector } = this.state.data;
   
       return (
         <div>
@@ -41,42 +38,81 @@ class PersonTitle extends Component {
               <div className="rectangle">
                   <Row>
                     <Col sm={10} className="text-left ">
-                      <p className="black-20"> {data.firstname} {data.lastname} </p>
-                      {!data.bio ? '' : <p className='gray800-14'> {data.bio} </p>}
+                      <Row className="black-20"> <Col>{firstname} {lastname} </Col></Row>
+                      <Row className="black-14"> <Col>{showOrganisation ? organisation : ''} </Col></Row>
+                    
+                    {     
+                      !tags ||
+                      !tags.topics ||
+                      tags.topics.length <= 0 ||
+                      !showDomain
+                      ? '' :
+                        <Row sm={10} className="gray800-14 pt-2 pb-3">
+                          <Col>
+                            {tags.topics.map(
+                                  (obj, i) => {
+                                    return (
+                                      (<a href={`/search?search=&tooltopics=${obj}&tab=Tools`}>
+
+                                        <div className="badge-tag" key={i}>
+                                          <span>{obj}</span>
+                                        </div>
+                                      </a>
+                                    )
+                                )}
+                              )
+                            }
+                          </Col>
+                        </Row>
+                      }
+
+                      {!bio || !showBio ? '' : <p className='gray800-14'> {bio} </p>}
                     </Col>
                     <Col sm={2} className="text-right">
                       <div class="avatar-circle">
-                        <span class="initials">{data.firstname.charAt(0).toUpperCase()}{data.lastname.charAt(0).toUpperCase()}</span>
+                        <span class="initials">{firstname.charAt(0).toUpperCase()}{lastname.charAt(0).toUpperCase()}</span>
                       </div>
                     </Col>
                   </Row>
   
-                  <Row>
-                    {!data.orcid ? '' :
-                      <Col xs={12} md={12}>
-                        <span className='gray800-14'> ORCID </span>
-                        <span className='purple-14'> {data.orcid} </span>
-                      </Col>
+                    {!orcid || !showOrcid ? '' :
+                      <Row>
+                        <Col xs={1} md={1}>
+                          <span className='gray600-14'> ORCID </span>
+                        </Col>
+                        <Col xs={9} md={9}>
+                          <a href={orcid} rel="noopener noreferrer" target="_blank" className="purple-14 overflowWrap">{orcid}</a>
+                        </Col>
+                      </Row>
                     }
-                  </Row>
+
+                    {!link || !showLink ? '' :
+                      <Row>
+                        <Col xs={1} md={1}>
+                          <span className='gray600-14'> URL </span>
+                        </Col>
+                        <Col xs={11} md={9}>
+                          <a href={link} rel="noopener noreferrer" target="_blank" className="purple-14 overflowWrap">{link}</a>
+                        </Col>
+                      </Row>
+                    }   
   
-                  <Row>
-                    {!data.link ? '' :
-                      <Col xs={12} md={12}>
-                        <span>
-                          <a href={data.link} className="purple-14">
-                            {data.link}
-                          </a>
-                        </span>
-                      </Col>
+                    {!sector || !showSector ? '' :
+                      <Row>
+                        <Col xs={1} md={1}>
+                          <span className='gray600-14'> Sector </span>
+                        </Col>
+                        <Col xs={11} md={11}>
+                          <span className='gray800-14'> {sector} </span>
+                        </Col>
+                      </Row>
                     }
-                  </Row>
   
                   <Row>
                     <Col className="mt-2">
                       <span className='gray800-14'>
-                        {data.counter === undefined ? 1 : data.counter + 1}
-                        {data.counter === undefined ? ' view' : ' views'}
+                        {counter === undefined ? 1 : counter + 1}
+                        {counter === undefined ? ' view' : ' views'}
                       </span>
                     </Col>
                   </Row>

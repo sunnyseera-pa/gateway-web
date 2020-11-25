@@ -100,7 +100,7 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 							className='btn btn-primary addButton'
 							onClick={() => onCloseModal(true)}
 						>
-							Make an enquiry
+							Send a message to the custodian
 						</button>
 					</div>
 					:

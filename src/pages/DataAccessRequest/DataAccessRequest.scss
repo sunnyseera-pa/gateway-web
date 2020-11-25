@@ -7,6 +7,7 @@
 	margin-left: 33px;
 	margin-top: 8px;
 	margin-bottom: 16px;
+	font-size: 16px;
 }
 
 .section-not-inreview {
@@ -19,6 +20,8 @@
 	margin-left: 33px;
 	margin-top: 0px;
 	margin-bottom: 0px;
+	font-size: 16px;
+	font-weight: 700;
 }
 
 .section-subheader {
@@ -84,6 +87,10 @@
 	text-align: right;
 	vertical-align: middle;
 	padding-right: 32px !important;
+	svg {
+		margin-left: 20px;
+		cursor: pointer;
+	}
 }
 
 #darLeftCol {
@@ -260,7 +267,7 @@ input[type=radio]:disabled {
 
 	&__questions {
 		margin-bottom: 36px;
-		padding: 24px;
+		padding: 24px 0;
 		margin-top: 1px;
 		box-shadow: 0 1px 6px -5px #333;
 	}
@@ -271,10 +278,10 @@ input[type=radio]:disabled {
 		padding-right: 8px !important;
 	}
 
-	&__questions .form-group {
-		padding-left: 16px !important;
-		padding-right: 16px !important;
-	}
+	// &__questions .form-group {
+	// 	padding-left: 16px !important;
+	// 	padding-right: 16px !important;
+	// }
 
 	&__questions .card-body .form-group {
 		padding-left: 0 !important;
@@ -289,8 +296,8 @@ input[type=radio]:disabled {
 			padding: 5px;
 			> input[type='checkbox'] {
 				margin-right: 10px;
-				width: 20px;
-				height: 20px;
+				width: 24px;
+				height: 24px;
 				cursor: pointer;
 				text-align: center;
 				vertical-align: middle;
@@ -381,6 +388,7 @@ input[type=radio]:disabled {
 		justify-content: flex-end;
 		flex: 1 0 0;
 		margin-left: auto;
+		align-items: center;
 
 		& > * {
 			margin-right: 6px;
@@ -394,6 +402,10 @@ input[type=radio]:disabled {
 	&-actions > button:last-child {
 		margin-right: 0px;
 	}
+}
+
+.amendment-count {
+	@include font-source(14px, $gray-800, $font-weight-semibold);
 }
 
 .userOption {
@@ -428,14 +440,21 @@ input[type=radio]:disabled {
 }
 
 .dar-form {
+	padding: 0 10px;
+	h3 {
+		padding: 0 15px;
+		@include font-source(14px, $gray-dark, $font-weight-semibold);
+		line-height: 21px;
+	}
+
 	h4 {
 		margin-bottom: 0;
 		padding: 16px 16px;
-		font-size: 20px;
-		font-weight: 500 !important;
+		@include font-source(17px, $gray-dark, $font-weight-bold);
 	}
+
 	.form-group {
-		padding: 10px 12px;
+		padding: 10px 16px;
 		transition: all 0.2s ease-in-out;
 
 		&:hover {
@@ -447,10 +466,6 @@ input[type=radio]:disabled {
 			margin-bottom: 5px;
 		}
 	}
-}
-
-.aboutAccordion {
-	margin: -24px -24px 0 -24px;
 }
 
 .card .activeCard {
@@ -518,7 +533,10 @@ input[type=radio]:disabled {
 }
 
 #messageLink,
-#howToRequestAccessLink {
+#howToRequestAccessLink,
+#approvedResearcherLink,
+#infoGovernanceLink,
+#dsptLink {
 	color: $purple !important;
 	text-decoration: underline !important;
 }
