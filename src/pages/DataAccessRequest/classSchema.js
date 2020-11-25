@@ -19,5 +19,8 @@ export const classSchema = {
         "buttonBar": "button-bar hidden",
         "actionControl": "action-control",
         "nested": "nested",
+        "toolTip": "toolTip",
+        "toolTipTop": "toolTip-top",
+        "toolTipText": "toolTipText"
     }
 }
