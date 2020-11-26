@@ -142,7 +142,7 @@ class RelatedObject extends React.Component {
                                     <Row className="noMargin">
                                         <Col sm={10} lg={10} className="pad-left-24">
                                             {activeLink===true ?
-                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/tool/' + data.id} >{data.name}</a>
+                                            <a className="purple-bold-16" style={{ cursor: 'pointer' }} href={'/tool/' + data.id} >{data.name}</a>
                                             : <span className="black-bold-16"> {data.name}</span> }
                                             <br />
                                             {!data.persons || data.persons <= 0 ? <span className="gray800-14">Author not listed</span> : data.persons.map((person, index) => {
@@ -246,7 +246,7 @@ class RelatedObject extends React.Component {
                                     <Row className="noMargin">
                                         <Col sm={10} lg={10} className="pad-left-24">
                                             {activeLink===true ?
-                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/project/' + data.id} >{data.name}</a>
+                                            <a className="purple-bold-16" style={{ cursor: 'pointer' }} href={'/project/' + data.id} >{data.name}</a>
                                             : <span className="black-bold-16"> {data.name}</span> }
                                             <br />
                                             {!data.persons || data.persons <= 0 ? <span className="gray800-14">Author not listed</span> : data.persons.map((person, index) => {
@@ -326,7 +326,7 @@ class RelatedObject extends React.Component {
                                     <Row className="noMargin">
                                         <Col sm={10} lg={10} className="pad-left-24">
                                             {activeLink===true ?
-                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/paper/' + data.id} >{data.name}</a>
+                                            <a className="purple-bold-16" style={{ cursor: 'pointer' }} href={'/paper/' + data.id} >{data.name}</a>
                                             : <span className="black-bold-16"> {data.name}</span> }
                                             <br />
                                             {!data.persons || data.persons <= 0 ? <span className="gray800-14">Author not listed</span> : data.persons.map((person, index) => {
@@ -403,7 +403,7 @@ class RelatedObject extends React.Component {
                                         </Col>
                                         <Col className="pad-left-8" sm={8} lg={9}>
                                             {activeLink===true ? 
-                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/person/' + data.id} >{data.firstname && data.lastname ? data.firstname + ' ' + data.lastname : ''}</a> 
+                                            <a className="purple-bold-16" style={{ cursor: 'pointer' }} href={'/person/' + data.id} >{data.firstname && data.lastname ? data.firstname + ' ' + data.lastname : ''}</a> 
                                             : <span className="black-bold-16"> {data.firstname && data.lastname ? data.firstname + ' ' + data.lastname : ''} </span>
                                             }
                                             <br />
@@ -421,7 +421,7 @@ class RelatedObject extends React.Component {
                                     <Row className="noMargin">
                                         <Col sm={10} lg={10} className="pad-left-24">
                                             {activeLink===true ?
-                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/course/' + data.id} >{data.title}</a>
+                                            <a className="purple-bold-16" style={{ cursor: 'pointer' }} href={'/course/' + data.id} >{data.title}</a>
                                             : <span className="black-bold-16">{data.title}</span> }
                                             <br />
                                             <span className="gray800-14">{data.provider}</span>
@@ -518,7 +518,7 @@ class RelatedObject extends React.Component {
                                     <Row className="noMargin">
                                         <Col sm={10} lg={10} className="pad-left-24">
                                             {activeLink===true ?
-                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/dataset/' + data.pid} >{data.name}</a>
+                                            <a className="purple-bold-16" style={{ cursor: 'pointer' }} href={'/dataset/' + data.pid} >{data.name}</a>
                                             : <span className="black-bold-16"> {data.name} </span> }
                                             <br />
                                             {!_.isEmpty(data.datasetv2) ?
