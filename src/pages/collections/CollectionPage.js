@@ -470,8 +470,8 @@ class CollectionPage extends Component {
 											var user = '';
 											let showAnswer = false;
 
-											{!_.isEmpty(object.datasetv2) && !_.isNil(object.datasetv2.summary.publisher.name) ? datasetPublisher = object.datasetv2.summary.publisher.name : datasetPublisher = ''}
-											{!_.isEmpty(object.datasetv2) && !_.isNil(object.datasetv2.summary.publisher.logo) ? datasetLogo = object.datasetv2.summary.publisher.logo : datasetLogo = ''}
+											{!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.name') ? datasetPublisher = object.datasetv2.summary.publisher.name : datasetPublisher = ''}
+											{!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.logo') ? datasetLogo = object.datasetv2.summary.publisher.logo : datasetLogo = ''}
 
 											data.relatedObjects.map((dat) => {
 												if (
@@ -515,8 +515,8 @@ class CollectionPage extends Component {
 											let showAnswer = false;
 											if (object.type === "dataset") {
 
-												{!_.isEmpty(object.datasetv2) && !_.isNil(object.datasetv2.summary.publisher.name) ? datasetPublisher = object.datasetv2.summary.publisher.name : datasetPublisher = ''}
-												{!_.isEmpty(object.datasetv2) && !_.isNil(object.datasetv2.summary.publisher.logo) ? datasetLogo = object.datasetv2.summary.publisher.logo : datasetLogo = ''}
+												{!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.name') ? datasetPublisher = object.datasetv2.summary.publisher.name : datasetPublisher = ''}
+												{!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.logo') ? datasetLogo = object.datasetv2.summary.publisher.logo : datasetLogo = ''}
 	
 												data.relatedObjects.map((dat) => {
 													if (dat.objectId === object.datasetid) {
