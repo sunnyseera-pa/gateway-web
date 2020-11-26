@@ -121,6 +121,10 @@ h6 {
   @include font-source(13px, $purple, $font-weight-semibold);
 }
 
+.purple-bold-16 {
+  @include font-source(16px, $purple, $font-weight-bold);
+}
+
 .purple-blue-14 {
   @include font-source(14px, $purple-blue, $font-weight-semibold);
 }
