@@ -165,10 +165,18 @@ class CourseDetail extends Component {
       await axios
         .get(baseURL + "/api/v1/relatedobject/" + object.objectId) 
         .then(res => {
+          let datasetPublisher;
+          let datasetLogo;
+
+          {!_.isEmpty(res.data.data[0].datasetv2) && !_.isNil(res.data.data[0].datasetv2.summary.publisher.name) ? datasetPublisher = res.data.data[0].datasetv2.summary.publisher.name : datasetPublisher = ''}
+          {!_.isEmpty(res.data.data[0].datasetv2) && !_.isNil(res.data.data[0].datasetv2.summary.publisher.logo) ? datasetLogo = res.data.data[0].datasetv2.summary.publisher.logo : datasetLogo = ''}
+
           tempObjects.push({
             id: object.objectId,
             authors: res.data.data[0].authors,
-            activeflag: res.data.data[0].activeflag
+            activeflag: res.data.data[0].activeflag,
+            datasetPublisher: datasetPublisher,
+            datasetLogo: datasetLogo
           });
         });
       }
@@ -189,6 +197,9 @@ class CourseDetail extends Component {
     this.state.data.relatedObjects.map(object =>
       this.state.objects.forEach(item => {
         if (object.objectId === item.id && item.activeflag === "active") {
+          object["datasetPublisher"] = item.datasetPublisher;
+          object["datasetLogo"] = item.datasetLogo;
+
           tempRelatedObjects.push(object);
         }
 
@@ -709,6 +720,8 @@ class CourseDetail extends Component {
                             relatedObject={object}
                             activeLink={true}
                             showRelationshipAnswer={true}
+                            datasetPublisher={object.datasetPublisher} 
+                            datasetLogo={object.datasetLogo}
                           />
                         ))
                       )}

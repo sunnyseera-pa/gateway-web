@@ -277,6 +277,9 @@ class CollectionPage extends Component {
 		var allCount =
 			toolCount + datasetCount + personCount + projectCount + paperCount + courseCount;
 
+		let datasetPublisher;
+		let datasetLogo;
+
 		if (isLoading) {
 			return (
 				<Container>
@@ -467,6 +470,9 @@ class CollectionPage extends Component {
 											var user = '';
 											let showAnswer = false;
 
+											{!_.isEmpty(object.datasetv2) && !_.isNil(object.datasetv2.summary.publisher.name) ? datasetPublisher = object.datasetv2.summary.publisher.name : datasetPublisher = ''}
+											{!_.isEmpty(object.datasetv2) && !_.isNil(object.datasetv2.summary.publisher.logo) ? datasetLogo = object.datasetv2.summary.publisher.logo : datasetLogo = ''}
+
 											data.relatedObjects.map((dat) => {
 												if (
 													dat.objectId === object.id ||
@@ -488,6 +494,8 @@ class CollectionPage extends Component {
 													collectionReason={reason}
 													collectionUpdated={updated}
 													collectionUser={user}
+													datasetPublisher={datasetPublisher} 
+													datasetLogo={datasetLogo}
 												/>
 											);
 										}
@@ -506,6 +514,10 @@ class CollectionPage extends Component {
 											var user = '';
 											let showAnswer = false;
 											if (object.type === "dataset") {
+
+												{!_.isEmpty(object.datasetv2) && !_.isNil(object.datasetv2.summary.publisher.name) ? datasetPublisher = object.datasetv2.summary.publisher.name : datasetPublisher = ''}
+												{!_.isEmpty(object.datasetv2) && !_.isNil(object.datasetv2.summary.publisher.logo) ? datasetLogo = object.datasetv2.summary.publisher.logo : datasetLogo = ''}
+	
 												data.relatedObjects.map((dat) => {
 													if (dat.objectId === object.datasetid) {
 														reason = dat.reason;
@@ -513,7 +525,7 @@ class CollectionPage extends Component {
 														user = dat.user;
 														showAnswer = !_.isEmpty(reason);
 													}
-												});
+												});												
 												return (
 													<RelatedObject
 														key={object.id}
@@ -523,6 +535,8 @@ class CollectionPage extends Component {
 														collectionReason={reason}
 														collectionUpdated={updated}
 														collectionUser={user}
+														datasetPublisher={datasetPublisher} 
+														datasetLogo={datasetLogo}
 													/>
 												);
 											}
