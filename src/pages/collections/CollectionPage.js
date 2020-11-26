@@ -165,11 +165,11 @@ class CollectionPage extends Component {
 		this.setState({ isLoading: true });
 		await Promise.all([
 			axios.get(baseURL + '/api/v1/datasets/' + datasetID).then((res) => {
-				this.state.objectData.push(res.data.data[0]);
+				this.state.objectData.push(res.data.data);
 				if (
-					res.data.data[0].activeflag === 'active' ||
-					(res.data.data[0].activeflag === 'review' &&
-						res.data.data[0].authors.includes(this.state.userState[0].id))
+					res.data.data.activeflag === 'active' ||
+					(res.data.data.activeflag === 'review' &&
+						res.data.data.authors.includes(this.state.userState[0].id))
 				) {
 					this.state.datasetCount++;
 				}

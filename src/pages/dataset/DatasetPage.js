@@ -153,23 +153,23 @@ class DatasetDetail extends Component {
     await axios.get(baseURL + '/api/v1/datasets/' + this.props.match.params.datasetID)
       .then( async (res) => {
         this.setState({
-          data: res.data.data[0],
-          v2data: res.data.data[0].datasetv2,
+          data: res.data.data,
+          v2data: res.data.data.datasetv2,
           isLoading: false
         });
         this.getTechnicalMetadata();
         this.getCollections();
-        if(!_.isEmpty(res.data.data[0].datasetv2)){
-          this.updateV2Flags(res.data.data[0].datasetv2)
-          this.getEmptyFieldsCount(res.data.data[0].datasetv2)
-          this.updatePublisherLogo(res.data.data[0].datasetv2.summary.publisher.name)
+        if(!_.isEmpty(res.data.data.datasetv2)){
+          this.updateV2Flags(res.data.data.datasetv2)
+          this.getEmptyFieldsCount(res.data.data.datasetv2)
+          this.updatePublisherLogo(res.data.data.datasetv2.summary.publisher.name)
         } 
-        if(!_.isEmpty(res.data.data[0].datasetv2) && !_.isEmpty(res.data.data[0].datasetv2.enrichmentAndLinkage.qualifiedRelation) ){
-          res.data.data[0].datasetv2.enrichmentAndLinkage.qualifiedRelation.map((relation) => {
+        if(!_.isEmpty(res.data.data.datasetv2) && !_.isEmpty(res.data.data.datasetv2.enrichmentAndLinkage.qualifiedRelation) ){
+          res.data.data.datasetv2.enrichmentAndLinkage.qualifiedRelation.map((relation) => {
            this.getLinkedDatasets(relation) 
           })
         }
-        document.title = res.data.data[0].name.trim();
+        document.title = res.data.data.name.trim();
         let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
       
         this.topicContext = { 
@@ -184,13 +184,22 @@ class DatasetDetail extends Component {
 
         this.updateCounter(this.props.match.params.datasetID, counter);
         
-        if(!_.isUndefined(res.data.data[0].relatedObjects)) {
-          await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+        if(!_.isUndefined(res.data.data.relatedObjects)) {
+          await this.getAdditionalObjectInfo(res.data.data.relatedObjects);
         }
 
         if(!_.isEmpty(this.topicContext.title)) {
           const publisherId = this.topicContext.title;
           await this.getPublisherById(publisherId);
+        }
+
+        if(!res.data.isLatestVersion){
+          this.setState({
+            alert: {
+                type: 'warning', 
+                message: <Fragment>You are viewing an old version of this dataset.  Click <a href={'/dataset/' + res.data.data.pid}>here</a> for the latest version.</Fragment>
+              }
+          })
         }
 
         this.setState({ isLoading: false });
@@ -204,7 +213,7 @@ class DatasetDetail extends Component {
       .get(baseURL + "/api/v1/datasets/" + this.state.data.datasetid)
       .then(res => {
         this.setState({
-          technicalMetadata: res.data.data[0].datasetfields.technicaldetails || []
+          technicalMetadata: res.data.data.datasetfields.technicaldetails || []
         });
       });
   }
@@ -225,7 +234,7 @@ class DatasetDetail extends Component {
       this.setState({emptyFlagDetails: true})
     }
 
-    if( _.isEmpty(v2data.provenance.temporal.startDate) && _.isEmpty(v2data.provenance.temporal.endDate) && _.isEmpty(v2data.provenance.temporal.timeLag) && _.isEmpty(v2data.coverage.spatial) && _.isEmpty(v2data.coverage.typicalAgeRange) && _.isEmpty(v2data.coverage.physicalSampleAvailability) && _.isEmpty(v2data.coverage.followup) && _.isEmpty(v2data.coverage.pathway) ) {
+    if( ( (_.isEmpty(v2data.provenance.temporal.startDate) || _.isEmpty(v2data.provenance.temporal.endDate)) ) && _.isEmpty(v2data.provenance.temporal.timeLag) && _.isEmpty(v2data.coverage.spatial) && _.isEmpty(v2data.coverage.typicalAgeRange) && _.isEmpty(v2data.coverage.physicalSampleAvailability) && _.isEmpty(v2data.coverage.followup) && _.isEmpty(v2data.coverage.pathway) ) {
       this.setState({emptyFlagCoverage: true})
     }
 
@@ -464,7 +473,7 @@ class DatasetDetail extends Component {
     });
   } 
 
-  toggleModal = (showEnquiry = false, context = {}) => {
+  toggleModal = (showEnquiry = false, context = {}) => { 
     this.setState( ( prevState ) => {
         return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
     });
@@ -485,6 +494,7 @@ class DatasetDetail extends Component {
     showAllPhenotypes = () => {
         this.setState({ showAllPhenotype: true });
     };
+
 
   render() {
     const {
@@ -517,6 +527,10 @@ class DatasetDetail extends Component {
     } = this.state;
 
     let publisherLogo = !_.isEmpty(v2data) && !_.isEmpty(v2data.summary.publisher.logo) ? v2data.summary.publisher.logo : publisherLogoURL;
+
+    const componentDecorator = (href, text, key) => (
+      <span><a href={href} key={key} target="_blank" rel="noopener noreferrer" className="gray800-14-bold pointer overflowWrap"> {text}</a></span>
+    );
 
     if (isLoading) {
       return (
@@ -1260,7 +1274,9 @@ class DatasetDetail extends Component {
                                             <span><a href={"/dataset/"+relation.id} target="_blank" rel="noopener noreferrer" className="gray800-14-bold pointer overflowWrap">{relation.title}</a></span> 
                                           : 
                                             relation.type === "externallink"?
-                                              <span><a href={relation.title} target="_blank" rel="noopener noreferrer" className="gray800-14-bold pointer overflowWrap">{relation.title}</a></span>
+                                              <Linkify componentDecorator={componentDecorator}>
+                                                {relation.title}
+                                              </Linkify>
                                             :
                                               <span className="gray800-14-bold overflowWrap">{relation.title}</span>
                                         } 
