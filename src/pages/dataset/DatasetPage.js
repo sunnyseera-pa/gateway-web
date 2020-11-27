@@ -13,7 +13,6 @@ import {
   Tab,
   Alert,
   Tooltip,
-  Overlay,
   Button,
   OverlayTrigger
 } from "react-bootstrap/";
@@ -549,9 +548,6 @@ class DatasetDetail extends Component {
     }
 
     function Metadata() {
-        const [show, setShow] = useState(false);
-        const target = useRef(null);
-
         var rating = "Not Rated";
 
         if (data.datasetfields.metadataquality && !_.isNil(data.datasetfields.metadataquality.quality_rating)) {
