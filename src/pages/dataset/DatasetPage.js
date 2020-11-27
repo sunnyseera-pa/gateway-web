@@ -14,7 +14,8 @@ import {
   Alert,
   Tooltip,
   Overlay,
-  Button
+  Button,
+  OverlayTrigger
 } from "react-bootstrap/";
 import NotFound from "../commonComponents/NotFound";
 import Loading from "../commonComponents/Loading";
@@ -560,15 +561,37 @@ class DatasetDetail extends Component {
             return <Fragment><div style={{lineHeight: 1}}><MetadataNotRated className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Not rated</span></div></Fragment>
         }
 
+        const renderTooltip = (props) => (
+            <Tooltip className="metadataOverlay" {...props}>
+              Metadata richness score: {Math.trunc(data.datasetfields.metadataquality.quality_score)}
+              <br />
+              <br />
+              The score relates to the amount of information available about
+              the dataset, and not to the quality of the actual datasets.
+              <br />
+              <br />
+              Click to read more about how the score is calculated.
+              <br />
+              <br />
+              {Math.trunc(data.datasetfields.metadataquality.completeness_percent)} Completeness %
+              <br />
+              {Math.trunc(data.datasetfields.metadataquality.weighted_completeness_percent)} Weighted completeness %
+              <br />
+              {Math.trunc(data.datasetfields.metadataquality.error_percent)} Error %
+              <br />
+              {Math.trunc(data.datasetfields.metadataquality.weighted_error_percent)} Weighted error %
+            </Tooltip>
+        );
+
       return (
         <Fragment>
-          <div className="text-center">
-            <div ref={target} 
-              onMouseEnter={() => setShow(true)}
-              onMouseLeave={() => setShow(false)}
-              style={{ cursor: "pointer" }} >
+          <OverlayTrigger 
+            placement="bottom"
+            delay={{ show: 100, hide: 400 }}
+            overlay={renderTooltip}>
+            <div className="text-center" onClick={() => window.open("https://github.com/HDRUK/datasets/tree/master/reports#hdr-uk-data-documentation-scores")}>
+              <div style={{ cursor: "pointer" }} >
                 <div style={{ lineHeight: 1 }}>
-
                     {(() => {
                         if (rating === "Not Rated") return <MetadataNotRated />
                         else if (rating === "Bronze") return <MetadataBronze />
@@ -577,40 +600,9 @@ class DatasetDetail extends Component {
                         else if (rating === "Platinum") return <MetadataPlatinum />
                     })()}
                 </div>
+              </div>
             </div>
-          </div>
-
-          <Overlay target={target.current} 
-            show={true} 
-            onHide={() => setShow(false)}
-            placement="bottom">
-            {props => (
-              <Tooltip className="metadataOverlay" 
-              onMouseEnter={() => setShow(true)}
-              onMouseLeave={() => setShow(false)}
-              {...props}>
-                Metadata richness score: {Math.trunc(data.datasetfields.metadataquality.quality_score)}
-                <br />
-                <br />
-                The score relates to the amount of information available about
-                the dataset, and not to the quality of the actual datasets.
-                <br />
-                <br />
-                <a href="https://github.com/HDRUK/datasets/tree/master/reports#hdr-uk-data-documentation-scores" target="_blank" className="white-13-semibold" rel="noopener noreferrer" >
-                  Click to read more about how the score is calculated.
-                </a>
-                <br />
-                <br />
-                {Math.trunc(data.datasetfields.metadataquality.completeness_percent)} Completeness %
-                <br />
-                {Math.trunc(data.datasetfields.metadataquality.weighted_completeness_percent)} Weighted completeness %
-                <br />
-                {Math.trunc(data.datasetfields.metadataquality.error_percent)} Error %
-                <br />
-                {Math.trunc(data.datasetfields.metadataquality.weighted_error_percent)} Weighted error %
-              </Tooltip>
-            )}
-          </Overlay>
+          </OverlayTrigger>
         </Fragment>
       );
     }
