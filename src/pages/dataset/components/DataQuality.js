@@ -53,9 +53,8 @@ class DataQuality extends React.Component {
           +weights.indexOf(datasetUtility.dama_quality_dimensions.trim()))/2)];
 
       let accessProvisionWeight = weights[Math.floor((weights.indexOf(datasetUtility.allowable_uses.trim())
-          +weights.indexOf(datasetUtility.research_environment.trim())
           +weights.indexOf(datasetUtility.time_lag.trim())
-          +weights.indexOf(datasetUtility.timeliness.trim()))/4)];
+          +weights.indexOf(datasetUtility.timeliness.trim()))/3)];
 
       let valueInterestWeight = weights[Math.floor((weights.indexOf(datasetUtility.linkages.trim())
           +weights.indexOf(datasetUtility.data_enrichments.trim()))/2)];

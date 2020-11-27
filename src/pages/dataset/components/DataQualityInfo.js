@@ -172,7 +172,7 @@ class DataQualityInfo extends React.Component {
             rating: "Platinum",
             response: "More than 10 years"
         },
-        {
+        { 
             dimension: "Allowable uses",
             rating: "Bronze",
             response: ""
@@ -191,26 +191,6 @@ class DataQualityInfo extends React.Component {
             dimension: "Allowable uses",
             rating: "Platinum",
             response: "Fully consented for commercial uses (following IG approval)"
-        },
-        {
-            dimension: "Research environment",
-            rating: "Bronze",
-            response: "Requested analysis available by internal teams, provided back in anonymised format"
-        },
-        {
-            dimension: "Research environment",
-            rating: "Silver",
-            response: "Users can access the dataset in a Trusted Research Environment"
-        },
-        {
-            dimension: "Research environment",
-            rating: "Gold",
-            response: ""
-        },        
-        {
-            dimension: "Research environment",
-            rating: "Platinum",
-            response: "Used in a Trusted Research Environment (other data & tools brought in securely)"
         },
         {
             dimension: "Time Lag",
@@ -300,7 +280,7 @@ class DataQualityInfo extends React.Component {
     this.state.open = props.open;
     this.updateFlag = this.updateFlag.bind(this);
     this.state.section = props.section;
-    this.state.datasetUtility = props.datasetUtility || {};
+    this.state.datasetUtility = props.datasetUtility || {};  
     this.state.documentationWeight = props.documentationWeight;
     this.state.technicalQualityWeight = props.technicalQualityWeight;
     this.state.accessProvisionWeight = props.accessProvisionWeight;
@@ -383,7 +363,7 @@ class DataQualityInfo extends React.Component {
         this.setState({techQualitySection: false})
         } 
 
-        if(!datasetUtility.allowable_uses && !datasetUtility.research_environment && !datasetUtility.time_lag && !datasetUtility.timeliness){
+        if(!datasetUtility.allowable_uses && !datasetUtility.time_lag && !datasetUtility.timeliness){
         this.setState({accessProvisionSection: false})
         } 
 
@@ -716,24 +696,6 @@ class DataQualityInfo extends React.Component {
                         <Col sm={1} lg={1}>
                             <span>
                                 {this.getSubSectionRating(datasetUtility.allowable_uses.trim())}
-                            </span>
-                        </Col>
-                    </Row>
-                    <Row className="dataUtilityBox">
-                        <Col sm={3} lg={3}>
-                            <span className="gray800-13-opacity">Research environment</span>
-                        </Col>
-                        <Col sm={8} lg={8}>
-                            {    ratings.map((rating) => {
-                                    if (rating.dimension === "Research environment" && rating.rating === datasetUtility.research_environment.trim()) {
-                                        return (<span className="gray800-13"> {rating.response} </span>)
-                                    }
-                                })
-                            }
-                        </Col>
-                        <Col sm={1} lg={1}>
-                            <span>
-                                {this.getSubSectionRating(datasetUtility.research_environment.trim())}
                             </span>
                         </Col>
                     </Row>
