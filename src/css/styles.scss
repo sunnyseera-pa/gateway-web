@@ -1500,7 +1500,7 @@ button a {
   text-decoration: underline;
 }      
 
-.collectionCheckSvg {
+.collectionCheckSvg { 
 
   float: right;
 
@@ -1510,6 +1510,10 @@ button a {
   @include mq("phablet",max) {
     transform: translate(0px, -20px) !important;
   }
+}
+
+.collectionCheckSvg g {
+  fill: #2C8267;
 }
 
 @media (max-width: 576px) {
