@@ -589,7 +589,7 @@ class DatasetDetail extends Component {
             placement="bottom"
             delay={{ show: 100, hide: 400 }}
             overlay={renderTooltip}>
-            <div className="text-center" onClick={() => window.open("https://github.com/HDRUK/datasets/tree/master/reports#hdr-uk-data-documentation-scores")}>
+            <div className="text-center" onClick={() => window.open("https://github.com/HDRUK/datasets/tree/master/reports#hdr-uk-data-documentation-scores", '_blank', 'noopener, noreferrer')}>
               <div style={{ cursor: "pointer" }} >
                 <div style={{ lineHeight: 1 }}>
                     {(() => {
