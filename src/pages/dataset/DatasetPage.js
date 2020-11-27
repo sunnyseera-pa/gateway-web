@@ -636,7 +636,7 @@ class DatasetDetail extends Component {
                   <Row>
                     {!_.isEmpty(v2data) ?
                       <>
-                        <Col xs={1}>
+                        <Col xs={1} md={1}>
                           <div
                             className="datasetImageCircle"
                             style={{
@@ -648,7 +648,7 @@ class DatasetDetail extends Component {
                             }}
                           />
                           </Col>
-                          <Col xs={9} className="datasetTitle" >
+                          <Col xs={7} md={9} className="datasetTitle" >
                           <span className="black-20"> {data.name} </span>
                           <br />
                           <span >
@@ -687,13 +687,13 @@ class DatasetDetail extends Component {
                             }
                           </span>
                       </Col>
-                      <Col xs={2} className="text-right">
+                      <Col xs={4} md={2} className="text-right">
                         <Metadata />
                       </Col>
                       </>
                     : 
                       <>
-                        <Col xs={10}>
+                        <Col xs={8} md={10}>
                         <span className="black-20">{data.name} </span>
                         <br />
                           {data.datasetfields.publisher ? (
@@ -706,7 +706,7 @@ class DatasetDetail extends Component {
                             </span> )
                           }
                         </Col>
-                        <Col xs={2} className="text-right">
+                        <Col xs={4} md={2} className="text-right">
                           <Metadata />
                         </Col>
                       </>
