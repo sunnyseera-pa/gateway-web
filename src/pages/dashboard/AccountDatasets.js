@@ -1,5 +1,5 @@
 import React from "react";
-import { Col, Row, Accordion, Card } from "react-bootstrap";
+import { Col, Row, Accordion, Card, Button } from "react-bootstrap";
 import "./Dashboard.scss";
 
 class AccountDatasets extends React.Component {
@@ -210,6 +210,39 @@ class AccountDatasets extends React.Component {
                 </Accordion.Collapse>
               </Card>
             </Accordion>
+            
+            <div className="rectangle text-right">
+                <Button
+                    variant="medium"
+                    href="https://metadata.atlassian.net/servicedesk/customer/portal/4"
+                    target="_blank"
+                    id="serviceDeskButton"
+                    className="dark-14 margin-right-8"
+                    data-testid="servicedesk-button"
+                >
+                    Service desk
+                </Button>
+
+                <Button
+                    variant="medium"
+                    href="https://metadata.atlassian.net/wiki/spaces/HDR/overview"
+                    target="_blank"
+                    id="userguideButton"
+                    className="dark-14 margin-right-8"
+                    data-testid="userguide-button"
+                >
+                    User guide
+                </Button>
+
+                <Button
+                    variant="primary"
+                    href="https://hdruk-preprod-auth.metadata.works/auth"
+                    id="metadataButton"
+                    className="white-14-semibold"
+                >
+                    Access the metadata onboarding platform
+                </Button>
+            </div>
           </Col>
           <Col sm={1} lg={1} />
         </Row>

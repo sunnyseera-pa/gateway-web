@@ -11,18 +11,18 @@ h6 {
 }
 
 h1 {
-  font-size: 18px;
+  font-size: 18px !important;
 }
 
-h2,
+h2 ,
 h3 {
-  font-size: 16px;
+  font-size: 16px !important;
 }
 
 h4,
 h5,
 h6 {
-  font-size: 14px;
+  font-size: 14px !important;
 }
 
 .dark-14 {
@@ -74,7 +74,7 @@ h6 {
 }
 
 .black-24 {
-  @include font-source(20px, $gray-dark, $font-weight-semibold);
+  @include font-source(24px, $gray-dark, $font-weight-semibold);
 }
 
 .black-28 {
@@ -139,6 +139,10 @@ h6 {
 
 .gray500-13 {
   @include font-source(13px, $gray-700, $font-weight-semibold);
+}
+
+.gray-600-14 {
+  @include font-source(14px, $gray-600 , $font-weight-semibold); 
 }
 
 .gray700-12 {

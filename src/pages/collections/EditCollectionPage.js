@@ -242,7 +242,7 @@ const EditCollectionForm = (props) => {
                 .required('This cannot be empty'),
             authors: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.number()) : Yup.number())), 
             imageLink: Yup.string()
-            .matches( /^(http|https){1}:\/\/[A-Za-z0-9-\/\._~:\?#\[\]@!\$&'\(\)\*\+,;%=]+$/ , 'Invalid URL: should start with http:// or https://' )
+                .matches( /^(http|https){1}:\/\/[A-Za-z0-9-\/\._~:\?#\[\]@!\$&'\(\)\*\+,;%=]+$/ , 'Invalid URL: should start with http:// or https://' )
         }),
 
         onSubmit: values => {

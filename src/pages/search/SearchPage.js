@@ -413,7 +413,7 @@ class SearchPage extends React.Component {
             })
         }
         
-        axios.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL)
+        axios.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL) 
             .then((res) => {
                 this.setState({
                     datasetData: res.data.datasetResults || [],
@@ -951,7 +951,7 @@ class SearchPage extends React.Component {
                                         datasetCount <= 0 && !isResultsLoading ? <NoResults type='datasets' searchString={searchString} />
                                         : datasetData.map((dataset) => {
                                             return <RelatedObject key={dataset.id} data={dataset} activeLink={true} onSearchPage={true} updateOnFilterBadge={this.updateOnFilterBadge} />
-                                        })
+                                        }) 
                                         : ''}
 
                                     {key === 'Tools' ?

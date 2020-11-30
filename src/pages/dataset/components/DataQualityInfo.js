@@ -50,7 +50,7 @@ class DataQualityInfo extends React.Component {
         {
             dimension: "Additional documentation and support",
             rating: "Platinum",
-            response: "Extensive supplementary documentation and support, including personnel support"
+            response: "As Gold, plus support personnel available to answer questions"
         },
         {
             dimension: "Data Model",
@@ -110,7 +110,7 @@ class DataQualityInfo extends React.Component {
         {
             dimension: "Provenance",
             rating: "Platinum",
-            response: "View earlier versions, ‘raw’ dataset and review impact of each stage of data cleaning"
+            response: "Ability to view earlier versions, including versions before any transformations have been applied data (in line with deidentification and IG approval) and review the impact of each stage of data cleaning"
         },
         {
             dimension: "Data Quality Management Process",
@@ -150,7 +150,7 @@ class DataQualityInfo extends React.Component {
         {
             dimension: "Pathway coverage",
             rating: "Platinum",
-            response: "Contains data across the whole pathway of care"
+            response: "Contains data across more than two tiers"
         },
         {
             dimension: "Length of follow up",
@@ -235,22 +235,22 @@ class DataQualityInfo extends React.Component {
         {
             dimension: "Timeliness",
             rating: "Bronze",
-            response: "More than 12 months"
+            response: "Less than 6 months"
         },
         {
             dimension: "Timeliness",
             rating: "Silver",
-            response: "Less than 12 months"
+            response: "Less than 3 months"
         },
         {
             dimension: "Timeliness",
             rating: "Gold",
-            response: "Less than 6 months"
+            response: "Less than 1 month"
         },        
         {
             dimension: "Timeliness",
             rating: "Platinum",
-            response: "Less than 3 months"
+            response: "Less than 2 weeks"
         },
         {
             dimension: "Linkages",
@@ -309,8 +309,9 @@ class DataQualityInfo extends React.Component {
   }
 
   async componentWillMount() {    
-    if(!_.isEmpty(this.props.datasetUtility)) 
+      if(!_.isEmpty(this.props.datasetUtility)) {
         await this.updateSections(this.props.datasetUtility);
+      }
   }
 
   componentDidUpdate(prevProps) {

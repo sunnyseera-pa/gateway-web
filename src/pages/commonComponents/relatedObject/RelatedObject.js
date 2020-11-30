@@ -7,6 +7,8 @@ import SVGIcon from '../../../images/SVGIcon'
 import './RelatedObject.scss';  
 import moment from "moment";
 import { ReactComponent as CalendarSvg } from '../../../images/calendaricon.svg'; 
+import _ from 'lodash';
+
  
 var baseURL = require('../BaseURL').getURL();
 
@@ -18,7 +20,7 @@ class RelatedObject extends React.Component {
         // user: '',
         // updated: '' ,
         data: [],
-        activeLink: true, 
+        activeLink: true,  
         onSearchPage: false,
         isLoading: true,
         didDelete: false,
@@ -72,7 +74,7 @@ class RelatedObject extends React.Component {
                 });
             }) 
         } else{
-            axios.get(baseURL + '/api/v1/relatedobject/' + id)
+            axios.get(baseURL + '/api/v1/relatedobject/' + id) 
             .then((res) => { 
                 this.setState({
                     data: res.data.data[0],
@@ -80,13 +82,15 @@ class RelatedObject extends React.Component {
                 });
             }) 
         }
-    };
+    }; 
  
     removeButton = () => {
         if(this.state.data.type === 'dataset') {
-            this.props.doRemoveObject(this.state.data.datasetid, this.state.data.type) 
+            // if removing an archived dataset, use the old datasetId for deletion
+            let datasetId = this.state.data.oldDatasetId ? this.state.data.oldDatasetId : this.state.data.datasetid;
+            this.props.doRemoveObject(this.state.data.pid, this.state.data.type, datasetId);
         } else{
-            this.props.doRemoveObject(this.state.data.id, this.state.data.type) 
+            this.props.doRemoveObject(this.state.data.id, this.state.data.type);
         }
     }
 
@@ -123,8 +127,7 @@ class RelatedObject extends React.Component {
         return (
             <Row className="resource-card-row"> 
                 <Col>
-                    <div className={rectangleClassName} onClick={() => !activeLink && !this.props.showRelationshipQuestion && !this.props.showRelationshipAnswer && this.props.doAddToTempRelatedObjects(data.type === "dataset" ? data.datasetid : data.id, data.type) } >
-                       
+                    <div className={rectangleClassName} onClick={() => !activeLink && !this.props.showRelationshipQuestion && !this.props.showRelationshipAnswer && this.props.doAddToTempRelatedObjects(data.type === "dataset" ? data.datasetid : data.id, data.type, data.pid) } >
                        {data.activeflag === 'review' ? 
                             <Row >
                                 <Col sm={12} lg={12}>
@@ -511,15 +514,31 @@ class RelatedObject extends React.Component {
                                 var phenotypesSelected = queryString.parse(window.location.search).phenotypes ? queryString.parse(window.location.search).phenotypes.split("::") : [];
                                 var searchTerm = queryString.parse(window.location.search).search ? queryString.parse(window.location.search).search : '';
                                 var phenotypesSeached = data.datasetfields.phenotypes.filter(phenotype => phenotype.name.toLowerCase() === searchTerm.toLowerCase())
-                                
                                 return (
                                     <Row className="noMargin">
                                         <Col sm={10} lg={10} className="pad-left-24">
                                             {activeLink===true ?
-                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/dataset/' + data.datasetid} >{data.name}</a>
+                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/dataset/' + data.pid} >{data.name}</a>
                                             : <span className="black-bold-16"> {data.name} </span> }
                                             <br />
-                                            <span className="gray800-14"> {data.datasetfields.publisher} </span>
+                                            {!_.isEmpty(data.datasetv2) ?
+                                                ( <>
+                                                    {!_.isNil(data.datasetv2.summary.publisher.memberOf) ?
+                                                        <span>
+                                                                <SVGIcon 
+                                                            name="shield"
+                                                            fill={"#475da7"} 
+                                                            className="svg-16 mr-2"
+                                                            viewBox="0 0 16 16"
+                                                            />
+                                                        </span>
+                                                    : ""
+                                                    }
+                                                    <span className="gray800-14"> {data.datasetv2.summary.publisher.name} </span>
+                                                </>)
+                                            :
+                                                <span className="gray800-14"> {data.datasetfields.publisher} </span>
+                                            }   
                                         </Col>
                                         <Col sm={2} lg={2} className="pad-right-24">
                                             {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="collection-card-updated">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
