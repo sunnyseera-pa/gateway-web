@@ -1342,25 +1342,6 @@ class DatasetDetail extends Component {
                     <Tab eventKey="TechDetails" title={`Technical details`}> 
                         {dataClassOpen === -1 ? (
                           <Fragment>
-                            <Col
-                              sm={12}
-                              lg={12}
-                              className={technicalMetadata && technicalMetadata.length > 0 ? 'margin-left-15 width-100' : 'width-100'}
-                            >
-                              {technicalMetadata && technicalMetadata.length > 0 ? (
-                                technicalMetadata.map((techMetadata, index) => (
-                                  <TechnicalMetadata
-                                    key={`techMetadata-${index}`}
-                                    technicalMetadata={techMetadata}
-                                    index={index}
-                                    doUpdateDataClassOpen={this.doUpdateDataClassOpen}
-                                  />
-                                ))
-                              ) : (
-                                <NotFound word='technical details' />
-                              )}
-                            </Col>
-
                             <Row style={{ width: "-webkit-fill-available" }}>
                               <Col
                                 sm={12}
@@ -1488,14 +1469,13 @@ class DatasetDetail extends Component {
                       data.relatedObjects.length <= 0 ? (
                         <NotFound word="related resources" />
                       ) : (
-                        <Row style={{ width: '-webkit-fill-available' }}>
-                          <Col sm={12} lg={12}>
-                            <TechnicalDetailsPage
-                              technicalMetadata={technicalMetadata[dataClassOpen]}
-                              doUpdateDataClassOpen={this.doUpdateDataClassOpen}
+                        relatedObjects.map(object => (
+                            <RelatedObject
+                              relatedObject={object}
+                              activeLink={true}
+                              showRelationshipAnswer={true}
                             />
-                          </Col>
-                        </Row>
+                          ))
                       )}
                     </Tab>
                     <Tab
