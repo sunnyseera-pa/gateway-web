@@ -236,7 +236,7 @@ class AccountDatasets extends React.Component {
 
                 <Button
                     variant="primary"
-                    href="https://hdruk-preprod-auth.metadata.works/auth"
+                    href="https://hdruk-auth.metadata.works/auth"
                     id="metadataButton"
                     className="white-14-semibold"
                 >
