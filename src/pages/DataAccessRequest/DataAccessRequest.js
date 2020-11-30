@@ -353,7 +353,6 @@ class DataAccessRequest extends Component {
 		} = datasets[0];
 		let { firstname, lastname } = mainApplicant;
 		let showSubmit = false;
-		let showEdit = false;
 		let submitButtonText = 'Submit application';
 
 		let publisherId = '',
@@ -440,9 +439,7 @@ class DataAccessRequest extends Component {
 			applicationStatus === DarHelper.darStatus.inReview ||
 			applicationStatus === DarHelper.darStatus.submitted
 		) {
-			if (readOnly) {
-				showEdit = true;
-			} else {
+			if (!readOnly) {
 				showSubmit = true;
 				submitButtonText = 'Submit updates';
 			}
@@ -476,7 +473,6 @@ class DataAccessRequest extends Component {
 			projectId,
 			showSubmit,
 			submitButtonText,
-			showEdit,
 			publisherId,
 			workflowEnabled,
 			inReviewMode,
@@ -1126,7 +1122,6 @@ class DataAccessRequest extends Component {
 	onEditForm = async () => {
 		this.setState({
 			readOnly: false,
-			showEdit: false,
 			showSubmit: false,
 			submitButtonText: 'Submit updates',
 		});
@@ -1586,7 +1581,6 @@ class DataAccessRequest extends Component {
 								onEditForm={this.onEditForm}
 								showSubmit={this.state.showSubmit}
 								submitButtonText={this.state.submitButtonText}
-								showEdit={this.state.showEdit}
 							/>
 						) : (
 							<CustodianActionButtons

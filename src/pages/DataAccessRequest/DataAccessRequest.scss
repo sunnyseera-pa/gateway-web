@@ -370,7 +370,7 @@ input[type=radio]:disabled {
 	}
 
 	&--questions {
-		flex: 2 0 0;
+		flex: 1 0 0;
 		@include font-source(14px, $gray-800, $font-weight-semibold);
 		p {
 			margin-bottom: 0;
