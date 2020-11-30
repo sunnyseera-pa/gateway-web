@@ -289,8 +289,8 @@ class AccountAnalyticsDashboard extends React.Component {
                             <Col sm={3} lg={3} className="kpiClass">
                                 <DashboardKPI kpiText="datasets with technical metadata" kpiValue={datasetsWithTechMetaData.toFixed(0)} percentageFlag={true}/>
                             </Col>
-                            <Col sm={3} lg={3} className="kpiClass">
-                                <DashboardKPI kpiText="unique users this month" kpiValue={gaUsers}/> 
+                            <Col sm={3} lg={3} className="kpiClass"> 
+                                <DashboardKPI kpiText="users this month" kpiValue={gaUsers}/> 
                             </Col>
                             <Col sm={3} lg={3} className="kpiClass">                               
                                 <DashboardKPI kpiText="unique registered users" kpiValue={uniqueUsers.toFixed(0)} percentageFlag={true}/> 
