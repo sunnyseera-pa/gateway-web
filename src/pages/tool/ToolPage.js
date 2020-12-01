@@ -67,7 +67,7 @@ class ToolDetail extends Component {
     context: {}
   };
  
-  constructor(props) {
+  constructor(props) { 
     super(props);
     this.state.userState = props.userState;
     this.searchBar = React.createRef();
@@ -229,11 +229,11 @@ class ToolDetail extends Component {
 
   updateDiscoursePostCount = count => {
     this.setState({ discoursePostCount: count });
-  };
+  }; 
 
     toggleDrawer = () => {
         this.setState( ( prevState ) => {
-            if(prevState.showDrawer === true) {
+            if(prevState.showDrawer === true) { 
                 this.searchBar.current.getNumberOfUnreadMessages();
             }
             return { showDrawer: !prevState.showDrawer };
@@ -292,6 +292,7 @@ class ToolDetail extends Component {
       <Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
         <div>
           <SearchBar
+            ref={this.searchBar} 
             searchString={searchString}
             doSearchMethod={this.doSearch}
             doUpdateSearchString={this.updateSearchString}
