@@ -690,7 +690,7 @@ class DatasetDetail extends Component {
                     : 
                       <>
                         <Col xs={8} md={10}>
-                        <span className="black-20">{data.name} </span>
+                        <span className="black-16">{data.name} </span>
                         <br />
                           {data.datasetfields.publisher ? (
                             <span className="gray800-14">

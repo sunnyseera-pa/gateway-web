@@ -348,7 +348,7 @@ class ProjectDetail extends Component {
 
                   <Row className="margin-top-20">
                     <Col xs={12} className="line-height-normal">
-                      <span className="gray700-13">
+                      <span className="gray700-14">
                         {data.counter === undefined ? 1 : data.counter + 1}
                         {data.counter === undefined ? " view" : " views"}
                       </span>
