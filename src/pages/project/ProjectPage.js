@@ -326,7 +326,7 @@ class ProjectDetail extends Component {
                       <span className="black-16">{data.name}</span>
                     </Col>
                   </Row>
-                  <Row className="mt-3">
+                  <Row className="margin-top-16">
                     <Col xs={12}>
                       <span className="badge-project"> 
                         <SVGIcon
@@ -346,8 +346,8 @@ class ProjectDetail extends Component {
                     </Col>
                   </Row>
 
-                  <Row className="mt-2">
-                    <Col xs={12}>
+                  <Row className="margin-top-20">
+                    <Col xs={12} className="line-height-normal">
                       <span className="gray700-13">
                         {data.counter === undefined ? 1 : data.counter + 1}
                         {data.counter === undefined ? " view" : " views"}

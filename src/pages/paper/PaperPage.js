@@ -376,7 +376,7 @@ toggleHoverState(state) {
             )}
 
             {data.isPreprint ? (
-              <Row className="">
+              <Row className="mt-4">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                     <Alert variant="warning" className="mt-3" data-testid="preprintAlert">
@@ -407,7 +407,7 @@ toggleHoverState(state) {
               ""
             )}
 
-            <Row className="mt-2">
+            <Row className="mt-4">
               <Col sm={1} lg={1} />
               <Col sm={10} lg={10}>
                 <div className="rectangle">
