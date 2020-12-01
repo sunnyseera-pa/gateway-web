@@ -423,8 +423,9 @@ toggleHoverState(state) {
                             name="projecticon"
                             fill={"#3c3c3b"}
                             className="badgeSvg mr-2"
+                            viewBox="-2 0 18 18"
                           />
-                          Paper
+                          <span>Paper</span>
                         </span>
                       </p>
                     </Col>
