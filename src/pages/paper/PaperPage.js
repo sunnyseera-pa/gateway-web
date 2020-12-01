@@ -412,12 +412,14 @@ toggleHoverState(state) {
               <Col sm={10} lg={10}>
                 <div className="rectangle">
                   <Row>
-                    <Col xs={7} md={8}>
-                      <p>
+                    <Col>
                         <span className="black-16" data-testid="title">
                           {data.name}
                         </span>
-                        <br />
+                    </Col>
+                  </Row>
+                  <Row className="margin-top-16">
+                    <Col>
                         <span className="badge-paper">
                           <SVGIcon
                             name="projecticon"
@@ -427,20 +429,15 @@ toggleHoverState(state) {
                           />
                           <span>Paper</span>
                         </span>
-                      </p>
                     </Col>
-                    <Col xs={5} md={4} className="iconHolder"></Col>
                   </Row>
-
-                  <Row>
-                    <Row>
-                      <Col className="ml-3">
+                    <Row className="margin-top-16">
+                      <Col xs={12}>
                         <span className="gray800-14">
                           {data.counter === undefined ? 1 : data.counter + 1}
                           {data.counter === undefined ? " view" : " views"}
                         </span>
                       </Col>
-                    </Row>
                   </Row>
                 </div>
               </Col>
