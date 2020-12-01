@@ -322,8 +322,8 @@ class ProjectDetail extends Component {
               <Col sm={10} lg={10}>
                 <div className="rectangle">
                   <Row>
-                    <Col>
-                      <span className="black-20">{data.name}</span>
+                    <Col className="line-height-normal">
+                      <span className="black-16">{data.name}</span>
                     </Col>
                   </Row>
                   <Row className="mt-3">
