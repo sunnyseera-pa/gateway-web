@@ -255,18 +255,15 @@ class SearchBar extends React.Component {
                     <Row className="whiteBackground">
                         <Col lg={5}>
                             <div className="navBarLogoSpacing">
-                                <a style={{ cursor: 'pointer' }} href={cmsURL} >
+                                <a style={{ cursor: 'pointer' }} href="/" >
                                     <ColourLogoSvg className="ml-4 mt-3" />
                                 </a>
                             </div>
                             <div className="navBarLinkSpacing">
-                                <a href={cmsURL + "/pages/about"} className="black-14">About</a>
+                                <a href="/https://icoda-research.org/about/about-us/" className="black-14">About</a>
                             </div>
                             <div className="navBarLinkSpacing">
-                                <a href={cmsURL + "/pages/community"} className="black-14">Community</a>
-                            </div>
-                            <div className="navBarLinkSpacing">
-                                <a href={"/dashboard"} className="black-14">Dashboard</a>
+                                <a href="https://icoda-research.org/public/" className="black-14">Community</a>
                             </div>
                         </Col>
 
