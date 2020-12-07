@@ -49,7 +49,7 @@ class YourAccount extends React.Component {
     }
 
     getAccountDetails() {
-        axios.get(baseURL + '/api/v1/person/' + this.state.userState[0].id)
+        axios.get(baseURL + '/api/v1/person/profile/' + this.state.userState[0].id)
             .then((res) => {
                 axios.get(baseURL + '/api/v1/users/' + this.state.userState[0].id)
                     .then((resUser) => {

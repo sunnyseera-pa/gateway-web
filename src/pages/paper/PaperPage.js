@@ -297,6 +297,7 @@ toggleHoverState(state) {
       <Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
         <div>
           <SearchBar
+            ref={this.searchBar}
             searchString={searchString}
             doSearchMethod={this.doSearch}
             doUpdateSearchString={this.updateSearchString}

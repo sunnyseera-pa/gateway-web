@@ -456,7 +456,7 @@ class DatasetDetail extends Component {
             this.setState({...stateObj});
           })
           .catch(error => {
-            console.log(error);
+            console.log(error); 
           });
   } 
 
@@ -543,7 +543,7 @@ class DatasetDetail extends Component {
     if (_.isNil(data.relatedObjects)) { 
       data.relatedObjects = []; 
     }
-    if (!_.isNil(data.datasetfields.phenotypes) && data.datasetfields.phenotypes.length > 0) {
+    if (_.has(data, 'datasetfields.phenotypes') && data.datasetfields.phenotypes.length > 0) {  
         data.datasetfields.phenotypes.sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0));
     }
 
