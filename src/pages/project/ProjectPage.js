@@ -323,11 +323,11 @@ class ProjectDetail extends Component {
               <Col sm={10} lg={10}>
                 <div className="rectangle">
                   <Row>
-                    <Col>
-                      <span className="black-20">{data.name}</span>
+                    <Col className="line-height-normal">
+                      <span className="black-16">{data.name}</span>
                     </Col>
                   </Row>
-                  <Row className="mt-3">
+                  <Row className="margin-top-16">
                     <Col xs={12}>
                       <span className="badge-project"> 
                         <SVGIcon
@@ -347,9 +347,9 @@ class ProjectDetail extends Component {
                     </Col>
                   </Row>
 
-                  <Row className="mt-2">
-                    <Col xs={12}>
-                      <span className="gray700-13">
+                  <Row className="margin-top-20">
+                    <Col xs={12} className="line-height-normal">
+                      <span className="gray700-14">
                         {data.counter === undefined ? 1 : data.counter + 1}
                         {data.counter === undefined ? " view" : " views"}
                       </span>
