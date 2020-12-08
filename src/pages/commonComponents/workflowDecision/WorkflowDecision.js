@@ -16,8 +16,8 @@ export default ({
 				return <SVGIcon name="flag" width={18} height={18} fill={'#dc3645'} />
 			case 'check':
 				return <SVGIcon name="check" width={18} height={18} fill={'#3db28c'} />;
-			case 'loading':
-				return <SVGIcon name="loading" width={18} height={18} fill={'#475da7'} />
+			case 'cycle':
+				return <SVGIcon name="cycle" width={18} height={18} fill={'#475da7'} />
 			default:
 				return '';
 		}

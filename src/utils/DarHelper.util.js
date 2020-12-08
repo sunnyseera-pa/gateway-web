@@ -10,7 +10,7 @@ let userTypes = {
 };
 
 let amendmentStatuses = {
-	AWAITINGUPDATES : { text: 'Awaiting updates', icon : 'loading' },
+	AWAITINGUPDATES : { text: 'Awaiting updates', icon : 'cycle' },
 	UPDATESSUBMITTED : { text: 'Updates submitted', icon : 'check' },
 	UPDATESREQUESTED : { text: 'Updates requested', icon : 'flag' },
 	UPDATESRECEIVED : { text: 'Updates received', icon : 'flag' }
