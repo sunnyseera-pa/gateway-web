@@ -449,10 +449,10 @@ const AboutApplication = (props) => {
 								<div className='margin-bottom-16'>After you have completed the form, you can submit the application.</div>
 								<div className='margin-bottom-16'>
 									<ul>
-										<li>Make sure to double-check everything before submitting</li>
-										<li>You will NOT be able to edit your responses via the Gateway after submission (for now)</li>
-										<li>If you do need to make any amendments, get in touch with the data custodian</li>
+										<li>Make sure to double-check everything before submitting.</li>
+										<li>You will be able to edit your responses via the Gateway after submission, but please speak to the data custodian before making any updates as this could impact the time it takes to review your application.</li>
 										<li>Both you and the data custodian will receive an email with a copy of the information submitted using this form.</li>
+										<li>Once you have submitted, the data custodian might still ask for some additional information.</li>
 									</ul>
 								</div>
 								<div className='dar-form-check-group'>
