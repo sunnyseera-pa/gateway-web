@@ -404,7 +404,8 @@ class DataAccessRequestsNew extends React.Component {
 								stepName = "",
 								remainingActioners = [],
                 _id,
-                decisionDate
+                decisionDate,
+                amendmentStatus = ''
 							} = request;
 							return (
 								<Row
@@ -456,7 +457,8 @@ class DataAccessRequestsNew extends React.Component {
 													stepName={stepName}
 													remainingActioners={remainingActioners}
 													navigateToLocation={this.navigateToLocation}
-													applicationId={_id}
+                          applicationId={_id}
+                          amendmentStatus={amendmentStatus}
 												/>
 											</div>
 											{this.renderComment(

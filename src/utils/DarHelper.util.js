@@ -4,6 +4,18 @@ import moment from 'moment';
 
 let autoCompleteLookUps = { fullname: ['orcid', 'email', 'bio'] };
 
+let userTypes = {
+	CUSTODIAN: 'custodian',
+	APPLICANT: 'applicant',
+};
+
+let amendmentStatuses = {
+	AWAITINGUPDATES : { text: 'Awaiting updates', icon : 'cycle' },
+	UPDATESSUBMITTED : { text: 'Updates submitted', icon : 'check' },
+	UPDATESREQUESTED : { text: 'Updates requested', icon : 'flag' },
+	UPDATESRECEIVED : { text: 'Updates received', icon : 'flag' }
+};
+
 let staticContent = {
 	aboutPageNav: {
 		pageId: 'about',
@@ -671,5 +683,7 @@ export default {
 	darSLAText									: darSLAText,
 	darCommentTitle							: darCommentTitle,
 	darStaticPageIds						: darStaticPageIds,
+	userTypes								: userTypes,
+	amendmentStatuses						: amendmentStatuses,
 	removeStaticPages 					: removeStaticPages
 };
