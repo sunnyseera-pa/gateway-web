@@ -47,6 +47,7 @@ import ContributorModal from './components/ContributorModal/ContributorModal';
 import AssignWorkflowModal from './components/AssignWorkflowModal/AssignWorkflowModal';
 import SLA from '../commonComponents/sla/SLA';
 import AboutApplication from './components/AboutApplication/AboutApplication';
+import Guidance from './components/Guidance/Guidance';
 import Uploads from './components/Uploads/Uploads';
 
 class DataAccessRequest extends Component {
@@ -54,7 +55,6 @@ class DataAccessRequest extends Component {
 		super(props);
 		this.onFormSubmit = this.onFormSubmit.bind(this);
 		this.onFormUpdate = this.onFormUpdate.bind(this);
-		this.onQuestionFocus = this.onQuestionFocus.bind(this);
 		this.onHandleDataSetChange = this.onHandleDataSetChange.bind(this);
 		this.searchBar = React.createRef();
 
@@ -503,8 +503,10 @@ class DataAccessRequest extends Component {
 					[...questions],
 					questionId
 				);
-				if (!_.isEmpty(activeQuestion))
-					this.setState({ activeGuidance: activeQuestion.guidance });
+				if (!_.isEmpty(activeQuestion)) {
+					const { guidance } = activeQuestion;
+					return guidance;
+				}
 			}
 		}
 	}
@@ -712,10 +714,6 @@ class DataAccessRequest extends Component {
 		this.updateNavigation({ panelId, pageId });
 	};
 
-	handleSelect = (key) => {
-		this.setState({ key: key });
-	};
-
 	/**
 	 * [UpdateNavigation]
 	 * @desc - Update the navigation state sidebar
@@ -820,8 +818,67 @@ class DataAccessRequest extends Component {
 		}
 	};
 
-	onQuestionAction = (questionSetId = '', questionId = '', key = '') => {
-		console.log(questionSetId, questionId, key);
+	onQuestionAction = (e= '', questionSetId = '', questionId = '', key = '') => {
+		console.log(e, questionSetId, questionId, key);
+		let mode = '';
+		// check valid event action - set active question with green border right
+		if(!_.isEmpty(e)) {
+			this.removeActiveQuestionClass();
+			this.addActiveQuestionClass(e);
+		}
+
+		// MODE - ADDED, REMOVED, REVERTED
+
+		switch (key) {
+			case DarHelper.actionKeys.GUIDANCE: 
+				const activeGuidance = this.onQuestionFocus(questionId);
+				this.setState({ activeGuidance });
+			break;
+			case DarHelper.actionKeys.REQUESTAMENDMENT:
+				mode = DarHelper.amendmentModes.ADDED;
+				// do API call here with questionSetId, questionId
+				// await API callback and update state with new schema from BE
+				console.log(key);
+			break;
+			case DarHelper.actionKeys.CANCELREQUEST:
+				mode = DarHelper.amendmentModes.REMOVED;
+				// do API call with questionSetId, questionId,
+				// await API callback and update state with new state from BE
+				console.log(key);
+			default:
+				console.log(questionId);
+			break;
+		}
+
+	}
+
+	/**
+	 * removeActiveQuestionClass
+	 * Removes active class on a single question
+	 */
+	removeActiveQuestionClass = () => {
+		let fGroups = document.querySelectorAll('.question-wrap');
+		fGroups.forEach(key => key.classList.remove('active-group'));
+	}
+
+	/**
+	 * addActiveQuestionClass
+	 * Adds active border to question clicked upon
+	 * 
+	 * @param - (e) eventObject
+	 */
+	addActiveQuestionClass = (e) => {
+		if(!_.isEmpty(e)) {
+			let fGroup = e.target.closest('.question-wrap');
+			fGroup.classList.add('active-group');
+		}
+	}
+
+	resetGuidance = () => {
+		// remove active question class
+		this.removeActiveQuestionClass();
+		// reset guidance state
+		this.setState({ activeGuidance: ''});
 	}
 
 	onHandleDataSetChange = (value = []) => {
@@ -983,7 +1040,6 @@ class DataAccessRequest extends Component {
 				case 6:
 					aboutApplication.completedSubmitAdvice = completed;
 					break;
-				
 				default:
 					console.error('Invalid step passed');
 					break;
@@ -1319,7 +1375,6 @@ class DataAccessRequest extends Component {
 					readOnly={this.state.readOnly}
 					validationErrors={this.state.validationErrors}
 					renderRequiredAsterisk={() => <span>{'*'}</span>} 				
-					onQuestionFocus={this.onQuestionFocus}
 					onQuestionClick={this.onQuestionClick}
 					onQuestionAction={this.onQuestionAction}
 					onUpdate={this.onFormUpdate}
@@ -1502,63 +1557,12 @@ class DataAccessRequest extends Component {
 					</div>
 					{isWideForm ? null : (
 						<div id='darRightCol' className='scrollable-sticky-column'>
-							<Tabs
-								className='dar-tabsBackground gray700-14'
-								activeKey={this.state.key}
-								onSelect={this.handleSelect}
-							>
-								<Tab eventKey='guidance' title='Guidance'>
-									<div className='darTab'>
-										<Col md={12} className='gray700-14'>
-											<span>{activeGuidance ? activeGuidance : 'Active guidance for questions'}.</span>
-										</Col>
-									</div>
-								</Tab>
-								<Tab eventKey='answers' title='Answers'>
-									<div className='darTab'>
-										<Col md={12} className='gray700-13 mt-2'>
-											<span>
-												Re-use answers from your previous applications
-											</span>
-											<br /> <br />
-											<span className='comingSoonBadge'> Coming soon </span>
-										</Col>
-									</div>
-								</Tab>
-								<Tab eventKey='notes' title='Notes'>
-									<div className='darTab'>
-										<Col md={12} className='gray700-13 mt-2'>
-											<span>Data custodians cannot see your notes. </span>
-											<br /> <br />
-											<span>
-												You can use notes to capture your thoughts or
-												communicate with any other applicants you invite to
-												collaborate.
-											</span>
-											<br /> <br />
-											<span className='comingSoonBadge'> Coming soon </span>
-										</Col>
-									</div>
-								</Tab>
-								<Tab eventKey='messages' title='Messages'>
-									<div className='darTab'>
-										<Col md={12} className='gray700-13 mt-2'>
-											<span>
-												Both data custodian and applicants can see messages
-											</span>
-											<br /> <br />
-											<span>
-												Use messages to seek guidance or clarify questions with
-												the data custodian. You can send messages before or
-												after the application is submitted. You will be notified
-												of every new message, and so will the data custodian.
-											</span>
-											<br /> <br />
-											<span className='comingSoonBadge'> Coming soon </span>
-										</Col>
-									</div>
-								</Tab>
-							</Tabs>
+							<div className='darTab'>
+								<Guidance
+									activeGuidance={activeGuidance}
+									resetGuidance={this.resetGuidance}
+								/>
+							</div> 
 						</div>
 					)}
 				</div>

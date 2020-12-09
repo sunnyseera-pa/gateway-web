@@ -16,6 +16,7 @@ export const classSchema = {
         "controlButton": "btn btn-primary pull-right",
         "backButton": "btn btn-default pull-left",
         "errorMessage": "alert alert-danger",
+        "alertWrap": "alert-wrap",
         "buttonBar": "button-bar hidden",
         "actionControl": "action-control",
         "nested": "nested",
