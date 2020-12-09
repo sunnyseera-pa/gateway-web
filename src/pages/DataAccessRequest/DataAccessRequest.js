@@ -849,7 +849,6 @@ class DataAccessRequest extends Component {
 				console.log(questionId);
 			break;
 		}
-
 	}
 
 	/**
