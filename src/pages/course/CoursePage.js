@@ -324,15 +324,15 @@ class CourseDetail extends Component {
                 <div className="rectangle">
                   <Row>
                     <Col>
-                      <span className="gray3a-20">{data.title}</span>
+                      <span className="black-16">{data.title}</span>
                     </Col>
                   </Row>
                   <Row>
                     <Col>
-                      <span className="gray800-14">{data.provider}</span>
+                      <span className="black-14">{data.provider}</span>
                     </Col>
                   </Row>
-                  <Row className="mt-3">
+                  <Row className="margin-top-16">
                     <Col xs={12}>
                       <span className="badge-course">
                         <SVGIcon
@@ -366,9 +366,9 @@ class CourseDetail extends Component {
                     </Col>
                   </Row>
 
-                  <Row className="mt-2">
+                  <Row className="margin-top-16">
                     <Col xs={12}>
-                      <span className="gray700-13">
+                      <span className="gray700-14">
                         {data.counter === undefined ? 1 : data.counter + 1}
                         {data.counter === undefined ? " view" : " views"}
                       </span>

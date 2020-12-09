@@ -375,14 +375,14 @@ class ToolDetail extends Component {
               <Col sm={10} lg={10}>
                 <div className="rectangle">
                   <Row>
-                    <Col>
-                      <span className="black-20">{data.name}</span>
+                    <Col className="line-height-normal">
+                      <span className="black-16">{data.name}</span>
                     </Col>
                   </Row>
                   {ratingsCount === 0 ? (
                     ""
                   ) : (
-                    <Row className="mt-3">
+                    <Row className="margin-top-16">
                       <Col>
                         <div className="gray500-13">
                           <Rating
@@ -405,7 +405,7 @@ class ToolDetail extends Component {
                       </Col>
                     </Row>
                   )}
-                  <Row className="mt-3">
+                  <Row className="margin-top-16">
                     <Col xs={12}>
                       <span className="badge-tool">
                         <SVGIcon
@@ -425,8 +425,8 @@ class ToolDetail extends Component {
                     </Col>
                   </Row>
 
-                  <Row className="mt-2">
-                    <Col xs={12}>
+                  <Row className="margin-top-20">
+                    <Col xs={12} className="line-height-normal">
                       <span className="gray800-14">
                         {data.counter === undefined ? 1 : data.counter + 1}
                         {data.counter === undefined ? " view" : " views"}
