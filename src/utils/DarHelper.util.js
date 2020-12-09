@@ -95,6 +95,19 @@ let darStaticPageIds = {
 	FILES: 'files'
 }
 
+let actionKeys = {
+	GUIDANCE: 'guidance',
+	REQUESTAMENDMENT: 'requestAmendment',
+	CANCELREQUEST: 'cancelRequest',
+	REVERTTOPREVIOUSANSWER: 'revertToPreviousAnswer'
+
+}
+
+const amendmentModes = {
+	ADDED: 'added',
+	REMOVED: 'removed',
+	REVERTED: 'reverted'
+};
 
 /**
  * [generateStatusCounts - Used in DataAccessRequest Dashboard for status counts]
@@ -683,7 +696,9 @@ export default {
 	darSLAText									: darSLAText,
 	darCommentTitle							: darCommentTitle,
 	darStaticPageIds						: darStaticPageIds,
-	userTypes								: userTypes,
+	userTypes										: userTypes,
 	amendmentStatuses						: amendmentStatuses,
+	actionKeys									: actionKeys,
+	amendmentModes							: amendmentModes,
 	removeStaticPages 					: removeStaticPages
 };

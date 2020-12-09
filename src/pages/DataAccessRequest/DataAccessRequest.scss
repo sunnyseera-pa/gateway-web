@@ -2,9 +2,61 @@
 @import '../../css/typography';
 @import '../../css/mixins';
 
+.active-group {
+	background: #f6f7f8;
+}
+
+.active-group:after{
+	position: absolute;
+	top: 0;
+	right: 0;
+	content: '';
+	height: 100%;
+	width: 4px;
+	background: $teal;
+}
+
+
+.alert {
+	margin-bottom: 8px !important;
+	font-size: 14px;
+	padding: 12px 1.25rem;
+	
+  &-warning {
+    border:2px solid #f0bb24 !important;
+	}
+	
+	&-success {
+		border: 2px solid #3db28c !important
+	}
+
+	&-danger {
+		border: 2px solid #dc3645 !important;
+		i {
+			color: #dc3645;
+		}
+	}
+
+  &-wrap {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    & > div:first-child {
+      margin-right: auto;
+		}
+		& > div:nth-child(2) {
+			cursor: pointer;
+			font-weight: bold;
+			text-align: right;
+		}
+  }
+}
+
 .toolTip {
 	position: relative;
 	display: inline-block;
+	padding: 0 5px;
 }
 
 .toolTip .toolTipText {
@@ -182,6 +234,40 @@ span.toolTipText:after {
 	background-color: $white;
 	max-height: calc(100vh - 169px);
 	margin-left: 1px;
+	header {
+		padding: 0 24px 15px 24px;
+		display: flex;
+		border-bottom: 1px solid rgba(0, 0, 0, 0.09);
+		flex-flow: row nowrap;
+		align-items: center;
+		svg {
+			cursor: pointer;
+		}
+		div {
+			display: flex;
+			flex-flow: row;
+			margin-right: auto;
+			align-items: center;
+			p {
+				margin: 0;
+			}
+			i {
+				font-size: 16px;
+				font-weight: 500;
+				color: $purple;
+			}
+		}
+	}
+	main {
+		padding: 24px;
+	}
+	&-guidance {
+		height: 40vh;
+    display: flex;
+    align-items: center;
+		justify-content: center;
+		@include font-source(14px, $gray-700, $font-weight-semibold);
+	}
 }
 
 @media (min-width: 769px) and (max-width: 1160px) {
@@ -282,8 +368,7 @@ span.toolTipText:after {
 }
 
 input[type=text]:disabled {
-		background-color: #eee !important;
-	
+		background-color: #eee !important;	
 }
 
 input[type=text]:disabled,
@@ -296,7 +381,7 @@ input[type=radio]:disabled {
 
 .dar {
 	&__header {
-		padding: 24px;
+		padding: 24px 25px;
 
 		p {
 			margin-bottom: 0;
@@ -477,9 +562,9 @@ input[type=radio]:disabled {
 }
 
 .dar-form {
-	padding: 0 10px;
+	// padding: 0 10px;
 	h3 {
-		padding: 0 15px;
+		padding: 0 25px;
 		@include font-source(14px, $gray-dark, $font-weight-semibold);
 		line-height: 21px;
 		white-space: pre-line;
@@ -487,22 +572,29 @@ input[type=radio]:disabled {
 
 	h4 {
 		margin-bottom: 0;
-		padding: 16px 16px;
+		padding: 16px 25px;
 		@include font-source(17px, $gray-dark, $font-weight-bold);
 	}
 
-	.form-group {
-		margin-bottom: 16px;
-		padding: 5px 16px 0 16px;
-		transition: all 0.2s ease-in-out;
+	.form-control {
+		margin-bottom: 8px;
+	}
 
-		&:hover {
-			background: #f6f7f8;
-		}
+	.form-group-nested {
+		border-left: 4px solid $gray-400;
+	}
+
+	.form-group {
+		position: relative;
+		margin-bottom: 2px;
+		// padding: 5px 16px 0 16px;
+		transition: all 0.2s ease-in-out;
+		box-sizing: border-box;
 
 		label {
 			@include font-source(14px, $gray-800, $font-weight-semibold);
 			margin-bottom: 5px;
+			width: 90%;
 		}
 	}
 }
@@ -594,9 +686,10 @@ input[type=radio]:disabled {
 	display: flex;
 	flex-flow: row;
 	align-items: center;
-	padding: 8px;
+	justify-content: center;
+	padding: 8px 0px;
 	position: absolute;
-	top: -19px;
+	top: -8px;
 	right: 25px;
 	visibility: hidden;
 	cursor: pointer;
@@ -615,15 +708,13 @@ input[type=radio]:disabled {
 	min-height: 40px;
 }
 
-// .form-group-nested {
-// 	margin-top: 1rem;
-// }
-
 .question-wrap {
 	position: relative;
-	margin-bottom: 1rem;
-	padding: 0 26px 8px 26px;
+	margin-bottom: 0;
+	padding: 3px 25px 3px 25px;
+
 	&:hover {
+		background: #f6f7f8;
 		> .action-control {
 			visibility: visible;
 			opacity:1;
