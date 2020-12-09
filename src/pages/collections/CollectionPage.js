@@ -161,15 +161,16 @@ class CollectionPage extends Component {
 		this.setState({ objectData: this.state.objectData });
 	};
 
-	getDatasetData = async (datasetID) => {
+	getDatasetData = async (datasetID) => { 
 		this.setState({ isLoading: true });
 		await Promise.all([
 			axios.get(baseURL + '/api/v1/datasets/' + datasetID).then((res) => {
-				this.state.objectData.push(res.data.data);
+				this.state.objectData.push(res.data.data); 
 				if (
 					res.data.data.activeflag === 'active' ||
+					res.data.data.activeflag === 'archive' ||
 					(res.data.data.activeflag === 'review' &&
-						res.data.data.authors.includes(this.state.userState[0].id))
+						res.data.data.authors.includes(this.state.userState[0].id)) 
 				) {
 					this.state.datasetCount++;
 				}
@@ -263,7 +264,7 @@ class CollectionPage extends Component {
 			toolCount,
 			datasetCount,
 			personCount,
-			projectCount,
+			projectCount, 
 			paperCount,
 			courseCount,
 			collectionAdded,
@@ -451,7 +452,7 @@ class CollectionPage extends Component {
 								</Row>
 							</Container>
 						</Tab>
-					</Tabs>
+					</Tabs> 
 				</div>
 
 				<Container className='resource-card'>
@@ -462,6 +463,7 @@ class CollectionPage extends Component {
 								? objectData.map((object) => {
 										if (
 											object.activeflag === 'active' 
+											|| object.activeflag === 'archive' && object.type === 'dataset'
 											|| (object.type === 'course' && object.activeflag === 'review' && object.creator[0].id === userState[0].id)
 											|| (object.type !== 'course' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
 										) {
@@ -506,6 +508,7 @@ class CollectionPage extends Component {
 								? objectData.map((object) => {
 										if (
 											object.activeflag === 'active' ||
+											object.activeflag === 'archive' && object.type === 'dataset' ||
 											(object.type === 'dataset' && object.activeflag === 'review' &&
 												object.authors.includes(userState[0].id))
 										) {
