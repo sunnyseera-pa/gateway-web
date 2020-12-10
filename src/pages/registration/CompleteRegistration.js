@@ -283,6 +283,7 @@ const YourAccountForm = (props) => {
         document.getElementById("bioCurrentCount").innerHTML=e.target.value.length
     }
 
+    
     return (
         <div>
             {props.isUpdated ? <Alert variant="success" className="mt-3">Done! Your account details have been updated</Alert> : ""}
@@ -371,12 +372,13 @@ const YourAccountForm = (props) => {
                                 <Row>
                                 <Col sm={4} lg={4}>
                                 <DropdownButton variant="white"  
-                                    title={formik.values.sector || <option disabled selected value></option>}
+                                    title={formik.values.sector || <option selected value></option>}
                                     className={formik.touched.sector && formik.errors.sector ? "emptyFormInput  gray800-14 custom-dropdown margin-top-8 padding-right-0" :  "gray700-13 custom-dropdown margin-top-8 padding-right-0"} 
                                     onChange={(selected) => {formik.setFieldValue("sector", selected.target.value);}}
                                     value={ formik.values.sector } 
                                     onBlur={() => formik.setFieldTouched("sector", true)} 
                                     touched={formik.touched.sector}
+                                    disabled={formik.showingSector}
                                     onSelect={(selected) => handleSectorSelect(selected)}>
                                     
                                     {sectorSelect.map((sec, i) => (
