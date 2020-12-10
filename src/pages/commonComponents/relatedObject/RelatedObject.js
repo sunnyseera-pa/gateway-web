@@ -559,7 +559,7 @@ class RelatedObject extends React.Component {
                                                         </span>
                                                     : ""
                                                     }
-                                                    <span className="gray800-14" style={{ cursor: 'pointer' }} onClick={() => this.updateOnFilterBadge('publishersSelected', data.datasetv2.summary.publisher.memberOf + " > " + data.datasetv2.summary.publisher.name)}> {data.datasetv2.summary.publisher.name} </span>
+                                                    <span className="gray800-14" style={{ cursor: 'pointer' }} onClick={() => this.updateOnFilterBadge('publishersSelected', data.datasetfields.publisher)}> {data.datasetv2.summary.publisher.name} </span>
                                                 </>)
                                             :
                                                 <span className="gray800-14" style={{ cursor: 'pointer' }} onClick={() => this.updateOnFilterBadge('publishersSelected', data.datasetfields.publisher)}> {data.datasetfields.publisher} </span>
