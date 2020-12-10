@@ -208,14 +208,7 @@ class DatasetDetail extends Component {
         }
 
         this.setState({ isLoading: false });
-      }
-
-      })
-      .catch(e => {
-        debugger;
-        console.log(e)
-      })
-
+      }})
   };
 
   getTechnicalMetadata() {
