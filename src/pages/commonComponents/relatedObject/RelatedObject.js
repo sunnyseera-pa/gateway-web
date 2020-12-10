@@ -538,7 +538,7 @@ class RelatedObject extends React.Component {
                             else { //default to dataset
                                 var phenotypesSelected = queryString.parse(window.location.search).phenotypes ? queryString.parse(window.location.search).phenotypes.split("::") : [];
                                 var searchTerm = queryString.parse(window.location.search).search ? queryString.parse(window.location.search).search : '';
-                                var phenotypesSeached = data.datasetfields.phenotypes.filter(phenotype => phenotype.name.toLowerCase() === searchTerm.toLowerCase())
+                                var phenotypesSeached = data.datasetfields.phenotypes.filter(phenotype => phenotype.name.toLowerCase() === searchTerm.toLowerCase());
                                 return (
                                     <Row className="noMargin">
                                         <Col sm={10} lg={10} className="pad-left-24">
@@ -559,10 +559,10 @@ class RelatedObject extends React.Component {
                                                         </span>
                                                     : ""
                                                     }
-                                                    <span className="gray800-14"> {data.datasetv2.summary.publisher.name} </span>
+                                                    <span className="gray800-14" style={{ cursor: 'pointer' }} onClick={() => this.updateOnFilterBadge('publishersSelected', data.datasetv2.summary.publisher.memberOf + " > " + data.datasetv2.summary.publisher.name)}> {data.datasetv2.summary.publisher.name} </span>
                                                 </>)
                                             :
-                                                <span className="gray800-14"> {data.datasetfields.publisher} </span>
+                                                <span className="gray800-14" style={{ cursor: 'pointer' }} onClick={() => this.updateOnFilterBadge('publishersSelected', data.datasetfields.publisher)}> {data.datasetfields.publisher} </span>
                                             }   
                                         </Col>
                                         <Col sm={2} lg={2} className="pad-right-24"> 
