@@ -81,12 +81,18 @@ class CollectionPage extends Component {
 				baseURL + '/api/v1/collections/' + this.props.match.params.collectionID
 			)
 			.then((res) => {
-				this.setState({
-					data: res.data.data[0],
-					discourseTopic: res.data.discourseTopic
-				});
-				this.getObjectData(res.data.data[0]);
-				this.setState({ isLoading: false });
+				if(!res.data.success){
+					window.localStorage.setItem('redirectMsg', `Collection not found for Id: ${this.props.match.params.collectionID}`);  
+					this.props.history.push({pathname: "/search?search=", search:""});
+				}
+				else{
+					this.setState({
+						data: res.data.data[0],
+						discourseTopic: res.data.discourseTopic
+					});
+					this.getObjectData(res.data.data[0]);
+					this.setState({ isLoading: false });
+				}
 			});
 	};
 
