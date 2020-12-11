@@ -374,12 +374,12 @@ class Account extends Component {
 
                             { team === 'user' ?
                                 <Fragment>
-                                    <div className={`${tabId === 'dashboard' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('dashboard')}>
+                                    {/* <div className={`${tabId === 'dashboard' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('dashboard')}>
                                         <Nav.Link className="verticalNavBar gray700-13">
                                             <SVGIcon name='dashboard' fill={'#b3b8bd'} className='accountSvgs' />
                                             <span className="navLinkItem">Dashboard</span>
                                         </Nav.Link>
-                                    </div>
+                                    </div> */}
 
                                     <div className={`${tabId === 'youraccount' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('youraccount')}>
                                         <Nav.Link className="verticalNavBar gray700-13">
@@ -433,7 +433,7 @@ class Account extends Component {
                                             </Accordion>
                                         </div> */}
                                     
-                                    <div className={`${tabId === 'papers' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('papers')}>
+                                    {/* <div className={`${tabId === 'papers' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('papers')}>
                                             <Nav.Link eventKey={'papers'} className="verticalNavBar gray700-13">
                                                 <SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
                                                 <span className="navLinkItem">Papers</span>
@@ -445,7 +445,7 @@ class Account extends Component {
                                             <SVGIcon name='educationicon' fill={'#b3b8bd'} className='svg-20' />
                                             <span className="navLinkItem">Courses</span>
                                         </Nav.Link>
-                                    </div>
+                                    </div> */}
 
                                     <div className={`${tabId === 'dataaccessrequests' ? 'activeCard' : ''}`} onClick={(e) => this.toggleNav('dataaccessrequests')}>
                                         <Nav.Link eventKey={'dataaccessrequests'} className="verticalNavBar gray700-13">

@@ -667,8 +667,8 @@ class SearchPage extends React.Component {
                                     <Tab eventKey="Datasets" title={'Datasets (' + datasetCount + ')'} />
                                     <Tab eventKey="Tools" title={'Tools (' + toolCount + ')'} />
                                     <Tab eventKey="Projects" title={'Projects (' + projectCount + ')'} />
-                                    <Tab eventKey="Courses" title={'Courses (' + courseCount + ')'} />
-                                    <Tab eventKey="Papers" title={'Papers (' + paperCount + ')'} />
+                                    {/* <Tab eventKey="Courses" title={'Courses (' + courseCount + ')'} />
+                                    <Tab eventKey="Papers" title={'Papers (' + paperCount + ')'} /> */}
                                     <Tab eventKey="People" title={'People (' + personCount + ')'}>
                                         {personCount <= 0 && !isResultsLoading ? <NoResults type='profiles' searchString={searchString} /> : ''}
                                     </Tab>
