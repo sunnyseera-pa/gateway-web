@@ -221,10 +221,10 @@ class DatasetDetail extends Component {
   getCollections() {
     this.setState({ isLoading: true });
     axios
-      .get(baseURL + "/api/v1/collections/datasetid/" + this.state.data.datasetid)
+      .get(baseURL + "/api/v1/collections/entityid/" + this.state.data.datasetid)
       .then(res => {
         this.setState({
-          collections: res.data.data || []
+          collections: res.data.data || [] 
         });
       });
   }
@@ -1526,7 +1526,7 @@ class DatasetDetail extends Component {
                             {
                               collections.map((collection) => (
                                 <Col sm={12} md={12} lg={6} style={{"text-align": "-webkit-center"}}>
-                                  <CollectionCard data={collection} />
+                                  <CollectionCard data={collection} /> 
                                 </Col>
                               ))
                             }
