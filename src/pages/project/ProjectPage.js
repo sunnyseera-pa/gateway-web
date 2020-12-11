@@ -102,26 +102,26 @@ class ProjectDetail extends Component {
     axios
       .get(baseURL + "/api/v1/projects/" + this.props.match.params.projectID)  
       .then( async (res) => {
-        this.setState({
-          data: res.data.data[0],
-          discourseTopic: res.data.discourseTopic
-        });
-        document.title = res.data.data[0].name.trim();
-
-        let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
-        this.updateCounter(this.props.match.params.projectID, counter);
-
-        if(!_.isUndefined(res.data.data[0].relatedObjects)) {
-          await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+        if(_.isNil(res.data)){
+          window.localStorage.setItem('redirectMsg', `Project not found for Id: ${this.props.match.params.projectID}`);  
+          this.props.history.push({pathname: "/search?search=", search:""});
+        }
+        else{
+          this.setState({
+            data: res.data.data[0],
+            discourseTopic: res.data.discourseTopic
+          });
+          document.title = res.data.data[0].name.trim();
+  
+          let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
+          this.updateCounter(this.props.match.params.projectID, counter);
+  
+          if(!_.isUndefined(res.data.data[0].relatedObjects)) {
+            await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+          }
         }
       })
-      .catch((err) => {
-          //check if request is for a ProjectID or a different route such as /add
-          if(!isNaN(this.props.match.params.projectID)){
-            window.localStorage.setItem('redirectMsg', err.response.data);  
-          }
-          this.props.history.push({pathname: "/search?search=", search:""});
-      }).finally(() => {
+      .finally(() => {
         this.setState({ isLoading: false });
     });
   };

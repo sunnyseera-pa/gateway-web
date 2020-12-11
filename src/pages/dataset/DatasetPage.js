@@ -152,7 +152,7 @@ class DatasetDetail extends Component {
     this.setState({ isLoading: true });
     await axios.get(baseURL + '/api/v1/datasets/' + this.props.match.params.datasetID)
       .then( async (res) => {
-        if(!res.data.success){
+        if(_.isNil(res.data)){
           window.localStorage.setItem('redirectMsg', `Dataset not found for Id: ${this.props.match.params.datasetID}`);  
           this.props.history.push({pathname: "/search?search=", search:""});
         }
