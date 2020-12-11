@@ -113,27 +113,27 @@ class ToolDetail extends Component {
     axios
       .get(baseURL + "/api/v1/tools/" + this.props.match.params.toolID) 
       .then( async (res) => {
-        this.setState({
-          data: res.data.data[0],
-          reviewData: res.data.reviewData,
-          discourseTopic: res.data.discourseTopic
-        });
-        document.title = res.data.data[0].name.trim();
-
-        let counter = !this.state.data.counter
-          ? 1
-          : this.state.data.counter + 1;
-        this.updateCounter(this.props.match.params.toolID, counter);
-        if(!_.isUndefined(res.data.data[0].relatedObjects)) {
-            await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+        if(_.isNil(res.data)){
+          window.localStorage.setItem('redirectMsg', `Tool not found for Id: ${this.props.match.params.toolID}`);  
+          this.props.history.push({pathname: "/search?search=", search:""});
         }
-      }).catch((err) => {
-        //check if request is for a ToolID or a different route such as /add
-        if(!isNaN(this.props.match.params.toolID)){
-            window.localStorage.setItem('redirectMsg', err.response.data);
+        else{
+          this.setState({
+            data: res.data.data[0],
+            reviewData: res.data.reviewData,
+            discourseTopic: res.data.discourseTopic
+          });
+          document.title = res.data.data[0].name.trim();
+  
+          let counter = !this.state.data.counter
+            ? 1
+            : this.state.data.counter + 1;
+          this.updateCounter(this.props.match.params.toolID, counter);
+          if(!_.isUndefined(res.data.data[0].relatedObjects)) {
+              await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
           }
-        this.props.history.push({pathname: "/search?search=", search:""});
-    }).finally(() => {
+        }
+      }).finally(() => {
         this.setState({ isLoading: false });
     });
   };
