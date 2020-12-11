@@ -159,7 +159,7 @@ class HDRRouter extends Component {
                         <Redirect to="/search?search=" />
                     </Switch>
                 </div>
-
+                <Footer /> 
             </Router>
         );
     }
