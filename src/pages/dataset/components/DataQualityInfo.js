@@ -172,7 +172,7 @@ class DataQualityInfo extends React.Component {
             rating: "Platinum",
             response: "More than 10 years"
         },
-        {
+        { 
             dimension: "Allowable uses",
             rating: "Bronze",
             response: ""
@@ -191,26 +191,6 @@ class DataQualityInfo extends React.Component {
             dimension: "Allowable uses",
             rating: "Platinum",
             response: "Fully consented for commercial uses (following IG approval)"
-        },
-        {
-            dimension: "Research environment",
-            rating: "Bronze",
-            response: "Requested analysis available by internal teams, provided back in anonymised format"
-        },
-        {
-            dimension: "Research environment",
-            rating: "Silver",
-            response: "Users can access the dataset in a Trusted Research Environment"
-        },
-        {
-            dimension: "Research environment",
-            rating: "Gold",
-            response: ""
-        },        
-        {
-            dimension: "Research environment",
-            rating: "Platinum",
-            response: "Used in a Trusted Research Environment (other data & tools brought in securely)"
         },
         {
             dimension: "Time Lag",
@@ -300,7 +280,7 @@ class DataQualityInfo extends React.Component {
     this.state.open = props.open;
     this.updateFlag = this.updateFlag.bind(this);
     this.state.section = props.section;
-    this.state.datasetUtility = props.datasetUtility || {};
+    this.state.datasetUtility = props.datasetUtility || {}; 
     this.state.documentationWeight = props.documentationWeight;
     this.state.technicalQualityWeight = props.technicalQualityWeight;
     this.state.accessProvisionWeight = props.accessProvisionWeight;
@@ -383,7 +363,7 @@ class DataQualityInfo extends React.Component {
         this.setState({techQualitySection: false})
         } 
 
-        if(!datasetUtility.allowable_uses && !datasetUtility.research_environment && !datasetUtility.time_lag && !datasetUtility.timeliness){
+        if(!datasetUtility.allowable_uses && !datasetUtility.time_lag && !datasetUtility.timeliness){
         this.setState({accessProvisionSection: false})
         } 
 
@@ -398,7 +378,9 @@ class DataQualityInfo extends React.Component {
   }
 
   render() {
-    const { open, flagClosed, section, ratings, datasetUtility, documentationWeight, technicalQualityWeight, accessProvisionWeight, valueInterestWeight, coverageWeight, metadataRichnessOnly, documentSection, techQualitySection, accessProvisionSection, valueInterestSection, coverageSection} = this.state;
+    const { open, flagClosed, section, ratings, documentationWeight, technicalQualityWeight, accessProvisionWeight, valueInterestWeight, coverageWeight, metadataRichnessOnly, documentSection, techQualitySection, accessProvisionSection, valueInterestSection, coverageSection,
+            datasetUtility: { metadata_richness = '', availability_of_additional_documentation_and_support = '', data_model = '', data_dictionary = '', provenance = '', data_quality_management_process = '', dama_quality_dimensions = '', allowable_uses = '', time_lag = '', timeliness = '', linkages = '', data_enrichments = '', pathway_coverage = '', length_of_follow_up = ''}
+        } = this.state;
 
     switch (section) {
       case "Documentation":
@@ -441,7 +423,7 @@ class DataQualityInfo extends React.Component {
                                 </Col>
                                 <Col sm={1} lg={1}>
                                     <span>
-                                        {this.getSubSectionRating(datasetUtility.metadata_richness.trim())}
+                                        {!_.isEmpty(metadata_richness) && this.getSubSectionRating(metadata_richness.trim())}
                                     </span>
                                 </Col>
                             </Row>
@@ -451,7 +433,7 @@ class DataQualityInfo extends React.Component {
                                 </Col>
                                 <Col sm={8} lg={8}>
                                     {    ratings.map((rating) => {
-                                            if (rating.dimension === "Additional documentation and support" && rating.rating === datasetUtility.availability_of_additional_documentation_and_support.trim()) {
+                                            if (rating.dimension === "Additional documentation and support" && rating.rating === availability_of_additional_documentation_and_support.trim()) {
                                                 return (<span className="gray800-13"> {rating.response} </span>)
                                             }
                                         })
@@ -459,7 +441,8 @@ class DataQualityInfo extends React.Component {
                                 </Col>
                                 <Col sm={1} lg={1}>
                                     <span>
-                                        {this.getSubSectionRating(datasetUtility.availability_of_additional_documentation_and_support.trim())}
+                                        {!_.isEmpty(availability_of_additional_documentation_and_support) && this.getSubSectionRating(availability_of_additional_documentation_and_support.trim())}
+
                                     </span>
                                 </Col>
                             </Row>
@@ -469,7 +452,7 @@ class DataQualityInfo extends React.Component {
                                 </Col>
                             <Col sm={8} lg={8}>
                                     {    ratings.map((rating) => {
-                                            if (rating.dimension === "Data Model" && rating.rating === datasetUtility.data_model.trim()) {
+                                            if (rating.dimension === "Data Model" && rating.rating === data_model.trim()) {
                                                 return (<span className="gray800-13"> {rating.response} </span>)
                                             }
                                         })
@@ -477,7 +460,8 @@ class DataQualityInfo extends React.Component {
                                 </Col> 
                                 <Col sm={1} lg={1}>
                                     <span>
-                                        {this.getSubSectionRating(datasetUtility.data_model.trim())}
+                                        {!_.isEmpty(data_model) && this.getSubSectionRating(data_model.trim())}
+
                                     </span>
                                 </Col>
                             </Row>
@@ -487,7 +471,7 @@ class DataQualityInfo extends React.Component {
                                 </Col>
                                 <Col sm={8} lg={8}>
                                     {    ratings.map((rating) => {
-                                            if (rating.dimension === "Data Dictionary" && rating.rating === datasetUtility.data_dictionary.trim()) {
+                                            if (rating.dimension === "Data Dictionary" && rating.rating === data_dictionary.trim()) {
                                                 return (<span className="gray800-13"> {rating.response} </span>)
                                             }
                                         })
@@ -495,7 +479,8 @@ class DataQualityInfo extends React.Component {
                                 </Col>
                                 <Col sm={1} lg={1}>
                                     <span>
-                                        {this.getSubSectionRating(datasetUtility.data_dictionary.trim())}
+                                        {!_.isEmpty(data_dictionary) && this.getSubSectionRating(data_dictionary.trim())}
+
                                     </span>
                                 </Col>
                             </Row>
@@ -505,7 +490,7 @@ class DataQualityInfo extends React.Component {
                                 </Col>
                                 <Col sm={8} lg={8}>
                                     {    ratings.map((rating) => {
-                                            if (rating.dimension === "Provenance" && rating.rating === datasetUtility.provenance.trim()) {
+                                            if (rating.dimension === "Provenance" && rating.rating === provenance.trim()) {
                                                 return (<span className="gray800-13"> {rating.response} </span>)
                                             }
                                         })
@@ -513,7 +498,8 @@ class DataQualityInfo extends React.Component {
                                 </Col>
                                 <Col sm={1} lg={1}>
                                     <span>
-                                        {this.getSubSectionRating(datasetUtility.provenance.trim())}
+                                        {!_.isEmpty(provenance) && this.getSubSectionRating(provenance.trim())}
+
                                     </span>
                                 </Col>
                             </Row>
@@ -555,7 +541,8 @@ class DataQualityInfo extends React.Component {
                             Documentation 
                         </Col>
                         <Col xs={2} sm={5} md={5} lg={8} xl={9} className="dataUtilitySvg">
-                            {this.getSectionRating(datasetUtility.metadata_richness.trim())}
+                            {!_.isEmpty(metadata_richness) && this.getSectionRating(metadata_richness.trim())}
+
                         </Col>
                     </Row>
                 
@@ -569,7 +556,7 @@ class DataQualityInfo extends React.Component {
                             </Col>
                             <Col sm={1} lg={1}>
                                 <span>
-                                    {this.getSubSectionRating(datasetUtility.metadata_richness.trim())}
+                                    {!_.isEmpty(metadata_richness) && this.getSubSectionRating(metadata_richness.trim())}
                                 </span>
                             </Col>
                         </Row>
@@ -616,7 +603,7 @@ class DataQualityInfo extends React.Component {
                                 </Col>
                                 <Col sm={8} lg={8}>
                                     {    ratings.map((rating) => {
-                                            if (rating.dimension === "Data Quality Management Process" && rating.rating === datasetUtility.data_quality_management_process.trim()) {
+                                            if (rating.dimension === "Data Quality Management Process" && rating.rating === data_quality_management_process.trim()) {
                                                 return (<span className="gray800-13"> {rating.response} </span>)
                                             }
                                         })
@@ -624,7 +611,7 @@ class DataQualityInfo extends React.Component {
                                 </Col>
                                 <Col sm={1} lg={1}>
                                     <span>
-                                        {this.getSubSectionRating(datasetUtility.data_quality_management_process.trim())}
+                                        {!_.isEmpty(data_quality_management_process) && this.getSubSectionRating(data_quality_management_process.trim())}
                                     </span>
                                 </Col>
                             </Row>
@@ -637,7 +624,7 @@ class DataQualityInfo extends React.Component {
                                 </Col>
                                 <Col sm={1} lg={1}>
                                     <span>
-                                        {this.getSubSectionRating(datasetUtility.dama_quality_dimensions.trim())}
+                                        {!_.isEmpty(dama_quality_dimensions) && this.getSubSectionRating(dama_quality_dimensions.trim())}
                                     </span>
                                 </Col>
                             </Row>
@@ -707,7 +694,7 @@ class DataQualityInfo extends React.Component {
                         </Col>
                         <Col sm={8} lg={8}>
                             {    ratings.map((rating) => {
-                                    if (rating.dimension === "Allowable uses" && rating.rating === datasetUtility.allowable_uses.trim()) {
+                                    if (rating.dimension === "Allowable uses" && rating.rating === allowable_uses.trim()) {
                                         return (<span className="gray800-13"> {rating.response} </span>)
                                     }
                                 })
@@ -715,25 +702,7 @@ class DataQualityInfo extends React.Component {
                         </Col>
                         <Col sm={1} lg={1}>
                             <span>
-                                {this.getSubSectionRating(datasetUtility.allowable_uses.trim())}
-                            </span>
-                        </Col>
-                    </Row>
-                    <Row className="dataUtilityBox">
-                        <Col sm={3} lg={3}>
-                            <span className="gray800-13-opacity">Research environment</span>
-                        </Col>
-                        <Col sm={8} lg={8}>
-                            {    ratings.map((rating) => {
-                                    if (rating.dimension === "Research environment" && rating.rating === datasetUtility.research_environment.trim()) {
-                                        return (<span className="gray800-13"> {rating.response} </span>)
-                                    }
-                                })
-                            }
-                        </Col>
-                        <Col sm={1} lg={1}>
-                            <span>
-                                {this.getSubSectionRating(datasetUtility.research_environment.trim())}
+                                {!_.isEmpty(allowable_uses) && this.getSubSectionRating(allowable_uses.trim())}
                             </span>
                         </Col>
                     </Row>
@@ -743,7 +712,7 @@ class DataQualityInfo extends React.Component {
                         </Col>
                         <Col sm={8} lg={8}>
                             {    ratings.map((rating) => {
-                                    if (rating.dimension === "Time Lag" && rating.rating === datasetUtility.time_lag.trim()) {
+                                    if (rating.dimension === "Time Lag" && rating.rating === time_lag.trim()) {
                                         return (<span className="gray800-13"> {rating.response} </span>)
                                     }
                                 })
@@ -751,7 +720,7 @@ class DataQualityInfo extends React.Component {
                         </Col>
                         <Col sm={1} lg={1}>
                             <span>
-                                {this.getSubSectionRating(datasetUtility.time_lag.trim())}
+                                {!_.isEmpty(time_lag) && this.getSubSectionRating(time_lag.trim())}
                             </span>
                         </Col>
                     </Row>
@@ -761,7 +730,7 @@ class DataQualityInfo extends React.Component {
                         </Col>
                         <Col sm={8} lg={8}>
                             {    ratings.map((rating) => {
-                                    if (rating.dimension === "Timeliness" && rating.rating === datasetUtility.timeliness.trim()) {
+                                    if (rating.dimension === "Timeliness" && rating.rating === timeliness.trim()) {
                                         return (<span className="gray800-13"> {rating.response} </span>)
                                     }
                                 })
@@ -769,7 +738,7 @@ class DataQualityInfo extends React.Component {
                         </Col>
                         <Col sm={1} lg={1}>
                             <span>
-                                {this.getSubSectionRating(datasetUtility.timeliness.trim())}
+                                {!_.isEmpty(timeliness) && this.getSubSectionRating(timeliness.trim())}
                             </span>
                         </Col>
                     </Row>
@@ -839,7 +808,7 @@ class DataQualityInfo extends React.Component {
                                 </Col>
                                 <Col sm={8} lg={8}>
                                     {    ratings.map((rating) => {
-                                            if (rating.dimension === "Linkages" && rating.rating === datasetUtility.linkages.trim()) {
+                                            if (rating.dimension === "Linkages" && rating.rating === linkages.trim()) {
                                                 return (<span className="gray800-13"> {rating.response} </span>)
                                             }
                                         })
@@ -847,7 +816,7 @@ class DataQualityInfo extends React.Component {
                                 </Col>
                                 <Col sm={1} lg={1}>
                                     <span>
-                                        {this.getSubSectionRating(datasetUtility.linkages.trim())}
+                                        {!_.isEmpty(linkages) && this.getSubSectionRating(linkages.trim())}
                                     </span>
                                 </Col>
                             </Row>
@@ -857,7 +826,7 @@ class DataQualityInfo extends React.Component {
                                 </Col>
                                 <Col sm={8} lg={8}>
                                     {    ratings.map((rating) => {
-                                            if (rating.dimension === "Data Enrichments" && rating.rating === datasetUtility.data_enrichments.trim()) {
+                                            if (rating.dimension === "Data Enrichments" && rating.rating === data_enrichments.trim()) {
                                                 return (<span className="gray800-13"> {rating.response} </span>)
                                             }
                                         })
@@ -865,7 +834,7 @@ class DataQualityInfo extends React.Component {
                                 </Col>
                                 <Col sm={1} lg={1}>
                                     <span>
-                                        {this.getSubSectionRating(datasetUtility.data_enrichments.trim())}
+                                        {!_.isEmpty(data_enrichments) && this.getSubSectionRating(data_enrichments.trim())}
                                     </span>
                                 </Col>
                             </Row>
@@ -913,7 +882,7 @@ class DataQualityInfo extends React.Component {
                                 name="chevronbottom"
                                 fill={"#475DA7"}
                                 className={
-                                flagClosed === true
+                                flagClosed === true 
                                     ? "svg-20 dataQualityArrow"
                                     : "svg-20 flipSVG dataQualityArrow"
                                 }
@@ -935,7 +904,7 @@ class DataQualityInfo extends React.Component {
                                 </Col>
                                 <Col sm={8} lg={8}>
                                     {    ratings.map((rating) => {
-                                            if (rating.dimension === "Pathway coverage" && rating.rating === datasetUtility.pathway_coverage.trim()) {
+                                            if (rating.dimension === "Pathway coverage" && rating.rating === pathway_coverage.trim()) {
                                                 return (<span className="gray800-13"> {rating.response} </span>)
                                             }
                                         })
@@ -943,7 +912,7 @@ class DataQualityInfo extends React.Component {
                                 </Col>
                                 <Col sm={1} lg={1}>
                                     <span>
-                                        {this.getSubSectionRating(datasetUtility.pathway_coverage.trim())}
+                                        {!_.isEmpty(pathway_coverage) && this.getSubSectionRating(pathway_coverage.trim())}
                                     </span>
                                 </Col>
                             </Row>
@@ -953,7 +922,7 @@ class DataQualityInfo extends React.Component {
                                 </Col>
                                 <Col sm={8} lg={8}>
                                     {    ratings.map((rating) => {
-                                            if (rating.dimension === "Length of follow up" && rating.rating === datasetUtility.length_of_follow_up.trim()) {
+                                            if (rating.dimension === "Length of follow up" && rating.rating === length_of_follow_up.trim()) {
                                                 return (<span className="gray800-13"> {rating.response} </span>)
                                             }
                                         })
@@ -961,7 +930,7 @@ class DataQualityInfo extends React.Component {
                                 </Col>
                                 <Col sm={1} lg={1}>
                                     <span>
-                                        {this.getSubSectionRating(datasetUtility.length_of_follow_up.trim())}
+                                        {!_.isEmpty(length_of_follow_up) && this.getSubSectionRating(length_of_follow_up.trim())}
                                     </span>
                                 </Col>
                             </Row>

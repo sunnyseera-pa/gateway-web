@@ -3,8 +3,8 @@ import axios from 'axios';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { Row, Col, Button } from "react-bootstrap";
 import moment from 'moment';
-import { ReactComponent as CheckSvg } from '../../../images/check.svg';
 import './AddToCollection.scss';
+import SVGIcon from '../../../images/SVGIcon';
 
 var baseURL = require('../BaseURL').getURL();
 
@@ -119,11 +119,13 @@ class AddToCollection extends Component {
                                                     <Col sm={10} lg={10}>
                                                         {dat.name} 
                                                     </Col>
-                                                    <Col sm={1} lg={1} style={{"align-self": "center"}}>
+                                                    <Col sm={1} lg={1} style={{"align-self": "center"}}> 
                                                         {this.state.resourceData.type === "dataset" ?  
-                                                            dat.relatedObjects.some(e => e.objectId === this.state.resourceData.datasetid) ? <CheckSvg fill="#2c8267" className="collectionCheckSvg" /> : '' 
+                                                            dat.relatedObjects.some(e => e.objectId === this.state.resourceData.datasetid) &&
+                                                            <SVGIcon className="collectionCheckSvg" name="checkicon" width={16} height={16} viewbox="0 0 16 16" fill={'#2c8267'} />
                                                         :
-                                                            dat.relatedObjects.some(e => e.objectId === this.state.resourceData.id.toString()) ? <CheckSvg fill="#2c8267" className="collectionCheckSvg" /> : '' 
+                                                            dat.relatedObjects.some(e => e.objectId === this.state.resourceData.id.toString()) &&
+                                                            <SVGIcon className="collectionCheckSvg" name="checkicon" width={16} height={16} viewbox="0 0 16 16" fill={'#2c8267'} />
                                                         }                                                    
                                                     </Col> 
                                                 </Row>

@@ -1,5 +1,5 @@
 // /ShowObjects.js
-import React, { Component, useState, useRef, Fragment } from "react";
+import React, { Component, Fragment } from "react";
 import { Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import _ from 'lodash';
@@ -13,8 +13,8 @@ import {
   Tab,
   Alert,
   Tooltip,
-  Overlay,
-  Button
+  Button,
+  OverlayTrigger
 } from "react-bootstrap/";
 import NotFound from "../commonComponents/NotFound";
 import Loading from "../commonComponents/Loading";
@@ -456,7 +456,7 @@ class DatasetDetail extends Component {
             this.setState({...stateObj});
           })
           .catch(error => {
-            console.log(error);
+            console.log(error); 
           });
   } 
 
@@ -543,14 +543,11 @@ class DatasetDetail extends Component {
     if (_.isNil(data.relatedObjects)) { 
       data.relatedObjects = []; 
     }
-    if (!_.isNil(data.datasetfields.phenotypes) && data.datasetfields.phenotypes.length > 0) {
+    if (_.has(data, 'datasetfields.phenotypes') && data.datasetfields.phenotypes.length > 0) {  
         data.datasetfields.phenotypes.sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0));
     }
 
     function Metadata() {
-        const [show, setShow] = useState(false);
-        const target = useRef(null);
-
         var rating = "Not Rated";
 
         if (data.datasetfields.metadataquality && !_.isNil(data.datasetfields.metadataquality.quality_rating)) {
@@ -560,12 +557,37 @@ class DatasetDetail extends Component {
             return <Fragment><div style={{lineHeight: 1}}><MetadataNotRated className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Not rated</span></div></Fragment>
         }
 
+        const renderTooltip = (props) => (
+            <Tooltip className="metadataOverlay" {...props}>
+              Metadata richness score: {Math.trunc(data.datasetfields.metadataquality.quality_score)}
+              <br />
+              <br />
+              The score relates to the amount of information available about
+              the dataset, and not to the quality of the actual datasets.
+              <br />
+              <br />
+              Click to read more about how the score is calculated.
+              <br />
+              <br />
+              {Math.trunc(data.datasetfields.metadataquality.completeness_percent)} Completeness %
+              <br />
+              {Math.trunc(data.datasetfields.metadataquality.weighted_completeness_percent)} Weighted completeness %
+              <br />
+              {Math.trunc(data.datasetfields.metadataquality.error_percent)} Error %
+              <br />
+              {Math.trunc(data.datasetfields.metadataquality.weighted_error_percent)} Weighted error %
+            </Tooltip>
+        );
+
       return (
         <Fragment>
-          <div className="text-center">
-            <div ref={target} onClick={() => setShow(!show)} style={{ cursor: "pointer" }} >
+          <OverlayTrigger 
+            placement="bottom"
+            delay={{ show: 100, hide: 400 }}
+            overlay={renderTooltip}>
+            <div className="text-center" onClick={() => window.open("https://github.com/HDRUK/datasets/tree/master/reports#hdr-uk-data-documentation-scores", '_blank', 'noopener, noreferrer')}>
+              <div style={{ cursor: "pointer" }} >
                 <div style={{ lineHeight: 1 }}>
-
                     {(() => {
                         if (rating === "Not Rated") return <MetadataNotRated />
                         else if (rating === "Bronze") return <MetadataBronze />
@@ -574,34 +596,9 @@ class DatasetDetail extends Component {
                         else if (rating === "Platinum") return <MetadataPlatinum />
                     })()}
                 </div>
+              </div>
             </div>
-          </div>
-
-          <Overlay target={target.current} show={show} placement="bottom">
-            {props => (
-              <Tooltip className="metadataOverlay" {...props}>
-                Metadata richness score: {Math.trunc(data.datasetfields.metadataquality.quality_score)}
-                <br />
-                <br />
-                The score relates to the amount of information available about
-                the dataset, and not to the quality of the actual datasets.
-                <br />
-                <br />
-                <a href="https://github.com/HDRUK/datasets/tree/master/reports#hdr-uk-data-documentation-scores" target="_blank" className="white-12" rel="noopener noreferrer" >
-                  Click to read more about how the score is calculated.
-                </a>
-                <br />
-                <br />
-                {Math.trunc(data.datasetfields.metadataquality.completeness_percent)} Completeness %
-                <br />
-                {Math.trunc(data.datasetfields.metadataquality.weighted_completeness_percent)} Weighted completeness %
-                <br />
-                {Math.trunc(data.datasetfields.metadataquality.error_percent)} Error %
-                <br />
-                {Math.trunc(data.datasetfields.metadataquality.weighted_error_percent)} Weighted error %
-              </Tooltip>
-            )}
-          </Overlay>
+          </OverlayTrigger>
         </Fragment>
       );
     }
@@ -635,7 +632,7 @@ class DatasetDetail extends Component {
                   <Row>
                     {!_.isEmpty(v2data) ?
                       <>
-                        <Col xs={1}>
+                        <Col xs={1} md={1}>
                           <div
                             className="datasetImageCircle"
                             style={{
@@ -647,8 +644,8 @@ class DatasetDetail extends Component {
                             }}
                           />
                           </Col>
-                          <Col xs={9} className="datasetTitle" >
-                          <span className="black-20"> {data.name} </span>
+                          <Col xs={7} md={9} className="datasetTitle" >
+                          <span className="black-16"> {data.name} </span>
                           <br />
                           <span >
                             {!_.isEmpty(v2data.summary.publisher.memberOf) ? 
@@ -686,14 +683,14 @@ class DatasetDetail extends Component {
                             }
                           </span>
                       </Col>
-                      <Col xs={2} className="text-right">
+                      <Col xs={4} md={2} className="text-right">
                         <Metadata />
                       </Col>
                       </>
                     : 
                       <>
-                        <Col xs={10}>
-                        <span className="black-20">{data.name} </span>
+                        <Col xs={8} md={10}>
+                        <span className="black-16">{data.name} </span>
                         <br />
                           {data.datasetfields.publisher ? (
                             <span className="gray800-14">
@@ -705,7 +702,7 @@ class DatasetDetail extends Component {
                             </span> )
                           }
                         </Col>
-                        <Col xs={2} className="text-right">
+                        <Col xs={4} md={2} className="text-right">
                           <Metadata />
                         </Col>
                       </>

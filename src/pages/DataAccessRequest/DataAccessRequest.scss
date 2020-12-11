@@ -6,7 +6,7 @@
 	background: #f6f7f8;
 }
 
-.active-group:after{
+.active-group:after {
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -16,18 +16,27 @@
 	background: $teal;
 }
 
+.warning {
+	color: #f0bb24;
+}
+.success {
+	color: #3db28c;
+}
+.danger {
+	color: #dc3645;
+}
 
 .alert {
 	margin-bottom: 8px !important;
 	font-size: 14px;
 	padding: 12px 1.25rem;
-	
-  &-warning {
-    border:2px solid #f0bb24 !important;
+
+	&-warning {
+		border: 2px solid #f0bb24 !important;
 	}
-	
+
 	&-success {
-		border: 2px solid #3db28c !important
+		border: 2px solid #3db28c !important;
 	}
 
 	&-danger {
@@ -37,20 +46,20 @@
 		}
 	}
 
-  &-wrap {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    justify-content: space-between;
-    & > div:first-child {
-      margin-right: auto;
+	&-wrap {
+		display: flex;
+		flex-flow: row nowrap;
+		align-items: center;
+		justify-content: space-between;
+		& > div:first-child {
+			margin-right: auto;
 		}
 		& > div:nth-child(2) {
 			cursor: pointer;
 			font-weight: bold;
 			text-align: right;
 		}
-  }
+	}
 }
 
 .toolTip {
@@ -71,16 +80,16 @@
 	border-radius: 6px;
 	z-index: 1;
 	opacity: 0;
-	transition: opacity .4s;
+	transition: opacity 0.4s;
 }
 
-.toolTip i:hover + .toolTipText { 
+.toolTip i:hover + .toolTipText {
 	visibility: visible;
-  opacity: 1;
+	opacity: 1;
 }
 
 span.toolTipText:after {
-	content: "";
+	content: '';
 	position: absolute;
 	top: 100%;
 	left: 50%;
@@ -102,20 +111,27 @@ span.toolTipText:after {
 	margin-top: 8px;
 	margin-bottom: 16px;
 	font-size: 16px;
+
+	display: grid;
+	grid-template-columns: 190px 1fr;
+	box-sizing: border-box;
+
+	&-active {
+		cursor: pointer !important;
+		opacity: 1 !important;
+		margin-left: 33px;
+		margin-top: 0px;
+		margin-bottom: 0px;
+		font-size: 16px;
+		font-weight: 700;
+		display: grid;
+		grid-template-columns: 185px 1fr;
+		box-sizing: border-box;
+	}
 }
 
 .section-not-inreview {
 	color: $gray-600 !important;
-}
-
-.section-header-active {
-	cursor: pointer !important;
-	opacity: 1 !important;
-	margin-left: 33px;
-	margin-top: 0px;
-	margin-bottom: 0px;
-	font-size: 16px;
-	font-weight: 700;
 }
 
 .section-subheader {
@@ -132,6 +148,11 @@ span.toolTipText:after {
 
 .section-subheader li:last-child {
 	margin-bottom: 8px;
+}
+
+.dar-nav-item {
+	display: grid;
+	grid-template-columns: 172px 1fr;
 }
 
 .dar-nav-item + .dar-nav-item {
@@ -263,8 +284,8 @@ span.toolTipText:after {
 	}
 	&-guidance {
 		height: 40vh;
-    display: flex;
-    align-items: center;
+		display: flex;
+		align-items: center;
 		justify-content: center;
 		@include font-source(14px, $gray-700, $font-weight-semibold);
 	}
@@ -367,13 +388,13 @@ span.toolTipText:after {
 	background: #eee !important;
 }
 
-input[type=text]:disabled {
-		background-color: #eee !important;	
+input[type='text']:disabled {
+	background-color: #eee !important;
 }
 
-input[type=text]:disabled,
-input[type=checkbox]:disabled,
-input[type=radio]:disabled {
+input[type='text']:disabled,
+input[type='checkbox']:disabled,
+input[type='radio']:disabled {
 	&:after {
 		background-color: #eee !important;
 	}
@@ -492,7 +513,7 @@ input[type=radio]:disabled {
 	}
 
 	&--questions {
-		flex: 2 0 0;
+		flex: 1 0 0;
 		@include font-source(14px, $gray-800, $font-weight-semibold);
 		p {
 			margin-bottom: 0;
@@ -567,6 +588,7 @@ input[type=radio]:disabled {
 		padding: 0 25px;
 		@include font-source(14px, $gray-dark, $font-weight-semibold);
 		line-height: 21px;
+		white-space: pre-line;
 	}
 
 	h4 {
@@ -694,9 +716,9 @@ input[type=radio]:disabled {
 	cursor: pointer;
 	min-width: 32px;
 	height: 32px;
-	opacity:0;
+	opacity: 0;
 	transition: visibility 0.55s linear, opacity 0.35s ease-in-out;
-	
+
 	& > i {
 		padding: 0 5px;
 	}
@@ -716,7 +738,7 @@ input[type=radio]:disabled {
 		background: #f6f7f8;
 		> .action-control {
 			visibility: visible;
-			opacity:1;
+			opacity: 1;
 			background: $white;
 			box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03);
 		}
@@ -782,11 +804,11 @@ input[type='checkbox']:after {
 
 .makeADecisionDropdown {
 	position: relative;
-    width: 320px !important;
-    max-height: 314px !important;	
-    box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03) !important;
-    background-color: $white !important;
-		padding: 12px 16px 12px 16px !important;
+	width: 320px !important;
+	max-height: 314px !important;
+	box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03) !important;
+	background-color: $white !important;
+	padding: 12px 16px 12px 16px !important;
 
 	option {
 		padding: 4px 0;
@@ -800,7 +822,6 @@ input[type='checkbox']:after {
 	z-index: 1;
 	padding-left: 16px;
 	padding-right: 16px;
-
 }
 
 .review-phase {
@@ -813,9 +834,9 @@ input[type='checkbox']:after {
 
 	&:after {
 		position: absolute;
-    bottom: -8px;
-    left: -15px;
-    height: 1px;
+		bottom: -8px;
+		left: -15px;
+		height: 1px;
 		background: $gray-pale;
 		width: 316px;
 		z-index: 1000;

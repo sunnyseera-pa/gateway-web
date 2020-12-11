@@ -6,7 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 class DatePickerCustom extends React.Component {
   constructor(props) {
-    super(props);    
+    super(props);
     this.state = {
       date: (isNil(this.props.value) || isEmpty(this.props.value)) ? new Date() : moment(this.props.value, 'DD/MM/YYYY').toDate()
     };

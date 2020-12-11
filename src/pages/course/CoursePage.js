@@ -165,13 +165,21 @@ class CourseDetail extends Component {
       await axios
         .get(baseURL + "/api/v1/relatedobject/" + object.objectId) 
         .then(res => {
+          let datasetPublisher;
+          let datasetLogo;
+
+          {!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.name') ? datasetPublisher = res.data.data[0].datasetv2.summary.publisher.name : datasetPublisher = ''}
+          {!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.logo') ? datasetLogo = res.data.data[0].datasetv2.summary.publisher.logo : datasetLogo = ''}
+
           tempObjects.push({
             id: object.objectId,
             authors: res.data.data[0].authors,
-            activeflag: res.data.data[0].activeflag
+            activeflag: res.data.data[0].activeflag,
+            datasetPublisher: datasetPublisher,
+            datasetLogo: datasetLogo
           });
         });
-      }
+      } 
 
     });
     await Promise.all(promises);
@@ -189,6 +197,9 @@ class CourseDetail extends Component {
     this.state.data.relatedObjects.map(object =>
       this.state.objects.forEach(item => {
         if (object.objectId === item.id && item.activeflag === "active") {
+          object["datasetPublisher"] = item.datasetPublisher;
+          object["datasetLogo"] = item.datasetLogo;
+
           tempRelatedObjects.push(object);
         }
 
@@ -256,6 +267,7 @@ class CourseDetail extends Component {
       <Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
         <div>
           <SearchBar
+            ref={this.searchBar}
             searchString={searchString}
             doSearchMethod={this.doSearch}
             doUpdateSearchString={this.updateSearchString}
@@ -312,15 +324,15 @@ class CourseDetail extends Component {
                 <div className="rectangle">
                   <Row>
                     <Col>
-                      <span className="gray3a-20">{data.title}</span>
+                      <span className="black-16">{data.title}</span>
                     </Col>
                   </Row>
                   <Row>
                     <Col>
-                      <span className="gray800-14">{data.provider}</span>
+                      <span className="black-14">{data.provider}</span>
                     </Col>
                   </Row>
-                  <Row className="mt-3">
+                  <Row className="margin-top-16">
                     <Col xs={12}>
                       <span className="badge-course">
                         <SVGIcon
@@ -354,9 +366,9 @@ class CourseDetail extends Component {
                     </Col>
                   </Row>
 
-                  <Row className="mt-2">
+                  <Row className="margin-top-16">
                     <Col xs={12}>
-                      <span className="gray700-13">
+                      <span className="gray700-14">
                         {data.counter === undefined ? 1 : data.counter + 1}
                         {data.counter === undefined ? " view" : " views"}
                       </span>
@@ -709,6 +721,8 @@ class CourseDetail extends Component {
                             relatedObject={object}
                             activeLink={true}
                             showRelationshipAnswer={true}
+                            datasetPublisher={object.datasetPublisher} 
+                            datasetLogo={object.datasetLogo}
                           />
                         ))
                       )}

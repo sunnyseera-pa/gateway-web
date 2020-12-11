@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { Row, Col, Tab, Tabs, Container, Pagination} from 'react-bootstrap';
+import _ from 'lodash';
 
 import SimpleSearchBar from '../searchBar/SimpleSearchBar';
 import RelatedObject from '../relatedObject/RelatedObject';
@@ -32,7 +33,7 @@ class RelatedResourcesModal extends React.Component {
             persons:0,
             courses:0
        }
-
+ 
     }
  
     constructor(props) {
@@ -262,7 +263,12 @@ class RelatedResourcesModal extends React.Component {
                                         return ''
                                     }
                                     else {
-                                       return <RelatedObject key={dataset.id} data={dataset} activeLink={false} doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects} tempRelatedObjectIds={this.props.tempRelatedObjectIds}/>
+                                        let datasetPublisher;
+                                        let datasetLogo;
+                                        {!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.name') ? datasetPublisher = dataset.datasetv2.summary.publisher.name : datasetPublisher = ''}
+                                        {!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.logo') ? datasetLogo = dataset.datasetv2.summary.publisher.logo : datasetLogo = ''}
+
+                                        return <RelatedObject key={dataset.id} data={dataset} activeLink={false} doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects} tempRelatedObjectIds={this.props.tempRelatedObjectIds} datasetPublisher={datasetPublisher} datasetLogo={datasetLogo}/>
                                     }
                                 })
                                 : ''}

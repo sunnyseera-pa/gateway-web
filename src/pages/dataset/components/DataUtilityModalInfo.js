@@ -196,7 +196,7 @@ class DataUtilityModalInfo extends React.Component {
                             : "svg-20 flipSVG flippedDataUtilityArrow"
                         }
                       />
-                  <span className="margin-left-8">
+                  <span className="margin-left-8"> 
                     Access & provision
                   </span>
                 </Row>
@@ -209,13 +209,6 @@ class DataUtilityModalInfo extends React.Component {
                       {this.renderRow("Non-consented, aggregate data for specific academic uses (following IG approval)", <SubSilverSVG />)}
                       {this.renderRow("Aggregate data, for academic and specific commercial uses (following IG approval)", <SubGoldSVG />)}
                       {this.renderRow("Fully consented for commercial uses (following IG approval)", <SubPlatinumSVG />)}
-
-                {this.renderSubHeader("Research environment", "Access, tooling and environment (once approved)")}
-
-                  {this.renderRow("Requested analysis can be undertaken by internal teams and provided back in anonymised format to data requestors", <SubBronzeSVG />)}
-                  {this.renderRow("Users can access the dataset in a Trusted Research Environment", <SubSilverSVG />)}
-                  {this.renderRow("Undefined", <SubGoldSVG />)}
-                  {this.renderRow("The dataset can be used in a Trusted Research Environment, and other data and tools can be securely brought in as required", <SubPlatinumSVG />)}
 
                 {this.renderSubHeader("Time lag", "Lag between the data being collected and added to the dataset")}
 
