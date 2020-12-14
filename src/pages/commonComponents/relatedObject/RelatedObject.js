@@ -536,9 +536,9 @@ class RelatedObject extends React.Component {
                                 );
                             }
                             else { //default to dataset
-                                var phenotypesSelected = queryString.parse(window.location.search).phenotypes ? queryString.parse(window.location.search).phenotypes.split("::") : [];
-                                var searchTerm = queryString.parse(window.location.search).search ? queryString.parse(window.location.search).search : '';
-                                var phenotypesSeached = data.datasetfields.phenotypes.filter(phenotype => phenotype.name.toLowerCase() === searchTerm.toLowerCase());
+                                const phenotypesSelected = queryString.parse(window.location.search).phenotypes ? queryString.parse(window.location.search).phenotypes.split("::") : [];
+                                const searchTerm = queryString.parse(window.location.search).search ? queryString.parse(window.location.search).search : '';
+                                const phenotypesSeached = data.datasetfields.phenotypes.filter(phenotype => phenotype.name.toLowerCase() === searchTerm.toLowerCase());
                                 return (
                                     <Row className="noMargin">
                                         <Col sm={10} lg={10} className="pad-left-24">
