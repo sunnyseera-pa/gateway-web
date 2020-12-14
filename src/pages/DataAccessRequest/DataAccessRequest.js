@@ -1393,7 +1393,6 @@ class DataAccessRequest extends Component {
 		Winterfell.addInputType('typeaheadUser', TypeaheadUser);
 		Winterfell.validation.default.addValidationMethods({
 			'isCustomDate': (value) => {
-				debugger;
 				if (_.isEmpty(value) || _.isNil(value) || moment(value, 'DD/MM/YYYY').isValid()) {
 					return true;
 				}
