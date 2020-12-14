@@ -549,7 +549,7 @@ class CourseDetail extends Component {
                         </Col>
                       </Row> 
 
-            
+             
                       <Row className="margin-top-8">
                       {/* gray800-14-opacity */}
                         <Col sm={12}>
@@ -734,6 +734,7 @@ class CourseDetail extends Component {
                         relatedObjects.map(object => (
                           <RelatedObject
                             relatedObject={object}
+                            objectType={object.objectType}
                             activeLink={true}
                             showRelationshipAnswer={true}
                             datasetPublisher={object.datasetPublisher} 

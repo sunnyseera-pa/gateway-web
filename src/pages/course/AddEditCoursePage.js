@@ -211,7 +211,7 @@ class AddEditCoursePage extends React.Component {
 				(object) => object.objectId !== id
 			)})
 		} else {
-			this.state.tempRelatedObjectIds.push({ objectId: id, type: type, pid: pid });
+			this.state.tempRelatedObjectIds.push({ objectId: id, objectType: type, pid: pid });
 		}
 		this.setState({ tempRelatedObjectIds: this.state.tempRelatedObjectIds });
 	};
@@ -226,7 +226,7 @@ class AddEditCoursePage extends React.Component {
 				...relatedObject, 
 				objectId: relatedObject.type === 'dataset' ? relatedObject.pid : relatedObject.objectId, 
 				user: user.name, 
-				updated: moment().format('DD MM YYYY') 
+				updated: moment().format('DD MMM YYYY') 
 			};
 			return newRelatedObject; 
 		});
@@ -293,7 +293,7 @@ class AddEditCoursePage extends React.Component {
 			courseData,
 			summary,
 			relatedObjects,
-			didDelete,
+			didDelete, 
 			showDrawer,
 			showModal,
 			context

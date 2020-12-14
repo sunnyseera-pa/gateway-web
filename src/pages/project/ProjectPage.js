@@ -522,7 +522,7 @@ class ProjectDetail extends Component {
                               <Col sm={12}>Collaborators</Col>
                             </Row>
                             <Row className="mt-3">
-                              {data.persons.map(author => (
+                              {data.persons.map(author => ( 
                                 <Col sm={6} key={author.id}>
                                   <Creators key={author.id} author={author} />
                                 </Col>
@@ -545,7 +545,8 @@ class ProjectDetail extends Component {
                       ) : (
                         relatedObjects.map(object => (
                           <RelatedObject
-                            relatedObject={object}
+                            relatedObject={object} 
+                            objectType={object.objectType}
                             activeLink={true}
                             showRelationshipAnswer={true}
                             datasetPublisher={object.datasetPublisher} 

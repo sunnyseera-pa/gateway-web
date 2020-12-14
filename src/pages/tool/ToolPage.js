@@ -124,7 +124,7 @@ class ToolDetail extends Component {
         document.title = res.data.data[0].name.trim();
 
         let counter = !this.state.data.counter
-          ? 1
+          ? 1 
           : this.state.data.counter + 1;
         this.updateCounter(this.props.match.params.toolID, counter);
         if(!_.isUndefined(res.data.data[0].relatedObjects)) {
@@ -315,7 +315,7 @@ class ToolDetail extends Component {
             userState={userState}
             doToggleDrawer={this.toggleDrawer}
           />
-          <Container className="margin-bottom-48">
+          <Container className="margin-bottom-48"> 
             {toolAdded ? (
               <Row className="">
                 <Col sm={1} lg={1} />
@@ -686,6 +686,7 @@ class ToolDetail extends Component {
                         relatedObjects.map(object => (
                           <RelatedObject
                             relatedObject={object}
+                            objectType={object.objectType}
                             activeLink={true}
                             showRelationshipAnswer={true}
                             datasetPublisher={object.datasetPublisher} 

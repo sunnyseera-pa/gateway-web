@@ -127,7 +127,7 @@ class ToolDetail extends Component {
           discourseTopic: res.data.discourseTopic
         });
         document.title = res.data.data[0].name.trim();
-
+ 
         let counter = !this.state.data.counter
           ? 1
           : this.state.data.counter + 1;
@@ -645,7 +645,7 @@ toggleHoverState(state) {
                     </Tab>
 
                     <Tab
-                      eventKey="Collaboration"
+                      eventKey="Collaboration" 
                       title={`Discussion (${discoursePostCount})`}
                     >
                       <DiscourseTopic
@@ -665,6 +665,7 @@ toggleHoverState(state) {
                         relatedObjects.map(object => (
                           <RelatedObject
                             relatedObject={object}
+                            objectType={object.objectType}
                             activeLink={true}
                             showRelationshipAnswer={true}
                             datasetPublisher={object.datasetPublisher} 
