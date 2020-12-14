@@ -39,7 +39,23 @@ class DataQuality extends React.Component {
   }
 
 
-  async getWeights(datasetUtility = {}) {
+  async getWeights(datasetUtility = {
+        metadata_richness: '',
+        availability_of_additional_documentation_and_support: '',
+        data_model: '',
+        data_dictionary: '',
+        provenance: '',
+        data_quality_management: '',
+        _process: '',
+        dama_quality_dim: '',
+        ensions: '',
+        allowable_uses: '',
+        time_lag: '',
+        timeliness: '',
+        linkages: '',
+        pathway_coverage: '',
+      }
+    ) {
     if(!_.isEmpty(datasetUtility)) {
       let weights = ["","Bronze","Silver","Gold","Platinum"] 
 
