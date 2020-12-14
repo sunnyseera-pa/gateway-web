@@ -104,17 +104,23 @@ class CourseDetail extends Component {
     axios
       .get(baseURL + "/api/v1/course/" + this.props.match.params.courseID) 
       .then( async (res) => {
-        this.setState({
-          data: res.data.data[0],
-          discourseTopic: res.data.discourseTopic
-        });
-        document.title = res.data.data[0].title.trim();
+        if(_.isNil(res.data)){
+					window.localStorage.setItem('redirectMsg', `Course not found for Id: ${this.props.match.params.courseID}`);  
+					this.props.history.push({pathname: "/search?search=", search:""});
+				}
+				else{
+          this.setState({
+            data: res.data.data[0],
+            discourseTopic: res.data.discourseTopic
+          });
+          document.title = res.data.data[0].title.trim();
 
-        let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
-        this.updateCounter(this.props.match.params.courseID, counter);
+          let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
+          this.updateCounter(this.props.match.params.courseID, counter);
 
-        if(!_.isUndefined(res.data.data[0].relatedObjects)) {
-          await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+          if(!_.isUndefined(res.data.data[0].relatedObjects)) {
+            await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+          }
         }
       })
       .catch((err) => {

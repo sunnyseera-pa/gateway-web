@@ -1410,7 +1410,7 @@ button a {
   right: 66%;
   left: 34%;
   z-index: 999999;
-  width: 440px;
+  width: max-content;
   padding: 10px 15px;
   max-height: calc(100% - 30px);
   overflow-x: hidden;
