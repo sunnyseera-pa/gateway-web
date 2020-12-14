@@ -377,10 +377,7 @@ const YourAccountForm = (props) => {
                                     className={"sectorTypeahead addFormInput margin-bottom-8 margin-top-8"} 
                                     onBlur={ formik.handleBlur }
                                     onChange={(selected) => {
-                                        var tempSelected = [];
-                                        selected.forEach((selectedItem) => {
-                                            selectedItem.customOption === true ? tempSelected.push(selectedItem.sector) : tempSelected.push(selectedItem);
-                                        })
+                                        let tempSelected = [...selected].map((selected) => { return selected.customOption ? selected.sector : selected })
                                         tempSelected.length > 0 ? formik.values.sector = tempSelected[0] : formik.values.sector = ""
                                         formik.setFieldTouched("sector", true)
                                     }}
