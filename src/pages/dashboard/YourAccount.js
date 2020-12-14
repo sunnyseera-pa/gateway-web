@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import axios from 'axios';
 import * as Yup from 'yup';
-import { Row, Col, Button, Alert, Form, DropdownButton, Dropdown } from 'react-bootstrap';
+import { Row, Col, Button, Alert, Form } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import queryString from 'query-string';
@@ -251,10 +251,6 @@ const YourAccountForm = (props) => {
                 });
         }
     });
-
-    const handleSectorSelect=(key)=>{
-        {formik.setFieldValue("sector", key)};
-    }
 
     function bioCount(e) {
         document.getElementById("bioCurrentCount").innerHTML=e.target.value.length
