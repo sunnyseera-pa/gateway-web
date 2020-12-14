@@ -352,21 +352,24 @@ const YourAccountForm = (props) => {
                                 <span className="gray700-13">Select one of the sectors your work falls under below</span>
                                 <Row>
                                 <Col sm={4} lg={4}>   
-                                <DropdownButton variant="white"  
-                                    title={formik.values.sector || <option disabled selected value></option>}
-                                    className={formik.touched.sector && formik.errors.sector ? "emptyFormInput  gray800-14 custom-dropdown margin-top-8 padding-right-0" :  "gray700-13 custom-dropdown margin-top-8 padding-right-0"} 
-                                    onChange={(selected) => {formik.setFieldValue("sector", selected.target.value);}}
-                                    value={ formik.values.sector } 
-                                    onBlur={() => formik.setFieldTouched("sector", true)} 
-                                    touched={formik.touched.sector}
-                                    onSelect={(selected) => handleSectorSelect(selected)}>
-                                    
-                                    {sectorSelect.map((sec, i) => (
-                                        <Dropdown.Item className="gray800-14 width-100" key={sec} eventKey={sec}>
-                                            {sec}
-                                        </Dropdown.Item>
-                                    ))}
-                                </DropdownButton>
+                                <Typeahead
+                                    id="sector"
+                                    name="sector"
+                                    labelKey="sector"
+                                    allowNew
+                                    defaultSelected={formik.values.sector ? [formik.values.sector] : ""}
+                                    options={sectorSelect}
+                                    className={"sectorTypeahead addFormInput margin-bottom-8 margin-top-8"} 
+                                    onBlur={ formik.handleBlur }
+                                    onChange={(selected) => {
+                                        var tempSelected = [];
+                                        selected.forEach((selectedItem) => {
+                                            selectedItem.customOption === true ? tempSelected.push(selectedItem.sector) : tempSelected.push(selectedItem);
+                                        })
+                                        tempSelected.length > 0 ? formik.values.sector = tempSelected[0] : formik.values.sector = ""
+                                        formik.setFieldTouched("sector", true)
+                                    }}
+                                />
                                 
                                 </Col>
                                 <Col sm={1} lg={1} className='eyeColumn' onMouseEnter={() => setSectorHover(true)} onMouseLeave={() => setSectorHover(false)}>
