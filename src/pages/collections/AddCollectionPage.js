@@ -11,7 +11,7 @@ import Loading from '../commonComponents/Loading';
 import RelatedResources from '../commonComponents/relatedResources/RelatedResources';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 
-import moment from 'moment';
+import moment from 'moment'; 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
 import ToolTip from '../../images/imageURL-ToolTip.gif';
@@ -112,7 +112,7 @@ class AddCollectionPage extends React.Component {
                     summary: res.data.summary || [],
                     isLoading: false
                 });
-            })
+            }) 
         }
     }
  
@@ -252,6 +252,7 @@ const AddCollectionForm = (props) => {
             if(object.objectId===id){
                 inRelatedObject = true;
                 object.reason = reason;
+				object.objectType = type;
                 object.user = props.userState[0].name;
                 object.updated = moment().format("DD MMM YYYY");
             }
@@ -350,7 +351,7 @@ const AddCollectionForm = (props) => {
                                     {formik.touched.imageLink && formik.errors.imageLink ? <div className="errorMessages">{formik.errors.imageLink}</div> : null}
                                 </Form.Group>
                             </div>
-    
+     
                             <div className="rectangle margin-top-16">
                                 <span className="black-20">Add resources</span>
                                 <br/>
@@ -361,14 +362,14 @@ const AddCollectionForm = (props) => {
                                 {props.relatedObjects.map((object) => { 
                                     return (
                                         <div className="relatedObjectRectangle"> 
-                                            <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} inCollection={true}/>
+                                            <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} objectType={object.objectType} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} inCollection={true}/>
                                         </div>   
                                     )
                                 })}
 
                                 <div className="flexCenter pt-3 pb-3">
                                     <Row>
-                                        <Col sm={1} lg={1} />
+                                        <Col sm={1} lg={1} /> 
                                         <Col sm={10} lg={10}> 
                                             <RelatedResources ref={relatedResourcesRef} searchString={props.searchString} doSearchMethod={props.doSearchMethod} doUpdateSearchString={props.doUpdateSearchString} userState={props.userState} datasetData={props.datasetData} toolData={props.toolData} projectData={props.projectData} personData={props.personData} paperData={props.paperData} courseData={props.courseData} summary={props.summary} doAddToTempRelatedObjects={props.doAddToTempRelatedObjects} tempRelatedObjectIds={props.tempRelatedObjectIds} relatedObjects={props.relatedObjects} doClearRelatedObjects={props.doClearRelatedObjects} doAddToRelatedObjects={props.doAddToRelatedObjects} />
                                         </Col>

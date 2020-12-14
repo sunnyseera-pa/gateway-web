@@ -1,5 +1,5 @@
 // /ShowObjects.js
-import React, { Component } from "react";
+import React, { Component } from "react"; 
 import axios from "axios";
 import queryString from "query-string";
 import * as Sentry from '@sentry/react';
@@ -27,6 +27,8 @@ import UserMessages from "../commonComponents/userMessages/UserMessages";
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
+import CollectionCard from "../commonComponents/collectionCard/CollectionCard";
+
 
 class ToolDetail extends Component {
   // initialize our state
@@ -64,7 +66,8 @@ class ToolDetail extends Component {
     showDrawer: false,
     showModal: false,
     showError: false,
-    context: {}
+    context: {},
+    collections: []
   };
  
   constructor(props) { 
@@ -133,10 +136,22 @@ class ToolDetail extends Component {
               await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
           }
         }
-      }).finally(() => {
+    }).finally(() => {
+        this.getCollections();
         this.setState({ isLoading: false });
     });
   };
+
+  getCollections() {
+    this.setState({ isLoading: true });
+    axios
+      .get(baseURL + "/api/v1/collections/entityid/" + this.state.data.id)
+      .then(res => {
+        this.setState({
+          collections: res.data.data || [] 
+        });
+      });
+  }
 
   doSearch = e => {
     //fires on enter on searchbar
@@ -261,7 +276,8 @@ class ToolDetail extends Component {
       discoursePostCount,
       showDrawer,
       showModal,
-      context
+      context,
+      collections
     } = this.state;
 
     if (isLoading) {
@@ -299,7 +315,7 @@ class ToolDetail extends Component {
             userState={userState}
             doToggleDrawer={this.toggleDrawer}
           />
-          <Container className="margin-bottom-48">
+          <Container className="margin-bottom-48"> 
             {toolAdded ? (
               <Row className="">
                 <Col sm={1} lg={1} />
@@ -670,12 +686,38 @@ class ToolDetail extends Component {
                         relatedObjects.map(object => (
                           <RelatedObject
                             relatedObject={object}
+                            objectType={object.objectType}
                             activeLink={true}
                             showRelationshipAnswer={true}
                             datasetPublisher={object.datasetPublisher} 
                             datasetLogo={object.datasetLogo}
                           />
                         ))
+                      )}
+                    </Tab>
+                    <Tab
+                      eventKey="Collections" 
+                      title={
+                        "Collections (" + collections.length + ")"
+                      }
+                    >
+                      {!collections ||
+                      collections.length <= 0 ? (
+                        <NotFound text="This tool has not been featured on any collections yet."/> 
+                      ) : (
+                        <>
+                          <NotFound text="This tool appears on the collections below. A collection is a group of resources on the same theme."/> 
+
+                          <Row >
+                            {
+                              collections.map((collection) => (
+                                <Col sm={12} md={12} lg={6} style={{"text-align": "-webkit-center"}}>
+                                  <CollectionCard data={collection} /> 
+                                </Col>
+                              ))
+                            }
+                          </Row>
+                        </>
                       )}
                     </Tab>
                   </Tabs>

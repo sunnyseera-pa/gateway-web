@@ -11,7 +11,7 @@ import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-import SVGIcon from '../../images/SVGIcon';
+import SVGIcon from '../../images/SVGIcon'; 
 import _ from 'lodash';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -112,6 +112,7 @@ const AddEditProjectForm = (props) => {
             if(object.objectId===id){
                 inRelatedObject = true;
                 object.reason = reason;
+                object.objectType = type;
                 object.user = props.userState[0].name;
                 object.updated = moment().format("DD MMM YYYY");
             }

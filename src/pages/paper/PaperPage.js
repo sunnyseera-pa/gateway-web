@@ -16,6 +16,7 @@ import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
+import CollectionCard from "../commonComponents/collectionCard/CollectionCard";
 
 import "react-tabs/style/react-tabs.css";
 import { baseURL } from "../../configs/url.config";
@@ -64,7 +65,8 @@ class ToolDetail extends Component {
     showModal: false,
     showError: false,
     isHovering: false,
-    context: {}
+    context: {},
+    collections: []
   };
 
   constructor(props) {
@@ -139,10 +141,28 @@ class ToolDetail extends Component {
           }
         }
       })
-      .finally(() => {
+      .catch((err) => {
+        //check if request is for a PaperID or a different route such as /add
+        if(!isNaN(this.props.match.params.paperID)){
+          window.localStorage.setItem('redirectMsg', err.response.data);
+        }
+        this.props.history.push({pathname: "/search?search=", search:""});
+      }).finally(() => {
+        this.getCollections();
         this.setState({ isLoading: false });
     });
   }; 
+
+  getCollections() {
+    this.setState({ isLoading: true });
+    axios
+      .get(baseURL + "/api/v1/collections/entityid/" + this.state.data.id)
+      .then(res => {
+        this.setState({
+          collections: res.data.data || [] 
+        });
+      });
+  }
 
   doSearch = e => {
     //fires on enter on searchbar
@@ -273,7 +293,8 @@ toggleHoverState(state) {
       discoursePostCount,
       showDrawer,
       showModal,
-      context
+      context,
+      collections
     } = this.state;
 
 
@@ -629,19 +650,19 @@ toggleHoverState(state) {
                     </Tab>
 
                     <Tab
-                      eventKey="Collaboration"
+                      eventKey="Collaboration" 
                       title={`Discussion (${discoursePostCount})`}
                     >
                       <DiscourseTopic
-                        toolId={data.id}
+                        toolId={data.id} 
                         topicId={data.discourseTopicId || 0}
                         userState={userState}
                         onUpdateDiscoursePostCount={this.updateDiscoursePostCount}
-                      />
+                      /> 
                     </Tab>
                     <Tab
                       eventKey="Projects"
-                      title={"Related resources (" + relatedObjects.length + ")"}
+                      title={"Related resources (" + relatedObjects.length + ")"} 
                     >
                       {relatedObjects.length <= 0 ? (
                         <NotFound word="related resources" />
@@ -649,12 +670,38 @@ toggleHoverState(state) {
                         relatedObjects.map(object => (
                           <RelatedObject
                             relatedObject={object}
+                            objectType={object.objectType}
                             activeLink={true}
                             showRelationshipAnswer={true}
                             datasetPublisher={object.datasetPublisher} 
                             datasetLogo={object.datasetLogo}
                           />
                         ))
+                      )}
+                    </Tab>
+                    <Tab
+                      eventKey="Collections"
+                      title={
+                        "Collections (" + collections.length + ")"
+                      }
+                    >
+                      {!collections ||
+                      collections.length <= 0 ? (
+                        <NotFound text="This paper has not been featured on any collections yet."/> 
+                      ) : (
+                        <>
+                          <NotFound text="This paper appears on the collections below. A collection is a group of resources on the same theme."/> 
+
+                          <Row >
+                            {
+                              collections.map((collection) => (
+                                <Col sm={12} md={12} lg={6} style={{"text-align": "-webkit-center"}}>
+                                  <CollectionCard data={collection} /> 
+                                </Col>
+                              ))
+                            }
+                          </Row>
+                        </>
                       )}
                     </Tab>
                   </Tabs>

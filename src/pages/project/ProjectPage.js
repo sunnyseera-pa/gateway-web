@@ -20,6 +20,7 @@ import UserMessages from "../commonComponents/userMessages/UserMessages";
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
+import CollectionCard from "../commonComponents/collectionCard/CollectionCard";
 
 // import ReactGA from 'react-ga';
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
@@ -57,7 +58,8 @@ class ProjectDetail extends Component {
     showDrawer: false,
     showModal: false,
     showError: false,
-    context: {}
+    context: {},
+    collections: []
   };
 
   constructor(props) {
@@ -120,11 +122,22 @@ class ProjectDetail extends Component {
             await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
           }
         }
-      })
-      .finally(() => {
+      }).finally(() => {
+        this.getCollections();
         this.setState({ isLoading: false });
     });
   };
+  
+  getCollections() {
+    this.setState({ isLoading: true });
+    axios
+      .get(baseURL + "/api/v1/collections/entityid/" + this.state.data.id)
+      .then(res => {
+        this.setState({
+          collections: res.data.data || [] 
+        });
+      });
+  }
 
   doSearch = e => {
     //fires on enter on searchbar
@@ -243,9 +256,10 @@ class ProjectDetail extends Component {
       discoursePostCount,
       showDrawer,
       showModal,
-      context
+      context,
+      collections
     } = this.state;
-
+ 
     if (isLoading) {
       return (
         <Container>
@@ -507,7 +521,7 @@ class ProjectDetail extends Component {
                               <Col sm={12}>Collaborators</Col>
                             </Row>
                             <Row className="mt-3">
-                              {data.persons.map(author => (
+                              {data.persons.map(author => ( 
                                 <Col sm={6} key={author.id}>
                                   <Creators key={author.id} author={author} />
                                 </Col>
@@ -517,7 +531,7 @@ class ProjectDetail extends Component {
                         </Col>
                       </Row>
                     </Tab>
-
+ 
                     <Tab eventKey="Collaboration" title={`Discussion (${discoursePostCount})`}>
                       <DiscourseTopic toolId={data.id} topicId={data.discourseTopicId || 0} userState={userState} onUpdateDiscoursePostCount={this.updateDiscoursePostCount}/>
                     </Tab>
@@ -530,13 +544,39 @@ class ProjectDetail extends Component {
                       ) : (
                         relatedObjects.map(object => (
                           <RelatedObject
-                            relatedObject={object}
+                            relatedObject={object} 
+                            objectType={object.objectType}
                             activeLink={true}
                             showRelationshipAnswer={true}
                             datasetPublisher={object.datasetPublisher} 
                             datasetLogo={object.datasetLogo} 
                           />
                         ))
+                      )}
+                    </Tab>
+                    <Tab
+                      eventKey="Collections"
+                      title={
+                        "Collections (" + collections.length + ")"
+                      }
+                    >
+                      {!collections ||
+                      collections.length <= 0 ? (
+                        <NotFound text="This project has not been featured on any collections yet."/> 
+                      ) : (
+                        <>
+                          <NotFound text="This project appears on the collections below. A collection is a group of resources on the same theme."/> 
+
+                          <Row >
+                            {
+                              collections.map((collection) => (
+                                <Col sm={12} md={12} lg={6} style={{"text-align": "-webkit-center"}}>
+                                  <CollectionCard data={collection} /> 
+                                </Col>
+                              ))
+                            }
+                          </Row>
+                        </>
                       )}
                     </Tab>
                   </Tabs>
