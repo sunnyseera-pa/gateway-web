@@ -129,7 +129,7 @@ class DataAccessRequest extends Component {
 			workflowAssigned: false,
 			roles: [],
 			nationalCoreStudiesProjects: [],
-			inReviewMode: false
+			inReviewMode: false,
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -404,11 +404,14 @@ class DataAccessRequest extends Component {
 
 		// 5. If multiple datasets are allowed, append 'about this application' section
 		if (allowsMultipleDatasets) {
-			let { pages } = {...jsonSchema};
+			let { pages } = { ...jsonSchema };
 			// see if the schema has about already injected
-			let navElementsExist = [...pages].find(page => page.pageId === DarHelper.darStaticPageIds.ABOUT) || false;
+			let navElementsExist =
+				[...pages].find(
+					(page) => page.pageId === DarHelper.darStaticPageIds.ABOUT
+				) || false;
 
-			if(!navElementsExist) {
+			if (!navElementsExist) {
 				// Append 'about' panel and nav item
 				jsonSchema.pages[0].active = false;
 				jsonSchema.pages.unshift(DarHelper.staticContent.aboutPageNav);
@@ -429,8 +432,11 @@ class DataAccessRequest extends Component {
 
 		// 7. Append review sections to jsonSchema if in review mode
 		jsonSchema.pages = [...jsonSchema.pages].map((page) => {
-			let inReview = [...reviewSections].includes(page.pageId.toLowerCase()) || page.pageId === DarHelper.darStaticPageIds.ABOUT || page.pageId === DarHelper.darStaticPageIds.FILES;
-			return { ...page, inReview: (inReviewMode && inReview) };
+			let inReview =
+				[...reviewSections].includes(page.pageId.toLowerCase()) ||
+				page.pageId === DarHelper.darStaticPageIds.ABOUT ||
+				page.pageId === DarHelper.darStaticPageIds.FILES;
+			return { ...page, inReview: inReviewMode && inReview };
 		});
 
 		// 8. Hide show submit application
@@ -515,7 +521,11 @@ class DataAccessRequest extends Component {
 	 * @desc Callback from Winterfell sets totalQuestionsAnswered + saveTime
 	 */
 	onFormUpdate = (id = '', questionAnswers = {}) => {
-		if (!_.isEmpty(id) && !_.isEmpty(questionAnswers) && this.state.readOnly === false) {
+		if (
+			!_.isEmpty(id) &&
+			!_.isEmpty(questionAnswers) &&
+			this.state.readOnly === false
+		) {
 			let { lookup, activePanelId } = this.state;
 			// 1. check for auto complete
 			if (typeof id === 'string') {
@@ -570,15 +580,21 @@ class DataAccessRequest extends Component {
 				updatedQuestionId,
 			};
 			// 3. API Patch call
-			axios.patch(`${baseURL}/api/v1/data-access-request/${id}`, params).then((response) => {
-				let { data: { unansweredAmendments = 0, answeredAmendments = 0 } } = response;
-				let { applicationStatus } = this.state;
-				this.setState({
-					unansweredAmendments,
-					answeredAmendments,
-					showSubmit: applicationStatus === DarHelper.darStatus.inProgress || answeredAmendments > 0
+			axios
+				.patch(`${baseURL}/api/v1/data-access-request/${id}`, params)
+				.then((response) => {
+					let {
+						data: { unansweredAmendments = 0, answeredAmendments = 0 },
+					} = response;
+					let { applicationStatus } = this.state;
+					this.setState({
+						unansweredAmendments,
+						answeredAmendments,
+						showSubmit:
+							applicationStatus === DarHelper.darStatus.inProgress ||
+							answeredAmendments > 0,
+					});
 				});
-			});
 		} catch (error) {
 			console.log(`API PUT ERROR ${error}`);
 		}
@@ -645,7 +661,9 @@ class DataAccessRequest extends Component {
 			let activePage = _.get(_.keys({ ...errors }), 0);
 			let activePanel = _.get(_.keys({ ...errors }[activePage]), 0);
 			let validationMessages = validationSectionMessages;
-			alert('Some validation issues have been found. Please see all items highlighted in red on this page.');
+			alert(
+				'Some validation issues have been found. Please see all items highlighted in red on this page.'
+			);
 			this.updateNavigation(
 				{ pageId: activePage, panelId: activePanel },
 				validationMessages
@@ -729,7 +747,9 @@ class DataAccessRequest extends Component {
 			// copy state pages
 			const pages = [...this.state.jsonSchema.pages];
 			// get the index of new form
-			const newPageindex = pages.findIndex((page) => page.pageId === newForm.pageId);			
+			const newPageindex = pages.findIndex(
+				(page) => page.pageId === newForm.pageId
+			);
 			reviewWarning = !pages[newPageindex].inReview && this.state.inReviewMode;
 			// reset the current state of active to false for all pages
 			const newFormState = [...this.state.jsonSchema.pages].map((item) => {
@@ -785,33 +805,48 @@ class DataAccessRequest extends Component {
 
 	onQuestionClick = async (questionSetId = '', questionId = '') => {
 		let questionSet, jsonSchema, questionAnswers, data;
-		
-		questionSet = DarHelper.findQuestionSet(questionSetId, {...this.state.jsonSchema});
+
+		questionSet = DarHelper.findQuestionSet(questionSetId, {
+			...this.state.jsonSchema,
+		});
 
 		if (!_.isEmpty(questionSet) && !_.isEmpty(questionId)) {
-
 			// remove about and files from pages to stop duplicate, about / files added to DAR on init
-			let schema = DarHelper.removeStaticPages({...this.state.jsonSchema});
+			let schema = DarHelper.removeStaticPages({ ...this.state.jsonSchema });
 
-			let { 
-				input: { 
-					action 
-				} 
+			let {
+				input: { action },
 			} = DarHelper.findQuestion(questionId, questionSet);
 			switch (action) {
 				case 'addApplicant':
-					let duplicateQuestionSet = DarHelper.questionSetToDuplicate(questionSetId, { ...schema });
-					jsonSchema = DarHelper.insertSchemaUpdates(questionSetId, duplicateQuestionSet, { ...schema });
+					let duplicateQuestionSet = DarHelper.questionSetToDuplicate(
+						questionSetId,
+						{ ...schema }
+					);
+					jsonSchema = DarHelper.insertSchemaUpdates(
+						questionSetId,
+						duplicateQuestionSet,
+						{ ...schema }
+					);
 					data = { key: 'jsonSchema', data: jsonSchema };
 					// post to API to do of new jsonSchema
 					await this.updateApplication(data);
 					break;
 				case 'removeApplicant':
-					jsonSchema = DarHelper.removeQuestionReferences(questionSetId, questionId, { ...schema });
-					questionAnswers = DarHelper.removeQuestionAnswers(questionId, { ...this.state.questionAnswers});
+					jsonSchema = DarHelper.removeQuestionReferences(
+						questionSetId,
+						questionId,
+						{ ...schema }
+					);
+					questionAnswers = DarHelper.removeQuestionAnswers(questionId, {
+						...this.state.questionAnswers,
+					});
 					// post to API of new jsonSchema
 					await this.updateApplication({ key: 'jsonSchema', data: jsonSchema });
-					await this.updateApplication({ key: 'questionAnswers', data: questionAnswers });
+					await this.updateApplication({
+						key: 'questionAnswers',
+						data: questionAnswers,
+					});
 					break;
 				default:
 					console.log(questionSetId);
@@ -822,10 +857,12 @@ class DataAccessRequest extends Component {
 
 	onHandleDataSetChange = (value = []) => {
 		// 1. Deconstruct current state
-		let { aboutApplication, allowedNavigation, topicContext } = {...this.state};
+		let { aboutApplication, allowedNavigation, topicContext } = {
+			...this.state,
+		};
 
 		aboutApplication.selectedDatasets = [...value];
-		
+
 		// 3. If no datasets are passed, set invalid and incomplete step, and update message context
 		if (_.isEmpty(value)) {
 			let emptyTopicContext = DarHelper.createTopicContext();
@@ -979,7 +1016,7 @@ class DataAccessRequest extends Component {
 				case 6:
 					aboutApplication.completedSubmitAdvice = completed;
 					break;
-				
+
 				default:
 					console.error('Invalid step passed');
 					break;
@@ -1185,7 +1222,7 @@ class DataAccessRequest extends Component {
 		e.preventDefault();
 		this.props.history.push({
 			pathname: `/account`,
-			search: '?tab=dataaccessrequests'
+			search: '?tab=dataaccessrequests',
 		});
 	};
 
@@ -1243,8 +1280,6 @@ class DataAccessRequest extends Component {
 		</Tooltip>
 	);
 
-	
-
 	renderApp = () => {
 		let { activePanelId } = this.state;
 		if (activePanelId === 'about') {
@@ -1254,7 +1289,10 @@ class DataAccessRequest extends Component {
 					allowedNavigation={this.state.allowedNavigation}
 					userType={this.state.userType}
 					selectedDatasets={this.state.aboutApplication.selectedDatasets}
-					readOnly={this.state.readOnly || this.state.applicationStatus !== DarHelper.darStatus.inProgress}
+					readOnly={
+						this.state.readOnly ||
+						this.state.applicationStatus !== DarHelper.darStatus.inProgress
+					}
 					projectNameValid={this.state.projectNameValid}
 					projectName={this.state.aboutApplication.projectName}
 					nationalCoreStudiesProjects={this.state.nationalCoreStudiesProjects}
@@ -1314,7 +1352,7 @@ class DataAccessRequest extends Component {
 					disableSubmit={true}
 					readOnly={this.state.readOnly}
 					validationErrors={this.state.validationErrors}
-					renderRequiredAsterisk={() => <span>{'*'}</span>} 				
+					renderRequiredAsterisk={() => <span>{'*'}</span>}
 					onQuestionFocus={this.onQuestionFocus}
 					onQuestionClick={this.onQuestionClick}
 					onUpdate={this.onFormUpdate}
@@ -1353,6 +1391,15 @@ class DataAccessRequest extends Component {
 		Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
 		Winterfell.addInputType('datePickerCustom', DatePickerCustom);
 		Winterfell.addInputType('typeaheadUser', TypeaheadUser);
+		Winterfell.validation.default.addValidationMethods({
+			'isCustomDate': (value) => {
+				debugger;
+				if (_.isEmpty(value) || _.isNil(value) || moment(value, 'DD/MM/YYYY').isValid()) {
+					return true;
+				}
+				return false;
+			},
+		});
 
 		if (isLoading) {
 			return (
@@ -1389,8 +1436,14 @@ class DataAccessRequest extends Component {
 							</span>
 						)}
 					</Col>
-					<Col sm={12} md={4} className='d-flex justify-content-end align-items-center banner-right'>
-						<span className='white-14-semibold'>{DarHelper.getSavedAgo(lastSaved)}</span>
+					<Col
+						sm={12}
+						md={4}
+						className='d-flex justify-content-end align-items-center banner-right'
+					>
+						<span className='white-14-semibold'>
+							{DarHelper.getSavedAgo(lastSaved)}
+						</span>
 						{
 							<a
 								className={`linkButton white-14-semibold ml-2 ${
@@ -1402,7 +1455,12 @@ class DataAccessRequest extends Component {
 								Save now
 							</a>
 						}
-						<CloseButtonSvg width="16px" height="16px" fill="#fff" onClick={(e) => this.redirectDashboard(e)}/>
+						<CloseButtonSvg
+							width='16px'
+							height='16px'
+							fill='#fff'
+							onClick={(e) => this.redirectDashboard(e)}
+						/>
 					</Col>
 				</Row>
 
@@ -1486,10 +1544,12 @@ class DataAccessRequest extends Component {
 											''
 										)
 								  )
-							: ''}
+								: ''}
 						</div>
 						<div
-							className={`dar__questions ${this.state.activePanelId === 'about' ? 'pad-bottom-0' : ''}`}
+							className={`dar__questions ${
+								this.state.activePanelId === 'about' ? 'pad-bottom-0' : ''
+							}`}
 							style={{ backgroundColor: '#ffffff' }}
 						>
 							{this.renderApp()}
@@ -1505,7 +1565,11 @@ class DataAccessRequest extends Component {
 								<Tab eventKey='guidance' title='Guidance'>
 									<div className='darTab'>
 										<Col md={12} className='gray700-14'>
-											<span>{activeGuidance ? activeGuidance : 'Active guidance for questions'}</span>
+											<span>
+												{activeGuidance
+													? activeGuidance
+													: 'Active guidance for questions'}
+											</span>
 										</Col>
 									</div>
 								</Tab>
