@@ -135,7 +135,7 @@ class ToolDetail extends Component {
           if(!_.isUndefined(res.data.data[0].relatedObjects)) {
               await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
           }
-        this.props.history.push({pathname: "/search?search=", search:""});
+        }
     }).finally(() => {
         this.getCollections();
         this.setState({ isLoading: false });
