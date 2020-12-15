@@ -19,6 +19,7 @@ import UserMessages from "../commonComponents/userMessages/UserMessages";
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
+import CollectionCard from "../commonComponents/collectionCard/CollectionCard";
 import './Course.scss'; 
 
 // import ReactGA from 'react-ga';
@@ -57,7 +58,8 @@ class CourseDetail extends Component {
     showDrawer: false,
     showModal: false,
     showError: false,
-    context: {}
+    context: {},
+    collections: []
   };
 
   constructor(props) {
@@ -121,10 +123,28 @@ class CourseDetail extends Component {
           }
         }
       })
-      .finally(() => {
+      .catch((err) => {
+          //check if request is for a courseID or a different route such as /add
+          if(!isNaN(this.props.match.params.courseID)){
+            window.localStorage.setItem('redirectMsg', err.response.data);  
+          }
+          this.props.history.push({pathname: "/search?search=", search:""});
+      }).finally(() => {
+        this.getCollections();
         this.setState({ isLoading: false });
     });
   }; 
+
+  getCollections() {
+    this.setState({ isLoading: true });
+    axios
+      .get(baseURL + "/api/v1/collections/entityid/" + this.state.data.id)
+      .then(res => {
+        this.setState({
+          collections: res.data.data || [] 
+        });
+      });
+  }
 
   doSearch = e => {
     //fires on enter on searchbar
@@ -245,7 +265,8 @@ class CourseDetail extends Component {
       discoursePostCount,
       showDrawer,
       showModal,
-      context
+      context,
+      collections
     } = this.state;
 
     if (isLoading) {
@@ -534,7 +555,7 @@ class CourseDetail extends Component {
                         </Col>
                       </Row> 
 
-            
+             
                       <Row className="margin-top-8">
                       {/* gray800-14-opacity */}
                         <Col sm={12}>
@@ -547,7 +568,7 @@ class CourseDetail extends Component {
                             {data.courseOptions.map((courseOption) => {
                               return(
                                 <div className="margin-top-24">
-                                <Row className="gray800-14-opacity">
+                                <Row className="gray800-14-opacity"> 
                                 <Col sm={12}>
                                   {courseOption.flexibleDates ? 'Flexible' : moment(courseOption.startDate).format("dddd Do MMMM YYYY")}
                                 </Col>
@@ -719,12 +740,38 @@ class CourseDetail extends Component {
                         relatedObjects.map(object => (
                           <RelatedObject
                             relatedObject={object}
+                            objectType={object.objectType}
                             activeLink={true}
                             showRelationshipAnswer={true}
                             datasetPublisher={object.datasetPublisher} 
                             datasetLogo={object.datasetLogo}
                           />
                         ))
+                      )}
+                    </Tab>
+                    <Tab
+                      eventKey="Collections"
+                      title={
+                        "Collections (" + collections.length + ")"
+                      }
+                    >
+                      {!collections ||
+                      collections.length <= 0 ? (
+                        <NotFound text="This course has not been featured on any collections yet."/> 
+                      ) : (
+                        <>
+                          <NotFound text="This course appears on the collections below. A collection is a group of resources on the same theme."/> 
+
+                          <Row >
+                            {
+                              collections.map((collection) => (
+                                <Col sm={12} md={12} lg={6} style={{"text-align": "-webkit-center"}}>
+                                  <CollectionCard data={collection} /> 
+                                </Col>
+                              ))
+                            }
+                          </Row>
+                        </>
                       )}
                     </Tab>
                   </Tabs>

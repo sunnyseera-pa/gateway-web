@@ -36,7 +36,7 @@ class RelatedObject extends React.Component {
         if(props.didDelete){
             this.state.didDelete = props.didDelete;
         }
-        if(props.inCollection){
+        if(props.inCollection){ 
             this.state.inCollection = props.inCollection;
         }
         if (props.data) {
@@ -75,10 +75,9 @@ class RelatedObject extends React.Component {
         this.getRelatedObjectFromDb(id, type);
     }
 
- 
     getRelatedObjectFromDb = (id, type) => {
         //need to handle error if no id is found
-        this.setState({ isLoading: true });
+        this.setState({ isLoading: true }); 
 
         if(type === 'course'){
             axios.get(baseURL + '/api/v1/relatedobject/course/' + id)
@@ -116,7 +115,7 @@ class RelatedObject extends React.Component {
 
     updateOnFilterBadge = (filter, option) => {
         this.props.updateOnFilterBadge(filter, option);
-    }
+    } 
  
     render() {
         const { data, isLoading, activeLink, onSearchPage, relatedObject, inCollection, publisherLogoURL } = this.state; 
@@ -130,7 +129,7 @@ class RelatedObject extends React.Component {
         if (isLoading) {
             return <Loading />;
         }
-
+ 
         if(this.props.didDelete){
             this.props.updateDeleteFlag()
             this.removeCard(this.props.objectId, this.props.reason, this.props.objectType)
@@ -451,29 +450,29 @@ class RelatedObject extends React.Component {
                                             <Row className="margin-top-8">
                                                 <Col sm={12} lg={12}>
                                             <CalendarSvg className="calendarSVG"/>
-                                            <span className="gray800-14 margin-left-10">
-                                            
+                                            <span className="gray800-14 margin-left-10"> 
                                             {(() => {
                                                 let courseRender = []
                                                 if (onSearchPage === true) { 
-                                                    if (data.courseOptions.startDate) {
+                                                    if (_.has(data.courseOptions, 'startDate')){
+
                                                         courseRender.push(<span> Starts {moment(data.courseOptions.startDate).format("dddd Do MMMM YYYY")} </span>);
                                                     }
-                                                    else {
+                                                    else { 
                                                         courseRender.push(<span> Flexible dates </span>)
                                                     }
-                                                    if (data.courseOptions.startDate && data.courseOptions.studyMode) courseRender.push(<span> | {data.courseOptions.studyMode} </span>);
+                                                    if (_.has(data.courseOptions, 'startDate') && _.has(data.courseOptions, 'studyMode')) courseRender.push(<span> | {data.courseOptions.studyMode} </span>);
                                                 }
                                                 else {
-                                                    if (data.courseOptions[0].startDate) {
+                                                    if (_.has(data.courseOptions[0], 'startDate')){
                                                         courseRender.push(<span> Starts {moment(data.courseOptions[0].startDate).format("dddd Do MMMM YYYY")} </span>);
                                                     }
                                                     else {
                                                         courseRender.push(<span> Flexible dates </span>)
                                                     }
-                                                    if (data.courseOptions[0].startDate && data.courseOptions[0].studyMode) courseRender.push('|');
+                                                    if (_.has(data.courseOptions[0], 'startDate') && _.has(data.courseOptions[0], 'studyMode')) courseRender.push('|');
 
-                                                    data.courseOptions.map((courseOption, index) => { 
+                                                    !_.isEmpty(data.courseOptions[0]) && data.courseOptions.map((courseOption, index) => { 
                                                         courseRender.push(
                                                             <>
                                                               {index > 0 ? <span> ,{courseOption.studyMode} </span> :  <span> {courseOption.studyMode} </span> }
@@ -536,9 +535,9 @@ class RelatedObject extends React.Component {
                                 );
                             }
                             else { //default to dataset
-                                var phenotypesSelected = queryString.parse(window.location.search).phenotypes ? queryString.parse(window.location.search).phenotypes.split("::") : [];
-                                var searchTerm = queryString.parse(window.location.search).search ? queryString.parse(window.location.search).search : '';
-                                var phenotypesSeached = data.datasetfields.phenotypes.filter(phenotype => phenotype.name.toLowerCase() === searchTerm.toLowerCase())
+                                const phenotypesSelected = queryString.parse(window.location.search).phenotypes ? queryString.parse(window.location.search).phenotypes.split("::") : [];
+                                const searchTerm = queryString.parse(window.location.search).search ? queryString.parse(window.location.search).search : '';
+                                const phenotypesSeached = data.datasetfields.phenotypes.filter(phenotype => phenotype.name.toLowerCase() === searchTerm.toLowerCase());
                                 return (
                                     <Row className="noMargin">
                                         <Col sm={10} lg={10} className="pad-left-24">
@@ -559,10 +558,10 @@ class RelatedObject extends React.Component {
                                                         </span>
                                                     : ""
                                                     }
-                                                    <span className="gray800-14"> {data.datasetv2.summary.publisher.name} </span>
+                                                    <span className="gray800-14" style={{ cursor: 'pointer' }} onClick={() => this.updateOnFilterBadge('publishersSelected', data.datasetfields.publisher)}> {data.datasetv2.summary.publisher.name} </span>
                                                 </>)
                                             :
-                                                <span className="gray800-14"> {data.datasetfields.publisher} </span>
+                                                <span className="gray800-14" style={{ cursor: 'pointer' }} onClick={() => this.updateOnFilterBadge('publishersSelected', data.datasetfields.publisher)}> {data.datasetfields.publisher} </span>
                                             }   
                                         </Col>
                                         <Col sm={2} lg={2} className="pad-right-24"> 
@@ -677,7 +676,7 @@ class RelatedObject extends React.Component {
                                         <Row className="noMargin">
                                             <div className="relationshipBar">
                                                 <span className="gray800-14 mr-2">Relationship</span>
-                                            </div>  
+                                            </div>   
                                         </Row>
                                         <Row className="noMargin">
                                             <Col className="pad-8" xs={12}>

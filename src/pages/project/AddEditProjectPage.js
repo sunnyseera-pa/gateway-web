@@ -160,7 +160,7 @@ class AddEditProjectPage extends React.Component {
             this.state.tempRelatedObjectIds = this.state.tempRelatedObjectIds.filter(object => object.objectId !== id);
         }
         else {
-            this.state.tempRelatedObjectIds.push({'objectId':id, 'type':type, 'pid': pid})
+            this.state.tempRelatedObjectIds.push({'objectId':id, 'objectType':type, 'pid': pid})
         }
        this.setState({tempRelatedObjectIds: this.state.tempRelatedObjectIds})
     }
@@ -175,7 +175,7 @@ class AddEditProjectPage extends React.Component {
                 ...relatedObject, 
                 objectId: relatedObject.type === 'dataset' ? relatedObject.pid : relatedObject.objectId, 
                 user: user.name, 
-                updated: moment().format('DD MM YYYY') 
+                updated: moment().format('DD MMM YYYY') 
             };
             return newRelatedObject; 
         });
@@ -223,7 +223,7 @@ class AddEditProjectPage extends React.Component {
             return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
         });
     }
-
+ 
     render() {
         const { data, isEdit, combinedTopic, combinedCategories, combinedUsers, combinedFeatures, isLoading, userState, searchString, datasetData, toolData, projectData, personData, paperData, courseData, summary, relatedObjects, didDelete, showDrawer, showModal, context } = this.state;
 

@@ -38,7 +38,7 @@ var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const AddEditToolForm = (props) => {
 	const formik = useFormik({
-		initialValues: {
+		initialValues: { 
 			id: props.data.id || '',
 			type: 'tool',
 			name: props.data.name || '',
@@ -60,7 +60,7 @@ const AddEditToolForm = (props) => {
 				features: [],
 				topics: [],
 			},
-			relatedObjects: props.relatedObjects || [],
+			relatedObjects: props.relatedObjects || [], 
 		},
 
 		validationSchema: Yup.object({
@@ -128,6 +128,7 @@ const AddEditToolForm = (props) => {
 			if (object.objectId === id) {
 				inRelatedObject = true;
 				object.reason = reason;
+				object.objectType = type;
 				object.user = props.userState[0].name;
 				object.updated = moment().format('DD MMM YYYY');
 			}
@@ -485,7 +486,7 @@ const AddEditToolForm = (props) => {
 														}}
 													/>
 												</Form.Group>
-											</div>
+											</div> 
 
 											<div className='rectangle mt-2'>
 												<span className='black-20'>Related resources</span>
@@ -501,9 +502,10 @@ const AddEditToolForm = (props) => {
 													{props.relatedObjects.map((object) => {
 														if(!_.isNil(object.objectId)){
 															return (
-																<RelatedObject
+																<RelatedObject 
 																	showRelationshipQuestion={true}
 																	objectId={object.objectId}
+																	objectType={object.objectType}
 																	doRemoveObject={props.doRemoveObject}
 																	doUpdateReason={updateReason}
 																	reason={object.reason}
@@ -536,7 +538,7 @@ const AddEditToolForm = (props) => {
 															doAddToTempRelatedObjects={props.doAddToTempRelatedObjects}
 															tempRelatedObjectIds={props.tempRelatedObjectIds}
 															relatedObjects={props.relatedObjects}
-															doClearRelatedObjects={props.doClearRelatedObjects}
+															doClearRelatedObjects={props.doClearRelatedObjects} 
 															doAddToRelatedObjects={props.doAddToRelatedObjects}
 														/>
 													</Col>
