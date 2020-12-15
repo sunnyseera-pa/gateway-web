@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import * as Yup from 'yup';
-import { Row, Col, Container, Button, Alert, Form } from 'react-bootstrap';
+import { Row, Col, Container, Button, Alert, Form, DropdownButton, Dropdown } from 'react-bootstrap';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
@@ -275,6 +275,10 @@ const YourAccountForm = (props) => {
         }
     });
 
+    const handleSectorSelect=(key)=>{
+        {formik.setFieldValue("sector", key)};
+    }
+
     function bioCount(e) {
         document.getElementById("bioCurrentCount").innerHTML=e.target.value.length
     }
@@ -367,22 +371,22 @@ const YourAccountForm = (props) => {
                                 <span className="gray700-13">Select one of the sectors your work falls under below</span>
                                 <Row>
                                 <Col sm={4} lg={4}>
-                                <Typeahead
-                                    id="sector"
-                                    name="sector"
-                                    labelKey="sector"
-                                    allowNew
-                                    defaultSelected={formik.values.sector ? [formik.values.sector] : ""}
-                                    options={sectorSelect}
-                                    className={"sectorTypeahead addFormInput margin-bottom-8 margin-top-8"} 
-                                    onBlur={ formik.handleBlur }
-                                    onChange={(selected) => {
-                                        let tempSelected = [...selected].map((selected) => { return selected.customOption ? selected.sector : selected })
-                                        tempSelected.length > 0 ? formik.values.sector = tempSelected[0] : formik.values.sector = ""
-                                        formik.setFieldTouched("sector", true)
-                                    }}
-                                />
-                                
+                                <DropdownButton variant="white"  
+                                    title={formik.values.sector || <select style={{opacity: 0}}></select>}
+                                    id={formik.values.sector}
+                                    className={formik.touched.sector && formik.errors.sector ? "emptyFormInput  gray800-14 custom-dropdown margin-top-8 padding-right-0" :  "gray700-13 custom-dropdown margin-top-8 padding-right-0"} 
+                                    onChange={(selected) => {formik.setFieldValue("sector", selected.target.value);}}
+                                    value={ formik.values.sector } 
+                                    onBlur={() => formik.setFieldTouched("sector", true)} 
+                                    touched={formik.touched.sector}
+                                    onSelect={(selected) => handleSectorSelect(selected)}>
+                                    
+                                    {sectorSelect.map((sec, i) => (
+                                        <Dropdown.Item className="gray800-14 width-100" key={sec} eventKey={sec}>
+                                            {sec}
+                                        </Dropdown.Item>
+                                    ))}
+                                </DropdownButton>
                                 </Col>
                                 <Col sm={1} lg={1} className='eyeColumn' onMouseEnter={() => setSectorHover(true)} onMouseLeave={() => setSectorHover(false)}>
                                     {inSectorHover && (
