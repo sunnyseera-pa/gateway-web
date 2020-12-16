@@ -24,7 +24,7 @@ const NavDropdown = ({ options, onFormSwitchPanel, enabled }) => {
     }
     
     const buildOption = (o) => {
-        let  { title } = pages.find(p => p.pageId === o.pageId);
+        let  { title= '' } = [...pages].find(p => p.pageId === o.pageId);
         return (
             <option value={o.panelId} key={o.panelId}>{`${title} ${_.isEmpty(o.navHeader) === true ? '' : '- ' + o.navHeader }`}</option>
             )

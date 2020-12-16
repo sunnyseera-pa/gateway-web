@@ -4194,3 +4194,14 @@ export const uniqueSchema = {
 		}
 	]
 }
+
+export const updateRequestProps = {
+	open: jest.fn(),
+	close: jest.fn(),
+	fullAmendments: {
+		'Safe People | Applicant': [{question: 'Test question', answer: 'Test answer'}]
+	},
+	publisher: 'Test publisher',
+	applicationId: '55aa66bb',
+	projectName: 'Test project'
+}
