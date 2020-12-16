@@ -353,7 +353,12 @@ const YourAccountForm = (props) => {
                                 <Row>
                                 <Col sm={4} lg={4}>
                                 <DropdownButton variant="white"  
-                                    title={formik.values.sector || <select style={{opacity: 0}}></select>}
+                                    title={formik.values.sector ? 
+                                        <>
+                                            <div className="first"><select className="hiddenSelectBox"></select></div>
+                                            <div className="second">{formik.values.sector}</div>
+                                        </> : 
+                                        <select className="hiddenSelectBox"></select>}
                                     className={formik.touched.sector && formik.errors.sector ? "emptyFormInput  gray800-14 custom-dropdown margin-top-8 padding-right-0" :  "gray700-13 custom-dropdown margin-top-8 padding-right-0"} 
                                     onChange={(selected) => {formik.setFieldValue("sector", selected.target.value);}}
                                     value={ formik.values.sector } 
