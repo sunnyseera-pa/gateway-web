@@ -55,12 +55,12 @@ const UpdateRequestModal = ({ open, close, fullAmendments, publisher, applicatio
 						<div key={section} className='request-wrap'>
 							<h6 className='black-16-semibold'>{section}</h6>
 							{fullAmendments[section].map((item, i) => (
-								<div key={`item-${i}`} className='request-section'>
+								<div key={`item-${i}`} className='request-section' data-spec="request-section">
 									<Fragment>
 										<div className='area'>Question:</div>
-										<div className='area'>{item.question}</div>
+										<div className='area' data-spec="request-question">{item.question}</div>
 										<div className='area'>Answer:</div>
-										<div className='area'>{item.answer}</div>
+										<div className='area' data-spec="request-answer">{item.answer}</div>
 									</Fragment>
 								</div>
 							))}
@@ -69,10 +69,10 @@ const UpdateRequestModal = ({ open, close, fullAmendments, publisher, applicatio
 				</div>
 				<div className='updateRequest-footer'>
 					<div className='updateRequest-footer--wrap'>
-						<button onClick={(e) => onHandleClose(e)} className='button-secondary'>
+						<button onClick={(e) => onHandleClose(e)} className='button-secondary' data-spec="btn-cancel">
 							No, nevermind
 						</button>
-						<button className='button-primary' onClick={(e) => onRequestUpdate(e)}>
+						<button className='button-primary' onClick={(e) => onRequestUpdate(e)} data-spec="btn-submit">
 							Request update
 						</button>
 					</div>
