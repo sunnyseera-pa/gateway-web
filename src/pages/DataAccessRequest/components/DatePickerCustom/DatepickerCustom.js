@@ -12,7 +12,7 @@ class DatePickerCustom extends React.Component {
 			date = moment(this.props.value, 'DD/MM/YYYY').toDate();
 		}
 		this.state = {
-			date
+			date,
 		};
 		this.handleChange = this.handleChange.bind(this);
 		this.handleFocus = this.handleFocus.bind(this);
@@ -23,14 +23,11 @@ class DatePickerCustom extends React.Component {
 		if (e) {
 			date = e;
 		}
-		if (!isEmpty(date)) {
-			moment(date).format('DD/MM/YYYY');
-		}
 		this.setState(
 			{
-				date
+				date,
 			},
-			this.props.onChange.bind(null, date)
+			this.props.onChange.bind(null, moment(date).format('DD/MM/YYYY'))
 		);
 	}
 	handleFocus(e) {
@@ -60,6 +57,6 @@ DatePickerCustom.defaultProps = {
 	value: null,
 	onChange: () => {},
 	onFocus: () => {},
-	onBlur: () => {}
+	onBlur: () => {},
 };
 export default DatePickerCustom;

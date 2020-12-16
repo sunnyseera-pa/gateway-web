@@ -566,7 +566,7 @@ class DataAccessRequest extends Component {
 				} = response;
 				let { applicationStatus } = this.state;
 				// 4. remove blank values from schema updates - omit values if they are blank, important for jsonSchema
-				if(_.isNil(jsonSchema))
+				if(!_.isNil(jsonSchema))
 					jsonSchema = this.injectStaticContent(jsonSchema, false, this.state.reviewSections);
 
 				let schemaUpdates = _.pickBy({
