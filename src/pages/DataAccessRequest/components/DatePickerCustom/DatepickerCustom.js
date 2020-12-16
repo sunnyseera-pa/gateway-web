@@ -18,6 +18,12 @@ class DatePickerCustom extends React.Component {
 		this.handleFocus = this.handleFocus.bind(this);
 		this.handleBlur = this.handleBlur.bind(this);
 	}
+
+	componentWillReceiveProps(nextProps) {
+    if(this.props.value !== nextProps.value)
+      this.setState({date: moment(nextProps.value, 'DD/MM/YYYY').toDate()});
+  }
+
 	handleChange(e) {
 		let date = '';
 		if (e) {
