@@ -152,6 +152,11 @@ class DatasetDetail extends Component {
     this.setState({ isLoading: true });
     await axios.get(baseURL + '/api/v1/datasets/' + this.props.match.params.datasetID)
       .then( async (res) => {
+        if(!res.data.success){
+          window.localStorage.setItem('redirectMsg', `Dataset not found for Id: ${this.props.match.params.datasetID}`);  
+          this.props.history.push({pathname: "/search?search=", search:""});
+        }
+        else{
         this.setState({
           data: res.data.data,
           v2data: res.data.data.datasetv2,
@@ -203,8 +208,7 @@ class DatasetDetail extends Component {
         }
 
         this.setState({ isLoading: false });
-      });
-
+      }})
   };
 
   getTechnicalMetadata() {

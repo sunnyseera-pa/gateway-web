@@ -1,9 +1,11 @@
 import React, { Fragment } from 'react';
+import DarHelper from '../../../../utils/DarHelper.util'
 import '../../DataAccessRequest.scss';  
 import Dropdown from 'react-bootstrap/Dropdown';
 import { Row } from "react-bootstrap";
 
 const CustodianActionButtons = ({
+  activeParty = '',
   allowedNavigation = false, 
   inReviewMode, 
   onNextClick, 
@@ -14,6 +16,8 @@ const CustodianActionButtons = ({
   workflowAssigned, 
   onWorkflowReview, 
   hasRecommended = false,
+  unansweredAmendments = 0,
+  onUpdateRequest,
   onWorkflowReviewDecisionClick}) => {
 
   const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -24,10 +28,11 @@ const CustodianActionButtons = ({
 
   return (
     <Fragment>
-      { applicationStatus === "inReview" && workflowAssigned ? 
+      { applicationStatus === DarHelper.darStatus.inReview && workflowAssigned ? 
           <button className="button-tertiary mr-1" onClick={e => onWorkflowReview(e)}>View recommendations</button> 
         : ''}
-      {inReviewMode && !hasRecommended || ((roles.includes('manager')) && (applicationStatus === 'inReview' || applicationStatus === 'submitted')) ?
+      {inReviewMode && unansweredAmendments === 0 && ((inReviewMode && !hasRecommended) || ((roles.includes('manager')) && 
+      (applicationStatus === DarHelper.darStatus.inReview || applicationStatus === DarHelper.darStatus.submitted))) ?
         <Dropdown>
           <Dropdown.Toggle as={CustomToggle} >
             <button className="button-secondary">
@@ -71,7 +76,7 @@ const CustodianActionButtons = ({
                       Approve with conditions
                     </option>
 
-                    <option className="gray800-14 pointer" onClick={e => onActionClick(e)} value="Reject" >  
+                    <option className="gray800-14 pointer" onClick={e => onActionClick(e)} value="Reject">  
                         Reject
                     </option>
                 </Fragment>
@@ -79,10 +84,12 @@ const CustodianActionButtons = ({
             </Dropdown.Menu>
           </Dropdown>
         : ''}
-
-      { applicationStatus === "inReview" && roles.includes('manager') && workflowEnabled && !workflowAssigned ? 
+      { inReviewMode && unansweredAmendments === 0 && (applicationStatus === DarHelper.darStatus.inReview && roles.includes('manager') && workflowEnabled && !workflowAssigned) ? 
         <button className="button-secondary" onClick={e => onActionClick(e)} value="AssignWorkflow">Assign a workflow</button> 
       : ''}
+      { applicationStatus === DarHelper.darStatus.inReview && activeParty === 'custodian' && roles.includes('manager') &&  applicationStatus !== DarHelper.darStatus.submitted && unansweredAmendments > 0 ?
+        <button className="button-secondary" onClick={e => onUpdateRequest(e)} value="SendUpdateRequest">Send update request</button> : null
+      }
       <button className={`button-primary ${allowedNavigation ? '' : 'disabled'}`} onClick={e => onNextClick()}>Next</button>      
     </Fragment>  
   );

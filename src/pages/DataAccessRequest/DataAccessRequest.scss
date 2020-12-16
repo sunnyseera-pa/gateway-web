@@ -6,7 +6,7 @@
 	background: #f6f7f8;
 }
 
-.active-group:after {
+.active-group:after{
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -19,9 +19,11 @@
 .warning {
 	color: #f0bb24;
 }
+
 .success {
 	color: #3db28c;
 }
+
 .danger {
 	color: #dc3645;
 }
@@ -30,13 +32,13 @@
 	margin-bottom: 8px !important;
 	font-size: 14px;
 	padding: 12px 1.25rem;
-
-	&-warning {
-		border: 2px solid #f0bb24 !important;
+	
+  &-warning {
+    border:2px solid #f0bb24 !important;
 	}
-
+	
 	&-success {
-		border: 2px solid #3db28c !important;
+		border: 2px solid #3db28c !important
 	}
 
 	&-danger {
@@ -46,20 +48,20 @@
 		}
 	}
 
-	&-wrap {
-		display: flex;
-		flex-flow: row nowrap;
-		align-items: center;
-		justify-content: space-between;
-		& > div:first-child {
-			margin-right: auto;
+  &-wrap {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    & > div:first-child {
+      margin-right: auto;
 		}
 		& > div:nth-child(2) {
 			cursor: pointer;
 			font-weight: bold;
 			text-align: right;
 		}
-	}
+  }
 }
 
 .toolTip {
@@ -80,16 +82,16 @@
 	border-radius: 6px;
 	z-index: 1;
 	opacity: 0;
-	transition: opacity 0.4s;
+	transition: opacity .4s;
 }
 
-.toolTip i:hover + .toolTipText {
+.toolTip i:hover + .toolTipText { 
 	visibility: visible;
-	opacity: 1;
+  opacity: 1;
 }
 
 span.toolTipText:after {
-	content: '';
+	content: "";
 	position: absolute;
 	top: 100%;
 	left: 50%;
@@ -107,7 +109,7 @@ span.toolTipText:after {
 
 .section-header {
 	cursor: pointer;
-	margin-left: 33px;
+	margin-left: 26px;
 	margin-top: 8px;
 	margin-bottom: 16px;
 	font-size: 16px;
@@ -119,7 +121,7 @@ span.toolTipText:after {
 	&-active {
 		cursor: pointer !important;
 		opacity: 1 !important;
-		margin-left: 33px;
+		margin-left: 30px;
 		margin-top: 0px;
 		margin-bottom: 0px;
 		font-size: 16px;
@@ -152,7 +154,16 @@ span.toolTipText:after {
 
 .dar-nav-item {
 	display: grid;
-	grid-template-columns: 172px 1fr;
+	grid-template-columns: 170px 1fr;
+	span {
+		i {
+			font-size: 8px;
+		}
+	}
+	span:nth-child(2) {
+		margin-top: -3px;
+		margin-left: 3px;
+	}
 }
 
 .dar-nav-item + .dar-nav-item {
@@ -388,8 +399,8 @@ span.toolTipText:after {
 	background: #eee !important;
 }
 
-input[type='text']:disabled {
-	background-color: #eee !important;
+input[type=text]:disabled {
+		background-color: #eee !important;	
 }
 
 input[type='text']:disabled,
@@ -716,9 +727,9 @@ input[type='radio']:disabled {
 	cursor: pointer;
 	min-width: 32px;
 	height: 32px;
-	opacity: 0;
+	opacity:0;
 	transition: visibility 0.55s linear, opacity 0.35s ease-in-out;
-
+	
 	& > i {
 		padding: 0 5px;
 	}
@@ -738,7 +749,7 @@ input[type='radio']:disabled {
 		background: #f6f7f8;
 		> .action-control {
 			visibility: visible;
-			opacity: 1;
+			opacity:1;
 			background: $white;
 			box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03);
 		}
