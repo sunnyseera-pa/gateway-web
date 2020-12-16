@@ -220,6 +220,10 @@ a.nav-item.nav-link.active {
     border: solid 2px #475da7;
 }
 
+.form-control:focus-within{
+    border: solid 2px #475da7 !important;
+}
+
 a {
     color: #475da7;
     text-decoration: none;
@@ -277,6 +281,45 @@ a {
     border-image-width: initial;
     border-image-outset: initial;
     border-image-repeat: initial;
+}
+
+.button-secondary {
+    background-color: #fff;
+    border: 2px solid #475da7;
+    border-top-color: #475da7;
+    border-top-style: solid;
+    border-top-width: 2px;
+    border-right-color: #475da7;
+    border-right-style: solid;
+    border-right-width: 2px;
+    border-bottom-color: #475da7;
+    border-bottom-style: solid;
+    border-bottom-width: 2px;
+    border-left-color: #475da7;
+    border-left-style: solid;
+    border-left-width: 2px;
+    border-image-source: initial;
+    border-image-slice: initial;
+    border-image-width: initial;
+    border-image-outset: initial;
+    border-image-repeat: initial;
+    color: #29235c;
+}
+
+.comingSoonBadge {
+    display: inline-block;
+    background-color:#475da7;
+    padding: 5px 10px;
+    border-radius: 16px;
+    color: #fff;
+    font-family: museo-sans-rounded;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.stepNumber.completed {
+    background-color: #475da7;;
+    border: solid 2px #475da7;;
 }
 
 
