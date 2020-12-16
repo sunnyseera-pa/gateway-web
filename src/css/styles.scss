@@ -1590,12 +1590,12 @@ button a {
   cursor: pointer;
 }
 
-.first {
+.sectorValueInFront {
   z-index: 2;
   width: 100%;
 }
 
-.second {
+.sectorValue {
   position: absolute;
   z-index: 1;
 }
