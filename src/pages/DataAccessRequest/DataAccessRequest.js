@@ -712,6 +712,8 @@ class DataAccessRequest extends Component {
 					countedQuestionAnswers.totalQuestions || 0
 				}  questions answered in this section`;
 			}
+
+			// reset guidance - due to on change
 			this.setState({
 				jsonSchema: { ...this.state.jsonSchema, pages: newFormState },
 				activePanelId: panelId,
@@ -719,6 +721,7 @@ class DataAccessRequest extends Component {
 				totalQuestions: totalQuestions,
 				validationErrors,
 				reviewWarning,
+				activeGuidance: ''
 			});
 		}
 	};
