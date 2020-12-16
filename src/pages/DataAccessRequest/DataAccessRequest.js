@@ -53,6 +53,8 @@ class DataAccessRequest extends Component {
 		this.state = {
 			_id: '',
 			activeParty: '',
+			activePanelId: '',
+			activeGuidance: '',
 			amendmentIterations: [],
 			fullAmendments: {},
 			jsonSchema: {},
@@ -63,8 +65,6 @@ class DataAccessRequest extends Component {
 			initialFilesLoad: true,
 			hasRecommended: false,
 			applicationStatus: '',
-			activePanelId: '',
-			activeGuidance: '',
 			searchString: '',
 			key: 'guidance',
 			totalQuestions: '',
@@ -118,6 +118,7 @@ class DataAccessRequest extends Component {
 				completedSubmitAdvice: false,
 				completedInviteCollaborators: false,
 			},
+			reviewSections: [],
 			context: {},
 			actionModalConfig: {},
 			workflows: [],
@@ -383,37 +384,9 @@ class DataAccessRequest extends Component {
 
 		// 5. If multiple datasets are allowed, append 'about this application' section
 		if (allowsMultipleDatasets) {
-			let { pages } = { ...jsonSchema };
-			// see if the schema has about already injected
-			let navElementsExist = [...pages].find(page => page.pageId === DarHelper.darStaticPageIds.ABOUT) || false;
-			if (!navElementsExist) {
-				// Append 'about' panel and nav item
-				jsonSchema.pages[0].active = false;
-				jsonSchema.pages.unshift(DarHelper.staticContent.aboutPageNav);
-				jsonSchema.pages.push(DarHelper.staticContent.filesNav);
-				// Add form panel
-				jsonSchema.formPanels.unshift(DarHelper.staticContent.aboutPanel);
-				jsonSchema.formPanels.push(DarHelper.staticContent.filesPanel);
-			} else {
-				// set default page active state
-				jsonSchema.pages.forEach(element => element.active = false);
-				jsonSchema.pages[0].active = true;
-			}
+			// we need to inject About and File sections if first time running
+			jsonSchema = this.injectStaticContent(jsonSchema, inReviewMode, reviewSections);
 		}
-		// 6. Get the first active panel
-		let {
-			formPanels: [initialPanel, ...rest],
-		} = jsonSchema;
-
-		// 7. Append review sections to jsonSchema if in review mode
-		jsonSchema.pages = [...jsonSchema.pages].map(page => {
-			let inReview =
-				[...reviewSections].includes(page.pageId.toLowerCase()) ||
-				page.pageId === DarHelper.darStaticPageIds.ABOUT ||
-				page.pageId === DarHelper.darStaticPageIds.FILES;
-			return { ...page, inReview: inReviewMode && inReview };
-		});
-
 		// 8. Hide show submit application
 		if (applicationStatus === DarHelper.darStatus.inProgress) {
 			showSubmit = true;
@@ -427,6 +400,8 @@ class DataAccessRequest extends Component {
 			}
 		}
 
+		let initialPanel = jsonSchema.formPanels[0].panelId;
+
 		// 9. Set state
 		this.setState({
 			jsonSchema: { ...jsonSchema, ...classSchema },
@@ -437,8 +412,8 @@ class DataAccessRequest extends Component {
 			hasRecommended,
 			amendmentIterations,
 			applicationStatus,
-			activePanelId: initialPanel.panelId,
-			isWideForm: initialPanel.panelId === DarHelper.darStaticPageIds.ABOUT,
+			activePanelId: initialPanel,
+			isWideForm: initialPanel === DarHelper.darStaticPageIds.ABOUT,
 			isLoading: false,
 			topicContext,
 			publisher,
@@ -458,11 +433,58 @@ class DataAccessRequest extends Component {
 			publisherId,
 			workflowEnabled,
 			inReviewMode,
+			reviewSections,
 			workflow,
 			workflowAssigned: !_.isEmpty(workflow) ? true : false,
 			files,
 		});
 	};
+
+	/**
+	 * this.
+	 * @desc Function to inject static 'about' and 'files' pages and panels
+	 * @returns {jsonSchmea} object
+	 */
+	injectStaticContent(jsonSchema = {}, inReviewMode = false, reviewSections = []) {
+		let { pages, formPanels } = { ...jsonSchema };
+		// formPanel {pageId: 'safePeople', panelId:'applicant'}
+		let formPanel = {};
+		let currentPageIdx = 0;
+		debugger;
+		// check if About page has been injected
+		let navElementsExist = [...pages].find(page => page.pageId === DarHelper.darStaticPageIds.ABOUT) || false;
+		// 2. About page does not exist
+		if (!navElementsExist) {
+			// Append 'about' & 'files' panel and nav item
+			jsonSchema.pages.unshift(DarHelper.staticContent.aboutPageNav);
+			jsonSchema.pages.push(DarHelper.staticContent.filesNav);
+			// Add form panel
+			jsonSchema.formPanels.unshift(DarHelper.staticContent.aboutPanel);
+			jsonSchema.formPanels.push(DarHelper.staticContent.filesPanel);
+		} 
+		// if activePanel, find active formPanel from formPanels, find pageId index from pages array
+		if(!_.isEmpty(this.state.activePanelId)) {
+			formPanel = [...formPanels].find(p => p.panelId === this.state.activePanelId);
+			currentPageIdx = [...pages].findIndex(page => page.pageId === formPanel.pageId);
+		}
+		// set active page
+		jsonSchema.pages.forEach(element => element.active = false);
+		jsonSchema.pages[currentPageIdx].active = true;
+		
+		// 7. Append review sections to jsonSchema if in review mode
+		jsonSchema.pages = [...jsonSchema.pages].map(page => {
+			let inReview =
+			[...reviewSections].includes(page.pageId.toLowerCase()) ||
+			page.pageId === DarHelper.darStaticPageIds.ABOUT ||
+			page.pageId === DarHelper.darStaticPageIds.FILES;
+			
+			return { ...page, inReview: inReviewMode && inReview };
+		});
+		// add in the classes for winterfell, important
+		jsonSchema = {...jsonSchema, ...classSchema};
+
+		return jsonSchema;
+	}
 
 	onQuestionFocus(questionId = '') {
 		let questions;
@@ -529,7 +551,6 @@ class DataAccessRequest extends Component {
 
 	onChangeDebounced = (obj = {}, updatedQuestionId) => {
 		try {
-			
 			let { _id: id } = this.state;
 			// 1. deconstruct
 			let { key, data = {} } = obj;
@@ -541,11 +562,13 @@ class DataAccessRequest extends Component {
 			// 3. API Patch call
 			axios.patch(`${baseURL}/api/v1/data-access-request/${id}`, params).then(response => {
 				let {
-					data: { unansweredAmendments = 0, answeredAmendments = 0, jsonSchema = {} },
+					data: { unansweredAmendments = 0, answeredAmendments = 0, jsonSchema = null },
 				} = response;
 				let { applicationStatus } = this.state;
-				debugger;
-				// 4. remove blank values from schema updates
+				// 4. remove blank values from schema updates - omit values if they are blank, important for jsonSchema
+				if(_.isNil(jsonSchema))
+					jsonSchema = this.injectStaticContent(jsonSchema, false, this.state.reviewSections);
+
 				let schemaUpdates = _.pickBy({
 					unansweredAmendments,
 					answeredAmendments,
@@ -713,7 +736,7 @@ class DataAccessRequest extends Component {
 				}  questions answered in this section`;
 			}
 
-			// reset guidance - due to on change
+			// reset guidance - due to on change of panel
 			this.setState({
 				jsonSchema: { ...this.state.jsonSchema, pages: newFormState },
 				activePanelId: panelId,
@@ -772,8 +795,7 @@ class DataAccessRequest extends Component {
 	 * @params {event, questionSetId, questionId, key}
 	 */
 	onQuestionAction = async (e = '', questionSetId = '', questionId = '', key = '') => {
-		console.log(e, questionSetId, questionId, key);
-		let mode = '', response = {}, jsonSchema = {}, answeredAmendments = 0, unansweredAmendments = 0, amendmentIterations = [], questionAnswers = {} ;
+		let mode,  stateObj;
 		switch (key) {
 			case DarHelper.actionKeys.GUIDANCE:
 				const activeGuidance = this.onQuestionFocus(questionId);
@@ -785,28 +807,42 @@ class DataAccessRequest extends Component {
 				break;
 			case DarHelper.actionKeys.REQUESTAMENDMENT:
 				mode = DarHelper.amendmentModes.ADDED;
-				response = await axios.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/amendments`, { questionSetId, questionId, mode });
-				({accessRecord: {jsonSchema, answeredAmendments, unansweredAmendments, amendmentIterations }} = response.data);
-				this.setState({ jsonSchema, answeredAmendments, unansweredAmendments, amendmentIterations });
+				stateObj = await this.invokeQuestionAction(questionSetId, questionId, mode);
+				debugger;
+				this.setState({ ...stateObj });
 				break;
 			case DarHelper.actionKeys.CANCELREQUEST:
 				mode = DarHelper.amendmentModes.REMOVED;
-				response = await axios.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/amendments`, { questionSetId, questionId, mode });
-				({accessRecord: {jsonSchema, answeredAmendments, unansweredAmendments, amendmentIterations }} = response.data);
-				this.setState({ jsonSchema, answeredAmendments, unansweredAmendments, amendmentIterations});
+				stateObj = await this.invokeQuestionAction(questionSetId, questionId, mode);
+				debugger;
+				this.setState({ ...stateObj });
 				break;
 			case DarHelper.actionKeys.REVERTTOPREVIOUSANSWER:
 				mode = DarHelper.amendmentModes.REVERTED;
-				response = await axios.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/amendments`, { questionSetId, questionId, mode });
-				({accessRecord: {jsonSchema, questionAnswers, answeredAmendments, unansweredAmendments, amendmentIterations }} = response.data);
+				stateObj = await this.invokeQuestionAction(questionSetId, questionId, mode);
 				debugger;
-				this.setState({ jsonSchema, questionAnswers, answeredAmendments, unansweredAmendments, amendmentIterations});
+				this.setState({ ...stateObj });
 				break;
 			default:
 				console.log(questionId);
 				break;
 		}
 	};
+
+	invokeQuestionAction = async (questionSetId, questionId, mode) => {
+		let response = await axios.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/amendments`, { questionSetId, questionId, mode });
+		let {accessRecord: { jsonSchema, questionAnswers = null, answeredAmendments, unansweredAmendments, amendmentIterations } } = response.data;
+		jsonSchema = this.injectStaticContent(jsonSchema, true, this.state.reviewSections);
+		let stateObj = _.pickBy({
+			jsonSchema,
+			questionAnswers,
+			answeredAmendments,
+			unansweredAmendments,
+			amendmentIterations
+		}, _.identity);
+		debugger;
+		return stateObj; 
+	}
 
 	/**
 	 * removeActiveQuestionClass
@@ -1266,9 +1302,9 @@ class DataAccessRequest extends Component {
 					let activePage = [...pages].find(pageItem => pageItem.pageId === pageId);
 					// Get the page title from page item
 					({title: page} = activePage);
-					// Get the list of question for questionPanelId
+					// Get the list of questions for questionPanelId from questionSets
 					({ questions } = [...questionSets].find(questionSet => questionSet.questionSetId === questionSetId));
-					// Get question checks for nested
+					// Get question checks for nested questions also
 					({ question } = DarHelper.getActiveQuestion(questions, key));
 					// Safe People | Applicant
 					let location = `${page} | ${section}`;
@@ -1278,7 +1314,7 @@ class DataAccessRequest extends Component {
 					} else if(obj[location]) {
 						let arr = [...obj[location], {question, answer}];
 						obj[location] = arr;
-					} 
+					}
 					return obj;
 				}, {});
 			}

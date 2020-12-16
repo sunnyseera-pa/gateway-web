@@ -1,6 +1,7 @@
 import React from 'React';
 import { mount } from 'enzyme';
 import UpdateRequestModal from '../UpdateRequestModal';
+import { getSpecWrapper } from '../../../../../../test/utils/unitTest';
 import { updateRequestProps } from '../../../../../utils/__mocks__/DarHelper.mock';
 
 let wrapped;
@@ -24,17 +25,17 @@ afterEach(() => {
  */
 
  describe('UpdateRequestModal component <UpdateRequestModal />', () => {
-   it('will display a list of requested changes', () => {
+    it('will display a list of requested changes', () => {
+      expect(getSpecWrapper(wrapped, 'request-question').length).toEqual(1);
+    });
 
-   });
+    it('will display `No, Nevermind` button', () => {
+      expect(getSpecWrapper(wrapped, 'btn-cancel').length).toEqual(1);
+    });
 
-   it('will display `No, Nevermind` button', () => {
-
-   });
-
-   it('will display `Request updates button`', () => {
-
-   });
+    it('will display `Request updates button`', () => {
+      expect(getSpecWrapper(wrapped, 'btn-submit').length).toEqual(1);
+    });
  });
 
  describe('UpdateRequestModal actions <UpdateRequestModal />', () => {

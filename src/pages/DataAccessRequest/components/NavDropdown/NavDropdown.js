@@ -7,7 +7,8 @@ const NavDropdown = ({ options, onFormSwitchPanel, enabled }) => {
     const { allowsMultipleDatasets } = options;
     const aboutNavItem = {
       "pageId":"about",
-      "panelId":"about"
+      "panelId":"about",
+      "navHeader": ""
     }
 
     if(allowsMultipleDatasets && !questionPanels.some(q => q.pageId === 'about')) {
@@ -24,10 +25,10 @@ const NavDropdown = ({ options, onFormSwitchPanel, enabled }) => {
     }
     
     const buildOption = (o) => {
-        let  { title= '' } = [...pages].find(p => p.pageId === o.pageId);
-        return (
-            <option value={o.panelId} key={o.panelId}>{`${title} ${_.isEmpty(o.navHeader) === true ? '' : '- ' + o.navHeader }`}</option>
-            )
+      let  { title } = [...pages].find(p => p.pageId === o.pageId);
+      return (
+          <option value={o.panelId} key={o.panelId}>{`${title} ${_.isEmpty(o.navHeader) === true ? '' : '- ' + o.navHeader }`}</option>
+          )
     }
 
     return (
