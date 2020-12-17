@@ -387,14 +387,14 @@ class DataAccessRequest extends Component {
 			// we need to inject About and File sections if first time running
 			jsonSchema = this.injectStaticContent(jsonSchema, inReviewMode, reviewSections);
 		}
-		// 8. Hide show submit application
+		// 6. Hide show submit application
 		if (applicationStatus === DarHelper.darStatus.inProgress) {
 			showSubmit = true;
 		} else if (
 			applicationStatus === DarHelper.darStatus.inReview ||
 			applicationStatus === DarHelper.darStatus.submitted
 		) {
-			if (!readOnly) {
+			if (activeParty === 'applicant' && answeredAmendments > 0) {
 				showSubmit = true;
 				submitButtonText = 'Submit updates';
 			}
