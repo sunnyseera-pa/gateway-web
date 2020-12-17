@@ -553,8 +553,8 @@ class DatasetDetail extends Component {
 
         var rating = "Not Rated";
 
-        if (data.datasetfields.metadataquality && !_.isNil(data.datasetfields.metadataquality.quality_rating)) {
-            rating = data.datasetfields.metadataquality.quality_rating;
+        if (data.datasetfields.metadataquality && !_.isNil(data.datasetfields.metadataquality.weighted_quality_rating)) {
+            rating = data.datasetfields.metadataquality.weighted_quality_rating;
         }
         else {
             return <Fragment><div style={{lineHeight: 1}}><MetadataNotRated className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Not rated</span></div></Fragment>
@@ -580,7 +580,7 @@ class DatasetDetail extends Component {
           <Overlay target={target.current} show={show} placement="bottom">
             {props => (
               <Tooltip className="metadataOverlay" {...props}>
-                Metadata richness score: {Math.trunc(data.datasetfields.metadataquality.quality_score)}
+                Metadata richness score: {Math.trunc(data.datasetfields.metadataquality.weighted_quality_score)}
                 <br />
                 <br />
                 The score relates to the amount of information available about
