@@ -32,18 +32,16 @@ export const PaperDetail = props => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [paperAdded, setPaperAdded] = useState(false);
 	const [paperEdited, setPaperEdited] = useState(false);
-	const [discourseTopic, setDiscourseTopic] = useState(null);
 	const [searchString, setSearchString] = useState('');
 	const [relatedObjects, setRelatedObjects] = useState([]);
 	const [discoursePostCount, setDiscoursePostCount] = useState(0);
 	const [showDrawer, setShowDrawer] = useState(false);
 	const [showModal, setShowModal] = useState(false);
-	const [showError, setShowError] = useState(false);
 	const [context, setContext] = useState({});
 	const [collections, setCollections] = useState([]);
 	const [searchBar] = useState(React.createRef());
 	const [isHovering, setIsHovering] = useState(false);
-	const [userState, setUserState] = useState(
+	const [userState] = useState(
 		props.userState || [
 			{
 				loggedIn: false,
@@ -53,6 +51,8 @@ export const PaperDetail = props => {
 			},
 		]
 	);
+
+	let showError = false;
 
 	//componentDidMount - on loading of page detail page
 	useEffect(() => {
@@ -76,11 +76,11 @@ export const PaperDetail = props => {
 	});
 
 	const showModalHandler = () => {
-		setShowError(true);
+		showError = true;
 	};
 
 	const hideModalHandler = () => {
-		setShowError(false);
+		showError = false;
 	};
 
 	const getPaperDataFromDb = () => {
@@ -103,7 +103,6 @@ export const PaperDetail = props => {
 						await populateRelatedObjects(localPaperData, localAdditionalObjInfo);
 					}
 					setPaperData(localPaperData);
-					setDiscourseTopic(res.data.discourseTopic);
 					populateCollections(localPaperData);
 				}
 			})

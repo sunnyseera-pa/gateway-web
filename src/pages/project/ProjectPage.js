@@ -36,7 +36,6 @@ export const ProjectDetail = props => {
 	const [discoursePostCount, setDiscoursePostCount] = useState(0);
 	const [showDrawer, setShowDrawer] = useState(false);
 	const [showModal, setShowModal] = useState(false);
-	const [showError, setShowError] = useState(false);
 	const [context, setContext] = useState({});
 	const [collections, setCollections] = useState([]);
 	const [searchBar] = useState(React.createRef());
@@ -50,6 +49,7 @@ export const ProjectDetail = props => {
 			},
 		]
 	);
+	let showError = false;
 
 	//componentDidMount - on loading of project detail page
 	useEffect(() => {
@@ -71,13 +71,13 @@ export const ProjectDetail = props => {
 	});
 
 	const showModalHandler = () => {
-		setShowError(true);
+		showError = true;
 	};
 
 	const hideModalHandler = () => {
-		setShowError(false);
+		showError = false;
 	};
-
+	
 	const getProjectDataFromDb = () => {
 		setIsLoading(true);
 		axios

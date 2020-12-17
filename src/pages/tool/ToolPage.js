@@ -47,16 +47,15 @@ export const ToolDetail = props => {
 	const [toolEdited, setToolEdited] = useState(false);
 	const [reviewAdded, setReviewAdded] = useState(false);
 	const [replyAdded, setReplyAdded] = useState(false);
-	const [discourseTopic, setDiscourseTopic] = useState(null);
 	const [searchString, setSearchString] = useState('');
 	const [relatedObjects, setRelatedObjects] = useState([]);
 	const [discoursePostCount, setDiscoursePostCount] = useState(0);
 	const [showDrawer, setShowDrawer] = useState(false);
 	const [showModal, setShowModal] = useState(false);
-	const [showError, setShowError] = useState(false);
 	const [context, setContext] = useState({});
 	const [collections, setCollections] = useState([]);
 	const [searchBar] = useState(React.createRef());
+	let showError = false;
 
 	//componentDidMount - on loading of tool detail page
 	useEffect(() => {
@@ -80,11 +79,11 @@ export const ToolDetail = props => {
 	});
 
 	const showModalHandler = () => {
-		setShowError(true);
+		showError = true;
 	};
 
 	const hideModalHandler = () => {
-		setShowError(false);
+		showError = false;
 	};
 
 	const getToolDataFromDb = () => {
@@ -109,7 +108,6 @@ export const ToolDetail = props => {
 
 					setToolData(localToolData);
 					setReviewData(res.data.reviewData);
-					setDiscourseTopic(res.data.discourseTopic);
 					populateCollections(localToolData);
 				}
 			})

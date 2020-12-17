@@ -25,28 +25,18 @@ import { PageView, initGA } from '../../tracking';
 let baseURL = require('../commonComponents/BaseURL').getURL();
 
 export const CourseDetail = props => {
-	const [id, setId] = useState('');
 	const [courseData, setCourseData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [courseAdded, setCourseAdded] = useState(false);
 	const [courseEdited, setCourseEdited] = useState(false);
-	const [discourseTopic, setDiscourseTopic] = useState(null);
 	const [relatedObjects, setRelatedObjects] = useState([]);
 	const [discoursePostCount, setDiscoursePostCount] = useState(0);
 	const [showDrawer, setShowDrawer] = useState(false);
 	const [showModal, setShowModal] = useState(false);
-	const [showError, setShowError] = useState(false);
 	const [context, setContext] = useState({});
 	const [collections, setCollections] = useState([]);
 	const [searchBar] = useState(React.createRef());
 	const [searchString, setSearchString] = useState('');
-	const [objects, setObjects] = useState([
-		{
-			id: '',
-			authors: [],
-			activeflag: '',
-		},
-	]);
 	const [userState] = useState(
 		props.userState || [
 			{
@@ -57,6 +47,7 @@ export const CourseDetail = props => {
 			},
 		]
 	);
+	let showError = false;
 
 	//componentDidMount - on loading of course detail page
 	useEffect(() => {
@@ -66,28 +57,12 @@ export const CourseDetail = props => {
 			setCourseEdited(values.courseEdited);
 		}
 		initGA('UA-166025838-1');
-    PageView();
-    async function invokeCourseDataCall(){
-      await getCourseDataFromDb();
-    }
-    invokeCourseDataCall();
+		PageView();
+		async function invokeCourseDataCall() {
+			await getCourseDataFromDb();
+		}
+		invokeCourseDataCall();
 	}, []);
-
-	// on loading of tool detail page were id is different
-	// componentDidUpdate() {
-	//   if (
-	//     props.match.params.courseID !== id &&
-	//     id !== "" &&
-	//     !isLoading
-	//   ) {
-	//     getCourseDataFromDb();
-	//   }
-	// }
-
-	// useEffect(async() => {
-	// 	// getCourseDataFromDb();
-	// await getAdditionalObjectInfo(courseData.relatedObjects)
-	// }, [courseData]);
 
 	const getCourseDataFromDb = async () => {
 		setIsLoading(true);
@@ -98,21 +73,19 @@ export const CourseDetail = props => {
 					window.localStorage.setItem('redirectMsg', `Course not found for Id: ${props.match.params.courseID}`);
 					props.history.push({ pathname: '/search?search=', search: '' });
 				} else {
-          let localCourseData = res.data.data[0];
+					let localCourseData = res.data.data[0];
 					document.title = localCourseData.title.trim();
-          
+
 					let counter = !localCourseData.counter ? 1 : localCourseData.counter + 1;
 					updateCounter(props.match.params.courseID, counter);
-          
+
 					if (!_.isUndefined(localCourseData.relatedObjects)) {
-            let localAdditionalInfo = await getAdditionalObjectInfo(localCourseData.relatedObjects);
-            debugger;
-		        await populateRelatedObjects(localCourseData, localAdditionalInfo);
-          }
-          
-          setCourseData(localCourseData);
-          setDiscourseTopic(res.data.discourseTopic);
-          populateCollections(localCourseData);
+						let localAdditionalInfo = await getAdditionalObjectInfo(localCourseData.relatedObjects);
+						await populateRelatedObjects(localCourseData, localAdditionalInfo);
+					}
+
+					setCourseData(localCourseData);
+					populateCollections(localCourseData);
 				}
 			})
 			.finally(() => {
@@ -120,7 +93,7 @@ export const CourseDetail = props => {
 			});
 	};
 
-	const populateCollections = (localCourseData) => {
+	const populateCollections = localCourseData => {
 		setIsLoading(true);
 		axios.get(baseURL + '/api/v1/collections/entityid/' + localCourseData.id).then(res => {
 			setCollections(res.data.data || []);
@@ -128,11 +101,11 @@ export const CourseDetail = props => {
 	};
 
 	const showModalHandler = () => {
-		setShowError(true);
+		showError = true;
 	};
 
 	const hideModalHandler = () => {
-		setShowError(false);
+		showError = false;
 	};
 
 	const doSearch = e => {

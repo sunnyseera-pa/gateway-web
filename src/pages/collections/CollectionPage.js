@@ -27,7 +27,6 @@ export const CollectionPage = props => {
 	const [courseCount, setCourseCount] = useState(0);
 	const [collectionAdded, setCollectionAdded] = useState(false);
 	const [collectionEdited, setCollectionEdited] = useState(false);
-	const [discourseTopic, setDiscourseTopic] = useState(null);
 	const [searchString, setSearchString] = useState('');
 	const [discoursePostCount, setDiscoursePostCount] = useState(0);
 	const [key, setKey] = useState('All');
@@ -66,7 +65,6 @@ export const CollectionPage = props => {
 				props.history.push({ pathname: '/search?search=', search: '' });
 			} else {
 				setCollectionData(res.data.data[0]);
-				setDiscourseTopic(res.data.discourseTopic);
 				await getObjectData(res.data.data[0]);
 				countEntities();
 				setIsLoading(false);
