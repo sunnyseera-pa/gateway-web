@@ -30,7 +30,6 @@ export const ProjectDetail = props => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [projectAdded, setProjectAdded] = useState(false);
 	const [projectEdited, setProjectEdited] = useState(false);
-	const [discourseTopic, setDiscourseTopic] = useState(null);
 	const [searchString, setSearchString] = useState('');
 	const [relatedObjects, setRelatedObjects] = useState([]);
 	const [discoursePostCount, setDiscoursePostCount] = useState(0);
@@ -77,7 +76,7 @@ export const ProjectDetail = props => {
 	const hideModalHandler = () => {
 		showError = false;
 	};
-	
+
 	const getProjectDataFromDb = () => {
 		setIsLoading(true);
 		axios
@@ -99,7 +98,6 @@ export const ProjectDetail = props => {
 					}
 
 					setProjectData(localProjectData);
-					setDiscourseTopic(res.data.discourseTopic);
 					popluateCollections(localProjectData);
 				}
 			})
