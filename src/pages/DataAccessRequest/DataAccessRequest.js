@@ -441,8 +441,8 @@ class DataAccessRequest extends Component {
 	};
 
 	/**
-	 * this.
-	 * @desc Function to inject static 'about' and 'files' pages and panels
+	 * InjectStaticContent
+	 * @desc Function to inject static 'about' and 'files' pages and panels into schema
 	 * @returns {jsonSchmea} object
 	 */
 	injectStaticContent(jsonSchema = {}, inReviewMode = false, reviewSections = []) {
@@ -450,7 +450,6 @@ class DataAccessRequest extends Component {
 		// formPanel {pageId: 'safePeople', panelId:'applicant'}
 		let formPanel = {};
 		let currentPageIdx = 0;
-		debugger;
 		// check if About page has been injected
 		let navElementsExist = [...pages].find(page => page.pageId === DarHelper.darStaticPageIds.ABOUT) || false;
 		// 2. About page does not exist
@@ -458,7 +457,7 @@ class DataAccessRequest extends Component {
 			// Append 'about' & 'files' panel and nav item
 			jsonSchema.pages.unshift(DarHelper.staticContent.aboutPageNav);
 			jsonSchema.pages.push(DarHelper.staticContent.filesNav);
-			// Add form panel
+			// Add form panel for 'about' & 'files'
 			jsonSchema.formPanels.unshift(DarHelper.staticContent.aboutPanel);
 			jsonSchema.formPanels.push(DarHelper.staticContent.filesPanel);
 		} 
@@ -484,26 +483,6 @@ class DataAccessRequest extends Component {
 		jsonSchema = {...jsonSchema, ...classSchema};
 
 		return jsonSchema;
-	}
-
-	onQuestionFocus(questionId = '') {
-		let questions;
-		if (!_.isEmpty(questionId)) {
-			let {
-				jsonSchema: { questionSets },
-			} = this.state;
-			// 1. get active question set
-			({ questions } = [...questionSets].find(q => q.questionSetId === this.state.activePanelId) || []);
-			if (!_.isEmpty(questions)) {
-				// 2. loop over and find active question
-				let activeQuestion = DarHelper.getActiveQuestion([...questions], questionId);
-				if (!_.isEmpty(activeQuestion)) {
-					const { guidance } = activeQuestion;
-					return guidance;
-				}
-				return '';
-			}
-		}
 	}
 
 	/**
@@ -569,16 +548,17 @@ class DataAccessRequest extends Component {
 				if(!_.isNil(jsonSchema))
 					jsonSchema = this.injectStaticContent(jsonSchema, false, this.state.reviewSections);
 
-				let schemaUpdates = _.pickBy({
+				let schemaUpdates = 	_.omitBy({
 					unansweredAmendments,
 					answeredAmendments,
 					showSubmit: applicationStatus === DarHelper.darStatus.inProgress || answeredAmendments > 0,
 					jsonSchema
-				}, _.identity);
+				}, _.isNil);
 
 				this.setState({
 					...schemaUpdates
 				});
+				
 			});
 		} catch (error) {
 			console.log(`API PUT ERROR ${error}`);
@@ -755,14 +735,21 @@ class DataAccessRequest extends Component {
 		this.setState({ lastSaved });
 	};
 
+	/**
+	 * [onQuestionClick]
+	 * @desc Add's or Removes applicants dynamically
+	 *
+	 * @param   {string}  questionSetId  [questionSetId]
+	 * @param   {string}  questionId     [questionId]
+	 */
 	onQuestionClick = async (questionSetId = '', questionId = '') => {
-		let questionSet, jsonSchema, questionAnswers, data;
+		let questionSet, jsonSchema, questionAnswers, data, schema;
 
 		questionSet = DarHelper.findQuestionSet(questionSetId, { ...this.state.jsonSchema });
 
 		if (!_.isEmpty(questionSet) && !_.isEmpty(questionId)) {
 			// remove about and files from pages to stop duplicate, about / files added to DAR on init
-			let schema = DarHelper.removeStaticPages({ ...this.state.jsonSchema });
+			schema = DarHelper.removeStaticPages({ ...this.state.jsonSchema });
 
 			let {
 				input: { action },
@@ -798,7 +785,7 @@ class DataAccessRequest extends Component {
 		let mode,  stateObj;
 		switch (key) {
 			case DarHelper.actionKeys.GUIDANCE:
-				const activeGuidance = this.onQuestionFocus(questionId);
+				const activeGuidance = this.getActiveQuestionGuidance(questionId);
 				if (!_.isEmpty(e)) {
 					this.removeActiveQuestionClass();
 					this.addActiveQuestionClass(e);
@@ -807,19 +794,18 @@ class DataAccessRequest extends Component {
 				break;
 			case DarHelper.actionKeys.REQUESTAMENDMENT:
 				mode = DarHelper.amendmentModes.ADDED;
-				stateObj = await this.invokeQuestionAction(questionSetId, questionId, mode);
-				debugger;
+				stateObj = await this.postQuestionAction(questionSetId, questionId, mode);
 				this.setState({ ...stateObj });
 				break;
 			case DarHelper.actionKeys.CANCELREQUEST:
 				mode = DarHelper.amendmentModes.REMOVED;
-				stateObj = await this.invokeQuestionAction(questionSetId, questionId, mode);
+				stateObj = await this.postQuestionAction(questionSetId, questionId, mode);
 				debugger;
 				this.setState({ ...stateObj });
 				break;
 			case DarHelper.actionKeys.REVERTTOPREVIOUSANSWER:
 				mode = DarHelper.amendmentModes.REVERTED;
-				stateObj = await this.invokeQuestionAction(questionSetId, questionId, mode);
+				stateObj = await this.postQuestionAction(questionSetId, questionId, mode);
 				debugger;
 				this.setState({ ...stateObj });
 				break;
@@ -829,7 +815,33 @@ class DataAccessRequest extends Component {
 		}
 	};
 
-	invokeQuestionAction = async (questionSetId, questionId, mode) => {
+	/**
+	 * getActiveQuestionGuidance
+	 * @desc - Returns the guidance based on the active question
+	 * @param   {string}  questionId 
+	 * @return  {string} guidance
+	 */
+	getActiveQuestionGuidance(questionId = '') {
+		let questions;
+		if (!_.isEmpty(questionId)) {
+			let {
+				jsonSchema: { questionSets },
+			} = this.state;
+			// 1. get active question set
+			({ questions } = [...questionSets].find(q => q.questionSetId === this.state.activePanelId) || []);
+			if (!_.isEmpty(questions)) {
+				// 2. loop over and find active question
+				let activeQuestion = DarHelper.getActiveQuestion([...questions], questionId);
+				if (!_.isEmpty(activeQuestion)) {
+					const { guidance } = activeQuestion;
+					return guidance;
+				}
+				return '';
+			}
+		}
+	}
+
+	postQuestionAction = async (questionSetId, questionId, mode) => {
 		let response = await axios.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/amendments`, { questionSetId, questionId, mode });
 		let {accessRecord: { jsonSchema, questionAnswers = null, answeredAmendments, unansweredAmendments, amendmentIterations } } = response.data;
 		jsonSchema = this.injectStaticContent(jsonSchema, true, this.state.reviewSections);
@@ -840,13 +852,13 @@ class DataAccessRequest extends Component {
 			unansweredAmendments,
 			amendmentIterations
 		}, _.identity);
-		debugger;
+
 		return stateObj; 
 	}
 
 	/**
 	 * removeActiveQuestionClass
-	 * Removes active class on a single question
+	 * @desc Removes active class on a single question
 	 */
 	removeActiveQuestionClass = () => {
 		let fGroups = document.querySelectorAll('.question-wrap');
@@ -855,8 +867,7 @@ class DataAccessRequest extends Component {
 
 	/**
 	 * addActiveQuestionClass
-	 * Adds active border to question clicked upon
-	 *
+	 * @desc Adds active border to question clicked upon
 	 * @param - (e) eventObject
 	 */
 	addActiveQuestionClass = e => {
