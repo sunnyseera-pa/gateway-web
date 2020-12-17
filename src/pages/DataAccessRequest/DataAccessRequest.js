@@ -1659,7 +1659,6 @@ class DataAccessRequest extends Component {
 						onHandleContributorChange={this.updateContributors}
 						selectedContributors={this.state.authorIds}
 						currentUserId={this.state.userId}
-						readOnly={this.state.readOnly}
 					/>
 				</ContributorModal>
 
