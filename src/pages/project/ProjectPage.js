@@ -1,617 +1,524 @@
-// /ShowObjects.js
-
-import React, { Component } from "react";
-import ReactMarkdown from "react-markdown";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
+import axios from 'axios';
 import * as Sentry from '@sentry/react';
-import _ from 'lodash'; 
-import queryString from "query-string";
-import { Container, Row, Col, Tabs, Tab, Alert } from "react-bootstrap";
-import moment from "moment";
-import RelatedObject from "../commonComponents/relatedObject/RelatedObject";
-import NotFound from "../commonComponents/NotFound";
-import SearchBar from "../commonComponents/searchBar/SearchBar";
-import Loading from "../commonComponents/Loading";
-import Creators from "../commonComponents/Creators";
-import SVGIcon from "../../images/SVGIcon";
+import _ from 'lodash';
+import queryString from 'query-string';
+import { Container, Row, Col, Tabs, Tab, Alert } from 'react-bootstrap';
+import moment from 'moment';
+import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
+import NotFound from '../commonComponents/NotFound';
+import SearchBar from '../commonComponents/searchBar/SearchBar';
+import Loading from '../commonComponents/Loading';
+import Creators from '../commonComponents/Creators';
+import SVGIcon from '../../images/SVGIcon';
 import DiscourseTopic from '../discourse/DiscourseTopic';
-import SideDrawer from '../commonComponents/sidedrawer/SideDrawer'; 
-import UserMessages from "../commonComponents/userMessages/UserMessages";
+import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
+import UserMessages from '../commonComponents/userMessages/UserMessages';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
-import CollectionCard from "../commonComponents/collectionCard/CollectionCard";
+import CollectionCard from '../commonComponents/collectionCard/CollectionCard';
+import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
+import { PageView, initGA } from '../../tracking';
 
-// import ReactGA from 'react-ga';
-import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
-import { PageView, initGA } from "../../tracking";
+var baseURL = require('../commonComponents/BaseURL').getURL();
 
-var baseURL = require("../commonComponents/BaseURL").getURL();
+export const ProjectDetail = props => {
+	const [id] = useState('');
+	const [projectData, setProjectData] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
+	const [projectAdded, setProjectAdded] = useState(false);
+	const [projectEdited, setProjectEdited] = useState(false);
+	const [discourseTopic, setDiscourseTopic] = useState(null);
+	const [searchString, setSearchString] = useState('');
+	const [relatedObjects, setRelatedObjects] = useState([]);
+	const [discoursePostCount, setDiscoursePostCount] = useState(0);
+	const [showDrawer, setShowDrawer] = useState(false);
+	const [showModal, setShowModal] = useState(false);
+	const [showError, setShowError] = useState(false);
+	const [context, setContext] = useState({});
+	const [collections, setCollections] = useState([]);
+	const [searchBar] = useState(React.createRef());
+	const [objects, setObjects] = useState([
+		{
+			id: '',
+			authors: [],
+			activeflag: '',
+		},
+	]);
+	const [userState] = useState(
+		props.userState || [
+			{
+				loggedIn: false,
+				role: 'Reader',
+				id: null,
+				name: null,
+			},
+		]
+	);
 
-class ProjectDetail extends Component {
-  // initialize our state
-  state = {
-    searchString: "",
-    id: "",
-    data: [],
-    isLoading: true,
-    userState: [
-      {
-        loggedIn: false,
-        role: "Reader",
-        id: null,
-        name: null
-      }
-    ],
-    projectAdded: false,
-    projectEdited: false,
-    discourseTopic: null,
-    objects: [
-      {
-        id: "",
-        authors: [],
-        activeflag: ""
-      }
-    ],
-    relatedObjects: [],
-    discoursePostCount: 0,
-    showDrawer: false,
-    showModal: false,
-    showError: false,
-    context: {},
-    collections: []
-  };
+	//componentDidMount - on loading of project detail page
+	useEffect(() => {
+		if (!!window.location.search) {
+			let values = queryString.parse(window.location.search);
+			setProjectAdded(values.projectAdded);
+			setProjectEdited(values.projectEdited);
+		}
+		getDataSearchFromDb();
+		initGA('UA-166025838-1');
+		PageView();
+	}, []);
 
-  constructor(props) {
-    super(props);
-    this.state.userState = props.userState;
-    this.searchBar = React.createRef();
-  }
-  
-  showModal = () => {
-		this.setState({ showError: true });
+	//componentDidUpdate - on render of project detail page were id is different
+	useEffect(() => {
+		if (props.match.params.projectID !== id && id !== '' && !isLoading) {
+			getDataSearchFromDb();
+		}
+	});
+
+	const showModalHandler = () => {
+		setShowError(true);
 	};
 
-	hideModal = () => {
-		this.setState({ showError: false });
+	const hideModalHandler = () => {
+		setShowError(false);
 	};
 
-  // on loading of tool detail page
-  componentDidMount() {
-    if (!!window.location.search) {
-      var values = queryString.parse(window.location.search);
-      this.setState({ projectAdded: values.projectAdded });
-      this.setState({ projectEdited: values.projectEdited });
-    }
-    this.getDataSearchFromDb();
-    initGA("UA-166025838-1");
-    PageView();
-  }
+	const getDataSearchFromDb = () => {
+		setIsLoading(true);
+		axios
+			.get(baseURL + '/api/v1/projects/' + props.match.params.projectID)
+			.then(async res => {
+				if (_.isNil(res.data)) {
+					window.localStorage.setItem('redirectMsg', `Project not found for Id: ${props.match.params.projectID}`);
+					props.history.push({ pathname: '/search?search=', search: '' });
+				} else {
+					setProjectData(res.data.data[0]);
+					setDiscourseTopic(res.data.discourseTopic);
+					document.title = res.data.data[0].name.trim();
 
-  // on loading of tool detail page were id is different
-  componentDidUpdate() {
-    if (
-      this.props.match.params.projectID !== this.state.id &&
-      this.state.id !== "" &&
-      !this.state.isLoading
-    ) {
-      this.getDataSearchFromDb();
-    }
-  }
+					let counter = !projectData.counter ? 1 : projectData.counter + 1;
+					updateCounter(props.match.params.projectID, counter);
 
-  getDataSearchFromDb = () => {
-    this.setState({ isLoading: true });
-    axios
-      .get(baseURL + "/api/v1/projects/" + this.props.match.params.projectID)  
-      .then( async (res) => {
-        if(_.isNil(res.data)){
-          window.localStorage.setItem('redirectMsg', `Project not found for Id: ${this.props.match.params.projectID}`);  
-          this.props.history.push({pathname: "/search?search=", search:""});
-        }
-        else{
-          this.setState({
-            data: res.data.data[0],
-            discourseTopic: res.data.discourseTopic
-          });
-          document.title = res.data.data[0].name.trim();
-  
-          let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
-          this.updateCounter(this.props.match.params.projectID, counter);
-  
-          if(!_.isUndefined(res.data.data[0].relatedObjects)) {
-            await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
-          }
-        }
-      }).finally(() => {
-        this.getCollections();
-        this.setState({ isLoading: false });
-    });
-  };
-  
-  getCollections() {
-    this.setState({ isLoading: true });
-    axios
-      .get(baseURL + "/api/v1/collections/entityid/" + this.state.data.id)
-      .then(res => {
-        this.setState({
-          collections: res.data.data || [] 
-        });
-      });
-  }
+					if (!_.isUndefined(res.data.data[0].relatedObjects)) {
+						await getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+					}
+				}
+			})
+			.finally(() => {
+				getCollections();
+				setIsLoading(false);
+			});
+	};
 
-  doSearch = e => {
-    //fires on enter on searchbar
-    if (e.key === "Enter")
-      window.location.href = "/search?search=" + this.state.searchString;
-  };
+	const getCollections = () => {
+		setIsLoading(true);
+		axios.get(baseURL + '/api/v1/collections/entityid/' + projectData.id).then(res => {
+			setCollections(res.data.data || []);
+		});
+	};
 
+	const doSearch = e => {
+		//fires on enter on searchbar
+		if (e.key === 'Enter') window.location.href = '/search?search=' + searchString;
+	};
 
-  updateSearchString = searchString => {
-    this.setState({ searchString: searchString });
-  };
+	const updateSearchString = searchString => {
+		setSearchString(searchString);
+	};
 
- updateDiscoursePostCount = (count) => {
-      this.setState({ discoursePostCount: count });
-  };
+	const updateDiscoursePostCount = count => {
+		setDiscoursePostCount(count);
+	};
 
-  updateCounter = (id, counter) => {
-    axios.post(baseURL + "/api/v1/counter/update", { id, counter });
-  };
+	const updateCounter = (id, counter) => {
+		axios.post(baseURL + '/api/v1/counter/update', { id, counter });
+	};
 
-  getAdditionalObjectInfo = async data => { 
-    let tempObjects = [];
-    if(data){
-    const promises = data.map(async (object, index) => {
+	const getAdditionalObjectInfo = async additionalObjInfo => {
+		let tempObjects = [];
+		if (additionalObjInfo) {
+			const promises = additionalObjInfo.map(async (object, index) => {
+				if (object.objectType === 'course') {
+					await axios.get(baseURL + '/api/v1/relatedobject/course/' + object.objectId).then(res => {
+						tempObjects.push({
+							id: object.objectId,
+							activeflag: res.data.data[0].activeflag,
+						});
+					});
+				} else {
+					await axios.get(baseURL + '/api/v1/relatedobject/' + object.objectId).then(res => {
+						let datasetPublisher;
+						let datasetLogo;
 
-      if(object.objectType === 'course'){
-        await axios
-        .get(baseURL + "/api/v1/relatedobject/course/" + object.objectId) 
-        .then(res => {
-          tempObjects.push({
-            id: object.objectId,
-            activeflag: res.data.data[0].activeflag
-          });
-        });
+						{
+							!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.name')
+								? (datasetPublisher = res.data.data[0].datasetv2.summary.publisher.name)
+								: (datasetPublisher = '');
+						}
+						{
+							!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.logo')
+								? (datasetLogo = res.data.data[0].datasetv2.summary.publisher.logo)
+								: (datasetLogo = '');
+						}
 
-      } else {
-      await axios
-        .get(baseURL + "/api/v1/relatedobject/" + object.objectId) 
-        .then(res => {
-          let datasetPublisher;
-          let datasetLogo;
+						tempObjects.push({
+							id: object.objectId,
+							authors: res.data.data[0].authors,
+							activeflag: res.data.data[0].activeflag,
+							datasetPublisher: datasetPublisher,
+							datasetLogo: datasetLogo,
+						});
+					});
+				}
+			});
+			await Promise.all(promises);
+		}
+		setObjects(tempObjects);
+		getRelatedObjects();
+	};
 
-          {!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.name') ? datasetPublisher = res.data.data[0].datasetv2.summary.publisher.name : datasetPublisher = ''}
-          {!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.logo') ? datasetLogo = res.data.data[0].datasetv2.summary.publisher.logo : datasetLogo = ''}
+	const getRelatedObjects = () => {
+		let tempRelatedObjects = [];
 
-          tempObjects.push({
-            id: object.objectId,
-            authors: res.data.data[0].authors,
-            activeflag: res.data.data[0].activeflag,
-            datasetPublisher: datasetPublisher,
-            datasetLogo: datasetLogo
-          });
-        });
-      }
-    });
-    await Promise.all(promises);
-  }
-    this.setState({ objects: tempObjects });
+		if (projectData.relatedObjects && objects) {
+			projectData.relatedObjects.map(object =>
+				objects.forEach(item => {
+					if (object.objectId === item.id && item.activeflag === 'active') {
+						object['datasetPublisher'] = item.datasetPublisher;
+						object['datasetLogo'] = item.datasetLogo;
 
-    this.getRelatedObjects(); 
-  };
+						tempRelatedObjects.push(object);
+					}
 
-  getRelatedObjects() {
-    let tempRelatedObjects = [];
+					if (object.objectId === item.id && item.activeflag === 'review' && item.authors.includes(userState[0].id)) {
+						tempRelatedObjects.push(object);
+					}
+				})
+			);
+		}
+		setRelatedObjects(tempRelatedObjects);
+	};
 
-    if(this.state.data.relatedObjects && this.state.objects){
+	const toggleDrawer = () => {
+		if (showDrawer === true) {
+			searchBar.current.getNumberOfUnreadMessages();
+		}
+		setShowDrawer(!showDrawer);
+	};
 
-    this.state.data.relatedObjects.map(object =>
-      this.state.objects.forEach(item => {
-        if (object.objectId === item.id && item.activeflag === "active") {
-          object["datasetPublisher"] = item.datasetPublisher;
-          object["datasetLogo"] = item.datasetLogo;
+	const toggleModal = (showEnquiry = false, context = {}) => {
+		setShowModal(!showModal);
+		setContext(context);
+		setShowDrawer(showEnquiry);
+	};
 
-          tempRelatedObjects.push(object);
-        }
+	if (isLoading) {
+		return (
+			<Container>
+				<Loading />
+			</Container>
+		);
+	}
 
-        if (
-          object.objectId === item.id &&
-          item.activeflag === "review" &&
-          item.authors.includes(this.state.userState[0].id)
-        ) {
-          tempRelatedObjects.push(object);
-        }
-      })
-    );
+	if (projectData.relatedObjects === null || typeof projectData.relatedObjects === 'undefined') {
+		projectData.relatedObjects = [];
+	}
 
-    }
+	return (
+		<Sentry.ErrorBoundary fallback={<ErrorModal show={showModalHandler} handleClose={hideModalHandler} />}>
+			<div>
+				<SearchBar
+					ref={searchBar}
+					searchString={searchString}
+					doSearchMethod={doSearch}
+					doUpdateSearchString={updateSearchString}
+					doToggleDrawer={toggleDrawer}
+					userState={userState}
+				/>
+				<Container className='margin-bottom-48'>
+					{projectAdded ? (
+						<Row className=''>
+							<Col sm={1} lg={1} />
+							<Col sm={10} lg={10}>
+								<Alert variant='success' className='mt-3'>
+									Done! Someone will review your project and let you know when it goes live
+								</Alert>
+							</Col>
+							<Col sm={1} lg={10} />
+						</Row>
+					) : (
+						''
+					)}
 
-    this.setState({ relatedObjects: tempRelatedObjects });
-  }
+					{projectEdited ? (
+						<Row className=''>
+							<Col sm={1} lg={1} />
+							<Col sm={10} lg={10}>
+								<Alert variant='success' className='mt-3'>
+									Done! Your project has been updated
+								</Alert>
+							</Col>
+							<Col sm={1} lg={10} />
+						</Row>
+					) : (
+						''
+					)}
 
-  toggleDrawer = () => {
-    this.setState( ( prevState ) => {
-        if(prevState.showDrawer === true) {
-            this.searchBar.current.getNumberOfUnreadMessages();
-        }
-        return { showDrawer: !prevState.showDrawer };
-    });
-  }
+					{projectData.activeflag === 'review' ? (
+						<Row className=''>
+							<Col sm={1} lg={1} />
+							<Col sm={10} lg={10}>
+								<Alert variant='warning' className='mt-3'>
+									Your project is pending review. Only you can see this page.
+								</Alert>
+							</Col>
+							<Col sm={1} lg={10} />
+						</Row>
+					) : (
+						''
+					)}
 
-  toggleModal = (showEnquiry = false, context = {}) => {
-    this.setState( ( prevState ) => {
-        return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
-    });
-}
+					<Row className='mt-4'>
+						<Col sm={1} lg={1} />
+						<Col sm={10} lg={10}>
+							<div className='rectangle'>
+								<Row>
+									<Col className='line-height-normal'>
+										<span className='black-16'>{projectData.name}</span>
+									</Col>
+								</Row>
+								<Row className='margin-top-16'>
+									<Col xs={12}>
+										<span className='badge-project'>
+											<SVGIcon name='newestprojecticon' fill={'#ffffff'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
+											<span>Project</span>
+										</span>
 
-  render() {
-    const {
-      searchString,
-      data,
-      isLoading,
-      projectAdded,
-      projectEdited,
-      userState,
-      relatedObjects,
-      discoursePostCount,
-      showDrawer,
-      showModal,
-      context,
-      collections
-    } = this.state;
- 
-    if (isLoading) {
-      return (
-        <Container>
-          <Loading />
-        </Container>
-      );
-    }
+										<a href={'/search?search=&tab=Projects&projectcategories=' + projectData.categories.category}>
+											<div className='badge-tag'>{projectData.categories.category}</div>
+										</a>
+									</Col>
+								</Row>
 
-    if (
-      data.relatedObjects === null ||
-      typeof data.relatedObjects === "undefined"
-    ) {
-      data.relatedObjects = [];
-    }
+								<Row className='margin-top-20'>
+									<Col xs={12} className='line-height-normal'>
+										<span className='gray700-14'>
+											{projectData.counter === undefined ? 1 : projectData.counter + 1}
+											{projectData.counter === undefined ? ' view' : ' views'}
+										</span>
+									</Col>
+								</Row>
+							</div>
+						</Col>
+						<Col sm={1} lg={10} />
+					</Row>
 
-    return (
-      <Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
-        <div>
-          <SearchBar
-            ref={this.searchBar}
-            searchString={searchString}
-            doSearchMethod={this.doSearch}
-            doUpdateSearchString={this.updateSearchString}
-            doToggleDrawer={this.toggleDrawer}
-            userState={userState}
-          />
-          <Container className="margin-bottom-48">
-            {projectAdded ? (
-              <Row className="">
-                <Col sm={1} lg={1} />
-                <Col sm={10} lg={10}>
-                  <Alert variant="success" className="mt-3">
-                    Done! Someone will review your project and let you know when
-                    it goes live
-                  </Alert>
-                </Col>
-                <Col sm={1} lg={10} />
-              </Row>
-            ) : (
-              ""
-            )}
+					<Row>
+						<Col sm={1} lg={1} />
+						<Col sm={10} lg={10}>
+							<div>
+								<Tabs className='tabsBackground gray700-13 margin-bottom-16'>
+									<Tab eventKey='About' title={'About'}>
+										<Row className='mt-2'>
+											<Col sm={12} lg={12}>
+												<div className='rectangle'>
+													<Row className='gray800-14-bold'>
+														<Col sm={12}>Description</Col>
+													</Row>
+													<Row className='mt-3'>
+														<Col sm={12} className='gray800-14'>
+															<ReactMarkdown source={projectData.description} />
+														</Col>
+													</Row>
+												</div>
+											</Col>
+										</Row>
 
-            {projectEdited ? (
-              <Row className="">
-                <Col sm={1} lg={1} />
-                <Col sm={10} lg={10}>
-                  <Alert variant="success" className="mt-3">
-                    Done! Your project has been updated
-                  </Alert>
-                </Col>
-                <Col sm={1} lg={10} />
-              </Row>
-            ) : (
-              ""
-            )}
+										{!_.isEmpty(projectData.resultsInsights) ? (
+											<Row className='mt-2'>
+												<Col sm={12} lg={12}>
+													<div className='rectangle'>
+														<Row className='gray800-14-bold'>
+															<Col sm={12}>Results/Insights</Col>
+														</Row>
+														<Row className='mt-3'>
+															<Col sm={12} className='gray800-14'>
+																<ReactMarkdown source={projectData.resultsInsights} />
+															</Col>
+														</Row>
+													</div>
+												</Col>
+											</Row>
+										) : (
+											''
+										)}
 
-            {data.activeflag === "review" ? (
-              <Row className="">
-                <Col sm={1} lg={1} />
-                <Col sm={10} lg={10}>
-                  <Alert variant="warning" className="mt-3">
-                    Your project is pending review. Only you can see this page.
-                  </Alert>
-                </Col>
-                <Col sm={1} lg={10} />
-              </Row>
-            ) : (
-              ""
-            )}
+										<Row className='mt-2'>
+											<Col sm={12}>
+												<div className='rectangle'>
+													<Row className='gray800-14-bold'>
+														<Col sm={12}>Details</Col>
+													</Row>
+													<Row className='mt-3'>
+														<Col sm={2} className='gray800-14'>
+															URL
+														</Col>
+														<Col sm={10} className='gray800-14'>
+															<a href={projectData.link} rel='noopener noreferrer' target='_blank' className='purple-14'>
+																{projectData.link}
+															</a>
+														</Col>
+													</Row>
+													<Row className='mt-2'>
+														<Col sm={2} className='gray800-14'>
+															Last update
+														</Col>
+														<Col sm={10} className='gray800-14'>
+															{moment(projectData.updatedon).format('DD MMM YYYY')}
+														</Col>
+													</Row>
+													{projectData.uploader ? (
+														<Row className='mt-2'>
+															<Col sm={2} className='gray800-14'>
+																Uploader
+															</Col>
+															<Col sm={10} className='gray800-14 overflowWrap'>
+																{projectData.uploader}
+															</Col>
+														</Row>
+													) : (
+														''
+													)}
+													<Row className='mt-2'>
+														<Col sm={2} className='gray800-14'>
+															Type
+														</Col>
+														<Col sm={10} className='gray800-14'>
+															<a href={'/search?search=&tab=Projects&projectcategories=' + projectData.categories.category}>
+																<div className='badge-tag'>{projectData.categories.category}</div>
+															</a>
+														</Col>
+													</Row>
+													<Row className='mt-2'>
+														<Col sm={2} className='gray800-14'>
+															Keywords
+														</Col>
+														<Col sm={10} className='gray800-14'>
+															{!projectData.tags.features || projectData.tags.features.length <= 0 ? (
+																<span className='gray800-14-opacity'>Not specified</span>
+															) : (
+																projectData.tags.features.map(keyword => {
+																	return (
+																		<a href={'/search?search=&tab=Projects&projectfeatures=' + keyword}>
+																			<div className='badge-tag'>{keyword}</div>
+																		</a>
+																	);
+																})
+															)}
+														</Col>
+													</Row>
+													<Row className='mt-2'>
+														<Col sm={2} className='gray800-14'>
+															Domain
+														</Col>
+														<Col sm={10} className='gray800-14'>
+															{!projectData.tags.topics || projectData.tags.topics.length <= 0 ? (
+																<span className='gray800-14-opacity'>Not specified</span>
+															) : (
+																projectData.tags.topics.map(domain => {
+																	return (
+																		<a href={'/search?search=&tab=Projects&projecttopics=' + domain}>
+																			<div className='badge-tag'>{domain}</div>
+																		</a>
+																	);
+																})
+															)}
+														</Col>
+													</Row>
+												</div>
+											</Col>
+										</Row>
 
-            {/* <ProjectTitle data={data} activeLink={true}/> */}
+										<Row className='mt-2'>
+											<Col sm={12}>
+												<div className='rectangle'>
+													<Row className='gray800-14-bold'>
+														<Col sm={12}>Collaborators</Col>
+													</Row>
+													<Row className='mt-3'>
+														{projectData.persons.map(author => (
+															<Col sm={6} key={author.id}>
+																<Creators key={author.id} author={author} />
+															</Col>
+														))}
+													</Row>
+												</div>
+											</Col>
+										</Row>
+									</Tab>
 
-            <Row className="mt-4">
-              <Col sm={1} lg={1} />
-              <Col sm={10} lg={10}>
-                <div className="rectangle">
-                  <Row>
-                    <Col className="line-height-normal">
-                      <span className="black-16">{data.name}</span>
-                    </Col>
-                  </Row>
-                  <Row className="margin-top-16">
-                    <Col xs={12}>
-                      <span className="badge-project"> 
-                        <SVGIcon
-                          name="newestprojecticon"
-                          fill={"#ffffff"}
-                          className="badgeSvg mr-2"
-                          viewBox="-2 -2 22 22"
-                        />
-                        <span>Project</span>
-                      </span>
+									<Tab eventKey='Collaboration' title={`Discussion (${discoursePostCount})`}>
+										<DiscourseTopic
+											toolId={projectData.id}
+											topicId={projectData.discourseTopicId || 0}
+											userState={userState}
+											onUpdateDiscoursePostCount={updateDiscoursePostCount}
+										/>
+									</Tab>
+									<Tab eventKey='Projects' title={'Related resources (' + relatedObjects.length + ')'}>
+										{relatedObjects.length <= 0 ? (
+											<NotFound word='related resources' />
+										) : (
+											relatedObjects.map(object => (
+												<RelatedObject
+													relatedObject={object}
+													objectType={object.objectType}
+													activeLink={true}
+													showRelationshipAnswer={true}
+													datasetPublisher={object.datasetPublisher}
+													datasetLogo={object.datasetLogo}
+												/>
+											))
+										)}
+									</Tab>
+									<Tab eventKey='Collections' title={'Collections (' + collections.length + ')'}>
+										{!collections || collections.length <= 0 ? (
+											<NotFound text='This project has not been featured on any collections yet.' />
+										) : (
+											<>
+												<NotFound text='This project appears on the collections below. A collection is a group of resources on the same theme.' />
 
-                      <a href={"/search?search=&tab=Projects&projectcategories=" + data.categories.category}>
-                        <div className="badge-tag">
-                          {data.categories.category}
-                        </div>
-                      </a>
-                    </Col>
-                  </Row>
+												<Row>
+													{collections.map(collection => (
+														<Col sm={12} md={12} lg={6} style={{ 'text-align': '-webkit-center' }}>
+															<CollectionCard data={collection} />
+														</Col>
+													))}
+												</Row>
+											</>
+										)}
+									</Tab>
+								</Tabs>
+							</div>
+						</Col>
+						<Col sm={1} lg={1} />
+					</Row>
+				</Container>
 
-                  <Row className="margin-top-20">
-                    <Col xs={12} className="line-height-normal">
-                      <span className="gray700-14">
-                        {data.counter === undefined ? 1 : data.counter + 1}
-                        {data.counter === undefined ? " view" : " views"}
-                      </span>
-                    </Col>
-                  </Row>
-                </div>
-              </Col>
-              <Col sm={1} lg={10} />
-            </Row>
+				<SideDrawer open={showDrawer} closed={toggleDrawer}>
+					<UserMessages userState={userState[0]} closed={toggleDrawer} toggleModal={toggleModal} drawerIsOpen={showDrawer} />
+				</SideDrawer>
 
-            <Row>
-              <Col sm={1} lg={1} />
-              <Col sm={10} lg={10}>
-                <div>
-                  <Tabs className="tabsBackground gray700-13 margin-bottom-16">
-                    <Tab eventKey="About" title={"About"}>
-                      <Row className="mt-2">
-                        <Col sm={12} lg={12}>
-                          <div className="rectangle">
-                            <Row className="gray800-14-bold">
-                              <Col sm={12}>Description</Col>
-                            </Row>
-                            <Row className="mt-3">
-                              <Col sm={12} className="gray800-14">
-                                <ReactMarkdown source={data.description} />
-                              </Col>
-                            </Row>
-                          </div>
-                        </Col>
-                      </Row>
-                      
-                      {!_.isEmpty(data.resultsInsights) ? (
-                        <Row className="mt-2">
-                          <Col sm={12} lg={12}>
-                            <div className="rectangle">
-                              <Row className="gray800-14-bold">
-                                <Col sm={12}>Results/Insights</Col>
-                              </Row>
-                              <Row className="mt-3">
-                                <Col sm={12} className="gray800-14">
-                                  <ReactMarkdown source={data.resultsInsights} />
-                                </Col>
-                              </Row>
-                            </div>
-                          </Col>
-                        </Row>): ""}
+				<ActionBar userState={userState}>
+					<ResourcePageButtons data={projectData} userState={userState} />
+				</ActionBar>
 
-                      <Row className="mt-2">
-                        <Col sm={12}>
-                          <div className="rectangle">
-                            <Row className="gray800-14-bold">
-                              <Col sm={12}>Details</Col>
-                            </Row>
-                            <Row className="mt-3">
-                              <Col sm={2} className="gray800-14">
-                                URL
-                              </Col>
-                              <Col sm={10} className="gray800-14">
-                                <a
-                                  href={data.link}
-                                  rel="noopener noreferrer"
-                                  target="_blank"
-                                  className="purple-14"
-                                >
-                                  {data.link}
-                                </a>
-                              </Col>
-                            </Row>
-                            <Row className="mt-2">
-                              <Col sm={2} className="gray800-14">
-                                Last update
-                              </Col>
-                              <Col sm={10} className="gray800-14">
-                                {moment(data.updatedon).format("DD MMM YYYY")}
-                              </Col>
-                            </Row>
-                            {data.uploader ? (
-                              <Row className="mt-2">
-                                <Col sm={2} className="gray800-14">
-                                  Uploader
-                                </Col>
-                                <Col sm={10} className="gray800-14 overflowWrap">
-                                  {data.uploader}
-                                </Col>
-                              </Row>
-                            ) : (
-                              ""
-                            )}
-                            <Row className="mt-2">
-                              <Col sm={2} className="gray800-14">
-                                Type
-                              </Col>
-                              <Col sm={10} className="gray800-14">
-                                <a
-                                  href={
-                                    "/search?search=&tab=Projects&projectcategories=" + data.categories.category
-                                  }
-                                >
-                                  <div className="badge-tag">
-                                    {data.categories.category}
-                                  </div>
-                                </a>
-                              </Col>
-                            </Row>
-                            <Row className="mt-2">
-                              <Col sm={2} className="gray800-14">
-                                Keywords
-                              </Col>
-                              <Col sm={10} className="gray800-14">
-                                {!data.tags.features ||
-                                data.tags.features.length <= 0 ? (
-                                  <span className="gray800-14-opacity">
-                                    Not specified
-                                  </span>
-                                ) : (
-                                  data.tags.features.map(keyword => {
-                                    return (
-                                      <a href={"/search?search=&tab=Projects&projectfeatures=" + keyword}>
-                                        <div className="badge-tag">{keyword}</div>
-                                      </a>
-                                    );
-                                  })
-                                )}
-                              </Col>
-                            </Row>
-                            <Row className="mt-2">
-                              <Col sm={2} className="gray800-14">
-                                Domain
-                              </Col>
-                              <Col sm={10} className="gray800-14">
-                                {!data.tags.topics ||
-                                data.tags.topics.length <= 0 ? (
-                                  <span className="gray800-14-opacity">
-                                    Not specified
-                                  </span>
-                                ) : (
-                                  data.tags.topics.map(domain => {
-                                    return (
-                                      <a href={"/search?search=&tab=Projects&projecttopics=" + domain}>
-                                        <div className="badge-tag">{domain}</div>
-                                      </a>
-                                    );
-                                  })
-                                )}
-                              </Col>
-                            </Row>
-                          </div>
-                        </Col>
-                      </Row>
-
-                      <Row className="mt-2">
-                        <Col sm={12}>
-                          <div className="rectangle">
-                            <Row className="gray800-14-bold">
-                              <Col sm={12}>Collaborators</Col>
-                            </Row>
-                            <Row className="mt-3">
-                              {data.persons.map(author => ( 
-                                <Col sm={6} key={author.id}>
-                                  <Creators key={author.id} author={author} />
-                                </Col>
-                              ))}
-                            </Row>
-                          </div>
-                        </Col>
-                      </Row>
-                    </Tab>
- 
-                    <Tab eventKey="Collaboration" title={`Discussion (${discoursePostCount})`}>
-                      <DiscourseTopic toolId={data.id} topicId={data.discourseTopicId || 0} userState={userState} onUpdateDiscoursePostCount={this.updateDiscoursePostCount}/>
-                    </Tab>
-                    <Tab
-                      eventKey="Projects"
-                      title={"Related resources (" + relatedObjects.length + ")"}
-                    >
-                      {relatedObjects.length <= 0 ? (
-                        <NotFound word="related resources" />
-                      ) : (
-                        relatedObjects.map(object => (
-                          <RelatedObject
-                            relatedObject={object} 
-                            objectType={object.objectType}
-                            activeLink={true}
-                            showRelationshipAnswer={true}
-                            datasetPublisher={object.datasetPublisher} 
-                            datasetLogo={object.datasetLogo} 
-                          />
-                        ))
-                      )}
-                    </Tab>
-                    <Tab
-                      eventKey="Collections"
-                      title={
-                        "Collections (" + collections.length + ")"
-                      }
-                    >
-                      {!collections ||
-                      collections.length <= 0 ? (
-                        <NotFound text="This project has not been featured on any collections yet."/> 
-                      ) : (
-                        <>
-                          <NotFound text="This project appears on the collections below. A collection is a group of resources on the same theme."/> 
-
-                          <Row >
-                            {
-                              collections.map((collection) => (
-                                <Col sm={12} md={12} lg={6} style={{"text-align": "-webkit-center"}}>
-                                  <CollectionCard data={collection} /> 
-                                </Col>
-                              ))
-                            }
-                          </Row>
-                        </>
-                      )}
-                    </Tab>
-                  </Tabs>
-                </div>
-              </Col>
-              <Col sm={1} lg={1} />
-            </Row>
-          </Container>
-
-          <SideDrawer
-            open={showDrawer}
-            closed={this.toggleDrawer}>
-            <UserMessages
-                userState={userState[0]}
-                closed={this.toggleDrawer}
-                toggleModal={this.toggleModal}
-                drawerIsOpen={this.state.showDrawer}
-            />
-          </SideDrawer>  
-
-          <ActionBar userState={userState}> 
-            <ResourcePageButtons data={data} userState={userState} />
-          </ActionBar> 
-
-          <DataSetModal 
-            open={showModal} 
-            context={context}
-            closed={this.toggleModal}
-            userState={userState[0]} 
-          />
-
-        </div>
-      </Sentry.ErrorBoundary>
-    );
-  }
-}
+				<DataSetModal open={showModal} context={context} closed={toggleModal} userState={userState[0]} />
+			</div>
+		</Sentry.ErrorBoundary>
+	);
+};
 
 export default ProjectDetail;
