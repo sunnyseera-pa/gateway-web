@@ -43,13 +43,6 @@ export const PaperDetail = props => {
 	const [collections, setCollections] = useState([]);
 	const [searchBar] = useState(React.createRef());
 	const [isHovering, setIsHovering] = useState(false);
-	const [objects, setObjects] = useState([
-		{
-			id: '',
-			authors: [],
-			activeflag: '',
-		},
-	]);
 	const [userState, setUserState] = useState(
 		props.userState || [
 			{
@@ -72,13 +65,13 @@ export const PaperDetail = props => {
 			initGA('UA-166025838-1');
 			PageView();
 		}
-		getDataSearchFromDb();
+		getPaperDataFromDb();
 	}, []);
 
 	//componentDidUpdate - on render of page detail page were id is different
 	useEffect(() => {
 		if (props.match.params.toolID !== id && id !== '' && !isLoading) {
-			getDataSearchFromDb();
+			getPaperDataFromDb();
 		}
 	});
 
@@ -90,7 +83,7 @@ export const PaperDetail = props => {
 		setShowError(false);
 	};
 
-	const getDataSearchFromDb = () => {
+	const getPaperDataFromDb = () => {
 		setIsLoading(true);
 		axios
 			.get(baseURL + '/api/v1/papers/' + props.match.params.paperID)
@@ -99,26 +92,29 @@ export const PaperDetail = props => {
 					window.localStorage.setItem('redirectMsg', `Paper not found for Id: ${props.match.params.paperID}`);
 					props.history.push({ pathname: '/search?search=', search: '' });
 				} else {
-					setPaperData(res.data.data[0]);
-					setDiscourseTopic(res.data.discourseTopic);
-					document.title = res.data.data[0].name.trim();
-
-					let counter = !paperData.counter ? 1 : paperData.counter + 1;
+					const localPaperData = res.data.data[0];
+					document.title = localPaperData.name.trim();
+					
+					let counter = !localPaperData.counter ? 1 : localPaperData.counter + 1;
 					updateCounter(props.match.params.paperID, counter);
-					if (!_.isUndefined(res.data.data[0].relatedObjects)) {
-						await getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+
+					if (!_.isUndefined(localPaperData.relatedObjects)) {
+						let localAdditionalObjInfo = await getAdditionalObjectInfo(localPaperData.relatedObjects);
+						await populateRelatedObjects(localPaperData, localAdditionalObjInfo);
 					}
+					setPaperData(localPaperData);
+					setDiscourseTopic(res.data.discourseTopic);
+					populateCollections(localPaperData);
 				}
 			})
 			.finally(() => {
-				getCollections();
 				setIsLoading(false);
 			});
 	};
 
-	const getCollections = () => {
+	const populateCollections = (localPaperData) => {
 		setIsLoading(true);
-		axios.get(baseURL + '/api/v1/collections/entityid/' + paperData.id).then(res => {
+		axios.get(baseURL + '/api/v1/collections/entityid/' + localPaperData.id).then(res => {
 			setCollections(res.data.data || []);
 		});
 	};
@@ -142,7 +138,6 @@ export const PaperDetail = props => {
 
 	const getAdditionalObjectInfo = async additionalObjInfo => {
 		let tempObjects = [];
-
 		if (additionalObjInfo) {
 			const promises = additionalObjInfo.map(async (object, index) => {
 				if (object.objectType === 'course') {
@@ -180,16 +175,15 @@ export const PaperDetail = props => {
 			});
 			await Promise.all(promises);
 		}
-		setObjects(tempObjects);
-		getRelatedObjects();
+		return tempObjects;
 	};
 
-	const getRelatedObjects = () => {
+	const populateRelatedObjects = (localPaperData, localAdditionalObjInfo) => {
 		let tempRelatedObjects = [];
 
-		if (paperData.relatedObjects && objects) {
-			paperData.relatedObjects.map(object =>
-				objects.forEach(item => {
+		if (localPaperData.relatedObjects && localAdditionalObjInfo) {
+			localPaperData.relatedObjects.map(object =>
+				localAdditionalObjInfo.forEach(item => {
 					if (object.objectId === item.id && item.activeflag === 'active') {
 						object['datasetPublisher'] = item.datasetPublisher;
 						object['datasetLogo'] = item.datasetLogo;

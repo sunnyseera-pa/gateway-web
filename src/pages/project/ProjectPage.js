@@ -40,13 +40,6 @@ export const ProjectDetail = props => {
 	const [context, setContext] = useState({});
 	const [collections, setCollections] = useState([]);
 	const [searchBar] = useState(React.createRef());
-	const [objects, setObjects] = useState([
-		{
-			id: '',
-			authors: [],
-			activeflag: '',
-		},
-	]);
 	const [userState] = useState(
 		props.userState || [
 			{
@@ -65,7 +58,7 @@ export const ProjectDetail = props => {
 			setProjectAdded(values.projectAdded);
 			setProjectEdited(values.projectEdited);
 		}
-		getDataSearchFromDb();
+		getProjectDataFromDb();
 		initGA('UA-166025838-1');
 		PageView();
 	}, []);
@@ -73,7 +66,7 @@ export const ProjectDetail = props => {
 	//componentDidUpdate - on render of project detail page were id is different
 	useEffect(() => {
 		if (props.match.params.projectID !== id && id !== '' && !isLoading) {
-			getDataSearchFromDb();
+			getProjectDataFromDb();
 		}
 	});
 
@@ -85,7 +78,7 @@ export const ProjectDetail = props => {
 		setShowError(false);
 	};
 
-	const getDataSearchFromDb = () => {
+	const getProjectDataFromDb = () => {
 		setIsLoading(true);
 		axios
 			.get(baseURL + '/api/v1/projects/' + props.match.params.projectID)
@@ -94,27 +87,30 @@ export const ProjectDetail = props => {
 					window.localStorage.setItem('redirectMsg', `Project not found for Id: ${props.match.params.projectID}`);
 					props.history.push({ pathname: '/search?search=', search: '' });
 				} else {
-					setProjectData(res.data.data[0]);
-					setDiscourseTopic(res.data.discourseTopic);
-					document.title = res.data.data[0].name.trim();
-
-					let counter = !projectData.counter ? 1 : projectData.counter + 1;
+					const localProjectData = res.data.data[0];
+					document.title = localProjectData.name.trim();
+					
+					let counter = !localProjectData.counter ? 1 : localProjectData.counter + 1;
 					updateCounter(props.match.params.projectID, counter);
-
-					if (!_.isUndefined(res.data.data[0].relatedObjects)) {
-						await getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+					
+					if (!_.isUndefined(localProjectData.relatedObjects)) {
+						let localAdditionalObjInfo = await getAdditionalObjectInfo(localProjectData.relatedObjects);
+						await populateRelatedObjects(localProjectData, localAdditionalObjInfo);
 					}
+
+					setProjectData(localProjectData);
+					setDiscourseTopic(res.data.discourseTopic);
+					popluateCollections(localProjectData);
 				}
 			})
 			.finally(() => {
-				getCollections();
 				setIsLoading(false);
 			});
 	};
 
-	const getCollections = () => {
+	const popluateCollections = (localProjectData) => {
 		setIsLoading(true);
-		axios.get(baseURL + '/api/v1/collections/entityid/' + projectData.id).then(res => {
+		axios.get(baseURL + '/api/v1/collections/entityid/' + localProjectData.id).then(res => {
 			setCollections(res.data.data || []);
 		});
 	};
@@ -175,16 +171,14 @@ export const ProjectDetail = props => {
 			});
 			await Promise.all(promises);
 		}
-		setObjects(tempObjects);
-		getRelatedObjects();
+		return tempObjects;
 	};
 
-	const getRelatedObjects = () => {
+	const populateRelatedObjects = (localProjectData, localAdditionalObjInfo) => {
 		let tempRelatedObjects = [];
-
-		if (projectData.relatedObjects && objects) {
-			projectData.relatedObjects.map(object =>
-				objects.forEach(item => {
+		if (localProjectData.relatedObjects && localAdditionalObjInfo) {
+			localProjectData.relatedObjects.map(object =>
+				localAdditionalObjInfo.forEach(item => {
 					if (object.objectId === item.id && item.activeflag === 'active') {
 						object['datasetPublisher'] = item.datasetPublisher;
 						object['datasetLogo'] = item.datasetLogo;

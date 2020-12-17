@@ -49,13 +49,6 @@ export const ToolDetail = props => {
 	const [replyAdded, setReplyAdded] = useState(false);
 	const [discourseTopic, setDiscourseTopic] = useState(null);
 	const [searchString, setSearchString] = useState('');
-	const [objects, setObjects] = useState([
-		{
-			id: '',
-			authors: [],
-			activeflag: '',
-		},
-	]);
 	const [relatedObjects, setRelatedObjects] = useState([]);
 	const [discoursePostCount, setDiscoursePostCount] = useState(0);
 	const [showDrawer, setShowDrawer] = useState(false);
@@ -76,13 +69,13 @@ export const ToolDetail = props => {
 		}
 		initGA('UA-166025838-1');
 		PageView();
-		getDataSearchFromDb();
+		getToolDataFromDb();
 	}, []);
 
 	//componentDidUpdate - on render of tool detail page were id is different
 	useEffect(() => {
 		if (props.match.params.toolID !== id && id !== '' && !isLoading) {
-			getDataSearchFromDb();
+			getToolDataFromDb();
 		}
 	});
 
@@ -94,7 +87,7 @@ export const ToolDetail = props => {
 		setShowError(false);
 	};
 
-	const getDataSearchFromDb = () => {
+	const getToolDataFromDb = () => {
 		setIsLoading(true);
 		axios
 			.get(baseURL + '/api/v1/tools/' + props.match.params.toolID)
@@ -103,28 +96,31 @@ export const ToolDetail = props => {
 					window.localStorage.setItem('redirectMsg', `Tool not found for Id: ${props.match.params.toolID}`);
 					props.history.push({ pathname: '/search?search=', search: '' });
 				} else {
-					setToolData(res.data.data[0]);
+					const localToolData = res.data.data[0];
+					document.title = localToolData.name.trim();
+
+					let counter = !localToolData.counter ? 1 : localToolData.counter + 1;
+					updateCounter(props.match.params.toolID, counter);
+
+					if (!_.isUndefined(localToolData.relatedObjects)) {
+						let localAdditionalObjInfo = await getAdditionalObjectInfo(localToolData.relatedObjects);
+						await populateRelatedObjects(localToolData, localAdditionalObjInfo);
+					}
+
+					setToolData(localToolData);
 					setReviewData(res.data.reviewData);
 					setDiscourseTopic(res.data.discourseTopic);
-
-					document.title = res.data.data[0].name.trim();
-
-					let counter = !toolData.counter ? 1 : toolData.counter + 1;
-					updateCounter(props.match.params.toolID, counter);
-					if (!_.isUndefined(res.data.data[0].relatedObjects)) {
-						await getAdditionalObjectInfo(res.data.data[0].relatedObjects);
-					}
+					populateCollections(localToolData);
 				}
 			})
 			.finally(() => {
-				getCollections();
 				setIsLoading(false);
 			});
 	};
 
-	const getCollections = () => {
+	const populateCollections = (localToolData) => {
 		setIsLoading(true);
-		axios.get(baseURL + '/api/v1/collections/entityid/' + toolData.id).then(res => {
+		axios.get(baseURL + '/api/v1/collections/entityid/' + localToolData.id).then(res => {
 			setCollections(res.data.data || []);
 		});
 	};
@@ -138,13 +134,13 @@ export const ToolDetail = props => {
 		setSearchString(searchString);
 	};
 
+	//Update the page view counter
 	const updateCounter = (id, counter) => {
 		axios.post(baseURL + '/api/v1/counter/update', { id, counter });
 	};
 
 	const getAdditionalObjectInfo = async addtionalObjInfo => {
 		let tempObjects = [];
-
 		if (addtionalObjInfo) {
 			const promises = addtionalObjInfo.map(async (object, index) => {
 				if (object.objectType === 'course') {
@@ -180,19 +176,16 @@ export const ToolDetail = props => {
 					});
 				}
 			});
-
 			await Promise.all(promises);
 		}
-		setObjects(tempObjects);
-		getRelatedObjects();
+		return tempObjects;
 	};
 
-	const getRelatedObjects = () => {
+	const populateRelatedObjects = (localToolData, localAdditionalObjInfo) => {
 		let tempRelatedObjects = [];
-
-		if (toolData.relatedObjects && objects) {
-			toolData.relatedObjects.map(object =>
-				objects.forEach(item => {
+		if (localToolData.relatedObjects && localAdditionalObjInfo) {
+			localToolData.relatedObjects.map(object =>
+				localAdditionalObjInfo.forEach(item => {
 					if (object.objectId === item.id && item.activeflag === 'active') {
 						object['datasetPublisher'] = item.datasetPublisher;
 						object['datasetLogo'] = item.datasetLogo;
