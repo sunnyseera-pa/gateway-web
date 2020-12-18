@@ -442,6 +442,7 @@ input[type=radio]:disabled {
 .dar-form {
 	padding: 0 10px;
 	h3 {
+		white-space: pre-line;
 		padding: 0 15px;
 		@include font-source(14px, $gray-dark, $font-weight-semibold);
 		line-height: 21px;
