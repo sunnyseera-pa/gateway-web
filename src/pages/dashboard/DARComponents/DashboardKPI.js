@@ -9,8 +9,8 @@ import '../Dashboard.scss';
 class  DashboardKPI extends Component {
 
   render() {
-    const  kpiText = this.props.kpiText; 
-    const  kpiValue = this.props.kpiValue; 
+    const kpiText = this.props.kpiText; 
+    const kpiValue = this.props.kpiValue; 
     const percentageFlag = this.props.percentageFlag;
 
     return (

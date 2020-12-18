@@ -4196,12 +4196,22 @@ export const uniqueSchema = {
 }
 
 export const updateRequestProps = {
-	open: jest.fn(),
+	open: true,
 	close: jest.fn(),
 	fullAmendments: {
 		'Safe People | Applicant': [{question: 'Test question', answer: 'Test answer'}]
 	},
 	publisher: 'Test publisher',
 	applicationId: '55aa66bb',
-	projectName: 'Test project'
+	projectName: 'Test project',
+	history:{ 
+		pathname: `/account`, 
+		search: `?tab=dataaccessrequests&team=`, 
+		state: {
+			publisher: 'Test publisher',
+			nav: `dataaccessrequests&team=Test%20publisher`,
+			tab: 'inReview',
+			message: `You have successfully requested updates to ‘Test project’ application`,
+		} 
+	}
 }
