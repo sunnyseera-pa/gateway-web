@@ -156,7 +156,7 @@ const AccessActivity = ({
 								>
 									Start review
 								</button>
-							) : !_.isEmpty(reviewStatus) ? (
+							) : !_.isEmpty(reviewStatus) || !_.isEmpty(amendmentStatus) ? (
 								setActivityMeta()
 							) : (
 								''
