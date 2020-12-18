@@ -1,7 +1,6 @@
 import React from 'react';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
-import { isEmpty, isNil, isNaN } from 'lodash';
 import 'react-datepicker/dist/react-datepicker.css';
 
 class DatePickerCustom extends React.Component {
