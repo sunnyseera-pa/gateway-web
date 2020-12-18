@@ -16,6 +16,7 @@ import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
+import CollectionCard from "../commonComponents/collectionCard/CollectionCard";
 
 import "react-tabs/style/react-tabs.css";
 import { baseURL } from "../../configs/url.config";
@@ -24,7 +25,6 @@ import SVGIcon from "../../images/SVGIcon";
 import ReactMarkdown from "react-markdown";
 import moment from "moment";
 import _ from 'lodash';
-import { ReactComponent as InfoFillSVG } from "../../images/infofill.svg";
 import { ReactComponent as InfoSVG } from "../../images/info.svg";
 import './Paper.scss'; 
 
@@ -65,7 +65,8 @@ class ToolDetail extends Component {
     showModal: false,
     showError: false,
     isHovering: false,
-    context: {}
+    context: {},
+    collections: []
   };
 
   constructor(props) {
@@ -113,25 +114,31 @@ class ToolDetail extends Component {
       this.getDataSearchFromDb();
     }
   }
-
+ 
   getDataSearchFromDb = () => {
     this.setState({ isLoading: true });
     axios
       .get(baseURL + "/api/v1/papers/" + this.props.match.params.paperID)
       .then( async (res) => {
-        this.setState({
-          data: res.data.data[0],
-          reviewData: res.data.reviewData,
-          discourseTopic: res.data.discourseTopic
-        });
-        document.title = res.data.data[0].name.trim();
-
-        let counter = !this.state.data.counter
+        if(_.isNil(res.data)){
+          window.localStorage.setItem('redirectMsg', `Paper not found for Id: ${this.props.match.params.paperID}`);  
+          this.props.history.push({pathname: "/search?search=", search:""});
+        }
+        else{
+          this.setState({
+            data: res.data.data[0],
+            reviewData: res.data.reviewData,
+            discourseTopic: res.data.discourseTopic
+          });
+          document.title = res.data.data[0].name.trim();
+          
+          let counter = !this.state.data.counter
           ? 1
           : this.state.data.counter + 1;
-        this.updateCounter(this.props.match.params.paperID, counter);
-        if(!_.isUndefined(res.data.data[0].relatedObjects)) {
-          await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+          this.updateCounter(this.props.match.params.paperID, counter);
+          if(!_.isUndefined(res.data.data[0].relatedObjects)) {
+            await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+          }
         }
       })
       .catch((err) => {
@@ -141,9 +148,21 @@ class ToolDetail extends Component {
         }
         this.props.history.push({pathname: "/search?search=", search:""});
       }).finally(() => {
+        this.getCollections();
         this.setState({ isLoading: false });
     });
   }; 
+
+  getCollections() {
+    this.setState({ isLoading: true });
+    axios
+      .get(baseURL + "/api/v1/collections/entityid/" + this.state.data.id)
+      .then(res => {
+        this.setState({
+          collections: res.data.data || [] 
+        });
+      });
+  }
 
   doSearch = e => {
     //fires on enter on searchbar
@@ -182,10 +201,18 @@ class ToolDetail extends Component {
       await axios
         .get(baseURL + "/api/v1/relatedobject/" + object.objectId) 
         .then(res => {
+          let datasetPublisher;
+          let datasetLogo;
+
+          {!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.name') ? datasetPublisher = res.data.data[0].datasetv2.summary.publisher.name : datasetPublisher = ''}
+          {!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.logo') ? datasetLogo = res.data.data[0].datasetv2.summary.publisher.logo : datasetLogo = ''}
+
           tempObjects.push({
             id: object.objectId,
             authors: res.data.data[0].authors,
-            activeflag: res.data.data[0].activeflag
+            activeflag: res.data.data[0].activeflag,
+            datasetPublisher: datasetPublisher,
+            datasetLogo: datasetLogo
           });
         });
       }
@@ -204,6 +231,9 @@ class ToolDetail extends Component {
     this.state.data.relatedObjects.map(object =>
       this.state.objects.forEach(item => {
         if (object.objectId === item.id && item.activeflag === "active") {
+          object["datasetPublisher"] = item.datasetPublisher;
+          object["datasetLogo"] = item.datasetLogo;
+
           tempRelatedObjects.push(object);
         }
 
@@ -263,7 +293,8 @@ toggleHoverState(state) {
       discoursePostCount,
       showDrawer,
       showModal,
-      context
+      context,
+      collections
     } = this.state;
 
 
@@ -286,6 +317,7 @@ toggleHoverState(state) {
       <Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
         <div>
           <SearchBar
+            ref={this.searchBar}
             searchString={searchString}
             doSearchMethod={this.doSearch}
             doUpdateSearchString={this.updateSearchString}
@@ -365,7 +397,7 @@ toggleHoverState(state) {
             )}
 
             {data.isPreprint ? (
-              <Row className="">
+              <Row className="mt-4">
                 <Col sm={1} lg={1} />
                 <Col sm={10} lg={10}>
                     <Alert variant="warning" className="mt-3" data-testid="preprintAlert">
@@ -396,39 +428,37 @@ toggleHoverState(state) {
               ""
             )}
 
-            <Row className="mt-2">
+            <Row className="mt-4">
               <Col sm={1} lg={1} />
               <Col sm={10} lg={10}>
                 <div className="rectangle">
                   <Row>
-                    <Col xs={7} md={8}>
-                      <p>
+                    <Col>
                         <span className="black-16" data-testid="title">
                           {data.name}
                         </span>
-                        <br />
+                    </Col>
+                  </Row>
+                  <Row className="margin-top-16">
+                    <Col>
                         <span className="badge-paper">
                           <SVGIcon
                             name="projecticon"
                             fill={"#3c3c3b"}
                             className="badgeSvg mr-2"
+                            viewBox="-2 0 18 18"
                           />
-                          Paper
+                          <span>Paper</span>
                         </span>
-                      </p>
                     </Col>
-                    <Col xs={5} md={4} className="iconHolder"></Col>
                   </Row>
-
-                  <Row>
-                    <Row>
-                      <Col className="ml-3">
+                    <Row className="margin-top-16">
+                      <Col xs={12}>
                         <span className="gray800-14">
                           {data.counter === undefined ? 1 : data.counter + 1}
                           {data.counter === undefined ? " view" : " views"}
                         </span>
                       </Col>
-                    </Row>
                   </Row>
                 </div>
               </Col>
@@ -620,19 +650,19 @@ toggleHoverState(state) {
                     </Tab>
 
                     <Tab
-                      eventKey="Collaboration"
+                      eventKey="Collaboration" 
                       title={`Discussion (${discoursePostCount})`}
                     >
                       <DiscourseTopic
-                        toolId={data.id}
+                        toolId={data.id} 
                         topicId={data.discourseTopicId || 0}
                         userState={userState}
                         onUpdateDiscoursePostCount={this.updateDiscoursePostCount}
-                      />
+                      /> 
                     </Tab>
                     <Tab
                       eventKey="Projects"
-                      title={"Related resources (" + relatedObjects.length + ")"}
+                      title={"Related resources (" + relatedObjects.length + ")"} 
                     >
                       {relatedObjects.length <= 0 ? (
                         <NotFound word="related resources" />
@@ -640,10 +670,38 @@ toggleHoverState(state) {
                         relatedObjects.map(object => (
                           <RelatedObject
                             relatedObject={object}
+                            objectType={object.objectType}
                             activeLink={true}
                             showRelationshipAnswer={true}
+                            datasetPublisher={object.datasetPublisher} 
+                            datasetLogo={object.datasetLogo}
                           />
                         ))
+                      )}
+                    </Tab>
+                    <Tab
+                      eventKey="Collections"
+                      title={
+                        "Collections (" + collections.length + ")"
+                      }
+                    >
+                      {!collections ||
+                      collections.length <= 0 ? (
+                        <NotFound text="This paper has not been featured on any collections yet."/> 
+                      ) : (
+                        <>
+                          <NotFound text="This paper appears on the collections below. A collection is a group of resources on the same theme."/> 
+
+                          <Row >
+                            {
+                              collections.map((collection) => (
+                                <Col sm={12} md={12} lg={6} style={{"text-align": "-webkit-center"}}>
+                                  <CollectionCard data={collection} /> 
+                                </Col>
+                              ))
+                            }
+                          </Row>
+                        </>
                       )}
                     </Tab>
                   </Tabs>

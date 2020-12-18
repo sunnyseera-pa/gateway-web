@@ -19,6 +19,7 @@ import UserMessages from "../commonComponents/userMessages/UserMessages";
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
+import CollectionCard from "../commonComponents/collectionCard/CollectionCard";
 import './Course.scss'; 
 
 // import ReactGA from 'react-ga';
@@ -57,7 +58,8 @@ class CourseDetail extends Component {
     showDrawer: false,
     showModal: false,
     showError: false,
-    context: {}
+    context: {},
+    collections: []
   };
 
   constructor(props) {
@@ -102,17 +104,23 @@ class CourseDetail extends Component {
     axios
       .get(baseURL + "/api/v1/course/" + this.props.match.params.courseID) 
       .then( async (res) => {
-        this.setState({
-          data: res.data.data[0],
-          discourseTopic: res.data.discourseTopic
-        });
-        document.title = res.data.data[0].title.trim();
+        if(_.isNil(res.data)){
+					window.localStorage.setItem('redirectMsg', `Course not found for Id: ${this.props.match.params.courseID}`);  
+					this.props.history.push({pathname: "/search?search=", search:""});
+				}
+				else{
+          this.setState({
+            data: res.data.data[0],
+            discourseTopic: res.data.discourseTopic
+          });
+          document.title = res.data.data[0].title.trim();
 
-        let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
-        this.updateCounter(this.props.match.params.courseID, counter);
+          let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
+          this.updateCounter(this.props.match.params.courseID, counter);
 
-        if(!_.isUndefined(res.data.data[0].relatedObjects)) {
-          await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+          if(!_.isUndefined(res.data.data[0].relatedObjects)) {
+            await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+          }
         }
       })
       .catch((err) => {
@@ -122,9 +130,21 @@ class CourseDetail extends Component {
           }
           this.props.history.push({pathname: "/search?search=", search:""});
       }).finally(() => {
+        this.getCollections();
         this.setState({ isLoading: false });
     });
   }; 
+
+  getCollections() {
+    this.setState({ isLoading: true });
+    axios
+      .get(baseURL + "/api/v1/collections/entityid/" + this.state.data.id)
+      .then(res => {
+        this.setState({
+          collections: res.data.data || [] 
+        });
+      });
+  }
 
   doSearch = e => {
     //fires on enter on searchbar
@@ -165,13 +185,21 @@ class CourseDetail extends Component {
       await axios
         .get(baseURL + "/api/v1/relatedobject/" + object.objectId) 
         .then(res => {
+          let datasetPublisher;
+          let datasetLogo;
+
+          {!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.name') ? datasetPublisher = res.data.data[0].datasetv2.summary.publisher.name : datasetPublisher = ''}
+          {!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.logo') ? datasetLogo = res.data.data[0].datasetv2.summary.publisher.logo : datasetLogo = ''}
+
           tempObjects.push({
             id: object.objectId,
             authors: res.data.data[0].authors,
-            activeflag: res.data.data[0].activeflag
+            activeflag: res.data.data[0].activeflag,
+            datasetPublisher: datasetPublisher,
+            datasetLogo: datasetLogo
           });
         });
-      }
+      } 
 
     });
     await Promise.all(promises);
@@ -189,6 +217,9 @@ class CourseDetail extends Component {
     this.state.data.relatedObjects.map(object =>
       this.state.objects.forEach(item => {
         if (object.objectId === item.id && item.activeflag === "active") {
+          object["datasetPublisher"] = item.datasetPublisher;
+          object["datasetLogo"] = item.datasetLogo;
+
           tempRelatedObjects.push(object);
         }
 
@@ -234,7 +265,8 @@ class CourseDetail extends Component {
       discoursePostCount,
       showDrawer,
       showModal,
-      context
+      context,
+      collections
     } = this.state;
 
     if (isLoading) {
@@ -256,6 +288,7 @@ class CourseDetail extends Component {
       <Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
         <div>
           <SearchBar
+            ref={this.searchBar}
             searchString={searchString}
             doSearchMethod={this.doSearch}
             doUpdateSearchString={this.updateSearchString}
@@ -312,15 +345,15 @@ class CourseDetail extends Component {
                 <div className="rectangle">
                   <Row>
                     <Col>
-                      <span className="gray3a-20">{data.title}</span>
+                      <span className="black-16">{data.title}</span>
                     </Col>
                   </Row>
                   <Row>
                     <Col>
-                      <span className="gray800-14">{data.provider}</span>
+                      <span className="black-14">{data.provider}</span>
                     </Col>
                   </Row>
-                  <Row className="mt-3">
+                  <Row className="margin-top-16">
                     <Col xs={12}>
                       <span className="badge-course">
                         <SVGIcon
@@ -354,9 +387,9 @@ class CourseDetail extends Component {
                     </Col>
                   </Row>
 
-                  <Row className="mt-2">
+                  <Row className="margin-top-16">
                     <Col xs={12}>
-                      <span className="gray700-13">
+                      <span className="gray700-14">
                         {data.counter === undefined ? 1 : data.counter + 1}
                         {data.counter === undefined ? " view" : " views"}
                       </span>
@@ -522,7 +555,7 @@ class CourseDetail extends Component {
                         </Col>
                       </Row> 
 
-            
+             
                       <Row className="margin-top-8">
                       {/* gray800-14-opacity */}
                         <Col sm={12}>
@@ -535,7 +568,7 @@ class CourseDetail extends Component {
                             {data.courseOptions.map((courseOption) => {
                               return(
                                 <div className="margin-top-24">
-                                <Row className="gray800-14-opacity">
+                                <Row className="gray800-14-opacity"> 
                                 <Col sm={12}>
                                   {courseOption.flexibleDates ? 'Flexible' : moment(courseOption.startDate).format("dddd Do MMMM YYYY")}
                                 </Col>
@@ -707,10 +740,38 @@ class CourseDetail extends Component {
                         relatedObjects.map(object => (
                           <RelatedObject
                             relatedObject={object}
+                            objectType={object.objectType}
                             activeLink={true}
                             showRelationshipAnswer={true}
+                            datasetPublisher={object.datasetPublisher} 
+                            datasetLogo={object.datasetLogo}
                           />
                         ))
+                      )}
+                    </Tab>
+                    <Tab
+                      eventKey="Collections"
+                      title={
+                        "Collections (" + collections.length + ")"
+                      }
+                    >
+                      {!collections ||
+                      collections.length <= 0 ? (
+                        <NotFound text="This course has not been featured on any collections yet."/> 
+                      ) : (
+                        <>
+                          <NotFound text="This course appears on the collections below. A collection is a group of resources on the same theme."/> 
+
+                          <Row >
+                            {
+                              collections.map((collection) => (
+                                <Col sm={12} md={12} lg={6} style={{"text-align": "-webkit-center"}}>
+                                  <CollectionCard data={collection} /> 
+                                </Col>
+                              ))
+                            }
+                          </Row>
+                        </>
                       )}
                     </Tab>
                   </Tabs>

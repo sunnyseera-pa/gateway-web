@@ -4,6 +4,7 @@ import { PageView, initGA } from '../../tracking';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
 import moment from 'moment';
+import _ from 'lodash';
 
 import { Container, Row, Col, Tabs, Tab, Pagination, Dropdown } from 'react-bootstrap';
 
@@ -568,9 +569,9 @@ class SearchPage extends React.Component {
             
             showDrawer,
             showModal,
-            context
+            context 
         } = this.state;
-
+        
         var { key } = this.state;
         
         if (isLoading) {
@@ -946,11 +947,15 @@ class SearchPage extends React.Component {
                                             </Col>
                                         </Row>
                                     }
-                                    
                                     {key === 'Datasets' ?
                                         datasetCount <= 0 && !isResultsLoading ? <NoResults type='datasets' searchString={searchString} />
                                         : datasetData.map((dataset) => {
-                                            return <RelatedObject key={dataset.id} data={dataset} activeLink={true} onSearchPage={true} updateOnFilterBadge={this.updateOnFilterBadge} />
+                                            let datasetPublisher;
+                                            let datasetLogo;
+                                            {!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.name') ? datasetPublisher = dataset.datasetv2.summary.publisher.name : datasetPublisher = ''}
+                                            {!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.logo') ? datasetLogo = dataset.datasetv2.summary.publisher.logo : datasetLogo = ''}
+
+                                            return <RelatedObject key={dataset.id} data={dataset} activeLink={true} onSearchPage={true} updateOnFilterBadge={this.updateOnFilterBadge} datasetPublisher={datasetPublisher} datasetLogo={datasetLogo} />;
                                         }) 
                                         : ''}
 

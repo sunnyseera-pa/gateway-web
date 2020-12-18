@@ -81,12 +81,18 @@ class CollectionPage extends Component {
 				baseURL + '/api/v1/collections/' + this.props.match.params.collectionID
 			)
 			.then((res) => {
-				this.setState({
-					data: res.data.data[0],
-					discourseTopic: res.data.discourseTopic
-				});
-				this.getObjectData(res.data.data[0]);
-				this.setState({ isLoading: false });
+				if(_.isNil(res.data)){
+					window.localStorage.setItem('redirectMsg', `Collection not found for Id: ${this.props.match.params.collectionID}`);  
+					this.props.history.push({pathname: "/search?search=", search:""});
+				}
+				else{
+					this.setState({
+						data: res.data.data[0],
+						discourseTopic: res.data.discourseTopic
+					});
+					this.getObjectData(res.data.data[0]);
+					this.setState({ isLoading: false });
+				}
 			});
 	};
 
@@ -161,15 +167,16 @@ class CollectionPage extends Component {
 		this.setState({ objectData: this.state.objectData });
 	};
 
-	getDatasetData = async (datasetID) => {
+	getDatasetData = async (datasetID) => { 
 		this.setState({ isLoading: true });
 		await Promise.all([
 			axios.get(baseURL + '/api/v1/datasets/' + datasetID).then((res) => {
-				this.state.objectData.push(res.data.data);
+				this.state.objectData.push(res.data.data); 
 				if (
 					res.data.data.activeflag === 'active' ||
+					res.data.data.activeflag === 'archive' ||
 					(res.data.data.activeflag === 'review' &&
-						res.data.data.authors.includes(this.state.userState[0].id))
+						res.data.data.authors.includes(this.state.userState[0].id)) 
 				) {
 					this.state.datasetCount++;
 				}
@@ -263,7 +270,7 @@ class CollectionPage extends Component {
 			toolCount,
 			datasetCount,
 			personCount,
-			projectCount,
+			projectCount, 
 			paperCount,
 			courseCount,
 			collectionAdded,
@@ -276,6 +283,9 @@ class CollectionPage extends Component {
 		var { key } = this.state;
 		var allCount =
 			toolCount + datasetCount + personCount + projectCount + paperCount + courseCount;
+
+		let datasetPublisher;
+		let datasetLogo;
 
 		if (isLoading) {
 			return (
@@ -448,7 +458,7 @@ class CollectionPage extends Component {
 								</Row>
 							</Container>
 						</Tab>
-					</Tabs>
+					</Tabs> 
 				</div>
 
 				<Container className='resource-card'>
@@ -459,6 +469,7 @@ class CollectionPage extends Component {
 								? objectData.map((object) => {
 										if (
 											object.activeflag === 'active' 
+											|| object.activeflag === 'archive' && object.type === 'dataset'
 											|| (object.type === 'course' && object.activeflag === 'review' && object.creator[0].id === userState[0].id)
 											|| (object.type !== 'course' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
 										) {
@@ -466,6 +477,9 @@ class CollectionPage extends Component {
 											var updated = '';
 											var user = '';
 											let showAnswer = false;
+
+											{!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.name') ? datasetPublisher = object.datasetv2.summary.publisher.name : datasetPublisher = ''}
+											{!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.logo') ? datasetLogo = object.datasetv2.summary.publisher.logo : datasetLogo = ''}
 
 											data.relatedObjects.map((dat) => {
 												if (
@@ -488,6 +502,8 @@ class CollectionPage extends Component {
 													collectionReason={reason}
 													collectionUpdated={updated}
 													collectionUser={user}
+													datasetPublisher={datasetPublisher} 
+													datasetLogo={datasetLogo}
 												/>
 											);
 										}
@@ -498,6 +514,7 @@ class CollectionPage extends Component {
 								? objectData.map((object) => {
 										if (
 											object.activeflag === 'active' ||
+											object.activeflag === 'archive' && object.type === 'dataset' ||
 											(object.type === 'dataset' && object.activeflag === 'review' &&
 												object.authors.includes(userState[0].id))
 										) {
@@ -506,6 +523,10 @@ class CollectionPage extends Component {
 											var user = '';
 											let showAnswer = false;
 											if (object.type === "dataset") {
+
+												{!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.name') ? datasetPublisher = object.datasetv2.summary.publisher.name : datasetPublisher = ''}
+												{!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.logo') ? datasetLogo = object.datasetv2.summary.publisher.logo : datasetLogo = ''}
+	
 												data.relatedObjects.map((dat) => {
 													if (dat.objectId === object.datasetid) {
 														reason = dat.reason;
@@ -513,7 +534,7 @@ class CollectionPage extends Component {
 														user = dat.user;
 														showAnswer = !_.isEmpty(reason);
 													}
-												});
+												});												
 												return (
 													<RelatedObject
 														key={object.id}
@@ -523,6 +544,8 @@ class CollectionPage extends Component {
 														collectionReason={reason}
 														collectionUpdated={updated}
 														collectionUser={user}
+														datasetPublisher={datasetPublisher} 
+														datasetLogo={datasetLogo}
 													/>
 												);
 											}

@@ -1,5 +1,5 @@
 // /ShowObjects.js
-import React, { Component } from "react";
+import React, { Component } from "react"; 
 import axios from "axios";
 import queryString from "query-string";
 import * as Sentry from '@sentry/react';
@@ -27,6 +27,8 @@ import UserMessages from "../commonComponents/userMessages/UserMessages";
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
+import CollectionCard from "../commonComponents/collectionCard/CollectionCard";
+
 
 class ToolDetail extends Component {
   // initialize our state
@@ -64,10 +66,11 @@ class ToolDetail extends Component {
     showDrawer: false,
     showModal: false,
     showError: false,
-    context: {}
+    context: {},
+    collections: []
   };
  
-  constructor(props) {
+  constructor(props) { 
     super(props);
     this.state.userState = props.userState;
     this.searchBar = React.createRef();
@@ -108,35 +111,47 @@ class ToolDetail extends Component {
     }
   }
 
-  getDataSearchFromDb = () => {
+  getDataSearchFromDb = () => { 
     this.setState({ isLoading: true });
     axios
-      .get(baseURL + "/api/v1/tools/" + this.props.match.params.toolID)
+      .get(baseURL + "/api/v1/tools/" + this.props.match.params.toolID) 
       .then( async (res) => {
-        this.setState({
-          data: res.data.data[0],
-          reviewData: res.data.reviewData,
-          discourseTopic: res.data.discourseTopic
-        });
-        document.title = res.data.data[0].name.trim();
-
-        let counter = !this.state.data.counter
-          ? 1
-          : this.state.data.counter + 1;
-        this.updateCounter(this.props.match.params.toolID, counter);
-        if(!_.isUndefined(res.data.data[0].relatedObjects)) {
-            await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+        if(_.isNil(res.data)){
+          window.localStorage.setItem('redirectMsg', `Tool not found for Id: ${this.props.match.params.toolID}`);  
+          this.props.history.push({pathname: "/search?search=", search:""});
         }
-      }).catch((err) => {
-        //check if request is for a ToolID or a different route such as /add
-        if(!isNaN(this.props.match.params.toolID)){
-            window.localStorage.setItem('redirectMsg', err.response.data);
+        else{
+          this.setState({
+            data: res.data.data[0],
+            reviewData: res.data.reviewData,
+            discourseTopic: res.data.discourseTopic
+          });
+          document.title = res.data.data[0].name.trim();
+  
+          let counter = !this.state.data.counter
+            ? 1
+            : this.state.data.counter + 1;
+          this.updateCounter(this.props.match.params.toolID, counter);
+          if(!_.isUndefined(res.data.data[0].relatedObjects)) {
+              await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
           }
-        this.props.history.push({pathname: "/search?search=", search:""});
+        }
     }).finally(() => {
+        this.getCollections();
         this.setState({ isLoading: false });
     });
   };
+
+  getCollections() {
+    this.setState({ isLoading: true });
+    axios
+      .get(baseURL + "/api/v1/collections/entityid/" + this.state.data.id)
+      .then(res => {
+        this.setState({
+          collections: res.data.data || [] 
+        });
+      });
+  }
 
   doSearch = e => {
     //fires on enter on searchbar
@@ -155,7 +170,7 @@ class ToolDetail extends Component {
   getAdditionalObjectInfo = async data => {
     let tempObjects = [];
 
-    if(data){
+    if(data){ 
     const promises = data.map(async (object, index) => {
 
       if(object.objectType === 'course'){
@@ -172,10 +187,18 @@ class ToolDetail extends Component {
       await axios
         .get(baseURL + "/api/v1/relatedobject/" + object.objectId) 
         .then(res => {
+          let datasetPublisher;
+          let datasetLogo;
+
+          {!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.name') ? datasetPublisher = res.data.data[0].datasetv2.summary.publisher.name : datasetPublisher = ''}
+          {!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.logo') ? datasetLogo = res.data.data[0].datasetv2.summary.publisher.logo : datasetLogo = ''}
+
           tempObjects.push({
             id: object.objectId,
             authors: res.data.data[0].authors,
-            activeflag: res.data.data[0].activeflag
+            activeflag: res.data.data[0].activeflag,
+            datasetPublisher: datasetPublisher,
+            datasetLogo: datasetLogo
           });
         });
       }
@@ -195,8 +218,12 @@ class ToolDetail extends Component {
     if(this.state.data.relatedObjects && this.state.objects){
 
     this.state.data.relatedObjects.map(object =>
+
       this.state.objects.forEach(item => {
         if (object.objectId === item.id && item.activeflag === "active") {
+          object["datasetPublisher"] = item.datasetPublisher;
+          object["datasetLogo"] = item.datasetLogo;
+
           tempRelatedObjects.push(object);
         }
 
@@ -217,11 +244,11 @@ class ToolDetail extends Component {
 
   updateDiscoursePostCount = count => {
     this.setState({ discoursePostCount: count });
-  };
+  }; 
 
     toggleDrawer = () => {
         this.setState( ( prevState ) => {
-            if(prevState.showDrawer === true) {
+            if(prevState.showDrawer === true) { 
                 this.searchBar.current.getNumberOfUnreadMessages();
             }
             return { showDrawer: !prevState.showDrawer };
@@ -249,7 +276,8 @@ class ToolDetail extends Component {
       discoursePostCount,
       showDrawer,
       showModal,
-      context
+      context,
+      collections
     } = this.state;
 
     if (isLoading) {
@@ -280,13 +308,14 @@ class ToolDetail extends Component {
       <Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
         <div>
           <SearchBar
+            ref={this.searchBar} 
             searchString={searchString}
             doSearchMethod={this.doSearch}
             doUpdateSearchString={this.updateSearchString}
             userState={userState}
             doToggleDrawer={this.toggleDrawer}
           />
-          <Container className="margin-bottom-48">
+          <Container className="margin-bottom-48"> 
             {toolAdded ? (
               <Row className="">
                 <Col sm={1} lg={1} />
@@ -362,14 +391,14 @@ class ToolDetail extends Component {
               <Col sm={10} lg={10}>
                 <div className="rectangle">
                   <Row>
-                    <Col>
-                      <span className="black-20">{data.name}</span>
+                    <Col className="line-height-normal">
+                      <span className="black-16">{data.name}</span>
                     </Col>
                   </Row>
                   {ratingsCount === 0 ? (
                     ""
                   ) : (
-                    <Row className="mt-3">
+                    <Row className="margin-top-16">
                       <Col>
                         <div className="gray500-13">
                           <Rating
@@ -392,7 +421,7 @@ class ToolDetail extends Component {
                       </Col>
                     </Row>
                   )}
-                  <Row className="mt-3">
+                  <Row className="margin-top-16">
                     <Col xs={12}>
                       <span className="badge-tool">
                         <SVGIcon
@@ -412,8 +441,8 @@ class ToolDetail extends Component {
                     </Col>
                   </Row>
 
-                  <Row className="mt-2">
-                    <Col xs={12}>
+                  <Row className="margin-top-20">
+                    <Col xs={12} className="line-height-normal">
                       <span className="gray800-14">
                         {data.counter === undefined ? 1 : data.counter + 1}
                         {data.counter === undefined ? " view" : " views"}
@@ -650,16 +679,45 @@ class ToolDetail extends Component {
                         "Related resources (" + relatedObjects.length + ")"
                       }
                     >
+
                       {relatedObjects.length <= 0 ? (
                         <NotFound word="related resources" />
                       ) : (
                         relatedObjects.map(object => (
                           <RelatedObject
                             relatedObject={object}
+                            objectType={object.objectType}
                             activeLink={true}
                             showRelationshipAnswer={true}
+                            datasetPublisher={object.datasetPublisher} 
+                            datasetLogo={object.datasetLogo}
                           />
                         ))
+                      )}
+                    </Tab>
+                    <Tab
+                      eventKey="Collections" 
+                      title={
+                        "Collections (" + collections.length + ")"
+                      }
+                    >
+                      {!collections ||
+                      collections.length <= 0 ? (
+                        <NotFound text="This tool has not been featured on any collections yet."/> 
+                      ) : (
+                        <>
+                          <NotFound text="This tool appears on the collections below. A collection is a group of resources on the same theme."/> 
+
+                          <Row >
+                            {
+                              collections.map((collection) => (
+                                <Col sm={12} md={12} lg={6} style={{"text-align": "-webkit-center"}}>
+                                  <CollectionCard data={collection} /> 
+                                </Col>
+                              ))
+                            }
+                          </Row>
+                        </>
                       )}
                     </Tab>
                   </Tabs>
