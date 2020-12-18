@@ -544,7 +544,9 @@ let getActiveQuestion = (questionsArr, questionId) => {
 					return typeof option.conditionalQuestions !== 'undefined' && option.conditionalQuestions.length > 0;
 				})
 				.forEach(option => {
-					child = getActiveQuestion(option.conditionalQuestions, questionId);
+					if(!child) {
+						child = getActiveQuestion(option.conditionalQuestions, questionId);
+					}
 				});
 		}
 

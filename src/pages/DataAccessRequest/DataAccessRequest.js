@@ -842,14 +842,15 @@ class DataAccessRequest extends Component {
 	postQuestionAction = async (questionSetId, questionId, mode) => {
 		let response = await axios.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/amendments`, { questionSetId, questionId, mode });
 		let {accessRecord: { jsonSchema, questionAnswers = null, answeredAmendments, unansweredAmendments, amendmentIterations } } = response.data;
-		jsonSchema = this.injectStaticContent(jsonSchema, true, this.state.reviewSections);
-		let stateObj = _.pickBy({
+		jsonSchema = this.injectStaticContent(jsonSchema, this.state.inReviewMode, this.state.reviewSections);
+
+		let stateObj = _.omitBy({
 			jsonSchema,
 			questionAnswers,
 			answeredAmendments,
 			unansweredAmendments,
 			amendmentIterations
-		}, _.identity);
+		}, _.isNil);
 
 		return stateObj; 
 	}
