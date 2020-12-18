@@ -558,7 +558,7 @@ class DataAccessRequest extends Component {
 				this.setState({
 					...schemaUpdates
 				});
-				
+
 			});
 		} catch (error) {
 			console.log(`API PUT ERROR ${error}`);
@@ -577,7 +577,7 @@ class DataAccessRequest extends Component {
 	 * @desc Submitting data access request
 	 * @params  Object{questionAnswers}
 	 */
-	onFormSubmit = async (questionAnswers = {}) => {
+	onFormSubmit = async () => {
 		let invalidQuestions = DarValidation.getQuestionPanelInvalidQuestions(
 			Winterfell,
 			this.state.jsonSchema.questionSets,
@@ -800,13 +800,11 @@ class DataAccessRequest extends Component {
 			case DarHelper.actionKeys.CANCELREQUEST:
 				mode = DarHelper.amendmentModes.REMOVED;
 				stateObj = await this.postQuestionAction(questionSetId, questionId, mode);
-				debugger;
 				this.setState({ ...stateObj });
 				break;
 			case DarHelper.actionKeys.REVERTTOPREVIOUSANSWER:
 				mode = DarHelper.amendmentModes.REVERTED;
 				stateObj = await this.postQuestionAction(questionSetId, questionId, mode);
-				debugger;
 				this.setState({ ...stateObj });
 				break;
 			default:
@@ -1405,8 +1403,6 @@ class DataAccessRequest extends Component {
 			);
 		}
 	};
-
-
 
 	render() {
 		const {
