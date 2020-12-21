@@ -6,7 +6,6 @@ const AmendmentCount = ({ answeredAmendments = 0, unansweredAmendments = 0 }) =>
 
 
     const runHeavyCalc = (answeredAmendments, unansweredAmendments)  => {
-        debugger;
         // Math.floor is not heavy, use your imagination again
         return answeredAmendments  +  unansweredAmendments;
       }
