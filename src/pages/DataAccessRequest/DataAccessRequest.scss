@@ -601,6 +601,7 @@ input[type='radio']:disabled {
 	// padding: 0 10px;
 	h3 {
 		padding: 0 25px;
+		white-space: pre-line;
 		@include font-source(14px, $gray-dark, $font-weight-semibold);
 		line-height: 21px;
 		white-space: pre-line;

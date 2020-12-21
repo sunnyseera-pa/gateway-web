@@ -2,7 +2,7 @@ import React, { Fragment, useRef } from "react";
 import axios from 'axios';
 import { Formik, useFormik, FieldArray } from "formik";
 import * as Yup from "yup";
-import { Typeahead } from 'react-bootstrap-typeahead';
+import { Typeahead } from 'react-bootstrap-typeahead'; 
 import _ from "lodash";
 import moment from 'moment';
 import { Form, Button, Row, Col, InputGroup, DropdownButton, Dropdown, Container } from 'react-bootstrap';
@@ -46,7 +46,7 @@ const initialValues = {
     }]
 };
 
-var baseURL = require('../commonComponents/BaseURL').getURL();
+var baseURL = require('../commonComponents/BaseURL').getURL(); 
 
 const AddEditCourseForm = (props) => {
     const courseOptions = {
@@ -63,7 +63,7 @@ const AddEditCourseForm = (props) => {
             }
         ]
     }
-
+    
     let entriesArray = props.data.entries;
     if (entriesArray.length === 0) {
         entriesArray = [
@@ -156,6 +156,7 @@ const AddEditCourseForm = (props) => {
             if (object.objectId === id) {
                 inRelatedObject = true;
                 object.reason = reason;
+                object.objectType = type;
                 object.user = props.userState[0].name;
                 object.updated = moment().format("DD MMM YYYY");
             }

@@ -11,7 +11,7 @@ import RelatedResources from '../commonComponents/relatedResources/RelatedResour
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import ActionBar from '../commonComponents/actionbar/ActionBar'; 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-import SVGIcon from '../../images/SVGIcon';
+import SVGIcon from '../../images/SVGIcon'; 
 import ToolTip from '../../images/imageURL-ToolTip.gif';
 import { ReactComponent as InfoFillSVG } from "../../images/infofill.svg";
 import { ReactComponent as InfoSVG } from "../../images/info.svg";
@@ -143,6 +143,7 @@ const AddEditPaperForm = (props) => {
             if(object.objectId===id){
                 inRelatedObject = true;
                 object.reason = reason;
+                object.objectType = type;
                 object.user = props.userState[0].name;
                 object.updated = moment().format("DD MMM YYYY");
             }

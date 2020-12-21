@@ -152,7 +152,7 @@ class DatasetDetail extends Component {
     this.setState({ isLoading: true });
     await axios.get(baseURL + '/api/v1/datasets/' + this.props.match.params.datasetID)
       .then( async (res) => {
-        if(!res.data.success){
+        if(_.isNil(res.data)){
           window.localStorage.setItem('redirectMsg', `Dataset not found for Id: ${this.props.match.params.datasetID}`);  
           this.props.history.push({pathname: "/search?search=", search:""});
         }
@@ -225,10 +225,10 @@ class DatasetDetail extends Component {
   getCollections() {
     this.setState({ isLoading: true });
     axios
-      .get(baseURL + "/api/v1/collections/datasetid/" + this.state.data.datasetid)
+      .get(baseURL + "/api/v1/collections/entityid/" + this.state.data.datasetid)
       .then(res => {
         this.setState({
-          collections: res.data.data || []
+          collections: res.data.data || [] 
         });
       });
   }
@@ -554,8 +554,8 @@ class DatasetDetail extends Component {
     function Metadata() {
         var rating = "Not Rated";
 
-        if (data.datasetfields.metadataquality && !_.isNil(data.datasetfields.metadataquality.quality_rating)) {
-            rating = data.datasetfields.metadataquality.quality_rating;
+        if (data.datasetfields.metadataquality && !_.isNil(data.datasetfields.metadataquality.weighted_quality_rating)) {
+            rating = data.datasetfields.metadataquality.weighted_quality_rating;
         }
         else {
             return <Fragment><div style={{lineHeight: 1}}><MetadataNotRated className="" /></div><div style={{lineHeight: 1}}><span className="gray800-14-opacity">Not rated</span></div></Fragment>
@@ -563,7 +563,7 @@ class DatasetDetail extends Component {
 
         const renderTooltip = (props) => (
             <Tooltip className="metadataOverlay" {...props}>
-              Metadata richness score: {Math.trunc(data.datasetfields.metadataquality.quality_score)}
+              Metadata richness score: {Math.trunc(data.datasetfields.metadataquality.weighted_quality_score)}
               <br />
               <br />
               The score relates to the amount of information available about
@@ -1530,7 +1530,7 @@ class DatasetDetail extends Component {
                             {
                               collections.map((collection) => (
                                 <Col sm={12} md={12} lg={6} style={{"text-align": "-webkit-center"}}>
-                                  <CollectionCard data={collection} />
+                                  <CollectionCard data={collection} /> 
                                 </Col>
                               ))
                             }

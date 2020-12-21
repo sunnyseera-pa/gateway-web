@@ -378,7 +378,7 @@ class AddEditToolPage extends React.Component {
 						toolData: res.data.toolResults || [],
 						projectData: res.data.projectResults || [],
 						paperData: res.data.paperResults || [],
-						personData: res.data.personResults || [],
+						personData: res.data.personResults || [], 
 						courseData: res.data.courseResults || [],
 						summary: res.data.summary || [],
 						isLoading: false
@@ -396,7 +396,7 @@ class AddEditToolPage extends React.Component {
 				(object) => object.objectId !== id
 			);
 		} else {
-			this.state.tempRelatedObjectIds.push({ objectId: id, type: type, pid: pid });
+			this.state.tempRelatedObjectIds.push({ objectId: id, objectType: type, pid: pid });
 		}
 		this.setState({ tempRelatedObjectIds: this.state.tempRelatedObjectIds });
 	};
@@ -411,7 +411,7 @@ class AddEditToolPage extends React.Component {
 				...relatedObject, 
 				objectId: relatedObject.type === 'dataset' ? relatedObject.pid : relatedObject.objectId, 
 				user: user.name, 
-				updated: moment().format('DD MM YYYY') 
+				updated: moment().format('DD MMM YYYY') 
 			};
 			return newRelatedObject; 
 		});
@@ -487,7 +487,7 @@ class AddEditToolPage extends React.Component {
 			context
 		} = this.state;
 
-		if (isLoading) {
+		if (isLoading) { 
 			return (
 				<Container>
 					<Loading />

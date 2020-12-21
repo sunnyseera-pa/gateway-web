@@ -81,7 +81,7 @@ class CollectionPage extends Component {
 				baseURL + '/api/v1/collections/' + this.props.match.params.collectionID
 			)
 			.then((res) => {
-				if(!res.data.success){
+				if(_.isNil(res.data)){
 					window.localStorage.setItem('redirectMsg', `Collection not found for Id: ${this.props.match.params.collectionID}`);  
 					this.props.history.push({pathname: "/search?search=", search:""});
 				}
