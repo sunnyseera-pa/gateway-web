@@ -149,7 +149,7 @@ class Account extends Component {
             let values = queryString.parse(window.location.search);
             let team  =  'user';
             if (values.tab !== this.state.tabId || typeof values.tab !== 'undefined' || typeof values.tab !== null) {
-                if(nextProps.location.state.team !== '') {
+                if(_.has(nextProps, 'location.state.team') && nextProps.location.state.team !== '') {
                     team = nextProps.location.state.team;
                     localStorage.setItem('HDR_TEAM', nextProps.location.state.team);
                 }
