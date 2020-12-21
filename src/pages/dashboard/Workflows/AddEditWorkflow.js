@@ -175,9 +175,9 @@ const AddEditWorkflow = props => {
 							stepName: Yup.string().trim().required('This cannot be empty'),
 							reviewers: Yup.array().of(Yup.string()).required('You must select at least one reviewer'),
 							sections: Yup.array().of(Yup.string()).required('You must select at least one section'),
-							deadline: Yup.string()
-								.trim()
-								.matches(/^(?:[4-9]|[12]\d)\d*$/, 'Must only be a number and be greater than 3')
+							deadline: Yup.number()
+								.integer('You must enter a number')
+								.min(4, 'You must enter a number greater than 3')
 								.required('This cannot be empty'),
 						})
 					),

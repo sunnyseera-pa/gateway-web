@@ -194,8 +194,8 @@ Max 10MB per file.</span>
       </div>
       </div>
       <div className="files-area">
-      { uploadFiles.length == 0 && 
-        files.length == 0 &&
+      { uploadFiles.length === 0 && 
+        files.length === 0 &&
         <NoFiles />
       }  
       { uploadFiles.length > 0 &&
