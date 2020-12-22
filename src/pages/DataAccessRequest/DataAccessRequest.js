@@ -1050,10 +1050,7 @@ class DataAccessRequest extends Component {
 		});
 	};
 
-	onCustodianAction = e => {
-		let {
-			target: { value },
-		} = e;
+	onCustodianAction = value => {
 		value === 'AssignWorkflow' ? this.toggleAssignWorkflowModal() : this.toggleActionModal(value);
 	};
 

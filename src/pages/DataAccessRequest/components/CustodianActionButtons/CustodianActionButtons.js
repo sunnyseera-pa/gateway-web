@@ -71,12 +71,12 @@ const CustodianActionButtons = ({
 								<Row className='makeADecisionHeader'>
 									<span className='gray800-14-bold mb-1'>Review this phase</span>
 								</Row>
-								<option className='gray800-14 pointer' onClick={e => onWorkflowReviewDecisionClick(false)}>
+								<div className='gray800-14 pointer option' onClick={e => onWorkflowReviewDecisionClick(false)}>
 									Issues found
-								</option>
-								<option className='gray800-14 pointer' onClick={e => onWorkflowReviewDecisionClick(true)}>
+								</div>
+								<div className='gray800-14 pointer option' onClick={e => onWorkflowReviewDecisionClick(true)}>
 									No issues found
-								</option>
+								</div>
 							</div>
 						)}
 						{roles.includes('manager') && (
@@ -86,15 +86,15 @@ const CustodianActionButtons = ({
 									<br />
 									<span className='gray700-13 mb-2'>This will end the review process and send a final response to the applicant</span>
 								</Row>
-								<option className='gray800-14 pointer' onClick={e => onActionClick(e)} value='Approve'>
+								<div className='gray800-14 pointer option' onClick={e => onActionClick('Approve')}>
 									Approve
-								</option>
-								<option className='gray800-14 pointer' onClick={e => onActionClick(e)} value='ApproveWithConditions'>
+								</div>
+								<div className='gray800-14 pointer option' onClick={e => onActionClick('ApproveWithConditions')}>
 									Approve with conditions
-								</option>
-								<option className='gray800-14 pointer' onClick={e => onActionClick(e)} value='Reject'>
+								</div>
+								<div className='gray800-14 pointer option' onClick={e => onActionClick('Reject')}>
 									Reject
-								</option>
+								</div>
 							</Fragment>
 						)}
 					</Dropdown.Menu>
