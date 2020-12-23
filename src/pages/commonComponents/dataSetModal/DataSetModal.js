@@ -12,6 +12,7 @@ import './DataSetModal.scss';
 const DataSetModal = ({ open, closed, context, userState }) => {
 	let datasets = [],
 		title = '',
+		subTitle = '',
 		contactPoint = '',
 		dataRequestModalContent = { header: '', body: '' },
 		showActionButtons;
@@ -23,8 +24,8 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 
 	const initScreenData = () => {
 		if (typeof context !== 'undefined' && !_.isEmpty(context) && !_.isEmpty(context.datasets)) {
-			({ datasets, title, contactPoint, dataRequestModalContent, showActionButtons = true } = context);
-			setScreenData({ datasets, title, contactPoint, dataRequestModalContent, showActionButtons });
+			({ datasets, title, subTitle, contactPoint, dataRequestModalContent, showActionButtons = true } = context);
+			setScreenData({ datasets, title, subTitle, contactPoint, dataRequestModalContent, showActionButtons });
 		}
 	};
 
@@ -36,7 +37,7 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 		// 3. check user loggedIn status if not make user login
 		if (!isLoggedIn) {
 			// 3a. Show the loginPanel
-			DataSetHelper.showLoginPanel(window, title);
+			DataSetHelper.showLoginPanel(window, _.isEmpty(title) ? screenData.subTitle : title);
 		} else {
 			// 3. log google analytics event (Category-Action-Label)
 			Event('Buttons', 'Click', 'Request Access');
@@ -52,7 +53,7 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 			// 2. close modal and do not show enquiry - false;
 			closed(false);
 			// 3. Show the loginPanel
-			DataSetHelper.showLoginPanel(window, title);
+			DataSetHelper.showLoginPanel(window, _.isEmpty(title) ? screenData.subTitle : title);
 		} else {
 			// 4. do normal operation
 			closed(showEnquiry);

@@ -366,7 +366,7 @@ class DatasetAboutCard extends React.Component {
 											{section}
 
 											{this.props.requiresModal ? (
-												<span className='purple-14 pointer float-right' onClick={this.props.toggleModal}>
+												<span className='purple-14 pointer float-right' onClick={() => this.props.toggleModal()}>
 													How to request access
 												</span>
 											) : (
