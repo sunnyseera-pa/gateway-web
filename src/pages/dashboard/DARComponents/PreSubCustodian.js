@@ -26,15 +26,16 @@ class PreSubCustodian extends React.Component {
 	}
 
 	getDataSearchFromDb = () => {
+		debugger;
 		this.setState({ isLoading: true });
 		axios.get(`${baseURL}/api/v1/person/${this.state.data.userId}`).then(res => {
-			if (typeof res.data.data[0] === 'undefined') {
+			if (typeof res.data.data === 'undefined') {
 				this.setState({
 					name: '',
 				});
 			} else {
 				this.setState({
-					name: res.data.data[0].firstname + ' ' + res.data.data[0].lastname,
+					name: res.data.data.firstname + ' ' + res.data.data.lastname,
 				});
 			}
 		});
