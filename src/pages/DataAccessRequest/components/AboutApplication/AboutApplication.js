@@ -43,7 +43,7 @@ const AboutApplication = (props) => {
 		context
 	} = props;
 
-	const {t, i18n} = useTranslation('common');
+	const {t} = useTranslation('common');
 
 	return (
 		<div className='aboutAccordion'>

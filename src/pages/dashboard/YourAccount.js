@@ -253,7 +253,7 @@ const YourAccountForm = (props) => {
         document.getElementById("bioCurrentCount").innerHTML=e.target.value.length
     }
 
-    const {t, i18n} = useTranslation('common');
+    const {t} = useTranslation('common');
 
     return (
         <div>
