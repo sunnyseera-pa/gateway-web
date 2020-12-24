@@ -1350,6 +1350,8 @@ class DataAccessRequest extends Component {
 		} = this.state;
 		const { userState, location } = this.props;
 
+		const { t } = this.props;
+
 		Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
 		Winterfell.addInputType('datePickerCustom', DatePickerCustom);
 		Winterfell.addInputType('typeaheadUser', TypeaheadUser);
@@ -1426,7 +1428,7 @@ class DataAccessRequest extends Component {
 										${this.state.allowedNavigation ? '' : 'disabled'}`}
 										onClick={(e) => this.updateNavigation(item)}
 									>
-										{item.title}
+										{t(item.title)}
 									</h3>
 									{item.active && (
 										<ul className='list-unstyled section-subheader'>
@@ -1475,11 +1477,12 @@ class DataAccessRequest extends Component {
 										item.active ? (
 											<Fragment key={`pageContent-${idx}`}>
 												<p className='black-20-semibold mb-0'>
-													{item.active ? item.title : ''}
+													{item.active ? t(item.title)  : ''}
+													
 												</p>
 												<ReactMarkdown
 													className='gray800-14'
-													source={item.description}
+													source={t(item.description)}
 												/>
 											</Fragment>
 										) : (

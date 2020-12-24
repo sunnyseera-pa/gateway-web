@@ -12,6 +12,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import './css/styles.scss';
 import './css/icoda-styles.scss';
 
+import './i18n';
+
 const urlEnv = require('./pages/commonComponents/BaseURL').getURLEnv();
 
 // TODO: Revisit using sentry's dialog feedback

@@ -30,6 +30,9 @@ import Footer from './pages/commonComponents/Footer';
 import LoginErrorPage from './pages/commonComponents/LoginErrorPage';
 import ErrorModal from './pages/commonComponents/errorModal/ErrorModal';
 
+import {withTranslation} from "react-i18next";
+const DataAccessRequestTranslated = withTranslation('common')(DataAccessRequest)
+
 var baseURL = require('./pages/commonComponents/BaseURL').getURL();
 class HDRRouter extends Component {
     // initialize our state
@@ -130,9 +133,9 @@ class HDRRouter extends Component {
                         <Route path='/account/unsubscribe/:userObjectID' render={(props) => <Unsubscribe {...props} userState={userState} />} />
                         <Route path='/dashboard' render={(props) => <PublicAnalyticsDashboard {...props} userState={userState} />} />
                         
-                        {userState[0].loggedIn ? (<Route path='/data-access-request/dataset/:datasetId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
-                        {userState[0].loggedIn ? (<Route path='/data-access-request/publisher/:publisherId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
-                        {userState[0].loggedIn ? (<Route path='/data-access-request/:accessId' render={(props) => <DataAccessRequest {...props} userState={userState} />} />) : ''}
+                        {userState[0].loggedIn ? (<Route path='/data-access-request/dataset/:datasetId' render={(props) => <DataAccessRequestTranslated {...props} userState={userState} />} />) : ''}
+                        {userState[0].loggedIn ? (<Route path='/data-access-request/publisher/:publisherId' render={(props) => <DataAccessRequestTranslated {...props} userState={userState} />} />) : ''}
+                        {userState[0].loggedIn ? (<Route path='/data-access-request/:accessId' render={(props) => <DataAccessRequestTranslated {...props} userState={userState} />} />) : ''}
                                                 
                         {userState[0].loggedIn ? (<Route path='/account' render={(props) => <Account {...props} userState={userState} />} />) : ''}
                         {userState[0].loggedIn ? (<Route path='/addcollection' render={(props) => <AddCollectionPage {...props} userState={userState} /> } />) : ''}

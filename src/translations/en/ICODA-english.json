@@ -1,0 +1,74 @@
+{
+    
+    "industrySectors": [ "NHS","Industry","Academia","Public","Charity/Non-profit"],
+    "button":{
+        "confirm": "Confirm",
+        "sendMessage": "Send message"
+
+    },
+    "dataAccessRequestForm": {
+        "stepCompleted": "i have completed this step",
+        "aboutThisApplicationSection": {
+            "title": "About this application",
+            "description": "Preparation is key to a successful data access request. You need to be able to demonstrate how you will ensure safe use of patient data and the potential for public benefit. The steps below are intended to help you get off to a good start.Preparation is key to a successful data access request.",
+            "datasets": {
+                "title": "Select the datasets you need",
+                "paragraphOne": "The datasets you select may impact the questions being asked in this application form. You cannot change this later. If you’re not sure,",
+                "paragraphTwo": "send a message to the data custodian",
+                "paragraphThree": "to clarify. The custodian will help you understand if the data you would like to access can be used to answer your research question. Below you can include datasets that are listed in the Gateway. Please note that you will be able to add datasets not currently listed in the Gateway under the ‘Safe people’ section of this form. If you need to request access to datasets from multiple data custodians please contact the custodians using the messaging function before completing the application form.",
+                "paragraphFour": "Datasets",
+                "errorOne": "You must select at least one dataset"
+              },
+            "applicationName": {
+                "title": "Name your application",
+                "paragraphOne": "This can be your project name or anything that helps the custodian identify your application.",
+                "paragraphTwo": "Application title",
+                "paragraphThree": "This application is part of a National Core Studies project",
+                "paragraphFour": "National Core Studies project",
+                "tooltipOne": "We use this information for overall reporting on the efficiency of the programme.",
+                "tooltipTwo": "Projects must be added to the Gateway first using the appropriate tags associated with the National Core Studies.",
+                "errorOne": "This cannot be empty",
+                "errorTwo": "You must indicate a project or untick the option above",
+                "dropdown": "Select a project"
+            },
+            "contributors": {
+                "title": "Invite contributors",
+                "paragraphOne": "Applications are often a team effort, so you can add others to help. Contributors can exchange private notes, make edits, message the data custodian, invite others and submit the application. If they’re named in the application, you can fill in some of their details automatically. You can do this later too.",
+                "addContributorsButton": "Add contributors"
+               
+            },
+            "dataCustodianAdvice": {
+                "title": "Read the advice from the data custodian",
+                "paragraphOne": "Please make sure you have read the advice provided by the data custodian on how to request access to their datasets.",
+                "paragraphTwo": "I have read",
+                "paragraphThree": "how to request access"
+            },
+            "dataCustodianCommunication": {
+                "title": "Communicate with the data custodian",
+                "paragraphOne": "The earlier you get in touch, the better. If you've not done so yet, we recommend sending a message with a brief description of your project and the data you are interested in. The data custodian will help you understand the data and provide information on how to complete the data access application form."
+            },
+            "approvalsCheck": {
+                "title": "Check what approvals you might need",
+                "paragraphOne": "Before requesting access to health data, you might need to demonstrate that everyone involved in the project has appropriate information governance training and / or seek approvals for research projects (e.g. ethics). For example, to access administrative data from custodians such as the Office for National Statistics you need to be an accredited researcher under the Digital Economy Act.",
+                "paragraphTwo": "Alternatively you might be asked to demonstrate that you have or are planning to attend recognised Information Governance training.",
+                "paragraphThree": "Contact the data custodian to know more about recognised training and accreditation.",
+                "paragraphFour": "Becoming an approved researcher through the ONS approved researcher scheme",
+                "paragraphFive": "Information governance training recognised by some data custodians",
+                "paragraphSix": "Data Security",
+                "paragraphSeven":"Data custodians require you to provide assurance that your organisation has appropriate data security processes in place. For example, use of NHS England data has to meet the standards set out in the Data Security Protection Toolkit. We encourage you to contact the data custodian for more information.",
+                "paragraphEight":"DSPT",
+                "paragraphNine": "The MRC Health Data Access toolkit aims to help you understand some of the approvals required for your research project. Data custodians request that these approvals are in place before you gain access to data.",
+                "buttonOne": "MRC Health Data Access toolkit"
+
+            },
+            "AfterYourSubmission": {
+                "title": "Understand what happens after you submit the application",
+                "paragraphOne": "After you have completed the form, you can submit the application.",
+                "paragraphTwo": "Make sure to double-check everything before submitting.",
+                "paragraphThree":"You will be able to edit your responses via the Gateway after submission, but please speak to the data custodian before making any updates as this could impact the time it takes to review your application.",
+                "paragraphFour": "Both you and the data custodian will receive an email with a copy of the information submitted using this form.",
+                "paragraphFive": "Once you have submitted, the data custodian might still ask for some additional information."
+            }
+        }
+    }
+}

@@ -1,0 +1,76 @@
+{
+    "industrySectors": [ "NHS","Industria","Accademia","Pubblico","Charity/Non-profit"],
+    "button":{
+        "confirm": "Conferma",
+        "sendMessage": "Invia messaggio"
+    },
+    "dataAccessRequestForm" :{
+        "stepCompleted": "Ho completato questo step",
+        "aboutThisApplicationSection": {
+            "title": "A proposito di questa applicazione",
+            "description": "La preparazione è la chiave per una richiesta di accesso ai dati di successo. Devi essere in grado di dimostrare come garantirai un uso sicuro dei dati dei pazienti e il potenziale di beneficio pubblico. I passaggi seguenti hanno lo scopo di aiutarti a iniziare bene. La preparazione è la chiave per una richiesta di accesso ai dati di successo.",
+            "datasets": {
+                "title": "Seleziona i set di dati di cui hai bisogno",
+                "paragraphOne": "I set di dati selezionati potrebbero influire sulle domande poste in questo modulo di domanda. Non puoi modificarlo in seguito. Se non sei sicuro",
+                "paragraphTwo": "invia un messaggio al custode dei dati",
+                "paragraphThree": "per chiarire. Il custode ti aiuterà a capire se i dati a cui desideri accedere possono essere utilizzati per rispondere alla tua domanda di ricerca. Di seguito puoi includere set di dati elencati nel gateway. Tieni presente che sarai in grado di aggiungere set di dati non attualmente elencati nel gateway nella sezione ‘Persone sicure’ di questo modulo. Se è necessario richiedere l'accesso ai set di dati da più custodi dei dati, contattare i custodi utilizzando la funzione di messaggistica prima di completare il modulo di domanda.",
+                "paragraphFour": "Set di dati",
+                "errorOne": "Devi selezionare almeno un set di dati"
+              },
+            "applicationName": {
+                "title": "Assegna un nome alla tua applicazione",
+                "paragraphOne": "Può essere il nome del tuo progetto o qualsiasi cosa che aiuti il ​​custode a identificare la tua applicazione.",
+                "paragraphTwo": "Titolo dell'applicazione",
+                "paragraphThree": "Questa applicazione fa parte di un progetto National Core Studies",
+                "paragraphFour": "Progetto National Core Studies",
+                "tooltipOne": "Utilizziamo queste informazioni per la rendicontazione generale sull'efficienza del programma.",
+                "tooltipTwo": "I progetti devono essere aggiunti prima al Gateway utilizzando i tag appropriati associati ai National Core Studies.",
+                "errorOne": "Questo non può essere vuoto",
+                "errorTwo": "Devi indicare un progetto o deselezionare l'opzione sopra",
+                "dropdown": "Seleziona un progetto"
+            },
+            "contributors": {
+                "title": "Invita collaboratori",
+                "paragraphOne": "Le applicazioni sono spesso un lavoro di squadra, quindi puoi aggiungerne altre per aiutare. I contributori possono scambiare note private, apportare modifiche, inviare messaggi al custode dei dati, invitare altri e inviare la domanda. Se sono nominati nell'applicazione, puoi inserire automaticamente alcuni dei loro dettagli. Puoi farlo anche più tardi.",
+                "addContributorsButton": "Aggiungi collaboratori"
+               
+            },
+            "dataCustodianAdvice": {
+                "title": "Leggi i consigli del custode dei dati",
+                "paragraphOne": "Assicurati di aver letto i consigli forniti dal custode dei dati su come richiedere l'accesso ai loro set di dati.",
+                "paragraphTwo": "Ho letto",
+                "paragraphThree": "come richiedere l'accesso"
+            },
+            "dataCustodianCommunication": {
+                "title": "Comunica con il custode dei dati",
+                "paragraphOne": "Prima ti metti in contatto, meglio è. Se non l'hai ancora fatto, ti consigliamo di inviare un messaggio con una breve descrizione del tuo progetto e dei dati che ti interessano. Il custode dei dati ti aiuterà a comprendere i dati e fornirà informazioni su come completare il modulo di richiesta di accesso ai dati ."
+            },
+            "approvalsCheck": {
+                "title": "Controlla quali approvazioni potresti aver bisogno",
+                "paragraphOne": "Prima di richiedere l'accesso ai dati sanitari, potrebbe essere necessario dimostrare che tutte le persone coinvolte nel progetto hanno un'adeguata formazione sulla governance delle informazioni e / o richiedono l'approvazione per i progetti di ricerca (ad es.etica). Ad esempio, per accedere ai dati amministrativi di custodi come l'Ufficio per le statistiche nazionali è necessario essere un ricercatore accreditato ai sensi del Digital Economy Act.",
+                "paragraphTwo": "In alternativa, ti potrebbe essere chiesto di dimostrare che hai o hai intenzione di frequentare una formazione riconosciuta sulla governance delle informazioni.",
+                "paragraphThree": "Contatta il custode dei dati per saperne di più sulla formazione e sull'accreditamento riconosciuti.",
+                "paragraphFour": "Diventare un ricercatore approvato tramite il programma di ricerca approvato dall'ONS",
+                "paragraphFive": "Formazione sulla governance delle informazioni riconosciuta da alcuni custodi dei dati",
+                "paragraphSix": "La sicurezza dei dati",
+                "paragraphSeven":"I custodi dei dati richiedono di fornire la garanzia che la tua organizzazione disponga di processi di sicurezza dei dati appropriati. Ad esempio, l'uso dei dati di NHS England deve soddisfare gli standard stabiliti nel Data Security Protection Toolkit. Ti invitiamo a contattare il custode dei dati per ulteriori informazioni.",
+                "paragraphEight":"DSPT",
+                "paragraphNine": "Il toolkit dell'MRC Health Data Access mira ad aiutarti a comprendere alcune delle approvazioni richieste per il tuo progetto di ricerca. I custodi dei dati richiedono che queste approvazioni siano in atto prima che tu possa accedere ai dati.",
+                "buttonOne": "Toolkit di accesso ai dati sulla salute dell'MRC"
+            },
+            "AfterYourSubmission": {
+                "title": "Comprendi cosa succede dopo aver inviato la domanda",
+                "paragraphOne": "Dopo aver completato il modulo, puoi inviare la domanda.",
+                "paragraphTwo": "Assicurati di ricontrollare tutto prima di inviare.",
+                "paragraphThree": "Sarai in grado di modificare le tue risposte tramite il gateway dopo l'invio, ma ti preghiamo di parlare con il custode dei dati prima di effettuare qualsiasi aggiornamento in quanto ciò potrebbe influire sul tempo necessario per esaminare la tua domanda.",
+                "paragraphFour": "Sia tu che il custode dei dati riceverete un'e-mail con una copia delle informazioni inviate utilizzando questo modulo.",
+                "paragraphFive": "Dopo l'invio, il custode dei dati potrebbe ancora chiedere alcune informazioni aggiuntive."
+                
+            }
+        }
+    }
+}
+
+
+
+
