@@ -83,7 +83,7 @@ class HDRRouter extends Component {
 							id: res.data.data[0].id,
 							name: res.data.data[0].name,
 							teams: res.data.data[0].teams,
-							profileComplete: person.data.data[0].profileComplete,
+							profileComplete: person.data.person.profileComplete,
 						},
 					],
 					isLoading: false,
