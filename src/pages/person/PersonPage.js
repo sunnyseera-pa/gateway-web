@@ -49,7 +49,7 @@ const PersonDetail = props => {
 				window.localStorage.setItem('redirectMsg', `Person not found for Id: ${props.match.params.personID}`);
 				props.history.push({ pathname: '/search?search=', search: '' });
 			} else {
-				setData(res.data.data);
+				setData(res.data.person);
 				setIsLoading(false);
 			}
 		});
