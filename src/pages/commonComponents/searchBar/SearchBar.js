@@ -14,6 +14,8 @@ import { ReactComponent as ArrowDownSvg } from '../../../images/stock.svg';
 import { ReactComponent as WhiteArrowDownSvg } from '../../../images/arrowDownWhite.svg';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import './SearchBar.scss'; 
+import FlagsTranslation from './FlagsTranslation';
+
 
 
 import moment from 'moment';
@@ -459,6 +461,7 @@ class SearchBar extends React.Component {
                                         }
                                     })()}
                                 </div>
+                                <FlagsTranslation />
                             </div>
                         </Col>
                     </Row>

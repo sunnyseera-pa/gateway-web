@@ -8,9 +8,8 @@ let staticContent = {
 	aboutPageNav: {
 		pageId: 'about',
 		active: true,
-		title: 'About this application',
-		description:
-			'Preparation is key to a successful data access request. You need to be able to demonstrate how you will ensure safe use of patient data and the potential for public benefit. The steps below are intended to help you get off to a good start.'
+		title: 'dataAccessRequestForm.aboutThisApplicationSection.title',
+		description: 'dataAccessRequestForm.aboutThisApplicationSection.description'
 	},
 	aboutPanel: {
 		panelId: 'about',

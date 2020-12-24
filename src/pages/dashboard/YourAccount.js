@@ -9,6 +9,7 @@ import Loading from '../commonComponents/Loading';
 import _ from 'lodash';
 import './Dashboard.scss';
 import SVGIcon from '../../images/SVGIcon'; 
+import {useTranslation} from "react-i18next";
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -147,14 +148,6 @@ class YourAccount extends React.Component {
     }
 }
 
-const sectorSelect = [
-    "NHS",
-    "Industry",
-    "Academia",
-    "Public",
-    "Charity/Non-profit"
-];
-
 //Your Account Form
 const YourAccountForm = (props) => {
     
@@ -260,6 +253,8 @@ const YourAccountForm = (props) => {
         document.getElementById("bioCurrentCount").innerHTML=e.target.value.length
     }
 
+    const {t} = useTranslation('common');
+
     return (
         <div>
             {props.profileComplete ? '' : 
@@ -361,7 +356,7 @@ const YourAccountForm = (props) => {
                                     touched={formik.touched.sector}
                                     onSelect={(selected) => handleSectorSelect(selected)}>
                                     
-                                    {sectorSelect.map((sec, i) => (
+                                    {t('industrySectors',{ returnObjects: true }).map((sec, i) => (
                                         <Dropdown.Item className="gray800-14 width-100" key={sec} eventKey={sec}>
                                             {sec}
                                         </Dropdown.Item>
@@ -569,7 +564,7 @@ const YourAccountForm = (props) => {
                             <Form.Group className="pb-2">
                                <Row className="mt-2">
                                 <Form.Control type="checkbox" className="checker" id="terms" name="terms" default={profileComplete ? formik.values.emailNotifications : false} checked={formik.values.terms} onChange={formik.handleChange} />
-                                <span className="gray800-14 ml-4 margin-top-2">I agree to the HDRUK <a href='https://www.hdruk.ac.uk/infrastructure/gateway/terms-and-conditions/' target="_blank">Terms and Conditions</a></span>
+                                <span className="gray800-14 ml-4 margin-top-2">I agree to the ICODA <a href='https://icoda-research.org/terms-conditions/' target="_blank">Terms and Conditions</a></span>
                                 </Row>
                                 <Row className="mt-2">
                                 {formik.touched.terms && formik.errors.terms ? <div className="errorMessages margin-left-16">{formik.errors.terms}</div> : null}
