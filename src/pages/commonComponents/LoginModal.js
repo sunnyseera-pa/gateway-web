@@ -30,7 +30,7 @@ const LoginModal = props => {
 
 	return (
 		<Fragment>
-			<div id='myModal' className='modal login-modal'>
+			<div id='myModal' className='modal login-modal' data-test-id='mdlLogin'>
 				<div class='modal-dialog modal-dialog-centered' role='document'>
 					<div className='modal-content'>
 						<div className='modal-body mb-4'>

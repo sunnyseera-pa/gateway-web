@@ -246,7 +246,7 @@ class AccountAnalyticsDashboard extends React.Component {
 										<span className='black-20'>Dashboard</span>
 									</Col>
 									<Col sm={4} lg={4}>
-										<span className='gray700-13 floatRight'>Last updated: {moment().format('DD MMM YYYY, hh:mm')}</span>
+										<span className='gray700-13 floatRight' data-test-id='dashboard-metrics-last-updated'>Last updated: {moment().format('DD MMM YYYY, hh:mm')}</span>
 									</Col>
 								</Row>
 								<Row>
@@ -278,35 +278,47 @@ class AccountAnalyticsDashboard extends React.Component {
 
 						<Row className='kpiContainer'>
 							<Col sm={3} lg={3} className='kpiClass'>
-								<DashboardKPI kpiText='total datasets' kpiValue={statsDataType.dataset} />
+								<DashboardKPI kpiText='total datasets' kpiValue={statsDataType.dataset} testId='dashboard-dataset-count' />
 							</Col>
 							<Col sm={3} lg={3} className='kpiClass'>
 								<DashboardKPI
 									kpiText='datasets with technical metadata'
 									kpiValue={datasetsWithTechMetaData.toFixed(0)}
 									percentageFlag={true}
+									testId='dashboard-dataset-metadata-percent'
 								/>
 							</Col>
 							<Col sm={3} lg={3} className='kpiClass'>
-								<DashboardKPI kpiText='users this month' kpiValue={gaUsers} />
+								<DashboardKPI kpiText='users this month' kpiValue={gaUsers} testId='dashboard-users-monthly-count' />
 							</Col>
 							<Col sm={3} lg={3} className='kpiClass'>
-								<DashboardKPI kpiText='unique registered users' kpiValue={uniqueUsers.toFixed(0)} percentageFlag={true} />
+								<DashboardKPI
+									kpiText='unique registered users'
+									kpiValue={uniqueUsers.toFixed(0)}
+									percentageFlag={true}
+									testId='dashboard-users-registered-percent'
+								/>
 							</Col>
 						</Row>
 
 						<Row className='kpiContainer'>
 							<Col sm={3} lg={3} className='kpiClass'>
-								<DashboardKPI kpiText='searches with results this month' kpiValue={searchesWithResults.toFixed(0)} percentageFlag={true} />
+								<DashboardKPI
+									kpiText='searches with results this month'
+									kpiValue={searchesWithResults.toFixed(0)}
+									percentageFlag={true}
+									testId='dashboard-searches-results-percent'
+								/>
 							</Col>
 							<Col sm={3} lg={3} className='kpiClass'>
-								<DashboardKPI kpiText='new access requests' kpiValue={accessRequests} />
+								<DashboardKPI kpiText='new access requests' kpiValue={accessRequests} testId='dashboard-data-access-requests-count' />
 							</Col>
 							<Col sm={3} lg={3} className='kpiClass'>
 								<DashboardKPI
 									kpiText='uptime this month'
 									kpiValue={uptime.toFixed(2) % 1 === 0 ? Math.trunc(uptime.toFixed(2)) : uptime.toFixed(2)}
 									percentageFlag={true}
+									testId='dashboard-gateway-uptime-percent'
 								/>
 							</Col>
 							<Col sm={3} lg={3} className='kpiClass'>
