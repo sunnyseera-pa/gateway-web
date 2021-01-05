@@ -17,19 +17,19 @@ class TopDatasets extends React.Component {
 
 		return (
 			<Fragment>
-				<Row className='resultBox'>
+				<Row className='resultBox' data-test-id='topDatasets-dataset'>
 					<Col sm={5} lg={6} className='gray800-14 noPadding' style={{ float: 'left', paddingLeft: '0px' }}>
-						<a href={'/dataset/' + data[0]}>
+						<a href={'/dataset/' + data[0]} data-test-id='topDatasets-dataset-name'>
 							<span className='colOneTerm gray800-14 pointer noPadding'>{data[1].name}</span>
 						</a>
 					</Col>
 					<Col sm={4} lg={4} className='gray800-14 noPadding'>
-						<span style={{ float: 'left' }} className='pad-right-0 pad-left-16'>
+						<span style={{ float: 'left' }} className='pad-right-0 pad-left-16' data-test-id='topDatasets-dataset-publisher'>
 							{data[1].publisher}
 						</span>
 					</Col>
 					<Col sm={3} lg={2} className='gray800-14 noPadding'>
-						<span className='pad-right-0 pad-left-16'>{data[1].requests}</span>
+						<span className='pad-right-0 pad-left-16' data-test-id='topDatasets-dataset-request-count'>{data[1].requests}</span>
 					</Col>
 				</Row>
 			</Fragment>

@@ -266,17 +266,17 @@ class SearchBar extends React.Component {
 									</a>
 								</div>
 								<div className='navBarLinkSpacing'>
-									<a href={cmsURL + '/pages/about'} className='black-14'>
+									<a href={cmsURL + '/pages/about'} className='black-14' data-test-id='lnkAbout'>
 										About
 									</a>
 								</div>
 								<div className='navBarLinkSpacing'>
-									<a href={cmsURL + '/pages/community'} className='black-14'>
+									<a href={cmsURL + '/pages/community'} className='black-14' data-test-id='lnkCommunity'>
 										Community
 									</a>
 								</div>
 								<div className='navBarLinkSpacing'>
-									<a href={'/dashboard'} className='black-14'>
+									<a href={'/dashboard'} className='black-14' data-test-id='lnkPublicDashboard'>
 										Dashboard
 									</a>
 								</div>

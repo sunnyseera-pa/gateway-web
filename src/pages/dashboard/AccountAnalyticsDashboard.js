@@ -439,7 +439,7 @@ class AccountAnalyticsDashboard extends React.Component {
 
 						<Row className='tabsBackground'>
 							<Col sm={12} lg={12}>
-								<Tabs className='dataAccessTabs gray700-13' activeKey={this.state.key} onSelect={this.handleSelect.bind(this)}>
+								<Tabs className='dataAccessTabs gray700-13' data-test-id='unmet-tabs' activeKey={this.state.key} onSelect={this.handleSelect.bind(this)}>
 									<Tab eventKey='Datasets' title={'Datasets'}></Tab>
 									<Tab eventKey='Tools' title={'Tools'}></Tab>
 									<Tab eventKey='Projects' title={'Projects'}></Tab>
