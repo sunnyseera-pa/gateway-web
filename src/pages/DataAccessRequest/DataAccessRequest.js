@@ -748,14 +748,14 @@ class DataAccessRequest extends Component {
 		if (!_.isEmpty(questionSet) && !_.isEmpty(questionId)) {
 			// deconstruct action to invoke from schema
 			let {
-				input: { action = '' },
-			} = DarHelper.findQuestion(questionId, questionSet);
+				input: { action = '', questionIds = [] },
+			} = DarHelper.getActiveQuestion(questionSet.questions, questionId, );
 			// ensure valid action was found for question set button click
 			if(_.isEmpty(action)) {
 				return console.error(`Action could not be invoked for question set - ${questionSetId}, question - ${questionId}`);
 			}
 			// call API with action, questionId and questionSetId
-			const stateObj = await this.postQuestionSetAction(questionSetId, questionId, action);
+			const stateObj = await this.postQuestionSetAction(questionSetId, questionId, questionIds, action);
 			// spread json schema response into state and reload static content
 			this.setState({ ...stateObj });
 		} else {
@@ -765,21 +765,21 @@ class DataAccessRequest extends Component {
 
 	/**
 	 * [postQuestionSetAction]
-	 * @desc Allows custom actions to be executed on specific question sets
+	 * @desc Allows custom actions to be executed on specific questions or question sets
 	 *
 	 * @param   {string}  questionSetId  [questionSetId]
 	 * @param   {string}  questionId     [questionId]
 	 * @param	{string}  mode			 [mode]
 	 */
-	postQuestionSetAction = async (questionSetId, questionId, mode) => {
+	postQuestionSetAction = async (questionSetId, questionId, questionIds = [], mode) => {
 		// post requested action to the API to perform an update to the application form
-		let response = await axios.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/actions`, { questionSetId, questionId, mode });
+		let response = await axios.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/actions`, { questionSetId, questionId, questionIds, mode });
 		// deconstruct the response containing the modified schema
-		let {accessRecord: { jsonSchema } } = response.data;
+		let {accessRecord: { jsonSchema, questionAnswers } } = response.data;
 		// add in static content to schema (includes about application, file upload panels etc.)
 		jsonSchema = this.injectStaticContent(jsonSchema, this.state.inReviewMode, this.state.reviewSections);
 		// return the updated schema to allow it to be spread into state later
-		return { jsonSchema }; 
+		return { jsonSchema, questionAnswers }; 
 	}
 
 	/**
