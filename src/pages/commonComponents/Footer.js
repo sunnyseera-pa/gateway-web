@@ -1,12 +1,12 @@
 import React from 'react';
 import axios from 'axios';
-import Loading from './Loading'
-import './CommonComponents.scss';  
+import Loading from './Loading';
+import './CommonComponents.scss';
 
 const baseURL = require('./BaseURL');
 const cmsURL = baseURL.getCMSURL();
 const env = baseURL.getURLEnv();
-const local = "local";
+const local = 'local';
 
 class Footer extends React.Component {
     
@@ -138,15 +138,8 @@ class Footer extends React.Component {
         '\t\t\n' +
         '\t\t\t</footer>';
 
-        return (
-            <>
-                {footer !== '' ? 
-                    <div dangerouslySetInnerHTML={{__html:footer}} />
-                    : <div className="footerBottom" />
-                }
-            </>
-        );
-    }
+		return <>{footer !== '' ? <div dangerouslySetInnerHTML={{ __html: footer }} /> : <div className='footerBottom' />}</>;
+	}
 }
- 
+
 export default Footer;

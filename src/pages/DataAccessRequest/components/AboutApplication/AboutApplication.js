@@ -40,7 +40,7 @@ const AboutApplication = (props) => {
 		nationalCoreStudiesProjectId,
 		toggleMrcModal,
 		toggleContributorModal,
-		context
+		context,
 	} = props;
 
 	const {t} = useTranslation('common');
@@ -53,8 +53,7 @@ const AboutApplication = (props) => {
 						as={Card.Header}
 						className={DarHelper.calcAccordionClasses(activeAccordionCard === 0, allowedNavigation)}
 						eventKey='0'
-						onClick={(e) => toggleCard(e, 0)}
-					>
+						onClick={e => toggleCard(e, 0)}>
 						{completedDatasetSelection ? (
 							<div className='stepNumber completed'>
 								<SVGIcon name='check' width={24} height={24} fill={'#ffffff'} />
@@ -82,7 +81,7 @@ const AboutApplication = (props) => {
 								<div className='form-group'>
 									<TypeaheadDataset
 										selectedDatasets={selectedDatasets}
-										onHandleDataSetChange={(e) => onHandleDataSetChange(e)}
+										onHandleDataSetChange={e => onHandleDataSetChange(e)}
 										readOnly={readOnly}
 									/>
 								</div>
@@ -93,7 +92,7 @@ const AboutApplication = (props) => {
 											type='input'
 											className={`button-primary ${allowedNavigation ? '' : 'disabled'}`}
 											disabled={!allowedNavigation}
-											onClick={(e) => {
+											onClick={e => {
 												onNextStep(allowedNavigation);
 											}}
 										>
@@ -112,8 +111,7 @@ const AboutApplication = (props) => {
 						as={Card.Header}
 						className={DarHelper.calcAccordionClasses(activeAccordionCard === 1, allowedNavigation)}
 						eventKey='1'
-						onClick={(e) => toggleCard(e, 1)}
-					>
+						onClick={e => toggleCard(e, 1)}>
 						{projectNameValid && ncsValid && !_.isEmpty(projectName) ? (
 							<div className='stepNumber completed'>
 								<SVGIcon name='check' width={24} height={24} fill={'#ffffff'} />
@@ -134,8 +132,8 @@ const AboutApplication = (props) => {
 									<input
 										className={`form-control ${!projectNameValid && _.isEmpty(projectName) ? 'emptyFormInput' : ''}`}
 										name='projectName'
-										onBlur={(e) => onHandleProjectNameBlur()}
-										onChange={(e) => onHandleProjectNameChange(e.target.value)}
+										onBlur={e => onHandleProjectNameBlur()}
+										onChange={e => onHandleProjectNameChange(e.target.value)}
 										value={projectName}
 										disabled={readOnly}
 									/>
@@ -148,7 +146,7 @@ const AboutApplication = (props) => {
 										checked={isNationalCoreStudies}
 										className='dar-form-check'
 										disabled={readOnly}
-										onChange={(e) => onHandleProjectIsNCSToggle(e)}
+										onChange={e => onHandleProjectIsNCSToggle(e)}
 									/>
 									<span className='dar-form-check-label'>{t('dataAccessRequestForm.aboutThisApplicationSection.applicationName.paragraphThree')}</span>
 
@@ -179,13 +177,12 @@ const AboutApplication = (props) => {
 												id='ddlNationalCoreStudiesProject'
 												className='form-input-dropdown'
 												value={nationalCoreStudiesProjectId}
-												onChange={(e) => onHandleNCSProjectChange(e.target.value)}
-												disabled={readOnly}
-											>
+												onChange={e => onHandleNCSProjectChange(e.target.value)}
+												disabled={readOnly}>
 												<option key='' value=''>
 												{t('dataAccessRequestForm.aboutThisApplicationSection.applicationName.dropdown')}
 												</option>
-												{nationalCoreStudiesProjects.map((item) => (
+												{nationalCoreStudiesProjects.map(item => (
 													<option key={item._id} value={item._id}>
 														{item.name}
 													</option>
@@ -218,8 +215,7 @@ const AboutApplication = (props) => {
 						as={Card.Header}
 						className={DarHelper.calcAccordionClasses(activeAccordionCard === 2, allowedNavigation)}
 						eventKey='2'
-						onClick={(e) => toggleCard(e, 2)}
-					>
+						onClick={e => toggleCard(e, 2)}>
 						{completedInviteCollaborators ? (
 							<div className='stepNumber completed'>
 								<SVGIcon name='check' width={24} height={24} fill={'#ffffff'} />
@@ -249,7 +245,7 @@ const AboutApplication = (props) => {
 										checked={completedInviteCollaborators}
 										className='dar-form-check'
 										disabled={readOnly}
-										onChange={(e) => onNextStep(e.target.checked)}
+										onChange={e => onNextStep(e.target.checked)}
 									/>
 									<span className='dar-form-check-label'>	{t('dataAccessRequestForm.stepCompleted')}</span>
 								</div>
@@ -262,8 +258,7 @@ const AboutApplication = (props) => {
 						as={Card.Header}
 						className={DarHelper.calcAccordionClasses(activeAccordionCard === 3, allowedNavigation)}
 						eventKey='3'
-						onClick={(e) => toggleCard(e, 3)}
-					>
+						onClick={e => toggleCard(e, 3)}>
 						{completedReadAdvice ? (
 							<div className='stepNumber completed'>
 								<SVGIcon name='check' width={24} height={24} fill={'#ffffff'} />
@@ -286,17 +281,17 @@ const AboutApplication = (props) => {
 										checked={completedReadAdvice}
 										className='dar-form-check'
 										disabled={readOnly}
-										onChange={(e) => onNextStep(e.target.checked)}
+										onChange={e => onNextStep(e.target.checked)}
 									/>
 									<span className='dar-form-check-label'>
 									{t('dataAccessRequestForm.aboutThisApplicationSection.dataCustodianAdvice.paragraphTwo')}{' '}
 										<Link
 											id='howToRequestAccessLink'
 											className={allowedNavigation && userType.toUpperCase() !== 'CUSTODIAN' ? '' : 'disabled'}
-											onClick={(e) =>
+											onClick={e =>
 												toggleModal(false, {
 													...context,
-													showActionButtons: false
+													showActionButtons: false,
 												})
 											}
 										>
@@ -313,8 +308,7 @@ const AboutApplication = (props) => {
 						as={Card.Header}
 						className={DarHelper.calcAccordionClasses(activeAccordionCard === 4, allowedNavigation)}
 						eventKey='4'
-						onClick={(e) => toggleCard(e, 4)}
-					>
+						onClick={e => toggleCard(e, 4)}>
 						{completedCommunicateAdvice ? (
 							<div className='stepNumber completed'>
 								<SVGIcon name='check' width={24} height={24} fill={'#ffffff'} />
@@ -344,7 +338,7 @@ const AboutApplication = (props) => {
 										checked={completedCommunicateAdvice}
 										className='dar-form-check'
 										disabled={readOnly ? true : false}
-										onChange={(e) => onNextStep(e.target.checked)}
+										onChange={e => onNextStep(e.target.checked)}
 									/>
 									<span className='dar-form-check-label'>	{t('dataAccessRequestForm.stepCompleted')}</span>
 								</div>
@@ -357,8 +351,7 @@ const AboutApplication = (props) => {
 						as={Card.Header}
 						className={DarHelper.calcAccordionClasses(activeAccordionCard === 5, allowedNavigation)}
 						eventKey='5'
-						onClick={(e) => toggleCard(e, 5)}
-					>
+						onClick={e => toggleCard(e, 5)}>
 						{completedApprovalsAdvice ? (
 							<div className='stepNumber completed'>
 								<SVGIcon name='check' width={24} height={24} fill={'#ffffff'} />
@@ -413,7 +406,7 @@ const AboutApplication = (props) => {
 										checked={completedApprovalsAdvice}
 										className='dar-form-check'
 										disabled={readOnly ? true : false}
-										onChange={(e) => onNextStep(e.target.checked)}
+										onChange={e => onNextStep(e.target.checked)}
 									/>
 									<span className='dar-form-check-label'>{t('dataAccessRequestForm.stepCompleted')}</span>
 								</div>
@@ -426,8 +419,7 @@ const AboutApplication = (props) => {
 						as={Card.Header}
 						className={DarHelper.calcAccordionClasses(activeAccordionCard === 6, allowedNavigation)}
 						eventKey='6'
-						onClick={(e) => toggleCard(e, 6)}
-					>
+						onClick={e => toggleCard(e, 6)}>
 						{completedSubmitAdvice ? (
 							<div className='stepNumber completed'>
 								<SVGIcon name='check' width={24} height={24} fill={'#ffffff'} />
@@ -456,7 +448,7 @@ const AboutApplication = (props) => {
 										checked={completedSubmitAdvice}
 										className='dar-form-check'
 										disabled={readOnly ? true : false}
-										onChange={(e) => onNextStep(e.target.checked)}
+										onChange={e => onNextStep(e.target.checked)}
 									/>
 									<span className='dar-form-check-label'>{t('dataAccessRequestForm.stepCompleted')}</span>
 								</div>
@@ -464,7 +456,6 @@ const AboutApplication = (props) => {
 						</Card.Body>
 					</Accordion.Collapse>
 				</Card>
-				
 			</Accordion>
 		</div>
 	);
