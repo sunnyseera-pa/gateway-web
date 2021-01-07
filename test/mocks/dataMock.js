@@ -585,6 +585,386 @@ const _collectionPage = {
 	],
 };
 
+const _tryData = {
+					"success":true,
+					"data":[{"_id":"5ff42da4cd8cef120d6aa185","authors":[947228017269611],"relatedObjects":[{"_id":"5ff42dcfcd8cef120d6aa189","objectId":"812619755280273","reason":"","objectType":"course","user":"Ciara Ward","updated":"05 Jan 2021"},{"_id":"5ff5882fcd8cef120d6aa196","objectId":"701594274314441","reason":"","objectType":"tool","user":"Ciara Ward","updated":"06 Jan 2021"}],"id":5252501631473394,"name":"test collection jan","description":"test collection jan\n","imageLink":"https://www.geteducated.com/wp-content/uploads/2019/11/online-tutoring-concept-ebooks-internet-courses-process-vector-staff-vector-id1053519062.jpg","activeflag":"active","createdAt":"2021-01-05T09:13:08.243Z","updatedAt":"2021-01-06T09:51:43.569Z","__v":0,"persons":[{"_id":"5e6f984a0a7300dc8f6fb196","categories":{"programmingLanguage":[]},"tags":{"topics":[]},"authors":[],"id":947228017269611,"type":"person","firstname":"Ciara","lastname":"Ward","activeflag":"active","createdAt":"2020-03-16T15:16:26.395Z","updatedAt":"2020-11-30T11:07:51.921Z","emailNotifications":true,"__v":0,"counter":113,"bio":"bio postman","link":"","orcid":"","organisation":"","sector":"Industry","showOrganisation":false,"terms":true,"showBio":true,"showSector":true,"showDomain":true,"showLink":true,"showOrcid":false,"profileComplete":true}]}],
+					"courseObjectData": [{"_id":"5f92ef9c56cc14ec404180c8","keywords":["Browser app"],"domains":["Ear"],"award":[],"relatedObjects":[{"objectId":7166814532900703,"reason":"test dec","objectType":"project","user":"Ciara Ward","updated":"14 Dec 2020"},{"objectId":9200153930843822,"reason":"","objectType":"project","user":"Ciara Ward","updated":"14 Dec 2020"},{"objectId":42545193014458910,"objectType":"paper","user":"Ciara Ward","updated":"14 Dec 2020"},{"objectId":38812550496186504,"reason":"test","objectType":"paper","user":"Ciara Ward","updated":"14 Dec 2020"},{"objectId":701594274314441,"reason":"test","objectType":"tool","user":"Ciara Ward","updated":"14 Dec 2020"},{"_id":"5fd7855d8686b67e664ee39a","objectId":"30359299289999052","objectType":"course","user":"Ciara Ward","updated":"14 Dec 2020"}],"courseOptions":[{"flexibleDates":true,"_id":"5f92ef9c56cc14ec404180c9","startDate":null,"studyMode":"","studyDurationNumber":null,"studyDurationMeasure":"","fees":[{"_id":"5f92ef9c56cc14ec404180ca","feeDescription":"","feeAmount":null}]}],"id":812619755280273,"type":"course","creator":[{"_id":"5e6f984a0a7300dc8f6fb196","categories":{"programmingLanguage":[]},"tags":{"topics":[]},"authors":[],"id":947228017269611,"type":"person","firstname":"Ciara","lastname":"Ward","activeflag":"active","createdAt":"2020-03-16T15:16:26.395Z","updatedAt":"2020-11-30T11:07:51.921Z","emailNotifications":true,"__v":0,"counter":113,"bio":"bio postman","link":"","orcid":"https://orcid.org/","organisation":"","sector":"Industry","showOrganisation":false,"terms":true,"showBio":true,"showSector":true,"showDomain":true,"showLink":true,"showOrcid":false,"profileComplete":true}],"activeflag":"active","title":"test 4pm","link":"https://www.test.com","provider":"test","description":"test","courseDelivery":"online","location":"","restrictions":"","competencyFramework":"","nationalPriority":"","createdAt":"2020-10-23T14:58:36.317Z","updatedAt":"2021-01-07T08:35:47.986Z","__v":0,"counter":27,"entries":[{"_id":"5fd767f29a6a1a5a01de6601","level":"","subject":""}]}],
+					"toolObjectData": [{"_id":"5eeb762eff0b1f510e87d2db","categories":{"category":"Code snippet","programmingLanguage":["C++"],"programmingLanguageVersion":""},"tags":{"features":["Association Rules"],"topics":["Cardiovascular"]},"authors":[947228017269611,46035149615760184],"toolids":[],"datasetids":[],"relatedObjects":[{"objectId":7166814532900703,"reason":"test dec","objectType":"project","user":"Ciara Ward","updated":"14 Dec 2020"},{"objectId":8323171593563026,"objectType":"tool","user":"Ciara Ward","updated":"14 12 2020"},{"objectId":3244973724198943,"reason":"test tool - course","objectType":"tool","user":"Ciara Ward","updated":"11 Dec 2020"},{"objectId":9200153930843822,"objectType":"project","user":"Ciara Ward","updated":"25 11 2020"},{"objectId":2100613787190182,"reason":"test","objectType":"tool","user":"Ciara Ward","updated":"14 Dec 2020"},{"objectId":5018238496973535,"reason":"test comment","objectType":"tool","user":"Ciara Ward","updated":"14 Dec 2020"},{"objectId":4050303073977839,"reason":"","objectType":"project","user":"Ciara Ward","updated":"16 Oct 2020"},{"objectId":42545193014458910,"objectType":"paper","user":"Ciara Ward","updated":"14 Dec 2020"},{"objectId":8411192033198684,"objectType":"tool","user":"Ciara Ward","updated":"14 Dec 2020"},{"_id":"5eeb762eff0b1f510e87d2dc","objectId":"5e022f8f-4d07-44bb-a87c-43e31200fe1e","reason":"comment"},{"_id":"5fb52dfbdc8420a92098fc15","objectId":"662ed97c-23bf-43dc-88ba-2206d110d119","reason":"","objectType":"dataset","user":"Ciara Ward","updated":"18 Nov 2020"},{"_id":"5fbf7c05c613327ddb8d2ffe","objectId":"96697315-557f-4d80-b255-57f1fdcf3065","user":"Ciara Ward","updated":"26 11 2020"},{"_id":"5fd784328686b67e664ee369","objectId":"812619755280273","objectType":"course","user":"Ciara Ward","updated":"14 Dec 2020","reason":"test"}],"id":701594274314441,"type":"tool","name":"787","link":"https://787","description":"787\n\nhttps://en.wikipedia.org/wiki/Bob_Rossbhdu\nsome more text https://www.google.com/\njust with www www.google.com\nwithout any prefix google.com\n\ne.g\n\nSome words.More words without space. Check these.","license":"","activeflag":"active","updatedon":"2020-06-18T14:11:58.215Z","createdAt":"2020-06-18T14:11:58.221Z","updatedAt":"2021-01-07T10:15:34.081Z","__v":0,"counter":31,"isPreprint":null,"journal":null,"journalYear":null,"programmingLanguage":[{"_id":"5f6a010b242df11fe834f631","programmingLanguage":"AJAX","version":""}],"resultsInsights":"https://en.wikipedia.org/wiki/Bob_Ross\n\ne.g\n\nSome words.More words without space. Check these.","persons":[{"_id":"5e6f984a0a7300dc8f6fb196","categories":{"programmingLanguage":[]},"tags":{"topics":[]},"authors":[],"id":947228017269611,"type":"person","firstname":"Ciara","lastname":"Ward","activeflag":"active","createdAt":"2020-03-16T15:16:26.395Z","updatedAt":"2020-11-30T11:07:51.921Z","emailNotifications":true,"__v":0,"counter":113,"bio":"bio postman","link":"","orcid":"","organisation":"","sector":"Industry","showOrganisation":false,"terms":true,"showBio":true,"showSector":true,"showDomain":true,"showLink":true,"showOrcid":false,"profileComplete":true},{"_id":"5eddf1593ca18f0915d15648","categories":{"programmingLanguage":[]},"tags":{"topics":[]},"authors":[],"toolids":[],"datasetids":[],"id":46035149615760184,"type":"person","firstname":"Ciara","lastname":"Test","bio":"test","link":"https://test","orcid":"https://orcid.org/test","activeflag":"active","createdAt":"2020-06-08T08:05:45.553Z","updatedAt":"2020-12-01T11:14:09.973Z","emailNotifications":true,"__v":0,"counter":211,"organisation":"","profileComplete":true,"sector":"Industry","showBio":true,"showDomain":true,"showLink":true,"showOrcid":true,"showOrganisation":true,"showSector":true,"terms":true}],"uploaderIs":[{"_id":"5f0610801cce5e62f83373e6","categories":{"category":"","programmingLanguage":[],"programmingLanguageVersion":""},"tags":{"features":[],"topics":[]},"authors":[5385077600698822],"toolids":[],"datasetids":[],"relatedObjects":[],"firstname":"Rich","lastname":"Example","type":"paper","bio":"PA","link":"https://Test Paper 10 July","orcid":"https://orcid.org/123456789","emailNotifications":false,"terms":true,"createdAt":"2020-07-08T18:29:20.814Z","updatedAt":"2020-09-03T12:08:02.909Z","__v":0,"description":"Test Paper 10 July","journal":"Test Paper 10 July","journalYear":2019,"license":null,"name":"Test Paper 10 July","counter":75}]}],
+					"objectData": [
+						{
+						  "_id": "5f92ef9c56cc14ec404180c8",
+						  "keywords": [
+							"Browser app"
+						  ],
+						  "domains": [
+							"Ear"
+						  ],
+						  "award": [],
+						  "relatedObjects": [
+							{
+							  "objectId": 7166814532900703,
+							  "reason": "test dec",
+							  "objectType": "project",
+							  "user": "Ciara Ward",
+							  "updated": "14 Dec 2020"
+							},
+							{
+							  "objectId": 9200153930843822,
+							  "reason": "",
+							  "objectType": "project",
+							  "user": "Ciara Ward",
+							  "updated": "14 Dec 2020"
+							},
+							{
+							  "objectId": 42545193014458910,
+							  "objectType": "paper",
+							  "user": "Ciara Ward",
+							  "updated": "14 Dec 2020"
+							},
+							{
+							  "objectId": 38812550496186504,
+							  "reason": "test",
+							  "objectType": "paper",
+							  "user": "Ciara Ward",
+							  "updated": "14 Dec 2020"
+							},
+							{
+							  "objectId": 701594274314441,
+							  "reason": "test",
+							  "objectType": "tool",
+							  "user": "Ciara Ward",
+							  "updated": "14 Dec 2020"
+							},
+							{
+							  "_id": "5fd7855d8686b67e664ee39a",
+							  "objectId": "30359299289999052",
+							  "objectType": "course",
+							  "user": "Ciara Ward",
+							  "updated": "14 Dec 2020"
+							}
+						  ],
+						  "courseOptions": [
+							{
+							  "flexibleDates": true,
+							  "_id": "5f92ef9c56cc14ec404180c9",
+							  "startDate": null,
+							  "studyMode": "",
+							  "studyDurationNumber": null,
+							  "studyDurationMeasure": "",
+							  "fees": [
+								{
+								  "_id": "5f92ef9c56cc14ec404180ca",
+								  "feeDescription": "",
+								  "feeAmount": null
+								}
+							  ]
+							}
+						  ],
+						  "id": 812619755280273,
+						  "type": "course",
+						  "creator": [
+							{
+							  "_id": "5e6f984a0a7300dc8f6fb196",
+							  "categories": {
+								"programmingLanguage": []
+							  },
+							  "tags": {
+								"topics": []
+							  },
+							  "authors": [],
+							  "id": 947228017269611,
+							  "type": "person",
+							  "firstname": "Ciara",
+							  "lastname": "Ward",
+							  "activeflag": "active",
+							  "createdAt": "2020-03-16T15:16:26.395Z",
+							  "updatedAt": "2020-11-30T11:07:51.921Z",
+							  "emailNotifications": true,
+							  "__v": 0,
+							  "counter": 113,
+							  "bio": "bio postman",
+							  "link": "",
+							  "orcid": "https://orcid.org/",
+							  "organisation": "",
+							  "sector": "Industry",
+							  "showOrganisation": false,
+							  "terms": true,
+							  "showBio": true,
+							  "showSector": true,
+							  "showDomain": true,
+							  "showLink": true,
+							  "showOrcid": false,
+							  "profileComplete": true
+							}
+						  ],
+						  "activeflag": "active",
+						  "title": "test 4pm",
+						  "link": "https://www.test.com",
+						  "provider": "test",
+						  "description": "test",
+						  "courseDelivery": "online",
+						  "location": "",
+						  "restrictions": "",
+						  "competencyFramework": "",
+						  "nationalPriority": "",
+						  "createdAt": "2020-10-23T14:58:36.317Z",
+						  "updatedAt": "2021-01-07T08:35:47.986Z",
+						  "__v": 0,
+						  "counter": 27,
+						  "entries": [
+							{
+							  "_id": "5fd767f29a6a1a5a01de6601",
+							  "level": "",
+							  "subject": ""
+							}
+						  ]
+						},
+						{
+						  "_id": "5eeb762eff0b1f510e87d2db",
+						  "categories": {
+							"category": "Code snippet",
+							"programmingLanguage": [
+							  "C++"
+							],
+							"programmingLanguageVersion": ""
+						  },
+						  "tags": {
+							"features": [
+							  "Association Rules"
+							],
+							"topics": [
+							  "Cardiovascular"
+							]
+						  },
+						  "authors": [
+							947228017269611,
+							46035149615760184
+						  ],
+						  "toolids": [],
+						  "datasetids": [],
+						  "relatedObjects": [
+							{
+							  "objectId": 7166814532900703,
+							  "reason": "test dec",
+							  "objectType": "project",
+							  "user": "Ciara Ward",
+							  "updated": "14 Dec 2020"
+							},
+							{
+							  "objectId": 8323171593563026,
+							  "objectType": "tool",
+							  "user": "Ciara Ward",
+							  "updated": "14 12 2020"
+							},
+							{
+							  "objectId": 3244973724198943,
+							  "reason": "test tool - course",
+							  "objectType": "tool",
+							  "user": "Ciara Ward",
+							  "updated": "11 Dec 2020"
+							},
+							{
+							  "objectId": 9200153930843822,
+							  "objectType": "project",
+							  "user": "Ciara Ward",
+							  "updated": "25 11 2020"
+							},
+							{
+							  "objectId": 2100613787190182,
+							  "reason": "test",
+							  "objectType": "tool",
+							  "user": "Ciara Ward",
+							  "updated": "14 Dec 2020"
+							},
+							{
+							  "objectId": 5018238496973535,
+							  "reason": "test comment",
+							  "objectType": "tool",
+							  "user": "Ciara Ward",
+							  "updated": "14 Dec 2020"
+							},
+							{
+							  "objectId": 4050303073977839,
+							  "reason": "",
+							  "objectType": "project",
+							  "user": "Ciara Ward",
+							  "updated": "16 Oct 2020"
+							},
+							{
+							  "objectId": 42545193014458910,
+							  "objectType": "paper",
+							  "user": "Ciara Ward",
+							  "updated": "14 Dec 2020"
+							},
+							{
+							  "objectId": 8411192033198684,
+							  "objectType": "tool",
+							  "user": "Ciara Ward",
+							  "updated": "14 Dec 2020"
+							},
+							{
+							  "_id": "5eeb762eff0b1f510e87d2dc",
+							  "objectId": "5e022f8f-4d07-44bb-a87c-43e31200fe1e",
+							  "reason": "comment"
+							},
+							{
+							  "_id": "5fb52dfbdc8420a92098fc15",
+							  "objectId": "662ed97c-23bf-43dc-88ba-2206d110d119",
+							  "reason": "",
+							  "objectType": "dataset",
+							  "user": "Ciara Ward",
+							  "updated": "18 Nov 2020"
+							},
+							{
+							  "_id": "5fbf7c05c613327ddb8d2ffe",
+							  "objectId": "96697315-557f-4d80-b255-57f1fdcf3065",
+							  "user": "Ciara Ward",
+							  "updated": "26 11 2020"
+							},
+							{
+							  "_id": "5fd784328686b67e664ee369",
+							  "objectId": "812619755280273",
+							  "objectType": "course",
+							  "user": "Ciara Ward",
+							  "updated": "14 Dec 2020",
+							  "reason": "test"
+							}
+						  ],
+						  "id": 701594274314441,
+						  "type": "tool",
+						  "name": "787",
+						  "link": "https://787",
+						  "description": "787\n\nhttps://en.wikipedia.org/wiki/Bob_Rossbhdu\nsome more text https://www.google.com/\njust with www www.google.com\nwithout any prefix google.com\n\ne.g\n\nSome words.More words without space. Check these.",
+						  "license": "",
+						  "activeflag": "active",
+						  "updatedon": "2020-06-18T14:11:58.215Z",
+						  "createdAt": "2020-06-18T14:11:58.221Z",
+						  "updatedAt": "2021-01-07T08:58:00.616Z",
+						  "__v": 0,
+						  "counter": 27,
+						  "isPreprint": null,
+						  "journal": null,
+						  "journalYear": null,
+						  "programmingLanguage": [
+							{
+							  "_id": "5f6a010b242df11fe834f631",
+							  "programmingLanguage": "AJAX",
+							  "version": ""
+							}
+						  ],
+						  "resultsInsights": "https://en.wikipedia.org/wiki/Bob_Ross\n\ne.g\n\nSome words.More words without space. Check these.",
+						  "persons": [
+							{
+							  "_id": "5e6f984a0a7300dc8f6fb196",
+							  "categories": {
+								"programmingLanguage": []
+							  },
+							  "tags": {
+								"topics": []
+							  },
+							  "authors": [],
+							  "id": 947228017269611,
+							  "type": "person",
+							  "firstname": "Ciara",
+							  "lastname": "Ward",
+							  "activeflag": "active",
+							  "createdAt": "2020-03-16T15:16:26.395Z",
+							  "updatedAt": "2020-11-30T11:07:51.921Z",
+							  "emailNotifications": true,
+							  "__v": 0,
+							  "counter": 113,
+							  "bio": "bio postman",
+							  "link": "",
+							  "orcid": "",
+							  "organisation": "",
+							  "sector": "Industry",
+							  "showOrganisation": false,
+							  "terms": true,
+							  "showBio": true,
+							  "showSector": true,
+							  "showDomain": true,
+							  "showLink": true,
+							  "showOrcid": false,
+							  "profileComplete": true
+							},
+							{
+							  "_id": "5eddf1593ca18f0915d15648",
+							  "categories": {
+								"programmingLanguage": []
+							  },
+							  "tags": {
+								"topics": []
+							  },
+							  "authors": [],
+							  "toolids": [],
+							  "datasetids": [],
+							  "id": 46035149615760184,
+							  "type": "person",
+							  "firstname": "Ciara",
+							  "lastname": "Test",
+							  "bio": "test",
+							  "link": "https://test",
+							  "orcid": "https://orcid.org/test",
+							  "activeflag": "active",
+							  "createdAt": "2020-06-08T08:05:45.553Z",
+							  "updatedAt": "2020-12-01T11:14:09.973Z",
+							  "emailNotifications": true,
+							  "__v": 0,
+							  "counter": 211,
+							  "organisation": "",
+							  "profileComplete": true,
+							  "sector": "Industry",
+							  "showBio": true,
+							  "showDomain": true,
+							  "showLink": true,
+							  "showOrcid": true,
+							  "showOrganisation": true,
+							  "showSector": true,
+							  "terms": true
+							}
+						  ],
+						  "uploaderIs": [
+							{
+							  "_id": "5f0610801cce5e62f83373e6",
+							  "categories": {
+								"category": "",
+								"programmingLanguage": [],
+								"programmingLanguageVersion": ""
+							  },
+							  "tags": {
+								"features": [],
+								"topics": []
+							  },
+							  "authors": [
+								5385077600698822
+							  ],
+							  "toolids": [],
+							  "datasetids": [],
+							  "relatedObjects": [],
+							  "firstname": "Rich",
+							  "lastname": "Example",
+							  "type": "paper",
+							  "bio": "PA",
+							  "link": "https://Test Paper 10 July",
+							  "orcid": "https://orcid.org/123456789",
+							  "emailNotifications": false,
+							  "terms": true,
+							  "createdAt": "2020-07-08T18:29:20.814Z",
+							  "updatedAt": "2020-09-03T12:08:02.909Z",
+							  "__v": 0,
+							  "description": "Test Paper 10 July",
+							  "journal": "Test Paper 10 July",
+							  "journalYear": 2019,
+							  "license": null,
+							  "name": "Test Paper 10 July",
+							  "counter": 75,
+							  "discourseTopicId": 211
+							}
+						  ]
+						}
+					  ]
+				}
+
 const _accountCollections = {
 	data: [
 		{
@@ -1342,4 +1722,5 @@ module.exports = {
 	preprintData: _preprintData,
 	preprintFormData: _preprintFormData,
 	paperData: _paperData,
+	tryData: _tryData
 };
