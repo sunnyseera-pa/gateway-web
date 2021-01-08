@@ -18,9 +18,7 @@ import './Collections.scss';
 
 export const CollectionPage = props => {
 	const [collectionData, setCollectionData] = useState([]);
-	// const [collectionData, setCollectionData] = React.useState([]);
-	const [isLoading, setIsLoading] = useState(true);
-	// const [isLoading, setIsLoading] = React.useState(true); 
+	const [isLoading, setIsLoading] = useState(true); 
 	const [toolCount, setToolCount] = useState(0);
 	const [datasetCount, setDatasetCount] = useState(0);
 	const [personCount, setPersonCount] = useState(0);
@@ -37,7 +35,6 @@ export const CollectionPage = props => {
 	const [showModal, setShowModal] = useState(false);
 	const [context, setContext] = useState({});
 	const [objectData, setObjectData] = useState([]);
-	// const [objectData, setObjectData] = React.useState([]);
 	const [userState] = useState(
 		props.userState || [
 			{
@@ -61,20 +58,17 @@ export const CollectionPage = props => {
 
 	const getCollectionDataFromDb = async () => {
 		setIsLoading(true);
-		console.log(`start isLoading - ${JSON.stringify(isLoading, null, 2)}`)
 		await axios.get(baseURL + '/api/v1/collections/' + props.match.params.collectionID).then(async res => {
 			if (_.isNil(res.data)) {
 				//redirect user if invalid collection id is supplied
 				window.localStorage.setItem('redirectMsg', `Collection not found for Id: ${props.match.params.collectionID}`);
 				props.history.push({ pathname: '/search?search=', search: '' });
 			} else {
-				console.log(`response - ${JSON.stringify(res, null, 2)}`)
 				setCollectionData(res.data.data[0]);
 				await getObjectData(res.data.data[0]);
 				countEntities();
 
 				setIsLoading(false);
-				console.log(`end isLoading - ${JSON.stringify(isLoading, null, 2)}`)
 			}
 		});
 	}; 
@@ -97,14 +91,11 @@ export const CollectionPage = props => {
 		}
 		await axios.get(baseURL + '/api/v1/' + entityType + '/' + entityID).then(async res => {
 			//extract standard result object from api
-			console.log(`entityType ${JSON.stringify(entityType)} + entityID ${JSON.stringify(entityID)}`)
-			// let result = entityType === 'datasets' ? res.data.data : res.data.data[0];
 			let result = entityType === 'datasets' ? res.data.data : entityType === 'person' ? res.data.person : res.data.data[0];
 			objectsToAdd.push(result);
 			if (result.activeflag === 'active' || (result.activeflag === 'review' && result.authors.includes(userState[0].id))) {
 				setObjectData(objectsToAdd);
 			}
-			{console.log(`end object data - ${JSON.stringify(objectData, null, 2)}`)}
 		});
 	};
 
@@ -117,8 +108,6 @@ export const CollectionPage = props => {
 			entityCountsByType[type]++;
 			return entityCountsByType;
 		}, {});
-
-		console.log(`entityCounts ${JSON.stringify(entityCounts, null, 2)}`)
 
 		let key;
 		if(entityCounts.dataset > 0){
@@ -134,7 +123,6 @@ export const CollectionPage = props => {
 		} else if (entityCounts.course > 0){
 			key = 'Course' 
 		}
-		console.log(`key - ${JSON.stringify(key)}`)
 		setKey(key);
 
 		setToolCount(entityCounts.tool || 0);
@@ -256,7 +244,7 @@ export const CollectionPage = props => {
 									<span className='black-28 collectionTitleText' data-testid='collectionName' > {collectionData.name} </span>
 								</Col>
 								<Col sm={2} lg={2} className='collectionDate collectionTitleCard'>
-									<span className='gray700-13'>Created {moment(collectionData.createdAt).format('MMM YYYY')} </span>
+									<span className='gray700-13' data-testid='collectionCreated'>Created {moment(collectionData.createdAt).format('MMM YYYY')} </span>
 								</Col>
 							</Row>
 
@@ -285,7 +273,7 @@ export const CollectionPage = props => {
 					<Row className='pad-top-32'>
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10} className='gray800-14'>
-							<ReactMarkdown source={collectionData.description} />
+							<ReactMarkdown source={collectionData.description} data-testid='collectionDescription' />
 						</Col>
 						<Col sm={1} lg={1} />
 					</Row>
@@ -293,7 +281,7 @@ export const CollectionPage = props => {
 			</div>
 
 			<div>
-				<Tabs className='tabsBackground gray700-13' activeKey={key} onSelect={handleSelect}>
+				<Tabs className='tabsBackground gray700-13' activeKey={key} onSelect={handleSelect} data-testid='collectionPageTabs'>
 					<Tab eventKey='Datasets' title={'Datasets (' + datasetCount + ')'}></Tab>
 					<Tab eventKey='Tools' title={'Tools (' + toolCount + ')'}></Tab>
 					<Tab eventKey='Papers' title={'Papers (' + paperCount + ')'}></Tab>
@@ -309,7 +297,7 @@ export const CollectionPage = props => {
 										collectionId={collectionData.id}
 										topicId={collectionData.discourseTopicId || 0}
 										userState={userState}
-										onUpdateDiscoursePostCount={updateDiscoursePostCount}></DiscourseTopic>
+										onUpdateDiscoursePostCount={updateDiscoursePostCount}></DiscourseTopic> 
 								</Col>
 							</Row>
 						</Container>
@@ -550,7 +538,7 @@ export const CollectionPage = props => {
 				</Row>
 			</Container>
 			<SideDrawer open={showDrawer} closed={toggleDrawer}>
-				<UserMessages userState={userState[0]} closed={toggleDrawer} toggleModal={toggleModal} drawerIsOpen={showDrawer} />
+				<UserMessages userState={userState[0]} closed={toggleDrawer} toggleModal={toggleModal} drawerIsOpen={showDrawer} />  
 			</SideDrawer>
 
 			<DataSetModal open={showModal} context={context} closed={toggleModal} userState={userState[0]} />
