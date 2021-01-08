@@ -163,7 +163,6 @@ export const CollectionPage = props => {
 		setShowDrawer(showEnquiry);
 	};
 
-	const allCount = 0;
 	let datasetPublisher;
 	let datasetLogo;
 
