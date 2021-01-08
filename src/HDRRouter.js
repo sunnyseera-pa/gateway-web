@@ -29,9 +29,11 @@ import LoginModal from './pages/commonComponents/LoginModal';
 import Footer from './pages/commonComponents/Footer';
 import LoginErrorPage from './pages/commonComponents/LoginErrorPage';
 import ErrorModal from './pages/commonComponents/errorModal/ErrorModal';
+import AboutPage from './pages/commonComponents/AboutPage';
 
 import {withTranslation} from "react-i18next";
 const DataAccessRequestTranslated = withTranslation('common')(DataAccessRequest)
+const AboutPageTranslated = withTranslation('common')(AboutPage)
 
 var baseURL = require('./pages/commonComponents/BaseURL').getURL();
 class HDRRouter extends Component {
@@ -136,6 +138,7 @@ class HDRRouter extends Component {
 							''
 						)}
 
+						<Route path='/about' render={props => <AboutPageTranslated {...props} userState={userState} />} />
 						<Route path='/search' render={props => <SearchPage {...props} userState={userState} />} />
 						<Route path='/loginerror' render={props => <LoginErrorPage {...props} userState={userState} />} />
 						<Route path='/person/:personID' render={props => <PersonPage {...props} userState={userState} />} />

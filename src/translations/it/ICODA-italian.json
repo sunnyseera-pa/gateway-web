@@ -1,4 +1,5 @@
 {
+    "aboutPageUrl": "https://icoda-research.org/icoda-gateway/",
     "industrySectors": [ "NHS","Industria","Accademia","Pubblico","Charity/Non-profit"],
     "button":{
         "confirm": "Conferma",
