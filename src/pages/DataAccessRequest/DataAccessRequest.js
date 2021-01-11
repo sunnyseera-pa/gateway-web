@@ -748,14 +748,14 @@ class DataAccessRequest extends Component {
 		if (!_.isEmpty(questionSet) && !_.isEmpty(questionId)) {
 			// deconstruct action to invoke from schema
 			let {
-				input: { action = '', questionIds = [] },
+				input: { action = '', questionIds = [], separatorText = '' },
 			} = DarHelper.getActiveQuestion(questionSet.questions, questionId, );
 			// ensure valid action was found for question set button click
 			if(_.isEmpty(action)) {
 				return console.error(`Action could not be invoked for question set - ${questionSetId}, question - ${questionId}`);
 			}
 			// call API with action, questionId and questionSetId
-			const stateObj = await this.postQuestionSetAction(questionSetId, questionId, questionIds, action);
+			const stateObj = await this.postQuestionSetAction(questionSetId, questionId, questionIds, action, separatorText);
 			// spread json schema response into state and reload static content
 			this.setState({ ...stateObj });
 		} else {
@@ -771,9 +771,9 @@ class DataAccessRequest extends Component {
 	 * @param   {string}  questionId     [questionId]
 	 * @param	{string}  mode			 [mode]
 	 */
-	postQuestionSetAction = async (questionSetId, questionId, questionIds = [], mode) => {
+	postQuestionSetAction = async (questionSetId, questionId, questionIds = [], mode, separatorText = '') => {
 		// post requested action to the API to perform an update to the application form
-		let response = await axios.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/actions`, { questionSetId, questionId, questionIds, mode });
+		let response = await axios.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/actions`, { questionSetId, questionId, questionIds, mode, separatorText });
 		// deconstruct the response containing the modified schema
 		let {accessRecord: { jsonSchema, questionAnswers } } = response.data;
 		// add in static content to schema (includes about application, file upload panels etc.)
