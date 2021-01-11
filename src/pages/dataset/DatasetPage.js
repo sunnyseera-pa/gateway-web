@@ -1,13 +1,7 @@
 // /ShowObjects.js
-<<<<<<< HEAD
-import React, { Component, useState, useRef, Fragment } from 'react';
-import { Link } from 'react-router-dom';
-import ReactMarkdown from 'react-markdown';
-=======
 import React, { Component, Fragment } from "react";
 import { Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
->>>>>>> UAT
 import _ from 'lodash';
 import axios from "axios";
 import * as Sentry from '@sentry/react'; 
