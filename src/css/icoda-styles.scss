@@ -318,9 +318,36 @@ a {
 }
 
 .stepNumber.completed {
-    background-color: #475da7;;
-    border: solid 2px #475da7;;
+    background-color: #475da7;
+    border: solid 2px #475da7;
 }
+
+ .languageBox{
+   margin-right: 30px;
+   margin-top: 5px;
+ }
+
+.flagsLanguage{
+    width:40px;
+    height:20px;
+    background-size: cover;
+    border: none;
+    margin: 1px 1px 1px 1px;
+} 
+
+.italianFlagLanguage{
+   background-image: url('./../images/italian-flag.png');
+}
+
+.englishFlagLanguage{
+   background-image: url('./../images/uk-flag.jpg');
+}
+
+.panConfirm > button {
+    height: 40px;
+    width: auto !important; 
+}
+
 
 
 
