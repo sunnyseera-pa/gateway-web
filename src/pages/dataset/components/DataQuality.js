@@ -39,7 +39,23 @@ class DataQuality extends React.Component {
   }
 
 
-  async getWeights(datasetUtility = {}) {
+  async getWeights(datasetUtility = {
+        metadata_richness: '',
+        availability_of_additional_documentation_and_support: '',
+        data_model: '',
+        data_dictionary: '',
+        provenance: '',
+        data_quality_management: '',
+        _process: '',
+        dama_quality_dim: '',
+        ensions: '',
+        allowable_uses: '',
+        time_lag: '',
+        timeliness: '',
+        linkages: '',
+        pathway_coverage: '',
+      }
+    ) {
     if(!_.isEmpty(datasetUtility)) {
       let weights = ["","Bronze","Silver","Gold","Platinum"] 
 
@@ -53,9 +69,8 @@ class DataQuality extends React.Component {
           +weights.indexOf(datasetUtility.dama_quality_dimensions.trim()))/2)];
 
       let accessProvisionWeight = weights[Math.floor((weights.indexOf(datasetUtility.allowable_uses.trim())
-          +weights.indexOf(datasetUtility.research_environment.trim())
           +weights.indexOf(datasetUtility.time_lag.trim())
-          +weights.indexOf(datasetUtility.timeliness.trim()))/4)];
+          +weights.indexOf(datasetUtility.timeliness.trim()))/3)];
 
       let valueInterestWeight = weights[Math.floor((weights.indexOf(datasetUtility.linkages.trim())
           +weights.indexOf(datasetUtility.data_enrichments.trim()))/2)];

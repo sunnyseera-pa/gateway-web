@@ -8,9 +8,10 @@ import './RelatedObject.scss';
 import moment from "moment";
 import { ReactComponent as CalendarSvg } from '../../../images/calendaricon.svg'; 
 import _ from 'lodash';
-
  
 var baseURL = require('../BaseURL').getURL();
+var cmsURL = require('../BaseURL').getCMSURL();
+const env = require('../BaseURL').getURLEnv();
 
 class RelatedObject extends React.Component {
     
@@ -24,17 +25,18 @@ class RelatedObject extends React.Component {
         onSearchPage: false,
         isLoading: true,
         didDelete: false,
-        inCollection: false
+        inCollection: false,
+        publisherLogoURL: ''
     };
 
-    constructor(props) { 
+    constructor(props) {  
         super(props)
         this.state.activeLink = props.activeLink;
         this.state.onSearchPage = props.onSearchPage;
         if(props.didDelete){
             this.state.didDelete = props.didDelete;
         }
-        if(props.inCollection){
+        if(props.inCollection){ 
             this.state.inCollection = props.inCollection;
         }
         if (props.data) {
@@ -52,6 +54,19 @@ class RelatedObject extends React.Component {
         }
     }
 
+    async componentDidMount() {
+        if(this.props.datasetPublisher){
+            await this.updatePublisherLogo(this.props.datasetPublisher);
+        } 
+      }
+
+    updatePublisherLogo(publisher){
+        let url = env === "local" ? "https://uatbeta.healthdatagateway.org" : cmsURL;
+        let publisherLogoURL = url + "/images/publisher/" + publisher; 
+    
+        this.setState({ publisherLogoURL: publisherLogoURL})
+      }
+
     removeCard = (id, reason, type) => {
         this.setState({
              reason: reason
@@ -60,10 +75,9 @@ class RelatedObject extends React.Component {
         this.getRelatedObjectFromDb(id, type);
     }
 
- 
     getRelatedObjectFromDb = (id, type) => {
         //need to handle error if no id is found
-        this.setState({ isLoading: true });
+        this.setState({ isLoading: true }); 
 
         if(type === 'course'){
             axios.get(baseURL + '/api/v1/relatedobject/course/' + id)
@@ -101,15 +115,21 @@ class RelatedObject extends React.Component {
 
     updateOnFilterBadge = (filter, option) => {
         this.props.updateOnFilterBadge(filter, option);
-    }
+    } 
  
     render() {
-        const { data, isLoading, activeLink, onSearchPage, relatedObject, inCollection } = this.state; 
+        const { data, isLoading, activeLink, onSearchPage, relatedObject, inCollection, publisherLogoURL } = this.state; 
+
+        let publisherLogo;
+
+        if(this.props.datasetPublisher || this.props.datasetLogo) {
+            publisherLogo = !_.isEmpty(this.props.datasetLogo) ? this.props.datasetLogo : publisherLogoURL;
+        }
 
         if (isLoading) {
             return <Loading />;
         }
-
+ 
         if(this.props.didDelete){
             this.props.updateDeleteFlag()
             this.removeCard(this.props.objectId, this.props.reason, this.props.objectType)
@@ -121,14 +141,14 @@ class RelatedObject extends React.Component {
             rectangleClassName = 'collection-rectangle selectedBorder';
         }
         else if (this.props.showRelationshipQuestion) {
-            rectangleClassName= 'collection-rectangleWithBorder';
+            rectangleClassName= 'collection-rectangleWithBorder'; 
         } 
         
         return (
             <Row className="resource-card-row"> 
                 <Col>
                     <div className={rectangleClassName} onClick={() => !activeLink && !this.props.showRelationshipQuestion && !this.props.showRelationshipAnswer && this.props.doAddToTempRelatedObjects(data.type === "dataset" ? data.datasetid : data.id, data.type, data.pid) } >
-                       {data.activeflag === 'review' ? 
+                       {data.activeflag === 'review' ?  
                             <Row >
                                 <Col sm={12} lg={12}>
                                     <Alert variant="warning" className="ml-4 mr-4">This resource is under review. It won't be visible to others until it is approved.</Alert> 
@@ -142,7 +162,7 @@ class RelatedObject extends React.Component {
                                     <Row className="noMargin">
                                         <Col sm={10} lg={10} className="pad-left-24">
                                             {activeLink===true ?
-                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/tool/' + data.id} >{data.name}</a>
+                                            <a className="purple-bold-16" style={{ cursor: 'pointer' }} href={'/tool/' + data.id} >{data.name}</a>
                                             : <span className="black-bold-16"> {data.name}</span> }
                                             <br />
                                             {!data.persons || data.persons <= 0 ? <span className="gray800-14">Author not listed</span> : data.persons.map((person, index) => {
@@ -165,10 +185,9 @@ class RelatedObject extends React.Component {
                                             })}
                                         </Col> 
                                         <Col sm={2} lg={2} className="pad-right-24">
-                                            {((this.props.showRelationshipAnswer && relatedObject.updated) || this.props.collectionUpdated) ? <span className="collection-card-updated">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
                                             {this.props.showRelationshipQuestion ? <Button variant="medium" className="soft-black-14" onClick={this.removeButton} ><SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />Remove</Button> : ''}
                                         </Col>
-                                        <Col className="pad-left-24 pad-right-24 pad-top-8">
+                                        <Col className="pad-left-24 pad-right-24 pad-top-16">
                                             <span className="badge-tool">
                                                 <SVGIcon name="newtoolicon" fill={'#ffffff'} className="badgeSvg mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Tool</span> 
@@ -233,11 +252,13 @@ class RelatedObject extends React.Component {
                                                 }
                                             })}
                                         </Col> 
-                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-18">
-                                            <span className="gray800-14">
-                                                {data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}
-                                            </span>
-                                        </Col> 
+                                        {!this.props.showRelationshipQuestion &&
+                                            <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-24 pad-bottom-16">
+                                                <span className="gray800-14">
+                                                    {data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}
+                                                </span>
+                                            </Col> 
+                                        }
                                     </Row>   
                                 );
                             }
@@ -246,7 +267,7 @@ class RelatedObject extends React.Component {
                                     <Row className="noMargin">
                                         <Col sm={10} lg={10} className="pad-left-24">
                                             {activeLink===true ?
-                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/project/' + data.id} >{data.name}</a>
+                                            <a className="purple-bold-16" style={{ cursor: 'pointer' }} href={'/project/' + data.id} >{data.name}</a>
                                             : <span className="black-bold-16"> {data.name}</span> }
                                             <br />
                                             {!data.persons || data.persons <= 0 ? <span className="gray800-14">Author not listed</span> : data.persons.map((person, index) => {
@@ -269,10 +290,9 @@ class RelatedObject extends React.Component {
                                             })}
                                         </Col> 
                                         <Col sm={2} lg={2} className="pad-right-24">
-                                            {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="collection-card-updated">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
                                             {this.props.showRelationshipQuestion ? <Button variant="medium" className="soft-black-14" onClick={this.removeButton} ><SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />Remove</Button> : ''}
                                         </Col>
-                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-8">
+                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-16">
                                             <span className="badge-project">
                                                 <SVGIcon name="newestprojecticon" fill={'#ffffff'} className="badgeSvg mr-2" viewBox="-2 -2 22 22"/>
                                                 <span>Project</span> 
@@ -313,11 +333,13 @@ class RelatedObject extends React.Component {
                                                 }
                                             })}
                                         </Col>  
-                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-18">
-                                            <span className="gray800-14">
-                                                {data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}
-                                            </span>
-                                        </Col> 
+                                        {!this.props.showRelationshipQuestion &&
+                                            <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-24 pad-bottom-16">
+                                                <span className="gray800-14">
+                                                    {data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}
+                                                </span>
+                                            </Col> 
+                                        }
                                     </Row>  
                                 );
                             }
@@ -326,7 +348,7 @@ class RelatedObject extends React.Component {
                                     <Row className="noMargin">
                                         <Col sm={10} lg={10} className="pad-left-24">
                                             {activeLink===true ?
-                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/paper/' + data.id} >{data.name}</a>
+                                            <a className="purple-bold-16" style={{ cursor: 'pointer' }} href={'/paper/' + data.id} >{data.name}</a>
                                             : <span className="black-bold-16"> {data.name}</span> }
                                             <br />
                                             {!data.persons || data.persons <= 0 ? <span className="gray800-14">Author not listed</span> : data.persons.map((person, index) => {
@@ -349,10 +371,9 @@ class RelatedObject extends React.Component {
                                             })}
                                         </Col> 
                                         <Col sm={2} lg={2} className="pad-right-24">
-                                            {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="collection-card-updated">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
                                             {this.props.showRelationshipQuestion ? <Button variant="medium" className="soft-black-14" onClick={this.removeButton} ><SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />Remove</Button> : ''}
                                         </Col>
-                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-8">
+                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-16">
                                             <span className="badge-paper">
                                                 <SVGIcon name="newprojecticon" fill={'#3c3c3b'} className="badgeSvg mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Paper</span> 
@@ -385,11 +406,13 @@ class RelatedObject extends React.Component {
                                                 }
                                             })}
                                         </Col>  
-                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-18">
-                                            <span className="gray800-14">
-                                                {data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}
-                                            </span> 
-                                        </Col> 
+                                        {!this.props.showRelationshipQuestion &&
+                                            <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-24 pad-bottom-16">
+                                                <span className="gray800-14">
+                                                    {data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}
+                                                </span> 
+                                            </Col> 
+                                        }
                                     </Row>
                                 );
                             }
@@ -403,14 +426,13 @@ class RelatedObject extends React.Component {
                                         </Col>
                                         <Col className="pad-left-8" sm={8} lg={9}>
                                             {activeLink===true ? 
-                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/person/' + data.id} >{data.firstname && data.lastname ? data.firstname + ' ' + data.lastname : ''}</a> 
+                                            <a className="purple-bold-16" style={{ cursor: 'pointer' }} href={'/person/' + data.id} >{data.firstname && data.lastname ? data.firstname + ' ' + data.lastname : ''}</a> 
                                             : <span className="black-bold-16"> {data.firstname && data.lastname ? data.firstname + ' ' + data.lastname : ''} </span>
                                             }
                                             <br />
                                             <span className="gray800-14"> {data.bio} </span>
                                         </Col>
                                         <Col sm={2} lg={2} className="pad-right-24">
-                                            {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="collection-card-updated">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
                                             {this.props.showRelationshipQuestion ? <Button variant="medium" className="soft-black-14" onClick={this.removeButton} ><SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />Remove</Button> : ''}
                                         </Col>
                                     </Row>
@@ -421,36 +443,36 @@ class RelatedObject extends React.Component {
                                     <Row className="noMargin">
                                         <Col sm={10} lg={10} className="pad-left-24">
                                             {activeLink===true ?
-                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/course/' + data.id} >{data.title}</a>
+                                            <a className="purple-bold-16" style={{ cursor: 'pointer' }} href={'/course/' + data.id} >{data.title}</a>
                                             : <span className="black-bold-16">{data.title}</span> }
                                             <br />
                                             <span className="gray800-14">{data.provider}</span>
                                             <Row className="margin-top-8">
                                                 <Col sm={12} lg={12}>
                                             <CalendarSvg className="calendarSVG"/>
-                                            <span className="gray800-14 margin-left-10">
-                                            
+                                            <span className="gray800-14 margin-left-10"> 
                                             {(() => {
                                                 let courseRender = []
                                                 if (onSearchPage === true) { 
-                                                    if (data.courseOptions.startDate) {
+                                                    if (_.has(data.courseOptions, 'startDate')){
+
                                                         courseRender.push(<span> Starts {moment(data.courseOptions.startDate).format("dddd Do MMMM YYYY")} </span>);
                                                     }
-                                                    else {
+                                                    else { 
                                                         courseRender.push(<span> Flexible dates </span>)
                                                     }
-                                                    if (data.courseOptions.startDate && data.courseOptions.studyMode) courseRender.push(<span> | {data.courseOptions.studyMode} </span>);
+                                                    if (_.has(data.courseOptions, 'startDate') && _.has(data.courseOptions, 'studyMode')) courseRender.push(<span> | {data.courseOptions.studyMode} </span>);
                                                 }
                                                 else {
-                                                    if (data.courseOptions[0].startDate) {
+                                                    if (_.has(data.courseOptions[0], 'startDate')){
                                                         courseRender.push(<span> Starts {moment(data.courseOptions[0].startDate).format("dddd Do MMMM YYYY")} </span>);
                                                     }
                                                     else {
                                                         courseRender.push(<span> Flexible dates </span>)
                                                     }
-                                                    if (data.courseOptions[0].startDate && data.courseOptions[0].studyMode) courseRender.push('|');
+                                                    if (_.has(data.courseOptions[0], 'startDate') && _.has(data.courseOptions[0], 'studyMode')) courseRender.push('|');
 
-                                                    data.courseOptions.map((courseOption, index) => { 
+                                                    !_.isEmpty(data.courseOptions[0]) && data.courseOptions.map((courseOption, index) => { 
                                                         courseRender.push(
                                                             <>
                                                               {index > 0 ? <span> ,{courseOption.studyMode} </span> :  <span> {courseOption.studyMode} </span> }
@@ -502,30 +524,32 @@ class RelatedObject extends React.Component {
                                                 }
                                             })}
                                         </Col>  
-                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-24 pad-bottom-16">
-                                            <span className="gray800-14">
-                                                {data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}
-                                            </span>
-                                        </Col> 
+                                        {!this.props.showRelationshipQuestion &&
+                                            <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-24 pad-bottom-16">
+                                                <span className="gray800-14">
+                                                    {data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}
+                                                </span>
+                                            </Col> 
+                                        }
                                     </Row>  
                                 );
                             }
                             else { //default to dataset
-                                var phenotypesSelected = queryString.parse(window.location.search).phenotypes ? queryString.parse(window.location.search).phenotypes.split("::") : [];
-                                var searchTerm = queryString.parse(window.location.search).search ? queryString.parse(window.location.search).search : '';
-                                var phenotypesSeached = data.datasetfields.phenotypes.filter(phenotype => phenotype.name.toLowerCase() === searchTerm.toLowerCase())
+                                const phenotypesSelected = queryString.parse(window.location.search).phenotypes ? queryString.parse(window.location.search).phenotypes.split("::") : [];
+                                const searchTerm = queryString.parse(window.location.search).search ? queryString.parse(window.location.search).search : '';
+                                const phenotypesSeached = data.datasetfields.phenotypes.filter(phenotype => phenotype.name.toLowerCase() === searchTerm.toLowerCase());
                                 return (
                                     <Row className="noMargin">
                                         <Col sm={10} lg={10} className="pad-left-24">
                                             {activeLink===true ?
-                                            <a className="black-bold-16" style={{ cursor: 'pointer' }} href={'/dataset/' + data.pid} >{data.name}</a>
+                                            <a className="purple-bold-16" style={{ cursor: 'pointer' }} href={'/dataset/' + data.pid} >{data.name}</a>
                                             : <span className="black-bold-16"> {data.name} </span> }
                                             <br />
                                             {!_.isEmpty(data.datasetv2) ?
                                                 ( <>
                                                     {!_.isNil(data.datasetv2.summary.publisher.memberOf) ?
                                                         <span>
-                                                                <SVGIcon 
+                                                            <SVGIcon 
                                                             name="shield"
                                                             fill={"#475da7"} 
                                                             className="svg-16 mr-2"
@@ -534,17 +558,30 @@ class RelatedObject extends React.Component {
                                                         </span>
                                                     : ""
                                                     }
-                                                    <span className="gray800-14"> {data.datasetv2.summary.publisher.name} </span>
+                                                    <span className="gray800-14" style={{ cursor: 'pointer' }} onClick={() => this.updateOnFilterBadge('publishersSelected', data.datasetfields.publisher)}> {data.datasetv2.summary.publisher.name} </span>
                                                 </>)
                                             :
-                                                <span className="gray800-14"> {data.datasetfields.publisher} </span>
+                                                <span className="gray800-14" style={{ cursor: 'pointer' }} onClick={() => this.updateOnFilterBadge('publishersSelected', data.datasetfields.publisher)}> {data.datasetfields.publisher} </span>
                                             }   
                                         </Col>
-                                        <Col sm={2} lg={2} className="pad-right-24">
-                                            {this.props.showRelationshipAnswer && relatedObject.updated || this.props.collectionUpdated ? <span className="collection-card-updated">{relatedObject.updated ? 'Updated ' + relatedObject.updated.substring(3) : 'Updated ' + this.props.collectionUpdated.substring(3)}</span> : ''}
+                                        <Col sm={2} lg={2} className="pad-right-24"> 
+                                            {!_.isEmpty(publisherLogo) && 
+
+                                                <div
+                                                className="datasetLogoCircle floatRight" 
+                                                style={{
+                                                  backgroundImage: `url('${publisherLogo}')`,
+                                                  backgroundRepeat: 'no-repeat',
+                                                  backgroundPosition: 'center',
+                                                  backgroundSize: "contain",
+                                                  backgroundOrigin: "content-box",
+                                                }}
+                                              />
+                                            
+                                            }
                                             {this.props.showRelationshipQuestion ? <Button variant="medium" className="soft-black-14" onClick={this.removeButton} ><SVGIcon name="closeicon" fill={'#979797'} className="buttonSvg mr-2" />Remove</Button> : ''}
                                         </Col>
-                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-8">
+                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-16">
                                             <span className="badge-dataset">
                                                 <SVGIcon name="dataseticon" fill={'#ffffff'} className="badgeSvg mr-2"  viewBox="-2 -2 22 22"/>
                                                 <span>Dataset</span>
@@ -595,20 +632,22 @@ class RelatedObject extends React.Component {
                                                 }
                                             })} 
                                         </Col>  
-                                        <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-18">
-                                            <span className="gray800-14">
-                                                {(() => {
-                                                    if (!data.datasetfields.abstract || typeof data.datasetfields.abstract === 'undefined') {
-                                                        if(data.description){
-                                                        return data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')
+                                        {!this.props.showRelationshipQuestion &&
+                                            <Col sm={12} lg={12} className="pad-left-24 pad-right-24 pad-top-24 pad-bottom-16">
+                                                <span className="gray800-14">
+                                                    {(() => {
+                                                        if (!data.datasetfields.abstract || typeof data.datasetfields.abstract === 'undefined') {
+                                                            if(data.description){
+                                                            return data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')
+                                                            }
                                                         }
-                                                    }
-                                                    else {
-                                                        return data.datasetfields.abstract.substr(0, 255) + (data.datasetfields.abstract.length > 255 ? '...' : '')
-                                                    }
-                                                })()}
-                                            </span>
-                                        </Col> 
+                                                        else {
+                                                            return data.datasetfields.abstract.substr(0, 255) + (data.datasetfields.abstract.length > 255 ? '...' : '')
+                                                        }
+                                                    })()}
+                                                </span>
+                                            </Col> 
+                                        }
                                     </Row>
                                 );
                             }
@@ -637,7 +676,7 @@ class RelatedObject extends React.Component {
                                         <Row className="noMargin">
                                             <div className="relationshipBar">
                                                 <span className="gray800-14 mr-2">Relationship</span>
-                                            </div>  
+                                            </div>   
                                         </Row>
                                         <Row className="noMargin">
                                             <Col className="pad-8" xs={12}>

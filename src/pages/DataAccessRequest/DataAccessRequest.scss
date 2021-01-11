@@ -446,6 +446,7 @@ input[type=radio]:disabled {
 		padding: 0 15px;
 		@include font-source(14px, $gray-dark, $font-weight-semibold);
 		line-height: 21px;
+		white-space: pre-line;
 	}
 
 	h4 {

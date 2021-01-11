@@ -1214,6 +1214,10 @@ button a {
     margin-top: 24px !important;
   }
 
+  .margin-top-20 {
+    margin-top: 20px !important;
+  }
+
   .margin-top-18 {
     margin-top: 18px !important;
   }
@@ -1406,7 +1410,7 @@ button a {
   right: 66%;
   left: 34%;
   z-index: 999999;
-  width: 440px;
+  width: max-content;
   padding: 10px 15px;
   max-height: calc(100% - 30px);
   overflow-x: hidden;
@@ -1500,7 +1504,7 @@ button a {
   text-decoration: underline;
 }      
 
-.collectionCheckSvg {
+.collectionCheckSvg { 
 
   float: right;
 
@@ -1510,6 +1514,10 @@ button a {
   @include mq("phablet",max) {
     transform: translate(0px, -20px) !important;
   }
+}
+
+.collectionCheckSvg g {
+  fill: #2C8267;
 }
 
 @media (max-width: 576px) {
@@ -1570,4 +1578,24 @@ button a {
 
 .centerText{
   text-align: center;
+}
+
+.line-height-normal {
+  line-height: normal;
+}
+
+.hiddenSelectBox {
+  opacity: 0;
+  width: 100%;
+  cursor: pointer;
+}
+
+.sectorValueInFront {
+  z-index: 2;
+  width: 100%;
+}
+
+.sectorValue {
+  position: absolute;
+  z-index: 1;
 }

@@ -79,3 +79,12 @@
 .calendarSVG {
   transform: translate(0px, 5px);
 }
+
+.datasetLogoCircle {
+  width: 48px;
+  height: 48px;
+  padding: 4px;
+  border: solid 2px $gray-300;
+  background-color: #ffffff; 
+  border-radius: 50%;
+}

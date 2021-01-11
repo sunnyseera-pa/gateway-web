@@ -20,6 +20,7 @@ import UserMessages from "../commonComponents/userMessages/UserMessages";
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
+import CollectionCard from "../commonComponents/collectionCard/CollectionCard";
 
 // import ReactGA from 'react-ga';
 import DataSetModal from "../commonComponents/dataSetModal/DataSetModal";
@@ -57,7 +58,8 @@ class ProjectDetail extends Component {
     showDrawer: false,
     showModal: false,
     showError: false,
-    context: {}
+    context: {},
+    collections: []
   };
 
   constructor(props) {
@@ -100,31 +102,42 @@ class ProjectDetail extends Component {
   getDataSearchFromDb = () => {
     this.setState({ isLoading: true });
     axios
-      .get(baseURL + "/api/v1/projects/" + this.props.match.params.projectID) 
+      .get(baseURL + "/api/v1/projects/" + this.props.match.params.projectID)  
       .then( async (res) => {
-        this.setState({
-          data: res.data.data[0],
-          discourseTopic: res.data.discourseTopic
-        });
-        document.title = res.data.data[0].name.trim();
-
-        let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
-        this.updateCounter(this.props.match.params.projectID, counter);
-
-        if(!_.isUndefined(res.data.data[0].relatedObjects)) {
-          await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
-        }
-      })
-      .catch((err) => {
-          //check if request is for a ProjectID or a different route such as /add
-          if(!isNaN(this.props.match.params.projectID)){
-            window.localStorage.setItem('redirectMsg', err.response.data);  
-          }
+        if(_.isNil(res.data)){
+          window.localStorage.setItem('redirectMsg', `Project not found for Id: ${this.props.match.params.projectID}`);  
           this.props.history.push({pathname: "/search?search=", search:""});
+        }
+        else{
+          this.setState({
+            data: res.data.data[0],
+            discourseTopic: res.data.discourseTopic
+          });
+          document.title = res.data.data[0].name.trim();
+  
+          let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
+          this.updateCounter(this.props.match.params.projectID, counter);
+  
+          if(!_.isUndefined(res.data.data[0].relatedObjects)) {
+            await this.getAdditionalObjectInfo(res.data.data[0].relatedObjects);
+          }
+        }
       }).finally(() => {
+        this.getCollections();
         this.setState({ isLoading: false });
     });
   };
+  
+  getCollections() {
+    this.setState({ isLoading: true });
+    axios
+      .get(baseURL + "/api/v1/collections/entityid/" + this.state.data.id)
+      .then(res => {
+        this.setState({
+          collections: res.data.data || [] 
+        });
+      });
+  }
 
   doSearch = e => {
     //fires on enter on searchbar
@@ -164,10 +177,18 @@ class ProjectDetail extends Component {
       await axios
         .get(baseURL + "/api/v1/relatedobject/" + object.objectId) 
         .then(res => {
+          let datasetPublisher;
+          let datasetLogo;
+
+          {!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.name') ? datasetPublisher = res.data.data[0].datasetv2.summary.publisher.name : datasetPublisher = ''}
+          {!_.isEmpty(res.data.data[0].datasetv2) && _.has(res.data.data[0], 'datasetv2.summary.publisher.logo') ? datasetLogo = res.data.data[0].datasetv2.summary.publisher.logo : datasetLogo = ''}
+
           tempObjects.push({
             id: object.objectId,
             authors: res.data.data[0].authors,
-            activeflag: res.data.data[0].activeflag
+            activeflag: res.data.data[0].activeflag,
+            datasetPublisher: datasetPublisher,
+            datasetLogo: datasetLogo
           });
         });
       }
@@ -187,6 +208,9 @@ class ProjectDetail extends Component {
     this.state.data.relatedObjects.map(object =>
       this.state.objects.forEach(item => {
         if (object.objectId === item.id && item.activeflag === "active") {
+          object["datasetPublisher"] = item.datasetPublisher;
+          object["datasetLogo"] = item.datasetLogo;
+
           tempRelatedObjects.push(object);
         }
 
@@ -232,9 +256,10 @@ class ProjectDetail extends Component {
       discoursePostCount,
       showDrawer,
       showModal,
-      context
+      context,
+      collections
     } = this.state;
-
+ 
     if (isLoading) {
       return (
         <Container>
@@ -254,6 +279,7 @@ class ProjectDetail extends Component {
       <Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
         <div>
           <SearchBar
+            ref={this.searchBar}
             searchString={searchString}
             doSearchMethod={this.doSearch}
             doUpdateSearchString={this.updateSearchString}
@@ -311,11 +337,11 @@ class ProjectDetail extends Component {
               <Col sm={10} lg={10}>
                 <div className="rectangle">
                   <Row>
-                    <Col>
-                      <span className="black-20">{data.name}</span>
+                    <Col className="line-height-normal">
+                      <span className="black-16">{data.name}</span>
                     </Col>
                   </Row>
-                  <Row className="mt-3">
+                  <Row className="margin-top-16">
                     <Col xs={12}>
                       <span className="badge-project"> 
                         <SVGIcon
@@ -335,9 +361,9 @@ class ProjectDetail extends Component {
                     </Col>
                   </Row>
 
-                  <Row className="mt-2">
-                    <Col xs={12}>
-                      <span className="gray700-13">
+                  <Row className="margin-top-20">
+                    <Col xs={12} className="line-height-normal">
+                      <span className="gray700-14">
                         {data.counter === undefined ? 1 : data.counter + 1}
                         {data.counter === undefined ? " view" : " views"}
                       </span>
@@ -495,7 +521,7 @@ class ProjectDetail extends Component {
                               <Col sm={12}>Collaborators</Col>
                             </Row>
                             <Row className="mt-3">
-                              {data.persons.map(author => (
+                              {data.persons.map(author => ( 
                                 <Col sm={6} key={author.id}>
                                   <Creators key={author.id} author={author} />
                                 </Col>
@@ -505,7 +531,7 @@ class ProjectDetail extends Component {
                         </Col>
                       </Row>
                     </Tab>
-
+ 
                     <Tab eventKey="Collaboration" title={`Discussion (${discoursePostCount})`}>
                       <DiscourseTopic toolId={data.id} topicId={data.discourseTopicId || 0} userState={userState} onUpdateDiscoursePostCount={this.updateDiscoursePostCount}/>
                     </Tab>
@@ -518,11 +544,39 @@ class ProjectDetail extends Component {
                       ) : (
                         relatedObjects.map(object => (
                           <RelatedObject
-                            relatedObject={object}
+                            relatedObject={object} 
+                            objectType={object.objectType}
                             activeLink={true}
                             showRelationshipAnswer={true}
+                            datasetPublisher={object.datasetPublisher} 
+                            datasetLogo={object.datasetLogo} 
                           />
                         ))
+                      )}
+                    </Tab>
+                    <Tab
+                      eventKey="Collections"
+                      title={
+                        "Collections (" + collections.length + ")"
+                      }
+                    >
+                      {!collections ||
+                      collections.length <= 0 ? (
+                        <NotFound text="This project has not been featured on any collections yet."/> 
+                      ) : (
+                        <>
+                          <NotFound text="This project appears on the collections below. A collection is a group of resources on the same theme."/> 
+
+                          <Row >
+                            {
+                              collections.map((collection) => (
+                                <Col sm={12} md={12} lg={6} style={{"text-align": "-webkit-center"}}>
+                                  <CollectionCard data={collection} /> 
+                                </Col>
+                              ))
+                            }
+                          </Row>
+                        </>
                       )}
                     </Tab>
                   </Tabs>
