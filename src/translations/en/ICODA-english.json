@@ -3,14 +3,15 @@
     "industrySectors": [ "NHS","Industry","Academia","Public","Charity/Non-profit"],
     "button":{
         "confirm": "Confirm",
-        "sendMessage": "Send message"
+        "sendMessage": "Send message",
+        "searchDatasets" : "SEARCH DATASETS"
 
     },
     "dataAccessRequestForm": {
         "stepCompleted": "i have completed this step",
         "aboutThisApplicationSection": {
             "title": "About this application",
-            "description": "Preparation is key to a successful data access request. You need to be able to demonstrate how you will ensure safe use of patient data and the potential for public benefit. The steps below are intended to help you get off to a good start.Preparation is key to a successful data access request.",
+            "description": "The International COVID-19 Data Research Alliance (ICODA) has committed to the 'five safes' framework (link) to ensure responsible and trustworthy uses of data. \nIn order to ensure 'Safe People' and give confidence that users be trusted to use the data in an appropriate manner, researchers need to be accredited by ICODA before they can access the COVID-19 Workbench.\nIn order to ensure 'Safe Projects', project proposals will be reviewed to ensure a valid research purpose with a defined public benefit.\nIn order to ensure ‘Safe Data’, data access requests will be reviewed either by data custodians or the Alliance to ensure appropriateness.\nIn order to ensure ‘Safe Settings’, your work will be performed within ICODA’s Trusted Research Environment (TRE), the COVID-19 Workbench.\nIn order to ensure ‘Safe Outputs’ your project publication and dissemination plans will be reviewed.\nPlease complete this form in order to help us achieve this. ",
             "datasets": {
                 "title": "Select the datasets you need",
                 "paragraphOne": "The datasets you select may impact the questions being asked in this application form. You cannot change this later. If you’re not sure,",

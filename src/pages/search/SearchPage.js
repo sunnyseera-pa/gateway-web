@@ -6,7 +6,7 @@ import * as Sentry from '@sentry/react';
 import moment from 'moment';
 import _ from 'lodash';
 
-import { Container, Row, Col, Tabs, Tab, Pagination, Dropdown } from 'react-bootstrap';
+import { Container, Button, Row, Col, Tabs, Tab, Pagination, Dropdown } from 'react-bootstrap';
 
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
@@ -934,20 +934,7 @@ class SearchPage extends React.Component {
 												) : (
 													''
 												)}
-												<Filters
-													data={filterOptions.publisherFilterOptions}
-													allFilters={allFilters.publisherFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={publishersSelected}
-													title='Publisher'
-												/>
-												<Filters
-													data={filterOptions.licenseFilterOptions}
-													allFilters={allFilters.licenseFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={licensesSelected}
-													title='License'
-												/>
+											
 												<Filters
 													data={filterOptions.datasetFeaturesFilterOptions}
 													allFilters={allFilters.datasetFeatureFilter}
@@ -962,7 +949,7 @@ class SearchPage extends React.Component {
 													selected={geoCoverageSelected}
 													title='Geographic coverage'
 												/>
-												<Filters
+												{/* <Filters
 													data={filterOptions.sampleFilterOptions}
 													allFilters={allFilters.sampleFilter}
 													updateOnFilter={this.updateOnFilter}
@@ -975,7 +962,7 @@ class SearchPage extends React.Component {
 													updateOnFilter={this.updateOnFilter}
 													selected={phenotypesSelected}
 													title='Phenotype'
-												/>
+												/> */}
 												{/* <Filters data={filterOptions.ageBandFilterOptions} updateOnFilter={this.updateOnFilter} selected={ageBandsSelected} title="Age Bands" /> */}
 											</div>
 										</>
@@ -1751,6 +1738,17 @@ class SearchPage extends React.Component {
 									<Loading />
 								</Col>
 							)}
+						</Row>
+						<Row className='mt-3'>
+							<Col className='text-center'>
+								<Button
+								className='addButton'
+								onClick={e => {
+								window.location.href = `/search?search=&tab=Datasets`;
+								}}>
+								SEARCH DATASETS
+								</Button>
+							</Col>
 						</Row>
 					</Container>
 					<NotificationContainer />

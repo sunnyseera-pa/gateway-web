@@ -210,7 +210,7 @@ const AboutApplication = (props) => {
 						</Card.Body>
 					</Accordion.Collapse>
 				</Card>
-				<Card className={activeAccordionCard === 2 ? 'activeCard' : ''}>
+				{/* <Card className={activeAccordionCard === 2 ? 'activeCard' : ''}>
 					<Accordion.Toggle
 						as={Card.Header}
 						className={DarHelper.calcAccordionClasses(activeAccordionCard === 2, allowedNavigation)}
@@ -413,7 +413,7 @@ const AboutApplication = (props) => {
 							</Fragment>
 						</Card.Body>
 					</Accordion.Collapse>
-				</Card>
+				</Card> */}
 				<Card className={activeAccordionCard === 6 ? 'activeCard' : ''}>
 					<Accordion.Toggle
 						as={Card.Header}
@@ -425,7 +425,7 @@ const AboutApplication = (props) => {
 								<SVGIcon name='check' width={24} height={24} fill={'#ffffff'} />
 							</div>
 						) : (
-							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>7</div>
+							<div className={`stepNumber ${activeAccordionCard === 0 ? 'active' : ''}`}>3</div>
 						)}
 						{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.title')}
 					</Accordion.Toggle>

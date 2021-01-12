@@ -3,7 +3,8 @@
     "industrySectors": [ "NHS","Industria","Accademia","Pubblico","Charity/Non-profit"],
     "button":{
         "confirm": "Conferma",
-        "sendMessage": "Invia messaggio"
+        "sendMessage": "Invia messaggio",
+        "searchDatasets" : "RICERCA DATASETS"
     },
     "dataAccessRequestForm" :{
         "stepCompleted": "Ho completato questo step",
