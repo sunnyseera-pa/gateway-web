@@ -3,27 +3,21 @@ import { accountProjectsData } from './mocks/dataMock';
 import { userStateData } from './mocks/dataMock';
 import moxios from 'moxios';
 import { act } from 'react-dom/test-utils';
-import Adapter from 'enzyme-adapter-react-16';
-import { configure } from 'enzyme';
 
-configure({ adapter: new Adapter() });
+let wrapper;
 
 describe('<AccountProjects />', () => {
 	beforeEach(function () {
 		moxios.install();
+		wrapper = mount(<AccountProjects userState={userStateData.userState} />);
 	});
 
 	afterEach(function () {
 		moxios.uninstall();
-	});
-
-	it('renders with <Loading /> component', () => {
-		let wrapper = shallow(<AccountProjects userState={userStateData.userState} />);
-		expect(wrapper.find('[data-testid="isLoading"]').exists()).toEqual(true);
+		wrapper.unmount();
 	});
 
 	it('renders with 1 project showing in tab "active"', async done => {
-		let wrapper = mount(<AccountProjects userState={userStateData.userState} />);
 		await moxios.wait(jest.fn);
 		await act(async () => {
 			let request = moxios.requests.mostRecent();
@@ -36,14 +30,12 @@ describe('<AccountProjects />', () => {
 					wrapper.update();
 					let projectEntryActive = await wrapper.find('[data-testid="projectEntryActive"]').hostNodes();
 					expect(projectEntryActive.length).toEqual(1);
-					wrapper.unmount();
 					done();
 				});
 		});
 	});
 
 	it('renders with 1 project showing in tab "pending"', async done => {
-		let wrapper = mount(<AccountProjects userState={userStateData.userState} />);
 		await moxios.wait(jest.fn);
 		await act(async () => {
 			let request = moxios.requests.mostRecent();
@@ -63,14 +55,12 @@ describe('<AccountProjects />', () => {
 					let projectEntryPending = await wrapper.find('[data-testid="projectEntryPending"]').hostNodes();
 					//3. Assert
 					expect(projectEntryPending.length).toEqual(1);
-					wrapper.unmount();
 					done();
 				});
 		});
 	});
 
 	it('renders with 1 project showing in tab "rejected"', async done => {
-		let wrapper = mount(<AccountProjects userState={userStateData.userState} />);
 		await moxios.wait(jest.fn);
 		await act(async () => {
 			let request = moxios.requests.mostRecent();
@@ -90,14 +80,12 @@ describe('<AccountProjects />', () => {
 					let projectEntryRejected = await wrapper.find('[data-testid="projectEntryRejected"]').hostNodes();
 					// 3. Assert
 					expect(projectEntryRejected.length).toEqual(1);
-					wrapper.unmount();
 					done();
 				});
 		});
 	});
 
 	it('renders with 1 project showing in tab "archive"', async done => {
-		let wrapper = mount(<AccountProjects userState={userStateData.userState} />);
 		await moxios.wait(jest.fn);
 		await act(async () => {
 			let request = moxios.requests.mostRecent();
@@ -117,7 +105,6 @@ describe('<AccountProjects />', () => {
 					let projectEntryArchived = await wrapper.find('[data-testid="projectEntryArchive"]').hostNodes();
 					// 3. Assert
 					expect(projectEntryArchived.length).toEqual(1);
-					wrapper.unmount();
 					done();
 				});
 		});

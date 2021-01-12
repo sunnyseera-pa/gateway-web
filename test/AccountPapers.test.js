@@ -3,27 +3,21 @@ import { accountPapersData } from './mocks/dataMock';
 import { userStateData } from './mocks/dataMock';
 import moxios from 'moxios';
 import { act } from 'react-dom/test-utils';
-import Adapter from 'enzyme-adapter-react-16';
-import { configure } from 'enzyme';
 
-configure({ adapter: new Adapter() });
+let wrapper;
 
 describe('<AccountPapers />', () => {
 	beforeEach(function () {
 		moxios.install();
+		wrapper = mount(<AccountPapers userState={userStateData.userState} />);
 	});
 
 	afterEach(function () {
 		moxios.uninstall();
-	});
-
-	it('renders with <Loading /> component', () => {
-		let wrapper = shallow(<AccountPapers userState={userStateData.userState} />);
-		expect(wrapper.find('[data-testid="isLoading"]').exists()).toEqual(true);
+		wrapper.unmount();
 	});
 
 	it('renders with 1 paper showing in tab "active"', async done => {
-		let wrapper = mount(<AccountPapers userState={userStateData.userState} />);
 		await moxios.wait(jest.fn);
 		await act(async () => {
 			let request = moxios.requests.mostRecent();
@@ -36,14 +30,12 @@ describe('<AccountPapers />', () => {
 					wrapper.update();
 					let paperEntryActive = await wrapper.find('[data-testid="paperEntryActive"]').hostNodes();
 					expect(paperEntryActive.length).toEqual(1);
-					wrapper.unmount();
 					done();
 				});
 		});
 	});
 
 	it('renders with 1 paper showing in tab "pending"', async done => {
-		let wrapper = mount(<AccountPapers userState={userStateData.userState} />);
 		await moxios.wait(jest.fn);
 		await act(async () => {
 			let request = moxios.requests.mostRecent();
@@ -63,14 +55,12 @@ describe('<AccountPapers />', () => {
 					let paperEntryPending = await wrapper.find('[data-testid="paperEntryPending"]').hostNodes();
 					//3. Assert
 					expect(paperEntryPending.length).toEqual(1);
-					wrapper.unmount();
 					done();
 				});
 		});
 	});
 
 	it('renders with 1 paper showing in tab "rejected"', async done => {
-		let wrapper = mount(<AccountPapers userState={userStateData.userState} />);
 		await moxios.wait(jest.fn);
 		await act(async () => {
 			let request = moxios.requests.mostRecent();
@@ -90,14 +80,12 @@ describe('<AccountPapers />', () => {
 					let paperEntryRejected = await wrapper.find('[data-testid="paperEntryRejected"]').hostNodes();
 					// 3. Assert
 					expect(paperEntryRejected.length).toEqual(1);
-					wrapper.unmount();
 					done();
 				});
 		});
 	});
 
 	it('renders with 1 paper showing in tab "archive"', async done => {
-		let wrapper = mount(<AccountPapers userState={userStateData.userState} />);
 		await moxios.wait(jest.fn);
 		await act(async () => {
 			let request = moxios.requests.mostRecent();
@@ -117,7 +105,6 @@ describe('<AccountPapers />', () => {
 					let paperEntryArchived = await wrapper.find('[data-testid="paperEntryArchive"]').hostNodes();
 					// 3. Assert
 					expect(paperEntryArchived.length).toEqual(1);
-					wrapper.unmount();
 					done();
 				});
 		});
