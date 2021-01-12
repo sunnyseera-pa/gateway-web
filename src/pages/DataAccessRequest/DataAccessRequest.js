@@ -383,7 +383,7 @@ class DataAccessRequest extends Component {
 		let allowsMultipleDatasets = topicContext.requiresModal || false;
 
 		// 5. If multiple datasets are allowed, append 'about this application' section
-		if (allowsMultipleDatasets) {
+		if (true) {
 			// we need to inject About and File sections if first time running
 			jsonSchema = this.injectStaticContent(jsonSchema, inReviewMode, reviewSections);
 		}
@@ -1537,7 +1537,7 @@ class DataAccessRequest extends Component {
 								enabled={allowedNavigation}
 							/>
 						</div>
-						<div style={{ backgroundColor: '#ffffff' }} className='dar__header'>
+						<div style={{ backgroundColor: '#ffffff', whiteSpace: 'pre-line' }} className='dar__header'>
 							{this.state.jsonSchema.pages
 								? [...this.state.jsonSchema.pages].map((item, idx) =>
 										item.active ? (
