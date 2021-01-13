@@ -275,7 +275,7 @@ class SearchBar extends React.Component {
 									</a>
 								</div>
 								<div className='navBarLinkSpacing'>
-                                    <a href={communityLink} className="black-14">
+                                    <a href={communityLink} className="black-14" data-test-id='lnkCommunity'>
                                         Community
                                     </a>
 								</div>
