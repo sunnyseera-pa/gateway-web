@@ -1,6 +1,5 @@
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
-import Linkify from 'react-linkify';
 import '../Dataset.scss';
 import _ from 'lodash';
 import { ReactComponent as InfoSVG } from '../../../images/info.svg';

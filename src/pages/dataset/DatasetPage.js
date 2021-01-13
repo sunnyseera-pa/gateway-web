@@ -596,7 +596,7 @@ class DatasetDetail extends Component {
 		);
 
 		const formatLinks = source => {
-			const reUrl = /([^\[\(])(https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}[-a-zA-Z0-9@:%_\+.~#?&//=]*)([^\]\)])/g
+			const reUrl = /([^\[\(])(https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}[-a-zA-Z0-9@:%_\+.~#?&/=]*)([^\]\)])/g
 			return source.replace(reUrl, '$1[$2]($2)$3')
 		  }
 
