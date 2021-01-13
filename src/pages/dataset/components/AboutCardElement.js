@@ -1,5 +1,6 @@
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
+import Linkify from 'react-linkify';
 import '../Dataset.scss';
 import _ from 'lodash';
 import { ReactComponent as InfoSVG } from '../../../images/info.svg';
@@ -60,13 +61,13 @@ class AboutCardElement extends React.Component {
 						<Col sm={8} className='gray800-14 v2Value'>
 							{typeof description === 'object' ? (
 								description.map((item, index) => (
-									<span className='overflowWrap'>
+									<Linkify properties={{target: '_blank'}}>
 										{' '}
 										{index !== 0 ? ', ' : ''} {item}
-									</span>
+									</Linkify>
 								))
 							) : (
-								<span className='overflowWrap'> {description} </span>
+								<Linkify properties={{target: '_blank'}}> {description}</Linkify>
 							)}
 						</Col>
 					)}
