@@ -92,11 +92,12 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 				<div className='appModal-footer'>
 					{screenData.showActionButtons ? (
 						<div className='appModal-footer--wrap'>
-							<button className='button-secondary mr-2' onClick={e => onRequestAccess(e)}>
-								Request access
+							<button className='button-secondary mr-2' onClick={() => onCloseModal(true)}>
+								Ask a question
 							</button>
-							<button className='btn btn-primary addButton' onClick={() => onCloseModal(true)}>
-								Send a message to the custodian
+							
+							<button className='btn btn-primary addButton' onClick={e => onRequestAccess(e)}>
+								Request access
 							</button>
 						</div>
 					) : null}
