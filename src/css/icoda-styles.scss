@@ -348,6 +348,21 @@ a {
     width: auto !important; 
 }
 
+#searchInputSpanPink{
+    display: inline-block;
+    width: 70%;
+    outline: none;
+    border: 0;
+    font-size: 16px;
+    background-color: #f6f7f8;
+    color: #b04a83;
+    padding-top: 7px;
+}
+
+#searchInputSpanPink::placeholder {
+    color: #b04a83;
+}
+
 
 
 

@@ -290,13 +290,13 @@ class SearchBar extends React.Component {
 												<Col>
 													<span className='searchBarInputGrey'>
 														<span className='searchInputIconGrey'>
-															<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />
+															<SVGIcon name='searchicon' width={20} height={20} fill={'#b04a83'} stroke='none' type='submit' />
 														</span>
 														<span>
 															<input
 																type='text'
-																placeholder='Search'
-																id='searchInputSpanGrey'
+																placeholder='Search Datasets'
+																id='searchInputSpanPink'
 																data-testid='searchbar'
 																onChange={this.onSearch}
 																onKeyDown={this.props.doSearchMethod}

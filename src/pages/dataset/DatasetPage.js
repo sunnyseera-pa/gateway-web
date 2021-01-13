@@ -803,19 +803,20 @@ class DatasetDetail extends Component {
 												</button>
 											) : (
 												<Fragment>
+													{allowsMessaging ? (
+														
+														<button className={`btn button-tertiary dark-14  ${allowsMessaging ? 'mr-2' : 'float-right'}`} onClick={() => this.toggleDrawer()}>
+															Ask a question
+														</button>
+													) : null}
 													<Link
-														className={`btn button-tertiary dark-14  ${allowsMessaging ? 'mr-2' : 'float-right'}`}
+														className='btn button-primary addButton pointer'
 														to={{
 															pathname: `/data-access-request/dataset/${data.datasetid}`,
 														}}
 														onClick={() => Event('Buttons', 'Click', 'Request Access')}>
 														Request access
 													</Link>
-													{allowsMessaging ? (
-														<button className='btn button-primary addButton pointer' onClick={() => this.toggleDrawer()}>
-															Send a message to the custodian
-														</button>
-													) : null}
 												</Fragment>
 											)}
 										</Col>
