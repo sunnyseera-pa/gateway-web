@@ -148,7 +148,6 @@ class DatasetDetail extends Component {
 					isLoading: false,
 					isLatestVersion: res.data.isLatestVersion
 				});
-				debugger;
 				this.getTechnicalMetadata();
 				this.getCollections();
 				if (!_.isEmpty(res.data.data.datasetv2)) {
@@ -897,7 +896,11 @@ class DatasetDetail extends Component {
 															v2data={v2data}
 															requiresModal={this.state.requiresModal}
 															toggleModal={this.toggleModal}
+															showLoginModal={() => { this.showLoginModal(this.state.data.name)}}
+															toggleDrawer={this.toggleDrawer}
 															showEmpty={showEmpty}
+															datasetid={this.state.data.datasetid}
+															loggedIn={this.state.userState[0].loggedIn}
 														/>
 													) : (
 														''
