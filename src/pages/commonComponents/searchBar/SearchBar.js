@@ -254,6 +254,10 @@ class SearchBar extends React.Component {
 			'December',
 		];
 
+        let communityLink = 'https://discourse-dev.healthresearch.tools/';
+        if (window.location.href.includes('.www.')) 
+            communityLink = 'https://discourse.healthdatagateway.org/';
+
 		return (
 			<Fragment>
 				<nav className={classnames('navbarShown', { navbarHidden: !this.state.visible })}>
@@ -271,9 +275,9 @@ class SearchBar extends React.Component {
 									</a>
 								</div>
 								<div className='navBarLinkSpacing'>
-									<a href={cmsURL + '/pages/community'} className='black-14' data-test-id='lnkCommunity'>
-										Community
-									</a>
+                                    <a href={communityLink} className="black-14">
+                                        Community
+                                    </a>
 								</div>
 								<div className='navBarLinkSpacing'>
 									<a href={'/dashboard'} className='black-14' data-test-id='lnkPublicDashboard'>
