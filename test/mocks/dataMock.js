@@ -2444,6 +2444,7 @@ const __datasetPageState = {
 	success: true,
 	isLatestVersion: true,
 	data: {
+		datasetv2: {},
 		categories: {
 			programmingLanguage: [],
 		},
@@ -2746,6 +2747,7 @@ const __datasetPageState = {
 		programmingLanguage: [],
 	},
 };
+
 
 module.exports = {
 	toolTitle: __toolTitle,
