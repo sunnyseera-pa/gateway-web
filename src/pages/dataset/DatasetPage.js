@@ -603,7 +603,7 @@ class DatasetDetail extends Component {
 		if (isLoading) {
 			return (
 				<Container>
-					<Loading />
+					<Loading data-testid='isLoading'/>
 				</Container>
 			);
 		}
@@ -1002,7 +1002,7 @@ class DatasetDetail extends Component {
 																	</Col>
 																	{data.datasetfields.accessRequestDuration ? (
 																		<Col sm={10} className='gray800-14'>
-																			{data.datasetfields.accessRequestDuration}
+																			<Linkify properties={{ target: '_blank' }}>{data.datasetfields.accessRequestDuration}</Linkify>
 																		</Col>
 																	) : (
 																		<Col sm={10} className='gray800-14-opacity'>
