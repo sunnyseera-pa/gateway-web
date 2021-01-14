@@ -463,6 +463,7 @@ const YourAccountForm = props => {
 								<Row>
 									<Col sm={4} lg={4}>
 										<DropdownButton
+											data-testid="dropdown-button"
 											variant='white'
 											title={
 												formik.values.sector ? (
