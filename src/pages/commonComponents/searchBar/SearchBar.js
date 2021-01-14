@@ -269,7 +269,7 @@ class SearchBar extends React.Component {
 									</a>
 								</div>
 								<div className="navBarLinkSpacing">
-									<a href={'/about'} className='black-14'>About</a>
+									<a href={'/search?aboutPage=true&search='} className='black-14'>About</a>
                             	</div>
                             	<div className="navBarLinkSpacing">
                                 	<a href="https://icoda-research.org/public/" className="black-14">Community</a>

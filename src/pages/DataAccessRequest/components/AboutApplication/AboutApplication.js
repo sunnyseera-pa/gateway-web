@@ -65,7 +65,7 @@ const AboutApplication = (props) => {
 					</Accordion.Toggle>
 					<Accordion.Collapse eventKey='0'>
 						<Card.Body className='gray800-14'>
-							<div className='margin-bottom-16'>
+							<div style={{ whiteSpace: 'pre-line' }} className='margin-bottom-16'>
 							{t('dataAccessRequestForm.aboutThisApplicationSection.datasets.paragraphOne')} {' '}
 								<Link
 									id='messageLink'
@@ -74,10 +74,9 @@ const AboutApplication = (props) => {
 								>
 									 {t('dataAccessRequestForm.aboutThisApplicationSection.datasets.paragraphTwo')} 
 								</Link> {' '}
-								{t('dataAccessRequestForm.aboutThisApplicationSection.datasets.paragraphThree')}
 							</div>
 							<div>
-								<span>{t('dataAccessRequestForm.aboutThisApplicationSection.datasets.paragraphFour')}</span>
+							<span>{t('dataAccessRequestForm.aboutThisApplicationSection.datasets.paragraphThree')}</span>
 								<div className='form-group'>
 									<TypeaheadDataset
 										selectedDatasets={selectedDatasets}
@@ -85,7 +84,7 @@ const AboutApplication = (props) => {
 										readOnly={readOnly}
 									/>
 								</div>
-								{_.isEmpty(selectedDatasets) ? <div className='errorMessages'>t('dataAccessRequestForm.aboutThisApplicationSection.datasets.error')</div> : null}
+								{_.isEmpty(selectedDatasets) ? <div className='errorMessages'>{t('dataAccessRequestForm.aboutThisApplicationSection.datasets.errorOne')}</div> : null}
 								<div className='panConfirm'>
 									{userType.toUpperCase() === 'APPLICANT' ? (
 										<button
@@ -139,59 +138,6 @@ const AboutApplication = (props) => {
 									/>
 									{!projectNameValid && _.isEmpty(projectName) ? <div className='errorMessages'>{t('dataAccessRequestForm.aboutThisApplicationSection.applicationName.errorOne')}</div> : null}
 								</div>
-								<div className='dar-form-check-group margin-top-8'>
-									<input
-										type='checkbox'
-										id='chkNationalCoreStudies'
-										checked={isNationalCoreStudies}
-										className='dar-form-check'
-										disabled={readOnly}
-										onChange={e => onHandleProjectIsNCSToggle(e)}
-									/>
-									<span className='dar-form-check-label'>{t('dataAccessRequestForm.aboutThisApplicationSection.applicationName.paragraphThree')}</span>
-
-									<OverlayTrigger
-										placement='top'
-										delay={{ show: 250, hide: 400 }}
-										overlay={renderTooltip(t('dataAccessRequestForm.aboutThisApplicationSection.applicationName.tooltipOne'))}
-									>
-										<InfoSVG className='margin-left-8 pointer' />
-									</OverlayTrigger>
-								</div>
-								{isNationalCoreStudies ? (
-									<Fragment>
-										<div className='margin-top-24'>
-											<span>{t('dataAccessRequestForm.aboutThisApplicationSection.applicationName.paragraphFour')}</span>
-											<OverlayTrigger
-												placement='top'
-												delay={{ show: 250, hide: 400 }}
-												overlay={renderTooltip(
-													t('dataAccessRequestForm.aboutThisApplicationSection.applicationName.tooltipTwo')
-												)}
-											>
-												<InfoSVG className='margin-left-8 pointer' viewBox='0 0 24 16' />
-											</OverlayTrigger>
-										</div>
-										<div className='form-group'>
-											<select
-												id='ddlNationalCoreStudiesProject'
-												className='form-input-dropdown'
-												value={nationalCoreStudiesProjectId}
-												onChange={e => onHandleNCSProjectChange(e.target.value)}
-												disabled={readOnly}>
-												<option key='' value=''>
-												{t('dataAccessRequestForm.aboutThisApplicationSection.applicationName.dropdown')}
-												</option>
-												{nationalCoreStudiesProjects.map(item => (
-													<option key={item._id} value={item._id}>
-														{item.name}
-													</option>
-												))}
-											</select>
-											{!ncsValid ? <div className='errorMessages'>{t('dataAccessRequestForm.aboutThisApplicationSection.applicationName.errorTwo')}</div> : null}
-										</div>
-									</Fragment>
-								) : null}
 								<div className='panConfirm'>
 									{userType.toUpperCase() === 'APPLICANT' ? (
 										<button
@@ -438,9 +384,9 @@ const AboutApplication = (props) => {
 										<li>{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.paragraphTwo')}</li>
 										<li>{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.paragraphThree')}</li>
 										<li>{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.paragraphFour')}</li>
-										<li>{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.paragraphFive')}</li>
 									</ul>
 								</div>
+								<div className='margin-bottom-16'>{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.paragraphFive')}</div>
 								<div className='dar-form-check-group'>
 									<input
 										type='checkbox'
@@ -450,7 +396,7 @@ const AboutApplication = (props) => {
 										disabled={readOnly ? true : false}
 										onChange={e => onNextStep(e.target.checked)}
 									/>
-									<span className='dar-form-check-label'>{t('dataAccessRequestForm.stepCompleted')}</span>
+									<span className='dar-form-check-label'>{t('dataAccessRequestForm.informationRead')}</span>
 								</div>
 							</Fragment>
 						</Card.Body>

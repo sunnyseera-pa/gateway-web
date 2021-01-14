@@ -8,6 +8,7 @@
     },
     "dataAccessRequestForm" :{
         "stepCompleted": "Ho completato questo step",
+        "informationRead": "Ho letto queste informazioni",
         "aboutThisApplicationSection": {
             "title": "A proposito di questa applicazione",
             "description": "La preparazione è la chiave per una richiesta di accesso ai dati di successo. Devi essere in grado di dimostrare come garantirai un uso sicuro dei dati dei pazienti e il potenziale di beneficio pubblico. I passaggi seguenti hanno lo scopo di aiutarti a iniziare bene. La preparazione è la chiave per una richiesta di accesso ai dati di successo.",

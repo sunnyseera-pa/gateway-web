@@ -19,6 +19,7 @@ import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import './Search.scss';
+import AboutPage from '../commonComponents/AboutPage';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -79,6 +80,7 @@ class SearchPage extends React.Component {
 		showModal: false,
 		showError: false,
 		context: {},
+		showAboutPage: false,
 		userState: [
 			{
 				loggedIn: false,
@@ -523,6 +525,8 @@ class SearchPage extends React.Component {
 				searchURL += '&loginReferrer=' + encodeURIComponent(document.referrer);
 		}
 
+		this.setState({showAboutPage:window.location.href.indexOf("aboutPage") != -1})
+		
 		if (!skipHistory) {
 			if (this.state.key) searchURL += '&tab=' + this.state.key;
 			this.props.history.push(`${window.location.pathname}?search=${this.state.searchString}` + searchURL);
@@ -1564,7 +1568,14 @@ class SearchPage extends React.Component {
 											</Col>
 										</Row>
 									)}
-									{key === 'Datasets' ? (
+
+									{this.state.showAboutPage === true ? (
+											<AboutPage />
+										) : (
+											''
+										)}	
+
+									{this.state.showAboutPage === false && key === 'Datasets' ? (
 										datasetCount <= 0 && !isResultsLoading ? (
 											<NoResults type='datasets' searchString={searchString} />
 										) : (
@@ -1719,6 +1730,9 @@ class SearchPage extends React.Component {
 										}
 									})()}
 
+
+
+
 									<div className='text-center'>
 										{key === 'Datasets' && datasetCount > maxResult ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
 
@@ -1732,24 +1746,26 @@ class SearchPage extends React.Component {
 
 										{key === 'Courses' && courseCount > maxResult ? <Pagination>{coursePaginationItems}</Pagination> : ''}
 									</div>
+									<Row className='mt-3'>
+										<Col className='text-center'>
+										<Button
+											className='addButton'
+											onClick={e => {
+											window.location.href = `/search?search=&tab=Datasets`;
+										}}>
+										SEARCH DATASETS
+										</Button>
+							</Col>
+						</Row>
 								</Col>
+								
 							) : (
 								<Col sm={12} md={12} lg={9}>
 									<Loading />
 								</Col>
 							)}
 						</Row>
-						<Row className='mt-3'>
-							<Col className='text-center'>
-								<Button
-								className='addButton'
-								onClick={e => {
-								window.location.href = `/search?search=&tab=Datasets`;
-								}}>
-								SEARCH DATASETS
-								</Button>
-							</Col>
-						</Row>
+						
 					</Container>
 					<NotificationContainer />
 					<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
