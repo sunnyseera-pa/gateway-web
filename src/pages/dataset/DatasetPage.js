@@ -597,10 +597,15 @@ class DatasetDetail extends Component {
 			</span>
 		);
 
+		const formatLinks = source => {
+			const reUrl = /([^\[\(])(https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}[-a-zA-Z0-9@:%_\+.~#?&/=]*)([^\]\)])/g
+			return source.replace(reUrl, '$1[$2]($2)$3')
+		  }
+
 		if (isLoading) {
 			return (
 				<Container>
-					<Loading />
+					<Loading data-testid='isLoading'/>
 				</Container>
 			);
 		}
@@ -624,9 +629,6 @@ class DatasetDetail extends Component {
 					<Fragment>
 						<div style={{ lineHeight: 1 }}>
 							<MetadataNotRated className='' />
-						</div>
-						<div style={{ lineHeight: 1 }}>
-							<span className='gray800-14-opacity'>Not rated</span>
 						</div>
 					</Fragment>
 				);
@@ -866,7 +868,7 @@ class DatasetDetail extends Component {
 															<Row className='mt-3'>
 																<Col sm={12} className='gray800-14 overflowWrap'>
 																	<span className='gray800-14'>
-																		<ReactMarkdown source={data.description} />
+																		<ReactMarkdown source={formatLinks(data.description)} />
 																	</span>
 																</Col>
 															</Row>
@@ -991,7 +993,7 @@ class DatasetDetail extends Component {
 																	</Col>
 																	{data.license ? (
 																		<Col sm={10} className='gray800-14'>
-																			{data.license}
+																			<Linkify properties={{ target: '_blank' }}>{data.license}</Linkify>
 																		</Col>
 																	) : (
 																		<Col sm={10} className='gray800-14-opacity'>
@@ -1005,7 +1007,7 @@ class DatasetDetail extends Component {
 																	</Col>
 																	{data.datasetfields.accessRequestDuration ? (
 																		<Col sm={10} className='gray800-14'>
-																			{data.datasetfields.accessRequestDuration}
+																			<Linkify properties={{ target: '_blank' }}>{data.datasetfields.accessRequestDuration}</Linkify>
 																		</Col>
 																	) : (
 																		<Col sm={10} className='gray800-14-opacity'>
@@ -1133,7 +1135,7 @@ class DatasetDetail extends Component {
 																	</Col>
 																	{data.datasetfields.physicalSampleAvailability ? (
 																		<Col sm={9} className='gray800-14'>
-																			{data.datasetfields.physicalSampleAvailability}
+																			<Linkify properties={{ target: '_blank' }}>{data.datasetfields.physicalSampleAvailability}</Linkify>
 																		</Col>
 																	) : (
 																		<Col sm={9} className='gray800-14-opacity'>

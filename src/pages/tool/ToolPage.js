@@ -459,7 +459,7 @@ export const ToolDetail = props => {
 																Uploader
 															</Col>
 															<Col sm={10} className='gray800-14 overflowWrap'>
-																{toolData.uploaderIs[0].firstname} {toolData.uploaderIs[0].lastname}
+																{toolData.uploader}
 															</Col>
 														</Row>
 													) : (

@@ -392,7 +392,7 @@ export const PaperDetail = props => {
 																Uploader
 															</Col>
 															<Col sm={10} className='gray800-14 overflowWrap'>
-																{paperData.uploaderIs[0].firstname} {paperData.uploaderIs[0].lastname}
+																{paperData.uploader}
 															</Col>
 														</Row>
 													) : (

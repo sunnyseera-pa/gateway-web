@@ -66,7 +66,7 @@ class AboutCardElement extends React.Component {
 									</span>
 								))
 							) : (
-								<span className='overflowWrap'> {description} </span>
+								<span className='overflowWrap'>{description}</span>
 							)}
 						</Col>
 					)}
