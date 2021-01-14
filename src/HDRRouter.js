@@ -231,7 +231,7 @@ class HDRRouter extends Component {
 						<Route path='/course/:courseID' render={props => <CoursePage {...props} userState={userState} />} />
 
 						{/* Catch all path */}
-						<Redirect to='/about' />
+						<Redirect to='/search?aboutPage=true&search=' />
 					</Switch>
 				</div>
 				<Footer />

@@ -8,20 +8,20 @@
 
     },
     "dataAccessRequestForm": {
-        "stepCompleted": "i have completed this step",
+        "stepCompleted": "I have completed this step",
+        "informationRead": "I have read this information",
         "aboutThisApplicationSection": {
             "title": "About this application",
-            "description": "The International COVID-19 Data Research Alliance (ICODA) has committed to the 'five safes' framework (link) to ensure responsible and trustworthy uses of data. \nIn order to ensure 'Safe People' and give confidence that users be trusted to use the data in an appropriate manner, researchers need to be accredited by ICODA before they can access the COVID-19 Workbench.\nIn order to ensure 'Safe Projects', project proposals will be reviewed to ensure a valid research purpose with a defined public benefit.\nIn order to ensure ‘Safe Data’, data access requests will be reviewed either by data custodians or the Alliance to ensure appropriateness.\nIn order to ensure ‘Safe Settings’, your work will be performed within ICODA’s Trusted Research Environment (TRE), the COVID-19 Workbench.\nIn order to ensure ‘Safe Outputs’ your project publication and dissemination plans will be reviewed.\nPlease complete this form in order to help us achieve this. ",
+            "description": "The International COVID-19 Data Research Alliance (ICODA) has committed to the ['five safes' framework](https://www.ukdataservice.ac.uk/manage-data/legal-ethical/access-control/five-safes) to ensure responsible and trustworthy  uses of data. This provides assurance by checking:\nSafe people:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;can users be trusted to use the data in an appropriate manner?\nSafe projects:&nbsp;&nbsp;&nbsp;is the use of data appropriate?\nSafe data:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is the risk of disclosure in the data minimised?\nSafe outputs:&nbsp;&nbsp;&nbsp;are there disclosure risks from reported results?\nSafe settings:&nbsp;&nbsp;&nbsp;can data be accessed in a Trusted Research Environment?\nIn order to answer each of these questions, we need to ask information about you and your research team, your proposed research and the data that you would like to access. Please complete this form in order to help us achieve this.\nYour work will be performed within ICODA’s Trusted Research Environment, the COVID-19 Workbench, which addresses the requirements for a ‘Safe setting’.",
             "datasets": {
                 "title": "Select the datasets you need",
-                "paragraphOne": "The datasets you select may impact the questions being asked in this application form. You cannot change this later. If you’re not sure,",
-                "paragraphTwo": "send a message to the data custodian",
-                "paragraphThree": "to clarify. The custodian will help you understand if the data you would like to access can be used to answer your research question. Below you can include datasets that are listed in the Gateway. Please note that you will be able to add datasets not currently listed in the Gateway under the ‘Safe people’ section of this form. If you need to request access to datasets from multiple data custodians please contact the custodians using the messaging function before completing the application form.",
-                "paragraphFour": "Datasets",
+                "paragraphOne": "Please select the datasets that you would like to access, using the list below of datasets that are currently available through the ICODA COVID-19 Workbench.\nIf you have any queries, please",
+                "paragraphTwo": "send a message to the ICODA team",
+                "paragraphThree": "You can enter additional datasets clicking in the input text box below",
                 "errorOne": "You must select at least one dataset"
               },
             "applicationName": {
-                "title": "Name your application",
+                "title": "Please enter the name of your project application",
                 "paragraphOne": "This can be your project name or anything that helps the custodian identify your application.",
                 "paragraphTwo": "Application title",
                 "paragraphThree": "This application is part of a National Core Studies project",
@@ -64,11 +64,11 @@
             },
             "AfterYourSubmission": {
                 "title": "Understand what happens after you submit the application",
-                "paragraphOne": "After you have completed the form, you can submit the application.",
-                "paragraphTwo": "Make sure to double-check everything before submitting.",
-                "paragraphThree":"You will be able to edit your responses via the Gateway after submission, but please speak to the data custodian before making any updates as this could impact the time it takes to review your application.",
-                "paragraphFour": "Both you and the data custodian will receive an email with a copy of the information submitted using this form.",
-                "paragraphFive": "Once you have submitted, the data custodian might still ask for some additional information."
+                "paragraphOne": "After you have completed all the sections, please submit your application.",
+                "paragraphTwo": "You will receive an email with a copy of the information submitted using this form.",
+                "paragraphThree":"The information will be reviewed by the ICODA team, working with the data contributor and our external reviewers where appropriate.",
+                "paragraphFour": "The ICODA team might ask for additional information as part of the review process.  If this is the case, you will be able to edit your responses via this website.",
+                "paragraphFive": "Given the COVID-19 pandemic we are fast-tracking applications and you should hear the outcome within 14 days."
             }
         }
     }
