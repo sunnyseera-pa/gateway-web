@@ -98,6 +98,7 @@ class DatasetDetail extends Component {
 		emptyFieldsCount: 0,
 		linkedDatasets: [],
 		publisherLogoURL: '',
+		isLatestVersion: true
 	};
 
 	topicContext = {};
@@ -145,6 +146,7 @@ class DatasetDetail extends Component {
 					data: res.data.data,
 					v2data: res.data.data.datasetv2,
 					isLoading: false,
+					isLatestVersion: res.data.isLatestVersion
 				});
 				this.getTechnicalMetadata();
 				this.getCollections();
@@ -790,6 +792,8 @@ class DatasetDetail extends Component {
 												{data.counter === undefined ? ' view' : ' views'}
 											</span>
 										</Col>
+
+										{this.state.isLatestVersion && (
 										<Col sm={6} className='text-right'>
 											{!userState[0].loggedIn ? (
 												<button className='btn button-tertiary dark-14 float-right' onClick={() => this.showLoginModal(data.name)}>
@@ -820,7 +824,7 @@ class DatasetDetail extends Component {
 													) : null}
 												</Fragment>
 											)}
-										</Col>
+										</Col> )}
 									</Row>
 								</div>
 							</Col>
@@ -894,7 +898,11 @@ class DatasetDetail extends Component {
 															v2data={v2data}
 															requiresModal={this.state.requiresModal}
 															toggleModal={this.toggleModal}
+															showLoginModal={() => { this.showLoginModal(this.state.data.name)}}
+															toggleDrawer={this.toggleDrawer}
 															showEmpty={showEmpty}
+															datasetid={this.state.data.datasetid}
+															loggedIn={this.state.userState[0].loggedIn}
 														/>
 													) : (
 														''
