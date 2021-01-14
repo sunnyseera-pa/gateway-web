@@ -549,6 +549,7 @@ class SearchPage extends React.Component {
 				isLoading: false,
 				isResultsLoading: false,
 			});
+			window.scrollTo(0, 0);
 		});
 	}
 
