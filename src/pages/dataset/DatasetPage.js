@@ -628,9 +628,6 @@ class DatasetDetail extends Component {
 						<div style={{ lineHeight: 1 }}>
 							<MetadataNotRated className='' />
 						</div>
-						<div style={{ lineHeight: 1 }}>
-							<span className='gray800-14-opacity'>Not rated</span>
-						</div>
 					</Fragment>
 				);
 			}
