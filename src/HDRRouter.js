@@ -159,7 +159,7 @@ class HDRRouter extends Component {
 						<GuardedRoute path='/paper/:paperID' component={PaperPage} userState={userState} />
 						<GuardedRoute path='/course/add' component={AddEditCoursePage} userState={userState} />
 						<GuardedRoute path='/course/edit/:courseID' component={AddEditCoursePage} userState={userState} />
-						<GuardedRoute path='/course/:courseID' component={AddEditCoursePage} userState={userState} />
+						<GuardedRoute path='/course/:courseID' component={CoursePage} userState={userState} />
 						{/* Catch all path */}
 						<Redirect to='/search?search=' />
 					</Switch>
