@@ -20,6 +20,10 @@ body {
 	height: 100%;
 }
 
+#darContainer {
+	min-height: 100vh;
+}
+
 button {
 	&:hover {
 		cursor: pointer;
@@ -154,8 +158,8 @@ button {
 /* Style Guide Components end */
 
 .mainWrap {
-	min-height: 100%;
-	padding-bottom: 440px;
+	min-height: calc(100% - 497px);
+	padding-bottom: 32px;
 }
 
 .rectangle {

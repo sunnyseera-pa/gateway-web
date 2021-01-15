@@ -682,7 +682,7 @@ class DatasetDetail extends Component {
 
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
-				<div>
+				<div style={{display:'grid'}}>
 					{data.datasetfields.metadataschema !== '' ? <DatasetSchema datasetSchema={data.datasetfields.metadataschema} /> : null}
 					<SearchBar
 						ref={this.searchBar}
