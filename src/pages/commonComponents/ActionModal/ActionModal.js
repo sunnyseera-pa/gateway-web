@@ -5,7 +5,7 @@ import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg'
 
 import './ActionModal.scss';
 
-const ActionModal = ({ id, open, close, context, updateApplicationStatus }) => {
+const ActionModal = ({ id, open, close, context, updateApplicationStatus, entityKey, entityIndex, entityCount }) => {
 	const [count, setCount] = useState(0);
 	const [formState, setFormState] = useState({
 		statusDesc: '',
@@ -15,21 +15,21 @@ const ActionModal = ({ id, open, close, context, updateApplicationStatus }) => {
 		showActionModal: false,
 	});
 
-	let {
+	let { 
 		title = '',
 		subTitle = 'Let the person who added this know know why their submission is being rejected, especially if there’s anything in particular they should correct before re-submitting.',
 		buttons = {
 			cancel: {
 				label: 'Cancel',
-				action: 'cancel',
-				class: 'button-secondary mr-2',
+				action: 'cancel', 
+				class: 'button-secondary mr-2', 
 			},
 			confirmReject: {
 				label: 'Reject and send message',
 				action: 'confirmRejection',
 				class: 'btn btn-primary addButton',
 			},
-		},
+		}, 
 	} = context;
 
 	const onClickAction = (e, action) => {
@@ -48,7 +48,11 @@ const ActionModal = ({ id, open, close, context, updateApplicationStatus }) => {
 					let isInvalid = isFormInvalid();
 					// 6. is valid pass back to DAR
 					if (!isInvalid) {
-						updateApplicationStatus(id, statusDesc);
+						if(typeof entityKey === 'undefined') {
+							updateApplicationStatus(id, statusDesc); 
+						} else {
+							updateApplicationStatus(id, statusDesc, entityKey, entityIndex, entityCount);
+						}
 						setFormState({ statusDesc: '', invalid: false, invalidMessage: '', submitted: false });
 						setCount(0);
 					}

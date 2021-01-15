@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from 'moment';
-import { Row, Col, Button, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
+import { Row, Col, Button, Tabs, Tab, DropdownButton, Dropdown, Pagination } from 'react-bootstrap';
 import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading';
 import ActionModal from '../commonComponents/ActionModal/ActionModal';
@@ -14,66 +14,147 @@ var baseURL = require('../commonComponents/BaseURL').getURL();
 
 export const AccountProjects = props => {
 	const [userState] = useState(props.userState);
-	const [key, setKey] = useState('active');
+	const [key, setKey] = useState('active'); 
 	const [projectsList, setProjectsList] = useState([]);
+	const [activeIndex, setActiveIndex] = useState(0);
+	const [pendingIndex, setPendingIndex] = useState(0);
+	const [rejectedIndex, setRejectedIndex] = useState(0);
+	const [archiveIndex, setArchiveIndex] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
+	const [isResultsLoading, setIsResultsLoading] = useState(true);
 	const [activeCount, setActiveCount] = useState(0);
 	const [reviewCount, setReviewCount] = useState(0);
-	const [archiveCount, setArchiveCount] = useState(0);
 	const [rejectedCount, setRejectedCount] = useState(0);
+	const [archiveCount, setArchiveCount] = useState(0);
 	const [showActionModal, setShowActionModal] = useState(false);
 	const actionModalConfig = {
 		title: 'Reject this Project?',
 	};
+	const maxResult = 40;
+
 
 	useEffect(() => {
 		initGA('UA-166025838-1');
-		doProjectsCall();
+		doProjectsCall('active', true, 0, true);
 	}, []);
 
 	const handleSelect = key => {
 		setKey(key);
+
+		let index; 
+		if(key==="active"){
+			index = activeIndex
+		} else if(key==="pending"){
+			index = pendingIndex
+		} else if(key==="rejected"){
+			index = rejectedIndex
+		} else if(key==="archive"){
+			index = archiveIndex
+		}
+
+		doProjectsCall(key, false, index);
 	};
 
-	const doProjectsCall = () => {
-		setIsLoading(true);
-		axios.get(baseURL + '/api/v1/projects/getList').then(res => {
-			setProjectsList(res.data.data);
+	const handlePagination = (type, index) => {
+		if(type === 'active'){
+			setActiveIndex(index)
+		} else if(type === 'pending'){
+			setPendingIndex(index)
+		} else if(type === 'rejected'){
+			setRejectedIndex(index)
+		} else if(type === 'archive'){
+			setArchiveIndex(index)
+		}
+		doProjectsCall(type, false, index);
+	}
 
-			let activeCount = 0;
-			let reviewCount = 0;
-			let archiveCount = 0;
-			let rejectedCount = 0;
+	const previousPageButton = (index, maxResult, key) => {
+		return (
+			<Pagination.Prev
+			key={index / maxResult}
+			active={index / maxResult}
+			onClick={e => {
+				handlePagination(key, index - maxResult);
+			}}
+			disabled={index < maxResult}
+			>
+			Previous
+			</Pagination.Prev>
+		)
+	}
 
-			res.data.data.forEach(project => {
-				if (project.activeflag === 'active') activeCount++;
-				else if (project.activeflag === 'review') reviewCount++;
-				else if (project.activeflag === 'archive') archiveCount++;
-				else if (project.activeflag === 'rejected') rejectedCount++;
-			});
+	const nextPageButton = (count, index, maxResult, key) => {
+		return (
+			<Pagination.Next
+			key={index / maxResult + 2}
+			active={index / maxResult + 2}
+			onClick={e => {
+				handlePagination(key, index + maxResult);
+			}}
+			disabled={count - (index + maxResult) <= 0}
+			>
+				Next
+			</Pagination.Next>
+		)
+	}
 
-			setActiveCount(activeCount);
-			setReviewCount(reviewCount);
-			setArchiveCount(archiveCount);
-			setRejectedCount(rejectedCount);
-			setIsLoading(false);
+	const doProjectsCall = (key, updateCounts, index, firstLoad) => { 
+		if(key === 'pending'){
+			key = 'review'
+		}
+		if(firstLoad === true){
+			setIsLoading(true);
+		}
+		setIsResultsLoading(true);
+
+		let apiUrl;
+		if (typeof index === 'undefined') {
+			apiUrl = baseURL + `/api/v1/projects/getList?status=${key}`;
+		} else {
+			apiUrl = baseURL + `/api/v1/projects/getList?status=${key}&offset=${index}`;
+		}
+
+		axios.get(apiUrl ).then(res => {
+			setProjectsList(res.data.data[0]);
+
+			if(updateCounts === true) {
+				setActiveCount(res.data.data[1].activeCount);
+				setReviewCount(res.data.data[1].reviewCount);
+				setArchiveCount(res.data.data[1].archiveCount);
+				setRejectedCount(res.data.data[1].rejectedCount);
+			}
+
+			if(firstLoad === true){
+				setIsLoading(false);
+			}
+			setIsResultsLoading(false);
 		});
+		window.scrollTo(0, 0);
 	};
 
-	const approveProject = id => {
+	const approveProject = (id, key, index, count) => {
 		axios
 			.patch(baseURL + '/api/v1/projects/' + id, {
 				activeflag: 'active',
 			})
 			.then(res => {
-				doProjectsCall();
 				if (shouldChangeTab()) {
 					setKey('active');
+					doProjectsCall('active', true);
+				} else if(!shouldChangeTab() && count - (index + maxResult) <= 0 && count % maxResult === 1){
+					if(key === 'pending'){
+						setPendingIndex(index - maxResult)
+					} else if(key === 'archive'){
+						setArchiveIndex(index - maxResult)
+					}
+					doProjectsCall(key, true, index-maxResult);
+				} else if (!shouldChangeTab()) {
+					doProjectsCall(key, true, index);
 				}
 			});
 	};
 
-	const rejectProject = (id, rejectionReason) => {
+	const rejectProject = (id, rejectionReason, key, index, count) => {
 		axios
 			.patch(baseURL + '/api/v1/projects/' + id, {
 				id: id,
@@ -81,9 +162,18 @@ export const AccountProjects = props => {
 				rejectionReason: rejectionReason,
 			})
 			.then(res => {
-				doProjectsCall();
 				if (shouldChangeTab()) {
 					setKey('active');
+					doProjectsCall('active', true);
+				} else if(!shouldChangeTab() && count - (index + maxResult) <= 0 && count % maxResult === 1){
+					if(key === 'pending'){
+						setPendingIndex(index - maxResult)
+					} else if(key === 'archive'){
+						setArchiveIndex(index - maxResult)
+					}
+					doProjectsCall(key, true, index-maxResult);
+				} else if (!shouldChangeTab()) {
+					doProjectsCall(key, true, index);
 				}
 			});
 	};
@@ -95,12 +185,15 @@ export const AccountProjects = props => {
 				activeflag: 'archive',
 			})
 			.then(res => {
-				doProjectsCall();
-				if (shouldChangeTab()) {
-					setKey('active');
+				setKey('active');
+				if(activeCount - (activeIndex + maxResult) <= 0 && activeCount % maxResult === 1){
+					setActiveIndex(activeIndex - maxResult)
+					doProjectsCall(key, true, activeIndex-maxResult);
+				} else {
+					doProjectsCall('active', true, activeIndex);
 				}
 			});
-	};
+	}; 
 
 	const toggleActionModal = () => {
 		setShowActionModal(!showActionModal);
@@ -109,6 +202,75 @@ export const AccountProjects = props => {
 	const shouldChangeTab = () => {
 		return (key === 'pending' && reviewCount <= 1) || (key === 'archive' && archiveCount <= 1) ? true : false;
 	};
+
+	let activePaginationItems = []; 
+	let pendingPaginationItems = []; 
+	let rejectedPaginationItems = []; 
+	let archivePaginationItems = []; 
+
+	activePaginationItems.push( previousPageButton(activeIndex, maxResult, 'active') )
+	for (let i = 1; i <= Math.ceil(activeCount / maxResult); i++) {
+		activePaginationItems.push(
+			<Pagination.Item
+				key={i}
+				active={i === activeIndex / maxResult + 1}
+				onClick={e => {
+					handlePagination('active', (i - 1) * maxResult);
+				}}
+			>
+				{i}
+			</Pagination.Item>
+		)
+	}
+	activePaginationItems.push( nextPageButton(activeCount, activeIndex, maxResult, 'active') )
+
+	pendingPaginationItems.push( previousPageButton(pendingIndex, maxResult, 'pending') )
+	for (let i = 1; i <= Math.ceil(reviewCount / maxResult); i++) {
+		pendingPaginationItems.push(
+			<Pagination.Item
+				key={i}
+				active={i === pendingIndex / maxResult + 1}
+				onClick={e => {
+					handlePagination('pending', (i - 1) * maxResult);
+				}}
+			>
+				{i}
+			</Pagination.Item>
+		)
+	}
+	pendingPaginationItems.push( nextPageButton(reviewCount, pendingIndex, maxResult, 'pending') )
+
+	rejectedPaginationItems.push( previousPageButton(rejectedIndex, maxResult, 'rejected') )
+	for (let i = 1; i <= Math.ceil(rejectedCount / maxResult); i++) {
+		rejectedPaginationItems.push(
+			<Pagination.Item
+				key={i}
+				active={i === rejectedIndex / maxResult + 1}
+				onClick={e => {
+					handlePagination('rejected', (i - 1) * maxResult);
+				}}
+			>
+				{i}
+			</Pagination.Item>
+		)
+	}
+	rejectedPaginationItems.push( nextPageButton(rejectedCount, rejectedIndex, maxResult, 'rejected') )
+
+	archivePaginationItems.push( previousPageButton(archiveIndex, maxResult, 'archive') )
+	for (let i = 1; i <= Math.ceil(archiveCount / maxResult); i++) {
+		archivePaginationItems.push(
+			<Pagination.Item
+				key={i}
+				active={i === archiveIndex / maxResult + 1}
+				onClick={e => {
+					handlePagination('archive', (i - 1) * maxResult);
+				}}
+			>
+				{i}
+			</Pagination.Item>
+		)
+	}
+	archivePaginationItems.push( nextPageButton(archiveCount, archiveIndex, maxResult, 'archive') )
 
 	if (isLoading) {
 		return (
@@ -166,7 +328,15 @@ export const AccountProjects = props => {
 						</Col>
 					</Row>
 
-					{(() => {
+					{isResultsLoading && 
+							<Row className="width-100">
+								<Col xs={12} className="noPadding">
+									<Loading/> 
+								</Col>
+							</Row>
+					} 
+
+					{!isResultsLoading && (() => {
 						switch (key) {
 							case 'active':
 								return (
@@ -279,7 +449,7 @@ export const AccountProjects = props => {
 																		<Dropdown.Item href={'/project/edit/' + project.id} className='black-14'>
 																			Edit
 																		</Dropdown.Item>
-																		<Dropdown.Item href='#' onClick={() => approveProject(project.id)} className='black-14'>
+																		<Dropdown.Item href='#' onClick={() => approveProject(project.id, key, pendingIndex, reviewCount)} className='black-14'>
 																			Approve
 																		</Dropdown.Item>
 																		<Dropdown.Item href='#' onClick={() => toggleActionModal()} className='black-14'>
@@ -287,6 +457,9 @@ export const AccountProjects = props => {
 																		</Dropdown.Item>
 																		<ActionModal
 																			id={project.id}
+																			entityKey={'pending'}
+																			entityIndex={pendingIndex} 
+																			entityCount={reviewCount}
 																			open={showActionModal}
 																			context={actionModalConfig}
 																			updateApplicationStatus={rejectProject}
@@ -407,7 +580,7 @@ export const AccountProjects = props => {
 																	<Dropdown.Item href={'/project/edit/' + project.id} className='black-14'>
 																		Edit
 																	</Dropdown.Item>
-																	<Dropdown.Item href='#' onClick={() => approveProject(project.id)} className='black-14'>
+																	<Dropdown.Item href='#' onClick={() => approveProject(project.id, key, archiveIndex, archiveCount)} className='black-14'>
 																		Approve
 																	</Dropdown.Item>
 																	<Dropdown.Item href='#' onClick={() => toggleActionModal()} className='black-14'>
@@ -415,6 +588,9 @@ export const AccountProjects = props => {
 																	</Dropdown.Item>
 																	<ActionModal
 																		id={project.id}
+																		entityKey={'archive'}
+																		entityIndex={archiveIndex} 
+																		entityCount={archiveCount}
 																		open={showActionModal}
 																		context={actionModalConfig}
 																		updateApplicationStatus={rejectProject}
@@ -431,6 +607,16 @@ export const AccountProjects = props => {
 								);
 						}
 					})()}
+ 
+					{!isResultsLoading &&
+						<div className='text-center entityDashboardPagination' >
+							{key === 'active' && activeCount > maxResult ? <Pagination className="margin-top-16">{activePaginationItems}</Pagination> : ''}
+							{key === 'pending' && reviewCount > maxResult ? <Pagination className="margin-top-16">{pendingPaginationItems}</Pagination> : ''}
+							{key === 'rejected' && rejectedCount > maxResult ? <Pagination className="margin-top-16">{rejectedPaginationItems}</Pagination> : ''}
+							{key === 'archive' && archiveCount > maxResult ? <Pagination className="margin-top-16">{archivePaginationItems}</Pagination> : ''}
+						</div>
+					}
+
 				</Col>
 				<Col xs={1}></Col>
 			</Row>

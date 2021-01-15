@@ -61,8 +61,8 @@ class RelatedResourcesModal extends React.Component {
 		} else if (type === 'course') {
 			await Promise.all([this.setState({ courseIndex: page })]);
 		}
-		this.props.doSearchMethod(e, type, page);
-	};
+		this.props.doSearchMethod(e, type, page); 
+	}; 
 
 	render() {
 		const { userState, datasetIndex, toolIndex, projectIndex, paperIndex, personIndex, courseIndex } = this.state;
@@ -98,6 +98,7 @@ class RelatedResourcesModal extends React.Component {
 		let projectPaginationItems = []; 
 		let paperPaginationItems = [];
 		let personPaginationItems = [];
+		let coursePaginationItems = [];
 		var maxResult = 40;
 		for (let i = 1; i <= Math.ceil(datasetCount / maxResult); i++) {
 			console.log(`dataset i is ${i}`)
@@ -164,11 +165,11 @@ class RelatedResourcesModal extends React.Component {
 			);
 		}
 		for (let i = 1; i <= Math.ceil(courseCount / maxResult); i++) {
-			personPaginationItems.push(
+			coursePaginationItems.push(
 				<Pagination.Item
 					key={i}
 					active={i === courseIndex / maxResult + 1}
-					onClick={e => {
+					onClick={e => { 
 						this.handlePagination('course', (i - 1) * maxResult, 'click');
 					}}>
 					{i}
@@ -476,7 +477,7 @@ class RelatedResourcesModal extends React.Component {
 
 									{key === 'People' && personCount > maxResult ? <Pagination>{personPaginationItems}</Pagination> : ''}
 
-									{key === 'Course' && courseCount > maxResult ? <Pagination>{personPaginationItems}</Pagination> : ''}
+									{key === 'Course' && courseCount > maxResult ? <Pagination>{coursePaginationItems}</Pagination> : ''}
 								</div>
 							</Col>
 							<Col sm={2} lg={2} />

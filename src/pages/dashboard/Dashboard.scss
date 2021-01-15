@@ -328,7 +328,7 @@ textarea {
 	}
 }
 
-.checker {
+.checker { 
 	width: 0% !important;
 	margin-left: 15px;
 	margin-right: 12px;
@@ -400,4 +400,13 @@ textarea {
 
 .eyeFaded {
 	opacity: 0.7;
+}
+
+.entityDashboardPagination{
+	float: right;
+	margin-right: 15px;
+}
+
+.tryThis {
+	width: 100%;
 }
