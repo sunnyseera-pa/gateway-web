@@ -220,11 +220,7 @@ export const AccountProjects = props => {
 																	<Dropdown.Item href={'/project/edit/' + project.id} className='black-14'>
 																		Edit
 																	</Dropdown.Item>
-																	{userState[0].role === 'Admin' ? (
-																		<EntityActionButton id={project.id} action={archiveProject} entity='project' actionType='archive' />
-																	) : (
-																		''
-																	)}
+																	<EntityActionButton id={project.id} action={archiveProject} entity='project' actionType='archive' />
 																</DropdownButton>
 															</Col>
 														</Row>

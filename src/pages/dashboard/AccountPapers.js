@@ -217,11 +217,7 @@ export const AccountPapers = props => {
 																	<Dropdown.Item href={'/paper/edit/' + paper.id} className='black-14'>
 																		Edit
 																	</Dropdown.Item>
-																	{userState[0].role === 'Admin' ? (
-																		<EntityActionButton id={paper.id} action={archivePaper} entity='paper' actionType='archive' />
-																	) : (
-																		''
-																	)}
+																	<EntityActionButton id={paper.id} action={archivePaper} entity='paper' actionType='archive' />
 																</DropdownButton>
 															</Col>
 														</Row>

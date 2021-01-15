@@ -217,11 +217,7 @@ export const AccountTools = props => {
 																	<Dropdown.Item href={'/tool/edit/' + tool.id} className='black-14'>
 																		Edit
 																	</Dropdown.Item>
-																	{userState[0].role === 'Admin' ? (
-																		<EntityActionButton id={tool.id} action={archiveTool} entity='tool' actionType='archive' />
-																	) : (
-																		''
-																	)}
+																	<EntityActionButton id={tool.id} action={archiveTool} entity='tool' actionType='archive' />
 																</DropdownButton>
 															</Col>
 														</Row>
