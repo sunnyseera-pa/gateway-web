@@ -29,6 +29,7 @@ import LoginModal from './pages/commonComponents/LoginModal';
 import Footer from './pages/commonComponents/Footer';
 import LoginErrorPage from './pages/commonComponents/LoginErrorPage';
 import ErrorModal from './pages/commonComponents/errorModal/ErrorModal';
+import { GuardedRoute } from './pages/commonComponents/GuardedRoute';
 
 var baseURL = require('./pages/commonComponents/BaseURL').getURL();
 class HDRRouter extends Component {
@@ -132,7 +133,6 @@ class HDRRouter extends Component {
 						) : (
 							''
 						)}
-
 						<Route path='/search' render={props => <SearchPage {...props} userState={userState} />} />
 						<Route path='/loginerror' render={props => <LoginErrorPage {...props} userState={userState} />} />
 						<Route path='/person/:personID' render={props => <PersonPage {...props} userState={userState} />} />
@@ -141,89 +141,25 @@ class HDRRouter extends Component {
 						<Route path='/sso' render={props => <SSOPage {...props} userState={userState} />} />
 						<Route path='/account/unsubscribe/:userObjectID' render={props => <Unsubscribe {...props} userState={userState} />} />
 						<Route path='/dashboard' render={props => <PublicAnalyticsDashboard {...props} userState={userState} />} />
-
-						{userState[0].loggedIn ? (
-							<Route
-								path='/data-access-request/dataset/:datasetId'
-								render={props => <DataAccessRequest {...props} userState={userState} />}
-							/>
-						) : (
-							''
-						)}
-						{userState[0].loggedIn ? (
-							<Route
-								path='/data-access-request/publisher/:publisherId'
-								render={props => <DataAccessRequest {...props} userState={userState} />}
-							/>
-						) : (
-							''
-						)}
-						{userState[0].loggedIn ? (
-							<Route path='/data-access-request/:accessId' render={props => <DataAccessRequest {...props} userState={userState} />} />
-						) : (
-							''
-						)}
-
-						{userState[0].loggedIn ? <Route path='/account' render={props => <Account {...props} userState={userState} />} /> : ''}
-						{userState[0].loggedIn ? (
-							<Route path='/addcollection' render={props => <AddCollectionPage {...props} userState={userState} />} />
-						) : (
-							''
-						)}
-						{userState[0].loggedIn ? (
-							<Route path='/editcollection/:collectionID' render={props => <EditCollectionPage {...props} userState={userState} />} />
-						) : (
-							''
-						)}
-						<Route path='/collection/:collectionID' render={props => <CollectionPage {...props} userState={userState} />} />
-
-						{userState[0].loggedIn ? <Route path='/tool/add' render={props => <AddEditToolPage {...props} userState={userState} />} /> : ''}
-						{userState[0].loggedIn ? (
-							<Route path='/tool/edit/:toolID' render={props => <AddEditToolPage {...props} userState={userState} isEdit='true' />} />
-						) : (
-							''
-						)}
-						<Route path='/tool/:toolID' render={props => <ToolPage {...props} userState={userState} />} />
-
-						{userState[0].loggedIn ? (
-							<Route path='/project/add' render={props => <AddEditProjectPage {...props} userState={userState} />} />
-						) : (
-							''
-						)}
-						{userState[0].loggedIn ? (
-							<Route
-								path='/project/edit/:projectID'
-								render={props => <AddEditProjectPage {...props} userState={userState} isEdit='true' />}
-							/>
-						) : (
-							''
-						)}
-						<Route path='/project/:projectID' render={props => <ProjectPage {...props} userState={userState} />} />
-
-						{userState[0].loggedIn ? (
-							<Route path='/paper/add' render={props => <AddEditPaperPage {...props} userState={userState} />} />
-						) : (
-							''
-						)}
-						{userState[0].loggedIn ? (
-							<Route path='/paper/edit/:paperID' render={props => <AddEditPaperPage {...props} userState={userState} isEdit='true' />} />
-						) : (
-							''
-						)}
-						<Route path='/paper/:paperID' render={props => <PaperPage {...props} userState={userState} />} />
-
-						{userState[0].loggedIn ? (
-							<Route path='/course/add' render={props => <AddEditCoursePage {...props} userState={userState} />} />
-						) : (
-							''
-						)}
-						{userState[0].loggedIn ? (
-							<Route path='/course/edit/:courseID' render={props => <AddEditCoursePage {...props} userState={userState} isEdit='true' />} />
-						) : (
-							''
-						)}
-						<Route path='/course/:courseID' render={props => <CoursePage {...props} userState={userState} />} />
-
+						<GuardedRoute path='/data-access-request/dataset/:datasetId' component={DataAccessRequest} userState={userState} />
+						<GuardedRoute path='/data-access-request/publisher/:publisherId' component={DataAccessRequest} userState={userState} />
+						<GuardedRoute path='/data-access-request/:accessId' component={DataAccessRequest} userState={userState} />
+						<GuardedRoute path='/account' component={Account} userState={userState} />
+						<GuardedRoute path='/addcollection' component={AddCollectionPage} userState={userState} />
+						<GuardedRoute path='/editcollection/:collectionID' component={EditCollectionPage} userState={userState} />
+						<GuardedRoute path='/collection/:collectionID' component={CollectionPage} userState={userState} />
+						<GuardedRoute path='/tool/add' component={AddEditToolPage} userState={userState} />
+						<GuardedRoute path='/tool/edit/:toolID' component={AddEditToolPage} userState={userState} />
+						<GuardedRoute path='/tool/:toolID' component={ToolPage} userState={userState} />
+						<GuardedRoute path='/project/add' component={AddEditProjectPage} userState={userState} />
+						<GuardedRoute path='/project/edit/:projectID' component={AddEditProjectPage} userState={userState} />
+						<GuardedRoute path='/project/:projectID' component={ProjectPage} userState={userState} />
+						<GuardedRoute path='/paper/add' component={AddEditPaperPage} userState={userState} />
+						<GuardedRoute path='/paper/edit/:paperID' component={AddEditPaperPage} userState={userState} />
+						<GuardedRoute path='/paper/:paperID' component={PaperPage} userState={userState} />
+						<GuardedRoute path='/course/add' component={AddEditCoursePage} userState={userState} />
+						<GuardedRoute path='/course/edit/:courseID' component={AddEditCoursePage} userState={userState} />
+						<GuardedRoute path='/course/:courseID' component={AddEditCoursePage} userState={userState} />
 						{/* Catch all path */}
 						<Redirect to='/search?search=' />
 					</Switch>

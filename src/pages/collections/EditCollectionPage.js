@@ -12,17 +12,13 @@ import RelatedResources from '../commonComponents/relatedResources/RelatedResour
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import moment from 'moment';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-import SVGIcon from '../../images/SVGIcon';
 import ToolTip from '../../images/imageURL-ToolTip.gif';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
-
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import './Collections.scss';
-
 import { Event, initGA } from '../../tracking';
-
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class EditCollectionPage extends React.Component {
@@ -369,7 +365,7 @@ const EditCollectionForm = props => {
 				<Row className='mt-2'>
 					<Col sm={1} lg={1} />
 					<Col sm={10} lg={10}>
-						<Form onSubmit={formik.handleSubmit} onBlur={formik.handleBlur} autocomplete='off'>
+						<Form onSubmit={formik.handleSubmit} onBlur={formik.handleBlur} autoComplete='off'>
 							<div className='rectangle'>
 								<Form.Group>
 									<span className='gray800-14'>Collection name</span>
