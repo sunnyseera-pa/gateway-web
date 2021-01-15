@@ -3,7 +3,6 @@ import { Route, Redirect } from "react-router-dom";
 
 export const GuardedRoute = ({ component: Component, ...rest }) => {
   // deconstruct out the rest of the props
-  console.log({...rest});
   let { userState = [], path } = {...rest};
   // get the user record
   let [user] = userState;
