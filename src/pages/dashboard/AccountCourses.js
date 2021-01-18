@@ -585,27 +585,35 @@ export const AccountCourses = props => {
 																	  })}
 															</Col>
 															<Col sm={12} lg={3} style={{ textAlign: 'right' }} className='toolsButtons'>
-																<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
-																	<Dropdown.Item href={'/course/edit/' + course.id} className='black-14'>
-																		Edit
-																	</Dropdown.Item>
-																	<Dropdown.Item href='#' onClick={() => approveCourse(course.id, key, archiveIndex, archiveCount)} className='black-14'>
-																		Approve
-																	</Dropdown.Item>
-																	<Dropdown.Item href='#' onClick={() => toggleActionModal()} className='black-14'>
-																		Reject
-																	</Dropdown.Item>
-																	<ActionModal
-																		id={course.id}
-																		entityKey={'archive'}
-																		entityIndex={archiveIndex} 
-																		entityCount={archiveCount}
-																		open={showActionModal}
-																		context={actionModalConfig}
-																		updateApplicationStatus={rejectCourse}
-																		close={toggleActionModal}
-																	/>
-																</DropdownButton>
+																{userState[0].role === 'Admin' ? (
+																	<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
+																		<Dropdown.Item href={'/course/edit/' + course.id} className='black-14'>
+																			Edit
+																		</Dropdown.Item>
+																		<Dropdown.Item href='#' onClick={() => approveCourse(course.id, key, archiveIndex, archiveCount)} className='black-14'>
+																			Approve
+																		</Dropdown.Item>
+																		<Dropdown.Item href='#' onClick={() => toggleActionModal()} className='black-14'>
+																			Reject
+																		</Dropdown.Item>
+																		<ActionModal
+																			id={course.id}
+                                      entityKey={'archive'}
+																		  entityIndex={archiveIndex} 
+																		  entityCount={archiveCount}
+																			open={showActionModal}
+																			context={actionModalConfig}
+																			updateApplicationStatus={rejectCourse}
+																			close={toggleActionModal}
+																		/>
+																	</DropdownButton>
+																) : (
+																	<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
+																		<Dropdown.Item href={'/course/edit/' + course.id} className='black-14'>
+																			Edit
+																		</Dropdown.Item>
+																	</DropdownButton>
+																)}
 															</Col>
 														</Row>
 													);
