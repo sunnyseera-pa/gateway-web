@@ -13,12 +13,14 @@ import ActionBar from '../commonComponents/actionbar/ActionBar';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
 import _ from 'lodash';
+import { isEditMode } from '../../utils/GeneralHelper.util';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const AddEditProjectForm = props => {
+	let isEdit = isEditMode(window.location.pathname);
 	//Fix for projects were features are set to null
-	if (props.isEdit && props.data && props.data.tags.features === null) props.data.tags.features = [];
+	if (isEdit && props.data && props.data.tags.features === null) props.data.tags.features = [];
 
 	// Pass the useFormik() hook initial form values and a submit function that will
 	// be called when the form is submitted
@@ -56,7 +58,7 @@ const AddEditProjectForm = props => {
 			//add via same post as add tool form - type set as 'project'
 			values.relatedObjects = props.relatedObjects;
 			values.toolCreator = props.userState[0];
-			if (props.isEdit) {
+			if (isEdit) {
 				axios.put(baseURL + '/api/v1/projects/' + props.data.id, values).then(res => {
 					window.location.href = window.location.search + '/project/' + props.data.id + '/?projectEdited=true';
 				});
@@ -70,7 +72,7 @@ const AddEditProjectForm = props => {
 
 	var listOfAuthors = [];
 
-	if (props.isEdit) {
+	if (isEdit) {
 		props.data.authors.forEach(author => {
 			props.combinedUsers.forEach(user => {
 				if (user.id === author) {
@@ -139,7 +141,7 @@ const AddEditProjectForm = props => {
 							<Row>
 								<Col sm={10} lg={10}>
 									<p className='black-20 margin-bottom-0 pad-bottom-8'>
-										{props.isEdit ? 'Edit your project' : 'Add a new research project'}
+										{isEdit ? 'Edit your project' : 'Add a new research project'}
 									</p>
 								</Col>
 								<Col sm={2} lg={2} className='text-right'>
@@ -429,7 +431,7 @@ const AddEditProjectForm = props => {
 				</Button>
 
 				<Button variant='primary' className='publishButton white-14-semibold mr-2' type='submit' onClick={formik.handleSubmit}>
-					{props.isEdit ? 'Update' : 'Publish'}
+					{isEdit ? 'Update' : 'Publish'}
 				</Button>
 			</ActionBar>
 		</div>

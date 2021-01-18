@@ -9,17 +9,15 @@ import AddEditPaperForm from './AddEditPaperForm';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
+import { isEditMode } from '../../utils/GeneralHelper.util';
 import './Paper.scss';
-
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class AddEditPaperPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state.userState = props.userState;
-		if (props.isEdit) this.state.isEdit = props.isEdit;
 		this.searchBar = React.createRef();
 	}
 
@@ -42,7 +40,7 @@ class AddEditPaperPage extends React.Component {
 		relatedObjectIds: [],
 		relatedObjects: [],
 		didDelete: false,
-		isEdit: false,
+		isEdit: isEditMode(window.location.pathname),
 		showDrawer: false,
 		showModal: false,
 		context: {},
