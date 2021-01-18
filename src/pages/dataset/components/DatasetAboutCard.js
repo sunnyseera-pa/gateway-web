@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { Fragment } from 'react';
+import { Link } from 'react-router-dom';
 import { Col, Row } from 'react-bootstrap';
 import '../Dataset.scss';
 import AboutCardElement from './AboutCardElement';
 import _ from 'lodash';
+import { Event } from '../../../tracking';
 
 class DatasetAboutCard extends React.Component {
 	state = {
 		v2data: {},
 		section: '',
 		showEmpty: false,
+		loggedIn: false
 	};
 
 	constructor(props) {
@@ -365,12 +368,23 @@ class DatasetAboutCard extends React.Component {
 										<Col sm={12} className='mb-1'>
 											{section}
 
-											{this.props.requiresModal ? (
+											{!this.props.loggedIn ? (
+												<span className='purple-14 pointer float-right' onClick={() => this.props.showLoginModal()}>
+													Request access
+												</span>
+											) : this.props.requiresModal ? (
 												<span className='purple-14 pointer float-right' onClick={() => this.props.toggleModal()}>
 													How to request access
 												</span>
 											) : (
-												''
+												<Link
+													className='purple-14 pointer float-right'
+													to={{
+														pathname: `/data-access-request/dataset/${this.props.datasetid}`,
+													}}
+													onClick={() => Event('Buttons', 'Click', 'Request Access')}>
+													Request access
+												</Link>
 											)}
 										</Col>
 									</Row>
