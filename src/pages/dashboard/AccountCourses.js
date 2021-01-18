@@ -598,9 +598,9 @@ export const AccountCourses = props => {
 																		</Dropdown.Item>
 																		<ActionModal
 																			id={course.id}
-                                      entityKey={'archive'}
-																		  entityIndex={archiveIndex} 
-																		  entityCount={archiveCount}
+                                      										entityKey={'archive'}
+																		  	entityIndex={archiveIndex} 
+																		  	entityCount={archiveCount}
 																			open={showActionModal}
 																			context={actionModalConfig}
 																			updateApplicationStatus={rejectCourse}

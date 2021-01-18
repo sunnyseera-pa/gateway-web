@@ -461,11 +461,9 @@ export const AccountPapers = props => {
 																		</Dropdown.Item>
 																		<ActionModal
 																			id={paper.id}
-
 																			entityKey={'pending'}
 																			entityIndex={pendingIndex} 
 																			entityCount={reviewCount}
-
 																			open={showActionModal}
 																			context={actionModalConfig}
 																			updateApplicationStatus={rejectPaper}
@@ -591,9 +589,9 @@ export const AccountPapers = props => {
 																		</Dropdown.Item>
 																		<ActionModal
 																			id={paper.id}
-	                                    entityKey={'archive'}
-																		  entityIndex={archiveIndex} 
-																		  entityCount={archiveCount}
+	                                    									entityKey={'archive'}
+																		  	entityIndex={archiveIndex} 
+																		  	entityCount={archiveCount}
 																			open={showActionModal}
 																			context={actionModalConfig}
 																			updateApplicationStatus={rejectPaper}

@@ -590,12 +590,12 @@ export const AccountTools = props => {
 																		</Dropdown.Item>
 																		<ActionModal
 																			id={tool.id}
-                                      entityKey={'archive'}
-																		  entityIndex={archiveIndex} 
-																		  entityCount={archiveCount}
+                                      										entityKey={'archive'}
+																		  	entityIndex={archiveIndex} 
+																		  	entityCount={archiveCount}
 																			open={showActionModal}
 																			context={actionModalConfig}
-																			updateApplicationStatus={rejectObject}
+																			updateApplicationStatus={rejectTool}
 																			close={toggleActionModal}
 																		/>
 																	</DropdownButton>

@@ -324,9 +324,6 @@ class AddEditToolPage extends React.Component {
 	};
 
 	doModalSearch = (e, type, page) => {
-		console.log(`e - ${e}`)
-		console.log(`type - ${JSON.stringify(type)}`)
-		console.log(`page - ${JSON.stringify(page)}`)
 		if (e.key === 'Enter' || e === 'click') {
 			var searchURL = '';
 

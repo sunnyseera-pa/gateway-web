@@ -595,9 +595,9 @@ export const AccountProjects = props => {
 																		</Dropdown.Item>
 																		<ActionModal
 																			id={project.id}
-                                      entityKey={'archive'}
-																		  entityIndex={archiveIndex} 
-																		  entityCount={archiveCount}
+                                      										entityKey={'archive'}
+																		  	entityIndex={archiveIndex} 
+																		  	entityCount={archiveCount}
 																			open={showActionModal}
 																			context={actionModalConfig}
 																			updateApplicationStatus={rejectProject}
