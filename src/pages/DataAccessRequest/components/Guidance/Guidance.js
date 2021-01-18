@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
+import ReactMarkdown from 'react-markdown';
 
 const Guidance = ({activeGuidance, resetGuidance}) => {
 	return (
@@ -14,7 +15,8 @@ const Guidance = ({activeGuidance, resetGuidance}) => {
 						<CloseButtonSvg width='16px' height='16px' fill='#475da' onClick={resetGuidance} />
 					</header>
 					<main className='gray800-14'>
-						<span>{activeGuidance}</span>
+					<ReactMarkdown className='gray800-14' source={activeGuidance} />
+					
 					</main>
 				</Fragment>
 			) : (
