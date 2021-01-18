@@ -1,13 +1,12 @@
 import React from 'react'; 
 import CompleteRegistration from '../src/pages/registration/CompleteRegistration';
-import { userStateData } from './mocks/dataMock';
 
 let wrapper;
 const match = { params: { personID: 38386886447696744 } }; 
 
 describe('<CompleteRegistration />', () => {
     it('renders with <Loading /> component', () => {
-		wrapper = shallow(<CompleteRegistration userState={userStateData} match={match} />);
+		wrapper = shallow(<CompleteRegistration match={match} />);
 		expect(wrapper.find('[data-testid="isLoading"]').exists()).toEqual(true);
     });
 
