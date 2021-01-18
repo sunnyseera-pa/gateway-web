@@ -34,7 +34,9 @@ export const AccountProjects = props => {
 
 
 	useEffect(() => {
-		initGA('UA-166025838-1');
+		if (process.env.NODE_ENV === 'production') {
+			initGA('UA-166025838-1');
+		}
 		doProjectsCall('active', true, 0, true);
 	}, []);
 
@@ -212,6 +214,7 @@ export const AccountProjects = props => {
 	for (let i = 1; i <= Math.ceil(activeCount / maxResult); i++) {
 		activePaginationItems.push(
 			<Pagination.Item
+				data-testid='activePaginationItem'
 				key={i}
 				active={i === activeIndex / maxResult + 1}
 				onClick={e => {
@@ -228,6 +231,7 @@ export const AccountProjects = props => {
 	for (let i = 1; i <= Math.ceil(reviewCount / maxResult); i++) {
 		pendingPaginationItems.push(
 			<Pagination.Item
+				data-testid='pendingPaginationItem'
 				key={i}
 				active={i === pendingIndex / maxResult + 1}
 				onClick={e => {
@@ -244,6 +248,7 @@ export const AccountProjects = props => {
 	for (let i = 1; i <= Math.ceil(rejectedCount / maxResult); i++) {
 		rejectedPaginationItems.push(
 			<Pagination.Item
+				data-testid='rejectedPaginationItem'
 				key={i}
 				active={i === rejectedIndex / maxResult + 1}
 				onClick={e => {
@@ -260,6 +265,7 @@ export const AccountProjects = props => {
 	for (let i = 1; i <= Math.ceil(archiveCount / maxResult); i++) {
 		archivePaginationItems.push(
 			<Pagination.Item
+				data-testid='archivePaginationItem'
 				key={i}
 				active={i === archiveIndex / maxResult + 1}
 				onClick={e => {
@@ -277,7 +283,7 @@ export const AccountProjects = props => {
 			<Row>
 				<Col xs={1}></Col>
 				<Col xs={10}>
-					<Loading />
+					<Loading data-testid='isLoading' />
 				</Col>
 				<Col xs={1}></Col>
 			</Row>
@@ -311,7 +317,7 @@ export const AccountProjects = props => {
 
 					<Row className='tabsBackground'>
 						<Col sm={12} lg={12}>
-							<Tabs className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
+							<Tabs className='dataAccessTabs gray700-13' data-testid='projectTabs' activeKey={key} onSelect={handleSelect}>
 								<Tab eventKey='active' title={'Active (' + activeCount + ')'}>
 									{' '}
 								</Tab>
@@ -362,7 +368,7 @@ export const AccountProjects = props => {
 													return <></>;
 												} else {
 													return (
-														<Row className='entryBox'>
+														<Row className='entryBox' data-testid='projectEntryActive'>
 															<Col sm={12} lg={2} className='pt-2 gray800-14'>
 																{moment(project.updatedAt).format('D MMMM YYYY HH:mm')}
 															</Col>
@@ -422,7 +428,7 @@ export const AccountProjects = props => {
 													return <></>;
 												} else {
 													return (
-														<Row className='entryBox'>
+														<Row className='entryBox' data-testid='projectEntryPending'>
 															<Col sm={12} lg={2} className='pt-2 gray800-14'>
 																{moment(project.updatedAt).format('D MMMM YYYY HH:mm')}
 															</Col>
@@ -501,7 +507,7 @@ export const AccountProjects = props => {
 													return <></>;
 												} else {
 													return (
-														<Row className='entryBox'>
+														<Row className='entryBox' data-testid='projectEntryRejected'>
 															<Col sm={12} lg={2} className='pt-2 gray800-14'>
 																{moment(project.updatedAt).format('D MMMM YYYY HH:mm')}
 															</Col>
@@ -554,7 +560,7 @@ export const AccountProjects = props => {
 													return <></>;
 												} else {
 													return (
-														<Row className='entryBox'>
+														<Row className='entryBox' data-testid='projectEntryArchive'>
 															<Col sm={12} lg={2} className='pt-2 gray800-14'>
 																{moment(project.updatedAt).format('D MMMM YYYY HH:mm')}
 															</Col>
@@ -610,10 +616,10 @@ export const AccountProjects = props => {
  
 					{!isResultsLoading &&
 						<div className='text-center entityDashboardPagination' >
-							{key === 'active' && activeCount > maxResult ? <Pagination className="margin-top-16">{activePaginationItems}</Pagination> : ''}
-							{key === 'pending' && reviewCount > maxResult ? <Pagination className="margin-top-16">{pendingPaginationItems}</Pagination> : ''}
-							{key === 'rejected' && rejectedCount > maxResult ? <Pagination className="margin-top-16">{rejectedPaginationItems}</Pagination> : ''}
-							{key === 'archive' && archiveCount > maxResult ? <Pagination className="margin-top-16">{archivePaginationItems}</Pagination> : ''}
+							{key === 'active' && activeCount > maxResult ? <Pagination className="margin-top-16" data-testid='activePagination'>{activePaginationItems}</Pagination> : ''}
+							{key === 'pending' && reviewCount > maxResult ? <Pagination className="margin-top-16" data-testid='pendingPagination'>{pendingPaginationItems}</Pagination> : ''}
+							{key === 'rejected' && rejectedCount > maxResult ? <Pagination className="margin-top-16" data-testid='rejectedPagination'>{rejectedPaginationItems}</Pagination> : ''}
+							{key === 'archive' && archiveCount > maxResult ? <Pagination className="margin-top-16" data-testid='archivePagination'>{archivePaginationItems}</Pagination> : ''}
 						</div>
 					}
 

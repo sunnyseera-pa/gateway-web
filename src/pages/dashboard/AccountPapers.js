@@ -33,7 +33,9 @@ export const AccountPapers = props => {
 	const maxResult = 40;
 
 	useEffect(() => {
-		initGA('UA-166025838-1');
+		if (process.env.NODE_ENV === 'production') {
+			initGA('UA-166025838-1');
+		}
 		doPapersCall('active', true, 0, true); 
 	}, []);
 
@@ -214,6 +216,7 @@ export const AccountPapers = props => {
 	for (let i = 1; i <= Math.ceil(activeCount / maxResult); i++) {
 		activePaginationItems.push(
 			<Pagination.Item
+				data-testid='activePaginationItem'
 				key={i}
 				active={i === activeIndex / maxResult + 1}
 				onClick={e => {
@@ -230,6 +233,7 @@ export const AccountPapers = props => {
 	for (let i = 1; i <= Math.ceil(reviewCount / maxResult); i++) {
 		pendingPaginationItems.push(
 			<Pagination.Item
+				data-testid='pendingPaginationItem'
 				key={i}
 				active={i === pendingIndex / maxResult + 1}
 				onClick={e => {
@@ -246,6 +250,7 @@ export const AccountPapers = props => {
 	for (let i = 1; i <= Math.ceil(rejectedCount / maxResult); i++) {
 		rejectedPaginationItems.push(
 			<Pagination.Item
+				data-testid='rejectedPaginationItem'
 				key={i}
 				active={i === rejectedIndex / maxResult + 1}
 				onClick={e => {
@@ -262,6 +267,7 @@ export const AccountPapers = props => {
 	for (let i = 1; i <= Math.ceil(archiveCount / maxResult); i++) {
 		archivePaginationItems.push(
 			<Pagination.Item
+				data-testid='archivePaginationItem'
 				key={i}
 				active={i === archiveIndex / maxResult + 1}
 				onClick={e => {
@@ -279,7 +285,7 @@ export const AccountPapers = props => {
 			<Row>
 				<Col xs={1}></Col>
 				<Col xs={10}>
-					<Loading />
+					<Loading data-testid='isLoading' />
 				</Col>
 				<Col xs={1}></Col>
 			</Row>
@@ -313,12 +319,12 @@ export const AccountPapers = props => {
 					</Row>
 					<Row className='tabsBackground'>
 						<Col sm={12} lg={12}>
-							<Tabs className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
+							<Tabs className='dataAccessTabs gray700-13' data-testid='paperTabs' activeKey={key} onSelect={handleSelect}>
 								<Tab eventKey='active' title={'Active (' + activeCount + ')'}>
-									{' '}
+									{' '} 
 								</Tab>
 								<Tab eventKey='pending' title={'Pending approval (' + reviewCount + ')'}>
-									{' '}
+									{' '} 
 								</Tab>
 								<Tab eventKey='rejected' title={'Rejected (' + rejectedCount + ')'}>
 									{' '}
@@ -363,7 +369,7 @@ export const AccountPapers = props => {
 													return <></>;
 												} else {
 													return (
-														<Row className='entryBox' key={i}>
+														<Row className='entryBox' data-testid='paperEntryActive' key={i}>
 															<Col sm={12} lg={2} className='pt-2 gray800-14'>
 																{moment(paper.updatedAt).format('D MMMM YYYY HH:mm')}
 															</Col>
@@ -421,7 +427,7 @@ export const AccountPapers = props => {
 													return <></>;
 												} else {
 													return (
-														<Row className='entryBox'>
+														<Row className='entryBox' data-testid='paperEntryPending'>
 															<Col sm={12} lg={2} className='pt-2 gray800-14'>
 																{moment(paper.updatedAt).format('D MMMM YYYY HH:mm')}
 															</Col>
@@ -500,7 +506,7 @@ export const AccountPapers = props => {
 													return <></>;
 												} else {
 													return (
-														<Row className='entryBox'>
+														<Row className='entryBox' data-testid='paperEntryRejected'>
 															<Col sm={12} lg={2} className='pt-2 gray800-14'>
 																{moment(paper.updatedAt).format('D MMMM YYYY HH:mm')}
 															</Col>
@@ -551,7 +557,7 @@ export const AccountPapers = props => {
 													return <></>;
 												} else {
 													return (
-														<Row className='entryBox'>
+														<Row className='entryBox' data-testid='paperEntryArchive'>
 															<Col sm={12} lg={2} className='pt-2 gray800-14'>
 																{moment(paper.updatedAt).format('D MMMM YYYY HH:mm')}
 															</Col>
@@ -608,10 +614,10 @@ export const AccountPapers = props => {
 
 					{!isResultsLoading &&
 						<div className='text-center entityDashboardPagination' >
-						{key === 'active' && activeCount > maxResult ? <Pagination className="margin-top-16">{activePaginationItems}</Pagination> : ''}
-						{key === 'pending' && reviewCount > maxResult ? <Pagination className="margin-top-16">{pendingPaginationItems}</Pagination> : ''}
-						{key === 'rejected' && rejectedCount > maxResult ? <Pagination className="margin-top-16">{rejectedPaginationItems}</Pagination> : ''}
-						{key === 'archive' && archiveCount > maxResult ? <Pagination className="margin-top-16">{archivePaginationItems}</Pagination> : ''}
+						{key === 'active' && activeCount > maxResult ? <Pagination className="margin-top-16" data-testid='activePagination'>{activePaginationItems}</Pagination> : ''}
+						{key === 'pending' && reviewCount > maxResult ? <Pagination className="margin-top-16" data-testid='pendingPagination'>{pendingPaginationItems}</Pagination> : ''}
+						{key === 'rejected' && rejectedCount > maxResult ? <Pagination className="margin-top-16" data-testid='rejectedPagination'>{rejectedPaginationItems}</Pagination> : ''}
+						{key === 'archive' && archiveCount > maxResult ? <Pagination className="margin-top-16" data-testid='archivePagination'>{archivePaginationItems}</Pagination> : ''}
 						</div>
 					}
 
