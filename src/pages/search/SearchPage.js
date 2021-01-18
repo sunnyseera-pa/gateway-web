@@ -725,7 +725,6 @@ class SearchPage extends React.Component {
 		let personPaginationItems = [];
 		let coursePaginationItems = [];
 		var maxResult = 40;
-		// var maxResult = 50;
 		for (let i = 1; i <= Math.ceil(datasetCount / maxResult); i++) {
 			datasetPaginationItems.push(
 				<Pagination.Item

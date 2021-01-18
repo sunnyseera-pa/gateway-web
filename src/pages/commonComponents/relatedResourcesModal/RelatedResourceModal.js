@@ -101,8 +101,6 @@ class RelatedResourcesModal extends React.Component {
 		let coursePaginationItems = [];
 		var maxResult = 40;
 		for (let i = 1; i <= Math.ceil(datasetCount / maxResult); i++) {
-			console.log(`dataset i is ${i}`)
-			console.log(`datasetIndex is ${datasetIndex}`)
 			datasetPaginationItems.push(
 				<Pagination.Item
 					key={i}
@@ -115,8 +113,6 @@ class RelatedResourcesModal extends React.Component {
 			);
 		}
 		for (let i = 1; i <= Math.ceil(toolCount / maxResult); i++) {
-			console.log(`tool i is ${i}`)
-			console.log(`toolIndex is ${toolIndex}`)
 			toolPaginationItems.push(
 				<Pagination.Item
 					key={i}
