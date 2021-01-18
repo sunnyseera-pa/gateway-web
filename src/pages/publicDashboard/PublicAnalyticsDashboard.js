@@ -293,7 +293,7 @@ class PublicAnalyticsDashboard extends React.Component {
 											<span className='black-20'>Dashboard</span>
 										</Col>
 										<Col sm={4} lg={4}>
-											<span className='gray700-13 floatRight'>Last updated: {moment().format('DD MMM YYYY, hh:mm')}</span>
+											<span className='gray700-13 floatRight' data-test-id='dashboard-metrics-last-updated'>Last updated: {moment().format('DD MMM YYYY, hh:mm')}</span>
 										</Col>
 									</Row>
 									<Row>
@@ -325,20 +325,26 @@ class PublicAnalyticsDashboard extends React.Component {
 
 							<Row className='kpiContainer'>
 								<Col sm={3} lg={3} className='kpiClass'>
-									<DashboardKPI kpiText='total datasets' kpiValue={statsDataType.dataset} />
+									<DashboardKPI kpiText='total datasets' kpiValue={statsDataType.dataset} testId='dashboard-dataset-count' />
 								</Col>
 								<Col sm={3} lg={3} className='kpiClass'>
 									<DashboardKPI
 										kpiText='datasets with technical metadata'
 										kpiValue={datasetsWithTechMetaData.toFixed(0)}
 										percentageFlag={true}
+										testId='dashboard-dataset-metadata-percent'
 									/>
 								</Col>
 								<Col sm={3} lg={3} className='kpiClass'>
-									<DashboardKPI kpiText='users this month' kpiValue={gaUsers} />
+									<DashboardKPI kpiText='users this month' kpiValue={gaUsers} testId='dashboard-users-monthly-count' />
 								</Col>
 								<Col sm={3} lg={3} className='kpiClass'>
-									<DashboardKPI kpiText='unique registered users' kpiValue={uniqueUsers.toFixed(0)} percentageFlag={true} />
+									<DashboardKPI
+										kpiText='unique registered users'
+										kpiValue={uniqueUsers.toFixed(0)}
+										percentageFlag={true}
+										testId='dashboard-users-registered-percent'
+									/>
 								</Col>
 							</Row>
 
@@ -348,16 +354,18 @@ class PublicAnalyticsDashboard extends React.Component {
 										kpiText='searches with results this month'
 										kpiValue={searchesWithResults.toFixed(0)}
 										percentageFlag={true}
+										testId='dashboard-searches-results-percent'
 									/>
 								</Col>
 								<Col sm={3} lg={3} className='kpiClass'>
-									<DashboardKPI kpiText='new access requests' kpiValue={accessRequests} />
+									<DashboardKPI kpiText='new access requests' kpiValue={accessRequests} testId='dashboard-data-access-requests-count' />
 								</Col>
 								<Col sm={3} lg={3} className='kpiClass'>
 									<DashboardKPI
 										kpiText='uptime this month'
 										kpiValue={uptime.toFixed(2) % 1 === 0 ? Math.trunc(uptime.toFixed(2)) : uptime.toFixed(2)}
 										percentageFlag={true}
+										testId='dashboard-gateway-uptime-percent'
 									/>
 								</Col>
 								<Col sm={3} lg={3} className='kpiClass'>
@@ -475,10 +483,13 @@ class PublicAnalyticsDashboard extends React.Component {
 									</Row>
 								</Col>
 							</Row>
-
 							<Row className='tabsBackground'>
 								<Col sm={12} lg={12}>
-									<Tabs className='dataAccessTabs gray700-13' activeKey={this.state.key} onSelect={this.handleSelect.bind(this)}>
+									<Tabs
+										className='dataAccessTabs gray700-13'
+										data-test-id='unmet-tabs'
+										activeKey={this.state.key}
+										onSelect={this.handleSelect.bind(this)}>
 										<Tab eventKey='Datasets' title={'Datasets'}></Tab>
 										<Tab eventKey='Tools' title={'Tools'}></Tab>
 										<Tab eventKey='Projects' title={'Projects'}></Tab>

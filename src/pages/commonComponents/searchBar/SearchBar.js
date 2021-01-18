@@ -266,17 +266,17 @@ class SearchBar extends React.Component {
 									</a>
 								</div>
 								<div className='navBarLinkSpacing'>
-									<a href={cmsURL + '/pages/about'} className='black-14'>
+									<a href={cmsURL + '/pages/about'} className='black-14' data-test-id='lnkAbout'>
 										About
 									</a>
 								</div>
 								<div className='navBarLinkSpacing'>
-									<a href={cmsURL + '/pages/community'} className='black-14'>
+									<a href={cmsURL + '/pages/community'} className='black-14' data-test-id='lnkCommunity'>
 										Community
 									</a>
 								</div>
 								<div className='navBarLinkSpacing'>
-									<a href={'/dashboard'} className='black-14'>
+									<a href={'/dashboard'} className='black-14' data-test-id='lnkPublicDashboard'>
 										Dashboard
 									</a>
 								</div>
@@ -320,11 +320,11 @@ class SearchBar extends React.Component {
 										if (userState[0].loggedIn === true) {
 											return (
 												<Fragment key='userNotifications'>
-													<div className='navBarNotificationSpacing' onClick={this.props.doToggleDrawer}>
+													<div className='navBarNotificationSpacing' onClick={this.props.doToggleDrawer} data-test-id='imgMessageBadge'>
 														<NotificationBadge count={this.state.messageCount} style={{ backgroundColor: '#29235c' }} />
 														<SVGIcon name='chat' fill={'#475da7'} width={20} height={20} id='notificationsBell' className={'pointer'} />
 													</div>
-													<div className='navBarNotificationSpacing'>
+													<div className='navBarNotificationSpacing' data-test-id='imgNotificationBadge'>
 														<Dropdown>
 															<Dropdown.Toggle as={CustomToggle} ref={node => (this.node = node)}>
 																<NotificationBadge count={this.state.count} style={{ backgroundColor: '#29235c' }} />
@@ -609,50 +609,48 @@ class SearchBar extends React.Component {
 										{(() => {
 											if (userState[0].loggedIn === true) {
 												return (
-													<Dropdown>
+													<Dropdown data-test-id='ddUserNavigation'>
 														<Dropdown.Toggle as={CustomToggle}>
-															<span className='black-14'>{userState[0].name}</span>
+															<span className='black-14' data-test-id='lblUserName'>{userState[0].name}</span>
 															<span className='accountDropDownGap'></span>
 															<ArrowDownSvg />
 														</Dropdown.Toggle>
 
 														<Dropdown.Menu as={CustomMenu} className='desktopLoginMenu'>
-															<Dropdown.Item href='/account?tab=dashboard' className='black-14'>
+															<Dropdown.Item href='/account?tab=dashboard' className='black-14' data-test-id='optDashboard'>
 																Dashboard
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=youraccount' className='black-14'>
+															<Dropdown.Item href='/account?tab=youraccount' className='black-14' data-test-id='optAccount'>
 																Your Account
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=tools' className='black-14'>
+															<Dropdown.Item href='/account?tab=tools' className='black-14' data-test-id='optTools'>
 																Tools
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=reviews' className='black-14'>
+															<Dropdown.Item href='/account?tab=reviews' className='black-14' data-test-id='optReviews'>
 																Reviews
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=projects' className='black-14'>
+															<Dropdown.Item href='/account?tab=projects' className='black-14' data-test-id='optProjects'>
 																Projects
 															</Dropdown.Item>
 															{/* <Dropdown.Item href="/account?tab=datasets" className="black-14">Datasets</Dropdown.Item> */}
-															<Dropdown.Item href='/account?tab=papers' className='black-14'>
+															<Dropdown.Item href='/account?tab=papers' className='black-14' data-test-id='optPapers'>
 																Papers
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=courses' className='black-14'>
+															<Dropdown.Item href='/account?tab=courses' className='black-14' data-test-id='optCourses'>
 																Courses
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=dataaccessrequests' className='black-14'>
+															<Dropdown.Item href='/account?tab=dataaccessrequests' className='black-14' data-test-id='optDataAccessRequests'>
 																Data access requests
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=collections' className='black-14'>
+															<Dropdown.Item href='/account?tab=collections' className='black-14' data-test-id='optCollections'>
 																Collections
 															</Dropdown.Item>
-															{userState[0].role === 'Admin' ? (
-																<Dropdown.Item href='/account?tab=usersroles' className='black-14'>
+															{userState[0].role === 'Admin' &&
+																<Dropdown.Item href='/account?tab=usersroles' className='black-14' data-test-id='optUsersRoles'>
 																	Users and roles
 																</Dropdown.Item>
-															) : (
-																''
-															)}
-															<Dropdown.Item onClick={this.logout} className='black-14'>
+															}
+															<Dropdown.Item onClick={this.logout} className='black-14' data-test-id='optLogout'>
 																Logout
 															</Dropdown.Item>
 														</Dropdown.Menu>
@@ -664,6 +662,7 @@ class SearchBar extends React.Component {
 														<span
 															className={isHovering ? 'black-14 textUnderline' : 'black-14'}
 															id='myBtn'
+															data-test-id='btnLogin'
 															style={{ cursor: 'pointer' }}
 															onClick={e => {
 																this.showLoginModal();

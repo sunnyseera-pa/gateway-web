@@ -6,7 +6,7 @@ import { act } from 'react-dom/test-utils';
 
 let wrapper;
 
-beforeEach(function () { 
+beforeEach(function () {
 	moxios.install();
 	wrapper = mount(<AccountTools userState={userStateData.userState} />);
 });

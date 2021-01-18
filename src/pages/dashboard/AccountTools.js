@@ -423,7 +423,7 @@ export const AccountTools = props => {
 													return <></>;
 												} else {
 													return (
-														<Row className='entryBox'  data-testid='toolEntryPending'>
+														<Row className='entryBox' data-testid='toolEntryPending'>
 															<Col sm={12} lg={2} className='pt-2 gray800-14'>
 																{moment(tool.updatedAt).format('D MMMM YYYY HH:mm')}
 															</Col>
@@ -502,7 +502,7 @@ export const AccountTools = props => {
 													return <></>;
 												} else {
 													return (
-														<Row className='entryBox'  data-testid='toolEntryRejected'>
+														<Row className='entryBox' data-testid='toolEntryRejected'>
 															<Col sm={12} lg={2} className='pt-2 gray800-14'>
 																{moment(tool.updatedAt).format('D MMMM YYYY HH:mm')}
 															</Col>
@@ -555,7 +555,7 @@ export const AccountTools = props => {
 													return <></>;
 												} else {
 													return (
-														<Row className='entryBox'  data-testid='toolEntryArchive'>
+														<Row className='entryBox' data-testid='toolEntryArchive'>
 															<Col sm={12} lg={2} className='pt-2 gray800-14'>
 																{moment(tool.updatedAt).format('D MMMM YYYY HH:mm')}
 															</Col>

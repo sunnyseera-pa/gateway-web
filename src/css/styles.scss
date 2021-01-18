@@ -1591,4 +1591,12 @@ button a {
 .sectorValue {
 	position: absolute;
 	z-index: 1;
+	top: 13px;
+	left: 15px;
+}
+
+.checker {
+	width: 20px !important;
+	margin-left: 15px;
+	margin-right: 12px;
 }

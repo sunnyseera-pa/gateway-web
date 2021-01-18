@@ -21,13 +21,13 @@ class TopSearches extends React.Component {
 		const { data } = this.state;
 		return (
 			<Fragment>
-				<Row className='entryBox'>
+				<Row className='entryBox' data-test-id='topSearches-search'>
 					<Col sm={5} lg={6} className='gray800-14' style={{ float: 'left', paddingLeft: '0px' }}>
 						<span className='truncate colOneTerm'>
 							{!data || !data._id ? (
 								'search term'
 							) : (
-								<a href={'/search?search=' + data._id} className='searchTermLink truncate'>
+								<a href={'/search?search=' + data._id} className='searchTermLink truncate' data-test-id='topSearches-search-term'>
 									{' '}
 									{data._id}{' '}
 								</a>
@@ -35,10 +35,10 @@ class TopSearches extends React.Component {
 						</span>
 					</Col>
 					<Col sm={2} lg={2} className='gray800-14'>
-						<span style={{ float: 'left' }}>{!data || !data.count ? 'number of searches' : data.count}</span>
+						<span style={{ float: 'left' }} data-test-id='topSearches-search-count'>{!data || !data.count ? 'number of searches' : data.count}</span>
 					</Col>
 					<Col sm={5} lg={4} className='gray800-14'>
-						<span style={{ paddingRight: '0px' }}>
+						<span style={{ paddingRight: '0px' }} data-test-id='topSearches-search-results'>
 							{(data.datasets || 0) +
 								' datasets, ' +
 								(data.tools || 0) +
