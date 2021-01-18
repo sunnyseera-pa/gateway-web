@@ -48,4 +48,10 @@ describe('<CompleteRegistration />', () => {
         expect(wrapper.find('[data-testid="your-account"]').dive().find('[data-testid="typeahead"]').simulate('click'));
         expect(wrapper.find('[data-testid="your-account"]').dive().find('[data-testid="typeahead"]').simulate('change', mockEvent));
     });
+
+    it('eye icon allows a click', () => {
+        wrapper = shallow(<CompleteRegistration match={match} />);
+        wrapper.setState({ isLoading: false });
+        expect(wrapper.find('[data-testid="your-account"]').dive().find('[data-testid="eye-icon"]').simulate('click', { preventDefault: () => {} }));
+    });
 });

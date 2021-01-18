@@ -570,6 +570,7 @@ const YourAccountForm = props => {
 												)}
 												<button
 													className='eye'
+													data-testid='eye-icon'
 													onClick={e => {
 														e.preventDefault();
 														toggleOrg();
