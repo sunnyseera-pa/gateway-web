@@ -147,7 +147,7 @@ class CompleteRegistration extends Component {
 		if (isLoading) {
 			return (
 				<Container>
-					<Loading />
+					<Loading data-testid="isLoading"/>
 				</Container>
 			);
 		}
@@ -161,6 +161,7 @@ class CompleteRegistration extends Component {
 					doUpdateSearchString={this.updateSearchString}
 					doToggleDrawer={this.toggleDrawer}
 					userState={userState}
+					data-testid="searchBar"
 				/>
 
 				<Container className='mb-5'>
@@ -178,6 +179,7 @@ class CompleteRegistration extends Component {
 									showLink={showLink}
 									showOrcid={showOrcid}
 									combinedOrganisations={combinedOrganisations}
+									data-testid="your-account"
 								/>
 							</div>
 						</Col>
@@ -341,7 +343,7 @@ const YourAccountForm = props => {
 			<Row className='mt-2'>
 				<Col>
 					<div className='rectangle'>
-						<p className='black-20'>Your details</p>
+						<p className='black-20' data-testid="your-details">Your details</p>
 						<p className='gray800-14'>
 							You can control what appears on your profile using the icons. Your details are also used when you make a data access request
 							application.
@@ -349,7 +351,7 @@ const YourAccountForm = props => {
 					</div>
 				</Col>
 			</Row>
-			<Form onSubmit={formik.handleSubmit}>
+			<Form onSubmit={formik.handleSubmit} data-testid='form'>
 				<Row className='mt-1'>
 					<Col>
 						<div className='rectangle'>
@@ -361,6 +363,7 @@ const YourAccountForm = props => {
 											id='firstname'
 											name='firstname'
 											type='text'
+											data-testid='first-name'
 											className={formik.touched.firstname && formik.errors.firstname ? 'emptyFormInput addFormInput' : 'addFormInput'}
 											onChange={formik.handleChange}
 											value={formik.values.firstname}
@@ -463,6 +466,7 @@ const YourAccountForm = props => {
 								<Row>
 									<Col sm={4} lg={4}>
 										<DropdownButton
+											data-testid="dropdown-button"
 											variant='white'
 											title={
 												formik.values.sector ? (
@@ -535,6 +539,7 @@ const YourAccountForm = props => {
 													id='organisation'
 													name='organisation'
 													labelKey='organisation'
+													data-testid='typeahead'
 													allowNew
 													defaultSelected={formik.values.organisation ? [formik.values.organisation] : ''}
 													options={props.combinedOrganisations}
@@ -565,6 +570,7 @@ const YourAccountForm = props => {
 												)}
 												<button
 													className='eye'
+													data-testid='eye-icon'
 													onClick={e => {
 														e.preventDefault();
 														toggleOrg();
