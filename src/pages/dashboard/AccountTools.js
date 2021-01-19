@@ -72,8 +72,6 @@ export const AccountTools = props => {
 	const previousPageButton = (index, maxResult, key) => {
 		return (
 			<Pagination.Prev
-			key={index / maxResult}
-			active={index / maxResult}
 			onClick={e => {
 				handlePagination(key, index - maxResult);
 			}}
@@ -87,8 +85,6 @@ export const AccountTools = props => {
 	const nextPageButton = (count, index, maxResult, key) => {
 		return (
 			<Pagination.Next
-			key={index / maxResult + 2}
-			active={index / maxResult + 2}
 			onClick={e => {
 				handlePagination(key, index + maxResult);
 			}}
