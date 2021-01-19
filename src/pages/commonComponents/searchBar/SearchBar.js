@@ -678,7 +678,7 @@ class SearchBar extends React.Component {
 											}
 										})()}
 									</div>
-									<FlagsTranslation />
+									{/* <FlagsTranslation /> */}
 								</div>
 							</Col>
 						</Row>
