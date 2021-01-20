@@ -718,7 +718,7 @@ class SearchPage extends React.Component {
 		if (key === 'Papers' && paperCount === 0) showSort = false;
 		if (key === 'People' && personCount === 0) showSort = false;
 		if (key === 'Courses') showSort = false;
-
+ 
 		let datasetPaginationItems = [];
 		let toolPaginationItems = [];
 		let projectPaginationItems = [];
