@@ -131,7 +131,7 @@ class TypaheadMultiUser extends React.Component {
 						<div>{option.name ? option.name : `${option.firstname} ${option.lastname}`}</div>
 						{_.isEmpty(this.state.team) ? (
 							<div>
-								<span>{option.bio || 'Institution not set'}</span> <span>{option.orcid || 'No ORCID'}</span>
+								<span>{option.bio || 'Organisation not set'}</span> <span>{option.orcid || 'No ORCID'}</span>
 							</div>
 						) : (
 							''

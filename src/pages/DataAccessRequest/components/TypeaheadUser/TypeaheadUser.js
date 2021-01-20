@@ -79,7 +79,7 @@ class TypaheadUser extends React.Component {
 					<div className='userOption'>
 						<div>{option.name}</div>
 						<div>
-							<span>{option.bio || 'Institution not set'}</span> <span>{option.orcid || 'No ORCID'}</span>
+							<span>{option.bio || 'Organisation not set'}</span> <span>{option.orcid || 'No ORCID'}</span>
 						</div>
 					</div>
 				)}
