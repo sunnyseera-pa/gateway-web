@@ -120,7 +120,7 @@ class AccountUsers extends React.Component {
 												<Row className='subHeader mt-3 gray800-14-bold'>
 													<Col xs={2}>Account created</Col>
 													<Col xs={3}>Name</Col>
-													<Col xs={4}>Institution</Col>
+													<Col xs={4}>Organisation</Col>
 													<Col xs={3}></Col>
 												</Row>
 											)}
