@@ -112,28 +112,25 @@ class AddCollectionPage extends React.Component {
 		}
 	};
 
-	addToTempRelatedObjects = (id, type) => {
-		if (this.state.tempRelatedObjectIds && this.state.tempRelatedObjectIds.some(object => object.objectId === id)) {
-			this.state.tempRelatedObjectIds = this.state.tempRelatedObjectIds.filter(object => object.objectId !== id);
-		} else {
-			this.state.tempRelatedObjectIds.push({ objectId: id, type: type });
-		}
-		this.setState({ tempRelatedObjectIds: this.state.tempRelatedObjectIds });
-	};
+	addToTempRelatedObjects = (id, type, pid) => {
+        debugger
+        if(this.state.tempRelatedObjectIds && this.state.tempRelatedObjectIds.some(object => object.objectId === id)){
+            this.state.tempRelatedObjectIds = this.state.tempRelatedObjectIds.filter(object => object.objectId !== id);
+        }
+        else {
+            this.state.tempRelatedObjectIds.push({'objectId':id, 'type':type, pid: pid})
+        }
+       this.setState({tempRelatedObjectIds: this.state.tempRelatedObjectIds})
+    }
 
-	addToRelatedObjects = () => {
-		this.state.tempRelatedObjectIds.map(object => {
-			this.state.relatedObjects.push({
-				objectId: object.objectId,
-				reason: '',
-				objectType: object.type,
-				user: this.state.userState[0].name,
-				updated: moment().format('DD MMM YYYY'),
-			});
-		});
+    addToRelatedObjects = () => {
+        debugger
+        this.state.tempRelatedObjectIds.map((object) => {
+            this.state.relatedObjects.push({'objectId':object.objectId, 'reason':'', objectId: object.type === 'dataset' ? object.pid : object.objectId, 'user':this.state.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
+        })
 
-		this.setState({ tempRelatedObjectIds: [] });
-	};
+        this.setState({tempRelatedObjectIds: []})
+    }
 
 	clearRelatedObjects = () => {
 		this.setState({ tempRelatedObjectIds: [] });
