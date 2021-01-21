@@ -261,13 +261,13 @@ a.nav-item.nav-link.active {
 
 	&-dataset {
 		@extend .badge;
-		background-color: $teal;
-		color: $white !important;
+		background-color: $green-light;
+		color: $green-dark !important;
 	}
 
 	&-project {
 		@extend .badge;
-		background-color: $orange;
+		background-color: $orange-dark;
 		color: $white !important;
 	}
 
@@ -1599,4 +1599,8 @@ button a {
 	width: 20px !important;
 	margin-left: 15px;
 	margin-right: 12px;
+}
+
+.badge-dataset {
+	color: #113328;
 }
