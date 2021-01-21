@@ -94,7 +94,7 @@ export const PaperDetail = props => {
 				} else {
 					const localPaperData = res.data.data[0];
 					document.title = localPaperData.name.trim();
-					
+
 					let counter = !localPaperData.counter ? 1 : localPaperData.counter + 1;
 					updateCounter(props.match.params.paperID, counter);
 
@@ -111,7 +111,7 @@ export const PaperDetail = props => {
 			});
 	};
 
-	const populateCollections = (localPaperData) => {
+	const populateCollections = localPaperData => {
 		setIsLoading(true);
 		axios.get(baseURL + '/api/v1/collections/entityid/' + localPaperData.id).then(res => {
 			setCollections(res.data.data || []);
@@ -339,7 +339,6 @@ export const PaperDetail = props => {
 						</Col>
 						<Col sm={1} lg={10} />
 					</Row>
-
 					<Row>
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10}>
@@ -359,7 +358,7 @@ export const PaperDetail = props => {
 															<span className='gray800-14'>URL</span>
 														</Col>
 														<Col sm={10}>
-															<a href={paperData.link} rel='noopener noreferrer' target='_blank' className='purple-14'>
+															<a href={paperData.link} rel='noopener noreferrer' target='_blank' className='purple-14 wordBreakAll'>
 																{paperData.link}
 															</a>
 														</Col>
@@ -454,7 +453,7 @@ export const PaperDetail = props => {
 													<Row className='mt-3'>
 														<Col>
 															<span className='gray800-14'>
-																<ReactMarkdown source={paperData.description} />
+																<ReactMarkdown className='wordBreakAll' source={paperData.description} />
 															</span>
 														</Col>
 													</Row>
@@ -474,7 +473,7 @@ export const PaperDetail = props => {
 														<Row className='mt-3'>
 															<Col>
 																<span className='gray800-14'>
-																	<ReactMarkdown source={paperData.resultsInsights} />
+																	<ReactMarkdown className='wordBreakAll' source={paperData.resultsInsights} />
 																</span>
 															</Col>
 														</Row>

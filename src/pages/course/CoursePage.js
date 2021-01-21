@@ -337,7 +337,7 @@ export const CourseDetail = props => {
 													</Row>
 													<Row className='mt-3'>
 														<Col sm={12} className='gray800-14'>
-															<ReactMarkdown source={courseData.description} />
+															<ReactMarkdown className='wordBreakAll' source={courseData.description} />
 														</Col>
 													</Row>
 												</div>
@@ -353,7 +353,7 @@ export const CourseDetail = props => {
 														</Row>
 														<Row className='mt-3'>
 															<Col sm={12} className='gray800-14'>
-																<ReactMarkdown source={courseData.resultsInsights} />
+																<ReactMarkdown className='wordBreakAll' source={courseData.resultsInsights} />
 															</Col>
 														</Row>
 													</div>
@@ -374,7 +374,7 @@ export const CourseDetail = props => {
 															URL
 														</Col>
 														<Col sm={10} className='gray800-14'>
-															<a href={courseData.link} rel='noopener noreferrer' target='_blank' className='purple-14'>
+															<a href={courseData.link} rel='noopener noreferrer' target='_blank' className='purple-14 wordBreakAll'>
 																{courseData.link}
 															</a>
 														</Col>
@@ -466,14 +466,11 @@ export const CourseDetail = props => {
 										</Row>
 
 										<Row className='margin-top-8'>
-											{/* gray800-14-opacity */}
 											<Col sm={12}>
 												<div className='rectangle'>
 													<Row className='gray800-14-bold'>
 														<Col sm={12}>Dates and costs</Col>
 													</Row>
-													{/* TODO - MAP THROUGH THE ENTRIES IN DATE AND COSTS AND FOR EACH RETURN THE BELOW 3 ROWS WRAPPED IN TH TOP24 DIV */}
-													{/* courseOptions */}
 													{courseData.courseOptions.map(courseOption => {
 														return (
 															<div className='margin-top-24'>
