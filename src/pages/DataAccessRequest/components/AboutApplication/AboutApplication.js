@@ -40,7 +40,7 @@ const AboutApplication = (props) => {
 		toggleContributorModal,
 		context
 	} = props;
-
+	
 	return (
 		<div className='aboutAccordion'>
 			<Accordion defaultActiveKey='0' activeKey={activeAccordionCard.toString()}>
@@ -185,7 +185,7 @@ const AboutApplication = (props) => {
 													Select a project
 												</option>
 												{nationalCoreStudiesProjects.map((item) => (
-													<option key={item._id} value={item._id}>
+													<option key={item.id} value={item.id}>
 														{item.name}
 													</option>
 												))}
