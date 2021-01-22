@@ -200,8 +200,7 @@ class AddEditCoursePage extends React.Component {
 			return newRelatedObject;
 		});
 
-		this.setState({ relatedObjects: [...relatedObjects, ...newRelatedObjects] });
-		this.setState({ tempRelatedObjectIds: [] });
+		this.setState({ relatedObjects: [...relatedObjects, ...newRelatedObjects], tempRelatedObjectIds: [] });
 	};
 
 	clearRelatedObjects = () => {
