@@ -267,8 +267,7 @@ const AddEditWorkflow = props => {
 																					Reviewers
 																				</label>
 																				<small className='form-text mb-2'>
-																					Only members of your team can be added as reviewers. To add members to your team email
-																					members@HDRUK.org.
+																					Only members of your team can be added as reviewers.
 																				</small>
 																				<TypaheadMultiUser
 																					apiCall='teams'
