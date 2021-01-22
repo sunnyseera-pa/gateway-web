@@ -175,7 +175,7 @@ class AddEditCoursePage extends React.Component {
 
 	addToTempRelatedObjects = (id, type, pid) => {
 		if (this.state.tempRelatedObjectIds && this.state.tempRelatedObjectIds.some(object => object.objectId === id)) {
-			this.setState({ tempRelatedObjectIds: this.state.tempRelatedObjectIds.filter(object => object.objectId !== id) });
+			this.state.tempRelatedObjectIds = this.state.tempRelatedObjectIds.filter(object => object.objectId !== id);
 		} else {
 			this.state.tempRelatedObjectIds.push({ objectId: id, objectType: type, pid: pid });
 		}
@@ -200,6 +200,7 @@ class AddEditCoursePage extends React.Component {
 		});
 
 		this.setState({ relatedObjects: [...relatedObjects, ...newRelatedObjects] });
+		this.setState({ tempRelatedObjectIds: [] });
 	};
 
 	clearRelatedObjects = () => {

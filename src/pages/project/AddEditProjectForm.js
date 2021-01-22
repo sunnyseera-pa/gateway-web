@@ -98,11 +98,12 @@ const AddEditProjectForm = props => {
 		});
 	}
 
-	function updateReason(id, reason, type) {
+	function updateReason(id, reason, type, pid) {
 		let inRelatedObject = false;
 		props.relatedObjects.map(object => {
 			if (object.objectId === id) {
 				inRelatedObject = true;
+				object.pid = pid;
 				object.reason = reason;
 				object.objectType = type;
 				object.user = props.userState[0].name;
@@ -113,6 +114,7 @@ const AddEditProjectForm = props => {
 		if (!inRelatedObject) {
 			props.relatedObjects.push({
 				objectId: id,
+				pid: pid,
 				reason: reason,
 				objectType: type,
 				user: props.userState[0].name,
@@ -140,9 +142,7 @@ const AddEditProjectForm = props => {
 						<div className='rectangle'>
 							<Row>
 								<Col sm={10} lg={10}>
-									<p className='black-20 margin-bottom-0 pad-bottom-8'>
-										{isEdit ? 'Edit your project' : 'Add a new research project'}
-									</p>
+									<p className='black-20 margin-bottom-0 pad-bottom-8'>{isEdit ? 'Edit your project' : 'Add a new research project'}</p>
 								</Col>
 								<Col sm={2} lg={2} className='text-right'>
 									<span className='badge-project'>
@@ -370,6 +370,7 @@ const AddEditProjectForm = props => {
 												<RelatedObject
 													showRelationshipQuestion={true}
 													objectId={object.objectId}
+													pid={object.pid}
 													objectType={object.objectType}
 													doRemoveObject={props.doRemoveObject}
 													doUpdateReason={updateReason}

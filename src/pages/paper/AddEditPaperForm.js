@@ -125,11 +125,12 @@ const AddEditPaperForm = props => {
 		});
 	}
 
-	function updateReason(id, reason, type) {
+	function updateReason(id, reason, type, pid) {
 		let inRelatedObject = false;
 		props.relatedObjects.map(object => {
 			if (object.objectId === id) {
 				inRelatedObject = true;
+				object.pid = pid;
 				object.reason = reason;
 				object.objectType = type;
 				object.user = props.userState[0].name;
@@ -140,6 +141,7 @@ const AddEditPaperForm = props => {
 		if (!inRelatedObject) {
 			props.relatedObjects.push({
 				objectId: id,
+				pid: pid,
 				reason: reason,
 				objectType: type,
 				user: props.userState[0].name,
@@ -452,6 +454,7 @@ const AddEditPaperForm = props => {
 												<RelatedObject
 													showRelationshipQuestion={true}
 													objectId={object.objectId}
+													pid={object.pid}
 													objectType={object.objectType}
 													doRemoveObject={props.doRemoveObject}
 													doUpdateReason={updateReason}

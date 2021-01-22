@@ -113,32 +113,43 @@ class AddCollectionPage extends React.Component {
 	};
 
 	addToTempRelatedObjects = (id, type, pid) => {
-        debugger
-        if(this.state.tempRelatedObjectIds && this.state.tempRelatedObjectIds.some(object => object.objectId === id)){
-            this.state.tempRelatedObjectIds = this.state.tempRelatedObjectIds.filter(object => object.objectId !== id);
-        }
-        else {
-            this.state.tempRelatedObjectIds.push({'objectId':id, 'type':type, pid: pid})
-        }
-       this.setState({tempRelatedObjectIds: this.state.tempRelatedObjectIds})
-    }
+		if (this.state.tempRelatedObjectIds && this.state.tempRelatedObjectIds.some(object => object.objectId === id)) {
+			this.state.tempRelatedObjectIds = this.state.tempRelatedObjectIds.filter(object => object.objectId !== id);
+		} else {
+			this.state.tempRelatedObjectIds.push({ objectId: id, type: type, pid: pid });
+		}
+		this.setState({ tempRelatedObjectIds: this.state.tempRelatedObjectIds });
+	};
 
-    addToRelatedObjects = () => {
-        debugger
-        this.state.tempRelatedObjectIds.map((object) => {
-            this.state.relatedObjects.push({'objectId':object.objectId, 'reason':'', objectId: object.type === 'dataset' ? object.pid : object.objectId, 'user':this.state.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
-        })
+	addToRelatedObjects = () => {
+		this.state.tempRelatedObjectIds.map(object => {
+			this.state.relatedObjects.push({
+				objectId: object.objectId,
+				reason: '',
+				objectType: object.type,
+				pid: object.type === 'dataset' ? object.pid : '',
+				user: this.state.userState[0].name,
+				updated: moment().format('DD MMM YYYY'),
+			});
+		});
 
-        this.setState({tempRelatedObjectIds: []})
-    }
+		this.setState({ tempRelatedObjectIds: [] });
+	};
 
 	clearRelatedObjects = () => {
 		this.setState({ tempRelatedObjectIds: [] });
 	};
 
-	removeObject = id => {
-		this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id);
-		this.setState({ relatedObjects: this.state.relatedObjects });
+	removeObject = (id, type, datasetid) => {
+		let countOfRelatedObjects = this.state.relatedObjects.length;
+		let newRelatedObjects = [...this.state.relatedObjects].filter(obj => obj.objectId !== id && obj.objectId !== id.toString());
+
+		//if an item was not removed try removing by datasetid for retro linkages
+		if (countOfRelatedObjects <= newRelatedObjects.length && type === 'dataset') {
+			newRelatedObjects = [...this.state.relatedObjects].filter(obj => obj.objectId !== datasetid && obj.objectId !== datasetid.toString());
+		}
+
+		this.setState({ relatedObjects: newRelatedObjects });
 		this.setState({ didDelete: true });
 	};
 
@@ -229,7 +240,7 @@ class AddCollectionPage extends React.Component {
 						userState={userState[0]}
 						closed={this.toggleDrawer}
 						toggleModal={this.toggleModal}
-						drawerIsOpen={this.state.showDrawer} 
+						drawerIsOpen={this.state.showDrawer}
 					/>
 				</SideDrawer>
 
@@ -256,10 +267,9 @@ const AddCollectionForm = props => {
 			name: Yup.string().required('This cannot be empty'),
 			description: Yup.string().max(5000, 'Maximum of 5,000 characters').required('This cannot be empty'),
 			authors: Yup.lazy(val => (Array.isArray(val) ? Yup.array().of(Yup.number()) : Yup.number())),
-			imageLink: Yup.string().matches(
-				/^(http|https){1}:\/\/[A-Za-z0-9-\/\._~:\?#\[\]@!\$&'\(\)\*\+,;%=]+$/,
-				{message: 'Invalid URL: should start with http:// or https://'}
-			),
+			imageLink: Yup.string().matches(/^(http|https){1}:\/\/[A-Za-z0-9-\/\._~:\?#\[\]@!\$&'\(\)\*\+,;%=]+$/, {
+				message: 'Invalid URL: should start with http:// or https://',
+			}),
 		}),
 
 		onSubmit: values => {
@@ -282,11 +292,12 @@ const AddCollectionForm = props => {
 		}
 	});
 
-	function updateReason(id, reason, type) {
+	function updateReason(id, reason, type, pid) {
 		let inRelatedObject = false;
 		props.relatedObjects.map(object => {
 			if (object.objectId === id) {
 				inRelatedObject = true;
+				object.pid = pid;
 				object.reason = reason;
 				object.objectType = type;
 				object.user = props.userState[0].name;
@@ -297,6 +308,7 @@ const AddCollectionForm = props => {
 		if (!inRelatedObject) {
 			props.relatedObjects.push({
 				objectId: id,
+				pid: pid,
 				reason: reason,
 				objectType: type,
 				user: props.userState[0].name,
@@ -442,6 +454,7 @@ const AddCollectionForm = props => {
 											<RelatedObject
 												showRelationshipQuestion={true}
 												objectId={object.objectId}
+												pid={object.pid}
 												objectType={object.objectType}
 												doRemoveObject={props.doRemoveObject}
 												doUpdateReason={updateReason}
@@ -451,7 +464,7 @@ const AddCollectionForm = props => {
 												inCollection={true}
 											/>
 										</div>
-									); 
+									);
 								})}
 
 								<div className='flexCenter pt-3 pb-3'>

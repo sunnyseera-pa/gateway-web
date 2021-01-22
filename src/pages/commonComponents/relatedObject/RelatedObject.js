@@ -103,9 +103,9 @@ class RelatedObject extends React.Component {
 		}
 	};
 
-	handleChange = (id, reason, type) => {
+	handleChange = (id, reason, type, pid) => {
 		this.setState({ reason: reason });
-		this.props.doUpdateReason(id, reason, type);
+		this.props.doUpdateReason(id, reason, type, pid);
 	};
 
 	updateOnFilterBadge = (filter, option) => {
@@ -647,24 +647,24 @@ class RelatedObject extends React.Component {
 														{(() => {
 															let courseRender = [];
 															if (onSearchPage === true) {
-																if ( _.has(data.courseOptions, 'startDate') && _.isObject(data.courseOptions.startDate) ) {
+																if (_.has(data.courseOptions, 'startDate') && _.isObject(data.courseOptions.startDate)) {
 																	courseRender.push(
 																		<span> Starts {moment(data.courseOptions.startDate).format('dddd Do MMMM YYYY')} </span>
 																	);
 																} else {
 																	courseRender.push(<span> Flexible dates </span>);
 																}
-																if ( _.has(data.courseOptions, 'studyMode') && _.isString(data.courseOptions.studyMode) )
+																if (_.has(data.courseOptions, 'studyMode') && _.isString(data.courseOptions.studyMode))
 																	courseRender.push(<span> | {data.courseOptions.studyMode} </span>);
 															} else {
-																if ( _.has(data.courseOptions[0], 'startDate') && _.isObject(data.courseOptions[0].startDate) ) {
+																if (_.has(data.courseOptions[0], 'startDate') && _.isObject(data.courseOptions[0].startDate)) {
 																	courseRender.push(
 																		<span> Starts {moment(data.courseOptions[0].startDate).format('dddd Do MMMM YYYY')} </span>
 																	);
 																} else {
 																	courseRender.push(<span> Flexible dates </span>);
 																}
-																if ( _.has(data.courseOptions[0], 'studyMode') && _.isString(data.courseOptions[0].studyMode) )
+																if (_.has(data.courseOptions[0], 'studyMode') && _.isString(data.courseOptions[0].studyMode))
 																	courseRender.push('|');
 
 																!_.isEmpty(data.courseOptions[0]) &&
@@ -933,7 +933,12 @@ class RelatedObject extends React.Component {
 													className='resultsCardInput'
 													value={this.state.reason}
 													onChange={event =>
-														this.handleChange(this.props.objectId, event.target.value, data.type === undefined ? 'dataset' : data.type)
+														this.handleChange(
+															this.props.objectId,
+															event.target.value,
+															data.type === undefined ? 'dataset' : data.type,
+															this.props.pid
+														)
 													}
 												/>
 											</Col>
