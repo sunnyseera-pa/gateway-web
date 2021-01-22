@@ -771,7 +771,7 @@ class DatasetDetail extends Component {
 									<Row className='mt-2'>
 										<Col xs={12}>
 											<span className='badge-dataset'>
-												<SVGIcon name='dataseticon' fill={'#ffffff'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
+												<SVGIcon name='dataseticon' fill={'#113328'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 												<span>Dataset</span>
 											</span>
 											{!data.tags.features || data.tags.features.length <= 0

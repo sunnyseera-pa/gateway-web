@@ -16,7 +16,8 @@
 
 	&-amber {
 		@extend .sla;
-		background-color: $orange;
+		background-color: $orange-light;
+		color: $orange-dark !important; 
 	}
 
 	&-indigo {
@@ -26,17 +27,18 @@
 
 	&-green {
 		@extend .sla;
-		background-color: $teal;
+		background-color: $green-light;
+		color: $green-dark !important;
 	}
 
 	&-red {
 		@extend .sla;
-		background-color: $red;
+		background-color: $red-rejected;
 	}
 
 	&-gray {
 		@extend .sla;
-		background-color: $gray-600;
+		background-color: $gray-presubmission;
 	}
 
 	&-white {
