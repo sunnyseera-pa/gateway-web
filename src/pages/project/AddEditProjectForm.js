@@ -146,7 +146,7 @@ const AddEditProjectForm = props => {
 								</Col>
 								<Col sm={2} lg={2} className='text-right'>
 									<span className='badge-project'>
-										<SVGIcon name='newestprojecticon' fill={'#ffffff'} className='badgeSvg mr-2' />
+										<SVGIcon name='newestprojecticon' fill={'#472505'} className='badgeSvg mr-2' />
 										Project
 									</span>
 								</Col>

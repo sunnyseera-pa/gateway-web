@@ -267,8 +267,8 @@ a.nav-item.nav-link.active {
 
 	&-project {
 		@extend .badge;
-		background-color: $orange-dark;
-		color: $white !important;
+		background-color: $orange-light;
+		color: $orange-dark !important;
 	}
 
 	&-paper {
