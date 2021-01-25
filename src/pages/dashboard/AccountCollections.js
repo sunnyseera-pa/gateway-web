@@ -165,7 +165,7 @@ const AccountCollections = props => {
 											''
 										) : (
 											<Row className='subHeader mt-3 gray800-14-bold'>
-												<Col xs={2}>Updated</Col>
+												<Col xs={2}>Last activity</Col>
 												<Col xs={5}>Name</Col>
 												<Col xs={2}>Author</Col>
 												<Col xs={3}></Col>
@@ -236,7 +236,7 @@ const AccountCollections = props => {
 											''
 										) : (
 											<Row className='subHeader mt-3 gray800-14-bold'>
-												<Col xs={2}>Updated</Col>
+												<Col xs={2}>Last activity</Col>
 												<Col xs={5}>Name</Col>
 												<Col xs={2}>Author</Col>
 												<Col xs={3}></Col>

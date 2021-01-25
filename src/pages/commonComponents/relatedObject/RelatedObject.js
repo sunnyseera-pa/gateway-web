@@ -103,9 +103,9 @@ class RelatedObject extends React.Component {
 		}
 	};
 
-	handleChange = (id, reason, type) => {
+	handleChange = (id, reason, type, pid) => {
 		this.setState({ reason: reason });
-		this.props.doUpdateReason(id, reason, type);
+		this.props.doUpdateReason(id, reason, type, pid);
 	};
 
 	updateOnFilterBadge = (filter, option) => {
@@ -401,7 +401,7 @@ class RelatedObject extends React.Component {
 										</Col>
 										<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-16'>
 											<span className='badge-project'>
-												<SVGIcon name='newestprojecticon' fill={'#ffffff'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
+												<SVGIcon name='newestprojecticon' fill={'#472505'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 												<span>Project</span>
 											</span>
 
@@ -826,7 +826,7 @@ class RelatedObject extends React.Component {
 										</Col>
 										<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-16'>
 											<span className='badge-dataset'>
-												<SVGIcon name='dataseticon' fill={'#ffffff'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
+												<SVGIcon name='dataseticon' fill={'#113328'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 												<span>Dataset</span>
 											</span>
 											{(() => {
@@ -941,7 +941,12 @@ class RelatedObject extends React.Component {
 													className='resultsCardInput'
 													value={this.state.reason}
 													onChange={event =>
-														this.handleChange(this.props.objectId, event.target.value, data.type === undefined ? 'dataset' : data.type)
+														this.handleChange(
+															this.props.objectId,
+															event.target.value,
+															data.type === undefined ? 'dataset' : data.type,
+															this.props.pid
+														)
 													}
 												/>
 											</Col>

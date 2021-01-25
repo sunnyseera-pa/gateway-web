@@ -284,7 +284,7 @@ export const ProjectDetail = props => {
 								<Row className='margin-top-16'>
 									<Col xs={12}>
 										<span className='badge-project'>
-											<SVGIcon name='newestprojecticon' fill={'#ffffff'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
+											<SVGIcon name='newestprojecticon' fill={'#472505'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 											<span>Project</span>
 										</span>
 
