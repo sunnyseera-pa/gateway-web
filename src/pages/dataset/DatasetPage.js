@@ -98,7 +98,7 @@ class DatasetDetail extends Component {
 		emptyFieldsCount: 0,
 		linkedDatasets: [],
 		publisherLogoURL: '',
-		isLatestVersion: true
+		isLatestVersion: true,
 	};
 
 	topicContext = {};
@@ -146,7 +146,7 @@ class DatasetDetail extends Component {
 					data: res.data.data,
 					v2data: res.data.data.datasetv2,
 					isLoading: false,
-					isLatestVersion: res.data.isLatestVersion
+					isLatestVersion: res.data.isLatestVersion,
 				});
 				this.getTechnicalMetadata();
 				this.getCollections();
@@ -214,7 +214,7 @@ class DatasetDetail extends Component {
 
 	getCollections() {
 		this.setState({ isLoading: true });
-		axios.get(baseURL + '/api/v1/collections/entityid/' + this.state.data.datasetid).then(res => {
+		axios.get(baseURL + '/api/v1/collections/entityid/' + this.state.data.pid).then(res => {
 			this.setState({
 				collections: res.data.data || [],
 			});
@@ -598,14 +598,14 @@ class DatasetDetail extends Component {
 		);
 
 		const formatLinks = source => {
-			const reUrl = /([^\[\(])(https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}[-a-zA-Z0-9@:%_\+.~#?&/=]*)([^\]\)])/g
-			return source.replace(reUrl, '$1[$2]($2)$3')
-		  }
+			const reUrl = /([^\[\(])(https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}[-a-zA-Z0-9@:%_\+.~#?&/=]*)([^\]\)])/g;
+			return source.replace(reUrl, '$1[$2]($2)$3');
+		};
 
 		if (isLoading) {
 			return (
 				<Container>
-					<Loading data-testid='isLoading'/>
+					<Loading data-testid='isLoading' />
 				</Container>
 			);
 		}
@@ -771,7 +771,7 @@ class DatasetDetail extends Component {
 									<Row className='mt-2'>
 										<Col xs={12}>
 											<span className='badge-dataset'>
-												<SVGIcon name='dataseticon' fill={'#ffffff'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
+												<SVGIcon name='dataseticon' fill={'#113328'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 												<span>Dataset</span>
 											</span>
 											{!data.tags.features || data.tags.features.length <= 0
@@ -794,37 +794,38 @@ class DatasetDetail extends Component {
 										</Col>
 
 										{this.state.isLatestVersion && (
-										<Col sm={6} className='text-right'>
-											{!userState[0].loggedIn ? (
-												<button className='btn button-tertiary dark-14 float-right' onClick={() => this.showLoginModal(data.name)}>
-													Request access
-												</button>
-											) : requiresModal ? (
-												<button
-													className='btn btn-primary addButton pointer float-right'
-													onClick={() => {
-														this.toggleModal();
-													}}>
-													How to request access
-												</button>
-											) : (
-												<Fragment>
-													<Link
-														className={`btn button-tertiary dark-14  ${allowsMessaging ? 'mr-2' : 'float-right'}`}
-														to={{
-															pathname: `/data-access-request/dataset/${data.datasetid}`,
-														}}
-														onClick={() => Event('Buttons', 'Click', 'Request Access')}>
+											<Col sm={6} className='text-right'>
+												{!userState[0].loggedIn ? (
+													<button className='btn button-tertiary dark-14 float-right' onClick={() => this.showLoginModal(data.name)}>
 														Request access
-													</Link>
-													{allowsMessaging ? (
-														<button className='btn button-primary addButton pointer' onClick={() => this.toggleDrawer()}>
-															Send a message to the custodian
-														</button>
-													) : null}
-												</Fragment>
-											)}
-										</Col> )}
+													</button>
+												) : requiresModal ? (
+													<button
+														className='btn btn-primary addButton pointer float-right'
+														onClick={() => {
+															this.toggleModal();
+														}}>
+														How to request access
+													</button>
+												) : (
+													<Fragment>
+														<Link
+															className={`btn button-tertiary dark-14  ${allowsMessaging ? 'mr-2' : 'float-right'}`}
+															to={{
+																pathname: `/data-access-request/dataset/${data.datasetid}`,
+															}}
+															onClick={() => Event('Buttons', 'Click', 'Request Access')}>
+															Request access
+														</Link>
+														{allowsMessaging ? (
+															<button className='btn button-primary addButton pointer' onClick={() => this.toggleDrawer()}>
+																Send a message to the custodian
+															</button>
+														) : null}
+													</Fragment>
+												)}
+											</Col>
+										)}
 									</Row>
 								</div>
 							</Col>
@@ -898,7 +899,9 @@ class DatasetDetail extends Component {
 															v2data={v2data}
 															requiresModal={this.state.requiresModal}
 															toggleModal={this.toggleModal}
-															showLoginModal={() => { this.showLoginModal(this.state.data.name)}}
+															showLoginModal={() => {
+																this.showLoginModal(this.state.data.name);
+															}}
 															toggleDrawer={this.toggleDrawer}
 															showEmpty={showEmpty}
 															datasetid={this.state.data.datasetid}

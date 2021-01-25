@@ -61,8 +61,8 @@ class RelatedResourcesModal extends React.Component {
 		} else if (type === 'course') {
 			await Promise.all([this.setState({ courseIndex: page })]);
 		}
-		this.props.doSearchMethod(e, type, page); 
-	}; 
+		this.props.doSearchMethod(e, type, page);
+	};
 
 	render() {
 		const { userState, datasetIndex, toolIndex, projectIndex, paperIndex, personIndex, courseIndex } = this.state;
@@ -95,7 +95,7 @@ class RelatedResourcesModal extends React.Component {
 
 		let datasetPaginationItems = [];
 		let toolPaginationItems = [];
-		let projectPaginationItems = []; 
+		let projectPaginationItems = [];
 		let paperPaginationItems = [];
 		let personPaginationItems = [];
 		let coursePaginationItems = [];
@@ -165,7 +165,7 @@ class RelatedResourcesModal extends React.Component {
 				<Pagination.Item
 					key={i}
 					active={i === courseIndex / maxResult + 1}
-					onClick={e => { 
+					onClick={e => {
 						this.handlePagination('course', (i - 1) * maxResult, 'click');
 					}}>
 					{i}
@@ -193,6 +193,7 @@ class RelatedResourcesModal extends React.Component {
 		if (this.props.relatedObjects) {
 			this.props.relatedObjects.map(object => {
 				this.state.relatedObjectIds.push(object.objectId);
+				this.state.relatedObjectIds.push(object.pid);
 
 				switch (object.objectType) {
 					case 'tool':
@@ -225,7 +226,12 @@ class RelatedResourcesModal extends React.Component {
 						break;
 					case 'dataset':
 						this.props.datasetData.map(dataset => {
-							if (object.objectId === dataset.datasetid || object.objectId === JSON.stringify(dataset.datasetid)) {
+							if (
+								object.objectId === dataset.datasetid ||
+								object.objectId === JSON.stringify(dataset.datasetid) ||
+								object.pid === dataset.pid ||
+								object.pid === JSON.stringify(dataset.pid)
+							) {
 								this.state.selected.datasets++;
 							}
 						});
@@ -313,7 +319,7 @@ class RelatedResourcesModal extends React.Component {
 							<Col sm={10} lg={10} className='mt-2 mb-3'>
 								{key === 'Datasets'
 									? this.props.datasetData.map(dataset => {
-											if (this.state.relatedObjectIds.includes(dataset.datasetid)) {
+											if (this.state.relatedObjectIds.includes(dataset.datasetid) || this.state.relatedObjectIds.includes(dataset.pid)) {
 												return '';
 											} else {
 												let datasetPublisher;

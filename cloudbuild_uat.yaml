@@ -7,3 +7,4 @@ steps:
   args: ['run', 'deploy', 'uat-web', '--image', 'gcr.io/$PROJECT_ID/${_APP_NAME}:uat', '--platform', 'managed', '--region', '${_REGION}', '--allow-unauthenticated']
 images:
 - gcr.io/$PROJECT_ID/${_APP_NAME}:uat
+timeout: 900s

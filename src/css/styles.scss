@@ -261,14 +261,14 @@ a.nav-item.nav-link.active {
 
 	&-dataset {
 		@extend .badge;
-		background-color: $teal;
-		color: $white !important;
+		background-color: $green-light;
+		color: $green-dark !important;
 	}
 
 	&-project {
 		@extend .badge;
-		background-color: $orange;
-		color: $white !important;
+		background-color: $orange-light;
+		color: $orange-dark !important;
 	}
 
 	&-paper {
