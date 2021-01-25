@@ -150,7 +150,7 @@ class Account extends Component {
 			let values = queryString.parse(window.location.search);
 			let team = 'user';
 			if (values.tab !== this.state.tabId || typeof values.tab !== 'undefined' || typeof values.tab !== null) {
-				if(_.has(nextProps, 'location.state.team') && nextProps.location.state.team !== '') {
+				if (_.has(nextProps, 'location.state.team') && nextProps.location.state.team !== '') {
 					team = nextProps.location.state.team;
 					localStorage.setItem('HDR_TEAM', nextProps.location.state.team);
 				} else if (localStorage.getItem('HDR_TEAM') !== '') {
@@ -328,6 +328,13 @@ class Account extends Component {
 		this.setState({ datasetAccordion: '0' });
 	};
 
+	userHasRole(teamId, role) {
+		const team = this.state.userState[0].teams.filter(t => {
+			return t._id === teamId;
+		})[0];
+		return team && team.roles.includes(role);
+	}
+
 	render() {
 		const {
 			searchString,
@@ -499,12 +506,14 @@ class Account extends Component {
 															className={`gray700-13 ${tabId === 'dataaccessrequests' ? 'nav-item-active' : ''}`}>
 															<span className='subLinkItem'>Applications</span>
 														</Nav.Link>
-														<Nav.Link
-															onClick={e => this.toggleNav(`workflows`)}
-															bsPrefix='nav-block'
-															className={`gray700-13 ${tabId === 'workflows' ? 'nav-item-active' : ''}`}>
-															<span className='subLinkItem'>Workflows</span>
-														</Nav.Link>
+														{this.userHasRole(teamId, 'manager') && (
+															<Nav.Link
+																onClick={e => this.toggleNav(`workflows`)}
+																bsPrefix='nav-block'
+																className={`gray700-13 ${tabId === 'workflows' ? 'nav-item-active' : ''}`}>
+																<span className='subLinkItem'>Workflows</span>
+															</Nav.Link>
+														)}
 													</div>
 												</Accordion.Collapse>
 											</Fragment>
