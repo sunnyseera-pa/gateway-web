@@ -18,7 +18,7 @@ import './Collections.scss';
 
 export const CollectionPage = props => {
 	const [collectionData, setCollectionData] = useState([]);
-	const [isLoading, setIsLoading] = useState(true); 
+	const [isLoading, setIsLoading] = useState(true);
 	const [toolCount, setToolCount] = useState(0);
 	const [datasetCount, setDatasetCount] = useState(0);
 	const [personCount, setPersonCount] = useState(0);
@@ -29,7 +29,7 @@ export const CollectionPage = props => {
 	const [collectionEdited, setCollectionEdited] = useState(false);
 	const [searchString, setSearchString] = useState('');
 	const [discoursePostCount, setDiscoursePostCount] = useState(0);
-	const [key, setKey] = useState('Datasets'); 
+	const [key, setKey] = useState('Datasets');
 	const [searchBar] = useState(React.createRef());
 	const [showDrawer, setShowDrawer] = useState(false);
 	const [showModal, setShowModal] = useState(false);
@@ -44,7 +44,7 @@ export const CollectionPage = props => {
 				name: null,
 			},
 		]
-	); 
+	);
 
 	//componentDidMount - on loading of project detail page
 	useEffect(() => {
@@ -71,11 +71,11 @@ export const CollectionPage = props => {
 				setIsLoading(false);
 			}
 		});
-	}; 
+	};
 
 	const getObjectData = async data => {
 		setIsLoading(true);
-		for (const object of data.relatedObjects) { 
+		for (const object of data.relatedObjects) {
 			await genericGetEntityData(object);
 		}
 	};
@@ -100,9 +100,9 @@ export const CollectionPage = props => {
 	};
 
 	const countEntities = () => {
-		const entityCounts = objectData.reduce((entityCountsByType, currentValue) => { 
+		const entityCounts = objectData.reduce((entityCountsByType, currentValue) => {
 			let type = currentValue.type;
-			if (!entityCountsByType.hasOwnProperty(type)) { 
+			if (!entityCountsByType.hasOwnProperty(type)) {
 				entityCountsByType[type] = 0;
 			}
 			entityCountsByType[type]++;
@@ -110,18 +110,18 @@ export const CollectionPage = props => {
 		}, {});
 
 		let key;
-		if(entityCounts.dataset > 0){
-			key = 'Datasets' 
-		} else if (entityCounts.tool > 0){
-			key = 'Tools' 
-		} else if (entityCounts.paper > 0){
-			key = 'Papers' 
-		} else if (entityCounts.project > 0){
-			key = 'Projects' 
-		} else if (entityCounts.person > 0){
-			key = 'People' 
-		} else if (entityCounts.course > 0){
-			key = 'Course' 
+		if (entityCounts.dataset > 0) {
+			key = 'Datasets';
+		} else if (entityCounts.tool > 0) {
+			key = 'Tools';
+		} else if (entityCounts.paper > 0) {
+			key = 'Papers';
+		} else if (entityCounts.project > 0) {
+			key = 'Projects';
+		} else if (entityCounts.person > 0) {
+			key = 'People';
+		} else if (entityCounts.course > 0) {
+			key = 'Course';
 		}
 		setKey(key);
 
@@ -240,10 +240,15 @@ export const CollectionPage = props => {
 						<Col className='titleWidth'>
 							<Row>
 								<Col sm={9} lg={9} className='collectionTitleCard'>
-									<span className='black-28 collectionTitleText' data-testid='collectionName' > {collectionData.name} </span>
+									<span className='black-28 collectionTitleText' data-testid='collectionName'>
+										{' '}
+										{collectionData.name}{' '}
+									</span>
 								</Col>
 								<Col sm={2} lg={2} className='collectionDate collectionTitleCard'>
-									<span className='gray700-13' data-testid='collectionCreated'>Created {moment(collectionData.createdAt).format('MMM YYYY')} </span>
+									<span className='gray700-13' data-testid='collectionCreated'>
+										Created {moment(collectionData.createdAt).format('MMM YYYY')}{' '}
+									</span>
 								</Col>
 							</Row>
 
@@ -262,7 +267,7 @@ export const CollectionPage = props => {
 													{person.firstname} {person.lastname}
 												</span>
 											);
-										} 
+										}
 									})}
 								</Col>
 							</Row>
@@ -272,7 +277,7 @@ export const CollectionPage = props => {
 					<Row className='pad-top-32'>
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10} className='gray800-14'>
-							<ReactMarkdown source={collectionData.description} data-testid='collectionDescription' />
+							<ReactMarkdown className='wordBreakAll' source={collectionData.description} data-testid='collectionDescription' />
 						</Col>
 						<Col sm={1} lg={1} />
 					</Row>
@@ -296,7 +301,7 @@ export const CollectionPage = props => {
 										collectionId={collectionData.id}
 										topicId={collectionData.discourseTopicId || 0}
 										userState={userState}
-										onUpdateDiscoursePostCount={updateDiscoursePostCount}></DiscourseTopic> 
+										onUpdateDiscoursePostCount={updateDiscoursePostCount}></DiscourseTopic>
 								</Col>
 							</Row>
 						</Container>
@@ -537,7 +542,7 @@ export const CollectionPage = props => {
 				</Row>
 			</Container>
 			<SideDrawer open={showDrawer} closed={toggleDrawer}>
-				<UserMessages userState={userState[0]} closed={toggleDrawer} toggleModal={toggleModal} drawerIsOpen={showDrawer} />  
+				<UserMessages userState={userState[0]} closed={toggleDrawer} toggleModal={toggleModal} drawerIsOpen={showDrawer} />
 			</SideDrawer>
 
 			<DataSetModal open={showModal} context={context} closed={toggleModal} userState={userState[0]} />

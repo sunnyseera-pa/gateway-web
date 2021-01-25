@@ -95,7 +95,7 @@ class CollectionCard extends React.Component {
 
 						<div className='collectionCardFooter'>
 							<Row className='noMargin'>
-								<span class='gray-deep-14'>
+								<span class='gray-deep-14 wordBreakAll'>
 									{' '}
 									{data.description.length <= 132 ? data.description : data.description.slice(0, 132) + '...'}{' '}
 								</span>
