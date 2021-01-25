@@ -337,7 +337,7 @@ export const CourseDetail = props => {
 													</Row>
 													<Row className='mt-3'>
 														<Col sm={12} className='gray800-14'>
-															<ReactMarkdown className='wordBreakAll' source={courseData.description} />
+															<ReactMarkdown className='text-break' source={courseData.description} />
 														</Col>
 													</Row>
 												</div>
@@ -353,7 +353,7 @@ export const CourseDetail = props => {
 														</Row>
 														<Row className='mt-3'>
 															<Col sm={12} className='gray800-14'>
-																<ReactMarkdown className='wordBreakAll' source={courseData.resultsInsights} />
+																<ReactMarkdown className='text-break' source={courseData.resultsInsights} />
 															</Col>
 														</Row>
 													</div>
@@ -374,7 +374,7 @@ export const CourseDetail = props => {
 															URL
 														</Col>
 														<Col sm={10} className='gray800-14'>
-															<a href={courseData.link} rel='noopener noreferrer' target='_blank' className='purple-14 wordBreakAll'>
+															<a href={courseData.link} rel='noopener noreferrer' target='_blank' className='purple-14 text-break'>
 																{courseData.link}
 															</a>
 														</Col>

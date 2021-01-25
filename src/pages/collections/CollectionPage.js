@@ -277,7 +277,7 @@ export const CollectionPage = props => {
 					<Row className='pad-top-32'>
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10} className='gray800-14'>
-							<ReactMarkdown className='wordBreakAll' source={collectionData.description} data-testid='collectionDescription' />
+							<ReactMarkdown className='text-break' source={collectionData.description} data-testid='collectionDescription' />
 						</Col>
 						<Col sm={1} lg={1} />
 					</Row>

@@ -82,7 +82,7 @@ class PersonTitle extends Component {
 										</Row>
 									)}
 
-									{!bio || !showBio ? '' : <p className='gray800-14 wordBreakAll'> {bio} </p>}
+									{!bio || !showBio ? '' : <p className='gray800-14 text-break'> {bio} </p>}
 								</Col>
 								<Col sm={2} className='text-right'>
 									<div class='avatar-circle'>
@@ -102,7 +102,7 @@ class PersonTitle extends Component {
 										<span className='gray600-14'> ORCID </span>
 									</Col>
 									<Col xs={9} md={9}>
-										<a href={orcid} rel='noopener noreferrer' target='_blank' className='purple-14 wordBreakAll'>
+										<a href={orcid} rel='noopener noreferrer' target='_blank' className='purple-14 text-break'>
 											{orcid}
 										</a>
 									</Col>
@@ -117,7 +117,7 @@ class PersonTitle extends Component {
 										<span className='gray600-14'> URL </span>
 									</Col>
 									<Col xs={11} md={9}>
-										<a href={link} rel='noopener noreferrer' target='_blank' className='purple-14 wordBreakAll'>
+										<a href={link} rel='noopener noreferrer' target='_blank' className='purple-14 text-break'>
 											{link}
 										</a>
 									</Col>

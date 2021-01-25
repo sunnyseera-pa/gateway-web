@@ -358,7 +358,8 @@ export const PaperDetail = props => {
 															<span className='gray800-14'>URL</span>
 														</Col>
 														<Col sm={10}>
-															<a href={paperData.link} rel='noopener noreferrer' target='_blank' className='purple-14 wordBreakAll'>
+															x
+															<a href={paperData.link} rel='noopener noreferrer' target='_blank' className='purple-14 text-break'>
 																{paperData.link}
 															</a>
 														</Col>
@@ -453,7 +454,7 @@ export const PaperDetail = props => {
 													<Row className='mt-3'>
 														<Col>
 															<span className='gray800-14'>
-																<ReactMarkdown className='wordBreakAll' source={paperData.description} />
+																<ReactMarkdown className='text-break' source={paperData.description} />
 															</span>
 														</Col>
 													</Row>
@@ -473,7 +474,7 @@ export const PaperDetail = props => {
 														<Row className='mt-3'>
 															<Col>
 																<span className='gray800-14'>
-																	<ReactMarkdown className='wordBreakAll' source={paperData.resultsInsights} />
+																	<ReactMarkdown className='text-break' source={paperData.resultsInsights} />
 																</span>
 															</Col>
 														</Row>
