@@ -64,7 +64,7 @@ class CollectionCard extends React.Component {
 		});
 
 		return (
-			<div className='collectionCardHolder'>
+			<div className='collectionCardHolder text-left'>
 				<div className='collectionBackgroundCard'>
 					<div className='collectionCard'>
 						<div className='collectionCardHeader'>
@@ -87,19 +87,16 @@ class CollectionCard extends React.Component {
 							{courseCount} {courseCount === 1 ? ' course' : ' courses'}
 						</Col>
 
-						{!data.imageLink || data.imageLink === 'https://' ? (
-							<div id='defaultCollectionCardImage' className='margin-right-1' />
-						) : (
-							<img src={data.imageLink} alt='collectionLogo' id='collectionCardImage' className='margin-right-1' />
-						)}
+						{ !data.imageLink || data.imageLink === 'https://' ? 
+							<div className="defaultCollectionImage"/>
+						: 
+							<div style={{backgroundImage: `url(${data.imageLink})`, backgroundSize: 'cover', width: '100%', height: '228px' }}  />
+						}
 
-						<div className='collectionCardFooter'>
-							<Row className='noMargin'>
-								<span class='gray-deep-14'>
-									{' '}
-									{data.description.length <= 132 ? data.description : data.description.slice(0, 132) + '...'}{' '}
-								</span>
-							</Row>
+						<div className='collectionCardFooter pt-2 px-4 pb-2'>
+							<span class='gray-deep-14'>
+								{data.description.length <= 132 ? data.description : data.description.slice(0, 132) + '...'}{' '}
+							</span>
 						</div>
 					</div>
 				</div>
