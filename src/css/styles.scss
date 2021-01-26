@@ -1600,3 +1600,8 @@ button a {
 	margin-left: 15px;
 	margin-right: 12px;
 }
+
+.text-break {
+	word-break: break-all;
+	overflow-wrap: break-word !important;
+}
