@@ -294,27 +294,38 @@ let totalQuestionsAnswered = (component, panelId = '', questionAnswers = {}) => 
 		if (_.isEmpty(questionAnswers)) ({ questionAnswers } = { ...component.state });
 		// 1. deconstruct state
 		let {
-			jsonSchema: { questionSets },
+			jsonSchema: { questionPanels = [], questionSets = [] },
 		} = { ...component.state };
 		// 2. omits out blank null, undefined, and [] values from this.state.answers
 		questionAnswers = _.pickBy({ ...questionAnswers }, v => v !== null && v !== undefined && v.length != 0);
-		// 3. find the relevant questionSet { questionSetId: applicant }
-		let questionSet = [...questionSets].find(q => q.questionSetId === panelId) || '';
+		// 3. find the relevant questionSetIds within the panel
+		debugger;
+		const qPanel = questionPanels.find(qp => qp.panelId === panelId);
 
-		if (!_.isEmpty(questionSet)) {
-			// 4. get questions
-			let { questions } = questionSet;
-			// 5. total questions in panel
-			totalQuestions = questions.length;
-			let totalQuestionKeys = _.map({ ...questions }, 'questionId');
-
-			// 6. return count of how many questions completed
-			if (!_.isEmpty(questionAnswers)) {
-				let count = Object.keys(questionAnswers).map(value => {
-					return totalQuestionKeys.includes(value) ? totalAnsweredQuestions++ : totalAnsweredQuestions;
-				});
+		if (!_.isNil(qPanel)) {
+			let qsIds = qPanel.questionSets.map(qs => qs.questionSetId);
+			// 4. find the relevant questionSets
+			let qsets = questionSets.filter(qs => qsIds.includes(qs.questionSetId));
+			// 5. ensure at least one was found
+			if (!_.isEmpty(qsets)) {
+				// 6. iterate through each question set to calculate answered and unanswered
+				for (const questionSet of questionSets) {
+					// 7. get questions
+					let { questions = [] } = questionSet;
+					// 8. total questions in panel
+					totalQuestions += questions.length;
+					let totalQuestionKeys = _.map({ ...questions }, 'questionId');
+					// 9. return count of how many questions completed
+					if (!_.isEmpty(questionAnswers)) {
+						Object.keys(questionAnswers).forEach(value => {
+							if (totalQuestionKeys.includes(value)) {
+								totalAnsweredQuestions++;
+							}
+						});
+					}
+				}
+				return { totalAnsweredQuestions, totalQuestions };
 			}
-			return { totalAnsweredQuestions, totalQuestions };
 		}
 		return { totalAnsweredQuestions: 0, totalQuestions: 0 };
 	}
@@ -353,7 +364,7 @@ let getActiveQuestion = (questionsArr, questionId) => {
 					return typeof option.conditionalQuestions !== 'undefined' && option.conditionalQuestions.length > 0;
 				})
 				.forEach(option => {
-					if(!child) {
+					if (!child) {
 						child = getActiveQuestion(option.conditionalQuestions, questionId);
 					}
 				});
