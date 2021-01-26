@@ -116,7 +116,7 @@ export const ToolDetail = props => {
 			});
 	};
 
-	const populateCollections = (localToolData) => {
+	const populateCollections = localToolData => {
 		setIsLoading(true);
 		axios.get(baseURL + '/api/v1/collections/entityid/' + localToolData.id).then(res => {
 			setCollections(res.data.data || []);
@@ -389,7 +389,7 @@ export const ToolDetail = props => {
 													</Row>
 													<Row className='mt-3'>
 														<Col sm={12} className='gray800-14'>
-															<ReactMarkdown source={toolData.description} />
+															<ReactMarkdown className='text-break' source={toolData.description} />
 														</Col>
 													</Row>
 												</div>
@@ -405,7 +405,7 @@ export const ToolDetail = props => {
 														</Row>
 														<Row className='mt-3'>
 															<Col sm={12} className='gray800-14'>
-																<ReactMarkdown source={toolData.resultsInsights} />
+																<ReactMarkdown className='text-break' source={toolData.resultsInsights} />
 															</Col>
 														</Row>
 													</div>
@@ -426,7 +426,7 @@ export const ToolDetail = props => {
 															URL
 														</Col>
 														<Col sm={10} className='gray800-14'>
-															<a href={toolData.link} rel='noopener noreferrer' target='_blank' className='purple-14'>
+															<a href={toolData.link} rel='noopener noreferrer' target='_blank' className='purple-14 text-break'>
 																{toolData.link}
 															</a>
 														</Col>

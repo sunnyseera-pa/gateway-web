@@ -92,7 +92,6 @@ class CollectionCard extends React.Component {
 						) : (
 							<img src={data.imageLink} alt='collectionLogo' id='collectionCardImage' className='margin-right-1' />
 						)}
-
 							<div className='collectionFooter px-3 py-2'>
 								<span class='gray-deep-14 text-break'>
 									{data.description.length <= 132 ? data.description : data.description.slice(0, 132) + '...'}{' '}
