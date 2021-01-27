@@ -107,7 +107,7 @@ class DatasetDetail extends Component {
     emptyFlagRelRes: false,
     emptyFieldsCount: 0,
     linkedDatasets: [],
-    publisherLogoURL: ''
+    publisherLogoURL: '',
     isLatestVersion: true,
     isDatasetArchived:false
   };
@@ -813,7 +813,7 @@ class DatasetDetail extends Component {
                             </Fragment>
                         )}
                         </Col>
-                    }
+                    )}
                   </Row>
                 </div>
               </Col>
