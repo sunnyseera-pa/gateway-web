@@ -271,7 +271,7 @@ let findQuestionSet = (questionSetId = '', schema = {}) => {
  * [TotalQuestionAnswered]
  * @desc - Sets total questions answered for each section
  */
-let totalQuestionsAnswered = (component, panelId = '', questionAnswers = {}) => {
+let totalQuestionsAnswered = (component, panelId = '', questionAnswers = {}, jsonSchema = {}) => {
 	let totalQuestions = 0;
 	let totalAnsweredQuestions = 0;
 
@@ -292,43 +292,140 @@ let totalQuestionsAnswered = (component, panelId = '', questionAnswers = {}) => 
 		};
 	} else {
 		if (_.isEmpty(questionAnswers)) ({ questionAnswers } = { ...component.state });
-		// 1. deconstruct state
-		let {
-			jsonSchema: { questionPanels = [], questionSets = [] },
-		} = { ...component.state };
+		// 1. deconstruct schema
+		if (_.isEmpty(jsonSchema)) {
+			({ jsonSchema } = { ...component.state });
+		}
+		let { questionPanels = [], questionSets = [] } = jsonSchema;
 		// 2. omits out blank null, undefined, and [] values from this.state.answers
 		questionAnswers = _.pickBy({ ...questionAnswers }, v => v !== null && v !== undefined && v.length != 0);
 		// 3. find the relevant questionSetIds within the panel
-		debugger;
 		const qPanel = questionPanels.find(qp => qp.panelId === panelId);
-
 		if (!_.isNil(qPanel)) {
-			let qsIds = qPanel.questionSets.map(qs => qs.questionSetId);
+			const { questionSets: panelQuestionSets = [] } = qPanel;
+			const qsIds = panelQuestionSets.map(qs => qs.questionSetId);
 			// 4. find the relevant questionSets
-			let qsets = questionSets.filter(qs => qsIds.includes(qs.questionSetId));
+			const qsets = questionSets.filter(qs => qsIds.includes(qs.questionSetId));
 			// 5. ensure at least one was found
 			if (!_.isEmpty(qsets)) {
 				// 6. iterate through each question set to calculate answered and unanswered
-				for (const questionSet of questionSets) {
+				for (const questionSet of qsets) {
 					// 7. get questions
-					let { questions = [] } = questionSet;
-					// 8. total questions in panel
-					totalQuestions += questions.length;
-					let totalQuestionKeys = _.map({ ...questions }, 'questionId');
-					// 9. return count of how many questions completed
-					if (!_.isEmpty(questionAnswers)) {
-						Object.keys(questionAnswers).forEach(value => {
-							if (totalQuestionKeys.includes(value)) {
-								totalAnsweredQuestions++;
-							}
-						});
+					const { questions = [] } = questionSet;
+					// 8. filter out buttons added as questions
+					const filteredQuestions = filterInvalidQuestions(questions);
+					// 9. Iterate through each top-level question
+					for (const question of filteredQuestions) {
+						// 10. Recursively gather question status from each question path
+						const conditionalQuestions = getRecursiveQuestionCounts(question, questionAnswers);
+						totalQuestions += conditionalQuestions.questionCount;
+						totalAnsweredQuestions += conditionalQuestions.answerCount;
 					}
 				}
+				// 11. Return question totals
 				return { totalAnsweredQuestions, totalQuestions };
 			}
 		}
 		return { totalAnsweredQuestions: 0, totalQuestions: 0 };
 	}
+};
+
+let filterInvalidQuestions = questions => {
+	const filteredQuestions = [...questions].filter(q => {
+		const { input = {} } = q;
+		return !_.isEmpty(input) && input.type !== 'buttonInput';
+	});
+	return filteredQuestions;
+};
+
+let getRecursiveQuestionCounts = (question, questionAnswers) => {
+	let questionCount = 0,
+		answerCount = 0;
+	// 1. Count parent question
+	questionCount++;
+	// 2. Count parent question if it has been answered
+	if (_.has(questionAnswers, question.questionId)) {
+		answerCount++;
+		// 3. Check if the question has children/conditional questions
+		if (_.has(question, 'input.options')) {
+			// 4. Check if question allows multiple answers
+			let conditionalQuestions = [];
+			const answeredOptions = question.input.options.filter(opt => {
+				return (
+					(Array.isArray(questionAnswers[question.questionId]) && questionAnswers[question.questionId].includes(opt.value)) ||
+					questionAnswers[question.questionId] === opt.value
+				);
+			});
+			if (!_.isEmpty(answeredOptions)) {
+				answeredOptions.forEach(answeredOption => {
+					({ conditionalQuestions = [] } = answeredOption);
+					// 4. Recursively iterate through conditional questions
+					conditionalQuestions.forEach(function iter(currentQuestion) {
+						// 5. Ensure valid question type (remove buttons)
+						const { input = {} } = currentQuestion;
+						if (!_.isEmpty(input) && input.type !== 'buttonInput') {
+							// 6. Increment question count
+							questionCount++;
+							// 7. Increment answer count if answer found
+							if (_.has(questionAnswers, currentQuestion.questionId)) {
+								answerCount++;
+								// 8. Call next level of recursion if answer has been provided
+								if (_.has(currentQuestion, 'input.options')) {
+									// 9. Find option based on answer provided
+									let recursiveConditionalQuestions = [];
+									const answeredRecursiveOptions = currentQuestion.input.options.filter(opt => {
+										return (
+											(Array.isArray(questionAnswers[currentQuestion.questionId]) &&
+												questionAnswers[currentQuestion.questionId].includes(opt.value)) ||
+											questionAnswers[currentQuestion.questionId] === opt.value
+										);
+									});
+									if (!_.isEmpty(answeredRecursiveOptions)) {
+										answeredRecursiveOptions.forEach(answeredRecursiveOption => {
+											({ conditionalQuestions: recursiveConditionalQuestions = [] } = answeredRecursiveOption);
+											// 10. Repeat function call
+											if (!_.isEmpty(recursiveConditionalQuestions)) {
+												Array.isArray(recursiveConditionalQuestions) && recursiveConditionalQuestions.forEach(iter);
+											}
+										});
+									}
+								}
+							}
+						}
+					});
+				});
+			}
+		}
+	}
+
+	// // 1. Extract question Id
+	// let { questionId } = question;
+	// let found = false;
+	// // 2. Recursive function to iterate through each level of questions
+	// questionsArr.forEach(function iter(currentQuestion, index, currentArray) {
+	// 	// 3. Prevent unnecessary computation by exiting loop if question was found
+	// 	if (found) {
+	// 		return;
+	// 	}
+	// 	// 4. If the current question matches the target question, replace with updated question
+	// 	if (currentQuestion.questionId === questionId) {
+	// 		currentArray[index] = { ...question };
+	// 		found = true;
+	// 		return;
+	// 	}
+	// 	// 5. If target question has not been identified, recall function with child questions
+	// 	if (_.has(currentQuestion, 'input.options')) {
+	// 		currentQuestion.input.options.forEach(option => {
+	// 			if (_.has(option, 'conditionalQuestions')) {
+	// 				Array.isArray(option.conditionalQuestions) && option.conditionalQuestions.forEach(iter);
+	// 			}
+	// 		});
+	// 	}
+	// });
+	// 6. Return the updated question array
+	//return questionsArr;
+
+	return { questionCount, answerCount };
 };
 
 /**

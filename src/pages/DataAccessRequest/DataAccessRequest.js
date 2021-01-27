@@ -743,6 +743,7 @@ class DataAccessRequest extends Component {
 	 * @param   {string}  questionId     [questionId]
 	 */
 	onQuestionSetAction = async (questionSetId = '', questionId = '') => {
+		debugger;
 		// locate question set containing button invoking action
 		const questionSet = DarHelper.findQuestionSet(questionSetId, { ...this.state.jsonSchema });
 		if (!_.isEmpty(questionSet) && !_.isEmpty(questionId)) {
@@ -756,8 +757,11 @@ class DataAccessRequest extends Component {
 			}
 			// call API with action, questionId and questionSetId
 			const stateObj = await this.postQuestionSetAction(questionSetId, questionId, questionIds, action, separatorText);
-			// spread json schema response into state and reload static content
-			this.setState({ ...stateObj });
+			// count question/answers for the current section
+			const countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this, this.state.activePanelId, this.state.questionAnswers, stateObj.jsonSchema);
+			const totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered in this section`;
+			// spread json schema response into state and reload static content including updated question counter
+			this.setState({ ...stateObj, totalQuestions });
 		} else {
 			console.error(`Action could not be invoked as question set - ${questionSetId}, question - ${questionId} could not be found`);
 		}
