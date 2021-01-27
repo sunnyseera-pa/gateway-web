@@ -26,6 +26,7 @@ import './Collections.scss';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
+<<<<<<< HEAD
 class AddCollectionPage extends React.Component { 
 
     constructor(props) {
@@ -118,23 +119,124 @@ class AddCollectionPage extends React.Component {
  
     addToTempRelatedObjects = (id, type) => {
 
+=======
+class AddCollectionPage extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state.userState = props.userState;
+		this.searchBar = React.createRef();
+	}
+
+	// initialize our state
+	state = {
+		data: [],
+		combinedUsers: [],
+		isLoading: true,
+		userState: [],
+		searchString: '',
+		datasetData: [],
+		toolData: [],
+		projectData: [],
+		personData: [],
+		paperData: [],
+		courseData: [],
+		summary: [],
+		tempRelatedObjectIds: [],
+		relatedObjectIds: [],
+		relatedObjects: [],
+		didDelete: false,
+		showDrawer: false,
+		showModal: false,
+		context: {},
+	};
+
+	async componentDidMount() {
+		initGA('UA-166025838-1');
+		await Promise.all([this.doGetUsersCall()]);
+		this.setState({ isLoading: false });
+	}
+
+	doGetUsersCall() {
+		return new Promise((resolve, reject) => {
+			axios.get(baseURL + '/api/v1/users').then(res => {
+				this.setState({ combinedUsers: res.data.data });
+				resolve();
+			});
+		});
+	}
+
+	doSearch = e => {
+		//fires on enter on searchbar
+		if (e.key === 'Enter') window.location.href = '/search?search=' + this.state.searchString;
+	};
+
+	updateSearchString = searchString => {
+		this.setState({ searchString: searchString });
+	};
+
+	doModalSearch = (e, type, page) => {
+		if (e.key === 'Enter' || e === 'click') {
+			var searchURL = '';
+
+			if (type === 'dataset' && page > 0) searchURL += '&datasetIndex=' + page;
+			if (type === 'tool' && page > 0) searchURL += '&toolIndex=' + page;
+			if (type === 'project' && page > 0) searchURL += '&projectIndex=' + page;
+			if (type === 'person' && page > 0) searchURL += '&personIndex=' + page;
+			if (type === 'course' && page > 0) searchURL += '&courseIndex=' + page;
+
+			axios
+				.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL, {
+					params: {
+						form: true,
+						userID: this.state.userState[0].id,
+					},
+				})
+				.then(res => {
+					this.setState({
+						datasetData: res.data.datasetResults || [],
+						toolData: res.data.toolResults || [],
+						projectData: res.data.projectResults || [],
+						personData: res.data.personResults || [],
+						paperData: res.data.paperResults || [],
+						courseData: res.data.courseResults || [],
+						summary: res.data.summary || [],
+						isLoading: false,
+					});
+				});
+		}
+	};
+
+	addToTempRelatedObjects = (id, type, pid) => {
+        debugger
+>>>>>>> b737413... Fixes
         if(this.state.tempRelatedObjectIds && this.state.tempRelatedObjectIds.some(object => object.objectId === id)){
             this.state.tempRelatedObjectIds = this.state.tempRelatedObjectIds.filter(object => object.objectId !== id);
         }
         else {
+<<<<<<< HEAD
             this.state.tempRelatedObjectIds.push({'objectId':id, 'type':type})
+=======
+            this.state.tempRelatedObjectIds.push({'objectId':id, 'type':type, pid: pid})
+>>>>>>> b737413... Fixes
         }
        this.setState({tempRelatedObjectIds: this.state.tempRelatedObjectIds})
     }
 
     addToRelatedObjects = () => {
+<<<<<<< HEAD
         this.state.tempRelatedObjectIds.map((object) => {
             this.state.relatedObjects.push({'objectId':object.objectId, 'reason':'', 'objectType':object.type, 'user':this.state.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
+=======
+        debugger
+        this.state.tempRelatedObjectIds.map((object) => {
+            this.state.relatedObjects.push({'objectId':object.objectId, 'reason':'', objectId: object.type === 'dataset' ? object.pid : object.objectId, 'user':this.state.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
+>>>>>>> b737413... Fixes
         })
 
         this.setState({tempRelatedObjectIds: []})
     }
 
+<<<<<<< HEAD
     clearRelatedObjects = () => {
         this.setState({tempRelatedObjectIds: [] })
     }
@@ -198,6 +300,113 @@ class AddCollectionPage extends React.Component {
         );
     }
 
+=======
+	clearRelatedObjects = () => {
+		this.setState({ tempRelatedObjectIds: [] });
+	};
+
+	removeObject = id => {
+		this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id);
+		this.setState({ relatedObjects: this.state.relatedObjects });
+		this.setState({ didDelete: true });
+	};
+
+	updateDeleteFlag = () => {
+		this.setState({ didDelete: false });
+	};
+
+	toggleDrawer = () => {
+		this.setState(prevState => {
+			if (prevState.showDrawer === true) {
+				this.searchBar.current.getNumberOfUnreadMessages();
+			}
+			return { showDrawer: !prevState.showDrawer };
+		});
+	};
+
+	toggleModal = (showEnquiry = false, context = {}) => {
+		this.setState(prevState => {
+			return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
+		});
+	};
+
+	render() {
+		const {
+			data,
+			combinedUsers,
+			isLoading,
+			userState,
+			searchString,
+			datasetData,
+			toolData,
+			projectData,
+			personData,
+			paperData,
+			courseData,
+			summary,
+			relatedObjects,
+			didDelete,
+			showDrawer,
+			showModal,
+			context,
+		} = this.state;
+
+		if (isLoading) {
+			return (
+				<Container>
+					<Loading />
+				</Container>
+			);
+		}
+
+		return (
+			<div>
+				<SearchBar
+					ref={this.searchBar}
+					doSearchMethod={this.doSearch}
+					doUpdateSearchString={this.updateSearchString}
+					doToggleDrawer={this.toggleDrawer}
+					userState={userState}
+				/>
+
+				<AddCollectionForm
+					data={data}
+					combinedUsers={combinedUsers}
+					userState={userState}
+					searchString={searchString}
+					doSearchMethod={this.doModalSearch}
+					doUpdateSearchString={this.updateSearchString}
+					datasetData={datasetData}
+					toolData={toolData}
+					projectData={projectData}
+					personData={personData}
+					paperData={paperData}
+					courseData={courseData}
+					summary={summary}
+					doAddToTempRelatedObjects={this.addToTempRelatedObjects}
+					tempRelatedObjectIds={this.state.tempRelatedObjectIds}
+					doClearRelatedObjects={this.clearRelatedObjects}
+					doAddToRelatedObjects={this.addToRelatedObjects}
+					doRemoveObject={this.removeObject}
+					relatedObjects={relatedObjects}
+					didDelete={didDelete}
+					updateDeleteFlag={this.updateDeleteFlag}
+				/>
+
+				<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
+					<UserMessages
+						userState={userState[0]}
+						closed={this.toggleDrawer}
+						toggleModal={this.toggleModal}
+						drawerIsOpen={this.state.showDrawer} 
+					/>
+				</SideDrawer>
+
+				<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
+			</div>
+		);
+	}
+>>>>>>> b737413... Fixes
 }
 
 
