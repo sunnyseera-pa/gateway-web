@@ -106,11 +106,12 @@ const AddEditProjectForm = (props) => {
         });
     }
 
-    function updateReason(id, reason, type) {
+    function updateReason(id, reason, type, pid) {
         let inRelatedObject = false;
         props.relatedObjects.map((object) => {
             if(object.objectId===id){
                 inRelatedObject = true;
+                object.pid = pid;
                 object.reason = reason;
                 object.objectType = type;
                 object.user = props.userState[0].name;
@@ -119,7 +120,7 @@ const AddEditProjectForm = (props) => {
         });
 
         if(!inRelatedObject){
-            props.relatedObjects.push({'objectId':id, 'reason':reason, 'objectType': type, 'user': props.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
+            props.relatedObjects.push({'objectId':id, pid: pid, 'reason':reason, 'objectType': type, 'user': props.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
         }
     }
 
@@ -305,7 +306,7 @@ const AddEditProjectForm = (props) => {
                             {props.relatedObjects.map((object) => {
                                 if(!_.isNil(object.objectId)){
                                     return (
-                                        <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} objectType={object.objectType} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} />
+                                        <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} pid={object.pid} objectType={object.objectType} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} />
                                     )
                                 };
                             })}

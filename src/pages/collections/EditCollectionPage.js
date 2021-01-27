@@ -131,20 +131,20 @@ class EditCollectionPage extends React.Component {
         }
     } 
 
-    addToTempRelatedObjects = (id, type) => {
+    addToTempRelatedObjects = (id, type, pid) => {
 
         if(this.state.tempRelatedObjectIds && this.state.tempRelatedObjectIds.some(object => object.objectId === id)){
             this.state.tempRelatedObjectIds = this.state.tempRelatedObjectIds.filter(object => object.objectId !== id);
         }
         else {
-            this.state.tempRelatedObjectIds.push({'objectId':id, 'type':type})
+            this.state.tempRelatedObjectIds.push({'objectId':id, 'type':type, pid: pid})
         }
        this.setState({tempRelatedObjectIds: this.state.tempRelatedObjectIds})
     }
 
     addToRelatedObjects = () => {
         this.state.tempRelatedObjectIds.map((object) => {
-            this.state.relatedObjects.push({'objectId':object.objectId, 'reason':'', 'objectType':object.type, 'user':this.state.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
+            this.state.relatedObjects.push({'objectId':object.objectId, 'reason':'', 'objectType':object.type, pid: object.type === 'dataset' ? object.pid : '', 'user':this.state.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
         })
 
         this.setState({tempRelatedObjectIds: []})  
@@ -154,11 +154,16 @@ class EditCollectionPage extends React.Component {
         this.setState({tempRelatedObjectIds: [] }) 
     }
 
-    removeObject = (id) => {
-        this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id);
-        this.state.relatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id.toString());
+    removeObject = (id, type, datasetid) => {
+        let countOfRelatedObjects = this.state.relatedObjects.length;
+		let newRelatedObjects = [...this.state.relatedObjects].filter(obj => obj.objectId !== id && obj.objectId !== id.toString());
 
-        this.setState({relatedObjects: this.state.relatedObjects})
+        //if an item was not removed try removing by datasetid for retro linkages
+		if (countOfRelatedObjects <= newRelatedObjects.length && type === 'dataset') {
+			newRelatedObjects = [...this.state.relatedObjects].filter(obj => obj.objectId !== datasetid && obj.objectId !== datasetid.toString());
+		}
+
+		this.setState({ relatedObjects: newRelatedObjects });
         this.setState({didDelete: true});
     }
 
@@ -272,11 +277,12 @@ const EditCollectionForm = (props) => {
         });
       })
   
-    function updateReason(id, reason, type) {
+    function updateReason(id, reason, type, pid) {
         let inRelatedObject = false;
         props.relatedObjects.map((object) => {
             if(object.objectId===id){
                 inRelatedObject = true;
+                object.pid = pid;
                 object.reason = reason;
                 object.user = props.userState[0].name;
                 object.updated = moment().format("DD MMM YYYY");
@@ -284,7 +290,7 @@ const EditCollectionForm = (props) => {
         });
 
         if(!inRelatedObject){
-            props.relatedObjects.push({'objectId':id, 'reason':reason, 'objectType': type, 'user': props.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
+            props.relatedObjects.push({'objectId':id, pid: pid, 'reason':reason, 'objectType': type, 'user': props.userState[0].name, 'updated':moment().format("DD MMM YYYY")})
         }
     }
  
@@ -387,7 +393,7 @@ const EditCollectionForm = (props) => {
                                 {props.relatedObjects ? props.relatedObjects.map((object) => {
                                     return (
                                         <div className="relatedObjectRectangle">
-                                            <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} objectType={object.objectType} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} inCollection={true}/>
+                                            <RelatedObject showRelationshipQuestion={true} objectId={object.objectId} pid={object.pid} objectType={object.objectType} doRemoveObject={props.doRemoveObject} doUpdateReason={updateReason} reason={object.reason} didDelete={props.didDelete} updateDeleteFlag={props.updateDeleteFlag} inCollection={true}/>
                                         </div>   
                                     )
                                 }) : ''}

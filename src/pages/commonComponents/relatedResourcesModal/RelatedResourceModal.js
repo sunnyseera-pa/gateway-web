@@ -175,6 +175,7 @@ class RelatedResourcesModal extends React.Component {
        if(this.props.relatedObjects) {
             this.props.relatedObjects.map((object) => {
                 this.state.relatedObjectIds.push(object.objectId) 
+                this.state.relatedObjectIds.push(object.pid);
                 
                 switch (object.objectType) {
                     case 'tool':
@@ -210,8 +211,12 @@ class RelatedResourcesModal extends React.Component {
                         break;
                     case 'dataset':
                             this.props.datasetData.map((dataset) => {
-                                if(object.objectId === dataset.datasetid || object.objectId === JSON.stringify(dataset.datasetid)) {
-                                 
+                                if (
+                                    object.objectId === dataset.datasetid ||
+                                    object.objectId === JSON.stringify(dataset.datasetid) ||
+                                    object.pid === dataset.pid ||
+                                    object.pid === JSON.stringify(dataset.pid)
+                                ) {    
                                     this.state.selected.datasets++
                                 }
                             })
@@ -259,7 +264,7 @@ class RelatedResourcesModal extends React.Component {
                         <Col sm={10} lg={10} className="mt-2 mb-3" >
                             {key === 'Datasets' ?
                                 this.props.datasetData.map((dataset) => {  
-                                    if(this.state.relatedObjectIds.includes(dataset.datasetid)){ 
+                                    if(this.state.relatedObjectIds.includes(dataset.datasetid) || this.state.relatedObjectIds.includes(dataset.pid)){ 
                                         return ''
                                     }
                                     else {

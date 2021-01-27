@@ -225,7 +225,7 @@ class DatasetDetail extends Component {
   getCollections() {
     this.setState({ isLoading: true });
     axios
-      .get(baseURL + "/api/v1/collections/entityid/" + this.state.data.datasetid)
+      .get(baseURL + "/api/v1/collections/entityid/" + this.state.data.pid)
       .then(res => {
         this.setState({
           collections: res.data.data || [] 

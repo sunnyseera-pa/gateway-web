@@ -108,9 +108,9 @@ class RelatedObject extends React.Component {
         }
     }
 
-    handleChange = (id, reason, type) => {
+    handleChange = (id, reason, type, pid) => {
         this.setState({reason: reason})
-        this.props.doUpdateReason(id, reason, type)
+        this.props.doUpdateReason(id, reason, type, pid)
     }
 
     updateOnFilterBadge = (filter, option) => {
@@ -664,7 +664,7 @@ class RelatedObject extends React.Component {
                                         </Row>
                                         <Row className="noMargin">
                                             <Col xs={12} className="pad-left-24 pad-right-24">
-                                            <input className="resultsCardInput"  value={this.state.reason} onChange={event => this.handleChange(this.props.objectId, event.target.value, data.type===undefined ? "dataset" : data.type)} />
+                                            <input className="resultsCardInput"  value={this.state.reason} onChange={event => this.handleChange(this.props.objectId, event.target.value, data.type===undefined ? "dataset" : data.type, this.props.pi)} />
                                             </Col>
                                         </Row>
                                     </>
