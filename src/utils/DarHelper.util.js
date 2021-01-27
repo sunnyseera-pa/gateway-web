@@ -397,34 +397,6 @@ let getRecursiveQuestionCounts = (question, questionAnswers) => {
 			}
 		}
 	}
-
-	// // 1. Extract question Id
-	// let { questionId } = question;
-	// let found = false;
-	// // 2. Recursive function to iterate through each level of questions
-	// questionsArr.forEach(function iter(currentQuestion, index, currentArray) {
-	// 	// 3. Prevent unnecessary computation by exiting loop if question was found
-	// 	if (found) {
-	// 		return;
-	// 	}
-	// 	// 4. If the current question matches the target question, replace with updated question
-	// 	if (currentQuestion.questionId === questionId) {
-	// 		currentArray[index] = { ...question };
-	// 		found = true;
-	// 		return;
-	// 	}
-	// 	// 5. If target question has not been identified, recall function with child questions
-	// 	if (_.has(currentQuestion, 'input.options')) {
-	// 		currentQuestion.input.options.forEach(option => {
-	// 			if (_.has(option, 'conditionalQuestions')) {
-	// 				Array.isArray(option.conditionalQuestions) && option.conditionalQuestions.forEach(iter);
-	// 			}
-	// 		});
-	// 	}
-	// });
-	// 6. Return the updated question array
-	//return questionsArr;
-
 	return { questionCount, answerCount };
 };
 
