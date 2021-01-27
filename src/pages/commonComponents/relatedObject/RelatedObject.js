@@ -331,7 +331,9 @@ class RelatedObject extends React.Component {
 										</Col>
 										{!this.props.showRelationshipQuestion && (
 											<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16'>
-												<span className='gray800-14'>{data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}</span>
+												<span className='gray800-14 text-break'>
+													{data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}
+												</span>
 											</Col>
 										)}
 									</Row>
@@ -467,7 +469,9 @@ class RelatedObject extends React.Component {
 										</Col>
 										{!this.props.showRelationshipQuestion && (
 											<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16'>
-												<span className='gray800-14'>{data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}</span>
+												<span className='gray800-14 text-break'>
+													{data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}
+												</span>
 											</Col>
 										)}
 									</Row>
@@ -584,7 +588,9 @@ class RelatedObject extends React.Component {
 										</Col>
 										{!this.props.showRelationshipQuestion && (
 											<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16'>
-												<span className='gray800-14'>{data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}</span>
+												<span className='gray800-14 text-break'>
+													{data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}
+												</span>
 											</Col>
 										)}
 									</Row>
@@ -613,7 +619,7 @@ class RelatedObject extends React.Component {
 												</span>
 											)}
 											<br />
-											<span className='gray800-14'> {data.bio} </span>
+											<span className='gray800-14 text-break'> {data.bio} </span>
 										</Col>
 										<Col sm={2} lg={2} className='pad-right-24'>
 											{this.props.showRelationshipQuestion ? (
@@ -742,7 +748,9 @@ class RelatedObject extends React.Component {
 										</Col>
 										{!this.props.showRelationshipQuestion && (
 											<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16'>
-												<span className='gray800-14'>{data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}</span>
+												<span className='gray800-14 text-break'>
+													{data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}
+												</span>
 											</Col>
 										)}
 									</Row>
