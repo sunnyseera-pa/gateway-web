@@ -108,6 +108,8 @@ class DatasetDetail extends Component {
     emptyFieldsCount: 0,
     linkedDatasets: [],
     publisherLogoURL: ''
+    isLatestVersion: true,
+    isDatasetArchived:false
   };
 
   topicContext = {};
@@ -160,7 +162,9 @@ class DatasetDetail extends Component {
         this.setState({
           data: res.data.data,
           v2data: res.data.data.datasetv2,
-          isLoading: false
+          isLoading: false,
+          isLatestVersion: res.data.isLatestVersion,
+          isDatasetArchived: res.data.isDatasetArchived,
         });
         this.getTechnicalMetadata();
         this.getCollections();
@@ -205,6 +209,19 @@ class DatasetDetail extends Component {
                 message: <Fragment>You are viewing an old version of this dataset.  Click <a href={'/dataset/' + res.data.data.pid}>here</a> for the latest version.</Fragment>
               }
           })
+        }
+
+        if (res.data.isDatasetArchived) {
+            this.setState({
+                alert: {
+                    type: 'warning',
+                    message: (
+                        <Fragment>
+                            The dataset that you are viewing has been archived and there is no active versions.
+                        </Fragment>
+                    ),
+                },
+            });
         }
 
         this.setState({ isLoading: false });
@@ -747,53 +764,56 @@ class DatasetDetail extends Component {
                         {data.counter === undefined ? " view" : " views"}
                       </span>
                     </Col>
-                    <Col sm={6} className="text-right">
-                      {!userState[0].loggedIn ? (
-                        <button
-                          className="btn button-tertiary dark-14 float-right"
-                          onClick={() =>
-                            this.showLoginModal(
-                              data.name
-                            )
-                          }
-                        >
-                          Request access
-                        </button>
-                      ) : requiresModal ? (
-                        <button
-                          className="btn btn-primary addButton pointer float-right"
-                          onClick={() => {
-                            this.toggleModal();
-                          }}
-                        >
-                          How to request access
-                        </button>
-                      ) : (
-                        <Fragment>
-                          <Link
-                            className={`btn button-tertiary dark-14  ${
-                              allowsMessaging ? "mr-2" : "float-right"
-                            }`}
-                            to={{
-                              pathname: `/data-access-request/dataset/${data.datasetid}`
-                            }}
-                            onClick={() =>
-                              Event("Buttons", "Click", "Request Access")
-                            }
-                          >
-                            Request access
-                          </Link>
-                          {allowsMessaging ? (
+                    {this.state.isLatestVersion && !this.state.isDatasetArchived && (
+
+                        <Col sm={6} className="text-right">
+                        {!userState[0].loggedIn ? (
                             <button
-                              className="btn button-primary addButton pointer"
-                              onClick={() => this.toggleDrawer()}
+                            className="btn button-tertiary dark-14 float-right"
+                            onClick={() =>
+                                this.showLoginModal(
+                                data.name
+                                )
+                            }
                             >
-                              Send a message to the custodian
+                            Request access
                             </button>
-                          ) : null}
-                        </Fragment>
-                      )}
-                    </Col>
+                        ) : requiresModal ? (
+                            <button
+                            className="btn btn-primary addButton pointer float-right"
+                            onClick={() => {
+                                this.toggleModal();
+                            }}
+                            >
+                            How to request access
+                            </button>
+                        ) : (
+                            <Fragment>
+                            <Link
+                                className={`btn button-tertiary dark-14  ${
+                                allowsMessaging ? "mr-2" : "float-right"
+                                }`}
+                                to={{
+                                pathname: `/data-access-request/dataset/${data.datasetid}`
+                                }}
+                                onClick={() =>
+                                Event("Buttons", "Click", "Request Access")
+                                }
+                            >
+                                Request access
+                            </Link>
+                            {allowsMessaging ? (
+                                <button
+                                className="btn button-primary addButton pointer"
+                                onClick={() => this.toggleDrawer()}
+                                >
+                                Send a message to the custodian
+                                </button>
+                            ) : null}
+                            </Fragment>
+                        )}
+                        </Col>
+                    }
                   </Row>
                 </div>
               </Col>
