@@ -743,7 +743,6 @@ class DataAccessRequest extends Component {
 	 * @param   {string}  questionId     [questionId]
 	 */
 	onQuestionSetAction = async (questionSetId = '', questionId = '') => {
-		debugger;
 		// locate question set containing button invoking action
 		const questionSet = DarHelper.findQuestionSet(questionSetId, { ...this.state.jsonSchema });
 		if (!_.isEmpty(questionSet) && !_.isEmpty(questionId)) {
