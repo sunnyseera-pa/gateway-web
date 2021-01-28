@@ -17,4 +17,4 @@ images:
 - gcr.io/$PROJECT_ID/${_APP_NAME}:${_ENVIRONMENT}
 options:
   machineType: 'N1_HIGHCPU_8'
-  diskSizeGb: '20GB'
+  diskSizeGb: '20'
