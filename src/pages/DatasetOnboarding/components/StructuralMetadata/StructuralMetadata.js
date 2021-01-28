@@ -5,25 +5,24 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import FormData from 'form-data';
 import { ReactComponent as UploadSVG } from '../../../../images/upload.svg';
-import readXlsxFile from 'read-excel-file'
-import { Row, Col, Button } from 'react-bootstrap';
+import readXlsxFile from 'read-excel-file';
+import { Row, Col, Button, Alert } from 'react-bootstrap';
 import { baseURL } from '../../../../configs/url.config';
 import './StructuralMetadata.scss';
 
 const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetaData, structuralMetaDataErrors }) => {
-  // 10mb - 10485760
-  // 2mb - 2097152
-  const maxSize = 10485760;
-  // name, size, location, id
-  const [uploadFiles, setUploadFiles] = useState([]);
-  const [newStructuralMetaData, setNewStructuralMetaData] = useState(structuralMetaData);
-  const [newStructuralMetaDataErrors, setNewStructuralMetaDataErrors] = useState(structuralMetaDataErrors);
-  const [submitted, setSubmitted] = useState(false);
-  const [isLoading, setLoading] = useState(false);
-  const [download, showDownload] = useState(true);
+	// 10mb - 10485760
+	// 2mb - 2097152
+	const maxSize = 10485760;
+	// name, size, location, id
+	const [uploadFiles, setUploadFiles] = useState([]);
+	const [newStructuralMetaData, setNewStructuralMetaData] = useState(structuralMetaData);
+	const [newStructuralMetaDataErrors, setNewStructuralMetaDataErrors] = useState(structuralMetaDataErrors);
+	const [submitted, setSubmitted] = useState(false);
+	const [isLoading, setLoading] = useState(false);
+	const [download, showDownload] = useState(true);
 
-
-  /* const onRemoveFile = (file) => {
+	/* const onRemoveFile = (file) => {
     const newFiles = [...uploadFiles].filter((f) => {
       return f.fileId !== file.fileId
     });
@@ -41,7 +40,7 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetaData, st
     setUploadFiles(newFiles);
   } */
 
-  /* const formatFiles = (acceptedFiles) => {
+	/* const formatFiles = (acceptedFiles) => {
     if(!_.isEmpty(acceptedFiles)) { 
       return [...acceptedFiles].map((file) => {
         return {
@@ -58,7 +57,7 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetaData, st
     return [];
   } */
 
-  /* const formatRejectedFiles = (rejectedFiles) => {
+	/* const formatRejectedFiles = (rejectedFiles) => {
     if(!_.isEmpty(rejectedFiles)) { 
       return [...rejectedFiles].map((f) => {
         let { file } = f; 
@@ -76,8 +75,7 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetaData, st
     return [];
   } */
 
-
-  /* const onDescriptionChange = event => {
+	/* const onDescriptionChange = event => {
     event.preventDefault();
     let {name, value} = event.currentTarget;
     let [key, uniqueId = ''] = name.split('_');
@@ -92,7 +90,7 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetaData, st
     }
   } */
 
-  /* const onUploadFiles = async () => {
+	/* const onUploadFiles = async () => {
     setSubmitted(true);
     // 1. filter out files that have description and newFile to upload
     const acceptedFiles = [...uploadFiles].filter(f => !_.isEmpty(f.description) && f.status === fileStatus.NEWFILE);
@@ -133,7 +131,7 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetaData, st
     }
   } */
 
-  /* const downloadFile = async (file)  => {
+	/* const downloadFile = async (file)  => {
     if(!_.isEmpty(file)) {
       let { fileId, name } = file;
       await axios.get(`${baseURL}/api/v1/data-access-request/${id}/file/${fileId}`, {responseType: 'blob'})
@@ -153,11 +151,11 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetaData, st
     }
   } */
 
-  /* const updateDARFileState = (files, initalLoading) => {
+	/* const updateDARFileState = (files, initalLoading) => {
     onFilesUpdate(files, initalLoading);
   } */
- 
-  /* useEffect(() => {
+
+	/* useEffect(() => {
     let timer;
     if(!initialFilesLoad) {
       showDownload(false);
@@ -173,8 +171,8 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetaData, st
       };
   }, [files, initialFilesLoad]) */
 
-  // dropzone setup
-  /* const { getRootProps, getInputProps } = useDropzone({
+	// dropzone setup
+	/* const { getRootProps, getInputProps } = useDropzone({
     noDrop: true,
     onDropAccepted,
     onDropRejected,
@@ -182,45 +180,44 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetaData, st
     maxSize
   }); */
 
+	const schema = {
+		'Table Name': {
+			prop: 'tableName',
+			type: String,
+			required: true,
+		},
+		'Table Description': {
+			prop: 'tableDescription',
+			type: String,
+		},
+		'Column Name': {
+			prop: 'columnName',
+			type: String,
+			required: true,
+		},
+		'Column Description': {
+			prop: 'columnDescription',
+			type: String,
+			required: true,
+		},
+		'Data Type': {
+			prop: 'dataType',
+			type: String,
+			required: true,
+		},
+		Sensitive: {
+			prop: 'sensitive',
+			type: Boolean,
+			required: true,
+		},
+	};
 
-  const schema = {
-    'Table Name': {
-      prop: 'tableName',
-      type: String,
-      required: true
-    },
-    'Table Description': {
-        prop: 'tableDescription',
-        type: String
-    },
-    'Column Name': {
-        prop: 'columnName',
-        type: String,
-        required: true
-    },
-    'Column Description': {
-        prop: 'columnDescription',
-        type: String,
-        required: true
-    },
-    'Data Type': {
-        prop: 'dataType',
-        type: String,
-        required: true
-    },
-    'Sensitive': {
-        prop: 'sensitive',
-        type: Boolean,
-        required: true
-    }
-  }
-
-  const onDescriptionChange = event => {
+	const onDescriptionChange = event => {
 		if (maxSize < event.target.files[0].size) {
-			setNewStructuralMetaDataErrors([{error: 'fileSizeError'}]);
+			setNewStructuralMetaDataErrors([{ error: 'fileSizeError' }]);
 		} else {
-            //event.target.files[0].type
-            //debugger
+			//event.target.files[0].type
+			//debugger
 			readXlsxFile(event.target.files[0], { schema }).then(({ rows, errors }) => {
 				if (errors.length > 0) setNewStructuralMetaDataErrors(errors);
 				else setNewStructuralMetaDataErrors([]);
@@ -244,85 +241,100 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetaData, st
 		event.target.value = null;
 	};
 
-  useEffect(() => {
-    onStructuralMetaDataUpdate(newStructuralMetaData, newStructuralMetaDataErrors)
-  }, [newStructuralMetaData, newStructuralMetaDataErrors])
+	useEffect(() => {
+		onStructuralMetaDataUpdate(newStructuralMetaData, newStructuralMetaDataErrors);
+	}, [newStructuralMetaData, newStructuralMetaDataErrors]);
 
-  const hiddenFileInput = React.useRef(null);
+	const hiddenFileInput = React.useRef(null);
 
-  const handleClick = event => {
-    hiddenFileInput.current.click();
-  };
+	const handleClick = event => {
+		hiddenFileInput.current.click();
+	};
 
-  
-  return (
-    <div className="files">
-      <div className="files-header">
-      <div>
-      <input type="file" id="input" hidden ref={hiddenFileInput} onChange={onDescriptionChange}/>
-        <div className="upload">
-          <button className="button-tertiary" onClick={handleClick} ><UploadSVG /> Select file...</button>
-          <span className="gray700-alt-13">Excel or SVG. Max 10MB per file.</span>
-        </div>
-      </div>
-      </div>
-      <div className="files-area">
-        
+	return (
+		<div className='files'>
+			<div className='files-header'>
+				<div>
+					<input type='file' id='input' hidden ref={hiddenFileInput} onChange={onDescriptionChange} />
+					<p className='black-20-semibold margin-bottom-16'>Upload</p>
+					<div className='upload'>
+						<button className='button-tertiary' onClick={handleClick}>
+							<UploadSVG /> Select file...
+						</button>
+						<span className='gray700-alt-13'>Excel or SVG. Max 10MB per file.</span>
+					</div>
+				</div>
+			</div>
+			<div className='files-area'>
+				{structuralMetaDataErrors.length > 0 ? (
+					structuralMetaDataErrors[0].error === 'fileSizeError' ? (
+						'Test'
+					) : (
+						<Row>
+							<Col xs={12} s={12} md={12}>
+								<Alert variant='danger'>
+									There are errors in the data you uploaded. Please correct these and try again. Errors are listed below.
+								</Alert>
+							</Col>
+						</Row>
+					)
+				) : (
+					''
+				)}
 
+				{structuralMetaDataErrors.map(errors => {
+					//debugger
 
+					//Error in row 3: “Sensitive” is “FAL” and should be “True” or “False”
+					//Error in row 5: “Sensitive” is empty and should be  “True” or “False”
 
-        {structuralMetaDataErrors.length > 0 ? structuralMetaDataErrors[0].error === 'fileSizeError' ? 'Test' :
-            (<Row>
-                <Col>There are errors in the data you uploaded. Please correct these and try again. Errors are listed below.</Col>
-            </Row>): ''
-        }
+					//row error column type value
+					return (
+						<Row>
+							<Col xs={12} s={12} md={12}>
+								<p className='dark-red-semibold-20'>Uploaded data errors</p>
+								<Alert variant='danger'>
+									Error in row {errors.row}: "{errors.column}" is {errors.value} = {errors.error} = {errors.type}{' '}
+								</Alert>
+							</Col>
+						</Row>
+					);
+				})}
 
+				{structuralMetaData.length !== 0 ? (
+					<Row className='gray800-14-bold'>
+						<Col>Table name</Col>
+						<Col>Table description</Col>
+						<Col>Column name</Col>
+						<Col>Column description</Col>
+						<Col>Data type</Col>
+						<Col>Sensitive</Col>
+					</Row>
+				) : (
+					''
+				)}
+				{structuralMetaData.map((data, index) => {
+					const filtered = structuralMetaDataErrors.filter(dat => dat.row === index + 1);
 
-        {structuralMetaDataErrors.map(errors => {
-            //debugger
+					//const reviewCount = data.filter(dat => dat.activeflag === 'review').length
 
-            //Error in row 3: “Sensitive” is “FAL” and should be “True” or “False”
-            //Error in row 5: “Sensitive” is empty and should be  “True” or “False”
+					let test = structuralMetaDataErrors;
+					//debugger
 
-
-            //row error column type value
-            return (<Row>
-                <Col>Error in row {errors.row}: "{errors.column}" is {errors.value} = {errors.error} = {errors.type} </Col>
-            </Row>)
-
-        })}
-
-
-        {
-            structuralMetaData.map((data, index ) => {
-                const filtered = structuralMetaDataErrors.filter(dat => dat.row === (index+1));
-
-                //const reviewCount = data.filter(dat => dat.activeflag === 'review').length
-
-                let test = structuralMetaDataErrors;
-                //debugger
-
-                return (
-                    <Row>
-                        <Col>{data.tableName}</Col>
-                        <Col>{data.tableDescription}</Col>
-                        <Col>{data.columnName}</Col>
-                        <Col>{data.columnDescription}</Col>
-                        <Col>{data.dataType}</Col>
-                        <Col>{String(data.sensitive)}</Col>
-                    </Row>
-
-                )
-
-
-
-            })
-        }
-
-
-      </div>
-    </div>
-  )
-}
+					return (
+						<Row className='gray800-14'>
+							<Col>{data.tableName}</Col>
+							<Col>{data.tableDescription}</Col>
+							<Col>{data.columnName}</Col>
+							<Col>{data.columnDescription}</Col>
+							<Col>{data.dataType}</Col>
+							<Col>{String(data.sensitive)}</Col>
+						</Row>
+					);
+				})}
+			</div>
+		</div>
+	);
+};
 
 export default StructuralMetadata;

@@ -1252,9 +1252,6 @@ class DatasetOnboarding extends Component {
 		} else if (activePanelId === 'structural') {
 			return (
 				//Structural
-                
-                
-                
                 <StructuralMetadata
                     onStructuralMetaDataUpdate={this.onStructuralMetaDataUpdate}
 					structuralMetaData={this.state.structuralMetaData}
