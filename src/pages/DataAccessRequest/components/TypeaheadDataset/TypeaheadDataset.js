@@ -73,7 +73,7 @@ class TypeaheadDataset extends React.Component {
               {option.name}
             </div>
             <div className='datasetDescription'>
-              {option.description || option.datasetfields.abstract}
+			<div className='datasetDescription'>{option.description || option.abstract || 'No description set'}</div>
             </div>
           </div>
         )}
