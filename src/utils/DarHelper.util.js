@@ -16,29 +16,29 @@ let amendmentStatuses = {
 };
 
 let staticContent = {
-	aboutPageNav: {
-		pageId: 'about',
+	beforeYouBeginPageNav: {
+		pageId: 'beforeYouBegin',
 		active: true,
-		title: 'About this application',
+		title: 'Before you begin',
 		description:
-			'Preparation is key to a successful data access request. You need to be able to demonstrate how you will ensure safe use of patient data and the potential for public benefit. The steps below are intended to help you get off to a good start.',
+			'The guidance below gives you a quick overview of the process of adding datasets to the Gateway. Guidance on each field is also provided throughout the form.',
 	},
-	aboutPanel: {
-		panelId: 'about',
+	beforeYouBeginPanel: {
+		panelId: 'beforeYouBegin',
 		index: 0,
-		pageId: 'about',
+		pageId: 'beforeYouBegin',
 	},
-	filesNav: {
-		pageId: 'files',
+	structuralPageNav: {
+		pageId: 'structural',
 		active: false,
-		title: 'Files',
+		title: 'Structural metadata',
 		description:
 			'Applicant should add any files requested here, as well as any additional files that could support the application. A description should be included to clarify the purpose of each document.',
 	},
-	filesPanel: {
-		panelId: 'files',
+	structuralPanel: {
+		panelId: 'structural',
 		index: 100,
-		pageId: 'files',
+		pageId: 'structural',
 	},
 };
 
@@ -91,12 +91,12 @@ let darStatusCounts = {
 };
 
 let darStaticPageIds = {
-	ABOUT: 'about',
-	FILES: 'files',
+	BEFOREYOUBEGIN: 'beforeYouBegin',
+	STRUCTURAL: 'structural',
 };
 
 let actionKeys = {
-	GUIDANCE: 'guidance',
+	BEFOREYOUBEGIN: 'beforeYouBegin',
 	REQUESTAMENDMENT: 'requestAmendment',
 	CANCELREQUEST: 'cancelRequest',
 	REVERTTOPREVIOUSANSWER: 'revertToPreviousAnswer',
