@@ -282,24 +282,24 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetaData, st
 					''
 				)}
 
-				{structuralMetaDataErrors.map(errors => {
-					//debugger
-
-					//Error in row 3: “Sensitive” is “FAL” and should be “True” or “False”
-					//Error in row 5: “Sensitive” is empty and should be  “True” or “False”
-
-					//row error column type value
-					return (
-						<Row>
-							<Col xs={12} s={12} md={12}>
-								<p className='dark-red-semibold-20'>Uploaded data errors</p>
-								<Alert variant='danger'>
-									Error in row {errors.row}: "{errors.column}" is {errors.value} = {errors.error} = {errors.type}{' '}
-								</Alert>
-							</Col>
-						</Row>
-					);
-				})}
+				{structuralMetaDataErrors.length !== 0 ? (
+					<Row>
+						<p className='dark-red-semibold-20'>Uploaded data errors</p>
+						<Col xs={12} s={12} md={12}>
+							<Alert variant='danger'>
+								{structuralMetaDataErrors.map(errors => {
+									return (
+										<>
+											Error in row {errors.row}: "{errors.column}" is {errors.value} = {errors.error} = {errors.type} <br/>
+										</>
+									);
+								})}
+							</Alert>
+						</Col>
+					</Row>
+				) : (
+					''
+				)}
 
 				{structuralMetaData.length !== 0 ? (
 					<Row className='gray800-14-bold'>
