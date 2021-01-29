@@ -257,12 +257,9 @@ class SearchBar extends React.Component {
 		let communityLink = 'https://discourse-dev.healthresearch.tools/';
 		if (window.location.href.includes('.www.')) communityLink = 'https://discourse.healthdatagateway.org/';
 
-		let col1Size;
-		let col2Size;
-		if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development') {
-			col1Size = 5;
-			col2Size = 7;
-		} else {
+		let col1Size = 5;
+		let col2Size = 7;
+		if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'development') {
 			col1Size = 6;
 			col2Size = 6;
 		}
@@ -296,7 +293,7 @@ class SearchBar extends React.Component {
 								{process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'development' && (
 									<div class='uatSearchBarBanner uatBannerText'>
 										<span class='verticalMiddle'>
-											UAT
+											{process.env.NODE_ENV.toString().toUpperCase()}
 											<br />
 											<a
 												class='floatRight uatBannerText'
@@ -727,7 +724,7 @@ class SearchBar extends React.Component {
 											{process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'development' && (
 												<Dropdown.Item href='https://discourse.healthdatagateway.org/t/using-the-uat-environment/451' target='_blank'>
 													<span class='uatMobileSearchBarBanner uatBannerText'>
-														UAT <span class='floatRight'>Read more</span>
+														{process.env.NODE_ENV.toString().toUpperCase()} <span class='floatRight'>Read more</span>
 													</span>
 												</Dropdown.Item>
 											)}
