@@ -253,7 +253,7 @@ export const ToolDetail = props => {
 						<Row className=''>
 							<Col sm={1} lg={1} />
 							<Col sm={10} lg={10}>
-								<Alert variant='success' className='mt-3'>
+								<Alert data-test-id='tool-added-banner' variant='success' className='mt-3'>
 									Done! Someone will review your tool and let you know when it goes live
 								</Alert>
 							</Col>
@@ -281,7 +281,7 @@ export const ToolDetail = props => {
 						<Row className=''>
 							<Col sm={1} lg={1} />
 							<Col sm={10} lg={10}>
-								<Alert variant='warning' className='mt-3'>
+								<Alert data-test-id='tool-pending-banner' variant='warning' className='mt-3'>
 									Your tool is pending review. Only you can see this page.
 								</Alert>
 							</Col>
@@ -324,7 +324,9 @@ export const ToolDetail = props => {
 							<div className='rectangle'>
 								<Row>
 									<Col className='line-height-normal'>
-										<span className='black-16'>{toolData.name}</span>
+										<span data-test-id='tool-name' className='black-16'>
+											{toolData.name}
+										</span>
 									</Col>
 								</Row>
 								{ratingsCount === 0 ? (
@@ -388,7 +390,7 @@ export const ToolDetail = props => {
 														<Col sm={12}>Description</Col>
 													</Row>
 													<Row className='mt-3'>
-														<Col sm={12} className='gray800-14'>
+														<Col sm={12} className='gray800-14' data-test-id='tool-description'>
 															<ReactMarkdown className='text-break' source={toolData.description} />
 														</Col>
 													</Row>
@@ -426,7 +428,12 @@ export const ToolDetail = props => {
 															URL
 														</Col>
 														<Col sm={10} className='gray800-14'>
-															<a href={toolData.link} rel='noopener noreferrer' target='_blank' className='purple-14 text-break'>
+															<a
+																href={toolData.link}
+																rel='noopener noreferrer'
+																data-test-id='tool-page-url'
+																target='_blank'
+																className='purple-14 text-break'>
 																{toolData.link}
 															</a>
 														</Col>
@@ -471,7 +478,9 @@ export const ToolDetail = props => {
 														</Col>
 														<Col sm={10} className='gray800-14'>
 															<a href={'/search?search=&tab=Tools&toolcategories=' + toolData.categories.category}>
-																<div className='badge-tag'>{toolData.categories.category}</div>
+																<div data-test-id='tool-type' className='badge-tag'>
+																	{toolData.categories.category}
+																</div>
 															</a>
 														</Col>
 													</Row>
@@ -485,7 +494,7 @@ export const ToolDetail = props => {
 																: toolData.programmingLanguage.map((obj, i) => {
 																		return obj.version !== '' ? (
 																			<a href={'/search?search=&tab=Tools&programmingLanguage=' + obj.programmingLanguage}>
-																				<div className='badge-version' key={i}>
+																				<div className='badge-version' key={i} data-test-id='tool-implementation'>
 																					<span>{obj.programmingLanguage}</span>
 																					<span>{obj.version}</span>
 																				</div>
