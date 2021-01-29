@@ -15,7 +15,7 @@ class Creators extends Component {
 							<Col xs={1} sm={2} md={1}>
 								<PersonPlaceholderSvg />
 							</Col>
-							<Col xs={11} sm={10} md={11} className='text-left ellipsis'>
+							<Col xs={10} sm={10} md={10} className='text-left ellipsis'>
 								<span className='black-16' data-testid='name'>
 									{' '}
 									{author.firstname} {author.lastname}{' '}
