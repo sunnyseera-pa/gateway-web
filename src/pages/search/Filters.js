@@ -4,9 +4,10 @@ import _ from 'lodash';
 import { ReactComponent as ChevronRight } from '../../images/chevron-right.svg';
 import './Search.scss';
 
-const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+const CustomToggle = React.forwardRef(({ children, onClick, title }, ref) => (
 	<a
 		href=''
+		aria-label={'Filter for ' + title}
 		ref={ref}
 		onClick={e => {
 			e.preventDefault();
@@ -104,7 +105,7 @@ class Filters extends Component {
 
 		return (
 			<Dropdown>
-				<Dropdown.Toggle as={CustomToggle} ref={filterButton => (this.filterButton = filterButton)}>
+				<Dropdown.Toggle as={CustomToggle} title={title} ref={filterButton => (this.filterButton = filterButton)}>
 					<div className={filterCard}>
 						<Row className=''>
 							<Col xs={12}>
