@@ -15,7 +15,6 @@ import { ReactComponent as WhiteArrowDownSvg } from '../../../images/arrowDownWh
 import { NotificationContainer, NotificationManager } from 'react-notifications';
 import './SearchBar.scss';
 import '../uatBanner/UatBanner.scss';
-import UatBanner from '../uatBanner/UatBanner';
 import moment from 'moment';
 import { cmsURL } from '../../../configs/url.config';
 
