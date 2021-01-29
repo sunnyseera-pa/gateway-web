@@ -19,7 +19,7 @@ export const AccountMembers = props => {
 	const [accountMembersId] = useState(props.teamId);
 
 	useEffect(() => {
-		initGA('UA-166025838-1');
+		initGA('UA-183238557-1');
 		doMembersCall();
 	}, []);
 

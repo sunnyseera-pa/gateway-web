@@ -31,7 +31,7 @@ class AccountUsers extends React.Component {
 	};
 
 	componentDidMount() {
-		initGA('UA-166025838-1');
+		initGA('UA-183238557-1');
 		this.doUsersCall();
 	}
 

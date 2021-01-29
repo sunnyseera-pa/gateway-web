@@ -56,7 +56,7 @@ export const CourseDetail = props => {
 			setCourseAdded(values.courseAdded);
 			setCourseEdited(values.courseEdited);
 		}
-		initGA('UA-166025838-1');
+		initGA('UA-183238557-1');
 		PageView();
 		async function invokeCourseDataCall() {
 			await getCourseDataFromDb();

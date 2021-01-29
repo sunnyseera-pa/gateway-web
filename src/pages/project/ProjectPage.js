@@ -58,7 +58,7 @@ export const ProjectDetail = props => {
 			setProjectEdited(values.projectEdited);
 		}
 		getProjectDataFromDb();
-		initGA('UA-166025838-1');
+		initGA('UA-183238557-1');
 		PageView();
 	}, []);
 

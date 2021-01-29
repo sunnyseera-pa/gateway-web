@@ -119,12 +119,12 @@ class SearchPage extends React.Component {
 
 			await Promise.all([this.updateFilterStates(values)]);
 			this.doSearchCall();
-			initGA('UA-166025838-1');
+			initGA('UA-183238557-1');
 			PageView();
 		} else {
 			this.setState({ data: [], searchString: '', isLoading: true });
 			this.doSearchCall();
-			initGA('UA-166025838-1');
+			initGA('UA-183238557-1');
 			PageView();
 		}
 	}

@@ -4,7 +4,7 @@ var disableGA = false;
 
 export const initGA = trackingID => {
 	// Disable tracking if the opt-out cookie exists.
-	var disableStr = 'ga-disable-UA-166025838-1';
+	var disableStr = 'ga-disable-UA-183238557-1';
 	if (document.cookie.indexOf(disableStr + '=true') > -1) {
 		window[disableStr] = true;
 		disableGA = true;
@@ -14,7 +14,7 @@ export const initGA = trackingID => {
 	}
 };
 
-//'UA-166025838-1'
+//'UA-183238557-1'
 
 export const PageView = () => {
 	if (disableGA === false) {

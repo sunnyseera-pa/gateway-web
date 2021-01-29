@@ -49,7 +49,7 @@ class AddEditPaperPage extends React.Component {
 	};
 
 	async componentDidMount() {
-		initGA('UA-166025838-1');
+		initGA('UA-183238557-1');
 		await Promise.all([this.doGetTopicsCall(), this.doGetFeaturesCall(), this.doGetUsersCall()]);
 		if (this.state.isEdit) this.getPaperFromDb();
 		else this.setState({ isLoading: false });

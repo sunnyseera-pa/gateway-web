@@ -82,7 +82,7 @@ class PublicAnalyticsDashboard extends React.Component {
 	}
 
 	async componentDidMount() {
-		initGA('UA-166025838-1');
+		initGA('UA-183238557-1');
 		await Promise.all([this.getUnmetDemand(), this.getTopSearches()]);
 
 		this.setState({ isLoading: false });

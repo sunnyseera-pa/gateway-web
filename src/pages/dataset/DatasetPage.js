@@ -123,7 +123,7 @@ class DatasetDetail extends Component {
 	async componentDidMount() {
 		await this.getDataset();
 		this.checkAlerts();
-		initGA('UA-166025838-1');
+		initGA('UA-183238557-1');
 		PageView();
 	}
 

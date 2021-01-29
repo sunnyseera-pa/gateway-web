@@ -66,7 +66,7 @@ export const ToolDetail = props => {
 			setReviewAdded(values.reviewAdded);
 			setReplyAdded(values.replyAdded);
 		}
-		initGA('UA-166025838-1');
+		initGA('UA-183238557-1');
 		PageView();
 		getToolDataFromDb();
 	}, []);
