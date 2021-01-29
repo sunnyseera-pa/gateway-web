@@ -162,7 +162,6 @@ let generateStatusCounts = (data = []) => {
 
 let configActionModal = (type = '') => {
 	let config = {};
-	debugger;
 	if (!_.isEmpty(type)) {
 		switch (type.toUpperCase()) {
 			case 'APPROVE':
