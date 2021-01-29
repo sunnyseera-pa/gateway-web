@@ -111,6 +111,7 @@ class DatasetOnboarding extends Component {
 			answeredAmendments: 0,
 			unansweredAmendments: 0,
 			isWideForm: false,
+			isTableForm: false,
 			allowsMultipleDatasets: false,
 			activeAccordionCard: 0,
 			allowedNavigation: true,
@@ -317,6 +318,7 @@ class DatasetOnboarding extends Component {
 			applicationStatus,
 			activePanelId: initialPanel,
 			isWideForm: initialPanel === DarHelper.darStaticPageIds.BEFOREYOUBEGIN,
+			isTableForm: initialPanel === DarHelper.darStaticPageIds.STRUCTURAL,
 			isLoading: false,
             //topicContext,
             name,
@@ -628,7 +630,8 @@ class DatasetOnboarding extends Component {
 			this.setState({
 				jsonSchema: { ...this.state.jsonSchema, pages: newFormState },
 				activePanelId: panelId,
-				isWideForm: panelId === 'beforeYouBegin' || panelId === 'structural',
+				isWideForm: panelId === 'beforeYouBegin',
+				isTableForm: panelId === 'structural',
 				totalQuestions: totalQuestions,
 				validationErrors,
 				reviewWarning,
@@ -1293,6 +1296,7 @@ class DatasetOnboarding extends Component {
 			showContributorModal,
 			showAssignWorkflowModal,
 			isWideForm,
+			isTableForm,
 			allowedNavigation,
 			applicationStatus,
 			aboutApplication: { projectName = '', selectedDatasets },
@@ -1403,7 +1407,7 @@ class DatasetOnboarding extends Component {
 							</div>
 						))}
 					</div>
-					<div id='darCenterCol' className={isWideForm ? 'extended' : ''}>
+					<div id='darCenterCol' className={isWideForm ? 'extended' : '' || isTableForm ? 'table' : ''}>
 						{this.state.reviewWarning ? (
 							<Alert variant='warning' className=''>
 								<SVGIcon name='attention' width={24} height={24} fill={'#f0bb24'} viewBox='2 -9 22 22'></SVGIcon>
@@ -1442,7 +1446,7 @@ class DatasetOnboarding extends Component {
 							{this.renderApp()}
 						</div>
 					</div>
-					{isWideForm ? null : (
+					{isWideForm || isTableForm ? null : (
 						<div id='darRightCol' className='scrollable-sticky-column'>
 							<div className='darTab'>
 								<Guidance

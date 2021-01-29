@@ -6,7 +6,7 @@ import axios from 'axios';
 import FormData from 'form-data';
 import { ReactComponent as UploadSVG } from '../../../../images/upload.svg';
 import readXlsxFile from 'read-excel-file';
-import { Row, Col, Button, Alert } from 'react-bootstrap';
+import { Row, Col, Button, Alert, Table } from 'react-bootstrap';
 import { baseURL } from '../../../../configs/url.config';
 import './StructuralMetadata.scss';
 
@@ -290,7 +290,7 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetaData, st
 								{structuralMetaDataErrors.map(errors => {
 									return (
 										<>
-											Error in row {errors.row}: "{errors.column}" is {errors.value} = {errors.error} = {errors.type} <br/>
+											Error in row {errors.row}: "{errors.column}" is {errors.value} = {errors.error} = {errors.type} <br />
 										</>
 									);
 								})}
@@ -301,37 +301,43 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetaData, st
 					''
 				)}
 
-				{structuralMetaData.length !== 0 ? (
-					<Row className='gray800-14-bold'>
-						<Col>Table name</Col>
-						<Col>Table description</Col>
-						<Col>Column name</Col>
-						<Col>Column description</Col>
-						<Col>Data type</Col>
-						<Col>Sensitive</Col>
-					</Row>
-				) : (
-					''
-				)}
-				{structuralMetaData.map((data, index) => {
-					const filtered = structuralMetaDataErrors.filter(dat => dat.row === index + 1);
+				<Table bordered responsive size='sm' tdStyle={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+					{structuralMetaData.length !== 0 ? (
+						<thead>
+							<tr className='gray800-14-bold'>
+								<th>Table name</th>
+								<th>Table description</th>
+								<th>Column name</th>
+								<th>Column description</th>
+								<th>Data type</th>
+								<th>Sensitive</th>
+							</tr>
+						</thead>
+					) : (
+						''
+					)}
+					<tbody>
+						{structuralMetaData.map((data, index) => {
+							const filtered = structuralMetaDataErrors.filter(dat => dat.row === index + 1);
 
-					//const reviewCount = data.filter(dat => dat.activeflag === 'review').length
+							//const reviewCount = data.filter(dat => dat.activeflag === 'review').length
 
-					let test = structuralMetaDataErrors;
-					//debugger
+							let test = structuralMetaDataErrors;
+							//debugger
 
-					return (
-						<Row className='gray800-14'>
-							<Col>{data.tableName}</Col>
-							<Col>{data.tableDescription}</Col>
-							<Col>{data.columnName}</Col>
-							<Col>{data.columnDescription}</Col>
-							<Col>{data.dataType}</Col>
-							<Col>{String(data.sensitive)}</Col>
-						</Row>
-					);
-				})}
+							return (
+								<tr className='gray800-14'>
+									<td className={data.tableName ? "" : "invalid-info"}>{data.tableName}</td>
+									<td className={data.tableDescription ? "" : "invalid-info"}>{data.tableDescription}</td>
+									<td className={data.columnName ? "" : "invalid-info"}>{data.columnName}</td>
+									<td className={data.columnDescription ? "" : "invalid-info"}>{data.columnDescription}</td>
+									<td className={data.dataType ? "" : "invalid-info"}>{data.dataType}</td>
+									<td className={data.sensitive ? "" : "invalid-info"}>{String(data.sensitive)}</td>
+								</tr>
+							);
+						})}
+					</tbody>
+				</Table>
 			</div>
 		</div>
 	);
