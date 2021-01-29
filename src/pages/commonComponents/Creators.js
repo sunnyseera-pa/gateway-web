@@ -12,10 +12,10 @@ class Creators extends Component {
 				<a data-testid='href' href={'/person/' + author.id}>
 					<div className='authorCardHolder'>
 						<Row className='authorCard ellipsis'>
-							<Col xs={1} sm={3} md={2}>
+							<Col xs={1} sm={2} md={1}>
 								<PersonPlaceholderSvg />
 							</Col>
-							<Col xs={11} sm={9} md={10} className='text-left ellipsis'>
+							<Col xs={10} sm={10} md={10} className='text-left ellipsis'>
 								<span className='black-16' data-testid='name'>
 									{' '}
 									{author.firstname} {author.lastname}{' '}
