@@ -1,0 +1,46 @@
+@import '../../../css/variables';
+@import '../../../css/mixins';
+
+.uatBanner {
+	min-height: 40px;
+	padding: 10px 12px;
+	background-color: $deep-red;
+}
+
+.uatSearchBarBanner {
+	height: 100%;
+	padding: 10px 12px;
+	background-color: $deep-red;
+	margin-left: 10px;
+	vertical-align: middle;
+	display: inline-block;
+	text-align: center;
+}
+
+.uatBannerText {
+	font-weight: 500;
+	font-size: 14px;
+	color: $white;
+
+	&:hover {
+		color: $white;
+	}
+}
+
+.uatMobileSearchBarBanner {
+	height: 100%;
+	padding: 10px 12px;
+	background-color: $deep-red;
+	margin-left: 10px;
+	vertical-align: middle;
+	display: inline-block;
+	width: inherit;
+}
+
+.floatRight {
+	float: right;
+}
+
+.verticalMiddle {
+	vertical-align: -webkit-baseline-middle;
+}
