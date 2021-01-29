@@ -102,13 +102,13 @@ const CustodianActionButtons = ({
 			)}
 
 			{showAssignWorkflow && (
-				<button className='button-secondary' onClick={e => onActionClick(e)} value='AssignWorkflow'>
+				<button className='button-secondary' onClick={e => onActionClick('AssignWorkflow')}>
 					Assign a workflow
 				</button>
 			)}
 
 			{showSendUpdateRequest && (
-				<button className='button-secondary' onClick={e => onUpdateRequest(e)} value='SendUpdateRequest'>
+				<button className='button-secondary' onClick={e => onUpdateRequest(e)}>
 					Send update request
 				</button>
 			)}
