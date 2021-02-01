@@ -598,8 +598,8 @@ class DatasetDetail extends Component {
 		);
 
 		const formatLinks = source => {
-			const reUrl = /([^\[\(])(https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}[-a-zA-Z0-9@:%_\+.~#?&/=]*)([^\]\)])/g;
-			return source.replace(reUrl, '$1[$2]($2)$3');
+			const reUrl = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+			return source.replace(reUrl, '[$1]($1) ');
 		};
 
 		if (isLoading) {
@@ -958,7 +958,7 @@ class DatasetDetail extends Component {
 																	</Col>
 																	{data.datasetfields.conformsTo ? (
 																		<Col sm={10} className='gray800-14 overflowWrap'>
-																			{data.datasetfields.conformsTo}
+																			<Linkify properties={{ target: '_blank' }}>{data.datasetfields.conformsTo}</Linkify>
 																		</Col>
 																	) : (
 																		<Col sm={10} className='gray800-14-opacity'>
