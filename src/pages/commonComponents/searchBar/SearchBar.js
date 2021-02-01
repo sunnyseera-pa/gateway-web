@@ -19,6 +19,7 @@ import moment from 'moment';
 import { cmsURL } from '../../../configs/url.config';
 
 var baseURL = require('../BaseURL').getURL();
+const urlEnv = require('../BaseURL').getURLEnv();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 	<a
@@ -256,16 +257,15 @@ class SearchBar extends React.Component {
 
 		let communityLink = 'https://discourse-dev.healthresearch.tools/';
 		if (window.location.href.includes('.www.')) communityLink = 'https://discourse.healthdatagateway.org/';
-
 		let showUatBanner = false;
 		let currentEnv = '';
-		if (baseURL.includes('uat') || baseURL.includes('latest')) {
+		if (urlEnv === 'uat' || urlEnv === 'uatbeta' || urlEnv === 'latest') {
 			showUatBanner = true;
-			if (baseURL.includes('uatbeta')) {
+			if (urlEnv === 'uatbeta') {
 				currentEnv = 'UAT BETA';
-			} else if (baseURL.includes('uat')) {
+			} else if (urlEnv === 'uat') {
 				currentEnv = 'UAT';
-			} else if (baseURL.includes('latest')) {
+			} else if (urlEnv === 'latest') {
 				currentEnv = 'LATEST';
 			}
 		}
