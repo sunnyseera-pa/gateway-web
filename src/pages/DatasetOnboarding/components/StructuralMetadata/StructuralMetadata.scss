@@ -241,3 +241,12 @@
 	color: $dark-red;
 	background-color: $red-light;
 }
+.table-description {
+	width: 230px;
+}
+
+.table-cell {
+	word-break: break-word;
+	white-space: break-spaces;
+	width: 10px;
+}

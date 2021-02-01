@@ -284,7 +284,7 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetaData, st
 
 				{structuralMetaDataErrors.length !== 0 ? (
 					<Row>
-						<p className='dark-red-semibold-20'>Uploaded data errors</p>
+						<p className='dark-red-semibold-20 margin-top-16 margin-left-8'>Uploaded data errors</p>
 						<Col xs={12} s={12} md={12}>
 							<Alert variant='danger'>
 								{structuralMetaDataErrors.map(errors => {
@@ -306,7 +306,7 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetaData, st
 						<thead>
 							<tr className='gray800-14-bold'>
 								<th>Table name</th>
-								<th>Table description</th>
+								<th className="table-description">Table description</th>
 								<th>Column name</th>
 								<th>Column description</th>
 								<th>Data type</th>
@@ -319,20 +319,16 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetaData, st
 					<tbody>
 						{structuralMetaData.map((data, index) => {
 							const filtered = structuralMetaDataErrors.filter(dat => dat.row === index + 1);
-
 							//const reviewCount = data.filter(dat => dat.activeflag === 'review').length
-
-							let test = structuralMetaDataErrors;
-							//debugger
 
 							return (
 								<tr className='gray800-14'>
-									<td className={data.tableName ? "" : "invalid-info"}>{data.tableName}</td>
-									<td className={data.tableDescription ? "" : "invalid-info"}>{data.tableDescription}</td>
-									<td className={data.columnName ? "" : "invalid-info"}>{data.columnName}</td>
-									<td className={data.columnDescription ? "" : "invalid-info"}>{data.columnDescription}</td>
-									<td className={data.dataType ? "" : "invalid-info"}>{data.dataType}</td>
-									<td className={data.sensitive ? "" : "invalid-info"}>{String(data.sensitive)}</td>
+									<td className={_.some(filtered, ["column", "Table name"]) ? "invalid-info table-cell" : "table-cell"}>{data.tableName}</td>
+									<td className={_.some(filtered, ["column", "Table description"]) ? "invalid-info table-cell" : "table-cell"}>{data.tableDescription}</td>
+									<td className={_.some(filtered, ["column", "Column name	"]) ? "invalid-info table-cell" : "table-cell"}>{data.columnName}</td>
+									<td className={_.some(filtered, ["column", "Column description"]) ? "invalid-info table-cell" : "table-cell"}>{data.columnDescription}</td>
+									<td className={_.some(filtered, ["column", "Data type"]) ? "invalid-info table-cell" : "table-cell"}>{data.dataType}</td>
+									<td className={_.some(filtered, ["column", "Sensitive"]) ? "invalid-info table-cell" : "table-cell"}>{String(data.sensitive)}</td>
 								</tr>
 							);
 						})}
