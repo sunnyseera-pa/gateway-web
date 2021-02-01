@@ -225,7 +225,7 @@ const AddEditToolForm = props => {
 													{formik.touched.name && formik.errors.name ? <div className='errorMessages'>{formik.errors.name}</div> : null}
 												</Form.Group>
 
-												<Form.Group>
+												<Form.Group data-test-id='txtType'>
 													<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Type</p>
 													<p className='gray700-13 margin-bottom-0'>Select from existing or enter a new one.</p>
 													<Typeahead
@@ -260,7 +260,7 @@ const AddEditToolForm = props => {
 													) : null}
 												</Form.Group>
 
-												<Form.Group>
+												<Form.Group data-test-id='description'>
 													<div style={{ display: 'inline-block' }}>
 														<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Description</p>
 														<p className='gray700-13 margin-bottom-0'>Include the tool purpose and objective.</p>
@@ -371,7 +371,9 @@ const AddEditToolForm = props => {
 																	formik.values.programmingLanguage.map((p, index) => (
 																		<Fragment>
 																			<Col sm={12} md={8}>
-																				<Form.Group labelKey={`programmingLanguage.${index}.programmingLanguage`}>
+																				<Form.Group
+																					data-test-id={`programmingLanguage.${index}.programmingLanguage`}
+																					labelKey={`programmingLanguage.${index}.programmingLanguage`}>
 																					<Typeahead
 																						id={`programmingLanguage-${index}`}
 																						name={`programmingLanguage.${index}.programmingLanguage`}
@@ -618,7 +620,12 @@ const AddEditToolForm = props => {
 				<Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className='techDetailButton mr-2'>
 					+ Add resource
 				</Button>
-				<Button variant='primary' className='publishButton white-14-semibold mr-2' type='submit' onClick={formik.handleSubmit}>
+				<Button
+					data-test-id='add-tool-publish'
+					variant='primary'
+					className='publishButton white-14-semibold mr-2'
+					type='submit'
+					onClick={formik.handleSubmit}>
 					{props.isEdit ? 'Update' : 'Publish'}
 				</Button>
 			</ActionBar>
