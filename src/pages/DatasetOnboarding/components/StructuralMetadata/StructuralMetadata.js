@@ -253,6 +253,47 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetaData, st
 
 	return (
 		<div className='files'>
+			<Table className='text-size-small gray-800'>
+				<thead>
+					<th className='metadata-field'>Metadata field</th>
+					<th>Completion guidance</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Table name*</td>
+						<td>Name of the table in the dataset. Use a fully qualified name if appropiate</td>
+					</tr>
+					<tr>
+						<td>Table description</td>
+						<td>Description of the table in the dataset</td>
+					</tr>
+					<tr>
+						<td>Column name*</td>
+						<td>Name of the column in the table dataset</td>
+					</tr>
+					<tr>
+						<td>Column description</td>
+						<td>Decription of the column in the table content</td>
+					</tr>
+					<tr>
+						<td>Data type</td>
+						<td>Type of data contained in the column</td>
+					</tr>
+					<tr>
+						<td>Sensitive*</td>
+						<td>
+							Please indicate (True / False) whether the information must be treated as sensitive and may need additional constraints /
+							removal / anonymisation / masking through the data access request process. Definition: An ODRL conformant policy expressing
+							the rights associated with the resource.
+						</td>
+					</tr>
+				</tbody>
+			</Table>
+			<div>
+				<button className='button-tertiary margin-top-8 margin-bottom-24'>
+					Download data dictionary template
+				</button>
+			</div>
 			<div className='files-header'>
 				<div>
 					<input type='file' id='input' hidden ref={hiddenFileInput} onChange={onDescriptionChange} />
@@ -301,12 +342,12 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetaData, st
 					''
 				)}
 
-				<Table bordered responsive size='sm' tdStyle={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+				<Table responsive size='sm' className='margin-top-8'>
 					{structuralMetaData.length !== 0 ? (
 						<thead>
 							<tr className='gray800-14-bold'>
 								<th>Table name</th>
-								<th className="table-description">Table description</th>
+								<th className='table-description'>Table description</th>
 								<th>Column name</th>
 								<th>Column description</th>
 								<th>Data type</th>
@@ -323,12 +364,22 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetaData, st
 
 							return (
 								<tr className='gray800-14'>
-									<td className={_.some(filtered, ["column", "Table name"]) ? "invalid-info table-cell" : "table-cell"}>{data.tableName}</td>
-									<td className={_.some(filtered, ["column", "Table description"]) ? "invalid-info table-cell" : "table-cell"}>{data.tableDescription}</td>
-									<td className={_.some(filtered, ["column", "Column name	"]) ? "invalid-info table-cell" : "table-cell"}>{data.columnName}</td>
-									<td className={_.some(filtered, ["column", "Column description"]) ? "invalid-info table-cell" : "table-cell"}>{data.columnDescription}</td>
-									<td className={_.some(filtered, ["column", "Data type"]) ? "invalid-info table-cell" : "table-cell"}>{data.dataType}</td>
-									<td className={_.some(filtered, ["column", "Sensitive"]) ? "invalid-info table-cell" : "table-cell"}>{String(data.sensitive)}</td>
+									<td className={_.some(filtered, ['column', 'Table name']) ? 'invalid-info table-cell' : 'table-cell'}>
+										{data.tableName}
+									</td>
+									<td className={_.some(filtered, ['column', 'Table description']) ? 'invalid-info table-cell' : 'table-cell'}>
+										{data.tableDescription}
+									</td>
+									<td className={_.some(filtered, ['column', 'Column name	']) ? 'invalid-info table-cell' : 'table-cell'}>
+										{data.columnName}
+									</td>
+									<td className={_.some(filtered, ['column', 'Column description']) ? 'invalid-info table-cell' : 'table-cell'}>
+										{data.columnDescription}
+									</td>
+									<td className={_.some(filtered, ['column', 'Data type']) ? 'invalid-info table-cell' : 'table-cell'}>{data.dataType}</td>
+									<td className={_.some(filtered, ['column', 'Sensitive']) ? 'invalid-info table-cell' : 'table-cell'}>
+										{String(data.sensitive)}
+									</td>
 								</tr>
 							);
 						})}

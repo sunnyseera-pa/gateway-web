@@ -31,7 +31,7 @@
 }
 
 .files {
-	padding: 10px 25px;
+	padding: 0px 25px;
 	&-area {
 		margin-top: 35px;
 	}
@@ -241,12 +241,19 @@
 	color: $dark-red;
 	background-color: $red-light;
 }
-.table-description {
-	width: 230px;
+
+.table {
+	&-description {
+		width: 200px;
+	}
+
+	&-cell {
+		word-break: break-word;
+		white-space: break-spaces;
+		width: 10px;
+	}
 }
 
-.table-cell {
-	word-break: break-word;
-	white-space: break-spaces;
-	width: 10px;
+.metadata-field {
+	width: 200px;
 }

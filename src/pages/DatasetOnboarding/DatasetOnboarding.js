@@ -1441,7 +1441,8 @@ class DatasetOnboarding extends Component {
 								: ''}
 						</div>
 						<div
-							className={`dar__questions ${this.state.activePanelId === 'beforeYouBegin' ? 'pad-bottom-0' : ''}`}
+							className={`dar__questions ${this.state. activePanelId === 'beforeYouBegin' ? 'pad-bottom-0' : ''}
+														${this.state. activePanelId === 'structural' ? 'margin-top-0 noPadding' : ''}`}
 							style={{ backgroundColor: '#ffffff' }}>
 							{this.renderApp()}
 						</div>
