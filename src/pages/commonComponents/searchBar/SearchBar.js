@@ -257,6 +257,8 @@ class SearchBar extends React.Component {
 		let communityLink = 'https://discourse-dev.healthresearch.tools/';
 		if (window.location.href.includes('.www.')) communityLink = 'https://discourse.healthdatagateway.org/';
 
+		let thisEnv = process.env.NODE_ENV;
+
 		let col1Size = 5;
 		let col2Size = 7;
 		if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'development') {
