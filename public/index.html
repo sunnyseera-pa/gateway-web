@@ -7,10 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#000000" />
     <meta name="description" content="The Health Data Research Innovation Gateway is a portal enabling researchers and innovators in academia, industry and the NHS to search for and request access to UK health research data." />
-
     <link rel="stylesheet" href="https://use.typekit.net/xom6vjf.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"></link>
     <title>HDRUK Innovation Gateway | Tools and Artefacts Repository</title>
-
     <script>
         (function (w, a, y, f) {
             var openAthensId = '5614d0c5-9fbf-46a0-8311-baf34df79bdb';
@@ -42,7 +41,20 @@
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-WBJHGN3');</script>
+    })(window,document,'script','dataLayer','GTM-WBJHGN3');
+
+    setTimeout(function () {
+        var a = document.getElementsByTagName('a');
+        var regex = /^https:///i;
+        for(var i = 0; i < a.length; i++){
+            if (a[i].href.indexOf(location.host) == -1 && a[i].href.match(regex)){
+                a[i].onclick = function(){
+                    _gaq.push(['_trackEvent', 'outgoing_links', this.href.replace(regex)]);
+                }
+            }
+        }
+    }, 5000);
+    </script>
     <!-- End Google Tag Manager -->
 </head>
 

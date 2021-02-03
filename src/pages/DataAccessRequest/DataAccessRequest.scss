@@ -2,26 +2,142 @@
 @import '../../css/typography';
 @import '../../css/mixins';
 
+.react-datepicker-wrapper {
+	margin-bottom: 4px;
+}
+
+.active-group {
+	background: #f6f7f8;
+}
+
+.active-group:after{
+	position: absolute;
+	top: 0;
+	right: 0;
+	content: '';
+	height: 100%;
+	width: 4px;
+	background: $teal;
+}
+
+.warning {
+	color: #f0bb24;
+}
+
+.success {
+	color: #3db28c;
+}
+
+.danger {
+	color: #dc3645;
+}
+
+.alert {
+	margin-bottom: 8px !important;
+	font-size: 14px;
+	padding: 12px 1.25rem;
+	
+  &-warning {
+    border:2px solid #f0bb24 !important;
+	}
+	
+	&-success {
+		border: 2px solid #3db28c !important
+	}
+
+	&-danger {
+		border: 2px solid #dc3645 !important;
+		i {
+			color: #dc3645;
+		}
+	}
+
+  &-wrap {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    & > div:first-child {
+      margin-right: auto;
+		}
+		& > div:nth-child(2) {
+			cursor: pointer;
+			font-weight: bold;
+			text-align: right;
+		}
+  }
+}
+
+.toolTip {
+	position: relative;
+	display: inline-block;
+	padding: 0 5px;
+}
+
+.toolTip .toolTipText {
+	visibility: hidden;
+	position: absolute;
+	width: 120px;
+	background-color: #222;
+	font-size: 12px;
+	color: #fff;
+	text-align: center;
+	padding: 5px 0;
+	border-radius: 6px;
+	z-index: 1;
+	opacity: 0;
+	transition: opacity .4s;
+}
+
+.toolTip i:hover + .toolTipText { 
+	visibility: visible;
+  opacity: 1;
+}
+
+span.toolTipText:after {
+	content: "";
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	margin-left: -5px;
+	border-width: 5px;
+	border-style: solid;
+	border-color: #222 transparent transparent transparent;
+}
+
+.toolTip-top {
+	bottom: 125%;
+	left: 50%;
+	margin-left: -60px;
+}
+
 .section-header {
 	cursor: pointer;
-	margin-left: 33px;
+	margin-left: 26px;
 	margin-top: 8px;
 	margin-bottom: 16px;
 	font-size: 16px;
+
+	display: grid;
+	grid-template-columns: 190px 1fr;
+	box-sizing: border-box;
+
+	&-active {
+		cursor: pointer !important;
+		opacity: 1 !important;
+		margin-left: 30px;
+		margin-top: 0px;
+		margin-bottom: 0px;
+		font-size: 16px;
+		font-weight: 700;
+		display: grid;
+		grid-template-columns: 185px 1fr;
+		box-sizing: border-box;
+	}
 }
 
 .section-not-inreview {
 	color: $gray-600 !important;
-}
-
-.section-header-active {
-	cursor: pointer !important;
-	opacity: 1 !important;
-	margin-left: 33px;
-	margin-top: 0px;
-	margin-bottom: 0px;
-	font-size: 16px;
-	font-weight: 700;
 }
 
 .section-subheader {
@@ -38,6 +154,20 @@
 
 .section-subheader li:last-child {
 	margin-bottom: 8px;
+}
+
+.dar-nav-item {
+	display: grid;
+	grid-template-columns: 170px 1fr;
+	span {
+		i {
+			font-size: 8px;
+		}
+	}
+	span:nth-child(2) {
+		margin-top: -3px;
+		margin-left: 3px;
+	}
 }
 
 .dar-nav-item + .dar-nav-item {
@@ -140,6 +270,40 @@
 	background-color: $white;
 	max-height: calc(100vh - 169px);
 	margin-left: 1px;
+	header {
+		padding: 0 24px 15px 24px;
+		display: flex;
+		border-bottom: 1px solid rgba(0, 0, 0, 0.09);
+		flex-flow: row nowrap;
+		align-items: center;
+		svg {
+			cursor: pointer;
+		}
+		div {
+			display: flex;
+			flex-flow: row;
+			margin-right: auto;
+			align-items: center;
+			p {
+				margin: 0;
+			}
+			i {
+				font-size: 16px;
+				font-weight: 500;
+				color: $purple;
+			}
+		}
+	}
+	main {
+		padding: 24px;
+	}
+	&-guidance {
+		height: 40vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		@include font-source(14px, $gray-700, $font-weight-semibold);
+	}
 }
 
 @media (min-width: 769px) and (max-width: 1160px) {
@@ -240,13 +404,12 @@
 }
 
 input[type=text]:disabled {
-		background-color: #eee !important;
-	
+		background-color: #eee !important;	
 }
 
-input[type=text]:disabled,
-input[type=checkbox]:disabled,
-input[type=radio]:disabled {
+input[type='text']:disabled,
+input[type='checkbox']:disabled,
+input[type='radio']:disabled {
 	&:after {
 		background-color: #eee !important;
 	}
@@ -254,7 +417,7 @@ input[type=radio]:disabled {
 
 .dar {
 	&__header {
-		padding: 24px;
+		padding: 24px 25px;
 
 		p {
 			margin-bottom: 0;
@@ -277,11 +440,6 @@ input[type=radio]:disabled {
 		padding-left: 8px !important;
 		padding-right: 8px !important;
 	}
-
-	// &__questions .form-group {
-	// 	padding-left: 16px !important;
-	// 	padding-right: 16px !important;
-	// }
 
 	&__questions .card-body .form-group {
 		padding-left: 0 !important;
@@ -370,7 +528,7 @@ input[type=radio]:disabled {
 	}
 
 	&--questions {
-		flex: 2 0 0;
+		flex: 1 0 0;
 		@include font-source(14px, $gray-800, $font-weight-semibold);
 		p {
 			margin-bottom: 0;
@@ -440,10 +598,10 @@ input[type=radio]:disabled {
 }
 
 .dar-form {
-	padding: 0 10px;
+	// padding: 0 10px;
 	h3 {
+		padding: 0 25px;
 		white-space: pre-line;
-		padding: 0 15px;
 		@include font-source(14px, $gray-dark, $font-weight-semibold);
 		line-height: 21px;
 		white-space: pre-line;
@@ -451,21 +609,30 @@ input[type=radio]:disabled {
 
 	h4 {
 		margin-bottom: 0;
-		padding: 16px 16px;
+		padding: 16px 25px;
 		@include font-source(17px, $gray-dark, $font-weight-bold);
 	}
 
-	.form-group {
-		padding: 10px 16px;
-		transition: all 0.2s ease-in-out;
+	.form-control {
+		margin-bottom: 8px;
+	}
 
-		&:hover {
-			background: $gray-200;
-		}
+	.form-group-nested {
+		border-left: 4px solid $gray-400;
+	}
+
+	.form-group {
+		position: relative;
+		margin-bottom: 2px;
+		// padding: 5px 16px 0 16px;
+		transition: all 0.2s ease-in-out;
+		box-sizing: border-box;
 
 		label {
 			@include font-source(14px, $gray-800, $font-weight-semibold);
 			margin-bottom: 5px;
+			width: 90%;
+			white-space: pre-line;
 		}
 	}
 }
@@ -553,9 +720,46 @@ input[type=radio]:disabled {
 	width: 85px;
 }
 
+.action-control {
+	display: flex;
+	flex-flow: row;
+	align-items: center;
+	justify-content: center;
+	padding: 8px 0px;
+	position: absolute;
+	top: -8px;
+	right: 25px;
+	visibility: hidden;
+	cursor: pointer;
+	min-width: 32px;
+	height: 32px;
+	opacity:0;
+	transition: visibility 0.55s linear, opacity 0.35s ease-in-out;
+	
+	& > i {
+		padding: 0 5px;
+	}
+}
+
 .form-group .addFormInputTypeAhead {
 	height: min-content !important;
 	min-height: 40px;
+}
+
+.question-wrap {
+	position: relative;
+	margin-bottom: 0;
+	padding: 3px 25px 3px 25px;
+
+	&:hover {
+		background: #f6f7f8;
+		> .action-control {
+			visibility: visible;
+			opacity:1;
+			background: $white;
+			box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03);
+		}
+	}
 }
 
 .addFormInputTypeAhead .dropdown-item.active,
@@ -617,13 +821,14 @@ input[type='checkbox']:after {
 
 .makeADecisionDropdown {
 	position: relative;
-    width: 320px !important;
-    max-height: 314px !important;	
-    box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03) !important;
-    background-color: $white !important;
-		padding: 12px 16px 12px 16px !important;
+	left:-87px !important;
+	width: 320px !important;
+	max-height: 314px !important;
+	box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03) !important;
+	background-color: $white !important;
+	padding: 12px 16px 12px 16px !important;
 
-	option {
+	.option {
 		padding: 4px 0;
 	}
 }
@@ -635,22 +840,21 @@ input[type='checkbox']:after {
 	z-index: 1;
 	padding-left: 16px;
 	padding-right: 16px;
-
 }
 
 .review-phase {
 	margin-bottom: 20px;
 	position: relative;
 
-	option {
+	.option {
 		padding: 4px 0;
 	}
 
 	&:after {
 		position: absolute;
-    bottom: -8px;
-    left: -15px;
-    height: 1px;
+		bottom: -8px;
+		left: -15px;
+		height: 1px;
 		background: $gray-pale;
 		width: 316px;
 		z-index: 1000;

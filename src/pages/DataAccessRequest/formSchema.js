@@ -211,7 +211,8 @@ export const formSchema = {
           "index": 100,
           "questionSetId": "addApplicant"
         }
-      ]
+      ],
+      
     },
     {
       "panelId": "organisationconductingthestudy",
@@ -1984,5 +1985,6 @@ export const formSchema = {
         "guidance": "Some safe project guidance."
       }]
     }
-  ]
+  ],
+  "questionActions": []
 };
