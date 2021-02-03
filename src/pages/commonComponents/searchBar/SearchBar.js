@@ -14,11 +14,12 @@ import { ReactComponent as ArrowDownSvg } from '../../../images/stock.svg';
 import { ReactComponent as WhiteArrowDownSvg } from '../../../images/arrowDownWhite.svg';
 import { NotificationContainer, NotificationManager } from 'react-notifications';
 import './SearchBar.scss';
-
+import '../uatBanner/UatBanner.scss';
 import moment from 'moment';
 import { cmsURL } from '../../../configs/url.config';
 
 var baseURL = require('../BaseURL').getURL();
+const urlEnv = require('../BaseURL').getURLEnv();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 	<a
@@ -254,16 +255,34 @@ class SearchBar extends React.Component {
 			'December',
 		];
 
-        let communityLink = 'https://discourse-dev.healthresearch.tools/';
-        if (window.location.href.includes('.www.')) 
-            communityLink = 'https://discourse.healthdatagateway.org/';
+		let communityLink = 'https://discourse-dev.healthresearch.tools/';
+		if (window.location.href.includes('.www.')) communityLink = 'https://discourse.healthdatagateway.org/';
+		let showUatBanner = false;
+		let currentEnv = '';
+		if (urlEnv === 'uat' || urlEnv === 'uatbeta' || urlEnv === 'latest') {
+			showUatBanner = true;
+			if (urlEnv === 'uatbeta') {
+				currentEnv = 'UAT BETA';
+			} else if (urlEnv === 'uat') {
+				currentEnv = 'UAT';
+			} else if (urlEnv === 'latest') {
+				currentEnv = 'LATEST';
+			}
+		}
+
+		let col1Size = 5;
+		let col2Size = 7;
+		if (showUatBanner === true) {
+			col1Size = 6;
+			col2Size = 6;
+		}
 
 		return (
 			<Fragment>
 				<nav className={classnames('navbarShown', { navbarHidden: !this.state.visible })}>
 					<div className='searchBarBackground' id='desktopSearchBar'>
 						<Row className='whiteBackground'>
-							<Col lg={5}>
+							<Col lg={col1Size}>
 								<div className='navBarLogoSpacing'>
 									<a style={{ cursor: 'pointer' }} href={cmsURL}>
 										<ColourLogoSvg className='ml-4 mt-3' />
@@ -275,18 +294,32 @@ class SearchBar extends React.Component {
 									</a>
 								</div>
 								<div className='navBarLinkSpacing'>
-                                    <a href={communityLink} className="black-14" data-test-id='lnkCommunity'>
-                                        Community
-                                    </a>
+									<a href={communityLink} className='black-14' data-test-id='lnkCommunity'>
+										Community
+									</a>
 								</div>
 								<div className='navBarLinkSpacing'>
 									<a href={'/dashboard'} className='black-14' data-test-id='lnkPublicDashboard'>
 										Dashboard
 									</a>
 								</div>
+								{showUatBanner === true && (
+									<div class='uatSearchBarBanner uatBannerText'>
+										<span class='verticalMiddle'>
+											{currentEnv}
+											<br />
+											<a
+												class='floatRight uatBannerText'
+												href='https://discourse.healthdatagateway.org/t/using-the-uat-environment/451'
+												target='_blank'>
+												Read more
+											</a>
+										</span>
+									</div>
+								)}
 							</Col>
 
-							<Col lg={7} className='text-right'>
+							<Col lg={col2Size} className='text-right'>
 								<div className='nav-wrapper'>
 									<div className='navBarSearchBarSpacing'>
 										<Container>
@@ -382,6 +415,41 @@ class SearchBar extends React.Component {
 																							) : (
 																								''
 																							)}
+																						</Col>
+																						<Col xs={2}>
+																							{dat.isRead === 'false' && !clearMessage ? (
+																								<SVGIcon
+																									name='newnotificationicon'
+																									width={20}
+																									height={20}
+																									visble='true'
+																									style={{
+																										float: 'right',
+																										fill: '#3db28c',
+																										paddingRight: '0px',
+																										marginRight: '10px',
+																										marginTop: '5px',
+																									}}
+																									fill={'#3db28c'}
+																									stroke='none'
+																								/>
+																							) : null}
+																						</Col>
+																					</Row>
+																					<Dropdown.Divider style={{ margin: '0px' }} />
+																				</Fragment>
+																			);
+																		} else if (dat.messageType === 'workflow') {
+																			return (
+																				<Fragment key={`message-${index}`}>
+																					<Row className={dat.isRead === 'true' || clearMessage ? 'notificationReadBackground' : ''}>
+																						<Col xs={10}>
+																							<div className='notificationDate'>{messageDateString + '\n'}</div>
+																							<div className='notificationInfoHolder'>
+																								<a href={`/account?tab=workflows`} class='notificationInfo'>
+																									{dat.messageDescription}
+																								</a>
+																							</div>
 																						</Col>
 																						<Col xs={2}>
 																							{dat.isRead === 'false' && !clearMessage ? (
@@ -615,7 +683,9 @@ class SearchBar extends React.Component {
 												return (
 													<Dropdown data-test-id='ddUserNavigation'>
 														<Dropdown.Toggle as={CustomToggle}>
-															<span className='black-14' data-test-id='lblUserName'>{userState[0].name}</span>
+															<span className='black-14' data-test-id='lblUserName'>
+																{userState[0].name}
+															</span>
 															<span className='accountDropDownGap'></span>
 															<ArrowDownSvg />
 														</Dropdown.Toggle>
@@ -643,17 +713,20 @@ class SearchBar extends React.Component {
 															<Dropdown.Item href='/account?tab=courses' className='black-14' data-test-id='optCourses'>
 																Courses
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=dataaccessrequests' className='black-14' data-test-id='optDataAccessRequests'>
+															<Dropdown.Item
+																href='/account?tab=dataaccessrequests'
+																className='black-14'
+																data-test-id='optDataAccessRequests'>
 																Data access requests
 															</Dropdown.Item>
 															<Dropdown.Item href='/account?tab=collections' className='black-14' data-test-id='optCollections'>
 																Collections
 															</Dropdown.Item>
-															{userState[0].role === 'Admin' &&
+															{userState[0].role === 'Admin' && (
 																<Dropdown.Item href='/account?tab=usersroles' className='black-14' data-test-id='optUsersRoles'>
 																	Users and roles
 																</Dropdown.Item>
-															}
+															)}
 															<Dropdown.Item onClick={this.logout} className='black-14' data-test-id='optLogout'>
 																Logout
 															</Dropdown.Item>
@@ -696,6 +769,14 @@ class SearchBar extends React.Component {
 										</Dropdown.Toggle>
 
 										<Dropdown.Menu as={CustomMenu} className='mobileLoginMenu'>
+											{showUatBanner === true && (
+												<Dropdown.Item href='https://discourse.healthdatagateway.org/t/using-the-uat-environment/451' target='_blank'>
+													<span class='uatMobileSearchBarBanner uatBannerText'>
+														{currentEnv}
+														<span class='floatRight'>Read more</span>
+													</span>
+												</Dropdown.Item>
+											)}
 											<Dropdown.Item className='black-14' href={cmsURL + '/pages/about'}>
 												About
 											</Dropdown.Item>
@@ -779,7 +860,6 @@ class SearchBar extends React.Component {
 																<ColourLogoSvg className='ml-4 mt-3' />
 															</a>
 														</div>
-
 														<div className='navBarSearchIconHolder'>
 															<a href='#' onClick={this.showSearchBar}>
 																<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />

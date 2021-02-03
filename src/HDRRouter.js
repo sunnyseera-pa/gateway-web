@@ -147,19 +147,19 @@ class HDRRouter extends Component {
 						<GuardedRoute path='/account' component={Account} userState={userState} />
 						<GuardedRoute path='/addcollection' component={AddCollectionPage} userState={userState} />
 						<GuardedRoute path='/editcollection/:collectionID' component={EditCollectionPage} userState={userState} />
-						<GuardedRoute path='/collection/:collectionID' component={CollectionPage} userState={userState} />
+						<Route path='/collection/:collectionID' render={props => <CollectionPage {...props} userState={userState} />} />
 						<GuardedRoute path='/tool/add' component={AddEditToolPage} userState={userState} />
 						<GuardedRoute path='/tool/edit/:toolID' component={AddEditToolPage} userState={userState} />
-						<GuardedRoute path='/tool/:toolID' component={ToolPage} userState={userState} />
+						<Route path='/tool/:toolID' render={props => <ToolPage {...props} userState={userState} />} />
 						<GuardedRoute path='/project/add' component={AddEditProjectPage} userState={userState} />
 						<GuardedRoute path='/project/edit/:projectID' component={AddEditProjectPage} userState={userState} />
-						<GuardedRoute path='/project/:projectID' component={ProjectPage} userState={userState} />
+						<Route path='/project/:projectID' render={props => <ProjectPage {...props} userState={userState} />} /> 
 						<GuardedRoute path='/paper/add' component={AddEditPaperPage} userState={userState} />
 						<GuardedRoute path='/paper/edit/:paperID' component={AddEditPaperPage} userState={userState} />
-						<GuardedRoute path='/paper/:paperID' component={PaperPage} userState={userState} />
+						<Route path='/paper/:paperID' render={props => <PaperPage {...props} userState={userState} />} />
 						<GuardedRoute path='/course/add' component={AddEditCoursePage} userState={userState} />
 						<GuardedRoute path='/course/edit/:courseID' component={AddEditCoursePage} userState={userState} />
-						<GuardedRoute path='/course/:courseID' component={CoursePage} userState={userState} />
+						<Route path='/course/:courseID' render={props => <CoursePage {...props} userState={userState} />} />
 						<Redirect to='/search?search=' />
 					</Switch>
 				</div>
