@@ -584,6 +584,7 @@ textarea:focus {
 .react-datepicker__input-container {
 	display: block;
 	width: 100%;
+	max-width: 480px;
 }
 
 .react-datepicker__input-container input {
