@@ -98,7 +98,8 @@ class DatasetDetail extends Component {
 		emptyFieldsCount: 0,
 		linkedDatasets: [],
 		publisherLogoURL: '',
-		isLatestVersion: true,
+        isLatestVersion: true,
+        isDatasetArchived:false
 	};
 
 	topicContext = {};
@@ -147,6 +148,7 @@ class DatasetDetail extends Component {
 					v2data: res.data.data.datasetv2,
 					isLoading: false,
 					isLatestVersion: res.data.isLatestVersion,
+					isDatasetArchived: res.data.isDatasetArchived,
 				});
 				this.getTechnicalMetadata();
 				this.getCollections();
@@ -187,11 +189,24 @@ class DatasetDetail extends Component {
 				if (!res.data.isLatestVersion) {
 					this.setState({
 						alert: {
-							type: 'warning',
+							type: 'warning', 
 							message: (
 								<Fragment>
 									You are viewing an old version of this dataset. Click <a href={'/dataset/' + res.data.data.pid}>here</a> for the latest
 									version.
+								</Fragment>
+							),
+						},
+					});
+                }
+                
+				if (res.data.isDatasetArchived) {
+					this.setState({
+						alert: {
+							type: 'warning',
+							message: (
+								<Fragment>
+									The dataset that you are viewing has been archived and there is no active versions.
 								</Fragment>
 							),
 						},
@@ -793,7 +808,7 @@ class DatasetDetail extends Component {
 											</span>
 										</Col>
 
-										{this.state.isLatestVersion && (
+										{this.state.isLatestVersion && !this.state.isDatasetArchived && (
 											<Col sm={6} className='text-right'>
 												{!userState[0].loggedIn ? (
 													<button className='btn button-tertiary dark-14 float-right' onClick={() => this.showLoginModal(data.name)}>
