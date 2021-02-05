@@ -65,41 +65,21 @@ export const CollectionPage = props => {
 				props.history.push({ pathname: '/search?search=', search: '' });
 			} else {
 				setCollectionData(res.data.data[0]);
-				await getObjectData(res.data.data[0]);
-				countEntities();
-
+				await getObjectData();
 				setIsLoading(false);
 			}
 		});
 	};
 
-	const getObjectData = async data => {
+	const getObjectData = async () => {
 		setIsLoading(true);
-		for (const object of data.relatedObjects) {
-			await genericGetEntityData(object);
-		}
-	};
-
-	const genericGetEntityData = async object => {
-		setIsLoading(true);
-		const entityID = object.objectId;
-		let entityType = object.objectType;
-		let objectsToAdd = objectData;
-		//Pluralise all entity types except person and course
-		if (entityType !== 'person' && entityType !== 'course') {
-			entityType += 's';
-		}
-		await axios.get(baseURL + '/api/v1/' + entityType + '/' + entityID).then(async res => {
-			//extract standard result object from api
-			let result = entityType === 'datasets' ? res.data.data : entityType === 'person' ? res.data.person : res.data.data[0];
-			objectsToAdd.push(result);
-			if (result.activeflag === 'active' || (result.activeflag === 'review' && result.authors.includes(userState[0].id))) {
-				setObjectData(objectsToAdd);
-			}
+		await axios.get(baseURL + '/api/v1/collections/relatedobjects/' + props.match.params.collectionID).then(async res => {
+			setObjectData(res.data.data);
+			countEntities(res.data.data);
 		});
 	};
 
-	const countEntities = () => {
+	const countEntities = objectData => {
 		const entityCounts = objectData.reduce((entityCountsByType, currentValue) => {
 			let type = currentValue.type;
 			if (!entityCountsByType.hasOwnProperty(type)) {
