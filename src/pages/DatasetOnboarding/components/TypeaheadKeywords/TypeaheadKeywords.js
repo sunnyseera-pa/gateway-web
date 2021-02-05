@@ -5,11 +5,11 @@ import axios from 'axios';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { baseURL } from '../../../../configs/url.config';
 
-class TypaheadUser extends React.Component {
+class TypeaheadKeywords extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            value: [],
+            value: props.value,
             options: [],
             id: props.id,
             readOnly: props.readOnly || false,
@@ -30,7 +30,20 @@ class TypaheadUser extends React.Component {
     }
 
     getData() {
-        axios
+        axios.get(baseURL + '/api/v1/search/filter/feature/dataset').then(res => {
+
+            this.setState({
+                options: res.data.data[0].sort(function (a, b) {
+                    return a.toUpperCase() < b.toUpperCase() ? -1 : a.toUpperCase() > b.toUpperCase() ? 1 : 0;
+                })
+            });
+
+        })
+            .catch(err => {
+                alert('Failed to fetch users');
+            });
+
+        /* axios
             .get(`${baseURL}/api/v1/users`)
             .then(res => {
                 let id;
@@ -46,16 +59,16 @@ class TypaheadUser extends React.Component {
             })
             .catch(err => {
                 alert('Failed to fetch users');
-            });
+            }); */
     }
 
     handleChange(e) {
-        let user = '';
-        if (e.length > 0) [user] = e;
+        let user = e;
+        //if (e.length > 0) [user] = e;
 
         this.setState(
             {
-                value: user ? [user] : [],
+                value: user,
             },
             this.props.onChange.bind(null, user)
         );
@@ -64,23 +77,19 @@ class TypaheadUser extends React.Component {
     render() {
         return (
             <Typeahead
-                id={'test'}
                 className={this.state.className}
                 options={this.state.options}
                 onChange={this.handleChange}
                 selected={this.state.value}
                 minLength={3}
-                filterBy={['name']}
                 multiple
+                allowNew
                 disabled={this.state.readOnly}
                 defaultSelected={this.state.value}
-                labelKey={options => `${options.name}`}
+                labelKey={options => `${options}`}
                 renderMenuItemChildren={(option, props) => (
                     <div className='userOption'>
-                        <div>{option.name}</div>
-                        <div>
-                            <span>{option.bio || 'Institution not set'}</span> <span>{option.orcid || 'No ORCID'}</span>
-                        </div>
+                        <div>{option}</div>
                     </div>
                 )}
             />
@@ -88,7 +97,7 @@ class TypaheadUser extends React.Component {
     }
 }
 
-TypaheadUser.defaultProps = {
+TypeaheadKeywords.defaultProps = {
     id: '',
     options: [],
     onChange: () => { },
@@ -96,4 +105,4 @@ TypaheadUser.defaultProps = {
     onBlur: () => { },
 };
 
-export default TypaheadUser;
+export default TypeaheadKeywords;
