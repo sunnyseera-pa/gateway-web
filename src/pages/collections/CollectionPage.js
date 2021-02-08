@@ -19,6 +19,7 @@ import './Collections.scss';
 export const CollectionPage = props => {
 	const [collectionData, setCollectionData] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
+	const [isResultsLoading, setIsResultsLoading] = useState(true);
 	const [toolCount, setToolCount] = useState(0);
 	const [datasetCount, setDatasetCount] = useState(0);
 	const [personCount, setPersonCount] = useState(0);
@@ -65,18 +66,18 @@ export const CollectionPage = props => {
 				props.history.push({ pathname: '/search?search=', search: '' });
 			} else {
 				setCollectionData(res.data.data[0]);
-				await getObjectData();
+				getObjectData();
 				setIsLoading(false);
 			}
 		});
 	};
 
 	const getObjectData = async () => {
-		setIsLoading(true);
 		await axios.get(baseURL + '/api/v1/collections/relatedobjects/' + props.match.params.collectionID).then(async res => {
 			setObjectData(res.data.data);
 			countEntities(res.data.data);
 		});
+		setIsResultsLoading(false);
 	};
 
 	const countEntities = objectData => {
@@ -290,6 +291,13 @@ export const CollectionPage = props => {
 			</div>
 
 			<Container className='resource-card'>
+				{isResultsLoading && (
+					<Row className='width-100'>
+						<Col xs={12} className='noPadding'>
+							<Loading />
+						</Col>
+					</Row>
+				)}
 				<Row>
 					<Col sm={1} lg={1} />
 					<Col sm={10} lg={10}>
