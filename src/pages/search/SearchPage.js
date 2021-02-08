@@ -10,6 +10,7 @@ import { Container, Row, Col, Tabs, Tab, Pagination, Dropdown } from 'react-boot
 
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
+import CollectionCard from '../commonComponents/collectionCard/CollectionCard';
 import Loading from '../commonComponents/Loading';
 import Filters from './Filters';
 import NoResults from '../commonComponents/NoResults';
@@ -43,6 +44,8 @@ class SearchPage extends React.Component {
 		paperData: [],
 		personData: [],
 		courseData: [],
+		//TODO
+		collectionData: [],
 		filterOptions: [],
 		allFilters: [],
 		licensesSelected: [],
@@ -545,6 +548,8 @@ class SearchPage extends React.Component {
 				paperData: res.data.paperResults || [],
 				personData: res.data.personResults || [],
 				courseData: res.data.courseResults || [],
+				// TODO
+				collectionData: res.data.collectionResults || [],
 				summary: res.data.summary || [],
 				isLoading: false,
 				isResultsLoading: false,
@@ -574,6 +579,8 @@ class SearchPage extends React.Component {
 			else if (this.state.key === 'Papers') this.setState({ paperSort: sort, isResultsLoading: true });
 			else if (this.state.key === 'People') this.setState({ personSort: sort, isResultsLoading: true });
 			else if (this.state.key === 'Courses') this.setState({ courseSort: sort, isResultsLoading: true });
+			//TODO - add sort fo collections? - just default sort by...
+			// else if (this.state.key === 'Collections') this.setState({ collectionSort: sort, isResultsLoading: true });
 			resolve();
 		});
 
@@ -622,6 +629,7 @@ class SearchPage extends React.Component {
 			paperData,
 			personData,
 			courseData,
+			collectionData,
 			filterOptions,
 			allFilters,
 			userState,
@@ -692,6 +700,8 @@ class SearchPage extends React.Component {
 		var paperCount = summary.papers || 0;
 		var personCount = summary.persons || 0;
 		var courseCount = summary.courses || 0;
+		//TODO
+		var collectionCount = summary.collections || 0;
 
 		if (key === '' || typeof key === 'undefined') {
 			if (datasetCount > 0) {
@@ -718,7 +728,8 @@ class SearchPage extends React.Component {
 		if (key === 'Papers' && paperCount === 0) showSort = false;
 		if (key === 'People' && personCount === 0) showSort = false;
 		if (key === 'Courses') showSort = false;
- 
+		if (key === 'Collections') showSort = false;
+
 		let datasetPaginationItems = [];
 		let toolPaginationItems = [];
 		let projectPaginationItems = [];
@@ -806,6 +817,8 @@ class SearchPage extends React.Component {
 								<Tab eventKey='Datasets' title={'Datasets (' + datasetCount + ')'} />
 								<Tab eventKey='Tools' title={'Tools (' + toolCount + ')'} />
 								<Tab eventKey='Projects' title={'Projects (' + projectCount + ')'} />
+								{/* TODO */}
+								<Tab eventKey='Collections' title={'Collections (' + collectionCount + ')'} />
 								<Tab eventKey='Courses' title={'Courses (' + courseCount + ')'} />
 								<Tab eventKey='Papers' title={'Papers (' + paperCount + ')'} />
 								<Tab eventKey='People' title={'People (' + personCount + ')'}>
@@ -1733,6 +1746,30 @@ class SearchPage extends React.Component {
 										}
 									})()}
 
+									{/* TODO - add in collection results search to collections tab */}
+									{key === 'Collections' ? (
+										collectionCount <= 0 && !isResultsLoading ? (
+											<NoResults type='collections' searchString={searchString} />
+										) : (
+											collectionData.map(collection => {
+												console.log(`collection: ${JSON.stringify(collection, null, 2)}`);
+												return (
+													<CollectionCard data={collection} />
+
+													// <RelatedObject
+													// 	key={paper.id}
+													// 	data={paper}
+													// 	activeLink={true}
+													// 	onSearchPage={true}
+													// 	updateOnFilterBadge={this.updateOnFilterBadge}
+													// />
+												);
+											})
+										)
+									) : (
+										''
+									)}
+
 									<div className='text-center'>
 										{key === 'Datasets' && datasetCount > maxResult ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
 
@@ -1745,6 +1782,8 @@ class SearchPage extends React.Component {
 										{key === 'People' && personCount > maxResult ? <Pagination>{personPaginationItems}</Pagination> : ''}
 
 										{key === 'Courses' && courseCount > maxResult ? <Pagination>{coursePaginationItems}</Pagination> : ''}
+
+										{/* TODO - add pagination for collections  */}
 									</div>
 								</Col>
 							) : (
