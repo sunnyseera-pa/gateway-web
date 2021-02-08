@@ -236,3 +236,9 @@
 	align-items: center;
 	justify-content: center;
 }
+
+.all-files-user {
+	display: grid;
+	grid-template-columns: 1fr auto auto;
+	column-gap: 0.5em;
+}
