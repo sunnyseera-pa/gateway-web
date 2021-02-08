@@ -98,8 +98,8 @@ class DatasetDetail extends Component {
 		emptyFieldsCount: 0,
 		linkedDatasets: [],
 		publisherLogoURL: '',
-        isLatestVersion: true,
-        isDatasetArchived:false
+		isLatestVersion: true,
+		isDatasetArchived: false,
 	};
 
 	topicContext = {};
@@ -189,7 +189,7 @@ class DatasetDetail extends Component {
 				if (!res.data.isLatestVersion) {
 					this.setState({
 						alert: {
-							type: 'warning', 
+							type: 'warning',
 							message: (
 								<Fragment>
 									You are viewing an old version of this dataset. Click <a href={'/dataset/' + res.data.data.pid}>here</a> for the latest
@@ -198,17 +198,13 @@ class DatasetDetail extends Component {
 							),
 						},
 					});
-                }
-                
+				}
+
 				if (res.data.isDatasetArchived) {
 					this.setState({
 						alert: {
 							type: 'warning',
-							message: (
-								<Fragment>
-									The dataset that you are viewing has been archived and there is no active versions.
-								</Fragment>
-							),
+							message: <Fragment>The dataset that you are viewing has been archived and there is no active versions.</Fragment>,
 						},
 					});
 				}
@@ -289,6 +285,10 @@ class DatasetDetail extends Component {
 			_.isEmpty(v2data.summary.publisher.deliveryLeadTime) &&
 			_.isEmpty(v2data.summary.publisher.accessRequestCost) &&
 			_.isEmpty(v2data.summary.publisher.accessService) &&
+			_.isEmpty(v2data.accessibility.access.accessRequestCost) &&
+			_.isEmpty(v2data.accessibility.access.accessRights) &&
+			_.isEmpty(v2data.accessibility.access.deliveryLeadTime) &&
+			_.isEmpty(v2data.accessibility.access.accessService) &&
 			_.isEmpty(v2data.accessibility.access.jurisdiction) &&
 			_.isEmpty(v2data.summary.publisher.accessService.dataUseLimitation) &&
 			_.isEmpty(v2data.summary.publisher.accessService.dataUseRequirements) &&
@@ -377,6 +377,10 @@ class DatasetDetail extends Component {
 			v2data.summary.publisher.accessRequestCost,
 			v2data.summary.publisher.accessService,
 			v2data.accessibility.access.jurisdiction,
+			v2data.accessibility.access.accessRequestCost,
+			v2data.accessibility.access.accessRights,
+			v2data.accessibility.access.deliveryLeadTime,
+			v2data.accessibility.access.accessService,
 			v2data.summary.publisher.accessService.dataUseLimitation,
 			v2data.summary.publisher.accessService.dataUseRequirements,
 			v2data.accessibility.access.dataController,
