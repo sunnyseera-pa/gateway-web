@@ -17,7 +17,7 @@ import _ from 'lodash';
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const initialValues = {
-	documentLinks: {
+	document_links: {
 		doi: [''],
 		pdf: [''],
 		html: [''],
@@ -33,9 +33,9 @@ class DocumentLinks {
 }
 
 const validateSchema = Yup.object().shape({
-	documentLinks: Yup.array().of(
+	document_links: Yup.array().of(
 		Yup.object().shape({
-			doi: Yup.array().of(Yup.string().min(5,'This cannot be empty').required('This cannot be empty')),
+			doi: Yup.array().of(Yup.string().min(5, 'This cannot be empty').required('This cannot be empty')),
 		})
 	),
 });
@@ -48,13 +48,11 @@ const AddEditPaperForm = props => {
 			id: props.data.id || '',
 			type: 'paper',
 			name: props.data.name || '',
-			documentLinks: [
-				{
-					doi: [''],
-					pdf: [''],
-					html: [''],
-				},
-			],
+			document_links: {
+				doi: [''],
+				pdf: [''],
+				html: [''],
+			},
 			journal: props.data.journal || '',
 			journalYear: props.data.journalYear || '',
 			description: props.data.description || '',
@@ -71,11 +69,9 @@ const AddEditPaperForm = props => {
 		validationSchema: Yup.object({
 			name: Yup.string().required('This cannot be empty'),
 			description: Yup.string().max(3000, 'Maximum of 3,000 characters').required('This cannot be empty'),
-			documentLinks: Yup.array().of(
-				Yup.object().shape({
-					doi: Yup.array().of(Yup.string().min(5,'This cannot be empty').required('This cannot be empty')),
-				})
-			),
+			document_links: Yup.object().shape({
+				doi: Yup.array().of(Yup.string().min(5, 'This cannot be empty').required('This cannot be empty')),
+			}),
 			resultsInsights: Yup.string().max(3000, 'Maximum of 3,000 characters'),
 			authors: Yup.string().required('This cannot be empty'),
 			isPreprint: Yup.bool(),
@@ -92,6 +88,7 @@ const AddEditPaperForm = props => {
 		onSubmit: values => {
 			values.relatedObjects = props.relatedObjects;
 			values.toolCreator = props.userState[0];
+			console.log('values', values);
 
 			if (props.isEdit) {
 				axios.put(baseURL + '/api/v1/papers/' + props.data.id, values).then(res => {
@@ -193,7 +190,7 @@ const AddEditPaperForm = props => {
 
 	const relatedResourcesRef = React.useRef();
 
-	console.log('formik.values.documentLinks', formik.values.documentLinks);
+	console.log('formik.values.document_links', formik.values.document_links);
 	return (
 		<div>
 			<Container>
@@ -248,51 +245,50 @@ const AddEditPaperForm = props => {
 												<Row className='mt-2'>
 													<Col sm={12} lg={8}>
 														<p className='gray800-14 margin-bottom-0 pad-bottom-4'>DOI and other links</p>
-														<p className='gray700-13 margin-bottom-0'></p>
+														<p className='gray700-13 margin-bottom-0'>If you don’t have a DOI please add an alternative URL or PDF full text link. You may add several.</p>
 													</Col>
 												</Row>
 
 												<Row className='mt-2'>
 													<FieldArray
-														name='documentLinks'
+														name='document_links'
 														render={({ insert, remove, push }) => (
 															<Fragment>
-																{formik.values.documentLinks.length > 0 &&
-																formik.values.documentLinks[0].doi.length > 0 &&
-																	formik.values.documentLinks[0].doi.map((d, index) => (
+																{formik.values.document_links.doi.length > 0 &&
+																	formik.values.document_links.doi.map((d, index) => (
 																		<Fragment>
 																			<Col sm={12} lg={10}>
-																				<Form.Group
-																					labelKey={`documentLinks.0.doi`}>
+																				<Form.Group labelKey={`document_links.doi`}>
 																					<Form.Control
-																						id={`documentLinks.0.doi.${index}`}
-																						name={`documentLinks.0.doi.${index}`}
+																						id={`document_links.doi.${index}`}
+																						name={`document_links.doi.${index}`}
 																						type='text'
-																						onChange= {e => {
-																							formik.setFieldValue(`documentLinks.0.doi.${index}`, e.target.value);
+																						onChange={e => {
+																							formik.setFieldValue(`document_links.doi.${index}`, e.target.value);
 																						}}
-																						className={formik.touched.documentLinks &&
-																							formik.touched.documentLinks[0] &&
-																							formik.errors.documentLinks && 
-																							formik.errors.documentLinks[0] &&
-																							formik.touched.documentLinks[0].doi &&
-																							formik.errors.documentLinks[0].doi &&
-																							formik.values.documentLinks[0].doi[0] === ''
-																							? 'emptyFormInput addFormInput' : 'addFormInput'}
-																						value={[formik.values.documentLinks[0].doi[index]]}
+																						className={
+																							formik.touched.document_links &&
+																							formik.touched.document_links &&
+																							formik.errors.document_links &&
+																							formik.errors.document_links &&
+																							formik.touched.document_links.doi &&
+																							formik.errors.document_links.doi &&
+																							formik.values.document_links.doi[0] === ''
+																								? 'emptyFormInput addFormInput'
+																								: 'addFormInput'
+																						}
+																						value={[formik.values.document_links.doi[index]]}
 																						onBlur={formik.handleBlur}
 																					/>
-																				{formik.values.documentLinks[0].doi[0] === '' &&
-																					formik.touched.documentLinks &&
-																					formik.errors.documentLinks &&
-																					formik.errors.documentLinks[0] &&
-																					typeof formik.errors.documentLinks[0] !== 'undefined' &&
-																					formik.touched.documentLinks[0] &&
-																					formik.touched.documentLinks[0].doi &&
-																					formik.values.documentLinks[0].doi[0] === '' ? (
-																						<div className='errorMessages'>
-																							{formik.errors.documentLinks[0].doi[0]}
-																						</div>
+																					{formik.values.document_links.doi[0] === '' &&
+																					formik.touched.document_links &&
+																					formik.errors.document_links &&
+																					formik.errors.document_links &&
+																					typeof formik.errors.document_links !== 'undefined' &&
+																					formik.touched.document_links &&
+																					formik.touched.document_links.doi &&
+																					formik.values.document_links.doi[0] === '' ? (
+																						<div className='errorMessages'>{formik.errors.document_links.doi[0]}</div>
 																					) : null}
 																				</Form.Group>
 																			</Col>
@@ -303,10 +299,10 @@ const AddEditPaperForm = props => {
 																				<button
 																					type='button'
 																					className='plusMinusButton'
-																					disabled={formik.values.documentLinks[0].doi.length < 2}
+																					disabled={formik.values.document_links.doi.length < 2}
 																					onClick={() => {
 																						remove(index);
-																						formik.values.documentLinks[0].doi.splice(index, 1);
+																						formik.values.document_links.doi.splice(index, 1);
 																					}}>
 																					-
 																				</button>
@@ -314,12 +310,12 @@ const AddEditPaperForm = props => {
 																					type='button'
 																					className='plusMinusButton'
 																					disabled={
-																						formik.values.documentLinks[0].doi.length >= 5 ||
-																						index !== formik.values.documentLinks[0].doi.length - 1
+																						formik.values.document_links.doi.length >= 5 ||
+																						index !== formik.values.document_links.doi.length - 1
 																					}
 																					onClick={() => {
 																						push('');
-																						formik.values.documentLinks[0].doi.push('');
+																						formik.values.document_links.doi.push('');
 																					}}>
 																					+
 																				</button>
@@ -327,18 +323,18 @@ const AddEditPaperForm = props => {
 																		</Fragment>
 																	))}
 
-																{formik.values.documentLinks.length > 0 &&
-																formik.values.documentLinks[0].pdf[0] !== "" &&
-																	formik.values.documentLinks[0].pdf.map((d, index) => (
+																{formik.values.document_links.length > 0 &&
+																	formik.values.document_links.pdf[0] !== '' &&
+																	formik.values.document_links.pdf.map((d, index) => (
 																		<Fragment>
 																			<Col sm={12} lg={10}>
 																				<div className=''>
 																					<Form.Control
-																						id={`documentLinks.${index}.pdf`}
-																						name={`documentLinks.${index}.pdf`}
+																						id={`document_links.${index}.pdf`}
+																						name={`document_links.${index}.pdf`}
 																						type='text'
 																						className='smallFormInput addFormInput'
-																						value={formik.values.documentLinks[0].pdf[index]}
+																						value={formik.values.document_links.pdf[index]}
 																						onBlur={formik.handleBlur}
 																					/>
 																				</div>
@@ -350,10 +346,10 @@ const AddEditPaperForm = props => {
 																				<button
 																					type='button'
 																					className='plusMinusButton'
-																					disabled={formik.values.documentLinks[0].pdf.length < 2}
+																					disabled={formik.values.document_links.pdf.length < 2}
 																					onClick={() => {
 																						remove(index);
-																						formik.values.documentLinks[0].pdf.splice(index, 1);
+																						formik.values.document_links.pdf.splice(index, 1);
 																					}}>
 																					-
 																				</button>
@@ -361,12 +357,12 @@ const AddEditPaperForm = props => {
 																					type='button'
 																					className='plusMinusButton'
 																					disabled={
-																						formik.values.documentLinks[0].pdf.length >= 5 ||
-																						index !== formik.values.documentLinks[0].pdf.length - 1
+																						formik.values.document_links.pdf.length >= 5 ||
+																						index !== formik.values.document_links.pdf.length - 1
 																					}
 																					onClick={() => {
 																						push('');
-																						formik.values.documentLinks[0].pdf.push('');
+																						formik.values.document_links.pdf.push('');
 																					}}>
 																					+
 																				</button>
@@ -374,18 +370,18 @@ const AddEditPaperForm = props => {
 																		</Fragment>
 																	))}
 
-																{formik.values.documentLinks.length > 0 &&
-																formik.values.documentLinks[0].html[0] !== "" &&
-																	formik.values.documentLinks[0].html.map((d, index) => (
+																{formik.values.document_links.length > 0 &&
+																	formik.values.document_links.html[0] !== '' &&
+																	formik.values.document_links.html.map((d, index) => (
 																		<Fragment>
 																			<Col sm={12} lg={10}>
 																				<div className=''>
 																					<Form.Control
-																						id={`documentLinks.${index}.html`}
-																						name={`documentLinks.${index}.html`}
+																						id={`document_links.${index}.html`}
+																						name={`document_links.${index}.html`}
 																						type='text'
 																						className='smallFormInput addFormInput'
-																						value={formik.values.documentLinks[0].html[index]}
+																						value={formik.values.document_links.html[index]}
 																						onBlur={formik.handleBlur}
 																					/>
 																				</div>
@@ -397,10 +393,10 @@ const AddEditPaperForm = props => {
 																				<button
 																					type='button'
 																					className='plusMinusButton'
-																					disabled={formik.values.documentLinks[0].html.length < 2}
+																					disabled={formik.values.document_links.html.length < 2}
 																					onClick={() => {
 																						remove(index);
-																						formik.values.documentLinks[0].html.splice(index, 1);
+																						formik.values.document_links.html.splice(index, 1);
 																					}}>
 																					-
 																				</button>
@@ -408,12 +404,12 @@ const AddEditPaperForm = props => {
 																					type='button'
 																					className='plusMinusButton'
 																					disabled={
-																						formik.values.documentLinks[0].html.length >= 5 ||
-																						index !== formik.values.documentLinks[0].html.length - 1
+																						formik.values.document_links.html.length >= 5 ||
+																						index !== formik.values.document_links.html.length - 1
 																					}
 																					onClick={() => {
 																						push('');
-																						formik.values.documentLinks[0].html.push('');
+																						formik.values.document_links.html.push('');
 																					}}>
 																					+
 																				</button>

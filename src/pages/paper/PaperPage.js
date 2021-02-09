@@ -227,6 +227,7 @@ export const PaperDetail = props => {
 		paperData.relatedObjects = [];
 	}
 
+	console.log('paperData', paperData);
 	return (
 		<Sentry.ErrorBoundary fallback={<ErrorModal show={showModalHandler} handleClose={hideModalHandler} />}>
 			<div>
@@ -358,10 +359,11 @@ export const PaperDetail = props => {
 															<span className='gray800-14'>URL</span>
 														</Col>
 														<Col sm={10}>
-															x
-															<a href={paperData.link} rel='noopener noreferrer' target='_blank' className='purple-14 text-break'>
-																{paperData.link}
+															{paperData.document_links.doi.map((paperDoi) => (
+															<a href={paperDoi} rel='noopener noreferrer' target='_blank' className='purple-14 text-break'>
+																{paperDoi}
 															</a>
+															))}
 														</Col>
 													</Row>
 													{paperData.isPreprint ? (
