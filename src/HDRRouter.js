@@ -42,6 +42,9 @@ class HDRRouter extends Component {
 				id: null,
 				name: null,
 				profileComplete: false,
+				provider: null,
+				advancedSearchRoles: [],
+				acceptedAdvancedSearchTerms: false,
 			},
 		],
 		isLoading: true,
@@ -85,6 +88,9 @@ class HDRRouter extends Component {
 							name: res.data.data[0].name,
 							teams: res.data.data[0].teams,
 							profileComplete: person.data.person.profileComplete,
+							provider: res.data.data[0].provider,
+							advancedSearchRoles: res.data.data[0].advancedSearchRoles,
+							acceptedAdvancedSearchTerms: res.data.data[0].acceptedAdvancedSearchTerms,
 						},
 					],
 					isLoading: false,
@@ -153,7 +159,7 @@ class HDRRouter extends Component {
 						<Route path='/tool/:toolID' render={props => <ToolPage {...props} userState={userState} />} />
 						<GuardedRoute path='/project/add' component={AddEditProjectPage} userState={userState} />
 						<GuardedRoute path='/project/edit/:projectID' component={AddEditProjectPage} userState={userState} />
-						<Route path='/project/:projectID' render={props => <ProjectPage {...props} userState={userState} />} /> 
+						<Route path='/project/:projectID' render={props => <ProjectPage {...props} userState={userState} />} />
 						<GuardedRoute path='/paper/add' component={AddEditPaperPage} userState={userState} />
 						<GuardedRoute path='/paper/edit/:paperID' component={AddEditPaperPage} userState={userState} />
 						<Route path='/paper/:paperID' render={props => <PaperPage {...props} userState={userState} />} />

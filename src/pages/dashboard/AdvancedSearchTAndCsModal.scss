@@ -1,0 +1,124 @@
+@import '../../css/variables';
+@import '../../css/typography';
+
+.modal {
+	li {
+		@include font-source(14px, $gray-dark);
+	}
+}
+
+.advancedSearchTAndCModal {
+	box-sizing: border-box;
+	height: calc(100% - 20px);
+
+	.modal-dialog {
+		margin: 10px auto;
+		max-width: 940px;
+		width: 100%;
+	}
+
+	.modal-body {
+		position: relative;
+		padding: 0px;
+		p {
+			padding-top: 8px;
+			padding-bottom: 8px;
+		}
+	}
+
+	.relatedModalBackground {
+		overflow-y: auto;
+		height: calc(100vh - 320px);
+	}
+
+	&-header {
+		display: flex;
+		flex-flow: column nowrap;
+		width: 100%;
+		padding: 32px 32px 0 32px;
+
+		&--wrap {
+			padding-bottom: 12px;
+
+			p {
+				margin-bottom: 0;
+				color: $gray-800;
+				font-size: 14px;
+			}
+		}
+	}
+
+	&-head {
+		display: flex;
+		flex-flow: row nowrap;
+		justify-content: space-between;
+
+		&--close {
+			width: 20px;
+			height: 20px;
+			fill: $indigo;
+			&:hover {
+				cursor: pointer;
+			}
+		}
+	}
+
+	&-body {
+		width: 100%;
+		padding: 12px 32px 16px 32px;
+
+		label {
+			display: flex;
+			width: 100%;
+			flex-flow: row nowrap;
+			justify-content: space-between;
+			margin: 0;
+		}
+
+		&--item {
+			padding: 16px;
+
+			h2 {
+				margin-bottom: 10px;
+			}
+		}
+	}
+
+	&-footer {
+		display: flex;
+		flex-flow: row nowrap;
+		justify-content: flex-end;
+		align-items: center;
+		width: 100%;
+		background: $white;
+
+		&--wrap {
+			display: flex;
+			flex-flow: row nowrap;
+			padding: 0 32px 32px 32px;
+
+			button {
+				margin-left: 8px;
+			}
+		}
+	}
+
+	.termsLink {
+		display: list-item;
+		color: $purple;
+	}
+
+	.termsLinks {
+		padding-top: 8px;
+		padding-bottom: 8px;
+	}
+
+	.advancedSearchAcceptTerms {
+		margin-left: 50px;
+		margin-top: -12px;
+	}
+
+	.advancedSearchAcceptTermsDiv {
+		margin-left: -14px;
+	}
+}
