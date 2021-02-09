@@ -287,7 +287,7 @@ class DataAccessRequestsNew extends React.Component {
   renderAverageSubmission = () => {
     return (
       <Clock />
-    )`${this.state.avgDecisionTime} average time from submission to descision`;
+    )`${this.state.avgDecisionTime} average time from submission to decision`;
   };
 
   render() {
@@ -332,7 +332,7 @@ class DataAccessRequestsNew extends React.Component {
 												<Row>
 														<div className="black-20">Data access request applications {!_.isEmpty(team) && team !== 'user' ? team : ''}</div>
 														<div className="gray700-13">Manage forms and applications</div>
-														<div><Clock /> {`${avgDecisionTime > 0 ? avgDecisionTime : '-'} days`} <span className="gray700-13">average time from submission to descision</span></div>
+														<div><Clock /> {`${avgDecisionTime > 0 ? avgDecisionTime : '-'} days`} <span className="gray700-13">average time from submission to decision</span></div>
 												</Row>
 										</Col>
 										<Col xs={4} style={{ textAlign: "right" }}>
@@ -404,7 +404,8 @@ class DataAccessRequestsNew extends React.Component {
 								stepName = "",
 								remainingActioners = [],
                 _id,
-                decisionDate
+                decisionDate,
+                amendmentStatus = ''
 							} = request;
 							return (
 								<Row
@@ -456,7 +457,8 @@ class DataAccessRequestsNew extends React.Component {
 													stepName={stepName}
 													remainingActioners={remainingActioners}
 													navigateToLocation={this.navigateToLocation}
-													applicationId={_id}
+                          applicationId={_id}
+                          amendmentStatus={amendmentStatus}
 												/>
 											</div>
 											{this.renderComment(

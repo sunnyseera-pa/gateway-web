@@ -50,7 +50,7 @@
     "uniqid": "^5.2.0",
     "uuid": "^8.3.1",
     "winterfell": "github:HDRUK/Winterfell",
-    "yup": "^0.28.2"
+    "yup": "^0.28.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -83,7 +83,8 @@
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "jest": "24.9.0",
-    "jest-cli": "^26.0.1"
+    "jest-cli": "^26.0.1",
+    "moxios": "^0.4.0"
   },
   "snyk": true
 }
