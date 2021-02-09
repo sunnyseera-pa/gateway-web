@@ -48,7 +48,6 @@ const AddEditPaperForm = props => {
 			id: props.data.id || '',
 			type: 'paper',
 			name: props.data.name || '',
-			link: props.data.link || '',
 			documentLinks: [
 				{
 					doi: [''],
@@ -71,7 +70,6 @@ const AddEditPaperForm = props => {
 
 		validationSchema: Yup.object({
 			name: Yup.string().required('This cannot be empty'),
-			link: Yup.string().required('This cannot be empty'),
 			description: Yup.string().max(3000, 'Maximum of 3,000 characters').required('This cannot be empty'),
 			documentLinks: Yup.array().of(
 				Yup.object().shape({
@@ -246,24 +244,6 @@ const AddEditPaperForm = props => {
 													/>
 													{formik.touched.name && formik.errors.name ? <div className='errorMessages'>{formik.errors.name}</div> : null}
 												</Form.Group>
-
-												{/* <Form.Group>
-													<p className='gray800-14 margin-bottom-0 pad-bottom-4'>DOI and other links</p>
-													<p className='gray700-13 margin-bottom-0'>
-														If you don’t have a DOI please add an alternative URL or PDF full text link. You may add several.
-													</p>
-													<Form.Control
-														id='link'
-														name='link'
-														type='text'
-														className={formik.touched.link && formik.errors.link ? 'emptyFormInput addFormInput' : 'addFormInput'}
-														onChange={formik.handleChange}
-														value={formik.values.link}
-														onBlur={validatePaper}
-													/>
-													{formik.touched.link && formik.errors.link ? <div className='errorMessages'>{formik.errors.link}</div> : null}
-													{formik.status && formik.status.duplicateLink ? <div className='errorMessages'>{formik.status.duplicateLink}</div> : null}
-												</Form.Group> */}
 
 												<Row className='mt-2'>
 													<Col sm={12} lg={8}>
