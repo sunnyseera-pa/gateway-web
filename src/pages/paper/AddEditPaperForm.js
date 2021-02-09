@@ -1,10 +1,8 @@
 import React, { useState, Fragment } from 'react';
 import axios from 'axios';
-import { Formik, useFormik, FieldArray } from 'formik';
+import { Formik, useFormik, FieldArray, Field } from 'formik';
 import * as Yup from 'yup';
 import { Typeahead } from 'react-bootstrap-typeahead';
-import { Event } from '../../tracking';
-
 import { Form, Button, Row, Col, Container } from 'react-bootstrap';
 import moment from 'moment';
 import RelatedResources from '../commonComponents/relatedResources/RelatedResources';
@@ -12,8 +10,6 @@ import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
-import ToolTip from '../../images/imageURL-ToolTip.gif';
-import { ReactComponent as InfoFillSVG } from '../../images/infofill.svg';
 import { ReactComponent as InfoSVG } from '../../images/info.svg';
 import './Paper.scss';
 import _ from 'lodash';
@@ -36,6 +32,14 @@ class DocumentLinks {
 	}
 }
 
+const validateSchema = Yup.object().shape({
+	documentLinks: Yup.array().of(
+		Yup.object().shape({
+			doi: Yup.array().of(Yup.string().min(5,'This cannot be empty').required('This cannot be empty')),
+		})
+	),
+});
+
 const AddEditPaperForm = props => {
 	// Pass the useFormik() hook initial form values and a submit function that will
 	// be called when the form is submitted
@@ -47,7 +51,7 @@ const AddEditPaperForm = props => {
 			link: props.data.link || '',
 			documentLinks: [
 				{
-					doi: ['sfasf'],
+					doi: [''],
 					pdf: [''],
 					html: [''],
 				},
@@ -69,14 +73,14 @@ const AddEditPaperForm = props => {
 			name: Yup.string().required('This cannot be empty'),
 			link: Yup.string().required('This cannot be empty'),
 			description: Yup.string().max(3000, 'Maximum of 3,000 characters').required('This cannot be empty'),
+			documentLinks: Yup.array().of(
+				Yup.object().shape({
+					doi: Yup.array().of(Yup.string().min(5,'This cannot be empty').required('This cannot be empty')),
+				})
+			),
 			resultsInsights: Yup.string().max(3000, 'Maximum of 3,000 characters'),
 			authors: Yup.string().required('This cannot be empty'),
 			isPreprint: Yup.bool(),
-			documentLinks: Yup.array().of(
-				Yup.object().shape({
-					doi: Yup.string().required('This cannot be empty'),
-				})
-			),
 			journal: Yup.string().when('isPreprint', {
 				is: false,
 				then: Yup.string().required('This cannot be empty'),
@@ -191,12 +195,13 @@ const AddEditPaperForm = props => {
 
 	const relatedResourcesRef = React.useRef();
 
-	console.log('formik.values', formik.values);
+	console.log('formik.values.documentLinks', formik.values.documentLinks);
 	return (
 		<div>
 			<Container>
 				<Formik
 					initialValues={initialValues}
+					validationSchema={validateSchema}
 					render={() => {
 						return (
 							<div>
@@ -243,22 +248,22 @@ const AddEditPaperForm = props => {
 												</Form.Group>
 
 												{/* <Form.Group>
-									<p className='gray800-14 margin-bottom-0 pad-bottom-4'>DOI and other links</p>
-									<p className='gray700-13 margin-bottom-0'>
-										If you don’t have a DOI please add an alternative URL or PDF full text link. You may add several.
-									</p>
-									<Form.Control
-										id='link'
-										name='link'
-										type='text'
-										className={formik.touched.link && formik.errors.link ? 'emptyFormInput addFormInput' : 'addFormInput'}
-										onChange={formik.handleChange}
-										value={formik.values.link}
-										onBlur={validatePaper}
-									/>
-									{formik.touched.link && formik.errors.link ? <div className='errorMessages'>{formik.errors.link}</div> : null}
-									{formik.status && formik.status.duplicateLink ? <div className='errorMessages'>{formik.status.duplicateLink}</div> : null}
-								</Form.Group> */}
+													<p className='gray800-14 margin-bottom-0 pad-bottom-4'>DOI and other links</p>
+													<p className='gray700-13 margin-bottom-0'>
+														If you don’t have a DOI please add an alternative URL or PDF full text link. You may add several.
+													</p>
+													<Form.Control
+														id='link'
+														name='link'
+														type='text'
+														className={formik.touched.link && formik.errors.link ? 'emptyFormInput addFormInput' : 'addFormInput'}
+														onChange={formik.handleChange}
+														value={formik.values.link}
+														onBlur={validatePaper}
+													/>
+													{formik.touched.link && formik.errors.link ? <div className='errorMessages'>{formik.errors.link}</div> : null}
+													{formik.status && formik.status.duplicateLink ? <div className='errorMessages'>{formik.status.duplicateLink}</div> : null}
+												</Form.Group> */}
 
 												<Row className='mt-2'>
 													<Col sm={12} lg={8}>
@@ -273,19 +278,43 @@ const AddEditPaperForm = props => {
 														render={({ insert, remove, push }) => (
 															<Fragment>
 																{formik.values.documentLinks.length > 0 &&
+																formik.values.documentLinks[0].doi.length > 0 &&
 																	formik.values.documentLinks[0].doi.map((d, index) => (
 																		<Fragment>
 																			<Col sm={12} lg={10}>
-																				<div className=''>
+																				<Form.Group
+																					labelKey={`documentLinks.0.doi`}>
 																					<Form.Control
-																						id={`documentLinks.${index}.doi`}
-																						name={`documentLinks.${index}.doi`}
+																						id={`documentLinks.0.doi.${index}`}
+																						name={`documentLinks.0.doi.${index}`}
 																						type='text'
-																						className='smallFormInput addFormInput'
-																						value={formik.values.documentLinks[0].doi[index]}
+																						onChange= {e => {
+																							formik.setFieldValue(`documentLinks.0.doi.${index}`, e.target.value);
+																						}}
+																						className={formik.touched.documentLinks &&
+																							formik.touched.documentLinks[0] &&
+																							formik.errors.documentLinks && 
+																							formik.errors.documentLinks[0] &&
+																							formik.touched.documentLinks[0].doi &&
+																							formik.errors.documentLinks[0].doi &&
+																							formik.values.documentLinks[0].doi[0] === ''
+																							? 'emptyFormInput addFormInput' : 'addFormInput'}
+																						value={[formik.values.documentLinks[0].doi[index]]}
 																						onBlur={formik.handleBlur}
 																					/>
-																				</div>
+																				{formik.values.documentLinks[0].doi[0] === '' &&
+																					formik.touched.documentLinks &&
+																					formik.errors.documentLinks &&
+																					formik.errors.documentLinks[0] &&
+																					typeof formik.errors.documentLinks[0] !== 'undefined' &&
+																					formik.touched.documentLinks[0] &&
+																					formik.touched.documentLinks[0].doi &&
+																					formik.values.documentLinks[0].doi[0] === '' ? (
+																						<div className='errorMessages'>
+																							{formik.errors.documentLinks[0].doi[0]}
+																						</div>
+																					) : null}
+																				</Form.Group>
 																			</Col>
 
 																			<Col
@@ -319,6 +348,7 @@ const AddEditPaperForm = props => {
 																	))}
 
 																{formik.values.documentLinks.length > 0 &&
+																formik.values.documentLinks[0].pdf[0] !== "" &&
 																	formik.values.documentLinks[0].pdf.map((d, index) => (
 																		<Fragment>
 																			<Col sm={12} lg={10}>
@@ -365,6 +395,7 @@ const AddEditPaperForm = props => {
 																	))}
 
 																{formik.values.documentLinks.length > 0 &&
+																formik.values.documentLinks[0].html[0] !== "" &&
 																	formik.values.documentLinks[0].html.map((d, index) => (
 																		<Fragment>
 																			<Col sm={12} lg={10}>
