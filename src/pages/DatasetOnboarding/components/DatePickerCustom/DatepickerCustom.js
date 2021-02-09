@@ -1,11 +1,12 @@
 import React from 'react';
+import _ from 'lodash';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 class DatePickerCustom extends React.Component {
 	constructor(props) {
 		super(props);
-		let date = '';
+		let date = null;
 		if (moment(this.props.value, 'DD/MM/YYYY').isValid()) {
 			date = moment(this.props.value, 'DD/MM/YYYY').toDate();
 		}
@@ -17,19 +18,18 @@ class DatePickerCustom extends React.Component {
 		this.handleBlur = this.handleBlur.bind(this);
 	}
 	componentWillReceiveProps(nextProps) {
-    if(this.props.value !== nextProps.value)
-      this.setState({date: moment(nextProps.value, 'DD/MM/YYYY').toDate()});
-  }
+		let { value } = nextProps;
+
+		if (!_.isNil(value)) value = moment(value, 'DD/MM/YYYY').toDate();
+
+		if (this.props.value !== value) this.setState({ date: value });
+	}
 	handleChange(e) {
-		let date = '';
-		if (e) {
-			date = e;
-		}
 		this.setState(
 			{
-				date,
+				date: e,
 			},
-			this.props.onChange.bind(null, moment(date).format('DD/MM/YYYY'))
+			this.props.onChange.bind(null, !_.isNil(e) ? moment(e).format('DD/MM/YYYY') : e)
 		);
 	}
 	handleFocus(e) {
@@ -37,6 +37,9 @@ class DatePickerCustom extends React.Component {
 	}
 	handleBlur(e) {
 		this.props.onBlur(this.props.value);
+	}
+	handleChangeRaw(e) {
+		e.preventDefault();
 	}
 	render() {
 		return (
@@ -48,6 +51,8 @@ class DatePickerCustom extends React.Component {
 				onChange={this.handleChange}
 				onBlur={this.handleBlur}
 				onFocus={this.handleFocus}
+				onChangeRaw={this.handleChangeRaw}
+				isClearable
 			/>
 		);
 	}
