@@ -11,7 +11,7 @@ class DatasetAboutCard extends React.Component {
 		v2data: {},
 		section: '',
 		showEmpty: false,
-		loggedIn: false
+		loggedIn: false,
 	};
 
 	constructor(props) {
@@ -388,39 +388,47 @@ class DatasetAboutCard extends React.Component {
 											)}
 										</Col>
 									</Row>
-									{showEmpty === false && _.isEmpty(v2data.summary.publisher.accessRights) ? (
+									{showEmpty === false &&
+									_.isEmpty(v2data.accessibility.access.accessRights) &&
+									_.isEmpty(v2data.summary.publisher.accessRights) ? (
 										''
 									) : (
 										<AboutCardElement
 											label={'Access information'}
-											description={v2data.summary.publisher.accessRights}
+											description={v2data.accessibility.access.accessRights || v2data.summary.publisher.accessRights}
 											tooltip={'The URL of a webpage where the data access request process and/or guidance is provided.'}
 										/>
 									)}
-									{showEmpty === false && _.isEmpty(v2data.summary.publisher.deliveryLeadTime) ? (
+									{showEmpty === false &&
+									_.isEmpty(v2data.accessibility.access.deliveryLeadTime) &&
+									_.isEmpty(v2data.summary.publisher.deliveryLeadTime) ? (
 										''
 									) : (
 										<AboutCardElement
 											label={'Processing time'}
-											description={v2data.summary.publisher.deliveryLeadTime}
+											description={v2data.accessibility.access.deliveryLeadTime || v2data.summary.publisher.deliveryLeadTime}
 											tooltip={'An indication of the typical processing times based on the types of requests typically received.'}
 										/>
 									)}
-									{showEmpty === false && _.isEmpty(v2data.summary.publisher.accessRequestCost) ? (
+									{showEmpty === false &&
+									_.isEmpty(v2data.accessibility.access.accessRequestCost) &&
+									_.isEmpty(v2data.summary.publisher.accessRequestCost) ? (
 										''
 									) : (
 										<AboutCardElement
 											label={'Access request cost'}
-											description={v2data.summary.publisher.accessRequestCost}
+											description={v2data.accessibility.access.accessRequestCost || v2data.summary.publisher.accessRequestCost}
 											tooltip={'Indication of cost (in GBP) for processing each data access request by the data custodian.'}
 										/>
 									)}
-									{showEmpty === false && _.isEmpty(v2data.summary.publisher.accessService) ? (
+									{showEmpty === false &&
+									_.isEmpty(v2data.accessibility.access.accessService) &&
+									_.isEmpty(v2data.summary.publisher.accessService) ? (
 										''
 									) : (
 										<AboutCardElement
 											label={'Access environment'}
-											description={v2data.summary.publisher.accessService}
+											description={v2data.accessibility.access.accessService || v2data.summary.publisher.accessService}
 											tooltip={'A brief description of the environment where data can be accessed by researchers.'}
 										/>
 									)}

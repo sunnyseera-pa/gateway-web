@@ -45,616 +45,623 @@ var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
 const env = require('../commonComponents/BaseURL').getURLEnv();
 
 class DatasetDetail extends Component {
-    // initialize our state
-    state = {
-        id: '',
-        data: {},
-        v2data: {},
-        technicalMetadata: [],
-        collections: [],
-        dataClassOpen: -1,
-        relatedObjects: [],
-        datarequest: [],
-        DBData: [],
-        activeKey: false,
-        selectedItem: 'tab-1',
-        isLoading: true,
-        userState: [
-            {
-                loggedIn: false,
-                role: 'Reader',
-                id: null,
-                name: null,
-            },
-        ],
-        alert: null,
-        discoursePostCount: 0,
-        searchString: '',
-        isHovering: false,
-        isHoveringPhenotypes: false,
-        isHoveringShield: false,
-        objects: [
-            {
-                id: '',
-                authors: [],
-                activeflag: '',
-            },
-        ],
-        showDrawer: false,
-        showModal: false,
-        showError: false,
-        requiresModal: false,
-        allowsMessaging: false,
-        allowNewMessage: false,
-        dataRequestModalContent: {},
-        showAllPhenotype: false,
-        showEmpty: false,
-        emptyFlagDetails: false,
-        emptyFlagCoverage: false,
-        emptyFlagFormats: false,
-        emptyFlagProvenance: false,
-        emptyFlagDAR: false,
-        emptyFlagRelRes: false,
-        emptyFieldsCount: 0,
-        linkedDatasets: [],
-        publisherLogoURL: '',
-        isLatestVersion: true,
-        isDatasetArchived: false
-    };
+	// initialize our state
+	state = {
+		id: '',
+		data: {},
+		v2data: {},
+		technicalMetadata: [],
+		collections: [],
+		dataClassOpen: -1,
+		relatedObjects: [],
+		datarequest: [],
+		DBData: [],
+		activeKey: false,
+		selectedItem: 'tab-1',
+		isLoading: true,
+		userState: [
+			{
+				loggedIn: false,
+				role: 'Reader',
+				id: null,
+				name: null,
+			},
+		],
+		alert: null,
+		discoursePostCount: 0,
+		searchString: '',
+		isHovering: false,
+		isHoveringPhenotypes: false,
+		isHoveringShield: false,
+		objects: [
+			{
+				id: '',
+				authors: [],
+				activeflag: '',
+			},
+		],
+		showDrawer: false,
+		showModal: false,
+		showError: false,
+		requiresModal: false,
+		allowsMessaging: false,
+		allowNewMessage: false,
+		dataRequestModalContent: {},
+		showAllPhenotype: false,
+		showEmpty: false,
+		emptyFlagDetails: false,
+		emptyFlagCoverage: false,
+		emptyFlagFormats: false,
+		emptyFlagProvenance: false,
+		emptyFlagDAR: false,
+		emptyFlagRelRes: false,
+		emptyFieldsCount: 0,
+		linkedDatasets: [],
+		publisherLogoURL: '',
+		isLatestVersion: true,
+		isDatasetArchived: false,
+	};
 
-    topicContext = {};
+	topicContext = {};
 
-    constructor(props) {
-        super(props);
-        this.doUpdateDataClassOpen = this.doUpdateDataClassOpen.bind(this);
-        this.state.userState = props.userState;
-        this.handleMouseHover = this.handleMouseHover.bind(this);
-        this.handleMouseHoverShield = this.handleMouseHoverShield.bind(this);
-        this.searchBar = React.createRef();
-    }
+	constructor(props) {
+		super(props);
+		this.doUpdateDataClassOpen = this.doUpdateDataClassOpen.bind(this);
+		this.state.userState = props.userState;
+		this.handleMouseHover = this.handleMouseHover.bind(this);
+		this.handleMouseHoverShield = this.handleMouseHoverShield.bind(this);
+		this.searchBar = React.createRef();
+	}
 
-    showModal = () => {
-        this.setState({ showError: true });
-    };
+	showModal = () => {
+		this.setState({ showError: true });
+	};
 
-    hideModal = () => {
-        this.setState({ showError: false });
-    };
+	hideModal = () => {
+		this.setState({ showError: false });
+	};
 
-    // on loading of tool detail page
-    async componentDidMount() {
-        await this.getDataset();
-        this.checkAlerts();
-        initGA('UA-166025838-1');
-        PageView();
-    }
+	// on loading of tool detail page
+	async componentDidMount() {
+		await this.getDataset();
+		this.checkAlerts();
+		initGA('UA-166025838-1');
+		PageView();
+	}
 
-    // on loading of tool detail page were id is different
-    componentDidUpdate() {
-        if (this.props.match.params.datasetID !== this.state.id && this.state.id !== '' && !this.state.isLoading) {
-            this.getDetailsSearchFromMDC();
-        }
-    }
+	// on loading of tool detail page were id is different
+	componentDidUpdate() {
+		if (this.props.match.params.datasetID !== this.state.id && this.state.id !== '' && !this.state.isLoading) {
+			this.getDetailsSearchFromMDC();
+		}
+	}
 
-    getDataset = async () => {
-        this.setState({ isLoading: true });
-        await axios.get(baseURL + '/api/v1/datasets/' + this.props.match.params.datasetID).then(async res => {
-            if (_.isNil(res.data)) {
-                window.localStorage.setItem('redirectMsg', `Dataset not found for Id: ${this.props.match.params.datasetID}`);
-                this.props.history.push({ pathname: '/search?search=', search: '' });
-            } else {
-                this.setState({
-                    data: res.data.data,
-                    v2data: res.data.data.datasetv2,
-                    isLoading: false,
-                    isLatestVersion: res.data.isLatestVersion,
-                    isDatasetArchived: res.data.isDatasetArchived,
-                });
-                this.getTechnicalMetadata();
-                this.getCollections();
-                if (!_.isEmpty(res.data.data.datasetv2)) {
-                    this.updateV2Flags(res.data.data.datasetv2);
-                    this.getEmptyFieldsCount(res.data.data.datasetv2);
-                    this.updatePublisherLogo(res.data.data.datasetv2.summary.publisher.name);
-                }
-                if (!_.isEmpty(res.data.data.datasetv2) && !_.isEmpty(res.data.data.datasetv2.enrichmentAndLinkage.qualifiedRelation)) {
-                    res.data.data.datasetv2.enrichmentAndLinkage.qualifiedRelation.map(relation => {
-                        this.getLinkedDatasets(relation);
-                    });
-                }
-                document.title = res.data.data.name.trim();
-                let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
+	getDataset = async () => {
+		this.setState({ isLoading: true });
+		await axios.get(baseURL + '/api/v1/datasets/' + this.props.match.params.datasetID).then(async res => {
+			if (_.isNil(res.data)) {
+				window.localStorage.setItem('redirectMsg', `Dataset not found for Id: ${this.props.match.params.datasetID}`);
+				this.props.history.push({ pathname: '/search?search=', search: '' });
+			} else {
+				this.setState({
+					data: res.data.data,
+					v2data: res.data.data.datasetv2,
+					isLoading: false,
+					isLatestVersion: res.data.isLatestVersion,
+					isDatasetArchived: res.data.isDatasetArchived,
+				});
+				this.getTechnicalMetadata();
+				this.getCollections();
+				if (!_.isEmpty(res.data.data.datasetv2)) {
+					this.updateV2Flags(res.data.data.datasetv2);
+					this.getEmptyFieldsCount(res.data.data.datasetv2);
+					this.updatePublisherLogo(res.data.data.datasetv2.summary.publisher.name);
+				}
+				if (!_.isEmpty(res.data.data.datasetv2) && !_.isEmpty(res.data.data.datasetv2.enrichmentAndLinkage.qualifiedRelation)) {
+					res.data.data.datasetv2.enrichmentAndLinkage.qualifiedRelation.map(relation => {
+						this.getLinkedDatasets(relation);
+					});
+				}
+				document.title = res.data.data.name.trim();
+				let counter = !this.state.data.counter ? 1 : this.state.data.counter + 1;
 
-                this.topicContext = {
-                    datasets: [{ datasetId: this.state.data.datasetid, publisher: this.state.data.datasetfields.publisher }] || [],
-                    tags: [this.state.data.name],
-                    relatedObjectIds: [this.state.data._id] || '',
-                    title: this.state.data.datasetfields.publisher || '',
-                    subTitle: this.state.data.name || '',
-                    contactPoint: this.state.data.datasetfields.contactPoint || '',
-                    allowNewMessage: false,
-                };
+				this.topicContext = {
+					datasets: [{ datasetId: this.state.data.datasetid, publisher: this.state.data.datasetfields.publisher }] || [],
+					tags: [this.state.data.name],
+					relatedObjectIds: [this.state.data._id] || '',
+					title: this.state.data.datasetfields.publisher || '',
+					subTitle: this.state.data.name || '',
+					contactPoint: this.state.data.datasetfields.contactPoint || '',
+					allowNewMessage: false,
+				};
 
-                this.updateCounter(this.state.data.datasetid, counter);
+				this.updateCounter(this.state.data.datasetid, counter);
 
-                if (!_.isUndefined(res.data.data.relatedObjects)) {
-                    await this.getAdditionalObjectInfo(res.data.data.relatedObjects);
-                }
+				if (!_.isUndefined(res.data.data.relatedObjects)) {
+					await this.getAdditionalObjectInfo(res.data.data.relatedObjects);
+				}
 
-                if (!_.isEmpty(this.topicContext.title)) {
-                    const publisherId = this.topicContext.title;
-                    await this.getPublisherById(publisherId);
-                }
+				if (!_.isEmpty(this.topicContext.title)) {
+					const publisherId = this.topicContext.title;
+					await this.getPublisherById(publisherId);
+				}
 
-                if (!res.data.isLatestVersion) {
-                    this.setState({
-                        alert: {
-                            type: 'warning',
-                            message: (
-                                <Fragment>
-                                    You are viewing an old version of this dataset. Click <a href={'/dataset/' + res.data.data.pid}>here</a> for the latest
+				if (!res.data.isLatestVersion) {
+					this.setState({
+						alert: {
+							type: 'warning',
+							message: (
+								<Fragment>
+									You are viewing an old version of this dataset. Click <a href={'/dataset/' + res.data.data.pid}>here</a> for the latest
 									version.
 								</Fragment>
-                            ),
-                        },
-                    });
-                }
+							),
+						},
+					});
+				}
 
-                if (res.data.isDatasetArchived) {
-                    this.setState({
-                        alert: {
-                            type: 'warning',
-                            message: (
-                                <Fragment>
-                                    The dataset that you are viewing has been archived and there is no active versions.
-								</Fragment>
-                            ),
-                        },
-                    });
-                }
+				if (res.data.isDatasetArchived) {
+					this.setState({
+						alert: {
+							type: 'warning',
+							message: <Fragment>The dataset that you are viewing has been archived and there is no active versions.</Fragment>,
+						},
+					});
+				}
 
-                this.setState({ isLoading: false });
-            }
-        });
-    };
+				this.setState({ isLoading: false });
+			}
+		});
+	};
 
-    getTechnicalMetadata() {
-        this.setState({ isLoading: true });
-        axios.get(baseURL + '/api/v1/datasets/' + this.state.data.datasetid).then(res => {
-            this.setState({
-                technicalMetadata: res.data.data.datasetfields.technicaldetails || [],
-            });
-        });
-    }
+	getTechnicalMetadata() {
+		this.setState({ isLoading: true });
+		axios.get(baseURL + '/api/v1/datasets/' + this.state.data.datasetid).then(res => {
+			this.setState({
+				technicalMetadata: res.data.data.datasetfields.technicaldetails || [],
+			});
+		});
+	}
 
-    getCollections() {
-        this.setState({ isLoading: true });
-        axios.get(baseURL + '/api/v1/collections/entityid/' + this.state.data.pid).then(res => {
-            this.setState({
-                collections: res.data.data || [],
-            });
-        });
-    }
+	getCollections() {
+		this.setState({ isLoading: true });
+		axios.get(baseURL + '/api/v1/collections/entityid/' + this.state.data.pid).then(res => {
+			this.setState({
+				collections: res.data.data || [],
+			});
+		});
+	}
 
-    updateV2Flags(v2data) {
-        if (
-            _.isEmpty(v2data.summary.doiName) &&
-            _.isEmpty(v2data.provenance.temporal.distributionReleaseDate) &&
-            _.isEmpty(v2data.provenance.temporal.accrualPeriodicity) &&
-            _.isEmpty(v2data.issued) &&
-            _.isEmpty(v2data.modified) &&
-            _.isEmpty(v2data.version) &&
-            _.isEmpty(v2data.accessibility.usage.resourceCreator)
-        ) {
-            this.setState({ emptyFlagDetails: true });
-        }
+	updateV2Flags(v2data) {
+		if (
+			_.isEmpty(v2data.summary.doiName) &&
+			_.isEmpty(v2data.provenance.temporal.distributionReleaseDate) &&
+			_.isEmpty(v2data.provenance.temporal.accrualPeriodicity) &&
+			_.isEmpty(v2data.issued) &&
+			_.isEmpty(v2data.modified) &&
+			_.isEmpty(v2data.version) &&
+			_.isEmpty(v2data.accessibility.usage.resourceCreator)
+		) {
+			this.setState({ emptyFlagDetails: true });
+		}
 
-        if (
-            (_.isEmpty(v2data.provenance.temporal.startDate) || _.isEmpty(v2data.provenance.temporal.endDate)) &&
-            _.isEmpty(v2data.provenance.temporal.timeLag) &&
-            _.isEmpty(v2data.coverage.spatial) &&
-            _.isEmpty(v2data.coverage.typicalAgeRange) &&
-            _.isEmpty(v2data.coverage.physicalSampleAvailability) &&
-            _.isEmpty(v2data.coverage.followup) &&
-            _.isEmpty(v2data.coverage.pathway)
-        ) {
-            this.setState({ emptyFlagCoverage: true });
-        }
+		if (
+			(_.isEmpty(v2data.provenance.temporal.startDate) || _.isEmpty(v2data.provenance.temporal.endDate)) &&
+			_.isEmpty(v2data.provenance.temporal.timeLag) &&
+			_.isEmpty(v2data.coverage.spatial) &&
+			_.isEmpty(v2data.coverage.typicalAgeRange) &&
+			_.isEmpty(v2data.coverage.physicalSampleAvailability) &&
+			_.isEmpty(v2data.coverage.followup) &&
+			_.isEmpty(v2data.coverage.pathway)
+		) {
+			this.setState({ emptyFlagCoverage: true });
+		}
 
-        if (
-            _.isEmpty(v2data.accessibility.formatAndStandards.vocabularyEncodingScheme) &&
-            _.isEmpty(v2data.accessibility.formatAndStandards.conformsTo) &&
-            _.isEmpty(v2data.accessibility.formatAndStandards.language) &&
-            _.isEmpty(v2data.accessibility.formatAndStandards.format)
-        ) {
-            this.setState({ emptyFlagFormats: true });
-        }
+		if (
+			_.isEmpty(v2data.accessibility.formatAndStandards.vocabularyEncodingScheme) &&
+			_.isEmpty(v2data.accessibility.formatAndStandards.conformsTo) &&
+			_.isEmpty(v2data.accessibility.formatAndStandards.language) &&
+			_.isEmpty(v2data.accessibility.formatAndStandards.format)
+		) {
+			this.setState({ emptyFlagFormats: true });
+		}
 
-        if (
-            _.isEmpty(v2data.provenance.origin.purpose) &&
-            _.isEmpty(v2data.provenance.source) &&
-            _.isEmpty(v2data.provenance.collectionSituation) &&
-            _.isEmpty(v2data.enrichmentAndLinkage.derivation) &&
-            _.isEmpty(v2data.observations.observedNode) &&
-            _.isEmpty(v2data.observations.disambiguatingDescription) &&
-            _.isEmpty(v2data.observations.measuredValue) &&
-            _.isEmpty(v2data.observations.measuredProperty) &&
-            _.isEmpty(v2data.observations.observationDate)
-        ) {
-            this.setState({ emptyFlagProvenance: true });
-        }
+		if (
+			_.isEmpty(v2data.provenance.origin.purpose) &&
+			_.isEmpty(v2data.provenance.source) &&
+			_.isEmpty(v2data.provenance.collectionSituation) &&
+			_.isEmpty(v2data.enrichmentAndLinkage.derivation) &&
+			_.isEmpty(v2data.observations.observedNode) &&
+			_.isEmpty(v2data.observations.disambiguatingDescription) &&
+			_.isEmpty(v2data.observations.measuredValue) &&
+			_.isEmpty(v2data.observations.measuredProperty) &&
+			_.isEmpty(v2data.observations.observationDate)
+		) {
+			this.setState({ emptyFlagProvenance: true });
+		}
 
-        if (
-            _.isEmpty(v2data.summary.publisher.accessRights) &&
-            _.isEmpty(v2data.summary.publisher.deliveryLeadTime) &&
-            _.isEmpty(v2data.summary.publisher.accessRequestCost) &&
-            _.isEmpty(v2data.summary.publisher.accessService) &&
-            _.isEmpty(v2data.accessibility.access.jurisdiction) &&
-            _.isEmpty(v2data.summary.publisher.accessService.dataUseLimitation) &&
-            _.isEmpty(v2data.summary.publisher.accessService.dataUseRequirements) &&
-            _.isEmpty(v2data.accessibility.access.dataController) &&
-            _.isEmpty(v2data.accessibility.access.dataProcessor)
-        ) {
-            this.setState({ emptyFlagDAR: true });
-        }
+		if (
+			_.isEmpty(v2data.summary.publisher.accessRights) &&
+			_.isEmpty(v2data.summary.publisher.deliveryLeadTime) &&
+			_.isEmpty(v2data.summary.publisher.accessRequestCost) &&
+			_.isEmpty(v2data.summary.publisher.accessService) &&
+			_.isEmpty(v2data.accessibility.access.accessRequestCost) &&
+			_.isEmpty(v2data.accessibility.access.accessRights) &&
+			_.isEmpty(v2data.accessibility.access.deliveryLeadTime) &&
+			_.isEmpty(v2data.accessibility.access.accessService) &&
+			_.isEmpty(v2data.accessibility.access.jurisdiction) &&
+			_.isEmpty(v2data.summary.publisher.accessService.dataUseLimitation) &&
+			_.isEmpty(v2data.summary.publisher.accessService.dataUseRequirements) &&
+			_.isEmpty(v2data.accessibility.access.dataController) &&
+			_.isEmpty(v2data.accessibility.access.dataProcessor)
+		) {
+			this.setState({ emptyFlagDAR: true });
+		}
 
-        if (
-            _.isEmpty(v2data.accessibility.usage.isReferencedBy) &&
-            _.isEmpty(v2data.enrichmentAndLinkage.tools) &&
-            _.isEmpty(v2data.accessibility.usage.investigations)
-        ) {
-            this.setState({ emptyFlagRelRes: true });
-        }
+		if (
+			_.isEmpty(v2data.accessibility.usage.isReferencedBy) &&
+			_.isEmpty(v2data.enrichmentAndLinkage.tools) &&
+			_.isEmpty(v2data.accessibility.usage.investigations)
+		) {
+			this.setState({ emptyFlagRelRes: true });
+		}
 
-        this.setState({ showEmpty: false });
-    }
+		this.setState({ showEmpty: false });
+	}
 
-    getLinkedDatasets = async relation => {
-        let linkedDatasets = this.state.linkedDatasets;
+	getLinkedDatasets = async relation => {
+		let linkedDatasets = this.state.linkedDatasets;
 
-        if (relation.match(/\bhttps?:\/\/\S+/gi) && relation.slice(0, 46) === 'https://web.www.healthdatagateway.org/dataset/') {
-            await axios.get(baseURL + '/api/v1/relatedobject/' + relation.slice(46)).then(async res => {
-                linkedDatasets.push({
-                    title: res.data.data[0].name,
-                    info: res.data.data[0].datasetfields.publisher,
-                    type: 'gatewaylink',
-                    id: relation.slice(46),
-                });
-            });
-        } else if (relation.match(/\bhttps?:\/\/\S+/gi) && relation.slice(0, 46) !== 'https://web.www.healthdatagateway.org/dataset/') {
-            linkedDatasets.push({
-                title: relation,
-                info: 'Dataset not on the gateway',
-                type: 'externallink',
-            });
-        } else {
-            linkedDatasets.push({
-                title: relation,
-                info: 'Unrecognised dataset title',
-                type: 'text',
-            });
-        }
+		if (relation.match(/\bhttps?:\/\/\S+/gi) && relation.slice(0, 46) === 'https://web.www.healthdatagateway.org/dataset/') {
+			await axios.get(baseURL + '/api/v1/relatedobject/' + relation.slice(46)).then(async res => {
+				linkedDatasets.push({
+					title: res.data.data[0].name,
+					info: res.data.data[0].datasetfields.publisher,
+					type: 'gatewaylink',
+					id: relation.slice(46),
+				});
+			});
+		} else if (relation.match(/\bhttps?:\/\/\S+/gi) && relation.slice(0, 46) !== 'https://web.www.healthdatagateway.org/dataset/') {
+			linkedDatasets.push({
+				title: relation,
+				info: 'Dataset not on the gateway',
+				type: 'externallink',
+			});
+		} else {
+			linkedDatasets.push({
+				title: relation,
+				info: 'Unrecognised dataset title',
+				type: 'text',
+			});
+		}
 
-        this.setState({ linkedDatasets: linkedDatasets });
-    };
+		this.setState({ linkedDatasets: linkedDatasets });
+	};
 
-    getEmptyFieldsCount(v2data) {
-        let temporalCoverage = '';
-        if (!_.isEmpty(v2data.provenance.temporal.startDate) && !_.isEmpty(v2data.provenance.temporal.endDate)) {
-            temporalCoverage = v2data.provenance.temporal.startDate + ' - ' + v2data.provenance.temporal.endDate;
-        }
+	getEmptyFieldsCount(v2data) {
+		let temporalCoverage = '';
+		if (!_.isEmpty(v2data.provenance.temporal.startDate) && !_.isEmpty(v2data.provenance.temporal.endDate)) {
+			temporalCoverage = v2data.provenance.temporal.startDate + ' - ' + v2data.provenance.temporal.endDate;
+		}
 
-        let requiredFieldsArray = [
-            v2data.summary.doiName,
-            v2data.provenance.temporal.distributionReleaseDate,
-            v2data.provenance.temporal.accrualPeriodicity,
-            v2data.issued,
-            v2data.modified,
-            v2data.version,
-            v2data.accessibility.usage.resourceCreator,
-            temporalCoverage,
-            v2data.provenance.temporal.timeLag,
-            v2data.coverage.spatial,
-            v2data.coverage.typicalAgeRange,
-            v2data.coverage.physicalSampleAvailability,
-            v2data.coverage.followup,
-            v2data.coverage.pathway,
-            v2data.accessibility.formatAndStandards.vocabularyEncodingScheme,
-            v2data.accessibility.formatAndStandards.conformsTo,
-            v2data.accessibility.formatAndStandards.language,
-            v2data.accessibility.formatAndStandards.format,
-            v2data.provenance.origin.purpose,
-            v2data.provenance.source,
-            v2data.provenance.collectionSituation,
-            v2data.enrichmentAndLinkage.derivation,
-            v2data.observations.observedNode,
-            v2data.observations.disambiguatingDescription,
-            v2data.observations.measuredValue,
-            v2data.observations.measuredProperty,
-            v2data.observations.observationDate,
-            v2data.summary.publisher.accessRights,
-            v2data.summary.publisher.deliveryLeadTime,
-            v2data.summary.publisher.accessRequestCost,
-            v2data.summary.publisher.accessService,
-            v2data.accessibility.access.jurisdiction,
-            v2data.summary.publisher.accessService.dataUseLimitation,
-            v2data.summary.publisher.accessService.dataUseRequirements,
-            v2data.accessibility.access.dataController,
-            v2data.accessibility.access.dataProcessor,
-            v2data.accessibility.usage.isReferencedBy,
-            v2data.enrichmentAndLinkage.tools,
-            v2data.accessibility.usage.investigations,
-        ];
-        let emptyFieldsArray = requiredFieldsArray.filter(field => _.isEmpty(field));
-        let tempEmptyFieldsCount = emptyFieldsArray.length;
+		let requiredFieldsArray = [
+			v2data.summary.doiName,
+			v2data.provenance.temporal.distributionReleaseDate,
+			v2data.provenance.temporal.accrualPeriodicity,
+			v2data.issued,
+			v2data.modified,
+			v2data.version,
+			v2data.accessibility.usage.resourceCreator,
+			temporalCoverage,
+			v2data.provenance.temporal.timeLag,
+			v2data.coverage.spatial,
+			v2data.coverage.typicalAgeRange,
+			v2data.coverage.physicalSampleAvailability,
+			v2data.coverage.followup,
+			v2data.coverage.pathway,
+			v2data.accessibility.formatAndStandards.vocabularyEncodingScheme,
+			v2data.accessibility.formatAndStandards.conformsTo,
+			v2data.accessibility.formatAndStandards.language,
+			v2data.accessibility.formatAndStandards.format,
+			v2data.provenance.origin.purpose,
+			v2data.provenance.source,
+			v2data.provenance.collectionSituation,
+			v2data.enrichmentAndLinkage.derivation,
+			v2data.observations.observedNode,
+			v2data.observations.disambiguatingDescription,
+			v2data.observations.measuredValue,
+			v2data.observations.measuredProperty,
+			v2data.observations.observationDate,
+			v2data.summary.publisher.accessRights,
+			v2data.summary.publisher.deliveryLeadTime,
+			v2data.summary.publisher.accessRequestCost,
+			v2data.summary.publisher.accessService,
+			v2data.accessibility.access.jurisdiction,
+			v2data.accessibility.access.accessRequestCost,
+			v2data.accessibility.access.accessRights,
+			v2data.accessibility.access.deliveryLeadTime,
+			v2data.accessibility.access.accessService,
+			v2data.summary.publisher.accessService.dataUseLimitation,
+			v2data.summary.publisher.accessService.dataUseRequirements,
+			v2data.accessibility.access.dataController,
+			v2data.accessibility.access.dataProcessor,
+			v2data.accessibility.usage.isReferencedBy,
+			v2data.enrichmentAndLinkage.tools,
+			v2data.accessibility.usage.investigations,
+		];
+		let emptyFieldsArray = requiredFieldsArray.filter(field => _.isEmpty(field));
+		let tempEmptyFieldsCount = emptyFieldsArray.length;
 
-        this.setState({ emptyFieldsCount: tempEmptyFieldsCount });
-    }
+		this.setState({ emptyFieldsCount: tempEmptyFieldsCount });
+	}
 
-    updatePublisherLogo(publisher) {
-        let url = env === 'local' ? 'https://uatbeta.healthdatagateway.org' : cmsURL;
-        let publisherLogoURL = url + '/images/publisher/' + publisher;
+	updatePublisherLogo(publisher) {
+		let url = env === 'local' ? 'https://uatbeta.healthdatagateway.org' : cmsURL;
+		let publisherLogoURL = url + '/images/publisher/' + publisher;
 
-        this.setState({ publisherLogoURL: publisherLogoURL });
-    }
+		this.setState({ publisherLogoURL: publisherLogoURL });
+	}
 
-    showHideAllEmpty() {
-        if (this.state.showEmpty === false) {
-            this.setState({
-                emptyFlagDetails: false,
-                emptyFlagCoverage: false,
-                emptyFlagFormats: false,
-                emptyFlagProvenance: false,
-                emptyFlagDAR: false,
-                emptyFlagRelRes: false,
-                showEmpty: true,
-            });
-        }
+	showHideAllEmpty() {
+		if (this.state.showEmpty === false) {
+			this.setState({
+				emptyFlagDetails: false,
+				emptyFlagCoverage: false,
+				emptyFlagFormats: false,
+				emptyFlagProvenance: false,
+				emptyFlagDAR: false,
+				emptyFlagRelRes: false,
+				showEmpty: true,
+			});
+		}
 
-        if (this.state.showEmpty === true) {
-            this.updateV2Flags(this.state.v2data);
-        }
-    }
+		if (this.state.showEmpty === true) {
+			this.updateV2Flags(this.state.v2data);
+		}
+	}
 
-    doUpdateDataClassOpen(index) {
-        this.setState({
-            dataClassOpen: index,
-        });
-    }
+	doUpdateDataClassOpen(index) {
+		this.setState({
+			dataClassOpen: index,
+		});
+	}
 
-    doSearch = e => {
-        //fires on enter on searchbar
-        if (e.key === 'Enter') window.location.href = '/search?search=' + this.state.searchString;
-    };
+	doSearch = e => {
+		//fires on enter on searchbar
+		if (e.key === 'Enter') window.location.href = '/search?search=' + this.state.searchString;
+	};
 
-    checkAlerts = () => {
-        const { state } = this.props.location;
-        if (typeof state !== 'undefined' && typeof state.alert !== 'undefined') {
-            const { alert } = state;
-            this.setState({ alert });
-        }
-    };
+	checkAlerts = () => {
+		const { state } = this.props.location;
+		if (typeof state !== 'undefined' && typeof state.alert !== 'undefined') {
+			const { alert } = state;
+			this.setState({ alert });
+		}
+	};
 
-    updateSearchString = searchString => {
-        this.setState({ searchString: searchString });
-    };
+	updateSearchString = searchString => {
+		this.setState({ searchString: searchString });
+	};
 
-    updateCounter = (id, counter) => {
-        axios.post(baseURL + '/api/v1/counter/update', { id, counter });
-    };
+	updateCounter = (id, counter) => {
+		axios.post(baseURL + '/api/v1/counter/update', { id, counter });
+	};
 
-    handleMouseHover() {
-        this.setState(this.toggleHoverState);
-    }
+	handleMouseHover() {
+		this.setState(this.toggleHoverState);
+	}
 
-    toggleHoverState(state) {
-        return {
-            isHovering: !state.isHovering,
-            isHoveringPhenotypes: !state.isHoveringPhenotypes,
-        };
-    }
+	toggleHoverState(state) {
+		return {
+			isHovering: !state.isHovering,
+			isHoveringPhenotypes: !state.isHoveringPhenotypes,
+		};
+	}
 
-    handleMouseHoverShield() {
-        this.setState(this.toggleHoverStateShield);
-    }
+	handleMouseHoverShield() {
+		this.setState(this.toggleHoverStateShield);
+	}
 
-    toggleHoverStateShield(state) {
-        return {
-            isHoveringShield: !state.isHoveringShield,
-        };
-    }
+	toggleHoverStateShield(state) {
+		return {
+			isHoveringShield: !state.isHoveringShield,
+		};
+	}
 
-    getAdditionalObjectInfo = async data => {
-        let tempObjects = [];
-        const promises = data.map(async (object, index) => {
-            if (object.objectType === 'course') {
-                await axios.get(baseURL + '/api/v1/relatedobject/course/' + object.objectId).then(res => {
-                    tempObjects.push({
-                        id: object.objectId,
-                        activeflag: res.data.data[0].activeflag,
-                    });
-                });
-            } else {
-                await axios.get(baseURL + '/api/v1/relatedobject/' + object.objectId).then(res => {
-                    tempObjects.push({
-                        id: object.objectId,
-                        authors: res.data.data[0].authors,
-                        activeflag: res.data.data[0].activeflag,
-                    });
-                });
-            }
-        });
-        await Promise.all(promises);
-        this.setState({ objects: tempObjects });
+	getAdditionalObjectInfo = async data => {
+		let tempObjects = [];
+		const promises = data.map(async (object, index) => {
+			if (object.objectType === 'course') {
+				await axios.get(baseURL + '/api/v1/relatedobject/course/' + object.objectId).then(res => {
+					tempObjects.push({
+						id: object.objectId,
+						activeflag: res.data.data[0].activeflag,
+					});
+				});
+			} else {
+				await axios.get(baseURL + '/api/v1/relatedobject/' + object.objectId).then(res => {
+					tempObjects.push({
+						id: object.objectId,
+						authors: res.data.data[0].authors,
+						activeflag: res.data.data[0].activeflag,
+					});
+				});
+			}
+		});
+		await Promise.all(promises);
+		this.setState({ objects: tempObjects });
 
-        this.getRelatedObjects();
-    };
+		this.getRelatedObjects();
+	};
 
-    getRelatedObjects = () => {
-        let tempRelatedObjects = [];
-        this.state.data.relatedObjects.map(object =>
-            this.state.objects.forEach(item => {
-                if (object.objectId === item.id && item.activeflag === 'active') {
-                    tempRelatedObjects.push(object);
-                }
+	getRelatedObjects = () => {
+		let tempRelatedObjects = [];
+		this.state.data.relatedObjects.map(object =>
+			this.state.objects.forEach(item => {
+				if (object.objectId === item.id && item.activeflag === 'active') {
+					tempRelatedObjects.push(object);
+				}
 
-                if (object.objectId === item.id && item.activeflag === 'review' && item.authors.includes(this.state.userState[0].id)) {
-                    tempRelatedObjects.push(object);
-                }
-            })
-        );
-        this.setState({ relatedObjects: tempRelatedObjects });
-    };
+				if (object.objectId === item.id && item.activeflag === 'review' && item.authors.includes(this.state.userState[0].id)) {
+					tempRelatedObjects.push(object);
+				}
+			})
+		);
+		this.setState({ relatedObjects: tempRelatedObjects });
+	};
 
-    updateDiscoursePostCount = count => {
-        this.setState({ discoursePostCount: count });
-    };
+	updateDiscoursePostCount = count => {
+		this.setState({ discoursePostCount: count });
+	};
 
-    getPublisherById = async publisherId => {
-        await axios
-            .get(`${baseURL}/api/v1/publishers/${publisherId}`)
-            .then(response => {
-                const {
-                    data: {
-                        publisher: { dataRequestModalContent = {}, allowsMessaging = false },
-                    },
-                } = response;
-                const stateObj = {
-                    requiresModal: !_.isEmpty(dataRequestModalContent) ? true : false,
-                    allowNewMessage: allowsMessaging && _.isEmpty(dataRequestModalContent) ? true : false,
-                    allowsMessaging,
-                    dataRequestModalContent,
-                };
-                this.topicContext = {
-                    ...this.topicContext,
-                    ...stateObj,
-                };
-                this.setState({ ...stateObj });
-            })
-            .catch(error => {
-                console.log(error);
-            });
-    };
+	getPublisherById = async publisherId => {
+		await axios
+			.get(`${baseURL}/api/v1/publishers/${publisherId}`)
+			.then(response => {
+				const {
+					data: {
+						publisher: { dataRequestModalContent = {}, allowsMessaging = false },
+					},
+				} = response;
+				const stateObj = {
+					requiresModal: !_.isEmpty(dataRequestModalContent) ? true : false,
+					allowNewMessage: allowsMessaging && _.isEmpty(dataRequestModalContent) ? true : false,
+					allowsMessaging,
+					dataRequestModalContent,
+				};
+				this.topicContext = {
+					...this.topicContext,
+					...stateObj,
+				};
+				this.setState({ ...stateObj });
+			})
+			.catch(error => {
+				console.log(error);
+			});
+	};
 
-    showLoginModal = title => {
-        DataSetHelper.showLoginPanel(window, title);
-    };
+	showLoginModal = title => {
+		DataSetHelper.showLoginPanel(window, title);
+	};
 
-    toggleDrawer = () => {
-        this.setState(prevState => {
-            if (prevState.showDrawer === true) {
-                this.searchBar.current.getNumberOfUnreadMessages();
-            }
-            return { showDrawer: !prevState.showDrawer };
-        });
-    };
+	toggleDrawer = () => {
+		this.setState(prevState => {
+			if (prevState.showDrawer === true) {
+				this.searchBar.current.getNumberOfUnreadMessages();
+			}
+			return { showDrawer: !prevState.showDrawer };
+		});
+	};
 
-    toggleModal = (showEnquiry = false, context = {}) => {
-        this.setState(prevState => {
-            return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
-        });
+	toggleModal = (showEnquiry = false, context = {}) => {
+		this.setState(prevState => {
+			return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
+		});
 
-        if (showEnquiry) {
-            this.topicContext = {
-                ...this.topicContext,
-                allowNewMessage: true,
-            };
-        } else {
-            this.topicContext = {
-                ...this.topicContext,
-                allowNewMessage: false,
-            };
-        }
-    };
+		if (showEnquiry) {
+			this.topicContext = {
+				...this.topicContext,
+				allowNewMessage: true,
+			};
+		} else {
+			this.topicContext = {
+				...this.topicContext,
+				allowNewMessage: false,
+			};
+		}
+	};
 
-    showAllPhenotypes = () => {
-        this.setState({ showAllPhenotype: true });
-    };
+	showAllPhenotypes = () => {
+		this.setState({ showAllPhenotype: true });
+	};
 
-    render() {
-        const {
-            searchString,
-            data,
-            v2data,
-            technicalMetadata,
-            isLoading,
-            userState,
-            alert = null,
-            dataClassOpen,
-            relatedObjects,
-            discoursePostCount,
-            showDrawer,
-            showModal,
-            requiresModal,
-            allowsMessaging,
-            showAllPhenotype,
-            collections,
-            emptyFlagDetails,
-            emptyFlagCoverage,
-            emptyFlagFormats,
-            emptyFlagProvenance,
-            emptyFlagDAR,
-            emptyFlagRelRes,
-            showEmpty,
-            emptyFieldsCount,
-            linkedDatasets,
-            publisherLogoURL,
-        } = this.state;
+	render() {
+		const {
+			searchString,
+			data,
+			v2data,
+			technicalMetadata,
+			isLoading,
+			userState,
+			alert = null,
+			dataClassOpen,
+			relatedObjects,
+			discoursePostCount,
+			showDrawer,
+			showModal,
+			requiresModal,
+			allowsMessaging,
+			showAllPhenotype,
+			collections,
+			emptyFlagDetails,
+			emptyFlagCoverage,
+			emptyFlagFormats,
+			emptyFlagProvenance,
+			emptyFlagDAR,
+			emptyFlagRelRes,
+			showEmpty,
+			emptyFieldsCount,
+			linkedDatasets,
+			publisherLogoURL,
+		} = this.state;
 
-        let publisherLogo = !_.isEmpty(v2data) && !_.isEmpty(v2data.summary.publisher.logo) ? v2data.summary.publisher.logo : publisherLogoURL;
+		let publisherLogo = !_.isEmpty(v2data) && !_.isEmpty(v2data.summary.publisher.logo) ? v2data.summary.publisher.logo : publisherLogoURL;
 
-        const componentDecorator = (href, text, key) => (
-            <span>
-                <a href={href} key={key} target='_blank' rel='noopener noreferrer' className='gray800-14-bold pointer overflowWrap'>
-                    {' '}
-                    {text}
-                </a>
-            </span>
-        );
+		const componentDecorator = (href, text, key) => (
+			<span>
+				<a href={href} key={key} target='_blank' rel='noopener noreferrer' className='gray800-14-bold pointer overflowWrap'>
+					{' '}
+					{text}
+				</a>
+			</span>
+		);
 
-        const formatLinks = source => {
-            const reUrl = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-            return source.replace(reUrl, '[$1]($1) ');
-        };
+		const formatLinks = source => {
+			const reUrl = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+			return source.replace(reUrl, '[$1]($1) ');
+		};
 
-        if (isLoading) {
-            return (
-                <Container>
-                    <Loading data-testid='isLoading' />
-                </Container>
-            );
-        }
+		if (isLoading) {
+			return (
+				<Container>
+					<Loading data-testid='isLoading' />
+				</Container>
+			);
+		}
 
-        if (_.isNil(data.relatedObjects)) {
-            data.relatedObjects = [];
-        }
-        if (_.has(data, 'datasetfields.phenotypes') && data.datasetfields.phenotypes.length > 0) {
-            data.datasetfields.phenotypes.sort((a, b) =>
-                a.name.toLowerCase() > b.name.toLowerCase() ? 1 : b.name.toLowerCase() > a.name.toLowerCase() ? -1 : 0
-            );
-        }
+		if (_.isNil(data.relatedObjects)) {
+			data.relatedObjects = [];
+		}
+		if (_.has(data, 'datasetfields.phenotypes') && data.datasetfields.phenotypes.length > 0) {
+			data.datasetfields.phenotypes.sort((a, b) =>
+				a.name.toLowerCase() > b.name.toLowerCase() ? 1 : b.name.toLowerCase() > a.name.toLowerCase() ? -1 : 0
+			);
+		}
 
-        function Metadata() {
-            var rating = 'Not Rated';
+		function Metadata() {
+			var rating = 'Not Rated';
 
-            if (data.datasetfields.metadataquality && !_.isNil(data.datasetfields.metadataquality.weighted_quality_rating)) {
-                rating = data.datasetfields.metadataquality.weighted_quality_rating;
-            } else {
-                return (
-                    <Fragment>
-                        <div style={{ lineHeight: 1 }}>
-                            <MetadataNotRated className='' />
-                        </div>
-                    </Fragment>
-                );
-            }
+			if (data.datasetfields.metadataquality && !_.isNil(data.datasetfields.metadataquality.weighted_quality_rating)) {
+				rating = data.datasetfields.metadataquality.weighted_quality_rating;
+			} else {
+				return (
+					<Fragment>
+						<div style={{ lineHeight: 1 }}>
+							<MetadataNotRated className='' />
+						</div>
+					</Fragment>
+				);
+			}
 
-            const renderTooltip = props => (
-                <Tooltip className='metadataOverlay' {...props}>
-                    Metadata richness score: {Math.trunc(data.datasetfields.metadataquality.weighted_quality_score)}
-                    <br />
-                    <br />
-                    The score relates to the amount of information available about the dataset, and not to the quality of the actual datasets.
+			const renderTooltip = props => (
+				<Tooltip className='metadataOverlay' {...props}>
+					Metadata richness score: {Math.trunc(data.datasetfields.metadataquality.weighted_quality_score)}
+					<br />
+					<br />
+					The score relates to the amount of information available about the dataset, and not to the quality of the actual datasets.
+					<br />
+					<br />
+					Click to read more about how the score is calculated.
 					<br />
                     <br />
                     Click to read more about how the score is calculated.
