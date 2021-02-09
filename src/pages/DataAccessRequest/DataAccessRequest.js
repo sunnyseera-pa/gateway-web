@@ -1389,6 +1389,7 @@ class DataAccessRequest extends Component {
 					onFilesUpdate={this.onFilesUpdate}
 					id={this.state._id}
 					files={this.state.files}
+					readOnly={this.state.readOnly}
 					initialFilesLoad={this.state.initialFilesLoad}
 				/>
 			);

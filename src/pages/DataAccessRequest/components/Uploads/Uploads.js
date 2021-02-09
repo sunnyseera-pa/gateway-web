@@ -12,7 +12,7 @@ import UploadFiles from './UploadFiles';
 import AllFiles from './AllFiles';
 import NoFiles from './NoFiles';
 
-const Uploads = ({ id, files, onFilesUpdate, initialFilesLoad }) => {
+const Uploads = ({ id, files, onFilesUpdate, readOnly, initialFilesLoad }) => {
   // 10mb - 10485760
   // 2mb - 2097152
   const maxSize = 10485760;
@@ -22,12 +22,18 @@ const Uploads = ({ id, files, onFilesUpdate, initialFilesLoad }) => {
   const [isLoading, setLoading] = useState(false);
   const [download, showDownload] = useState(true);
 
-
   const onRemoveFile = (file) => {
     const newFiles = [...uploadFiles].filter((f) => {
       return f.fileId !== file.fileId
     });
     setUploadFiles(newFiles);
+  }
+
+  const onDeleteFile = (file) => {
+    const newUpladedFiles = [...files].filter((f) => {
+      return f.fileId !== file.fileId
+    });
+    onFilesUpdate(newUpladedFiles,true);
   }
 
   const onDropAccepted = (acceptedFiles) => {
@@ -152,6 +158,20 @@ const Uploads = ({ id, files, onFilesUpdate, initialFilesLoad }) => {
         });
     }
   }
+  
+  const deleteFile = async (file)  => {
+     if(!_.isEmpty(file)) {
+        let { fileId } = file;
+        const body = {
+          fileId
+        };
+        await axios.put(`${baseURL}/api/v1/data-access-request/${id}/deletefile`, body).then(response => {
+        onDeleteFile(file);
+      }).catch(err => {
+          console.log(err);
+      });
+    }
+  }
 
   const updateDARFileState = (files, initalLoading) => {
     onFilesUpdate(files, initalLoading);
@@ -213,6 +233,8 @@ Max 10MB per file.</span>
           files={files}
           download={download}
           downloadFile={downloadFile}
+          deleteFile={deleteFile}
+          readOnly={readOnly}
         />
       }
       </div>
