@@ -88,7 +88,6 @@ const AddEditPaperForm = props => {
 		onSubmit: values => {
 			values.relatedObjects = props.relatedObjects;
 			values.toolCreator = props.userState[0];
-			console.log('values', values);
 
 			if (props.isEdit) {
 				axios.put(baseURL + '/api/v1/papers/' + props.data.id, values).then(res => {
@@ -190,7 +189,6 @@ const AddEditPaperForm = props => {
 
 	const relatedResourcesRef = React.useRef();
 
-	console.log('formik.values.document_links', formik.values.document_links);
 	return (
 		<div>
 			<Container>
