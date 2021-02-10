@@ -11,6 +11,14 @@ export const isEditMode = (url = '') => {
   return false;
 }
 
-export const isDOILink = link => {
-  return /^(?:(http)(s)?(:\/\/))?(dx.)?doi.org\/([\w.\/-]*)/i.test(link);
+export const isPDFLink = link => {
+  return /\.pdf$/.test(link);
 };
+
+export const removeArrayItem = (arr, value) => {
+  const index = arr.indexOf(value);
+  if (index > -1) {
+    arr.splice(index, 1);
+  }
+  return arr;
+}

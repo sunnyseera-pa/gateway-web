@@ -20,8 +20,8 @@ var baseURL = require('../commonComponents/BaseURL').getURL();
 const initialValues = {
 	document_links: {
 		doi: [''],
-		pdf: [''],
-		html: [''],
+		pdf: [],
+		html: [],
 	},
 };
 
@@ -51,8 +51,8 @@ const AddEditPaperForm = props => {
 			name: props.data.name || '',
 			document_links: props.data.document_links || {
 				doi: [''],
-				pdf: [''],
-				html: [''],
+				pdf: [],
+				html: [],
 			},
 			journal: props.data.journal || '',
 			journalYear: props.data.journalYear || '',
@@ -89,6 +89,12 @@ const AddEditPaperForm = props => {
 		onSubmit: values => {
 			values.relatedObjects = props.relatedObjects;
 			values.toolCreator = props.userState[0];
+			for (var i = 0; i < values.document_links.doi.length; i++) {
+				if (isPDFLink(values.document_links.doi[i])) {
+					values.document_links.pdf.push(values.document_links.doi[i]);
+					removeArrayItem(values.document_links.doi, values.document_links.doi[i]);
+				}
+			}
 
 			if (props.isEdit) {
 				axios.put(baseURL + '/api/v1/papers/' + props.data.id, values).then(res => {
@@ -321,6 +327,7 @@ const AddEditPaperForm = props => {
 																	))}
 
 																{formik.values.document_links.html.length > 0 &&
+																	formik.values.document_links.html[0] !== "" &&
 																	formik.values.document_links.html.map((htmlLink, index) => 
 																		<Fragment>
 																			<Col sm={12} lg={10}>
@@ -365,6 +372,7 @@ const AddEditPaperForm = props => {
 																)}
 
 																{formik.values.document_links.pdf.length > 0 &&
+																	formik.values.document_links.pdf[0] !== "" &&
 																	formik.values.document_links.pdf.map((pdfLink, index) => (
 																		<Fragment>
 																			<Col sm={12} lg={10}>
