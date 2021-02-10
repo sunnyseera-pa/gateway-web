@@ -706,7 +706,9 @@ class SearchBar extends React.Component {
 															<Dropdown.Item href='/account?tab=projects' className='black-14' data-test-id='optProjects'>
 																Projects
 															</Dropdown.Item>
-															{/* <Dropdown.Item href="/account?tab=datasets" className="black-14">Datasets</Dropdown.Item> */}
+															<Dropdown.Item href='/account?tab=datasets' className='black-14'>
+																Datasets
+															</Dropdown.Item>
 															<Dropdown.Item href='/account?tab=papers' className='black-14' data-test-id='optPapers'>
 																Papers
 															</Dropdown.Item>
@@ -806,7 +808,9 @@ class SearchBar extends React.Component {
 															<Dropdown.Item href='/account?tab=projects' className='black-14'>
 																Projects
 															</Dropdown.Item>
-															{/* <Dropdown.Item href="/account?tab=datasets" className="black-14">Datasets</Dropdown.Item> */}
+															<Dropdown.Item href='/account?tab=datasets' className='black-14'>
+																Datasets
+															</Dropdown.Item>
 															<Dropdown.Item href='/account?tab=papers' className='black-14'>
 																Papers
 															</Dropdown.Item>
