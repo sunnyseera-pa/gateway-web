@@ -227,7 +227,6 @@ export const PaperDetail = props => {
 		paperData.relatedObjects = [];
 	}
 
-	console.log('paperData.document_links', paperData.document_links);
 	return (
 		<Sentry.ErrorBoundary fallback={<ErrorModal show={showModalHandler} handleClose={hideModalHandler} />}>
 			<div>

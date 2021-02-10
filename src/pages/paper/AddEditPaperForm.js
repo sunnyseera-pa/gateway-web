@@ -327,8 +327,8 @@ const AddEditPaperForm = props => {
 																	))}
 
 																{formik.values.document_links.html.length > 0 &&
-																	formik.values.document_links.html[0] !== "" &&
-																	formik.values.document_links.html.map((htmlLink, index) => 
+																	formik.values.document_links.html[0] !== '' &&
+																	formik.values.document_links.html.map((htmlLink, index) => (
 																		<Fragment>
 																			<Col sm={12} lg={10}>
 																				<Form.Group labelKey={`document_links.html`}>
@@ -369,10 +369,10 @@ const AddEditPaperForm = props => {
 																				</button>
 																			</Col>
 																		</Fragment>
-																)}
+																	))}
 
 																{formik.values.document_links.pdf.length > 0 &&
-																	formik.values.document_links.pdf[0] !== "" &&
+																	formik.values.document_links.pdf[0] !== '' &&
 																	formik.values.document_links.pdf.map((pdfLink, index) => (
 																		<Fragment>
 																			<Col sm={12} lg={10}>
@@ -414,8 +414,7 @@ const AddEditPaperForm = props => {
 																				</button>
 																			</Col>
 																		</Fragment>
-																	)
-																)}
+																	))}
 															</Fragment>
 														)}
 													/>
