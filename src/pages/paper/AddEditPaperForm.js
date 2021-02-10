@@ -8,6 +8,7 @@ import moment from 'moment';
 import RelatedResources from '../commonComponents/relatedResources/RelatedResources';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
+import { isDOILink } from '../../utils/GeneralHelper.util';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
 import { ReactComponent as InfoSVG } from '../../images/info.svg';
@@ -48,7 +49,7 @@ const AddEditPaperForm = props => {
 			id: props.data.id || '',
 			type: 'paper',
 			name: props.data.name || '',
-			document_links: {
+			document_links: props.data.document_links || {
 				doi: [''],
 				pdf: [''],
 				html: [''],
@@ -189,6 +190,7 @@ const AddEditPaperForm = props => {
 
 	const relatedResourcesRef = React.useRef();
 
+	// console.log('formik.values.document_links', formik.values.document_links);
 	return (
 		<div>
 			<Container>

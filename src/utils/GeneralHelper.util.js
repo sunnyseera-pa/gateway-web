@@ -10,3 +10,7 @@ export const isEditMode = (url = '') => {
   }
   return false;
 }
+
+export const isDOILink = link => {
+  return /^(?:(http)(s)?(:\/\/))?(dx.)?doi.org\/([\w.\/-]*)/i.test(link);
+};

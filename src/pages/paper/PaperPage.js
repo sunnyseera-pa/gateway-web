@@ -358,11 +358,20 @@ export const PaperDetail = props => {
 															<span className='gray800-14'>URL</span>
 														</Col>
 														<Col sm={10}>
-															{paperData.document_links.doi.map((paperDoi) => (
-															<a href={paperDoi} rel='noopener noreferrer' target='_blank' className='purple-14 text-break'>
-																{paperDoi}
-															</a>
-															))}
+															{paperData.document_links ? (
+																paperData.document_links.doi.map(paperDoi => (
+																	<>
+																		<a href={paperDoi} rel='noopener noreferrer' target='_blank' className='purple-14 text-break'>
+																			{paperDoi}
+																		</a>
+																		<br />
+																	</>
+																))
+															) : (
+																<a href={paperData.link} rel='noopener noreferrer' target='_blank' className='purple-14 text-break'>
+																	{paperData.link}
+																</a>
+															)}
 														</Col>
 													</Row>
 													{paperData.isPreprint ? (
