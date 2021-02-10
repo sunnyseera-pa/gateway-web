@@ -25,14 +25,6 @@ const initialValues = {
 	},
 };
 
-class DocumentLinks {
-	constructor() {
-		this.doi = '';
-		this.pdf = '';
-		this.html = '';
-	}
-}
-
 const validateSchema = Yup.object().shape({
 	document_links: Yup.array().of(
 		Yup.object().shape({
