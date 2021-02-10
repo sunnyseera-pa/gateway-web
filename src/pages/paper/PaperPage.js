@@ -358,7 +358,6 @@ export const PaperDetail = props => {
 															<span className='gray800-14'>URL</span>
 														</Col>
 														<Col sm={10}>
-															x
 															<a href={paperData.link} rel='noopener noreferrer' target='_blank' className='purple-14 text-break'>
 																{paperData.link}
 															</a>
