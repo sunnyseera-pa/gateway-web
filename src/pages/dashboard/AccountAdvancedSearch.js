@@ -33,10 +33,10 @@ export const AccountAdvancedSearch = props => {
 			let authorised = false;
 			await axios
 				.patch(baseURL + '/api/v1/users/advancedSearch/roles/' + userState[0].id, {
-					advancedSearchRoles: GENERAL_ACCESS,
+					advancedSearchRoles: [GENERAL_ACCESS],
 				})
 				.then(res => {
-					authorised = res.status === 200;
+					authorised = true;
 					let newUserState = userState;
 					newUserState[0].advancedSearchRoles = res.data.response.advancedSearchRoles;
 					setUserState(newUserState);

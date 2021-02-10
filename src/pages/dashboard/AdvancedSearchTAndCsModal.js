@@ -40,7 +40,7 @@ const AdvancedSearchTAndCsModal = ({ open, close, updateUserAcceptedAdvancedSear
 							<Modal.Body>
 								<div className='relatedModalBackground'>
 									<p>PLEASE READ THESE TERMS OF USE CAREFULLY BEFORE ACCEPTING THEM</p>
-									<p>1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHAT’S IN THESE TERMS? </p>
+									<p className='termsSubtitle'>1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHAT’S IN THESE TERMS? </p>
 									<p>
 										These terms set out the standards and rules that apply when you log onto and use the HDR Discovery tool (“our site”) or
 										interact with our site in any other way. You will be required to go through a validation process before being allowed to
@@ -100,37 +100,51 @@ const AdvancedSearchTAndCsModal = ({ open, close, updateUserAcceptedAdvancedSear
 											APPENDIX
 										</a>
 									</div>
-									<p id='terms-2'>2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHO WE ARE AND HOW TO CONTACT US</p>
+									<p id='terms-2' className='termsSubtitle'>
+										2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHO WE ARE AND HOW TO CONTACT US
+									</p>
 									<p>UNIVERSITY OF NOTTINGHAM of University Park, Nottingham, NG7 2RD (“The University”, “us” or “we”)</p>
 									<p>To contact us, please email Email: contact@biobankinguk.org </p>
-									<p id='terms-3'>3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AGREEING TO OUR TERMS</p>
+									<p id='terms-3' className='termsSubtitle'>
+										3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AGREEING TO OUR TERMS
+									</p>
 									<p>
 										BY [CLICKING ON THE YES BOX] OUR SITE YOU ACCEPT THESE TERMS AND THE SNOMED CT TERMS IN THE APPENDIX AND AGREE TO COMPLY
 										WITH THEM.
 									</p>
 									<p>
-										• If you do not agree to these terms, you must not use our site. <br></br>• We recommend that you print a copy of these
-										terms for future reference.
+										<ul className='termsBulletList'>
+											<li>If you do not agree to these terms, you must not use our site. </li>
+											<li>We recommend that you print a copy of these terms for future reference.</li>
+										</ul>
 									</p>
-									<p id='terms-4'>4.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WE MAY MAKE CHANGES TO THESE TERMS</p>
+									<p id='terms-4' className='termsSubtitle'>
+										4.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WE MAY MAKE CHANGES TO THESE TERMS
+									</p>
 									<p>
-										 We amend these terms from time to time. Every time you wish to use our site, please check these terms to ensure you
+										We amend these terms from time to time. Every time you wish to use our site, please check these terms to ensure you
 										understand the terms that apply at that time.  When we change our terms you will be asked on logging in to accept the
 										new terms. If you choose not to accept the new terms we will withdraw your access to your account.
 									</p>
-									<p id='terms-5'>5.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PURPOSE OF USE</p>
-									<p>
-										<li>
-											You may only use the site as a discovery tool to search anonymised data to assist you in finding an organisation that
-											may hold the data you need for your research.
-										</li>
-										<li>You are not allowed to use the site for any kind of research activity or for any commercial use.</li>
-										<li>
-											An account on the site must be used solely by the person it has been registered to. Such accounts must be used by such
-											individual. It must not be used by groups nor used as a generic account.
-										</li>
+									<p id='terms-5' className='termsSubtitle'>
+										5.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PURPOSE OF USE
 									</p>
-									<p id='terms-6'>6.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PROHIBITED USES</p>
+									<p>
+										<ul className='termsBulletList'>
+											<li>
+												You may only use the site as a discovery tool to search anonymised data to assist you in finding an organisation
+												that may hold the data you need for your research.
+											</li>
+											<li>You are not allowed to use the site for any kind of research activity or for any commercial use.</li>
+											<li>
+												An account on the site must be used solely by the person it has been registered to. Such accounts must be used by
+												such individual. It must not be used by groups nor used as a generic account.
+											</li>
+										</ul>
+									</p>
+									<p id='terms-6' className='termsSubtitle'>
+										6.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PROHIBITED USES
+									</p>
 									<p>
 										6.1 You may use our site only for lawful purposes. You may not use our site:  <br></br>for any kind of research activity
 										unless you have prior written consent from an organisation registered on our site allowing you to use their data for
@@ -164,7 +178,9 @@ const AdvancedSearchTAndCsModal = ({ open, close, updateUserAcceptedAdvancedSear
 										<br></br>any equipment or network on which our site is stored; or
 										<br></br>any software used in the provision of our site.
 									</p>
-									<p id='terms-7'>7.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AVAILABILITY OF OUR SITE</p>
+									<p id='terms-7' className='termsSubtitle'>
+										7.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AVAILABILITY OF OUR SITE
+									</p>
 									<p>
 										7.1 Use of our site is provided on an “as is” basis. Use is intended to be provided 24/7, excluding temporary service
 										breaks, which may result from maintenance, update or correction activities or activities performed in order to ensure or
@@ -199,7 +215,9 @@ const AdvancedSearchTAndCsModal = ({ open, close, updateUserAcceptedAdvancedSear
 										activities;
 										<br></br>(iii) a user or users have not complied with these terms.
 									</p>
-									<p id='terms-8'>8.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your privacy and personal information</p>
+									<p id='terms-8' className='termsSubtitle'>
+										8.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your privacy and personal information
+									</p>
 									<p>
 										Your privacy and personal information are important to us. Any personal information that you provide to us will be dealt
 										with in line with our privacy policy, which explains what personal information we collect from you, how and why we
@@ -207,7 +225,9 @@ const AdvancedSearchTAndCsModal = ({ open, close, updateUserAcceptedAdvancedSear
 										us and supervisory authorities in the event you have a query or complaint about the use of your personal information.
 										Our privacy policy is available at https://www.hdruk.ac.uk/infrastructure/gateway/privacy-policy/.
 									</p>
-									<p id='terms-9'>9.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ownership, use and intellectual property rights</p>
+									<p id='terms-9' className='termsSubtitle'>
+										9.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ownership, use and intellectual property rights
+									</p>
 									<p>
 										Our site and all intellectual property rights in it including are owned by us or our licensors. Intellectual property
 										rights means rights such as: copyright, trade marks, domain names, design rights, database rights, patents and all other
@@ -218,7 +238,9 @@ const AdvancedSearchTAndCsModal = ({ open, close, updateUserAcceptedAdvancedSear
 										adjust to try to circumvent or delete any notices contained on the site (including any intellectual property notices)
 										and in particular in any digital rights or other security technology embedded or contained within the site.
 									</p>
-									<p id='terms-10'>10.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DATA PROTECTION </p>
+									<p id='terms-10' className='termsSubtitle'>
+										10.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DATA PROTECTION{' '}
+									</p>
 									<p>
 										The University shall have the right to take action to prevent any personal data breach and to remove interference
 										related to data security. Such action may include prevention of transfer and receipt of messages or removing malicious
@@ -226,14 +248,18 @@ const AdvancedSearchTAndCsModal = ({ open, close, updateUserAcceptedAdvancedSear
 										impact of any interference.
 									</p>
 									<p>You must inform the University without delay of any data security threats or breaches of which you become aware.</p>
-									<p id='terms-11'>11.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CONFIDENTIALITY</p>
+									<p id='terms-11' className='termsSubtitle'>
+										11.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CONFIDENTIALITY
+									</p>
 									<p>
 										You agree to keep confidential and not disclose to any third party any information relating to the site or the results
 										of your searches. You must retain your access right details, password and similar information carefully and in a manner
 										that ensures that they are not exposed to third parties.
 									</p>
 									<p>You will tell the University immediately if your access rights have become available to a third party.</p>
-									<p id='terms-12'>12.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RESEARCH ACTIVITY </p>
+									<p id='terms-12' className='termsSubtitle'>
+										12.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RESEARCH ACTIVITY{' '}
+									</p>
 									<p>
 										You are not allowed to use the site for any kind of research activity. Be aware that if as a result of your discovery
 										exercise on the site you go onto do research, you must get prior written consent from any of the organisations that hold
@@ -243,19 +269,25 @@ const AdvancedSearchTAndCsModal = ({ open, close, updateUserAcceptedAdvancedSear
 										to you for research purposes. Release of any data to you is at the discretion of that organisation.
 										<br></br>You should be aware that every search is logged and accessible to the University.
 									</p>
-									<p id='terms-13'>13.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MONITORING OF USE</p>
+									<p id='terms-13' className='termsSubtitle'>
+										13.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MONITORING OF USE
+									</p>
 									<p>
 										To ensure compliance with these rules and with UK legislation including the General Data Protection Regulations we
 										reserve the right to log in at our discretion and in particular to investigate any suspected incidents or performance
 										problems or other issues to view your user activity and for this purpose we will access your IP address.
 									</p>
-									<p id='terms-14'>14.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SNOMED CT TERMS OF USE</p>
+									<p id='terms-14' className='termsSubtitle'>
+										14.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SNOMED CT TERMS OF USE
+									</p>
 									<p>
 										Under the terms of its licence for the use of SNOMED CT the University is required to ensure that you agree to its terms
 										of use as set out in the Appendix to these rules.
 										<br></br>By accepting these rules you also agree to the SNOMED terms.{' '}
 									</p>
-									<p id='terms-15'>15.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BREACH OF THESE TERMS </p>
+									<p id='terms-15' className='termsSubtitle'>
+										15.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BREACH OF THESE TERMS{' '}
+									</p>
 									<p>
 										When we consider that a breach of these terms has occurred, we may take such action as we consider appropriate. Any
 										breach by you of these terms may result in the University taking all or any of the following actions:
@@ -268,7 +300,9 @@ const AdvancedSearchTAndCsModal = ({ open, close, updateUserAcceptedAdvancedSear
 										by law.
 										<br></br>We exclude our liability for all action we may take in response to breaches of these terms.
 									</p>
-									<p id='terms-16'>16.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LIABILITY </p>
+									<p id='terms-16' className='termsSubtitle'>
+										16.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LIABILITY{' '}
+									</p>
 									<p>
 										You will be liable for any unauthorized installation, use, copying, reproduction, or sharing of our site , software or
 										parts thereof and for possible costs, expenses and damages incurred by the University as a result thereof.
@@ -278,12 +312,16 @@ const AdvancedSearchTAndCsModal = ({ open, close, updateUserAcceptedAdvancedSear
 										caused by unauthorized use of our site or software or attempt thereof or data security of public internet network or
 										other interference or interruption to data connection network outside our control.
 									</p>
-									<p id='terms-17'>17.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAWS APPLYING TO ANY DISPUTES </p>
+									<p id='terms-17' className='termsSubtitle'>
+										17.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAWS APPLYING TO ANY DISPUTES 
+									</p>
 									<p>
 										These terms of use, their subject matter and formation (and any non-contractual disputes or claims) are governed by
 										English law. We both agree to the exclusive jurisdiction of the courts of England and Wales.
 									</p>
-									<p id='terms-appendix'>Appendix</p>
+									<p id='terms-appendix' className='termsSubtitle'>
+										Appendix
+									</p>
 									<p>
 										SNOMED CT licence statement for HDR Discovery Tool
 										<br></br>HDR Discovery Tool includes SNOMED Clinical Terms® (SNOMED CT®) which is used by permission of the SNOMED
@@ -299,7 +337,7 @@ const AdvancedSearchTAndCsModal = ({ open, close, updateUserAcceptedAdvancedSear
 										mlds.ihtsdotools.org, subject to acceptance of the Affiliate License Agreement (see on the SNOMED International web
 										site).
 										<br></br>3. The current list of SNOMED International Member Territories can be viewed at
-										https://www.snomed.org/our-customers/members. Countries not included in that list are "Non-Member Territories".
+										https://www.snomed.org/our-customers/members. Countries not included in that list are "Non-Member Territories".
 										<br></br>4. End Users, that do not hold an SNOMED International Affiliate License, may access SNOMED CT® using HDR
 										Discovery Tool subject to acceptance of and adherence to the following sub-license limitations:
 										<br></br>a) The sub-licensee is only permitted to access SNOMED CT® using this software (or service) for the purpose of
