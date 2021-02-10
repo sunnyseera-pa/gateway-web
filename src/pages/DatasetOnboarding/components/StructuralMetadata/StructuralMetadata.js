@@ -213,7 +213,7 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetadata, st
 									<td className={_.some(filtered, ['column', 'Table Description']) ? 'invalid-info table-cell' : 'table-cell'}>
 										{data.tableDescription}
 									</td>
-									<td className={_.some(filtered, ['column', 'Column Name	']) ? 'invalid-info table-cell' : 'table-cell'}>
+									<td className={_.some(filtered, ['column', 'Column Name']) ? 'invalid-info table-cell' : 'table-cell'}>
 										{data.columnName}
 									</td>
 									<td className={_.some(filtered, ['column', 'Column Description']) ? 'invalid-info table-cell' : 'table-cell'}>

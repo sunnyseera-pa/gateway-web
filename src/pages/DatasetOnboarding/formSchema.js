@@ -316,7 +316,7 @@ export const formSchema = {
 				},
 				{
 					questionId: 'summary/doiName',
-					question: 'DOI *',
+					question: 'DOI',
 					guidance:
 						'- Please note: This is **not** the DOI of the publication(s) associated with the dataset.\n- All HDR UK registered **datasets** should either have a **Digital Object Identifier (DOI)** or be working towards obtaining one.\n- If a DOI is available, please provide the DOI.\n- **Example**: 10.1093/ije/dyx196\n- **What happens if I do not have a DOI?**: Contact your academic organisation to find out if there is an existing relationship with a DOI provider. If that is not available, sites such as figshare offer free services to mint a DOI for your dataset. Subsequent versions of the Metadata Exchange will provide a DOI minting service.',
 					input: {

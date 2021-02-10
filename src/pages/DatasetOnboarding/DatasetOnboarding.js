@@ -1,6 +1,6 @@
 import React, { Component, Fragment, useState } from 'react';
 import { History } from 'react-router';
-import { Container, Row, Col, Modal, Tabs, Tab, Alert, Tooltip, Button } from 'react-bootstrap';
+import { Container, Row, Col, Alert } from 'react-bootstrap';
 import Winterfell from 'winterfell';
 import _ from 'lodash';
 import axios from 'axios';
@@ -9,16 +9,12 @@ import TypeaheadCustom from './components/TypeaheadCustom/TypeaheadCustom';
 import TypeaheadKeywords from './components/TypeaheadKeywords/TypeaheadKeywords';
 import TextareaInputCustom from './components/TextareaInputCustom/TextareaInputCustom';
 import TypeaheadUser from './components/TypeaheadUser/TypeaheadUser';
-import TypeaheadMultiUser from './components/TypeaheadUser/TypeaheadMultiUser';
 import DatePickerCustom from './components/DatePickerCustom/DatepickerCustom';
 import MultiField from './components/MultiField/MultiField';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
 import NavItem from './components/NavItem/NavItem';
 import NavDropdown from './components/NavDropdown/NavDropdown';
-import WorkflowReviewStepsModal from '../commonComponents/workflowReviewStepsModal/WorkflowReviewStepsModal';
-import ActivePhaseModal from '../commonComponents/workflowActivePhase/ActivePhaseModal';
-import WorkflowReviewDecisionModal from '../commonComponents/workflowReviewDecision/WorkflowReviewDecisionModal';
 import DarValidation from '../../utils/DarValidation.util';
 import DarHelper from '../../utils/DarHelper.util';
 import SearchBarHelperUtil from '../../utils/SearchBarHelper.util';
@@ -26,7 +22,6 @@ import { classSchema } from './classSchema';
 import { baseURL } from '../../configs/url.config';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
-import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import 'react-tabs/style/react-tabs.css';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import './DatasetOnboarding.scss';
@@ -36,14 +31,10 @@ import moment from 'moment';
 import AmendmentCount from './components/AmendmentCount/AmendmentCount';
 import ApplicantActionButtons from './components/ApplicantActionButtons/ApplicantActionButtons';
 import CustodianActionButtons from './components/CustodianActionButtons/CustodianActionButtons';
-import ActionModal from './components/ActionModal/ActionModal';
-import ContributorModal from './components/ContributorModal/ContributorModal';
-import AssignWorkflowModal from './components/AssignWorkflowModal/AssignWorkflowModal';
 import SLA from '../commonComponents/sla/SLA';
 import BeforeYouBegin from './components/BeforeYouBegin/BeforeYouBegin';
 import Guidance from './components/Guidance/Guidance';
 import StructuralMetadata from './components/StructuralMetadata/StructuralMetadata';
-import UpdateRequestModal from './components/UpdateRequestModal/UpdateRequestModal';
 import CreateNewVersionModal from './components/CreateNewVersionModal/CreateNewVersionModal';
 import Dropdown from 'react-bootstrap/Dropdown';
 
@@ -97,9 +88,6 @@ class DatasetOnboarding extends Component {
 			fullAmendments: {},
 			jsonSchema: {},
 			questionAnswers: {},
-			workflow: {},
-			activeWorkflow: {},
-			files: [],
 			structuralMetadataErrors: [],
 			structuralMetadata: [],
 			listOfDatasets: [],
@@ -125,19 +113,10 @@ class DatasetOnboarding extends Component {
 			datasetVersion: '',
 			activeflag: '',
 			publisher: '',
-			mainApplicant: '',
 			showDrawer: false,
-			showModal: false,
-			//showMrcModal: false,
-			showActionModal: false,
-			showWorkflowReviewModal: false,
-			showWorkflowReviewDecisionModal: false,
-			workflowReviewDecisionType: false,
-			showActivePhaseModal: false,
 			showArchiveModal: false,
 			showUnArchiveModal: false,
 			showCreateNewVersionModal: false,
-			showAssignWorkflowModal: false,
 			readOnly: false,
 			userType: '',
 			answeredAmendments: 0,
@@ -147,30 +126,10 @@ class DatasetOnboarding extends Component {
 			allowsMultipleDatasets: false,
 			activeAccordionCard: 0,
 			allowedNavigation: true,
-			projectNameValid: true,
-			ncsValid: true,
 			topicContext: {},
 			authorIds: [],
-			projectId: '',
-			aboutApplication: {
-				projectName: '',
-				isNationalCoreStudies: false,
-				nationalCoreStudiesProjectId: '',
-				selectedDatasets: [],
-				completedDatasetSelection: false,
-				completedReadAdvice: false,
-				completedCommunicateAdvice: false,
-				completedApprovalsAdvice: false,
-				completedSubmitAdvice: false,
-				completedInviteCollaborators: false,
-			},
 			reviewSections: [],
-			context: {},
-			actionModalConfig: {},
-			workflows: [],
-			workflowAssigned: false,
 			roles: [],
-			nationalCoreStudiesProjects: [],
 			inReviewMode: false,
 			updateRequestModal: false,
 		};
@@ -292,27 +251,22 @@ class DatasetOnboarding extends Component {
 		let {
 			jsonSchema,
 			activeParty = '',
-			questionAnswers,
+			questionAnswers = {},
 			structuralMetadata = [],
 			listOfDatasets = [],
 			_id,
 			hasRecommended,
 			amendmentIterations = [],
 			applicationStatus,
-			aboutApplication = {},
 			dataset,
 			readOnly = false,
 			userType = 'APPLICANT',
 			unansweredAmendments = 0,
 			answeredAmendments = 0,
-			mainApplicant,
 			userId,
 			authorIds,
-			projectId,
 			inReviewMode = false,
 			reviewSections = [],
-			workflow,
-			files,
 		} = context;
 
 		let {
@@ -322,17 +276,15 @@ class DatasetOnboarding extends Component {
 			datasetfields: { publisher },
 		} = dataset;
 
-		///let { firstname, lastname } = mainApplicant;
 		let showSubmit = false;
 		let submitButtonText = 'Submit for review';
 		let showCreateNewVersion = false;
 		let showArchive = false;
 		let showUnArchive = false;
 
-		let publisherId = '',
-			workflowEnabled = false;
+		let publisherId = '';
 		if (dataset.publisher) {
-			({ _id: publisherId, workflowEnabled } = dataset.publisher);
+			({ _id: publisherId } = dataset.publisher);
 		}
 
 		jsonSchema = this.injectStaticContent(jsonSchema, inReviewMode, reviewSections);
@@ -371,34 +323,24 @@ class DatasetOnboarding extends Component {
 			isWideForm: initialPanel === DarHelper.darStaticPageIds.BEFOREYOUBEGIN,
 			isTableForm: initialPanel === DarHelper.darStaticPageIds.STRUCTURAL,
 			isLoading: false,
-			//topicContext,
 			name,
 			datasetVersion,
 			activeflag,
 			publisher,
-			aboutApplication,
-			//allowsMultipleDatasets,
-			//context: modalContext,
 			readOnly,
 			answeredAmendments,
 			unansweredAmendments,
 			userType,
 			userId,
-			//mainApplicant: `${firstname} ${lastname}${this.checkCurrentUser(userId) ? ' (you)' : ''}`,
 			authorIds,
-			projectId,
 			showSubmit,
 			submitButtonText,
 			showCreateNewVersion,
 			showArchive,
 			showUnArchive,
 			//publisherId,
-			//workflowEnabled,
 			inReviewMode,
 			reviewSections,
-			workflow,
-			workflowAssigned: !_.isEmpty(workflow) ? true : false,
-			files,
 		});
 	};
 
@@ -601,8 +543,11 @@ class DatasetOnboarding extends Component {
 	onNextClick = () => {
 		// 1. If in the about panel, we go to the next step.  Otherwise next panel.
 		if (this.state.activePanelId === 'beforeYouBegin') {
-			// 2. Pass no completed bool value to go to next step without modifying completed status
-			this.onNextStep();
+			// 2. Set new state
+			this.setState({
+				activeAccordionCard: ++this.state.activeAccordionCard,
+			});
+
 			// 3. If we have reached the end of the about accordion, reset active accordion so all are closed
 			if (this.state.activeAccordionCard >= 4) {
 				this.setState({
@@ -849,210 +794,8 @@ class DatasetOnboarding extends Component {
 		this.setState({ activeGuidance: '' });
 	};
 
-	/* onHandleDataSetChange = (value = []) => {
-		// 1. Deconstruct current state
-		let { aboutApplication, allowedNavigation, topicContext } = { ...this.state };
-
-		aboutApplication.selectedDatasets = [...value];
-
-		// 3. If no datasets are passed, set invalid and incomplete step, and update message context
-		if (_.isEmpty(value)) {
-			let emptyTopicContext = DarHelper.createTopicContext();
-			aboutApplication.completedDatasetSelection = false;
-			allowedNavigation = false;
-			topicContext = {
-				...topicContext,
-				...emptyTopicContext,
-			};
-		} else {
-			let updatedTopicContext = DarHelper.createTopicContext(aboutApplication.selectedDatasets);
-			allowedNavigation = true;
-			topicContext = {
-				...topicContext,
-				...updatedTopicContext,
-			};
-			// 4. Create data object to save
-			let dataObj = { key: 'aboutApplication', data: aboutApplication };
-			// 5. Update application
-			this.updateApplication(dataObj);
-		}
-
-		// 6. Update state to reflect change
-		this.setState({
-			allowedNavigation,
-			aboutApplication,
-			topicContext,
-		});
-	}; */
-
-	/* onHandleProjectNameBlur = () => {
-		// 1. Deconstruct current state
-		let { aboutApplication, projectNameValid, ncsValid } = this.state;
-		// 2. Save updates if entire step is valid
-		if (projectNameValid && ncsValid) {
-			// 3. Set up aboutApplication object for saving
-			let dataObj = { key: 'aboutApplication', data: aboutApplication };
-			// 4. Update application
-			this.updateApplication(dataObj);
-		}
-	}; */
-
-	/* onHandleProjectNameChange = projectName => {
-		// 1. Deconstruct current state
-		let { aboutApplication } = this.state;
-		// 2. Update 'about application' state with project name
-		aboutApplication.projectName = projectName;
-		// 3. Update state to reflect change
-		this.setState({
-			allowedNavigation: this.isAboutApplicationValid(aboutApplication),
-			aboutApplication,
-		});
-	}; */
-
-	/* isAboutApplicationValid = aboutApplication => {
-		let isValid = false;
-		// 1. Desconstruct aboutApplication object to validate
-		let { projectName = '', isNationalCoreStudies = false, nationalCoreStudiesProjectId = '' } = aboutApplication;
-		// 2. Check valid state of NCS project selection
-		let projectNameValid = !_.isEmpty(projectName.trim());
-		let ncsValid = isNationalCoreStudies === false || (isNationalCoreStudies && !_.isEmpty(nationalCoreStudiesProjectId));
-		// 3. Set individaul validation states
-		this.setState({
-			projectNameValid,
-			ncsValid,
-		});
-		// 4. Determine overall valid state
-		if (projectNameValid && ncsValid) {
-			isValid = true;
-		}
-		// 5. Return result
-		return isValid;
-	}; */
-
-	/* onHandleProjectIsNCSToggle = async e => {
-		// 1. Deconstruct aboutApplication from state
-		let { aboutApplication } = this.state;
-		// 2. Update about application object
-		aboutApplication.isNationalCoreStudies = e.target.checked;
-		aboutApplication.nationalCoreStudiesProjectId = '';
-		// 3. If toggle is checked, get NCS tagged projects
-		this.getNationalCoreStudiesProjects();
-		// 4. Save validation state, disable navigation if toggle was checked until project is selected, remove previous selected project
-		this.setState({
-			aboutApplication,
-			allowedNavigation: this.isAboutApplicationValid(aboutApplication),
-		});
-	}; */
-
-	/* onHandleNCSProjectChange = e => {
-		// 1. Deconstruct aboutApplication from state
-		let { aboutApplication } = this.state;
-		// 2. Update about application object
-		aboutApplication.nationalCoreStudiesProjectId = e;
-		// 3. Set state updating validation
-		this.setState({
-			aboutApplication,
-			allowedNavigation: this.isAboutApplicationValid(aboutApplication),
-		});
-	}; */
-
-	/* getNationalCoreStudiesProjects = async () => {
-		try {
-			// 1. Call endpoint to retrieve NCS projects
-			let response = await axios.get(`${baseURL}/api/v1/tools/project/tag/NCS`);
-			const {
-				data: { entities },
-			} = response;
-			// 2. Store found projects in state
-			this.setState({
-				nationalCoreStudiesProjects: entities,
-			});
-		} catch (err) {
-			console.error(err);
-			return [];
-		}
-	}; */
-
-	onNextStep = async completed => {
-		// 1. Deconstruct current state
-		let { aboutApplication, activeAccordionCard } = this.state;
-		// 2. If a completed flag has been passed, update step during navigation
-		if (!_.isUndefined(completed)) {
-			switch (activeAccordionCard) {
-				case 0:
-					aboutApplication.completedDatasetSelection = completed;
-					break;
-				case 1:
-					// Do nothing, valid state for project name step handled by existence of text
-					break;
-				case 2:
-					aboutApplication.completedInviteCollaborators = completed;
-					break;
-				case 3:
-					aboutApplication.completedReadAdvice = completed;
-					break;
-				case 4:
-					aboutApplication.completedCommunicateAdvice = completed;
-					break;
-				default:
-					console.error('Invalid step passed');
-					break;
-			}
-		}
-		// 3. Update application
-		let dataObj = { key: 'beforeYouBegin', data: aboutApplication };
-		await this.updateApplication(dataObj);
-
-		// 4. Set new state
-		this.setState({
-			activeAccordionCard: ++activeAccordionCard,
-			aboutApplication,
-		});
-	};
-
-	onCustodianAction = value => {
+	/* onCustodianAction = value => {
 		value === 'AssignWorkflow' ? this.toggleAssignWorkflowModal() : this.toggleActionModal(value);
-	};
-
-	/* completeActivePhase = async () => {
-		await axios
-			.put(`${baseURL}/api/v1/data-access-request/${this.state._id}/stepoverride`)
-			.then(response => {
-				this.loadDataAccessRequest(this.state._id);
-				this.toggleWorkflowReviewModal();
-			})
-			.catch(error => {
-				console.log(error);
-			});
-	}; */
-
-	/* onDecisionReview = async (approved, comments) => {
-		let params = {
-			approved,
-			comments,
-		};
-		await axios
-			.put(`${baseURL}/api/v1/data-access-request/${this.state._id}/vote`, params)
-			.then(response => {
-				this.loadDataAccessRequest(this.state._id);
-				this.toggleWorkflowReviewDecisionModal();
-				// redirect to dashboard with message
-				let alert = {
-					publisher: this.state.publisher || '',
-					nav: `dataaccessrequests&team=${this.state.publisher}`,
-					tab: 'inReview',
-					message: `You have successfully sent your recommendation for your assigned phase of ${this.state.aboutApplication.projectName} project`,
-				};
-				// 4. redirect with Publisher name, Status: reject, approved, key of tab: presubmission, inreview, approved, rejected
-				this.props.history.push({
-					pathname: `/account`,
-					search: '?tab=dataaccessrequests',
-					state: { alert },
-				});
-			})
-			.catch(error => {
-				alert(error.message);
-			});
 	}; */
 
 	onStructuralMetaDataUpdate = (structuralMetadata, structuralMetadataErrors) => {
@@ -1062,14 +805,13 @@ class DatasetOnboarding extends Component {
 	toggleCard = (e, eventKey) => {
 		e.preventDefault();
 		// 1. Deconstruct current state
-		let { aboutApplication, activeAccordionCard } = this.state;
+		let { activeAccordionCard } = this.state;
 		if (activeAccordionCard === eventKey) {
 			eventKey = -1;
 		}
 		// 2. Set new state
 		this.setState({
 			activeAccordionCard: eventKey,
-			aboutApplication,
 		});
 	};
 
@@ -1081,49 +823,6 @@ class DatasetOnboarding extends Component {
 			return { showDrawer: !prevState.showDrawer };
 		});
 	};
-
-	toggleModal = (showEnquiry = false, modalContext) => {
-		this.setState(prevState => {
-			return {
-				showModal: !prevState.showModal,
-				context: modalContext,
-			};
-		});
-
-		if (showEnquiry) {
-			this.toggleDrawer();
-		}
-	};
-
-	/* toggleMrcModal = () => {
-		this.setState(prevState => {
-			return { showMrcModal: !prevState.showMrcModal };
-		});
-	}; */
-
-	toggleActionModal = (type = '') => {
-		let actionModalConfig = {};
-		// 1. get basic modal config
-		if (!_.isEmpty(type)) actionModalConfig = DarHelper.configActionModal(type);
-		// 2. set state for hide/show/config modal
-		this.setState(prevState => {
-			return {
-				showActionModal: !prevState.showActionModal,
-				actionModalConfig,
-			};
-		});
-	};
-
-	/* toggleAssignWorkflowModal = async () => {
-		let response = await axios.get(`${baseURL}/api/v1/publishers/${this.state.publisherId}/workflows`);
-		let { workflows } = response.data;
-		this.setState(prevState => {
-			return {
-				workflows,
-				showAssignWorkflowModal: !prevState.showAssignWorkflowModal,
-			};
-		});
-	}; */
 
 	onEditForm = async () => {
 		this.setState({
@@ -1156,47 +855,6 @@ class DatasetOnboarding extends Component {
 			};
 		});
 	};
-
-	/* toggleActivePhaseModal = () => {
-		this.setState(prevState => {
-			return {
-				showActivePhaseModal: !prevState.showActivePhaseModal,
-			};
-		});
-	}; */
-
-	toggleWorkflowReviewModal = (e, activePhase = false) => {
-		this.setState(prevState => {
-			return {
-				showWorkflowReviewModal: !prevState.showWorkflowReviewModal,
-				showActivePhaseModal: activePhase,
-			};
-		});
-	};
-
-	toggleWorkflowReviewDecisionModal = (type = false) => {
-		this.setState(prevState => {
-			return {
-				showWorkflowReviewDecisionModal: !prevState.showWorkflowReviewDecisionModal,
-				workflowReviewDecisionType: type,
-			};
-		});
-	};
-
-	/* updateContributors = contributors => {
-		let updatedAuthorIds = [...contributors].map(user => user.id);
-		this.setState({ updatedAuthorIds });
-	}; */
-
-	/* submitContributors = async () => {
-		let { updatedAuthorIds: authorIds, _id } = this.state;
-		const body = {
-			authorIds,
-		};
-		// 1. Update action status
-		await axios.put(`${baseURL}/api/v1/data-access-request/${_id}`, body);
-		this.setState({ authorIds });
-	}; */
 
 	redirectDashboard = e => {
 		e.preventDefault();
@@ -1373,24 +1031,15 @@ class DatasetOnboarding extends Component {
 			datasetVersion,
 			activeflag,
 			listOfDatasets,
-			datasets,
 			showDrawer,
-			showModal,
-			//showMrcModal,
-			showActionModal,
 			showArchiveModal,
 			showUnArchiveModal,
 			showCreateNewVersionModal,
-			showAssignWorkflowModal,
 			isWideForm,
 			isTableForm,
 			allowedNavigation,
 			applicationStatus,
-			aboutApplication: { projectName = '', selectedDatasets },
-			context,
-			projectId,
 			userType,
-			actionModalConfig,
 			roles,
 		} = this.state;
 		const { userState, location } = this.props;
@@ -1408,19 +1057,12 @@ class DatasetOnboarding extends Component {
 			isCustomDate: value => {
 				if (_.isEmpty(value) || value === 'Invalid date') return true;
 				return moment(value, 'DD/MM/YYYY').isValid();
-
-				if (!_.isEmpty(value) || (value !== 'Invalid date' && moment(value, 'DD/MM/YYYY').isValid())) {
-					debugger;
-					return true;
-				}
-				return false;
 			},
 			isCustomDateRequired: value => {
 				return moment(value, 'DD/MM/YYYY').isValid();
 			},
-
 			isValidDoiName: value => {
-				return !_.isEmpty(value) && !!value.match(/\b(10[.][0-9]{4,}(?:[.][0-9]+)*\/(?:(?!["&\'<>])\S)+)\b/gm);
+				return _.isEmpty(value) || !!value.match(/\b(10[.][0-9]{4,}(?:[.][0-9]+)*\/(?:(?!["&\'<>])\S)+)\b/gm);
 			},
 			isAtLeastOneKeywordSelected: value => {
 				return !_.isEmpty(value);
@@ -1581,7 +1223,10 @@ class DatasetOnboarding extends Component {
 							</div>
 						))}
 					</div>
+
 					<div id='darCenterCol' className={isWideForm ? 'extended' : '' || isTableForm ? 'table' : ''}>
+						{/* Paul - Warnings go here */}
+
 						{this.state.reviewWarning ? (
 							<Alert variant='warning' className=''>
 								<SVGIcon name='attention' width={24} height={24} fill={'#f0bb24'} viewBox='2 -9 22 22'></SVGIcon>
@@ -1590,16 +1235,7 @@ class DatasetOnboarding extends Component {
 						) : (
 							''
 						)}
-						<div id='darDropdownNav'>
-							<NavDropdown
-								options={{
-									...this.state.jsonSchema,
-									allowsMultipleDatasets: this.state.allowsMultipleDatasets,
-								}}
-								onFormSwitchPanel={this.updateNavigation}
-								enabled={allowedNavigation}
-							/>
-						</div>
+
 						<div style={{ backgroundColor: '#ffffff' }} className='dar__header'>
 							{this.state.jsonSchema.pages
 								? [...this.state.jsonSchema.pages].map((item, idx) =>
@@ -1662,11 +1298,7 @@ class DatasetOnboarding extends Component {
 								unansweredAmendments={this.state.unansweredAmendments}
 								onUpdateRequest={this.onUpdateRequest}
 								onActionClick={this.onCustodianAction}
-								onWorkflowReview={this.toggleWorkflowReviewModal}
-								onWorkflowReviewDecisionClick={this.toggleWorkflowReviewDecisionModal}
 								onNextClick={this.onNextClick}
-								workflowEnabled={this.state.workflowEnabled}
-								workflowAssigned={this.state.workflowAssigned}
 								inReviewMode={this.state.inReviewMode}
 								hasRecommended={this.state.hasRecommended}
 								applicationStatus={applicationStatus}
@@ -1686,52 +1318,6 @@ class DatasetOnboarding extends Component {
 					/>
 				</SideDrawer>
 
-				{/* <DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} /> */}
-
-				<ActionModal
-					open={showActionModal}
-					context={actionModalConfig}
-					updateApplicationStatus={this.updateApplicationStatus}
-					close={this.toggleActionModal}
-				/>
-
-				{/* <WorkflowReviewStepsModal
-					open={this.state.showWorkflowReviewModal}
-					close={this.toggleWorkflowReviewModal}
-					workflow={this.state.workflow}
-				/> */}
-
-				{/* <ActivePhaseModal
-					open={this.state.showActivePhaseModal}
-					close={this.toggleActivePhaseModal}
-					workflow={this.state.workflow}
-					projectName={projectName}
-					dataSets={selectedDatasets}
-					completeActivePhase={this.completeActivePhase}
-				/> */}
-
-				{/* <WorkflowReviewDecisionModal
-					open={this.state.showWorkflowReviewDecisionModal}
-					close={this.toggleWorkflowReviewDecisionModal}
-					onDecisionReview={this.onDecisionReview}
-					approved={this.state.workflowReviewDecisionType}
-					workflow={this.state.workflow}
-					projectName={projectName}
-					dataSets={selectedDatasets}
-				/> */}
-
-				<ContributorModal
-					open={showArchiveModal}
-					close={this.toggleArchiveModal}
-					mainApplicant={this.state.mainApplicant}
-					handleOnSaveChanges={this.submitContributors}></ContributorModal>
-
-				<ContributorModal
-					open={showUnArchiveModal}
-					close={this.toggleUnArchiveModal}
-					mainApplicant={this.state.mainApplicant}
-					handleOnSaveChanges={this.submitContributors}></ContributorModal>
-
 				<CreateNewVersionModal
 					open={showCreateNewVersionModal}
 					close={this.toggleCreateNewVersionModal}
@@ -1740,15 +1326,26 @@ class DatasetOnboarding extends Component {
 					publisher={this.state.publisher}
 				/>
 
-				{/* <AssignWorkflowModal
-					open={showAssignWorkflowModal}
-					close={this.toggleAssignWorkflowModal}
-					applicationId={this.state._id}
-					publisher={datasets[0].datasetfields.publisher}
-					workflows={this.state.workflows}
-				/> */}
+				{/* Use Chris modal creator ????? */}
+				{/* Submit for review modal */}
+				{/* Approve modal */}
+				{/* Reject modal */}
+				{/* Archive modal */}
+				{/* Unarchive modal */}
 
-				<UpdateRequestModal
+				{/* <Archive
+					open={showArchiveModal}
+					close={this.toggleArchiveModal}
+					mainApplicant={this.state.mainApplicant}
+					handleOnSaveChanges={this.submitContributors}></Archive> */}
+
+				{/* <UnArchive
+					open={showUnArchiveModal}
+					close={this.toggleUnArchiveModal}
+					mainApplicant={this.state.mainApplicant}
+					handleOnSaveChanges={this.submitContributors}></UnArchive> */}
+
+				{/* <UpdateRequestModal
 					open={this.state.updateRequestModal}
 					close={this.toggleUpdateRequestModal}
 					publisher={this.state.publisher}
@@ -1756,19 +1353,7 @@ class DatasetOnboarding extends Component {
 					applicationId={this.state._id}
 					fullAmendments={this.state.fullAmendments}
 					amendmentIterations={this.state.amendmentIterations}
-				/>
-
-				{/* <Modal
-					show={showMrcModal}
-					onHide={e => this.toggleMrcModal()}
-					size='lg'
-					aria-labelledby='contained-modal-title-vcenter'
-					centered
-					className='darModal'>
-					<iframe src='https://hda-toolkit.org/story_html5.html' className='darIframe'>
-						{' '}
-					</iframe>
-				</Modal> */}
+				/> */}
 			</div>
 		);
 	}
