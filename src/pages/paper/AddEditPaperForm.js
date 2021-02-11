@@ -41,7 +41,11 @@ const AddEditPaperForm = props => {
 			id: props.data.id || '',
 			type: 'paper',
 			name: props.data.name || '',
-			document_links: props.data.document_links || {
+			document_links: props.data.document_links ? {
+				doi : [].concat(...Object.values(props.data.document_links)),
+				pdf: [],
+				html: [],
+			} : {
 				doi: [''],
 				pdf: [],
 				html: [],
@@ -187,9 +191,6 @@ const AddEditPaperForm = props => {
 	const [isShown, setIsShown] = useState(false);
 
 	const relatedResourcesRef = React.useRef();
-	
-	const result = [].concat(...Object.values(props.document_links));
-	console.log('result', result);
 	return (
 		<div>
 			<Container>
