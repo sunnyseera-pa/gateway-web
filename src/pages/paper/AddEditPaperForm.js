@@ -1,6 +1,6 @@
 import React, { useState, Fragment } from 'react';
 import axios from 'axios';
-import { Formik, useFormik, FieldArray, Field } from 'formik';
+import { Formik, useFormik, FieldArray } from 'formik';
 import * as Yup from 'yup';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { Form, Button, Row, Col, Container } from 'react-bootstrap';
@@ -103,28 +103,6 @@ const AddEditPaperForm = props => {
 			}
 		},
 	});
-
-	const validatePaper = async e => {
-		// 1. Continue event handling for onBlur with Formik
-		formik.handleBlur(e);
-		// 2. Extract the link value
-		const payload = { link: e.target.value };
-		// 3. If a link has been entered, validate
-		if (payload) {
-			// 4. Use axios to call backend to check if link exists against another paper
-			axios.post(baseURL + '/api/v1/papers/validate', payload).then(res => {
-				const {
-					data: { error },
-				} = res;
-				// 5. Set Formik status to include the error message returned by the backend to be displayed below the input field
-				if (error) {
-					formik.setStatus({ duplicateLink: error });
-				} else {
-					formik.setStatus({});
-				}
-			});
-		}
-	};
 
 	var listOfAuthors = [];
 
