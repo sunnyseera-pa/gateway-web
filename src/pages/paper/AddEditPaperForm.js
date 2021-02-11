@@ -258,8 +258,7 @@ const AddEditPaperForm = props => {
 																						value={[formik.values.document_links.doi[index]]}
 																						onBlur={formik.handleBlur}
 																					/>
-																					{formik.values.document_links.doi[0] === '' &&
-																					formik.touched.document_links &&
+																					{formik.touched.document_links &&
 																					formik.errors.document_links &&
 																					typeof formik.errors.document_links !== 'undefined' &&
 																					formik.touched.document_links.doi &&
