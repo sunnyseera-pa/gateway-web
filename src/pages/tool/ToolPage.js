@@ -549,7 +549,7 @@ export const ToolDetail = props => {
 											</Col>
 										</Row>
 										<Row className='mt-2'>
-											<Col sm={12}>
+											<Col sm={12} className="mb-5">
 												<div className='rectangle'>
 													<Row className='gray800-14-bold'>
 														<Col sm={12}>Authors</Col>

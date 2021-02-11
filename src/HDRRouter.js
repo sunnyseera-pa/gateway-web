@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
+import _ from 'lodash';
 import Container from 'react-bootstrap/Container';
 import SSOPage from './pages/sso/SSOPage';
 import ToolPage from './pages/tool/ToolPage';
@@ -32,6 +33,8 @@ import ErrorModal from './pages/commonComponents/errorModal/ErrorModal';
 import { GuardedRoute } from './pages/commonComponents/GuardedRoute';
 
 var baseURL = require('./pages/commonComponents/BaseURL').getURL();
+let actionBar, footer;
+
 class HDRRouter extends Component {
 	// initialize our state
 	state = {
@@ -51,10 +54,45 @@ class HDRRouter extends Component {
 		showError: false,
 	};
 
+	getRectTop = el => {
+		if (el) {
+			let rect = el.getBoundingClientRect();
+			return rect.top;
+		}
+		return 0;
+	};
+
+	handleScroll = () => {
+		actionBar = document.querySelector('.actionBar');
+		footer = document.querySelector('.footerBottom');
+
+		if (!_.isNil(actionBar) && !_.isNil(footer)) {
+			// (distance of actionBar to the top of the screen + number of pixels the body is scrolled) + height of actionBar >= the distance of the footer to the top of the screen + body scroll
+			if (
+				this.getRectTop(actionBar) + document.body.scrollTop + actionBar.offsetHeight >=
+				this.getRectTop(footer) + document.body.scrollTop
+				) {
+				actionBar.style.position = 'absolute';
+				// compensate for the 50px margin on mainWrapper
+				actionBar.style.bottom = '-50px';
+			}
+
+			// keep actionbar fixed if the window innerHeight is less than actual position of the footer in the document
+			if (document.body.scrollTop + window.innerHeight < this.getRectTop(footer) + document.body.scrollTop) {
+				actionBar.style.position = 'fixed';
+				actionBar.style.bottom = '0px'; // remove the margin compensation on mainWrapper
+			}
+		}
+	};
+
 	hideModal = () => {
 		this.setState({ showError: false });
 	};
+
 	async componentDidMount() {
+		// register scroll event and bind to handleScroll
+		window.addEventListener('scroll', this.handleScroll);
+
 		let currentComponent = this;
 
 		axios.defaults.withCredentials = true;
@@ -110,6 +148,11 @@ class HDRRouter extends Component {
 				});
 			});
 	}
+
+	componentWillUnmount() {
+		window.removeEventListener('scroll', this.handleScroll);
+	}
+
 	render() {
 		const { isLoading, userState, showError } = this.state;
 		if (isLoading) {
@@ -132,7 +175,7 @@ class HDRRouter extends Component {
 			<Router>
 				<LoginModal userState={userState} />
 				<div className='navBarGap'></div>
-				<div className='mainWrap'>
+				<div className='mainWrap' onScroll={this.handleScroll}>
 					<Switch>
 						{userState[0].loggedIn && !userState[0].profileComplete ? (
 							<Route render={props => <Account {...props} userState={userState} profileComplete={false} />} />
