@@ -187,7 +187,9 @@ const AddEditPaperForm = props => {
 	const [isShown, setIsShown] = useState(false);
 
 	const relatedResourcesRef = React.useRef();
-
+	
+	const result = [].concat(...Object.values(props.document_links));
+	console.log('result', result);
 	return (
 		<div>
 			<Container>
@@ -267,8 +269,6 @@ const AddEditPaperForm = props => {
 																						}}
 																						className={
 																							formik.touched.document_links &&
-																							formik.touched.document_links &&
-																							formik.errors.document_links &&
 																							formik.errors.document_links &&
 																							formik.touched.document_links.doi &&
 																							formik.errors.document_links.doi &&
@@ -282,9 +282,7 @@ const AddEditPaperForm = props => {
 																					{formik.values.document_links.doi[0] === '' &&
 																					formik.touched.document_links &&
 																					formik.errors.document_links &&
-																					formik.errors.document_links &&
 																					typeof formik.errors.document_links !== 'undefined' &&
-																					formik.touched.document_links &&
 																					formik.touched.document_links.doi &&
 																					formik.values.document_links.doi[0] === '' ? (
 																						<div className='errorMessages'>{formik.errors.document_links.doi[0]}</div>
@@ -311,96 +309,6 @@ const AddEditPaperForm = props => {
 																					onClick={() => {
 																						push('');
 																						formik.values.document_links.doi.push('');
-																					}}>
-																					+
-																				</button>
-																			</Col>
-																		</Fragment>
-																	))}
-
-																{formik.values.document_links.html.length > 0 &&
-																	formik.values.document_links.html[0] !== '' &&
-																	formik.values.document_links.html.map((htmlLink, index) => (
-																		<Fragment>
-																			<Col sm={12} lg={10}>
-																				<Form.Group labelKey={`document_links.html`}>
-																					<Form.Control
-																						id={`document_links.html.${index}`}
-																						name={`document_links.html.${index}`}
-																						type='text'
-																						onChange={e => {
-																							formik.setFieldValue(`document_links.html.${index}`, e.target.value);
-																						}}
-																						className={'addFormInput'}
-																						value={[formik.values.document_links.html[index]]}
-																						onBlur={formik.handleBlur}
-																					/>
-																				</Form.Group>
-																			</Col>
-
-																			<Col
-																				style={{ paddingRight: '0px' }}
-																				className='col-sm-6 col-md-2 d-flex justify-content-center align-items-center setHeight'>
-																				<button
-																					type='button'
-																					className='plusMinusButton'
-																					onClick={() => {
-																						remove(index);
-																						formik.values.document_links.html.splice(index, 1);
-																					}}>
-																					-
-																				</button>
-																				<button
-																					type='button'
-																					className='plusMinusButton'
-																					onClick={() => {
-																						push('');
-																						formik.values.document_links.html.push('');
-																					}}>
-																					+
-																				</button>
-																			</Col>
-																		</Fragment>
-																	))}
-
-																{formik.values.document_links.pdf.length > 0 &&
-																	formik.values.document_links.pdf[0] !== '' &&
-																	formik.values.document_links.pdf.map((pdfLink, index) => (
-																		<Fragment>
-																			<Col sm={12} lg={10}>
-																				<Form.Group labelKey={`document_links.pdf`}>
-																					<Form.Control
-																						id={`document_links.pdf.${index}`}
-																						name={`document_links.pdf.${index}`}
-																						type='text'
-																						onChange={e => {
-																							formik.setFieldValue(`document_links.pdf.${index}`, e.target.value);
-																						}}
-																						className={'addFormInput'}
-																						value={[formik.values.document_links.pdf[index]]}
-																						onBlur={formik.handleBlur}
-																					/>
-																				</Form.Group>
-																			</Col>
-
-																			<Col
-																				style={{ paddingRight: '0px' }}
-																				className='col-sm-6 col-md-2 d-flex justify-content-center align-items-center setHeight'>
-																				<button
-																					type='button'
-																					className='plusMinusButton'
-																					onClick={() => {
-																						remove(index);
-																						formik.values.document_links.pdf.splice(index, 1);
-																					}}>
-																					-
-																				</button>
-																				<button
-																					type='button'
-																					className='plusMinusButton'
-																					onClick={() => {
-																						push('');
-																						formik.values.document_links.pdf.push('');
 																					}}>
 																					+
 																				</button>
