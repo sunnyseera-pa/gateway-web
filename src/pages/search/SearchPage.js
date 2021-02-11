@@ -718,7 +718,7 @@ class SearchPage extends React.Component {
 		if (key === 'Papers' && paperCount === 0) showSort = false;
 		if (key === 'People' && personCount === 0) showSort = false;
 		if (key === 'Courses') showSort = false;
- 
+
 		let datasetPaginationItems = [];
 		let toolPaginationItems = [];
 		let projectPaginationItems = [];
@@ -818,7 +818,7 @@ class SearchPage extends React.Component {
 					<Container>
 						<Row>
 							{key !== 'People' ? (
-								<Col sm={12} md={12} lg={3} className='mt-4'>
+								<Col sm={12} md={12} lg={3} className='mt-4 mb-5'>
 									{key === 'Datasets' ? (
 										<>
 											<div className='filterHolder'>
@@ -1529,7 +1529,7 @@ class SearchPage extends React.Component {
 							)}
 
 							{!isResultsLoading ? (
-								<Col sm={12} md={12} lg={9} className='mt-4'>
+								<Col sm={12} md={12} lg={9} className='mt-4 mb-5'>
 									{!showSort ? (
 										''
 									) : (

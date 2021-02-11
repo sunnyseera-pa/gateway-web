@@ -5,11 +5,9 @@ import * as Yup from 'yup';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import moment from 'moment';
 import { Form, Button, Row, Col, Container } from 'react-bootstrap';
-
 import RelatedResources from '../commonComponents/relatedResources/RelatedResources';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
-
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
 import _ from 'lodash';
@@ -421,19 +419,21 @@ const AddEditProjectForm = props => {
 			</Container>
 
 			<ActionBar userState={props.userState}>
-				<a style={{ cursor: 'pointer' }} href={'/account?tab=projects'}>
-					<Button variant='medium' className='cancelButton dark-14 mr-2'>
-						Cancel
+				<div className='floatRight'>
+					<a style={{ cursor: 'pointer' }} href={'/account?tab=projects'}>
+						<Button variant='medium' className='cancelButton dark-14 mr-2'>
+							Cancel
+						</Button>
+					</a>
+
+					<Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className='techDetailButton mr-2'>
+						+ Add resource
 					</Button>
-				</a>
 
-				<Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className='techDetailButton mr-2'>
-					+ Add resource
-				</Button>
-
-				<Button variant='primary' className='publishButton white-14-semibold mr-2' type='submit' onClick={formik.handleSubmit}>
-					{isEdit ? 'Update' : 'Publish'}
-				</Button>
+					<Button variant='primary' className='publishButton white-14-semibold mr-2' type='submit' onClick={formik.handleSubmit}>
+						{isEdit ? 'Update' : 'Publish'}
+					</Button>
+				</div>
 			</ActionBar>
 		</div>
 	);

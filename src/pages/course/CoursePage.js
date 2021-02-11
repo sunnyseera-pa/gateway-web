@@ -525,7 +525,7 @@ export const CourseDetail = props => {
 										</Row>
 
 										<Row className='margin-top-8'>
-											<Col sm={12}>
+											<Col sm={12} className='mb-5'>
 												<div className='rectangle'>
 													<Row className='gray800-14-bold pad-bottom-8'>
 														<Col sm={12}>Requirements and certifications</Col>

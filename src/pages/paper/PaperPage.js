@@ -510,7 +510,7 @@ export const PaperDetail = props => {
 										)}
 
 										<Row className='mt-2'>
-											<Col>
+											<Col className="mb-5">
 												<div className='rectangle'>
 													<Row>
 														<Col>

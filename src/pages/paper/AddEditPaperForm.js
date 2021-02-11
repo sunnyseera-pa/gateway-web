@@ -708,19 +708,21 @@ const AddEditPaperForm = props => {
 			</Container>
 
 			<ActionBar userState={props.userState}>
-				<a style={{ cursor: 'pointer' }} href={'/account?tab=papers'}>
-					<Button variant='medium' className='cancelButton dark-14 mr-2'>
-						Cancel
+				<div className='floatRight'>
+					<a style={{ cursor: 'pointer' }} href={'/account?tab=papers'}>
+						<Button variant='medium' className='cancelButton dark-14 mr-2'>
+							Cancel
+						</Button>
+					</a>
+
+					<Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className='techDetailButton mr-2'>
+						+ Add resource
 					</Button>
-				</a>
 
-				<Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className='techDetailButton mr-2'>
-					+ Add resource
-				</Button>
-
-				<Button variant='primary' className='publishButton white-14-semibold mr-2' type='submit' onClick={formik.handleSubmit}>
-					{props.isEdit ? 'Update' : 'Publish'}
-				</Button>
+					<Button variant='primary' className='publishButton white-14-semibold mr-2' type='submit' onClick={formik.handleSubmit}>
+						{props.isEdit ? 'Update' : 'Publish'}
+					</Button>
+				</div>
 			</ActionBar>
 		</div>
 	);
