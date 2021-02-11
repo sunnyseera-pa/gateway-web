@@ -11,7 +11,7 @@ import './Dashboard.scss';
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const AccountDatasets = props => {
-    const [userState] = useState(props.userState);
+	const [userState] = useState(props.userState);
 	const [key, setKey] = useState('active');
 	const [datasetList, setDatasetList] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
@@ -24,7 +24,7 @@ const AccountDatasets = props => {
 		title: 'Reject this Paper?',
 	}; */
 
-    let completion1 = {
+	let completion1 = {
 		Summary: 'partial',
 		Documentation: 'partial',
 		Coverage: 'empty',
@@ -45,21 +45,20 @@ const AccountDatasets = props => {
 		'Structural Meta Data': 'empty',
 	};
 
-	let statusIcons = { // Move to datasetcard
+	let statusIcons = {
+		// Move to datasetcard
 		partial: { text: 'Partially completed', icon: 'MetadataHalfDoneSvg' },
 		done: { text: 'Completed', icon: 'MetadataHalfDoneSvg' },
 		empty: { text: 'Not completed', icon: 'MetadataHalfDoneSvg' },
 	};
-
 
 	useEffect(() => {
 		initGA('UA-166025838-1');
 		doDatasetsCall();
 	}, []);
 
-    const doDatasetsCall = async () => {
-        setIsLoading(true);
-		//axios.get(baseURL + `/api/v1/dataset-onboarding/publisher/${props.teamid}`).then(res => { // Paul - switch to use publisher ids
+	const doDatasetsCall = async () => {
+		setIsLoading(true);
 		await axios.get(baseURL + `/api/v1/dataset-onboarding/publisher/5f3f9e698af2ef61552e1d78`).then(res => {
 			setDatasetList(res.data.data.dataset);
 
@@ -67,10 +66,10 @@ const AccountDatasets = props => {
 			let reviewCount = 0;
 			let archiveCount = 0;
 			let rejectedCount = 0;
-debugger
-            res.data.data.dataset.forEach(dataset => {
+			debugger;
+			res.data.data.dataset.forEach(dataset => {
 				if (dataset.activeflag === 'active') activeCount++;
-				else if (dataset.activeflag === 'review') reviewCount++;
+				else if (dataset.activeflag === 'inProgress') reviewCount++;
 				else if (dataset.activeflag === 'archive') archiveCount++;
 				else if (dataset.activeflag === 'rejected') rejectedCount++;
 			});
@@ -81,30 +80,29 @@ debugger
 			setRejectedCount(rejectedCount);
 			setIsLoading(false);
 		});
-    };
-    
-    const createNewDataset = e => {
-        e.preventDefault();
-        //call to API to create new dataset
-        setIsLoading(true);
-        axios.post(baseURL + '/api/v1/dataset-onboarding', {publisherID:props.team}).then(res => {
-            debugger
-            let { id } = res.data.data;
-            //load dataset onboarding page
-            if (!_.isUndefined(id)) window.location.href = `/dataset-onboarding/${id}`;
-            else {
-                //show error message
-                setIsLoading(false);
-            }
-        });
-        
-    };
+	};
+
+	const createNewDataset = e => {
+		e.preventDefault();
+		//call to API to create new dataset
+		setIsLoading(true);
+		axios.post(baseURL + '/api/v1/dataset-onboarding', { publisherID: props.team }).then(res => {
+			debugger;
+			let { id } = res.data.data;
+			//load dataset onboarding page
+			if (!_.isUndefined(id)) window.location.href = `/dataset-onboarding/${id}`;
+			else {
+				//show error message
+				setIsLoading(false);
+			}
+		});
+	};
 
 	const handleSelect = key => {
 		setKey(key);
-    };
+	};
 
-    if (isLoading) {
+	if (isLoading) {
 		return (
 			<Row>
 				<Col xs={1}></Col>
@@ -131,12 +129,12 @@ debugger
 							</Row>
 						</Col>
 						<Col sm={12} md={4} style={{ textAlign: 'right' }}>
-                            <Button
-                                variant='primary'
-                                className='addButton'
-                                onClick={() => Event('Buttons', 'Click', 'Add a new paper'), createNewDataset}>
-                                + Add a new dataset
-                            </Button>
+							<Button
+								variant='primary'
+								className='addButton'
+								onClick={(() => Event('Buttons', 'Click', 'Add a new paper'), createNewDataset)}>
+								+ Add a new dataset
+							</Button>
 						</Col>
 					</Row>
 					<Row className='tabsBackground'>
@@ -158,7 +156,7 @@ debugger
 						</Col>
 					</Row>
 
-                    {(() => {
+					{(() => {
 						switch (key) {
 							case 'active':
 								return (
@@ -174,17 +172,17 @@ debugger
 												} else {
 													return (
 														<>
-                                                            <DatasetCard
-                                                                id={dataset._id}
-                                                                title={dataset.name}
-                                                                publisher={dataset.datasetfields.publisher}
-                                                                version={dataset.datasetVersion}
-                                                                isDraft={true}
-                                                                datasetStatus={dataset.activeflag}
-                                                                lastActivity={dataset.updatedAt}
-                                                                completion={completion1}></DatasetCard>
+															<DatasetCard
+																id={dataset._id}
+																title={dataset.name}
+																publisher={dataset.datasetfields.publisher}
+																version={dataset.datasetVersion}
+																isDraft={true}
+																datasetStatus={dataset.activeflag}
+																lastActivity={dataset.updatedAt}
+																completion={completion1}></DatasetCard>
 
-                                                            {/* <DatasetCard
+															{/* <DatasetCard
                                                                 title='Diagnostic and Therapy Services Waiting Times'
                                                                 publisher='NHS Digital'
                                                                 version='3.0'
@@ -192,7 +190,7 @@ debugger
                                                                 datasetStatus='rejected'
                                                                 lastActivity=''
                                                                 completion={completion2}></DatasetCard> */}
-                                                        </>
+														</>
 													);
 												}
 											})
@@ -208,29 +206,30 @@ debugger
 											</Row>
 										) : (
 											datasetList.map(dataset => {
-												if (dataset.activeflag !== 'review') {
+												if (dataset.activeflag !== 'inProgress') {
 													return <></>;
 												} else {
 													return (
 														<>
-                                                            <DatasetCard
-                                                                title='Cambridge Blood and Stem Cell Biobank'
-                                                                publisher='a publisher'
-                                                                version='2'
-                                                                isDraft={true}
-                                                                datasetStatus='isPending'
-                                                                lastActivity=''
-                                                                completion={completion1}></DatasetCard>
+															<DatasetCard
+																id={dataset._id}
+																title={dataset.name}
+																publisher={dataset.datasetfields.publisher}
+																version={dataset.datasetVersion}
+																isDraft={true}
+																datasetStatus={dataset.activeflag}
+																lastActivity={dataset.updatedAt}
+																completion={completion1}></DatasetCard>
 
-                                                            <DatasetCard
+															{/* <DatasetCard
                                                                 title='Diagnostic and Therapy Services Waiting Times'
                                                                 publisher='NHS Digital'
                                                                 version='3.0'
                                                                 // isDraft={true}
                                                                 datasetStatus='rejected'
                                                                 lastActivity=''
-                                                                completion={completion2}></DatasetCard>
-                                                        </>
+                                                                completion={completion2}></DatasetCard> */}
+														</>
 													);
 												}
 											})
@@ -251,24 +250,24 @@ debugger
 												} else {
 													return (
 														<>
-                                                            <DatasetCard
-                                                                title='Cambridge Blood and Stem Cell Biobank'
-                                                                publisher='a publisher'
-                                                                version='2'
-                                                                isDraft={true}
-                                                                datasetStatus='isPending'
-                                                                lastActivity=''
-                                                                completion={completion1}></DatasetCard>
+															<DatasetCard
+																title='Cambridge Blood and Stem Cell Biobank'
+																publisher='a publisher'
+																version='2'
+																isDraft={true}
+																datasetStatus='isPending'
+																lastActivity=''
+																completion={completion1}></DatasetCard>
 
-                                                            <DatasetCard
-                                                                title='Diagnostic and Therapy Services Waiting Times'
-                                                                publisher='NHS Digital'
-                                                                version='3.0'
-                                                                // isDraft={true}
-                                                                datasetStatus='rejected'
-                                                                lastActivity=''
-                                                                completion={completion2}></DatasetCard>
-                                                        </>
+															<DatasetCard
+																title='Diagnostic and Therapy Services Waiting Times'
+																publisher='NHS Digital'
+																version='3.0'
+																// isDraft={true}
+																datasetStatus='rejected'
+																lastActivity=''
+																completion={completion2}></DatasetCard>
+														</>
 													);
 												}
 											})
@@ -289,24 +288,24 @@ debugger
 												} else {
 													return (
 														<>
-                                                            <DatasetCard
-                                                                title='Cambridge Blood and Stem Cell Biobank'
-                                                                publisher='a publisher'
-                                                                version='2'
-                                                                isDraft={true}
-                                                                datasetStatus='isPending'
-                                                                lastActivity=''
-                                                                completion={completion1}></DatasetCard>
+															<DatasetCard
+																title='Cambridge Blood and Stem Cell Biobank'
+																publisher='a publisher'
+																version='2'
+																isDraft={true}
+																datasetStatus='isPending'
+																lastActivity=''
+																completion={completion1}></DatasetCard>
 
-                                                            <DatasetCard
-                                                                title='Diagnostic and Therapy Services Waiting Times'
-                                                                publisher='NHS Digital'
-                                                                version='3.0'
-                                                                // isDraft={true}
-                                                                datasetStatus='rejected'
-                                                                lastActivity=''
-                                                                completion={completion2}></DatasetCard>
-                                                        </>
+															<DatasetCard
+																title='Diagnostic and Therapy Services Waiting Times'
+																publisher='NHS Digital'
+																version='3.0'
+																// isDraft={true}
+																datasetStatus='rejected'
+																lastActivity=''
+																completion={completion2}></DatasetCard>
+														</>
 													);
 												}
 											})
@@ -316,13 +315,7 @@ debugger
 						}
 					})()}
 
-
-
-
-
-
-
-                    {/* <Fragment>
+					{/* <Fragment>
                         <DatasetCard
                             title='Cambridge Blood and Stem Cell Biobank'
                             publisher='a publisher'
@@ -341,16 +334,11 @@ debugger
                             lastActivity=''>
                         </DatasetCard>
                     </Fragment> */}
-
-                    
-
-
 				</Col>
 				<Col xs={1}></Col>
 			</Row>
 		</div>
 	);
-
-}
+};
 
 export default AccountDatasets;

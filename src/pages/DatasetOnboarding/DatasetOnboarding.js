@@ -1142,24 +1142,22 @@ class DatasetOnboarding extends Component {
 							<Dropdown>
 								<Dropdown.Toggle as={CustomToggle}>
 									<span className='listOfVersionsButton'>
-										{activeflag === 'draft' ? <>{datasetVersion} (Draft)</> : ''}
-										{activeflag === 'active' ? <>{datasetVersion} (Live)</> : ''}
-										{activeflag === 'rejected' ? <>{datasetVersion} (Rejected)</> : ''}
-										{activeflag !== 'draft' && activeflag !== 'active' && activeflag !== 'rejected' ? <>{datasetVersion}</> : ''}
+										{datasetVersion}
+										{activeflag === 'draft' ? ' (Draft)' : ''}
+										{activeflag === 'active' ? ' (Live)' : ''}
+										{activeflag === 'rejected' ? ' (Rejected)' : ''}
+										{activeflag === 'inProgress' ? ' (Pending)' : ''}
 									</span>
 								</Dropdown.Toggle>
 								<Dropdown.Menu as={CustomMenu} className='listOfVersionsDropdown'>
 									{listOfDatasets.map(dat => {
 										return (
 											<Dropdown.Item href={`/dataset-onboarding/${dat._id}`} className='black-14'>
-												{dat.activeflag === 'draft' ? <>{dat.datasetVersion} (Draft)</> : ''}
-												{dat.activeflag === 'active' ? <>{dat.datasetVersion} (Live)</> : ''}
-												{dat.activeflag === 'rejected' ? <>{dat.datasetVersion} (Rejected)</> : ''}
-												{dat.activeflag !== 'draft' && dat.activeflag !== 'active' && dat.activeflag !== 'rejected' ? (
-													<>{dat.datasetVersion}</>
-												) : (
-													''
-												)}
+												{datasetVersion}
+												{activeflag === 'draft' ? ' (Draft)' : ''}
+												{activeflag === 'active' ? ' (Live)' : ''}
+												{activeflag === 'rejected' ? ' (Rejected)' : ''}
+												{activeflag === 'inProgress' ? ' (Pending)' : ''}
 
 												{this.state._id === dat._id ? (
 													<SVGIcon
@@ -1273,6 +1271,8 @@ class DatasetOnboarding extends Component {
 						<SLA classProperty={DarHelper.darStatusColours[applicationStatus]} text={DarHelper.darSLAText[applicationStatus]} />
 						<div className='action-bar-status'>
 							{applicationStatus === 'draft' ? totalQuestions : 'This version was published on 2 Jan 2021'}
+
+							{/* Status updated here */}
 						</div>
 					</div>
 					<div className='action-bar-actions'>
