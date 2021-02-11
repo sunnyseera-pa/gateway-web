@@ -1231,6 +1231,15 @@ class DataAccessRequest extends Component {
 		this.setState({ authorIds });
 	};
 
+	onClickMailDAR  = async () => {
+		try{
+			let { _id } = this.state;
+			await axios.post(`${baseURL}/api/v1/data-access-request/${_id}/email`, {});
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
 	redirectDashboard = e => {
 		e.preventDefault();
 		this.props.history.push({
@@ -1491,6 +1500,14 @@ class DataAccessRequest extends Component {
 								onClick={this.onClickSave}
 								href='!#'>
 								Save now
+							</a>
+						}
+						{
+							<a
+								className={`linkButton white-14-semibold ml-2 ${allowedNavigation && !this.state.readOnly ? '' : 'disabled'}`}
+								onClick={this.onClickMailDAR}
+								href="">
+								Mail DAR
 							</a>
 						}
 						<CloseButtonSvg width='16px' height='16px' fill='#fff' onClick={e => this.redirectDashboard(e)} />
