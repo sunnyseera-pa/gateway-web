@@ -38,13 +38,13 @@ class SearchPage extends React.Component {
 		paperIndex: 0,
 		personIndex: 0,
 		courseIndex: 0,
+		collectionIndex: 0,
 		datasetData: [],
 		toolData: [],
 		projectData: [],
 		paperData: [],
 		personData: [],
 		courseData: [],
-		//TODO
 		collectionData: [],
 		filterOptions: [],
 		allFilters: [],
@@ -74,6 +74,8 @@ class SearchPage extends React.Component {
 		courseKeywordsSelected: [],
 		courseFrameworkSelected: [],
 		coursePrioritySelected: [],
+		collectionKeywordsSelected: [],
+		collectionPublishersSelected: [],
 		summary: [],
 		key: 'Datasets',
 		isLoading: true,
@@ -232,6 +234,9 @@ class SearchPage extends React.Component {
 				(((typeof values.courseIndex === 'undefined' && this.state.courseIndex !== 0) ||
 					(typeof values.courseIndex !== 'undefined' && this.state.courseIndex === 0)) &&
 					this.state.courseIndex !== values.courseIndex) ||
+				(((typeof values.collectionIndex === 'undefined' && this.state.collectionIndex !== 0) ||
+					(typeof values.collectionIndex !== 'undefined' && this.state.collectionIndex === 0)) &&
+					this.state.collectionIndex !== values.collectionIndex) ||
 				(((typeof values.datasetSort === 'undefined' && this.state.datasetSort !== '') ||
 					(typeof values.datasetSort !== 'undefined' && this.state.datasetSort === '')) &&
 					this.state.datasetSort !== values.datasetSort) ||
@@ -249,7 +254,13 @@ class SearchPage extends React.Component {
 					this.state.personSort !== values.personSort) ||
 				(((typeof values.courseSort === 'undefined' && this.state.courseSort !== '') ||
 					(typeof values.courseSort !== 'undefined' && this.state.courseSort === '')) &&
-					this.state.courseSort !== values.courseSort)
+					this.state.courseSort !== values.courseSort) ||
+				(((typeof values.collectionkeywords === 'undefined' && this.state.collectionKeywordsSelected.length !== 0) ||
+					(typeof values.collectionkeywords !== 'undefined' && this.state.collectionKeywordsSelected.length === 0)) &&
+					!this.state.collectionKeywordsSelected.includes(values.collectionkeywords)) ||
+				(((typeof values.collectionpublisher === 'undefined' && this.state.collectionPublisherSelected.length !== 0) ||
+					(typeof values.collectionpublisher !== 'undefined' && this.state.collectionPublisherSelected.length === 0)) &&
+					!this.state.collectionPublisherSelected.includes(values.collectionpublisher))
 			) {
 				await Promise.all([this.updateFilterStates(values)]);
 				this.doSearchCall(true);
@@ -350,13 +361,21 @@ class SearchPage extends React.Component {
 			? this.setState({ coursePrioritySelected: values.coursepriority.split('::') })
 			: this.setState({ coursePrioritySelected: [] });
 
+		values.collectionkeywords
+			? this.setState({ collectionKeywordsSelected: values.collectionkeywords.split('::') })
+			: this.setState({ collectionKeywordsSelected: [] });
+		values.collectionpublisher
+			? this.setState({ collectionPublisherSelected: values.collectionpublisher.split('::') })
+			: this.setState({ collectionPublisherSelected: [] });
+
 		values.tab ? this.setState({ key: values.tab }) : this.setState({ key: 'Datasets' });
 		values.datasetIndex ? this.setState({ datasetIndex: values.datasetIndex }) : this.setState({ datasetIndex: 0 });
 		values.toolIndex ? this.setState({ toolIndex: values.toolIndex }) : this.setState({ toolIndex: 0 });
 		values.projectIndex ? this.setState({ projectIndex: values.projectIndex }) : this.setState({ projectIndex: 0 });
 		values.paperIndex ? this.setState({ paperIndex: values.paperIndex }) : this.setState({ paperIndex: 0 });
 		values.personIndex ? this.setState({ personIndex: values.personIndex }) : this.setState({ personIndex: 0 });
-		values.courseIndex ? this.setState({ courseIndex: values.courseIndex }) : this.setState({ projectIndex: 0 });
+		values.courseIndex ? this.setState({ courseIndex: values.courseIndex }) : this.setState({ courseIndex: 0 });
+		values.collectionIndex ? this.setState({ collectionIndex: values.collectionIndex }) : this.setState({ collectionIndex: 0 });
 
 		values.datasetSort ? this.setState({ datasetSort: values.datasetSort }) : this.setState({ datasetSort: '' });
 		values.toolSort ? this.setState({ toolSort: values.toolSort }) : this.setState({ toolSort: '' });
@@ -398,12 +417,16 @@ class SearchPage extends React.Component {
 		this.setState({ courseFrameworkSelected: [] });
 		this.setState({ coursePrioritySelected: [] });
 
+		this.setState({ collectionKeywordsSelected: [] });
+		this.setState({ collectionPublisherSelected: [] });
+
 		this.setState({ datasetIndex: 0 });
 		this.setState({ toolIndex: 0 });
 		this.setState({ projectIndex: 0 });
 		this.setState({ paperIndex: 0 });
 		this.setState({ personIndex: 0 });
 		this.setState({ courseIndex: 0 });
+		this.setState({ collectionIndex: 0 });
 
 		this.setState({ datasetSort: '' });
 		this.setState({ toolSort: '' });
@@ -428,6 +451,7 @@ class SearchPage extends React.Component {
 			this.setState({ paperIndex: 0 }),
 			this.setState({ personIndex: 0 }),
 			this.setState({ courseIndex: 0 }),
+			this.setState({ collectionIndex: 0 }),
 		]);
 		this.doSearchCall();
 		this.setState({ isResultsLoading: true });
@@ -504,12 +528,18 @@ class SearchPage extends React.Component {
 		if (this.state.coursePrioritySelected.length > 0)
 			searchURL += '&coursepriority=' + encodeURIComponent(this.state.coursePrioritySelected.toString().split(',').join('::'));
 
+		if (this.state.collectionKeywordsSelected.length > 0)
+			searchURL += '&collectionkeywords=' + encodeURIComponent(this.state.collectionKeywordsSelected.toString().split(',').join('::'));
+		if (this.state.collectionPublisherSelected.length > 0)
+			searchURL += '&collectionpublisher=' + encodeURIComponent(this.state.collectionPublisherSelected.toString().split(',').join('::'));
+
 		if (this.state.datasetIndex > 0) searchURL += '&datasetIndex=' + encodeURIComponent(this.state.datasetIndex);
 		if (this.state.toolIndex > 0) searchURL += '&toolIndex=' + encodeURIComponent(this.state.toolIndex);
 		if (this.state.projectIndex > 0) searchURL += '&projectIndex=' + encodeURIComponent(this.state.projectIndex);
 		if (this.state.paperIndex > 0) searchURL += '&paperIndex=' + encodeURIComponent(this.state.paperIndex);
 		if (this.state.personIndex > 0) searchURL += '&personIndex=' + encodeURIComponent(this.state.personIndex);
 		if (this.state.courseIndex > 0) searchURL += '&courseIndex=' + encodeURIComponent(this.state.courseIndex);
+		if (this.state.collectionIndex > 0) searchURL += '&collectionIndex=' + encodeURIComponent(this.state.collectionIndex);
 
 		if (this.state.datasetSort !== '') searchURL += '&datasetSort=' + encodeURIComponent(this.state.datasetSort);
 		if (this.state.toolSort !== '') searchURL += '&toolSort=' + encodeURIComponent(this.state.toolSort);
@@ -548,7 +578,6 @@ class SearchPage extends React.Component {
 				paperData: res.data.paperResults || [],
 				personData: res.data.personResults || [],
 				courseData: res.data.courseResults || [],
-				// TODO
 				collectionData: res.data.collectionResults || [],
 				summary: res.data.summary || [],
 				isLoading: false,
@@ -579,8 +608,6 @@ class SearchPage extends React.Component {
 			else if (this.state.key === 'Papers') this.setState({ paperSort: sort, isResultsLoading: true });
 			else if (this.state.key === 'People') this.setState({ personSort: sort, isResultsLoading: true });
 			else if (this.state.key === 'Courses') this.setState({ courseSort: sort, isResultsLoading: true });
-			//TODO - add sort fo collections? - just default sort by...
-			// else if (this.state.key === 'Collections') this.setState({ collectionSort: sort, isResultsLoading: true });
 			resolve();
 		});
 
@@ -600,6 +627,8 @@ class SearchPage extends React.Component {
 			await Promise.all([this.setState({ personIndex: page })]);
 		} else if (type === 'course') {
 			await Promise.all([this.setState({ courseIndex: page })]);
+		} else if (type === 'collection') {
+			await Promise.all([this.setState({ collectionIndex: page })]);
 		}
 		this.doSearchCall();
 	};
@@ -666,12 +695,16 @@ class SearchPage extends React.Component {
 			courseFrameworkSelected,
 			coursePrioritySelected,
 
+			collectionKeywordsSelected,
+			collectionPublisherSelected,
+
 			datasetIndex,
 			toolIndex,
 			projectIndex,
 			paperIndex,
 			personIndex,
 			courseIndex,
+			collectionIndex,
 
 			datasetSort,
 			toolSort,
@@ -700,7 +733,6 @@ class SearchPage extends React.Component {
 		var paperCount = summary.papers || 0;
 		var personCount = summary.persons || 0;
 		var courseCount = summary.courses || 0;
-		//TODO
 		var collectionCount = summary.collections || 0;
 
 		if (key === '' || typeof key === 'undefined') {
@@ -710,12 +742,14 @@ class SearchPage extends React.Component {
 				key = 'Tools';
 			} else if (projectCount > 0) {
 				key = 'Projects';
+			} else if (collectionCount > 0) {
+				key = 'Collections';
+			} else if (courseCount > 0) {
+				key = 'Course';
 			} else if (paperCount > 0) {
 				key = 'Papers';
 			} else if (personCount > 0) {
 				key = 'People';
-			} else if (courseCount > 0) {
-				key = 'Course';
 			} else {
 				key = 'Datasets';
 			}
@@ -736,6 +770,7 @@ class SearchPage extends React.Component {
 		let paperPaginationItems = [];
 		let personPaginationItems = [];
 		let coursePaginationItems = [];
+		let collectionPaginationItems = [];
 		var maxResult = 40;
 		for (let i = 1; i <= Math.ceil(datasetCount / maxResult); i++) {
 			datasetPaginationItems.push(
@@ -793,6 +828,16 @@ class SearchPage extends React.Component {
 					key={i}
 					active={i === courseIndex / maxResult + 1}
 					onClick={() => this.handlePagination('course', (i - 1) * maxResult)}>
+					{i}
+				</Pagination.Item>
+			);
+		}
+		for (let i = 1; i <= Math.ceil(collectionCount / maxResult); i++) {
+			collectionPaginationItems.push(
+				<Pagination.Item
+					key={i}
+					active={i === collectionIndex / maxResult + 1}
+					onClick={() => this.handlePagination('collection', (i - 1) * maxResult)}>
 					{i}
 				</Pagination.Item>
 			);
@@ -1536,6 +1581,86 @@ class SearchPage extends React.Component {
 									) : (
 										''
 									)}
+
+									{key === 'Collections' ? (
+										<>
+											<div className='filterHolder'>
+												{collectionKeywordsSelected.length !== 0 || collectionPublisherSelected.length !== 0 ? (
+													<div className='filterCard mb-2'>
+														<Row>
+															<Col className='mb-2'>
+																<div className='inlineBlock'>
+																	<div className='gray500-13'>Showing:</div>
+																</div>
+																<div className='floatRight'>
+																	<div className='purple-13 pointer' onClick={() => this.clearFilter('All')}>
+																		Clear all
+																	</div>
+																</div>
+															</Col>
+														</Row>
+
+														{!collectionKeywordsSelected || collectionKeywordsSelected.length <= 0
+															? ''
+															: collectionKeywordsSelected.map(selected => {
+																	return (
+																		<div className='badge-tag'>
+																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
+																			<span
+																				className='gray800-14-opacity pointer'
+																				onClick={() => this.clearFilter(selected, 'collectionKeywordsSelected')}>
+																				X
+																			</span>
+																		</div>
+																	);
+															  })}
+
+														{!collectionPublisherSelected || collectionPublisherSelected.length <= 0
+															? ''
+															: collectionPublisherSelected.map(selected => {
+																	if (!_.isNil(allFilters.collectionPublisherFilter)) {
+																		const collectionPublisherFilters = Object.values(allFilters.collectionPublisherFilter);
+
+																		return collectionPublisherFilters.map(filter => {
+																			if (selected === filter.result.toString()) {
+																				return (
+																					<div className='badge-tag'>
+																						{filter.name.substr(0, 80)} {filter.name.length > 80 ? '...' : ''}{' '}
+																						<span
+																							className='gray800-14-opacity pointer'
+																							onClick={() => this.clearFilter(selected, 'collectionPublisherSelected')}>
+																							X
+																						</span>
+																					</div>
+																				);
+																			}
+																		});
+																	}
+															  })}
+													</div>
+												) : (
+													''
+												)}
+												<Filters
+													data={filterOptions.collectionKeywordsFilterOptions}
+													allFilters={allFilters.collectionKeywordFilter}
+													updateOnFilter={this.updateOnFilter}
+													selected={collectionKeywordsSelected}
+													title='Keywords'
+												/>
+												<Filters
+													data={filterOptions.collectionPublisherFilterOptions}
+													allFilters={allFilters.collectionPublisherFilter}
+													updateOnFilter={this.updateOnFilter}
+													selected={collectionPublisherSelected}
+													title='Publisher'
+													collectionPublisher={true}
+												/>
+											</div>
+										</>
+									) : (
+										''
+									)}
 								</Col>
 							) : (
 								<Col sm={12} md={12} lg={3} />
@@ -1746,25 +1871,19 @@ class SearchPage extends React.Component {
 										}
 									})()}
 
-									{/* TODO - add in collection results search to collections tab */}
 									{key === 'Collections' ? (
 										collectionCount <= 0 && !isResultsLoading ? (
 											<NoResults type='collections' searchString={searchString} />
 										) : (
-											collectionData.map(collection => {
-												console.log(`collection: ${JSON.stringify(collection, null, 2)}`);
-												return (
-													<CollectionCard data={collection} />
-
-													// <RelatedObject
-													// 	key={paper.id}
-													// 	data={paper}
-													// 	activeLink={true}
-													// 	onSearchPage={true}
-													// 	updateOnFilterBadge={this.updateOnFilterBadge}
-													// />
-												);
-											})
+											<Row className='mt-5'>
+												{collectionData.map(collection => {
+													return (
+														<Col sm={12} md={12} lg={6} style={{ 'text-align': '-webkit-center' }}>
+															<CollectionCard key={collection.id} data={collection} />
+														</Col>
+													);
+												})}
+											</Row>
 										)
 									) : (
 										''
@@ -1783,7 +1902,7 @@ class SearchPage extends React.Component {
 
 										{key === 'Courses' && courseCount > maxResult ? <Pagination>{coursePaginationItems}</Pagination> : ''}
 
-										{/* TODO - add pagination for collections  */}
+										{key === 'Collections' && collectionCount > maxResult ? <Pagination>{collectionPaginationItems}</Pagination> : ''}
 									</div>
 								</Col>
 							) : (
