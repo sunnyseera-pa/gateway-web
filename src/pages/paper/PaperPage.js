@@ -477,8 +477,8 @@ export const PaperDetail = props => {
 													</Row>
 													<Row className='mt-3'>
 														<Col>
-															<span className='gray800-14'>
-																<ReactMarkdown className='text-break' source={paperData.description} />
+															<span className='gray800-14 hdruk-section-body'>
+																<ReactMarkdown source={paperData.description} />
 															</span>
 														</Col>
 													</Row>
@@ -497,8 +497,8 @@ export const PaperDetail = props => {
 														</Row>
 														<Row className='mt-3'>
 															<Col>
-																<span className='gray800-14'>
-																	<ReactMarkdown className='text-break' source={paperData.resultsInsights} />
+																<span className='gray800-14 hdruk-section-body'>
+																	<ReactMarkdown source={paperData.resultsInsights} />
 																</span>
 															</Col>
 														</Row>
