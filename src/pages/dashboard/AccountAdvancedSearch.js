@@ -97,13 +97,14 @@ export const AccountAdvancedSearch = props => {
 				<Col sm={1} lg={1} />
 				<Col sm={10} lg={10}>
 					<div className='rectangle'>
-						<span className='black-20-semibold'>Advanced search</span>
+						<span className='black-20-semibold'>Cohort Discovery</span>
 						<div id='thisTag' className='margin-left-8 margin-bottom-8'>
 							<span className='white-13-bold'>BETA</span>
 						</div>
 						<p className='gray800-15 margin-bottom-6'>
-							The advanced search allows you to find datasets based on the characteristics you need for your project , such as disease, age,
-							and location. This feature is still being tested, so only a limited number of datasets are available for now.
+							Cohort Discovery provides remote querying of multiple clinical databases in situ, even those with different data models to
+							determine the dataset appropriate for your research needs. We are adding more datasets into the cohort discovery service
+							monthly, please check back in form time to time to discover datasets suitable for your research.
 						</p>
 					</div>
 				</Col>
@@ -123,13 +124,23 @@ export const AccountAdvancedSearch = props => {
 								<Card.Body className='datasetCard gray800-14'>
 									<ul className='gray800-14'>
 										<li>Access the advanced search tool using the button below.</li>
-										<li>Select the characteristics you need for your project , such as disease, age, gender and location.</li>
-										<li>Use AND/OR to specify your inclusion and exclusion criteria.</li>
 										<li>
-											The tool will give you a list of datasets listed on the Gateway where this data is available, including sample size.
+											Select the patient characteristics you need for your research project, such as disease, age, gender, ethnicity and
+											region.
 										</li>
-										<li>You can save your search and return later</li>
+										<li>Use AND/OR to specify how you would like to combine the patient characteristics.</li>
+										<li>Use Groups to define your control and research cohorts.</li>
+										<li>
+											The cohort query builder will give you a count of the patients matching your defined characteristics and a breakdown
+											by age and gender. You will also receive a list of datasets listed on the Gateway where this data is available.
+										</li>
+										<li>Your search queries are automatically saved and you can return to them later.</li>
 									</ul>
+									<p>
+										It is important to understand that the number of patients that match your query may not reflect the true number within
+										the datasets, as there may be changes within the dataset between discovery of the dataset and the time your data access
+										request is submitted and approved.
+									</p>
 								</Card.Body>
 							</Accordion.Collapse>
 						</Card>
@@ -142,7 +153,7 @@ export const AccountAdvancedSearch = props => {
 								<Card.Body className='datasetCard gray800-14'>
 									<ul className='gray800-14'>
 										<li>Once you have found the datasets you need, you can make a Data Access Request via the Innovation Gateway</li>
-										<li>Search for the datasets on the Innovation Gateway and either make an enquiry or request acccess</li>
+										<li>Search for the datasets on the Innovation Gateway and either make an enquiry or request access</li>
 										<li>Data Access Requests must be made individually for each dataset</li>
 									</ul>
 								</Card.Body>
