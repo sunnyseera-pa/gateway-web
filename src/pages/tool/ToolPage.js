@@ -406,7 +406,7 @@ export const ToolDetail = props => {
 															<Col sm={12}>Results/Insights</Col>
 														</Row>
 														<Row className='mt-3'>
-															<Col sm={12} className='gray800-14 hrduk-section-body'>
+															<Col sm={12} className='gray800-14 hdruk-section-body'>
 																<ReactMarkdown source={toolData.resultsInsights} />
 															</Col>
 														</Row>

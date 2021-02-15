@@ -1591,7 +1591,7 @@ button a {
 	margin-right: 12px;
 }
 
-.hdruk-section-body p a[href] {
+.hdruk-section-body p > a[href] {
 	word-break: break-all;
 	word-wrap: break-word;
 }
