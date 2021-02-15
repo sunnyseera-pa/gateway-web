@@ -72,12 +72,13 @@ class SearchBar extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state.userState = props.userState;
+		// set default textValue from props - for between tabs
+		this.state.textValue = props.search;
 		this.handleMouseHover = this.handleMouseHover.bind(this);
 	}
 
 	componentDidMount() {
 		this._isMounted = true;
-
 		window.addEventListener('scroll', this.handleScroll);
 		document.addEventListener('mousedown', this.handleClick, false);
 
@@ -234,7 +235,7 @@ class SearchBar extends React.Component {
 	}
 
 	render() {
-		const { userState, newData, isLoading, clearMessage, isHovering } = this.state;
+		const { userState, newData, isLoading, clearMessage, isHovering, textValue } = this.state;
 
 		if (isLoading) {
 			return <></>;
@@ -337,7 +338,7 @@ class SearchBar extends React.Component {
 																id='searchInputSpanGrey'
 																onChange={this.onSearch}
 																onKeyDown={this.props.doSearchMethod}
-																value={this.props.searchString}
+																value={textValue}
 															/>
 														</span>
 														{this.props.searchString !== '' && this.props.searchString !== undefined ? (
