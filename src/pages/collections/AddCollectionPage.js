@@ -3,24 +3,19 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Typeahead } from 'react-bootstrap-typeahead';
-
 import { Form, Button, Row, Col, Container } from 'react-bootstrap';
-
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
 import RelatedResources from '../commonComponents/relatedResources/RelatedResources';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
-
 import moment from 'moment';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
 import ToolTip from '../../images/imageURL-ToolTip.gif';
-
 import { Event, initGA } from '../../tracking';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
-
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import './Collections.scss';
 
@@ -506,19 +501,21 @@ const AddCollectionForm = props => {
 			</Container>
 
 			<ActionBar userState={props.userState}>
-				<a style={{ cursor: 'pointer' }} href={'/account?tab=collections'}>
-					<Button variant='medium' className='cancelButton dark-14 mr-2'>
-						Cancel
+				<div className='floatRight'>
+					<a style={{ cursor: 'pointer' }} href={'/account?tab=collections'}>
+						<Button variant='medium' className='cancelButton dark-14 mr-2'>
+							Cancel
+						</Button>
+					</a>
+
+					<Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className='techDetailButton mr-2'>
+						+ Add resource
 					</Button>
-				</a>
 
-				<Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className='techDetailButton mr-2'>
-					+ Add resource
-				</Button>
-
-				<Button variant='primary' className='publishButton white-14-semibold mr-2' type='submit' onClick={formik.handleSubmit}>
-					Save
-				</Button>
+					<Button variant='primary' className='publishButton white-14-semibold mr-2' type='submit' onClick={formik.handleSubmit}>
+						Save
+					</Button>
+				</div>
 			</ActionBar>
 		</div>
 	);

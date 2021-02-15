@@ -10,6 +10,7 @@ import TypeaheadUser from './components/TypeaheadUser/TypeaheadUser';
 import TypeaheadMultiUser from './components/TypeaheadUser/TypeaheadMultiUser';
 import DatePickerCustom from './components/DatePickerCustom/DatepickerCustom';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
+import ActionBar from '../commonComponents/actionbar/ActionBar';
 import Loading from '../commonComponents/Loading';
 import NavItem from './components/NavItem/NavItem';
 import NavDropdown from './components/NavDropdown/NavDropdown';
@@ -126,7 +127,7 @@ class DataAccessRequest extends Component {
 			roles: [],
 			nationalCoreStudiesProjects: [],
 			inReviewMode: false,
-			updateRequestModal: false
+			updateRequestModal: false,
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -390,10 +391,7 @@ class DataAccessRequest extends Component {
 		// 6. Hide show submit application
 		if (applicationStatus === DarHelper.darStatus.inProgress) {
 			showSubmit = true;
-		} else if (
-			applicationStatus === DarHelper.darStatus.inReview ||
-			applicationStatus === DarHelper.darStatus.submitted
-		) {
+		} else if (applicationStatus === DarHelper.darStatus.inReview || applicationStatus === DarHelper.darStatus.submitted) {
 			if (activeParty === 'applicant' && answeredAmendments > 0) {
 				showSubmit = true;
 				submitButtonText = 'Submit updates';
@@ -460,27 +458,27 @@ class DataAccessRequest extends Component {
 			// Add form panel for 'about' & 'files'
 			jsonSchema.formPanels.unshift(DarHelper.staticContent.aboutPanel);
 			jsonSchema.formPanels.push(DarHelper.staticContent.filesPanel);
-		} 
+		}
 		// if activePanel, find active formPanel from formPanels, find pageId index from pages array
-		if(!_.isEmpty(this.state.activePanelId)) {
+		if (!_.isEmpty(this.state.activePanelId)) {
 			formPanel = [...formPanels].find(p => p.panelId === this.state.activePanelId);
 			currentPageIdx = [...pages].findIndex(page => page.pageId === formPanel.pageId);
 		}
 		// set active page
-		jsonSchema.pages.forEach(element => element.active = false);
+		jsonSchema.pages.forEach(element => (element.active = false));
 		jsonSchema.pages[currentPageIdx].active = true;
-		
+
 		// 7. Append review sections to jsonSchema if in review mode
 		jsonSchema.pages = [...jsonSchema.pages].map(page => {
 			let inReview =
-			[...reviewSections].includes(page.pageId.toLowerCase()) ||
-			page.pageId === DarHelper.darStaticPageIds.ABOUT ||
-			page.pageId === DarHelper.darStaticPageIds.FILES;
-			
+				[...reviewSections].includes(page.pageId.toLowerCase()) ||
+				page.pageId === DarHelper.darStaticPageIds.ABOUT ||
+				page.pageId === DarHelper.darStaticPageIds.FILES;
+
 			return { ...page, inReview: inReviewMode && inReview };
 		});
 		// add in the classes for winterfell, important
-		jsonSchema = {...jsonSchema, ...classSchema};
+		jsonSchema = { ...jsonSchema, ...classSchema };
 
 		return jsonSchema;
 	}
@@ -545,20 +543,21 @@ class DataAccessRequest extends Component {
 				} = response;
 				let { applicationStatus } = this.state;
 				// 4. remove blank values from schema updates - omit values if they are blank, important for jsonSchema
-				if(!_.isNil(jsonSchema))
-					jsonSchema = this.injectStaticContent(jsonSchema, false, this.state.reviewSections);
+				if (!_.isNil(jsonSchema)) jsonSchema = this.injectStaticContent(jsonSchema, false, this.state.reviewSections);
 
-				let schemaUpdates = 	_.omitBy({
-					unansweredAmendments,
-					answeredAmendments,
-					showSubmit: applicationStatus === DarHelper.darStatus.inProgress || answeredAmendments > 0,
-					jsonSchema
-				}, _.isNil);
+				let schemaUpdates = _.omitBy(
+					{
+						unansweredAmendments,
+						answeredAmendments,
+						showSubmit: applicationStatus === DarHelper.darStatus.inProgress || answeredAmendments > 0,
+						jsonSchema,
+					},
+					_.isNil
+				);
 
 				this.setState({
-					...schemaUpdates
+					...schemaUpdates,
 				});
-
 			});
 		} catch (error) {
 			console.log(`API PUT ERROR ${error}`);
@@ -700,7 +699,7 @@ class DataAccessRequest extends Component {
 			if (_.isEmpty(panelId) || typeof panelId == 'undefined') {
 				({ panelId } = [...this.state.jsonSchema.formPanels].find(p => p.pageId === newFormState[newPageindex].pageId) || '');
 			}
-			
+
 			let countedQuestionAnswers = {};
 			let totalQuestions = '';
 			// if in the about panel, retrieve question answers count for entire application
@@ -724,7 +723,7 @@ class DataAccessRequest extends Component {
 				totalQuestions: totalQuestions,
 				validationErrors,
 				reviewWarning,
-				activeGuidance: ''
+				activeGuidance: '',
 			});
 		}
 	};
@@ -749,15 +748,20 @@ class DataAccessRequest extends Component {
 			// deconstruct action to invoke from schema
 			let {
 				input: { action = '', questionIds = [], separatorText = '' },
-			} = DarHelper.getActiveQuestion(questionSet.questions, questionId, );
+			} = DarHelper.getActiveQuestion(questionSet.questions, questionId);
 			// ensure valid action was found for question set button click
-			if(_.isEmpty(action)) {
+			if (_.isEmpty(action)) {
 				return console.error(`Action could not be invoked for question set - ${questionSetId}, question - ${questionId}`);
 			}
 			// call API with action, questionId and questionSetId
 			const stateObj = await this.postQuestionSetAction(questionSetId, questionId, questionIds, action, separatorText);
 			// count question/answers for the current section
-			const countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this, this.state.activePanelId, this.state.questionAnswers, stateObj.jsonSchema);
+			const countedQuestionAnswers = DarHelper.totalQuestionsAnswered(
+				this,
+				this.state.activePanelId,
+				this.state.questionAnswers,
+				stateObj.jsonSchema
+			);
 			const totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered in this section`;
 			// spread json schema response into state and reload static content including updated question counter
 			this.setState({ ...stateObj, totalQuestions });
@@ -776,14 +780,22 @@ class DataAccessRequest extends Component {
 	 */
 	postQuestionSetAction = async (questionSetId, questionId, questionIds = [], mode, separatorText = '') => {
 		// post requested action to the API to perform an update to the application form
-		let response = await axios.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/actions`, { questionSetId, questionId, questionIds, mode, separatorText });
+		let response = await axios.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/actions`, {
+			questionSetId,
+			questionId,
+			questionIds,
+			mode,
+			separatorText,
+		});
 		// deconstruct the response containing the modified schema
-		let {accessRecord: { jsonSchema, questionAnswers } } = response.data;
+		let {
+			accessRecord: { jsonSchema, questionAnswers },
+		} = response.data;
 		// add in static content to schema (includes about application, file upload panels etc.)
 		jsonSchema = this.injectStaticContent(jsonSchema, this.state.inReviewMode, this.state.reviewSections);
 		// return the updated schema to allow it to be spread into state later
-		return { jsonSchema, questionAnswers }; 
-	}
+		return { jsonSchema, questionAnswers };
+	};
 
 	/**
 	 * onQuestionAction
@@ -791,7 +803,7 @@ class DataAccessRequest extends Component {
 	 * @params {event, questionSetId, questionId, key}
 	 */
 	onQuestionAction = async (e = '', questionSetId = '', questionId = '', key = '') => {
-		let mode,  stateObj;
+		let mode, stateObj;
 		switch (key) {
 			case DarHelper.actionKeys.GUIDANCE:
 				const activeGuidance = this.getActiveQuestionGuidance(questionId);
@@ -825,7 +837,7 @@ class DataAccessRequest extends Component {
 	/**
 	 * getActiveQuestionGuidance
 	 * @desc - Returns the guidance based on the active question
-	 * @param   {string}  questionId 
+	 * @param   {string}  questionId
 	 * @return  {string} guidance
 	 */
 	getActiveQuestionGuidance(questionId = '') {
@@ -849,21 +861,30 @@ class DataAccessRequest extends Component {
 	}
 
 	postQuestionAction = async (questionSetId, questionId, mode) => {
-		let response = await axios.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/amendments`, { questionSetId, questionId, mode });
-		let {accessRecord: { jsonSchema, questionAnswers = null, answeredAmendments, unansweredAmendments, amendmentIterations } } = response.data;
+		let response = await axios.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/amendments`, {
+			questionSetId,
+			questionId,
+			mode,
+		});
+		let {
+			accessRecord: { jsonSchema, questionAnswers = null, answeredAmendments, unansweredAmendments, amendmentIterations },
+		} = response.data;
 		jsonSchema = this.injectStaticContent(jsonSchema, this.state.inReviewMode, this.state.reviewSections);
 
-		let stateObj = _.omitBy({
-			jsonSchema,
-			questionAnswers,
-			answeredAmendments,
-			unansweredAmendments,
-			amendmentIterations
-		}, _.isNil);
+		let stateObj = _.omitBy(
+			{
+				jsonSchema,
+				questionAnswers,
+				answeredAmendments,
+				unansweredAmendments,
+				amendmentIterations,
+			},
+			_.isNil
+		);
 
-		return stateObj; 
-	}
-	
+		return stateObj;
+	};
+
 	/**
 	 * removeActiveQuestionClass
 	 * @desc Removes active class on a single question
@@ -1305,47 +1326,57 @@ class DataAccessRequest extends Component {
 	onUpdateRequest = e => {
 		let fullAmendments = {};
 		let updateRequestModal = this.state.updateRequestModal;
-		let { pages, questionPanels, questionSets } = {...this.state.jsonSchema};
+		let { pages, questionPanels, questionSets } = { ...this.state.jsonSchema };
 		// Get the last amendmentIteration in the array
 		let amendmentsIterations = _.last([...this.state.amendmentIterations]);
-		if(!_.isEmpty(amendmentsIterations)) {
+		if (!_.isEmpty(amendmentsIterations)) {
 			// get the questionAnswers object {role: {}, lastName: {}}
-			let { questionAnswers } = {...amendmentsIterations};
+			let { questionAnswers } = { ...amendmentsIterations };
 			// get all the questionIds into a iterable array from questionAnswers
-			if(!_.isEmpty(questionAnswers)) {
+			if (!_.isEmpty(questionAnswers)) {
 				// set up default variables
-				let questionSetId, answer, section, pageId, page, questions, question = '';
+				let questionSetId,
+					answer,
+					section,
+					pageId,
+					page,
+					questions,
+					question = '';
 				// reduce over questionanswers object using lodash
-			 	fullAmendments = _.reduce(questionAnswers, (obj, value, key) => {
-					// currentItem {questionSetId, answer}
-					({questionSetId, answer}= questionAnswers[key]);
-					// find the active questionPanel ie questionPanels: [{navHeader, pageId, panelId, questionSets:[]}]
-					let activeQuestionPanel = [...questionPanels].find(panel => panel.panelId === questionSetId);
-					// Get the section {navHeader: panelHeader: 'Applicant', pageId: 'safePeople'}
-					({navHeader: section, pageId} = activeQuestionPanel);
-					// find the active page ie pages: [{pageId: 'safepeople', title: pageTitle: 'Safe People'}]
-					let activePage = [...pages].find(pageItem => pageItem.pageId === pageId);
-					// Get the page title from page item
-					({title: page} = activePage);
-					// Get the list of questions for questionPanelId from questionSets
-					({ questions } = [...questionSets].find(questionSet => questionSet.questionSetId === questionSetId));
-					// Get question checks for nested questions also
-					({ question } = DarHelper.getActiveQuestion(questions, key));
-					// Safe People | Applicant
-					let location = `${page} | ${section}`;
-					// build up our object of data for display
-					if(!obj[location]) {
-						obj = {...obj, [location]: [ {question, answer} ]}
-					} else if(obj[location]) {
-						let arr = [...obj[location], {question, answer}];
-						obj[location] = arr;
-					}
-					return obj;
-				}, {});
+				fullAmendments = _.reduce(
+					questionAnswers,
+					(obj, value, key) => {
+						// currentItem {questionSetId, answer}
+						({ questionSetId, answer } = questionAnswers[key]);
+						// find the active questionPanel ie questionPanels: [{navHeader, pageId, panelId, questionSets:[]}]
+						let activeQuestionPanel = [...questionPanels].find(panel => panel.panelId === questionSetId);
+						// Get the section {navHeader: panelHeader: 'Applicant', pageId: 'safePeople'}
+						({ navHeader: section, pageId } = activeQuestionPanel);
+						// find the active page ie pages: [{pageId: 'safepeople', title: pageTitle: 'Safe People'}]
+						let activePage = [...pages].find(pageItem => pageItem.pageId === pageId);
+						// Get the page title from page item
+						({ title: page } = activePage);
+						// Get the list of questions for questionPanelId from questionSets
+						({ questions } = [...questionSets].find(questionSet => questionSet.questionSetId === questionSetId));
+						// Get question checks for nested questions also
+						({ question } = DarHelper.getActiveQuestion(questions, key));
+						// Safe People | Applicant
+						let location = `${page} | ${section}`;
+						// build up our object of data for display
+						if (!obj[location]) {
+							obj = { ...obj, [location]: [{ question, answer }] };
+						} else if (obj[location]) {
+							let arr = [...obj[location], { question, answer }];
+							obj[location] = arr;
+						}
+						return obj;
+					},
+					{}
+				);
 			}
 		}
-		this.setState({updateRequestModal: !updateRequestModal, fullAmendments});
-	}
+		this.setState({ updateRequestModal: !updateRequestModal, fullAmendments });
+	};
 
 	toggleUpdateRequestModal = () => {
 		this.setState(prevState => {
@@ -1451,14 +1482,14 @@ class DataAccessRequest extends Component {
 		Winterfell.addInputType('datePickerCustom', DatePickerCustom);
 		Winterfell.addInputType('typeaheadUser', TypeaheadUser);
 		Winterfell.validation.default.addValidationMethods({
-			'isCustomDate': (value) => {
+			isCustomDate: value => {
 				if (_.isEmpty(value) || _.isNil(value) || moment(value, 'DD/MM/YYYY').isValid()) {
 					return true;
 				}
 				return false;
 			},
 		});
-	
+
 		if (isLoading) {
 			return (
 				<Container>
@@ -1585,58 +1616,57 @@ class DataAccessRequest extends Component {
 					{isWideForm ? null : (
 						<div id='darRightCol' className='scrollable-sticky-column'>
 							<div className='darTab'>
-								<Guidance
-									activeGuidance={activeGuidance}
-									resetGuidance={this.resetGuidance}
-								/>
-							</div> 
+								<Guidance activeGuidance={activeGuidance} resetGuidance={this.resetGuidance} />
+							</div>
 						</div>
 					)}
 				</div>
 
-				<div className='action-bar'>
-					<div className='action-bar--questions'>
-						{applicationStatus === 'inProgress' ? (
-							''
-						) : (
-							<SLA classProperty={DarHelper.darStatusColours[applicationStatus]} text={DarHelper.darSLAText[applicationStatus]} />
-						)}
-						<div className='action-bar-status'>
-							{totalQuestions} &nbsp;|&nbsp; {projectId}
+				<ActionBar userState={userState}>
+					<div className='action-bar'>
+						<div className='action-bar--questions'>
+							{applicationStatus === 'inProgress' ? (
+								''
+							) : (
+								<SLA classProperty={DarHelper.darStatusColours[applicationStatus]} text={DarHelper.darSLAText[applicationStatus]} />
+							)}
+							<div className='action-bar-status'>
+								{totalQuestions} &nbsp;|&nbsp; {projectId}
+							</div>
+						</div>
+						<div className='action-bar-actions'>
+							<AmendmentCount answeredAmendments={this.state.answeredAmendments} unansweredAmendments={this.state.unansweredAmendments} />
+							{userType.toUpperCase() === 'APPLICANT' ? (
+								<ApplicantActionButtons
+									allowedNavigation={allowedNavigation}
+									onNextClick={this.onNextClick}
+									onFormSubmit={this.onFormSubmit}
+									onShowContributorModal={this.toggleContributorModal}
+									onEditForm={this.onEditForm}
+									showSubmit={this.state.showSubmit}
+									submitButtonText={this.state.submitButtonText}
+								/>
+							) : (
+								<CustodianActionButtons
+									activeParty={this.state.activeParty}
+									allowedNavigation={allowedNavigation}
+									unansweredAmendments={this.state.unansweredAmendments}
+									onUpdateRequest={this.onUpdateRequest}
+									onActionClick={this.onCustodianAction}
+									onWorkflowReview={this.toggleWorkflowReviewModal}
+									onWorkflowReviewDecisionClick={this.toggleWorkflowReviewDecisionModal}
+									onNextClick={this.onNextClick}
+									workflowEnabled={this.state.workflowEnabled}
+									workflowAssigned={this.state.workflowAssigned}
+									inReviewMode={this.state.inReviewMode}
+									hasRecommended={this.state.hasRecommended}
+									applicationStatus={applicationStatus}
+									roles={roles}
+								/>
+							)}
 						</div>
 					</div>
-					<div className='action-bar-actions'>
-						<AmendmentCount answeredAmendments={this.state.answeredAmendments} unansweredAmendments={this.state.unansweredAmendments} />
-						{userType.toUpperCase() === 'APPLICANT' ? (
-							<ApplicantActionButtons
-								allowedNavigation={allowedNavigation}
-								onNextClick={this.onNextClick}
-								onFormSubmit={this.onFormSubmit}
-								onShowContributorModal={this.toggleContributorModal}
-								onEditForm={this.onEditForm}
-								showSubmit={this.state.showSubmit}
-								submitButtonText={this.state.submitButtonText}
-							/>
-						) : (
-							<CustodianActionButtons
-								activeParty={this.state.activeParty}
-								allowedNavigation={allowedNavigation}
-								unansweredAmendments={this.state.unansweredAmendments}
-								onUpdateRequest={this.onUpdateRequest}
-								onActionClick={this.onCustodianAction}
-								onWorkflowReview={this.toggleWorkflowReviewModal}
-								onWorkflowReviewDecisionClick={this.toggleWorkflowReviewDecisionModal}
-								onNextClick={this.onNextClick}
-								workflowEnabled={this.state.workflowEnabled}
-								workflowAssigned={this.state.workflowAssigned}
-								inReviewMode={this.state.inReviewMode}
-								hasRecommended={this.state.hasRecommended}
-								applicationStatus={applicationStatus}
-								roles={roles}
-							/>
-						)}
-					</div>
-				</div>
+				</ActionBar>
 
 				<SideDrawer open={showDrawer} closed={e => this.toggleDrawer()}>
 					<UserMessages
@@ -1702,14 +1732,15 @@ class DataAccessRequest extends Component {
 					workflows={this.state.workflows}
 				/>
 
-				<UpdateRequestModal 
+				<UpdateRequestModal
 					open={this.state.updateRequestModal}
 					close={this.toggleUpdateRequestModal}
 					publisher={this.state.publisher}
 					projectName={projectName}
 					applicationId={this.state._id}
 					fullAmendments={this.state.fullAmendments}
-					amendmentIterations={this.state.amendmentIterations} />
+					amendmentIterations={this.state.amendmentIterations}
+				/>
 
 				<Modal
 					show={showMrcModal}
