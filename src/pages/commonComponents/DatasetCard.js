@@ -4,8 +4,7 @@ import _ from 'lodash';
 import SLA from '../commonComponents/sla/SLA';
 import TimeDuration from './timeDuration/TimeDuration';
 import AccessActivity from '../../pages/dashboard/DataAccessRequests/AccessActivity/AccessActivity';
-import DarHelperUtil from '../../utils/DarHelper.util';
-import DatasetCardHelperUtil from './DatasetCardHelper.util';
+import DatasetOnboardingHelper from './../../utils/DatasetOnboardingHelper.util';
 import CommentItem from '../dashboard/DataAccessRequests/CommentItem/CommentItem.js';
 import StatusDisplay from './StatusDisplay';
 import SVGIcon from '../../images/SVGIcon';
@@ -14,10 +13,9 @@ import moment from 'moment';
 import '../commonComponents/DatasetCard.scss';
 
 export const DatasetCard = props => {
-    let { id, publisher, title, version, isDraft, datasetStatus, completion, createdAt, lastActivity } = props;
-
+    let { id, publisher, title, version, isDraft, datasetStatus, completion, createdAt, lastActivity, rejectionText } = props;
     const [flagClosed, setFlagClosed] = useState(true);
-
+    
     return (
         <Row
             key={`dataset_card_${title}`}
@@ -31,14 +29,14 @@ export const DatasetCard = props => {
                         </div>
                         <div className='header-status'>
                             {datasetStatus === 'draft' ? (
-                                <TimeDuration text={`${DatasetCardHelperUtil.calculateTimeDifference(createdAt)} days since start`} />
-                            ) : (
-                                    ''
-                                )}
-                            {/* {isDraft ? <SLA classProperty={'gray'} text='Draft' /> : 'hello'} */}
-                            {/* isDraft ? <div className='margin-right-4 sla-gray'>Draft</div> : '' */}
-                            {/* <SLA classProperty={DarHelperUtil.darStatusColours[datasetStatus]} text={DarHelperUtil.darSLAText[datasetStatus]} /> */}
-                            <SLA classProperty={DarHelperUtil.darStatusColours[datasetStatus]} text={DarHelperUtil.darSLAText[datasetStatus]} />
+                                <TimeDuration text={`${DatasetOnboardingHelper.calculateTimeDifference(createdAt)} days since start`} />
+                            ) : ('')}
+
+                            {datasetStatus === 'inReview' ? (
+                                <TimeDuration text={`${DatasetOnboardingHelper.calculateTimeDifference(createdAt)} days since submission`} />
+                            ) : ('')}
+
+                            <SLA classProperty={DatasetOnboardingHelper.datasetStatusColours[datasetStatus]} text={DatasetOnboardingHelper.datasetSLAText[datasetStatus]} />
                         </div>
                     </div>
                     <div className='dataset-completion-wheels'>
@@ -107,7 +105,7 @@ export const DatasetCard = props => {
 								{moment(updatedAt).format('D MMMM YYYY HH:mm')}
 								{isTeam == true ? (
 									<div className='box-meta'>
-										{applicationStatus === DarHelperUtil.darStatus.submitted ? (
+										{applicationStatus === DatasetOnboardingHelper.darStatus.submitted ? (
 											<button
 												id='startReview'
 												className='button-primary'
@@ -132,10 +130,10 @@ export const DatasetCard = props => {
                     </div>
                     {datasetStatus === 'rejected' ? (
                         <CommentItem
-                            text={'decisionComments'}
-                            title={'Phase decision'}
-                            subtitle={`${'decisionApprovedType'} ${'reviewPanels'}`}
-                            decisionDate={'decisionDate'}
+                            text={rejectionText}
+                            title={'Reason for rejection'}
+                            subtitle={`Paul McCafferty`}
+                            decisionDate={moment(lastActivity).format('D MMMM YYYY HH:mm')}
                         />
                     ) : (
                             ''

@@ -6,6 +6,10 @@
 	li {
 		@include font-source(14px, $gray-dark);
 	}
+
+	p {
+		white-space: pre-wrap;
+	}
 }
 
 .actionModal {

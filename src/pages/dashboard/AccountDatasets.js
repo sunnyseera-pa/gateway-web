@@ -1,28 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Col, Row, Button, Tabs, Tab } from 'react-bootstrap';
+import { Col, Row, Button, Tabs, Tab, Alert } from 'react-bootstrap';
 import { Event, initGA } from '../../tracking';
 import _ from 'lodash';
 import Loading from '../commonComponents/Loading';
 import DatasetCard from '../commonComponents/DatasetCard';
 import NotFound from '../commonComponents/NotFound';
+import SVGIcon from "../../images/SVGIcon";
 import './Dashboard.scss';
+
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const AccountDatasets = props => {
 	const [userState] = useState(props.userState);
-	const [key, setKey] = useState('active');
+	const [key, setKey] = useState(!_.isEmpty(props.alert.tab) ? props.alert.tab : 'active');
 	const [datasetList, setDatasetList] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [activeCount, setActiveCount] = useState(0);
 	const [reviewCount, setReviewCount] = useState(0);
 	const [archiveCount, setArchiveCount] = useState(0);
 	const [rejectedCount, setRejectedCount] = useState(0);
-	/* const [showActionModal, setShowActionModal] = useState(false);
-	const actionModalConfig = {
-		title: 'Reject this Paper?',
-	}; */
+	const [alert, setAlert] = useState(props.alert)
+	const [team, setTeam] = useState(props.team)
+	const [publisherID, setPublisherID] = useState('')
 
 	let completion1 = {
 		Summary: 'partial',
@@ -55,21 +56,24 @@ const AccountDatasets = props => {
 	useEffect(() => {
 		initGA('UA-166025838-1');
 		doDatasetsCall();
-	}, []);
+	}, [team]);
 
 	const doDatasetsCall = async () => {
 		setIsLoading(true);
-		await axios.get(baseURL + `/api/v1/dataset-onboarding/publisher/5f3f9e698af2ef61552e1d78`).then(res => {
+		let isPublisher = getPublisherID();
+		setPublisherID(isPublisher);
+		
+		await axios.get(baseURL + `/api/v1/dataset-onboarding/publisher/${isPublisher}`).then(res => {
 			setDatasetList(res.data.data.dataset);
 
 			let activeCount = 0;
 			let reviewCount = 0;
 			let archiveCount = 0;
 			let rejectedCount = 0;
-			debugger;
+			
 			res.data.data.dataset.forEach(dataset => {
 				if (dataset.activeflag === 'active') activeCount++;
-				else if (dataset.activeflag === 'inProgress') reviewCount++;
+				else if (dataset.activeflag === 'inReview') reviewCount++;
 				else if (dataset.activeflag === 'archive') archiveCount++;
 				else if (dataset.activeflag === 'rejected') rejectedCount++;
 			});
@@ -78,10 +82,25 @@ const AccountDatasets = props => {
 			setReviewCount(reviewCount);
 			setArchiveCount(archiveCount);
 			setRejectedCount(rejectedCount);
+			if (isPublisher === 'admin') setKey('inReview');
 			setIsLoading(false);
 		});
 	};
 
+	const getPublisherID = () => {
+		let { teams } = props.userState[0];
+		let foundAdmin = teams.filter(x => x.type === team);
+		if (!_.isEmpty(foundAdmin)) {
+			return 'admin';
+		}
+		let foundTeam = teams.filter(x => x.name === team);
+		if (_.isEmpty(teams) || _.isEmpty(foundTeam)) {
+			return ['applicant']; //pass back to user
+		}
+
+		return foundTeam[0]._id;
+	};
+	
 	const createNewDataset = e => {
 		e.preventDefault();
 		//call to API to create new dataset
@@ -102,6 +121,22 @@ const AccountDatasets = props => {
 		setKey(key);
 	};
 
+	const generateAlert = () => {
+		debugger
+		let { message = '' } = alert;
+		return (
+			<Row className='mt-3'>
+					<Col xs={1}></Col>
+					<Col xs={10}>
+						<Alert variant={"success"} className="col-sm-12 main-alert">
+			<SVGIcon name="check" width={18} height={18} fill={'#2C8267'} /> {message}
+						</Alert>
+					</Col>
+					<Col xs={1}></Col>
+			</Row>
+		)
+		};
+
 	if (isLoading) {
 		return (
 			<Row>
@@ -113,20 +148,21 @@ const AccountDatasets = props => {
 			</Row>
 		);
 	}
-
+	
 	return (
 		<div>
+			<>{!_.isEmpty(alert) ? generateAlert() : ""}</>
 			<Row>
 				<Col xs={1}></Col>
 				<Col xs={10}>
 					<Row className='accountHeader'>
 						<Col sm={12} md={8}>
-							<Row>
+							<div>
 								<span className='black-20'>Datasets</span>
-							</Row>
-							<Row>
-								<span className='gray700-13 '>View, add, edit, archive and check the status of your datasets.</span>
-							</Row>
+							</div>
+							<div>
+							<span className='gray700-13 '>{publisherID !== 'admin' ? 'View, add, edit, archive and check the status of your datasets.' : 'Approve or reject pending datasets'}</span>
+							</div>
 						</Col>
 						<Col sm={12} md={4} style={{ textAlign: 'right' }}>
 							<Button
@@ -139,11 +175,17 @@ const AccountDatasets = props => {
 					</Row>
 					<Row className='tabsBackground'>
 						<Col sm={12} lg={12}>
-							<Tabs className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
+							{team === 'admin' ? 
+							(<Tabs className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
+								<Tab eventKey='inReview' title={'Pending approval (' + reviewCount + ')'}>
+									{' '}
+								</Tab>
+							</Tabs>) :
+							(<Tabs className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
 								<Tab eventKey='active' title={'Active (' + activeCount + ')'}>
 									{' '}
 								</Tab>
-								<Tab eventKey='pending' title={'Pending approval (' + reviewCount + ')'}>
+								<Tab eventKey='inReview' title={'Pending approval (' + reviewCount + ')'}>
 									{' '}
 								</Tab>
 								<Tab eventKey='rejected' title={'Rejected (' + rejectedCount + ')'}>
@@ -152,7 +194,8 @@ const AccountDatasets = props => {
 								<Tab eventKey='archive' title={'Archived (' + archiveCount + ')'}>
 									{' '}
 								</Tab>
-							</Tabs>
+							</Tabs>)
+							}
 						</Col>
 					</Row>
 
@@ -163,7 +206,7 @@ const AccountDatasets = props => {
 									<div>
 										{activeCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='tools' />
+												<NotFound word='datasets' />
 											</Row>
 										) : (
 											datasetList.map(dataset => {
@@ -171,65 +214,43 @@ const AccountDatasets = props => {
 													return <></>;
 												} else {
 													return (
-														<>
-															<DatasetCard
-																id={dataset._id}
-																title={dataset.name}
-																publisher={dataset.datasetfields.publisher}
-																version={dataset.datasetVersion}
-																isDraft={true}
-																datasetStatus={dataset.activeflag}
-																lastActivity={dataset.updatedAt}
-																completion={completion1}></DatasetCard>
-
-															{/* <DatasetCard
-                                                                title='Diagnostic and Therapy Services Waiting Times'
-                                                                publisher='NHS Digital'
-                                                                version='3.0'
-                                                                // isDraft={true}
-                                                                datasetStatus='rejected'
-                                                                lastActivity=''
-                                                                completion={completion2}></DatasetCard> */}
-														</>
+														<DatasetCard
+															id={dataset._id}
+															title={dataset.name}
+															publisher={dataset.datasetfields.publisher}
+															version={dataset.datasetVersion}
+															isDraft={true}
+															datasetStatus={dataset.activeflag}
+															lastActivity={dataset.updatedAt}
+															completion={completion1} />
 													);
 												}
 											})
 										)}
 									</div>
 								);
-							case 'pending':
+							case 'inReview':
 								return (
 									<div>
 										{reviewCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='tools' />
+												<NotFound word='datasets' />
 											</Row>
 										) : (
 											datasetList.map(dataset => {
-												if (dataset.activeflag !== 'inProgress') {
+												if (dataset.activeflag !== 'inReview') {
 													return <></>;
 												} else {
 													return (
-														<>
-															<DatasetCard
-																id={dataset._id}
-																title={dataset.name}
-																publisher={dataset.datasetfields.publisher}
-																version={dataset.datasetVersion}
-																isDraft={true}
-																datasetStatus={dataset.activeflag}
-																lastActivity={dataset.updatedAt}
-																completion={completion1}></DatasetCard>
-
-															{/* <DatasetCard
-                                                                title='Diagnostic and Therapy Services Waiting Times'
-                                                                publisher='NHS Digital'
-                                                                version='3.0'
-                                                                // isDraft={true}
-                                                                datasetStatus='rejected'
-                                                                lastActivity=''
-                                                                completion={completion2}></DatasetCard> */}
-														</>
+														<DatasetCard
+															id={dataset._id}
+															title={dataset.name}
+															publisher={dataset.datasetfields.publisher}
+															version={dataset.datasetVersion}
+															isDraft={true}
+															datasetStatus={dataset.activeflag}
+															lastActivity={dataset.updatedAt}
+															completion={completion1}  />
 													);
 												}
 											})
@@ -241,7 +262,7 @@ const AccountDatasets = props => {
 									<div>
 										{rejectedCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='tools' />
+												<NotFound word='datasets' />
 											</Row>
 										) : (
 											datasetList.map(dataset => {
@@ -249,25 +270,16 @@ const AccountDatasets = props => {
 													return <></>;
 												} else {
 													return (
-														<>
-															<DatasetCard
-																title='Cambridge Blood and Stem Cell Biobank'
-																publisher='a publisher'
-																version='2'
-																isDraft={true}
-																datasetStatus='isPending'
-																lastActivity=''
-																completion={completion1}></DatasetCard>
-
-															<DatasetCard
-																title='Diagnostic and Therapy Services Waiting Times'
-																publisher='NHS Digital'
-																version='3.0'
-																// isDraft={true}
-																datasetStatus='rejected'
-																lastActivity=''
-																completion={completion2}></DatasetCard>
-														</>
+														<DatasetCard
+															id={dataset._id}
+															title={dataset.name}
+															publisher={dataset.datasetfields.publisher}
+															version={dataset.datasetVersion}
+															isDraft={true}
+															datasetStatus={dataset.activeflag}
+															lastActivity={dataset.updatedAt}
+															completion={completion1}  
+															rejectionText={dataset.applicationStatusDesc}/>
 													);
 												}
 											})
@@ -279,7 +291,7 @@ const AccountDatasets = props => {
 									<div>
 										{archiveCount <= 0 ? (
 											<Row className='margin-right-15'>
-												<NotFound word='tools' />
+												<NotFound word='datasets' />
 											</Row>
 										) : (
 											datasetList.map(dataset => {
@@ -287,25 +299,15 @@ const AccountDatasets = props => {
 													return <></>;
 												} else {
 													return (
-														<>
-															<DatasetCard
-																title='Cambridge Blood and Stem Cell Biobank'
-																publisher='a publisher'
-																version='2'
-																isDraft={true}
-																datasetStatus='isPending'
-																lastActivity=''
-																completion={completion1}></DatasetCard>
-
-															<DatasetCard
-																title='Diagnostic and Therapy Services Waiting Times'
-																publisher='NHS Digital'
-																version='3.0'
-																// isDraft={true}
-																datasetStatus='rejected'
-																lastActivity=''
-																completion={completion2}></DatasetCard>
-														</>
+														<DatasetCard
+															id={dataset._id}
+															title={dataset.name}
+															publisher={dataset.datasetfields.publisher}
+															version={dataset.datasetVersion}
+															isDraft={true}
+															datasetStatus={dataset.activeflag}
+															lastActivity={dataset.updatedAt}
+															completion={completion1}  />
 													);
 												}
 											})
@@ -314,26 +316,6 @@ const AccountDatasets = props => {
 								);
 						}
 					})()}
-
-					{/* <Fragment>
-                        <DatasetCard
-                            title='Cambridge Blood and Stem Cell Biobank'
-                            publisher='a publisher'
-                            version='2'
-                            isDraft={true}
-                            datasetStatus='isPending'
-                            lastActivity=''>
-                        </DatasetCard>
-
-                        <DatasetCard
-                            title='Diagnostic and Therapy Services Waiting Times'
-                            publisher='NHS Digital'
-                            version='3.0'
-                            // isDraft={true}
-                            datasetStatus='rejected'
-                            lastActivity=''>
-                        </DatasetCard>
-                    </Fragment> */}
 				</Col>
 				<Col xs={1}></Col>
 			</Row>

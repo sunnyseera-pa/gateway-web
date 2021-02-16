@@ -5,7 +5,7 @@ import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.s
 
 import './ActionModal.scss';
 
-const ActionModal = ({ open, close, context, updateApplicationStatus }) => {
+const ActionModal = ({ open, close, context, datasetVersionAction }) => {
 	const [count, setCount] = useState(0);
 	const [formState, setFormState] = useState({ statusDesc: '', invalid: false, invalidMessage: '', submitted: false });
 
@@ -22,20 +22,22 @@ const ActionModal = ({ open, close, context, updateApplicationStatus }) => {
 			// 4. deconstruct properties
 			let { statusDesc } = formState;
 			switch (type) {
+				case 'CONFIRMSUBMISSION':
+					datasetVersionAction({ statusDesc, type });
 				case 'CONFIRMAPPROVALCONDITIONS':
 				case 'CONFIRMREJECTION':
 					// 5. check state is valid / invalid
 					let isInvalid = isFormInvalid();
 					// 6. is valid pass back to DAR
 					if (!isInvalid) {
-						updateApplicationStatus({ statusDesc, type });
+						datasetVersionAction({ statusDesc, type });
 						setFormState({ statusDesc: '', invalid: false, invalidMessage: '', submitted: false });
 						setCount(0);
 					}
 					break;
 				case 'CONFIRMAPPROVAL':
 					// 7. send approval to DAR
-					updateApplicationStatus({ statusDesc, type });
+					datasetVersionAction({ statusDesc, type });
 					setFormState({ statusDesc: '', invalid: false, invalidMessage: '', submitted: false });
 					setCount(0);
 					break;

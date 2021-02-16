@@ -92,20 +92,24 @@ class Account extends Component {
 		this.state.userState = props.userState;
 		this.searchBar = React.createRef();
 		// 1. used for DAR custodian update status of application
+		debugger
 		if (_.has(props, 'location.state.alert')) {
 			this.state.alert = props.location.state.alert;
 			this.alertTimeOut = setTimeout(() => this.setState({ alert: {} }), 10000);
 		}
 
-		if (_.has(props, 'location.state.team') && props.location.state.team !== '') {
+		if ((_.has(props, 'location.state.team') && props.location.state.team !== '') || (_.has(props, 'location.state.publisher') && props.location.state.team !== '')) {
 			this.state.team = props.location.state.team;
 			localStorage.setItem('HDR_TEAM', props.location.state.team);
-		} else if (!_.isEmpty(localStorage.getItem('HDR_TEAM'))) {
+		} 
+		else if (!_.isEmpty(localStorage.getItem('HDR_TEAM'))) {
 			this.state.team = localStorage.getItem('HDR_TEAM');
-		} else {
+		} 
+		else {
 			this.state.team = 'user';
 			localStorage.setItem('HDR_TEAM', 'user');
 		}
+
 		if (_.has(props, 'profileComplete')) {
 			this.state.profileComplete = props.profileComplete;
 		}
@@ -271,6 +275,34 @@ class Account extends Component {
 			return '';
 		}
 	}
+	
+	/**
+	 * [renderAdmin Renders out admin entry if admin team is found]
+	 *
+	 * @return  {[Nav.item]}  [return Nav.Item]
+	 */
+	renderAdmin() {
+		let { userState } = this.state;
+		let [user] = userState;
+		
+		const isAdmin = [...user.teams].filter(p => p.type === 'admin');
+		debugger
+		if (!_.isEmpty(isAdmin)) {
+			return (
+				<Dropdown.Item
+					className='gray700-13'
+					onClick={e => {
+						this.toggleNav(`datasets&team=admin`);
+						this.setState({ teamId: 'admin' });
+					}}>
+					Admin
+				</Dropdown.Item>
+			);
+		}
+		else {
+			return '';
+		}
+	}
 
 	toggleNav = (tabId = '') => {
 		let {
@@ -284,6 +316,7 @@ class Account extends Component {
 			tabId = alert.nav;
 		}
 		// 2. make sure tabId is not empty
+		debugger
 		if (!_.isEmpty(tabId)) {
 			// 3. need to check for teams returns {tabId: '', team: ''}; eg dataccessrequests&team=ALLIANCE
 			let tab = this.generateTabObject(tabId);
@@ -304,7 +337,7 @@ class Account extends Component {
 
 			if (!_.isEmpty(tab.team)) {
 				localStorage.setItem('HDR_TEAM', tab.team);
-				if (tab.team !== 'user') tab.tabId = 'dataaccessrequests';
+				if (tab.team !== 'user' && tab.team !== 'admin') tab.tabId = 'dataaccessrequests';
 			} else if (localStorage.getItem('HDR_TEAM') == '') localStorage.setItem('HDR_TEAM', 'user');
 			// 6. set state
 			this.setState({
@@ -371,7 +404,7 @@ class Account extends Component {
 							<Dropdown>
 								<Dropdown.Toggle as={CustomToggle}>
 									<div className='teamSelectorHeader'>
-										<span className='gray700-13'>{team === 'user' ? userState[0].name : team}</span>
+										<span className='gray700-13'>{team === 'user' ? userState[0].name : team === 'admin' ? 'Admin' : team}</span>
 										<ChevronRightSvg fill={'#475da7'} className='dataClassArrow pointer' />
 									</div>
 								</Dropdown.Toggle>
@@ -380,6 +413,7 @@ class Account extends Component {
 									<Dropdown.Item className='gray700-13' onClick={e => this.toggleNav(`youraccount&team=user`)}>
 										{userState[0].name || ''}
 									</Dropdown.Item>
+									{this.renderAdmin()}
 									{this.renderPublishers()}
 								</Dropdown.Menu>
 							</Dropdown>
@@ -486,8 +520,24 @@ class Account extends Component {
 										''
 									)}
 								</Fragment>
+							) : ''}
+
+							{team === 'admin' ? (
+								<Fragment>
+									<div className={`${tabId === 'datasets' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('datasets')}>
+										<Nav.Link className='verticalNavBar gray700-13'>
+											<SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
+											<span style={{ 'margin-left': '11px' }}>Datasets</span>
+										</Nav.Link>
+									</div>
+								</Fragment>
 							) : (
-								<div
+								''
+							)}	
+							
+							{team !== 'user' && team !== 'admin' ? (
+								<Fragment>
+									<div
 									className={`${
 										tabId === 'dataaccessrequests' || tabId === 'workflows' || tabId === 'addeditworkflow' ? 'activeCard' : ''
 									}`}>
@@ -527,9 +577,6 @@ class Account extends Component {
 										</Fragment>
 									)}
 								</div>
-							)}
-							{team !== 'user' ? (
-								<Fragment>
                                     <div className={`${tabId === 'datasets' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('datasets')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
                                             <SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />

@@ -17,6 +17,7 @@ import NavItem from './components/NavItem/NavItem';
 import NavDropdown from './components/NavDropdown/NavDropdown';
 import DarValidation from '../../utils/DarValidation.util';
 import DarHelper from '../../utils/DarHelper.util';
+import DatasetOnboardingHelper from '../../utils/DatasetOnboardingHelper.util';
 import SearchBarHelperUtil from '../../utils/SearchBarHelper.util';
 import { classSchema } from './classSchema';
 import { baseURL } from '../../configs/url.config';
@@ -35,7 +36,14 @@ import SLA from '../commonComponents/sla/SLA';
 import BeforeYouBegin from './components/BeforeYouBegin/BeforeYouBegin';
 import Guidance from './components/Guidance/Guidance';
 import StructuralMetadata from './components/StructuralMetadata/StructuralMetadata';
-import CreateNewVersionModal from './components/CreateNewVersionModal/CreateNewVersionModal';
+
+
+//import CreateNewVersionModal from './components/Modals/CreateNewVersionModal/CreateNewVersionModal';
+import ActionModal from './components/ActionModal/ActionModal';
+
+
+
+
 import Dropdown from 'react-bootstrap/Dropdown';
 
 import { formSchema } from './formSchema';
@@ -114,9 +122,10 @@ class DatasetOnboarding extends Component {
 			activeflag: '',
 			publisher: '',
 			showDrawer: false,
-			showArchiveModal: false,
-			showUnArchiveModal: false,
+			showActionModal: false,
+			actionModalConfig: {},
 			showCreateNewVersionModal: false,
+
 			readOnly: false,
 			userType: '',
 			answeredAmendments: 0,
@@ -237,10 +246,6 @@ class DatasetOnboarding extends Component {
 		} catch (error) {
 			this.setState({ isLoading: false });
 			console.error(error);
-		} finally {
-			this.setState({
-				roles: this.getUserRoles(),
-			});
 		}
 	}
 
@@ -260,7 +265,7 @@ class DatasetOnboarding extends Component {
 			applicationStatus,
 			dataset,
 			readOnly = false,
-			userType = 'APPLICANT',
+			userType = 'CUSTODIAN',
 			unansweredAmendments = 0,
 			answeredAmendments = 0,
 			userId,
@@ -286,6 +291,9 @@ class DatasetOnboarding extends Component {
 		if (dataset.publisher) {
 			({ _id: publisherId } = dataset.publisher);
 		}
+
+		this.setState({roles: this.getUserRoles()});
+		if (this.state.roles.includes('admin') && applicationStatus === DarHelper.darStatus.inReview) userType = 'ADMIN';
 
 		jsonSchema = this.injectStaticContent(jsonSchema, inReviewMode, reviewSections);
 
@@ -487,34 +495,15 @@ class DatasetOnboarding extends Component {
 		let isValid = Object.keys(errors).length ? false : true;
 
 		if (isValid) {
-			try {
-				let { _id } = this.state;
-				// 1. POST
-				await axios.post(`${baseURL}/api/v1/dataset-onboarding/${_id}`, {});
-				const lastSaved = DarHelper.saveTime();
-				this.setState({ lastSaved });
-
-				let alert = {
-					tab: 'submitted',
-					message:
-						this.state.applicationStatus === 'inProgress'
-							? 'Your application was submitted successfully'
-							: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
-					publisher: 'user',
-				};
-				this.props.history.push({
-					pathname: '/account',
-					search: '?tab=datasets',
-					state: { alert },
-				});
-			} catch (err) {
-				console.log(err);
-			}
+			this.toggleActionModal('SUBMITFORREVIEW');
 		} else {
 			let activePage = _.get(_.keys({ ...errors }), 0);
 			let activePanel = _.get(_.keys({ ...errors }[activePage]), 0);
 			let validationMessages = validationSectionMessages;
-			alert('Some validation issues have been found. Please see all items highlighted in red on this page.');
+			
+			this.toggleActionModal('VALIDATIONERRORS');
+			
+			//alert('Some validation issues have been found. Please see all items highlighted in red on this page.');
 			this.updateNavigation({ pageId: activePage, panelId: activePanel }, validationMessages);
 		}
 	};
@@ -794,9 +783,9 @@ class DatasetOnboarding extends Component {
 		this.setState({ activeGuidance: '' });
 	};
 
-	/* onCustodianAction = value => {
-		value === 'AssignWorkflow' ? this.toggleAssignWorkflowModal() : this.toggleActionModal(value);
-	}; */
+	onCustodianAction = value => {
+		this.toggleActionModal(value);
+	};
 
 	onStructuralMetaDataUpdate = (structuralMetadata, structuralMetadataErrors) => {
 		this.setState({ structuralMetadata, structuralMetadataErrors });
@@ -832,26 +821,23 @@ class DatasetOnboarding extends Component {
 		});
 	};
 
-	toggleArchiveModal = () => {
-		this.setState(prevState => {
-			return {
-				showArchiveModal: !prevState.showArchiveModal,
-			};
-		});
-	};
-
-	toggleUnArchiveModal = () => {
-		this.setState(prevState => {
-			return {
-				showUnArchiveModal: !prevState.showUnArchiveModal,
-			};
-		});
-	};
-
 	toggleCreateNewVersionModal = () => {
 		this.setState(prevState => {
 			return {
 				showCreateNewVersionModal: !prevState.showCreateNewVersionModal,
+			};
+		});
+	};
+
+	toggleActionModal = (type = '') => {
+		let actionModalConfig = {};
+		// 1. get basic modal config
+		if (!_.isEmpty(type)) actionModalConfig = DatasetOnboardingHelper.configActionModal(type);
+		// 2. set state for hide/show/config modal
+		this.setState(prevState => {
+			return {
+				showActionModal: !prevState.showActionModal,
+				actionModalConfig,
 			};
 		});
 	};
@@ -861,8 +847,85 @@ class DatasetOnboarding extends Component {
 		this.props.history.push({
 			pathname: `/account`,
 			search: '?tab=datasets',
+			state: { team: this.state.publisher },
 		});
 	};
+
+	datasetVersionAction = async (action = {}) => {
+		let { type, statusDesc } = action;
+		switch (type) {
+			case 'CONFIRMSUBMISSION':
+				try {
+				let { _id } = this.state;
+				// 1. POST
+				await axios.post(`${baseURL}/api/v1/dataset-onboarding/${_id}`, {});
+				const lastSaved = DatasetOnboardingHelper.saveTime();
+				this.setState({ lastSaved });
+
+				let alert = {
+					tab: 'inReview',
+					message:
+						this.state.applicationStatus === 'inReview'
+							? 'You have successfully submitted your dataset for review. You will be notified when a decision has been made.'
+							: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
+				};
+				this.props.history.push({
+					pathname: '/account',
+					search: '?tab=datasets',
+					state: { alert, team: this.state.publisher,},
+				});
+			} catch (err) {
+				console.log(err);
+			}
+			case 'CONFIRMAPPROVALCONDITIONS':
+			case 'CONFIRMREJECTION':
+			case 'CONFIRMAPPROVAL':
+				let { _id } = this.state;
+				const body = {
+					applicationStatus: this.applicationState[type],
+					applicationStatusDesc: statusDesc,
+				};
+				// 1. Update action status
+				const response = await axios.put(`${baseURL}/api/v1/dataset-onboarding/${_id}`, body);
+				
+				/* let alert = {
+					tab: 'inReview',
+					message:
+						this.state.applicationStatus === 'inReview'
+							? 'You have successfully submitted your dataset for review. You will be notified when a decision has been made.'
+							: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
+				}; */
+				
+				this.props.history.push({
+					pathname: '/account',
+					search: '?tab=datasets',
+					state: { team: 'admin',},
+				});
+
+				// 2. set alert object for screen
+				/* let alert = {
+					publisher: this.state.publisher || '',
+					nav: `dataaccessrequests&team=${this.state.publisher}`,
+					tab: this.tabState[type],
+					message: `You have ${this.tabState[type]} the data access request for ${this.state.publisher}`,
+				};
+				// 3. hide screen modal for approve, reject, approve with comments
+				this.toggleActionModal();
+				// 4. redirect with Publisher name, Status: reject, approved, key of tab: presubmission, inreview, approved, rejected
+				this.props.history.push({
+					pathname: `/account`,
+					search: '?tab=dataaccessrequests',
+					state: { alert },
+				});  */
+				break;
+			default:
+				this.toggleActionModal();
+		}
+
+	};
+	
+
+
 
 	updateApplicationStatus = async (action = {}) => {
 		let { type, statusDesc } = action;
@@ -875,7 +938,10 @@ class DatasetOnboarding extends Component {
 					applicationStatus: this.applicationState[type],
 					applicationStatusDesc: statusDesc,
 				};
-				// 1. Update action status
+				debugger
+				
+				
+				/* // 1. Update action status
 				const response = await axios.put(`${baseURL}/api/v1/data-access-request/${_id}`, body);
 				// 2. set alert object for screen
 				let alert = {
@@ -891,7 +957,7 @@ class DatasetOnboarding extends Component {
 					pathname: `/account`,
 					search: '?tab=dataaccessrequests',
 					state: { alert },
-				});
+				}); */
 				break;
 			default:
 				this.toggleActionModal();
@@ -900,11 +966,32 @@ class DatasetOnboarding extends Component {
 
 	getUserRoles() {
 		let { teams } = this.props.userState[0];
-		let foundTeam = teams.filter(team => team.name === this.state.datasets[0].datasetfields.publisher);
+
+		let foundAdmin = teams.filter(x => x.type === 'admin');
+		if (!_.isEmpty(foundAdmin)) {
+			return ['admin'];
+		}
+
+		let foundTeam = teams.filter(team => team.name === this.state.publisher);
 		if (_.isEmpty(teams) || _.isEmpty(foundTeam)) {
 			return ['applicant'];
 		}
-		return foundTeam[0].roles;
+		
+
+
+
+
+		/* let { teams } = props.userState[0];
+		let foundAdmin = teams.filter(x => x.type === team);
+		if (!_.isEmpty(foundAdmin)) {
+			return 'admin';
+		}
+		let foundTeam = teams.filter(x => x.name === team);
+		if (_.isEmpty(teams) || _.isEmpty(foundTeam)) {
+			return ['applicant']; //pass back to user
+		}
+
+		return foundTeam[0]._id; */
 	}
 
 	/* renderTooltip = props => (
@@ -1032,9 +1119,9 @@ class DatasetOnboarding extends Component {
 			activeflag,
 			listOfDatasets,
 			showDrawer,
-			showArchiveModal,
-			showUnArchiveModal,
 			showCreateNewVersionModal,
+			showActionModal,
+			actionModalConfig,
 			isWideForm,
 			isTableForm,
 			allowedNavigation,
@@ -1146,7 +1233,7 @@ class DatasetOnboarding extends Component {
 										{activeflag === 'draft' ? ' (Draft)' : ''}
 										{activeflag === 'active' ? ' (Live)' : ''}
 										{activeflag === 'rejected' ? ' (Rejected)' : ''}
-										{activeflag === 'inProgress' ? ' (Pending)' : ''}
+										{activeflag === 'inReview' ? ' (Pending)' : ''}
 									</span>
 								</Dropdown.Toggle>
 								<Dropdown.Menu as={CustomMenu} className='listOfVersionsDropdown'>
@@ -1157,7 +1244,7 @@ class DatasetOnboarding extends Component {
 												{activeflag === 'draft' ? ' (Draft)' : ''}
 												{activeflag === 'active' ? ' (Live)' : ''}
 												{activeflag === 'rejected' ? ' (Rejected)' : ''}
-												{activeflag === 'inProgress' ? ' (Pending)' : ''}
+												{activeflag === 'inReview' ? ' (Pending)' : ''}
 
 												{this.state._id === dat._id ? (
 													<SVGIcon
@@ -1270,14 +1357,17 @@ class DatasetOnboarding extends Component {
 					<div className='action-bar--questions'>
 						<SLA classProperty={DarHelper.darStatusColours[applicationStatus]} text={DarHelper.darSLAText[applicationStatus]} />
 						<div className='action-bar-status'>
-							{applicationStatus === 'draft' ? totalQuestions : 'This version was published on 2 Jan 2021'}
-
+							{applicationStatus === 'draft' ? totalQuestions : ''}
+							{applicationStatus === 'active' ? 'This version was published on 12 Feb 2021' : ''}
+							{applicationStatus === 'inReview' ? 'Submitted for review on 12 Feb 2021' : ''}
+							{applicationStatus === 'rejected' ? 'This version was rejected on 12 Feb 2021' : ''}
+							{applicationStatus === 'archived' ? 'This version was published on 2 Feb 2021 and archived on 12 Feb 2021' : ''}
 							{/* Status updated here */}
 						</div>
 					</div>
 					<div className='action-bar-actions'>
 						<AmendmentCount answeredAmendments={this.state.answeredAmendments} unansweredAmendments={this.state.unansweredAmendments} />
-						{userType.toUpperCase() === 'APPLICANT' ? (
+						{userType.toUpperCase() === 'CUSTODIAN'  ? (
 							<ApplicantActionButtons
 								allowedNavigation={allowedNavigation}
 								onNextClick={this.onNextClick}
@@ -1293,15 +1383,9 @@ class DatasetOnboarding extends Component {
 							/>
 						) : (
 							<CustodianActionButtons
-								activeParty={this.state.activeParty}
 								allowedNavigation={allowedNavigation}
-								unansweredAmendments={this.state.unansweredAmendments}
-								onUpdateRequest={this.onUpdateRequest}
 								onActionClick={this.onCustodianAction}
 								onNextClick={this.onNextClick}
-								inReviewMode={this.state.inReviewMode}
-								hasRecommended={this.state.hasRecommended}
-								applicationStatus={applicationStatus}
 								roles={roles}
 							/>
 						)}
@@ -1318,7 +1402,46 @@ class DatasetOnboarding extends Component {
 					/>
 				</SideDrawer>
 
-				<CreateNewVersionModal
+				{/* <CreateNewVersionModal
+					open={showCreateNewVersionModal}
+					close={this.toggleCreateNewVersionModal}
+					pid={this.state.dataset.pid}
+					currentVersionId={this.state._id}
+					publisher={this.state.publisher}
+				/> */}
+
+				<ActionModal
+					open={showActionModal}
+					context={actionModalConfig}
+					datasetVersionAction={this.datasetVersionAction}
+					close={this.toggleActionModal}
+				/>
+
+				{/* <ValidationErrorVersionModal
+					open={showCreateNewVersionModal}
+					close={this.toggleCreateNewVersionModal}
+					pid={this.state.dataset.pid}
+					currentVersionId={this.state._id}
+					publisher={this.state.publisher}
+				/> */}
+
+				{/* <SubmitNewVersionModal
+					open={showCreateNewVersionModal}
+					close={this.toggleCreateNewVersionModal}
+					pid={this.state.dataset.pid}
+					currentVersionId={this.state._id}
+					publisher={this.state.publisher}
+				/> */}
+
+				{/* <ApproveVersionModal
+					open={showApproveVersionModal}
+					close={this.toggleApproveVersionModal}
+					pid={this.state.dataset.pid}
+					currentVersionId={this.state._id}
+					publisher={this.state.publisher}
+				/> */}
+
+				{/* <RejectVersionModal
 					open={showCreateNewVersionModal}
 					close={this.toggleCreateNewVersionModal}
 					pid={this.state.dataset.pid}
@@ -1326,33 +1449,18 @@ class DatasetOnboarding extends Component {
 					publisher={this.state.publisher}
 				/>
 
-				{/* Use Chris modal creator ????? */}
-				{/* Submit for review modal */}
-				{/* Approve modal */}
-				{/* Reject modal */}
-				{/* Archive modal */}
-				{/* Unarchive modal */}
-
-				{/* <Archive
+				<ArchiveVersionModal
 					open={showArchiveModal}
 					close={this.toggleArchiveModal}
 					mainApplicant={this.state.mainApplicant}
-					handleOnSaveChanges={this.submitContributors}></Archive> */}
+					handleOnSaveChanges={this.submitContributors}
+				/>
 
-				{/* <UnArchive
+				<UnarchiveVersionModal
 					open={showUnArchiveModal}
 					close={this.toggleUnArchiveModal}
 					mainApplicant={this.state.mainApplicant}
-					handleOnSaveChanges={this.submitContributors}></UnArchive> */}
-
-				{/* <UpdateRequestModal
-					open={this.state.updateRequestModal}
-					close={this.toggleUpdateRequestModal}
-					publisher={this.state.publisher}
-					projectName={projectName}
-					applicationId={this.state._id}
-					fullAmendments={this.state.fullAmendments}
-					amendmentIterations={this.state.amendmentIterations}
+					handleOnSaveChanges={this.submitContributors}
 				/> */}
 			</div>
 		);
