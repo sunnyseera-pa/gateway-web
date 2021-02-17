@@ -876,7 +876,7 @@ class SearchPage extends React.Component {
 					<Container>
 						<Row>
 							{key !== 'People' ? (
-								<Col sm={12} md={12} lg={3} className='mt-4'>
+								<Col sm={12} md={12} lg={3} className='mt-4 mb-5'>
 									{key === 'Datasets' ? (
 										<>
 											<div className='filterHolder'>
@@ -1667,7 +1667,7 @@ class SearchPage extends React.Component {
 							)}
 
 							{!isResultsLoading ? (
-								<Col sm={12} md={12} lg={9} className='mt-4'>
+								<Col sm={12} md={12} lg={9} className='mt-4 mb-5'>
 									{!showSort ? (
 										''
 									) : (
