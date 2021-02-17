@@ -1717,7 +1717,7 @@ class SearchPage extends React.Component {
 										</Row>
 									)}
 									{key === 'Datasets' ? (
-										datasetCount <= 0 && !isResultsLoading ? (
+										datasetCount <= 0 ? (
 											<NoResults type='datasets' searchString={searchString} />
 										) : (
 											datasetData.map(dataset => {
@@ -1752,7 +1752,7 @@ class SearchPage extends React.Component {
 									)}
 
 									{key === 'Tools' ? (
-										toolCount <= 0 && !isResultsLoading ? (
+										toolCount <= 0 ? (
 											<NoResults type='tools' searchString={searchString} />
 										) : (
 											toolData.map(tool => {
@@ -1772,7 +1772,7 @@ class SearchPage extends React.Component {
 									)}
 
 									{key === 'Projects' ? (
-										projectCount <= 0 && !isResultsLoading ? (
+										projectCount <= 0 ? (
 											<NoResults type='projects' searchString={searchString} />
 										) : (
 											projectData.map(project => {
@@ -1792,7 +1792,7 @@ class SearchPage extends React.Component {
 									)}
 
 									{key === 'Papers' ? (
-										paperCount <= 0 && !isResultsLoading ? (
+										paperCount <= 0 ? (
 											<NoResults type='papers' searchString={searchString} />
 										) : (
 											paperData.map(paper => {
@@ -1828,7 +1828,7 @@ class SearchPage extends React.Component {
 									{(() => {
 										if (key === 'Courses') {
 											let courseRender = [];
-											if (courseCount <= 0 && !isResultsLoading) return <NoResults type='courses' searchString={searchString} />;
+											if (courseCount <= 0) return <NoResults type='courses' searchString={searchString} />;
 											else {
 												let currentHeader = '';
 												courseData.map(course => {
@@ -1872,7 +1872,7 @@ class SearchPage extends React.Component {
 									})()}
 
 									{key === 'Collections' ? (
-										collectionCount <= 0 && !isResultsLoading ? (
+										collectionCount <= 0 ? (
 											<NoResults type='collections' searchString={searchString} />
 										) : (
 											<Row className='mt-5'>
