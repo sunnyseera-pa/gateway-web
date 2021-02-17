@@ -6,7 +6,9 @@ import './AdvancedSearchRequestAccessModal.scss';
 
 const AdvancedSearchRequestAccessModal = ({ open, close }) => {
 	const redirectToJira = () => {
-		window.location.assign('https://hdruk.atlassian.net/servicedesk/customer/portal/1/group/1/create/1');
+		window.location.assign(
+			'https://hdruk.atlassian.net/servicedesk/customer/portal/1/group/1/create/1?summary=Cohort%20Discovery%20Access%20Request&description=Please%20provide%20details%20about%20you%20(profile,%20url,%20etc)'
+		);
 	};
 
 	return (
