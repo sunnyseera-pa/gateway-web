@@ -32,6 +32,7 @@ class AddCollectionPage extends React.Component {
 	state = {
 		data: [],
 		combinedUsers: [],
+		combinedKeywords: [],
 		isLoading: true,
 		userState: [],
 		searchString: '',
@@ -62,6 +63,16 @@ class AddCollectionPage extends React.Component {
 		return new Promise((resolve, reject) => {
 			axios.get(baseURL + '/api/v1/users').then(res => {
 				this.setState({ combinedUsers: res.data.data });
+				resolve();
+			});
+		});
+	}
+
+	// TODO
+	doGetKeywordsCall() {
+		return new Promise((resolve, reject) => {
+			axios.get(baseURL + '/api/v1/users').then(res => {
+				this.setState({ combinedKeywords: res.data.data });
 				resolve();
 			});
 		});
@@ -176,6 +187,7 @@ class AddCollectionPage extends React.Component {
 		const {
 			data,
 			combinedUsers,
+			combinedKeywords,
 			isLoading,
 			userState,
 			searchString,
@@ -215,6 +227,7 @@ class AddCollectionPage extends React.Component {
 				<AddCollectionForm
 					data={data}
 					combinedUsers={combinedUsers}
+					combinedKeywords={combinedKeywords}
 					userState={userState}
 					searchString={searchString}
 					doSearchMethod={this.doModalSearch}
@@ -413,6 +426,27 @@ const AddCollectionForm = props => {
 										defaultSelected={listOfAuthors}
 										multiple
 										options={props.combinedUsers}
+										className='addFormInput'
+										onChange={selected => {
+											var tempSelected = [];
+											selected.forEach(selectedItem => {
+												tempSelected.push(selectedItem.id);
+											});
+											formik.values.authors = tempSelected;
+										}}
+									/>
+								</Form.Group>
+
+								{/* TODO  */}
+								<Form.Group className='margin-bottom-24'>
+									<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Keywords</p>
+									<p className='gray700-13 margin-bottom-0'>E.g. NCS, Charity, Disease etc.</p>
+									<Typeahead
+										id='authors'
+										labelKey={authors => `${authors.name}`}
+										defaultSelected={listOfAuthors}
+										multiple
+										options={props.combinedKeywords}
 										className='addFormInput'
 										onChange={selected => {
 											var tempSelected = [];
