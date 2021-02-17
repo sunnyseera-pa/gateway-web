@@ -862,7 +862,6 @@ class SearchPage extends React.Component {
 								<Tab eventKey='Datasets' title={'Datasets (' + datasetCount + ')'} />
 								<Tab eventKey='Tools' title={'Tools (' + toolCount + ')'} />
 								<Tab eventKey='Projects' title={'Projects (' + projectCount + ')'} />
-								{/* TODO */}
 								<Tab eventKey='Collections' title={'Collections (' + collectionCount + ')'} />
 								<Tab eventKey='Courses' title={'Courses (' + courseCount + ')'} />
 								<Tab eventKey='Papers' title={'Papers (' + paperCount + ')'} />
@@ -1625,7 +1624,7 @@ class SearchPage extends React.Component {
 																			if (selected === filter.result.toString()) {
 																				return (
 																					<div className='badge-tag'>
-																						{filter.name.substr(0, 80)} {filter.name.length > 80 ? '...' : ''}{' '}
+																						{filter.value.substr(0, 80)} {filter.value.length > 80 ? '...' : ''}{' '}
 																						<span
 																							className='gray800-14-opacity pointer'
 																							onClick={() => this.clearFilter(selected, 'collectionPublisherSelected')}>
@@ -1654,7 +1653,7 @@ class SearchPage extends React.Component {
 													updateOnFilter={this.updateOnFilter}
 													selected={collectionPublisherSelected}
 													title='Publisher'
-													collectionPublisher={true}
+													isKeyValue={true}
 												/>
 											</div>
 										</>
