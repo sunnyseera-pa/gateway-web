@@ -9,6 +9,7 @@ import Loading from '../commonComponents/Loading';
 import RelatedResources from '../commonComponents/relatedResources/RelatedResources';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import moment from 'moment';
+import SVGIcon from '../../images/SVGIcon';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import ToolTip from '../../images/imageURL-ToolTip.gif';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
@@ -47,6 +48,7 @@ class EditCollectionPage extends React.Component {
 		showDrawer: false,
 		showModal: false,
 		context: {},
+		publicFlag: false,
 	};
 
 	async componentDidMount() {
@@ -65,6 +67,7 @@ class EditCollectionPage extends React.Component {
 			this.setState({
 				data: res.data.data[0],
 				relatedObjects: res.data.data[0].relatedObjects ? res.data.data[0].relatedObjects : [],
+				publicFlag: res.data.data[0].publicflag,
 			});
 
 			this.setState({ isLoading: false });
@@ -166,6 +169,11 @@ class EditCollectionPage extends React.Component {
 		this.setState({ didDelete: false });
 	};
 
+	updatePublicFlag = publicFlag => {
+		this.setState({ publicFlag: !this.state.publicFlag });
+		// this.setState({ publicFlag: !publicFlag });
+	};
+
 	toggleDrawer = () => {
 		this.setState(prevState => {
 			if (prevState.showDrawer === true) {
@@ -200,6 +208,7 @@ class EditCollectionPage extends React.Component {
 			showDrawer,
 			showModal,
 			context,
+			publicFlag,
 		} = this.state;
 
 		if (isLoading) {
@@ -242,6 +251,8 @@ class EditCollectionPage extends React.Component {
 					relatedObjects={relatedObjects}
 					didDelete={didDelete}
 					updateDeleteFlag={this.updateDeleteFlag}
+					publicFlag={publicFlag}
+					updatePublicFlag={this.updatePublicFlag}
 				/>
 
 				<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
@@ -272,6 +283,7 @@ const EditCollectionForm = props => {
 			authors: props.data.authors,
 			imageLink: props.data.imageLink,
 			relatedObjects: props.relatedObjects,
+			publicflag: props.publicFlag,
 		},
 
 		validationSchema: Yup.object({
@@ -332,6 +344,13 @@ const EditCollectionForm = props => {
 		}
 	}
 
+	const updatePublicFlag = () => {
+		{
+			formik.setFieldValue('publicflag', !props.publicFlag);
+		}
+		props.updatePublicFlag(!props.publicFlag);
+	};
+
 	const [isShown, setIsShown] = useState(false);
 
 	const relatedResourcesRef = React.useRef();
@@ -372,7 +391,7 @@ const EditCollectionForm = props => {
 					<Col sm={10} lg={10}>
 						<Form onSubmit={formik.handleSubmit} onBlur={formik.handleBlur} autoComplete='off'>
 							<div className='rectangle'>
-								<Form.Group>
+								<Form.Group className='margin-bottom-24'>
 									<span className='gray800-14'>Collection name</span>
 									<Form.Control
 										id='name'
@@ -386,7 +405,7 @@ const EditCollectionForm = props => {
 									{formik.touched.name && formik.errors.name ? <div className='errorMessages'>{formik.errors.name}</div> : null}
 								</Form.Group>
 
-								<Form.Group>
+								<Form.Group className='margin-bottom-24'>
 									<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Description</p>
 									<p className='gray700-13 margin-bottom-0'>Up to 5,000 characters</p>
 									<Form.Control
@@ -408,7 +427,7 @@ const EditCollectionForm = props => {
 									) : null}
 								</Form.Group>
 
-								<Form.Group>
+								<Form.Group className='margin-bottom-24'>
 									<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Collection collaborators</p>
 									<p className='gray700-13 margin-bottom-0'>Anyone added will be able to add and remove resources to this collection.</p>
 									<Typeahead
@@ -428,7 +447,7 @@ const EditCollectionForm = props => {
 									/>
 								</Form.Group>
 
-								<Form.Group>
+								<Form.Group className='margin-bottom-24'>
 									<Row>
 										<Col sm={7} lg={9}>
 											<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Image URL (optional)</p>
@@ -454,6 +473,25 @@ const EditCollectionForm = props => {
 										<div className='errorMessages'>{formik.errors.imageLink}</div>
 									) : null}
 								</Form.Group>
+
+								<Row className='margin-bottom-8 pad-left-16'>
+									<span
+										className='eyeColumn pad-right-8'
+										onClick={() => {
+											updatePublicFlag();
+										}}>
+										{formik.values.publicflag === true ? (
+											<SVGIcon name='eye' width={24} height={24} fill={'#475da7'} className={'pointer'} />
+										) : (
+											<SVGIcon name='eyeCrossed' width={24} height={24} fill={'#475da7'} className={'pointer'} />
+										)}
+									</span>
+									<span className='gray800-14'>
+										{formik.values.publicflag === true
+											? 'This collection is public, meaning anyone can view and search this collection. Click to make private.'
+											: 'This collection is private. Click to make public.'}
+									</span>
+								</Row>
 							</div>
 
 							<div className='rectangle mt-2'>
