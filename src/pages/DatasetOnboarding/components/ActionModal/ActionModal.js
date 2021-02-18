@@ -21,9 +21,14 @@ const ActionModal = ({ open, close, context, datasetVersionAction }) => {
 			let type = action.toUpperCase();
 			// 4. deconstruct properties
 			let { statusDesc } = formState;
+
 			switch (type) {
+				case 'CONFIRMNEWVERSION':
+					datasetVersionAction({ statusDesc, type });
+					break;
 				case 'CONFIRMSUBMISSION':
 					datasetVersionAction({ statusDesc, type });
+					break;
 				case 'CONFIRMAPPROVALCONDITIONS':
 				case 'CONFIRMREJECTION':
 					// 5. check state is valid / invalid

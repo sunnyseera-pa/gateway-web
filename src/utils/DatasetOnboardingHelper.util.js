@@ -249,6 +249,63 @@ let configActionModal = (type = '') => {
                     },
                 };
                 break;
+            case 'CREATENEWVERSION':
+                config = {
+                    title: 'Create new version?',
+                    subTitle: 'Are you sure that you want to create a new draft version of this dataset?',
+                    description: false,
+                    buttons: {
+                        cancel: {
+                            label: 'No, nevermind',
+                            action: 'cancel',
+                            class: 'button-secondary mr-2',
+                        },
+                        confirmSubmission: {
+                            label: 'Create new version',
+                            action: 'confirmNewVersion',
+                            class: 'btn btn-primary addButton',
+                        },
+                    },
+                };
+                break;
+            case 'ARCHIVE':
+                config = {
+                    title: 'Archive this version?',
+                    subTitle: 'This will remove your dataset from search results, but anyone with a direct link will still be able to access the page with a message explaining that it has been archived.',
+                    description: false,
+                    buttons: {
+                        cancel: {
+                            label: 'No, nevermind',
+                            action: 'cancel',
+                            class: 'button-secondary mr-2',
+                        },
+                        confirmSubmission: {
+                            label: 'Archive this version',
+                            action: 'archive',
+                            class: 'btn btn-primary addButton',
+                        },
+                    },
+                };
+                break;
+            case 'UNARCHIVE':
+                config = {
+                    title: 'Un-archive this dataset?',
+                    subTitle: 'Are you sure that you want to create a new draft version of this dataset?',
+                    description: false,
+                    buttons: {
+                        cancel: {
+                            label: 'No, nevermind',
+                            action: 'cancel',
+                            class: 'button-secondary mr-2',
+                        },
+                        confirmSubmission: {
+                            label: 'Create new version',
+                            action: 'unarchive',
+                            class: 'btn btn-primary addButton',
+                        },
+                    },
+                };
+                break;
             case 'APPROVE':
                 config = {
                     title: 'Approve this version of this dataset metadata',

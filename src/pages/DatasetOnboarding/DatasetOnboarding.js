@@ -14,7 +14,6 @@ import MultiField from './components/MultiField/MultiField';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
 import NavItem from './components/NavItem/NavItem';
-import NavDropdown from './components/NavDropdown/NavDropdown';
 import DarValidation from '../../utils/DarValidation.util';
 import DarHelper from '../../utils/DarHelper.util';
 import DatasetOnboardingHelper from '../../utils/DatasetOnboardingHelper.util';
@@ -38,7 +37,7 @@ import Guidance from './components/Guidance/Guidance';
 import StructuralMetadata from './components/StructuralMetadata/StructuralMetadata';
 
 
-//import CreateNewVersionModal from './components/Modals/CreateNewVersionModal/CreateNewVersionModal';
+
 import ActionModal from './components/ActionModal/ActionModal';
 
 
@@ -822,11 +821,7 @@ class DatasetOnboarding extends Component {
 	};
 
 	toggleCreateNewVersionModal = () => {
-		this.setState(prevState => {
-			return {
-				showCreateNewVersionModal: !prevState.showCreateNewVersionModal,
-			};
-		});
+		this.toggleActionModal('CREATENEWVERSION');
 	};
 
 	toggleActionModal = (type = '') => {
@@ -853,30 +848,48 @@ class DatasetOnboarding extends Component {
 
 	datasetVersionAction = async (action = {}) => {
 		let { type, statusDesc } = action;
+
 		switch (type) {
+			case 'CONFIRMNEWVERSION' :
+				try {
+					if (!_.isEmpty(this.state.dataset.pid) && !_.isEmpty(this.state.publisher)) {
+						debugger
+						axios.post(baseURL + '/api/v1/dataset-onboarding', { publisherID: this.state.publisher, pid: this.state.dataset.pid, currentVersionId: this.state._id }).then(res => {
+							let { id } = res.data.data;
+							this.props.history.push({ pathname: `/dataset-onboarding/${id}` });
+							
+							//history.push({ pathname: `/dataset-onboarding/${id}` });
+							this.toggleActionModal();
+						});
+					}
+				} catch (err) {
+					console.log(err);
+				}
+				break;
 			case 'CONFIRMSUBMISSION':
 				try {
-				let { _id } = this.state;
-				// 1. POST
-				await axios.post(`${baseURL}/api/v1/dataset-onboarding/${_id}`, {});
-				const lastSaved = DatasetOnboardingHelper.saveTime();
-				this.setState({ lastSaved });
+					let { _id } = this.state;
+					// 1. POST
+					await axios.post(`${baseURL}/api/v1/dataset-onboarding/${_id}`, {});
+					const lastSaved = DatasetOnboardingHelper.saveTime();
+					this.setState({ lastSaved });
 
-				let alert = {
-					tab: 'inReview',
-					message:
-						this.state.applicationStatus === 'inReview'
-							? 'You have successfully submitted your dataset for review. You will be notified when a decision has been made.'
-							: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
-				};
-				this.props.history.push({
-					pathname: '/account',
-					search: '?tab=datasets',
-					state: { alert, team: this.state.publisher,},
-				});
-			} catch (err) {
-				console.log(err);
-			}
+					let alert = {
+						tab: 'inReview',
+						message:
+							this.state.applicationStatus === 'inReview'
+								? 'You have successfully submitted your dataset for review. You will be notified when a decision has been made.'
+								: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
+					};
+					this.props.history.push({
+						pathname: '/account',
+						search: '?tab=datasets',
+						state: { alert, team: this.state.publisher,},
+					});
+				} catch (err) {
+					console.log(err);
+				}
+				break;
 			case 'CONFIRMAPPROVALCONDITIONS':
 			case 'CONFIRMREJECTION':
 			case 'CONFIRMAPPROVAL':
@@ -1240,7 +1253,7 @@ class DatasetOnboarding extends Component {
 									{listOfDatasets.map(dat => {
 										return (
 											<Dropdown.Item href={`/dataset-onboarding/${dat._id}`} className='black-14'>
-												{datasetVersion}
+												{dat.datasetVersion}
 												{activeflag === 'draft' ? ' (Draft)' : ''}
 												{activeflag === 'active' ? ' (Live)' : ''}
 												{activeflag === 'rejected' ? ' (Rejected)' : ''}
@@ -1402,14 +1415,6 @@ class DatasetOnboarding extends Component {
 					/>
 				</SideDrawer>
 
-				{/* <CreateNewVersionModal
-					open={showCreateNewVersionModal}
-					close={this.toggleCreateNewVersionModal}
-					pid={this.state.dataset.pid}
-					currentVersionId={this.state._id}
-					publisher={this.state.publisher}
-				/> */}
-
 				<ActionModal
 					open={showActionModal}
 					context={actionModalConfig}
@@ -1417,51 +1422,6 @@ class DatasetOnboarding extends Component {
 					close={this.toggleActionModal}
 				/>
 
-				{/* <ValidationErrorVersionModal
-					open={showCreateNewVersionModal}
-					close={this.toggleCreateNewVersionModal}
-					pid={this.state.dataset.pid}
-					currentVersionId={this.state._id}
-					publisher={this.state.publisher}
-				/> */}
-
-				{/* <SubmitNewVersionModal
-					open={showCreateNewVersionModal}
-					close={this.toggleCreateNewVersionModal}
-					pid={this.state.dataset.pid}
-					currentVersionId={this.state._id}
-					publisher={this.state.publisher}
-				/> */}
-
-				{/* <ApproveVersionModal
-					open={showApproveVersionModal}
-					close={this.toggleApproveVersionModal}
-					pid={this.state.dataset.pid}
-					currentVersionId={this.state._id}
-					publisher={this.state.publisher}
-				/> */}
-
-				{/* <RejectVersionModal
-					open={showCreateNewVersionModal}
-					close={this.toggleCreateNewVersionModal}
-					pid={this.state.dataset.pid}
-					currentVersionId={this.state._id}
-					publisher={this.state.publisher}
-				/>
-
-				<ArchiveVersionModal
-					open={showArchiveModal}
-					close={this.toggleArchiveModal}
-					mainApplicant={this.state.mainApplicant}
-					handleOnSaveChanges={this.submitContributors}
-				/>
-
-				<UnarchiveVersionModal
-					open={showUnArchiveModal}
-					close={this.toggleUnArchiveModal}
-					mainApplicant={this.state.mainApplicant}
-					handleOnSaveChanges={this.submitContributors}
-				/> */}
 			</div>
 		);
 	}
