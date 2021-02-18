@@ -390,8 +390,8 @@ export const ToolDetail = props => {
 														<Col sm={12}>Description</Col>
 													</Row>
 													<Row className='mt-3'>
-														<Col sm={12} className='gray800-14' data-test-id='tool-description'>
-															<ReactMarkdown className='text-break' source={toolData.description} />
+														<Col sm={12} className='gray800-14 hdruk-section-body' data-test-id='tool-description'>
+															<ReactMarkdown source={toolData.description} />
 														</Col>
 													</Row>
 												</div>
@@ -406,8 +406,8 @@ export const ToolDetail = props => {
 															<Col sm={12}>Results/Insights</Col>
 														</Row>
 														<Row className='mt-3'>
-															<Col sm={12} className='gray800-14'>
-																<ReactMarkdown className='text-break' source={toolData.resultsInsights} />
+															<Col sm={12} className='gray800-14 hdruk-section-body'>
+																<ReactMarkdown source={toolData.resultsInsights} />
 															</Col>
 														</Row>
 													</div>
@@ -549,7 +549,7 @@ export const ToolDetail = props => {
 											</Col>
 										</Row>
 										<Row className='mt-2'>
-											<Col sm={12}>
+											<Col sm={12} className="mb-5">
 												<div className='rectangle'>
 													<Row className='gray800-14-bold'>
 														<Col sm={12}>Authors</Col>

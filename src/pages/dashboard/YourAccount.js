@@ -839,7 +839,7 @@ const YourAccountForm = props => {
 					</Col>
 				</Row>
 
-				<Row className='mt-3'>
+				<Row className='mt-3 mb-5'>
 					<Col className='text-right'>
 						<Button
 							variant='medium'
