@@ -55,7 +55,7 @@ class AddCollectionPage extends React.Component {
 
 	async componentDidMount() {
 		initGA('UA-166025838-1');
-		await Promise.all([this.doGetUsersCall()]);
+		await Promise.all([this.doGetUsersCall(), this.doGetKeywordsCall()]);
 		this.setState({ isLoading: false });
 	}
 
@@ -68,11 +68,10 @@ class AddCollectionPage extends React.Component {
 		});
 	}
 
-	// TODO
 	doGetKeywordsCall() {
 		return new Promise((resolve, reject) => {
-			axios.get(baseURL + '/api/v1/users').then(res => {
-				this.setState({ combinedKeywords: res.data.data });
+			axios.get(baseURL + '/api/v1/search/filter?search=&tab=Collections').then(res => {
+				this.setState({ combinedKeywords: res.data.allFilters.collectionKeywordFilter });
 				resolve();
 			});
 		});
@@ -278,6 +277,7 @@ const AddCollectionForm = props => {
 			imageLink: '',
 			relatedObjects: props.relatedObjects,
 			publicflag: false,
+			keywords: [],
 		},
 
 		validationSchema: Yup.object({
@@ -437,23 +437,23 @@ const AddCollectionForm = props => {
 									/>
 								</Form.Group>
 
-								{/* TODO  */}
 								<Form.Group className='margin-bottom-24'>
 									<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Keywords</p>
 									<p className='gray700-13 margin-bottom-0'>E.g. NCS, Charity, Disease etc.</p>
 									<Typeahead
-										id='authors'
-										labelKey={authors => `${authors.name}`}
-										defaultSelected={listOfAuthors}
+										id='keywords'
+										labelKey='keywords'
+										allowNew
+										defaultSelected={formik.values.keywords}
 										multiple
 										options={props.combinedKeywords}
-										className='addFormInput'
+										className='addFormInputTypeAhead'
 										onChange={selected => {
 											var tempSelected = [];
 											selected.forEach(selectedItem => {
-												tempSelected.push(selectedItem.id);
+												selectedItem.customOption === true ? tempSelected.push(selectedItem.keywords) : tempSelected.push(selectedItem);
 											});
-											formik.values.authors = tempSelected;
+											formik.values.keywords = tempSelected;
 										}}
 									/>
 								</Form.Group>

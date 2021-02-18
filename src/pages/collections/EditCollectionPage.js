@@ -31,6 +31,7 @@ class EditCollectionPage extends React.Component {
 	state = {
 		data: [],
 		combinedUsers: [],
+		combinedKeywords: [],
 		isLoading: true,
 		userState: [],
 		searchString: '',
@@ -53,10 +54,7 @@ class EditCollectionPage extends React.Component {
 
 	async componentDidMount() {
 		initGA('UA-166025838-1');
-		await Promise.all([
-			this.doGetUsersCall(),
-			// this.getDataSearchFromDb()
-		]);
+		await Promise.all([this.doGetUsersCall(), this.doGetKeywordsCall()]);
 		this.getDataSearchFromDb();
 	}
 
@@ -78,6 +76,15 @@ class EditCollectionPage extends React.Component {
 		return new Promise((resolve, reject) => {
 			axios.get(baseURL + '/api/v1/users').then(res => {
 				this.setState({ combinedUsers: res.data.data });
+				resolve();
+			});
+		});
+	}
+
+	doGetKeywordsCall() {
+		return new Promise((resolve, reject) => {
+			axios.get(baseURL + '/api/v1/search/filter?search=&tab=Collections').then(res => {
+				this.setState({ combinedKeywords: res.data.allFilters.collectionKeywordFilter });
 				resolve();
 			});
 		});
@@ -171,7 +178,6 @@ class EditCollectionPage extends React.Component {
 
 	updatePublicFlag = publicFlag => {
 		this.setState({ publicFlag: !this.state.publicFlag });
-		// this.setState({ publicFlag: !publicFlag });
 	};
 
 	toggleDrawer = () => {
@@ -193,6 +199,7 @@ class EditCollectionPage extends React.Component {
 		const {
 			data,
 			combinedUsers,
+			combinedKeywords,
 			isLoading,
 			userState,
 			searchString,
@@ -232,6 +239,7 @@ class EditCollectionPage extends React.Component {
 				<EditCollectionForm
 					data={data}
 					combinedUsers={combinedUsers}
+					combinedKeywords={combinedKeywords}
 					userState={userState}
 					searchString={searchString}
 					doSearchMethod={this.doModalSearch}
@@ -279,11 +287,11 @@ const EditCollectionForm = props => {
 			id: props.data.id,
 			name: props.data.name,
 			description: props.data.description,
-			// authors: [props.userState[0].id],
 			authors: props.data.authors,
 			imageLink: props.data.imageLink,
 			relatedObjects: props.relatedObjects,
 			publicflag: props.publicFlag,
+			keywords: props.data.keywords,
 		},
 
 		validationSchema: Yup.object({
@@ -443,6 +451,27 @@ const EditCollectionForm = props => {
 												tempSelected.push(selectedItem.id);
 											});
 											formik.values.authors = tempSelected;
+										}}
+									/>
+								</Form.Group>
+
+								<Form.Group className='margin-bottom-24'>
+									<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Keywords</p>
+									<p className='gray700-13 margin-bottom-0'>E.g. NCS, Charity, Disease etc.</p>
+									<Typeahead
+										id='keywords'
+										labelKey='keywords'
+										allowNew
+										defaultSelected={formik.values.keywords}
+										multiple
+										options={props.combinedKeywords}
+										className='addFormInputTypeAhead'
+										onChange={selected => {
+											var tempSelected = [];
+											selected.forEach(selectedItem => {
+												selectedItem.customOption === true ? tempSelected.push(selectedItem.keywords) : tempSelected.push(selectedItem);
+											});
+											formik.values.keywords = tempSelected;
 										}}
 									/>
 								</Form.Group>
