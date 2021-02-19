@@ -401,6 +401,7 @@ const AddEditPaperForm = props => {
 										id='tags.features'
 										labelKey='features'
 										allowNew
+										defaultSelected={formik.values.tags.features}
 										multiple
 										className='addFormInputTypeAhead'
 										options={props.combinedFeatures}
@@ -421,6 +422,7 @@ const AddEditPaperForm = props => {
 										id='tags.topics'
 										labelKey='topics'
 										allowNew
+										defaultSelected={formik.values.tags.topics}
 										multiple
 										className='addFormInputTypeAhead'
 										options={props.combinedTopic}
