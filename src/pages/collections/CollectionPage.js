@@ -14,6 +14,7 @@ import _ from 'lodash';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
+import SVGIcon from '../../images/SVGIcon';
 import './Collections.scss';
 
 export const CollectionPage = props => {
@@ -172,7 +173,9 @@ export const CollectionPage = props => {
 							<Col sm={1} lg={1} />
 							<Col sm={10} lg={10} className='pad-left-0'>
 								<Alert variant='success' className='mt-3'>
-									This collection is now live. Anyone with the link can see this page.
+									{collectionData.publicflag === true
+										? 'This public collection is now live. This collection is searchable on the Gateway and can be viewed by all users.'
+										: 'This private collection is now live. Only those who you share the collection link with will be able to view this page.'}
 								</Alert>
 							</Col>
 							<Col sm={1} lg={10} />
@@ -186,7 +189,9 @@ export const CollectionPage = props => {
 							<Col sm={1} lg={1} />
 							<Col sm={10} lg={10}>
 								<Alert variant='success' className='mt-3'>
-									Done! Your collection has been updated.
+									{collectionData.publicflag === true
+										? 'Done! Your public collection has been updated. This collection is searchable on the Gateway and can be viewed by all users.'
+										: 'Done! Your private collection has been updated. Only those who you share the collection link with will be able to view this page.'}
 								</Alert>
 							</Col>
 							<Col sm={1} lg={10} />
@@ -255,6 +260,23 @@ export const CollectionPage = props => {
 						</Col>
 					</Row>
 
+					{/* TODO  */}
+					{/* <Row>
+						<Col sm={1} lg={1} />
+						<Col sm={10} lg={10}>
+							{collectionData.keywords &&
+								collectionData.keywords.length > 0 &&
+								collectionData.keywords.map((keyword, index) => {
+									return (
+										<a href={'/search?search=&tab=Collections&collectionkeywords=' + keyword}>
+											<div className='badge-tag'>{keyword}</div>
+										</a>
+									);
+								})}
+						</Col>
+						<Col sm={1} lg={1} />
+					</Row> */}
+
 					<Row className='pad-top-32'>
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10} className='gray800-14 hdruk-section-body'>
@@ -262,6 +284,21 @@ export const CollectionPage = props => {
 						</Col>
 						<Col sm={1} lg={1} />
 					</Row>
+
+					{/* TODO  */}
+					{/* <Row>
+						{collectionData.publicflag === true ? (
+							<button className='btn button-tertiary dark-14 float-right'>
+								{' '}
+								<SVGIcon name='eye' width={24} height={24} fill={'#475da7'} className={'pointer'} /> Public{' '}
+							</button>
+						) : (
+							<button className='btn button-tertiary dark-14 float-right'>
+								{' '}
+								<SVGIcon name='eyeCrossed' width={24} height={24} fill={'#475da7'} className={'pointer'} /> Private{' '}
+							</button>
+						)}
+					</Row> */}
 				</Container>
 			</div>
 
