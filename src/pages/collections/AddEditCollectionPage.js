@@ -37,7 +37,6 @@ class AddEditCollectionPage extends React.Component {
 		courseData: [],
 		summary: [],
 		tempRelatedObjectIds: [],
-		relatedObjectIds: [],
 		relatedObjects: [],
 		didDelete: false,
 		showDrawer: false,
