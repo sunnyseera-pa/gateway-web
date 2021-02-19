@@ -336,8 +336,8 @@ export const CourseDetail = props => {
 														<Col sm={12}>Description</Col>
 													</Row>
 													<Row className='mt-3'>
-														<Col sm={12} className='gray800-14'>
-															<ReactMarkdown className='text-break' source={courseData.description} />
+														<Col sm={12} className='gray800-14 hdruk-section-body'>
+															<ReactMarkdown source={courseData.description} />
 														</Col>
 													</Row>
 												</div>
@@ -352,8 +352,8 @@ export const CourseDetail = props => {
 															<Col sm={12}>Results/Insights</Col>
 														</Row>
 														<Row className='mt-3'>
-															<Col sm={12} className='gray800-14'>
-																<ReactMarkdown className='text-break' source={courseData.resultsInsights} />
+															<Col sm={12} className='gray800-14 hdruk-section-body'>
+																<ReactMarkdown source={courseData.resultsInsights} />
 															</Col>
 														</Row>
 													</div>

@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { History } from 'react-router';
-import { Container, Row, Col, Modal, Tabs, Tab, Alert, Tooltip } from 'react-bootstrap';
+import { Container, Row, Col, Modal, Tabs, Tab, Alert, Tooltip, Button } from 'react-bootstrap';
 import Winterfell from 'winterfell';
 import _ from 'lodash';
 import axios from 'axios';
@@ -128,6 +128,7 @@ class DataAccessRequest extends Component {
 			nationalCoreStudiesProjects: [],
 			inReviewMode: false,
 			updateRequestModal: false,
+			showEmailModal: false
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -1252,6 +1253,17 @@ class DataAccessRequest extends Component {
 		this.setState({ authorIds });
 	};
 
+	onClickMailDAR  = async () => {
+		let { _id } = this.state;
+		await axios.post(`${baseURL}/api/v1/data-access-request/${_id}/email`, {}).then(response => {
+			window.location.reload();
+		})
+		.catch(error => {
+			console.log(error);
+		});
+	};
+
+
 	redirectDashboard = e => {
 		e.preventDefault();
 		this.props.history.push({
@@ -1377,6 +1389,10 @@ class DataAccessRequest extends Component {
 		});
 	};
 
+	toggleEmailModal = (showModal) => {
+        this.setState({showEmailModal : showModal})
+    };
+
 	renderApp = () => {
 		let { activePanelId } = this.state;
 		if (activePanelId === 'about') {
@@ -1466,6 +1482,7 @@ class DataAccessRequest extends Component {
 			userType,
 			actionModalConfig,
 			roles,
+			showEmailModal
 		} = this.state;
 		const { userState, location } = this.props;
 
@@ -1523,6 +1540,13 @@ class DataAccessRequest extends Component {
 								href='!#'>
 								Save now
 							</a>
+						}
+						{
+						(userType.toUpperCase() === 'APPLICANT' && !this.state.readOnly) ? <a
+									className={`linkButton white-14-semibold ml-2 ${allowedNavigation ? '' : 'disabled'}`}
+									href= 'javascript:;' onClick={e => this.toggleEmailModal(true)}>
+									Email application
+							</a> : ''
 						}
 						<CloseButtonSvg width='16px' height='16px' fill='#fff' onClick={e => this.redirectDashboard(e)} />
 					</Col>
@@ -1736,6 +1760,26 @@ class DataAccessRequest extends Component {
 						{' '}
 					</iframe>
 				</Modal>
+
+				<Modal show={showEmailModal} onHide={e => this.toggleEmailModal(false)} aria-labelledby='contained-modal-title-vcenter' centered className='workflowModal'>
+                <div className='workflowModal-header'>
+                    <h1 className='black-20-semibold'>Email application</h1>
+                    <CloseButtonSvg className='workflowModal-header--close' onClick={e => this.toggleEmailModal(false)} />
+                </div>
+
+                <div className='workflowModal-body'>Are you sure you want to email yourself this application? This will be sent to the email address provided in your HDR UK account.</div>
+                    <div className='workflowModal-footer'>
+                        <div className='workflowModal-footer--wrap'>
+                        <Button variant='white' className='techDetailButton mr-2'  onClick={e => this.toggleEmailModal(false)}>
+                            No, nevermind
+                        </Button>
+                        <Button variant='primary' className='white-14-semibold'  onClick={this.onClickMailDAR}>
+                            Email application
+                        </Button>
+                        </div>
+                    </div>
+                </Modal>
+
 			</div>
 		);
 	}

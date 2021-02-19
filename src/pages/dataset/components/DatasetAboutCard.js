@@ -279,21 +279,21 @@ class DatasetAboutCard extends React.Component {
 											tooltip={'The purpose(s) for which the dataset was collected.'}
 										/>
 									)}
-									{showEmpty === false && _.isEmpty(v2data.provenance.source) ? (
+									{showEmpty === false && _.isEmpty(v2data.provenance.origin.source) ? (
 										''
 									) : (
 										<AboutCardElement
 											label={'Source'}
-											description={v2data.provenance.source}
+											description={v2data.provenance.origin.source}
 											tooltip={'The source of the data extraction.'}
 										/>
 									)}
-									{showEmpty === false && _.isEmpty(v2data.provenance.collectionSituation) ? (
+									{showEmpty === false && _.isEmpty(v2data.provenance.origin.collectionSituation) ? (
 										''
 									) : (
 										<AboutCardElement
 											label={'Collection situation'}
-											description={v2data.provenance.collectionSituation}
+											description={v2data.provenance.origin.collectionSituation}
 											tooltip={'The setting(s) where data was collected. Multiple settings may be provided'}
 										/>
 									)}
@@ -443,23 +443,27 @@ class DatasetAboutCard extends React.Component {
 											}
 										/>
 									)}
-									{showEmpty === false && _.isEmpty(v2data.summary.publisher.accessService.dataUseLimitation) ? (
+									{showEmpty === false &&
+									_.isEmpty(v2data.accessibility.usage.dataUseLimitation) &&
+									_.isEmpty(v2data.summary.publisher.dataUseLimitation) ? (
 										''
 									) : (
 										<AboutCardElement
 											label={'Limitations'}
-											description={v2data.summary.publisher.accessService.dataUseLimitation}
+											description={v2data.accessibility.usage.dataUseLimitation || v2data.summary.publisher.dataUseLimitation}
 											tooltip={
 												'An indication of consent permissions for datasets and/or materials, and relates to the purposes for which datasets and/or material might be removed, stored or used.'
 											}
 										/>
 									)}
-									{showEmpty === false && _.isEmpty(v2data.summary.publisher.accessService.dataUseRequirements) ? (
+									{showEmpty === false &&
+									_.isEmpty(v2data.accessibility.usage.dataUseRequirements) &&
+									_.isEmpty(v2data.summary.publisher.dataUseRequirements) ? (
 										''
 									) : (
 										<AboutCardElement
 											label={'Requirements'}
-											description={v2data.summary.publisher.accessService.dataUseRequirements}
+											description={v2data.accessibility.usage.dataUseRequirements || v2data.summary.publisher.dataUseRequirements}
 											tooltip={'Any additional conditions set for use if any.'}
 										/>
 									)}
