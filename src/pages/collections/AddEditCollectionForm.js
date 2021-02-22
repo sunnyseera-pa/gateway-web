@@ -133,20 +133,7 @@ const AddEditCollectionForm = props => {
 									<p className='black-20 margin-bottom-0 pad-bottom-8'>{props.isEdit ? 'Edit a collection' : 'Create a collection'}</p>
 								</Col>
 							</Row>
-							<p className='gray800-14 margin-bottom-0'>
-								Collections allow you to display any number of datasets and other resources in a single space. After saving, anyone with the
-								link will be able to see your collection, but it will not be discoverable on the Gateway.
-								<br />
-								<br />
-								Certain collections are featured on the homepage, where anyone can find them. If you’d like to display yours,
-								<a
-									className='purple-blue-14'
-									href='https://hdruk.atlassian.net/servicedesk/customer/portal/1/group/1/create/7'
-									target='_blank'>
-									{' '}
-									please submit a feature request ticket.{' '}
-								</a>
-							</p>
+							<p className='gray800-14 margin-bottom-0'>Collections help collate varying resource types into one discovery space</p>
 						</div>
 					</Col>
 					<Col sm={1} lg={10} />
