@@ -14,6 +14,7 @@ import ActionBar from '../commonComponents/actionbar/ActionBar';
 import './Collections.scss';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
+let windowUrl = window.location.origin;
 
 const AddEditCollectionForm = props => {
 	// Pass the useFormik() hook initial form values and a submit function that will
@@ -45,13 +46,11 @@ const AddEditCollectionForm = props => {
 
 			if (props.isEdit) {
 				axios.put(baseURL + '/api/v1/collections/edit', values).then(res => {
-					let collectionId = props.data.id;
-					window.location.href = window.location.search + '/collection/' + collectionId + '/?collectionEdited=true';
+					window.location.href = windowUrl + '/collection/' + props.data.id + '/?collectionEdited=true';
 				});
 			} else {
 				axios.post(baseURL + '/api/v1/collections/add', values).then(res => {
-					let collectionId = res.data.id;
-					window.location.href = window.location.search + '/collection/' + collectionId + '/?collectionAdded=true';
+					window.location.href = windowUrl + '/collection/' + res.data.id + '/?collectionAdded=true';
 				});
 			}
 		},
