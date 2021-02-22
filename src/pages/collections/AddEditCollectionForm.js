@@ -45,11 +45,13 @@ const AddEditCollectionForm = props => {
 
 			if (props.isEdit) {
 				axios.put(baseURL + '/api/v1/collections/edit', values).then(res => {
-					window.location.href = window.location.search + '/collection/' + props.data.id + '/?collectionEdited=true';
+					let collectionId = props.data.id;
+					window.location.href = window.location.search + '/collection/' + collectionId + '/?collectionEdited=true';
 				});
 			} else {
 				axios.post(baseURL + '/api/v1/collections/add', values).then(res => {
-					window.location.href = window.location.search + '/collection/' + res.data.id + '/?collectionAdded=true';
+					let collectionId = res.data.id;
+					window.location.href = window.location.search + '/collection/' + collectionId + '/?collectionAdded=true';
 				});
 			}
 		},
