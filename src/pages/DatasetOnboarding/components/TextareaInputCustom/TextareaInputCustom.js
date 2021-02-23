@@ -9,6 +9,7 @@ class TextareaInputCustom extends React.Component {
 		this.state = {
 			value: this.props.value,
 			length: this.props.options[0],
+			readOnly: props.readOnly || false,
 		};
 	}
 
@@ -37,6 +38,7 @@ class TextareaInputCustom extends React.Component {
 					type='text'
 					name={this.props.name}
 					id={this.props.id}
+					disabled={this.state.readOnly}
 					aria-labelledby={this.props.labelId}
 					className={this.props.classes.input}
 					placeholder={this.props.placeholder}

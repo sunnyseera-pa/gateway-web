@@ -10,12 +10,7 @@ class TypeaheadMultiField extends React.Component {
 
 		this.state = {
 			value: props.value || [{ name: '' }],
-			options: [
-				{ name: 'http://www.linktomypdf1.com/mypdf1.pdf' },
-				{ name: 'http://www.linktomypdf2.com/mypdf2.pdf' },
-				{ name: 'http://www.linktomypdf3.com/mypdf3.pdf' },
-				{ name: 'http://www.linktomypdf4.com/mypdf4.pdf' },
-			],
+			options: [],
 			readOnly: props.readOnly || false,
 		};
 	}

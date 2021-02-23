@@ -92,7 +92,6 @@ class Account extends Component {
 		this.state.userState = props.userState;
 		this.searchBar = React.createRef();
 		// 1. used for DAR custodian update status of application
-		debugger
 		if (_.has(props, 'location.state.alert')) {
 			this.state.alert = props.location.state.alert;
 			this.alertTimeOut = setTimeout(() => this.setState({ alert: {} }), 10000);
@@ -284,9 +283,8 @@ class Account extends Component {
 	renderAdmin() {
 		let { userState } = this.state;
 		let [user] = userState;
-		
 		const isAdmin = [...user.teams].filter(p => p.type === 'admin');
-		debugger
+
 		if (!_.isEmpty(isAdmin)) {
 			return (
 				<Dropdown.Item
@@ -316,7 +314,6 @@ class Account extends Component {
 			tabId = alert.nav;
 		}
 		// 2. make sure tabId is not empty
-		debugger
 		if (!_.isEmpty(tabId)) {
 			// 3. need to check for teams returns {tabId: '', team: ''}; eg dataccessrequests&team=ALLIANCE
 			let tab = this.generateTabObject(tabId);

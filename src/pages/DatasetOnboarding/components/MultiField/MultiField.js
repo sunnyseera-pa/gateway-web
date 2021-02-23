@@ -65,14 +65,14 @@ class MultiField extends React.Component {
 						<Col sm={12} md={2}>
 							<button
 								type='button'
-								disabled={this.state.value.length < 2}
+								disabled={this.props.readOnly || this.state.value.length < 2}
 								onClick={this.handleRemoveShareholder(idx)}
 								className='plusMinusButton'>
 								-
 							</button>
 							<button
 								type='button'
-								disabled={this.state.value.length - 1 !== idx}
+								disabled={this.props.readOnly || this.state.value.length - 1 !== idx}
 								onClick={this.handleAddShareholder}
 								className='plusMinusButton'>
 								+

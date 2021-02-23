@@ -7,7 +7,7 @@ import { Row, Col, Alert, Table } from 'react-bootstrap';
 import { baseURL } from '../../../../configs/url.config';
 import './StructuralMetadata.scss';
 
-const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetadata, structuralMetadataErrors, currentVersionId }) => {
+const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetadata, structuralMetadataErrors, currentVersionId, readOnly }) => {
 	// 10mb - 10485760
 	// 2mb - 2097152
 	const maxSize = 10485760;
@@ -126,7 +126,7 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetadata, st
 					<input type='file' id='input' hidden ref={hiddenFileInput} onChange={onChange} />
 					<p className='black-20-semibold margin-bottom-16'>Upload</p>
 					<div className='upload'>
-						<button className='button-tertiary' onClick={handleClick}>
+						<button className='button-tertiary' onClick={handleClick} disabled={readOnly}>
 							<UploadSVG /> Select file...
 						</button>
 						<span className='gray700-alt-13'>Excel or xls. Max 10MB per file.</span>

@@ -106,7 +106,6 @@ const AccountDatasets = props => {
 		//call to API to create new dataset
 		setIsLoading(true);
 		axios.post(baseURL + '/api/v1/dataset-onboarding', { publisherID: props.team }).then(res => {
-			debugger;
 			let { id } = res.data.data;
 			//load dataset onboarding page
 			if (!_.isUndefined(id)) window.location.href = `/dataset-onboarding/${id}`;
@@ -122,7 +121,6 @@ const AccountDatasets = props => {
 	};
 
 	const generateAlert = () => {
-		debugger
 		let { message = '' } = alert;
 		return (
 			<Row className='mt-3'>

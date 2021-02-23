@@ -6,6 +6,7 @@ import _ from 'lodash';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import TypeaheadCustom from './components/TypeaheadCustom/TypeaheadCustom';
+import TypeaheadCustomKeyValue from './components/TypeaheadCustom/TypeaheadCustomKeyValue';
 import TypeaheadKeywords from './components/TypeaheadKeywords/TypeaheadKeywords';
 import TextareaInputCustom from './components/TextareaInputCustom/TextareaInputCustom';
 import TypeaheadUser from './components/TypeaheadUser/TypeaheadUser';
@@ -46,6 +47,7 @@ import ActionModal from './components/ActionModal/ActionModal';
 import Dropdown from 'react-bootstrap/Dropdown';
 
 import { formSchema } from './formSchema';
+import DatasetOnboardingHelperUtil from '../../utils/DatasetOnboardingHelper.util';
 
 /* export const DatasetOnboarding = props => {
     const [id] = useState('');
@@ -169,10 +171,6 @@ class DatasetOnboarding extends Component {
 
 	async initPage() {
 		try {
-			// 1. Determine the entry point to the Data Access Request
-			//  a) Dataset - route will contain only the 'datasetId' from the dataset page from which they came
-			//	b) Message Panel - route will contain only the 'publisherId' with historic state passed from the message panel component which includes datasetId(s)
-			// 	c/d) Data Access Request User Area / Direct Link - route will contain a data access request 'accessId' which specifically links all associated data to one application
 			const { id: _id } = this.props.match.params;
 			let countedQuestionAnswers = {},
 				totalQuestions = '';
@@ -295,6 +293,7 @@ class DatasetOnboarding extends Component {
 		if (this.state.roles.includes('admin') && applicationStatus === DarHelper.darStatus.inReview) userType = 'ADMIN';
 
 		jsonSchema = this.injectStaticContent(jsonSchema, inReviewMode, reviewSections);
+		jsonSchema = this.injectObservations(jsonSchema, questionAnswers);     
 
 		// 6. Hide show submit application
 		if (applicationStatus === DarHelper.darStatus.draft) {
@@ -351,6 +350,36 @@ class DatasetOnboarding extends Component {
 		});
 	};
 
+	/**
+	 * injectObservations
+	 * @desc Function to inject observation questions into schema
+	 * @returns {jsonSchmea} object
+	 */
+	injectObservations(jsonSchema = {}, questionAnswers = {}) {
+		let {questions} = DatasetOnboardingHelperUtil.findQuestionSet('observations', { ...jsonSchema });
+		let listOfObservationFields = questions.map(x => x.questionId).flat()
+		
+		let listOfObservationUniqueIds = [];
+		listOfObservationFields.forEach(field => {
+			Object.keys(questionAnswers).some(function(key) {
+				var regex = new RegExp(field.toLowerCase().replace(/\//g, '\\/')+'_', 'g');
+				if (key.match(regex)) {
+					let [, uniqueId] = key.split('_');
+					if(!_.find(listOfObservationUniqueIds, uniqueId)) {
+						listOfObservationUniqueIds.push(uniqueId)
+					  }
+				}
+			});
+		})
+
+		listOfObservationUniqueIds.forEach(uniqueId => {
+			let duplicateQuestionSet = DatasetOnboardingHelperUtil.questionSetToDuplicate('add-observations', { ...jsonSchema }, uniqueId);
+			jsonSchema = DatasetOnboardingHelperUtil.insertSchemaUpdates('add-observations', duplicateQuestionSet, { ...jsonSchema });
+		});
+		
+		return jsonSchema;
+	}	
+	
 	/**
 	 * InjectStaticContent
 	 * @desc Function to inject static 'about' and 'files' pages and panels into schema
@@ -518,7 +547,7 @@ class DatasetOnboarding extends Component {
 				[`${key}`]: JSON.stringify(data),
 			};
 			// 4. PATCH the data
-			//const response = await axios.patch(`${baseURL}/api/v1/data-access-request/${id}`, params);
+			const response = await axios.patch(`${baseURL}/api/v1/dataset-onboarding/${id}`, params);
 			// 6. Get saved time
 			const lastSaved = DarHelper.saveTime();
 			// 5. Set state
@@ -635,28 +664,26 @@ class DatasetOnboarding extends Component {
 	onQuestionClick = async (questionSetId = '', questionId = '') => {
 		let questionSet, jsonSchema, questionAnswers, data, schema;
 
-		questionSet = DarHelper.findQuestionSet(questionSetId, { ...this.state.jsonSchema });
+		questionSet = DatasetOnboardingHelperUtil.findQuestionSet(questionSetId, { ...this.state.jsonSchema });
 
 		if (!_.isEmpty(questionSet) && !_.isEmpty(questionId)) {
 			// remove about and files from pages to stop duplicate, about / files added to DAR on init
-			schema = DarHelper.removeStaticPages({ ...this.state.jsonSchema });
+			schema = DatasetOnboardingHelperUtil.removeStaticPages({ ...this.state.jsonSchema });
 
 			let {
 				input: { action },
-			} = DarHelper.findQuestion(questionId, questionSet);
+			} = DatasetOnboardingHelperUtil.findQuestion(questionId, questionSet);
 			switch (action) {
-				case 'addApplicant':
-					let duplicateQuestionSet = DarHelper.questionSetToDuplicate(questionSetId, { ...schema });
-					jsonSchema = DarHelper.insertSchemaUpdates(questionSetId, duplicateQuestionSet, { ...schema });
-					data = { key: 'jsonSchema', data: jsonSchema };
-					// post to API to do of new jsonSchema
-					await this.updateApplication(data);
+				case 'addObservation':
+					let duplicateQuestionSet = DatasetOnboardingHelperUtil.questionSetToDuplicate(questionSetId, { ...schema });
+					jsonSchema = DatasetOnboardingHelperUtil.insertSchemaUpdates(questionSetId, duplicateQuestionSet, { ...schema });
+					this.setState({
+						jsonSchema
+					})
 					break;
-				case 'removeApplicant':
-					jsonSchema = DarHelper.removeQuestionReferences(questionSetId, questionId, { ...schema });
-					questionAnswers = DarHelper.removeQuestionAnswers(questionId, { ...this.state.questionAnswers });
-					// post to API of new jsonSchema
-					await this.updateApplication({ key: 'jsonSchema', data: jsonSchema });
+				case 'removeObservation':
+					jsonSchema = DatasetOnboardingHelperUtil.removeQuestionReferences(questionSetId, questionId, { ...schema });
+					questionAnswers = DatasetOnboardingHelperUtil.removeQuestionAnswers(questionId, { ...this.state.questionAnswers });
 					await this.updateApplication({ key: 'questionAnswers', data: questionAnswers });
 					break;
 				default:
@@ -716,7 +743,8 @@ class DatasetOnboarding extends Component {
 				jsonSchema: { questionSets },
 			} = this.state;
 			// 1. get active question set
-			({ questions } = [...questionSets].find(q => q.questionSetId === this.state.activePanelId) || []);
+			let questionList = [...questionSets].filter(q => q.questionSetId.includes(this.state.activePanelId)) || [];
+			questions = questionList.map(({questions}) => questions).flat();
 			if (!_.isEmpty(questions)) {
 				// 2. loop over and find active question
 				let activeQuestion = DarHelper.getActiveQuestion([...questions], questionId);
@@ -853,7 +881,6 @@ class DatasetOnboarding extends Component {
 			case 'CONFIRMNEWVERSION' :
 				try {
 					if (!_.isEmpty(this.state.dataset.pid) && !_.isEmpty(this.state.publisher)) {
-						debugger
 						axios.post(baseURL + '/api/v1/dataset-onboarding', { publisherID: this.state.publisher, pid: this.state.dataset.pid, currentVersionId: this.state._id }).then(res => {
 							let { id } = res.data.data;
 							this.props.history.push({ pathname: `/dataset-onboarding/${id}` });
@@ -951,7 +978,6 @@ class DatasetOnboarding extends Component {
 					applicationStatus: this.applicationState[type],
 					applicationStatusDesc: statusDesc,
 				};
-				debugger
 				
 				
 				/* // 1. Update action status
@@ -1099,6 +1125,7 @@ class DatasetOnboarding extends Component {
 					structuralMetadata={this.state.structuralMetadata}
 					structuralMetadataErrors={this.state.structuralMetadataErrors}
 					currentVersionId={this.state._id}
+					readOnly={this.state.readOnly}
 				/>
 			);
 		} else {
@@ -1144,9 +1171,8 @@ class DatasetOnboarding extends Component {
 		} = this.state;
 		const { userState, location } = this.props;
 
-		/* Paul - new inputs and validation here */
-
 		Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
+		Winterfell.addInputType('typeaheadCustomKeyValue', TypeaheadCustomKeyValue);
 		Winterfell.addInputType('typeaheadKeywords', TypeaheadKeywords);
 		Winterfell.addInputType('datePickerCustom', DatePickerCustom);
 		Winterfell.addInputType('typeaheadUser', TypeaheadUser);
@@ -1200,7 +1226,7 @@ class DatasetOnboarding extends Component {
 
 				let isNoError = true;
 				value.forEach(url => {
-					if (!url.match(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/)) isNoError = false;
+					if (!_.isEmpty(url) && !url.match(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/)) isNoError = false;
 				});
 				return isNoError;
 			},
@@ -1254,10 +1280,10 @@ class DatasetOnboarding extends Component {
 										return (
 											<Dropdown.Item href={`/dataset-onboarding/${dat._id}`} className='black-14'>
 												{dat.datasetVersion}
-												{activeflag === 'draft' ? ' (Draft)' : ''}
-												{activeflag === 'active' ? ' (Live)' : ''}
-												{activeflag === 'rejected' ? ' (Rejected)' : ''}
-												{activeflag === 'inReview' ? ' (Pending)' : ''}
+												{dat.activeflag === 'draft' ? ' (Draft)' : ''}
+												{dat.activeflag === 'active' ? ' (Live)' : ''}
+												{dat.activeflag === 'rejected' ? ' (Rejected)' : ''}
+												{dat.activeflag === 'inReview' ? ' (Pending)' : ''}
 
 												{this.state._id === dat._id ? (
 													<SVGIcon
@@ -1323,17 +1349,6 @@ class DatasetOnboarding extends Component {
 					</div>
 
 					<div id='darCenterCol' className={isWideForm ? 'extended' : '' || isTableForm ? 'table' : ''}>
-						{/* Paul - Warnings go here */}
-
-						{this.state.reviewWarning ? (
-							<Alert variant='warning' className=''>
-								<SVGIcon name='attention' width={24} height={24} fill={'#f0bb24'} viewBox='2 -9 22 22'></SVGIcon>
-								You are not assigned to this section but can still view the form
-							</Alert>
-						) : (
-							''
-						)}
-
 						<div style={{ backgroundColor: '#ffffff' }} className='dar__header'>
 							{this.state.jsonSchema.pages
 								? [...this.state.jsonSchema.pages].map((item, idx) =>
@@ -1363,8 +1378,6 @@ class DatasetOnboarding extends Component {
 						</div>
 					)}
 				</div>
-
-				{/* Paul - Action bar here */}
 
 				<div className='action-bar'>
 					<div className='action-bar--questions'>
