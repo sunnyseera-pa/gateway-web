@@ -14,6 +14,7 @@ import ActionBar from '../commonComponents/actionbar/ActionBar';
 import './Collections.scss';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
+let windowUrl = window.location.origin;
 
 const AddEditCollectionForm = props => {
 	// Pass the useFormik() hook initial form values and a submit function that will
@@ -45,11 +46,11 @@ const AddEditCollectionForm = props => {
 
 			if (props.isEdit) {
 				axios.put(baseURL + '/api/v1/collections/edit', values).then(res => {
-					window.location.href = window.location.search + '/collection/' + props.data.id + '/?collectionEdited=true';
+					window.location.href = windowUrl + '/collection/' + props.data.id + '/?collectionEdited=true';
 				});
 			} else {
 				axios.post(baseURL + '/api/v1/collections/add', values).then(res => {
-					window.location.href = window.location.search + '/collection/' + res.data.id + '/?collectionAdded=true';
+					window.location.href = windowUrl + '/collection/' + res.data.id + '/?collectionAdded=true';
 				});
 			}
 		},
@@ -131,20 +132,7 @@ const AddEditCollectionForm = props => {
 									<p className='black-20 margin-bottom-0 pad-bottom-8'>{props.isEdit ? 'Edit a collection' : 'Create a collection'}</p>
 								</Col>
 							</Row>
-							<p className='gray800-14 margin-bottom-0'>
-								Collections allow you to display any number of datasets and other resources in a single space. After saving, anyone with the
-								link will be able to see your collection, but it will not be discoverable on the Gateway.
-								<br />
-								<br />
-								Certain collections are featured on the homepage, where anyone can find them. If you’d like to display yours,
-								<a
-									className='purple-blue-14'
-									href='https://hdruk.atlassian.net/servicedesk/customer/portal/1/group/1/create/7'
-									target='_blank'>
-									{' '}
-									please submit a feature request ticket.{' '}
-								</a>
-							</p>
+							<p className='gray800-14 margin-bottom-0'>Collections help collate varying resource types into one discovery space</p>
 						</div>
 					</Col>
 					<Col sm={1} lg={10} />

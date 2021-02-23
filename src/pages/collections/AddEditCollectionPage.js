@@ -184,7 +184,9 @@ class AddEditCollectionPage extends React.Component {
 	};
 
 	updatePublicFlag = publicFlag => {
-		this.setState({ publicFlag: !this.state.publicFlag });
+		this.setState(prevState => {
+			return { publicFlag: !prevState.publicFlag };
+		});
 	};
 
 	toggleDrawer = () => {

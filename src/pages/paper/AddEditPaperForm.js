@@ -41,15 +41,17 @@ const AddEditPaperForm = props => {
 			id: props.data.id || '',
 			type: 'paper',
 			name: props.data.name || '',
-			document_links: props.data.document_links ? {
-				doi : [].concat(...Object.values(props.data.document_links)),
-				pdf: [],
-				html: [],
-			} : {
-				doi: [''],
-				pdf: [],
-				html: [],
-			},
+			document_links: props.data.document_links
+				? {
+						doi: [].concat(...Object.values(props.data.document_links)),
+						pdf: [],
+						html: [],
+				  }
+				: {
+						doi: [''],
+						pdf: [],
+						html: [],
+				  },
 			journal: props.data.journal || '',
 			journalYear: props.data.journalYear || '',
 			description: props.data.description || '',
@@ -282,6 +284,7 @@ const AddEditPaperForm = props => {
 																					-
 																				</button>
 																				<button
+																					data-test-id={`add-link-${index}`}
 																					type='button'
 																					className='plusMinusButton'
 																					onClick={() => {
@@ -422,6 +425,7 @@ const AddEditPaperForm = props => {
 														</span>
 													</div>
 													<Form.Control
+														data-test-id='abstract'
 														as='textarea'
 														id='description'
 														name='description'
@@ -473,7 +477,7 @@ const AddEditPaperForm = props => {
 													) : null}
 												</Form.Group>
 
-												<Form.Group>
+												<Form.Group data-test-id='keywords'>
 													<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Keywords (optional)</p>
 													<p className='gray700-13 margin-bottom-0'>
 														Technological paradigms or other keywords. Eg. Rule-based, clustering, supervised machine learning
@@ -482,6 +486,7 @@ const AddEditPaperForm = props => {
 														id='tags.features'
 														labelKey='features'
 														allowNew
+														defaultSelected={formik.values.tags.features}
 														multiple
 														className='addFormInputTypeAhead'
 														options={props.combinedFeatures}
@@ -497,13 +502,14 @@ const AddEditPaperForm = props => {
 													/>
 												</Form.Group>
 
-												<Form.Group>
+												<Form.Group data-test-id='domain'>
 													<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Domain (optional)</p>
 													<p className='gray700-13 margin-bottom-0'>E.g. Biogenomics, Nutrition, Blockchain</p>
 													<Typeahead
 														id='tags.topics'
 														labelKey='topics'
 														allowNew
+														defaultSelected={formik.values.tags.topics}
 														multiple
 														className='addFormInputTypeAhead'
 														options={props.combinedTopic}
@@ -605,7 +611,12 @@ const AddEditPaperForm = props => {
 						+ Add resource
 					</Button>
 
-					<Button variant='primary' className='publishButton white-14-semibold mr-2' type='submit' onClick={formik.handleSubmit}>
+					<Button
+						data-test-id='add-paper-publish'
+						variant='primary'
+						className='publishButton white-14-semibold mr-2'
+						type='submit'
+						onClick={formik.handleSubmit}>
 						{props.isEdit ? 'Update' : 'Publish'}
 					</Button>
 				</div>
