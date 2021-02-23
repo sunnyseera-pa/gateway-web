@@ -278,7 +278,6 @@ export const CollectionPage = props => {
 						<Col sm={1} lg={1} />
 					</Row>
 
-					{/* TODO  */}
 					<Row>
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10} className='collectionKeywords'>
