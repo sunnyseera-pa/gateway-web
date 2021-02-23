@@ -236,7 +236,7 @@ const AddEditCollectionForm = props => {
 									<Row>
 										<Col sm={7} lg={9}>
 											<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Image URL (optional)</p>
-											<p className='gray700-13 margin-bottom-0'>Paste an image address URL. Optimal image size: W700 x H466</p>
+											<p className='gray700-13 margin-bottom-0'>Paste an image address URL. Optimal image size: W750 x H400</p>
 										</Col>
 										<Col sm={5} lg={3} className='pl-4'>
 											<span className='purple-13' onMouseEnter={() => setIsShown(true)} onMouseLeave={() => setIsShown(false)}>

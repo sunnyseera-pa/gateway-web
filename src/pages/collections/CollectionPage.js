@@ -166,13 +166,13 @@ export const CollectionPage = props => {
 				doToggleDrawer={toggleDrawer}
 				userState={userState}
 			/>
-			<div className='rectangle pixelGapTop pixelGapBottom'>
+			<div className='collectionHeader pixelGapTop pixelGapBottom'>
 				<Container>
 					{collectionAdded ? (
 						<Row>
 							<Col sm={1} lg={1} />
 							<Col sm={10} lg={10} className='pad-left-0'>
-								<Alert variant='success' className='mt-3'>
+								<Alert variant='success' className='mb-3'>
 									{collectionData.publicflag === true
 										? 'This public collection is now live. This collection is searchable on the Gateway and can be viewed by all users.'
 										: 'This private collection is now live. Only those who you share the collection link with will be able to view this page.'}
@@ -188,7 +188,7 @@ export const CollectionPage = props => {
 						<Row>
 							<Col sm={1} lg={1} />
 							<Col sm={10} lg={10}>
-								<Alert variant='success' className='mt-3'>
+								<Alert variant='success' className='mb-3'>
 									{collectionData.publicflag === true
 										? 'Done! Your public collection has been updated. This collection is searchable on the Gateway and can be viewed by all users.'
 										: 'Done! Your private collection has been updated. Only those who you share the collection link with will be able to view this page.'}
@@ -204,7 +204,7 @@ export const CollectionPage = props => {
 						<Row>
 							<Col sm={1} lg={1} />
 							<Col sm={10} lg={10}>
-								<Alert variant='danger' className='mt-3'>
+								<Alert variant='danger' className='mb-3'>
 									This collection has been archived
 								</Alert>
 							</Col>
@@ -214,56 +214,74 @@ export const CollectionPage = props => {
 						''
 					)}
 
-					<Row className='margin-top-16'>
-						<Col sm={1} lg={1} />
+					<Row>
+						<Col md={3} lg={2} />
+						<Col md={6} lg={8} className='centerImage'>
+							{!collectionData.imageLink || collectionData.imageLink === 'https://' ? (
+								<div id='defaultCollectionImage' className='margin-right-1' />
+							) : (
+								<div id='collectionImage' style={{ backgroundImage: `url(${collectionData.imageLink})` }}></div>
+							)}
+						</Col>
+						<Col md={2} lg={1} className='privatePublicDisplayCol'>
+							{collectionData.publicflag === true ? (
+								<div className='privatePublicDisplay'>
+									<SVGIcon name='eye' width={24} height={24} fill={'#000000'} className={'pointer margin-right-8'} />
+									<span className='deepBlack-14 alignSuper'>Public</span>
+								</div>
+							) : (
+								<div className='privatePublicDisplay'>
+									<SVGIcon name='eyeCrossed' width={24} height={24} fill={'#000000'} className={'pointer margin-right-8'} />
+									<span className='deepBlack-14 alignSuper'>Private</span>
+								</div>
+							)}
+						</Col>
+						<Col md={1} lg={1} />
+					</Row>
 
-						{!collectionData.imageLink || collectionData.imageLink === 'https://' ? (
-							<div id='defaultCollectionImage' className='margin-right-1' />
-						) : (
-							<img src={collectionData.imageLink} alt='collectionLogo' id='collectionImage' className='margin-right-1' />
-						)}
-
-						<Col className='titleWidth'>
-							<Row>
-								<Col sm={9} lg={9} className='collectionTitleCard'>
-									<span className='black-28 collectionTitleText' data-testid='collectionName'>
-										{' '}
-										{collectionData.name}{' '}
-									</span>
-								</Col>
-								<Col sm={2} lg={2} className='collectionDate collectionTitleCard'>
-									<span className='gray700-13' data-testid='collectionCreated'>
-										Created {moment(collectionData.createdAt).format('MMM YYYY')}{' '}
-									</span>
-								</Col>
-							</Row>
-
-							<Row>
-								<Col sm={10} lg={10} className='collectionTitleCard'>
-									{collectionData.persons.map((person, index) => {
-										if (index > 0) {
-											return (
-												<span className='gray800-14' key={index}>
-													, {person.firstname} {person.lastname}
-												</span>
-											);
-										} else {
-											return (
-												<span className='gray800-14' key={index}>
-													{person.firstname} {person.lastname}
-												</span>
-											);
-										}
-									})}
-								</Col>
-							</Row>
+					<Row>
+						<Col sm={12} lg={12} className='collectionCreatedDate'>
+							<span className='gray700-13' data-testid='collectionCreated'>
+								Created {moment(collectionData.createdAt).format('MMM YYYY')}{' '}
+							</span>
+						</Col>
+					</Row>
+					<Row>
+						<Col sm={12} lg={12} className='centerText'>
+							{/* <span className='black-28 collectionTitleText' data-testid='collectionName'> */}
+							<span className='black-28' data-testid='collectionName'>
+								{' '}
+								{collectionData.name}{' '}
+							</span>
 						</Col>
 					</Row>
 
-					{/* TODO  */}
-					{/* <Row>
+					<Row>
 						<Col sm={1} lg={1} />
-						<Col sm={10} lg={10}>
+						<Col sm={10} lg={10} className='centerText'>
+							{collectionData.persons.map((person, index) => {
+								if (index > 0) {
+									return (
+										<span className='gray800-14' key={index}>
+											, {person.firstname} {person.lastname}
+										</span>
+									);
+								} else {
+									return (
+										<span className='gray800-14' key={index}>
+											{person.firstname} {person.lastname}
+										</span>
+									);
+								}
+							})}
+						</Col>
+						<Col sm={1} lg={1} />
+					</Row>
+
+					{/* TODO  */}
+					<Row>
+						<Col sm={1} lg={1} />
+						<Col sm={10} lg={10} className='collectionKeywords'>
 							{collectionData.keywords &&
 								collectionData.keywords.length > 0 &&
 								collectionData.keywords.map((keyword, index) => {
@@ -275,30 +293,15 @@ export const CollectionPage = props => {
 								})}
 						</Col>
 						<Col sm={1} lg={1} />
-					</Row> */}
+					</Row>
 
-					<Row className='pad-top-32'>
+					<Row className='pad-top-24'>
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10} className='gray800-14 hdruk-section-body'>
 							<ReactMarkdown source={collectionData.description} data-testid='collectionDescription' />
 						</Col>
 						<Col sm={1} lg={1} />
 					</Row>
-
-					{/* TODO  */}
-					{/* <Row>
-						{collectionData.publicflag === true ? (
-							<button className='btn button-tertiary dark-14 float-right'>
-								{' '}
-								<SVGIcon name='eye' width={24} height={24} fill={'#475da7'} className={'pointer'} /> Public{' '}
-							</button>
-						) : (
-							<button className='btn button-tertiary dark-14 float-right'>
-								{' '}
-								<SVGIcon name='eyeCrossed' width={24} height={24} fill={'#475da7'} className={'pointer'} /> Private{' '}
-							</button>
-						)}
-					</Row> */}
 				</Container>
 			</div>
 

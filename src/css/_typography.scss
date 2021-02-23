@@ -81,6 +81,10 @@ h6 {
 	@include font-source(28px, $gray-dark, $font-weight-semibold);
 }
 
+.deepBlack-14 {
+	@include font-source(14px, $deep-black, $font-weight-semibold);
+}
+
 .white-12 {
 	@include font-source(12px, $white);
 
