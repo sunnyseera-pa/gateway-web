@@ -193,8 +193,8 @@ class HDRRouter extends Component {
 						<GuardedRoute path='/data-access-request/publisher/:publisherId' component={DataAccessRequest} userState={userState} />
 						<GuardedRoute path='/data-access-request/:accessId' component={DataAccessRequest} userState={userState} />
 						<GuardedRoute path='/account' component={Account} userState={userState} />
-						<GuardedRoute path='/addcollection' component={AddEditCollectionPage} userState={userState} />
-						<GuardedRoute path='/editcollection/:collectionID' component={AddEditCollectionPage} userState={userState} />
+						<GuardedRoute path='/collection/add' component={AddEditCollectionPage} userState={userState} />
+						<GuardedRoute path='/collection/edit/:collectionID' component={AddEditCollectionPage} userState={userState} />
 						<Route path='/collection/:collectionID' render={props => <CollectionPage {...props} userState={userState} />} />
 						<GuardedRoute path='/tool/add' component={AddEditToolPage} userState={userState} />
 						<GuardedRoute path='/tool/edit/:toolID' component={AddEditToolPage} userState={userState} />
