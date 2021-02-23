@@ -248,7 +248,6 @@ export const CollectionPage = props => {
 					</Row>
 					<Row>
 						<Col sm={12} lg={12} className='centerText'>
-							{/* <span className='black-28 collectionTitleText' data-testid='collectionName'> */}
 							<span className='black-28' data-testid='collectionName'>
 								{' '}
 								{collectionData.name}{' '}
