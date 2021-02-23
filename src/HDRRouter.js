@@ -73,8 +73,8 @@ class HDRRouter extends Component {
 				this.getRectTop(footer) + document.body.scrollTop
 				) {
 				actionBar.style.position = 'absolute';
-				// compensate for the 50px margin on mainWrapper
-				actionBar.style.bottom = '-50px';
+				// compensate for the 100px margin on mainWrapper
+				actionBar.style.bottom = '-100px';
 			}
 
 			// keep actionbar fixed if the window innerHeight is less than actual position of the footer in the document
