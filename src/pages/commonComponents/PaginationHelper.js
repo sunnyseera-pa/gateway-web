@@ -2,44 +2,12 @@ import React from 'react';
 import { Pagination } from 'react-bootstrap';
 
 export const PaginationHelper = props => {
-	const {
-		paginationIndex = 0,
-		setPaginationIndex,
-		doEntitiesCall,
-		statusKey,
-		entityCount,
-		maxResult,
-		// , relatedResources = false
-	} = props;
+	const { paginationIndex = 0, setPaginationIndex, doEntitiesCall, statusKey, entityCount, maxResult } = props;
 
 	const handlePagination = (key, index) => {
 		setPaginationIndex(index);
-
-		// if (relatedResources) {
-		// 	doEntitiesCall('click', translateKey(key), index);
-		// } else {
 		doEntitiesCall(key, false, index);
-		// }
 	};
-
-	// const translateKey = statusKey => {
-	// 	switch (statusKey) {
-	// 		case 'Datasets':
-	// 			return 'dataset';
-	// 		case 'Tools':
-	// 			return 'tool';
-	// 		case 'Projects':
-	// 			return 'project';
-	// 		case 'Papers':
-	// 			return 'paper';
-	// 		case 'People':
-	// 			return 'person';
-	// 		case 'Course':
-	// 			return 'course';
-	// 		default:
-	// 			return statusKey;
-	// 	}
-	// };
 
 	const previousPageButton = (index, maxResult, key) => {
 		return (
