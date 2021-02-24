@@ -5,6 +5,7 @@ export const fileStatus = {
 	SCANNED: 'SCANNED',
 	ERROR: 'ERROR',
 	NEWFILE: 'NEWFILE',
+	QUARANTINED: 'QUARANTINED'
 };
 
 export const concatFileName = file => {

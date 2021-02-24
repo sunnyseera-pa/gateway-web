@@ -1437,7 +1437,6 @@ class DataAccessRequest extends Component {
 					id={this.state._id}
 					files={this.state.files}
 					readOnly={this.state.readOnly}
-					initialFilesLoad={this.state.initialFilesLoad}
 				/>
 			);
 		} else {
