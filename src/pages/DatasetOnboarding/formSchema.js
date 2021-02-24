@@ -267,6 +267,9 @@ export const formSchema = {
 							type: 'isLength',
 							params: [2, 80],
 						},
+						{
+							type: 'isTitleUnique'
+						}
 					],
 				},
 				{

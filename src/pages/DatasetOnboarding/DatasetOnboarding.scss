@@ -119,19 +119,19 @@ span.toolTipText:after {
 	font-size: 16px;
 
 	display: grid;
-	grid-template-columns: 190px 1fr;
+	grid-template-columns: 205px 1fr;
 	box-sizing: border-box;
 
 	&-active {
 		cursor: pointer !important;
 		opacity: 1 !important;
-		margin-left: 30px;
+		margin-left: 26px;
 		margin-top: 0px;
 		margin-bottom: 0px;
 		font-size: 16px;
 		font-weight: 700;
 		display: grid;
-		grid-template-columns: 185px 1fr;
+		grid-template-columns: 210px 1fr;
 		box-sizing: border-box;
 	}
 }
@@ -168,6 +168,7 @@ span.toolTipText:after {
 		margin-top: -3px;
 		margin-left: 3px;
 	}
+	padding-left: 10px;
 }
 
 .dar-nav-item + .dar-nav-item {
@@ -184,12 +185,22 @@ span.toolTipText:after {
 	padding-bottom: 8px;
 }
 
-.active-border > div {
-	margin-left: -4px;
-}
-
 .active-grey-border {
 	border-left: 1px solid $gray-400;
+}
+
+.completionIconHolder {
+	display: inline-block;
+	padding-right: 10px;
+}
+
+.titleHolder {
+	display: inline-block;
+}
+
+.completionIconGap {
+	display: inline-block;
+	padding-right: 16px;
 }
 
 .dar-tabsBackground {

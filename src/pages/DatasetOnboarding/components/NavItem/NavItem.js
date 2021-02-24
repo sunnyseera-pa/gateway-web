@@ -1,7 +1,11 @@
 import React, { useState, Fragment } from 'react';
 import { isEmpty } from 'lodash';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import DarHelper from '../../../../utils/DarHelper.util';
+import StatusDisplay from '../../../commonComponents/StatusDisplay';
 import '../../DatasetOnboarding.scss';
+
+
 const NavItem = ({ parentForm, questionPanels, onFormSwitchPanel, activePanelId, enabled, notForReview }) => {
 	const onClickItem = (e, panel) => {
 		e.preventDefault();
@@ -9,6 +13,25 @@ const NavItem = ({ parentForm, questionPanels, onFormSwitchPanel, activePanelId,
 			onFormSwitchPanel(panel);
 		}
 	};
+
+	let completion = {
+		Summary: 'partial',
+		Documentation: 'partial',
+		Coverage: 'empty',
+		Provenance: 'partial',
+		Origin: 'partial',
+		Temporal: 'partial',
+		Accessibility: 'empty',
+		Usage: 'empty',
+		Access: 'empty',
+		'Formats and standards': 'empty',
+		Enrichment: 'partial',
+		Observations: 'partial',
+		'Structural Meta Data': 'partial',
+	};
+
+
+							
 
 	const buildNavItem = () => {
 		let qPanels = [...questionPanels];
@@ -21,8 +44,24 @@ const NavItem = ({ parentForm, questionPanels, onFormSwitchPanel, activePanelId,
 
 					return (
 						<li className={classes} style={{ cursor: 'pointer' }} key={index} onClick={e => onClickItem(e, item)}>
-							<span>{item.navHeader}</span>
-							<span>{item.flag && <i className={DarHelper.flagPanelIcons[item.flag]}></i>}</span>
+							<div>
+							<div className='completionIconHolder'>
+								<OverlayTrigger
+									key={item.navHeader}
+									placement='top'
+									overlay={
+										<Tooltip id={`tooltip-top`}>
+											{item.navHeader}: {completion[item.navHeader]}
+										</Tooltip>
+									}>
+									<div>
+										<StatusDisplay section={item.navHeader} status={completion[item.navHeader]} />
+									</div>
+								</OverlayTrigger>
+							</div>
+							<div className='titleHolder'>{item.navHeader}</div>
+							<div>{item.flag && <i className={DarHelper.flagPanelIcons[item.flag]}></i>}</div>
+							</div>
 						</li>
 					);
 				}

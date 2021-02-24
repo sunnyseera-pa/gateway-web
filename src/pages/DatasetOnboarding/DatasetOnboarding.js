@@ -1,6 +1,6 @@
 import React, { Component, Fragment, useState } from 'react';
 import { History } from 'react-router';
-import { Container, Row, Col, Alert } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip, Container, Row, Col, Alert } from 'react-bootstrap';
 import Winterfell from 'winterfell';
 import _ from 'lodash';
 import axios from 'axios';
@@ -36,6 +36,7 @@ import SLA from '../commonComponents/sla/SLA';
 import BeforeYouBegin from './components/BeforeYouBegin/BeforeYouBegin';
 import Guidance from './components/Guidance/Guidance';
 import StructuralMetadata from './components/StructuralMetadata/StructuralMetadata';
+import StatusDisplay from '../commonComponents/StatusDisplay';
 
 
 
@@ -1236,6 +1237,13 @@ class DatasetOnboarding extends Component {
 			isSelectedRequired: value => {
 				return !_.isEmpty(value) && value !== 'undefined';
 			},
+			isTitleUnique: value => {
+				
+				
+				
+				
+				return !_.isEmpty(value) && value !== 'undefined';
+			},
 		});
 
 		if (isLoading) {
@@ -1246,6 +1254,19 @@ class DatasetOnboarding extends Component {
 			);
 		}
 
+
+		let completion = {
+			Summary: 'partial',
+			Documentation: 'partial',
+			Coverage: 'empty',
+			Provenance: 'partial',
+			Accessibility: 'empty',
+			'Enrichment and Linkage': 'partial',
+			Observations: 'partial',
+			'Structural metadata': 'partial',
+		};
+
+		
 		return (
 			<div>
 				<SearchBar
@@ -1322,15 +1343,34 @@ class DatasetOnboarding extends Component {
 					<div id='darLeftCol' className='scrollable-sticky-column'>
 						{[...this.state.jsonSchema.pages].map((item, idx) => (
 							<div key={`navItem-${idx}`} className={`${item.active ? 'active-border' : ''}`}>
-								<div>
-									<h3
+								<div >
+									<span
 										className={`${!this.state.inReviewMode ? 'black-16' : item.inReview ? 'black-16' : 'section-not-inreview'}
 										${item.active ? 'section-header-active' : 'section-header'} 
 										${this.state.allowedNavigation ? '' : 'disabled'}`}
 										onClick={e => this.updateNavigation(item)}>
-										<span>{item.title}</span>
-										<span>{item.flag && <i className={DarHelper.flagIcons[item.flag]} />}</span>
-									</h3>
+																
+										<div>
+											<div className='completionIconHolder'>
+												{item.title === 'Before you begin' ? <div className='completionIconGap'></div> :
+													<OverlayTrigger
+														key={item.title}
+														placement='top'
+														overlay={
+															<Tooltip id={`tooltip-top`}>
+																{item.title}: {completion[item.title]}
+															</Tooltip>
+														}>
+														<div>
+															<StatusDisplay section={item.title} status={completion[item.title]} />
+														</div>
+													</OverlayTrigger>
+												}
+											</div>
+											<div className='titleHolder'>{item.title}</div>
+											<div> {item.flag && <i className={DarHelper.flagIcons[item.flag]} />}</div>
+										</div>
+									</span>
 									{item.active && (
 										<ul className='list-unstyled section-subheader'>
 											<NavItem

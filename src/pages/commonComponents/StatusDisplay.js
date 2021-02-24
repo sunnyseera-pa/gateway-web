@@ -6,13 +6,9 @@ import _ from 'lodash';
 
 export const StatusDisplay = ({ section, status }) => {
 	let completionStatus = {
-		done: {
-			icon: <MetadataCompleteSvg></MetadataCompleteSvg>,
-		},
-		partial: {
-			icon: <MetadataHalfDoneSvg></MetadataHalfDoneSvg>,
-		},
-		empty: { icon: <MetadataEmptySvg></MetadataEmptySvg> },
+		done: { icon: <MetadataCompleteSvg /> },
+		partial: { icon: <MetadataHalfDoneSvg /> },
+		empty: { icon: <MetadataEmptySvg /> }
 	};
 
 	const getCompletionStatusWheel = status => {
