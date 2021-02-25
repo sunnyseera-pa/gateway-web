@@ -216,7 +216,7 @@ export const CollectionPage = props => {
 
 					<Row>
 						<Col md={3} lg={2} />
-						<Col md={6} lg={8} className='centerImage'>
+						<Col md={6} lg={8} className='flexCenter'>
 							{!collectionData.imageLink || collectionData.imageLink === 'https://' ? (
 								<div id='defaultCollectionImage' className='margin-right-1' />
 							) : (
