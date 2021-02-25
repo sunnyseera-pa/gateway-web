@@ -53,6 +53,7 @@ class DatePickerCustom extends React.Component {
 				onFocus={this.handleFocus}
 				onChangeRaw={this.handleChangeRaw}
 				isClearable={!this.props.readOnly}
+				autoComplete='off'
 			/>
 		);
 	}

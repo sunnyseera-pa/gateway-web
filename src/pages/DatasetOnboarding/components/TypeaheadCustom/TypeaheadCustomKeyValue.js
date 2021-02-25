@@ -8,18 +8,20 @@ class TypeaheadCustomKeyValue extends React.Component {
 
 		var listOfSelectedOptions = [];
 
-		this.props.value.forEach(selected => {
-			this.props.options.forEach(option => {
-				if (option.key === selected) {
-					listOfSelectedOptions.push({ key: option.key, value: option.value});
-				}
+		if (this.props.value) {
+			this.props.value.forEach(selected => {
+				this.props.options.forEach(option => {
+					if (option.key === selected) {
+						listOfSelectedOptions.push({ key: option.key, value: option.value });
+					}
+				});
 			});
-		});
+		}
 
 		this.state = {
 			//value: this.props.value || '',
 			readOnly: props.readOnly || false,
-			listOfSelectedOptions
+			listOfSelectedOptions,
 		};
 
 		this.handleChange = this.handleChange.bind(this);
@@ -27,15 +29,13 @@ class TypeaheadCustomKeyValue extends React.Component {
 		this.handleBlur = this.handleBlur.bind(this);
 	}
 
-
-
 	handleChange(e) {
-		let listOfKeys = []
+		let listOfKeys = [];
 		e.forEach(entry => listOfKeys.push(entry.key));
 
 		this.setState(
 			{
-				listOfSelectedOptions: e
+				listOfSelectedOptions: e,
 			},
 			this.props.onChange.bind(null, listOfKeys)
 		);
@@ -55,7 +55,7 @@ class TypeaheadCustomKeyValue extends React.Component {
 				id='key'
 				labelKey={key => `${key.value}`}
 				className={'addFormInputTypeAhead'}
-				minLength={3}
+				//minLength={3}
 				multiple
 				disabled={this.state.readOnly}
 				options={this.props.options ? this.props.options : ['Test', 'Test1']}
@@ -64,9 +64,6 @@ class TypeaheadCustomKeyValue extends React.Component {
 				onFocus={this.handleFocus}
 				selected={this.state.listOfSelectedOptions}
 			/>
-
-
-			
 		);
 	}
 }

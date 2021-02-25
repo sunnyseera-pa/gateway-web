@@ -38,12 +38,7 @@ import Guidance from './components/Guidance/Guidance';
 import StructuralMetadata from './components/StructuralMetadata/StructuralMetadata';
 import StatusDisplay from '../commonComponents/StatusDisplay';
 
-
-
 import ActionModal from './components/ActionModal/ActionModal';
-
-
-
 
 import Dropdown from 'react-bootstrap/Dropdown';
 
@@ -290,11 +285,11 @@ class DatasetOnboarding extends Component {
 			({ _id: publisherId } = dataset.publisher);
 		}
 
-		this.setState({roles: this.getUserRoles()});
+		this.setState({ roles: this.getUserRoles() });
 		if (this.state.roles.includes('admin') && applicationStatus === DarHelper.darStatus.inReview) userType = 'ADMIN';
 
 		jsonSchema = this.injectStaticContent(jsonSchema, inReviewMode, reviewSections);
-		jsonSchema = this.injectObservations(jsonSchema, questionAnswers);     
+		jsonSchema = this.injectObservations(jsonSchema, questionAnswers);
 
 		// 6. Hide show submit application
 		if (applicationStatus === DarHelper.darStatus.draft) {
@@ -357,30 +352,30 @@ class DatasetOnboarding extends Component {
 	 * @returns {jsonSchmea} object
 	 */
 	injectObservations(jsonSchema = {}, questionAnswers = {}) {
-		let {questions} = DatasetOnboardingHelperUtil.findQuestionSet('observations', { ...jsonSchema });
-		let listOfObservationFields = questions.map(x => x.questionId).flat()
-		
+		let { questions } = DatasetOnboardingHelperUtil.findQuestionSet('observations', { ...jsonSchema });
+		let listOfObservationFields = questions.map(x => x.questionId).flat();
+
 		let listOfObservationUniqueIds = [];
 		listOfObservationFields.forEach(field => {
-			Object.keys(questionAnswers).some(function(key) {
-				var regex = new RegExp(field.toLowerCase().replace(/\//g, '\\/')+'_', 'g');
+			Object.keys(questionAnswers).some(function (key) {
+				let regex = new RegExp(field.toLowerCase().replace(/\//g, '\\/') + '_', 'g');
 				if (key.match(regex)) {
 					let [, uniqueId] = key.split('_');
-					if(!_.find(listOfObservationUniqueIds, uniqueId)) {
-						listOfObservationUniqueIds.push(uniqueId)
-					  }
+					if (!_.find(listOfObservationUniqueIds, uniqueId)) {
+						listOfObservationUniqueIds.push(uniqueId);
+					}
 				}
 			});
-		})
+		});
 
 		listOfObservationUniqueIds.forEach(uniqueId => {
 			let duplicateQuestionSet = DatasetOnboardingHelperUtil.questionSetToDuplicate('add-observations', { ...jsonSchema }, uniqueId);
 			jsonSchema = DatasetOnboardingHelperUtil.insertSchemaUpdates('add-observations', duplicateQuestionSet, { ...jsonSchema });
 		});
-		
+
 		return jsonSchema;
-	}	
-	
+	}
+
 	/**
 	 * InjectStaticContent
 	 * @desc Function to inject static 'about' and 'files' pages and panels into schema
@@ -529,9 +524,9 @@ class DatasetOnboarding extends Component {
 			let activePage = _.get(_.keys({ ...errors }), 0);
 			let activePanel = _.get(_.keys({ ...errors }[activePage]), 0);
 			let validationMessages = validationSectionMessages;
-			
+
 			this.toggleActionModal('VALIDATIONERRORS');
-			
+
 			//alert('Some validation issues have been found. Please see all items highlighted in red on this page.');
 			this.updateNavigation({ pageId: activePage, panelId: activePanel }, validationMessages);
 		}
@@ -679,8 +674,8 @@ class DatasetOnboarding extends Component {
 					let duplicateQuestionSet = DatasetOnboardingHelperUtil.questionSetToDuplicate(questionSetId, { ...schema });
 					jsonSchema = DatasetOnboardingHelperUtil.insertSchemaUpdates(questionSetId, duplicateQuestionSet, { ...schema });
 					this.setState({
-						jsonSchema
-					})
+						jsonSchema,
+					});
 					break;
 				case 'removeObservation':
 					jsonSchema = DatasetOnboardingHelperUtil.removeQuestionReferences(questionSetId, questionId, { ...schema });
@@ -745,7 +740,7 @@ class DatasetOnboarding extends Component {
 			} = this.state;
 			// 1. get active question set
 			let questionList = [...questionSets].filter(q => q.questionSetId.includes(this.state.activePanelId)) || [];
-			questions = questionList.map(({questions}) => questions).flat();
+			questions = questionList.map(({ questions }) => questions).flat();
 			if (!_.isEmpty(questions)) {
 				// 2. loop over and find active question
 				let activeQuestion = DarHelper.getActiveQuestion([...questions], questionId);
@@ -879,16 +874,22 @@ class DatasetOnboarding extends Component {
 		let { type, statusDesc } = action;
 
 		switch (type) {
-			case 'CONFIRMNEWVERSION' :
+			case 'CONFIRMNEWVERSION':
 				try {
 					if (!_.isEmpty(this.state.dataset.pid) && !_.isEmpty(this.state.publisher)) {
-						axios.post(baseURL + '/api/v1/dataset-onboarding', { publisherID: this.state.publisher, pid: this.state.dataset.pid, currentVersionId: this.state._id }).then(res => {
-							let { id } = res.data.data;
-							this.props.history.push({ pathname: `/dataset-onboarding/${id}` });
-							
-							//history.push({ pathname: `/dataset-onboarding/${id}` });
-							this.toggleActionModal();
-						});
+						axios
+							.post(baseURL + '/api/v1/dataset-onboarding', {
+								publisherID: this.state.publisher,
+								pid: this.state.dataset.pid,
+								currentVersionId: this.state._id,
+							})
+							.then(res => {
+								let { id } = res.data.data;
+								this.props.history.push({ pathname: `/dataset-onboarding/${id}` });
+
+								//history.push({ pathname: `/dataset-onboarding/${id}` });
+								this.toggleActionModal();
+							});
 					}
 				} catch (err) {
 					console.log(err);
@@ -912,7 +913,7 @@ class DatasetOnboarding extends Component {
 					this.props.history.push({
 						pathname: '/account',
 						search: '?tab=datasets',
-						state: { alert, team: this.state.publisher,},
+						state: { alert, team: this.state.publisher },
 					});
 				} catch (err) {
 					console.log(err);
@@ -928,7 +929,7 @@ class DatasetOnboarding extends Component {
 				};
 				// 1. Update action status
 				const response = await axios.put(`${baseURL}/api/v1/dataset-onboarding/${_id}`, body);
-				
+
 				/* let alert = {
 					tab: 'inReview',
 					message:
@@ -936,11 +937,11 @@ class DatasetOnboarding extends Component {
 							? 'You have successfully submitted your dataset for review. You will be notified when a decision has been made.'
 							: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
 				}; */
-				
+
 				this.props.history.push({
 					pathname: '/account',
 					search: '?tab=datasets',
-					state: { team: 'admin',},
+					state: { team: 'admin' },
 				});
 
 				// 2. set alert object for screen
@@ -962,11 +963,7 @@ class DatasetOnboarding extends Component {
 			default:
 				this.toggleActionModal();
 		}
-
 	};
-	
-
-
 
 	updateApplicationStatus = async (action = {}) => {
 		let { type, statusDesc } = action;
@@ -979,8 +976,7 @@ class DatasetOnboarding extends Component {
 					applicationStatus: this.applicationState[type],
 					applicationStatusDesc: statusDesc,
 				};
-				
-				
+
 				/* // 1. Update action status
 				const response = await axios.put(`${baseURL}/api/v1/data-access-request/${_id}`, body);
 				// 2. set alert object for screen
@@ -1016,10 +1012,6 @@ class DatasetOnboarding extends Component {
 		if (_.isEmpty(teams) || _.isEmpty(foundTeam)) {
 			return ['applicant'];
 		}
-		
-
-
-
 
 		/* let { teams } = props.userState[0];
 		let foundAdmin = teams.filter(x => x.type === team);
@@ -1106,6 +1098,11 @@ class DatasetOnboarding extends Component {
 				updateRequestModal: !prevState.updateRequestModal,
 			};
 		});
+	};
+
+	checkUniqueTitle = async title => {
+		let result = await axios.get(`${baseURL}/api/v1/dataset-onboarding/checkUniqueTitle?pid=${this.state.dataset.pid}&&title=${title}`);
+		return result.data.isUniqueTitle;
 	};
 
 	renderApp = () => {
@@ -1227,7 +1224,8 @@ class DatasetOnboarding extends Component {
 
 				let isNoError = true;
 				value.forEach(url => {
-					if (!_.isEmpty(url) && !url.match(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/)) isNoError = false;
+					if (!_.isEmpty(url) && !url.match(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/))
+						isNoError = false;
 				});
 				return isNoError;
 			},
@@ -1237,12 +1235,10 @@ class DatasetOnboarding extends Component {
 			isSelectedRequired: value => {
 				return !_.isEmpty(value) && value !== 'undefined';
 			},
-			isTitleUnique: value => {
-				
-				
-				
-				
-				return !_.isEmpty(value) && value !== 'undefined';
+			isTitleUnique: async value => {
+				let isTitleUnique = await this.checkUniqueTitle(value);
+				//debugger;
+				return isTitleUnique;
 			},
 		});
 
@@ -1253,7 +1249,6 @@ class DatasetOnboarding extends Component {
 				</Container>
 			);
 		}
-
 
 		let completion = {
 			Summary: 'partial',
@@ -1266,7 +1261,6 @@ class DatasetOnboarding extends Component {
 			'Structural metadata': 'partial',
 		};
 
-		
 		return (
 			<div>
 				<SearchBar
@@ -1343,16 +1337,17 @@ class DatasetOnboarding extends Component {
 					<div id='darLeftCol' className='scrollable-sticky-column'>
 						{[...this.state.jsonSchema.pages].map((item, idx) => (
 							<div key={`navItem-${idx}`} className={`${item.active ? 'active-border' : ''}`}>
-								<div >
+								<div>
 									<span
 										className={`${!this.state.inReviewMode ? 'black-16' : item.inReview ? 'black-16' : 'section-not-inreview'}
 										${item.active ? 'section-header-active' : 'section-header'} 
 										${this.state.allowedNavigation ? '' : 'disabled'}`}
 										onClick={e => this.updateNavigation(item)}>
-																
 										<div>
 											<div className='completionIconHolder'>
-												{item.title === 'Before you begin' ? <div className='completionIconGap'></div> :
+												{item.title === 'Before you begin' ? (
+													<div className='completionIconGap'></div>
+												) : (
 													<OverlayTrigger
 														key={item.title}
 														placement='top'
@@ -1365,7 +1360,7 @@ class DatasetOnboarding extends Component {
 															<StatusDisplay section={item.title} status={completion[item.title]} />
 														</div>
 													</OverlayTrigger>
-												}
+												)}
 											</div>
 											<div className='titleHolder'>{item.title}</div>
 											<div> {item.flag && <i className={DarHelper.flagIcons[item.flag]} />}</div>
@@ -1433,7 +1428,7 @@ class DatasetOnboarding extends Component {
 					</div>
 					<div className='action-bar-actions'>
 						<AmendmentCount answeredAmendments={this.state.answeredAmendments} unansweredAmendments={this.state.unansweredAmendments} />
-						{userType.toUpperCase() === 'CUSTODIAN'  ? (
+						{userType.toUpperCase() === 'CUSTODIAN' ? (
 							<ApplicantActionButtons
 								allowedNavigation={allowedNavigation}
 								onNextClick={this.onNextClick}
@@ -1474,7 +1469,6 @@ class DatasetOnboarding extends Component {
 					datasetVersionAction={this.datasetVersionAction}
 					close={this.toggleActionModal}
 				/>
-
 			</div>
 		);
 	}
