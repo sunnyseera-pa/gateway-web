@@ -617,7 +617,7 @@ class DatasetDetail extends Component {
 		);
 
 		const formatLinks = source => {
-			const reUrl = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+			const reUrl = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
 			return source.replace(reUrl, '[$1]($1) ');
 		};
 
@@ -663,17 +663,17 @@ class DatasetDetail extends Component {
 					<br />
 					Click to read more about how the score is calculated.
 					<br />
-                    <br />
-                    Click to read more about how the score is calculated.
 					<br />
-                    <br />
-                    {Math.trunc(data.datasetfields.metadataquality.completeness_percent)} Completeness %
+					Click to read more about how the score is calculated.
 					<br />
-                    {Math.trunc(data.datasetfields.metadataquality.weighted_completeness_percent)} Weighted completeness %
 					<br />
-                    {Math.trunc(data.datasetfields.metadataquality.error_percent)} Error %
+					{Math.trunc(data.datasetfields.metadataquality.completeness_percent)} Completeness %
 					<br />
-                    {Math.trunc(data.datasetfields.metadataquality.weighted_error_percent)} Weighted error %
+					{Math.trunc(data.datasetfields.metadataquality.weighted_completeness_percent)} Weighted completeness %
+					<br />
+					{Math.trunc(data.datasetfields.metadataquality.error_percent)} Error %
+					<br />
+					{Math.trunc(data.datasetfields.metadataquality.weighted_error_percent)} Weighted error %
 				</Tooltip>
             );
 
@@ -756,691 +756,691 @@ class DatasetDetail extends Component {
                                                                                 v2data.summary.publisher.memberOf.slice(1).toLowerCase()}{' '}
                                                                             member
 																		</span>
-                                                                    </div>
-                                                                )}
-                                                            </>
-                                                        ) : (
-                                                                ''
-                                                            )}
-                                                        {!_.isEmpty(v2data.summary.publisher.name) ? (
-                                                            <span className='gray800-14'>{v2data.summary.publisher.name}</span>
-                                                        ) : (
-                                                                <span className='gray800-14-opacity'>Not specified</span>
-                                                            )}
-                                                    </span>
-                                                </Col>
-                                                <Col xs={4} md={2} className='text-right'>
-                                                    <Metadata />
-                                                </Col>
-                                            </>
-                                        ) : (
-                                                <>
-                                                    <Col xs={8} md={10}>
-                                                        <span className='black-16'>{data.name} </span>
-                                                        <br />
-                                                        {data.datasetfields.publisher ? (
-                                                            <span className='gray800-14'>{data.datasetfields.publisher}</span>
-                                                        ) : (
-                                                                <span className='gray800-14-opacity'>Not specified</span>
-                                                            )}
-                                                    </Col>
-                                                    <Col xs={4} md={2} className='text-right'>
-                                                        <Metadata />
-                                                    </Col>
-                                                </>
-                                            )}
-                                    </Row>
-                                    <Row className='mt-2'>
-                                        <Col xs={12}>
-                                            <span className='badge-dataset'>
-                                                <SVGIcon name='dataseticon' fill={'#113328'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
-                                                <span>Dataset</span>
-                                            </span>
-                                            {!data.tags.features || data.tags.features.length <= 0
-                                                ? ''
-                                                : data.tags.features.map((keyword, index) => {
-                                                    return (
-                                                        <a key={`tag-${index}`} href={'/search?search=&tab=Datasets&keywords=' + keyword}>
-                                                            <div className='ml-2 badge-tag'>{keyword}</div>
-                                                        </a>
-                                                    );
-                                                })}
-                                        </Col>
-                                    </Row>
-                                    <Row className='mt-2'>
-                                        <Col sm={6}>
-                                            <span className='gray800-14'>
-                                                {data.counter === undefined ? 1 : data.counter + 1}
-                                                {data.counter === undefined ? ' view' : ' views'}
-                                            </span>
-                                        </Col>
+																	</div>
+																)}
+															</>
+														) : (
+															''
+														)}
+														{!_.isEmpty(v2data.summary.publisher.name) ? (
+															<span className='gray800-14'>{v2data.summary.publisher.name}</span>
+														) : (
+															<span className='gray800-14-opacity'>Not specified</span>
+														)}
+													</span>
+												</Col>
+												<Col xs={4} md={2} className='text-right'>
+													<Metadata />
+												</Col>
+											</>
+										) : (
+											<>
+												<Col xs={8} md={10}>
+													<span className='black-16'>{data.name} </span>
+													<br />
+													{data.datasetfields.publisher ? (
+														<span className='gray800-14'>{data.datasetfields.publisher}</span>
+													) : (
+														<span className='gray800-14-opacity'>Not specified</span>
+													)}
+												</Col>
+												<Col xs={4} md={2} className='text-right'>
+													<Metadata />
+												</Col>
+											</>
+										)}
+									</Row>
+									<Row className='mt-2'>
+										<Col xs={12}>
+											<span className='badge-dataset'>
+												<SVGIcon name='dataseticon' fill={'#113328'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
+												<span>Dataset</span>
+											</span>
+											{!data.tags.features || data.tags.features.length <= 0
+												? ''
+												: data.tags.features.map((keyword, index) => {
+														return (
+															<a key={`tag-${index}`} href={'/search?search=&tab=Datasets&keywords=' + keyword}>
+																<div className='ml-2 badge-tag'>{keyword}</div>
+															</a>
+														);
+												  })}
+										</Col>
+									</Row>
+									<Row className='mt-2'>
+										<Col sm={6}>
+											<span className='gray800-14'>
+												{data.counter === undefined ? 1 : data.counter + 1}
+												{data.counter === undefined ? ' view' : ' views'}
+											</span>
+										</Col>
 
-                                        {this.state.isLatestVersion && !this.state.isDatasetArchived && (
-                                            <Col sm={6} className='text-right'>
-                                                {!userState[0].loggedIn ? (
-                                                    <button className='btn button-tertiary dark-14 float-right' onClick={() => this.showLoginModal(data.name)}>
-                                                        Request access
+										{this.state.isLatestVersion && !this.state.isDatasetArchived && (
+											<Col sm={6} className='text-right'>
+												{!userState[0].loggedIn ? (
+													<button className='btn button-tertiary dark-14 float-right' onClick={() => this.showLoginModal(data.name)}>
+														Request access
 													</button>
-                                                ) : requiresModal ? (
-                                                    <button
-                                                        className='btn btn-primary addButton pointer float-right'
-                                                        onClick={() => {
-                                                            this.toggleModal();
-                                                        }}>
-                                                        How to request access
+												) : requiresModal ? (
+													<button
+														className='btn btn-primary addButton pointer float-right'
+														onClick={() => {
+															this.toggleModal();
+														}}>
+														How to request access
 													</button>
-                                                ) : (
-                                                            <Fragment>
-                                                                <Link
-                                                                    className={`btn button-tertiary dark-14  ${allowsMessaging ? 'mr-2' : 'float-right'}`}
-                                                                    to={{
-                                                                        pathname: `/data-access-request/dataset/${data.datasetid}`,
-                                                                    }}
-                                                                    onClick={() => Event('Buttons', 'Click', 'Request Access')}>
-                                                                    Request access
+												) : (
+													<Fragment>
+														<Link
+															className={`btn button-tertiary dark-14  ${allowsMessaging ? 'mr-2' : 'float-right'}`}
+															to={{
+																pathname: `/data-access-request/dataset/${data.datasetid}`,
+															}}
+															onClick={() => Event('Buttons', 'Click', 'Request Access')}>
+															Request access
 														</Link>
-                                                                {allowsMessaging ? (
-                                                                    <button className='btn button-primary addButton pointer' onClick={() => this.toggleDrawer()}>
-                                                                        Send a message to the custodian
+														{allowsMessaging ? (
+															<button className='btn button-primary addButton pointer' onClick={() => this.toggleDrawer()}>
+																Send a message to the custodian
 															</button>
-                                                                ) : null}
-                                                            </Fragment>
-                                                        )}
-                                            </Col>
-                                        )}
-                                    </Row>
-                                </div>
-                            </Col>
-                            <Col sm={1} />
-                        </Row>
+														) : null}
+													</Fragment>
+												)}
+											</Col>
+										)}
+									</Row>
+								</div>
+							</Col>
+							<Col sm={1} />
+						</Row>
 
-                        <Row>
-                            <Col sm={1} />
-                            <Col sm={10}>
-                                <div>
-                                    <Tabs className='tabsBackground gray700-13 margin-bottom-16'>
-                                        <Tab eventKey='About' title={'About'}>
-                                            {!data.datasetfields.abstract ? (
-                                                ''
-                                            ) : (
-                                                    <Row className='mt-1'>
-                                                        <Col sm={12}>
-                                                            <div className='rectangle'>
-                                                                <Row className='gray800-14-bold'>
-                                                                    <Col sm={12}>Abstract</Col>
-                                                                </Row>
-                                                                <Row className='mt-3'>
-                                                                    <Col sm={12} className='gray800-14'>
-                                                                        <span className='gray800-14'>{data.datasetfields.abstract}</span>
-                                                                    </Col>
-                                                                </Row>
-                                                            </div>
-                                                        </Col>
-                                                    </Row>
-                                                )}
+						<Row>
+							<Col sm={1} />
+							<Col sm={10}>
+								<div>
+									<Tabs className='tabsBackground gray700-13 margin-bottom-16'>
+										<Tab eventKey='About' title={'About'}>
+											{!data.datasetfields.abstract ? (
+												''
+											) : (
+												<Row className='mt-1'>
+													<Col sm={12}>
+														<div className='rectangle'>
+															<Row className='gray800-14-bold'>
+																<Col sm={12}>Abstract</Col>
+															</Row>
+															<Row className='mt-3'>
+																<Col sm={12} className='gray800-14'>
+																	<span className='gray800-14'>{data.datasetfields.abstract}</span>
+																</Col>
+															</Row>
+														</div>
+													</Col>
+												</Row>
+											)}
 
-                                            {!data.description ? (
-                                                ''
-                                            ) : (
-                                                    <Row className='mt-1'>
-                                                        <Col sm={12}>
-                                                            <div className='rectangle'>
-                                                                <Row className='gray800-14-bold'>
-                                                                    <Col sm={12}>Description</Col>
-                                                                </Row>
-                                                                <Row className='mt-3'>
-                                                                    <Col sm={12} className='gray800-14 overflowWrap'>
-                                                                        <span className='gray800-14'>
-                                                                            <ReactMarkdown source={formatLinks(data.description)} />
-                                                                        </span>
-                                                                    </Col>
-                                                                </Row>
-                                                            </div>
-                                                        </Col>
-                                                    </Row>
-                                                )}
+											{!data.description ? (
+												''
+											) : (
+												<Row className='mt-1'>
+													<Col sm={12}>
+														<div className='rectangle'>
+															<Row className='gray800-14-bold'>
+																<Col sm={12}>Description</Col>
+															</Row>
+															<Row className='mt-3'>
+																<Col sm={12} className='gray800-14 overflowWrap'>
+																	<span className='gray800-14'>
+																		<ReactMarkdown source={formatLinks(data.description)} />
+																	</span>
+																</Col>
+															</Row>
+														</div>
+													</Col>
+												</Row>
+											)}
 
-                                            {/* V2 DATASETS  */}
-                                            {!_.isEmpty(v2data) ? (
-                                                <>
-                                                    {emptyFlagDetails === false ? <DatasetAboutCard section='Details' v2data={v2data} showEmpty={showEmpty} /> : ''}
-                                                    {emptyFlagCoverage === false ? <DatasetAboutCard section='Coverage' v2data={v2data} showEmpty={showEmpty} /> : ''}
-                                                    {emptyFlagFormats === false ? (
-                                                        <DatasetAboutCard section='Formats and standards' v2data={v2data} showEmpty={showEmpty} />
-                                                    ) : (
-                                                            ''
-                                                        )}
-                                                    {emptyFlagProvenance === false ? (
-                                                        <DatasetAboutCard section='Provenance' v2data={v2data} showEmpty={showEmpty} />
-                                                    ) : (
-                                                            ''
-                                                        )}
-                                                    {emptyFlagDAR === false ? (
-                                                        <DatasetAboutCard
-                                                            section='Data access request'
-                                                            v2data={v2data}
-                                                            requiresModal={this.state.requiresModal}
-                                                            toggleModal={this.toggleModal}
-                                                            showLoginModal={() => {
-                                                                this.showLoginModal(this.state.data.name);
-                                                            }}
-                                                            toggleDrawer={this.toggleDrawer}
-                                                            showEmpty={showEmpty}
-                                                            datasetid={this.state.data.datasetid}
-                                                            loggedIn={this.state.userState[0].loggedIn}
-                                                        />
-                                                    ) : (
-                                                            ''
-                                                        )}
-                                                    {emptyFlagRelRes === false ? (
-                                                        <DatasetAboutCard section='Related resources' v2data={v2data} showEmpty={showEmpty} />
-                                                    ) : (
-                                                            ''
-                                                        )}
-                                                </>
-                                            ) : (
-                                                    <>
-                                                        <Row className='mt-1'>
-                                                            <Col sm={12}>
-                                                                <div className='rectangle'>
-                                                                    <Row className='gray800-14-bold'>
-                                                                        <Col sm={12}>Details</Col>
-                                                                    </Row>
-                                                                    <Row className='mt-3'>
-                                                                        <Col sm={2} className='gray800-14'>
-                                                                            Release date
+											{/* V2 DATASETS  */}
+											{!_.isEmpty(v2data) ? (
+												<>
+													{emptyFlagDetails === false ? <DatasetAboutCard section='Details' v2data={v2data} showEmpty={showEmpty} /> : ''}
+													{emptyFlagCoverage === false ? <DatasetAboutCard section='Coverage' v2data={v2data} showEmpty={showEmpty} /> : ''}
+													{emptyFlagFormats === false ? (
+														<DatasetAboutCard section='Formats and standards' v2data={v2data} showEmpty={showEmpty} />
+													) : (
+														''
+													)}
+													{emptyFlagProvenance === false ? (
+														<DatasetAboutCard section='Provenance' v2data={v2data} showEmpty={showEmpty} />
+													) : (
+														''
+													)}
+													{emptyFlagDAR === false ? (
+														<DatasetAboutCard
+															section='Data access request'
+															v2data={v2data}
+															requiresModal={this.state.requiresModal}
+															toggleModal={this.toggleModal}
+															showLoginModal={() => {
+																this.showLoginModal(this.state.data.name);
+															}}
+															toggleDrawer={this.toggleDrawer}
+															showEmpty={showEmpty}
+															datasetid={this.state.data.datasetid}
+															loggedIn={this.state.userState[0].loggedIn}
+														/>
+													) : (
+														''
+													)}
+													{emptyFlagRelRes === false ? (
+														<DatasetAboutCard section='Related resources' v2data={v2data} showEmpty={showEmpty} />
+													) : (
+														''
+													)}
+												</>
+											) : (
+												<>
+													<Row className='mt-1'>
+														<Col sm={12}>
+															<div className='rectangle'>
+																<Row className='gray800-14-bold'>
+																	<Col sm={12}>Details</Col>
+																</Row>
+																<Row className='mt-3'>
+																	<Col sm={2} className='gray800-14'>
+																		Release date
 																	</Col>
-                                                                        {data.datasetfields.releaseDate ? (
-                                                                            <Col sm={10} className='gray800-14'>
-                                                                                {moment(data.datasetfields.releaseDate).format('DD MMMM YYYY')}
-                                                                            </Col>
-                                                                        ) : (
-                                                                                <Col sm={10} className='gray800-14-opacity'>
-                                                                                    Not specified
+																	{data.datasetfields.releaseDate ? (
+																		<Col sm={10} className='gray800-14'>
+																			{moment(data.datasetfields.releaseDate).format('DD MMMM YYYY')}
 																		</Col>
-                                                                            )}
-                                                                    </Row>
-                                                                    <Row className='mt-2'>
-                                                                        <Col sm={2} className='gray800-14'>
-                                                                            Periodicity
+																	) : (
+																		<Col sm={10} className='gray800-14-opacity'>
+																			Not specified
+																		</Col>
+																	)}
+																</Row>
+																<Row className='mt-2'>
+																	<Col sm={2} className='gray800-14'>
+																		Periodicity
 																	</Col>
-                                                                        {data.datasetfields.periodicity ? (
-                                                                            <Col sm={10} className='gray800-14'>
-                                                                                {data.datasetfields.periodicity}
-                                                                            </Col>
-                                                                        ) : (
-                                                                                <Col sm={10} className='gray800-14-opacity'>
-                                                                                    Not specified
+																	{data.datasetfields.periodicity ? (
+																		<Col sm={10} className='gray800-14'>
+																			{data.datasetfields.periodicity}
 																		</Col>
-                                                                            )}
-                                                                    </Row>
-                                                                    <Row className='mt-2'>
-                                                                        <Col sm={2} className='gray800-14'>
-                                                                            Standard
+																	) : (
+																		<Col sm={10} className='gray800-14-opacity'>
+																			Not specified
+																		</Col>
+																	)}
+																</Row>
+																<Row className='mt-2'>
+																	<Col sm={2} className='gray800-14'>
+																		Standard
 																	</Col>
-                                                                        {data.datasetfields.conformsTo ? (
-                                                                            <Col sm={10} className='gray800-14 overflowWrap'>
-                                                                                <Linkify properties={{ target: '_blank' }}>{data.datasetfields.conformsTo}</Linkify>
-                                                                            </Col>
-                                                                        ) : (
-                                                                                <Col sm={10} className='gray800-14-opacity'>
-                                                                                    Not specified
+																	{data.datasetfields.conformsTo ? (
+																		<Col sm={10} className='gray800-14 overflowWrap'>
+																			<Linkify properties={{ target: '_blank' }}>{data.datasetfields.conformsTo}</Linkify>
 																		</Col>
-                                                                            )}
-                                                                    </Row>
-                                                                </div>
-                                                            </Col>
-                                                        </Row>
+																	) : (
+																		<Col sm={10} className='gray800-14-opacity'>
+																			Not specified
+																		</Col>
+																	)}
+																</Row>
+															</div>
+														</Col>
+													</Row>
 
-                                                        <Row className='mt-1'>
-                                                            <Col sm={12}>
-                                                                <div className='rectangle'>
-                                                                    <Row className='gray800-14-bold'>
-                                                                        <Col sm={12}>Data access</Col>
-                                                                    </Row>
-                                                                    <Row className='mt-3'>
-                                                                        <Col sm={2} className='gray800-14'>
-                                                                            Access rights
+													<Row className='mt-1'>
+														<Col sm={12}>
+															<div className='rectangle'>
+																<Row className='gray800-14-bold'>
+																	<Col sm={12}>Data access</Col>
+																</Row>
+																<Row className='mt-3'>
+																	<Col sm={2} className='gray800-14'>
+																		Access rights
 																	</Col>
-                                                                        {data.datasetfields.accessRights ? (
-                                                                            <Col sm={10} className='gray800-14'>
-                                                                                <Linkify properties={{ target: '_blank' }}>{data.datasetfields.accessRights}</Linkify>
-                                                                            </Col>
-                                                                        ) : (
-                                                                                <Col sm={10} className='gray800-14-opacity'>
-                                                                                    Not specified
+																	{data.datasetfields.accessRights ? (
+																		<Col sm={10} className='gray800-14'>
+																			<Linkify properties={{ target: '_blank' }}>{data.datasetfields.accessRights}</Linkify>
 																		</Col>
-                                                                            )}
-                                                                    </Row>
-                                                                    <Row className='mt-2'>
-                                                                        <Col sm={2} className='gray800-14'>
-                                                                            License
+																	) : (
+																		<Col sm={10} className='gray800-14-opacity'>
+																			Not specified
+																		</Col>
+																	)}
+																</Row>
+																<Row className='mt-2'>
+																	<Col sm={2} className='gray800-14'>
+																		License
 																	</Col>
-                                                                        {data.license ? (
-                                                                            <Col sm={10} className='gray800-14'>
-                                                                                <Linkify properties={{ target: '_blank' }}>{data.license}</Linkify>
-                                                                            </Col>
-                                                                        ) : (
-                                                                                <Col sm={10} className='gray800-14-opacity'>
-                                                                                    Not specified
+																	{data.license ? (
+																		<Col sm={10} className='gray800-14'>
+																			<Linkify properties={{ target: '_blank' }}>{data.license}</Linkify>
 																		</Col>
-                                                                            )}
-                                                                    </Row>
-                                                                    <Row className='mt-2'>
-                                                                        <Col sm={2} className='gray800-14'>
-                                                                            Request time
+																	) : (
+																		<Col sm={10} className='gray800-14-opacity'>
+																			Not specified
+																		</Col>
+																	)}
+																</Row>
+																<Row className='mt-2'>
+																	<Col sm={2} className='gray800-14'>
+																		Request time
 																	</Col>
-                                                                        {data.datasetfields.accessRequestDuration ? (
-                                                                            <Col sm={10} className='gray800-14'>
-                                                                                <Linkify properties={{ target: '_blank' }}>{data.datasetfields.accessRequestDuration}</Linkify>
-                                                                            </Col>
-                                                                        ) : (
-                                                                                <Col sm={10} className='gray800-14-opacity'>
-                                                                                    Not specified
+																	{data.datasetfields.accessRequestDuration ? (
+																		<Col sm={10} className='gray800-14'>
+																			<Linkify properties={{ target: '_blank' }}>{data.datasetfields.accessRequestDuration}</Linkify>
 																		</Col>
-                                                                            )}
-                                                                    </Row>
-                                                                </div>
-                                                            </Col>
-                                                        </Row>
+																	) : (
+																		<Col sm={10} className='gray800-14-opacity'>
+																			Not specified
+																		</Col>
+																	)}
+																</Row>
+															</div>
+														</Col>
+													</Row>
 
-                                                        <Row className='mt-1'>
-                                                            <Col sm={12}>
-                                                                <div className='rectangle'>
-                                                                    <Row className='gray800-14-bold'>
-                                                                        <Col sm={10}>Coverage</Col>
-                                                                    </Row>
-                                                                    <Row className='mt-3'>
-                                                                        <Col sm={3} className='gray800-14'>
-                                                                            Jurisdiction
+													<Row className='mt-1'>
+														<Col sm={12}>
+															<div className='rectangle'>
+																<Row className='gray800-14-bold'>
+																	<Col sm={10}>Coverage</Col>
+																</Row>
+																<Row className='mt-3'>
+																	<Col sm={3} className='gray800-14'>
+																		Jurisdiction
 																	</Col>
-                                                                        {data.datasetfields.jurisdiction ? (
-                                                                            <Col sm={9} className='gray800-14'>
-                                                                                {data.datasetfields.jurisdiction}
-                                                                            </Col>
-                                                                        ) : (
-                                                                                <Col sm={9} className='gray800-14-opacity'>
-                                                                                    Not specified
+																	{data.datasetfields.jurisdiction ? (
+																		<Col sm={9} className='gray800-14'>
+																			{data.datasetfields.jurisdiction}
 																		</Col>
-                                                                            )}
-                                                                    </Row>
-                                                                    <Row className='mt-2'>
-                                                                        <Col sm={3} className='gray800-14'>
-                                                                            Geographic coverage
+																	) : (
+																		<Col sm={9} className='gray800-14-opacity'>
+																			Not specified
+																		</Col>
+																	)}
+																</Row>
+																<Row className='mt-2'>
+																	<Col sm={3} className='gray800-14'>
+																		Geographic coverage
 																	</Col>
-                                                                        {data.datasetfields.geographicCoverage ? (
-                                                                            <Col sm={9} className='gray800-14'>
-                                                                                {data.datasetfields.geographicCoverage.toString()}
-                                                                            </Col>
-                                                                        ) : (
-                                                                                <Col sm={9} className='gray800-14-opacity'>
-                                                                                    Not specified
+																	{data.datasetfields.geographicCoverage ? (
+																		<Col sm={9} className='gray800-14'>
+																			{data.datasetfields.geographicCoverage.toString()}
 																		</Col>
-                                                                            )}
-                                                                    </Row>
-                                                                    <Row className='mt-2'>
-                                                                        <Col sm={3} className='gray800-14'>
-                                                                            Dataset start date
+																	) : (
+																		<Col sm={9} className='gray800-14-opacity'>
+																			Not specified
+																		</Col>
+																	)}
+																</Row>
+																<Row className='mt-2'>
+																	<Col sm={3} className='gray800-14'>
+																		Dataset start date
 																	</Col>
-                                                                        {data.datasetfields.datasetStartDate ? (
-                                                                            <Col sm={9} className='gray800-14'>
-                                                                                {data.datasetfields.datasetStartDate}
-                                                                            </Col>
-                                                                        ) : (
-                                                                                <Col sm={9} className='gray800-14-opacity'>
-                                                                                    Not specified
+																	{data.datasetfields.datasetStartDate ? (
+																		<Col sm={9} className='gray800-14'>
+																			{data.datasetfields.datasetStartDate}
 																		</Col>
-                                                                            )}
-                                                                    </Row>
-                                                                    <Row className='mt-2'>
-                                                                        <Col sm={3} className='gray800-14'>
-                                                                            Dataset end date
+																	) : (
+																		<Col sm={9} className='gray800-14-opacity'>
+																			Not specified
+																		</Col>
+																	)}
+																</Row>
+																<Row className='mt-2'>
+																	<Col sm={3} className='gray800-14'>
+																		Dataset end date
 																	</Col>
-                                                                        {data.datasetfields.datasetEndDate ? (
-                                                                            <Col sm={9} className='gray800-14'>
-                                                                                {data.datasetfields.datasetEndDate}
-                                                                            </Col>
-                                                                        ) : (
-                                                                                <Col sm={9} className='gray800-14-opacity'>
-                                                                                    Not specified
+																	{data.datasetfields.datasetEndDate ? (
+																		<Col sm={9} className='gray800-14'>
+																			{data.datasetfields.datasetEndDate}
 																		</Col>
-                                                                            )}
-                                                                    </Row>
-                                                                </div>
-                                                            </Col>
-                                                        </Row>
+																	) : (
+																		<Col sm={9} className='gray800-14-opacity'>
+																			Not specified
+																		</Col>
+																	)}
+																</Row>
+															</div>
+														</Col>
+													</Row>
 
-                                                        <Row className='mt-1'>
-                                                            <Col sm={12}>
-                                                                <div className='rectangle'>
-                                                                    <Row className='gray800-14-bold'>
-                                                                        <Col sm={12}>Demographics</Col>
-                                                                    </Row>
-                                                                    <Row className='mt-3'>
-                                                                        <Col sm={3} className='gray800-14'>
-                                                                            Statistical population
+													<Row className='mt-1'>
+														<Col sm={12}>
+															<div className='rectangle'>
+																<Row className='gray800-14-bold'>
+																	<Col sm={12}>Demographics</Col>
+																</Row>
+																<Row className='mt-3'>
+																	<Col sm={3} className='gray800-14'>
+																		Statistical population
 																	</Col>
-                                                                        {data.datasetfields.statisticalPopulation ? (
-                                                                            <Col sm={9} className='gray800-14'>
-                                                                                {data.datasetfields.statisticalPopulation}
-                                                                            </Col>
-                                                                        ) : (
-                                                                                <Col sm={9} className='gray800-14-opacity'>
-                                                                                    Not specified
+																	{data.datasetfields.statisticalPopulation ? (
+																		<Col sm={9} className='gray800-14'>
+																			{data.datasetfields.statisticalPopulation}
 																		</Col>
-                                                                            )}
-                                                                    </Row>
-                                                                    <Row className='mt-2'>
-                                                                        <Col sm={3} className='gray800-14'>
-                                                                            Age band
+																	) : (
+																		<Col sm={9} className='gray800-14-opacity'>
+																			Not specified
+																		</Col>
+																	)}
+																</Row>
+																<Row className='mt-2'>
+																	<Col sm={3} className='gray800-14'>
+																		Age band
 																	</Col>
-                                                                        {data.datasetfields.ageBand ? (
-                                                                            <Col sm={9} className='gray800-14'>
-                                                                                {data.datasetfields.ageBand}
-                                                                            </Col>
-                                                                        ) : (
-                                                                                <Col sm={9} className='gray800-14-opacity'>
-                                                                                    Not specified
+																	{data.datasetfields.ageBand ? (
+																		<Col sm={9} className='gray800-14'>
+																			{data.datasetfields.ageBand}
 																		</Col>
-                                                                            )}
-                                                                    </Row>
-                                                                </div>
-                                                            </Col>
-                                                        </Row>
+																	) : (
+																		<Col sm={9} className='gray800-14-opacity'>
+																			Not specified
+																		</Col>
+																	)}
+																</Row>
+															</div>
+														</Col>
+													</Row>
 
-                                                        <Row className='mt-1'>
-                                                            <Col sm={12}>
-                                                                <div className='rectangle'>
-                                                                    <Row className='gray800-14-bold'>
-                                                                        <Col sm={12}>Related resources</Col>
-                                                                    </Row>
-                                                                    <Row className='mt-3'>
-                                                                        <Col sm={3} className='gray800-14'>
-                                                                            Physical sample availability
+													<Row className='mt-1'>
+														<Col sm={12}>
+															<div className='rectangle'>
+																<Row className='gray800-14-bold'>
+																	<Col sm={12}>Related resources</Col>
+																</Row>
+																<Row className='mt-3'>
+																	<Col sm={3} className='gray800-14'>
+																		Physical sample availability
 																	</Col>
-                                                                        {data.datasetfields.physicalSampleAvailability ? (
-                                                                            <Col sm={9} className='gray800-14'>
-                                                                                <Linkify properties={{ target: '_blank' }}>{data.datasetfields.physicalSampleAvailability}</Linkify>
-                                                                            </Col>
-                                                                        ) : (
-                                                                                <Col sm={9} className='gray800-14-opacity'>
-                                                                                    Not specified
+																	{data.datasetfields.physicalSampleAvailability ? (
+																		<Col sm={9} className='gray800-14'>
+																			<Linkify properties={{ target: '_blank' }}>{data.datasetfields.physicalSampleAvailability}</Linkify>
 																		</Col>
-                                                                            )}
-                                                                    </Row>
-                                                                </div>
-                                                            </Col>
-                                                        </Row>
-                                                    </>
-                                                )}
+																	) : (
+																		<Col sm={9} className='gray800-14-opacity'>
+																			Not specified
+																		</Col>
+																	)}
+																</Row>
+															</div>
+														</Col>
+													</Row>
+												</>
+											)}
 
-                                            {!_.isNil(data.datasetfields.phenotypes) && data.datasetfields.phenotypes.length > 0 ? (
-                                                <Fragment>
-                                                    <Row className='mt-1'>
-                                                        <Col sm={12}>
-                                                            <div className='rectangle'>
-                                                                <Row className='gray800-14-bold'>
-                                                                    <Col sm={12}>
-                                                                        <span className='mr-3'>Phenotypes</span>
+											{!_.isNil(data.datasetfields.phenotypes) && data.datasetfields.phenotypes.length > 0 ? (
+												<Fragment>
+													<Row className='mt-1'>
+														<Col sm={12}>
+															<div className='rectangle'>
+																<Row className='gray800-14-bold'>
+																	<Col sm={12}>
+																		<span className='mr-3'>Phenotypes</span>
 
-                                                                        <span onMouseEnter={this.handleMouseHover} onMouseLeave={this.handleMouseHover}>
-                                                                            {this.state.isHoveringPhenotypes ? <InfoFillSVG /> : <InfoSVG />}
-                                                                        </span>
+																		<span onMouseEnter={this.handleMouseHover} onMouseLeave={this.handleMouseHover}>
+																			{this.state.isHoveringPhenotypes ? <InfoFillSVG /> : <InfoSVG />}
+																		</span>
 
-                                                                        {this.state.isHoveringPhenotypes && (
-                                                                            <div className='dataClassToolTip'>
-                                                                                <span className='white-13-semibold'>
-                                                                                    When patients interact with physicians, or are admitted into hospital, information is collected
+																		{this.state.isHoveringPhenotypes && (
+																			<div className='dataClassToolTip'>
+																				<span className='white-13-semibold'>
+																					When patients interact with physicians, or are admitted into hospital, information is collected
 																					electronically on their symptoms, diagnoses, laboratory test results, and prescriptions and stored
 																					in Electronic Health Records (EHR). EHR are a valuable resource for researchers and clinicians for
 																					improving health and healthcare. Phenotyping algorithms are complex computer programs that extract
 																					useful information from EHR so they can be used for health research.
 																				</span>
-                                                                            </div>
-                                                                        )}
-                                                                    </Col>
-                                                                </Row>
-                                                                <Row className='mt-2'>
-                                                                    <Col sm={12} className='gray800-14'>
-                                                                        Below are the phenotypes identified in this dataset through a phenotyping algorithm.
+																			</div>
+																		)}
 																	</Col>
-                                                                </Row>
-                                                                <Row className='mt-3'>
-                                                                    {!showAllPhenotype
-                                                                        ? data.datasetfields.phenotypes.slice(0, 20).map(phenotype => {
-                                                                            return (
-                                                                                <Fragment>
-                                                                                    <Col xs={6} lg={3} className='mb-2'>
-                                                                                        <a href={phenotype.url} rel='noopener noreferrer' className='purple-14'>
-                                                                                            {phenotype.name}
-                                                                                        </a>
-                                                                                    </Col>
-                                                                                    <Col xs={6} lg={3} className='gray800-14-opacity'>
-                                                                                        {phenotype.type}
-                                                                                    </Col>
-                                                                                </Fragment>
-                                                                            );
-                                                                        })
-                                                                        : data.datasetfields.phenotypes.map(phenotype => {
-                                                                            return (
-                                                                                <Fragment>
-                                                                                    <Col xs={6} lg={3} className='mb-2'>
-                                                                                        <a href={phenotype.url} rel='noopener noreferrer' className='purple-14'>
-                                                                                            {phenotype.name}
-                                                                                        </a>
-                                                                                    </Col>
-                                                                                    <Col xs={6} lg={3} className='gray800-14-opacity'>
-                                                                                        {phenotype.type}
-                                                                                    </Col>
-                                                                                </Fragment>
-                                                                            );
-                                                                        })}
-                                                                </Row>
-                                                                {!showAllPhenotype && data.datasetfields.phenotypes.length > 20 ? (
-                                                                    <Row className='mt-3 text-center'>
-                                                                        <Col sm={12} className='purple-14'>
-                                                                            <span onClick={() => this.showAllPhenotypes()} style={{ cursor: 'pointer' }}>
-                                                                                Show all phenotypes
+																</Row>
+																<Row className='mt-2'>
+																	<Col sm={12} className='gray800-14'>
+																		Below are the phenotypes identified in this dataset through a phenotyping algorithm.
+																	</Col>
+																</Row>
+																<Row className='mt-3'>
+																	{!showAllPhenotype
+																		? data.datasetfields.phenotypes.slice(0, 20).map(phenotype => {
+																				return (
+																					<Fragment>
+																						<Col xs={6} lg={3} className='mb-2'>
+																							<a href={phenotype.url} rel='noopener noreferrer' className='purple-14'>
+																								{phenotype.name}
+																							</a>
+																						</Col>
+																						<Col xs={6} lg={3} className='gray800-14-opacity'>
+																							{phenotype.type}
+																						</Col>
+																					</Fragment>
+																				);
+																		  })
+																		: data.datasetfields.phenotypes.map(phenotype => {
+																				return (
+																					<Fragment>
+																						<Col xs={6} lg={3} className='mb-2'>
+																							<a href={phenotype.url} rel='noopener noreferrer' className='purple-14'>
+																								{phenotype.name}
+																							</a>
+																						</Col>
+																						<Col xs={6} lg={3} className='gray800-14-opacity'>
+																							{phenotype.type}
+																						</Col>
+																					</Fragment>
+																				);
+																		  })}
+																</Row>
+																{!showAllPhenotype && data.datasetfields.phenotypes.length > 20 ? (
+																	<Row className='mt-3 text-center'>
+																		<Col sm={12} className='purple-14'>
+																			<span onClick={() => this.showAllPhenotypes()} style={{ cursor: 'pointer' }}>
+																				Show all phenotypes
 																			</span>
-                                                                        </Col>
-                                                                    </Row>
-                                                                ) : (
-                                                                        ''
-                                                                    )}
-                                                            </div>
-                                                        </Col>
-                                                    </Row>
-                                                </Fragment>
-                                            ) : (
-                                                    ''
-                                                )}
+																		</Col>
+																	</Row>
+																) : (
+																	''
+																)}
+															</div>
+														</Col>
+													</Row>
+												</Fragment>
+											) : (
+												''
+											)}
 
-                                            {!_.isEmpty(v2data) && !_.isEmpty(v2data.enrichmentAndLinkage.qualifiedRelation) ? (
-                                                <Fragment>
-                                                    <Row className='mt-1'>
-                                                        <Col sm={12}>
-                                                            <div className='rectangle'>
-                                                                <Row className='gray800-14-bold'>
-                                                                    <Col sm={12}>
-                                                                        <span className='gray800-14-bold'>Linked datasets</span>
-                                                                    </Col>
-                                                                </Row>
-                                                            </div>
-                                                        </Col>
-                                                    </Row>
+											{!_.isEmpty(v2data) && !_.isEmpty(v2data.enrichmentAndLinkage.qualifiedRelation) ? (
+												<Fragment>
+													<Row className='mt-1'>
+														<Col sm={12}>
+															<div className='rectangle'>
+																<Row className='gray800-14-bold'>
+																	<Col sm={12}>
+																		<span className='gray800-14-bold'>Linked datasets</span>
+																	</Col>
+																</Row>
+															</div>
+														</Col>
+													</Row>
 
-                                                    {linkedDatasets.map(relation => (
-                                                        <Row className='pixelGapTop'>
-                                                            <Col sm={12} m={12}>
-                                                                <div className='rectangle'>
-                                                                    <Row className='gray800-14-bold'>
-                                                                        <Col sm={9} m={9} lg={9}>
-                                                                            <Row>
-                                                                                <Col sm={1} m={1} lg={1}>
-                                                                                    <SVGIcon
-                                                                                        name={
-                                                                                            relation.type === 'gatewaylink'
-                                                                                                ? 'dataseticon'
-                                                                                                : relation.type === 'externallink'
-                                                                                                    ? 'externallink'
-                                                                                                    : 'searchicon'
-                                                                                        }
-                                                                                        fill={'#475da7'}
-                                                                                        className='svg-16 mr-2'
-                                                                                        viewBox='-2 -2 20 20'
-                                                                                    />
-                                                                                </Col>
-                                                                                <Col sm={11} m={11} lg={11} className='datasetLinked'>
-                                                                                    {relation.type === 'gatewaylink' ? (
-                                                                                        <span>
-                                                                                            <a
-                                                                                                href={'/dataset/' + relation.id}
-                                                                                                target='_blank'
-                                                                                                rel='noopener noreferrer'
-                                                                                                className='gray800-14-bold pointer overflowWrap'>
-                                                                                                {relation.title}
-                                                                                            </a>
-                                                                                        </span>
-                                                                                    ) : relation.type === 'externallink' ? (
-                                                                                        <Linkify componentDecorator={componentDecorator}>{relation.title}</Linkify>
-                                                                                    ) : (
-                                                                                                <span className='gray800-14-bold overflowWrap'>{relation.title}</span>
-                                                                                            )}
-                                                                                </Col>
-                                                                            </Row>
-                                                                            <Row>
-                                                                                <Col sm={1} m={1} lg={1} />
-                                                                                <Col sm={11} m={11} lg={11} className='datasetLinked'>
-                                                                                    <span className='gray800-14'>{relation.info}</span>
-                                                                                </Col>
-                                                                            </Row>
-                                                                        </Col>
-                                                                        <Col sm={3} m={3} lg={3}>
-                                                                            {relation.type === 'text' ? (
-                                                                                <Button
-                                                                                    variant='white'
-                                                                                    href={'/search?search=' + relation.title}
-                                                                                    target='_blank'
-                                                                                    className='gatewaySearchButton floatRightLinkedDataset'>
-                                                                                    Search on gateway
+													{linkedDatasets.map(relation => (
+														<Row className='pixelGapTop'>
+															<Col sm={12} m={12}>
+																<div className='rectangle'>
+																	<Row className='gray800-14-bold'>
+																		<Col sm={9} m={9} lg={9}>
+																			<Row>
+																				<Col sm={1} m={1} lg={1}>
+																					<SVGIcon
+																						name={
+																							relation.type === 'gatewaylink'
+																								? 'dataseticon'
+																								: relation.type === 'externallink'
+																								? 'externallink'
+																								: 'searchicon'
+																						}
+																						fill={'#475da7'}
+																						className='svg-16 mr-2'
+																						viewBox='-2 -2 20 20'
+																					/>
+																				</Col>
+																				<Col sm={11} m={11} lg={11} className='datasetLinked'>
+																					{relation.type === 'gatewaylink' ? (
+																						<span>
+																							<a
+																								href={'/dataset/' + relation.id}
+																								target='_blank'
+																								rel='noopener noreferrer'
+																								className='gray800-14-bold pointer overflowWrap'>
+																								{relation.title}
+																							</a>
+																						</span>
+																					) : relation.type === 'externallink' ? (
+																						<Linkify componentDecorator={componentDecorator}>{relation.title}</Linkify>
+																					) : (
+																						<span className='gray800-14-bold overflowWrap'>{relation.title}</span>
+																					)}
+																				</Col>
+																			</Row>
+																			<Row>
+																				<Col sm={1} m={1} lg={1} />
+																				<Col sm={11} m={11} lg={11} className='datasetLinked'>
+																					<span className='gray800-14'>{relation.info}</span>
+																				</Col>
+																			</Row>
+																		</Col>
+																		<Col sm={3} m={3} lg={3}>
+																			{relation.type === 'text' ? (
+																				<Button
+																					variant='white'
+																					href={'/search?search=' + relation.title}
+																					target='_blank'
+																					className='gatewaySearchButton floatRightLinkedDataset'>
+																					Search on gateway
 																				</Button>
-                                                                            ) : (
-                                                                                    ''
-                                                                                )}
-                                                                        </Col>
-                                                                    </Row>
-                                                                </div>
-                                                            </Col>
-                                                        </Row>
-                                                    ))}
-                                                </Fragment>
-                                            ) : (
-                                                    ''
-                                                )}
+																			) : (
+																				''
+																			)}
+																		</Col>
+																	</Row>
+																</div>
+															</Col>
+														</Row>
+													))}
+												</Fragment>
+											) : (
+												''
+											)}
 
-                                            {!_.isEmpty(v2data) ? (
-                                                <>
-                                                    <Row>
-                                                        <Col sm={12} lg={12} className='gray800-14 datasetEmptyInfo'>
-                                                            Data custodians are responsible for providing information about each dataset. Not all fields have been
+											{!_.isEmpty(v2data) ? (
+												<>
+													<Row>
+														<Col sm={12} lg={12} className='gray800-14 datasetEmptyInfo'>
+															Data custodians are responsible for providing information about each dataset. Not all fields have been
 															completed in this case. We hide empty fields to make the page easier to read, but you can choose to view them.
 														</Col>
-                                                    </Row>
-                                                    <Row>
-                                                        <Col sm={12} lg={12} className='centerText'>
-                                                            <Button onClick={() => this.showHideAllEmpty()} variant='medium' className='datasetEmptyButton dark-14 mr-2'>
-                                                                {showEmpty === false
-                                                                    ? `Show all empty fields (${emptyFieldsCount})`
-                                                                    : `Hide all empty fields (${emptyFieldsCount})`}
-                                                            </Button>
-                                                        </Col>
-                                                    </Row>
-                                                </>
-                                            ) : (
-                                                    ''
-                                                )}
-                                        </Tab>
+													</Row>
+													<Row>
+														<Col sm={12} lg={12} className='centerText'>
+															<Button onClick={() => this.showHideAllEmpty()} variant='medium' className='datasetEmptyButton dark-14 mr-2'>
+																{showEmpty === false
+																	? `Show all empty fields (${emptyFieldsCount})`
+																	: `Hide all empty fields (${emptyFieldsCount})`}
+															</Button>
+														</Col>
+													</Row>
+												</>
+											) : (
+												''
+											)}
+										</Tab>
 
-                                        <Tab eventKey='TechDetails' title={`Technical details`}>
-                                            {dataClassOpen === -1 ? (
-                                                <Fragment>
-                                                    <Col sm={12} lg={12} className='subHeader gray800-14-bold pad-bottom-24 pad-top-24'>
-                                                        <span className='black-16-semibold mr-3'>Data Classes</span>
-                                                        <span onMouseEnter={this.handleMouseHover} onMouseLeave={this.handleMouseHover}>
-                                                            {this.state.isHovering ? <InfoFillSVG /> : <InfoSVG />}
-                                                        </span>
+										<Tab eventKey='TechDetails' title={`Technical details`}>
+											{dataClassOpen === -1 ? (
+												<Fragment>
+													<Col sm={12} lg={12} className='subHeader gray800-14-bold pad-bottom-24 pad-top-24'>
+														<span className='black-16-semibold mr-3'>Data Classes</span>
+														<span onMouseEnter={this.handleMouseHover} onMouseLeave={this.handleMouseHover}>
+															{this.state.isHovering ? <InfoFillSVG /> : <InfoSVG />}
+														</span>
 
-                                                        {this.state.isHovering && (
-                                                            <div className='dataClassToolTip'>
-                                                                <span className='white-13-semibold'>
-                                                                    A Dataset contains a number of Data Classes: groupings or collections of data points that share some
+														{this.state.isHovering && (
+															<div className='dataClassToolTip'>
+																<span className='white-13-semibold'>
+																	A Dataset contains a number of Data Classes: groupings or collections of data points that share some
 																	common context: for example appearing in the same table of a database, or the same section in a form. A
 																	data class has a name, a description, some aliases, and may contain further (sub-) data classes.
 																</span>
-                                                            </div>
-                                                        )}
-                                                    </Col>
+															</div>
+														)}
+													</Col>
 
-                                                    <Row style={{ width: '-webkit-fill-available' }}>
-                                                        <Col
-                                                            sm={12}
-                                                            lg={12}
-                                                            className={technicalMetadata && technicalMetadata.length > 0 ? 'margin-left-15 width-100' : 'width-100'}>
-                                                            {technicalMetadata && technicalMetadata.length > 0 ? (
-                                                                technicalMetadata.map((techMetadata, index) => (
-                                                                    <TechnicalMetadata
-                                                                        key={`techMetadata-${index}`}
-                                                                        technicalMetadata={techMetadata}
-                                                                        index={index}
-                                                                        doUpdateDataClassOpen={this.doUpdateDataClassOpen}
-                                                                    />
-                                                                ))
-                                                            ) : (
-                                                                    <NotFound word='technical details' />
-                                                                )}
-                                                        </Col>
-                                                    </Row>
-                                                </Fragment>
-                                            ) : (
-                                                    <Row style={{ width: '-webkit-fill-available' }}>
-                                                        <Col sm={12} lg={12}>
-                                                            <TechnicalDetailsPage
-                                                                technicalMetadata={technicalMetadata[dataClassOpen]}
-                                                                doUpdateDataClassOpen={this.doUpdateDataClassOpen}
-                                                            />
-                                                        </Col>
-                                                    </Row>
-                                                )}
-                                        </Tab>
+													<Row style={{ width: '-webkit-fill-available' }}>
+														<Col
+															sm={12}
+															lg={12}
+															className={technicalMetadata && technicalMetadata.length > 0 ? 'margin-left-15 width-100' : 'width-100'}>
+															{technicalMetadata && technicalMetadata.length > 0 ? (
+																technicalMetadata.map((techMetadata, index) => (
+																	<TechnicalMetadata
+																		key={`techMetadata-${index}`}
+																		technicalMetadata={techMetadata}
+																		index={index}
+																		doUpdateDataClassOpen={this.doUpdateDataClassOpen}
+																	/>
+																))
+															) : (
+																<NotFound word='technical details' />
+															)}
+														</Col>
+													</Row>
+												</Fragment>
+											) : (
+												<Row style={{ width: '-webkit-fill-available' }}>
+													<Col sm={12} lg={12}>
+														<TechnicalDetailsPage
+															technicalMetadata={technicalMetadata[dataClassOpen]}
+															doUpdateDataClassOpen={this.doUpdateDataClassOpen}
+														/>
+													</Col>
+												</Row>
+											)}
+										</Tab>
 
-                                        <Tab eventKey='DataUtility' title={`Data utility`}>
-                                            <Row className='mt-2'>
-                                                <Col sm={12}>
-                                                    <div className='rectangle pad-bottom-16'>
-                                                        <Row>
-                                                            <Col sm={12} lg={12} className='pad-left-14'>
-                                                                <span className='pad-top-24 pad-bottom-16  gray800-14-bold mr-3'>Data utility</span>
+										<Tab eventKey='DataUtility' title={`Data utility`}>
+											<Row className='mt-2'>
+												<Col sm={12}>
+													<div className='rectangle pad-bottom-16'>
+														<Row>
+															<Col sm={12} lg={12} className='pad-left-14'>
+																<span className='pad-top-24 pad-bottom-16  gray800-14-bold mr-3'>Data utility</span>
 
-                                                                <DataUtitlityFramework />
-                                                            </Col>
-                                                        </Row>
+																<DataUtitlityFramework />
+															</Col>
+														</Row>
 
-                                                        <Row className='mt-3'>
-                                                            <Col sm={12} className='gray-deep-14'>
-                                                                <span className='gray-deep-14'>
-                                                                    The Data Utility Framework scores datasets on 5 categories and a range of dimensions, and is used to refer
+														<Row className='mt-3'>
+															<Col sm={12} className='gray-deep-14'>
+																<span className='gray-deep-14'>
+																	The Data Utility Framework scores datasets on 5 categories and a range of dimensions, and is used to refer
 																	to the usefulness of a dataset for a given purpose. This framework enables:
 																</span>
-                                                                <ul className='gray-deep-14 margin-top-8'>
-                                                                    <li>Data custodians to communicate the utility of their dataset, and improvements made in the dataset</li>
-                                                                    <li>Users to identify datasets that meet the minimum requirements for their specific purpose</li>
-                                                                    <li>
-                                                                        Systems leaders and funders to identify where to invest in data utility improvements, and to evaluate
+																<ul className='gray-deep-14 margin-top-8'>
+																	<li>Data custodians to communicate the utility of their dataset, and improvements made in the dataset</li>
+																	<li>Users to identify datasets that meet the minimum requirements for their specific purpose</li>
+																	<li>
+																		Systems leaders and funders to identify where to invest in data utility improvements, and to evaluate
 																		what improvements have happened as a result of their investments
 																	</li>
-                                                                </ul>
-                                                                <span>
-                                                                    Some datasets will not yet have a data utility rating and some may only have a rating for metadata
+																</ul>
+																<span>
+																	Some datasets will not yet have a data utility rating and some may only have a rating for metadata
 																	richness.
 																</span>
                                                             </Col>
@@ -1478,7 +1478,7 @@ class DatasetDetail extends Component {
 
                                                         <Row>
                                                             {collections.map(collection => (
-                                                                <Col sm={12} md={12} lg={6} style={{ 'text-align': '-webkit-center' }}>
+                                                                <Col sm={12} md={12} lg={6} className='flexCenter'>
                                                                     <CollectionCard data={collection} />
                                                                 </Col>
                                                             ))}

@@ -1877,7 +1877,7 @@ class SearchPage extends React.Component {
 											<Row className='mt-5'>
 												{collectionData.map(collection => {
 													return (
-														<Col sm={12} md={12} lg={6} style={{ 'text-align': '-webkit-center' }}>
+														<Col sm={12} md={12} lg={6} className='flexCenter'>
 															<CollectionCard key={collection.id} data={collection} />
 														</Col>
 													);
