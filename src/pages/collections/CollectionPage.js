@@ -216,7 +216,7 @@ export const CollectionPage = props => {
 
 					<Row>
 						<Col md={3} lg={2} />
-						<Col md={6} lg={8} className='centerImage'>
+						<Col md={6} lg={8} className='flexCenter'>
 							{!collectionData.imageLink || collectionData.imageLink === 'https://' ? (
 								<div id='defaultCollectionImage' className='margin-right-1' />
 							) : (
@@ -261,15 +261,15 @@ export const CollectionPage = props => {
 							{collectionData.persons.map((person, index) => {
 								if (index > 0) {
 									return (
-										<span className='gray800-14' key={index}>
+										<a className='gray800-14' href={'/person/' + person.id} key={index}>
 											, {person.firstname} {person.lastname}
-										</span>
+										</a>
 									);
 								} else {
 									return (
-										<span className='gray800-14' key={index}>
+										<a className='gray800-14' href={'/person/' + person.id} key={index}>
 											{person.firstname} {person.lastname}
-										</span>
+										</a>
 									);
 								}
 							})}
