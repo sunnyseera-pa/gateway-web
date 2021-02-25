@@ -12,7 +12,7 @@ import UploadFiles from './UploadFiles';
 import AllFiles from './AllFiles';
 import NoFiles from './NoFiles';
 
-const Uploads = ({ id, files, onFilesUpdate, readOnly, initialFilesLoad }) => {
+const Uploads = ({ id, files, onFilesUpdate, readOnly}) => {
   // 10mb - 10485760
   // 2mb - 2097152
   const maxSize = 10485760;
@@ -20,7 +20,6 @@ const Uploads = ({ id, files, onFilesUpdate, readOnly, initialFilesLoad }) => {
   const [uploadFiles, setUploadFiles] = useState([]);
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [download, showDownload] = useState(true);
 
   const onRemoveFile = (file) => {
     const newFiles = [...uploadFiles].filter((f) => {
@@ -173,25 +172,29 @@ const Uploads = ({ id, files, onFilesUpdate, readOnly, initialFilesLoad }) => {
     }
   }
 
-  const updateDARFileState = (files, initalLoading) => {
-    onFilesUpdate(files, initalLoading);
-  }
- 
   useEffect(() => {
-    let timer;
-    if(!initialFilesLoad) {
-      showDownload(false);
-      timer = setTimeout(() => {
-        showDownload(true);
-        updateDARFileState(files, false);
-       }, 45000);
-      }
-      return () =>  {
-        if(!initialFilesLoad) {
-          clearTimeout(timer);
+    let timer = setInterval(() => {
+      files.forEach(file => {
+         if(file.status === fileStatus.NEWFILE || file.status === fileStatus.UPLOADED){
+          axios.get(`${baseURL}/api/v1/data-access-request/${id}/file/${file.fileId}/status`)
+          .then(response => {
+            file.status = response.data.status;
+            if(file.status === fileStatus.SCANNED || file.status === fileStatus.QUARANTINED || file.status === fileStatus.ERROR){
+                onFilesUpdate(files,false);
+           }
+          })
+          .catch(err => {
+          console.log(err);
+          });
         }
-      };
-  }, [files, initialFilesLoad])
+      }
+      )
+    }, 10000);
+    return () => {
+      clearInterval(timer);
+    };
+  });
+
 
   // dropzone setup
   const { getRootProps, getInputProps } = useDropzone({
@@ -231,7 +234,6 @@ Max 10MB per file.</span>
       { files.length > 0 && 
         <AllFiles
           files={files}
-          download={download}
           downloadFile={downloadFile}
           deleteFile={deleteFile}
           readOnly={readOnly}
