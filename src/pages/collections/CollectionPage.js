@@ -261,15 +261,15 @@ export const CollectionPage = props => {
 							{collectionData.persons.map((person, index) => {
 								if (index > 0) {
 									return (
-										<span className='gray800-14' key={index}>
+										<a className='gray800-14' href={'/person/' + person.id} key={index}>
 											, {person.firstname} {person.lastname}
-										</span>
+										</a>
 									);
 								} else {
 									return (
-										<span className='gray800-14' key={index}>
+										<a className='gray800-14' href={'/person/' + person.id} key={index}>
 											{person.firstname} {person.lastname}
-										</span>
+										</a>
 									);
 								}
 							})}
