@@ -27,11 +27,11 @@ class CollectionCard extends React.Component {
 				<div className='flexCenter'>
 					<div className='collectionCard'>
 						{!data.imageLink || data.imageLink === 'https://' ? (
-							<div id='defaultCollectionCardImage' className='margin-right-1'>
+							<div className='defaultCollectionCardImage margin-right-1'>
 								<span className='badge-paper collectionBadge'>Collection</span>
 							</div>
 						) : (
-							<div id='collectionCardImage' style={{ backgroundImage: `url(${data.imageLink})` }}>
+							<div className='collectionCardImage' style={{ backgroundImage: `url(${data.imageLink})` }}>
 								<span className='badge-paper collectionBadge'>Collection</span>
 							</div>
 						)}
