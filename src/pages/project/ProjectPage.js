@@ -434,7 +434,7 @@ export const ProjectDetail = props => {
 										</Row>
 
 										<Row className='mt-2'>
-											<Col sm={12} className="mb-5">
+											<Col sm={12} className='mb-5'>
 												<div className='rectangle'>
 													<Row className='gray800-14-bold'>
 														<Col sm={12}>Collaborators</Col>
@@ -484,7 +484,7 @@ export const ProjectDetail = props => {
 
 												<Row>
 													{collections.map(collection => (
-														<Col sm={12} md={12} lg={6} style={{ 'text-align': '-webkit-center' }}>
+														<Col sm={12} md={12} lg={6} className='flexCenter'>
 															<CollectionCard data={collection} />
 														</Col>
 													))}
