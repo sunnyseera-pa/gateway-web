@@ -8,7 +8,7 @@ import { ReactComponent as TrashSVG } from '../../../../images/trash-alt-solid.s
 import Image from 'react-bootstrap/Image';
 import { Button, Modal} from 'react-bootstrap';
 
-export const AllFiles = ({ files, downloadFile, deleteFile, download, readOnly }) => {
+export const AllFiles = ({ files, downloadFile, deleteFile, readOnly }) => {
 
 	const [showDeleteModal,setShowDeleteModal] = useState(false);
 	const [fileToDelete,setFileToDelete] = useState({});
@@ -88,23 +88,28 @@ export const AllFiles = ({ files, downloadFile, deleteFile, download, readOnly }
 								</div>
 							</div>
 							<div className='column all-files-desc'>
-								{file.status === fileStatus.ERROR ? (
-									<Fragment>
-										<div className='error-alert'>
-											<SmallAttentionSVG /> {file.error}
-										</div>
-									</Fragment>
-								) : (
-									<Fragment>{file.description}</Fragment>
-								)}
-							</div>
-							<div className='column all-files-user'>
-								{file.status === fileStatus.ERROR ? '' : getOwner(file)}
-								{download ? renderDownload(file) : renderScan()}
-								{download && !readOnly ? renderDelete(file) : ''}
-							</div>
-						</div>
-					))}
+                                {file.status === fileStatus.ERROR ? (
+                                    <Fragment>
+                                        <div className='error-alert'>
+                                            <SmallAttentionSVG />An unexpected error has occurred
+                                        </div>
+                                    </Fragment>
+                                ) : (file.status === fileStatus.QUARANTINED) ? 
+                                    <Fragment>
+                                        <div className='error-alert'>
+                                            <SmallAttentionSVG />This file is infected and has been quarantined
+                                        </div>
+                                    </Fragment> : (
+                                    <Fragment>{file.description}</Fragment>
+                                )}
+                            </div>
+                            <div className='column all-files-user'>
+                                {file.status === fileStatus.ERROR || file.status === fileStatus.QUARANTINED ? '' : getOwner(file)}
+                                {file.status === fileStatus.SCANNED ? renderDownload(file) : ((file.status === fileStatus.NEWFILE || file.status === fileStatus.UPLOADED) ? renderScan() : '')}
+                                {file.status === fileStatus.SCANNED && !readOnly ? renderDelete(file) : ''}
+                            </div>
+                        </div>
+                    ))}
 
 <Modal
 					show={showDeleteModal}
