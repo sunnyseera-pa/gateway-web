@@ -5,14 +5,15 @@ import { ReactComponent as PaperSVG } from '../../../../images/paper.svg';
 import { ReactComponent as ArrowDownSVG } from '../../../../images/arrow-down.svg';
 import { ReactComponent as SmallAttentionSVG } from '../../../../images/small-attention.svg';
 import { ReactComponent as TrashSVG } from '../../../../images/trash-alt-solid.svg';
+import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
 import Image from 'react-bootstrap/Image';
-import { Button, Modal} from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 
 export const AllFiles = ({ files, downloadFile, deleteFile, readOnly }) => {
+	const [showDeleteModal, setShowDeleteModal] = useState(false);
+	const [fileToDelete, setFileToDelete] = useState({});
 
-	const [showDeleteModal,setShowDeleteModal] = useState(false);
-	const [fileToDelete,setFileToDelete] = useState({});
-	
+
 	const getOwner = file => {
 		let { owner } = file;
 		if (!_.isEmpty(owner)) {
@@ -59,14 +60,12 @@ export const AllFiles = ({ files, downloadFile, deleteFile, readOnly }) => {
 	const postDelete = file => {
 		deleteFile(file);
 		renderDeleteModal(false);
-	}
+	};
 
 	const renderDeleteModal = (show, file = {}) => {
 		setShowDeleteModal(show);
 		setFileToDelete(file);
 	};
-
-
 
 	return (
 		<div className='all-files'>
@@ -111,32 +110,35 @@ export const AllFiles = ({ files, downloadFile, deleteFile, readOnly }) => {
                         </div>
                     ))}
 
-<Modal
+				<Modal
 					show={showDeleteModal}
 					onHide={() => {
 						renderDeleteModal(false);
-					}}>
-					<Modal.Header closeButton>
-						<Modal.Title>Delete this file?</Modal.Title>
-					</Modal.Header>
-					<Modal.Body>This file will be deleted from the Gateway and Discourse.</Modal.Body>
-					<Modal.Footer>
-						<Button
-							variant='secondary'
-							onClick={() => {
-								renderDeleteModal(false);
-							}}>
-							No, nevermind
-						</Button>
-						<Button
-							variant='primary'
-							onClick={() => {
-								postDelete(fileToDelete);
-								
-							}}>
-							Yes, delete
-						</Button>
-					</Modal.Footer>
+					}}
+					aria-labelledby='contained-modal-title-vcenter'
+					centered
+					className='workflowModal'>
+					<div className='workflowModal-header'>
+						<h1 className='black-20-semibold'>Confirm action?</h1>
+						<CloseButtonSvg className='workflowModal-header--close' onClick={() => renderDeleteModal(false)} />
+					</div>
+
+					<div className='workflowModal-body'>This file will be deleted from the Gateway and Discourse.</div>
+					<div className='workflowModal-footer'>
+						<div className='workflowModal-footer--wrap'>
+							<Button variant='white' className='techDetailButton mr-2' onClick={() => renderDeleteModal(false)}>
+								No, nevermind
+							</Button>
+							<Button
+								variant='primary'
+								className='white-14-semibold'
+								onClick={() => {
+									postDelete(fileToDelete);
+								}}>
+								Yes, confirm action
+							</Button>
+						</div>
+					</div>
 				</Modal>
 			</Fragment>
 		</div>
