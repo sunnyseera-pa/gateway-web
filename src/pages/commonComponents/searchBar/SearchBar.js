@@ -780,7 +780,7 @@ class SearchBar extends React.Component {
 											<Dropdown.Item className='black-14' href={cmsURL + '/pages/about'}>
 												About
 											</Dropdown.Item>
-											<Dropdown.Item className='black-14' href={cmsURL + '/pages/community'}>
+											<Dropdown.Item className='black-14' href={communityLink}>
 												Community
 											</Dropdown.Item>
 											<Dropdown.Item className='black-14' href={'/dashboard'}>
