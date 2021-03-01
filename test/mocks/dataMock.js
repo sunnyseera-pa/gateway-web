@@ -279,6 +279,7 @@ const _collectionPage = {
 		{
 			_id: '5ff42da4cd8cef120d6aa185',
 			authors: [947228017269611],
+			keywords: ['test', 'keyword'],
 			relatedObjects: [
 				{
 					_id: '5ff42dcfcd8cef120d6aa189',
@@ -303,6 +304,7 @@ const _collectionPage = {
 			imageLink:
 				'https://www.geteducated.com/wp-content/uploads/2019/11/online-tutoring-concept-ebooks-internet-courses-process-vector-staff-vector-id1053519062.jpg',
 			activeflag: 'active',
+			publicflag: false,
 			createdAt: '2021-01-05T09:13:08.243Z',
 			updatedAt: '2021-01-06T09:51:43.569Z',
 			__v: 0,
@@ -5005,7 +5007,6 @@ const __datasetPageState = {
 		programmingLanguage: [],
 	},
 };
-
 
 module.exports = {
 	toolTitle: __toolTitle,
