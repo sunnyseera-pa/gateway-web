@@ -247,16 +247,16 @@ const AddEditCollectionForm = props => {
 									) : null}
 								</Form.Group>
 
-								<Row className='margin-bottom-8 pad-left-16'>
-									<span
-										className='eyeColumn pad-right-8'
-										onClick={() => {
-											updatePublicFlag();
-										}}>
+								<Row
+									className='margin-bottom-8 pad-left-16 pointer'
+									onClick={() => {
+										updatePublicFlag();
+									}}>
+									<span className='eyeColumn pad-right-8'>
 										{formik.values.publicflag === true ? (
-											<SVGIcon name='eye' width={24} height={24} fill={'#475da7'} className={'pointer'} />
+											<SVGIcon name='eye' width={24} height={24} fill={'#475da7'} />
 										) : (
-											<SVGIcon name='eyeCrossed' width={24} height={24} fill={'#475da7'} className={'pointer'} />
+											<SVGIcon name='eyeCrossed' width={24} height={24} fill={'#475da7'} />
 										)}
 									</span>
 									<span className='gray800-14'>
