@@ -227,12 +227,16 @@ export const CollectionPage = props => {
 							{collectionData.publicflag === true ? (
 								<div className='privatePublicDisplay'>
 									<SVGIcon name='eye' width={24} height={24} fill={'#000000'} className={'pointer margin-right-8'} />
-									<span className='deepBlack-14 alignSuper'>Public</span>
+									<span className='deepBlack-14 alignSuper' data-testid='publicBadge'>
+										Public
+									</span>
 								</div>
 							) : (
 								<div className='privatePublicDisplay'>
 									<SVGIcon name='eyeCrossed' width={24} height={24} fill={'#000000'} className={'pointer margin-right-8'} />
-									<span className='deepBlack-14 alignSuper'>Private</span>
+									<span className='deepBlack-14 alignSuper' data-testid='privateBadge'>
+										Private
+									</span>
 								</div>
 							)}
 						</Col>
@@ -249,7 +253,6 @@ export const CollectionPage = props => {
 					<Row>
 						<Col sm={12} lg={12} className='centerText'>
 							<span className='black-28' data-testid='collectionName'>
-								{' '}
 								{collectionData.name}{' '}
 							</span>
 						</Col>
@@ -285,7 +288,9 @@ export const CollectionPage = props => {
 								collectionData.keywords.map((keyword, index) => {
 									return (
 										<a href={'/search?search=&tab=Collections&collectionkeywords=' + keyword}>
-											<div className='badge-tag'>{keyword}</div>
+											<div className='badge-tag' data-testid={`collectionKeyword${index}`}>
+												{keyword}
+											</div>
 										</a>
 									);
 								})}
