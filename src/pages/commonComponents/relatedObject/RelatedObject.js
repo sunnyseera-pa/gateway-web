@@ -8,6 +8,7 @@ import './RelatedObject.scss';
 import moment from 'moment';
 import { ReactComponent as CalendarSvg } from '../../../images/calendaricon.svg';
 import _ from 'lodash';
+import removeMd from 'remove-markdown';
 
 var baseURL = require('../BaseURL').getURL();
 var cmsURL = require('../BaseURL').getCMSURL();
@@ -111,6 +112,16 @@ class RelatedObject extends React.Component {
 	updateOnFilterBadge = (filter, option) => {
 		this.props.updateOnFilterBadge(filter, option);
 	};
+
+	stripMarkdown = (value = '', truncate = 0) => {
+		if(!_.isEmpty(value)) {
+			if (truncate > 0) {
+				value = value.substr(0, 255) + (value.length > 255 ? '...' : '');
+			}
+			value = removeMd(value);
+		}
+		return value;
+	}
 
 	render() {
 		const { data, isLoading, activeLink, onSearchPage, relatedObject, inCollection, publisherLogoURL } = this.state;
@@ -332,7 +343,7 @@ class RelatedObject extends React.Component {
 										{!this.props.showRelationshipQuestion && (
 											<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16'>
 												<span className='gray800-14'>
-													{data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}
+													{this.stripMarkdown(data.description, 255)}
 												</span>
 											</Col>
 										)}
@@ -470,7 +481,7 @@ class RelatedObject extends React.Component {
 										{!this.props.showRelationshipQuestion && (
 											<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16'>
 												<span className='gray800-14'>
-													{data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}
+													{this.stripMarkdown(data.description, 255)}
 												</span>
 											</Col>
 										)}
@@ -589,7 +600,7 @@ class RelatedObject extends React.Component {
 										{!this.props.showRelationshipQuestion && (
 											<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16'>
 												<span className='gray800-14'>
-													{data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}
+													{this.stripMarkdown(data.description, 255)}
 												</span>
 											</Col>
 										)}
@@ -749,7 +760,7 @@ class RelatedObject extends React.Component {
 										{!this.props.showRelationshipQuestion && (
 											<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16'>
 												<span className='gray800-14'>
-													{data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '')}
+													{this.stripMarkdown(data.description, 255)}
 												</span>
 											</Col>
 										)}
@@ -909,10 +920,10 @@ class RelatedObject extends React.Component {
 													{(() => {
 														if (!data.datasetfields.abstract || typeof data.datasetfields.abstract === 'undefined') {
 															if (data.description) {
-																return data.description.substr(0, 255) + (data.description.length > 255 ? '...' : '');
+																return this.stripMarkdown(data.description, 255);
 															}
 														} else {
-															return data.datasetfields.abstract.substr(0, 255) + (data.datasetfields.abstract.length > 255 ? '...' : '');
+															return this.stripMarkdown(data.datasetfields.abstract);
 														}
 													})()}
 												</span>
