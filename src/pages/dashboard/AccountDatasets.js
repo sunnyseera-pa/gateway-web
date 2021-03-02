@@ -6,9 +6,8 @@ import _ from 'lodash';
 import Loading from '../commonComponents/Loading';
 import DatasetCard from '../commonComponents/DatasetCard';
 import NotFound from '../commonComponents/NotFound';
-import SVGIcon from "../../images/SVGIcon";
+import SVGIcon from '../../images/SVGIcon';
 import './Dashboard.scss';
-
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -21,37 +20,9 @@ const AccountDatasets = props => {
 	const [reviewCount, setReviewCount] = useState(0);
 	const [archiveCount, setArchiveCount] = useState(0);
 	const [rejectedCount, setRejectedCount] = useState(0);
-	const [alert, setAlert] = useState(props.alert)
-	const [team, setTeam] = useState(props.team)
-	const [publisherID, setPublisherID] = useState('')
-
-	let completion1 = {
-		Summary: 'partial',
-		Documentation: 'partial',
-		Coverage: 'empty',
-		Provenance: 'partial',
-		Accessibility: 'empty',
-		Enrichment: 'partial',
-		Observations: 'partial',
-		'Structural Meta Data': 'partial',
-	};
-	let completion2 = {
-		Summary: 'partial',
-		Documentation: 'partial',
-		Coverage: 'done',
-		Provenance: 'partial',
-		Accessibility: 'empty',
-		Enrichment: 'empty',
-		Observations: 'done',
-		'Structural Meta Data': 'empty',
-	};
-
-	let statusIcons = {
-		// Move to datasetcard
-		partial: { text: 'Partially completed', icon: 'MetadataHalfDoneSvg' },
-		done: { text: 'Completed', icon: 'MetadataHalfDoneSvg' },
-		empty: { text: 'Not completed', icon: 'MetadataHalfDoneSvg' },
-	};
+	const [alert, setAlert] = useState(props.alert);
+	const [team, setTeam] = useState(props.team);
+	const [publisherID, setPublisherID] = useState('');
 
 	useEffect(() => {
 		initGA('UA-166025838-1');
@@ -62,7 +33,7 @@ const AccountDatasets = props => {
 		setIsLoading(true);
 		let isPublisher = getPublisherID();
 		setPublisherID(isPublisher);
-		
+
 		await axios.get(baseURL + `/api/v1/dataset-onboarding/publisher/${isPublisher}`).then(res => {
 			setDatasetList(res.data.data.dataset);
 
@@ -70,7 +41,7 @@ const AccountDatasets = props => {
 			let reviewCount = 0;
 			let archiveCount = 0;
 			let rejectedCount = 0;
-			
+
 			res.data.data.dataset.forEach(dataset => {
 				if (dataset.activeflag === 'active') activeCount++;
 				else if (dataset.activeflag === 'inReview') reviewCount++;
@@ -100,7 +71,7 @@ const AccountDatasets = props => {
 
 		return foundTeam[0]._id;
 	};
-	
+
 	const createNewDataset = e => {
 		e.preventDefault();
 		//call to API to create new dataset
@@ -124,16 +95,16 @@ const AccountDatasets = props => {
 		let { message = '' } = alert;
 		return (
 			<Row className='mt-3'>
-					<Col xs={1}></Col>
-					<Col xs={10}>
-						<Alert variant={"success"} className="col-sm-12 main-alert">
-			<SVGIcon name="check" width={18} height={18} fill={'#2C8267'} /> {message}
-						</Alert>
-					</Col>
-					<Col xs={1}></Col>
+				<Col xs={1}></Col>
+				<Col xs={10}>
+					<Alert variant={'success'} className='col-sm-12 main-alert'>
+						<SVGIcon name='check' width={18} height={18} fill={'#2C8267'} /> {message}
+					</Alert>
+				</Col>
+				<Col xs={1}></Col>
 			</Row>
-		)
-		};
+		);
+	};
 
 	if (isLoading) {
 		return (
@@ -146,10 +117,10 @@ const AccountDatasets = props => {
 			</Row>
 		);
 	}
-	
+
 	return (
 		<div>
-			<>{!_.isEmpty(alert) ? generateAlert() : ""}</>
+			<>{!_.isEmpty(alert) ? generateAlert() : ''}</>
 			<Row>
 				<Col xs={1}></Col>
 				<Col xs={10}>
@@ -159,7 +130,11 @@ const AccountDatasets = props => {
 								<span className='black-20'>Datasets</span>
 							</div>
 							<div>
-							<span className='gray700-13 '>{publisherID !== 'admin' ? 'View, add, edit, archive and check the status of your datasets.' : 'Approve or reject pending datasets'}</span>
+								<span className='gray700-13 '>
+									{publisherID !== 'admin'
+										? 'View, add, edit, archive and check the status of your datasets.'
+										: 'Approve or reject pending datasets'}
+								</span>
 							</div>
 						</Col>
 						<Col sm={12} md={4} style={{ textAlign: 'right' }}>
@@ -173,27 +148,28 @@ const AccountDatasets = props => {
 					</Row>
 					<Row className='tabsBackground'>
 						<Col sm={12} lg={12}>
-							{team === 'admin' ? 
-							(<Tabs className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
-								<Tab eventKey='inReview' title={'Pending approval (' + reviewCount + ')'}>
-									{' '}
-								</Tab>
-							</Tabs>) :
-							(<Tabs className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
-								<Tab eventKey='active' title={'Active (' + activeCount + ')'}>
-									{' '}
-								</Tab>
-								<Tab eventKey='inReview' title={'Pending approval (' + reviewCount + ')'}>
-									{' '}
-								</Tab>
-								<Tab eventKey='rejected' title={'Rejected (' + rejectedCount + ')'}>
-									{' '}
-								</Tab>
-								<Tab eventKey='archive' title={'Archived (' + archiveCount + ')'}>
-									{' '}
-								</Tab>
-							</Tabs>)
-							}
+							{team === 'admin' ? (
+								<Tabs className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
+									<Tab eventKey='inReview' title={'Pending approval (' + reviewCount + ')'}>
+										{' '}
+									</Tab>
+								</Tabs>
+							) : (
+								<Tabs className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
+									<Tab eventKey='active' title={'Active (' + activeCount + ')'}>
+										{' '}
+									</Tab>
+									<Tab eventKey='inReview' title={'Pending approval (' + reviewCount + ')'}>
+										{' '}
+									</Tab>
+									<Tab eventKey='rejected' title={'Rejected (' + rejectedCount + ')'}>
+										{' '}
+									</Tab>
+									<Tab eventKey='archive' title={'Archived (' + archiveCount + ')'}>
+										{' '}
+									</Tab>
+								</Tabs>
+							)}
 						</Col>
 					</Row>
 
@@ -220,7 +196,8 @@ const AccountDatasets = props => {
 															isDraft={true}
 															datasetStatus={dataset.activeflag}
 															lastActivity={dataset.updatedAt}
-															completion={completion1} />
+															completion={dataset.percentageCompleted}
+														/>
 													);
 												}
 											})
@@ -248,7 +225,8 @@ const AccountDatasets = props => {
 															isDraft={true}
 															datasetStatus={dataset.activeflag}
 															lastActivity={dataset.updatedAt}
-															completion={completion1}  />
+															completion={dataset.percentageCompleted}
+														/>
 													);
 												}
 											})
@@ -276,8 +254,9 @@ const AccountDatasets = props => {
 															isDraft={true}
 															datasetStatus={dataset.activeflag}
 															lastActivity={dataset.updatedAt}
-															completion={completion1}  
-															rejectionText={dataset.applicationStatusDesc}/>
+															completion={dataset.percentageCompleted}
+															rejectionText={dataset.applicationStatusDesc}
+														/>
 													);
 												}
 											})
@@ -305,7 +284,8 @@ const AccountDatasets = props => {
 															isDraft={true}
 															datasetStatus={dataset.activeflag}
 															lastActivity={dataset.updatedAt}
-															completion={completion1}  />
+															completion={dataset.percentageCompleted}
+														/>
 													);
 												}
 											})

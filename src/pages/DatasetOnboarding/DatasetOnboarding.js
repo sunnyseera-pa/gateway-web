@@ -103,7 +103,7 @@ class DatasetOnboarding extends Component {
 			totalQuestions: '',
 			validationErrors: {},
 			lastSaved: '',
-			lookup: ['fullname'],
+			lookup: [],
 			isLoading: true,
 			formSubmitted: false,
 			datasets: [
@@ -138,6 +138,7 @@ class DatasetOnboarding extends Component {
 			roles: [],
 			inReviewMode: false,
 			updateRequestModal: false,
+			completion: {},
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -199,42 +200,17 @@ class DatasetOnboarding extends Component {
 				console.error(error);
 			}
 
-			countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this);
+			countedQuestionAnswers = DatasetOnboardingHelperUtil.totalQuestionsAnswered(this);
 			totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered`;
-
-			/*if (datasetId) {
-				// a) Dataset
-				await this.loadSingleDatasetMode(datasetId);
-				// Populate the question/answers count
-				countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this);
-				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered`;
-			} else if (publisherId) {
-				// b) Message Panel/Modal
-				// Extract datasets passed from history (provided via request access click from modal)
-				const { datasets: datasetIds } = this.props.location.state;
-				const datasetIdsConcat = datasetIds.map(ds => ds.datasetId).join(',');
-				await this.loadMultipleDatasetMode(datasetIdsConcat);
-				// Populate the question/answers count
-				countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this);
-				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered`;
-			} else if (accessId) {
-				// c/d) Data Access Request/Direct Link (To be extended for readonly mode)
-				await this.loadDataAccessRequest(accessId);
-				// Populate the question/answers count if still in progress, otherwise display project status and date last updated
-				const { applicationStatus, updatedAt } = this.state;
-				if (applicationStatus === 'inProgress') {
-					countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this);
-					totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered`;
-				} else {
-					totalQuestions = `Application ${DarHelper.darSLAText[applicationStatus]} on ${moment(updatedAt).format('DD MMM YYYY HH:mm')}`;
-				}
-			} */
-
-			//this.setState({jsonSchema: {...formSchema}, questionAnswers: {}, activePanelId: 'beforeYouBegin', isLoading: false, applicationStatus: 'inProgress'});
+			let percentageCompleted = DatasetOnboardingHelperUtil.getCompletionPercentages(this);
+			if (!_.isEmpty(this.state.structuralMetadata) && _.isEmpty(this.state.structuralMetadataErrors))
+				percentageCompleted.updatedCompletion.structural = 100;
+			else percentageCompleted.updatedCompletion.structural = 0;
 
 			// Update state to display question answer count
 			this.setState({
 				totalQuestions,
+				completion: percentageCompleted.updatedCompletion,
 			});
 		} catch (error) {
 			this.setState({ isLoading: false });
@@ -361,7 +337,7 @@ class DatasetOnboarding extends Component {
 				let regex = new RegExp(field.toLowerCase().replace(/\//g, '\\/') + '_', 'g');
 				if (key.match(regex)) {
 					let [, uniqueId] = key.split('_');
-					if (!_.find(listOfObservationUniqueIds, uniqueId)) {
+					if (!_.isEmpty(uniqueId) && !listOfObservationUniqueIds.find(x => x === uniqueId)) {
 						listOfObservationUniqueIds.push(uniqueId);
 					}
 				}
@@ -444,14 +420,18 @@ class DatasetOnboarding extends Component {
 			let totalQuestions = '';
 			// 3. total questions answered
 			if (activePanelId === 'beforeYouBegin' || activePanelId === 'structural') {
-				countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this);
+				countedQuestionAnswers = DatasetOnboardingHelperUtil.totalQuestionsAnswered(this);
 				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered`;
 			} else {
-				countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this, this.state.activePanelId, questionAnswers);
+				countedQuestionAnswers = DatasetOnboardingHelperUtil.totalQuestionsAnswered(this, this.state.activePanelId, questionAnswers);
 				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered in this section`;
 			}
+			let percentageCompleted = DatasetOnboardingHelperUtil.getCompletionPercentages(this);
+			if (!_.isEmpty(this.state.structuralMetadata) && _.isEmpty(this.state.structuralMetadataErrors))
+				percentageCompleted.updatedCompletion.structural = 100;
+			else percentageCompleted.updatedCompletion.structural = 0;
 			// 4. set totalQuestionAnswered
-			this.setState({ totalQuestions });
+			this.setState({ totalQuestions, completion: percentageCompleted.updatedCompletion });
 			// 5. remove blank vals from questionAnswers
 			let data = _.pickBy({ ...this.state.questionAnswers, ...questionAnswers }, _.identity);
 			const lastSaved = DarHelper.saveTime();
@@ -460,11 +440,11 @@ class DatasetOnboarding extends Component {
 			// 7. Immediately update the state
 			this.setState({ [`${dataObj.key}`]: { ...dataObj.data }, lastSaved });
 			// 8. Execute the debounced onChange method API CALL
-			this.onChangeDebounced(dataObj, id);
+			this.onChangeDebounced(dataObj, id, percentageCompleted.updatedCompletion);
 		}
 	};
 
-	onChangeDebounced = (obj = {}, updatedQuestionId) => {
+	onChangeDebounced = (obj = {}, updatedQuestionId, percentageCompleted) => {
 		try {
 			let { _id: id } = this.state;
 			// 1. deconstruct
@@ -473,6 +453,7 @@ class DatasetOnboarding extends Component {
 			let params = {
 				[`${key}`]: JSON.stringify(data),
 				updatedQuestionId,
+				percentageCompleted,
 			};
 			// 3. API Patch call
 			//axios.patch(`${baseURL}/api/v1/dataset-onboarding/${pid}/${datasetId}`, params).then(response => {
@@ -619,16 +600,20 @@ class DatasetOnboarding extends Component {
 			let totalQuestions = '';
 			// if in the about panel, retrieve question answers count for entire application
 			if (panelId === 'beforeYouBegin' || panelId === 'structural') {
-				countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this);
+				countedQuestionAnswers = DatasetOnboardingHelperUtil.totalQuestionsAnswered(this);
 				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions || 0}/${
 					countedQuestionAnswers.totalQuestions || 0
 				}  questions answered`;
 			} else {
-				countedQuestionAnswers = DarHelper.totalQuestionsAnswered(this, panelId);
+				countedQuestionAnswers = DatasetOnboardingHelperUtil.totalQuestionsAnswered(this, panelId);
 				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions || 0}/${
 					countedQuestionAnswers.totalQuestions || 0
 				}  questions answered in this section`;
 			}
+			let percentageCompleted = DatasetOnboardingHelperUtil.getCompletionPercentages(this);
+			if (!_.isEmpty(this.state.structuralMetadata) && _.isEmpty(this.state.structuralMetadataErrors))
+				percentageCompleted.updatedCompletion.structural = 100;
+			else percentageCompleted.updatedCompletion.structural = 0;
 
 			// reset guidance - due to on change of panel
 			this.setState({
@@ -640,6 +625,7 @@ class DatasetOnboarding extends Component {
 				validationErrors,
 				reviewWarning,
 				activeGuidance: '',
+				completion: percentageCompleted.updatedCompletion,
 			});
 		}
 	};
@@ -811,7 +797,11 @@ class DatasetOnboarding extends Component {
 	};
 
 	onStructuralMetaDataUpdate = (structuralMetadata, structuralMetadataErrors) => {
-		this.setState({ structuralMetadata, structuralMetadataErrors });
+		let percentageCompleted = DatasetOnboardingHelperUtil.getCompletionPercentages(this);
+		if (!_.isEmpty(this.state.structuralMetadata) && _.isEmpty(this.state.structuralMetadataErrors))
+			percentageCompleted.updatedCompletion.structural = 100;
+		else percentageCompleted.updatedCompletion.structural = 0;
+		this.setState({ structuralMetadata, structuralMetadataErrors, completion: percentageCompleted.updatedCompletion });
 	};
 
 	toggleCard = (e, eventKey) => {
@@ -1166,6 +1156,7 @@ class DatasetOnboarding extends Component {
 			applicationStatus,
 			userType,
 			roles,
+			completion,
 		} = this.state;
 		const { userState, location } = this.props;
 
@@ -1237,7 +1228,6 @@ class DatasetOnboarding extends Component {
 			},
 			isTitleUnique: async value => {
 				let isTitleUnique = await this.checkUniqueTitle(value);
-				//debugger;
 				return isTitleUnique;
 			},
 		});
@@ -1249,17 +1239,6 @@ class DatasetOnboarding extends Component {
 				</Container>
 			);
 		}
-
-		let completion = {
-			Summary: 'partial',
-			Documentation: 'partial',
-			Coverage: 'empty',
-			Provenance: 'partial',
-			Accessibility: 'empty',
-			'Enrichment and Linkage': 'partial',
-			Observations: 'partial',
-			'Structural metadata': 'partial',
-		};
 
 		return (
 			<div>
@@ -1353,11 +1332,11 @@ class DatasetOnboarding extends Component {
 														placement='top'
 														overlay={
 															<Tooltip id={`tooltip-top`}>
-																{item.title}: {completion[item.title]}
+																{item.title}: {completion[item.pageId]}%
 															</Tooltip>
 														}>
 														<div>
-															<StatusDisplay section={item.title} status={completion[item.title]} />
+															<StatusDisplay section={item.title} status={completion[item.pageId]} />
 														</div>
 													</OverlayTrigger>
 												)}
@@ -1375,6 +1354,7 @@ class DatasetOnboarding extends Component {
 												activePanelId={this.state.activePanelId}
 												enabled={allowedNavigation}
 												notForReview={!item.inReview && this.state.inReviewMode}
+												completion={completion}
 											/>
 										</ul>
 									)}

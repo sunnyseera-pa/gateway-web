@@ -295,7 +295,6 @@ let findQuestionSet = (questionSetId = '', schema = {}) => {
  * @desc - Sets total questions answered for each section
  */
 let totalQuestionsAnswered = (component, panelId = '', questionAnswers = {}, jsonSchema = {}) => {
-	debugger;
 	let totalQuestions = 0;
 	let totalAnsweredQuestions = 0;
 

@@ -17,6 +17,14 @@ const ResourcePageButtons = props => {
 				''
 			)}
 
+			{props.data.type === 'dataset' ? ( //Update to use team or admin
+				<Button variant='white' href={'/dataset-onboarding/' + props.data._id} className='techDetailButton mr-2'>
+					Edit
+				</Button>
+			) : (
+				''
+			)}
+
 			{props.data.type === 'dataset' ? (
 				<Button
 					variant='white'

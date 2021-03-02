@@ -117,7 +117,7 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetadata, st
 				</tbody>
 			</Table>
 			<div>
-				<button href='/somefile.txt' download className='button-tertiary margin-top-8 margin-bottom-24'>
+				<button href='/StructuralMetadataTemplate.xlsx' className='button-tertiary margin-top-8 margin-bottom-24'>
 					Download data dictionary template
 				</button>
 			</div>

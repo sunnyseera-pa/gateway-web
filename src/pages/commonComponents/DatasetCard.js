@@ -12,62 +12,85 @@ import moment from 'moment';
 
 import '../commonComponents/DatasetCard.scss';
 
+let completionList = {
+	Summary: 'summary',
+	Documentation: 'documentation',
+	Coverage: 'coverage',
+	Provenance: 'provenance',
+	Accessibility: 'accessibility',
+	Enrichment: 'enrichmentAndLinkage',
+	Observations: 'observations',
+	'Structural Meta Data': 'structural',
+};
+
+let statusIcons = {
+	// Move to datasetcard
+	partial: { text: 'Partially completed', icon: 'MetadataHalfDoneSvg' },
+	done: { text: 'Completed', icon: 'MetadataHalfDoneSvg' },
+	empty: { text: 'Not completed', icon: 'MetadataHalfDoneSvg' },
+};
+
 export const DatasetCard = props => {
-    let { id, publisher, title, version, isDraft, datasetStatus, completion, createdAt, lastActivity, rejectionText } = props;
-    const [flagClosed, setFlagClosed] = useState(true);
-    
-    return (
-        <Row
-            key={`dataset_card_${title}`}
-            onClick={event => window.location.href = `/dataset-onboarding/${id}`}>
-            {/* onClick={e => this.navigateToLocation(e, _id, applicationStatus)} */}
-            <div className='col-md-12'>
-                <div className='layoutCard mb-0'>
-                    <div className='header mb-0 mt-2'>
-                        <div className='header-title'>
-                            <h1>{title}</h1>
-                        </div>
-                        <div className='header-status'>
-                            {datasetStatus === 'draft' ? (
-                                <TimeDuration text={`${DatasetOnboardingHelper.calculateTimeDifference(createdAt)} days since start`} />
-                            ) : ('')}
+	let { id, publisher, title, version, isDraft, datasetStatus, completion = {}, createdAt, lastActivity, rejectionText } = props;
+	const [flagClosed, setFlagClosed] = useState(true);
 
-                            {datasetStatus === 'inReview' ? (
-                                <TimeDuration text={`${DatasetOnboardingHelper.calculateTimeDifference(createdAt)} days since submission`} />
-                            ) : ('')}
+	return (
+		<Row key={`dataset_card_${title}`} onClick={event => (window.location.href = `/dataset-onboarding/${id}`)}>
+			{/* onClick={e => this.navigateToLocation(e, _id, applicationStatus)} */}
+			<div className='col-md-12'>
+				<div className='layoutCard mb-0'>
+					<div className='header mb-0 mt-2'>
+						<div className='header-title'>
+							<h1>{title}</h1>
+						</div>
+						<div className='header-status'>
+							{datasetStatus === 'draft' ? (
+								<TimeDuration text={`${DatasetOnboardingHelper.calculateTimeDifference(createdAt)} days since start`} />
+							) : (
+								''
+							)}
 
-                            <SLA classProperty={DatasetOnboardingHelper.datasetStatusColours[datasetStatus]} text={DatasetOnboardingHelper.datasetSLAText[datasetStatus]} />
-                        </div>
-                    </div>
-                    <div className='dataset-completion-wheels'>
-                        {Object.keys(completion).map(key => (
-                            <OverlayTrigger
-                                key={key}
-                                placement='top'
-                                overlay={
-                                    <Tooltip id={`tooltip-top`}>
-                                        {key}: {completion[key]}
-                                    </Tooltip>
-                                }>
-                                <div>
-                                    <StatusDisplay section={key} status={completion[key]} />
-                                </div>
-                            </OverlayTrigger>
-                        ))}
-                    </div>
+							{datasetStatus === 'inReview' ? (
+								<TimeDuration text={`${DatasetOnboardingHelper.calculateTimeDifference(createdAt)} days since submission`} />
+							) : (
+								''
+							)}
 
-                    <div className='body'>
-                        <Fragment>
-                            <div className='box'>Publisher</div>
-                            <div className='box'>{publisher}</div>
-                            <div className='box'>Version</div>
-                            <div className='box'>
-                                {version}
-                                {datasetStatus === 'draft' ? ' (Draft)' : ''}
+							<SLA
+								classProperty={DatasetOnboardingHelper.datasetStatusColours[datasetStatus]}
+								text={DatasetOnboardingHelper.datasetSLAText[datasetStatus]}
+							/>
+						</div>
+					</div>
+					<div className='dataset-completion-wheels'>
+						{Object.keys(completionList).map(key => (
+							<OverlayTrigger
+								key={key}
+								placement='top'
+								overlay={
+									<Tooltip id={`tooltip-top`}>
+										{key}: {completion[completionList[key]]}
+									</Tooltip>
+								}>
+								<div>
+									<StatusDisplay section={key} status={completion[completionList[key]]} />
+								</div>
+							</OverlayTrigger>
+						))}
+					</div>
 
-                                {/* {isDraft ? ' (Draft)' : ` (${datasetStatus})`} */}
-                            </div>
-                            {/* <div className='box version-list'>Version2</div>
+					<div className='body'>
+						<Fragment>
+							<div className='box'>Publisher</div>
+							<div className='box'>{publisher}</div>
+							<div className='box'>Version</div>
+							<div className='box'>
+								{version}
+								{datasetStatus === 'draft' ? ' (Draft)' : ''}
+
+								{/* {isDraft ? ' (Draft)' : ` (${datasetStatus})`} */}
+							</div>
+							{/* <div className='box version-list'>Version2</div>
 							<div className='box'>
 								<Accordion defaultActiveKey='1' style={{ width: '100%' }}>
 									<Accordion.Toggle
@@ -98,10 +121,10 @@ export const DatasetCard = props => {
 								</Accordion>
 							</div> */}
 
-                            <div className='box'>Last activity</div>
-                            <div className='box'>{moment(lastActivity).format('D MMMM YYYY HH:mm')}</div>
+							<div className='box'>Last activity</div>
+							<div className='box'>{moment(lastActivity).format('D MMMM YYYY HH:mm')}</div>
 
-                            {/* <div className='box'>
+							{/* <div className='box'>
 								{moment(updatedAt).format('D MMMM YYYY HH:mm')}
 								{isTeam == true ? (
 									<div className='box-meta'>
@@ -126,22 +149,22 @@ export const DatasetCard = props => {
 									''
 								)}
 							</div> */}
-                        </Fragment>
-                    </div>
-                    {datasetStatus === 'rejected' ? (
-                        <CommentItem
-                            text={rejectionText}
-                            title={'Reason for rejection'}
-                            subtitle={`Paul McCafferty`}
-                            decisionDate={moment(lastActivity).format('D MMMM YYYY HH:mm')}
-                        />
-                    ) : (
-                            ''
-                        )}
-                </div>
-            </div>
-        </Row>
-    );
+						</Fragment>
+					</div>
+					{datasetStatus === 'rejected' ? (
+						<CommentItem
+							text={rejectionText}
+							title={'Reason for rejection'}
+							subtitle={`Paul McCafferty`}
+							decisionDate={moment(lastActivity).format('D MMMM YYYY HH:mm')}
+						/>
+					) : (
+						''
+					)}
+				</div>
+			</div>
+		</Row>
+	);
 };
 
 export default DatasetCard;

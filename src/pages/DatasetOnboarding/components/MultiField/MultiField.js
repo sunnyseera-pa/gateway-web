@@ -8,13 +8,13 @@ class MultiField extends React.Component {
 		super(props);
 
 		this.state = {
-			value: props.value || [''],
+			value: this.updateValue(props.value),
 			readOnly: props.readOnly || false,
 		};
 	}
 
 	componentWillReceiveProps(nextProps) {
-		if (this.props.value !== nextProps.value) this.setState({ value: nextProps.value });
+		if (this.props.value !== nextProps.value) this.setState({ value: this.updateValue(nextProps.value) });
 	}
 
 	handleAddShareholder = () => {
@@ -43,6 +43,15 @@ class MultiField extends React.Component {
 	}
 	handleBlur() {
 		this.props.onBlur(this.props.value);
+	}
+
+	updateValue(value) {
+		let clonedValue = _.cloneDeep(value);
+		let updatedValue = _.remove(clonedValue, function (n) {
+			return n !== '';
+		});
+		if (updatedValue.length === 0) updatedValue = [''];
+		return updatedValue;
 	}
 
 	render() {
