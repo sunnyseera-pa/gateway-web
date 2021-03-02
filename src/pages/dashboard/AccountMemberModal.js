@@ -73,8 +73,8 @@ const AccountMemberModal = ({ open, close, teamId, onMemberAdded }) => {
 					onMemberAdded(members);
 					close();
 				});
-			} catch (error) {
-				console.log(error);
+			} catch (err) {
+				console.error(err.message);
 			}
 		},
 	});

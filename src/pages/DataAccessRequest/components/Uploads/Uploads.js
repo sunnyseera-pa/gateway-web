@@ -133,9 +133,9 @@ const Uploads = ({ id, files, onFilesUpdate, readOnly}) => {
             setLoading(false);
           }
         })
-        .catch(error => {
+        .catch(err => {
           setLoading(false);
-          console.log(error);
+          console.error(err.message);
         });
     }
   }
@@ -155,7 +155,7 @@ const Uploads = ({ id, files, onFilesUpdate, readOnly}) => {
           document.body.removeChild(link);
         })
         .catch(err => {
-          console.log(err);
+          console.error(err.message);
         });
     }
   }
@@ -169,7 +169,7 @@ const Uploads = ({ id, files, onFilesUpdate, readOnly}) => {
         await axios.put(`${baseURL}/api/v1/data-access-request/${id}/deletefile`, body).then(response => {
         onDeleteFile(file);
       }).catch(err => {
-          console.log(err);
+          console.error(err.message);
       });
     }
   }
@@ -194,7 +194,7 @@ const Uploads = ({ id, files, onFilesUpdate, readOnly}) => {
             }
             })
             .catch(err => {
-            console.log(err);
+            console.error(err.message);
             });
           }
         }
