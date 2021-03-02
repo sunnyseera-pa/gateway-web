@@ -79,7 +79,7 @@ class CompleteRegistration extends Component {
 				});
 			})
 			.catch(err => {
-				console.log(err);
+				console.error(err.message);
 			});
 	}
 

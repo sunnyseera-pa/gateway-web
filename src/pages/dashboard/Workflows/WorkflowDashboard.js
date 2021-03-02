@@ -62,9 +62,9 @@ const WorkflowDashboard = ({ userState, team }) => {
 				setWorkflows(workflowsArr);
 				setLoading(false);
 			})
-			.catch(error => {
+			.catch(err => {
 				setLoading(false);
-				console.log(error);
+				console.error(err.message);
 			});
 	};
 
