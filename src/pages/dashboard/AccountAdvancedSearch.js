@@ -42,7 +42,7 @@ export const AccountAdvancedSearch = props => {
 					setUserState(newUserState);
 				})
 				.catch(err => {
-					console.log(err);
+					console.error(err.message);
 				});
 			return authorised;
 		} else {
@@ -71,7 +71,7 @@ export const AccountAdvancedSearch = props => {
 				accessRQuest();
 			})
 			.catch(err => {
-				console.log('error', err);
+				console.error(err.message);
 			});
 	};
 

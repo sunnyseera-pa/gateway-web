@@ -280,7 +280,7 @@ class DataAccessRequestsNew extends React.Component {
         window.location.href = `/data-access-request/${applicationId}`;
       })
       .catch(err => {
-        console.error(err);
+        console.error(err.message);
       });
   };
 

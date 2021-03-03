@@ -49,7 +49,6 @@ class AddEditProjectPage extends React.Component {
 	};
 
 	async componentDidMount() {
-		console.log(this.state.isEdit);
 		initGA('UA-166025838-1');
 		await Promise.all([this.doGetTopicsCall(), this.doGetCategoriesCall(), this.doGetUsersCall(), this.doGetFeaturesCall()]);
 		if (this.state.isEdit) this.getProjectFromDb();

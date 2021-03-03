@@ -200,9 +200,9 @@ class DataAccessRequest extends Component {
 			this.setState({
 				totalQuestions,
 			});
-		} catch (error) {
+		} catch (err) {
 			this.setState({ isLoading: false });
-			console.error(error);
+			console.error(err.message);
 		} finally {
 			this.setState({
 				roles: this.getUserRoles(),
@@ -249,9 +249,9 @@ class DataAccessRequest extends Component {
 				workflow,
 				files,
 			});
-		} catch (error) {
+		} catch (err) {
 			this.setState({ isLoading: false });
-			console.error(error);
+			console.error(err.message);
 		}
 	};
 
@@ -296,9 +296,9 @@ class DataAccessRequest extends Component {
 
 			// for local test uses formSchema.json
 			//  this.setState({jsonSchema: {...formSchema}, questionAnswers: {fullname: {"id":5385077600698822,"orcid":"12345678","name":"Paul McCafferty","bio":"Developer @ PA","email":"p*************y@p**************m"}, orcid:"12345678", email:"p*************y@p**************m"}, activePanelId: 'applicant', isLoading: false, applicationStatus: 'inProgress'});
-		} catch (error) {
+		} catch (err) {
 			this.setState({ isLoading: false });
-			console.error(error);
+			console.error(err.message);
 		}
 	};
 
@@ -312,9 +312,9 @@ class DataAccessRequest extends Component {
 			} = response;
 			// 3. Set up the DAR
 			this.setScreenData({ ...data });
-		} catch (error) {
+		} catch (err) {
 			this.setState({ isLoading: false });
-			console.error(error);
+			console.error(err.message);
 		}
 	};
 
@@ -562,8 +562,8 @@ class DataAccessRequest extends Component {
 					...schemaUpdates,
 				});
 			});
-		} catch (error) {
-			console.log(`API PUT ERROR ${error}`);
+		} catch (err) {
+			console.error(`API PUT ERROR ${err.message}`);
 		}
 	};
 
@@ -612,7 +612,7 @@ class DataAccessRequest extends Component {
 					state: { alert },
 				});
 			} catch (err) {
-				console.log(err);
+				console.error(err.message);
 			}
 		} else {
 			let activePage = _.get(_.keys({ ...errors }), 0);
@@ -640,7 +640,7 @@ class DataAccessRequest extends Component {
 			// 5. Set state
 			this.setState({ [`${key}`]: { ...data }, lastSaved });
 		} catch (err) {
-			console.log(err);
+			console.error(err.message);
 		}
 	};
 
@@ -832,7 +832,6 @@ class DataAccessRequest extends Component {
 				this.setState({ ...stateObj });
 				break;
 			default:
-				console.log(questionId);
 				break;
 		}
 	};
@@ -1035,7 +1034,7 @@ class DataAccessRequest extends Component {
 				nationalCoreStudiesProjects: entities,
 			});
 		} catch (err) {
-			console.error(err);
+			console.error(err.message);
 			return [];
 		}
 	};
@@ -1094,8 +1093,8 @@ class DataAccessRequest extends Component {
 				this.loadDataAccessRequest(this.state._id);
 				this.toggleWorkflowReviewModal();
 			})
-			.catch(error => {
-				console.log(error);
+			.catch(err => {
+				console.error(err.message);
 			});
 	};
 
@@ -1257,15 +1256,13 @@ class DataAccessRequest extends Component {
 
 	onClickMailDAR = async () => {
 		let { _id } = this.state;
-		await axios
-			.post(`${baseURL}/api/v1/data-access-request/${_id}/email`, {})
-			.then(response => {
-				window.location.reload();
-			})
-			.catch(error => {
-				console.log(error);
-			});
-	};
+		await axios.post(`${baseURL}/api/v1/data-access-request/${_id}/email`, {}).then(response => {
+			window.location.reload();
+		})
+		.catch(err => {
+			console.error(err.message);
+		});
+  };
 
 	redirectDashboard = e => {
 		e.preventDefault();
