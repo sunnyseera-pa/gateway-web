@@ -535,8 +535,8 @@ class DatasetDetail extends Component {
 				};
 				this.setState({ ...stateObj });
 			})
-			.catch(error => {
-				console.log(error);
+			.catch(err => {
+				console.error(err.message);
 			});
 	};
 

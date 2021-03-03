@@ -135,9 +135,9 @@ const Uploads = ({ id, files, onFilesUpdate, readOnly }) => {
 						setLoading(false);
 					}
 				})
-				.catch(error => {
+				.catch(err => {
 					setLoading(false);
-					console.log(error);
+					console.error(err.message);
 				});
 		}
 	};
@@ -158,7 +158,7 @@ const Uploads = ({ id, files, onFilesUpdate, readOnly }) => {
 					document.body.removeChild(link);
 				})
 				.catch(err => {
-					console.log(err);
+					console.error(err.message);
 				});
 		}
 	};
@@ -175,7 +175,7 @@ const Uploads = ({ id, files, onFilesUpdate, readOnly }) => {
 					onDeleteFile(file);
 				})
 				.catch(err => {
-					console.log(err);
+					console.error(err.message);
 				});
 		}
 	};
@@ -184,7 +184,6 @@ const Uploads = ({ id, files, onFilesUpdate, readOnly }) => {
 		let timer = setInterval(() => {
 			if (retryCount < maxRetries) {
 				retryCount++;
-				console.log(retryCount);
 				files.forEach(file => {
 					if (file.status === fileStatus.NEWFILE || file.status === fileStatus.UPLOADED) {
 						axios
@@ -198,7 +197,7 @@ const Uploads = ({ id, files, onFilesUpdate, readOnly }) => {
 								}
 							})
 							.catch(err => {
-								console.log(err);
+								console.error(err.message);
                 clearInterval(timer);
 							})
 					}
