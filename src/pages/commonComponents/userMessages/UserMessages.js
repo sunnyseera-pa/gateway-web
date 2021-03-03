@@ -88,8 +88,8 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 				// 7. set topics state
 				setTopics(topicsArr);
 			})
-			.catch(error => {
-				console.error(error);
+			.catch(err => {
+				console.error(err.message);
 			});
 	};
 
@@ -186,7 +186,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 					setActiveTopic({ ...topic, modalRequired, dataRequestModalContent, active: true });
 				})
 				.catch(err => {
-					console.error(err);
+					console.error(err.message);
 					return {};
 				});
 		} else {
@@ -296,7 +296,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 				setActiveTopic(newTopic);
 			})
 			.catch(err => {
-				console.log(err);
+				console.error(err.message);
 			});
 	};
 
