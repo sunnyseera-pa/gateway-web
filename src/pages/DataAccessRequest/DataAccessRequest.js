@@ -42,6 +42,7 @@ import AboutApplication from './components/AboutApplication/AboutApplication';
 import Guidance from './components/Guidance/Guidance';
 import Uploads from './components/Uploads/Uploads';
 import UpdateRequestModal from './components/UpdateRequestModal/UpdateRequestModal';
+import MissingFieldsModal from './components/MissingFieldsModal/MissingFieldsModal';
 
 class DataAccessRequest extends Component {
 	constructor(props) {
@@ -128,7 +129,8 @@ class DataAccessRequest extends Component {
 			nationalCoreStudiesProjects: [],
 			inReviewMode: false,
 			updateRequestModal: false,
-			showEmailModal: false
+			showEmailModal: false,
+			showMissingFieldsModal: false,
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -616,7 +618,7 @@ class DataAccessRequest extends Component {
 			let activePage = _.get(_.keys({ ...errors }), 0);
 			let activePanel = _.get(_.keys({ ...errors }[activePage]), 0);
 			let validationMessages = validationSectionMessages;
-			alert('Some validation issues have been found. Please see all items highlighted in red on this page.');
+			this.setState({ showMissingFieldsModal: true });
 			this.updateNavigation({ pageId: activePage, panelId: activePanel }, validationMessages);
 		}
 	};
@@ -1252,7 +1254,7 @@ class DataAccessRequest extends Component {
 		this.setState({ authorIds });
 	};
 
-	onClickMailDAR  = async () => {
+	onClickMailDAR = async () => {
 		let { _id } = this.state;
 		await axios.post(`${baseURL}/api/v1/data-access-request/${_id}/email`, {}).then(response => {
 			window.location.reload();
@@ -1260,8 +1262,7 @@ class DataAccessRequest extends Component {
 		.catch(err => {
 			console.error(err.message);
 		});
-	};
-
+  };
 
 	redirectDashboard = e => {
 		e.preventDefault();
@@ -1388,9 +1389,17 @@ class DataAccessRequest extends Component {
 		});
 	};
 
-	toggleEmailModal = (showModal) => {
-        this.setState({showEmailModal : showModal})
-    };
+	toggleEmailModal = showModal => {
+		this.setState({ showEmailModal: showModal });
+	};
+
+	toggleMissingFieldsModal = () => {
+		this.setState(prevState => {
+			return {
+				showMissingFieldsModal: !prevState.showMissingFieldsModal,
+			};
+		});
+	};
 
 	renderApp = () => {
 		let { activePanelId } = this.state;
@@ -1430,14 +1439,7 @@ class DataAccessRequest extends Component {
 				/>
 			);
 		} else if (activePanelId === 'files') {
-			return (
-				<Uploads
-					onFilesUpdate={this.onFilesUpdate}
-					id={this.state._id}
-					files={this.state.files}
-					readOnly={this.state.readOnly}
-				/>
-			);
+			return <Uploads onFilesUpdate={this.onFilesUpdate} id={this.state._id} files={this.state.files} readOnly={this.state.readOnly} />;
 		} else {
 			return (
 				<Winterfell
@@ -1480,7 +1482,7 @@ class DataAccessRequest extends Component {
 			userType,
 			actionModalConfig,
 			roles,
-			showEmailModal
+			showEmailModal,
 		} = this.state;
 		const { userState, location } = this.props;
 
@@ -1539,13 +1541,16 @@ class DataAccessRequest extends Component {
 								Save now
 							</a>
 						}
-						{
-						(userType.toUpperCase() === 'APPLICANT' && !this.state.readOnly) ? <a
-									className={`linkButton white-14-semibold ml-2 ${allowedNavigation ? '' : 'disabled'}`}
-									href= 'javascript:;' onClick={e => this.toggleEmailModal(true)}>
-									Email application
-							</a> : ''
-						}
+						{userType.toUpperCase() === 'APPLICANT' && !this.state.readOnly ? (
+							<a
+								className={`linkButton white-14-semibold ml-2 ${allowedNavigation ? '' : 'disabled'}`}
+								href='javascript:;'
+								onClick={e => this.toggleEmailModal(true)}>
+								Email application
+							</a>
+						) : (
+							''
+						)}
 						<CloseButtonSvg width='16px' height='16px' fill='#fff' onClick={e => this.redirectDashboard(e)} />
 					</Col>
 				</Row>
@@ -1759,25 +1764,34 @@ class DataAccessRequest extends Component {
 					</iframe>
 				</Modal>
 
-				<Modal show={showEmailModal} onHide={e => this.toggleEmailModal(false)} aria-labelledby='contained-modal-title-vcenter' centered className='workflowModal'>
-                <div className='workflowModal-header'>
-                    <h1 className='black-20-semibold'>Email application</h1>
-                    <CloseButtonSvg className='workflowModal-header--close' onClick={e => this.toggleEmailModal(false)} />
-                </div>
+				<Modal
+					show={showEmailModal}
+					onHide={e => this.toggleEmailModal(false)}
+					aria-labelledby='contained-modal-title-vcenter'
+					centered
+					className='workflowModal'>
+					<div className='workflowModal-header'>
+						<h1 className='black-20-semibold'>Email application</h1>
+						<CloseButtonSvg className='workflowModal-header--close' onClick={e => this.toggleEmailModal(false)} />
+					</div>
 
-                <div className='workflowModal-body'>Are you sure you want to email yourself this application? This will be sent to the email address provided in your HDR UK account.</div>
-                    <div className='workflowModal-footer'>
-                        <div className='workflowModal-footer--wrap'>
-                        <Button variant='white' className='techDetailButton mr-2'  onClick={e => this.toggleEmailModal(false)}>
-                            No, nevermind
-                        </Button>
-                        <Button variant='primary' className='white-14-semibold'  onClick={this.onClickMailDAR}>
-                            Email application
-                        </Button>
-                        </div>
-                    </div>
-                </Modal>
+					<div className='workflowModal-body'>
+						Are you sure you want to email yourself this application? This will be sent to the email address provided in your HDR UK
+						account.
+					</div>
+					<div className='workflowModal-footer'>
+						<div className='workflowModal-footer--wrap'>
+							<Button variant='white' className='techDetailButton mr-2' onClick={e => this.toggleEmailModal(false)}>
+								No, nevermind
+							</Button>
+							<Button variant='primary' className='white-14-semibold' onClick={this.onClickMailDAR}>
+								Email application
+							</Button>
+						</div>
+					</div>
+				</Modal>
 
+				<MissingFieldsModal open={this.state.showMissingFieldsModal} close={this.toggleMissingFieldsModal} />
 			</div>
 		);
 	}
