@@ -14,6 +14,7 @@ class TypeaheadDataset extends React.Component {
 			options: [],
 			id: props.id,
 			readOnly: props.readOnly || false,
+			publisher: null,
 		};
 	}
 
@@ -30,21 +31,54 @@ class TypeaheadDataset extends React.Component {
 	}
 
 	getData() {
-		// if(this.props.selectedDatasets) {
-		const { publisher } = this.props.selectedDatasets[0];
+		let publisher;
+		if (this.props.selectedDatasets) {
+			 ({ publisher } = this.props.selectedDatasets[0]);
+			this.setState({
+				publisher,
+			});
+		}
+
 		axios
-			.get(`${baseURL}/api/v1/publishers/${publisher}/datasets`)
+			.get(`${baseURL}/api/v2/datasets`, {
+				params: {
+					activeflag: 'active',
+					fields: 'datasetid,name,description,datasetfields.abstract,_id,datasetfields.publisher,datasetfields.contactPoint',
+					populate: 'publisher',
+					...(publisher ? { is5Safes: true, ['datasetfields.publisher']: publisher } : {}),
+				}
+			})
 			.then(res => {
 				const {
-					data: { datasets },
+					data: { datasets = [] },
 				} = res;
+				const formattedDatasets = datasets.map(dataset => {
+					let {
+						_id,
+						datasetid: datasetId,
+						name,
+						description,
+						publisher: publisherObj,
+						datasetfields: { abstract, publisher, contactPoint },
+					} = dataset;
+					return {
+						_id,
+						datasetId,
+						name,
+						description,
+						abstract,
+						publisher,
+						publisherObj,
+						contactPoint,
+					};
+				});
 				let value = [...this.state.value];
-				this.setState({ options: [...datasets], value });
+				this.setState({ options: [...formattedDatasets], value });
 			})
 			.catch(err => {
+				console.error(err);
 				alert('Failed to fetch publisher datasets');
 			});
-		// }
 	}
 
 	handleChange(e) {
