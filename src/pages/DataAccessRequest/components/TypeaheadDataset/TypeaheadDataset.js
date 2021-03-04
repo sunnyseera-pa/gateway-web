@@ -45,7 +45,8 @@ class TypeaheadDataset extends React.Component {
 					activeflag: 'active',
 					fields: 'datasetid,name,description,datasetfields.abstract,_id,datasetfields.publisher,datasetfields.contactPoint',
 					populate: 'publisher',
-					...(publisher ? { is5Safes: true, ['datasetfields.publisher']: publisher } : {}),
+					is5Safes: true,
+					...(publisher ? { ['datasetfields.publisher']: publisher } : {}),
 				}
 			})
 			.then(res => {
