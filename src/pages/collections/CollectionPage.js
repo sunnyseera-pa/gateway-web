@@ -14,6 +14,8 @@ import _ from 'lodash';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
+import ActionBar from '../commonComponents/actionbar/ActionBar';
+import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import SVGIcon from '../../images/SVGIcon';
 import './Collections.scss';
 
@@ -572,6 +574,14 @@ export const CollectionPage = props => {
 					<Col sm={1} lg={10} />
 				</Row>
 			</Container>
+
+			{userState[0].loggedIn &&
+				(userState[0].role === 'Admin' || (collectionData.authors && collectionData.authors.includes(userState[0].id))) && (
+					<ActionBar userState={userState}>
+						<ResourcePageButtons data={collectionData} userState={userState} isCollection={true} />
+					</ActionBar>
+				)}
+
 			<SideDrawer open={showDrawer} closed={toggleDrawer}>
 				<UserMessages userState={userState[0]} closed={toggleDrawer} toggleModal={toggleModal} drawerIsOpen={showDrawer} />
 			</SideDrawer>
