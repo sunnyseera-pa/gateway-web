@@ -23,21 +23,28 @@ class TypeaheadDataset extends React.Component {
 	}
 
 	componentDidUpdate(prevProps) {
+		debugger;
 		if (this.props.selectedDatasets !== prevProps.selectedDatasets) {
 			this.setState({
 				value: this.props.selectedDatasets,
 			});
+			if (this.props.selectedDatasets.length < 2) {
+				this.getData();
+			}
 		}
 	}
 
 	getData() {
-		let publisher;
-		if (this.props.selectedDatasets) {
-			 ({ publisher } = this.props.selectedDatasets[0]);
-			this.setState({
-				publisher,
-			});
+		let { publisher } = this.state;
+		if (this.props.selectedDatasets && this.props.selectedDatasets.length > 0) {
+			({ publisher } = this.props.selectedDatasets[0]);
+		} else if (this.props.allowAllCustodians) {
+			publisher = null;
 		}
+
+		this.setState({
+			publisher,
+		});
 
 		axios
 			.get(`${baseURL}/api/v2/datasets`, {
@@ -47,7 +54,7 @@ class TypeaheadDataset extends React.Component {
 					populate: 'publisher',
 					is5Safes: true,
 					...(publisher ? { ['datasetfields.publisher']: publisher } : {}),
-				}
+				},
 			})
 			.then(res => {
 				const {
