@@ -657,7 +657,7 @@ export const CourseDetail = props => {
 
 												<Row>
 													{collections.map(collection => (
-														<Col sm={12} md={12} lg={6} style={{ 'text-align': '-webkit-center' }}>
+														<Col sm={12} md={12} lg={6} className='flexCenter'>
 															<CollectionCard data={collection} />
 														</Col>
 													))}

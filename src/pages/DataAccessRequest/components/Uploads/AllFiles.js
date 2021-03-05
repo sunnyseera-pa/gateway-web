@@ -5,14 +5,15 @@ import { ReactComponent as PaperSVG } from '../../../../images/paper.svg';
 import { ReactComponent as ArrowDownSVG } from '../../../../images/arrow-down.svg';
 import { ReactComponent as SmallAttentionSVG } from '../../../../images/small-attention.svg';
 import { ReactComponent as TrashSVG } from '../../../../images/trash-alt-solid.svg';
+import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
 import Image from 'react-bootstrap/Image';
-import { Button, Modal} from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 
-export const AllFiles = ({ files, downloadFile, deleteFile, download, readOnly }) => {
+export const AllFiles = ({ files, downloadFile, deleteFile, readOnly }) => {
+	const [showDeleteModal, setShowDeleteModal] = useState(false);
+	const [fileToDelete, setFileToDelete] = useState({});
 
-	const [showDeleteModal,setShowDeleteModal] = useState(false);
-	const [fileToDelete,setFileToDelete] = useState({});
-	
+
 	const getOwner = file => {
 		let { owner } = file;
 		if (!_.isEmpty(owner)) {
@@ -59,14 +60,12 @@ export const AllFiles = ({ files, downloadFile, deleteFile, download, readOnly }
 	const postDelete = file => {
 		deleteFile(file);
 		renderDeleteModal(false);
-	}
+	};
 
 	const renderDeleteModal = (show, file = {}) => {
 		setShowDeleteModal(show);
 		setFileToDelete(file);
 	};
-
-
 
 	return (
 		<div className='all-files'>
@@ -88,50 +87,58 @@ export const AllFiles = ({ files, downloadFile, deleteFile, download, readOnly }
 								</div>
 							</div>
 							<div className='column all-files-desc'>
-								{file.status === fileStatus.ERROR ? (
-									<Fragment>
-										<div className='error-alert'>
-											<SmallAttentionSVG /> {file.error}
-										</div>
-									</Fragment>
-								) : (
-									<Fragment>{file.description}</Fragment>
-								)}
-							</div>
-							<div className='column all-files-user'>
-								{file.status === fileStatus.ERROR ? '' : getOwner(file)}
-								{download ? renderDownload(file) : renderScan()}
-								{download && !readOnly ? renderDelete(file) : ''}
-							</div>
-						</div>
-					))}
+                                {file.status === fileStatus.ERROR ? (
+                                    <Fragment>
+                                        <div className='error-alert'>
+                                            <SmallAttentionSVG />An unexpected error has occurred
+                                        </div>
+                                    </Fragment>
+                                ) : (file.status === fileStatus.QUARANTINED) ? 
+                                    <Fragment>
+                                        <div className='error-alert'>
+                                            <SmallAttentionSVG />This file is infected and has been quarantined
+                                        </div>
+                                    </Fragment> : (
+                                    <Fragment>{file.description}</Fragment>
+                                )}
+                            </div>
+                            <div className='column all-files-user'>
+                                {file.status === fileStatus.ERROR || file.status === fileStatus.QUARANTINED ? '' : getOwner(file)}
+                                {file.status === fileStatus.SCANNED ? renderDownload(file) : ((file.status === fileStatus.NEWFILE || file.status === fileStatus.UPLOADED) ? renderScan() : '')}
+                                {file.status === fileStatus.SCANNED && !readOnly ? renderDelete(file) : ''}
+                            </div>
+                        </div>
+                    ))}
 
-<Modal
+				<Modal
 					show={showDeleteModal}
 					onHide={() => {
 						renderDeleteModal(false);
-					}}>
-					<Modal.Header closeButton>
-						<Modal.Title>Delete this file?</Modal.Title>
-					</Modal.Header>
-					<Modal.Body>This file will be deleted from the Gateway and Discourse.</Modal.Body>
-					<Modal.Footer>
-						<Button
-							variant='secondary'
-							onClick={() => {
-								renderDeleteModal(false);
-							}}>
-							No, nevermind
-						</Button>
-						<Button
-							variant='primary'
-							onClick={() => {
-								postDelete(fileToDelete);
-								
-							}}>
-							Yes, delete
-						</Button>
-					</Modal.Footer>
+					}}
+					aria-labelledby='contained-modal-title-vcenter'
+					centered
+					className='workflowModal'>
+					<div className='workflowModal-header'>
+						<h1 className='black-20-semibold'>Confirm action?</h1>
+						<CloseButtonSvg className='workflowModal-header--close' onClick={() => renderDeleteModal(false)} />
+					</div>
+
+					<div className='workflowModal-body'>This file will be deleted from the Gateway and Discourse.</div>
+					<div className='workflowModal-footer'>
+						<div className='workflowModal-footer--wrap'>
+							<Button variant='white' className='techDetailButton mr-2' onClick={() => renderDeleteModal(false)}>
+								No, nevermind
+							</Button>
+							<Button
+								variant='primary'
+								className='white-14-semibold'
+								onClick={() => {
+									postDelete(fileToDelete);
+								}}>
+								Yes, confirm action
+							</Button>
+						</div>
+					</div>
 				</Modal>
 			</Fragment>
 		</div>

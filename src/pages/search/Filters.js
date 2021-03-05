@@ -38,6 +38,7 @@ class Filters extends Component {
 			title: props.title || '',
 			allFilters: props.allFilters && props.length !== 0 ? props.allFilters : [],
 			filterOpen: false,
+			isKeyValue: props.isKeyValue,
 		};
 	}
 
@@ -47,6 +48,7 @@ class Filters extends Component {
 			selected: props.selected || [],
 			title: props.title || '',
 			allFilters: props.allFilters && props.length !== 0 ? props.allFilters : [],
+			isKeyValue: props.isKeyValue,
 		};
 	}
 
@@ -96,7 +98,7 @@ class Filters extends Component {
 	};
 
 	render() {
-		const { data, selected, title, filterOpen, allFilters } = this.state;
+		const { data, selected, title, filterOpen, allFilters, isKeyValue } = this.state;
 
 		var filterCard = 'filterCard mb-1';
 		if (filterOpen) {
@@ -144,7 +146,12 @@ class Filters extends Component {
 							: allFilters.map(filter => {
 									var filterClass = 'gray800-14 ml-4 mt-2 mb-2 pb-1';
 
-									if (!data.includes(filter)) filterClass = 'gray800-14-opacity ml-4 mt-2 mb-2 pb-1';
+									if (
+										(isKeyValue !== true && !data.includes(filter)) ||
+										(isKeyValue === true && data.filter(dat => dat.value === filter.value).length === 0)
+									) {
+										filterClass = 'gray800-14-opacity ml-4 mt-2 mb-2 pb-1';
+									}
 
 									return (
 										<InputGroup>
@@ -152,12 +159,17 @@ class Filters extends Component {
 												<InputGroup.Checkbox
 													aria-label='Checkbox for following text input'
 													name='publisher'
-													checked={selected.indexOf(filter) !== -1 ? 'true' : ''}
-													value={filter}
+													checked={
+														(isKeyValue === true && selected.indexOf(filter.result.toString()) !== -1) ||
+														(isKeyValue !== true && selected.indexOf(filter) !== -1)
+															? 'true'
+															: ''
+													}
+													value={isKeyValue === true ? filter.result : filter}
 													onChange={this.changeFilter}
 												/>
 											</InputGroup.Prepend>
-											<FormText className={filterClass}>{filter}</FormText>
+											<FormText className={filterClass}>{isKeyValue === true ? filter.value : filter}</FormText>
 										</InputGroup>
 									);
 							  })}

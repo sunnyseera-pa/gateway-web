@@ -10,6 +10,7 @@ import { Container, Row, Col, Tabs, Tab, Pagination, Dropdown } from 'react-boot
 
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
+import CollectionCard from '../commonComponents/collectionCard/CollectionCard';
 import Loading from '../commonComponents/Loading';
 import Filters from './Filters';
 import NoResults from '../commonComponents/NoResults';
@@ -37,12 +38,14 @@ class SearchPage extends React.Component {
 		paperIndex: 0,
 		personIndex: 0,
 		courseIndex: 0,
+		collectionIndex: 0,
 		datasetData: [],
 		toolData: [],
 		projectData: [],
 		paperData: [],
 		personData: [],
 		courseData: [],
+		collectionData: [],
 		filterOptions: [],
 		allFilters: [],
 		licensesSelected: [],
@@ -71,6 +74,8 @@ class SearchPage extends React.Component {
 		courseKeywordsSelected: [],
 		courseFrameworkSelected: [],
 		coursePrioritySelected: [],
+		collectionKeywordsSelected: [],
+		collectionPublishersSelected: [],
 		summary: [],
 		key: 'Datasets',
 		isLoading: true,
@@ -229,6 +234,9 @@ class SearchPage extends React.Component {
 				(((typeof values.courseIndex === 'undefined' && this.state.courseIndex !== 0) ||
 					(typeof values.courseIndex !== 'undefined' && this.state.courseIndex === 0)) &&
 					this.state.courseIndex !== values.courseIndex) ||
+				(((typeof values.collectionIndex === 'undefined' && this.state.collectionIndex !== 0) ||
+					(typeof values.collectionIndex !== 'undefined' && this.state.collectionIndex === 0)) &&
+					this.state.collectionIndex !== values.collectionIndex) ||
 				(((typeof values.datasetSort === 'undefined' && this.state.datasetSort !== '') ||
 					(typeof values.datasetSort !== 'undefined' && this.state.datasetSort === '')) &&
 					this.state.datasetSort !== values.datasetSort) ||
@@ -246,7 +254,13 @@ class SearchPage extends React.Component {
 					this.state.personSort !== values.personSort) ||
 				(((typeof values.courseSort === 'undefined' && this.state.courseSort !== '') ||
 					(typeof values.courseSort !== 'undefined' && this.state.courseSort === '')) &&
-					this.state.courseSort !== values.courseSort)
+					this.state.courseSort !== values.courseSort) ||
+				(((typeof values.collectionkeywords === 'undefined' && this.state.collectionKeywordsSelected.length !== 0) ||
+					(typeof values.collectionkeywords !== 'undefined' && this.state.collectionKeywordsSelected.length === 0)) &&
+					!this.state.collectionKeywordsSelected.includes(values.collectionkeywords)) ||
+				(((typeof values.collectionpublisher === 'undefined' && this.state.collectionPublisherSelected.length !== 0) ||
+					(typeof values.collectionpublisher !== 'undefined' && this.state.collectionPublisherSelected.length === 0)) &&
+					!this.state.collectionPublisherSelected.includes(values.collectionpublisher))
 			) {
 				await Promise.all([this.updateFilterStates(values)]);
 				this.doSearchCall(true);
@@ -347,13 +361,21 @@ class SearchPage extends React.Component {
 			? this.setState({ coursePrioritySelected: values.coursepriority.split('::') })
 			: this.setState({ coursePrioritySelected: [] });
 
+		values.collectionkeywords
+			? this.setState({ collectionKeywordsSelected: values.collectionkeywords.split('::') })
+			: this.setState({ collectionKeywordsSelected: [] });
+		values.collectionpublisher
+			? this.setState({ collectionPublisherSelected: values.collectionpublisher.split('::') })
+			: this.setState({ collectionPublisherSelected: [] });
+
 		values.tab ? this.setState({ key: values.tab }) : this.setState({ key: 'Datasets' });
 		values.datasetIndex ? this.setState({ datasetIndex: values.datasetIndex }) : this.setState({ datasetIndex: 0 });
 		values.toolIndex ? this.setState({ toolIndex: values.toolIndex }) : this.setState({ toolIndex: 0 });
 		values.projectIndex ? this.setState({ projectIndex: values.projectIndex }) : this.setState({ projectIndex: 0 });
 		values.paperIndex ? this.setState({ paperIndex: values.paperIndex }) : this.setState({ paperIndex: 0 });
 		values.personIndex ? this.setState({ personIndex: values.personIndex }) : this.setState({ personIndex: 0 });
-		values.courseIndex ? this.setState({ courseIndex: values.courseIndex }) : this.setState({ projectIndex: 0 });
+		values.courseIndex ? this.setState({ courseIndex: values.courseIndex }) : this.setState({ courseIndex: 0 });
+		values.collectionIndex ? this.setState({ collectionIndex: values.collectionIndex }) : this.setState({ collectionIndex: 0 });
 
 		values.datasetSort ? this.setState({ datasetSort: values.datasetSort }) : this.setState({ datasetSort: '' });
 		values.toolSort ? this.setState({ toolSort: values.toolSort }) : this.setState({ toolSort: '' });
@@ -395,12 +417,16 @@ class SearchPage extends React.Component {
 		this.setState({ courseFrameworkSelected: [] });
 		this.setState({ coursePrioritySelected: [] });
 
+		this.setState({ collectionKeywordsSelected: [] });
+		this.setState({ collectionPublisherSelected: [] });
+
 		this.setState({ datasetIndex: 0 });
 		this.setState({ toolIndex: 0 });
 		this.setState({ projectIndex: 0 });
 		this.setState({ paperIndex: 0 });
 		this.setState({ personIndex: 0 });
 		this.setState({ courseIndex: 0 });
+		this.setState({ collectionIndex: 0 });
 
 		this.setState({ datasetSort: '' });
 		this.setState({ toolSort: '' });
@@ -425,6 +451,7 @@ class SearchPage extends React.Component {
 			this.setState({ paperIndex: 0 }),
 			this.setState({ personIndex: 0 }),
 			this.setState({ courseIndex: 0 }),
+			this.setState({ collectionIndex: 0 }),
 		]);
 		this.doSearchCall();
 		this.setState({ isResultsLoading: true });
@@ -501,12 +528,18 @@ class SearchPage extends React.Component {
 		if (this.state.coursePrioritySelected.length > 0)
 			searchURL += '&coursepriority=' + encodeURIComponent(this.state.coursePrioritySelected.toString().split(',').join('::'));
 
+		if (this.state.collectionKeywordsSelected.length > 0)
+			searchURL += '&collectionkeywords=' + encodeURIComponent(this.state.collectionKeywordsSelected.toString().split(',').join('::'));
+		if (this.state.collectionPublisherSelected.length > 0)
+			searchURL += '&collectionpublisher=' + encodeURIComponent(this.state.collectionPublisherSelected.toString().split(',').join('::'));
+
 		if (this.state.datasetIndex > 0) searchURL += '&datasetIndex=' + encodeURIComponent(this.state.datasetIndex);
 		if (this.state.toolIndex > 0) searchURL += '&toolIndex=' + encodeURIComponent(this.state.toolIndex);
 		if (this.state.projectIndex > 0) searchURL += '&projectIndex=' + encodeURIComponent(this.state.projectIndex);
 		if (this.state.paperIndex > 0) searchURL += '&paperIndex=' + encodeURIComponent(this.state.paperIndex);
 		if (this.state.personIndex > 0) searchURL += '&personIndex=' + encodeURIComponent(this.state.personIndex);
 		if (this.state.courseIndex > 0) searchURL += '&courseIndex=' + encodeURIComponent(this.state.courseIndex);
+		if (this.state.collectionIndex > 0) searchURL += '&collectionIndex=' + encodeURIComponent(this.state.collectionIndex);
 
 		if (this.state.datasetSort !== '') searchURL += '&datasetSort=' + encodeURIComponent(this.state.datasetSort);
 		if (this.state.toolSort !== '') searchURL += '&toolSort=' + encodeURIComponent(this.state.toolSort);
@@ -545,6 +578,7 @@ class SearchPage extends React.Component {
 				paperData: res.data.paperResults || [],
 				personData: res.data.personResults || [],
 				courseData: res.data.courseResults || [],
+				collectionData: res.data.collectionResults || [],
 				summary: res.data.summary || [],
 				isLoading: false,
 				isResultsLoading: false,
@@ -593,6 +627,8 @@ class SearchPage extends React.Component {
 			await Promise.all([this.setState({ personIndex: page })]);
 		} else if (type === 'course') {
 			await Promise.all([this.setState({ courseIndex: page })]);
+		} else if (type === 'collection') {
+			await Promise.all([this.setState({ collectionIndex: page })]);
 		}
 		this.doSearchCall();
 	};
@@ -622,6 +658,7 @@ class SearchPage extends React.Component {
 			paperData,
 			personData,
 			courseData,
+			collectionData,
 			filterOptions,
 			allFilters,
 			userState,
@@ -658,12 +695,16 @@ class SearchPage extends React.Component {
 			courseFrameworkSelected,
 			coursePrioritySelected,
 
+			collectionKeywordsSelected,
+			collectionPublisherSelected,
+
 			datasetIndex,
 			toolIndex,
 			projectIndex,
 			paperIndex,
 			personIndex,
 			courseIndex,
+			collectionIndex,
 
 			datasetSort,
 			toolSort,
@@ -692,6 +733,7 @@ class SearchPage extends React.Component {
 		var paperCount = summary.papers || 0;
 		var personCount = summary.persons || 0;
 		var courseCount = summary.courses || 0;
+		var collectionCount = summary.collections || 0;
 
 		if (key === '' || typeof key === 'undefined') {
 			if (datasetCount > 0) {
@@ -700,12 +742,14 @@ class SearchPage extends React.Component {
 				key = 'Tools';
 			} else if (projectCount > 0) {
 				key = 'Projects';
+			} else if (collectionCount > 0) {
+				key = 'Collections';
+			} else if (courseCount > 0) {
+				key = 'Course';
 			} else if (paperCount > 0) {
 				key = 'Papers';
 			} else if (personCount > 0) {
 				key = 'People';
-			} else if (courseCount > 0) {
-				key = 'Course';
 			} else {
 				key = 'Datasets';
 			}
@@ -718,6 +762,7 @@ class SearchPage extends React.Component {
 		if (key === 'Papers' && paperCount === 0) showSort = false;
 		if (key === 'People' && personCount === 0) showSort = false;
 		if (key === 'Courses') showSort = false;
+		if (key === 'Collections') showSort = false;
 
 		let datasetPaginationItems = [];
 		let toolPaginationItems = [];
@@ -725,6 +770,7 @@ class SearchPage extends React.Component {
 		let paperPaginationItems = [];
 		let personPaginationItems = [];
 		let coursePaginationItems = [];
+		let collectionPaginationItems = [];
 		var maxResult = 40;
 		for (let i = 1; i <= Math.ceil(datasetCount / maxResult); i++) {
 			datasetPaginationItems.push(
@@ -786,6 +832,16 @@ class SearchPage extends React.Component {
 				</Pagination.Item>
 			);
 		}
+		for (let i = 1; i <= Math.ceil(collectionCount / maxResult); i++) {
+			collectionPaginationItems.push(
+				<Pagination.Item
+					key={i}
+					active={i === collectionIndex / maxResult + 1}
+					onClick={() => this.handlePagination('collection', (i - 1) * maxResult)}>
+					{i}
+				</Pagination.Item>
+			);
+		}
 
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
@@ -806,6 +862,7 @@ class SearchPage extends React.Component {
 								<Tab eventKey='Datasets' title={'Datasets (' + datasetCount + ')'} />
 								<Tab eventKey='Tools' title={'Tools (' + toolCount + ')'} />
 								<Tab eventKey='Projects' title={'Projects (' + projectCount + ')'} />
+								<Tab eventKey='Collections' title={'Collections (' + collectionCount + ')'} />
 								<Tab eventKey='Courses' title={'Courses (' + courseCount + ')'} />
 								<Tab eventKey='Papers' title={'Papers (' + paperCount + ')'} />
 								<Tab eventKey='People' title={'People (' + personCount + ')'}>
@@ -1523,6 +1580,86 @@ class SearchPage extends React.Component {
 									) : (
 										''
 									)}
+
+									{key === 'Collections' ? (
+										<>
+											<div className='filterHolder'>
+												{collectionKeywordsSelected.length !== 0 || collectionPublisherSelected.length !== 0 ? (
+													<div className='filterCard mb-2'>
+														<Row>
+															<Col className='mb-2'>
+																<div className='inlineBlock'>
+																	<div className='gray500-13'>Showing:</div>
+																</div>
+																<div className='floatRight'>
+																	<div className='purple-13 pointer' onClick={() => this.clearFilter('All')}>
+																		Clear all
+																	</div>
+																</div>
+															</Col>
+														</Row>
+
+														{!collectionKeywordsSelected || collectionKeywordsSelected.length <= 0
+															? ''
+															: collectionKeywordsSelected.map(selected => {
+																	return (
+																		<div className='badge-tag'>
+																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
+																			<span
+																				className='gray800-14-opacity pointer'
+																				onClick={() => this.clearFilter(selected, 'collectionKeywordsSelected')}>
+																				X
+																			</span>
+																		</div>
+																	);
+															  })}
+
+														{!collectionPublisherSelected || collectionPublisherSelected.length <= 0
+															? ''
+															: collectionPublisherSelected.map(selected => {
+																	if (!_.isNil(allFilters.collectionPublisherFilter)) {
+																		const collectionPublisherFilters = Object.values(allFilters.collectionPublisherFilter);
+
+																		return collectionPublisherFilters.map(filter => {
+																			if (selected === filter.result.toString()) {
+																				return (
+																					<div className='badge-tag'>
+																						{filter.value.substr(0, 80)} {filter.value.length > 80 ? '...' : ''}{' '}
+																						<span
+																							className='gray800-14-opacity pointer'
+																							onClick={() => this.clearFilter(selected, 'collectionPublisherSelected')}>
+																							X
+																						</span>
+																					</div>
+																				);
+																			}
+																		});
+																	}
+															  })}
+													</div>
+												) : (
+													''
+												)}
+												<Filters
+													data={filterOptions.collectionKeywordsFilterOptions}
+													allFilters={allFilters.collectionKeywordFilter}
+													updateOnFilter={this.updateOnFilter}
+													selected={collectionKeywordsSelected}
+													title='Keywords'
+												/>
+												<Filters
+													data={filterOptions.collectionPublisherFilterOptions}
+													allFilters={allFilters.collectionPublisherFilter}
+													updateOnFilter={this.updateOnFilter}
+													selected={collectionPublisherSelected}
+													title='Publisher'
+													isKeyValue={true}
+												/>
+											</div>
+										</>
+									) : (
+										''
+									)}
 								</Col>
 							) : (
 								<Col sm={12} md={12} lg={3} />
@@ -1579,7 +1716,7 @@ class SearchPage extends React.Component {
 										</Row>
 									)}
 									{key === 'Datasets' ? (
-										datasetCount <= 0 && !isResultsLoading ? (
+										datasetCount <= 0 ? (
 											<NoResults type='datasets' searchString={searchString} />
 										) : (
 											datasetData.map(dataset => {
@@ -1614,7 +1751,7 @@ class SearchPage extends React.Component {
 									)}
 
 									{key === 'Tools' ? (
-										toolCount <= 0 && !isResultsLoading ? (
+										toolCount <= 0 ? (
 											<NoResults type='tools' searchString={searchString} />
 										) : (
 											toolData.map(tool => {
@@ -1634,7 +1771,7 @@ class SearchPage extends React.Component {
 									)}
 
 									{key === 'Projects' ? (
-										projectCount <= 0 && !isResultsLoading ? (
+										projectCount <= 0 ? (
 											<NoResults type='projects' searchString={searchString} />
 										) : (
 											projectData.map(project => {
@@ -1654,7 +1791,7 @@ class SearchPage extends React.Component {
 									)}
 
 									{key === 'Papers' ? (
-										paperCount <= 0 && !isResultsLoading ? (
+										paperCount <= 0 ? (
 											<NoResults type='papers' searchString={searchString} />
 										) : (
 											paperData.map(paper => {
@@ -1690,7 +1827,7 @@ class SearchPage extends React.Component {
 									{(() => {
 										if (key === 'Courses') {
 											let courseRender = [];
-											if (courseCount <= 0 && !isResultsLoading) return <NoResults type='courses' searchString={searchString} />;
+											if (courseCount <= 0) return <NoResults type='courses' searchString={searchString} />;
 											else {
 												let currentHeader = '';
 												courseData.map(course => {
@@ -1733,6 +1870,24 @@ class SearchPage extends React.Component {
 										}
 									})()}
 
+									{key === 'Collections' ? (
+										collectionCount <= 0 ? (
+											<NoResults type='collections' searchString={searchString} />
+										) : (
+											<Row className='mt-5'>
+												{collectionData.map(collection => {
+													return (
+														<Col sm={12} md={12} lg={6} className='flexCenter'>
+															<CollectionCard key={collection.id} data={collection} />
+														</Col>
+													);
+												})}
+											</Row>
+										)
+									) : (
+										''
+									)}
+
 									<div className='text-center'>
 										{key === 'Datasets' && datasetCount > maxResult ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
 
@@ -1745,6 +1900,8 @@ class SearchPage extends React.Component {
 										{key === 'People' && personCount > maxResult ? <Pagination>{personPaginationItems}</Pagination> : ''}
 
 										{key === 'Courses' && courseCount > maxResult ? <Pagination>{coursePaginationItems}</Pagination> : ''}
+
+										{key === 'Collections' && collectionCount > maxResult ? <Pagination>{collectionPaginationItems}</Pagination> : ''}
 									</div>
 								</Col>
 							) : (

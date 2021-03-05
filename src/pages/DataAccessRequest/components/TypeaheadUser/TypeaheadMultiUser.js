@@ -62,7 +62,7 @@ class TypaheadMultiUser extends React.Component {
 						this.setState({ options: data, value });
 					})
 					.catch(err => {
-						console.error(err);
+						console.error(err.message);
 						alert('Failed to fetch users');
 					});
 				break;
@@ -87,7 +87,7 @@ class TypaheadMultiUser extends React.Component {
 						this.setState({ options: membersLists, value });
 					})
 					.catch(err => {
-						console.error(err);
+						console.error(err.message);
 						alert('Failed to fetch users');
 					});
 				break;

@@ -421,7 +421,7 @@ class Account extends Component {
 										</Nav.Link>
 									</div>
 
-									{/* <div
+									<div
 										data-test-id='datasets'
 										className={`${tabId === 'datasets' || tabId === 'datasetsAdvancedSearch' ? 'activeCard' : ''}`}>
 										<Accordion activeKey={datasetAccordion} onSelect={this.datasetAccordionClick}>
@@ -449,7 +449,7 @@ class Account extends Component {
 												</Accordion.Collapse>
 											</Fragment>
 										</Accordion>
-									</div> */}
+									</div>
 
 									<div className={`${tabId === 'papers' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('papers')}>
 										<Nav.Link eventKey={'papers'} className='verticalNavBar gray700-13'>

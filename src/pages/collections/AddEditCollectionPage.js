@@ -1,20 +1,20 @@
 import React from 'react';
 import axios from 'axios';
-import { initGA } from '../../tracking';
-import moment from 'moment';
 import { Container } from 'react-bootstrap';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
-import AddEditProjectForm from './AddEditProjectForm';
+import moment from 'moment';
+import { initGA } from '../../tracking';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import { isEditMode } from '../../utils/GeneralHelper.util';
-import 'react-bootstrap-typeahead/css/Typeahead.css';
+import AddEditCollectionForm from './AddEditCollectionForm';
+import './Collections.scss';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
-class AddEditProjectPage extends React.Component {
+class AddEditCollectionPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state.userState = props.userState;
@@ -24,10 +24,8 @@ class AddEditProjectPage extends React.Component {
 	// initialize our state
 	state = {
 		data: [],
-		combinedTopic: [],
-		combinedFeatures: [],
-		combinedCategories: [],
 		combinedUsers: [],
+		combinedKeywords: [],
 		isLoading: true,
 		userState: [],
 		searchString: '',
@@ -39,77 +37,61 @@ class AddEditProjectPage extends React.Component {
 		courseData: [],
 		summary: [],
 		tempRelatedObjectIds: [],
-		relatedObjectIds: [],
 		relatedObjects: [],
 		didDelete: false,
-		isEdit: isEditMode(window.location.pathname),
 		showDrawer: false,
 		showModal: false,
 		context: {},
+		publicFlag: false,
+		isEdit: isEditMode(window.location.pathname),
 	};
 
 	async componentDidMount() {
 		initGA('UA-166025838-1');
-		await Promise.all([this.doGetTopicsCall(), this.doGetCategoriesCall(), this.doGetUsersCall(), this.doGetFeaturesCall()]);
-		if (this.state.isEdit) this.getProjectFromDb();
+		await Promise.all([this.doGetUsersCall(), this.doGetKeywordsCall()]);
+
+		if (this.state.isEdit) this.getDataSearchFromDb();
 		else this.setState({ isLoading: false });
 	}
 
-	getProjectFromDb = () => {
-		//need to handle error if no id is found
+	getDataSearchFromDb = () => {
 		this.setState({ isLoading: true });
-		axios.get(baseURL + '/api/v1/projects/' + this.props.match.params.projectID).then(res => {
+		axios.get(baseURL + '/api/v1/collections/' + this.props.match.params.collectionID).then(res => {
 			this.setState({
 				data: res.data.data[0],
 				relatedObjects: res.data.data[0].relatedObjects ? res.data.data[0].relatedObjects : [],
+				publicFlag: res.data.data[0].publicflag,
 			});
+
 			this.setState({ isLoading: false });
 		});
 	};
-
-	doGetTopicsCall() {
-		return new Promise((resolve, reject) => {
-			axios.get(baseURL + '/api/v1/search/filter/topic/project').then(res => {
-				this.setState({
-					combinedTopic: res.data.data[0].sort(function (a, b) {
-						return a.toUpperCase() < b.toUpperCase() ? -1 : a.toUpperCase() > b.toUpperCase() ? 1 : 0;
-					}),
-				});
-				resolve();
-			});
-		});
-	}
-
-	doGetFeaturesCall() {
-		return new Promise((resolve, reject) => {
-			axios.get(baseURL + '/api/v1/search/filter/feature/project').then(res => {
-				this.setState({
-					combinedFeatures: res.data.data[0].sort(function (a, b) {
-						return a.toUpperCase() < b.toUpperCase() ? -1 : a.toUpperCase() > b.toUpperCase() ? 1 : 0;
-					}),
-				});
-				resolve();
-			});
-		});
-	}
-
-	doGetCategoriesCall() {
-		return new Promise((resolve, reject) => {
-			axios.get(baseURL + '/api/v1/search/filter/category/project').then(res => {
-				this.setState({
-					combinedCategories: res.data.data[0].sort(function (a, b) {
-						return a.toUpperCase() < b.toUpperCase() ? -1 : a.toUpperCase() > b.toUpperCase() ? 1 : 0;
-					}),
-				});
-				resolve();
-			});
-		});
-	}
 
 	doGetUsersCall() {
 		return new Promise((resolve, reject) => {
 			axios.get(baseURL + '/api/v1/users').then(res => {
 				this.setState({ combinedUsers: res.data.data });
+				resolve();
+			});
+		});
+	}
+
+	doGetKeywordsCall() {
+		return new Promise((resolve, reject) => {
+			axios.get(baseURL + '/api/v1/search/filter/keywords/collection').then(res => {
+				var tempKeywordsArray = [];
+
+				res.data.data[1].forEach(dat => {
+					if (!tempKeywordsArray.includes(dat) && dat !== '') {
+						tempKeywordsArray.push(dat);
+					}
+				});
+
+				this.setState({
+					combinedKeywords: tempKeywordsArray.sort(function (a, b) {
+						return a.toUpperCase() < b.toUpperCase() ? -1 : a.toUpperCase() > b.toUpperCase() ? 1 : 0;
+					}),
+				});
 				resolve();
 			});
 		});
@@ -160,28 +142,23 @@ class AddEditProjectPage extends React.Component {
 		if (this.state.tempRelatedObjectIds && this.state.tempRelatedObjectIds.some(object => object.objectId === id)) {
 			this.state.tempRelatedObjectIds = this.state.tempRelatedObjectIds.filter(object => object.objectId !== id);
 		} else {
-			this.state.tempRelatedObjectIds.push({ objectId: id, objectType: type, pid: pid });
+			this.state.tempRelatedObjectIds.push({ objectId: id, type: type, pid: pid });
 		}
 		this.setState({ tempRelatedObjectIds: this.state.tempRelatedObjectIds });
 	};
 
 	addToRelatedObjects = () => {
-		let {
-			userState: [user = {}],
-		} = this.state;
-		let relatedObjectIds = [...this.state.tempRelatedObjectIds];
-		let relatedObjects = [...this.state.relatedObjects];
-
-		let newRelatedObjects = relatedObjectIds.map(relatedObject => {
-			let newRelatedObject = {
-				...relatedObject,
-				objectId: relatedObject.type === 'dataset' ? relatedObject.pid : relatedObject.objectId,
-				user: user.name,
+		this.state.tempRelatedObjectIds.map(object => {
+			this.state.relatedObjects.push({
+				objectId: object.objectId,
+				reason: '',
+				objectType: object.type,
+				pid: object.type === 'dataset' ? object.pid : '',
+				user: this.state.userState[0].name,
 				updated: moment().format('DD MMM YYYY'),
-			};
-			return newRelatedObject;
+			});
 		});
-		this.setState({ relatedObjects: [...relatedObjects, ...newRelatedObjects] });
+
 		this.setState({ tempRelatedObjectIds: [] });
 	};
 
@@ -191,18 +168,25 @@ class AddEditProjectPage extends React.Component {
 
 	removeObject = (id, type, datasetid) => {
 		let countOfRelatedObjects = this.state.relatedObjects.length;
-		let newRelatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== id && obj.objectId !== id.toString());
+		let newRelatedObjects = [...this.state.relatedObjects].filter(obj => obj.objectId !== id && obj.objectId !== id.toString());
 
 		//if an item was not removed try removing by datasetid for retro linkages
 		if (countOfRelatedObjects <= newRelatedObjects.length && type === 'dataset') {
-			newRelatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== datasetid && obj.objectId !== datasetid.toString());
+			newRelatedObjects = [...this.state.relatedObjects].filter(obj => obj.objectId !== datasetid && obj.objectId !== datasetid.toString());
 		}
+
 		this.setState({ relatedObjects: newRelatedObjects });
 		this.setState({ didDelete: true });
 	};
 
 	updateDeleteFlag = () => {
 		this.setState({ didDelete: false });
+	};
+
+	updatePublicFlag = publicFlag => {
+		this.setState(prevState => {
+			return { publicFlag: !prevState.publicFlag };
+		});
 	};
 
 	toggleDrawer = () => {
@@ -223,11 +207,8 @@ class AddEditProjectPage extends React.Component {
 	render() {
 		const {
 			data,
-			isEdit,
-			combinedTopic,
-			combinedCategories,
 			combinedUsers,
-			combinedFeatures,
+			combinedKeywords,
 			isLoading,
 			userState,
 			searchString,
@@ -243,6 +224,8 @@ class AddEditProjectPage extends React.Component {
 			showDrawer,
 			showModal,
 			context,
+			publicFlag,
+			isEdit,
 		} = this.state;
 
 		if (isLoading) {
@@ -252,6 +235,7 @@ class AddEditProjectPage extends React.Component {
 				</Container>
 			);
 		}
+
 		return (
 			<div>
 				<SearchBar
@@ -262,13 +246,10 @@ class AddEditProjectPage extends React.Component {
 					userState={userState}
 				/>
 
-				<AddEditProjectForm
+				<AddEditCollectionForm
 					data={data}
-					isEdit={isEdit}
-					combinedTopic={combinedTopic}
-					combinedCategories={combinedCategories}
 					combinedUsers={combinedUsers}
-					combinedFeatures={combinedFeatures}
+					combinedKeywords={combinedKeywords}
 					userState={userState}
 					searchString={searchString}
 					doSearchMethod={this.doModalSearch}
@@ -288,6 +269,9 @@ class AddEditProjectPage extends React.Component {
 					relatedObjects={relatedObjects}
 					didDelete={didDelete}
 					updateDeleteFlag={this.updateDeleteFlag}
+					publicFlag={publicFlag}
+					updatePublicFlag={this.updatePublicFlag}
+					isEdit={isEdit}
 				/>
 
 				<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
@@ -305,4 +289,4 @@ class AddEditProjectPage extends React.Component {
 	}
 }
 
-export default AddEditProjectPage;
+export default AddEditCollectionPage;

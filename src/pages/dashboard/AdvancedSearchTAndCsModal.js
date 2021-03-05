@@ -40,322 +40,328 @@ const AdvancedSearchTAndCsModal = ({ open, close, updateUserAcceptedAdvancedSear
 							<Modal.Body>
 								<div className='relatedModalBackground'>
 									<p>PLEASE READ THESE TERMS OF USE CAREFULLY BEFORE ACCEPTING THEM</p>
-									<p className='termsSubtitle'>1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHAT’S IN THESE TERMS? </p>
-									<p>
-										These terms set out the standards and rules that apply when you log onto and use the HDR Discovery tool (“our site”) or
-										interact with our site in any other way. You will be required to go through a validation process before being allowed to
-										use our site.
-									</p>
 									<p>Click on the links below to go straight to more information on each area:</p>
 									<div className='termsLinks'>
 										<a className='termsLink' href='#terms-2'>
-											WHO WE ARE AND HOW TO CONTACT US
+											Who we are and how to contact us
 										</a>
 										<a className='termsLink' href='#terms-3'>
-											AGREEING TO OUR TERMS
+											Acceptance of Terms and Conditions
 										</a>
 										<a className='termsLink' href='#terms-4'>
-											WE MAY MAKE CHANGES TO THESE TERMS  
+											Other Terms and Conditions that apply to you  
 										</a>
 										<a className='termsLink' href='#terms-5'>
-											PURPOSE OF USE
+											Changes to Terms and Conditions
 										</a>
 										<a className='termsLink' href='#terms-6'>
-											PROHIBITED USES  
+											Your account and password 
 										</a>
 										<a className='termsLink' href='#terms-7'>
-											AVAILABILITY OF OUR SITE
+											Disclaimer
 										</a>
 										<a className='termsLink' href='#terms-8'>
-											Your privacy and personal information
+											Requesting data sets via the site
 										</a>
 										<a className='termsLink' href='#terms-9'>
-											Ownership, use and intellectual property rights
+											External links
 										</a>
 										<a className='termsLink' href='#terms-10'>
-											DATA PROTECTION
+											Copyright (and other intellectual property rights) restrictions
 										</a>
 										<a className='termsLink' href='#terms-11'>
-											CONFIDENTIALITY
+											Restrictions on your use of the site
 										</a>
 										<a className='termsLink' href='#terms-12'>
-											RESEARCH ACTIVITY
+											Accuracy of information
 										</a>
 										<a className='termsLink' href='#terms-13'>
-											MONITORING OF USE
+											Suspension and termination
 										</a>
 										<a className='termsLink' href='#terms-14'>
-											SNOMED TERMS OF USE
-										</a>
-										<a className='termsLink' href='#terms-15'>
-											BREACH OF THESE TERMS   
-										</a>
-										<a className='termsLink' href='#terms-16'>
-											LIABILITY
-										</a>
-										<a className='termsLink' href='#terms-17'>
-											LAWS APPLYING TO ANY DISPUTES  
-										</a>
-										<a className='termsLink' href='#terms-appendix'>
-											APPENDIX
+											Other important terms
 										</a>
 									</div>
 									<p id='terms-2' className='termsSubtitle'>
-										2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHO WE ARE AND HOW TO CONTACT US
+										Who we are and how to contact us
 									</p>
-									<p>UNIVERSITY OF NOTTINGHAM of University Park, Nottingham, NG7 2RD (“The University”, “us” or “we”)</p>
-									<p>To contact us, please email Email: contact@biobankinguk.org </p>
+									<p>
+										This Gateway Portal (the <b>“site“</b>) is operated by Health Data Research UK (“HDR UK”). HDR UK is a limited company
+										registered in England and Wales under company number 10887014 and its registered office is at 215 Euston Road, London,
+										England, NW1 2BE.
+									</p>
+									<p>To contact us, please use the contact details on our page.</p>
 									<p id='terms-3' className='termsSubtitle'>
-										3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AGREEING TO OUR TERMS
+										Acceptance of Terms and Conditions
 									</p>
 									<p>
-										BY [CLICKING ON THE YES BOX] OUR SITE YOU ACCEPT THESE TERMS AND THE SNOMED CT TERMS IN THE APPENDIX AND AGREE TO COMPLY
-										WITH THEM.
-									</p>
-									<p>
+										Access to and use of this site is provided by HDR UK subject to the following:
 										<ul className='termsBulletList'>
-											<li>If you do not agree to these terms, you must not use our site. </li>
-											<li>We recommend that you print a copy of these terms for future reference.</li>
+											<li>
+												By using this site you confirm that you accept these terms and conditions (including any Additional Terms that may
+												apply as below) (together, the <b>"Terms and Conditions"</b>) and that you agree to comply with them. The Terms and
+												Conditions take effect on the date of your first use of the site.
+											</li>
+											<li>If you do not agree to the Terms and Conditions, you must not use our site.</li>
 										</ul>
 									</p>
 									<p id='terms-4' className='termsSubtitle'>
-										4.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WE MAY MAKE CHANGES TO THESE TERMS
+										Other Terms and Conditions that apply to you
 									</p>
 									<p>
-										We amend these terms from time to time. Every time you wish to use our site, please check these terms to ensure you
-										understand the terms that apply at that time.  When we change our terms you will be asked on logging in to accept the
-										new terms. If you choose not to accept the new terms we will withdraw your access to your account.
+										Additional terms and conditions may apply when you use certain functions made available on the site, including the terms
+										of use for the Discovery Tool (the "<b>Additional Terms</b>").The following additional documents also apply to your use
+										of our site as an individual user:
+										<ul className='termsBulletList'>
+											<li>
+												<a className='link' href='https://www.hdruk.ac.uk/privacy-policy/'>
+													Privacy Policy
+												</a>
+												, which sets out how we will use your personal data.
+											</li>
+											<li>
+												<a className='link' href='https://www.hdruk.ac.uk/terms-and-conditions/cookies/'>
+													Cookie Policy
+												</a>
+												, which sets out information about the cookies on our site.
+											</li>
+										</ul>
 									</p>
 									<p id='terms-5' className='termsSubtitle'>
-										5.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PURPOSE OF USE
+										Changes to Terms and Conditions
 									</p>
 									<p>
 										<ul className='termsBulletList'>
 											<li>
-												You may only use the site as a discovery tool to search anonymised data to assist you in finding an organisation
-												that may hold the data you need for your research.
+												HDR UK reserves the right to amend the Terms and Conditions from time to time. When you use this site, please check
+												the Terms and Conditions. These terms were most recently updated on 28th February 2021.
 											</li>
-											<li>You are not allowed to use the site for any kind of research activity or for any commercial use.</li>
 											<li>
-												An account on the site must be used solely by the person it has been registered to. Such accounts must be used by
-												such individual. It must not be used by groups nor used as a generic account.
+												By continuing to use the site after amendments are made you confirm that you accept the amendments and that you
+												agree to comply with them.
 											</li>
 										</ul>
 									</p>
 									<p id='terms-6' className='termsSubtitle'>
-										6.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PROHIBITED USES
+										Your account and password
 									</p>
 									<p>
-										6.1 You may use our site only for lawful purposes. You may not use our site:  <br></br>for any kind of research activity
-										unless you have prior written consent from an organisation registered on our site allowing you to use their data for
-										research purposes;
-										<br></br>to attempt to re-identify or retrace an individual out of anonymous data;
-										<br></br>to ask questions which may lead to loss of anonymization of data;
-										<br></br>in any way that is unlawful or fraudulent, or has any unlawful or fraudulent purpose or effect;
-										<br></br>to bully, insult, intimidate or humiliate any person;
-										<br></br>to send, knowingly receive, use or re-use any material which does not comply with our content standards;
-										<br></br>to transmit, or procure the sending of, any unsolicited or unauthorised advertising or promotional material or
-										any other form of similar solicitation (spam);
-										<br></br>to knowingly transmit any data, send or upload any material that contains viruses, Trojan horses, worms,
-										time-bombs, keystroke loggers, spyware, adware or any other harmful programs or similar computer code designed to
-										adversely affect the operation of any computer software or hardware.
-										<br></br>in any unlawful or unethical manner, including, but not limited to, violation of any persons right to privacy;
-										<br></br>in a way that causes interference to our site or to other users;
-										<br></br>in any way that breaches any applicable local, national or international law or regulation;
-										<br></br>or attempt to use or use the site in violation of these terms.
-									</p>
-									<p>
-										6.2 You also agree:
-										<br></br>not to license, sublicense, sell, resell, rent, lease, transfer, assign, distribute, or otherwise commercially
-										exploit or make our site available to any third party;
-										<br></br>modify, adapt, alter or hack our site or otherwise attempt to gain unauthorized access to related systems and
-										networks;
-										<br></br>not to reproduce, duplicate, copy or re-sell any part of our site;
-										<br></br>not to attempt to decipher, decompile, reverse engineer or otherwise discover the source code of any software
-										making up our site;
-										<br></br>not to access without authority, interfere with, damage or disrupt:
-										<br></br>any part of our site;
-										<br></br>any equipment or network on which our site is stored; or
-										<br></br>any software used in the provision of our site.
+										<ul className='termsBulletList'>
+											<li>
+												You will need to register an account with us on the site in order to access certain services available on the site,
+												including the Discovery Tool ("<b>Account</b>"). In order to register for an Account, you must be aged 18 or over.
+												If you register an Account, you will be asked to provide certain information (such as your Athens account details or
+												email address) and to create a password, as part of our security procedures. You must treat the password as
+												confidential and you must not disclose it to any third party.
+											</li>
+											<li>
+												We have the right to disable any Accounts and/or passwords, at any time, if in our reasonable opinion you have
+												failed to comply with any of the provisions of the Terms and Conditions.
+											</li>
+											<li>
+												If you know or suspect that anyone other than you knows your Account login details, you must immediately notify us
+												at support@healthdatagateway.org.
+											</li>
+											<li>You are responsible for any unauthorised use of your Account login details.</li>
+										</ul>
 									</p>
 									<p id='terms-7' className='termsSubtitle'>
-										7.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AVAILABILITY OF OUR SITE
+										Disclaimer
 									</p>
 									<p>
-										7.1 Use of our site is provided on an “as is” basis. Use is intended to be provided 24/7, excluding temporary service
-										breaks, which may result from maintenance, update or correction activities or activities performed in order to ensure or
-										restore availability, performance, recoverability, information security or management of our site or from other similar
-										breaks. The University shall have no liability for such breaks. The University shall usually inform you of such breaks
-										in advance if it is reasonably possible by putting a message on the site’s front page.
+										<ul className='termsBulletList'>
+											<li>
+												Views and opinions of non-HDR UK groups or individuals that appear on this site do not necessarily reflect the views
+												of HDR UK.
+											</li>
+											<li>
+												HDR UK does not endorse or recommend any datasets, commercial products, processes or services linked from, referred
+												to, or provided on this site.
+											</li>
+											<li>
+												This site and the information, names, images, pictures, logos and icons contained therein are provided “AS IS” and
+												on an “AS AVAILABLE” basis without any representation or endorsement made and without warranty of any kind
+												(including any implied warranties), and HDR UK may update and change the site from time to time. We may suspend,
+												withdraw, discontinue or change all or any part of the site without notice. We will not be liable to you if for any
+												reason the site is unavailable at any time or for any period.
+											</li>
+											<li>
+												To the maximum extent permitted by law, HDR UK (including any of its member/partner organisations) shall not be
+												liable to you for
+											</li>
+											<ul className='termsBulletList'>
+												<li>
+													any loss or damage, whether in contract, tort (including negligence), breach of statutory duty, or otherwise, even
+													if foreseeable, arising under or in connection with use of, or inability to use our site or use of or reliance on
+													any content displayed on our site; and
+												</li>
+												<li>
+													any indirect or consequential loss or damage, loss of profits, sales, business or revenue, loss of anticipated
+													savings, loss or business opportunity, goodwill or reputation or business interruption.
+												</li>
+											</ul>
+											<li>
+												HDR UK does not guarantee that access to this site will be uninterrupted or error-free, nor does HDR UK guarantee
+												that this site or the server that makes it available are free of viruses, bugs or defects.
+											</li>
+										</ul>
 									</p>
-									<p>
-										The University shall have no responsibility in the event that our site does not function due to accident, misuse or
-										unauthorized amendments.
-									</p>
-									<p>
-										7.2 The University shall have the right to measure and adapt data communications in order to avoid overload in data
-										connection, which may affect the quality of the service provided. The University is entitled to make such minor changes
-										and amendments to the site which do not have effect on its essential content
-									</p>
-									<p>
-										7.3 The University cannot guarantee that the site will always be available to you for use or that the information you
-										access through the site will be accurate.
-									</p>
-									<p>
-										7.4 The University shall have the right to rectify the site, to prevent a problem with the site, to apply fixes to the
-										site and to amend the site if the amendment is necessary due to mandatory legislation or authoritative order or if the
-										amendment is due to changes in products or license terms of a third-party software provider.
-									</p>
-									<p>
-										7.5 The University shall have the right to suspend the site or your use of the site either partly or in full for the
-										following reasons:
-										<br></br>(i) suspension is necessary for repair, update or maintenance of the site or any part or to ensure its
-										usability or functioning. The University will inform you of such suspension in advance if it is reasonably possible;
-										<br></br>(ii) the University has a legitimate reason to suspect that the site has been used for unlawful or unethical
-										activities;
-										<br></br>(iii) a user or users have not complied with these terms.
-									</p>
+
 									<p id='terms-8' className='termsSubtitle'>
-										8.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your privacy and personal information
+										Requesting data sets via the site
 									</p>
 									<p>
-										Your privacy and personal information are important to us. Any personal information that you provide to us will be dealt
-										with in line with our privacy policy, which explains what personal information we collect from you, how and why we
-										collect, store, use and share such information, your rights in relation to your personal information and how to contact
-										us and supervisory authorities in the event you have a query or complaint about the use of your personal information.
-										Our privacy policy is available at https://www.hdruk.ac.uk/infrastructure/gateway/privacy-policy/.
+										<ul className='termsBulletList'>
+											<li>
+												If you request access to a dataset referenced on our site (following authentication through OpenAthens), your
+												request will be automatically forwarded to the relevant data custodian that maintains the dataset (
+												<b>“data custodian”</b>). HDR UK will not be party to any contract for the subsequent sharing of the dataset, which
+												in each case is a contract solely between you and the applicable data custodian (a{' '}
+												<b>“dataset sharing agreement”</b>). We do not have any rights or obligations under any dataset sharing agreement.
+											</li>
+											<li>
+												HDR UK and its members/partners do not make any recommendations or endorsements regarding the datasets referred to
+												on the site and are not responsible for their availability, reliability or accuracy.
+											</li>
+											<li>
+												You must obtain professional or specialist advice before taking, or refraining from, any action on the basis of the
+												content on our site. This shall include conducting your own due diligence on any dataset that you may request to use
+												via this site.
+											</li>
+											<li>
+												To the maximum extent permitted by law, HDR UK (including any of its member/partner organisations) shall not be
+												liable to you for any loss or damage, whether in contract, tort (including negligence), breach of statutory duty, or
+												otherwise, even if foreseeable, arising under or in connection with any use of any dataset referred to on our site,
+												including, without limitation, any loss of profits, sales, business or revenue, loss of anticipated savings, loss of
+												business opportunity, goodwill or reputation or business interruption. You agree that you shall pursue any claims
+												for loss or damage arising from use of a dataset against the relevant data custodian and not against HDR UK.
+											</li>
+										</ul>
 									</p>
 									<p id='terms-9' className='termsSubtitle'>
-										9.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ownership, use and intellectual property rights
+										External links
 									</p>
 									<p>
-										Our site and all intellectual property rights in it including are owned by us or our licensors. Intellectual property
-										rights means rights such as: copyright, trade marks, domain names, design rights, database rights, patents and all other
-										intellectual property rights of any kind whether or not they are registered or unregistered (anywhere in the world). We
-										and our licensors reserve all of our and their rights in any intellectual property in connection with these terms. This
-										means, for example, that we and they remain owners of them and free to use them as we and they see fit. Nothing in these
-										terms grants you any legal rights in the site other than as necessary to enable you to access the site. You agree not to
-										adjust to try to circumvent or delete any notices contained on the site (including any intellectual property notices)
-										and in particular in any digital rights or other security technology embedded or contained within the site.
+										<ul className='termsBulletList'>
+											<li>
+												Links from this site to other external sites are provided for convenience and information only. HDR UK and its
+												members/partners do not endorse the content or services delivered through these external sites and are not
+												responsible for their availability, reliability or accuracy. HDR UK have no control over the content of these
+												external sites. Permission to reproduce information from these external sites may be required from the external site
+												provider.
+											</li>
+											<li>
+												The existence of a link from any organisation’s site to HDR UK’s site does not imply that HDR UK endorses the
+												activities or views of that organisation.
+											</li>
+											<li>
+												We only link to sites (charity, business or otherwise) if they fulfil the following two conditions: HDR UK has an
+												existing partnership with the organisation and/or the link is relevant to the work of HDR UK.
+											</li>
+										</ul>
 									</p>
 									<p id='terms-10' className='termsSubtitle'>
-										10.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DATA PROTECTION{' '}
+										Copyright (and other intellectual property rights) restrictions
 									</p>
 									<p>
-										The University shall have the right to take action to prevent any personal data breach and to remove interference
-										related to data security. Such action may include prevention of transfer and receipt of messages or removing malicious
-										software that endanger data security from messages. Action taken by the University shall depend on the severity of the
-										impact of any interference.
+										<ul className='termsBulletList'>
+											<li>
+												HDR UK is the owner or the licensee of all intellectual property rights in this site, and in the material published
+												on it.
+											</li>
+											<li>
+												You may print off one copy, and may download extracts, of any page(s) from our site for your personal use and you
+												may draw the attention of others within your organisation to content posted on our site.
+											</li>
+											<li>
+												You must not modify the paper or digital copies of any materials you have printed off or downloaded in any way, and
+												you must not use any illustrations, photographs, video or audio sequences or any graphics separately from any
+												accompanying text.
+											</li>
+											<li>
+												Our status (and that of any identified contributors) as the authors of content on our site must always be
+												acknowledged.
+											</li>
+											<li>
+												You must not use any part of the content on our site for commercial purposes without obtaining a licence to do so
+												from us or our licensors.
+											</li>
+											<li>
+												If you print off, copy or download any part of our site in breach of the Terms and Conditions, your right to use our
+												site will cease immediately and you must, at our option, return or destroy any copies of the materials you have
+												made.
+											</li>
+										</ul>
 									</p>
-									<p>You must inform the University without delay of any data security threats or breaches of which you become aware.</p>
 									<p id='terms-11' className='termsSubtitle'>
-										11.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CONFIDENTIALITY
+										Restrictions on your use of the site
 									</p>
 									<p>
-										You agree to keep confidential and not disclose to any third party any information relating to the site or the results
-										of your searches. You must retain your access right details, password and similar information carefully and in a manner
-										that ensures that they are not exposed to third parties.
+										<ul className='termsBulletList'>
+											<li>
+												You agree to use this site only for lawful purposes, and in a manner which does not infringe the rights of, or
+												restrict, or inhibit the use and enjoyment of this site by any third party. Such restriction includes, without
+												limitation, conduct which is unlawful or which may harass or cause distress or inconvenience to any person and the
+												transmission of offensive material or disruption of normal flow of dialogue within this site.
+											</li>
+											<li>
+												You must not misuse our site by knowingly introducing any material that contains viruses, Trojan horses, worms,
+												logic bombs, time-bombs, keystroke loggers, spyware, adware or other harmful programs or material that is malicious
+												or technologically harmful. You must not attempt to gain unauthorised access to our site, the server on which our
+												site is stored or any server, computer or database connected to our site. You must not attack our site via a
+												denial-of-service attack or a distributed denial-of-service attack. By breaching this provision, you would commit a
+												criminal offence under the Computer Misuse Act 1990. We will report any breach to the relevant law enforcement
+												authorities and we will co-operate with those authorities by disclosing your identity to them. In the event of such
+												a breach, your right to use our site will cease immediately.
+											</li>
+										</ul>
 									</p>
-									<p>You will tell the University immediately if your access rights have become available to a third party.</p>
 									<p id='terms-12' className='termsSubtitle'>
-										12.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RESEARCH ACTIVITY{' '}
+										Accuracy of information
 									</p>
 									<p>
-										You are not allowed to use the site for any kind of research activity. Be aware that if as a result of your discovery
-										exercise on the site you go onto do research, you must get prior written consent from any of the organisations that hold
-										the data you may require for your research. You must ensure that you have obtained the appropriate permissions such as
-										ethics consent and other consents.
-										<br></br>The University gives no guarantee that the organisation holding the data will grant permission for disclosure
-										to you for research purposes. Release of any data to you is at the discretion of that organisation.
-										<br></br>You should be aware that every search is logged and accessible to the University.
+										<ul className='termsBulletList'>
+											<li>
+												Neither HDR UK nor its members will be liable for any losses or damage that may result from use of the site as a
+												consequence of any inaccuracies in, or any omissions from, the information, which it may contain or which may be
+												accessed through the site.
+											</li>
+											<li>
+												We have made reasonable efforts to ensure that the information on this site is accurate at the time of inclusion.
+												However, we make no representations, warranties or guarantees, whether express or implied, that the information on
+												this site is free from technical inaccuracies or typographical errors or that the content is accurate, complete or
+												up to date. We are not liable for any error or omission in, or any failure to update, the information on this site
+												and any decisions based on the information are your sole responsibility.
+											</li>
+										</ul>
 									</p>
 									<p id='terms-13' className='termsSubtitle'>
-										13.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MONITORING OF USE
+										Suspension and termination
 									</p>
 									<p>
-										To ensure compliance with these rules and with UK legislation including the General Data Protection Regulations we
-										reserve the right to log in at our discretion and in particular to investigate any suspected incidents or performance
-										problems or other issues to view your user activity and for this purpose we will access your IP address.
+										If you breach any of the Terms and Conditions, we may immediately do any or all of the following (without limitation),
+										issue a warning to you, temporarily or permanently withdraw your right to use the site; suspend or terminate your
+										Account, issue legal proceedings against you for reimbursement of all costs resulting from the breach (including, but
+										not limited to, reasonable administrative and legal costs), take further legal action against you, and/or disclose such
+										information to law enforcement authorities as we reasonably feel is necessary to do so.
 									</p>
 									<p id='terms-14' className='termsSubtitle'>
-										14.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SNOMED CT TERMS OF USE
+										Other important terms
 									</p>
 									<p>
-										Under the terms of its licence for the use of SNOMED CT the University is required to ensure that you agree to its terms
-										of use as set out in the Appendix to these rules.
-										<br></br>By accepting these rules you also agree to the SNOMED terms.{' '}
-									</p>
-									<p id='terms-15' className='termsSubtitle'>
-										15.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BREACH OF THESE TERMS{' '}
-									</p>
-									<p>
-										When we consider that a breach of these terms has occurred, we may take such action as we consider appropriate. Any
-										breach by you of these terms may result in the University taking all or any of the following actions:
-										<br></br>Immediate, temporary or permanent termination of your right to use our site.
-										<br></br>Issue of a warning to you.
-										<br></br>Legal proceedings against you for reimbursement of all costs on an indemnity basis (including, but not limited
-										to, reasonable administrative and legal costs) resulting from the breach.
-										<br></br>Further legal action against you.
-										<br></br>Disclosure of such information to law enforcement authorities as we reasonably feel is necessary or as required
-										by law.
-										<br></br>We exclude our liability for all action we may take in response to breaches of these terms.
-									</p>
-									<p id='terms-16' className='termsSubtitle'>
-										16.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LIABILITY{' '}
-									</p>
-									<p>
-										You will be liable for any unauthorized installation, use, copying, reproduction, or sharing of our site , software or
-										parts thereof and for possible costs, expenses and damages incurred by the University as a result thereof.
-									</p>
-									<p>
-										The University will not be liable for, and it shall not have obligation to compensate for, expenses, costs, and damages
-										caused by unauthorized use of our site or software or attempt thereof or data security of public internet network or
-										other interference or interruption to data connection network outside our control.
-									</p>
-									<p id='terms-17' className='termsSubtitle'>
-										17.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAWS APPLYING TO ANY DISPUTES 
-									</p>
-									<p>
-										These terms of use, their subject matter and formation (and any non-contractual disputes or claims) are governed by
-										English law. We both agree to the exclusive jurisdiction of the courts of England and Wales.
-									</p>
-									<p id='terms-appendix' className='termsSubtitle'>
-										Appendix
-									</p>
-									<p>
-										SNOMED CT licence statement for HDR Discovery Tool
-										<br></br>HDR Discovery Tool includes SNOMED Clinical Terms® (SNOMED CT®) which is used by permission of the SNOMED
-										International. All rights reserved. SNOMED CT® was originally created by the College of American Pathologists. “SNOMED”,
-										“SNOMED CT” and “SNOMED Clinical Terms” are registered trademarks of the SNOMED International (https://www.snomed.org/)
-										<br></br>Use of SNOMED CT in HDR Discovery Tool is governed by the conditions of the following SNOMED CT license issued
-										by SNOMED International:
-										<br></br>1. The meaning of the terms “Affiliate”, or “Data Analysis System”, “Data Creation System”, “Derivative”, “End
-										User”, “Extension”, “Member”, “Non-Member Territory”, “SNOMED CT” and “SNOMED CT Content” are as defined in the SNOMED
-										International Affiliate License Agreement (see on the SNOMED International web site).
-										<br></br>2. Information about Affiliate Licensing is available at https://www.snomed.org/snomed-ct/get-snomed.
-										Individuals or organizations wishing to register as SNOMED International Affiliates can register at
-										mlds.ihtsdotools.org, subject to acceptance of the Affiliate License Agreement (see on the SNOMED International web
-										site).
-										<br></br>3. The current list of SNOMED International Member Territories can be viewed at
-										https://www.snomed.org/our-customers/members. Countries not included in that list are "Non-Member Territories".
-										<br></br>4. End Users, that do not hold an SNOMED International Affiliate License, may access SNOMED CT® using HDR
-										Discovery Tool subject to acceptance of and adherence to the following sub-license limitations:
-										<br></br>a) The sub-licensee is only permitted to access SNOMED CT® using this software (or service) for the purpose of
-										exploring and evaluating the terminology.
-										<br></br>b) The sub-licensee is not permitted the use of this software as part of a system that constitutes a SNOMED CT
-										"Data Creation System" or "Data Analysis System", as defined in the SNOMED International Affiliate License. This means
-										that the sub-licensee must not use HDR Discovery Tool to add or copy SNOMED CT identifiers into any type of record
-										system, database or document.
-										<br></br>c) The sub-licensee is not permitted to translate or modify SNOMED CT Content or Derivatives.
-										<br></br>d) The sub-licensee is not permitted to distribute or share SNOMED CT Content or Derivatives.
-										<br></br>5. SNOMED International Affiliates may use HDR Discovery Tool as part of a "Data Creation System" or "Data
-										Analysis System" subject to the following conditions:
-										<br></br>a) The SNOMED International Affiliate, using HDR Discovery Tool must accept full responsibility for any
-										reporting and fees due for use or deployment of such a system in a Non-Member Territory.
-										<br></br>b) The SNOMED International Affiliate must not use HDR Discovery Tool to access or interact with SNOMED CT in
-										any way that is not permitted by the Affiliate License Agreement.
-										<br></br>c) In the event of termination of the Affiliate License Agreement, the use of HDR Discovery Tool will be
-										subject to the End User limitations noted in 4
+										<ul className='termsBulletList'>
+											<li>
+												If any of the Terms and Conditions should be determined to be illegal, invalid or otherwise unenforceable by reason
+												of the laws of any state or country in which the Terms and Conditions are intended to be effective, then to the
+												extent to which that Term and Condition is illegal, invalid and unenforceable within the jurisdiction, it shall be
+												severed and deleted from the Terms and Conditions and the remaining Terms and Conditions shall survive, remain in
+												full force and continue to be binding and enforceable.
+											</li>
+											<li>
+												The Terms and Conditions, their subject matter and their formation (and any non-contractual disputes or claims) are
+												governed by English law. We both agree to the exclusive jurisdiction of the courts of England and Wales.
+											</li>
+										</ul>
 									</p>
 									<Form.Group className='pb-2'>
 										<div className='mt-2 advancedSearchAcceptTermsDiv'>
