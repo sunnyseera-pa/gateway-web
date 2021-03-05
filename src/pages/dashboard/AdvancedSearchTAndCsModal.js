@@ -88,7 +88,7 @@ const AdvancedSearchTAndCsModal = ({ open, close, updateUserAcceptedAdvancedSear
 									<p>
 										This Gateway Portal (the <b>“site“</b>) is operated by Health Data Research UK (“HDR UK”). HDR UK is a limited company
 										registered in England and Wales under company number 10887014 and its registered office is at 215 Euston Road, London,
-										England, NW1 2BE.w
+										England, NW1 2BE.
 									</p>
 									<p>To contact us, please use the contact details on our page.</p>
 									<p id='terms-3' className='termsSubtitle'>
