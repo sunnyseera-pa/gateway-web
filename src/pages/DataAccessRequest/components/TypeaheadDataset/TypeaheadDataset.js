@@ -23,22 +23,24 @@ class TypeaheadDataset extends React.Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		debugger;
-		if (this.props.selectedDatasets !== prevProps.selectedDatasets) {
-			this.setState({
-				value: this.props.selectedDatasets,
-			});
-			if (this.props.selectedDatasets.length < 2) {
+		const { selectedDatasets } = this.props;
+		if (selectedDatasets !== prevProps.selectedDatasets) {
+			if (selectedDatasets.length < 2) {
 				this.getData();
 			}
+			this.setState({
+				value: selectedDatasets,
+			});
 		}
 	}
 
 	getData() {
+		const { selectedDatasets, allowAllCustodians } = this.props;
 		let { publisher } = this.state;
-		if (this.props.selectedDatasets && this.props.selectedDatasets.length > 0) {
-			({ publisher } = this.props.selectedDatasets[0]);
-		} else if (this.props.allowAllCustodians) {
+		
+		if (selectedDatasets && selectedDatasets.length > 0) {
+			({ publisher } = selectedDatasets[0]);
+		} else if (allowAllCustodians) {
 			publisher = null;
 		}
 
