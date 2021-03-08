@@ -77,7 +77,6 @@ export const CollectionPage = props => {
 
 	const getObjectData = async () => {
 		await axios.get(baseURL + '/api/v1/collections/relatedobjects/' + props.match.params.collectionID).then(async res => {
-			debugger;
 			setObjectData(res.data.data);
 			countEntities(res.data.data);
 		});
