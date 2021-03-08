@@ -37,7 +37,7 @@ class TypeaheadDataset extends React.Component {
 	getData() {
 		const { selectedDatasets, allowAllCustodians } = this.props;
 		let { publisher } = this.state;
-		
+
 		if (selectedDatasets && selectedDatasets.length > 0) {
 			({ publisher } = selectedDatasets[0]);
 		} else if (allowAllCustodians) {
@@ -98,6 +98,20 @@ class TypeaheadDataset extends React.Component {
 		});
 	}
 
+	datasetOption(item) {
+		const { publisher = 'No publisher set', description, abstract, name: optionName = 'No dataset name' } = item;
+		const { publisher: publisherSelected } = this.state;
+		const optionDescription =
+			publisherSelected === null ? publisher : description || abstract || 'No description set';
+
+		return (
+			<div>
+				<div className='optionName'>{optionName}</div>
+				<div className='optionDescription'>{optionDescription}</div>
+			</div>
+		);
+	}
+
 	render() {
 		return (
 			<Typeahead
@@ -114,12 +128,7 @@ class TypeaheadDataset extends React.Component {
 				disabled={this.state.readOnly}
 				defaultSelected={this.state.value}
 				labelKey={options => `${options.name}`}
-				renderMenuItemChildren={(option, props) => (
-					<div>
-						<div className='datasetName'>{option.name}</div>
-						<div className='datasetDescription'>{option.description || option.abstract || 'No description set'}</div>
-					</div>
-				)}
+				renderMenuItemChildren={option => this.datasetOption(option)}
 			/>
 		);
 	}

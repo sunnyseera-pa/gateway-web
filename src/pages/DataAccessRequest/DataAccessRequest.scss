@@ -570,7 +570,7 @@ input[type='radio']:disabled {
 	}
 }
 
-.datasetName {
+.optionName {
 	@include font-source(14px, $gray-800, $font-weight-semibold);
 	width: 100%;
 	white-space: nowrap;
@@ -578,7 +578,7 @@ input[type='radio']:disabled {
 	text-overflow: ellipsis;
 }
 
-.datasetDescription {
+.optionDescription {
 	@include font-source(14px, $gray-600, $font-weight-semibold);
 	width: 100%;
 	white-space: nowrap;
