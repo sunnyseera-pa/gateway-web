@@ -114,13 +114,13 @@ const AdvancedSearchTAndCsModal = ({ open, close, updateUserAcceptedAdvancedSear
 										of our site as an individual user:
 										<ul className='termsBulletList'>
 											<li>
-												<a className='link' href='https://www.hdruk.ac.uk/privacy-policy/'>
+												<a className='link' href='https://www.hdruk.ac.uk/privacy-policy/' target='_blank'>
 													Privacy Policy
 												</a>
 												, which sets out how we will use your personal data.
 											</li>
 											<li>
-												<a className='link' href='https://www.hdruk.ac.uk/terms-and-conditions/cookies/'>
+												<a className='link' href='https://www.hdruk.ac.uk/terms-and-conditions/cookies/' target='_blank'>
 													Cookie Policy
 												</a>
 												, which sets out information about the cookies on our site.
