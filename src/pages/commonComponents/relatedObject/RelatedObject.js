@@ -114,14 +114,14 @@ class RelatedObject extends React.Component {
 	};
 
 	stripMarkdown = (value = '', truncate = 0) => {
-		if(!_.isEmpty(value)) {
+		if (!_.isEmpty(value)) {
 			if (truncate > 0) {
 				value = value.substr(0, 255) + (value.length > 255 ? '...' : '');
 			}
 			value = removeMd(value);
 		}
 		return value;
-	}
+	};
 
 	render() {
 		const { data, isLoading, activeLink, onSearchPage, relatedObject, inCollection, publisherLogoURL } = this.state;
@@ -342,9 +342,7 @@ class RelatedObject extends React.Component {
 										</Col>
 										{!this.props.showRelationshipQuestion && (
 											<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16'>
-												<span className='gray800-14'>
-													{this.stripMarkdown(data.description, 255)}
-												</span>
+												<span className='gray800-14'>{this.stripMarkdown(data.description, 255)}</span>
 											</Col>
 										)}
 									</Row>
@@ -480,16 +478,14 @@ class RelatedObject extends React.Component {
 										</Col>
 										{!this.props.showRelationshipQuestion && (
 											<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16'>
-												<span className='gray800-14'>
-													{this.stripMarkdown(data.description, 255)}
-												</span>
+												<span className='gray800-14'>{this.stripMarkdown(data.description, 255)}</span>
 											</Col>
 										)}
 									</Row>
 								);
 							} else if (data.type === 'paper') {
 								return (
-									<Row className='noMargin'>
+									<Row data-test-id='related-paper-object' className='noMargin'>
 										<Col sm={10} lg={10} className='pad-left-24'>
 											{activeLink === true ? (
 												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/paper/' + data.id}>
@@ -599,9 +595,7 @@ class RelatedObject extends React.Component {
 										</Col>
 										{!this.props.showRelationshipQuestion && (
 											<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16'>
-												<span className='gray800-14'>
-													{this.stripMarkdown(data.description, 255)}
-												</span>
+												<span className='gray800-14'>{this.stripMarkdown(data.description, 255)}</span>
 											</Col>
 										)}
 									</Row>
@@ -759,9 +753,7 @@ class RelatedObject extends React.Component {
 										</Col>
 										{!this.props.showRelationshipQuestion && (
 											<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16'>
-												<span className='gray800-14'>
-													{this.stripMarkdown(data.description, 255)}
-												</span>
+												<span className='gray800-14'>{this.stripMarkdown(data.description, 255)}</span>
 											</Col>
 										)}
 									</Row>

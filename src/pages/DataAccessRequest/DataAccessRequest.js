@@ -43,6 +43,7 @@ import Guidance from './components/Guidance/Guidance';
 import Uploads from './components/Uploads/Uploads';
 import UpdateRequestModal from './components/UpdateRequestModal/UpdateRequestModal';
 import MissingFieldsModal from './components/MissingFieldsModal/MissingFieldsModal';
+import ConfirmSubmissionModal from './components/ConfirmSubmissionModal/ConfirmSubmissionModal';
 
 class DataAccessRequest extends Component {
 	constructor(props) {
@@ -131,6 +132,7 @@ class DataAccessRequest extends Component {
 			updateRequestModal: false,
 			showEmailModal: false,
 			showMissingFieldsModal: false,
+			showConfirmSubmissionModal: false,
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -589,6 +591,7 @@ class DataAccessRequest extends Component {
 		let inValidMessages = DarValidation.buildInvalidMessages(Winterfell, invalidQuestions);
 		let errors = DarValidation.formatValidationObj(inValidMessages, [...this.state.jsonSchema.questionPanels]);
 		let isValid = Object.keys(errors).length ? false : true;
+		this.setState({ showConfirmSubmissionModal: false });
 
 		if (isValid) {
 			try {
@@ -1256,13 +1259,15 @@ class DataAccessRequest extends Component {
 
 	onClickMailDAR = async () => {
 		let { _id } = this.state;
-		await axios.post(`${baseURL}/api/v1/data-access-request/${_id}/email`, {}).then(response => {
-			window.location.reload();
-		})
-		.catch(err => {
-			console.error(err.message);
-		});
-  };
+		await axios
+			.post(`${baseURL}/api/v1/data-access-request/${_id}/email`, {})
+			.then(response => {
+				window.location.reload();
+			})
+			.catch(err => {
+				console.error(err.message);
+			});
+	};
 
 	redirectDashboard = e => {
 		e.preventDefault();
@@ -1397,6 +1402,14 @@ class DataAccessRequest extends Component {
 		this.setState(prevState => {
 			return {
 				showMissingFieldsModal: !prevState.showMissingFieldsModal,
+			};
+		});
+	};
+
+	toggleConfirmSubmissionModal = () => {
+		this.setState(prevState => {
+			return {
+				showConfirmSubmissionModal: !prevState.showConfirmSubmissionModal,
 			};
 		});
 	};
@@ -1650,7 +1663,7 @@ class DataAccessRequest extends Component {
 								<ApplicantActionButtons
 									allowedNavigation={allowedNavigation}
 									onNextClick={this.onNextClick}
-									onFormSubmit={this.onFormSubmit}
+									onSubmitClick={this.toggleConfirmSubmissionModal}
 									onShowContributorModal={this.toggleContributorModal}
 									onEditForm={this.onEditForm}
 									showSubmit={this.state.showSubmit}
@@ -1792,6 +1805,11 @@ class DataAccessRequest extends Component {
 				</Modal>
 
 				<MissingFieldsModal open={this.state.showMissingFieldsModal} close={this.toggleMissingFieldsModal} />
+				<ConfirmSubmissionModal
+					open={this.state.showConfirmSubmissionModal}
+					close={this.toggleConfirmSubmissionModal}
+					confirm={this.onFormSubmit}
+				/>
 			</div>
 		);
 	}
