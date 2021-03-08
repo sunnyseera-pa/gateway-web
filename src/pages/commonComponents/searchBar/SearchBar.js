@@ -331,10 +331,10 @@ class SearchBar extends React.Component {
 														</span>
 														<span>
 															<input
+																data-testid='searchbar'
 																type='text'
 																placeholder='Search'
 																id='searchInputSpanGrey'
-																data-testid='searchbar'
 																onChange={this.onSearch}
 																onKeyDown={this.props.doSearchMethod}
 																value={this.props.searchString}
