@@ -1769,7 +1769,7 @@ class DataAccessRequest extends Component {
 
 					<div className='workflowModal-body'>
 						Are you sure you want to email yourself this application? This will be sent to the email address provided in your HDR UK
-						account, where it will be available for you to print.”
+						account, where it will be available for you to print.
 					</div>
 					<div className='workflowModal-footer'>
 						<div className='workflowModal-footer--wrap'>
