@@ -19,11 +19,11 @@ export const AccountAdvancedSearch = props => {
 		const approvedUser = await authorisedForAdvancedSearch();
 		if (approvedUser && userState[0].acceptedAdvancedSearchTerms) {
 			console.log('Redirecting to RQuest');
-			// if (process.env.NODE_ENV === 'production') {
-			// window.location.assign('https://rquest.prod.healthdatagateway.org/bcrquest/');
-			// } else {
-			window.location.assign('https://rquest.test.healthdatagateway.org/bcrquest/');
-			// }
+			if (process.env.NODE_ENV === 'production') {
+				window.location.assign('https://rquest.prod.healthdatagateway.org/bcrquest/');
+			} else {
+				window.location.assign('https://rquest.test.healthdatagateway.org/bcrquest/');
+			}
 		} else {
 			determineModalToShow(approvedUser);
 		}
