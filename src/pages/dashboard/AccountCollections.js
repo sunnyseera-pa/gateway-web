@@ -12,7 +12,6 @@ import { PaginationHelper } from '../commonComponents/PaginationHelper';
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const AccountCollections = props => {
-	const [userState] = useState(props.userState);
 	const [key, setKey] = useState('active');
 	const [collectionsList, setCollectionsList] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
