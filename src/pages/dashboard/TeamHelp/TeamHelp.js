@@ -25,7 +25,7 @@ const TeamHelp = () => {
 			setHelp(helpFAQ);
 			setLoading(false);
 		} catch (err) {
-			console.log(`Error fetching team help ${err}`);
+			console.error(`Error fetching team help ${err.message}`);
 		}
 	};
 

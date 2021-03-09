@@ -14,6 +14,7 @@ import _ from 'lodash';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
+import SVGIcon from '../../images/SVGIcon';
 import './Collections.scss';
 
 export const CollectionPage = props => {
@@ -165,14 +166,16 @@ export const CollectionPage = props => {
 				doToggleDrawer={toggleDrawer}
 				userState={userState}
 			/>
-			<div className='rectangle pixelGapTop pixelGapBottom'>
+			<div className='collectionHeader pixelGapTop pixelGapBottom'>
 				<Container>
 					{collectionAdded ? (
 						<Row>
 							<Col sm={1} lg={1} />
 							<Col sm={10} lg={10} className='pad-left-0'>
-								<Alert variant='success' className='mt-3'>
-									This collection is now live. Anyone with the link can see this page.
+								<Alert variant='success' className='mb-3'>
+									{collectionData.publicflag === true
+										? 'This public collection is now live. This collection is searchable on the Gateway and can be viewed by all users.'
+										: 'This private collection is now live. Only those who you share the collection link with will be able to view this page.'}
 								</Alert>
 							</Col>
 							<Col sm={1} lg={10} />
@@ -185,8 +188,10 @@ export const CollectionPage = props => {
 						<Row>
 							<Col sm={1} lg={1} />
 							<Col sm={10} lg={10}>
-								<Alert variant='success' className='mt-3'>
-									Done! Your collection has been updated.
+								<Alert variant='success' className='mb-3'>
+									{collectionData.publicflag === true
+										? 'Done! Your public collection has been updated. This collection is searchable on the Gateway and can be viewed by all users.'
+										: 'Done! Your private collection has been updated. Only those who you share the collection link with will be able to view this page.'}
 								</Alert>
 							</Col>
 							<Col sm={1} lg={10} />
@@ -199,7 +204,7 @@ export const CollectionPage = props => {
 						<Row>
 							<Col sm={1} lg={1} />
 							<Col sm={10} lg={10}>
-								<Alert variant='danger' className='mt-3'>
+								<Alert variant='danger' className='mb-3'>
 									This collection has been archived
 								</Alert>
 							</Col>
@@ -209,53 +214,91 @@ export const CollectionPage = props => {
 						''
 					)}
 
-					<Row className='margin-top-16'>
-						<Col sm={1} lg={1} />
-
-						{!collectionData.imageLink || collectionData.imageLink === 'https://' ? (
-							<div id='defaultCollectionImage' className='margin-right-1' />
-						) : (
-							<img src={collectionData.imageLink} alt='collectionLogo' id='collectionImage' className='margin-right-1' />
-						)}
-
-						<Col className='titleWidth'>
-							<Row>
-								<Col sm={9} lg={9} className='collectionTitleCard'>
-									<span className='black-28 collectionTitleText' data-testid='collectionName'>
-										{' '}
-										{collectionData.name}{' '}
+					<Row>
+						<Col md={3} lg={2} />
+						<Col md={6} lg={8} className='flexCenter'>
+							{!collectionData.imageLink || collectionData.imageLink === 'https://' ? (
+								<div id='defaultCollectionImage' className='margin-right-1' />
+							) : (
+								<div id='collectionImage' style={{ backgroundImage: `url(${collectionData.imageLink})` }}></div>
+							)}
+						</Col>
+						<Col md={2} lg={1} className='privatePublicDisplayCol'>
+							{collectionData.publicflag === true ? (
+								<div className='privatePublicDisplay'>
+									<SVGIcon name='eye' width={24} height={24} fill={'#000000'} className={'pointer margin-right-8'} />
+									<span className='deepBlack-14 alignSuper' data-testid='publicBadge'>
+										Public
 									</span>
-								</Col>
-								<Col sm={2} lg={2} className='collectionDate collectionTitleCard'>
-									<span className='gray700-13' data-testid='collectionCreated'>
-										Created {moment(collectionData.createdAt).format('MMM YYYY')}{' '}
+								</div>
+							) : (
+								<div className='privatePublicDisplay'>
+									<SVGIcon name='eyeCrossed' width={24} height={24} fill={'#000000'} className={'pointer margin-right-8'} />
+									<span className='deepBlack-14 alignSuper' data-testid='privateBadge'>
+										Private
 									</span>
-								</Col>
-							</Row>
+								</div>
+							)}
+						</Col>
+						<Col md={1} lg={1} />
+					</Row>
 
-							<Row>
-								<Col sm={10} lg={10} className='collectionTitleCard'>
-									{collectionData.persons.map((person, index) => {
-										if (index > 0) {
-											return (
-												<span className='gray800-14' key={index}>
-													, {person.firstname} {person.lastname}
-												</span>
-											);
-										} else {
-											return (
-												<span className='gray800-14' key={index}>
-													{person.firstname} {person.lastname}
-												</span>
-											);
-										}
-									})}
-								</Col>
-							</Row>
+					<Row>
+						<Col sm={12} lg={12} className='collectionCreatedDate'>
+							<span className='gray700-13' data-testid='collectionCreated'>
+								Created {moment(collectionData.createdAt).format('MMM YYYY')}{' '}
+							</span>
+						</Col>
+					</Row>
+					<Row>
+						<Col sm={12} lg={12} className='centerText'>
+							<span className='black-28' data-testid='collectionName'>
+								{collectionData.name}{' '}
+							</span>
 						</Col>
 					</Row>
 
-					<Row className='pad-top-32'>
+					<Row>
+						<Col sm={1} lg={1} />
+						<Col sm={10} lg={10} className='centerText'>
+							{collectionData.persons.map((person, index) => {
+								if (index > 0) {
+									return (
+										<a className='gray800-14' href={'/person/' + person.id} key={index}>
+											, {person.firstname} {person.lastname}
+										</a>
+									);
+								} else {
+									return (
+										<a className='gray800-14' href={'/person/' + person.id} key={index}>
+											{person.firstname} {person.lastname}
+										</a>
+									);
+								}
+							})}
+						</Col>
+						<Col sm={1} lg={1} />
+					</Row>
+
+					<Row>
+						<Col sm={1} lg={1} />
+						<Col sm={10} lg={10} className='collectionKeywords'>
+							{collectionData.keywords &&
+								collectionData.keywords.length > 0 &&
+								collectionData.keywords.map((keyword, index) => {
+									return (
+										<a href={'/search?search=&tab=Collections&collectionkeywords=' + keyword}>
+											<div className='badge-tag' data-testid={`collectionKeyword${index}`}>
+												{keyword}
+											</div>
+										</a>
+									);
+								})}
+						</Col>
+						<Col sm={1} lg={1} />
+					</Row>
+
+					<Row className='pad-top-24'>
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10} className='gray800-14 hdruk-section-body'>
 							<ReactMarkdown source={collectionData.description} data-testid='collectionDescription' />

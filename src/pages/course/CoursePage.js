@@ -525,7 +525,7 @@ export const CourseDetail = props => {
 										</Row>
 
 										<Row className='margin-top-8'>
-											<Col sm={12}>
+											<Col sm={12} className='mb-5'>
 												<div className='rectangle'>
 													<Row className='gray800-14-bold pad-bottom-8'>
 														<Col sm={12}>Requirements and certifications</Col>
@@ -657,7 +657,7 @@ export const CourseDetail = props => {
 
 												<Row>
 													{collections.map(collection => (
-														<Col sm={12} md={12} lg={6} style={{ 'text-align': '-webkit-center' }}>
+														<Col sm={12} md={12} lg={6} className='flexCenter'>
 															<CollectionCard data={collection} />
 														</Col>
 													))}

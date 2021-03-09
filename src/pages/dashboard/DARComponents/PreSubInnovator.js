@@ -43,7 +43,7 @@ const PreSubInnovator = ({ data }) => {
 				setLoading(false);
 			})
 			.catch(err => {
-				console.log(err);
+				console.error(err.message);
 			});
 	};
 

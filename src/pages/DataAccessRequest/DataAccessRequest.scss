@@ -68,6 +68,10 @@
   }
 }
 
+#darContainer {
+	margin-bottom: 100px;
+}
+
 .toolTip {
 	position: relative;
 	display: inline-block;
@@ -511,24 +515,13 @@ input[type='radio']:disabled {
 	display: flex;
 	flex-flow: row nowrap;
 	align-items: center;
-	box-sizing: border-box;
-	position: sticky !important;
-	margin-bottom: -30px;
-	padding: 0 24px;
-	left: 0;
-	bottom: 0;
 	width: 100%;
-	min-height: 72px;
-	background-color: $white;
-	box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.09);
-	z-index: 1000;
 
 	&-status {
 		display: inline-block;
 	}
 
 	&--questions {
-		flex: 1 0 0;
 		@include font-source(14px, $gray-800, $font-weight-semibold);
 		p {
 			margin-bottom: 0;

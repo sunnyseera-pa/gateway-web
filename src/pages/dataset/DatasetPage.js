@@ -535,8 +535,8 @@ class DatasetDetail extends Component {
 				};
 				this.setState({ ...stateObj });
 			})
-			.catch(error => {
-				console.log(error);
+			.catch(err => {
+				console.error(err.message);
 			});
 	};
 
@@ -708,7 +708,7 @@ class DatasetDetail extends Component {
 
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
-				<div>
+				<Fragment>
 					{data.datasetfields.metadataschema !== '' ? <DatasetSchema datasetSchema={data.datasetfields.metadataschema} /> : null}
 					<SearchBar
 						ref={this.searchBar}
@@ -1478,7 +1478,7 @@ class DatasetDetail extends Component {
 
 													<Row>
 														{collections.map(collection => (
-															<Col sm={12} md={12} lg={6} style={{ 'text-align': '-webkit-center' }}>
+															<Col sm={12} md={12} lg={6} className='flexCenter'>
 																<CollectionCard data={collection} />
 															</Col>
 														))}
@@ -1508,7 +1508,7 @@ class DatasetDetail extends Component {
 					</ActionBar>
 
 					<DataSetModal open={showModal} closed={this.toggleModal} context={this.topicContext} userState={userState[0]} />
-				</div>
+				</Fragment>
 			</Sentry.ErrorBoundary>
 		);
 	}

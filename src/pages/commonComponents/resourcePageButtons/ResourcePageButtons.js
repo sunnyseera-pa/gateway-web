@@ -4,7 +4,7 @@ import AddToCollection from '../addToCollection/AddToCollection';
 
 const ResourcePageButtons = props => {
 	return (
-		<>
+		<div className='floatRight row'>
 			{props.userState[0].loggedIn &&
 			props.data.type !== 'dataset' &&
 			((props.data.authors && props.data.authors.includes(props.userState[0].id)) ||
@@ -34,7 +34,7 @@ const ResourcePageButtons = props => {
 			) : (
 				''
 			)}
-		</>
+		</div>
 	);
 };
 

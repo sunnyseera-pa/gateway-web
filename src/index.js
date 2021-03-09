@@ -13,7 +13,7 @@ import './css/styles.scss';
 
 const urlEnv = require('./pages/commonComponents/BaseURL').getURLEnv();
 
-// TODO: Revisit using sentry's dialog feedback
+// TODO: Revisit using sentry's dialog  feedback
 
 if (urlEnv !== 'local') {
 	Sentry.init({
