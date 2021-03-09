@@ -165,6 +165,7 @@ const AccountCollections = props => {
 						</Col>
 						<Col sm={12} md={4} style={{ textAlign: 'right' }}>
 							<Button
+								data-test-id='add-collection-btn'
 								variant='primary'
 								href='/collection/add'
 								className='addButton'
