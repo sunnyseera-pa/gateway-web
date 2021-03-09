@@ -44,6 +44,7 @@ import Uploads from './components/Uploads/Uploads';
 import UpdateRequestModal from './components/UpdateRequestModal/UpdateRequestModal';
 import MissingFieldsModal from './components/MissingFieldsModal/MissingFieldsModal';
 import ConfirmSubmissionModal from './components/ConfirmSubmissionModal/ConfirmSubmissionModal';
+import DeleteDraftModal from './components/DeleteDraftModal/DeleteDraftModal';
 
 class DataAccessRequest extends Component {
 	constructor(props) {
@@ -133,6 +134,7 @@ class DataAccessRequest extends Component {
 			showEmailModal: false,
 			showMissingFieldsModal: false,
 			showConfirmSubmissionModal: false,
+			showDeleteDraftModal: false,
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -1417,6 +1419,39 @@ class DataAccessRequest extends Component {
 		});
 	};
 
+	toggleDeleteDraftModal = () => {
+		this.setState(prevState => {
+			return {
+				showDeleteDraftModal: !prevState.showDeleteDraftModal,
+			};
+		});
+	};
+
+	onDeleteDraft = async () => {
+		// try {
+		// 	let { _id } = this.state;
+		// 	// 1. POST
+		// 	await axios.post(`${baseURL}/api/v1/data-access-request/${_id}`, {});
+		// 	const lastSaved = DarHelper.saveTime();
+		// 	this.setState({ lastSaved });
+		// 	let alert = {
+		// 		tab: 'submitted',
+		// 		message:
+		// 			this.state.applicationStatus === 'inProgress'
+		// 				? 'Your application was submitted successfully'
+		// 				: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
+		// 		publisher: 'user',
+		// 	};
+		// 	this.props.history.push({
+		// 		pathname: '/account',
+		// 		search: '?tab=dataaccessrequests',
+		// 		state: { alert },
+		// 	});
+		// } catch (err) {
+		// 	console.error(err.message);
+		// }
+	};
+
 	renderApp = () => {
 		let { activePanelId } = this.state;
 		if (activePanelId === 'about') {
@@ -1671,6 +1706,7 @@ class DataAccessRequest extends Component {
 									onEditForm={this.onEditForm}
 									showSubmit={this.state.showSubmit}
 									submitButtonText={this.state.submitButtonText}
+									onDeleteDraftClick={this.toggleDeleteDraftModal}
 								/>
 							) : (
 								<CustodianActionButtons
@@ -1792,8 +1828,8 @@ class DataAccessRequest extends Component {
 					</div>
 
 					<div className='workflowModal-body'>
-						Are you sure you want to email yourself this application? This will be sent to the email address provided in your HDR UK
-						account.
+						Are you sure you want to email yourself this application? This will be sent to the email address provided in your HDR UK account
+						where it will be available for you to print.
 					</div>
 					<div className='workflowModal-footer'>
 						<div className='workflowModal-footer--wrap'>
@@ -1813,6 +1849,7 @@ class DataAccessRequest extends Component {
 					close={this.toggleConfirmSubmissionModal}
 					confirm={this.onFormSubmit}
 				/>
+				<DeleteDraftModal open={this.state.showDeleteDraftModal} close={this.toggleDeleteDraftModal} confirm={this.onDeleteDraft} />
 			</div>
 		);
 	}
