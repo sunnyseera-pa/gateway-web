@@ -114,14 +114,14 @@ class RelatedObject extends React.Component {
 	};
 
 	stripMarkdown = (value = '', truncate = 0) => {
-		if(!_.isEmpty(value)) {
+		if (!_.isEmpty(value)) {
 			if (truncate > 0) {
 				value = value.substr(0, 255) + (value.length > 255 ? '...' : '');
 			}
 			value = removeMd(value);
 		}
 		return value;
-	}
+	};
 
 	render() {
 		const { data, isLoading, activeLink, onSearchPage, relatedObject, inCollection, publisherLogoURL } = this.state;
@@ -342,9 +342,7 @@ class RelatedObject extends React.Component {
 										</Col>
 										{!this.props.showRelationshipQuestion && (
 											<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16'>
-												<span className='gray800-14'>
-													{this.stripMarkdown(data.description, 255)}
-												</span>
+												<span className='gray800-14'>{this.stripMarkdown(data.description, 255)}</span>
 											</Col>
 										)}
 									</Row>
@@ -480,16 +478,14 @@ class RelatedObject extends React.Component {
 										</Col>
 										{!this.props.showRelationshipQuestion && (
 											<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16'>
-												<span className='gray800-14'>
-													{this.stripMarkdown(data.description, 255)}
-												</span>
+												<span className='gray800-14'>{this.stripMarkdown(data.description, 255)}</span>
 											</Col>
 										)}
 									</Row>
 								);
 							} else if (data.type === 'paper') {
 								return (
-									<Row className='noMargin'>
+									<Row data-test-id='related-paper-object' className='noMargin'>
 										<Col sm={10} lg={10} className='pad-left-24'>
 											{activeLink === true ? (
 												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/paper/' + data.id}>
@@ -599,9 +595,7 @@ class RelatedObject extends React.Component {
 										</Col>
 										{!this.props.showRelationshipQuestion && (
 											<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16'>
-												<span className='gray800-14'>
-													{this.stripMarkdown(data.description, 255)}
-												</span>
+												<span className='gray800-14'>{this.stripMarkdown(data.description, 255)}</span>
 											</Col>
 										)}
 									</Row>
@@ -759,15 +753,29 @@ class RelatedObject extends React.Component {
 										</Col>
 										{!this.props.showRelationshipQuestion && (
 											<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16'>
-												<span className='gray800-14'>
-													{this.stripMarkdown(data.description, 255)}
-												</span>
+												<span className='gray800-14'>{this.stripMarkdown(data.description, 255)}</span>
 											</Col>
 										)}
 									</Row>
 								);
 							} else {
 								//default to dataset
+								if (data.type === 'dataset' && data.activeflag === 'archive') {
+									return (
+										<Row className='noMargin pad-left-24'>
+											<Col sm={10} lg={10} className='entity-deleted-edit gray800-14'>
+												The dataset '{data.name}' has been deleted by the publisher
+											</Col>
+											<Col sm={2} lg={2}>
+												<Button variant='medium' className='soft-black-14' onClick={this.removeButton}>
+													<SVGIcon name='closeicon' fill={'#979797'} className='buttonSvg mr-2' />
+													Remove
+												</Button>
+											</Col>
+										</Row>
+									);
+								}
+
 								const phenotypesSelected = queryString.parse(window.location.search).phenotypes
 									? queryString.parse(window.location.search).phenotypes.split('::')
 									: [];
@@ -934,7 +942,7 @@ class RelatedObject extends React.Component {
 							}
 						})()}
 						{(() => {
-							if (this.props.showRelationshipQuestion) {
+							if (this.props.showRelationshipQuestion && !(data.type === 'dataset' && data.activeflag === 'archive')) {
 								return (
 									<>
 										<Row className='pad-top-24 noMargin'>

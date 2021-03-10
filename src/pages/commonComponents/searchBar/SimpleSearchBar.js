@@ -48,6 +48,7 @@ class SimpleSearchBar extends React.Component {
 						</span>
 						<span>
 							<input
+								data-test-id='simple-search-bar'
 								type='text'
 								placeholder='Search'
 								id='searchInputSpanGrey'

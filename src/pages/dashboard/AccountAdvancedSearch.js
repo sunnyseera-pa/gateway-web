@@ -8,6 +8,7 @@ import AdvancedSearchTermsandConditionsModal from './AdvancedSearchTAndCsModal';
 import _ from 'lodash';
 const baseURL = require('../commonComponents/BaseURL').getURL();
 const GENERAL_ACCESS = 'GENERAL_ACCESS';
+const urlEnv = require('../commonComponents/BaseURL').getURLEnv();
 
 export const AccountAdvancedSearch = props => {
 	const [userState, setUserState] = useState(props.userState);
@@ -19,7 +20,11 @@ export const AccountAdvancedSearch = props => {
 		const approvedUser = await authorisedForAdvancedSearch();
 		if (approvedUser && userState[0].acceptedAdvancedSearchTerms) {
 			console.log('Redirecting to RQuest');
-			window.location.assign('https://rquest.test.healthdatagateway.org/bcrquest/');
+			if (urlEnv === 'prod') {
+				window.location.assign('https://rquest.prod.healthdatagateway.org/bcrquest/');
+			} else {
+				window.location.assign('https://rquest.test.healthdatagateway.org/bcrquest/');
+			}
 		} else {
 			determineModalToShow(approvedUser);
 		}
