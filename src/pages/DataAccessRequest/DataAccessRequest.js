@@ -1703,7 +1703,7 @@ class DataAccessRequest extends Component {
 									showSubmit={this.state.showSubmit}
 									submitButtonText={this.state.submitButtonText}
 									onDeleteDraftClick={this.toggleDeleteDraftModal}
-									inProgress={!readOnly}
+									applicationStatus={applicationStatus}
 								/>
 							) : (
 								<CustodianActionButtons

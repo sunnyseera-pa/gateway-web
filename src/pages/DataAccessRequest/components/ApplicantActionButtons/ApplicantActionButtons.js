@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import '../../DataAccessRequest.scss';
+import DarHelper from '../../../../utils/DarHelper.util';
 
 const ApplicantActionButtons = ({
 	allowedNavigation = false,
@@ -10,11 +11,11 @@ const ApplicantActionButtons = ({
 	showSubmit,
 	submitButtonText,
 	onDeleteDraftClick,
-	inProgress,
+	applicationStatus,
 }) => {
 	return (
 		<Fragment>
-			{inProgress ? (
+			{applicationStatus === DarHelper.darStatus.inProgress ? (
 				<button className={`btn-link btn-link-delete p-2 ${allowedNavigation ? '' : 'disabled'}`} onClick={e => onDeleteDraftClick()}>
 					Delete draft
 				</button>
