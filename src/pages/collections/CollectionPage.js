@@ -358,6 +358,12 @@ export const CollectionPage = props => {
 										var user = '';
 										let showAnswer = false;
 										if (object.type === 'dataset') {
+											if (object.activeflag === 'archive') {
+												return (
+													<div className='entity-deleted gray800-14'>The dataset '{object.name}' has been deleted by the publisher</div>
+												);
+											}
+
 											{
 												!_.isEmpty(object.datasetv2) && _.has(object, 'datasetv2.summary.publisher.name')
 													? (datasetPublisher = object.datasetv2.summary.publisher.name)
