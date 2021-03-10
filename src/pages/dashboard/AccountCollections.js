@@ -79,7 +79,7 @@ const AccountCollections = props => {
 			.then(res => {
 				if (shouldChangeTab()) {
 					setKey('active');
-					doCollectionsCall('active', true);
+					doCollectionsCall('active', true, activeIndex);
 				} else if (archiveCount - (archiveIndex + maxResult) <= 0 && archiveCount % maxResult === 1 && archiveCount !== 1) {
 					setArchiveIndex(archiveIndex - maxResult);
 					doCollectionsCall(key, true, archiveIndex - maxResult);
@@ -93,7 +93,7 @@ const AccountCollections = props => {
 		axios.delete(baseURL + '/api/v1/collections/delete/' + id).then(res => {
 			if (shouldChangeTab()) {
 				setKey('active');
-				doCollectionsCall('active', true);
+				doCollectionsCall('active', true, activeIndex);
 			} else if (key === 'active' && !shouldChangeTab() && activeCount - (activeIndex + maxResult) <= 0 && activeCount % maxResult === 1) {
 				setActiveIndex(activeIndex - maxResult);
 				doCollectionsCall('active', true, activeIndex - maxResult);
