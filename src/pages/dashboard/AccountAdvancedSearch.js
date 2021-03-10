@@ -20,7 +20,7 @@ export const AccountAdvancedSearch = props => {
 		const approvedUser = await authorisedForAdvancedSearch();
 		if (approvedUser && userState[0].acceptedAdvancedSearchTerms) {
 			console.log('Redirecting to RQuest');
-			if (urlEnv === 'production') {
+			if (urlEnv === 'prod') {
 				window.location.assign('https://rquest.prod.healthdatagateway.org/bcrquest/');
 			} else {
 				window.location.assign('https://rquest.test.healthdatagateway.org/bcrquest/');
