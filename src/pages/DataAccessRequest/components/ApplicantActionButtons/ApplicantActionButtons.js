@@ -13,7 +13,7 @@ const ApplicantActionButtons = ({
 }) => {
 	return (
 		<Fragment>
-			<button className={`danger btn-link p-2 ${allowedNavigation ? '' : 'disabled'}`} onClick={e => onDeleteDraftClick()}>
+			<button className={`btn-link btn-link-delete p-2 ${allowedNavigation ? '' : 'disabled'}`} onClick={e => onDeleteDraftClick()}>
 				Delete draft
 			</button>
 			<button className={`button-tertiary ${allowedNavigation ? '' : 'disabled'}`} onClick={e => onShowContributorModal()}>

@@ -1428,28 +1428,23 @@ class DataAccessRequest extends Component {
 	};
 
 	onDeleteDraft = async () => {
-		// try {
-		// 	let { _id } = this.state;
-		// 	// 1. POST
-		// 	await axios.post(`${baseURL}/api/v1/data-access-request/${_id}`, {});
-		// 	const lastSaved = DarHelper.saveTime();
-		// 	this.setState({ lastSaved });
-		// 	let alert = {
-		// 		tab: 'submitted',
-		// 		message:
-		// 			this.state.applicationStatus === 'inProgress'
-		// 				? 'Your application was submitted successfully'
-		// 				: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
-		// 		publisher: 'user',
-		// 	};
-		// 	this.props.history.push({
-		// 		pathname: '/account',
-		// 		search: '?tab=dataaccessrequests',
-		// 		state: { alert },
-		// 	});
-		// } catch (err) {
-		// 	console.error(err.message);
-		// }
+		try {
+			let { _id } = this.state;
+			let projectName = this.state.projectName || this.state.datasets[0].name;
+			await axios.delete(`${baseURL}/api/v1/data-access-request/${_id}`, {});
+			let alert = {
+				tab: 'all',
+				message: `You have deleted the data access request for saved updates to '${projectName}' project`,
+				publisher: 'user',
+			};
+			this.props.history.push({
+				pathname: '/account',
+				search: '?tab=dataaccessrequests',
+				state: { alert },
+			});
+		} catch (err) {
+			console.error(err.message);
+		}
 	};
 
 	renderApp = () => {
@@ -1828,8 +1823,8 @@ class DataAccessRequest extends Component {
 					</div>
 
 					<div className='workflowModal-body'>
-						Are you sure you want to email yourself this application? This will be sent to the email address provided in your HDR UK account
-						where it will be available for you to print.
+						Are you sure you want to email yourself this application? This will be sent to the email address provided in your HDR UK
+						account.
 					</div>
 					<div className='workflowModal-footer'>
 						<div className='workflowModal-footer--wrap'>
