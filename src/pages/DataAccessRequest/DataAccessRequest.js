@@ -1529,6 +1529,7 @@ class DataAccessRequest extends Component {
 			actionModalConfig,
 			roles,
 			showEmailModal,
+			readOnly,
 		} = this.state;
 		const { userState, location } = this.props;
 
@@ -1702,6 +1703,7 @@ class DataAccessRequest extends Component {
 									showSubmit={this.state.showSubmit}
 									submitButtonText={this.state.submitButtonText}
 									onDeleteDraftClick={this.toggleDeleteDraftModal}
+									inProgress={!readOnly}
 								/>
 							) : (
 								<CustodianActionButtons

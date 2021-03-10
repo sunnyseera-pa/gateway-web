@@ -10,12 +10,17 @@ const ApplicantActionButtons = ({
 	showSubmit,
 	submitButtonText,
 	onDeleteDraftClick,
+	inProgress,
 }) => {
 	return (
 		<Fragment>
-			<button className={`btn-link btn-link-delete p-2 ${allowedNavigation ? '' : 'disabled'}`} onClick={e => onDeleteDraftClick()}>
-				Delete draft
-			</button>
+			{inProgress ? (
+				<button className={`btn-link btn-link-delete p-2 ${allowedNavigation ? '' : 'disabled'}`} onClick={e => onDeleteDraftClick()}>
+					Delete draft
+				</button>
+			) : (
+				''
+			)}
 			<button className={`button-tertiary ${allowedNavigation ? '' : 'disabled'}`} onClick={e => onShowContributorModal()}>
 				Contributors
 			</button>
