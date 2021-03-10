@@ -88,7 +88,7 @@ const AdvancedSearchTAndCsModal = ({ open, close, updateUserAcceptedAdvancedSear
 									<p>
 										This Gateway Portal (the <b>“site“</b>) is operated by Health Data Research UK (“HDR UK”). HDR UK is a limited company
 										registered in England and Wales under company number 10887014 and its registered office is at 215 Euston Road, London,
-										England, NW1 2BE.w
+										England, NW1 2BE.
 									</p>
 									<p>To contact us, please use the contact details on our page.</p>
 									<p id='terms-3' className='termsSubtitle'>
@@ -114,13 +114,13 @@ const AdvancedSearchTAndCsModal = ({ open, close, updateUserAcceptedAdvancedSear
 										of our site as an individual user:
 										<ul className='termsBulletList'>
 											<li>
-												<a className='link' href='https://www.hdruk.ac.uk/privacy-policy/'>
+												<a className='link' href='https://www.hdruk.ac.uk/privacy-policy/' target='_blank'>
 													Privacy Policy
 												</a>
 												, which sets out how we will use your personal data.
 											</li>
 											<li>
-												<a className='link' href='https://www.hdruk.ac.uk/terms-and-conditions/cookies/'>
+												<a className='link' href='https://www.hdruk.ac.uk/terms-and-conditions/cookies/' target='_blank'>
 													Cookie Policy
 												</a>
 												, which sets out information about the cookies on our site.
