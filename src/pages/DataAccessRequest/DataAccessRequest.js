@@ -1434,7 +1434,7 @@ class DataAccessRequest extends Component {
 			await axios.delete(`${baseURL}/api/v1/data-access-request/${_id}`, {});
 			let alert = {
 				tab: 'all',
-				message: `You have deleted the data access request for saved updates to '${projectName}' project`,
+				message: `You have deleted the data access request for '${projectName}' project`,
 				publisher: 'user',
 			};
 			this.props.history.push({
