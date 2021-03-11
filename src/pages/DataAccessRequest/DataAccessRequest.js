@@ -1562,7 +1562,7 @@ class DataAccessRequest extends Component {
 								className={`linkButton white-14-semibold ml-2 ${allowedNavigation ? '' : 'disabled'}`}
 								href='javascript:;'
 								onClick={e => this.toggleEmailModal(true)}>
-								Email application
+								Email me a copy
 							</a>
 						) : (
 							''
@@ -1793,7 +1793,7 @@ class DataAccessRequest extends Component {
 
 					<div className='workflowModal-body'>
 						Are you sure you want to email yourself this application? This will be sent to the email address provided in your HDR UK
-						account.
+						account, where it will be available for you to print.
 					</div>
 					<div className='workflowModal-footer'>
 						<div className='workflowModal-footer--wrap'>
