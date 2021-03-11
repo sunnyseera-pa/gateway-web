@@ -29,6 +29,7 @@ const AddEditCollectionForm = props => {
 			relatedObjects: props.relatedObjects,
 			publicflag: props.publicFlag || false,
 			keywords: props.data.keywords || [],
+			previousPublicFlag: props.publicFlag,
 		},
 
 		validationSchema: Yup.object({
