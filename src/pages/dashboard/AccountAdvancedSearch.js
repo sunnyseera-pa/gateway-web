@@ -8,6 +8,7 @@ import AdvancedSearchTermsandConditionsModal from './AdvancedSearchTAndCsModal';
 import _ from 'lodash';
 const baseURL = require('../commonComponents/BaseURL').getURL();
 const GENERAL_ACCESS = 'GENERAL_ACCESS';
+const urlEnv = require('../commonComponents/BaseURL').getURLEnv();
 
 export const AccountAdvancedSearch = props => {
 	const [userState, setUserState] = useState(props.userState);
@@ -19,7 +20,11 @@ export const AccountAdvancedSearch = props => {
 		const approvedUser = await authorisedForAdvancedSearch();
 		if (approvedUser && userState[0].acceptedAdvancedSearchTerms) {
 			console.log('Redirecting to RQuest');
-			window.location.assign('https://rquest.test.healthdatagateway.org/bcrquest/');
+			if (urlEnv === 'prod') {
+				window.location.assign('https://rquest.prod.healthdatagateway.org/bcrquest/');
+			} else {
+				window.location.assign('https://rquest.test.healthdatagateway.org/bcrquest/');
+			}
 		} else {
 			determineModalToShow(approvedUser);
 		}
@@ -104,7 +109,7 @@ export const AccountAdvancedSearch = props => {
 						<p className='gray800-15 margin-bottom-6'>
 							Cohort Discovery provides remote querying of multiple clinical databases in situ, even those with different data models to
 							determine the dataset appropriate for your research needs. We are adding more datasets into the cohort discovery service
-							monthly, please check back in form time to time to discover datasets suitable for your research.
+							monthly, please check back in from time to time to discover datasets suitable for your research.
 						</p>
 					</div>
 				</Col>
@@ -118,7 +123,7 @@ export const AccountAdvancedSearch = props => {
 						<Card className={activeAccordionCardState === 0 ? 'activeCard datasetCard' : 'datasetCard'}>
 							<Accordion.Toggle as={Card.Header} eventKey='0' onClick={e => toggleCard(e, 0)} className='datasetCard'>
 								<div className={activeAccordionCardState === 0 ? 'stepNumber active' : 'stepNumber'}>1</div>
-								<span className='black-16 noTextDecoration'>Creating a cohort</span>
+								<span className='black-16 noTextDecoration'>Creating cohorts</span>
 							</Accordion.Toggle>
 							<Accordion.Collapse eventKey='0'>
 								<Card.Body className='datasetCard gray800-14'>
