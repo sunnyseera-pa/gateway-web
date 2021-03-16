@@ -759,7 +759,23 @@ class RelatedObject extends React.Component {
 									</Row>
 								);
 							} else {
-								// default to dataset
+								//default to dataset
+								if (data.type === 'dataset' && data.activeflag === 'archive') {
+									return (
+										<Row className='noMargin pad-left-24'>
+											<Col sm={10} lg={10} className='entity-deleted-edit gray800-14'>
+												The dataset '{data.name}' has been deleted by the publisher
+											</Col>
+											<Col sm={2} lg={2}>
+												<Button variant='medium' className='soft-black-14' onClick={this.removeButton}>
+													<SVGIcon name='closeicon' fill={'#979797'} className='buttonSvg mr-2' />
+													Remove
+												</Button>
+											</Col>
+										</Row>
+									);
+								}
+								
 								const phenotypesSelected = queryString.parse(window.location.search).phenotypes
 									? queryString.parse(window.location.search).phenotypes.split('::')
 									: [];
