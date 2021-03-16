@@ -1,16 +1,9 @@
 import React from 'react';
-
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Alert from 'react-bootstrap/Alert';
-
 import SVGIcon from '../../../images/SVGIcon';
-import { ReactComponent as ColourLogoSvg } from '../../../images/colour.svg';
 import './SearchBar.scss';
 
-var baseURL = require('../BaseURL').getURL();
-var cmsURL = require('../BaseURL').getCMSURL();
+let baseURL = require('../BaseURL').getURL();
+let cmsURL = require('../BaseURL').getCMSURL();
 
 class SimpleSearchBar extends React.Component {
 	state = {
