@@ -14,6 +14,7 @@ class TypeaheadDataset extends React.Component {
 			options: [],
 			id: props.id,
 			readOnly: props.readOnly || false,
+			publisher: null,
 		};
 	}
 
@@ -22,29 +23,72 @@ class TypeaheadDataset extends React.Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		if (this.props.selectedDatasets !== prevProps.selectedDatasets) {
+		const { selectedDatasets } = this.props;
+		if (selectedDatasets !== prevProps.selectedDatasets) {
+			if (selectedDatasets.length < 2) {
+				this.getData();
+			}
 			this.setState({
-				value: this.props.selectedDatasets,
+				value: selectedDatasets,
 			});
 		}
 	}
 
 	getData() {
-		// if(this.props.selectedDatasets) {
-		const { publisher } = this.props.selectedDatasets[0];
+		const { selectedDatasets, allowAllCustodians } = this.props;
+		let { publisher } = this.state;
+
+		if (selectedDatasets && selectedDatasets.length > 0) {
+			({ publisher } = selectedDatasets[0]);
+		} else if (allowAllCustodians) {
+			publisher = null;
+		}
+
+		this.setState({
+			publisher,
+		});
+
 		axios
-			.get(`${baseURL}/api/v1/publishers/${publisher}/datasets`)
+			.get(`${baseURL}/api/v2/datasets`, {
+				params: {
+					activeflag: 'active',
+					fields: 'datasetid,name,description,datasetfields.abstract,_id,datasetfields.publisher,datasetfields.contactPoint',
+					populate: 'publisher',
+					is5Safes: true,
+					...(publisher ? { ['datasetfields.publisher']: publisher } : {}),
+				},
+			})
 			.then(res => {
 				const {
-					data: { datasets },
+					data: { datasets = [] },
 				} = res;
+				const formattedDatasets = datasets.map(dataset => {
+					let {
+						_id,
+						datasetid: datasetId,
+						name,
+						description,
+						publisher: publisherObj,
+						datasetfields: { abstract, publisher, contactPoint },
+					} = dataset;
+					return {
+						_id,
+						datasetId,
+						name,
+						description,
+						abstract,
+						publisher,
+						publisherObj,
+						contactPoint,
+					};
+				});
 				let value = [...this.state.value];
-				this.setState({ options: [...datasets], value });
+				this.setState({ options: [...formattedDatasets], value });
 			})
 			.catch(err => {
+				console.error(err);
 				alert('Failed to fetch publisher datasets');
 			});
-		// }
 	}
 
 	handleChange(e) {
@@ -52,6 +96,20 @@ class TypeaheadDataset extends React.Component {
 		this.setState({
 			value: e,
 		});
+	}
+
+	datasetOption(item) {
+		const { publisher = 'No publisher set', description, abstract, name: optionName = 'No dataset name' } = item;
+		const { publisher: publisherSelected } = this.state;
+		const optionDescription =
+			publisherSelected === null ? publisher : description || abstract || 'No description set';
+
+		return (
+			<div>
+				<div className='optionName'>{optionName}</div>
+				<div className='optionDescription'>{optionDescription}</div>
+			</div>
+		);
 	}
 
 	render() {
@@ -70,12 +128,7 @@ class TypeaheadDataset extends React.Component {
 				disabled={this.state.readOnly}
 				defaultSelected={this.state.value}
 				labelKey={options => `${options.name}`}
-				renderMenuItemChildren={(option, props) => (
-					<div>
-						<div className='datasetName'>{option.name}</div>
-						<div className='datasetDescription'>{option.description || option.abstract || 'No description set'}</div>
-					</div>
-				)}
+				renderMenuItemChildren={option => this.datasetOption(option)}
 			/>
 		);
 	}

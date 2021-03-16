@@ -320,8 +320,8 @@ export const ProjectDetail = props => {
 														<Col sm={12}>Description</Col>
 													</Row>
 													<Row className='mt-3'>
-														<Col sm={12} className='gray800-14'>
-															<ReactMarkdown className='text-break' source={projectData.description} />
+														<Col sm={12} className='gray800-14 hdruk-section-body'>
+															<ReactMarkdown source={projectData.description} />
 														</Col>
 													</Row>
 												</div>
@@ -336,8 +336,8 @@ export const ProjectDetail = props => {
 															<Col sm={12}>Results/Insights</Col>
 														</Row>
 														<Row className='mt-3'>
-															<Col sm={12} className='gray800-14'>
-																<ReactMarkdown className='text-break' source={projectData.resultsInsights} />
+															<Col sm={12} className='gray800-14 hdruk-section-body'>
+																<ReactMarkdown source={projectData.resultsInsights} />
 															</Col>
 														</Row>
 													</div>
@@ -434,7 +434,7 @@ export const ProjectDetail = props => {
 										</Row>
 
 										<Row className='mt-2'>
-											<Col sm={12}>
+											<Col sm={12} className='mb-5'>
 												<div className='rectangle'>
 													<Row className='gray800-14-bold'>
 														<Col sm={12}>Collaborators</Col>
@@ -484,7 +484,7 @@ export const ProjectDetail = props => {
 
 												<Row>
 													{collections.map(collection => (
-														<Col sm={12} md={12} lg={6} style={{ 'text-align': '-webkit-center' }}>
+														<Col sm={12} md={12} lg={6} className='flexCenter'>
 															<CollectionCard data={collection} />
 														</Col>
 													))}

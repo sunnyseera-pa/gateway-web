@@ -19,6 +19,7 @@ import moment from 'moment';
 import { cmsURL } from '../../../configs/url.config';
 
 var baseURL = require('../BaseURL').getURL();
+const urlEnv = require('../BaseURL').getURLEnv();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 	<a
@@ -256,12 +257,22 @@ class SearchBar extends React.Component {
 
 		let communityLink = 'https://discourse-dev.healthresearch.tools/';
 		if (window.location.href.includes('.www.')) communityLink = 'https://discourse.healthdatagateway.org/';
-
-		let thisEnv = process.env.NODE_ENV;
+		let showUatBanner = false;
+		let currentEnv = '';
+		if (urlEnv === 'uat' || urlEnv === 'uatbeta' || urlEnv === 'latest') {
+			showUatBanner = true;
+			if (urlEnv === 'uatbeta') {
+				currentEnv = 'UAT BETA';
+			} else if (urlEnv === 'uat') {
+				currentEnv = 'UAT';
+			} else if (urlEnv === 'latest') {
+				currentEnv = 'LATEST';
+			}
+		}
 
 		let col1Size = 5;
 		let col2Size = 7;
-		if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'development') {
+		if (showUatBanner === true) {
 			col1Size = 6;
 			col2Size = 6;
 		}
@@ -292,10 +303,10 @@ class SearchBar extends React.Component {
 										Dashboard
 									</a>
 								</div>
-								{process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'development' && (
+								{showUatBanner === true && (
 									<div class='uatSearchBarBanner uatBannerText'>
 										<span class='verticalMiddle'>
-											{process.env.NODE_ENV.toString().toUpperCase()}
+											{currentEnv}
 											<br />
 											<a
 												class='floatRight uatBannerText'
@@ -320,10 +331,10 @@ class SearchBar extends React.Component {
 														</span>
 														<span>
 															<input
+																data-testid='searchbar'
 																type='text'
 																placeholder='Search'
 																id='searchInputSpanGrey'
-																data-testid='searchbar'
 																onChange={this.onSearch}
 																onKeyDown={this.props.doSearchMethod}
 																value={this.props.searchString}
@@ -428,7 +439,7 @@ class SearchBar extends React.Component {
 																					<Dropdown.Divider style={{ margin: '0px' }} />
 																				</Fragment>
 																			);
-																		} else if(dat.messageType === 'workflow') {
+																		} else if (dat.messageType === 'workflow') {
 																			return (
 																				<Fragment key={`message-${index}`}>
 																					<Row className={dat.isRead === 'true' || clearMessage ? 'notificationReadBackground' : ''}>
@@ -463,9 +474,7 @@ class SearchBar extends React.Component {
 																					<Dropdown.Divider style={{ margin: '0px' }} />
 																				</Fragment>
 																			);
-																		}
-																		
-																		else if (dat.messageType === 'data access request') {
+																		} else if (dat.messageType === 'data access request') {
 																			return (
 																				<Fragment key={`message-${index}`}>
 																					<Row className={dat.isRead === 'true' || clearMessage ? 'notificationReadBackground' : ''}>
@@ -697,7 +706,9 @@ class SearchBar extends React.Component {
 															<Dropdown.Item href='/account?tab=projects' className='black-14' data-test-id='optProjects'>
 																Projects
 															</Dropdown.Item>
-															{/* <Dropdown.Item href="/account?tab=datasets" className="black-14">Datasets</Dropdown.Item> */}
+															<Dropdown.Item href='/account?tab=datasets' className='black-14'>
+																Datasets
+															</Dropdown.Item>
 															<Dropdown.Item href='/account?tab=papers' className='black-14' data-test-id='optPapers'>
 																Papers
 															</Dropdown.Item>
@@ -760,17 +771,18 @@ class SearchBar extends React.Component {
 										</Dropdown.Toggle>
 
 										<Dropdown.Menu as={CustomMenu} className='mobileLoginMenu'>
-											{process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'development' && (
+											{showUatBanner === true && (
 												<Dropdown.Item href='https://discourse.healthdatagateway.org/t/using-the-uat-environment/451' target='_blank'>
 													<span class='uatMobileSearchBarBanner uatBannerText'>
-														{process.env.NODE_ENV.toString().toUpperCase()} <span class='floatRight'>Read more</span>
+														{currentEnv}
+														<span class='floatRight'>Read more</span>
 													</span>
 												</Dropdown.Item>
 											)}
 											<Dropdown.Item className='black-14' href={cmsURL + '/pages/about'}>
 												About
 											</Dropdown.Item>
-											<Dropdown.Item className='black-14' href={cmsURL + '/pages/community'}>
+											<Dropdown.Item className='black-14' href={communityLink}>
 												Community
 											</Dropdown.Item>
 											<Dropdown.Item className='black-14' href={'/dashboard'}>
@@ -796,7 +808,9 @@ class SearchBar extends React.Component {
 															<Dropdown.Item href='/account?tab=projects' className='black-14'>
 																Projects
 															</Dropdown.Item>
-															{/* <Dropdown.Item href="/account?tab=datasets" className="black-14">Datasets</Dropdown.Item> */}
+															<Dropdown.Item href='/account?tab=datasets' className='black-14'>
+																Datasets
+															</Dropdown.Item>
 															<Dropdown.Item href='/account?tab=papers' className='black-14'>
 																Papers
 															</Dropdown.Item>

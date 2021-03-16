@@ -452,29 +452,35 @@ class Account extends Component {
 										</Nav.Link>
 									</div>
 
-									{/* <div className={`${tabId === 'datasets' || tabId === 'datasetsAdvancedSearch' ? 'activeCard' : ''}`}>
-                                            <Accordion activeKey={datasetAccordion} onSelect={this.datasetAccordionClick}>
-                                                <Fragment>
-                                                    <Accordion.Toggle variant='link' className='verticalNavBar gray700-13 navLinkButton' eventKey='0'>
-                                                        <SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' /> 
-                                                        <span className="navLinkItem">Datasets</span>
-                                                    </Accordion.Toggle>
-                                                    <Accordion.Collapse eventKey='0'>
-                                                        <div>
-                                                            <Nav.Link onClick={(e) => this.toggleNav('datasets')} 
-                                                            bsPrefix="nav-block" className={`gray700-13 ${tabId === 'datasets' ? 'nav-item-active' : ''}`}>
-                                                                <span className="subLinkItem">Datasets</span>
-                                                            </Nav.Link>
-                                                            <Nav.Link 
-                                                            onClick={(e) => this.toggleNav('datasetsAdvancedSearch')}
-                                                            bsPrefix="nav-block" className={`gray700-13 ${tabId === 'datasetsAdvancedSearch' ? 'nav-item-active' : ''}`}>
-                                                                <span className="subLinkItem">Advanced search</span>
-                                                            </Nav.Link>
-                                                        </div>
-                                                    </Accordion.Collapse>
-                                                </Fragment>
-                                            </Accordion>
-                                        </div> */}
+									<div
+										data-test-id='datasets'
+										className={`${tabId === 'datasets' || tabId === 'datasetsAdvancedSearch' ? 'activeCard' : ''}`}>
+										<Accordion activeKey={datasetAccordion} onSelect={this.datasetAccordionClick}>
+											<Fragment>
+												<Accordion.Toggle variant='link' className='verticalNavBar gray700-13 navLinkButton' eventKey='0'>
+													<SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
+													<span className='navLinkItem'>Datasets</span>
+												</Accordion.Toggle>
+												<Accordion.Collapse eventKey='0'>
+													<div>
+														<Nav.Link
+															onClick={e => this.toggleNav('datasets')}
+															bsPrefix='nav-block'
+															className={`gray700-13 ${tabId === 'datasets' ? 'nav-item-active' : ''}`}>
+															<span className='subLinkItem'>Datasets</span>
+														</Nav.Link>
+														{/* <Nav.Link
+															data-test-id='advanced-search'
+															onClick={e => this.toggleNav('datasetsAdvancedSearch')}
+															bsPrefix='nav-block'
+															className={`gray700-13 ${tabId === 'datasetsAdvancedSearch' ? 'nav-item-active' : ''}`}>
+															<span className='subLinkItem'>Advanced search</span>
+														</Nav.Link> */}
+													</div>
+												</Accordion.Collapse>
+											</Fragment>
+										</Accordion>
+									</div>
 
 									<div className={`${tabId === 'papers' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('papers')}>
 										<Nav.Link eventKey={'papers'} className='verticalNavBar gray700-13'>

@@ -57,8 +57,8 @@ class DiscourseTopic extends Component {
 				const postCount = topic.posts.length || 0;
 				this.props.onUpdateDiscoursePostCount(postCount);
 			})
-			.catch(error => {
-				console.error(error);
+			.catch(err => {
+				console.error(err.message);
 			});
 	}
 
@@ -87,8 +87,8 @@ class DiscourseTopic extends Component {
 						topic,
 					});
 				})
-				.catch(error => {
-					console.error(error);
+				.catch(err => {
+					console.error(err.message);
 				});
 		} else {
 			// 1. Assemble payload to create new post
@@ -114,8 +114,8 @@ class DiscourseTopic extends Component {
 					// 4. Increment discussion counter
 					this.props.onUpdateDiscoursePostCount(topic.posts.length);
 				})
-				.catch(error => {
-					console.error(error);
+				.catch(err => {
+					console.error(err.message);
 				});
 		}
 	};
@@ -147,8 +147,8 @@ class DiscourseTopic extends Component {
 				// 3. Update discussion counter
 				this.props.onUpdateDiscoursePostCount(posts.length);
 			})
-			.catch(error => {
-				console.error(error);
+			.catch(err => {
+				console.error(err.message);
 				this.showDeleteModal(false);
 			});
 	};

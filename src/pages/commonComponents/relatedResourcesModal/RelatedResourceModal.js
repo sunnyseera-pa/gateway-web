@@ -260,7 +260,11 @@ class RelatedResourcesModal extends React.Component {
 						{typeof this.props.summary.datasets !== 'undefined' ? (
 							<div className='searchTabsHolder'>
 								<div>
-									<Tabs className='tabsBackground-shadow-bottom gray700-13' activeKey={key} onSelect={this.handleSelect}>
+									<Tabs
+										data-test-id='related-resource-tabs'
+										className='tabsBackground-shadow-bottom gray700-13'
+										activeKey={key}
+										onSelect={this.handleSelect}>
 										<Tab
 											eventKey='Datasets'
 											title={
@@ -294,6 +298,7 @@ class RelatedResourcesModal extends React.Component {
 											}
 										/>
 										<Tab
+											data-test-id='related-papers'
 											eventKey='Papers'
 											title={'Papers (' + (!this.props.summary.papers ? '0' : this.props.summary.papers - this.state.selected.papers) + ')'}
 										/>

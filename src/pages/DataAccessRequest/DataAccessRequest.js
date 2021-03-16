@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { History } from 'react-router';
-import { Container, Row, Col, Modal, Tabs, Tab, Alert, Tooltip } from 'react-bootstrap';
+import { Container, Row, Col, Modal, Tabs, Tab, Alert, Tooltip, Button } from 'react-bootstrap';
 import Winterfell from 'winterfell';
 import _ from 'lodash';
 import axios from 'axios';
@@ -10,6 +10,7 @@ import TypeaheadUser from './components/TypeaheadUser/TypeaheadUser';
 import TypeaheadMultiUser from './components/TypeaheadUser/TypeaheadMultiUser';
 import DatePickerCustom from './components/DatePickerCustom/DatepickerCustom';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
+import ActionBar from '../commonComponents/actionbar/ActionBar';
 import Loading from '../commonComponents/Loading';
 import NavItem from './components/NavItem/NavItem';
 import NavDropdown from './components/NavDropdown/NavDropdown';
@@ -41,6 +42,8 @@ import AboutApplication from './components/AboutApplication/AboutApplication';
 import Guidance from './components/Guidance/Guidance';
 import Uploads from './components/Uploads/Uploads';
 import UpdateRequestModal from './components/UpdateRequestModal/UpdateRequestModal';
+import MissingFieldsModal from './components/MissingFieldsModal/MissingFieldsModal';
+import ConfirmSubmissionModal from './components/ConfirmSubmissionModal/ConfirmSubmissionModal';
 
 class DataAccessRequest extends Component {
 	constructor(props) {
@@ -127,6 +130,9 @@ class DataAccessRequest extends Component {
 			nationalCoreStudiesProjects: [],
 			inReviewMode: false,
 			updateRequestModal: false,
+			showEmailModal: false,
+			showMissingFieldsModal: false,
+			showConfirmSubmissionModal: false,
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -196,9 +202,9 @@ class DataAccessRequest extends Component {
 			this.setState({
 				totalQuestions,
 			});
-		} catch (error) {
+		} catch (err) {
 			this.setState({ isLoading: false });
-			console.error(error);
+			console.error(err.message);
 		} finally {
 			this.setState({
 				roles: this.getUserRoles(),
@@ -245,9 +251,9 @@ class DataAccessRequest extends Component {
 				workflow,
 				files,
 			});
-		} catch (error) {
+		} catch (err) {
 			this.setState({ isLoading: false });
-			console.error(error);
+			console.error(err.message);
 		}
 	};
 
@@ -292,9 +298,9 @@ class DataAccessRequest extends Component {
 
 			// for local test uses formSchema.json
 			//  this.setState({jsonSchema: {...formSchema}, questionAnswers: {fullname: {"id":5385077600698822,"orcid":"12345678","name":"Paul McCafferty","bio":"Developer @ PA","email":"p*************y@p**************m"}, orcid:"12345678", email:"p*************y@p**************m"}, activePanelId: 'applicant', isLoading: false, applicationStatus: 'inProgress'});
-		} catch (error) {
+		} catch (err) {
 			this.setState({ isLoading: false });
-			console.error(error);
+			console.error(err.message);
 		}
 	};
 
@@ -308,9 +314,9 @@ class DataAccessRequest extends Component {
 			} = response;
 			// 3. Set up the DAR
 			this.setScreenData({ ...data });
-		} catch (error) {
+		} catch (err) {
 			this.setState({ isLoading: false });
-			console.error(error);
+			console.error(err.message);
 		}
 	};
 
@@ -558,8 +564,8 @@ class DataAccessRequest extends Component {
 					...schemaUpdates,
 				});
 			});
-		} catch (error) {
-			console.log(`API PUT ERROR ${error}`);
+		} catch (err) {
+			console.error(`API PUT ERROR ${err.message}`);
 		}
 	};
 
@@ -570,12 +576,7 @@ class DataAccessRequest extends Component {
 		return id === userId;
 	};
 
-	/**
-	 * [Form Submit]
-	 * @desc Submitting data access request
-	 * @params  Object{questionAnswers}
-	 */
-	onFormSubmit = async () => {
+	onSubmitClick = () => {
 		let invalidQuestions = DarValidation.getQuestionPanelInvalidQuestions(
 			Winterfell,
 			this.state.jsonSchema.questionSets,
@@ -587,35 +588,44 @@ class DataAccessRequest extends Component {
 		let isValid = Object.keys(errors).length ? false : true;
 
 		if (isValid) {
-			try {
-				let { _id } = this.state;
-				// 1. POST
-				await axios.post(`${baseURL}/api/v1/data-access-request/${_id}`, {});
-				const lastSaved = DarHelper.saveTime();
-				this.setState({ lastSaved });
-
-				let alert = {
-					tab: 'submitted',
-					message:
-						this.state.applicationStatus === 'inProgress'
-							? 'Your application was submitted successfully'
-							: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
-					publisher: 'user',
-				};
-				this.props.history.push({
-					pathname: '/account',
-					search: '?tab=dataaccessrequests',
-					state: { alert },
-				});
-			} catch (err) {
-				console.log(err);
-			}
+			this.setState({ showConfirmSubmissionModal: true });
 		} else {
 			let activePage = _.get(_.keys({ ...errors }), 0);
 			let activePanel = _.get(_.keys({ ...errors }[activePage]), 0);
 			let validationMessages = validationSectionMessages;
-			alert('Some validation issues have been found. Please see all items highlighted in red on this page.');
+			this.setState({ showMissingFieldsModal: true });
 			this.updateNavigation({ pageId: activePage, panelId: activePanel }, validationMessages);
+		}
+	};
+
+	/**
+	 * [Form Submit]
+	 * @desc Submitting data access request
+	 * @params  Object{questionAnswers}
+	 */
+	onFormSubmit = async () => {
+		try {
+			let { _id } = this.state;
+			// 1. POST
+			await axios.post(`${baseURL}/api/v1/data-access-request/${_id}`, {});
+			const lastSaved = DarHelper.saveTime();
+			this.setState({ lastSaved });
+
+			let alert = {
+				tab: 'submitted',
+				message:
+					this.state.applicationStatus === 'inProgress'
+						? 'Your application was submitted successfully'
+						: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
+				publisher: 'user',
+			};
+			this.props.history.push({
+				pathname: '/account',
+				search: '?tab=dataaccessrequests',
+				state: { alert },
+			});
+		} catch (err) {
+			console.error(err.message);
 		}
 	};
 
@@ -636,7 +646,7 @@ class DataAccessRequest extends Component {
 			// 5. Set state
 			this.setState({ [`${key}`]: { ...data }, lastSaved });
 		} catch (err) {
-			console.log(err);
+			console.error(err.message);
 		}
 	};
 
@@ -828,7 +838,6 @@ class DataAccessRequest extends Component {
 				this.setState({ ...stateObj });
 				break;
 			default:
-				console.log(questionId);
 				break;
 		}
 	};
@@ -1031,7 +1040,7 @@ class DataAccessRequest extends Component {
 				nationalCoreStudiesProjects: entities,
 			});
 		} catch (err) {
-			console.error(err);
+			console.error(err.message);
 			return [];
 		}
 	};
@@ -1090,8 +1099,8 @@ class DataAccessRequest extends Component {
 				this.loadDataAccessRequest(this.state._id);
 				this.toggleWorkflowReviewModal();
 			})
-			.catch(error => {
-				console.log(error);
+			.catch(err => {
+				console.error(err.message);
 			});
 	};
 
@@ -1251,6 +1260,18 @@ class DataAccessRequest extends Component {
 		this.setState({ authorIds });
 	};
 
+	onClickMailDAR = async () => {
+		let { _id } = this.state;
+		await axios
+			.post(`${baseURL}/api/v1/data-access-request/${_id}/email`, {})
+			.then(response => {
+				window.location.reload();
+			})
+			.catch(err => {
+				console.error(err.message);
+			});
+	};
+
 	redirectDashboard = e => {
 		e.preventDefault();
 		this.props.history.push({
@@ -1376,6 +1397,26 @@ class DataAccessRequest extends Component {
 		});
 	};
 
+	toggleEmailModal = showModal => {
+		this.setState({ showEmailModal: showModal });
+	};
+
+	toggleMissingFieldsModal = () => {
+		this.setState(prevState => {
+			return {
+				showMissingFieldsModal: !prevState.showMissingFieldsModal,
+			};
+		});
+	};
+
+	toggleConfirmSubmissionModal = () => {
+		this.setState(prevState => {
+			return {
+				showConfirmSubmissionModal: !prevState.showConfirmSubmissionModal,
+			};
+		});
+	};
+
 	renderApp = () => {
 		let { activePanelId } = this.state;
 		if (activePanelId === 'about') {
@@ -1414,14 +1455,7 @@ class DataAccessRequest extends Component {
 				/>
 			);
 		} else if (activePanelId === 'files') {
-			return (
-				<Uploads
-					onFilesUpdate={this.onFilesUpdate}
-					id={this.state._id}
-					files={this.state.files}
-					initialFilesLoad={this.state.initialFilesLoad}
-				/>
-			);
+			return <Uploads onFilesUpdate={this.onFilesUpdate} id={this.state._id} files={this.state.files} readOnly={this.state.readOnly} />;
 		} else {
 			return (
 				<Winterfell
@@ -1464,6 +1498,7 @@ class DataAccessRequest extends Component {
 			userType,
 			actionModalConfig,
 			roles,
+			showEmailModal,
 		} = this.state;
 		const { userState, location } = this.props;
 
@@ -1522,6 +1557,16 @@ class DataAccessRequest extends Component {
 								Save now
 							</a>
 						}
+						{userType.toUpperCase() === 'APPLICANT' && !this.state.readOnly ? (
+							<a
+								className={`linkButton white-14-semibold ml-2 ${allowedNavigation ? '' : 'disabled'}`}
+								href='javascript:;'
+								onClick={e => this.toggleEmailModal(true)}>
+								Email me a copy
+							</a>
+						) : (
+							''
+						)}
 						<CloseButtonSvg width='16px' height='16px' fill='#fff' onClick={e => this.redirectDashboard(e)} />
 					</Col>
 				</Row>
@@ -1603,49 +1648,51 @@ class DataAccessRequest extends Component {
 					)}
 				</div>
 
-				<div className='action-bar'>
-					<div className='action-bar--questions'>
-						{applicationStatus === 'inProgress' ? (
-							''
-						) : (
-							<SLA classProperty={DarHelper.darStatusColours[applicationStatus]} text={DarHelper.darSLAText[applicationStatus]} />
-						)}
-						<div className='action-bar-status'>
-							{totalQuestions} &nbsp;|&nbsp; {projectId}
+				<ActionBar userState={userState}>
+					<div className='action-bar'>
+						<div className='action-bar--questions'>
+							{applicationStatus === 'inProgress' ? (
+								''
+							) : (
+								<SLA classProperty={DarHelper.darStatusColours[applicationStatus]} text={DarHelper.darSLAText[applicationStatus]} />
+							)}
+							<div className='action-bar-status'>
+								{totalQuestions} &nbsp;|&nbsp; {projectId}
+							</div>
+						</div>
+						<div className='action-bar-actions'>
+							<AmendmentCount answeredAmendments={this.state.answeredAmendments} unansweredAmendments={this.state.unansweredAmendments} />
+							{userType.toUpperCase() === 'APPLICANT' ? (
+								<ApplicantActionButtons
+									allowedNavigation={allowedNavigation}
+									onNextClick={this.onNextClick}
+									onSubmitClick={this.onSubmitClick}
+									onShowContributorModal={this.toggleContributorModal}
+									onEditForm={this.onEditForm}
+									showSubmit={this.state.showSubmit}
+									submitButtonText={this.state.submitButtonText}
+								/>
+							) : (
+								<CustodianActionButtons
+									activeParty={this.state.activeParty}
+									allowedNavigation={allowedNavigation}
+									unansweredAmendments={this.state.unansweredAmendments}
+									onUpdateRequest={this.onUpdateRequest}
+									onActionClick={this.onCustodianAction}
+									onWorkflowReview={this.toggleWorkflowReviewModal}
+									onWorkflowReviewDecisionClick={this.toggleWorkflowReviewDecisionModal}
+									onNextClick={this.onNextClick}
+									workflowEnabled={this.state.workflowEnabled}
+									workflowAssigned={this.state.workflowAssigned}
+									inReviewMode={this.state.inReviewMode}
+									hasRecommended={this.state.hasRecommended}
+									applicationStatus={applicationStatus}
+									roles={roles}
+								/>
+							)}
 						</div>
 					</div>
-					<div className='action-bar-actions'>
-						<AmendmentCount answeredAmendments={this.state.answeredAmendments} unansweredAmendments={this.state.unansweredAmendments} />
-						{userType.toUpperCase() === 'APPLICANT' ? (
-							<ApplicantActionButtons
-								allowedNavigation={allowedNavigation}
-								onNextClick={this.onNextClick}
-								onFormSubmit={this.onFormSubmit}
-								onShowContributorModal={this.toggleContributorModal}
-								onEditForm={this.onEditForm}
-								showSubmit={this.state.showSubmit}
-								submitButtonText={this.state.submitButtonText}
-							/>
-						) : (
-							<CustodianActionButtons
-								activeParty={this.state.activeParty}
-								allowedNavigation={allowedNavigation}
-								unansweredAmendments={this.state.unansweredAmendments}
-								onUpdateRequest={this.onUpdateRequest}
-								onActionClick={this.onCustodianAction}
-								onWorkflowReview={this.toggleWorkflowReviewModal}
-								onWorkflowReviewDecisionClick={this.toggleWorkflowReviewDecisionModal}
-								onNextClick={this.onNextClick}
-								workflowEnabled={this.state.workflowEnabled}
-								workflowAssigned={this.state.workflowAssigned}
-								inReviewMode={this.state.inReviewMode}
-								hasRecommended={this.state.hasRecommended}
-								applicationStatus={applicationStatus}
-								roles={roles}
-							/>
-						)}
-					</div>
-				</div>
+				</ActionBar>
 
 				<SideDrawer open={showDrawer} closed={e => this.toggleDrawer()}>
 					<UserMessages
@@ -1732,6 +1779,40 @@ class DataAccessRequest extends Component {
 						{' '}
 					</iframe>
 				</Modal>
+
+				<Modal
+					show={showEmailModal}
+					onHide={e => this.toggleEmailModal(false)}
+					aria-labelledby='contained-modal-title-vcenter'
+					centered
+					className='workflowModal'>
+					<div className='workflowModal-header'>
+						<h1 className='black-20-semibold'>Email application</h1>
+						<CloseButtonSvg className='workflowModal-header--close' onClick={e => this.toggleEmailModal(false)} />
+					</div>
+
+					<div className='workflowModal-body'>
+						Are you sure you want to email yourself this application? This will be sent to the email address provided in your HDR UK
+						account, where it will be available for you to print.
+					</div>
+					<div className='workflowModal-footer'>
+						<div className='workflowModal-footer--wrap'>
+							<Button variant='white' className='techDetailButton mr-2' onClick={e => this.toggleEmailModal(false)}>
+								No, nevermind
+							</Button>
+							<Button variant='primary' className='white-14-semibold' onClick={this.onClickMailDAR}>
+								Email application
+							</Button>
+						</div>
+					</div>
+				</Modal>
+
+				<MissingFieldsModal open={this.state.showMissingFieldsModal} close={this.toggleMissingFieldsModal} />
+				<ConfirmSubmissionModal
+					open={this.state.showConfirmSubmissionModal}
+					close={this.toggleConfirmSubmissionModal}
+					confirm={this.onFormSubmit}
+				/>
 			</div>
 		);
 	}

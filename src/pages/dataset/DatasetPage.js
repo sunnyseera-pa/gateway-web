@@ -99,6 +99,7 @@ class DatasetDetail extends Component {
 		linkedDatasets: [],
 		publisherLogoURL: '',
 		isLatestVersion: true,
+		isDatasetArchived: false,
 	};
 
 	topicContext = {};
@@ -147,6 +148,7 @@ class DatasetDetail extends Component {
 					v2data: res.data.data.datasetv2,
 					isLoading: false,
 					isLatestVersion: res.data.isLatestVersion,
+					isDatasetArchived: res.data.isDatasetArchived,
 				});
 				this.getTechnicalMetadata();
 				this.getCollections();
@@ -194,6 +196,15 @@ class DatasetDetail extends Component {
 									version.
 								</Fragment>
 							),
+						},
+					});
+				}
+
+				if (res.data.isDatasetArchived) {
+					this.setState({
+						alert: {
+							type: 'warning',
+							message: <Fragment>The dataset that you are viewing has been archived and there is no active versions.</Fragment>,
 						},
 					});
 				}
@@ -274,6 +285,10 @@ class DatasetDetail extends Component {
 			_.isEmpty(v2data.summary.publisher.deliveryLeadTime) &&
 			_.isEmpty(v2data.summary.publisher.accessRequestCost) &&
 			_.isEmpty(v2data.summary.publisher.accessService) &&
+			_.isEmpty(v2data.accessibility.access.accessRequestCost) &&
+			_.isEmpty(v2data.accessibility.access.accessRights) &&
+			_.isEmpty(v2data.accessibility.access.deliveryLeadTime) &&
+			_.isEmpty(v2data.accessibility.access.accessService) &&
 			_.isEmpty(v2data.accessibility.access.jurisdiction) &&
 			_.isEmpty(v2data.summary.publisher.accessService.dataUseLimitation) &&
 			_.isEmpty(v2data.summary.publisher.accessService.dataUseRequirements) &&
@@ -362,6 +377,10 @@ class DatasetDetail extends Component {
 			v2data.summary.publisher.accessRequestCost,
 			v2data.summary.publisher.accessService,
 			v2data.accessibility.access.jurisdiction,
+			v2data.accessibility.access.accessRequestCost,
+			v2data.accessibility.access.accessRights,
+			v2data.accessibility.access.deliveryLeadTime,
+			v2data.accessibility.access.accessService,
 			v2data.summary.publisher.accessService.dataUseLimitation,
 			v2data.summary.publisher.accessService.dataUseRequirements,
 			v2data.accessibility.access.dataController,
@@ -516,8 +535,8 @@ class DatasetDetail extends Component {
 				};
 				this.setState({ ...stateObj });
 			})
-			.catch(error => {
-				console.log(error);
+			.catch(err => {
+				console.error(err.message);
 			});
 	};
 
@@ -598,7 +617,7 @@ class DatasetDetail extends Component {
 		);
 
 		const formatLinks = source => {
-			const reUrl = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+			const reUrl = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
 			return source.replace(reUrl, '[$1]($1) ');
 		};
 
@@ -645,6 +664,9 @@ class DatasetDetail extends Component {
 					Click to read more about how the score is calculated.
 					<br />
 					<br />
+					Click to read more about how the score is calculated.
+					<br />
+					<br />
 					{Math.trunc(data.datasetfields.metadataquality.completeness_percent)} Completeness %
 					<br />
 					{Math.trunc(data.datasetfields.metadataquality.weighted_completeness_percent)} Weighted completeness %
@@ -653,86 +675,86 @@ class DatasetDetail extends Component {
 					<br />
 					{Math.trunc(data.datasetfields.metadataquality.weighted_error_percent)} Weighted error %
 				</Tooltip>
-			);
+            );
 
-			return (
-				<Fragment>
-					<OverlayTrigger placement='bottom' delay={{ show: 100, hide: 400 }} overlay={renderTooltip}>
-						<div
-							className='text-center'
-							onClick={() =>
-								window.open(
-									'https://github.com/HDRUK/datasets/tree/master/reports#hdr-uk-data-documentation-scores',
-									'_blank',
-									'noopener, noreferrer'
-								)
-							}>
-							<div style={{ cursor: 'pointer' }}>
-								<div style={{ lineHeight: 1 }}>
-									{(() => {
-										if (rating === 'Not Rated') return <MetadataNotRated />;
-										else if (rating === 'Bronze') return <MetadataBronze />;
-										else if (rating === 'Silver') return <MetadataSilver />;
-										else if (rating === 'Gold') return <MetadataGold />;
-										else if (rating === 'Platinum') return <MetadataPlatinum />;
-									})()}
-								</div>
-							</div>
-						</div>
-					</OverlayTrigger>
-				</Fragment>
-			);
-		}
+            return (
+                <Fragment>
+                    <OverlayTrigger placement='bottom' delay={{ show: 100, hide: 400 }} overlay={renderTooltip}>
+                        <div
+                            className='text-center'
+                            onClick={() =>
+                                window.open(
+                                    'https://github.com/HDRUK/datasets/tree/master/reports#hdr-uk-data-documentation-scores',
+                                    '_blank',
+                                    'noopener, noreferrer'
+                                )
+                            }>
+                            <div style={{ cursor: 'pointer' }}>
+                                <div style={{ lineHeight: 1 }}>
+                                    {(() => {
+                                        if (rating === 'Not Rated') return <MetadataNotRated />;
+                                        else if (rating === 'Bronze') return <MetadataBronze />;
+                                        else if (rating === 'Silver') return <MetadataSilver />;
+                                        else if (rating === 'Gold') return <MetadataGold />;
+                                        else if (rating === 'Platinum') return <MetadataPlatinum />;
+                                    })()}
+                                </div>
+                            </div>
+                        </div>
+                    </OverlayTrigger>
+                </Fragment>
+            );
+        }
 
-		return (
-			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
-				<div>
-					{data.datasetfields.metadataschema !== '' ? <DatasetSchema datasetSchema={data.datasetfields.metadataschema} /> : null}
-					<SearchBar
-						ref={this.searchBar}
-						searchString={searchString}
-						doSearchMethod={this.doSearch}
-						doUpdateSearchString={this.updateSearchString}
-						userState={userState}
-						doToggleDrawer={this.toggleDrawer}
-					/>
-					<Container className='margin-bottom-48'>
-						<Row className='mt-4'>
-							<Col sm={1} />
-							<Col sm={10}>
-								{alert ? <Alert variant={alert.type}>{alert.message}</Alert> : null}
-								<div className='rectangle'>
-									<Row>
-										{!_.isEmpty(v2data) ? (
-											<>
-												<Col xs={1} md={1}>
-													<div
-														className='datasetImageCircle'
-														style={{
-															backgroundImage: `url('${publisherLogo}')`,
-															backgroundRepeat: 'no-repeat',
-															backgroundPosition: 'center',
-															backgroundSize: 'contain',
-															backgroundOrigin: 'content-box',
-														}}
-													/>
-												</Col>
-												<Col xs={7} md={9} className='datasetTitle'>
-													<span className='black-16'> {data.name} </span>
-													<br />
-													<span>
-														{!_.isEmpty(v2data.summary.publisher.memberOf) ? (
-															<>
-																<span onMouseEnter={this.handleMouseHoverShield} onMouseLeave={this.handleMouseHoverShield}>
-																	<SVGIcon name='shield' fill={'#475da7'} className='svg-16 mr-2' viewBox='0 0 16 16' />
-																</span>
+        return (
+            <Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
+                <Fragment>
+                    {data.datasetfields.metadataschema !== '' ? <DatasetSchema datasetSchema={data.datasetfields.metadataschema} /> : null}
+                    <SearchBar
+                        ref={this.searchBar}
+                        searchString={searchString}
+                        doSearchMethod={this.doSearch}
+                        doUpdateSearchString={this.updateSearchString}
+                        userState={userState}
+                        doToggleDrawer={this.toggleDrawer}
+                    />
+                    <Container className='margin-bottom-48'>
+                        <Row className='mt-4'>
+                            <Col sm={1} />
+                            <Col sm={10}>
+                                {alert ? <Alert variant={alert.type}>{alert.message}</Alert> : null}
+                                <div className='rectangle'>
+                                    <Row>
+                                        {!_.isEmpty(v2data) ? (
+                                            <>
+                                                <Col xs={1} md={1}>
+                                                    <div
+                                                        className='datasetImageCircle'
+                                                        style={{
+                                                            backgroundImage: `url('${publisherLogo}')`,
+                                                            backgroundRepeat: 'no-repeat',
+                                                            backgroundPosition: 'center',
+                                                            backgroundSize: 'contain',
+                                                            backgroundOrigin: 'content-box',
+                                                        }}
+                                                    />
+                                                </Col>
+                                                <Col xs={7} md={9} className='datasetTitle'>
+                                                    <span className='black-16'> {data.name} </span>
+                                                    <br />
+                                                    <span>
+                                                        {!_.isEmpty(v2data.summary.publisher.memberOf) ? (
+                                                            <>
+                                                                <span onMouseEnter={this.handleMouseHoverShield} onMouseLeave={this.handleMouseHoverShield}>
+                                                                    <SVGIcon name='shield' fill={'#475da7'} className='svg-16 mr-2' viewBox='0 0 16 16' />
+                                                                </span>
 
-																{this.state.isHoveringShield && (
-																	<div className='dataShieldToolTip'>
-																		<span className='white-13-semibold'>
-																			{v2data.summary.publisher.memberOf.charAt(0).toUpperCase() +
-																				v2data.summary.publisher.memberOf.slice(1).toLowerCase()}{' '}
-																			member
+                                                                {this.state.isHoveringShield && (
+                                                                    <div className='dataShieldToolTip'>
+                                                                        <span className='white-13-semibold'>
+                                                                            {v2data.summary.publisher.memberOf.charAt(0).toUpperCase() +
+                                                                                v2data.summary.publisher.memberOf.slice(1).toLowerCase()}{' '}
+                                                                            member
 																		</span>
 																	</div>
 																)}
@@ -793,7 +815,7 @@ class DatasetDetail extends Component {
 											</span>
 										</Col>
 
-										{this.state.isLatestVersion && (
+										{this.state.isLatestVersion && !this.state.isDatasetArchived && (
 											<Col sm={6} className='text-right'>
 												{!userState[0].loggedIn ? (
 													<button className='btn button-tertiary dark-14 float-right' onClick={() => this.showLoginModal(data.name)}>
@@ -1421,75 +1443,75 @@ class DatasetDetail extends Component {
 																	Some datasets will not yet have a data utility rating and some may only have a rating for metadata
 																	richness.
 																</span>
-															</Col>
-														</Row>
-													</div>
+                                                            </Col>
+                                                        </Row>
+                                                    </div>
 
-													<DataQuality datasetUtility={data.datasetfields.datautility} />
-												</Col>
-											</Row>
-										</Tab>
+                                                    <DataQuality datasetUtility={data.datasetfields.datautility} />
+                                                </Col>
+                                            </Row>
+                                        </Tab>
 
-										<Tab eventKey='Collaboration' title={`Discussion (${discoursePostCount})`}>
-											<DiscourseTopic
-												toolId={data.id}
-												topicId={data.discourseTopicId || 0}
-												userState={userState}
-												onUpdateDiscoursePostCount={this.updateDiscoursePostCount}
-											/>
-										</Tab>
-										<Tab eventKey='Projects' title={'Related resources (' + relatedObjects.length + ')'}>
-											{data.relatedObjects && data.relatedObjects.length <= 0 ? (
-												<NotFound word='related resources' />
-											) : (
-												relatedObjects.map(object => (
-													<RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />
-												))
-											)}
-										</Tab>
-										<Tab eventKey='Collections' title={'Collections (' + collections.length + ')'}>
-											{!collections || collections.length <= 0 ? (
-												<NotFound text='This dataset has not been featured on any collections yet.' />
-											) : (
-												<>
-													<NotFound text='This dataset appears on the collections below. A collection can be a group of resources on the same theme or a Trusted Research Environment where this dataset can be accessed.' />
+                                        <Tab eventKey='Collaboration' title={`Discussion (${discoursePostCount})`}>
+                                            <DiscourseTopic
+                                                toolId={data.id}
+                                                topicId={data.discourseTopicId || 0}
+                                                userState={userState}
+                                                onUpdateDiscoursePostCount={this.updateDiscoursePostCount}
+                                            />
+                                        </Tab>
+                                        <Tab eventKey='Projects' title={'Related resources (' + relatedObjects.length + ')'}>
+                                            {data.relatedObjects && data.relatedObjects.length <= 0 ? (
+                                                <NotFound word='related resources' />
+                                            ) : (
+                                                    relatedObjects.map(object => (
+                                                        <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />
+                                                    ))
+                                                )}
+                                        </Tab>
+                                        <Tab eventKey='Collections' title={'Collections (' + collections.length + ')'}>
+                                            {!collections || collections.length <= 0 ? (
+                                                <NotFound text='This dataset has not been featured on any collections yet.' />
+                                            ) : (
+                                                    <>
+                                                        <NotFound text='This dataset appears on the collections below. A collection can be a group of resources on the same theme or a Trusted Research Environment where this dataset can be accessed.' />
 
-													<Row>
-														{collections.map(collection => (
-															<Col sm={12} md={12} lg={6} style={{ 'text-align': '-webkit-center' }}>
-																<CollectionCard data={collection} />
-															</Col>
-														))}
-													</Row>
-												</>
-											)}
-										</Tab>
-									</Tabs>
-								</div>
-							</Col>
-							<Col sm={1} />
-						</Row>
-					</Container>
+                                                        <Row>
+                                                            {collections.map(collection => (
+                                                                <Col sm={12} md={12} lg={6} className='flexCenter'>
+                                                                    <CollectionCard data={collection} />
+                                                                </Col>
+                                                            ))}
+                                                        </Row>
+                                                    </>
+                                                )}
+                                        </Tab>
+                                    </Tabs>
+                                </div>
+                            </Col>
+                            <Col sm={1} />
+                        </Row>
+                    </Container>
 
-					<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
-						<UserMessages
-							userState={userState[0]}
-							closed={this.toggleDrawer}
-							toggleModal={this.toggleModal}
-							drawerIsOpen={showDrawer}
-							topicContext={this.topicContext}
-						/>
-					</SideDrawer>
+                    <SideDrawer open={showDrawer} closed={this.toggleDrawer}>
+                        <UserMessages
+                            userState={userState[0]}
+                            closed={this.toggleDrawer}
+                            toggleModal={this.toggleModal}
+                            drawerIsOpen={showDrawer}
+                            topicContext={this.topicContext}
+                        />
+                    </SideDrawer>
 
-					<ActionBar userState={userState} showOverride={true}>
-						<ResourcePageButtons data={data} userState={userState} />
-					</ActionBar>
+                    <ActionBar userState={userState} showOverride={true}>
+                        <ResourcePageButtons data={data} userState={userState} />
+                    </ActionBar>
 
-					<DataSetModal open={showModal} closed={this.toggleModal} context={this.topicContext} userState={userState[0]} />
-				</div>
-			</Sentry.ErrorBoundary>
-		);
-	}
+                    <DataSetModal open={showModal} closed={this.toggleModal} context={this.topicContext} userState={userState[0]} />
+                </Fragment>
+            </Sentry.ErrorBoundary>
+        );
+    }
 }
 
 export default DatasetDetail;
