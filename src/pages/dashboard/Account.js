@@ -328,6 +328,11 @@ class Account extends Component {
 		this.setState({ datasetAccordion: '0' });
 	};
 
+	userHasRole(teamId,role) {
+		const team = this.state.userState[0].teams.filter(t => {return t._id===teamId})[0];
+		return team && team.roles.includes(role);
+	}
+
 	render() {
 		const {
 			searchString,
@@ -499,12 +504,14 @@ class Account extends Component {
 															className={`gray700-13 ${tabId === 'dataaccessrequests' ? 'nav-item-active' : ''}`}>
 															<span className='subLinkItem'>Applications</span>
 														</Nav.Link>
-														<Nav.Link
+														
+														{this.userHasRole(teamId,'manager')  ?
+														(<Nav.Link
 															onClick={e => this.toggleNav(`workflows`)}
 															bsPrefix='nav-block'
 															className={`gray700-13 ${tabId === 'workflows' ? 'nav-item-active' : ''}`}>
 															<span className='subLinkItem'>Workflows</span>
-														</Nav.Link>
+														</Nav.Link>) : ('') }
 													</div>
 												</Accordion.Collapse>
 											</Fragment>
