@@ -4,7 +4,7 @@ import classnames from 'classnames';
 
 import { Container, Row, Col, Dropdown } from 'react-bootstrap';
 import NotificationBadge from 'react-notification-badge';
-
+import { isEmpty } from 'lodash';
 import SVGIcon from '../../../images/SVGIcon';
 import { ReactComponent as ColourLogoSvg } from '../../../images/colour.svg';
 import { ReactComponent as ClearButtonSvg } from '../../../images/clear.svg';
@@ -231,6 +231,20 @@ class SearchBar extends React.Component {
 		return {
 			isHovering: !state.isHovering,
 		};
+	}
+
+	getLink = (publisherName = '') => {
+		if(!isEmpty(publisherName))
+			return `/account?tab=dataaccessrequests&team=${publisherName}`;
+
+		return `/account?tab=dataaccessrequests`;
+	}
+
+	getPublisherLink = (data) => {
+		let { messageDescription, publisherName } = data;
+		let link = this.getLink(publisherName);
+
+		return <a href={`${link}`} class='notificationInfo'>{messageDescription}</a>;
 	}
 
 	render() {
@@ -484,6 +498,39 @@ class SearchBar extends React.Component {
 																								<a href={`/data-access-request/${dat.messageDataRequestID}`} class='notificationInfo'>
 																									{dat.messageDescription}
 																								</a>
+																							</div>
+																						</Col>
+																						<Col xs={2}>
+																							{dat.isRead === 'false' && !clearMessage ? (
+																								<SVGIcon
+																									name='newnotificationicon'
+																									width={20}
+																									height={20}
+																									visble='true'
+																									style={{
+																										float: 'right',
+																										fill: '#3db28c',
+																										paddingRight: '0px',
+																										marginRight: '10px',
+																										marginTop: '5px',
+																									}}
+																									fill={'#3db28c'}
+																									stroke='none'
+																								/>
+																							) : null}
+																						</Col>
+																					</Row>
+																					<Dropdown.Divider style={{ margin: '0px' }} />
+																				</Fragment>
+																			);
+																		} else if (dat.messageType === 'data access request received') {
+																			return (
+																				<Fragment key={`message-${index}`}>
+																					<Row className={dat.isRead === 'true' || clearMessage ? 'notificationReadBackground' : ''}>
+																						<Col xs={10}>
+																							<div className='notificationDate'>{messageDateString + '\n'}</div>
+																							<div className='notificationInfoHolder'>
+																								{ this.getPublisherLink(dat) }
 																							</div>
 																						</Col>
 																						<Col xs={2}>
