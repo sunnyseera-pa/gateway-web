@@ -5,6 +5,7 @@ import Winterfell from 'winterfell';
 import _ from 'lodash';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
+import ActionBar from '../commonComponents/actionbar/ActionBar';
 import TypeaheadCustom from './components/TypeaheadCustom/TypeaheadCustom';
 import TypeaheadCustomKeyValue from './components/TypeaheadCustom/TypeaheadCustomKeyValue';
 import TypeaheadKeywords from './components/TypeaheadKeywords/TypeaheadKeywords';
@@ -1394,44 +1395,46 @@ class DatasetOnboarding extends Component {
 					)}
 				</div>
 
-				<div className='action-bar'>
-					<div className='action-bar--questions'>
-						<SLA classProperty={DarHelper.darStatusColours[applicationStatus]} text={DarHelper.darSLAText[applicationStatus]} />
-						<div className='action-bar-status'>
-							{applicationStatus === 'draft' ? totalQuestions : ''}
-							{applicationStatus === 'active' ? 'This version was published on 12 Feb 2021' : ''}
-							{applicationStatus === 'inReview' ? 'Submitted for review on 12 Feb 2021' : ''}
-							{applicationStatus === 'rejected' ? 'This version was rejected on 12 Feb 2021' : ''}
-							{applicationStatus === 'archived' ? 'This version was published on 2 Feb 2021 and archived on 12 Feb 2021' : ''}
-							{/* Status updated here */}
+				<ActionBar userState={userState}>
+					<div className='action-bar'>
+						<div className='action-bar--questions'>
+							<SLA classProperty={DarHelper.darStatusColours[applicationStatus]} text={DarHelper.darSLAText[applicationStatus]} />
+							<div className='action-bar-status'>
+								{applicationStatus === 'draft' ? totalQuestions : ''}
+								{applicationStatus === 'active' ? 'This version was published on 12 Feb 2021' : ''}
+								{applicationStatus === 'inReview' ? 'Submitted for review on 12 Feb 2021' : ''}
+								{applicationStatus === 'rejected' ? 'This version was rejected on 12 Feb 2021' : ''}
+								{applicationStatus === 'archived' ? 'This version was published on 2 Feb 2021 and archived on 12 Feb 2021' : ''}
+								{/* Status updated here */}
+							</div>
+						</div>
+						<div className='action-bar-actions'>
+							<AmendmentCount answeredAmendments={this.state.answeredAmendments} unansweredAmendments={this.state.unansweredAmendments} />
+							{userType.toUpperCase() === 'CUSTODIAN' ? (
+								<ApplicantActionButtons
+									allowedNavigation={allowedNavigation}
+									onNextClick={this.onNextClick}
+									onFormSubmit={this.onFormSubmit}
+									onShowArchiveModal={this.toggleArchiveModal}
+									onShowUnArchiveModal={this.toggleUnArchiveModal}
+									onShowCreateNewVersionModal={this.toggleCreateNewVersionModal}
+									showSubmit={this.state.showSubmit}
+									submitButtonText={this.state.submitButtonText}
+									showCreateNewVersion={this.state.showCreateNewVersion}
+									showArchive={this.state.showArchive}
+									showUnArchive={this.state.showUnArchive}
+								/>
+							) : (
+								<CustodianActionButtons
+									allowedNavigation={allowedNavigation}
+									onActionClick={this.onCustodianAction}
+									onNextClick={this.onNextClick}
+									roles={roles}
+								/>
+							)}
 						</div>
 					</div>
-					<div className='action-bar-actions'>
-						<AmendmentCount answeredAmendments={this.state.answeredAmendments} unansweredAmendments={this.state.unansweredAmendments} />
-						{userType.toUpperCase() === 'CUSTODIAN' ? (
-							<ApplicantActionButtons
-								allowedNavigation={allowedNavigation}
-								onNextClick={this.onNextClick}
-								onFormSubmit={this.onFormSubmit}
-								onShowArchiveModal={this.toggleArchiveModal}
-								onShowUnArchiveModal={this.toggleUnArchiveModal}
-								onShowCreateNewVersionModal={this.toggleCreateNewVersionModal}
-								showSubmit={this.state.showSubmit}
-								submitButtonText={this.state.submitButtonText}
-								showCreateNewVersion={this.state.showCreateNewVersion}
-								showArchive={this.state.showArchive}
-								showUnArchive={this.state.showUnArchive}
-							/>
-						) : (
-							<CustodianActionButtons
-								allowedNavigation={allowedNavigation}
-								onActionClick={this.onCustodianAction}
-								onNextClick={this.onNextClick}
-								roles={roles}
-							/>
-						)}
-					</div>
-				</div>
+				</ActionBar>
 
 				<SideDrawer open={showDrawer} closed={e => this.toggleDrawer()}>
 					<UserMessages

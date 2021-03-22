@@ -97,14 +97,15 @@ class Account extends Component {
 			this.alertTimeOut = setTimeout(() => this.setState({ alert: {} }), 10000);
 		}
 
-		if ((_.has(props, 'location.state.team') && props.location.state.team !== '') || (_.has(props, 'location.state.publisher') && props.location.state.team !== '')) {
+		if (
+			(_.has(props, 'location.state.team') && props.location.state.team !== '') ||
+			(_.has(props, 'location.state.publisher') && props.location.state.team !== '')
+		) {
 			this.state.team = props.location.state.team;
 			localStorage.setItem('HDR_TEAM', props.location.state.team);
-		} 
-		else if (!_.isEmpty(localStorage.getItem('HDR_TEAM'))) {
+		} else if (!_.isEmpty(localStorage.getItem('HDR_TEAM'))) {
 			this.state.team = localStorage.getItem('HDR_TEAM');
-		} 
-		else {
+		} else {
 			this.state.team = 'user';
 			localStorage.setItem('HDR_TEAM', 'user');
 		}
@@ -274,7 +275,7 @@ class Account extends Component {
 			return '';
 		}
 	}
-	
+
 	/**
 	 * [renderAdmin Renders out admin entry if admin team is found]
 	 *
@@ -296,8 +297,7 @@ class Account extends Component {
 					Admin
 				</Dropdown.Item>
 			);
-		}
-		else {
+		} else {
 			return '';
 		}
 	}
@@ -523,7 +523,9 @@ class Account extends Component {
 										''
 									)}
 								</Fragment>
-							) : ''}
+							) : (
+								''
+							)}
 
 							{team === 'admin' ? (
 								<Fragment>
@@ -536,53 +538,53 @@ class Account extends Component {
 								</Fragment>
 							) : (
 								''
-							)}	
-							
+							)}
+
 							{team !== 'user' && team !== 'admin' ? (
 								<Fragment>
 									<div
-									className={`${
-										tabId === 'dataaccessrequests' || tabId === 'workflows' || tabId === 'addeditworkflow' ? 'activeCard' : ''
-									}`}>
-									{this.isPublisher() ? (
-										<Accordion activeKey={activeAccordion} onSelect={this.accordionClick}>
+										className={`${
+											tabId === 'dataaccessrequests' || tabId === 'workflows' || tabId === 'addeditworkflow' ? 'activeCard' : ''
+										}`}>
+										{this.isPublisher() ? (
+											<Accordion activeKey={activeAccordion} onSelect={this.accordionClick}>
+												<Fragment>
+													<Accordion.Toggle variant='link' className='verticalNavBar gray700-13 navLinkButton' eventKey='0'>
+														<SVGIcon name='dataaccessicon' fill={'#b3b8bd'} className='accountSvgs' />
+														<span className='navLinkItem'>Data access requests</span>
+													</Accordion.Toggle>
+													<Accordion.Collapse eventKey='0'>
+														<div>
+															<Nav.Link
+																onClick={e => this.toggleNav('dataaccessrequests')}
+																bsPrefix='nav-block'
+																className={`gray700-13 ${tabId === 'dataaccessrequests' ? 'nav-item-active' : ''}`}>
+																<span className='subLinkItem'>Applications</span>
+															</Nav.Link>
+															{this.userHasRole(teamId, 'manager') && (
+																<Nav.Link
+																	onClick={e => this.toggleNav(`workflows`)}
+																	bsPrefix='nav-block'
+																	className={`gray700-13 ${tabId === 'workflows' ? 'nav-item-active' : ''}`}>
+																	<span className='subLinkItem'>Workflows</span>
+																</Nav.Link>
+															)}
+														</div>
+													</Accordion.Collapse>
+												</Fragment>
+											</Accordion>
+										) : (
 											<Fragment>
-												<Accordion.Toggle variant='link' className='verticalNavBar gray700-13 navLinkButton' eventKey='0'>
+												<Nav.Link onClick={e => this.toggleNav('dataaccessrequests')} className='verticalNavBar gray700-13'>
 													<SVGIcon name='dataaccessicon' fill={'#b3b8bd'} className='accountSvgs' />
 													<span className='navLinkItem'>Data access requests</span>
-												</Accordion.Toggle>
-												<Accordion.Collapse eventKey='0'>
-													<div>
-														<Nav.Link
-															onClick={e => this.toggleNav('dataaccessrequests')}
-															bsPrefix='nav-block'
-															className={`gray700-13 ${tabId === 'dataaccessrequests' ? 'nav-item-active' : ''}`}>
-															<span className='subLinkItem'>Applications</span>
-														</Nav.Link>
-														{this.userHasRole(teamId, 'manager') && (
-															<Nav.Link
-																onClick={e => this.toggleNav(`workflows`)}
-																bsPrefix='nav-block'
-																className={`gray700-13 ${tabId === 'workflows' ? 'nav-item-active' : ''}`}>
-																<span className='subLinkItem'>Workflows</span>
-															</Nav.Link>
-														)}
-													</div>
-												</Accordion.Collapse>
+												</Nav.Link>
 											</Fragment>
-										</Accordion>
-									) : (
-										<Fragment>
-											<Nav.Link onClick={e => this.toggleNav('dataaccessrequests')} className='verticalNavBar gray700-13'>
-												<SVGIcon name='dataaccessicon' fill={'#b3b8bd'} className='accountSvgs' />
-												<span className='navLinkItem'>Data access requests</span>
-											</Nav.Link>
-										</Fragment>
-									)}
-								</div>
-                                    <div className={`${tabId === 'datasets' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('datasets')}>
+										)}
+									</div>
+									<div className={`${tabId === 'datasets' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('datasets')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
-                                            <SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
+											<SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span style={{ 'margin-left': '11px' }}>Datasets</span>
 										</Nav.Link>
 									</div>
