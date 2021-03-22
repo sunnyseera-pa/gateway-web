@@ -323,7 +323,7 @@ class AddEditToolPage extends React.Component {
 		this.setState({ searchString: searchString });
 	};
 
-	doModalSearch = (e, type, page) => {
+	doModalSearch = (e, type = 'dataset', page = 0) => {
 		if (e.key === 'Enter' || e === 'click') {
 			var searchURL = '';
 
