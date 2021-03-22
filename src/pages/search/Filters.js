@@ -38,18 +38,18 @@ class Filters extends Component {
 			title: props.title || '',
 			allFilters: props.allFilters && props.length !== 0 ? props.allFilters : [],
 			filterOpen: false,
-			isKeyValue: props.isKeyValue,
+			isKeyValue: props.isKeyValue
 		};
 	}
 
 	componentWillReceiveProps(props) {
-		this.state = {
+		this.setState({ 
 			data: props.data || [],
 			selected: props.selected || [],
 			title: props.title || '',
 			allFilters: props.allFilters && props.length !== 0 ? props.allFilters : [],
-			isKeyValue: props.isKeyValue,
-		};
+			isKeyValue: props.isKeyValue
+		});
 	}
 
 	componentDidMount() {
@@ -100,7 +100,7 @@ class Filters extends Component {
 	render() {
 		const { data, selected, title, filterOpen, allFilters, isKeyValue } = this.state;
 
-		var filterCard = 'filterCard mb-1';
+		let filterCard = 'filterCard mb-1';
 		if (filterOpen) {
 			filterCard = 'filterCardSelected mb-1';
 		}
@@ -144,11 +144,11 @@ class Filters extends Component {
 						{_.isEmpty(allFilters)
 							? ''
 							: allFilters.map(filter => {
-									var filterClass = 'gray800-14 ml-4 mt-2 mb-2 pb-1';
+									let filterClass = 'gray800-14 ml-4 mt-2 mb-2 pb-1';
 
 									if (
-										(isKeyValue !== true && !data.includes(filter)) ||
-										(isKeyValue === true && data.filter(dat => dat.value === filter.value).length === 0)
+										(isKeyValue !== true && data && !data.includes(filter)) ||
+										(isKeyValue === true && data && data.filter(dat => dat.value === filter.value).length === 0)
 									) {
 										filterClass = 'gray800-14-opacity ml-4 mt-2 mb-2 pb-1';
 									}

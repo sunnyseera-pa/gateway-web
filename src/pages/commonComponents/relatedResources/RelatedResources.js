@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Modal, Row, Col, Tab, Tabs } from 'react-bootstrap';
 import RelatedResourcesModal from '../relatedResourcesModal/RelatedResourceModal';
 import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg';
@@ -26,7 +26,7 @@ const RelatedResources = React.forwardRef((props, ref) => {
 	}
 
 	return (
-		<Fragment className='flexCenter'>
+		<div className='flexCenter'>
 			<Button variant='white' href={''} target='_blank' className='techDetailButton mr-2' onClick={handleShow} ref={ref}>
 				+ Add resource
 			</Button>
@@ -76,7 +76,7 @@ const RelatedResources = React.forwardRef((props, ref) => {
 					</div>
 				</Modal.Footer>
 			</Modal>
-		</Fragment>
+		</div>
 	);
 });
 
