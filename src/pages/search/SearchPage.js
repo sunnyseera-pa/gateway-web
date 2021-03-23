@@ -305,7 +305,6 @@ class SearchPage extends React.Component {
 		queryParams.projectSort ? this.setState({ projectSort: queryParams.projectSort }) : this.setState({ projectSort: '' });
 		queryParams.paperSort ? this.setState({ paperSort: queryParams.paperSort }) : this.setState({ paperSort: '' });
 		queryParams.personSort ? this.setState({ personSort: queryParams.personSort }) : this.setState({ personSort: '' });
-		queryParams.collectionSort ? this.setState({ collectionSort: queryParams.collectionSort }) : this.setState({ collectionSort: '' });
 		queryParams.courseSort ? this.setState({ courseSort: queryParams.courseSort }) : this.setState({ courseSort: '' });
 	}
 
@@ -351,8 +350,7 @@ class SearchPage extends React.Component {
 			projectSort: '',
 			paperSort: '',
 			personSort: '',
-			courseSort: '',
-			collectionSort: ''
+			courseSort: ''
 		}, () => {
 			this.doSearchCall();
 		});
@@ -468,7 +466,6 @@ class SearchPage extends React.Component {
 		if (this.state.paperSort !== '') searchURL += '&paperSort=' + encodeURIComponent(this.state.paperSort);
 		if (this.state.personSort !== '') searchURL += '&personSort=' + encodeURIComponent(this.state.personSort);
 		if (this.state.courseSort !== '') searchURL += '&courseSort=' + encodeURIComponent(this.state.courseSort);
-		if (this.state.collectionSort !== '') searchURL += '&collectionSort=' + encodeURIComponent(this.state.collectionSort);
 		// login status handler
 		if (this.state.userState[0].loggedIn === false) {
 			let values = queryString.parse(window.location.search);
@@ -968,7 +965,6 @@ class SearchPage extends React.Component {
 			projectSort,
 			paperSort,
 			personSort,
-			collectionSort,
 
 			filtersV2,
 			selectedV2,
@@ -1018,7 +1014,7 @@ class SearchPage extends React.Component {
 		if (key === 'Papers' && paperCount === 0) showSort = false;
 		if (key === 'People' && personCount === 0) showSort = false;
 		if (key === 'Courses' && courseCount === 0) showSort = false;
-		if (key === 'Collections' && collectionCount === 0) showSort = false;
+		if (key === 'Collections') showSort = false;
 
 		let datasetPaginationItems = [];
 		let toolPaginationItems = [];
@@ -1812,10 +1808,7 @@ class SearchPage extends React.Component {
 															} else if (key === 'People') {
 																if (personSort === 'popularity') return 'Sort by popularity';
 																else return 'Sort by relevance';
-															} else if (key === 'Collections') {
-																if (collectionSort === 'popularity') return 'Sort by popularity';
-																else return 'Sort by relevance';
-															}
+															} 
 														})()}
 														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 													</Dropdown.Toggle>
