@@ -312,30 +312,41 @@ class DatasetDetail extends Component {
 	getLinkedDatasets = async relation => {
 		let linkedDatasets = this.state.linkedDatasets;
 
-		if (relation.match(/\bhttps?:\/\/\S+/gi) && relation.slice(0, 46) === 'https://web.www.healthdatagateway.org/dataset/') {
-			await axios.get(baseURL + '/api/v1/relatedobject/' + relation.slice(46)).then(async res => {
-				linkedDatasets.push({
-					title: res.data.data[0].name,
-					info: res.data.data[0].datasetfields.publisher,
-					type: 'gatewaylink',
-					id: relation.slice(46),
-				});
-			});
-		} else if (relation.match(/\bhttps?:\/\/\S+/gi) && relation.slice(0, 46) !== 'https://web.www.healthdatagateway.org/dataset/') {
+		// 1. Check if relation is a URL
+		if (relation.match(/\bhttps?:\/\/\S+/gi)) {
 			linkedDatasets.push({
 				title: relation,
-				info: 'Dataset not on the gateway',
+				info:
+					relation.slice(0, 46) === 'https://web.www.healthdatagateway.org/dataset/'
+						? 'Dataset on the gateway'
+						: 'Dataset not on the gateway',
 				type: 'externallink',
 			});
 		} else {
-			linkedDatasets.push({
-				title: relation,
-				info: 'Unrecognised dataset title',
-				type: 'text',
+			// 2. Check if relation is a String that matches a dataset title
+			await axios.get(baseURL + '/api/v1/relatedobject/linkeddatasets/' + relation).then(async res => {
+				const { datasetFound, pid } = res.data;
+				if (datasetFound && !_.isNil(pid)) {
+					await axios.get(baseURL + '/api/v1/relatedobject/' + pid).then(async res => {
+						linkedDatasets.push({
+							title: res.data.data[0].name,
+							info: res.data.data[0].datasetfields.publisher,
+							type: 'gatewaylink',
+							id: pid,
+						});
+					});
+				} else {
+					// 3. Else determine that relation is an unrecognised dataset title
+					linkedDatasets.push({
+						title: relation,
+						info: 'Unrecognised dataset title',
+						type: 'text',
+					});
+				}
 			});
 		}
 
-		this.setState({ linkedDatasets: linkedDatasets });
+		this.setState({ linkedDatasets });
 	};
 
 	getEmptyFieldsCount(v2data) {
@@ -675,86 +686,86 @@ class DatasetDetail extends Component {
 					<br />
 					{Math.trunc(data.datasetfields.metadataquality.weighted_error_percent)} Weighted error %
 				</Tooltip>
-            );
+			);
 
-            return (
-                <Fragment>
-                    <OverlayTrigger placement='bottom' delay={{ show: 100, hide: 400 }} overlay={renderTooltip}>
-                        <div
-                            className='text-center'
-                            onClick={() =>
-                                window.open(
-                                    'https://github.com/HDRUK/datasets/tree/master/reports#hdr-uk-data-documentation-scores',
-                                    '_blank',
-                                    'noopener, noreferrer'
-                                )
-                            }>
-                            <div style={{ cursor: 'pointer' }}>
-                                <div style={{ lineHeight: 1 }}>
-                                    {(() => {
-                                        if (rating === 'Not Rated') return <MetadataNotRated />;
-                                        else if (rating === 'Bronze') return <MetadataBronze />;
-                                        else if (rating === 'Silver') return <MetadataSilver />;
-                                        else if (rating === 'Gold') return <MetadataGold />;
-                                        else if (rating === 'Platinum') return <MetadataPlatinum />;
-                                    })()}
-                                </div>
-                            </div>
-                        </div>
-                    </OverlayTrigger>
-                </Fragment>
-            );
-        }
+			return (
+				<Fragment>
+					<OverlayTrigger placement='bottom' delay={{ show: 100, hide: 400 }} overlay={renderTooltip}>
+						<div
+							className='text-center'
+							onClick={() =>
+								window.open(
+									'https://github.com/HDRUK/datasets/tree/master/reports#hdr-uk-data-documentation-scores',
+									'_blank',
+									'noopener, noreferrer'
+								)
+							}>
+							<div style={{ cursor: 'pointer' }}>
+								<div style={{ lineHeight: 1 }}>
+									{(() => {
+										if (rating === 'Not Rated') return <MetadataNotRated />;
+										else if (rating === 'Bronze') return <MetadataBronze />;
+										else if (rating === 'Silver') return <MetadataSilver />;
+										else if (rating === 'Gold') return <MetadataGold />;
+										else if (rating === 'Platinum') return <MetadataPlatinum />;
+									})()}
+								</div>
+							</div>
+						</div>
+					</OverlayTrigger>
+				</Fragment>
+			);
+		}
 
-        return (
-            <Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
-                <Fragment>
-                    {data.datasetfields.metadataschema !== '' ? <DatasetSchema datasetSchema={data.datasetfields.metadataschema} /> : null}
-                    <SearchBar
-                        ref={this.searchBar}
-                        searchString={searchString}
-                        doSearchMethod={this.doSearch}
-                        doUpdateSearchString={this.updateSearchString}
-                        userState={userState}
-                        doToggleDrawer={this.toggleDrawer}
-                    />
-                    <Container className='margin-bottom-48'>
-                        <Row className='mt-4'>
-                            <Col sm={1} />
-                            <Col sm={10}>
-                                {alert ? <Alert variant={alert.type}>{alert.message}</Alert> : null}
-                                <div className='rectangle'>
-                                    <Row>
-                                        {!_.isEmpty(v2data) ? (
-                                            <>
-                                                <Col xs={1} md={1}>
-                                                    <div
-                                                        className='datasetImageCircle'
-                                                        style={{
-                                                            backgroundImage: `url('${publisherLogo}')`,
-                                                            backgroundRepeat: 'no-repeat',
-                                                            backgroundPosition: 'center',
-                                                            backgroundSize: 'contain',
-                                                            backgroundOrigin: 'content-box',
-                                                        }}
-                                                    />
-                                                </Col>
-                                                <Col xs={7} md={9} className='datasetTitle'>
-                                                    <span className='black-16'> {data.name} </span>
-                                                    <br />
-                                                    <span>
-                                                        {!_.isEmpty(v2data.summary.publisher.memberOf) ? (
-                                                            <>
-                                                                <span onMouseEnter={this.handleMouseHoverShield} onMouseLeave={this.handleMouseHoverShield}>
-                                                                    <SVGIcon name='shield' fill={'#475da7'} className='svg-16 mr-2' viewBox='0 0 16 16' />
-                                                                </span>
+		return (
+			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
+				<Fragment>
+					{data.datasetfields.metadataschema !== '' ? <DatasetSchema datasetSchema={data.datasetfields.metadataschema} /> : null}
+					<SearchBar
+						ref={this.searchBar}
+						searchString={searchString}
+						doSearchMethod={this.doSearch}
+						doUpdateSearchString={this.updateSearchString}
+						userState={userState}
+						doToggleDrawer={this.toggleDrawer}
+					/>
+					<Container className='margin-bottom-48'>
+						<Row className='mt-4'>
+							<Col sm={1} />
+							<Col sm={10}>
+								{alert ? <Alert variant={alert.type}>{alert.message}</Alert> : null}
+								<div className='rectangle'>
+									<Row>
+										{!_.isEmpty(v2data) ? (
+											<>
+												<Col xs={1} md={1}>
+													<div
+														className='datasetImageCircle'
+														style={{
+															backgroundImage: `url('${publisherLogo}')`,
+															backgroundRepeat: 'no-repeat',
+															backgroundPosition: 'center',
+															backgroundSize: 'contain',
+															backgroundOrigin: 'content-box',
+														}}
+													/>
+												</Col>
+												<Col xs={7} md={9} className='datasetTitle'>
+													<span className='black-16'> {data.name} </span>
+													<br />
+													<span>
+														{!_.isEmpty(v2data.summary.publisher.memberOf) ? (
+															<>
+																<span onMouseEnter={this.handleMouseHoverShield} onMouseLeave={this.handleMouseHoverShield}>
+																	<SVGIcon name='shield' fill={'#475da7'} className='svg-16 mr-2' viewBox='0 0 16 16' />
+																</span>
 
-                                                                {this.state.isHoveringShield && (
-                                                                    <div className='dataShieldToolTip'>
-                                                                        <span className='white-13-semibold'>
-                                                                            {v2data.summary.publisher.memberOf.charAt(0).toUpperCase() +
-                                                                                v2data.summary.publisher.memberOf.slice(1).toLowerCase()}{' '}
-                                                                            member
+																{this.state.isHoveringShield && (
+																	<div className='dataShieldToolTip'>
+																		<span className='white-13-semibold'>
+																			{v2data.summary.publisher.memberOf.charAt(0).toUpperCase() +
+																				v2data.summary.publisher.memberOf.slice(1).toLowerCase()}{' '}
+																			member
 																		</span>
 																	</div>
 																)}
@@ -1443,75 +1454,75 @@ class DatasetDetail extends Component {
 																	Some datasets will not yet have a data utility rating and some may only have a rating for metadata
 																	richness.
 																</span>
-                                                            </Col>
-                                                        </Row>
-                                                    </div>
+															</Col>
+														</Row>
+													</div>
 
-                                                    <DataQuality datasetUtility={data.datasetfields.datautility} />
-                                                </Col>
-                                            </Row>
-                                        </Tab>
+													<DataQuality datasetUtility={data.datasetfields.datautility} />
+												</Col>
+											</Row>
+										</Tab>
 
-                                        <Tab eventKey='Collaboration' title={`Discussion (${discoursePostCount})`}>
-                                            <DiscourseTopic
-                                                toolId={data.id}
-                                                topicId={data.discourseTopicId || 0}
-                                                userState={userState}
-                                                onUpdateDiscoursePostCount={this.updateDiscoursePostCount}
-                                            />
-                                        </Tab>
-                                        <Tab eventKey='Projects' title={'Related resources (' + relatedObjects.length + ')'}>
-                                            {data.relatedObjects && data.relatedObjects.length <= 0 ? (
-                                                <NotFound word='related resources' />
-                                            ) : (
-                                                    relatedObjects.map(object => (
-                                                        <RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />
-                                                    ))
-                                                )}
-                                        </Tab>
-                                        <Tab eventKey='Collections' title={'Collections (' + collections.length + ')'}>
-                                            {!collections || collections.length <= 0 ? (
-                                                <NotFound text='This dataset has not been featured on any collections yet.' />
-                                            ) : (
-                                                    <>
-                                                        <NotFound text='This dataset appears on the collections below. A collection can be a group of resources on the same theme or a Trusted Research Environment where this dataset can be accessed.' />
+										<Tab eventKey='Collaboration' title={`Discussion (${discoursePostCount})`}>
+											<DiscourseTopic
+												toolId={data.id}
+												topicId={data.discourseTopicId || 0}
+												userState={userState}
+												onUpdateDiscoursePostCount={this.updateDiscoursePostCount}
+											/>
+										</Tab>
+										<Tab eventKey='Projects' title={'Related resources (' + relatedObjects.length + ')'}>
+											{data.relatedObjects && data.relatedObjects.length <= 0 ? (
+												<NotFound word='related resources' />
+											) : (
+												relatedObjects.map(object => (
+													<RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />
+												))
+											)}
+										</Tab>
+										<Tab eventKey='Collections' title={'Collections (' + collections.length + ')'}>
+											{!collections || collections.length <= 0 ? (
+												<NotFound text='This dataset has not been featured on any collections yet.' />
+											) : (
+												<>
+													<NotFound text='This dataset appears on the collections below. A collection can be a group of resources on the same theme or a Trusted Research Environment where this dataset can be accessed.' />
 
-                                                        <Row>
-                                                            {collections.map(collection => (
-                                                                <Col sm={12} md={12} lg={6} className='flexCenter'>
-                                                                    <CollectionCard data={collection} />
-                                                                </Col>
-                                                            ))}
-                                                        </Row>
-                                                    </>
-                                                )}
-                                        </Tab>
-                                    </Tabs>
-                                </div>
-                            </Col>
-                            <Col sm={1} />
-                        </Row>
-                    </Container>
+													<Row>
+														{collections.map(collection => (
+															<Col sm={12} md={12} lg={6} className='flexCenter'>
+																<CollectionCard data={collection} />
+															</Col>
+														))}
+													</Row>
+												</>
+											)}
+										</Tab>
+									</Tabs>
+								</div>
+							</Col>
+							<Col sm={1} />
+						</Row>
+					</Container>
 
-                    <SideDrawer open={showDrawer} closed={this.toggleDrawer}>
-                        <UserMessages
-                            userState={userState[0]}
-                            closed={this.toggleDrawer}
-                            toggleModal={this.toggleModal}
-                            drawerIsOpen={showDrawer}
-                            topicContext={this.topicContext}
-                        />
-                    </SideDrawer>
+					<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
+						<UserMessages
+							userState={userState[0]}
+							closed={this.toggleDrawer}
+							toggleModal={this.toggleModal}
+							drawerIsOpen={showDrawer}
+							topicContext={this.topicContext}
+						/>
+					</SideDrawer>
 
-                    <ActionBar userState={userState} showOverride={true}>
-                        <ResourcePageButtons data={data} userState={userState} />
-                    </ActionBar>
+					<ActionBar userState={userState} showOverride={true}>
+						<ResourcePageButtons data={data} userState={userState} />
+					</ActionBar>
 
-                    <DataSetModal open={showModal} closed={this.toggleModal} context={this.topicContext} userState={userState[0]} />
-                </Fragment>
-            </Sentry.ErrorBoundary>
-        );
-    }
+					<DataSetModal open={showModal} closed={this.toggleModal} context={this.topicContext} userState={userState[0]} />
+				</Fragment>
+			</Sentry.ErrorBoundary>
+		);
+	}
 }
 
 export default DatasetDetail;
