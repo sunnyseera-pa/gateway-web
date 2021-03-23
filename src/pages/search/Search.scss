@@ -1,4 +1,5 @@
 @import '../../css/variables';
+@import '../../css/typography';
 
 .filterCard {
 	box-shadow: 1px 1px 3px 0 #00000017;
@@ -43,15 +44,366 @@
 }
 
 .filterHolder {
-	position: -webkit-sticky !important; /* Safari */
-	position: sticky !important;
-	width: 100%;
-	z-index: 999;
+	// position: -webkit-sticky !important; /* Safari */
+	// position: sticky !important;
+	// // width: 265px;
+	// z-index: 999;
 	margin-top: 45px;
-	top: 100px;
+	// top: 100px;
 }
 
 .courseDateHeader {
 	margin-top: 7px !important;
 	margin-bottom: 7px;
+}
+
+.filters {
+	-webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+	margin-bottom: 8px;
+	padding: 12px 16px 24px;
+	background: $white;
+	box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
+	&-header {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 10px;
+	}
+
+	&-title {
+		display: flex;
+		font-size: 13px;
+		&__count {
+			display: flex;
+			flex-flow: column;
+			margin-left: 12px;
+			font-size: 12px;
+			width: 20px;
+			height: 20px;
+			line-height: 20px;
+			border-radius: 10px;
+			background: $indigo;
+			align-items: center;
+			color: $white;
+		}
+		&__clear {
+			&:hover {
+				cursor: pointer;
+			}
+		}
+	}
+
+	&-body {
+		width: 100%;
+		display: flex;
+		flex-flow: row wrap;
+		word-break: break-word;
+	}
+
+	&-chip {
+		margin: 4px 4px 4px 0;
+		padding: 3px 12px;
+		font-size: 12px;
+		border-radius: 10px;
+		background: #f3f3f3;
+		display: flex;
+		flex-flow: row;
+		align-items: center;
+		svg {
+			width: 10px;
+			height: 10px;
+			fill: $indigo;
+			margin-left: 10px;
+		}
+
+		&:hover {
+			cursor: pointer;
+		}
+	}
+}
+
+
+.closed:after {
+	display: none;
+}
+
+.selected {
+	color: #353534;
+	font-weight: 600;
+}
+
+.node {
+	&-wrapper {
+		background: $white;
+		margin-bottom: 1px;
+		font-size: 14px !important;
+		color: #373737;
+		box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
+		padding: 12px 16px;
+	}
+
+	&-search {
+		display: flex;
+		width: 100%;
+		position: relative;
+		padding: 8px 0 10px 0;
+		&__input {
+			padding: 5px 10px 5px 25px;
+			width: 100%;
+			border: none;
+			outline: none;
+			transition: all .2s;
+			background-color: #f6f7f8;
+			
+		}
+		&__icon {
+			position: absolute;
+			top: 16px;
+			left: 5px;
+		}
+	}
+
+	&-clearAll {
+		color: $purple;
+		&:hover {
+			cursor: pointer;
+		}
+	}
+
+	&-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+
+		svg {
+			margin-top: -1px;
+			&.flip180 {
+				margin-top: 3px;
+			}
+		}
+
+		&:hover {
+			cursor: pointer;
+		}
+	}
+
+	&-item {
+		display: flex;
+		&:hover {
+			cursor: pointer;
+		}
+
+		> svg {
+			margin-top: 1px;
+			&.flip180 {
+				margin-top: 5px;
+			}
+		}
+	}
+
+	&-subItem {
+		padding: 4px 4px 4px 0;
+
+		&:first-child {
+			padding: 10px 0 4px 0;
+		}
+
+		&:only-child {
+			padding: 10px 0 10px 0;
+			// border-bottom: 1px solid #e7e9ed;
+		}
+	
+	}
+
+	&-subTitle {
+		padding-left: 10px;
+		display: flex;
+		align-items: flex-start;
+		span {
+			padding-right: 8px;
+		}
+
+		& > div {
+			width: 20px;
+			height: 20px;
+			display: flex;
+
+			svg {
+				margin-top: 5px;
+			}
+		}
+
+	}
+
+	&-checkbox {
+		&-wrap {
+			max-height: 220px;
+			overflow-y: auto;
+			word-break: break-word;
+			padding-bottom: 1px;
+			&::-webkit-scrollbar {
+				width: 0.35em;
+				height: 0.35em;
+				background-color: #f2f2f2;
+				border-radius: 3px;
+				-webkit-border-radius: 3px;
+				-moz-border-radius: 3px;
+			 }
+		 
+			 &::-webkit-scrollbar-thumb {
+				background-color: rgba(0,0,0,.1);
+				border-radius: 3px;
+				-webkit-border-radius: 3px;
+				-moz-border-radius: 3px;
+		 
+				&:hover {
+				 background: rgba(0,0,0, .2);
+				}
+			 }
+		}
+
+		&-items {
+			@extend .node-checkbox-wrap;
+		}
+	}
+
+	&-group {
+		padding: 4px 0 4px 0;
+
+		&:first-child {
+			padding: 12px 0 4px 0;
+		}
+		
+		&:last-child {
+			padding-bottom: 8px;
+		}
+	}
+
+	&-nested {
+		padding: 0 0 5px 0;
+		border-bottom: 1px solid #e7e9ed;
+		.node-item:last-child {
+			padding-bottom: 12px;
+		}
+	}
+
+	&-title {
+		display: flex;
+		align-self: stretch;
+		align-items: center;
+
+		& > * {
+			cursor: pointer;
+			height: 100%;
+			display: flex;
+			align-items: center;
+		}
+		span {
+			margin-right: 5px;
+		}
+		svg {
+			width: 10px;
+			height: 10px;
+		}
+	}
+
+	&-micro {
+		display: flex;
+		align-items: center;
+		&__count {
+			display: flex;
+			flex-flow: column;
+			margin-right: 8px;
+			font-size: 12px;
+			width: 20px;
+			height: 20px;
+			line-height: 20px;
+			border-radius: 10px;
+			background: $indigo;
+			align-items: center;
+			color: $white;
+		}
+	}
+
+	&-check-group {
+		& > .node-parent-wrap {
+			padding: 0 18px;
+		}
+	}
+}
+
+.checkbox {
+	display: block;
+	position: relative;
+	padding-left: 28px;
+	cursor: pointer;
+	font-size: 13px;
+	-webkit-user-select: none; /* Chrome, Opera, Safari */
+	-moz-user-select: none; /* Firefox 2+ */
+	-ms-user-select: none; /* IE 10+ */
+	user-select: none; /* Standard syntax */
+	&-text {
+		color: #cbcbcb;
+    font-weight: 200;
+	}
+}
+
+/* Hide browsers default checkbox */
+.checkbox input {
+	position: absolute;
+	opacity: 0;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height:  20px;
+	z-index: 500;
+	cursor: pointer;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 20px;
+	width: 20px;
+	border: 2px solid #eee;
+	z-index: 100;
+}
+
+/* On mouse-over, add a grey background color */
+.checkbox:hover input ~ .checkmark {
+	background-color: #eaeaea;
+}
+
+/* When the checkbox is checked, add a blue background */
+.checkbox input:checked ~ .checkmark {
+	background-color: $white;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+	content: "";
+	position: absolute;
+	display: none;
+}
+
+/* Show the checkmark when checked */
+.checkbox input:checked ~ .checkmark:after {
+	display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkbox .checkmark:after {
+	left: 3px;
+	top: 3px;
+	width: 10px;
+	height: 10px;
+	background:$teal;
+}
+
+.highlighted-text {
+	color: #3c3c3b;
+	font-weight: 500;
 }

@@ -538,7 +538,7 @@ class DataAccessRequest extends Component {
 			let { key, data = {} } = obj;
 			// 2. set body params
 			let params = {
-				[`${key}`]: JSON.stringify(data),
+				[`${key}`]: data,
 				updatedQuestionId,
 			};
 			// 3. API Patch call
@@ -637,7 +637,7 @@ class DataAccessRequest extends Component {
 			let { _id: id } = this.state;
 			// 3. Set up body params
 			let params = {
-				[`${key}`]: JSON.stringify(data),
+				[`${key}`]: data,
 			};
 			// 4. PATCH the data
 			const response = await axios.patch(`${baseURL}/api/v1/data-access-request/${id}`, params);
