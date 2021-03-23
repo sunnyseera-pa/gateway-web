@@ -13,6 +13,7 @@
 		align-items: center;
 		justify-content: space-between;
 		&-wrapper {
+			display: -ms-grid;
 			display: grid;
 		}
 		&--close {
@@ -46,14 +47,17 @@
 	}
 
 	&-body {
+		display: -ms-grid;
 		display: grid;
 		height: 100vh;
+		-ms-grid-columns: 1fr 2fr;
 		grid-template-columns: 35% 65%;
 		justify-items: stretch;
 		align-items: stretch;
 	}
 
 	&-nav {
+		-ms-grid-column: 1;
 		background: $gray-200;
 		overflow-y: auto;
 		height: calc(100vh - 72px);
@@ -89,12 +93,15 @@
 	}
 }
 .messageArea {
+	display: -ms-grid;
 	display: grid;
+	-ms-grid-rows: 1fr 10fr 170px;
 	grid-template-rows: 1fr 10fr 170px;
 	box-sizing: border-box;
 	height: calc(100vh - 40px);
 
 	&-header {
+		-ms-grid-row: 1;
 		background: $white;
 		padding: 24px;
 		border-bottom: 1px solid $gray-200;
@@ -126,6 +133,7 @@
 	}
 
 	&-body {
+		-ms-grid-row: 2;
 		background: $white;
 		overflow-y: auto;
 	}
@@ -148,6 +156,7 @@
 	}
 
 	&-footer {
+		-ms-grid-row: 3;
 		display: flex;
 		flex-flow: column nowrap;
 		border-top: 1px solid $gray-200;
