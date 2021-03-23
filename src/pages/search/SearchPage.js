@@ -489,7 +489,6 @@ class SearchPage extends React.Component {
 			// remove once full migration to v2 filters for all other entities 'Tools, Projects, Courses and Papers'
 			axios.get(baseURL + '/api/v1/search/filter?search=' + this.state.search + searchURL).then(res => {
 				const entityType = typeMapper[`${this.state.key}`];
-				debugger;
 				let filters = this.getFilterState(entityType, res);
 				// test the type and set relevant state
 				if(entityType === 'dataset') {
@@ -506,7 +505,6 @@ class SearchPage extends React.Component {
 		.then(res => {
 			// get the correct entity type from our mapper via the selected tab ie..'Dataset, Tools'
 			const entityType = typeMapper[`${this.state.key}`];
-			debugger;
 			// pull out the dynamic key : set data and filters
 			let {[`${entityType}Results`]: {data = [] }, summary = [] } = res.data;
 
