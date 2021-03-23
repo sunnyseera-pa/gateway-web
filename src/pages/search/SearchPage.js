@@ -30,7 +30,7 @@ const typeMapper = {
 	'Papers' : 'paper',
 	'People' : 'person',
 	'Courses' : 'course',
-	'Collections': 'collections'
+	'Collections': 'collection'
 }
 
 class SearchPage extends React.Component {
@@ -350,8 +350,7 @@ class SearchPage extends React.Component {
 			projectSort: '',
 			paperSort: '',
 			personSort: '',
-			courseSort: '',
-			collectionSort: ''
+			courseSort: ''
 		}, () => {
 			this.doSearchCall();
 		});
@@ -1015,7 +1014,7 @@ class SearchPage extends React.Component {
 		if (key === 'Papers' && paperCount === 0) showSort = false;
 		if (key === 'People' && personCount === 0) showSort = false;
 		if (key === 'Courses' && courseCount === 0) showSort = false;
-		if (key === 'Collections' && collectionCount === 0) showSort = false;
+		if (key === 'Collections') showSort = false;
 
 		let datasetPaginationItems = [];
 		let toolPaginationItems = [];
@@ -1809,7 +1808,7 @@ class SearchPage extends React.Component {
 															} else if (key === 'People') {
 																if (personSort === 'popularity') return 'Sort by popularity';
 																else return 'Sort by relevance';
-															}
+															} 
 														})()}
 														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 													</Dropdown.Toggle>
