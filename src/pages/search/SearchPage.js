@@ -30,7 +30,7 @@ const typeMapper = {
 	'Papers' : 'paper',
 	'People' : 'person',
 	'Courses' : 'course',
-	'Collections': 'collections'
+	'Collections': 'collection'
 }
 
 class SearchPage extends React.Component {
@@ -305,6 +305,7 @@ class SearchPage extends React.Component {
 		queryParams.projectSort ? this.setState({ projectSort: queryParams.projectSort }) : this.setState({ projectSort: '' });
 		queryParams.paperSort ? this.setState({ paperSort: queryParams.paperSort }) : this.setState({ paperSort: '' });
 		queryParams.personSort ? this.setState({ personSort: queryParams.personSort }) : this.setState({ personSort: '' });
+		queryParams.collectionSort ? this.setState({ collectionSort: queryParams.collectionSort }) : this.setState({ collectionSort: '' });
 		queryParams.courseSort ? this.setState({ courseSort: queryParams.courseSort }) : this.setState({ courseSort: '' });
 	}
 
@@ -467,6 +468,7 @@ class SearchPage extends React.Component {
 		if (this.state.paperSort !== '') searchURL += '&paperSort=' + encodeURIComponent(this.state.paperSort);
 		if (this.state.personSort !== '') searchURL += '&personSort=' + encodeURIComponent(this.state.personSort);
 		if (this.state.courseSort !== '') searchURL += '&courseSort=' + encodeURIComponent(this.state.courseSort);
+		if (this.state.collectionSort !== '') searchURL += '&collectionSort=' + encodeURIComponent(this.state.collectionSort);
 		// login status handler
 		if (this.state.userState[0].loggedIn === false) {
 			let values = queryString.parse(window.location.search);
@@ -487,6 +489,7 @@ class SearchPage extends React.Component {
 			// remove once full migration to v2 filters for all other entities 'Tools, Projects, Courses and Papers'
 			axios.get(baseURL + '/api/v1/search/filter?search=' + this.state.search + searchURL).then(res => {
 				const entityType = typeMapper[`${this.state.key}`];
+				debugger;
 				let filters = this.getFilterState(entityType, res);
 				// test the type and set relevant state
 				if(entityType === 'dataset') {
@@ -503,6 +506,7 @@ class SearchPage extends React.Component {
 		.then(res => {
 			// get the correct entity type from our mapper via the selected tab ie..'Dataset, Tools'
 			const entityType = typeMapper[`${this.state.key}`];
+			debugger;
 			// pull out the dynamic key : set data and filters
 			let {[`${entityType}Results`]: {data = [] }, summary = [] } = res.data;
 
@@ -966,6 +970,7 @@ class SearchPage extends React.Component {
 			projectSort,
 			paperSort,
 			personSort,
+			collectionSort,
 
 			filtersV2,
 			selectedV2,
@@ -1808,6 +1813,9 @@ class SearchPage extends React.Component {
 																else return 'Sort by relevance';
 															} else if (key === 'People') {
 																if (personSort === 'popularity') return 'Sort by popularity';
+																else return 'Sort by relevance';
+															} else if (key === 'Collections') {
+																if (collectionSort === 'popularity') return 'Sort by popularity';
 																else return 'Sort by relevance';
 															}
 														})()}
