@@ -44,6 +44,8 @@ import Uploads from './components/Uploads/Uploads';
 import UpdateRequestModal from './components/UpdateRequestModal/UpdateRequestModal';
 import MissingFieldsModal from './components/MissingFieldsModal/MissingFieldsModal';
 import ConfirmSubmissionModal from './components/ConfirmSubmissionModal/ConfirmSubmissionModal';
+import DuplicateApplicationModal from './components/DuplicateApplicationModal/DuplicateApplicationModal';
+import SelectDatasetModal from './components/SelectDatasetModal/SelectDatasetModal';
 
 class DataAccessRequest extends Component {
 	constructor(props) {
@@ -133,6 +135,9 @@ class DataAccessRequest extends Component {
 			showEmailModal: false,
 			showMissingFieldsModal: false,
 			showConfirmSubmissionModal: false,
+			showDuplicateApplicationModal: false,
+			showSelectDatasetModal: false,
+			alert: {},
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -619,6 +624,7 @@ class DataAccessRequest extends Component {
 						: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
 				publisher: 'user',
 			};
+
 			this.props.history.push({
 				pathname: '/account',
 				search: '?tab=dataaccessrequests',
@@ -1314,6 +1320,44 @@ class DataAccessRequest extends Component {
 		}
 	};
 
+	onDuplicateApplication = async (appIdToCloneInto = '', selectedDatasets = []) => {
+		!_.isEmpty(appIdToCloneInto) ? this.toggleDuplicateApplicationModal() : this.toggleSelectDatasetModal();
+
+		let datasetIds = [];
+		let datasetTitles = [];
+		let publisher = '';
+
+		if (!_.isEmpty(selectedDatasets)) {
+			publisher = selectedDatasets[0].publisher;
+			selectedDatasets.forEach(dataset => {
+				datasetIds.push(dataset.datasetId);
+				datasetTitles.push(dataset.name);
+			});
+		}
+
+		axios
+			.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/clone`, {
+				datasetIds,
+				datasetTitles,
+				publisher,
+				appIdToCloneInto,
+			})
+			.then(res => {
+				let projectName = this.state.projectName || this.state.datasets[0].name;
+				let message = _.isEmpty(appIdToCloneInto)
+					? `You have successfully duplicated your '${projectName}' into a new application`
+					: `You have successfully duplicated your '${projectName}' into '${res.data.accessRecord.aboutApplication.projectName}'`;
+				let alert = {
+					message: message,
+					publisher: 'user',
+				};
+				this.setState({ alert: alert });
+				setTimeout(() => this.setState({ alert: {} }), 10000);
+
+				this.props.history.push({ pathname: `/data-access-request/${res.data.accessRecord._id}` });
+			});
+	};
+
 	getUserRoles() {
 		let { teams } = this.props.userState[0];
 		let foundTeam = teams.filter(team => team.name === this.state.datasets[0].datasetfields.publisher);
@@ -1417,6 +1461,27 @@ class DataAccessRequest extends Component {
 		});
 	};
 
+	toggleDuplicateApplicationModal = () => {
+		this.setState(prevState => {
+			return {
+				showDuplicateApplicationModal: !prevState.showDuplicateApplicationModal,
+			};
+		});
+	};
+
+	toggleSelectDatasetModal = () => {
+		this.setState(prevState => {
+			return {
+				showSelectDatasetModal: !prevState.showSelectDatasetModal,
+			};
+		});
+	};
+
+	showDatasetModal = () => {
+		this.toggleSelectDatasetModal();
+		this.toggleDuplicateApplicationModal();
+	};
+
 	renderApp = () => {
 		let { activePanelId } = this.state;
 		if (activePanelId === 'about') {
@@ -1499,6 +1564,7 @@ class DataAccessRequest extends Component {
 			actionModalConfig,
 			roles,
 			showEmailModal,
+			alert,
 		} = this.state;
 		const { userState, location } = this.props;
 
@@ -1609,6 +1675,14 @@ class DataAccessRequest extends Component {
 						) : (
 							''
 						)}
+						{!_.isEmpty(alert) ? (
+							<Alert variant={'success'} className='main-alert'>
+								<SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert.message}
+							</Alert>
+						) : (
+							''
+						)}
+
 						<div id='darDropdownNav'>
 							<NavDropdown
 								options={{
@@ -1671,6 +1745,7 @@ class DataAccessRequest extends Component {
 									onEditForm={this.onEditForm}
 									showSubmit={this.state.showSubmit}
 									submitButtonText={this.state.submitButtonText}
+									onDuplicateClick={this.toggleDuplicateApplicationModal}
 								/>
 							) : (
 								<CustodianActionButtons
@@ -1812,6 +1887,20 @@ class DataAccessRequest extends Component {
 					open={this.state.showConfirmSubmissionModal}
 					close={this.toggleConfirmSubmissionModal}
 					confirm={this.onFormSubmit}
+				/>
+
+				<DuplicateApplicationModal
+					isOpen={this.state.showDuplicateApplicationModal}
+					closeModal={this.toggleDuplicateApplicationModal}
+					duplicateApplication={this.onDuplicateApplication}
+					showDatasetModal={this.showDatasetModal}
+				/>
+
+				<SelectDatasetModal
+					isOpen={this.state.showSelectDatasetModal}
+					closeModal={this.toggleSelectDatasetModal}
+					duplicateApplication={this.onDuplicateApplication}
+					appToCloneId={this.state._id}
 				/>
 			</div>
 		);

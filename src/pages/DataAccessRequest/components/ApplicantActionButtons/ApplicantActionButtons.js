@@ -9,9 +9,13 @@ const ApplicantActionButtons = ({
 	onEditForm,
 	showSubmit,
 	submitButtonText,
+	onDuplicateClick,
 }) => {
 	return (
 		<Fragment>
+			<button className={`button-tertiary ${allowedNavigation ? '' : 'disabled'}`} onClick={e => onDuplicateClick()}>
+				Duplicate
+			</button>
 			<button className={`button-tertiary ${allowedNavigation ? '' : 'disabled'}`} onClick={e => onShowContributorModal()}>
 				Contributors
 			</button>
