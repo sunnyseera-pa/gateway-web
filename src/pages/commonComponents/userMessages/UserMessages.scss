@@ -95,10 +95,12 @@
 .messageArea {
 	display: -ms-grid;
 	display: grid;
-	-ms-grid-rows: 1fr 10fr 170px;
+	-ms-grid-column: 2;
+	-ms-grid-rows: 165px 10fr 170px;
 	grid-template-rows: 1fr 10fr 170px;
 	box-sizing: border-box;
 	height: calc(100vh - 40px);
+	overflow-wrap: break-word;
 
 	&-header {
 		-ms-grid-row: 1;
