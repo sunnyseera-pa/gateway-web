@@ -350,8 +350,7 @@ class SearchPage extends React.Component {
 			projectSort: '',
 			paperSort: '',
 			personSort: '',
-			courseSort: '',
-			collectionSort: ''
+			courseSort: ''
 		}, () => {
 			this.doSearchCall();
 		});
@@ -1809,7 +1808,7 @@ class SearchPage extends React.Component {
 															} else if (key === 'People') {
 																if (personSort === 'popularity') return 'Sort by popularity';
 																else return 'Sort by relevance';
-															}
+															} 
 														})()}
 														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 													</Dropdown.Toggle>
