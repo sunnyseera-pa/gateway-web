@@ -170,3 +170,22 @@
 .selected-item {
 	border-right: 4px solid $teal !important;
 }
+
+// IE 11
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+	.messageArea-item, .messageArea-item-header, .messageArea-footer  {
+		max-width: 478px;
+	}
+
+	.messageArea-header {
+		padding: 12px 24px;
+	}
+
+	.messageArea-header-action {
+		padding-top: 8px;
+	}
+
+	.messageArea-item {
+		word-break: break-all;
+	}
+}
