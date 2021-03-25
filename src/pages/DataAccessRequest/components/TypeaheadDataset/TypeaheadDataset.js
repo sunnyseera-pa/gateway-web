@@ -54,6 +54,7 @@ class TypeaheadDataset extends React.Component {
 					activeflag: 'active',
 					fields: 'datasetid,name,description,datasetfields.abstract,_id,datasetfields.publisher,datasetfields.contactPoint',
 					populate: 'publisher',
+					sort: 'datasetfields.publisher, name',
 					is5Safes: true,
 					...(publisher ? { ['datasetfields.publisher']: publisher } : {}),
 				},
@@ -112,6 +113,11 @@ class TypeaheadDataset extends React.Component {
 		);
 	}
 
+	filterByCallback = (option, props) => (
+		option.publisher.toLowerCase().indexOf(props.text.toLowerCase()) !== -1 ||
+		option.name.toLowerCase().indexOf(props.text.toLowerCase()) !== -1
+	);
+
 	render() {
 		return (
 			<Typeahead
@@ -122,8 +128,9 @@ class TypeaheadDataset extends React.Component {
 				onChange={e => {
 					this.handleChange(e);
 				}}
+				minLength={this.state.publisher === null ? 2 : 0}
 				selected={this.state.value}
-				filterBy={['name']}
+				filterBy={this.filterByCallback}
 				multiple
 				disabled={this.state.readOnly}
 				defaultSelected={this.state.value}
