@@ -53,7 +53,7 @@ const SelectDatasetModal = ({ isOpen, closeModal, duplicateApplication }) => {
 									selectedDatasets={selectedDatasets}
 									onHandleDataSetChange={onHandleDataSetChange}
 									readOnly={false}
-									allowAllCustodians={false}
+									allowAllCustodians={true}
 								/>
 							</div>
 						</div>

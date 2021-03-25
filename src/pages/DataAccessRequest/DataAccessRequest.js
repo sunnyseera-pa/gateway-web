@@ -106,6 +106,7 @@ class DataAccessRequest extends Component {
 			allowsMultipleDatasets: false,
 			activeAccordionCard: 0,
 			allowedNavigation: true,
+			isCloneable: false,
 			projectNameValid: true,
 			ncsValid: true,
 			topicContext: {},
@@ -237,6 +238,7 @@ class DataAccessRequest extends Component {
 						projectId,
 						workflow,
 						files,
+						isCloneable
 					},
 				},
 			} = response;
@@ -255,6 +257,7 @@ class DataAccessRequest extends Component {
 				projectId,
 				workflow,
 				files,
+				isCloneable
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -281,6 +284,7 @@ class DataAccessRequest extends Component {
 						projectId,
 						workflow,
 						files,
+						isCloneable
 					},
 				},
 			} = response;
@@ -299,6 +303,7 @@ class DataAccessRequest extends Component {
 				projectId,
 				workflow,
 				files,
+				isCloneable
 			});
 
 			// for local test uses formSchema.json
@@ -349,6 +354,7 @@ class DataAccessRequest extends Component {
 			reviewSections = [],
 			workflow,
 			files,
+			isCloneable
 		} = context;
 		let {
 			datasetfields: { publisher },
@@ -445,6 +451,7 @@ class DataAccessRequest extends Component {
 			workflow,
 			workflowAssigned: !_.isEmpty(workflow) ? true : false,
 			files,
+			isCloneable
 		});
 	};
 
@@ -1343,18 +1350,30 @@ class DataAccessRequest extends Component {
 				appIdToCloneInto,
 			})
 			.then(res => {
+				let message = '';
 				let projectName = this.state.projectName || this.state.datasets[0].name;
-				let message = _.isEmpty(appIdToCloneInto)
-					? `You have successfully duplicated your '${projectName}' into a new application`
-					: `You have successfully duplicated your '${projectName}' into '${res.data.accessRecord.aboutApplication.projectName}'`;
-				let alert = {
-					message: message,
+
+				if(_.isEmpty(appIdToCloneInto)) {
+					message = `You have successfully duplicated your application '${projectName}' into a new application`;
+				} else {
+					let { aboutApplication: { projectName: projectNameCloneInto } = {} } = res.data.accessRecord;
+					projectNameCloneInto = _.isNil(projectNameCloneInto) ? 'your selected application' : `'${projectNameCloneInto}'`;
+					message = `You have successfully duplicated your application '${projectName}' into ${projectNameCloneInto}`
+				}
+
+				const alert = {
+					tab: 'inProgress',
+					message,
 					publisher: 'user',
 				};
-				this.setState({ alert: alert });
+				this.setState({ alert });
 				setTimeout(() => this.setState({ alert: {} }), 10000);
 
-				this.props.history.push({ pathname: `/data-access-request/${res.data.accessRecord._id}` });
+				this.props.history.push({
+					pathname: `/account`,
+					search: '?tab=dataaccessrequests',
+					state: { alert },
+				});
 			});
 	};
 
@@ -1739,6 +1758,7 @@ class DataAccessRequest extends Component {
 							{userType.toUpperCase() === 'APPLICANT' ? (
 								<ApplicantActionButtons
 									allowedNavigation={allowedNavigation}
+									isCloneable={this.state.isCloneable}
 									onNextClick={this.onNextClick}
 									onSubmitClick={this.onSubmitClick}
 									onShowContributorModal={this.toggleContributorModal}
