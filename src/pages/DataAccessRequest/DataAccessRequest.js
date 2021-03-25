@@ -867,7 +867,8 @@ class DataAccessRequest extends Component {
 				jsonSchema: { questionSets },
 			} = this.state;
 			// 1. get active question set
-			({ questions } = [...questionSets].find(q => q.questionSetId === this.state.activePanelId) || []);
+			let questionList = [...questionSets].filter(q => q.questionSetId.includes(this.state.activePanelId)) || [];
+			questions = questionList.map(({ questions }) => questions).flat();
 			if (!_.isEmpty(questions)) {
 				// 2. loop over and find active question
 				let activeQuestion = DarHelper.getActiveQuestion([...questions], questionId);
