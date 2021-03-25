@@ -1580,7 +1580,6 @@ class DataAccessRequest extends Component {
 			actionModalConfig,
 			roles,
 			showEmailModal,
-			alert,
 		} = this.state;
 		const { userState, location } = this.props;
 
