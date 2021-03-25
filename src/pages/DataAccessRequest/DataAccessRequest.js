@@ -138,7 +138,6 @@ class DataAccessRequest extends Component {
 			showConfirmSubmissionModal: false,
 			showDuplicateApplicationModal: false,
 			showSelectDatasetModal: false,
-			alert: {},
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -238,7 +237,7 @@ class DataAccessRequest extends Component {
 						projectId,
 						workflow,
 						files,
-						isCloneable
+						isCloneable,
 					},
 				},
 			} = response;
@@ -257,7 +256,7 @@ class DataAccessRequest extends Component {
 				projectId,
 				workflow,
 				files,
-				isCloneable
+				isCloneable,
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -284,7 +283,7 @@ class DataAccessRequest extends Component {
 						projectId,
 						workflow,
 						files,
-						isCloneable
+						isCloneable,
 					},
 				},
 			} = response;
@@ -303,7 +302,7 @@ class DataAccessRequest extends Component {
 				projectId,
 				workflow,
 				files,
-				isCloneable
+				isCloneable,
 			});
 
 			// for local test uses formSchema.json
@@ -354,7 +353,7 @@ class DataAccessRequest extends Component {
 			reviewSections = [],
 			workflow,
 			files,
-			isCloneable
+			isCloneable,
 		} = context;
 		let {
 			datasetfields: { publisher },
@@ -451,7 +450,7 @@ class DataAccessRequest extends Component {
 			workflow,
 			workflowAssigned: !_.isEmpty(workflow) ? true : false,
 			files,
-			isCloneable
+			isCloneable,
 		});
 	};
 
@@ -1353,12 +1352,12 @@ class DataAccessRequest extends Component {
 				let message = '';
 				let projectName = this.state.projectName || this.state.datasets[0].name;
 
-				if(_.isEmpty(appIdToCloneInto)) {
+				if (_.isEmpty(appIdToCloneInto)) {
 					message = `You have successfully duplicated your application '${projectName}' into a new application`;
 				} else {
 					let { aboutApplication: { projectName: projectNameCloneInto } = {} } = res.data.accessRecord;
 					projectNameCloneInto = _.isNil(projectNameCloneInto) ? 'your selected application' : `'${projectNameCloneInto}'`;
-					message = `You have successfully duplicated your application '${projectName}' into ${projectNameCloneInto}`
+					message = `You have successfully duplicated your application '${projectName}' into ${projectNameCloneInto}`;
 				}
 
 				const alert = {
@@ -1366,8 +1365,6 @@ class DataAccessRequest extends Component {
 					message,
 					publisher: 'user',
 				};
-				this.setState({ alert });
-				setTimeout(() => this.setState({ alert: {} }), 10000);
 
 				this.props.history.push({
 					pathname: `/account`,
@@ -1694,14 +1691,6 @@ class DataAccessRequest extends Component {
 						) : (
 							''
 						)}
-						{!_.isEmpty(alert) ? (
-							<Alert variant={'success'} className='main-alert'>
-								<SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert.message}
-							</Alert>
-						) : (
-							''
-						)}
-
 						<div id='darDropdownNav'>
 							<NavDropdown
 								options={{
