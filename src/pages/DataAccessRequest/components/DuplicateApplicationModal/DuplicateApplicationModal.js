@@ -1,5 +1,5 @@
-import React, { useState, useEffect, Fragment } from 'react';
-import { Modal, Row, Alert, Button } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Modal, Alert } from 'react-bootstrap';
 import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
 import './DuplicateApplicationModal.scss';
 import SVGIcon from '../../../../images/SVGIcon';
