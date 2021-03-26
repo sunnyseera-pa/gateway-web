@@ -257,10 +257,7 @@ class DatasetOnboarding extends Component {
 		let showArchive = false;
 		let showUnArchive = false;
 
-		let publisherId = '';
-		if (dataset.publisher) {
-			({ _id: publisherId } = dataset.publisher);
-		}
+		publisher = dataset.datasetv2.summary.publisher.identifier;
 
 		this.setState({ roles: this.getUserRoles() });
 		if (this.state.roles.includes('admin') && applicationStatus === DarHelper.darStatus.inReview) userType = 'ADMIN';
@@ -317,7 +314,6 @@ class DatasetOnboarding extends Component {
 			showCreateNewVersion,
 			showArchive,
 			showUnArchive,
-			//publisherId,
 			inReviewMode,
 			reviewSections,
 		});

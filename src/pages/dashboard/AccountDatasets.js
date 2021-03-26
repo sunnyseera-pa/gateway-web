@@ -43,7 +43,7 @@ const AccountDatasets = props => {
 			let rejectedCount = 0;
 
 			res.data.data.dataset.forEach(dataset => {
-				if (dataset.activeflag === 'active') activeCount++;
+				if (dataset.activeflag === 'active' || dataset.activeflag === 'draft') activeCount++;
 				else if (dataset.activeflag === 'inReview') reviewCount++;
 				else if (dataset.activeflag === 'archive') archiveCount++;
 				else if (dataset.activeflag === 'rejected') rejectedCount++;
@@ -76,7 +76,8 @@ const AccountDatasets = props => {
 		e.preventDefault();
 		//call to API to create new dataset
 		setIsLoading(true);
-		axios.post(baseURL + '/api/v1/dataset-onboarding', { publisherID: props.team }).then(res => {
+		let isPublisher = getPublisherID();
+		axios.post(baseURL + '/api/v1/dataset-onboarding', { publisherID: isPublisher }).then(res => {
 			let { id } = res.data.data;
 			//load dataset onboarding page
 			if (!_.isUndefined(id)) window.location.href = `/dataset-onboarding/${id}`;
@@ -191,7 +192,7 @@ const AccountDatasets = props => {
 														<DatasetCard
 															id={dataset._id}
 															title={dataset.name}
-															publisher={dataset.datasetfields.publisher}
+															publisher={dataset.datasetv2.summary.publisher.name}
 															version={dataset.datasetVersion}
 															isDraft={true}
 															datasetStatus={dataset.activeflag}
@@ -220,7 +221,7 @@ const AccountDatasets = props => {
 														<DatasetCard
 															id={dataset._id}
 															title={dataset.name}
-															publisher={dataset.datasetfields.publisher}
+															publisher={dataset.datasetv2.summary.publisher.name}
 															version={dataset.datasetVersion}
 															isDraft={true}
 															datasetStatus={dataset.activeflag}
@@ -249,7 +250,7 @@ const AccountDatasets = props => {
 														<DatasetCard
 															id={dataset._id}
 															title={dataset.name}
-															publisher={dataset.datasetfields.publisher}
+															publisher={dataset.datasetv2.summary.publisher.name}
 															version={dataset.datasetVersion}
 															isDraft={true}
 															datasetStatus={dataset.activeflag}
@@ -279,7 +280,7 @@ const AccountDatasets = props => {
 														<DatasetCard
 															id={dataset._id}
 															title={dataset.name}
-															publisher={dataset.datasetfields.publisher}
+															publisher={dataset.datasetv2.summary.publisher.name}
 															version={dataset.datasetVersion}
 															isDraft={true}
 															datasetStatus={dataset.activeflag}
