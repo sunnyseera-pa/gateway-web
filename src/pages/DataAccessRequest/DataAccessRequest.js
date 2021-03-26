@@ -42,6 +42,8 @@ import AboutApplication from './components/AboutApplication/AboutApplication';
 import Guidance from './components/Guidance/Guidance';
 import Uploads from './components/Uploads/Uploads';
 import UpdateRequestModal from './components/UpdateRequestModal/UpdateRequestModal';
+import MissingFieldsModal from './components/MissingFieldsModal/MissingFieldsModal';
+import ConfirmSubmissionModal from './components/ConfirmSubmissionModal/ConfirmSubmissionModal';
 
 class DataAccessRequest extends Component {
 	constructor(props) {
@@ -129,6 +131,8 @@ class DataAccessRequest extends Component {
 			inReviewMode: false,
 			updateRequestModal: false,
 			showEmailModal: false,
+			showMissingFieldsModal: false,
+			showConfirmSubmissionModal: false,
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -534,7 +538,7 @@ class DataAccessRequest extends Component {
 			let { key, data = {} } = obj;
 			// 2. set body params
 			let params = {
-				[`${key}`]: JSON.stringify(data),
+				[`${key}`]: data,
 				updatedQuestionId,
 			};
 			// 3. API Patch call
@@ -572,12 +576,7 @@ class DataAccessRequest extends Component {
 		return id === userId;
 	};
 
-	/**
-	 * [Form Submit]
-	 * @desc Submitting data access request
-	 * @params  Object{questionAnswers}
-	 */
-	onFormSubmit = async () => {
+	onSubmitClick = () => {
 		let invalidQuestions = DarValidation.getQuestionPanelInvalidQuestions(
 			Winterfell,
 			this.state.jsonSchema.questionSets,
@@ -589,35 +588,44 @@ class DataAccessRequest extends Component {
 		let isValid = Object.keys(errors).length ? false : true;
 
 		if (isValid) {
-			try {
-				let { _id } = this.state;
-				// 1. POST
-				await axios.post(`${baseURL}/api/v1/data-access-request/${_id}`, {});
-				const lastSaved = DarHelper.saveTime();
-				this.setState({ lastSaved });
-
-				let alert = {
-					tab: 'submitted',
-					message:
-						this.state.applicationStatus === 'inProgress'
-							? 'Your application was submitted successfully'
-							: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
-					publisher: 'user',
-				};
-				this.props.history.push({
-					pathname: '/account',
-					search: '?tab=dataaccessrequests',
-					state: { alert },
-				});
-			} catch (err) {
-				console.error(err.message);
-			}
+			this.setState({ showConfirmSubmissionModal: true });
 		} else {
 			let activePage = _.get(_.keys({ ...errors }), 0);
 			let activePanel = _.get(_.keys({ ...errors }[activePage]), 0);
 			let validationMessages = validationSectionMessages;
-			alert('Some validation issues have been found. Please see all items highlighted in red on this page.');
+			this.setState({ showMissingFieldsModal: true });
 			this.updateNavigation({ pageId: activePage, panelId: activePanel }, validationMessages);
+		}
+	};
+
+	/**
+	 * [Form Submit]
+	 * @desc Submitting data access request
+	 * @params  Object{questionAnswers}
+	 */
+	onFormSubmit = async () => {
+		try {
+			let { _id } = this.state;
+			// 1. POST
+			await axios.post(`${baseURL}/api/v1/data-access-request/${_id}`, {});
+			const lastSaved = DarHelper.saveTime();
+			this.setState({ lastSaved });
+
+			let alert = {
+				tab: 'submitted',
+				message:
+					this.state.applicationStatus === 'inProgress'
+						? 'Your application was submitted successfully'
+						: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
+				publisher: 'user',
+			};
+			this.props.history.push({
+				pathname: '/account',
+				search: '?tab=dataaccessrequests',
+				state: { alert },
+			});
+		} catch (err) {
+			console.error(err.message);
 		}
 	};
 
@@ -629,7 +637,7 @@ class DataAccessRequest extends Component {
 			let { _id: id } = this.state;
 			// 3. Set up body params
 			let params = {
-				[`${key}`]: JSON.stringify(data),
+				[`${key}`]: data,
 			};
 			// 4. PATCH the data
 			const response = await axios.patch(`${baseURL}/api/v1/data-access-request/${id}`, params);
@@ -1393,6 +1401,22 @@ class DataAccessRequest extends Component {
 		this.setState({ showEmailModal: showModal });
 	};
 
+	toggleMissingFieldsModal = () => {
+		this.setState(prevState => {
+			return {
+				showMissingFieldsModal: !prevState.showMissingFieldsModal,
+			};
+		});
+	};
+
+	toggleConfirmSubmissionModal = () => {
+		this.setState(prevState => {
+			return {
+				showConfirmSubmissionModal: !prevState.showConfirmSubmissionModal,
+			};
+		});
+	};
+
 	renderApp = () => {
 		let { activePanelId } = this.state;
 		if (activePanelId === 'about') {
@@ -1642,7 +1666,7 @@ class DataAccessRequest extends Component {
 								<ApplicantActionButtons
 									allowedNavigation={allowedNavigation}
 									onNextClick={this.onNextClick}
-									onFormSubmit={this.onFormSubmit}
+									onSubmitClick={this.onSubmitClick}
 									onShowContributorModal={this.toggleContributorModal}
 									onEditForm={this.onEditForm}
 									showSubmit={this.state.showSubmit}
@@ -1782,6 +1806,13 @@ class DataAccessRequest extends Component {
 						</div>
 					</div>
 				</Modal>
+
+				<MissingFieldsModal open={this.state.showMissingFieldsModal} close={this.toggleMissingFieldsModal} />
+				<ConfirmSubmissionModal
+					open={this.state.showConfirmSubmissionModal}
+					close={this.toggleConfirmSubmissionModal}
+					confirm={this.onFormSubmit}
+				/>
 			</div>
 		);
 	}

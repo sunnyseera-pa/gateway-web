@@ -114,14 +114,14 @@ class RelatedObject extends React.Component {
 	};
 
 	stripMarkdown = (value = '', truncate = 0) => {
-		if(!_.isEmpty(value)) {
+		if (!_.isEmpty(value)) {
 			if (truncate > 0) {
 				value = value.substr(0, 255) + (value.length > 255 ? '...' : '');
 			}
 			value = removeMd(value);
 		}
 		return value;
-	}
+	};
 
 	render() {
 		const { data, isLoading, activeLink, onSearchPage, relatedObject, inCollection, publisherLogoURL } = this.state;
@@ -269,7 +269,7 @@ class RelatedObject extends React.Component {
 																return (
 																	<span
 																		className='pointer'
-																		onClick={event => this.updateOnFilterBadge('languageSelected', p.programmingLanguage)}>
+																		onClick={event => this.updateOnFilterBadge('toolProgrammingLanguageSelected', p.programmingLanguage)}>
 																		<div className='badge-version' key={i}>
 																			<span>{p.programmingLanguage}</span>
 																			<span>{p.version}</span>
@@ -278,7 +278,7 @@ class RelatedObject extends React.Component {
 																);
 															} else {
 																return (
-																	<a href={'/search?search=&tab=Tools&programmingLanguage=' + p.programmingLanguage}>
+																	<a href={'/search?search=&tab=Tools&toolprogrammingLanguage=' + p.programmingLanguage}>
 																		<div className='badge-version' key={i}>
 																			<span>{p.programmingLanguage}</span>
 																			<span>{p.version}</span>
@@ -302,13 +302,13 @@ class RelatedObject extends React.Component {
 														if (activeLink === true) {
 															if (onSearchPage === true) {
 																return (
-																	<span className='pointer' onClick={event => this.updateOnFilterBadge('featuresSelected', feature)}>
+																	<span className='pointer' onClick={event => this.updateOnFilterBadge('toolFeaturesSelected', feature)}>
 																		<div className='badge-tag'>{feature}</div>
 																	</span>
 																);
 															} else {
 																return (
-																	<a href={'/search?search=&tab=Tools&features=' + feature}>
+																	<a href={'/search?search=&tab=Tools&toolfeatures=' + feature}>
 																		<div className='badge-tag'>{feature}</div>
 																	</a>
 																);
@@ -342,9 +342,7 @@ class RelatedObject extends React.Component {
 										</Col>
 										{!this.props.showRelationshipQuestion && (
 											<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16'>
-												<span className='gray800-14'>
-													{this.stripMarkdown(data.description, 255)}
-												</span>
+												<span className='gray800-14'>{this.stripMarkdown(data.description, 255)}</span>
 											</Col>
 										)}
 									</Row>
@@ -480,16 +478,14 @@ class RelatedObject extends React.Component {
 										</Col>
 										{!this.props.showRelationshipQuestion && (
 											<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16'>
-												<span className='gray800-14'>
-													{this.stripMarkdown(data.description, 255)}
-												</span>
+												<span className='gray800-14'>{this.stripMarkdown(data.description, 255)}</span>
 											</Col>
 										)}
 									</Row>
 								);
 							} else if (data.type === 'paper') {
 								return (
-									<Row className='noMargin'>
+									<Row data-test-id='related-paper-object' className='noMargin'>
 										<Col sm={10} lg={10} className='pad-left-24'>
 											{activeLink === true ? (
 												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/paper/' + data.id}>
@@ -599,9 +595,7 @@ class RelatedObject extends React.Component {
 										</Col>
 										{!this.props.showRelationshipQuestion && (
 											<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16'>
-												<span className='gray800-14'>
-													{this.stripMarkdown(data.description, 255)}
-												</span>
+												<span className='gray800-14'>{this.stripMarkdown(data.description, 255)}</span>
 											</Col>
 										)}
 									</Row>
@@ -759,15 +753,29 @@ class RelatedObject extends React.Component {
 										</Col>
 										{!this.props.showRelationshipQuestion && (
 											<Col sm={12} lg={12} className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16'>
-												<span className='gray800-14'>
-													{this.stripMarkdown(data.description, 255)}
-												</span>
+												<span className='gray800-14'>{this.stripMarkdown(data.description, 255)}</span>
 											</Col>
 										)}
 									</Row>
 								);
 							} else {
 								//default to dataset
+								if (data.type === 'dataset' && data.activeflag === 'archive') {
+									return (
+										<Row className='noMargin pad-left-24'>
+											<Col sm={10} lg={10} className='entity-deleted-edit gray800-14'>
+												The dataset '{data.name}' has been deleted by the publisher
+											</Col>
+											<Col sm={2} lg={2}>
+												<Button variant='medium' className='soft-black-14' onClick={this.removeButton}>
+													<SVGIcon name='closeicon' fill={'#979797'} className='buttonSvg mr-2' />
+													Remove
+												</Button>
+											</Col>
+										</Row>
+									);
+								}
+								
 								const phenotypesSelected = queryString.parse(window.location.search).phenotypes
 									? queryString.parse(window.location.search).phenotypes.split('::')
 									: [];
@@ -798,7 +806,7 @@ class RelatedObject extends React.Component {
 													<span
 														className='gray800-14'
 														style={{ cursor: 'pointer' }}
-														onClick={() => this.updateOnFilterBadge('publishersSelected', data.datasetfields.publisher)}>
+														onClick={() => this.updateOnFilterBadge('publisher', {label: data.datasetfields.publisher, parentKey: 'publisher'})}>
 														{' '}
 														{data.datasetv2.summary.publisher.name}{' '}
 													</span>
@@ -807,7 +815,7 @@ class RelatedObject extends React.Component {
 												<span
 													className='gray800-14'
 													style={{ cursor: 'pointer' }}
-													onClick={() => this.updateOnFilterBadge('publishersSelected', data.datasetfields.publisher)}>
+													onClick={() => this.updateOnFilterBadge('publisher', {label: data.datasetfields.publisher, parentKey: 'publisher'})}>
 													{' '}
 													{data.datasetfields.publisher}{' '}
 												</span>
@@ -847,7 +855,7 @@ class RelatedObject extends React.Component {
 															return (
 																<span
 																	className='pointer'
-																	onClick={event => this.updateOnFilterBadge('phenotypesSelected', phenotypesSeached[0].name)}>
+																	onClick={event => this.updateOnFilterBadge('phenotypes', {label: phenotypesSeached[0].name, parentKey: 'phenotypes'})}>
 																	<div className='badge-phenotype'>Phenotype: {phenotypesSeached[0].name}</div>
 																</span>
 															);
@@ -875,7 +883,7 @@ class RelatedObject extends React.Component {
 															if (activeLink === true) {
 																if (onSearchPage === true) {
 																	return (
-																		<span className='pointer' onClick={event => this.updateOnFilterBadge('phenotypesSelected', phenotype)}>
+																		<span className='pointer' onClick={event => this.updateOnFilterBadge('phenotypes', {label: phenotype, parentKey: 'phenotypes'})}>
 																			<div className='badge-phenotype'>Phenotype: {phenotype}</div>
 																		</span>
 																	);
@@ -898,13 +906,13 @@ class RelatedObject extends React.Component {
 														if (activeLink === true) {
 															if (onSearchPage === true) {
 																return (
-																	<span className='pointer' onClick={event => this.updateOnFilterBadge('keywordsSelected', feature)}>
+																	<span className='pointer' onClick={event => this.updateOnFilterBadge('datasetfeatures', {label: feature, parentKey: 'datasetfeatures'})}>
 																		<div className='badge-tag'>{feature}</div>
 																	</span>
 																);
 															} else {
 																return (
-																	<a href={'/search?search=&tab=Datasets&keywords=' + feature}>
+																	<a href={'/search?search=&tab=Datasets&datasetfeatures=' + feature}>
 																		<div className='badge-tag'>{feature}</div>
 																	</a>
 																);
@@ -934,7 +942,7 @@ class RelatedObject extends React.Component {
 							}
 						})()}
 						{(() => {
-							if (this.props.showRelationshipQuestion) {
+							if (this.props.showRelationshipQuestion && !(data.type === 'dataset' && data.activeflag === 'archive')) {
 								return (
 									<>
 										<Row className='pad-top-24 noMargin'>

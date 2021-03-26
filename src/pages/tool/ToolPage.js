@@ -493,14 +493,14 @@ export const ToolDetail = props => {
 																? ''
 																: toolData.programmingLanguage.map((obj, i) => {
 																		return obj.version !== '' ? (
-																			<a href={'/search?search=&tab=Tools&programmingLanguage=' + obj.programmingLanguage}>
+																			<a href={'/search?search=&tab=Tools&toolprogrammingLanguage=' + obj.programmingLanguage}>
 																				<div className='badge-version' key={i} data-test-id='tool-implementation'>
 																					<span>{obj.programmingLanguage}</span>
 																					<span>{obj.version}</span>
 																				</div>
 																			</a>
 																		) : (
-																			<a href={'/search?search=&tab=Tools&programmingLanguage=' + obj.programmingLanguage}>
+																			<a href={'/search?search=&tab=Tools&toolprogrammingLanguage=' + obj.programmingLanguage}>
 																				<div className='badge-tag' key={i}>
 																					<span>{obj.programmingLanguage}</span>
 																				</div>
@@ -519,7 +519,7 @@ export const ToolDetail = props => {
 															) : (
 																toolData.tags.features.map(keyword => {
 																	return (
-																		<a href={'/search?search=&tab=Tools&features=' + keyword}>
+																		<a href={'/search?search=&tab=Tools&toolfeatures=' + keyword}>
 																			<div className='badge-tag'>{keyword}</div>
 																		</a>
 																	);

@@ -83,6 +83,7 @@ const AboutApplication = props => {
 										selectedDatasets={selectedDatasets}
 										onHandleDataSetChange={e => onHandleDataSetChange(e)}
 										readOnly={readOnly}
+										allowAllCustodians={false}
 									/>
 								</div>
 								{_.isEmpty(selectedDatasets) ? <div className='errorMessages'>You must select at least one dataset</div> : null}

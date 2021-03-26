@@ -29,6 +29,7 @@ const AddEditCollectionForm = props => {
 			relatedObjects: props.relatedObjects,
 			publicflag: props.publicFlag || false,
 			keywords: props.data.keywords || [],
+			previousPublicFlag: props.publicFlag,
 		},
 
 		validationSchema: Yup.object({
@@ -146,6 +147,7 @@ const AddEditCollectionForm = props => {
 								<Form.Group className='margin-bottom-24'>
 									<span className='gray800-14'>Collection name</span>
 									<Form.Control
+										data-test-id='collection-name'
 										id='name'
 										name='name'
 										type='text'
@@ -162,6 +164,7 @@ const AddEditCollectionForm = props => {
 									<p className='gray700-13 margin-bottom-0'>Up to 5,000 characters</p>
 									<Form.Control
 										as='textarea'
+										data-test-id='collection-description'
 										id='description'
 										name='description'
 										type='text'
@@ -199,7 +202,7 @@ const AddEditCollectionForm = props => {
 									/>
 								</Form.Group>
 
-								<Form.Group className='margin-bottom-24'>
+								<Form.Group className='margin-bottom-24' data-test-id='keywords'>
 									<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Keywords</p>
 									<p className='gray700-13 margin-bottom-0'>E.g. NCS, Charity, Disease etc.</p>
 									<Typeahead
@@ -339,11 +342,20 @@ const AddEditCollectionForm = props => {
 						</Button>
 					</a>
 
-					<Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className='techDetailButton mr-2'>
+					<Button
+						data-test-id='add-resource'
+						onClick={() => relatedResourcesRef.current.showModal()}
+						variant='white'
+						className='techDetailButton mr-2'>
 						+ Add resource
 					</Button>
 
-					<Button variant='primary' className='publishButton white-14-semibold mr-2' type='submit' onClick={formik.handleSubmit}>
+					<Button
+						data-test-id='add-collection-publish'
+						variant='primary'
+						className='publishButton white-14-semibold mr-2'
+						type='submit'
+						onClick={formik.handleSubmit}>
 						Save
 					</Button>
 				</div>
