@@ -413,9 +413,11 @@ class DataAccessRequest extends Component {
 			}
 		}
 
+		// 7. Set initial panel as selected and scroll to top of view port
 		let initialPanel = jsonSchema.formPanels[0].panelId;
+		window.scrollTo(0, 0);
 
-		// 9. Set state
+		// 8. Set state
 		this.setState({
 			jsonSchema: { ...jsonSchema, ...classSchema },
 			activeParty,
@@ -1361,17 +1363,26 @@ class DataAccessRequest extends Component {
 					message = `You have successfully duplicated your application '${projectName}' into ${projectNameCloneInto}`;
 				}
 
-				const alert = {
-					tab: 'inProgress',
-					message,
+				// const alert = {
+				// 	tab: 'inProgress',
+				// 	message,
+				// 	publisher: 'user',
+				// };
+
+				// this.props.history.push({
+				// 	pathname: `/account`,
+				// 	search: '?tab=dataaccessrequests',
+				// 	state: { alert },
+				// });
+
+				let alert = {
+					message: message,
 					publisher: 'user',
 				};
+				this.setState({ alert: alert });
+				setTimeout(() => this.setState({ alert: {} }), 10000);
 
-				this.props.history.push({
-					pathname: `/account`,
-					search: '?tab=dataaccessrequests',
-					state: { alert },
-				});
+				this.props.history.push({ pathname: `/data-access-request/${res.data.accessRecord._id}` });
 			});
 	};
 
@@ -1581,6 +1592,7 @@ class DataAccessRequest extends Component {
 			actionModalConfig,
 			roles,
 			showEmailModal,
+			alert
 		} = this.state;
 		const { userState, location } = this.props;
 
@@ -1683,13 +1695,16 @@ class DataAccessRequest extends Component {
 						))}
 					</div>
 					<div id='darCenterCol' className={isWideForm ? 'extended' : ''}>
-						{this.state.reviewWarning ? (
+						{this.state.reviewWarning && (
 							<Alert variant='warning' className=''>
 								<SVGIcon name='attention' width={24} height={24} fill={'#f0bb24'} viewBox='2 -9 22 22'></SVGIcon>
 								You are not assigned to this section but can still view the form
 							</Alert>
-						) : (
-							''
+						)}
+						{!_.isEmpty(alert) && (
+							<Alert variant={'success'} className='main-alert'>
+								<SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert.message}
+							</Alert>
 						)}
 						<div id='darDropdownNav'>
 							<NavDropdown
