@@ -1363,18 +1363,6 @@ class DataAccessRequest extends Component {
 					message = `You have successfully duplicated your application '${projectName}' into ${projectNameCloneInto}`;
 				}
 
-				// const alert = {
-				// 	tab: 'inProgress',
-				// 	message,
-				// 	publisher: 'user',
-				// };
-
-				// this.props.history.push({
-				// 	pathname: `/account`,
-				// 	search: '?tab=dataaccessrequests',
-				// 	state: { alert },
-				// });
-
 				let alert = {
 					message: message,
 					publisher: 'user',
