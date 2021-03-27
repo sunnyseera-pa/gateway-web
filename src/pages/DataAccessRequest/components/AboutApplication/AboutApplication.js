@@ -16,7 +16,7 @@ const AboutApplication = props => {
 		toggleDrawer,
 		onHandleDataSetChange,
 		selectedDatasets,
-		readOnly = false,
+		readOnly = true,
 		onNextStep,
 		projectNameValid = true,
 		projectName = '',
