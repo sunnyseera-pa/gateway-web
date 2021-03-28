@@ -44,6 +44,8 @@ import Uploads from './components/Uploads/Uploads';
 import UpdateRequestModal from './components/UpdateRequestModal/UpdateRequestModal';
 import MissingFieldsModal from './components/MissingFieldsModal/MissingFieldsModal';
 import ConfirmSubmissionModal from './components/ConfirmSubmissionModal/ConfirmSubmissionModal';
+import DuplicateApplicationModal from './components/DuplicateApplicationModal/DuplicateApplicationModal';
+import SelectDatasetModal from './components/SelectDatasetModal/SelectDatasetModal';
 
 class DataAccessRequest extends Component {
 	constructor(props) {
@@ -104,6 +106,7 @@ class DataAccessRequest extends Component {
 			allowsMultipleDatasets: false,
 			activeAccordionCard: 0,
 			allowedNavigation: true,
+			isCloneable: false,
 			projectNameValid: true,
 			ncsValid: true,
 			topicContext: {},
@@ -133,6 +136,8 @@ class DataAccessRequest extends Component {
 			showEmailModal: false,
 			showMissingFieldsModal: false,
 			showConfirmSubmissionModal: false,
+			showDuplicateApplicationModal: false,
+			showSelectDatasetModal: false,
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -232,6 +237,7 @@ class DataAccessRequest extends Component {
 						projectId,
 						workflow,
 						files,
+						isCloneable,
 					},
 				},
 			} = response;
@@ -250,6 +256,7 @@ class DataAccessRequest extends Component {
 				projectId,
 				workflow,
 				files,
+				isCloneable,
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -276,6 +283,7 @@ class DataAccessRequest extends Component {
 						projectId,
 						workflow,
 						files,
+						isCloneable,
 					},
 				},
 			} = response;
@@ -294,6 +302,7 @@ class DataAccessRequest extends Component {
 				projectId,
 				workflow,
 				files,
+				isCloneable,
 			});
 
 			// for local test uses formSchema.json
@@ -344,6 +353,7 @@ class DataAccessRequest extends Component {
 			reviewSections = [],
 			workflow,
 			files,
+			isCloneable,
 		} = context;
 		let {
 			datasetfields: { publisher },
@@ -440,6 +450,7 @@ class DataAccessRequest extends Component {
 			workflow,
 			workflowAssigned: !_.isEmpty(workflow) ? true : false,
 			files,
+			isCloneable,
 		});
 	};
 
@@ -538,7 +549,7 @@ class DataAccessRequest extends Component {
 			let { key, data = {} } = obj;
 			// 2. set body params
 			let params = {
-				[`${key}`]: JSON.stringify(data),
+				[`${key}`]: data,
 				updatedQuestionId,
 			};
 			// 3. API Patch call
@@ -619,6 +630,7 @@ class DataAccessRequest extends Component {
 						: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
 				publisher: 'user',
 			};
+
 			this.props.history.push({
 				pathname: '/account',
 				search: '?tab=dataaccessrequests',
@@ -637,7 +649,7 @@ class DataAccessRequest extends Component {
 			let { _id: id } = this.state;
 			// 3. Set up body params
 			let params = {
-				[`${key}`]: JSON.stringify(data),
+				[`${key}`]: data,
 			};
 			// 4. PATCH the data
 			const response = await axios.patch(`${baseURL}/api/v1/data-access-request/${id}`, params);
@@ -855,7 +867,8 @@ class DataAccessRequest extends Component {
 				jsonSchema: { questionSets },
 			} = this.state;
 			// 1. get active question set
-			({ questions } = [...questionSets].find(q => q.questionSetId === this.state.activePanelId) || []);
+			let questionList = [...questionSets].filter(q => q.questionSetId.includes(this.state.activePanelId)) || [];
+			questions = questionList.map(({ questions }) => questions).flat();
 			if (!_.isEmpty(questions)) {
 				// 2. loop over and find active question
 				let activeQuestion = DarHelper.getActiveQuestion([...questions], questionId);
@@ -1314,6 +1327,54 @@ class DataAccessRequest extends Component {
 		}
 	};
 
+	onDuplicateApplication = async (appIdToCloneInto = '', selectedDatasets = []) => {
+		!_.isEmpty(appIdToCloneInto) ? this.toggleDuplicateApplicationModal() : this.toggleSelectDatasetModal();
+
+		let datasetIds = [];
+		let datasetTitles = [];
+		let publisher = '';
+
+		if (!_.isEmpty(selectedDatasets)) {
+			publisher = selectedDatasets[0].publisher;
+			selectedDatasets.forEach(dataset => {
+				datasetIds.push(dataset.datasetId);
+				datasetTitles.push(dataset.name);
+			});
+		}
+
+		axios
+			.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/clone`, {
+				datasetIds,
+				datasetTitles,
+				publisher,
+				appIdToCloneInto,
+			})
+			.then(res => {
+				let message = '';
+				let projectName = this.state.projectName || this.state.datasets[0].name;
+
+				if (_.isEmpty(appIdToCloneInto)) {
+					message = `You have successfully duplicated your application '${projectName}' into a new application`;
+				} else {
+					let { aboutApplication: { projectName: projectNameCloneInto } = {} } = res.data.accessRecord;
+					projectNameCloneInto = _.isNil(projectNameCloneInto) ? 'your selected application' : `'${projectNameCloneInto}'`;
+					message = `You have successfully duplicated your application '${projectName}' into ${projectNameCloneInto}`;
+				}
+
+				const alert = {
+					tab: 'inProgress',
+					message,
+					publisher: 'user',
+				};
+
+				this.props.history.push({
+					pathname: `/account`,
+					search: '?tab=dataaccessrequests',
+					state: { alert },
+				});
+			});
+	};
+
 	getUserRoles() {
 		let { teams } = this.props.userState[0];
 		let foundTeam = teams.filter(team => team.name === this.state.datasets[0].datasetfields.publisher);
@@ -1415,6 +1476,27 @@ class DataAccessRequest extends Component {
 				showConfirmSubmissionModal: !prevState.showConfirmSubmissionModal,
 			};
 		});
+	};
+
+	toggleDuplicateApplicationModal = () => {
+		this.setState(prevState => {
+			return {
+				showDuplicateApplicationModal: !prevState.showDuplicateApplicationModal,
+			};
+		});
+	};
+
+	toggleSelectDatasetModal = () => {
+		this.setState(prevState => {
+			return {
+				showSelectDatasetModal: !prevState.showSelectDatasetModal,
+			};
+		});
+	};
+
+	showDatasetModal = () => {
+		this.toggleSelectDatasetModal();
+		this.toggleDuplicateApplicationModal();
 	};
 
 	renderApp = () => {
@@ -1665,12 +1747,14 @@ class DataAccessRequest extends Component {
 							{userType.toUpperCase() === 'APPLICANT' ? (
 								<ApplicantActionButtons
 									allowedNavigation={allowedNavigation}
+									isCloneable={this.state.isCloneable}
 									onNextClick={this.onNextClick}
 									onSubmitClick={this.onSubmitClick}
 									onShowContributorModal={this.toggleContributorModal}
 									onEditForm={this.onEditForm}
 									showSubmit={this.state.showSubmit}
 									submitButtonText={this.state.submitButtonText}
+									onDuplicateClick={this.toggleDuplicateApplicationModal}
 								/>
 							) : (
 								<CustodianActionButtons
@@ -1812,6 +1896,20 @@ class DataAccessRequest extends Component {
 					open={this.state.showConfirmSubmissionModal}
 					close={this.toggleConfirmSubmissionModal}
 					confirm={this.onFormSubmit}
+				/>
+
+				<DuplicateApplicationModal
+					isOpen={this.state.showDuplicateApplicationModal}
+					closeModal={this.toggleDuplicateApplicationModal}
+					duplicateApplication={this.onDuplicateApplication}
+					showDatasetModal={this.showDatasetModal}
+				/>
+
+				<SelectDatasetModal
+					isOpen={this.state.showSelectDatasetModal}
+					closeModal={this.toggleSelectDatasetModal}
+					duplicateApplication={this.onDuplicateApplication}
+					appToCloneId={this.state._id}
 				/>
 			</div>
 		);

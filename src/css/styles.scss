@@ -10,6 +10,10 @@ body {
 	-webkit-text-size-adjust: 100%; //fix for iOS
 }
 
+a {
+	overflow-wrap: break-word;
+}
+
 .no-scroll {
 	overflow: hidden !important;
 }
@@ -1620,3 +1624,4 @@ button a {
 .paper-links {
 	display: block;
 }
+
