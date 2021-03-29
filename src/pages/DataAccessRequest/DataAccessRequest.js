@@ -1532,6 +1532,7 @@ class DataAccessRequest extends Component {
 		if (activePanelId === 'about') {
 			return (
 				<AboutApplication
+					key={this.state._id}
 					activeAccordionCard={this.state.activeAccordionCard}
 					allowedNavigation={this.state.allowedNavigation}
 					userType={this.state.userType}
