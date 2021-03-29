@@ -391,7 +391,9 @@ class AddEditToolPage extends React.Component {
 
 	removeObject = (id, type, datasetid) => {
 		let countOfRelatedObjects = this.state.relatedObjects.length;
-		let newRelatedObjects = [...this.state.relatedObjects].filter(obj => obj.objectId !== id && obj.objectId !== id.toString());
+		let newRelatedObjects = [...this.state.relatedObjects].filter(
+			obj => obj.objectId !== id && obj.objectId !== id.toString() && obj.pid !== id
+		);
 
 		//if an item was not removed try removing by datasetid for retro linkages
 		if (countOfRelatedObjects <= newRelatedObjects.length && type === 'dataset') {
