@@ -101,9 +101,7 @@ class TypeaheadDataset extends React.Component {
 
 	datasetOption(item) {
 		const { publisher = 'No publisher set', description, abstract, name: optionName = 'No dataset name' } = item;
-		const { publisher: publisherSelected } = this.state;
-		const optionDescription =
-			publisherSelected === null ? publisher : description || abstract || 'No description set';
+		const optionDescription = this.props.allowAllCustodians === true ? publisher : description || abstract || 'No description set';
 
 		return (
 			<div>
@@ -113,10 +111,9 @@ class TypeaheadDataset extends React.Component {
 		);
 	}
 
-	filterByCallback = (option, props) => (
+	filterByCallback = (option, props) =>
 		option.publisher.toLowerCase().indexOf(props.text.toLowerCase()) !== -1 ||
-		option.name.toLowerCase().indexOf(props.text.toLowerCase()) !== -1
-	);
+		option.name.toLowerCase().indexOf(props.text.toLowerCase()) !== -1;
 
 	render() {
 		return (
