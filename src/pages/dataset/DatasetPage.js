@@ -329,7 +329,7 @@ class DatasetDetail extends Component {
 				const { datasetFound, pid, name, publisher } = res.data;
 				if (datasetFound && !_.isNil(pid)) {
 					if (pid !== this.state.data.pid) {
-						linkedDatasets.push({
+						linkedDatasets.unshift({
 							title: name,
 							info: publisher,
 							type: 'gatewaylink',
