@@ -52,7 +52,7 @@ const DuplicateApplicationModal = ({ isOpen, closeModal, duplicateApplication, s
 					<div className='duplicateApplicationModal-alert--icon'>
 						<SVGIcon name='attention' width={16} height={16} fill={'#f0bb24'} className='duplicateApplicationModal-alert--icon--svg' />
 					</div>
-					<div>By selecting a pre-submission application, any already existing answers will be overriden.</div>
+					<div>By selecting a pre-submission application, any already existing answers will be overridden.</div>
 				</Alert>
 			</div>
 			<div className='duplicateApplicationModal-body'>
