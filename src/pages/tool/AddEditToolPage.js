@@ -399,8 +399,7 @@ class AddEditToolPage extends React.Component {
 		if (countOfRelatedObjects <= newRelatedObjects.length && type === 'dataset') {
 			newRelatedObjects = [...this.state.relatedObjects].filter(obj => obj.objectId !== datasetid && obj.objectId !== datasetid.toString());
 		}
-		this.setState({ relatedObjects: newRelatedObjects });
-		this.setState({ didDelete: true });
+		this.setState({ relatedObjects: newRelatedObjects, didDelete: true });
 	};
 
 	updateDeleteFlag = () => {
