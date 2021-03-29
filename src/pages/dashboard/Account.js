@@ -294,7 +294,7 @@ class Account extends Component {
 						this.toggleNav(`datasets&team=admin`);
 						this.setState({ teamId: 'admin' });
 					}}>
-					Admin
+					HDR Admin
 				</Dropdown.Item>
 			);
 		} else {
@@ -411,6 +411,7 @@ class Account extends Component {
 										{userState[0].name || ''}
 									</Dropdown.Item>
 									{this.renderAdmin()}
+									<hr />
 									{this.renderPublishers()}
 								</Dropdown.Menu>
 							</Dropdown>

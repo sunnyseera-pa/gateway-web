@@ -31,11 +31,18 @@ const AccountMemberModal = ({ open, close, teamId, onMemberAdded }) => {
 	const roleSelect = [
 		{
 			role: 'Manager',
+			value: 'manager',
 			roleDescription: 'Can add, edit or remove members and resources. Can assign workflows and review applications.',
 		},
 		{
 			role: 'Reviewer',
+			value: 'reviewer',
 			roleDescription: 'Can review applications assigned to them.',
+		},
+		{
+			role: 'Metadata manager',
+			value: 'metadata_manager',
+			roleDescription: 'Can add and create new versions of datasets',
 		},
 	];
 
@@ -62,7 +69,10 @@ const AccountMemberModal = ({ open, close, teamId, onMemberAdded }) => {
 			try {
 				const payload = {
 					members: values.members.map(m => {
-						return { memberid: m.user._id, roles: [m.role.toLowerCase()] };
+						var roleValue = roleSelect.find(roleObject => {
+							return roleObject.role === m.role;
+						});
+						return { memberid: m.user._id, roles: [roleValue.value] };
 					}),
 				};
 
