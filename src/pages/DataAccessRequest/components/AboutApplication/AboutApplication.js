@@ -42,8 +42,6 @@ const AboutApplication = props => {
 		context,
 	} = props;
 
-	debugger;
-
 	return (
 		<div className='aboutAccordion'>
 			<Accordion defaultActiveKey='0' activeKey={activeAccordionCard.toString()}>
