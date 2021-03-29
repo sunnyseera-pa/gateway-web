@@ -44,6 +44,7 @@ import Uploads from './components/Uploads/Uploads';
 import UpdateRequestModal from './components/UpdateRequestModal/UpdateRequestModal';
 import MissingFieldsModal from './components/MissingFieldsModal/MissingFieldsModal';
 import ConfirmSubmissionModal from './components/ConfirmSubmissionModal/ConfirmSubmissionModal';
+import DeleteDraftModal from './components/DeleteDraftModal/DeleteDraftModal';
 import DuplicateApplicationModal from './components/DuplicateApplicationModal/DuplicateApplicationModal';
 import SelectDatasetModal from './components/SelectDatasetModal/SelectDatasetModal';
 
@@ -136,6 +137,7 @@ class DataAccessRequest extends Component {
 			showEmailModal: false,
 			showMissingFieldsModal: false,
 			showConfirmSubmissionModal: false,
+			showDeleteDraftModal: false,
 			showDuplicateApplicationModal: false,
 			showSelectDatasetModal: false,
 		};
@@ -1478,6 +1480,14 @@ class DataAccessRequest extends Component {
 		});
 	};
 
+	toggleDeleteDraftModal = () => {
+		this.setState(prevState => {
+			return {
+				showDeleteDraftModal: !prevState.showDeleteDraftModal,
+			};
+		});
+	};
+
 	toggleDuplicateApplicationModal = () => {
 		this.setState(prevState => {
 			return {
@@ -1486,6 +1496,25 @@ class DataAccessRequest extends Component {
 		});
 	};
 
+	onDeleteDraft = async () => {
+		try {
+			let { _id } = this.state;
+			let projectName = this.state.projectName || this.state.datasets[0].name;
+			await axios.delete(`${baseURL}/api/v1/data-access-request/${_id}`, {});
+			let alert = {
+				tab: 'all',
+				message: `You have deleted the data access request for '${projectName}' project`,
+				publisher: 'user',
+			};
+			this.props.history.push({
+				pathname: '/account',
+				search: '?tab=dataaccessrequests',
+				state: { alert },
+			});
+		} catch (err) {
+			console.error(err.message);
+		}
+	};
 	toggleSelectDatasetModal = () => {
 		this.setState(prevState => {
 			return {
@@ -1754,6 +1783,8 @@ class DataAccessRequest extends Component {
 									onEditForm={this.onEditForm}
 									showSubmit={this.state.showSubmit}
 									submitButtonText={this.state.submitButtonText}
+									onDeleteDraftClick={this.toggleDeleteDraftModal}
+									applicationStatus={applicationStatus}
 									onDuplicateClick={this.toggleDuplicateApplicationModal}
 								/>
 							) : (
@@ -1897,6 +1928,7 @@ class DataAccessRequest extends Component {
 					close={this.toggleConfirmSubmissionModal}
 					confirm={this.onFormSubmit}
 				/>
+				<DeleteDraftModal open={this.state.showDeleteDraftModal} close={this.toggleDeleteDraftModal} confirm={this.onDeleteDraft} />
 
 				<DuplicateApplicationModal
 					isOpen={this.state.showDuplicateApplicationModal}
