@@ -115,40 +115,6 @@ class Account extends Component {
 		}
 	}
 
-	componentDidMount() {
-		if (window.location.search) {
-			let tab = '';
-			let values = queryString.parse(window.location.search);
-			if (values.tab !== this.state.tabId || typeof values.tab !== 'undefined' || typeof values.tab !== null) {
-				tab = this.checkRedirect(values);
-				this.setState({
-					tabId: tab,
-					isDeleted: values.toolDeleted,
-					isApproved: values.toolApproved,
-					isRejected: values.toolRejected,
-					isProjectApproved: values.projectApproved,
-					isProjectRejected: values.projectRejected,
-					isReviewApproved: values.reviewApproved,
-					isReviewRejected: values.reviewRejected,
-				});
-				this.toggleNav(tab);
-			}
-		}
-		if (!this.state.profileComplete) {
-			this.setState({ tabId: 'youraccount' });
-		}
-		window.addEventListener('beforeunload', this.componentCleanup);
-	}
-
-	componentCleanup() {
-		localStorage.setItem('HDR_TEAM', 'user');
-	}
-
-	componentWillUnmount() {
-		this.componentCleanup();
-		window.removeEventListener('beforeunload', this.componentCleanup);
-	}
-
 	componentWillReceiveProps(nextProps) {
 		if (window.location.search) {
 			let values = queryString.parse(window.location.search);
@@ -175,9 +141,45 @@ class Account extends Component {
 				});
 			}
 		}
+
 		if (!this.state.profileComplete) {
 			this.setState({ tabId: 'youraccount' });
 		}
+	}
+
+	componentDidMount() {
+		if (window.location.search) {
+			let tab = '';
+			let values = queryString.parse(window.location.search);
+			if (values.tab !== this.state.tabId || typeof values.tab !== 'undefined' || typeof values.tab !== null) {
+				tab = this.checkRedirect(values);
+				this.setState({
+					tabId: tab,
+					isDeleted: values.toolDeleted,
+					isApproved: values.toolApproved,
+					isRejected: values.toolRejected,
+					isProjectApproved: values.projectApproved,
+					isProjectRejected: values.projectRejected,
+					isReviewApproved: values.reviewApproved,
+					isReviewRejected: values.reviewRejected,
+				});
+				this.toggleNav(tab);
+			}
+		}
+
+		if (!this.state.profileComplete) {
+			this.setState({ tabId: 'youraccount' });
+		}
+		window.addEventListener('beforeunload', this.componentCleanup);
+	}
+
+	componentCleanup() {
+		//localStorage.setItem('HDR_TEAM', 'user');
+	}
+
+	componentWillUnmount() {
+		this.componentCleanup();
+		window.removeEventListener('beforeunload', this.componentCleanup);
 	}
 
 	checkRedirect = values => {
@@ -261,7 +263,7 @@ class Account extends Component {
 						<Dropdown.Item
 							className='gray700-13'
 							onClick={e => {
-								this.toggleNav(`${this.state.tabId}&team=${pub.name}`);
+								this.toggleNav(`${this.state.tabId}&team=${pub._id}`);
 								this.setState({ teamId: pub._id });
 							}}>
 							{pub.name}
@@ -299,6 +301,19 @@ class Account extends Component {
 			);
 		} else {
 			return '';
+		}
+	}
+
+	renderCurrentTeam() {
+		let { team, userState } = this.state;
+		if (team === 'user') return <>{userState[0].name}</>;
+		else if (team === 'admin') return <>HDR Admin</>;
+		else {
+			const teamIs = this.state.userState[0].teams.filter(t => {
+				return t._id === team;
+			})[0];
+
+			return <>{teamIs.name}</>;
 		}
 	}
 
@@ -401,7 +416,7 @@ class Account extends Component {
 							<Dropdown>
 								<Dropdown.Toggle as={CustomToggle}>
 									<div className='teamSelectorHeader'>
-										<span className='gray700-13'>{team === 'user' ? userState[0].name : team === 'admin' ? 'Admin' : team}</span>
+										<span className='gray700-13'>{this.renderCurrentTeam()}</span>
 										<ChevronRightSvg fill={'#475da7'} className='dataClassArrow pointer' />
 									</div>
 								</Dropdown.Toggle>

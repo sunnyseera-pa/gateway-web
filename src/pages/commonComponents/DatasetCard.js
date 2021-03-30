@@ -31,12 +31,23 @@ let statusIcons = {
 };
 
 export const DatasetCard = props => {
-	let { id, publisher, title, version, isDraft, datasetStatus, completion = {}, createdAt, lastActivity, rejectionText } = props;
+	let {
+		id,
+		publisher,
+		title,
+		version,
+		isDraft,
+		datasetStatus,
+		completion = {},
+		createdAt,
+		lastActivity,
+		rejectionText,
+		listOfVersions,
+	} = props;
 	const [flagClosed, setFlagClosed] = useState(true);
 
 	return (
-		<Row key={`dataset_card_${title}`} onClick={event => (window.location.href = `/dataset-onboarding/${id}`)}>
-			{/* onClick={e => this.navigateToLocation(e, _id, applicationStatus)} */}
+		<Row key={`dataset_card_${title}`} onClick={() => (window.location.href = `/dataset-onboarding/${id}`)}>
 			<div className='col-md-12'>
 				<div className='layoutCard mb-0'>
 					<div className='header mb-0 mt-2'>
@@ -49,17 +60,28 @@ export const DatasetCard = props => {
 							) : (
 								''
 							)}
-
 							{datasetStatus === 'inReview' ? (
 								<TimeDuration text={`${DatasetOnboardingHelper.calculateTimeDifference(createdAt)} days since submission`} />
 							) : (
 								''
 							)}
-
 							<SLA
 								classProperty={DatasetOnboardingHelper.datasetStatusColours[datasetStatus]}
 								text={DatasetOnboardingHelper.datasetSLAText[datasetStatus]}
 							/>
+
+							{datasetStatus === 'draft' && listOfVersions.find(version => version.activeflag === 'active') ? (
+								<>
+									&nbsp;&nbsp;
+									<SLA
+										classProperty={DatasetOnboardingHelper.datasetStatusColours['active']}
+										text={DatasetOnboardingHelper.datasetSLAText['active']}
+									/>
+								</>
+							) : (
+								''
+							)}
+							{/* {datasetStatus === 'draft' ? <>: ''} */}
 						</div>
 					</div>
 					<div className='dataset-completion-wheels'>
@@ -83,44 +105,67 @@ export const DatasetCard = props => {
 						<Fragment>
 							<div className='box'>Publisher</div>
 							<div className='box'>{publisher}</div>
-							<div className='box'>Version</div>
-							<div className='box'>
-								{version}
-								{datasetStatus === 'draft' ? ' (Draft)' : ''}
+							<div className='box version-list'>Version</div>
 
-								{/* {isDraft ? ' (Draft)' : ` (${datasetStatus})`} */}
-							</div>
-							{/* <div className='box version-list'>Version2</div>
-							<div className='box'>
-								<Accordion defaultActiveKey='1' style={{ width: '100%' }}>
-									<Accordion.Toggle
-										as={Button}
-										variant='link'
-										eventKey='0'
-										onClick={() => setFlagClosed(!flagClosed)}
-										data-testid='accordion-toggle'
-										style={{ width: '100%', padding: '0px', border: '0px' }}
-										className='version-list'>
-										<div className='version-list'>
-											4.99 (Example)
-											<SVGIcon
-												name='chevronbottom'
-												fill={'#475da7'}
-												style={{ width: '18px', height: '18px', paddingLeft: '4px' }}
-												className={flagClosed === true ? 'svg-24' : 'svg-24 flipSVG'}
-											/>
-										</div>
-									</Accordion.Toggle>
-									<Accordion.Collapse eventKey='0' style={{ paddingRight: '20px' }}>
-										<Fragment>
-											<div className='version-list'>4.5 (Example)</div>
-											<div className='version-list'>4.4 (Example)</div>
-											<div className='version-list'>4.2 (Example)</div>
-										</Fragment>
-									</Accordion.Collapse>
-								</Accordion>
-							</div> */}
-
+							{listOfVersions.length > 1 ? (
+								<div className='box'>
+									<Accordion defaultActiveKey='1' style={{ width: '100%' }}>
+										<Accordion.Toggle
+											as={Button}
+											variant='link'
+											eventKey='0'
+											onClick={e => {
+												e.stopPropagation();
+												setFlagClosed(!flagClosed);
+											}}
+											data-testid='accordion-toggle'
+											style={{ width: '100%', padding: '0px', border: '0px' }}
+											className='version-list'>
+											<div className='version-list'>
+												{version}
+												{datasetStatus === 'draft' ? ' (Draft)' : ''}
+												{datasetStatus === 'inReview' ? ' (Pending)' : ''}
+												<SVGIcon
+													name='chevronbottom'
+													fill={'#475da7'}
+													style={{ width: '18px', height: '18px', paddingLeft: '4px' }}
+													className={flagClosed === true ? 'svg-24' : 'svg-24 flipSVG'}
+												/>
+											</div>
+										</Accordion.Toggle>
+										<Accordion.Collapse eventKey='0' style={{ paddingRight: '20px' }}>
+											<Fragment>
+												{listOfVersions.map(datasetVersion => (
+													<>
+														{datasetVersion.datasetVersion !== version ? (
+															<a
+																href='#'
+																className='version-list'
+																onClick={e => {
+																	e.stopPropagation();
+																	window.location.href = `/dataset-onboarding/${datasetVersion._id}`;
+																}}>
+																{datasetVersion.datasetVersion}
+																{datasetVersion.activeflag === 'draft' ? ' (Draft)' : ''}
+																{datasetVersion.activeflag === 'active' ? ' (Live)' : ''}
+																{datasetVersion.activeflag === 'rejected' ? ' (Rejected)' : ''}
+																{datasetVersion.activeflag === 'inReview' ? ' (Pending)' : ''}
+															</a>
+														) : (
+															''
+														)}
+													</>
+												))}
+											</Fragment>
+										</Accordion.Collapse>
+									</Accordion>
+								</div>
+							) : (
+								<div className='box'>
+									{version}
+									{datasetStatus === 'draft' ? ' (Draft)' : ''}
+								</div>
+							)}
 							<div className='box'>Last activity</div>
 							<div className='box'>{moment(lastActivity).format('D MMMM YYYY HH:mm')}</div>
 

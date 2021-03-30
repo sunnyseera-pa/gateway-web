@@ -1,3 +1,5 @@
+@import '../../css/typography';
+
 .dataset-completion-wheels {
 	display: flex;
 	flex-flow: row;
@@ -14,4 +16,8 @@
 	align-items: flex-start !important;
 	word-break: break-word;
 	position: relative;
+	font-family: museo-sans-rounded;
+	font-weight: 500;
+	color: $gray-800;
+	font-size: 14px;
 }

@@ -35,14 +35,14 @@ const AccountDatasets = props => {
 		setPublisherID(isPublisher);
 
 		await axios.get(baseURL + `/api/v1/dataset-onboarding/publisher/${isPublisher}`).then(res => {
-			setDatasetList(res.data.data.dataset);
+			setDatasetList(res.data.data.listOfDatasets);
 
 			let activeCount = 0;
 			let reviewCount = 0;
 			let archiveCount = 0;
 			let rejectedCount = 0;
 
-			res.data.data.dataset.forEach(dataset => {
+			res.data.data.listOfDatasets.forEach(dataset => {
 				if (dataset.activeflag === 'active' || dataset.activeflag === 'draft') activeCount++;
 				else if (dataset.activeflag === 'inReview') reviewCount++;
 				else if (dataset.activeflag === 'archive') archiveCount++;
@@ -64,7 +64,7 @@ const AccountDatasets = props => {
 		if (!_.isEmpty(foundAdmin)) {
 			return 'admin';
 		}
-		let foundTeam = teams.filter(x => x.name === team);
+		let foundTeam = teams.filter(x => x._id === team);
 		if (_.isEmpty(teams) || _.isEmpty(foundTeam)) {
 			return ['applicant']; //pass back to user
 		}
@@ -198,6 +198,7 @@ const AccountDatasets = props => {
 															datasetStatus={dataset.activeflag}
 															lastActivity={dataset.updatedAt}
 															completion={dataset.percentageCompleted}
+															listOfVersions={dataset.listOfVersions}
 														/>
 													);
 												}
@@ -227,6 +228,7 @@ const AccountDatasets = props => {
 															datasetStatus={dataset.activeflag}
 															lastActivity={dataset.updatedAt}
 															completion={dataset.percentageCompleted}
+															listOfVersions={dataset.listOfVersions}
 														/>
 													);
 												}
@@ -257,6 +259,7 @@ const AccountDatasets = props => {
 															lastActivity={dataset.updatedAt}
 															completion={dataset.percentageCompleted}
 															rejectionText={dataset.applicationStatusDesc}
+															listOfVersions={dataset.listOfVersions}
 														/>
 													);
 												}
@@ -286,6 +289,7 @@ const AccountDatasets = props => {
 															datasetStatus={dataset.activeflag}
 															lastActivity={dataset.updatedAt}
 															completion={dataset.percentageCompleted}
+															listOfVersions={dataset.listOfVersions}
 														/>
 													);
 												}
