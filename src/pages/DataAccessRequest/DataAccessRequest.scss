@@ -859,3 +859,9 @@ input[type='checkbox']:after {
 		content: '';
 	}
 }
+
+.btn-link-delete {
+	color: red !important;
+	text-decoration: underline;
+	outline: none !important;
+}

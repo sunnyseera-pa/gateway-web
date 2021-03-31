@@ -9,6 +9,7 @@ import TypeaheadDataset from '../TypeaheadDataset/TypeaheadDataset';
 
 const AboutApplication = props => {
 	let {
+		key,
 		activeAccordionCard,
 		allowedNavigation,
 		userType,
@@ -16,25 +17,25 @@ const AboutApplication = props => {
 		toggleDrawer,
 		onHandleDataSetChange,
 		selectedDatasets,
-		readOnly,
+		readOnly = false,
 		onNextStep,
-		projectNameValid,
-		projectName,
+		projectNameValid = true,
+		projectName = '',
 		onHandleProjectNameBlur,
 		onHandleProjectNameChange,
 		onHandleProjectIsNCSToggle,
 		onHandleNCSProjectChange,
 		renderTooltip,
 		nationalCoreStudiesProjects,
-		ncsValid,
+		ncsValid = true,
 		toggleModal,
-		completedReadAdvice,
-		completedCommunicateAdvice,
-		completedApprovalsAdvice,
-		completedSubmitAdvice,
-		completedInviteCollaborators,
-		completedDatasetSelection,
-		isNationalCoreStudies,
+		completedReadAdvice = false,
+		completedCommunicateAdvice = false,
+		completedApprovalsAdvice = false,
+		completedSubmitAdvice = false,
+		completedInviteCollaborators = false,
+		completedDatasetSelection = false,
+		isNationalCoreStudies = false,
 		nationalCoreStudiesProjectId,
 		toggleMrcModal,
 		toggleContributorModal,
@@ -80,6 +81,7 @@ const AboutApplication = props => {
 								<span>Datasets</span>
 								<div className='form-group'>
 									<TypeaheadDataset
+										key={key}
 										selectedDatasets={selectedDatasets}
 										onHandleDataSetChange={e => onHandleDataSetChange(e)}
 										readOnly={readOnly}

@@ -44,6 +44,7 @@ import Uploads from './components/Uploads/Uploads';
 import UpdateRequestModal from './components/UpdateRequestModal/UpdateRequestModal';
 import MissingFieldsModal from './components/MissingFieldsModal/MissingFieldsModal';
 import ConfirmSubmissionModal from './components/ConfirmSubmissionModal/ConfirmSubmissionModal';
+import DeleteDraftModal from './components/DeleteDraftModal/DeleteDraftModal';
 import DuplicateApplicationModal from './components/DuplicateApplicationModal/DuplicateApplicationModal';
 import SelectDatasetModal from './components/SelectDatasetModal/SelectDatasetModal';
 
@@ -136,6 +137,7 @@ class DataAccessRequest extends Component {
 			showEmailModal: false,
 			showMissingFieldsModal: false,
 			showConfirmSubmissionModal: false,
+			showDeleteDraftModal: false,
 			showDuplicateApplicationModal: false,
 			showSelectDatasetModal: false,
 		};
@@ -413,9 +415,11 @@ class DataAccessRequest extends Component {
 			}
 		}
 
+		// 7. Set initial panel as selected and scroll to top of view port
 		let initialPanel = jsonSchema.formPanels[0].panelId;
+		window.scrollTo(0, 0);
 
-		// 9. Set state
+		// 8. Set state
 		this.setState({
 			jsonSchema: { ...jsonSchema, ...classSchema },
 			activeParty,
@@ -1361,17 +1365,14 @@ class DataAccessRequest extends Component {
 					message = `You have successfully duplicated your application '${projectName}' into ${projectNameCloneInto}`;
 				}
 
-				const alert = {
-					tab: 'inProgress',
-					message,
+				let alert = {
+					message: message,
 					publisher: 'user',
 				};
+				this.setState({ alert: alert });
+				setTimeout(() => this.setState({ alert: {} }), 10000);
 
-				this.props.history.push({
-					pathname: `/account`,
-					search: '?tab=dataaccessrequests',
-					state: { alert },
-				});
+				this.props.history.push({ pathname: `/data-access-request/${res.data.accessRecord._id}` });
 			});
 	};
 
@@ -1478,6 +1479,14 @@ class DataAccessRequest extends Component {
 		});
 	};
 
+	toggleDeleteDraftModal = () => {
+		this.setState(prevState => {
+			return {
+				showDeleteDraftModal: !prevState.showDeleteDraftModal,
+			};
+		});
+	};
+
 	toggleDuplicateApplicationModal = () => {
 		this.setState(prevState => {
 			return {
@@ -1486,6 +1495,25 @@ class DataAccessRequest extends Component {
 		});
 	};
 
+	onDeleteDraft = async () => {
+		try {
+			let { _id } = this.state;
+			let projectName = this.state.projectName || this.state.datasets[0].name;
+			await axios.delete(`${baseURL}/api/v1/data-access-request/${_id}`, {});
+			let alert = {
+				tab: 'all',
+				message: `You have deleted the data access request for '${projectName}' project`,
+				publisher: 'user',
+			};
+			this.props.history.push({
+				pathname: '/account',
+				search: '?tab=dataaccessrequests',
+				state: { alert },
+			});
+		} catch (err) {
+			console.error(err.message);
+		}
+	};
 	toggleSelectDatasetModal = () => {
 		this.setState(prevState => {
 			return {
@@ -1504,6 +1532,7 @@ class DataAccessRequest extends Component {
 		if (activePanelId === 'about') {
 			return (
 				<AboutApplication
+					key={this.state._id}
 					activeAccordionCard={this.state.activeAccordionCard}
 					allowedNavigation={this.state.allowedNavigation}
 					userType={this.state.userType}
@@ -1581,6 +1610,7 @@ class DataAccessRequest extends Component {
 			actionModalConfig,
 			roles,
 			showEmailModal,
+			alert
 		} = this.state;
 		const { userState, location } = this.props;
 
@@ -1683,13 +1713,16 @@ class DataAccessRequest extends Component {
 						))}
 					</div>
 					<div id='darCenterCol' className={isWideForm ? 'extended' : ''}>
-						{this.state.reviewWarning ? (
+						{this.state.reviewWarning && (
 							<Alert variant='warning' className=''>
 								<SVGIcon name='attention' width={24} height={24} fill={'#f0bb24'} viewBox='2 -9 22 22'></SVGIcon>
 								You are not assigned to this section but can still view the form
 							</Alert>
-						) : (
-							''
+						)}
+						{!_.isEmpty(alert) && (
+							<Alert variant={'success'} className='main-alert'>
+								<SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert.message}
+							</Alert>
 						)}
 						<div id='darDropdownNav'>
 							<NavDropdown
@@ -1754,6 +1787,8 @@ class DataAccessRequest extends Component {
 									onEditForm={this.onEditForm}
 									showSubmit={this.state.showSubmit}
 									submitButtonText={this.state.submitButtonText}
+									onDeleteDraftClick={this.toggleDeleteDraftModal}
+									applicationStatus={applicationStatus}
 									onDuplicateClick={this.toggleDuplicateApplicationModal}
 								/>
 							) : (
@@ -1897,6 +1932,7 @@ class DataAccessRequest extends Component {
 					close={this.toggleConfirmSubmissionModal}
 					confirm={this.onFormSubmit}
 				/>
+				<DeleteDraftModal open={this.state.showDeleteDraftModal} close={this.toggleDeleteDraftModal} confirm={this.onDeleteDraft} />
 
 				<DuplicateApplicationModal
 					isOpen={this.state.showDuplicateApplicationModal}
