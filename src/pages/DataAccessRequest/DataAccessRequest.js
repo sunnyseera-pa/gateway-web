@@ -44,6 +44,9 @@ import Uploads from './components/Uploads/Uploads';
 import UpdateRequestModal from './components/UpdateRequestModal/UpdateRequestModal';
 import MissingFieldsModal from './components/MissingFieldsModal/MissingFieldsModal';
 import ConfirmSubmissionModal from './components/ConfirmSubmissionModal/ConfirmSubmissionModal';
+import DeleteDraftModal from './components/DeleteDraftModal/DeleteDraftModal';
+import DuplicateApplicationModal from './components/DuplicateApplicationModal/DuplicateApplicationModal';
+import SelectDatasetModal from './components/SelectDatasetModal/SelectDatasetModal';
 
 class DataAccessRequest extends Component {
 	constructor(props) {
@@ -104,6 +107,7 @@ class DataAccessRequest extends Component {
 			allowsMultipleDatasets: false,
 			activeAccordionCard: 0,
 			allowedNavigation: true,
+			isCloneable: false,
 			projectNameValid: true,
 			ncsValid: true,
 			topicContext: {},
@@ -133,6 +137,9 @@ class DataAccessRequest extends Component {
 			showEmailModal: false,
 			showMissingFieldsModal: false,
 			showConfirmSubmissionModal: false,
+			showDeleteDraftModal: false,
+			showDuplicateApplicationModal: false,
+			showSelectDatasetModal: false,
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -232,6 +239,7 @@ class DataAccessRequest extends Component {
 						projectId,
 						workflow,
 						files,
+						isCloneable,
 					},
 				},
 			} = response;
@@ -250,6 +258,7 @@ class DataAccessRequest extends Component {
 				projectId,
 				workflow,
 				files,
+				isCloneable,
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -276,6 +285,7 @@ class DataAccessRequest extends Component {
 						projectId,
 						workflow,
 						files,
+						isCloneable,
 					},
 				},
 			} = response;
@@ -294,6 +304,7 @@ class DataAccessRequest extends Component {
 				projectId,
 				workflow,
 				files,
+				isCloneable,
 			});
 
 			// for local test uses formSchema.json
@@ -344,6 +355,7 @@ class DataAccessRequest extends Component {
 			reviewSections = [],
 			workflow,
 			files,
+			isCloneable,
 		} = context;
 		let {
 			datasetfields: { publisher },
@@ -403,9 +415,11 @@ class DataAccessRequest extends Component {
 			}
 		}
 
+		// 7. Set initial panel as selected and scroll to top of view port
 		let initialPanel = jsonSchema.formPanels[0].panelId;
+		window.scrollTo(0, 0);
 
-		// 9. Set state
+		// 8. Set state
 		this.setState({
 			jsonSchema: { ...jsonSchema, ...classSchema },
 			activeParty,
@@ -440,6 +454,7 @@ class DataAccessRequest extends Component {
 			workflow,
 			workflowAssigned: !_.isEmpty(workflow) ? true : false,
 			files,
+			isCloneable,
 		});
 	};
 
@@ -619,6 +634,7 @@ class DataAccessRequest extends Component {
 						: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
 				publisher: 'user',
 			};
+
 			this.props.history.push({
 				pathname: '/account',
 				search: '?tab=dataaccessrequests',
@@ -855,7 +871,8 @@ class DataAccessRequest extends Component {
 				jsonSchema: { questionSets },
 			} = this.state;
 			// 1. get active question set
-			({ questions } = [...questionSets].find(q => q.questionSetId === this.state.activePanelId) || []);
+			let questionList = [...questionSets].filter(q => q.questionSetId.includes(this.state.activePanelId)) || [];
+			questions = questionList.map(({ questions }) => questions).flat();
 			if (!_.isEmpty(questions)) {
 				// 2. loop over and find active question
 				let activeQuestion = DarHelper.getActiveQuestion([...questions], questionId);
@@ -1314,6 +1331,51 @@ class DataAccessRequest extends Component {
 		}
 	};
 
+	onDuplicateApplication = async (appIdToCloneInto = '', selectedDatasets = []) => {
+		!_.isEmpty(appIdToCloneInto) ? this.toggleDuplicateApplicationModal() : this.toggleSelectDatasetModal();
+
+		let datasetIds = [];
+		let datasetTitles = [];
+		let publisher = '';
+
+		if (!_.isEmpty(selectedDatasets)) {
+			publisher = selectedDatasets[0].publisher;
+			selectedDatasets.forEach(dataset => {
+				datasetIds.push(dataset.datasetId);
+				datasetTitles.push(dataset.name);
+			});
+		}
+
+		axios
+			.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/clone`, {
+				datasetIds,
+				datasetTitles,
+				publisher,
+				appIdToCloneInto,
+			})
+			.then(res => {
+				let message = '';
+				let projectName = this.state.projectName || this.state.datasets[0].name;
+
+				if (_.isEmpty(appIdToCloneInto)) {
+					message = `You have successfully duplicated your application '${projectName}' into a new application`;
+				} else {
+					let { aboutApplication: { projectName: projectNameCloneInto } = {} } = res.data.accessRecord;
+					projectNameCloneInto = _.isNil(projectNameCloneInto) ? 'your selected application' : `'${projectNameCloneInto}'`;
+					message = `You have successfully duplicated your application '${projectName}' into ${projectNameCloneInto}`;
+				}
+
+				let alert = {
+					message: message,
+					publisher: 'user',
+				};
+				this.setState({ alert: alert });
+				setTimeout(() => this.setState({ alert: {} }), 10000);
+
+				this.props.history.push({ pathname: `/data-access-request/${res.data.accessRecord._id}` });
+			});
+	};
+
 	getUserRoles() {
 		let { teams } = this.props.userState[0];
 		let foundTeam = teams.filter(team => team.name === this.state.datasets[0].datasetfields.publisher);
@@ -1417,11 +1479,60 @@ class DataAccessRequest extends Component {
 		});
 	};
 
+	toggleDeleteDraftModal = () => {
+		this.setState(prevState => {
+			return {
+				showDeleteDraftModal: !prevState.showDeleteDraftModal,
+			};
+		});
+	};
+
+	toggleDuplicateApplicationModal = () => {
+		this.setState(prevState => {
+			return {
+				showDuplicateApplicationModal: !prevState.showDuplicateApplicationModal,
+			};
+		});
+	};
+
+	onDeleteDraft = async () => {
+		try {
+			let { _id } = this.state;
+			let projectName = this.state.projectName || this.state.datasets[0].name;
+			await axios.delete(`${baseURL}/api/v1/data-access-request/${_id}`, {});
+			let alert = {
+				tab: 'all',
+				message: `You have deleted the data access request for '${projectName}' project`,
+				publisher: 'user',
+			};
+			this.props.history.push({
+				pathname: '/account',
+				search: '?tab=dataaccessrequests',
+				state: { alert },
+			});
+		} catch (err) {
+			console.error(err.message);
+		}
+	};
+	toggleSelectDatasetModal = () => {
+		this.setState(prevState => {
+			return {
+				showSelectDatasetModal: !prevState.showSelectDatasetModal,
+			};
+		});
+	};
+
+	showDatasetModal = () => {
+		this.toggleSelectDatasetModal();
+		this.toggleDuplicateApplicationModal();
+	};
+
 	renderApp = () => {
 		let { activePanelId } = this.state;
 		if (activePanelId === 'about') {
 			return (
 				<AboutApplication
+					key={this.state._id}
 					activeAccordionCard={this.state.activeAccordionCard}
 					allowedNavigation={this.state.allowedNavigation}
 					userType={this.state.userType}
@@ -1499,6 +1610,7 @@ class DataAccessRequest extends Component {
 			actionModalConfig,
 			roles,
 			showEmailModal,
+			alert
 		} = this.state;
 		const { userState, location } = this.props;
 
@@ -1601,13 +1713,16 @@ class DataAccessRequest extends Component {
 						))}
 					</div>
 					<div id='darCenterCol' className={isWideForm ? 'extended' : ''}>
-						{this.state.reviewWarning ? (
+						{this.state.reviewWarning && (
 							<Alert variant='warning' className=''>
 								<SVGIcon name='attention' width={24} height={24} fill={'#f0bb24'} viewBox='2 -9 22 22'></SVGIcon>
 								You are not assigned to this section but can still view the form
 							</Alert>
-						) : (
-							''
+						)}
+						{!_.isEmpty(alert) && (
+							<Alert variant={'success'} className='main-alert'>
+								<SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert.message}
+							</Alert>
 						)}
 						<div id='darDropdownNav'>
 							<NavDropdown
@@ -1665,12 +1780,16 @@ class DataAccessRequest extends Component {
 							{userType.toUpperCase() === 'APPLICANT' ? (
 								<ApplicantActionButtons
 									allowedNavigation={allowedNavigation}
+									isCloneable={this.state.isCloneable}
 									onNextClick={this.onNextClick}
 									onSubmitClick={this.onSubmitClick}
 									onShowContributorModal={this.toggleContributorModal}
 									onEditForm={this.onEditForm}
 									showSubmit={this.state.showSubmit}
 									submitButtonText={this.state.submitButtonText}
+									onDeleteDraftClick={this.toggleDeleteDraftModal}
+									applicationStatus={applicationStatus}
+									onDuplicateClick={this.toggleDuplicateApplicationModal}
 								/>
 							) : (
 								<CustodianActionButtons
@@ -1812,6 +1931,21 @@ class DataAccessRequest extends Component {
 					open={this.state.showConfirmSubmissionModal}
 					close={this.toggleConfirmSubmissionModal}
 					confirm={this.onFormSubmit}
+				/>
+				<DeleteDraftModal open={this.state.showDeleteDraftModal} close={this.toggleDeleteDraftModal} confirm={this.onDeleteDraft} />
+
+				<DuplicateApplicationModal
+					isOpen={this.state.showDuplicateApplicationModal}
+					closeModal={this.toggleDuplicateApplicationModal}
+					duplicateApplication={this.onDuplicateApplication}
+					showDatasetModal={this.showDatasetModal}
+				/>
+
+				<SelectDatasetModal
+					isOpen={this.state.showSelectDatasetModal}
+					closeModal={this.toggleSelectDatasetModal}
+					duplicateApplication={this.onDuplicateApplication}
+					appToCloneId={this.state._id}
 				/>
 			</div>
 		);

@@ -54,6 +54,7 @@ class TypeaheadDataset extends React.Component {
 					activeflag: 'active',
 					fields: 'datasetid,name,description,datasetfields.abstract,_id,datasetfields.publisher,datasetfields.contactPoint',
 					populate: 'publisher',
+					sort: 'datasetfields.publisher, name',
 					is5Safes: true,
 					...(publisher ? { ['datasetfields.publisher']: publisher } : {}),
 				},
@@ -100,9 +101,7 @@ class TypeaheadDataset extends React.Component {
 
 	datasetOption(item) {
 		const { publisher = 'No publisher set', description, abstract, name: optionName = 'No dataset name' } = item;
-		const { publisher: publisherSelected } = this.state;
-		const optionDescription =
-			publisherSelected === null ? publisher : description || abstract || 'No description set';
+		const optionDescription = this.props.allowAllCustodians === true ? publisher : description || abstract || 'No description set';
 
 		return (
 			<div>
@@ -111,6 +110,10 @@ class TypeaheadDataset extends React.Component {
 			</div>
 		);
 	}
+
+	filterByCallback = (option, props) =>
+		option.publisher.toLowerCase().indexOf(props.text.toLowerCase()) !== -1 ||
+		option.name.toLowerCase().indexOf(props.text.toLowerCase()) !== -1;
 
 	render() {
 		return (
@@ -122,8 +125,9 @@ class TypeaheadDataset extends React.Component {
 				onChange={e => {
 					this.handleChange(e);
 				}}
+				minLength={this.state.publisher === null ? 2 : 0}
 				selected={this.state.value}
-				filterBy={['name']}
+				filterBy={this.filterByCallback}
 				multiple
 				disabled={this.state.readOnly}
 				defaultSelected={this.state.value}
