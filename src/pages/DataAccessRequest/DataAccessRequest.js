@@ -1048,7 +1048,7 @@ class DataAccessRequest extends Component {
 	getNationalCoreStudiesProjects = async () => {
 		try {
 			// 1. Call endpoint to retrieve NCS projects
-			let response = await axios.get(`${baseURL}/api/v1/tools/project/tag/NCS`);
+			let response = await axios.get(`${baseURL}/api/v1/tools/project/tag/?name=NCS,National Core Study`);
 			const {
 				data: { entities },
 			} = response;
@@ -1610,7 +1610,7 @@ class DataAccessRequest extends Component {
 			actionModalConfig,
 			roles,
 			showEmailModal,
-			alert
+			alert,
 		} = this.state;
 		const { userState, location } = this.props;
 
