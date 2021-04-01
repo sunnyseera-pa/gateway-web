@@ -312,30 +312,39 @@ class DatasetDetail extends Component {
 	getLinkedDatasets = async relation => {
 		let linkedDatasets = this.state.linkedDatasets;
 
-		if (relation.match(/\bhttps?:\/\/\S+/gi) && relation.slice(0, 46) === 'https://web.www.healthdatagateway.org/dataset/') {
-			await axios.get(baseURL + '/api/v1/relatedobject/' + relation.slice(46)).then(async res => {
-				linkedDatasets.push({
-					title: res.data.data[0].name,
-					info: res.data.data[0].datasetfields.publisher,
-					type: 'gatewaylink',
-					id: relation.slice(46),
-				});
-			});
-		} else if (relation.match(/\bhttps?:\/\/\S+/gi) && relation.slice(0, 46) !== 'https://web.www.healthdatagateway.org/dataset/') {
+		// 1. Check if relation is a URL
+		if (relation.match(/\bhttps?:\/\/\S+/gi)) {
 			linkedDatasets.push({
 				title: relation,
-				info: 'Dataset not on the gateway',
+				info:
+					relation.slice(0, 46) === 'https://web.www.healthdatagateway.org/dataset/'
+						? 'Dataset on the gateway'
+						: 'Dataset not on the gateway',
 				type: 'externallink',
 			});
 		} else {
-			linkedDatasets.push({
-				title: relation,
-				info: 'Unrecognised dataset title',
-				type: 'text',
+			// 2. Check if relation is a String that matches a dataset title
+			await axios.get(baseURL + '/api/v1/relatedobject/linkeddatasets/' + relation).then(async res => {
+				const { datasetFound, pid, name, publisher } = res.data;
+				if (datasetFound && !_.isNil(pid)) {
+					linkedDatasets.unshift({
+						title: name,
+						info: publisher,
+						type: 'gatewaylink',
+						id: pid,
+					});
+				} else {
+					// 3. Else determine that relation is an unrecognised dataset title
+					linkedDatasets.push({
+						title: relation,
+						info: 'Unrecognised dataset title',
+						type: 'text',
+					});
+				}
 			});
 		}
 
-		this.setState({ linkedDatasets: linkedDatasets });
+		this.setState({ linkedDatasets });
 	};
 
 	getEmptyFieldsCount(v2data) {
