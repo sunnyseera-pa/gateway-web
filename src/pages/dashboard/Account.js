@@ -438,13 +438,13 @@ class Account extends Component {
 															className={`gray700-13 ${tabId === 'datasets' ? 'nav-item-active' : ''}`}>
 															<span className='subLinkItem'>Datasets</span>
 														</Nav.Link>
-														{/* <Nav.Link
+														<Nav.Link
 															data-test-id='advanced-search'
 															onClick={e => this.toggleNav('datasetsAdvancedSearch')}
 															bsPrefix='nav-block'
 															className={`gray700-13 ${tabId === 'datasetsAdvancedSearch' ? 'nav-item-active' : ''}`}>
 															<span className='subLinkItem'>Advanced search</span>
-														</Nav.Link> */}
+														</Nav.Link>
 													</div>
 												</Accordion.Collapse>
 											</Fragment>
