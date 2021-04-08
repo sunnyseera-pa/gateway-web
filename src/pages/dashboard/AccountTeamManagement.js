@@ -212,7 +212,7 @@ const AccountTeamManagement = ({ userState = [], team = '', forwardRef, onTeamMa
 				let { optIn: memberOptIn, notificationType } = memberNotification;
 				let foundIndex = getTeamNotificationType(notificationType);
 				if (foundIndex > -1) {
-					let { optIn: teamOptIn, subscribedEmails } = teamGatewayNotifications[foundIndex];
+					let { optIn: teamOptIn } = teamGatewayNotifications[foundIndex];
 					if (!memberOptIn && !teamOptIn) hasMissingOptIns = true;
 				}
 			}

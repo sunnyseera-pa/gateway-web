@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg';
 import './TeamEmailAlertModal.scss';
 

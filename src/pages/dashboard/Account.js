@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useState, useRef, forwardRef } from 'react';
+import React, { Component, Fragment, useState } from 'react';
 import queryString from 'query-string';
 import { Nav, Accordion, Dropdown } from 'react-bootstrap';
 import _ from 'lodash';

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { isEmpty } from 'lodash';
 
 const Field = ({ id = '', manager = false, data = {}, index = 0, notificationType = '', handleFieldChange }) => {
