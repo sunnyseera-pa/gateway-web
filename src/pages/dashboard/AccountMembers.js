@@ -74,9 +74,9 @@ export const AccountMembers = props => {
 			<Row>
 				<Col xs={1}></Col>
 				<Col xs={10}>
-					<Row className='accountHeader'>
+					<div className='accountHeader d-flex'>
 						<Col sm={12} md={9}>
-							<Row className=''>
+							<Row>
 								<span className='black-20'>Members</span>
 							</Row>
 							<Row>
@@ -112,7 +112,7 @@ export const AccountMembers = props => {
 								''
 							)}
 						</Col>
-					</Row>
+					</div>
 
 					{(() => {
 						return (
@@ -120,11 +120,11 @@ export const AccountMembers = props => {
 								{members.length <= 0 ? (
 									''
 								) : (
-									<Row className='subHeader mt-3 gray800-14-bold'>
+									<div className='subHeader mt-3 gray800-14-bold'>
 										<Col xs={5}>Name</Col>
 										<Col xs={4}>Role</Col>
 										<Col xs={3}></Col>
-									</Row>
+									</div>
 								)}
 								{members.length <= 0 ? (
 									<Row className='margin-right-15'>
@@ -133,7 +133,7 @@ export const AccountMembers = props => {
 								) : (
 									members.map(m => {
 										return (
-											<Row className='entryBox padding-left-20 '>
+											<div className='entryBox padding-left-20'>
 												<Col sm={12} lg={5}>
 													<a href={'/person/' + m.id} className='purple-14'>
 														{m.firstname} {m.lastname}
@@ -147,7 +147,7 @@ export const AccountMembers = props => {
 												<Col sm={4} lg={4} className='black-14'>
 													{m.roles[0].charAt(0).toUpperCase() + m.roles[0].slice(1)}
 												</Col>
-											</Row>
+											</div>
 										);
 									})
 								)}
