@@ -15,7 +15,7 @@ const Guidance = ({ activeGuidance, resetGuidance }) => {
 						<CloseButtonSvg width='16px' height='16px' fill='#475da' onClick={resetGuidance} />
 					</header>
 					<main className='gray800-14'>
-						<ReactMarkdown source={activeGuidance} />
+						<ReactMarkdown source={activeGuidance} linkTarget='_blank' />
 					</main>
 				</Fragment>
 			) : (

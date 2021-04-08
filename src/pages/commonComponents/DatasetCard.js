@@ -31,19 +31,7 @@ let statusIcons = {
 };
 
 export const DatasetCard = props => {
-	let {
-		id,
-		publisher,
-		title,
-		version,
-		isDraft,
-		datasetStatus,
-		completion = {},
-		createdAt,
-		lastActivity,
-		rejectionText,
-		listOfVersions,
-	} = props;
+	let { id, publisher, title, version, isDraft, datasetStatus, completion = {}, timeStamps = {}, rejectionText, listOfVersions } = props;
 	const [flagClosed, setFlagClosed] = useState(true);
 
 	return (
@@ -56,12 +44,12 @@ export const DatasetCard = props => {
 						</div>
 						<div className='header-status'>
 							{datasetStatus === 'draft' ? (
-								<TimeDuration text={`${DatasetOnboardingHelper.calculateTimeDifference(createdAt)} days since start`} />
+								<TimeDuration text={`${DatasetOnboardingHelper.calculateTimeDifference(timeStamps.created)} days since start`} />
 							) : (
 								''
 							)}
 							{datasetStatus === 'inReview' ? (
-								<TimeDuration text={`${DatasetOnboardingHelper.calculateTimeDifference(createdAt)} days since submission`} />
+								<TimeDuration text={`${DatasetOnboardingHelper.calculateTimeDifference(timeStamps.submitted)} days since submission`} />
 							) : (
 								''
 							)}
@@ -167,7 +155,7 @@ export const DatasetCard = props => {
 								</div>
 							)}
 							<div className='box'>Last activity</div>
-							<div className='box'>{moment(lastActivity).format('D MMMM YYYY HH:mm')}</div>
+							<div className='box'>{moment(timeStamps.updated).format('D MMMM YYYY HH:mm')}</div>
 
 							{/* <div className='box'>
 								{moment(updatedAt).format('D MMMM YYYY HH:mm')}
@@ -201,7 +189,7 @@ export const DatasetCard = props => {
 							text={rejectionText}
 							title={'Reason for rejection'}
 							subtitle={`Paul McCafferty`}
-							decisionDate={moment(lastActivity).format('D MMMM YYYY HH:mm')}
+							decisionDate={moment(timeStamps.rejected).format('D MMMM YYYY HH:mm')}
 						/>
 					) : (
 						''

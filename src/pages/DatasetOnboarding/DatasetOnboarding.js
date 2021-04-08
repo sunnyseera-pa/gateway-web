@@ -795,8 +795,7 @@ class DatasetOnboarding extends Component {
 
 	onStructuralMetaDataUpdate = (structuralMetadata, structuralMetadataErrors) => {
 		let percentageCompleted = DatasetOnboardingHelperUtil.getCompletionPercentages(this);
-		if (!_.isEmpty(this.state.structuralMetadata) && _.isEmpty(this.state.structuralMetadataErrors))
-			percentageCompleted.updatedCompletion.structural = 100;
+		if (!_.isEmpty(structuralMetadata) && _.isEmpty(structuralMetadataErrors)) percentageCompleted.updatedCompletion.structural = 100;
 		else percentageCompleted.updatedCompletion.structural = 0;
 		this.setState({ structuralMetadata, structuralMetadataErrors, completion: percentageCompleted.updatedCompletion });
 	};
@@ -1111,6 +1110,7 @@ class DatasetOnboarding extends Component {
 					structuralMetadataErrors={this.state.structuralMetadataErrors}
 					currentVersionId={this.state._id}
 					readOnly={this.state.readOnly}
+					percentageCompleted={this.state.completion}
 				/>
 			);
 		} else {
@@ -1154,6 +1154,7 @@ class DatasetOnboarding extends Component {
 			userType,
 			roles,
 			completion,
+			dataset,
 		} = this.state;
 		const { userState, location } = this.props;
 
@@ -1397,11 +1398,20 @@ class DatasetOnboarding extends Component {
 							<SLA classProperty={DarHelper.darStatusColours[applicationStatus]} text={DarHelper.darSLAText[applicationStatus]} />
 							<div className='action-bar-status'>
 								{applicationStatus === 'draft' ? totalQuestions : ''}
-								{applicationStatus === 'active' ? 'This version was published on 12 Feb 2021' : ''}
-								{applicationStatus === 'inReview' ? 'Submitted for review on 12 Feb 2021' : ''}
-								{applicationStatus === 'rejected' ? 'This version was rejected on 12 Feb 2021' : ''}
-								{applicationStatus === 'archived' ? 'This version was published on 2 Feb 2021 and archived on 12 Feb 2021' : ''}
-								{/* Status updated here */}
+								{applicationStatus === 'active'
+									? `This version was published on ${moment(dataset.timestamps.published).format('D MMMM YYYY')}`
+									: ''}
+								{applicationStatus === 'inReview'
+									? `Submitted for review on ${moment(dataset.timestamps.submitted).format('D MMMM YYYY')}`
+									: ''}
+								{applicationStatus === 'rejected'
+									? `This version was rejected on ${moment(dataset.timestamps.rejected).format('D MMMM YYYY')}`
+									: ''}
+								{applicationStatus === 'archived'
+									? `This version was published on ${moment(dataset.timestamps.published).format('D MMMM YYYY')} and archived on ${moment(
+											dataset.timestamps.archived
+									  ).format('D MMMM YYYY')}`
+									: ''}
 							</div>
 						</div>
 						<div className='action-bar-actions'>

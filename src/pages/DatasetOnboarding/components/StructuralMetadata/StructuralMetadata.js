@@ -3,11 +3,19 @@ import _ from 'lodash';
 import axios from 'axios';
 import { ReactComponent as UploadSVG } from '../../../../images/upload.svg';
 import readXlsxFile from 'read-excel-file';
+import { Link } from 'react-router-dom';
 import { Row, Col, Alert, Table } from 'react-bootstrap';
 import { baseURL } from '../../../../configs/url.config';
 import './StructuralMetadata.scss';
 
-const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetadata, structuralMetadataErrors, currentVersionId, readOnly }) => {
+const StructuralMetadata = ({
+	onStructuralMetaDataUpdate,
+	structuralMetadata,
+	structuralMetadataErrors,
+	currentVersionId,
+	readOnly,
+	percentageCompleted,
+}) => {
 	// 10mb - 10485760
 	// 2mb - 2097152
 	const maxSize = 10485760;
@@ -17,26 +25,51 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetadata, st
 	const schema = {
 		'Table Name': {
 			prop: 'tableName',
-			type: String,
+			type: value => {
+				if (value.length > 255) {
+					throw new Error('tooLong255');
+				}
+				return value;
+			},
 			required: true,
 		},
 		'Table Description': {
 			prop: 'tableDescription',
-			type: String,
+			type: value => {
+				if (value.length > 20000) {
+					throw new Error('tooLong20000');
+				}
+				return value;
+			},
 		},
 		'Column Name': {
 			prop: 'columnName',
-			type: String,
+			type: value => {
+				if (value.length > 255) {
+					throw new Error('tooLong255');
+				}
+				return value;
+			},
 			required: true,
 		},
 		'Column Description': {
 			prop: 'columnDescription',
-			type: String,
+			type: value => {
+				if (value.length > 20000) {
+					throw new Error('tooLong20000');
+				}
+				return value;
+			},
 			required: true,
 		},
 		'Data Type': {
 			prop: 'dataType',
-			type: String,
+			type: value => {
+				if (value.length > 255) {
+					throw new Error('tooLong255');
+				}
+				return value;
+			},
 			required: true,
 		},
 		Sensitive: {
@@ -50,20 +83,29 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetadata, st
 		if (maxSize < event.target.files[0].size) {
 			setNewStructuralMetaDataErrors([{ error: 'fileSizeError' }]);
 		} else {
-			readXlsxFile(event.target.files[0], { schema }).then(({ rows, errors }) => {
-				if (errors.length > 0) setNewStructuralMetaDataErrors(errors);
-				else setNewStructuralMetaDataErrors([]);
+			readXlsxFile(event.target.files[0], { schema })
+				.then(({ rows, errors }) => {
+					if (rows.length === 0) {
+						setNewStructuralMetaDataErrors([{ error: 'noEntries' }]);
+					} else if (errors.length > 0) {
+						setNewStructuralMetaDataErrors(errors);
+					} else {
+						setNewStructuralMetaDataErrors([]);
 
-				setNewStructuralMetaData(rows);
+						percentageCompleted.structural = 100;
 
-				if (rows.length > 0 && errors.length === 0) {
-					let params = {
-						rows: JSON.stringify(rows),
-						key: 'structuralMetadata',
-					};
-					axios.patch(`${baseURL}/api/v1/dataset-onboarding/${currentVersionId}`, params);
-				}
-			});
+						let params = {
+							rows: JSON.stringify(rows),
+							key: 'structuralMetadata',
+							percentageCompleted,
+						};
+						axios.patch(`${baseURL}/api/v1/dataset-onboarding/${currentVersionId}`, params);
+					}
+					setNewStructuralMetaData(rows);
+				})
+				.catch(err => {
+					setNewStructuralMetaDataErrors([{ error: 'errorLoading' }]);
+				});
 		}
 		event.target.value = null;
 	};
@@ -76,6 +118,49 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetadata, st
 
 	const handleClick = () => {
 		hiddenFileInput.current.click();
+	};
+
+	const renderErrors = errors => {
+		if (errors.column === 'Sensitive') {
+			if (errors.error === 'required') {
+				return (
+					<>
+						Error in row {errors.row}: "{errors.column}" is empty and should be "True" or "False"
+						<br />
+					</>
+				);
+			} else {
+				return (
+					<>
+						Error in row {errors.row}: "{errors.column}" is "{errors.value}" and should be "True" or "False"
+						<br />
+					</>
+				);
+			}
+		} else {
+			if (errors.error === 'tooLong20000') {
+				return (
+					<>
+						Error in row {errors.row}: "{errors.column}" too long at {errors.value.length} characters (only 20000 characters are allowed)
+						<br />
+					</>
+				);
+			} else if (errors.error === 'tooLong255') {
+				return (
+					<>
+						Error in row {errors.row}: "{errors.column}" too long at {errors.value.length} characters (only 255 characters are allowed)
+						<br />
+					</>
+				);
+			} else {
+				return (
+					<>
+						Error in row {errors.row}: "{errors.column}" is empty and should have content
+						<br />
+					</>
+				);
+			}
+		}
 	};
 
 	return (
@@ -117,13 +202,15 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetadata, st
 				</tbody>
 			</Table>
 			<div>
-				<button href='/StructuralMetadataTemplate.xlsx' className='button-tertiary margin-top-8 margin-bottom-24'>
-					Download data dictionary template
+				<button className='button-tertiary margin-top-8 margin-bottom-24'>
+					<Link to='/StructuralMetadataTemplate.xlsx' download target='_blank'>
+						Download data dictionary template
+					</Link>
 				</button>
 			</div>
 			<div className='files-header'>
 				<div>
-					<input type='file' id='input' hidden ref={hiddenFileInput} onChange={onChange} />
+					<input type='file' id='input' accept='.xls,.xlsx' hidden ref={hiddenFileInput} onChange={onChange} />
 					<p className='black-20-semibold margin-bottom-16'>Upload</p>
 					<div className='upload'>
 						<button className='button-tertiary' onClick={handleClick} disabled={readOnly}>
@@ -133,51 +220,43 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetadata, st
 					</div>
 				</div>
 			</div>
+
 			<div className='files-area'>
 				{structuralMetadataErrors.length > 0 ? (
-					structuralMetadataErrors[0].error === 'fileSizeError' ? (
-						'Test'
-					) : (
-						<Row>
-							<Col xs={12} s={12} md={12}>
+					<Row>
+						<Col xs={12} s={12} md={12}>
+							{structuralMetadataErrors[0].error === 'fileSizeError' ? <Alert variant='danger'>File exceeds 10MB limit</Alert> : ''}
+							{structuralMetadataErrors[0].error === 'noEntries' ? <Alert variant='danger'>File contained no entries</Alert> : ''}
+							{structuralMetadataErrors[0].error === 'errorLoading' ? (
+								<Alert variant='danger'>There was an error loading the file</Alert>
+							) : (
+								''
+							)}
+							{structuralMetadataErrors[0].error !== 'fileSizeError' &&
+							structuralMetadataErrors[0].error !== 'noEntries' &&
+							structuralMetadataErrors[0].error !== 'errorLoading' ? (
 								<Alert variant='danger'>
 									There are errors in the data you uploaded. Please correct these and try again. Errors are listed below.
 								</Alert>
-							</Col>
-						</Row>
-					)
+							) : (
+								''
+							)}
+						</Col>
+					</Row>
 				) : (
 					''
 				)}
 
-				{structuralMetadataErrors.length !== 0 ? (
+				{structuralMetadataErrors.length !== 0 &&
+				structuralMetadataErrors[0].error !== 'fileSizeError' &&
+				structuralMetadataErrors[0].error !== 'noEntries' &&
+				structuralMetadataErrors[0].error !== 'errorLoading' ? (
 					<Row>
 						<p className='dark-red-semibold-20 margin-top-16 margin-left-8'>Uploaded data errors</p>
 						<Col xs={12} s={12} md={12}>
 							<Alert variant='danger'>
 								{structuralMetadataErrors.map(errors => {
-									return (
-										<>
-											{errors.column === 'Sensitive' ? (
-												errors.error === 'required' ? (
-													<>
-														Error in row {errors.row}: "{errors.column}" is empty and should be "True" or "False"
-														<br />
-													</>
-												) : (
-													<>
-														Error in row {errors.row}: "{errors.column}" is "{errors.value}" and should be "True" or "False"
-														<br />
-													</>
-												)
-											) : (
-												<>
-													Error in row {errors.row}: "{errors.column}" is empty and is required
-													<br />
-												</>
-											)}
-										</>
-									);
+									return renderErrors(errors);
 								})}
 							</Alert>
 						</Col>
@@ -208,16 +287,20 @@ const StructuralMetadata = ({ onStructuralMetaDataUpdate, structuralMetadata, st
 							return (
 								<tr className='gray800-14'>
 									<td className={_.some(filtered, ['column', 'Table Name']) ? 'invalid-info table-cell' : 'table-cell'}>
-										{data.tableName}
+										{_.some(filtered, ['column', 'Table Name']) ? _.find(filtered, ['column', 'Table Name']).value : data.tableName}
 									</td>
 									<td className={_.some(filtered, ['column', 'Table Description']) ? 'invalid-info table-cell' : 'table-cell'}>
-										{data.tableDescription}
+										{_.some(filtered, ['column', 'Table Description'])
+											? _.find(filtered, ['column', 'Table Description']).value
+											: data.tableDescription}
 									</td>
 									<td className={_.some(filtered, ['column', 'Column Name']) ? 'invalid-info table-cell' : 'table-cell'}>
-										{data.columnName}
+										{_.some(filtered, ['column', 'Column Name']) ? _.find(filtered, ['column', 'Column Name']).value : data.columnName}
 									</td>
 									<td className={_.some(filtered, ['column', 'Column Description']) ? 'invalid-info table-cell' : 'table-cell'}>
-										{data.columnDescription}
+										{_.some(filtered, ['column', 'Column Description'])
+											? _.find(filtered, ['column', 'Column Description']).value
+											: data.columnDescription}
 									</td>
 									<td className={_.some(filtered, ['column', 'Data Type']) ? 'invalid-info table-cell' : 'table-cell'}>{data.dataType}</td>
 									<td className={_.some(filtered, ['column', 'Sensitive']) ? 'invalid-info table-cell' : 'table-cell'}>

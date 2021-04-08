@@ -196,7 +196,7 @@ const AccountDatasets = props => {
 															version={dataset.datasetVersion}
 															isDraft={true}
 															datasetStatus={dataset.activeflag}
-															lastActivity={dataset.updatedAt}
+															timeStamps={dataset.timestamps}
 															completion={dataset.percentageCompleted}
 															listOfVersions={dataset.listOfVersions}
 														/>
@@ -226,7 +226,7 @@ const AccountDatasets = props => {
 															version={dataset.datasetVersion}
 															isDraft={true}
 															datasetStatus={dataset.activeflag}
-															lastActivity={dataset.updatedAt}
+															timeStamps={dataset.timestamps}
 															completion={dataset.percentageCompleted}
 															listOfVersions={dataset.listOfVersions}
 														/>
@@ -256,7 +256,7 @@ const AccountDatasets = props => {
 															version={dataset.datasetVersion}
 															isDraft={true}
 															datasetStatus={dataset.activeflag}
-															lastActivity={dataset.updatedAt}
+															timeStamps={dataset.timestamps}
 															completion={dataset.percentageCompleted}
 															rejectionText={dataset.applicationStatusDesc}
 															listOfVersions={dataset.listOfVersions}
@@ -287,7 +287,7 @@ const AccountDatasets = props => {
 															version={dataset.datasetVersion}
 															isDraft={true}
 															datasetStatus={dataset.activeflag}
-															lastActivity={dataset.updatedAt}
+															timeStamps={dataset.timestamps}
 															completion={dataset.percentageCompleted}
 															listOfVersions={dataset.listOfVersions}
 														/>
