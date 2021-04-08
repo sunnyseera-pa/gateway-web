@@ -389,7 +389,9 @@ const AccountTeamManagement = ({ userState = [], team = '', forwardRef, onTeamMa
 												<div className='gray700-14'>Team email</div>
 												<FieldRepeater
 													id={index}
+                          teamId={teamId}
 													data={teamNotification}
+                          userHasRole={userHasRole}
 													handleFieldChange={handleFieldChange}
 													handleRemoveClick={handleRemoveClick}
 													handleAddClick={handleAddClick}

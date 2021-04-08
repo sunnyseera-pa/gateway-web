@@ -139,12 +139,6 @@ class Account extends Component {
 		if (!this.state.profileComplete) {
 			this.setState({ tabId: 'youraccount' });
 		}
-		window.addEventListener('beforeunload', this.componentCleanup);
-	}
-
-	componentWillUnmount() {
-		this.componentCleanup();
-		window.removeEventListener('beforeunload', this.componentCleanup);
 	}
 
 	componentWillReceiveProps(nextProps) {

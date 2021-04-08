@@ -1,18 +1,33 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Field from './Field';
 import FieldRepeaterAction from './FieldRepeaterAction';
+import { userTypes } from '../../dashboard/Team/teamUtil';
 import './FieldRepeater.scss';
 
-const FieldRepeater = ({id, data, handleFieldChange, handleRemoveClick, handleAddClick}) => {
+const FieldRepeater = ({id, teamId, data, userHasRole, handleFieldChange, handleRemoveClick, handleAddClick}) => {
+  const [manager, setIsManager] = useState(false);
+
+
+  const isManager = () => { 
+    const isManager = userHasRole(teamId, userTypes.MANAGER);
+    setIsManager(isManager);
+  }
+
   let { subscribedEmails = [], notificationType = ''} = data;
+
+  useEffect(() => {
+    isManager();
+  }, [teamId]);
+
   return (
     <div key={`repeater-${id}`}>
        {[...subscribedEmails].map(
         (value = {}, index = 1) => (
           <div className='field-repeater' key={`repeater-section-${index}`}>
-            <Field id={index + 1} data={value} index={index} notificationType={notificationType} handleFieldChange={handleFieldChange} />
+            <Field id={index + 1} manager={manager} data={value} index={index} notificationType={notificationType} handleFieldChange={handleFieldChange} />
             <FieldRepeaterAction 
               data={subscribedEmails}
+              manager={manager}
               notificationType={notificationType}
               index={index}
               handleRemoveClick={handleRemoveClick}
