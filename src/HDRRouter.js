@@ -125,6 +125,7 @@ class HDRRouter extends Component {
 							id: res.data.data[0].id,
 							name: res.data.data[0].name,
 							teams: res.data.data[0].teams,
+							email: res.data.data[0].email,
 							profileComplete: person.data.person.profileComplete,
 							provider: res.data.data[0].provider,
 							advancedSearchRoles: res.data.data[0].advancedSearchRoles,

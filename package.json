@@ -44,6 +44,7 @@
 		"react-schemaorg": "^1.1.0",
 		"react-scripts": "3.4.4",
 		"react-slidedown": "^2.4.5",
+		"react-switch": "^6.0.0",
 		"react-tabs": "^3.1.0",
 		"react-web-tabs": "^1.0.1",
 		"remove-markdown": "^0.3.0",

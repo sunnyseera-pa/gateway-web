@@ -3,6 +3,7 @@ import queryString from 'query-string';
 import { Nav, Accordion, Dropdown } from 'react-bootstrap';
 import _ from 'lodash';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
+import ActionBar from '../commonComponents/actionbar/ActionBar';
 import AccountTools from './AccountTools';
 import AccountProjects from './AccountProjects';
 import AccountDatasets from './AccountDatasets';
@@ -10,6 +11,7 @@ import AccountAdvancedSearch from './AccountAdvancedSearch';
 import AccountPapers from './AccountPapers';
 import AccountCourses from './AccountCourses';
 import AccountCollections from './AccountCollections';
+import AccountTeamManagement from './AccountTeamManagement';
 import AccountAnalyticsDashboard from './AccountAnalyticsDashboard';
 import AccountUsers from './AccountUsers';
 import AccountMembers from './AccountMembers';
@@ -25,6 +27,8 @@ import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
 import { ReactComponent as MembersSvg } from '../../images/members.svg';
+import { ReactComponent as CheckSVG } from '../../images/check.svg';
+
 import './Dashboard.scss';
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -85,18 +89,20 @@ class Account extends Component {
 		datasetAccordion: -1,
 		context: {},
 		profileComplete: true,
+		savedTeamNotificationSuccess: false,
+		isSubmitting: false,
 	};
 
 	constructor(props) {
 		super(props);
 		this.state.userState = props.userState;
+		// create Refs for parent to child fn calls
 		this.searchBar = React.createRef();
 		// 1. used for DAR custodian update status of application
 		if (_.has(props, 'location.state.alert')) {
 			this.state.alert = props.location.state.alert;
 			this.alertTimeOut = setTimeout(() => this.setState({ alert: {} }), 10000);
 		}
-
 		if (_.has(props, 'location.state.team') && props.location.state.team !== '') {
 			this.state.team = props.location.state.team;
 			localStorage.setItem('HDR_TEAM', props.location.state.team);
@@ -133,16 +139,6 @@ class Account extends Component {
 		if (!this.state.profileComplete) {
 			this.setState({ tabId: 'youraccount' });
 		}
-		window.addEventListener('beforeunload', this.componentCleanup);
-	}
-
-	componentCleanup() {
-		localStorage.setItem('HDR_TEAM', 'user');
-	}
-
-	componentWillUnmount() {
-		this.componentCleanup();
-		window.removeEventListener('beforeunload', this.componentCleanup);
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -328,12 +324,37 @@ class Account extends Component {
 		this.setState({ datasetAccordion: '0' });
 	};
 
+	getTeamId = team => {
+		const { teams } = this.state.userState[0];
+		if (!_.isEmpty(teams)) {
+			return [...teams].filter(t => {
+				return t.name.toUpperCase() === team.toUpperCase();
+			})[0]._id;
+		}
+		return null;
+	};
+
 	userHasRole(teamId, role) {
+		if (_.isEmpty(teamId) && !_.isEmpty(this.state.team)) {
+			teamId = this.getTeamId(this.state.team);
+		}
+
 		const team = this.state.userState[0].teams.filter(t => {
 			return t._id === teamId;
 		})[0];
+
 		return team && team.roles.includes(role);
 	}
+
+	onSaveNotificationsClick = () => {
+		// using forward ref call our save function inside child component
+		this.saveNotifiations();
+	};
+
+	// the onchange handler for when the user saves team management
+	onTeamManagementSave = (isSubmitting, savedTeamNotificationSuccess) => {
+		this.setState({ isSubmitting, savedTeamNotificationSuccess });
+	};
 
 	render() {
 		const {
@@ -349,6 +370,8 @@ class Account extends Component {
 			alert,
 			activeAccordion,
 			datasetAccordion,
+			savedTeamNotificationSuccess,
+			isSubmitting,
 		} = this.state;
 		if (typeof data.datasetids === 'undefined') {
 			data.datasetids = [];
@@ -386,35 +409,35 @@ class Account extends Component {
 
 							{team === 'user' ? (
 								<Fragment>
-									<div className={`${tabId === 'dashboard' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('dashboard')}>
+									<div className={`${tabId === 'dashboard' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('dashboard')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='dashboard' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Dashboard</span>
 										</Nav.Link>
 									</div>
 
-									<div className={`${tabId === 'youraccount' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('youraccount')}>
+									<div className={`${tabId === 'youraccount' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('youraccount')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='accounticon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Account</span>
 										</Nav.Link>
 									</div>
 
-									<div className={`${tabId === 'tools' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('tools')}>
+									<div className={`${tabId === 'tools' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('tools')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='newtoolicon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Tools</span>
 										</Nav.Link>
 									</div>
 
-									<div className={`${tabId === 'reviews' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('reviews')}>
+									<div className={`${tabId === 'reviews' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('reviews')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='reviewsicon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Reviews</span>
 										</Nav.Link>
 									</div>
 
-									<div className={`${tabId === 'projects' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('projects')}>
+									<div className={`${tabId === 'projects' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('projects')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='newestprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Projects</span>
@@ -423,7 +446,7 @@ class Account extends Component {
 
 									<div
 										data-test-id='datasets'
-										className={`${tabId === 'datasets' || tabId === 'datasetsAdvancedSearch' ? 'activeCard' : ''}`}>
+										className={`${tabId === 'datasets' || tabId === 'datasetsAdvancedSearch' ? 'activeCard' : 'accountNav'}`}>
 										<Accordion activeKey={datasetAccordion} onSelect={this.datasetAccordionClick}>
 											<Fragment>
 												<Accordion.Toggle variant='link' className='verticalNavBar gray700-13 navLinkButton' eventKey='0'>
@@ -451,14 +474,14 @@ class Account extends Component {
 										</Accordion>
 									</div>
 
-									<div className={`${tabId === 'papers' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('papers')}>
+									<div className={`${tabId === 'papers' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('papers')}>
 										<Nav.Link eventKey={'papers'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Papers</span>
 										</Nav.Link>
 									</div>
 
-									<div className={`${tabId === 'courses' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('courses')}>
+									<div className={`${tabId === 'courses' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('courses')}>
 										<Nav.Link eventKey={'courses'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='educationicon' fill={'#b3b8bd'} className='svg-20' />
 											<span className='navLinkItem'>Courses</span>
@@ -466,7 +489,7 @@ class Account extends Component {
 									</div>
 
 									<div
-										className={`${tabId === 'dataaccessrequests' ? 'activeCard' : ''}`}
+										className={`${tabId === 'dataaccessrequests' ? 'activeCard' : 'accountNav'}`}
 										onClick={e => this.toggleNav('dataaccessrequests')}>
 										<Nav.Link eventKey={'dataaccessrequests'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
@@ -474,7 +497,7 @@ class Account extends Component {
 										</Nav.Link>
 									</div>
 
-									<div className={`${tabId === 'collections' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('collections')}>
+									<div className={`${tabId === 'collections' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('collections')}>
 										<Nav.Link eventKey={'collections'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='collections' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Collections</span>
@@ -482,7 +505,7 @@ class Account extends Component {
 									</div>
 
 									{userState[0].role === 'Admin' ? (
-										<div className={`${tabId === 'usersroles' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('usersroles')}>
+										<div className={`${tabId === 'usersroles' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('usersroles')}>
 											<Nav.Link eventKey={'usersroles'} className='verticalNavBar gray700-13'>
 												<SVGIcon name='rolesicon' fill={'#b3b8bd'} className='accountSvgs' />
 												<span className='navLinkItem'>Users and roles</span>
@@ -493,64 +516,69 @@ class Account extends Component {
 									)}
 								</Fragment>
 							) : (
-								<div
-									className={`${
-										tabId === 'dataaccessrequests' || tabId === 'workflows' || tabId === 'addeditworkflow' ? 'activeCard' : ''
-									}`}>
-									{this.isPublisher() ? (
-										<Accordion activeKey={activeAccordion} onSelect={this.accordionClick}>
-											<Fragment>
-												<Accordion.Toggle variant='link' className='verticalNavBar gray700-13 navLinkButton' eventKey='0'>
-													<SVGIcon name='dataaccessicon' fill={'#b3b8bd'} className='accountSvgs' />
-													<span className='navLinkItem'>Data access requests</span>
-												</Accordion.Toggle>
-												<Accordion.Collapse eventKey='0'>
-													<div>
-														<Nav.Link
-															onClick={e => this.toggleNav('dataaccessrequests')}
-															bsPrefix='nav-block'
-															className={`gray700-13 ${tabId === 'dataaccessrequests' ? 'nav-item-active' : ''}`}>
-															<span className='subLinkItem'>Applications</span>
-														</Nav.Link>
-														{this.userHasRole(teamId, 'manager') && (
-															<Nav.Link
-																onClick={e => this.toggleNav(`workflows`)}
-																bsPrefix='nav-block'
-																className={`gray700-13 ${tabId === 'workflows' ? 'nav-item-active' : ''}`}>
-																<span className='subLinkItem'>Workflows</span>
-															</Nav.Link>
-														)}
-													</div>
-												</Accordion.Collapse>
-											</Fragment>
-										</Accordion>
-									) : (
-										<Fragment>
-											<Nav.Link onClick={e => this.toggleNav('dataaccessrequests')} className='verticalNavBar gray700-13'>
-												<SVGIcon name='dataaccessicon' fill={'#b3b8bd'} className='accountSvgs' />
-												<span className='navLinkItem'>Data access requests</span>
-											</Nav.Link>
-										</Fragment>
-									)}
-								</div>
-							)}
-							{team !== 'user' ? (
 								<Fragment>
-									<div className={`${tabId === 'members' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('members')}>
+									<div
+										className={`${tabId === 'teamManagement' ? 'activeCard' : 'accountNav'}`}
+										onClick={e => this.toggleNav('teamManagement')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
-											<MembersSvg className='membersSvg' />
-											<span style={{ 'margin-left': '11px' }}>Members</span>
+											<SVGIcon name='rolesicon' fill={'#b3b8bd'} className='accountSvgs' />
+											<span style={{ marginLeft: '11px' }}>Team Management</span>
 										</Nav.Link>
 									</div>
-									<div className={`${tabId === 'help' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('help')}>
+
+									<div
+										className={`${
+											tabId === 'dataaccessrequests' || tabId === 'workflows' || tabId === 'addeditworkflow' ? 'activeCard' : ''
+										}`}>
+										{this.isPublisher() ? (
+											<Accordion activeKey={activeAccordion} onSelect={this.accordionClick}>
+												<Fragment>
+													<Accordion.Toggle variant='link' className='verticalNavBar gray700-13 navLinkButton' eventKey='0'>
+														<SVGIcon name='dataaccessicon' fill={'#b3b8bd'} className='accountSvgs' />
+														<span className='navLinkItem'>Data access requests</span>
+													</Accordion.Toggle>
+													<Accordion.Collapse eventKey='0'>
+														<div>
+															<Nav.Link
+																onClick={e => this.toggleNav('dataaccessrequests')}
+																bsPrefix='nav-block'
+																className={`gray700-13 ${tabId === 'dataaccessrequests' ? 'nav-item-active' : ''}`}>
+																<span className='subLinkItem'>Applications</span>
+															</Nav.Link>
+															{this.userHasRole(teamId, 'manager') && (
+																<Nav.Link
+																	onClick={e => this.toggleNav(`workflows`)}
+																	bsPrefix='nav-block'
+																	className={`gray700-13 ${tabId === 'workflows' ? 'nav-item-active' : ''}`}>
+																	<span className='subLinkItem'>Workflows</span>
+																</Nav.Link>
+															)}
+														</div>
+													</Accordion.Collapse>
+												</Fragment>
+											</Accordion>
+										) : (
+											<Fragment>
+												<Nav.Link onClick={e => this.toggleNav('dataaccessrequests')} className='verticalNavBar gray700-13'>
+													<SVGIcon name='dataaccessicon' fill={'#b3b8bd'} className='accountSvgs' />
+													<span className='navLinkItem'>Data access requests</span>
+												</Nav.Link>
+											</Fragment>
+										)}
+									</div>
+									<div className={`${tabId === 'members' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('members')}>
+										<Nav.Link className='verticalNavBar gray700-13'>
+											<MembersSvg className='membersSvg' />
+											<span style={{ marginLeft: '11px' }}>Members</span>
+										</Nav.Link>
+									</div>
+									<div className={`${tabId === 'help' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('help')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='info' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Help</span>
 										</Nav.Link>
 									</div>
 								</Fragment>
-							) : (
-								''
 							)}
 						</div>
 					</div>
@@ -582,6 +610,19 @@ class Account extends Component {
 
 						{tabId === 'usersroles' ? <AccountUsers userState={userState} /> : ''}
 
+						{tabId === 'teamManagement' ? (
+							<AccountTeamManagement
+								userState={userState}
+								team={team}
+								forwardRef={c => {
+									this.saveNotifiations = c;
+								}}
+								onTeamManagementSave={this.onTeamManagementSave}
+							/>
+						) : (
+							''
+						)}
+
 						{tabId === 'members' ? <AccountMembers userState={userState} team={team} teamId={teamId} /> : ''}
 
 						{tabId === 'help' ? <TeamHelp /> : ''}
@@ -596,7 +637,28 @@ class Account extends Component {
 						drawerIsOpen={this.state.showDrawer}
 					/>
 				</SideDrawer>
+				{tabId === 'teamManagement' && (
+					<ActionBar userState={userState}>
+						<div>
+							{/* <button className='btn btn-primary white-14-semibold' onClick={this.onSaveNotificationsClick} type='button'>Save</button> */}
 
+							<button
+								className={savedTeamNotificationSuccess ? 'button-teal' : 'button-primary'}
+								type='button'
+								onClick={this.onSaveNotificationsClick}
+								disabled={isSubmitting}>
+								{' '}
+								{savedTeamNotificationSuccess ? (
+									<div>
+										<CheckSVG fill='#fff' className='submitClose' /> Saved
+									</div>
+								) : (
+									'Save'
+								)}
+							</button>
+						</div>
+					</ActionBar>
+				)}
 				<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
 			</Fragment>
 		);

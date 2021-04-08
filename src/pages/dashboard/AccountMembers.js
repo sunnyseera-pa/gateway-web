@@ -1,12 +1,13 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import axios from 'axios';
+import { isEmpty } from 'lodash';
 import { Row, Col, Button } from 'react-bootstrap';
 import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading';
-import '../../css/styles.scss';
-import './Dashboard.scss';
 import AccountMembersModal from './AccountMemberModal';
 import { initGA } from '../../tracking';
+import '../../css/styles.scss';
+import './Dashboard.scss';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -16,19 +17,33 @@ export const AccountMembers = props => {
 	const [members, setMembers] = useState([]);
 	const [userIsManager, setUserIsManager] = useState(false);
 	const [showAccountAddMemberModal, setShowAccountAddMemberModal] = useState(false);
-	const [accountMembersId] = useState(props.teamId);
+	const [teamId, setTeamId] = useState('');
 
 	useEffect(() => {
 		initGA('UA-166025838-1');
+		if (!isEmpty(props.team) && isEmpty(teamId)) {
+			const foundTeamId = getTeamId(props.team);
+			setTeamId(foundTeamId);
+		}
 		doMembersCall();
-	}, []);
+	}, [teamId]);
+
+	const getTeamId = team => {
+		const { teams } = userState[0];
+		if (!isEmpty(teams)) {
+			return teams.filter(t => {
+				return t.name.toUpperCase() === team.toUpperCase();
+			})[0]._id;
+		}
+		return null;
+	};
 
 	const doMembersCall = async () => {
-		if (accountMembersId) {
+		if (!isEmpty(teamId)) {
 			setIsLoading(true);
-			await axios.get(baseURL + `/api/v1/teams/${accountMembersId}/members`).then(async res => {
+			await axios.get(baseURL + `/api/v1/teams/${teamId}/members`).then(async res => {
 				setMembers(res.data.members);
-				setUserIsManager(res.data.members.filter(m => m.id === userState[0].id).map(m => m.roles[0] === 'manager')[0]);
+				setUserIsManager(res.data.members.filter(m => m.id === userState[0].id).map(m => m.roles.includes('manager')));
 			});
 		}
 		setIsLoading(false);
@@ -140,7 +155,7 @@ export const AccountMembers = props => {
 								<AccountMembersModal
 									open={showAccountAddMemberModal}
 									close={onShowAccountMembersModal}
-									teamId={accountMembersId}
+									teamId={teamId}
 									onMemberAdded={onMemberAdded}></AccountMembersModal>
 							</div>
 						);
