@@ -91,6 +91,7 @@ class Account extends Component {
 		profileComplete: true,
 		savedTeamNotificationSuccess: false,
 		isSubmitting: false,
+		teamManagementInternalTab: 'Notifications'
 	};
 
 	constructor(props) {
@@ -356,6 +357,10 @@ class Account extends Component {
 		this.setState({ isSubmitting, savedTeamNotificationSuccess });
 	};
 
+	onTeamManagementTabChange = (teamManagementTab) => {
+		this.setState({ teamManagementTab: teamManagementTab});
+	}
+
 	render() {
 		const {
 			searchString,
@@ -372,6 +377,7 @@ class Account extends Component {
 			datasetAccordion,
 			savedTeamNotificationSuccess,
 			isSubmitting,
+			teamManagementTab
 		} = this.state;
 		if (typeof data.datasetids === 'undefined') {
 			data.datasetids = [];
@@ -566,12 +572,12 @@ class Account extends Component {
 											</Fragment>
 										)}
 									</div>
-									<div className={`${tabId === 'members' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('members')}>
+									{/* <div className={`${tabId === 'members' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('members')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<MembersSvg className='membersSvg' />
 											<span style={{ marginLeft: '11px' }}>Members</span>
 										</Nav.Link>
-									</div>
+									</div> */}
 									<div className={`${tabId === 'help' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('help')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='info' fill={'#b3b8bd'} className='accountSvgs' />
@@ -618,12 +624,13 @@ class Account extends Component {
 									this.saveNotifiations = c;
 								}}
 								onTeamManagementSave={this.onTeamManagementSave}
+								onTeamManagementTabChange={this.onTeamManagementTabChange}
 							/>
 						) : (
 							''
 						)}
 
-						{tabId === 'members' ? <AccountMembers userState={userState} team={team} teamId={teamId} /> : ''}
+						{/* {tabId === 'members' ? <AccountMembers userState={userState} team={team} teamId={teamId} /> : ''} */}
 
 						{tabId === 'help' ? <TeamHelp /> : ''}
 					</div>
@@ -637,7 +644,7 @@ class Account extends Component {
 						drawerIsOpen={this.state.showDrawer}
 					/>
 				</SideDrawer>
-				{tabId === 'teamManagement' && (
+				{tabId === 'teamManagement' && teamManagementTab == 'Notifications' && (
 					<ActionBar userState={userState}>
 						<div>
 							{/* <button className='btn btn-primary white-14-semibold' onClick={this.onSaveNotificationsClick} type='button'>Save</button> */}

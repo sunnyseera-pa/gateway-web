@@ -5,6 +5,7 @@ import { isEmpty } from 'lodash';
 import axios from 'axios';
 import Loading from '../commonComponents/Loading';
 import { baseURL } from '../../configs/url.config';
+import AccountMembers from './AccountMembers';
 import TeamGatewayEmail from './Team/TeamGatewayEmail';
 import TeamGatewayNotificationEmails from './Team/TeamGatewayNotificationEmails';
 import FieldRepeater from '../commonComponents/FieldRepeater/FieldRepeater';
@@ -12,10 +13,11 @@ import TeamEmailAlertModal from './Team/TeamEmailAlertModal';
 import SVGIcon from '../../images/SVGIcon';
 import './Dashboard.scss';
 
-const AccountTeamManagement = ({ userState = [], team = '', forwardRef, onTeamManagementSave }) => {
+const AccountTeamManagement = ({ userState = [], team = '', forwardRef, onTeamManagementSave, onTeamManagementTabChange }) => {
 	// constants
 	const tabTypes = {
-		Notifications: 'Notifications',
+		Members: 'Members',
+		Notifications: 'Notifications'
 	};
 	// state
 	const [isLoading, setLoading] = useState(false);
@@ -26,12 +28,13 @@ const AccountTeamManagement = ({ userState = [], team = '', forwardRef, onTeamMa
 		{ notificationType: 'dataAccessRequest', optIn: false, subscribedEmails: [{ value: '', error: '' }] },
 	]);
 	const [alertModal, setAlertModal] = useState(false);
-	const [activeTabKey, setActiveTab] = useState(tabTypes.Notifications);
+	const [activeTabKey, setActiveTab] = useState(tabTypes.Members);
 	let history = useHistory();
 	forwardRef(() => saveNotifications());
 
 	// functions
 	const onTabChange = key => {
+		onTeamManagementTabChange(key);
 		setActiveTab(key);
 	};
 
@@ -194,7 +197,9 @@ const AccountTeamManagement = ({ userState = [], team = '', forwardRef, onTeamMa
 				let { notificationType, optIn, subscribedEmails } = teamNotification;
 
 				if (!isEmpty(subscribedEmails)) {
-					emails = [...subscribedEmails].map(item => item.value);
+					emails = [...subscribedEmails].filter((item) => {
+                      return item.value !== '';
+                    }).map(value => value.value);
 				}
 
 				arr = [...arr, { notificationType, optIn, subscribedEmails: emails }];
@@ -336,6 +341,8 @@ const AccountTeamManagement = ({ userState = [], team = '', forwardRef, onTeamMa
 				{/*CLOSE col-sm-10 */}
 				<Col xs={1}></Col>
 			</Row>
+
+			{activeTabKey == tabTypes.Members && <AccountMembers userState={userState} team={team} teamId={teamId}/>}
 
 			{activeTabKey === tabTypes.Notifications && (
 				<Row>
