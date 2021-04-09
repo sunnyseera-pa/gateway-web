@@ -99,6 +99,27 @@
 		display: flex;
 		flex-flow: row wrap;
 		word-break: break-word;
+		overflow-y: scroll;
+		max-height: 170px;
+		&::-webkit-scrollbar {
+			width: 0.35em;
+			height: 0.35em;
+			background-color: #f2f2f2;
+			border-radius: 3px;
+			-webkit-border-radius: 3px;
+			-moz-border-radius: 3px;
+		 }
+	 
+		 &::-webkit-scrollbar-thumb {
+			background-color: rgba(0,0,0,.1);
+			border-radius: 3px;
+			-webkit-border-radius: 3px;
+			-moz-border-radius: 3px;
+	 
+			&:hover {
+			 background: rgba(0,0,0, .2);
+			}
+		 }
 	}
 
 	&-chip {
