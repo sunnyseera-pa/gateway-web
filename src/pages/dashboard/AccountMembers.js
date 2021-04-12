@@ -45,7 +45,7 @@ export const AccountMembers = props => {
 	let roles = {
 		manager: 'Manager',
 		reviewer: 'Reviewer',
-		metadata_manager: 'Metadata Manager',
+		metadata_editor: 'Metadata Editor',
 	};
 
 	if (isLoading) {
