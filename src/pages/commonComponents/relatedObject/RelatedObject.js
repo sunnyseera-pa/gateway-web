@@ -27,7 +27,6 @@ class RelatedObject extends React.Component {
 		didDelete: false,
 		inCollection: false,
 		publisherLogoURL: '',
-		isPublisherHovering: false,
 	};
 
 	constructor(props) {
@@ -124,12 +123,8 @@ class RelatedObject extends React.Component {
 		return value;
 	};
 
-	setPublisherHover = value => {
-		this.setState({ isPublisherHovering: value });
-	};
-
 	render() {
-		const { data, isLoading, activeLink, onSearchPage, relatedObject, inCollection, publisherLogoURL, isPublisherHovering } = this.state;
+		const { data, isLoading, activeLink, onSearchPage, relatedObject, inCollection, publisherLogoURL } = this.state;
 
 		let publisherLogo;
 
@@ -780,7 +775,7 @@ class RelatedObject extends React.Component {
 										</Row>
 									);
 								}
-
+								
 								const phenotypesSelected = queryString.parse(window.location.search).phenotypes
 									? queryString.parse(window.location.search).phenotypes.split('::')
 									: [];
@@ -809,26 +804,18 @@ class RelatedObject extends React.Component {
 														''
 													)}
 													<span
-														className={isPublisherHovering ? 'gray800-14 textUnderline' : 'gray800-14'}
+														className='gray800-14'
 														style={{ cursor: 'pointer' }}
-														onClick={() =>
-															this.updateOnFilterBadge('publisher', { label: data.datasetfields.publisher, parentKey: 'publisher' })
-														}
-														onMouseEnter={() => this.setPublisherHover(true)}
-														onMouseLeave={() => this.setPublisherHover(false)}>
+														onClick={() => this.updateOnFilterBadge('publisher', {label: data.datasetfields.publisher, parentKey: 'publisher'})}>
 														{' '}
 														{data.datasetv2.summary.publisher.name}{' '}
 													</span>
 												</>
 											) : (
 												<span
-													className={isPublisherHovering ? 'gray800-14 textUnderline' : 'gray800-14'}
+													className='gray800-14'
 													style={{ cursor: 'pointer' }}
-													onClick={() =>
-														this.updateOnFilterBadge('publisher', { label: data.datasetfields.publisher, parentKey: 'publisher' })
-													}
-													onMouseEnter={() => this.setPublisherHover(true)}
-													onMouseLeave={() => this.setPublisherHover(false)}>
+													onClick={() => this.updateOnFilterBadge('publisher', {label: data.datasetfields.publisher, parentKey: 'publisher'})}>
 													{' '}
 													{data.datasetfields.publisher}{' '}
 												</span>
@@ -868,9 +855,7 @@ class RelatedObject extends React.Component {
 															return (
 																<span
 																	className='pointer'
-																	onClick={event =>
-																		this.updateOnFilterBadge('phenotypes', { label: phenotypesSeached[0].name, parentKey: 'phenotypes' })
-																	}>
+																	onClick={event => this.updateOnFilterBadge('phenotypes', {label: phenotypesSeached[0].name, parentKey: 'phenotypes'})}>
 																	<div className='badge-phenotype'>Phenotype: {phenotypesSeached[0].name}</div>
 																</span>
 															);
@@ -898,11 +883,7 @@ class RelatedObject extends React.Component {
 															if (activeLink === true) {
 																if (onSearchPage === true) {
 																	return (
-																		<span
-																			className='pointer'
-																			onClick={event =>
-																				this.updateOnFilterBadge('phenotypes', { label: phenotype, parentKey: 'phenotypes' })
-																			}>
+																		<span className='pointer' onClick={event => this.updateOnFilterBadge('phenotypes', {label: phenotype, parentKey: 'phenotypes'})}>
 																			<div className='badge-phenotype'>Phenotype: {phenotype}</div>
 																		</span>
 																	);
@@ -925,11 +906,7 @@ class RelatedObject extends React.Component {
 														if (activeLink === true) {
 															if (onSearchPage === true) {
 																return (
-																	<span
-																		className='pointer'
-																		onClick={event =>
-																			this.updateOnFilterBadge('datasetfeatures', { label: feature, parentKey: 'datasetfeatures' })
-																		}>
+																	<span className='pointer' onClick={event => this.updateOnFilterBadge('datasetfeatures', {label: feature, parentKey: 'datasetfeatures'})}>
 																		<div className='badge-tag'>{feature}</div>
 																	</span>
 																);
