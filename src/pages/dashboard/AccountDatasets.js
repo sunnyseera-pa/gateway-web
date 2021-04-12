@@ -125,54 +125,58 @@ const AccountDatasets = props => {
 			<Row>
 				<Col xs={1}></Col>
 				<Col xs={10}>
-					<Row className='accountHeader'>
-						<Col sm={12} md={8}>
-							<div>
-								<span className='black-20'>Datasets</span>
-							</div>
-							<div>
-								<span className='gray700-13 '>
-									{publisherID !== 'admin'
-										? 'View, add, edit, archive and check the status of your datasets.'
-										: 'Approve or reject pending datasets'}
-								</span>
-							</div>
-						</Col>
-						<Col sm={12} md={4} style={{ textAlign: 'right' }}>
-							<Button
-								variant='primary'
-								className='addButton'
-								onClick={(() => Event('Buttons', 'Click', 'Add a new paper'), createNewDataset)}>
-								+ Add a new dataset
-							</Button>
-						</Col>
-					</Row>
-					<Row className='tabsBackground'>
-						<Col sm={12} lg={12}>
-							{team === 'admin' ? (
-								<Tabs className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
-									<Tab eventKey='inReview' title={'Pending approval (' + reviewCount + ')'}>
-										{' '}
-									</Tab>
-								</Tabs>
-							) : (
-								<Tabs className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
-									<Tab eventKey='active' title={'Active (' + activeCount + ')'}>
-										{' '}
-									</Tab>
-									<Tab eventKey='inReview' title={'Pending approval (' + reviewCount + ')'}>
-										{' '}
-									</Tab>
-									<Tab eventKey='rejected' title={'Rejected (' + rejectedCount + ')'}>
-										{' '}
-									</Tab>
-									<Tab eventKey='archive' title={'Archived (' + archiveCount + ')'}>
-										{' '}
-									</Tab>
-								</Tabs>
-							)}
-						</Col>
-					</Row>
+					<div className='accountHeader'>
+						<Row>
+							<Col sm={12} md={8}>
+								<div>
+									<span className='black-20'>Datasets</span>
+								</div>
+								<div>
+									<span className='gray700-13 '>
+										{publisherID !== 'admin'
+											? 'View, add, edit, archive and check the status of your datasets.'
+											: 'Approve or reject pending datasets'}
+									</span>
+								</div>
+							</Col>
+							<Col sm={12} md={4} style={{ textAlign: 'right' }}>
+								<Button
+									variant='primary'
+									className='addButton'
+									onClick={(() => Event('Buttons', 'Click', 'Add a new paper'), createNewDataset)}>
+									+ Add a new dataset
+								</Button>
+							</Col>
+						</Row>
+					</div>
+					<div className='tabsBackground'>
+						<Row>
+							<Col sm={12} lg={12}>
+								{team === 'admin' ? (
+									<Tabs className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
+										<Tab eventKey='inReview' title={'Pending approval (' + reviewCount + ')'}>
+											{' '}
+										</Tab>
+									</Tabs>
+								) : (
+									<Tabs className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
+										<Tab eventKey='active' title={'Active (' + activeCount + ')'}>
+											{' '}
+										</Tab>
+										<Tab eventKey='inReview' title={'Pending approval (' + reviewCount + ')'}>
+											{' '}
+										</Tab>
+										<Tab eventKey='rejected' title={'Rejected (' + rejectedCount + ')'}>
+											{' '}
+										</Tab>
+										<Tab eventKey='archive' title={'Archived (' + archiveCount + ')'}>
+											{' '}
+										</Tab>
+									</Tabs>
+								)}
+							</Col>
+						</Row>
+					</div>
 
 					{(() => {
 						switch (key) {
@@ -180,9 +184,7 @@ const AccountDatasets = props => {
 								return (
 									<div>
 										{activeCount <= 0 ? (
-											<Row className='margin-right-15'>
-												<NotFound word='datasets' />
-											</Row>
+											<NotFound word='datasets' />
 										) : (
 											datasetList.map(dataset => {
 												if (dataset.activeflag !== 'active' && dataset.activeflag !== 'draft') {
@@ -210,9 +212,7 @@ const AccountDatasets = props => {
 								return (
 									<div>
 										{reviewCount <= 0 ? (
-											<Row className='margin-right-15'>
-												<NotFound word='datasets' />
-											</Row>
+											<NotFound word='datasets' />
 										) : (
 											datasetList.map(dataset => {
 												if (dataset.activeflag !== 'inReview') {
@@ -240,9 +240,7 @@ const AccountDatasets = props => {
 								return (
 									<div>
 										{rejectedCount <= 0 ? (
-											<Row className='margin-right-15'>
-												<NotFound word='datasets' />
-											</Row>
+											<NotFound word='datasets' />
 										) : (
 											datasetList.map(dataset => {
 												if (dataset.activeflag !== 'rejected') {
@@ -271,9 +269,7 @@ const AccountDatasets = props => {
 								return (
 									<div>
 										{archiveCount <= 0 ? (
-											<Row className='margin-right-15'>
-												<NotFound word='datasets' />
-											</Row>
+											<NotFound word='datasets' />
 										) : (
 											datasetList.map(dataset => {
 												if (dataset.activeflag !== 'archive') {
@@ -283,7 +279,7 @@ const AccountDatasets = props => {
 														<DatasetCard
 															id={dataset._id}
 															title={dataset.name}
-															publisher={dataset.datasetv2.summary.publisher.name}
+															//publisher={dataset.datasetv2.summary.publisher.name}
 															version={dataset.datasetVersion}
 															isDraft={true}
 															datasetStatus={dataset.activeflag}

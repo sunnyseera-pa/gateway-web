@@ -97,7 +97,11 @@ class Account extends Component {
 			this.alertTimeOut = setTimeout(() => this.setState({ alert: {} }), 10000);
 		}
 
-		if (
+		let values = queryString.parse(window.location.search);
+		if (values.team === 'user') {
+			this.state.team = 'user';
+			localStorage.setItem('HDR_TEAM', 'user');
+		} else if (
 			(_.has(props, 'location.state.team') && props.location.state.team !== '') ||
 			(_.has(props, 'location.state.publisher') && props.location.state.team !== '')
 		) {
@@ -479,19 +483,19 @@ class Account extends Component {
 												</Accordion.Toggle>
 												<Accordion.Collapse eventKey='0'>
 													<div>
-														<Nav.Link
+														{/* <Nav.Link
 															onClick={e => this.toggleNav('datasets')}
 															bsPrefix='nav-block'
 															className={`gray700-13 ${tabId === 'datasets' ? 'nav-item-active' : ''}`}>
 															<span className='subLinkItem'>Datasets</span>
-														</Nav.Link>
-														{/* <Nav.Link
+														</Nav.Link> */}
+														<Nav.Link
 															data-test-id='advanced-search'
 															onClick={e => this.toggleNav('datasetsAdvancedSearch')}
 															bsPrefix='nav-block'
 															className={`gray700-13 ${tabId === 'datasetsAdvancedSearch' ? 'nav-item-active' : ''}`}>
 															<span className='subLinkItem'>Advanced search</span>
-														</Nav.Link> */}
+														</Nav.Link>
 													</div>
 												</Accordion.Collapse>
 											</Fragment>
@@ -598,12 +602,12 @@ class Account extends Component {
 											</Fragment>
 										)}
 									</div>
-									<div className={`${tabId === 'datasets' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('datasets')}>
+									{/* <div className={`${tabId === 'datasets' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('datasets')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span style={{ 'margin-left': '11px' }}>Datasets</span>
 										</Nav.Link>
-									</div>
+									</div> */}
 									<div className={`${tabId === 'members' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('members')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<MembersSvg className='membersSvg' />

@@ -37,7 +37,7 @@ class TypaheadCustom extends React.Component {
 				className={'addFormInputTypeAhead'}
 				multiple
 				disabled={this.state.readOnly}
-				options={this.props.options ? this.props.options : ['Test', 'Test1']}
+				options={this.props.options}
 				onChange={this.handleChange}
 				onBlur={this.handleBlur}
 				onFocus={this.handleFocus}

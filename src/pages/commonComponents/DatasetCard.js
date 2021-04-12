@@ -1,9 +1,8 @@
 import React, { Fragment, useState } from 'react';
 import { OverlayTrigger, Tooltip, Row, Button, Accordion, Col } from 'react-bootstrap';
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 import SLA from '../commonComponents/sla/SLA';
 import TimeDuration from './timeDuration/TimeDuration';
-import AccessActivity from '../../pages/dashboard/DataAccessRequests/AccessActivity/AccessActivity';
 import DatasetOnboardingHelper from './../../utils/DatasetOnboardingHelper.util';
 import CommentItem from '../dashboard/DataAccessRequests/CommentItem/CommentItem.js';
 import StatusDisplay from './StatusDisplay';
@@ -21,13 +20,6 @@ let completionList = {
 	Enrichment: 'enrichmentAndLinkage',
 	Observations: 'observations',
 	'Structural Meta Data': 'structural',
-};
-
-let statusIcons = {
-	// Move to datasetcard
-	partial: { text: 'Partially completed', icon: 'MetadataHalfDoneSvg' },
-	done: { text: 'Completed', icon: 'MetadataHalfDoneSvg' },
-	empty: { text: 'Not completed', icon: 'MetadataHalfDoneSvg' },
 };
 
 export const DatasetCard = props => {
@@ -69,24 +61,25 @@ export const DatasetCard = props => {
 							) : (
 								''
 							)}
-							{/* {datasetStatus === 'draft' ? <>: ''} */}
 						</div>
 					</div>
 					<div className='dataset-completion-wheels'>
-						{Object.keys(completionList).map(key => (
-							<OverlayTrigger
-								key={key}
-								placement='top'
-								overlay={
-									<Tooltip id={`tooltip-top`}>
-										{key}: {completion[completionList[key]]}
-									</Tooltip>
-								}>
-								<div>
-									<StatusDisplay section={key} status={completion[completionList[key]]} />
-								</div>
-							</OverlayTrigger>
-						))}
+						{!isEmpty(completion)
+							? Object.keys(completionList).map(key => (
+									<OverlayTrigger
+										key={key}
+										placement='top'
+										overlay={
+											<Tooltip id={`tooltip-top`}>
+												{key}: {completion[completionList[key]]}
+											</Tooltip>
+										}>
+										<div>
+											<StatusDisplay section={key} status={completion[completionList[key]]} />
+										</div>
+									</OverlayTrigger>
+							  ))
+							: ''}
 					</div>
 
 					<div className='body'>
@@ -154,34 +147,11 @@ export const DatasetCard = props => {
 									{datasetStatus === 'draft' ? ' (Draft)' : ''}
 								</div>
 							)}
+							{(() => {
+								console.log(timeStamps.updated);
+							})()}
 							<div className='box'>Last activity</div>
-							<div className='box'>{moment(timeStamps.updated).format('D MMMM YYYY HH:mm')}</div>
-
-							{/* <div className='box'>
-								{moment(updatedAt).format('D MMMM YYYY HH:mm')}
-								{isTeam == true ? (
-									<div className='box-meta'>
-										{applicationStatus === DatasetOnboardingHelper.darStatus.submitted ? (
-											<button
-												id='startReview'
-												className='button-primary'
-												onClick={e => {
-													onClickStartReview(e);
-												}}>
-												Start review
-											</button>
-										) : !_.isEmpty(reviewStatus) || !_.isEmpty(amendmentStatus) ? (
-											setActivityMeta()
-										) : (
-											''
-										)}
-									</div>
-								) : !_.isEmpty(amendmentStatus) ? (
-									setActivityMeta()
-								) : (
-									''
-								)}
-							</div> */}
+							<div className='box'>{!isEmpty(timeStamps.updated) ? moment(timeStamps.updated).format('D MMMM YYYY HH:mm') : '-'}</div>
 						</Fragment>
 					</div>
 					{datasetStatus === 'rejected' ? (

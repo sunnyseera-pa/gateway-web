@@ -400,7 +400,7 @@ class DatasetOnboarding extends Component {
 	 * @desc Callback from Winterfell sets totalQuestionsAnswered + saveTime
 	 */
 	onFormUpdate = (id = '', questionAnswers = {}) => {
-		if (!_.isEmpty(id) && !_.isEmpty(questionAnswers)) {
+		if (!_.isEmpty(id) && !_.isEmpty(questionAnswers) && !this.state.readOnly) {
 			let { lookup, activePanelId } = this.state;
 			// 1. check for auto complete
 			if (typeof id === 'string') {
