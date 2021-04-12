@@ -27,7 +27,6 @@ class RelatedObject extends React.Component {
 		didDelete: false,
 		inCollection: false,
 		publisherLogoURL: '',
-		isPublisherHovering: false,
 	};
 
 	constructor(props) {
@@ -124,12 +123,8 @@ class RelatedObject extends React.Component {
 		return value;
 	};
 
-	setPublisherHover = value => {
-		this.setState({ isPublisherHovering: value });
-	};
-
 	render() {
-		const { data, isLoading, activeLink, onSearchPage, relatedObject, inCollection, publisherLogoURL, isPublisherHovering } = this.state;
+		const { data, isLoading, activeLink, onSearchPage, relatedObject, inCollection, publisherLogoURL } = this.state;
 
 		let publisherLogo;
 
@@ -809,26 +804,22 @@ class RelatedObject extends React.Component {
 														''
 													)}
 													<span
-														className={isPublisherHovering ? 'gray800-14 textUnderline' : 'gray800-14'}
+														className={activeLink ? 'gray800-14 underlined' : 'gray800-14'}
 														style={{ cursor: 'pointer' }}
 														onClick={() =>
 															this.updateOnFilterBadge('publisher', { label: data.datasetfields.publisher, parentKey: 'publisher' })
-														}
-														onMouseEnter={() => this.setPublisherHover(true)}
-														onMouseLeave={() => this.setPublisherHover(false)}>
+														}>
 														{' '}
 														{data.datasetv2.summary.publisher.name}{' '}
 													</span>
 												</>
 											) : (
 												<span
-													className={isPublisherHovering ? 'gray800-14 textUnderline' : 'gray800-14'}
+													className={activeLink ? 'gray800-14 underlined' : 'gray800-14'}
 													style={{ cursor: 'pointer' }}
 													onClick={() =>
 														this.updateOnFilterBadge('publisher', { label: data.datasetfields.publisher, parentKey: 'publisher' })
-													}
-													onMouseEnter={() => this.setPublisherHover(true)}
-													onMouseLeave={() => this.setPublisherHover(false)}>
+													}>
 													{' '}
 													{data.datasetfields.publisher}{' '}
 												</span>
