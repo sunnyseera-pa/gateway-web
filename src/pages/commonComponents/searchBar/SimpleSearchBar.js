@@ -1,17 +1,9 @@
 import React from 'react';
-
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Alert from 'react-bootstrap/Alert';
-
 import SVGIcon from '../../../images/SVGIcon';
-import { ReactComponent as ColourLogoSvg } from '../../../images/colour.svg';
-import { ReactComponent as ClearButtonSvg } from '../../../images/clear.svg';
 import './SearchBar.scss';
 
-var baseURL = require('../BaseURL').getURL();
-var cmsURL = require('../BaseURL').getCMSURL();
+let baseURL = require('../BaseURL').getURL();
+let cmsURL = require('../BaseURL').getCMSURL();
 
 class SimpleSearchBar extends React.Component {
 	state = {
@@ -48,6 +40,7 @@ class SimpleSearchBar extends React.Component {
 						</span>
 						<span>
 							<input
+								data-test-id='simple-search-bar'
 								type='text'
 								placeholder='Search'
 								id='searchInputSpanGrey'
@@ -56,12 +49,6 @@ class SimpleSearchBar extends React.Component {
 								value={this.props.searchString}
 							/>
 						</span>
-						{/* {(this.props.searchString != '' && this.props.searchString != undefined) ?
-                            <span className="searchInputClearGrey">
-                                <a style={{ cursor: 'pointer' }} href={'/search?search='} >
-                                    <ClearButtonSvg />
-                                </a>
-                            </span> : null} */}
 					</span>
 				</div>
 			</div>

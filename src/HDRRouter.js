@@ -29,6 +29,7 @@ import LoginModal from './pages/commonComponents/LoginModal';
 import Footer from './pages/commonComponents/Footer';
 import LoginErrorPage from './pages/commonComponents/LoginErrorPage';
 import ErrorModal from './pages/commonComponents/errorModal/ErrorModal';
+import DatasetOnboarding from './pages/DatasetOnboarding/DatasetOnboarding';
 import { GuardedRoute } from './pages/commonComponents/GuardedRoute';
 
 var baseURL = require('./pages/commonComponents/BaseURL').getURL();
@@ -189,6 +190,8 @@ class HDRRouter extends Component {
 						<Route path='/sso' render={props => <SSOPage {...props} userState={userState} />} />
 						<Route path='/account/unsubscribe/:userObjectID' render={props => <Unsubscribe {...props} userState={userState} />} />
 						<Route path='/dashboard' render={props => <PublicAnalyticsDashboard {...props} userState={userState} />} />
+
+						<GuardedRoute path='/dataset-onboarding/:id' component={DatasetOnboarding} userState={userState} />
 						<GuardedRoute path='/data-access-request/dataset/:datasetId' component={DataAccessRequest} userState={userState} />
 						<GuardedRoute path='/data-access-request/publisher/:publisherId' component={DataAccessRequest} userState={userState} />
 						<GuardedRoute path='/data-access-request/:accessId' component={DataAccessRequest} userState={userState} />
@@ -216,4 +219,4 @@ class HDRRouter extends Component {
 		);
 	}
 }
-export default HDRRouter; 
+export default HDRRouter;

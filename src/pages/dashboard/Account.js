@@ -97,7 +97,14 @@ class Account extends Component {
 			this.alertTimeOut = setTimeout(() => this.setState({ alert: {} }), 10000);
 		}
 
-		if (_.has(props, 'location.state.team') && props.location.state.team !== '') {
+		let values = queryString.parse(window.location.search);
+		if (values.team === 'user') {
+			this.state.team = 'user';
+			localStorage.setItem('HDR_TEAM', 'user');
+		} else if (
+			(_.has(props, 'location.state.team') && props.location.state.team !== '') ||
+			(_.has(props, 'location.state.publisher') && props.location.state.team !== '')
+		) {
 			this.state.team = props.location.state.team;
 			localStorage.setItem('HDR_TEAM', props.location.state.team);
 		} else if (!_.isEmpty(localStorage.getItem('HDR_TEAM'))) {
@@ -106,43 +113,10 @@ class Account extends Component {
 			this.state.team = 'user';
 			localStorage.setItem('HDR_TEAM', 'user');
 		}
+
 		if (_.has(props, 'profileComplete')) {
 			this.state.profileComplete = props.profileComplete;
 		}
-	}
-
-	componentDidMount() {
-		if (window.location.search) {
-			let tab = '';
-			let values = queryString.parse(window.location.search);
-			if (values.tab !== this.state.tabId || typeof values.tab !== 'undefined' || typeof values.tab !== null) {
-				tab = this.checkRedirect(values);
-				this.setState({
-					tabId: tab,
-					isDeleted: values.toolDeleted,
-					isApproved: values.toolApproved,
-					isRejected: values.toolRejected,
-					isProjectApproved: values.projectApproved,
-					isProjectRejected: values.projectRejected,
-					isReviewApproved: values.reviewApproved,
-					isReviewRejected: values.reviewRejected,
-				});
-				this.toggleNav(tab);
-			}
-		}
-		if (!this.state.profileComplete) {
-			this.setState({ tabId: 'youraccount' });
-		}
-		window.addEventListener('beforeunload', this.componentCleanup);
-	}
-
-	componentCleanup() {
-		localStorage.setItem('HDR_TEAM', 'user');
-	}
-
-	componentWillUnmount() {
-		this.componentCleanup();
-		window.removeEventListener('beforeunload', this.componentCleanup);
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -171,6 +145,32 @@ class Account extends Component {
 				});
 			}
 		}
+
+		if (!this.state.profileComplete) {
+			this.setState({ tabId: 'youraccount' });
+		}
+	}
+
+	componentDidMount() {
+		if (window.location.search) {
+			let tab = '';
+			let values = queryString.parse(window.location.search);
+			if (values.tab !== this.state.tabId || typeof values.tab !== 'undefined' || typeof values.tab !== null) {
+				tab = this.checkRedirect(values);
+				this.setState({
+					tabId: tab,
+					isDeleted: values.toolDeleted,
+					isApproved: values.toolApproved,
+					isRejected: values.toolRejected,
+					isProjectApproved: values.projectApproved,
+					isProjectRejected: values.projectRejected,
+					isReviewApproved: values.reviewApproved,
+					isReviewRejected: values.reviewRejected,
+				});
+				this.toggleNav(tab);
+			}
+		}
+
 		if (!this.state.profileComplete) {
 			this.setState({ tabId: 'youraccount' });
 		}
@@ -257,7 +257,7 @@ class Account extends Component {
 						<Dropdown.Item
 							className='gray700-13'
 							onClick={e => {
-								this.toggleNav(`${this.state.tabId}&team=${pub.name}`);
+								this.toggleNav(`${this.state.tabId}&team=${pub._id}`);
 								this.setState({ teamId: pub._id });
 							}}>
 							{pub.name}
@@ -269,6 +269,45 @@ class Account extends Component {
 			}
 		} else {
 			return '';
+		}
+	}
+
+	/**
+	 * [renderAdmin Renders out admin entry if admin team is found]
+	 *
+	 * @return  {[Nav.item]}  [return Nav.Item]
+	 */
+	renderAdmin() {
+		let { userState } = this.state;
+		let [user] = userState;
+		const isAdmin = [...user.teams].filter(p => p.type === 'admin');
+
+		if (!_.isEmpty(isAdmin)) {
+			return (
+				<Dropdown.Item
+					className='gray700-13'
+					onClick={e => {
+						this.toggleNav(`datasets&team=admin`);
+						this.setState({ teamId: 'admin' });
+					}}>
+					HDR Admin
+				</Dropdown.Item>
+			);
+		} else {
+			return '';
+		}
+	}
+
+	renderCurrentTeam() {
+		let { team, userState } = this.state;
+		if (team === 'user') return <>{userState[0].name}</>;
+		else if (team === 'admin') return <>HDR Admin</>;
+		else {
+			const teamIs = this.state.userState[0].teams.filter(t => {
+				return t._id === team;
+			})[0];
+
+			return <>{teamIs.name}</>;
 		}
 	}
 
@@ -304,7 +343,7 @@ class Account extends Component {
 
 			if (!_.isEmpty(tab.team)) {
 				localStorage.setItem('HDR_TEAM', tab.team);
-				if (tab.team !== 'user') tab.tabId = 'dataaccessrequests';
+				if (tab.team !== 'user' && tab.team !== 'admin') tab.tabId = 'dataaccessrequests';
 			} else if (localStorage.getItem('HDR_TEAM') == '') localStorage.setItem('HDR_TEAM', 'user');
 			// 6. set state
 			this.setState({
@@ -371,7 +410,7 @@ class Account extends Component {
 							<Dropdown>
 								<Dropdown.Toggle as={CustomToggle}>
 									<div className='teamSelectorHeader'>
-										<span className='gray700-13'>{team === 'user' ? userState[0].name : team}</span>
+										<span className='gray700-13'>{this.renderCurrentTeam()}</span>
 										<ChevronRightSvg fill={'#475da7'} className='dataClassArrow pointer' />
 									</div>
 								</Dropdown.Toggle>
@@ -380,6 +419,8 @@ class Account extends Component {
 									<Dropdown.Item className='gray700-13' onClick={e => this.toggleNav(`youraccount&team=user`)}>
 										{userState[0].name || ''}
 									</Dropdown.Item>
+									{this.renderAdmin()}
+									<hr />
 									{this.renderPublishers()}
 								</Dropdown.Menu>
 							</Dropdown>
@@ -432,12 +473,6 @@ class Account extends Component {
 												</Accordion.Toggle>
 												<Accordion.Collapse eventKey='0'>
 													<div>
-														<Nav.Link
-															onClick={e => this.toggleNav('datasets')}
-															bsPrefix='nav-block'
-															className={`gray700-13 ${tabId === 'datasets' ? 'nav-item-active' : ''}`}>
-															<span className='subLinkItem'>Datasets</span>
-														</Nav.Link>
 														<Nav.Link
 															data-test-id='advanced-search'
 															onClick={e => this.toggleNav('datasetsAdvancedSearch')}
@@ -493,49 +528,70 @@ class Account extends Component {
 									)}
 								</Fragment>
 							) : (
-								<div
-									className={`${
-										tabId === 'dataaccessrequests' || tabId === 'workflows' || tabId === 'addeditworkflow' ? 'activeCard' : ''
-									}`}>
-									{this.isPublisher() ? (
-										<Accordion activeKey={activeAccordion} onSelect={this.accordionClick}>
+								''
+							)}
+
+							{team === 'admin' ? (
+								<Fragment>
+									<div className={`${tabId === 'datasets' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('datasets')}>
+										<Nav.Link className='verticalNavBar gray700-13'>
+											<SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
+											<span style={{ 'margin-left': '11px' }}>Datasets</span>
+										</Nav.Link>
+									</div>
+								</Fragment>
+							) : (
+								''
+							)}
+
+							{team !== 'user' && team !== 'admin' ? (
+								<Fragment>
+									<div
+										className={`${
+											tabId === 'dataaccessrequests' || tabId === 'workflows' || tabId === 'addeditworkflow' ? 'activeCard' : ''
+										}`}>
+										{this.isPublisher() ? (
+											<Accordion activeKey={activeAccordion} onSelect={this.accordionClick}>
+												<Fragment>
+													<Accordion.Toggle variant='link' className='verticalNavBar gray700-13 navLinkButton' eventKey='0'>
+														<SVGIcon name='dataaccessicon' fill={'#b3b8bd'} className='accountSvgs' />
+														<span className='navLinkItem'>Data access requests</span>
+													</Accordion.Toggle>
+													<Accordion.Collapse eventKey='0'>
+														<div>
+															<Nav.Link
+																onClick={e => this.toggleNav('dataaccessrequests')}
+																bsPrefix='nav-block'
+																className={`gray700-13 ${tabId === 'dataaccessrequests' ? 'nav-item-active' : ''}`}>
+																<span className='subLinkItem'>Applications</span>
+															</Nav.Link>
+															{this.userHasRole(teamId, 'manager') && (
+																<Nav.Link
+																	onClick={e => this.toggleNav(`workflows`)}
+																	bsPrefix='nav-block'
+																	className={`gray700-13 ${tabId === 'workflows' ? 'nav-item-active' : ''}`}>
+																	<span className='subLinkItem'>Workflows</span>
+																</Nav.Link>
+															)}
+														</div>
+													</Accordion.Collapse>
+												</Fragment>
+											</Accordion>
+										) : (
 											<Fragment>
-												<Accordion.Toggle variant='link' className='verticalNavBar gray700-13 navLinkButton' eventKey='0'>
+												<Nav.Link onClick={e => this.toggleNav('dataaccessrequests')} className='verticalNavBar gray700-13'>
 													<SVGIcon name='dataaccessicon' fill={'#b3b8bd'} className='accountSvgs' />
 													<span className='navLinkItem'>Data access requests</span>
-												</Accordion.Toggle>
-												<Accordion.Collapse eventKey='0'>
-													<div>
-														<Nav.Link
-															onClick={e => this.toggleNav('dataaccessrequests')}
-															bsPrefix='nav-block'
-															className={`gray700-13 ${tabId === 'dataaccessrequests' ? 'nav-item-active' : ''}`}>
-															<span className='subLinkItem'>Applications</span>
-														</Nav.Link>
-														{this.userHasRole(teamId, 'manager') && (
-															<Nav.Link
-																onClick={e => this.toggleNav(`workflows`)}
-																bsPrefix='nav-block'
-																className={`gray700-13 ${tabId === 'workflows' ? 'nav-item-active' : ''}`}>
-																<span className='subLinkItem'>Workflows</span>
-															</Nav.Link>
-														)}
-													</div>
-												</Accordion.Collapse>
+												</Nav.Link>
 											</Fragment>
-										</Accordion>
-									) : (
-										<Fragment>
-											<Nav.Link onClick={e => this.toggleNav('dataaccessrequests')} className='verticalNavBar gray700-13'>
-												<SVGIcon name='dataaccessicon' fill={'#b3b8bd'} className='accountSvgs' />
-												<span className='navLinkItem'>Data access requests</span>
-											</Nav.Link>
-										</Fragment>
-									)}
-								</div>
-							)}
-							{team !== 'user' ? (
-								<Fragment>
+										)}
+									</div>
+									{/* <div className={`${tabId === 'datasets' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('datasets')}>
+										<Nav.Link className='verticalNavBar gray700-13'>
+											<SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
+											<span style={{ 'margin-left': '11px' }}>Datasets</span>
+										</Nav.Link>
+									</div> */}
 									<div className={`${tabId === 'members' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('members')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<MembersSvg className='membersSvg' />
@@ -566,8 +622,6 @@ class Account extends Component {
 
 						{tabId === 'projects' ? <AccountProjects userState={userState} /> : ''}
 
-						{tabId === 'datasets' ? <AccountDatasets userState={userState} /> : ''}
-
 						{tabId === 'datasetsAdvancedSearch' ? <AccountAdvancedSearch userState={userState} /> : ''}
 
 						{tabId === 'papers' ? <AccountPapers userState={userState} /> : ''}
@@ -576,15 +630,23 @@ class Account extends Component {
 
 						{tabId === 'dataaccessrequests' ? <DataAccessRequests userState={userState} team={team} alert={alert} /> : ''}
 
-						{tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}
-
 						{tabId === 'collections' ? <AccountCollections userState={userState} /> : ''}
 
 						{tabId === 'usersroles' ? <AccountUsers userState={userState} /> : ''}
 
-						{tabId === 'members' ? <AccountMembers userState={userState} team={team} teamId={teamId} /> : ''}
+						{team !== 'user' ? (
+							<>
+								{tabId === 'datasets' ? <AccountDatasets userState={userState} team={team} alert={alert} /> : ''}
 
-						{tabId === 'help' ? <TeamHelp /> : ''}
+								{tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}
+
+								{tabId === 'members' ? <AccountMembers userState={userState} team={team} teamId={teamId} /> : ''}
+
+								{tabId === 'help' ? <TeamHelp /> : ''}
+							</>
+						) : (
+							''
+						)}
 					</div>
 				</div>
 

@@ -42,6 +42,12 @@ export const AccountMembers = props => {
 		setMembers(members);
 	};
 
+	let roles = {
+		manager: 'Manager',
+		reviewer: 'Reviewer',
+		metadata_editor: 'Metadata Editor',
+	};
+
 	if (isLoading) {
 		return (
 			<Row>
@@ -130,7 +136,14 @@ export const AccountMembers = props => {
 													</Row>
 												</Col>
 												<Col sm={4} lg={4} className='black-14'>
-													{m.roles[0].charAt(0).toUpperCase() + m.roles[0].slice(1)}
+													{m.roles.map(n => {
+														return (
+															<>
+																{roles[n]}
+																<br />
+															</>
+														);
+													})}
 												</Col>
 											</Row>
 										);

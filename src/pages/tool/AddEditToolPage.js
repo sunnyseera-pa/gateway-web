@@ -323,7 +323,7 @@ class AddEditToolPage extends React.Component {
 		this.setState({ searchString: searchString });
 	};
 
-	doModalSearch = (e, type, page) => {
+	doModalSearch = (e, type = 'dataset', page = 0) => {
 		if (e.key === 'Enter' || e === 'click') {
 			var searchURL = '';
 
@@ -391,14 +391,15 @@ class AddEditToolPage extends React.Component {
 
 	removeObject = (id, type, datasetid) => {
 		let countOfRelatedObjects = this.state.relatedObjects.length;
-		let newRelatedObjects = [...this.state.relatedObjects].filter(obj => obj.objectId !== id && obj.objectId !== id.toString());
+		let newRelatedObjects = [...this.state.relatedObjects].filter(
+			obj => obj.objectId !== id && obj.objectId !== id.toString() && obj.pid !== id
+		);
 
 		//if an item was not removed try removing by datasetid for retro linkages
 		if (countOfRelatedObjects <= newRelatedObjects.length && type === 'dataset') {
 			newRelatedObjects = [...this.state.relatedObjects].filter(obj => obj.objectId !== datasetid && obj.objectId !== datasetid.toString());
 		}
-		this.setState({ relatedObjects: newRelatedObjects });
-		this.setState({ didDelete: true });
+		this.setState({ relatedObjects: newRelatedObjects, didDelete: true });
 	};
 
 	updateDeleteFlag = () => {
