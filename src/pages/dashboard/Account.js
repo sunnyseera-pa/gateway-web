@@ -622,8 +622,6 @@ class Account extends Component {
 
 						{tabId === 'projects' ? <AccountProjects userState={userState} /> : ''}
 
-						{tabId === 'datasets' ? <AccountDatasets userState={userState} team={team} alert={alert} /> : ''}
-
 						{tabId === 'datasetsAdvancedSearch' ? <AccountAdvancedSearch userState={userState} /> : ''}
 
 						{tabId === 'papers' ? <AccountPapers userState={userState} /> : ''}
@@ -632,15 +630,23 @@ class Account extends Component {
 
 						{tabId === 'dataaccessrequests' ? <DataAccessRequests userState={userState} team={team} alert={alert} /> : ''}
 
-						{tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}
-
 						{tabId === 'collections' ? <AccountCollections userState={userState} /> : ''}
 
 						{tabId === 'usersroles' ? <AccountUsers userState={userState} /> : ''}
 
-						{tabId === 'members' ? <AccountMembers userState={userState} team={team} teamId={teamId} /> : ''}
+						{team !== 'user' ? (
+							<>
+								{tabId === 'datasets' ? <AccountDatasets userState={userState} team={team} alert={alert} /> : ''}
 
-						{tabId === 'help' ? <TeamHelp /> : ''}
+								{tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}
+
+								{tabId === 'members' ? <AccountMembers userState={userState} team={team} teamId={teamId} /> : ''}
+
+								{tabId === 'help' ? <TeamHelp /> : ''}
+							</>
+						) : (
+							''
+						)}
 					</div>
 				</div>
 
