@@ -249,7 +249,6 @@ const AccountTeamManagement = ({ userState = [], team = '', forwardRef, onTeamMa
 	// Save Notifications API
 	const saveNotifications = async () => {
 		let missingOptIns = findMandatoryOptIns() || false;
-		debugger;
 		let isValid = validEmailList().length ? false : true;
 		if (missingOptIns) {
 			// fire modal you must have one selected
@@ -297,7 +296,6 @@ const AccountTeamManagement = ({ userState = [], team = '', forwardRef, onTeamMa
 				.then(res => {
 					// will need updated once more notification types are defined
 					let { memberNotifications = [], teamNotifications = [] } = res.data;
-					debugger;
 					// memberNotifications
 					if (!isEmpty(memberNotifications)) setGatewayEmailNotification([...memberNotifications]);
 					// teamNotifications
