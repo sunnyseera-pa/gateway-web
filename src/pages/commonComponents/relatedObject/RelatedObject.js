@@ -27,7 +27,6 @@ class RelatedObject extends React.Component {
 		didDelete: false,
 		inCollection: false,
 		publisherLogoURL: '',
-		isProviderHovering: false,
 	};
 
 	constructor(props) {
@@ -124,12 +123,8 @@ class RelatedObject extends React.Component {
 		return value;
 	};
 
-	setProviderHover = value => {
-		this.setState({ isProviderHovering: value });
-	};
-
 	render() {
-		const { data, isLoading, activeLink, onSearchPage, relatedObject, inCollection, publisherLogoURL, isProviderHovering } = this.state;
+		const { data, isLoading, activeLink, onSearchPage, relatedObject, inCollection, publisherLogoURL } = this.state;
 
 		let publisherLogo;
 
@@ -656,11 +651,9 @@ class RelatedObject extends React.Component {
 											)}
 											<br />
 											<span
-												className={isProviderHovering ? 'gray800-14 textUnderline' : 'gray800-14'}
+												className={activeLink ? 'gray800-14 underlined' : 'gray800-14'}
 												style={{ cursor: 'pointer' }}
-												onClick={() => this.updateOnFilterBadge('courseProviderSelected', data.provider)}
-												onMouseEnter={() => this.setProviderHover(true)}
-												onMouseLeave={() => this.setProviderHover(false)}>
+												onClick={() => this.updateOnFilterBadge('courseProviderSelected', data.provider)}>
 												{' '}
 												{data.provider}
 											</span>
