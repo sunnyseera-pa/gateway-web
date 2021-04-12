@@ -42,7 +42,6 @@ export const AccountMembers = props => {
 		if (!isEmpty(teamId)) {
 			setIsLoading(true);
 			await axios.get(baseURL + `/api/v1/teams/${teamId}/members`).then(async res => {
-				console.log(res.data.members);
 				setMembers(res.data.members);
 				setUserIsManager(res.data.members.filter(m => m.id === userState[0].id).map(m => m.roles.includes('manager')));
 			});
