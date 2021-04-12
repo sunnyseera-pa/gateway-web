@@ -189,7 +189,7 @@ const AccountTeamManagement = ({ userState = [], team = '', forwardRef, onTeamMa
 	const toggleAlertModal = (title = '', body = '') => {
 		if(!isEmpty(title) && !isEmpty(body))
 			setAlertModalOptions({ title, body });
-			
+
 		setAlertModal(!alertModal);
 	};
 
@@ -297,10 +297,11 @@ const AccountTeamManagement = ({ userState = [], team = '', forwardRef, onTeamMa
 				.then(res => {
 					// will need updated once more notification types are defined
 					let { memberNotifications = [], teamNotifications = [] } = res.data;
+					debugger;
 					// memberNotifications
 					if (!isEmpty(memberNotifications)) setGatewayEmailNotification([...memberNotifications]);
 					// teamNotifications
-					if (!isEmpty(teamNotifications)) setGatewayNotifications(teamNotifications);
+					if (!isEmpty(teamNotifications) && teamNotifications.length > 0) setGatewayNotifications(teamNotifications);
 
 					setLoading(false);
 				})
@@ -398,7 +399,9 @@ const AccountTeamManagement = ({ userState = [], team = '', forwardRef, onTeamMa
 										<div key={`memberNotification-${index}`}>
 											<TeamGatewayEmail
 												id={index}
+												teamId={teamId}
 												userState={userState}
+												userHasRole={userHasRole}
 												memberNotification={memberNotification}
 												togglePersonalNotifications={togglePersonalNotifications}
 											/>
