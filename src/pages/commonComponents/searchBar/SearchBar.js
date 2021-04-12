@@ -235,18 +235,21 @@ class SearchBar extends React.Component {
 	}
 
 	getLink = (publisherName = '') => {
-		if(!isEmpty(publisherName))
-			return `/account?tab=dataaccessrequests&team=${publisherName}`;
+		if (!isEmpty(publisherName)) return `/account?tab=dataaccessrequests&team=${publisherName}`;
 
 		return `/account?tab=dataaccessrequests`;
-	}
+	};
 
-	getPublisherLink = (data) => {
+	getPublisherLink = data => {
 		let { messageDescription, publisherName } = data;
 		let link = this.getLink(publisherName);
 
-		return <a href={`${link}`} class='notificationInfo'>{messageDescription}</a>;
-	}
+		return (
+			<a href={`${link}`} class='notificationInfo'>
+				{messageDescription}
+			</a>
+		);
+	};
 
 	render() {
 		const { userState, newData, isLoading, clearMessage, isHovering, textValue } = this.state;
@@ -530,9 +533,7 @@ class SearchBar extends React.Component {
 																					<Row className={dat.isRead === 'true' || clearMessage ? 'notificationReadBackground' : ''}>
 																						<Col xs={10}>
 																							<div className='notificationDate'>{messageDateString + '\n'}</div>
-																							<div className='notificationInfoHolder'>
-																								{ this.getPublisherLink(dat) }
-																							</div>
+																							<div className='notificationInfoHolder'>{this.getPublisherLink(dat)}</div>
 																						</Col>
 																						<Col xs={2}>
 																							{dat.isRead === 'false' && !clearMessage ? (
@@ -739,41 +740,41 @@ class SearchBar extends React.Component {
 														</Dropdown.Toggle>
 
 														<Dropdown.Menu as={CustomMenu} className='desktopLoginMenu'>
-															<Dropdown.Item href='/account?tab=dashboard' className='black-14' data-test-id='optDashboard'>
+															<Dropdown.Item href='/account?tab=dashboard&team=user' className='black-14' data-test-id='optDashboard'>
 																Dashboard
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=youraccount' className='black-14' data-test-id='optAccount'>
+															<Dropdown.Item href='/account?tab=youraccount&team=user' className='black-14' data-test-id='optAccount'>
 																Your Account
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=tools' className='black-14' data-test-id='optTools'>
+															<Dropdown.Item href='/account?tab=tools&team=user' className='black-14' data-test-id='optTools'>
 																Tools
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=reviews' className='black-14' data-test-id='optReviews'>
+															<Dropdown.Item href='/account?tab=reviews&team=user' className='black-14' data-test-id='optReviews'>
 																Reviews
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=projects' className='black-14' data-test-id='optProjects'>
+															<Dropdown.Item href='/account?tab=projects&team=user' className='black-14' data-test-id='optProjects'>
 																Projects
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=datasets' className='black-14'>
+															<Dropdown.Item href='/account?tab=datasets&team=user' className='black-14'>
 																Datasets
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=papers' className='black-14' data-test-id='optPapers'>
+															<Dropdown.Item href='/account?tab=papers&team=user' className='black-14' data-test-id='optPapers'>
 																Papers
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=courses' className='black-14' data-test-id='optCourses'>
+															<Dropdown.Item href='/account?tab=courses&team=user' className='black-14' data-test-id='optCourses'>
 																Courses
 															</Dropdown.Item>
 															<Dropdown.Item
-																href='/account?tab=dataaccessrequests'
+																href='/account?tab=dataaccessrequests&team=user'
 																className='black-14'
 																data-test-id='optDataAccessRequests'>
 																Data access requests
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=collections' className='black-14' data-test-id='optCollections'>
+															<Dropdown.Item href='/account?tab=collections&team=user' className='black-14' data-test-id='optCollections'>
 																Collections
 															</Dropdown.Item>
 															{userState[0].role === 'Admin' && (
-																<Dropdown.Item href='/account?tab=usersroles' className='black-14' data-test-id='optUsersRoles'>
+																<Dropdown.Item href='/account?tab=usersroles&team=user' className='black-14' data-test-id='optUsersRoles'>
 																	Users and roles
 																</Dropdown.Item>
 															)}
@@ -841,38 +842,38 @@ class SearchBar extends React.Component {
 												if (userState[0].loggedIn === true) {
 													return (
 														<>
-															<Dropdown.Item href='/account?tab=dashboard' className='black-14'>
+															<Dropdown.Item href='/account?tab=dashboard&team=user' className='black-14'>
 																Dashboard
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=youraccount' className='black-14'>
+															<Dropdown.Item href='/account?tab=youraccount&team=user' className='black-14'>
 																Your Account
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=tools' className='black-14'>
+															<Dropdown.Item href='/account?tab=tools&team=user' className='black-14'>
 																Tools
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=reviews' className='black-14'>
+															<Dropdown.Item href='/account?tab=reviews&team=user' className='black-14'>
 																Reviews
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=projects' className='black-14'>
+															<Dropdown.Item href='/account?tab=projects&team=user' className='black-14'>
 																Projects
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=datasets' className='black-14'>
+															<Dropdown.Item href='/account?tab=datasets&team=user' className='black-14'>
 																Datasets
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=papers' className='black-14'>
+															<Dropdown.Item href='/account?tab=papers&team=user' className='black-14'>
 																Papers
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=courses' className='black-14'>
+															<Dropdown.Item href='/account?tab=courses&team=user' className='black-14'>
 																Courses
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=dataaccessrequests' className='black-14'>
+															<Dropdown.Item href='/account?tab=dataaccessrequests&team=user' className='black-14'>
 																Data access requests
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=collections' className='black-14'>
+															<Dropdown.Item href='/account?tab=collections&team=user' className='black-14'>
 																Collections
 															</Dropdown.Item>
 															{userState[0].role === 'Admin' ? (
-																<Dropdown.Item href='/account?tab=usersroles' className='black-14'>
+																<Dropdown.Item href='/account?tab=usersroles&team=user' className='black-14'>
 																	Users and roles
 																</Dropdown.Item>
 															) : (
