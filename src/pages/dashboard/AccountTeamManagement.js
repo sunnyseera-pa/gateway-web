@@ -23,7 +23,7 @@ const AccountTeamManagement = ({ userState = [], team = '', forwardRef, onTeamMa
 	const [isLoading, setLoading] = useState(false);
 	const [alert, setAlert] = useState({});
 	const [teamId, setTeamId] = useState(null);
-	const [memberNotifications, setGatewayEmailNotification] = useState([{ optIn: false, notificationType: 'dataAccessRequest' }]);
+	const [memberNotifications, setGatewayEmailNotification] = useState([{ optIn: true, notificationType: 'dataAccessRequest' }]);
 	const [teamGatewayNotifications, setGatewayNotifications] = useState([
 		{ notificationType: 'dataAccessRequest', optIn: false, subscribedEmails: [{ value: '', error: '' }] },
 	]);

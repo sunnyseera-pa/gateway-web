@@ -122,6 +122,7 @@ class SearchPage extends React.Component {
 		PageView();
 		// 1. call filters - this will need parameterised when tools, projects etc move to v2
 		await this.getFilters();
+		debugger;
 		// 2. fires on first time in or page is refreshed/url loaded / has search location
 		if (!!window.location.search) {
 			// 3. splits location search into object { search: search, tab: Datasets}
@@ -164,7 +165,6 @@ class SearchPage extends React.Component {
 			this.setState({ isResultsLoading: true  }, () => {
 				this.clearFilterStates();
 			});
-
 		}
 	};
 
@@ -190,6 +190,7 @@ class SearchPage extends React.Component {
 			// 3. loop over queryKeys
 			for (const key of Object.keys(queryParams)) {
 				// 4. convert queryString into array of values
+				debugger;
 				let queryValues = queryParams[key].split('::');
 				// 5. check if key exists in our tree, return {} or undefined
 				let parentNode = this.findParentNode(filtersV2, key);
@@ -404,6 +405,7 @@ class SearchPage extends React.Component {
 		const searchObj = this.buildSearchObj(this.state.selectedV2);
 		// 2. dynamically build the searchUrl v2 only
 		searchURL = this.buildSearchUrl(searchObj);
+		debugger;
 		// 3. build up V1 Tools / early filters, no change from original implementation
 		if (this.state.toolCategoriesSelected.length > 0)
 			searchURL += '&toolcategories=' + encodeURIComponent(this.state.toolCategoriesSelected.toString().split(',').join('::'));
@@ -479,13 +481,14 @@ class SearchPage extends React.Component {
 			if (this.state.key) 
 				searchURL += '&tab=' + this.state.key;
 
-			this.props.history.push(`${window.location.pathname}?search=${this.state.search}` + searchURL);
+			this.props.history.push(`${window.location.pathname}?search=${encodeURIComponent(this.state.search)}` + searchURL);
 		}
 
 		if (this.state.key !== 'People') {
 			// remove once full migration to v2 filters for all other entities 'Tools, Projects, Courses and Papers'
-			axios.get(baseURL + '/api/v1/search/filter?search=' + this.state.search + searchURL).then(res => {
-				const entityType = typeMapper[`${this.state.key}`];
+			const entityType = typeMapper[`${this.state.key}`];
+			console.log('search here 1');
+			axios.get(`${baseURL}/api/v1/search/filter?search=${encodeURIComponent(this.state.search)}${searchURL}`).then(res => {
 				let filters = this.getFilterState(entityType, res);
 				// test the type and set relevant state
 				if(entityType === 'dataset') {
@@ -497,8 +500,10 @@ class SearchPage extends React.Component {
 				}
 			});
 		}
+
+		console.log('search results call');
 		// search call brings back search results and now filters highlighting for v2
-		axios.get(baseURL + '/api/v1/search?search=' + this.state.search + searchURL)
+		axios.get(`${baseURL}/api/v1/search?search=${encodeURIComponent(this.state.search)}${searchURL}`)
 		.then(res => {
 			// get the correct entity type from our mapper via the selected tab ie..'Dataset, Tools'
 			const entityType = typeMapper[`${this.state.key}`];
@@ -602,6 +607,7 @@ class SearchPage extends React.Component {
 	 */
 	buildSearchUrl = (searchObj) => {
 		let searchUrl = '';
+		debugger;
 		if(searchObj) {
 			for (let key of Object.keys(searchObj)) {
 				let values = searchObj[key];

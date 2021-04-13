@@ -123,7 +123,7 @@ export const CollectionPage = props => {
 
 	const doSearch = e => {
 		//fires on enter on searchbar
-		if (e.key === 'Enter') window.location.href = '/search?search=' + searchString;
+		if (e.key === 'Enter') window.location.href = `/search?search=${encodeURIComponent(searchString)}`;
 	};
 
 	const updateSearchString = searchString => {
