@@ -28,6 +28,7 @@ const AccountTeamManagement = ({ userState = [], team = '', forwardRef, onTeamMa
 		{ notificationType: 'dataAccessRequest', optIn: false, subscribedEmails: [{ value: '', error: '' }] },
 	]);
 	const [alertModal, setAlertModal] = useState(false);
+	const [alertModalOptions, setAlertModalOptions] = useState({title: '', body:''});
 	const [activeTabKey, setActiveTab] = useState(tabTypes.Members);
 	let history = useHistory();
 	forwardRef(() => saveNotifications());
@@ -185,7 +186,10 @@ const AccountTeamManagement = ({ userState = [], team = '', forwardRef, onTeamMa
 	};
 
 	// modal for notifications ensures one notification is selected
-	const toggleAlertModal = () => {
+	const toggleAlertModal = (title = '', body = '') => {
+		if(!isEmpty(title) && !isEmpty(body))
+			setAlertModalOptions({ title, body });
+
 		setAlertModal(!alertModal);
 	};
 
@@ -225,12 +229,32 @@ const AccountTeamManagement = ({ userState = [], team = '', forwardRef, onTeamMa
 		}
 	};
 
+	const validEmailList = () => {
+		if(!isEmpty(teamGatewayNotifications)) {
+			return [...teamGatewayNotifications].reduce((arr, teamNotification) => {
+				let emails = [];
+				let { subscribedEmails } = teamNotification;
+				if (!isEmpty(subscribedEmails)) 
+					emails = [...subscribedEmails].filter(item =>  item.error !== '');
+
+				if(emails.length)
+					arr = [...arr, ...emails];
+
+				return arr;
+			}, []);
+		}
+		return [];
+	}
+
 	// Save Notifications API
 	const saveNotifications = async () => {
 		let missingOptIns = findMandatoryOptIns() || false;
+		let isValid = validEmailList().length ? false : true;
 		if (missingOptIns) {
 			// fire modal you must have one selected
-			toggleAlertModal();
+			toggleAlertModal('You must have one email address selected', 'At least one email address is needed to receive notifications from the gateway.');
+		} else if (!isValid) {
+			toggleAlertModal('Invalid Email address', 'Please fix the following email errors.');
 		} else {
 			if (!isEmpty(teamGatewayNotifications)) {
 				// format the subscribeEmails for the backend
@@ -275,7 +299,7 @@ const AccountTeamManagement = ({ userState = [], team = '', forwardRef, onTeamMa
 					// memberNotifications
 					if (!isEmpty(memberNotifications)) setGatewayEmailNotification([...memberNotifications]);
 					// teamNotifications
-					if (!isEmpty(teamNotifications)) setGatewayNotifications(teamNotifications);
+					if (!isEmpty(teamNotifications) && teamNotifications.length > 0) setGatewayNotifications(teamNotifications);
 
 					setLoading(false);
 				})
@@ -373,7 +397,9 @@ const AccountTeamManagement = ({ userState = [], team = '', forwardRef, onTeamMa
 										<div key={`memberNotification-${index}`}>
 											<TeamGatewayEmail
 												id={index}
+												teamId={teamId}
 												userState={userState}
+												userHasRole={userHasRole}
 												memberNotification={memberNotification}
 												togglePersonalNotifications={togglePersonalNotifications}
 											/>
@@ -412,7 +438,7 @@ const AccountTeamManagement = ({ userState = [], team = '', forwardRef, onTeamMa
 					<Col xs={1}></Col>
 				</Row>
 			)}
-			<TeamEmailAlertModal open={alertModal} close={toggleAlertModal} />
+			<TeamEmailAlertModal open={alertModal} close={toggleAlertModal} options={alertModalOptions} />
 		</Fragment>
 	);
 };
