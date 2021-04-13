@@ -228,14 +228,14 @@ export const CollectionPage = props => {
 						<Col md={2} lg={1} className='privatePublicDisplayCol'>
 							{collectionData.publicflag === true ? (
 								<div className='privatePublicDisplay'>
-									<SVGIcon name='eye' width={24} height={24} fill={'#000000'} className={'pointer margin-right-8'} />
+									<SVGIcon name='eye' width={24} height={24} fill={'#000000'} className={'margin-right-8'} />
 									<span className='deepBlack-14 alignSuper' data-testid='publicBadge'>
 										Public
 									</span>
 								</div>
 							) : (
 								<div className='privatePublicDisplay'>
-									<SVGIcon name='eyeCrossed' width={24} height={24} fill={'#000000'} className={'pointer margin-right-8'} />
+									<SVGIcon name='eyeCrossed' width={24} height={24} fill={'#000000'} className={'margin-right-8'} />
 									<span className='deepBlack-14 alignSuper' data-testid='privateBadge'>
 										Private
 									</span>
