@@ -811,7 +811,7 @@ class RelatedObject extends React.Component {
 														''
 													)}
 													<span
-														className='gray800-14'
+														className={activeLink ? 'gray800-14 underlined' : 'gray800-14'}
 														style={{ cursor: 'pointer' }}
 														onClick={() =>
 															this.updateOnFilterBadge('publisher', { label: data.datasetfields.publisher, parentKey: 'publisher' })
@@ -822,7 +822,7 @@ class RelatedObject extends React.Component {
 												</>
 											) : (
 												<span
-													className='gray800-14'
+													className={activeLink ? 'gray800-14 underlined' : 'gray800-14'}
 													style={{ cursor: 'pointer' }}
 													onClick={() =>
 														this.updateOnFilterBadge('publisher', { label: data.datasetfields.publisher, parentKey: 'publisher' })

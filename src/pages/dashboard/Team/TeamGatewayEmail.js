@@ -1,9 +1,18 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import Switch from "react-switch";
+import { userTypes } from './teamUtil';
 
-const TeamGatewayEmail = ({id, userState = [], memberNotification, togglePersonalNotifications}) => {
+const TeamGatewayEmail = ({id, teamId,  userState = [], userHasRole, memberNotification, togglePersonalNotifications}) => {
   const [user = {}]= userState;
   let { optIn, notificationType } = memberNotification;
+  const isManager = () => {
+		return userHasRole(teamId, userTypes.MANAGER);
+	};
+
+  useEffect(() => {
+		isManager();
+	}, [teamId]);
+
   return (
     <Fragment>
       <div className="tm-notification" key={`member-notification-${id}`}>
@@ -22,7 +31,7 @@ const TeamGatewayEmail = ({id, userState = [], memberNotification, togglePersona
         </div>
         <div className="tm-title">
           <div className="black-16-semibold">Send email notifications to my gateway email address</div>
-          <div className="gray700-14">You will need to add a team email to be able to save switching off notifications to your own gateway email.</div>
+          {teamId && isManager() && ( <div className="gray700-14">You will need to add a team email to be able to save switching off notifications to your own gateway email.</div>)}
         </div>
       </div>
       <div className="form-group mt-3">
