@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import axios from 'axios';
-import { isEmpty } from 'lodash';
+import { isEmpty, upperFirst } from 'lodash';
 import { Row, Col, Button } from 'react-bootstrap';
 import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading';
@@ -56,6 +56,14 @@ export const AccountMembers = props => {
 	const onMemberAdded = members => {
 		setMembers(members);
 	};
+
+	const renderRoles = roles => {
+		if (!isEmpty(roles)) {
+			let sortedRoles = roles.sort();
+			return sortedRoles.map(role => `${upperFirst(role)}${roles.length > 1  && roles.indexOf(role) !== roles.length - 1 ? ', ' : ' '}`);
+		}
+		return '';
+	}
 
 	if (isLoading) {
 		return (
@@ -145,7 +153,7 @@ export const AccountMembers = props => {
 													</Row>
 												</Col>
 												<Col sm={4} lg={4} className='black-14'>
-													{m.roles[0].charAt(0).toUpperCase() + m.roles[0].slice(1)}
+													{renderRoles(m.roles)}
 												</Col>
 											</div>
 										);
