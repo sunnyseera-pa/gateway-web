@@ -650,7 +650,14 @@ class RelatedObject extends React.Component {
 												<span className='black-bold-16'>{data.title}</span>
 											)}
 											<br />
-											<span className='gray800-14'>{data.provider}</span>
+											<span
+												className={activeLink ? 'gray800-14 underlined' : 'gray800-14'}
+												style={{ cursor: 'pointer' }}
+												onClick={() => this.updateOnFilterBadge('courseProviderSelected', data.provider)}>
+												{' '}
+												{data.provider}
+											</span>
+
 											<Row className='margin-top-8'>
 												<Col sm={12} lg={12}>
 													<CalendarSvg className='calendarSVG' />
