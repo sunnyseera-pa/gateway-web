@@ -8,6 +8,7 @@ import AdvancedSearchTermsandConditionsModal from './AdvancedSearchTAndCsModal';
 import _ from 'lodash';
 const baseURL = require('../commonComponents/BaseURL').getURL();
 const GENERAL_ACCESS = 'GENERAL_ACCESS';
+const BANNED = 'BANNED';
 const urlEnv = require('../commonComponents/BaseURL').getURLEnv();
 
 export const AccountAdvancedSearch = props => {
@@ -31,10 +32,12 @@ export const AccountAdvancedSearch = props => {
 	};
 
 	const authorisedForAdvancedSearch = async () => {
-		if (userState[0].advancedSearchRoles.includes(GENERAL_ACCESS)) {
+		if (userState[0].advancedSearchRoles.includes(BANNED)) {
+			return false;
+		} else if (userState[0].advancedSearchRoles.includes(GENERAL_ACCESS)) {
 			return true;
 		} else if (userState[0].provider === 'oidc') {
-			//if user is from open athens but not authorised, assign them an advanced search role
+			//if user is from open athens but not authorised and not banned, assign them an advanced search role
 			let authorised = false;
 			await axios
 				.patch(baseURL + '/api/v1/users/advancedSearch/roles/' + userState[0].id, {
