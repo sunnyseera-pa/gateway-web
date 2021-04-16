@@ -186,7 +186,8 @@ export const AccountAdvancedSearch = props => {
 							updateUserAcceptedAdvancedSearchTerms={() => updateUserAcceptedAdvancedSearchTerms()}></AdvancedSearchTermsandConditionsModal>
 						<AdvancedSearchRequestAccessModal
 							open={showRequestAccessModal}
-							close={() => toggleShowRequestAccessModal()}></AdvancedSearchRequestAccessModal>
+							close={() => toggleShowRequestAccessModal()}
+							userId={userState[0].id}></AdvancedSearchRequestAccessModal>
 					</div>
 				</Col>
 				<Col sm={1} lg={1} />
