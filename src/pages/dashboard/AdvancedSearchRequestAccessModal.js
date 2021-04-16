@@ -3,11 +3,12 @@ import _ from 'lodash';
 import { Modal } from 'react-bootstrap';
 import { ReactComponent as CloseButtonSvg } from '../../images/close-alt.svg';
 import './AdvancedSearchRequestAccessModal.scss';
+const urlEnv = require('../commonComponents/BaseURL').getURLEnv();
 
-const AdvancedSearchRequestAccessModal = ({ open, close }) => {
+const AdvancedSearchRequestAccessModal = ({ open, close, userId }) => {
 	const redirectToJira = () => {
 		window.location.assign(
-			'https://hdruk.atlassian.net/servicedesk/customer/portal/1/group/1/create/1?summary=Cohort%20Discovery%20Access%20Request&description=Please%20provide%20details%20about%20you%20(profile,%20url,%20etc)'
+			`https://hdruk.atlassian.net/servicedesk/customer/portal/1/group/1/create/1?summary=Cohort%20Discovery%20Access%20Request%20|%20UserId:%20${userId}%20|%20Environment:%20${urlEnv}&description=Please%20provide%20details%20about%20you%20(profile,%20url,%20etc)`
 		);
 	};
 
