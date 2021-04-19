@@ -16,12 +16,16 @@ export const AccountMembers = props => {
 	const [members, setMembers] = useState([]);
 	const [userIsManager, setUserIsManager] = useState(false);
 	const [showAccountAddMemberModal, setShowAccountAddMemberModal] = useState(false);
-	const [accountMembersId] = useState(props.teamId);
+	const [accountMembersId, setAccountMembersId] = useState(props.team);
+
+	useEffect(() => {
+		setAccountMembersId(props.team);
+	}, [props]);
 
 	useEffect(() => {
 		initGA('UA-166025838-1');
 		doMembersCall();
-	}, []);
+	}, [accountMembersId]);
 
 	const doMembersCall = async () => {
 		if (accountMembersId) {
