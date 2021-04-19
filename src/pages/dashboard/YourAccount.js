@@ -339,7 +339,7 @@ const YourAccountForm = props => {
 			<Form onSubmit={formik.handleSubmit}>
 				<Row>
 					<Col>
-						<div className='rectangle'>
+						<div className='rectangle pb-1'>
 							<Form.Group className='pb-2'>
 								<Form.Label className='gray800-14'>First name</Form.Label>
 								<Row>
