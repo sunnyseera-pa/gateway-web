@@ -153,6 +153,7 @@ class Account extends Component {
 				if (team !== 'user' && team !== 'admin') {
 					await axios.get(baseURL + `/api/v1/publishers/${team}`).then(res => {
 						let publisherDetails = res.data.publisher;
+						if (!publisherDetails.allowAccessRequestManagement && values.tab === 'dataaccessrequests') this.setState({ tabId: 'members' });
 						this.setState({
 							allowWorkflow: publisherDetails.workflowEnabled,
 							allowAccessRequestManagement: publisherDetails.allowAccessRequestManagement,
