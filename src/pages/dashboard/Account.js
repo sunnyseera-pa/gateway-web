@@ -606,14 +606,14 @@ class Account extends Component {
 											</Accordion>
 										</div>
 									)}
-									{this.userHasRole(team, ['manager', 'metadata_editor']) && (
+									{/* {this.userHasRole(team, ['manager', 'metadata_editor']) && (
 										<div className={`${tabId === 'datasets' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('datasets')}>
 											<Nav.Link className='verticalNavBar gray700-13'>
 												<SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
 												<span style={{ 'margin-left': '11px' }}>Datasets</span>
 											</Nav.Link>
 										</div>
-									)}
+									)} */}
 									<div className={`${tabId === 'members' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('members')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<MembersSvg className='membersSvg' />
