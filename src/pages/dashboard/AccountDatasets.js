@@ -12,7 +12,6 @@ import './Dashboard.scss';
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const AccountDatasets = props => {
-	const [userState] = useState(props.userState);
 	const [key, setKey] = useState(!_.isEmpty(props.alert.tab) ? props.alert.tab : 'active');
 	const [datasetList, setDatasetList] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
@@ -20,12 +19,17 @@ const AccountDatasets = props => {
 	const [reviewCount, setReviewCount] = useState(0);
 	const [archiveCount, setArchiveCount] = useState(0);
 	const [rejectedCount, setRejectedCount] = useState(0);
-	const [alert, setAlert] = useState(props.alert);
-	const [team, setTeam] = useState(props.team);
+	const [alert] = useState(props.alert);
+	const [team, setTeam, getTeam] = useState(props.team);
 	const [publisherID, setPublisherID] = useState('');
 
 	useEffect(() => {
+		setTeam(props.team);
+	}, [props]);
+
+	useEffect(() => {
 		initGA('UA-166025838-1');
+		setIsLoading(true);
 		doDatasetsCall();
 	}, [team]);
 

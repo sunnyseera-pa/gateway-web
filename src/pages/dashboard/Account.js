@@ -2,6 +2,7 @@ import React, { Component, Fragment, useState } from 'react';
 import queryString from 'query-string';
 import { Nav, Accordion, Dropdown } from 'react-bootstrap';
 import _ from 'lodash';
+import axios from 'axios';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import AccountTools from './AccountTools';
 import AccountProjects from './AccountProjects';
@@ -26,6 +27,8 @@ import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
 import { ReactComponent as MembersSvg } from '../../images/members.svg';
 import './Dashboard.scss';
+
+var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 	<a
@@ -72,7 +75,6 @@ class Account extends Component {
 		tabId: '',
 		activeKey: '',
 		team: 'user',
-		teamId: '',
 		alert: {},
 		isDeleted: false,
 		isApproved: false,
@@ -85,6 +87,8 @@ class Account extends Component {
 		datasetAccordion: -1,
 		context: {},
 		profileComplete: true,
+		allowWorkflow: true,
+		allowAccessRequestManagement: true,
 	};
 
 	constructor(props) {
@@ -96,11 +100,13 @@ class Account extends Component {
 			this.state.alert = props.location.state.alert;
 			this.alertTimeOut = setTimeout(() => this.setState({ alert: {} }), 10000);
 		}
-
 		let values = queryString.parse(window.location.search);
 		if (values.team === 'user') {
 			this.state.team = 'user';
 			localStorage.setItem('HDR_TEAM', 'user');
+		} else if (values.team === 'admin') {
+			this.state.team = 'admin';
+			localStorage.setItem('HDR_TEAM', 'admin');
 		} else if (
 			(_.has(props, 'location.state.team') && props.location.state.team !== '') ||
 			(_.has(props, 'location.state.publisher') && props.location.state.team !== '')
@@ -119,7 +125,7 @@ class Account extends Component {
 		}
 	}
 
-	componentWillReceiveProps(nextProps) {
+	async componentWillReceiveProps(nextProps) {
 		if (window.location.search) {
 			let values = queryString.parse(window.location.search);
 			let team = 'user';
@@ -143,15 +149,27 @@ class Account extends Component {
 					team,
 					activeAccordion: values.tab === 'dataaccessrequests' || values.tab === 'workflows' ? '0' : -1,
 				});
+
+				if (team !== 'user' && team !== 'admin') {
+					await axios.get(baseURL + `/api/v1/publishers/${team}`).then(res => {
+						let publisherDetails = res.data.publisher;
+						if (!publisherDetails.allowAccessRequestManagement && values.tab === 'dataaccessrequests') this.setState({ tabId: 'members' });
+						this.setState({
+							allowWorkflow: publisherDetails.workflowEnabled,
+							allowAccessRequestManagement: publisherDetails.allowAccessRequestManagement,
+						});
+					});
+				}
 			}
 		}
 
 		if (!this.state.profileComplete) {
-			this.setState({ tabId: 'youraccount' });
+			this.setState({ tabId: 'youraccount', team: 'user' });
+			localStorage.setItem('HDR_TEAM', 'user');
 		}
 	}
 
-	componentDidMount() {
+	async componentDidMount() {
 		if (window.location.search) {
 			let tab = '';
 			let values = queryString.parse(window.location.search);
@@ -172,7 +190,8 @@ class Account extends Component {
 		}
 
 		if (!this.state.profileComplete) {
-			this.setState({ tabId: 'youraccount' });
+			this.setState({ tabId: 'youraccount', team: 'user' });
+			localStorage.setItem('HDR_TEAM', 'user');
 		}
 	}
 
@@ -254,14 +273,17 @@ class Account extends Component {
 			if (!_.isEmpty(filterPublishers)) {
 				return filterPublishers.map((pub, index) => {
 					return (
-						<Dropdown.Item
-							className='gray700-13'
-							onClick={e => {
-								this.toggleNav(`${this.state.tabId}&team=${pub._id}`);
-								this.setState({ teamId: pub._id });
-							}}>
-							{pub.name}
-						</Dropdown.Item>
+						<>
+							{index == 0 ? <hr /> : ''}
+							<Dropdown.Item
+								className='gray700-13'
+								onClick={e => {
+									this.toggleNav(`${this.state.tabId}&team=${pub._id}`);
+									this.setState({ team: pub._id });
+								}}>
+								{pub.name}
+							</Dropdown.Item>
+						</>
 					);
 				});
 			} else {
@@ -288,7 +310,7 @@ class Account extends Component {
 					className='gray700-13'
 					onClick={e => {
 						this.toggleNav(`datasets&team=admin`);
-						this.setState({ teamId: 'admin' });
+						this.setState({ team: 'admin' });
 					}}>
 					HDR Admin
 				</Dropdown.Item>
@@ -326,7 +348,6 @@ class Account extends Component {
 		if (!_.isEmpty(tabId)) {
 			// 3. need to check for teams returns {tabId: '', team: ''}; eg dataccessrequests&team=ALLIANCE
 			let tab = this.generateTabObject(tabId);
-
 			// 4. check if user has teams and the current nav is dataaccessrequests, keep expanded
 			if (
 				!_.isEmpty(user.teams) &&
@@ -343,7 +364,13 @@ class Account extends Component {
 
 			if (!_.isEmpty(tab.team)) {
 				localStorage.setItem('HDR_TEAM', tab.team);
-				if (tab.team !== 'user' && tab.team !== 'admin') tab.tabId = 'dataaccessrequests';
+				if (tab.team !== 'user' && tab.team !== 'admin') {
+					if (_.isEmpty(tab.tabId) || !['dataaccessrequests', 'datasets', 'members'].includes(tab.tabId)) {
+						if (this.userHasRole(tab.team, ['manager', 'reviewer'])) tab.tabId = 'dataaccessrequests';
+						else if (this.userHasRole(tab.team, 'metadata_editor')) tab.tabId = 'datasets';
+						else tab.tabId = 'members';
+					}
+				}
 			} else if (localStorage.getItem('HDR_TEAM') == '') localStorage.setItem('HDR_TEAM', 'user');
 			// 6. set state
 			this.setState({
@@ -371,7 +398,7 @@ class Account extends Component {
 		const team = this.state.userState[0].teams.filter(t => {
 			return t._id === teamId;
 		})[0];
-		return team && team.roles.includes(role);
+		return team && team.roles.some(r => role.includes(r));
 	}
 
 	render() {
@@ -384,10 +411,11 @@ class Account extends Component {
 			showModal,
 			context,
 			team,
-			teamId,
 			alert,
 			activeAccordion,
 			datasetAccordion,
+			allowWorkflow,
+			allowAccessRequestManagement,
 		} = this.state;
 		if (typeof data.datasetids === 'undefined') {
 			data.datasetids = [];
@@ -420,7 +448,6 @@ class Account extends Component {
 										{userState[0].name || ''}
 									</Dropdown.Item>
 									{this.renderAdmin()}
-									<hr />
 									{this.renderPublishers()}
 								</Dropdown.Menu>
 							</Dropdown>
@@ -546,11 +573,11 @@ class Account extends Component {
 
 							{team !== 'user' && team !== 'admin' ? (
 								<Fragment>
-									<div
-										className={`${
-											tabId === 'dataaccessrequests' || tabId === 'workflows' || tabId === 'addeditworkflow' ? 'activeCard' : ''
-										}`}>
-										{this.isPublisher() ? (
+									{allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
+										<div
+											className={`${
+												tabId === 'dataaccessrequests' || tabId === 'workflows' || tabId === 'addeditworkflow' ? 'activeCard' : ''
+											}`}>
 											<Accordion activeKey={activeAccordion} onSelect={this.accordionClick}>
 												<Fragment>
 													<Accordion.Toggle variant='link' className='verticalNavBar gray700-13 navLinkButton' eventKey='0'>
@@ -565,7 +592,7 @@ class Account extends Component {
 																className={`gray700-13 ${tabId === 'dataaccessrequests' ? 'nav-item-active' : ''}`}>
 																<span className='subLinkItem'>Applications</span>
 															</Nav.Link>
-															{this.userHasRole(teamId, 'manager') && (
+															{allowWorkflow && this.userHasRole(team, 'manager') && (
 																<Nav.Link
 																	onClick={e => this.toggleNav(`workflows`)}
 																	bsPrefix='nav-block'
@@ -577,21 +604,16 @@ class Account extends Component {
 													</Accordion.Collapse>
 												</Fragment>
 											</Accordion>
-										) : (
-											<Fragment>
-												<Nav.Link onClick={e => this.toggleNav('dataaccessrequests')} className='verticalNavBar gray700-13'>
-													<SVGIcon name='dataaccessicon' fill={'#b3b8bd'} className='accountSvgs' />
-													<span className='navLinkItem'>Data access requests</span>
-												</Nav.Link>
-											</Fragment>
-										)}
-									</div>
-									{/* <div className={`${tabId === 'datasets' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('datasets')}>
-										<Nav.Link className='verticalNavBar gray700-13'>
-											<SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
-											<span style={{ 'margin-left': '11px' }}>Datasets</span>
-										</Nav.Link>
-									</div> */}
+										</div>
+									)}
+									{/* {this.userHasRole(team, ['manager', 'metadata_editor']) && (
+										<div className={`${tabId === 'datasets' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('datasets')}>
+											<Nav.Link className='verticalNavBar gray700-13'>
+												<SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
+												<span style={{ 'margin-left': '11px' }}>Datasets</span>
+											</Nav.Link>
+										</div>
+									)} */}
 									<div className={`${tabId === 'members' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('members')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<MembersSvg className='membersSvg' />
@@ -612,35 +634,47 @@ class Account extends Component {
 					</div>
 
 					<div className='col-sm-12 col-md-10 margin-top-32'>
-						{tabId === 'dashboard' ? <AccountAnalyticsDashboard userState={userState} /> : ''}
+						{team === 'user' && (
+							<>
+								{tabId === 'dashboard' ? <AccountAnalyticsDashboard userState={userState} /> : ''}
 
-						{tabId === 'youraccount' ? <YourAccount userState={userState} /> : ''}
+								{tabId === 'youraccount' ? <YourAccount userState={userState} /> : ''}
 
-						{tabId === 'tools' ? <AccountTools userState={userState} /> : ''}
+								{tabId === 'tools' ? <AccountTools userState={userState} /> : ''}
 
-						{tabId === 'reviews' ? <ReviewTools userState={userState} /> : ''}
+								{tabId === 'reviews' ? <ReviewTools userState={userState} /> : ''}
 
-						{tabId === 'projects' ? <AccountProjects userState={userState} /> : ''}
+								{tabId === 'projects' ? <AccountProjects userState={userState} /> : ''}
 
-						{tabId === 'datasetsAdvancedSearch' ? <AccountAdvancedSearch userState={userState} /> : ''}
+								{tabId === 'datasetsAdvancedSearch' ? <AccountAdvancedSearch userState={userState} /> : ''}
 
-						{tabId === 'papers' ? <AccountPapers userState={userState} /> : ''}
+								{tabId === 'papers' ? <AccountPapers userState={userState} /> : ''}
 
-						{tabId === 'courses' ? <AccountCourses userState={userState} /> : ''}
+								{tabId === 'courses' ? <AccountCourses userState={userState} /> : ''}
 
-						{tabId === 'dataaccessrequests' ? <DataAccessRequests userState={userState} team={team} alert={alert} /> : ''}
+								{tabId === 'dataaccessrequests' ? <DataAccessRequests userState={userState} team={team} alert={alert} /> : ''}
 
-						{tabId === 'collections' ? <AccountCollections userState={userState} /> : ''}
+								{tabId === 'collections' ? <AccountCollections userState={userState} /> : ''}
 
-						{tabId === 'usersroles' ? <AccountUsers userState={userState} /> : ''}
+								{tabId === 'usersroles' ? <AccountUsers userState={userState} /> : ''}
+							</>
+						)}
 
 						{team !== 'user' ? (
 							<>
-								{tabId === 'datasets' ? <AccountDatasets userState={userState} team={team} alert={alert} /> : ''}
+								{allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
+									<>{tabId === 'dataaccessrequests' ? <DataAccessRequests userState={userState} team={team} alert={alert} /> : ''}</>
+								)}
 
-								{tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}
+								{(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') && (
+									<>{tabId === 'datasets' ? <AccountDatasets userState={userState} team={team} alert={alert} /> : ''}</>
+								)}
 
-								{tabId === 'members' ? <AccountMembers userState={userState} team={team} teamId={teamId} /> : ''}
+								{allowWorkflow && this.userHasRole(team, 'manager') && (
+									<>{tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}</>
+								)}
+
+								{tabId === 'members' ? <AccountMembers userState={userState} team={team} /> : ''}
 
 								{tabId === 'help' ? <TeamHelp /> : ''}
 							</>
