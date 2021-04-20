@@ -324,7 +324,7 @@ const YourAccountForm = props => {
 			) : (
 				''
 			)}
-			<DevelopmentAndImprovementBanner data-test-id='user-account-dev-and-improvement' />
+			<DevelopmentAndImprovementBanner />
 			<Row className='pixelGapBottom margin-top-24'>
 				<Col>
 					<div className='rectangle pad-bottom-2'>
