@@ -25,6 +25,8 @@ import SVGIcon from '../../images/SVGIcon';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
+import { tabTypes } from './Team/teamUtil';
+
 import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
 import { ReactComponent as MembersSvg } from '../../images/members.svg';
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
@@ -74,6 +76,7 @@ class Account extends Component {
 			},
 		],
 		tabId: '',
+		innertab: '',
 		activeKey: '',
 		team: 'user',
 		teamId: '',
@@ -126,6 +129,7 @@ class Account extends Component {
 				tab = this.checkRedirect(values);
 				this.setState({
 					tabId: tab,
+					innertab: values.innertab ? values.innertab : '',
 					isDeleted: values.toolDeleted,
 					isApproved: values.toolApproved,
 					isRejected: values.toolRejected,
@@ -135,6 +139,10 @@ class Account extends Component {
 					isReviewRejected: values.reviewRejected,
 				});
 				this.toggleNav(tab);
+				// // set the teamManagement
+				// if(typeof values.innertab !== 'undefined' && values.innertab === tabTypes.Notifications) {
+				// 	this.onTeamManagementTabChange(tabTypes.Notifications);
+				// }
 			}
 		}
 		if (!this.state.profileComplete) {
@@ -312,6 +320,7 @@ class Account extends Component {
 				activeAccordion,
 				datasetAccordion,
 			});
+			debugger;
 			// 7. push state
 			this.props.history.push({ pathname: window.location.pathname, search: `?tab=${tab.tabId}`, state: { team: tab.team } });
 		}
@@ -361,12 +370,17 @@ class Account extends Component {
 		this.setState({ teamManagementTab: teamManagementTab});
 	}
 
+	onClearInnerTab = () => {
+		this.setState({ innertab: ''});
+	}
+
 	render() {
 		const {
 			searchString,
 			data,
 			userState,
 			tabId,
+			innertab,
 			showDrawer,
 			showModal,
 			context,
@@ -620,11 +634,13 @@ class Account extends Component {
 							<AccountTeamManagement
 								userState={userState}
 								team={team}
+								innertab={innertab}
 								forwardRef={c => {
 									this.saveNotifiations = c;
 								}}
 								onTeamManagementSave={this.onTeamManagementSave}
 								onTeamManagementTabChange={this.onTeamManagementTabChange}
+								onClearInnerTab={this.onClearInnerTab}
 							/>
 						) : (
 							''
@@ -644,11 +660,9 @@ class Account extends Component {
 						drawerIsOpen={this.state.showDrawer}
 					/>
 				</SideDrawer>
-				{tabId === 'teamManagement' && teamManagementTab == 'Notifications' && (
+				{tabId === 'teamManagement' && teamManagementTab == tabTypes.Notifications && (
 					<ActionBar userState={userState}>
 						<div>
-							{/* <button className='btn btn-primary white-14-semibold' onClick={this.onSaveNotificationsClick} type='button'>Save</button> */}
-
 							<button
 								className={savedTeamNotificationSuccess ? 'button-teal' : 'button-primary'}
 								type='button'
