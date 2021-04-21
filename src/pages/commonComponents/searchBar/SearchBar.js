@@ -701,7 +701,7 @@ class SearchBar extends React.Component {
 																						<Col xs={10}>
 																							<div className='notificationDate'>{messageDateString + '\n'}</div>
 																							<div className='notificationInfoHolder'>
-																								<a href={`/dataset/${dat.messageObjectID}`} class='notificationInfo'>
+																								<a href={`/dataset/${dat.datasetID}`} class='notificationInfo'>
 																									{dat.messageDescription}
 																								</a>
 																							</div>
@@ -736,7 +736,7 @@ class SearchBar extends React.Component {
 																						<Col xs={10}>
 																							<div className='notificationDate'>{messageDateString + '\n'}</div>
 																							<div className='notificationInfoHolder'>
-																								<a href={`/dataset/${dat.messageObjectID}`} class='notificationInfo'>
+																								<a href={`/account?tab=datasets&team=${dat.datasetID}`} class='notificationInfo'>
 																									{dat.messageDescription}
 																								</a>
 																							</div>

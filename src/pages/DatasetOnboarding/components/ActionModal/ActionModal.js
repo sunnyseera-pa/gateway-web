@@ -29,6 +29,12 @@ const ActionModal = ({ open, close, context, datasetVersionAction }) => {
 				case 'CONFIRMSUBMISSION':
 					datasetVersionAction({ statusDesc, type });
 					break;
+				case 'ARCHIVE':
+					datasetVersionAction({ statusDesc, type });
+					break;
+				case 'UNARCHIVE':
+					datasetVersionAction({ statusDesc, type });
+					break;
 				case 'CONFIRMAPPROVALCONDITIONS':
 				case 'CONFIRMREJECTION':
 					// 5. check state is valid / invalid
