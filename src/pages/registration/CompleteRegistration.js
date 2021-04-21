@@ -147,7 +147,7 @@ class CompleteRegistration extends Component {
 		if (isLoading) {
 			return (
 				<Container>
-					<Loading data-testid="isLoading"/>
+					<Loading data-testid='isLoading' />
 				</Container>
 			);
 		}
@@ -161,7 +161,7 @@ class CompleteRegistration extends Component {
 					doUpdateSearchString={this.updateSearchString}
 					doToggleDrawer={this.toggleDrawer}
 					userState={userState}
-					data-testid="searchBar"
+					data-testid='searchBar'
 				/>
 
 				<Container className='mb-5'>
@@ -179,7 +179,7 @@ class CompleteRegistration extends Component {
 									showLink={showLink}
 									showOrcid={showOrcid}
 									combinedOrganisations={combinedOrganisations}
-									data-testid="your-account"
+									data-testid='your-account'
 								/>
 							</div>
 						</Col>
@@ -290,7 +290,8 @@ const YourAccountForm = props => {
 			link: '',
 			orcid: '',
 			redirectURL: props.userdata.redirectURL,
-			emailNotifications: true,
+			feedback: false,
+			news: false,
 			terms: false,
 			sector: '',
 			organisation: '',
@@ -343,7 +344,9 @@ const YourAccountForm = props => {
 			<Row className='mt-2'>
 				<Col>
 					<div className='rectangle'>
-						<p className='black-20' data-testid="your-details">Your details</p>
+						<p className='black-20' data-testid='your-details'>
+							Your details
+						</p>
 						<p className='gray800-14'>
 							You can control what appears on your profile using the icons. Your details are also used when you make a data access request
 							application.
@@ -354,7 +357,7 @@ const YourAccountForm = props => {
 			<Form onSubmit={formik.handleSubmit} data-testid='form'>
 				<Row className='mt-1'>
 					<Col>
-						<div className='rectangle'>
+						<div className='rectangle pb-1'>
 							<Form.Group className='pb-2'>
 								<Form.Label className='gray800-14'>First name</Form.Label>
 								<Row>
@@ -466,7 +469,7 @@ const YourAccountForm = props => {
 								<Row>
 									<Col sm={4} lg={4}>
 										<DropdownButton
-											data-testid="dropdown-button"
+											data-testid='dropdown-button'
 											variant='white'
 											title={
 												formik.values.sector ? (
@@ -778,22 +781,6 @@ const YourAccountForm = props => {
 									<Form.Control
 										type='checkbox'
 										className='checker'
-										id='emailNotficiations'
-										name='emailNotifications'
-										checked={formik.values.emailNotifications}
-										onChange={formik.handleChange}
-									/>
-									<span className='gray800-14 ml-4 margin-top-2'>
-										I want to receive email notifications about activity relating to my account or content
-									</span>
-								</Row>
-							</Form.Group>
-
-							<Form.Group className='pb-2'>
-								<Row className='mt-2'>
-									<Form.Control
-										type='checkbox'
-										className='checker'
 										id='terms'
 										name='terms'
 										checked={formik.values.terms}
@@ -815,6 +802,73 @@ const YourAccountForm = props => {
 						</div>
 					</Col>
 				</Row>
+
+				<div className='rectangle margin-top-16'>
+					<Row className='mt-2 '>
+						<span className='divider-lines' />
+						<Col sm={12} className='gray800-14-bold'>
+							Keeping you updated
+						</Col>
+					</Row>
+					<Form.Group>
+						<Row className='mt-2 gray800-14'>
+							<span className='divider-lines' />
+							<Col md={1} sm={2} xs={3}>
+								Feedback
+							</Col>
+							<Col md={1} sm={2} xs={3}>
+								<Form.Control
+									type='checkbox'
+									className='checker'
+									id='feedback'
+									checked={formik.values.feedback}
+									onChange={formik.handleChange}
+									data-test-id='user-account-feedback'
+								/>
+							</Col>
+							<Col md={10} sm={8} xs={6} className='gray800-14 pl-0'>
+								I am happy to be contacted to share and give feedback on my experience with the Gateway
+							</Col>
+						</Row>
+					</Form.Group>
+
+					<Form.Group>
+						<Row className='mt-2 gray800-14'>
+							<span className='divider-lines' />
+							<Col md={1} sm={2} xs={3}>
+								News
+							</Col>
+							<Col md={1} sm={2} xs={3}>
+								<Form.Control
+									type='checkbox'
+									className='checker'
+									id='news'
+									checked={formik.values.news}
+									onChange={formik.handleChange}
+									data-test-id='user-account-news'
+								/>
+							</Col>
+							<Col md={10} sm={8} xs={6} className='gray800-14 pl-0'>
+								I want to receive news, updates and curated marketing from the Gateway&nbsp;&nbsp;&nbsp;&nbsp;
+								<a target='_blank' href='https://mailchi.mp/hdruk.ac.uk/explore-and-access-the-uks-health-research-datasets'>
+									Show me an example
+								</a>
+							</Col>
+						</Row>
+					</Form.Group>
+
+					<Row className='gray800-14 margin-top-2'>
+						<span className='divider-lines' />
+						<Col sm={12}>
+							As a user of the Gateway we take the privacy and security of your personal data seriously. Our{' '}
+							<a target='_blank' href='https://www.hdruk.ac.uk/infrastructure/gateway/privacy-policy/'>
+								privacy policy
+							</a>{' '}
+							aims to give you information on how Health Data Research UK collects and processes your personal data through your use of this
+							Gateway, including any data you may provide by emailing us.
+						</Col>
+					</Row>
+				</div>
 
 				<Row className='mt-3'>
 					<Col className='text-right'>
