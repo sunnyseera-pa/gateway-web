@@ -134,9 +134,14 @@ class SearchPage extends React.Component {
 					window.location.reload();
 				});
 			}
-			// 6. set the selectedFilter states from queryParams ** does not return anything **
+			// 6 if openUserMessages is true open the user messages
+			else if (this.state.userState[0].loggedIn && queryParams.openUserMessages === 'true') {
+				this.toggleDrawer();
+
+			}
+			// 7. set the selectedFilter states from queryParams ** does not return anything **
 			await this.updateFilterStates(queryParams);
-			// 7. call search API
+			// 8. call search API
 			this.doSearchCall();
 		} else {
 			this.setState({ data: [], search: '', isLoading: true });
