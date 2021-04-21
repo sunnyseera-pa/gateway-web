@@ -264,7 +264,8 @@ let configActionModal = (type = '') => {
 			case 'UNARCHIVE':
 				config = {
 					title: 'Un-archive this dataset?',
-					subTitle: 'Are you sure that you want to create a new draft version of this dataset?',
+					subTitle:
+						'This dataset will appear in search results again. You will be able to create a new version from this dataset once it has been un-archived.',
 					description: false,
 					buttons: {
 						cancel: {
@@ -273,7 +274,7 @@ let configActionModal = (type = '') => {
 							class: 'button-secondary mr-2',
 						},
 						confirmSubmission: {
-							label: 'Create new version',
+							label: 'Un-archive this version',
 							action: 'unarchive',
 							class: 'btn btn-primary addButton',
 						},
@@ -396,7 +397,7 @@ let modifyQuestionIds = (questionSet, existingUniqueId) => {
 		let question = _.cloneDeep(qValue);
 		// 3. if there is a questionId update
 		if (typeof question.questionId !== undefined) {
-			question.questionId = `${qValue.questionId.toLowerCase()}_${uniqueId}`;
+			question.questionId = `${qValue.questionId}_${uniqueId}`;
 		}
 		// 4. if qObj has input and input.options meaning potential nest, loop over nested options
 		if (typeof question.input === 'object' && typeof question.input.options !== 'undefined') {
@@ -440,7 +441,7 @@ let modifyNestedQuestionIds = (questionsArr, uniqueId) => {
 			questionObj.conditionalQuestions.forEach(option => {
 				// 3. test if option has a questionId and if so modify
 				if (typeof option.questionId !== undefined) {
-					option['questionId'] = `${option.questionId.toLowerCase()}_${uniqueId}`;
+					option['questionId'] = `${option.questionId}_${uniqueId}`;
 				}
 				// 4. test the input for options and if options defined means it is another recursive loop call
 				if (typeof questionObj.input === 'object' && typeof questionObj.input.options !== 'undefined') {

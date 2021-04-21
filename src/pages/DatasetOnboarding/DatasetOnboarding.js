@@ -147,6 +147,8 @@ class DatasetOnboarding extends Component {
 		CONFIRMAPPROVALCONDITIONS: 'approved with conditions',
 		CONFIRMREJECTION: 'rejected',
 		CONFIRMAPPROVAL: 'approved',
+		ARCHIVE: 'archive',
+		UNARCHIVE: 'unarchive',
 	};
 
 	tabState = {
@@ -233,7 +235,7 @@ class DatasetOnboarding extends Component {
 			applicationStatus,
 			dataset,
 			readOnly = false,
-			userType = 'CUSTODIAN',
+			userType = 'EDITOR',
 			unansweredAmendments = 0,
 			answeredAmendments = 0,
 			userId,
@@ -263,18 +265,20 @@ class DatasetOnboarding extends Component {
 		jsonSchema = this.injectStaticContent(jsonSchema, inReviewMode, reviewSections);
 		jsonSchema = this.injectObservations(jsonSchema, questionAnswers);
 
-		// 6. Hide show submit application
+		let isLatestVersion = listOfDatasets[0]._id === _id ? true : false;
+		let isThereALiveVersion = listOfDatasets.filter(x => x.activeflag === 'active').length > 0 ? true : false;
+
 		if (applicationStatus === DatasetOnboardingHelper.datasetStatus.draft) {
 			showSubmit = true;
-			showArchive = true;
+			//if (isLatestVersion) showArchive = true;
 		} else if (applicationStatus === DatasetOnboardingHelper.datasetStatus.rejected) {
-			showCreateNewVersion = true;
+			if (isLatestVersion) showCreateNewVersion = true;
 			readOnly = true;
 		} else if (applicationStatus === DatasetOnboardingHelper.datasetStatus.archive) {
-			showUnArchive = true;
+			if (!isThereALiveVersion && isLatestVersion) showCreateNewVersion = true;
 			readOnly = true;
 		} else if (applicationStatus !== DatasetOnboardingHelper.datasetStatus.inReview) {
-			showCreateNewVersion = true;
+			if (isLatestVersion) showCreateNewVersion = true;
 			showArchive = true;
 			readOnly = true;
 		}
@@ -330,7 +334,7 @@ class DatasetOnboarding extends Component {
 		listOfObservationFields.forEach(field => {
 			Object.keys(questionAnswers).some(function (key) {
 				let regex = new RegExp(field.toLowerCase().replace(/\//g, '\\/') + '_', 'g');
-				if (key.match(regex)) {
+				if (key.toLowerCase().match(regex)) {
 					let [, uniqueId] = key.split('_');
 					if (!_.isEmpty(uniqueId) && !listOfObservationUniqueIds.find(x => x === uniqueId)) {
 						listOfObservationUniqueIds.push(uniqueId);
@@ -832,6 +836,14 @@ class DatasetOnboarding extends Component {
 		this.toggleActionModal('CREATENEWVERSION');
 	};
 
+	toggleArchiveModal = () => {
+		this.toggleActionModal('ARCHIVE');
+	};
+
+	toggleUnArchiveModal = () => {
+		this.toggleActionModal('UNARCHIVE');
+	};
+
 	toggleActionModal = (type = '') => {
 		let actionModalConfig = {};
 		// 1. get basic modal config
@@ -889,10 +901,7 @@ class DatasetOnboarding extends Component {
 
 					let alert = {
 						tab: 'inReview',
-						message:
-							this.state.applicationStatus === 'inReview'
-								? 'You have successfully submitted your dataset for review. You will be notified when a decision has been made.'
-								: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
+						message: 'You have successfully submitted your dataset for review. You will be notified when a decision has been made.',
 					};
 					this.props.history.push({
 						pathname: '/account',
@@ -912,37 +921,52 @@ class DatasetOnboarding extends Component {
 					applicationStatusDesc: statusDesc,
 				};
 				// 1. Update action status
-				const response = await axios.put(`${baseURL}/api/v1/dataset-onboarding/${_id}`, body);
+				await axios.put(`${baseURL}/api/v1/dataset-onboarding/${_id}`, body);
 
-				/* let alert = {
+				let alert = {
 					tab: 'inReview',
-					message:
-						this.state.applicationStatus === 'inReview'
-							? 'You have successfully submitted your dataset for review. You will be notified when a decision has been made.'
-							: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
-				}; */
+					message: type !== 'CONFIRMREJECTION' ? 'You have approved the dataset.' : 'You have rejected the dataset.',
+				};
 
 				this.props.history.push({
 					pathname: '/account',
 					search: '?tab=datasets',
-					state: { team: 'admin' },
+					state: { alert, team: 'admin' },
 				});
+				break;
+			case 'ARCHIVE':
+				try {
+					let { _id } = this.state;
+					const body = {
+						applicationStatus: this.applicationState[type],
+					};
+					// 1. Update action status
+					await axios.put(`${baseURL}/api/v1/dataset-onboarding/${_id}`, body);
 
-				// 2. set alert object for screen
-				/* let alert = {
-					publisher: this.state.publisher || '',
-					nav: `dataaccessrequests&team=${this.state.publisher}`,
-					tab: this.tabState[type],
-					message: `You have ${this.tabState[type]} the data access request for ${this.state.publisher}`,
-				};
-				// 3. hide screen modal for approve, reject, approve with comments
-				this.toggleActionModal();
-				// 4. redirect with Publisher name, Status: reject, approved, key of tab: presubmission, inreview, approved, rejected
-				this.props.history.push({
-					pathname: `/account`,
-					search: '?tab=dataaccessrequests',
-					state: { alert },
-				});  */
+					let alert = {
+						tab: 'archive',
+						message: 'You have successfully submitted archived your dataset.',
+					};
+					this.props.history.push({
+						pathname: '/account',
+						search: '?tab=datasets',
+						state: { alert, team: this.state.publisher },
+					});
+				} catch (err) {
+					console.log(err);
+				}
+				break;
+			case 'UNARCHIVE':
+				try {
+					let { _id } = this.state;
+					const body = {
+						applicationStatus: this.applicationState[type],
+					};
+					// 1. Update action status
+					const response = await axios.put(`${baseURL}/api/v1/dataset-onboarding/${_id}`, body);
+				} catch (err) {
+					console.log(err);
+				}
 				break;
 			default:
 				this.toggleActionModal();
@@ -1417,7 +1441,7 @@ class DatasetOnboarding extends Component {
 						</div>
 						<div className='action-bar-actions'>
 							<AmendmentCount answeredAmendments={this.state.answeredAmendments} unansweredAmendments={this.state.unansweredAmendments} />
-							{userType.toUpperCase() === 'CUSTODIAN' ? (
+							{userType.toUpperCase() === 'EDITOR' ? (
 								<ApplicantActionButtons
 									allowedNavigation={allowedNavigation}
 									onNextClick={this.onNextClick}

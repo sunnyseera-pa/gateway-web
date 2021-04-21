@@ -107,6 +107,9 @@ class Account extends Component {
 		} else if (values.team === 'admin') {
 			this.state.team = 'admin';
 			localStorage.setItem('HDR_TEAM', 'admin');
+		} else if (!_.isEmpty(values.team)) {
+			this.state.team = values.team;
+			localStorage.setItem('HDR_TEAM', values.team);
 		} else if (
 			(_.has(props, 'location.state.team') && props.location.state.team !== '') ||
 			(_.has(props, 'location.state.publisher') && props.location.state.team !== '')
