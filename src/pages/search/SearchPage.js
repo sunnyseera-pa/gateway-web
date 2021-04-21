@@ -1808,22 +1808,22 @@ class SearchPage extends React.Component {
 													<Dropdown.Toggle variant='info' id='dropdown-menu-align-right' className='gray800-14'>
 														{(() => {
 															if (key === 'Datasets') {
-																if (datasetSort === 'popularity') return 'Sort by popularity';
+																if (datasetSort === 'popularity') return 'Number of views (highest to lowest)';
 																else if (datasetSort === 'metadata') return 'Sort by metadata quality';
-																else return 'Sort by relevance';
+																else return 'Match to search terms (closest first)';
 															} else if (key === 'Tools') {
-																if (toolSort === 'popularity') return 'Sort by popularity';
-																else return 'Sort by relevance';
+																if (toolSort === 'popularity') return 'Number of views (highest to lowest)';
+																else return 'Match to search terms (closest first)';
 															} else if (key === 'Projects') {
-																if (projectSort === 'popularity') return 'Sort by popularity';
-																else return 'Sort by relevance';
+																if (projectSort === 'popularity') return 'Number of views (highest to lowest)';
+																else return 'Match to search terms (closest first)';
 															} else if (key === 'Papers') {
-																if (paperSort === 'popularity') return 'Sort by popularity';
-																else return 'Sort by relevance';
+																if (paperSort === 'popularity') return 'Number of views (highest to lowest)';
+																else return 'Match to search terms (closest first)';
 															} else if (key === 'People') {
-																if (personSort === 'popularity') return 'Sort by popularity';
-																else if (personSort === 'latest') return 'Sort by latest (newest to oldest)';
-																else return 'Sort by relevance';
+																if (personSort === 'popularity') return 'Number of views (highest to lowest)';
+																else if (personSort === 'latest') return 'Latest (recently updated first)';
+																else return 'Match to search terms (closest first)';
 															}
 														})()}
 														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -1831,10 +1831,10 @@ class SearchPage extends React.Component {
 
 													<Dropdown.Menu>
 														<Dropdown.Item eventKey='relevance' className='gray800-14 '>
-															Sort by relevance
+															Match to search terms (closest first)
 														</Dropdown.Item>
 														<Dropdown.Item eventKey='popularity' className='gray800-14'>
-															Sort by popularity
+															Number of views (highest to lowest)
 														</Dropdown.Item>
 														{key === 'Datasets' ? (
 															<Dropdown.Item eventKey='metadata' className='gray800-14'>
@@ -1845,7 +1845,7 @@ class SearchPage extends React.Component {
 														)}
 														{key === 'People' ? (
 															<Dropdown.Item eventKey='latest' className='gray800-14'>
-																Sort by latest (newest to oldest)
+																Latest (recently updated first)
 															</Dropdown.Item>
 														) : (
 															''
