@@ -30,6 +30,7 @@ import Footer from './pages/commonComponents/Footer';
 import LoginErrorPage from './pages/commonComponents/LoginErrorPage';
 import ErrorModal from './pages/commonComponents/errorModal/ErrorModal';
 import { GuardedRoute } from './pages/commonComponents/GuardedRoute';
+import AdvancedSearchTAndCs from './pages/dashboard/AdvancedSearchTAndCs';
 
 var baseURL = require('./pages/commonComponents/BaseURL').getURL();
 let actionBar, footer;
@@ -124,6 +125,7 @@ class HDRRouter extends Component {
 							id: res.data.data[0].id,
 							name: res.data.data[0].name,
 							teams: res.data.data[0].teams,
+							email: res.data.data[0].email,
 							profileComplete: person.data.person.profileComplete,
 							provider: res.data.data[0].provider,
 							advancedSearchRoles: res.data.data[0].advancedSearchRoles,
@@ -208,6 +210,7 @@ class HDRRouter extends Component {
 						<GuardedRoute path='/course/add' component={AddEditCoursePage} userState={userState} />
 						<GuardedRoute path='/course/edit/:courseID' component={AddEditCoursePage} userState={userState} />
 						<Route path='/course/:courseID' render={props => <CoursePage {...props} userState={userState} />} />
+						<Route path='/advanced-search-terms/' render={props => <AdvancedSearchTAndCs {...props} userState={userState} />} />
 						<Redirect to='/search?search=' />
 					</Switch>
 				</div>
@@ -216,4 +219,4 @@ class HDRRouter extends Component {
 		);
 	}
 }
-export default HDRRouter; 
+export default HDRRouter;

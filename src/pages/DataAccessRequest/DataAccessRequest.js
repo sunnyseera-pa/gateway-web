@@ -1037,7 +1037,7 @@ class DataAccessRequest extends Component {
 		// 1. Deconstruct aboutApplication from state
 		let { aboutApplication } = this.state;
 		// 2. Update about application object
-		aboutApplication.nationalCoreStudiesProjectId = e;
+		aboutApplication.nationalCoreStudiesProjectId = e.toString();
 		// 3. Set state updating validation
 		this.setState({
 			aboutApplication,
@@ -1048,7 +1048,7 @@ class DataAccessRequest extends Component {
 	getNationalCoreStudiesProjects = async () => {
 		try {
 			// 1. Call endpoint to retrieve NCS projects
-			let response = await axios.get(`${baseURL}/api/v1/tools/project/tag/NCS`);
+			let response = await axios.get(`${baseURL}/api/v1/tools/project/tag/?name=NCS,National Core Study`);
 			const {
 				data: { entities },
 			} = response;
@@ -1610,7 +1610,7 @@ class DataAccessRequest extends Component {
 			actionModalConfig,
 			roles,
 			showEmailModal,
-			alert
+			alert,
 		} = this.state;
 		const { userState, location } = this.props;
 

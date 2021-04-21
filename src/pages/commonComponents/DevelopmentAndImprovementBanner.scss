@@ -1,0 +1,19 @@
+@import '../../css/variables.scss';
+
+.dev-and-improv-banner {
+	display: block;
+	border: 2px solid $purple;
+	border-radius: 5px;
+	background-color: #cdd7f7;
+	color: $purple;
+	padding: 8px 22px 8px 22px;
+	font-weight: bold;
+	font-size: 14px;
+
+	&:hover {
+		cursor: pointer;
+		background-color: $purple;
+		color: #ffffff;
+		text-decoration: none;
+	}
+}

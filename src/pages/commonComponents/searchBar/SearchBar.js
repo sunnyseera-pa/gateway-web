@@ -116,6 +116,9 @@ class SearchBar extends React.Component {
 
 	logout = e => {
 		axios.get(baseURL + '/api/v1/auth/logout').then(res => {
+			if (localStorage.getItem('HDR_TEAM') !== null)
+				localStorage.removeItem('HDR_TEAM');
+
 			window.location.reload();
 		});
 	};
