@@ -357,7 +357,6 @@ const AccountTeamManagement = ({ userState = [], team = '', innertab, forwardRef
 					// memberNotifications set
 					if (!isEmpty(memberNotifications))  {
 						// set member notifications
-						debugger;
 						setGatewayEmailNotification([...memberNotifications]);
 						// pull out messages from the member notifications and format in valid alerts for UI
 						messages = [...memberNotifications].filter(obj => Object.keys(obj).includes(messageKey) && !isEmpty(obj[messageKey])).map((value) => ({ message: value.message, type: alertTypes.warning})); 
@@ -394,7 +393,6 @@ const AccountTeamManagement = ({ userState = [], team = '', innertab, forwardRef
 			localStorage.setItem('HDR_TEAM', team);
 		}
 
-		debugger;
 		if(!isEmpty(innertab) && innertab === tabTypes.Notifications) {
 			onTabChange(innertab);
 			onClearInnerTab();
