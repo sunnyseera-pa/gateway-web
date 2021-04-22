@@ -71,6 +71,10 @@
 	text-align: center;
 }
 
+.footerButton:hover {
+	color: white !important;
+}
+
 @media (max-width: 1200px) {
 	.footerBottom {
 		padding: 49px 74px 41px 74px;
