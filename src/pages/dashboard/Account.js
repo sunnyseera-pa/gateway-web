@@ -139,10 +139,6 @@ class Account extends Component {
 					isReviewRejected: values.reviewRejected,
 				});
 				this.toggleNav(tab);
-				// // set the teamManagement
-				// if(typeof values.innertab !== 'undefined' && values.innertab === tabTypes.Notifications) {
-				// 	this.onTeamManagementTabChange(tabTypes.Notifications);
-				// }
 			}
 		}
 		if (!this.state.profileComplete) {
