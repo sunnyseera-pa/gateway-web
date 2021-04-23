@@ -1362,6 +1362,28 @@ class DatasetOnboarding extends Component {
 												)}
 											</div>
 											<div className='titleHolder'>{item.title}</div>
+
+											{(() => {
+												let isSubPanel = false;
+												const baseClasses = 'dar-nav-item text-size-small ';
+												[...this.state.jsonSchema.questionPanels].map((item2, index) => {
+													if (item.pageId === item2.pageId && item2.navHeader) {
+														console.log(item.pageId + ' === ' + item2.pageId + ' && ' + item2.navHeader);
+														isSubPanel = true;
+													}
+												});
+												if (isSubPanel)
+													return (
+														<SVGIcon
+															name='chevronbottom'
+															width={14}
+															height={14}
+															fill={'#3c4e8c'}
+															className={item.active ? 'padding-left-4' : 'padding-left-4 flip180'}
+														/>
+													);
+											})()}
+
 											<div> {item.flag && <i className={DatasetOnboardingHelper.flagIcons[item.flag]} />}</div>
 										</div>
 									</span>

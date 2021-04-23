@@ -21,6 +21,8 @@ const StructuralMetadata = ({
 	const maxSize = 10485760;
 	const [newStructuralMetaData, setNewStructuralMetaData] = useState(structuralMetadata);
 	const [newStructuralMetaDataErrors, setNewStructuralMetaDataErrors] = useState(structuralMetadataErrors);
+	const [showOverrideWarning, setShowOverrideWarning] = useState(!_.isEmpty(structuralMetadata) ? true : false);
+	const [showSuccessfullyUploaded, setShowSuccessfullyUploaded] = useState(false);
 
 	const schema = {
 		'Table Name': {
@@ -102,6 +104,8 @@ const StructuralMetadata = ({
 						axios.patch(`${baseURL}/api/v1/dataset-onboarding/${currentVersionId}`, params);
 					}
 					setNewStructuralMetaData(rows);
+					setShowOverrideWarning(true);
+					setShowSuccessfullyUploaded(true);
 				})
 				.catch(err => {
 					setNewStructuralMetaDataErrors([{ error: 'errorLoading' }]);
@@ -222,6 +226,26 @@ const StructuralMetadata = ({
 			</div>
 
 			<div className='files-area'>
+				{showSuccessfullyUploaded ? (
+					<Row>
+						<Col xs={12} s={12} md={12}>
+							<Alert variant='success'>Your data has been successfully uploaded.</Alert>
+						</Col>
+					</Row>
+				) : (
+					''
+				)}
+
+				{showOverrideWarning ? (
+					<Row>
+						<Col xs={12} s={12} md={12}>
+							<Alert variant='warning'>Warning! Uploading a new file will delete the previously uploaded technical metadata.</Alert>
+						</Col>
+					</Row>
+				) : (
+					''
+				)}
+
 				{structuralMetadataErrors.length > 0 ? (
 					<Row>
 						<Col xs={12} s={12} md={12}>
