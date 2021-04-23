@@ -316,7 +316,6 @@ class Account extends Component {
 				activeAccordion,
 				datasetAccordion,
 			});
-			debugger;
 			// 7. push state
 			this.props.history.push({ pathname: window.location.pathname, search: `?tab=${tab.tabId}`, state: { team: tab.team } });
 		}
