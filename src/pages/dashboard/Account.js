@@ -92,6 +92,7 @@ class Account extends Component {
 		savedTeamNotificationSuccess: false,
 		isSubmitting: false,
 		teamManagementInternalTab: 'Notifications',
+		accountUpdated: false,
 	};
 
 	constructor(props) {
@@ -133,6 +134,7 @@ class Account extends Component {
 					isProjectRejected: values.projectRejected,
 					isReviewApproved: values.reviewApproved,
 					isReviewRejected: values.reviewRejected,
+					accountUpdated: !!values.accountUpdated,
 				});
 				this.toggleNav(tab);
 			}
@@ -148,6 +150,9 @@ class Account extends Component {
 			let values = queryString.parse(window.location.search);
 			let team = 'user';
 			if (values.tab !== this.state.tabId || typeof values.tab !== 'undefined' || typeof values.tab !== null) {
+				if (values.tab !== 'youraccount' && this.state.accountUpdated) {
+					this.setState({ accountUpdated: false });
+				}
 				if (_.has(nextProps, 'location.state.team') && nextProps.location.state.team !== '') {
 					team = nextProps.location.state.team;
 					localStorage.setItem('HDR_TEAM', nextProps.location.state.team);
@@ -176,8 +181,10 @@ class Account extends Component {
 	}
 
 	setProfileComplete() {
-		this.setState({ profileComplete: true });
-		axios.patch(baseURL + `/api/v1/person/profileComplete/${this.state.userState[0].id}`);
+		if (this.state.userState[0].terms) {
+			this.setState({ profileComplete: true });
+			axios.patch(baseURL + `/api/v1/person/profileComplete/${this.state.userState[0].id}`);
+		}
 	}
 
 	checkRedirect = values => {
@@ -385,6 +392,7 @@ class Account extends Component {
 			savedTeamNotificationSuccess,
 			isSubmitting,
 			teamManagementTab,
+			accountUpdated,
 		} = this.state;
 		if (typeof data.datasetids === 'undefined') {
 			data.datasetids = [];
@@ -599,7 +607,7 @@ class Account extends Component {
 					<div className='col-sm-12 col-md-10 margin-top-32'>
 						{tabId === 'dashboard' ? <AccountAnalyticsDashboard userState={userState} /> : ''}
 
-						{tabId === 'youraccount' ? <YourAccount userState={userState} /> : ''}
+						{tabId === 'youraccount' ? <YourAccount userState={userState} accountUpdated={accountUpdated} /> : ''}
 
 						{tabId === 'tools' ? <AccountTools userState={userState} /> : ''}
 

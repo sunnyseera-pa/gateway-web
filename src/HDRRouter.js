@@ -130,6 +130,7 @@ class HDRRouter extends Component {
 							provider: res.data.data[0].provider,
 							advancedSearchRoles: res.data.data[0].advancedSearchRoles,
 							acceptedAdvancedSearchTerms: res.data.data[0].acceptedAdvancedSearchTerms,
+							terms: person.data.person.terms,
 						},
 					],
 					isLoading: false,

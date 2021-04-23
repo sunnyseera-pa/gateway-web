@@ -21,7 +21,7 @@ class YourAccount extends React.Component {
 		userState: [],
 		topicData: [],
 		isLoading: true,
-		isUpdated: false,
+		accountUpdated: false,
 		showOrg: true,
 		combinedOrganisations: [],
 		showSector: true,
@@ -36,6 +36,7 @@ class YourAccount extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state.userState = props.userState;
+		this.state.accountUpdated = props.accountUpdated;
 	}
 
 	componentDidMount() {
@@ -129,6 +130,7 @@ class YourAccount extends React.Component {
 			showLink,
 			showOrcid,
 			showOrganisation,
+			accountUpdated,
 		} = this.state;
 
 		if (isLoading) {
@@ -153,6 +155,7 @@ class YourAccount extends React.Component {
 							userdata={userdata}
 							isUpdated={isUpdated}
 							profileComplete={profileComplete}
+							accountUpdated={accountUpdated}
 							topicData={topicData}
 							combinedOrganisations={combinedOrganisations}
 							showOrg={showOrg}
@@ -307,6 +310,16 @@ const YourAccountForm = props => {
 
 	return (
 		<div>
+			{initialTerms ? (
+				''
+			) : (
+				<Row className='accountBanner'>
+					<Col className='pad-left-24'>
+						Please accept the updated Terms and Conditions and update your profile details. You can now control the visibility of certain
+						fields.
+					</Col>
+				</Row>
+			)}
 			{props.profileComplete ? (
 				''
 			) : (
@@ -316,13 +329,7 @@ const YourAccountForm = props => {
 				newsletter.'
 				/>
 			)}
-			{props.isUpdated ? (
-				<Alert variant='success' className='mt-3'>
-					Done! Your account details have been updated
-				</Alert>
-			) : (
-				''
-			)}
+			{props.accountUpdated ? <Alert variant='success'>Done! Your account details have been updated</Alert> : ''}
 			<AlertBannerBlue
 				message='Want to get involved in shaping the Gateway? Join our development and improvement group.'
 				href='https://discourse.healthdatagateway.org/t/about-the-development-and-improvement-group/498'
