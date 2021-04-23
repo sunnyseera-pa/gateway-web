@@ -462,15 +462,8 @@ const AccountTeamManagement = ({ userState = [], team = '', innertab, forwardRef
 									<div className='black-20-semibold'>Email notifications</div>
 									<div className='gray700-14'>
 										Team related email notifications will automatically be sent to each team members gateway log in email. Data custodian
-										managers can choose to send notifications to additional email accounts. This only affects the following email
-										notifications:
+										managers can choose to send notifications to additional email accounts. 
 									</div>
-									<ul className='gray700-14 mt-3'>
-										<li>Data access requests</li>
-										<li>Workflows</li>
-										<li>Pre-sumbission messages from researchers</li>
-										<li>Metadata onboarding</li>
-									</ul>
 								</Row>
 							</Col>
 						</div>
