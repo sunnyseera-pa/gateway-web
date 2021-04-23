@@ -9,7 +9,7 @@ import Loading from '../commonComponents/Loading';
 import _ from 'lodash';
 import './Dashboard.scss';
 import SVGIcon from '../../images/SVGIcon';
-import DevelopmentAndImprovementBanner from '../commonComponents/DevelopmentAndImprovementBanner';
+import AlertBannerBlue from '../commonComponents/AlertBannerBlue';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -21,7 +21,7 @@ class YourAccount extends React.Component {
 		userState: [],
 		topicData: [],
 		isLoading: true,
-		isUpdated: false,
+		accountUpdated: false,
 		showOrg: true,
 		combinedOrganisations: [],
 		showSector: true,
@@ -36,6 +36,7 @@ class YourAccount extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state.userState = props.userState;
+		this.state.accountUpdated = props.accountUpdated;
 	}
 
 	componentDidMount() {
@@ -129,6 +130,7 @@ class YourAccount extends React.Component {
 			showLink,
 			showOrcid,
 			showOrganisation,
+			accountUpdated,
 		} = this.state;
 
 		if (isLoading) {
@@ -153,6 +155,7 @@ class YourAccount extends React.Component {
 							userdata={userdata}
 							isUpdated={isUpdated}
 							profileComplete={profileComplete}
+							accountUpdated={accountUpdated}
 							topicData={topicData}
 							combinedOrganisations={combinedOrganisations}
 							showOrg={showOrg}
@@ -184,9 +187,9 @@ const YourAccountForm = props => {
 	let showOrcid = props.showOrcid;
 
 	let profileComplete = props.profileComplete;
-	let initialTerms = profileComplete ? props.data.terms || false : false;
-	let optInFeedback = props.optInFeedback || false;
-	let optInNews = props.optInNews || false;
+	let initialTerms = props.data.terms || false;
+	let optInFeedback = props.data.feedback || false;
+	let optInNews = props.data.news || false;
 
 	//tool tips for eyes
 	const mandatoryShowFieldMsg = 'This will be visible to others. You cannot change this.';
@@ -307,7 +310,7 @@ const YourAccountForm = props => {
 
 	return (
 		<div>
-			{props.profileComplete ? (
+			{initialTerms ? (
 				''
 			) : (
 				<Row className='accountBanner'>
@@ -317,14 +320,21 @@ const YourAccountForm = props => {
 					</Col>
 				</Row>
 			)}
-			{props.isUpdated ? (
-				<Alert variant='success' className='mt-3'>
-					Done! Your account details have been updated
-				</Alert>
-			) : (
+			{props.profileComplete ? (
 				''
+			) : (
+				<AlertBannerBlue
+					className='margin-bottom-12'
+					message='Our new account page allows you to easily update your preferences regarding participating in feedback and receiving our
+				newsletter.'
+				/>
 			)}
-			<DevelopmentAndImprovementBanner />
+			{props.accountUpdated ? <Alert variant='success'>Done! Your account details have been updated</Alert> : ''}
+			<AlertBannerBlue
+				message='Want to get involved in shaping the Gateway? Join our development and improvement group.'
+				href='https://discourse.healthdatagateway.org/t/about-the-development-and-improvement-group/498'
+				data-test-id='dev-and-improvement'
+			/>
 			<Row className='pixelGapBottom margin-top-24'>
 				<Col>
 					<div className='rectangle pad-bottom-2'>
@@ -842,6 +852,7 @@ const YourAccountForm = props => {
 											type='checkbox'
 											className='checker'
 											id='feedback'
+											name='feedback'
 											checked={formik.values.feedback}
 											onChange={formik.handleChange}
 											data-test-id='user-account-feedback'
@@ -864,6 +875,7 @@ const YourAccountForm = props => {
 											type='checkbox'
 											className='checker'
 											id='news'
+											name='news'
 											checked={formik.values.news}
 											onChange={formik.handleChange}
 											data-test-id='user-account-news'
