@@ -363,7 +363,6 @@ const AccountTeamManagement = ({ userState = [], team = '', innertab, forwardRef
 						// if messages exist from personal notifications
 						if(!isEmpty(messages)) {
 							// set the alerts to show on the UI - once only
-							console.log(messages);
 							setAlerts(messages);
 							// post to back-end to remove all alerts so they do not show on repeat once we re-vist the page
 							// axios put remove teamNotificationMessage
