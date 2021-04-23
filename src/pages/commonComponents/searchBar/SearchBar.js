@@ -626,7 +626,6 @@ class SearchBar extends React.Component {
 																					<Dropdown.Divider style={{ margin: '0px' }} />
 																				</Fragment>
 																			);
-																		} else if (dat.messageType === 'added collection') {
 																		} else if (dat.messageType === 'team') {
 																			return (
 																				<Fragment key={`message-${index}`}>
