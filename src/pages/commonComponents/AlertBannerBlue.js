@@ -8,7 +8,8 @@ const AlertBannerBlue = props => {
 		<Alert.Link
 			target='_blank'
 			className={props.className + ' ' + (!isEmpty(props.href) ? 'blue-banner blue-banner-hover' : 'blue-banner')}
-			href={props.href}>
+			href={props.href}
+			data-test-id={props.dataTestId}>
 			{props.message}
 		</Alert.Link>
 	);
