@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, Fragment, useRef } from 'react';
 import _ from 'lodash';
 import { Modal } from 'react-bootstrap';
 import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
@@ -11,7 +11,12 @@ const ActionModal = ({ open, close, context, datasetVersionAction }) => {
 
 	let { title = '', subTitle = '', buttons = {}, description = false } = context;
 
+	let btnRef = useRef();
+
 	const onClickAction = (e, action) => {
+		if (btnRef.current) {
+			btnRef.current.setAttribute('disabled', 'disabled');
+		}
 		e.preventDefault();
 		// 1. set form to be submitted
 		setFormState({ ...formState, submitted: true });
@@ -126,7 +131,7 @@ const ActionModal = ({ open, close, context, datasetVersionAction }) => {
 					<div className='actionModal-footer--wrap'>
 						{Object.keys(buttons).map((key, index) => {
 							return (
-								<button key={index} className={buttons[key].class} onClick={e => onClickAction(e, buttons[key].action)}>
+								<button ref={btnRef} key={index} className={buttons[key].class} onClick={e => onClickAction(e, buttons[key].action)}>
 									{buttons[key].label}
 								</button>
 							);
