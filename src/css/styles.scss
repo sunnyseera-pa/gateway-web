@@ -10,6 +10,10 @@ body {
 	-webkit-text-size-adjust: 100%; //fix for iOS
 }
 
+a {
+	overflow-wrap: break-word;
+}
+
 .no-scroll {
 	overflow: hidden !important;
 }
@@ -160,6 +164,7 @@ button {
 .mainWrap {
 	min-height: calc(100% - 497px);
 	padding-bottom: 32px;
+	position: relative;
 }
 
 .rectangle {
@@ -181,6 +186,7 @@ button {
 }
 
 .subHeader {
+	display: flex;
 	box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
 	background-color: $white;
 	width: 100%;
@@ -189,6 +195,7 @@ button {
 }
 
 .entryBox {
+	display: flex;
 	width: 100%;
 	box-shadow: 1px 1px 3px 0 #00000017;
 	background-color: $white;
@@ -265,14 +272,14 @@ a.nav-item.nav-link.active {
 
 	&-dataset {
 		@extend .badge;
-		background-color: $teal;
-		color: $white !important;
+		background-color: $green-light;
+		color: $green-dark !important;
 	}
 
 	&-project {
 		@extend .badge;
-		background-color: $orange;
-		color: $white !important;
+		background-color: $orange-light;
+		color: $orange-dark !important;
 	}
 
 	&-paper {
@@ -588,6 +595,7 @@ textarea:focus {
 .react-datepicker__input-container {
 	display: block;
 	width: 100%;
+	max-width: 480px;
 }
 
 .react-datepicker__input-container input {
@@ -888,7 +896,6 @@ iframe#discourse-embed-frame {
 
 .page-item {
 	margin: 0px 1px !important;
-	width: 32px !important;
 	text-align: center;
 }
 
@@ -931,6 +938,7 @@ iframe#discourse-embed-frame {
 	position: -webkit-sticky; /* Safari */
 	position: sticky;
 	top: 0;
+	margin-bottom: 50px;
 }
 
 .icon-18 {
@@ -970,19 +978,6 @@ iframe#discourse-embed-frame {
 .flexColumn {
 	display: flex;
 	flex-direction: column;
-}
-
-.action-bar {
-	display: flex;
-	flex-flow: row nowrap;
-	position: fixed;
-	left: 0;
-	bottom: 0;
-	width: 100%;
-	height: 72px;
-	background-color: $white;
-	box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.09);
-	z-index: 1000;
 }
 
 .hidden {
@@ -1299,6 +1294,10 @@ button a {
 	margin-bottom: 16px !important;
 }
 
+.margin-bottom-24 {
+	margin-bottom: 24px !important;
+}
+
 .margin-bottom-48 {
 	margin-bottom: 48px !important;
 }
@@ -1595,4 +1594,34 @@ button a {
 .sectorValue {
 	position: absolute;
 	z-index: 1;
+	top: 13px;
+	left: 15px;
+}
+
+.checker {
+	width: 20px !important;
+	margin-left: 15px;
+	margin-right: 12px;
+}
+
+.hdruk-section-body p a[href] {
+	word-break: break-all;
+	word-wrap: break-word;
+}
+
+.text-break {
+	word-break: break-all;
+	overflow-wrap: break-word !important;
+}
+
+.paper-links {
+	display: block;
+}
+
+.divider-lines {
+	width: 100%;
+	border-top: 1px solid #e7e9ed;
+	position: relative;
+	margin: 0 14px 0 14px;
+	padding-top: 10px;
 }

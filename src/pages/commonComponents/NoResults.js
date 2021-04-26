@@ -94,7 +94,7 @@ class NoResults extends React.Component {
 								</Row>
 							</>
 						);
-					} else if (type === 'papers') {
+					} else if (type === 'papers' || type === 'collections') {
 						return (
 							<>
 								<Row className='mt-3'>
@@ -105,7 +105,7 @@ class NoResults extends React.Component {
 											<a href={'/search?search=' + 'COVID-19'} className='purple-14'>
 												COVID-19
 											</a>
-											’ if you want to see examples of papers{' '}
+											’ if you want to see examples of {type}{' '}
 										</span>
 									</Col>
 								</Row>

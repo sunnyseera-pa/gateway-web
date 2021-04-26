@@ -147,11 +147,12 @@ const AddEditCourseForm = props => {
 
 	const formRef = useRef();
 
-	function updateReason(id, reason, type) {
+	function updateReason(id, reason, type, pid) {
 		let inRelatedObject = false;
 		props.relatedObjects.map(object => {
 			if (object.objectId === id) {
 				inRelatedObject = true;
+				object.pid = pid;
 				object.reason = reason;
 				object.objectType = type;
 				object.user = props.userState[0].name;
@@ -162,6 +163,7 @@ const AddEditCourseForm = props => {
 		if (!inRelatedObject) {
 			props.relatedObjects.push({
 				objectId: id,
+				pid: pid,
 				reason: reason,
 				objectType: type,
 				user: props.userState[0].name,
@@ -940,6 +942,7 @@ const AddEditCourseForm = props => {
 																<RelatedObject
 																	showRelationshipQuestion={true}
 																	objectId={object.objectId}
+																	pid={object.pid}
 																	objectType={object.objectType}
 																	doRemoveObject={props.doRemoveObject}
 																	doUpdateReason={updateReason}
@@ -994,17 +997,19 @@ const AddEditCourseForm = props => {
 				/>
 			</Container>
 			<ActionBar userState={props.userState}>
-				<a style={{ cursor: 'pointer' }} href={'/account?tab=courses'}>
-					<Button variant='medium' className='cancelButton dark-14 mr-2'>
-						Cancel
+				<div className='floatRight'>
+					<a style={{ cursor: 'pointer' }} href={'/account?tab=courses'}>
+						<Button variant='medium' className='cancelButton dark-14 mr-2'>
+							Cancel
+						</Button>
+					</a>
+					<Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className='techDetailButton mr-2'>
+						+ Add resource
 					</Button>
-				</a>
-				<Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className='techDetailButton mr-2'>
-					+ Add resource
-				</Button>
-				<Button variant='primary' className='publishButton white-14-semibold mr-2' type='submit' onClick={formik.handleSubmit}>
-					{props.isEdit ? 'Update' : 'Publish'}
-				</Button>
+					<Button variant='primary' className='publishButton white-14-semibold mr-2' type='submit' onClick={formik.handleSubmit}>
+						{props.isEdit ? 'Update' : 'Publish'}
+					</Button>
+				</div>
 			</ActionBar>
 		</div>
 	);

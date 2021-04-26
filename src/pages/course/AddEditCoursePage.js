@@ -9,6 +9,7 @@ import AddEditCourseForm from './AddEditCourseForm';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
+import { isEditMode } from '../../utils/GeneralHelper.util';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -17,7 +18,6 @@ class AddEditCoursePage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state.userState = props.userState;
-		if (props.isEdit) this.state.isEdit = props.isEdit;
 		this.searchBar = React.createRef();
 	}
 
@@ -40,7 +40,7 @@ class AddEditCoursePage extends React.Component {
 		tempRelatedObjectIds: [],
 		relatedObjects: [],
 		didDelete: false,
-		isEdit: false,
+		isEdit: isEditMode(window.location.pathname),
 		showDrawer: false,
 		showModal: false,
 		context: {},
@@ -174,12 +174,13 @@ class AddEditCoursePage extends React.Component {
 	};
 
 	addToTempRelatedObjects = (id, type, pid) => {
+		let updatedTempRelatedObjectIds = [...this.state.tempRelatedObjectIds];
 		if (this.state.tempRelatedObjectIds && this.state.tempRelatedObjectIds.some(object => object.objectId === id)) {
-			this.setState({ tempRelatedObjectIds: this.state.tempRelatedObjectIds.filter(object => object.objectId !== id) });
+			updatedTempRelatedObjectIds = updatedTempRelatedObjectIds.filter(object => object.objectId !== id);
 		} else {
-			this.state.tempRelatedObjectIds.push({ objectId: id, objectType: type, pid: pid });
+			updatedTempRelatedObjectIds.push({ objectId: id, objectType: type, pid: pid });
 		}
-		this.setState({ tempRelatedObjectIds: this.state.tempRelatedObjectIds });
+		this.setState({ tempRelatedObjectIds: updatedTempRelatedObjectIds });
 	};
 
 	addToRelatedObjects = () => {
@@ -199,7 +200,7 @@ class AddEditCoursePage extends React.Component {
 			return newRelatedObject;
 		});
 
-		this.setState({ relatedObjects: [...relatedObjects, ...newRelatedObjects] });
+		this.setState({ relatedObjects: [...relatedObjects, ...newRelatedObjects], tempRelatedObjectIds: [] });
 	};
 
 	clearRelatedObjects = () => {
@@ -208,15 +209,15 @@ class AddEditCoursePage extends React.Component {
 
 	removeObject = (id, type, datasetid) => {
 		let countOfRelatedObjects = this.state.relatedObjects.length;
-
-		let updatedRelatedObjects = [...this.state.relatedObjects].filter(obj => obj.objectId !== id && obj.objectId !== id.toString());
+		let newRelatedObjects = [...this.state.relatedObjects].filter(
+			obj => obj.objectId !== id && obj.objectId !== id.toString() && obj.pid !== id
+		);
 
 		//if an item was not removed try removing by datasetid for retro linkages
-		if (countOfRelatedObjects <= updatedRelatedObjects.length && type === 'dataset') {
-			updatedRelatedObjects = this.state.relatedObjects.filter(obj => obj.objectId !== datasetid && obj.objectId !== datasetid.toString());
+		if (countOfRelatedObjects <= newRelatedObjects.length && type === 'dataset') {
+			newRelatedObjects = [...this.state.relatedObjects].filter(obj => obj.objectId !== datasetid && obj.objectId !== datasetid.toString());
 		}
-
-		this.setState({ relatedObjects: updatedRelatedObjects, didDelete: true });
+		this.setState({ relatedObjects: newRelatedObjects, didDelete: true });
 	};
 
 	updateDeleteFlag = () => {

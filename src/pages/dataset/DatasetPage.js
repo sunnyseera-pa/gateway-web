@@ -88,6 +88,7 @@ class DatasetDetail extends Component {
 		allowNewMessage: false,
 		dataRequestModalContent: {},
 		showAllPhenotype: false,
+		showAllLinkedDatasets: false,
 		showEmpty: false,
 		emptyFlagDetails: false,
 		emptyFlagCoverage: false,
@@ -98,6 +99,8 @@ class DatasetDetail extends Component {
 		emptyFieldsCount: 0,
 		linkedDatasets: [],
 		publisherLogoURL: '',
+		isLatestVersion: true,
+		isDatasetArchived: false,
 	};
 
 	topicContext = {};
@@ -145,6 +148,8 @@ class DatasetDetail extends Component {
 					data: res.data.data,
 					v2data: res.data.data.datasetv2,
 					isLoading: false,
+					isLatestVersion: res.data.isLatestVersion,
+					isDatasetArchived: res.data.isDatasetArchived,
 				});
 				this.getTechnicalMetadata();
 				this.getCollections();
@@ -171,7 +176,7 @@ class DatasetDetail extends Component {
 					allowNewMessage: false,
 				};
 
-				this.updateCounter(this.props.match.params.datasetID, counter);
+				this.updateCounter(this.state.data.datasetid, counter);
 
 				if (!_.isUndefined(res.data.data.relatedObjects)) {
 					await this.getAdditionalObjectInfo(res.data.data.relatedObjects);
@@ -196,6 +201,15 @@ class DatasetDetail extends Component {
 					});
 				}
 
+				if (res.data.isDatasetArchived) {
+					this.setState({
+						alert: {
+							type: 'warning',
+							message: <Fragment>The dataset that you are viewing has been archived and there is no active versions.</Fragment>,
+						},
+					});
+				}
+
 				this.setState({ isLoading: false });
 			}
 		});
@@ -212,7 +226,7 @@ class DatasetDetail extends Component {
 
 	getCollections() {
 		this.setState({ isLoading: true });
-		axios.get(baseURL + '/api/v1/collections/entityid/' + this.state.data.datasetid).then(res => {
+		axios.get(baseURL + '/api/v1/collections/entityid/' + this.state.data.pid).then(res => {
 			this.setState({
 				collections: res.data.data || [],
 			});
@@ -272,6 +286,10 @@ class DatasetDetail extends Component {
 			_.isEmpty(v2data.summary.publisher.deliveryLeadTime) &&
 			_.isEmpty(v2data.summary.publisher.accessRequestCost) &&
 			_.isEmpty(v2data.summary.publisher.accessService) &&
+			_.isEmpty(v2data.accessibility.access.accessRequestCost) &&
+			_.isEmpty(v2data.accessibility.access.accessRights) &&
+			_.isEmpty(v2data.accessibility.access.deliveryLeadTime) &&
+			_.isEmpty(v2data.accessibility.access.accessService) &&
 			_.isEmpty(v2data.accessibility.access.jurisdiction) &&
 			_.isEmpty(v2data.summary.publisher.accessService.dataUseLimitation) &&
 			_.isEmpty(v2data.summary.publisher.accessService.dataUseRequirements) &&
@@ -295,30 +313,41 @@ class DatasetDetail extends Component {
 	getLinkedDatasets = async relation => {
 		let linkedDatasets = this.state.linkedDatasets;
 
-		if (relation.match(/\bhttps?:\/\/\S+/gi) && relation.slice(0, 46) === 'https://web.www.healthdatagateway.org/dataset/') {
-			await axios.get(baseURL + '/api/v1/relatedobject/' + relation.slice(46)).then(async res => {
-				linkedDatasets.push({
-					title: res.data.data[0].name,
-					info: res.data.data[0].datasetfields.publisher,
-					type: 'gatewaylink',
-					id: relation.slice(46),
-				});
-			});
-		} else if (relation.match(/\bhttps?:\/\/\S+/gi) && relation.slice(0, 46) !== 'https://web.www.healthdatagateway.org/dataset/') {
+		// 1. Check if relation is a URL
+		if (relation.match(/\bhttps?:\/\/\S+/gi)) {
 			linkedDatasets.push({
 				title: relation,
-				info: 'Dataset not on the gateway',
+				info:
+					relation.slice(0, 46) === 'https://web.www.healthdatagateway.org/dataset/'
+						? 'Dataset on the gateway'
+						: 'Dataset not on the gateway',
 				type: 'externallink',
 			});
 		} else {
-			linkedDatasets.push({
-				title: relation,
-				info: 'Unrecognised dataset title',
-				type: 'text',
+			// 2. Check if relation is a String that matches a dataset title
+			await axios.get(baseURL + '/api/v1/relatedobject/linkeddatasets/' + encodeURIComponent(relation)).then(async res => {
+				const { datasetFound, pid, name, publisher } = res.data;
+				if (datasetFound && !_.isNil(pid)) {
+					if (pid !== this.state.data.pid) {
+						linkedDatasets.unshift({
+							title: name,
+							info: publisher,
+							type: 'gatewaylink',
+							id: pid,
+						});
+					}
+				} else {
+					// 3. Else determine that relation is an unrecognised dataset title
+					linkedDatasets.push({
+						title: relation,
+						info: 'Unrecognised dataset title',
+						type: 'text',
+					});
+				}
 			});
 		}
 
-		this.setState({ linkedDatasets: linkedDatasets });
+		this.setState({ linkedDatasets });
 	};
 
 	getEmptyFieldsCount(v2data) {
@@ -360,6 +389,10 @@ class DatasetDetail extends Component {
 			v2data.summary.publisher.accessRequestCost,
 			v2data.summary.publisher.accessService,
 			v2data.accessibility.access.jurisdiction,
+			v2data.accessibility.access.accessRequestCost,
+			v2data.accessibility.access.accessRights,
+			v2data.accessibility.access.deliveryLeadTime,
+			v2data.accessibility.access.accessService,
 			v2data.summary.publisher.accessService.dataUseLimitation,
 			v2data.summary.publisher.accessService.dataUseRequirements,
 			v2data.accessibility.access.dataController,
@@ -514,8 +547,8 @@ class DatasetDetail extends Component {
 				};
 				this.setState({ ...stateObj });
 			})
-			.catch(error => {
-				console.log(error);
+			.catch(err => {
+				console.error(err.message);
 			});
 	};
 
@@ -554,6 +587,10 @@ class DatasetDetail extends Component {
 		this.setState({ showAllPhenotype: true });
 	};
 
+	showAllLinkedDatasets = () => {
+		this.setState({ showAllLinkedDatasets: true });
+	};
+
 	render() {
 		const {
 			searchString,
@@ -571,6 +608,7 @@ class DatasetDetail extends Component {
 			requiresModal,
 			allowsMessaging,
 			showAllPhenotype,
+			showAllLinkedDatasets,
 			collections,
 			emptyFlagDetails,
 			emptyFlagCoverage,
@@ -595,10 +633,15 @@ class DatasetDetail extends Component {
 			</span>
 		);
 
+		const formatLinks = source => {
+			const reUrl = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
+			return source.replace(reUrl, '[$1]($1) ');
+		};
+
 		if (isLoading) {
 			return (
 				<Container>
-					<Loading />
+					<Loading data-testid='isLoading' />
 				</Container>
 			);
 		}
@@ -623,9 +666,6 @@ class DatasetDetail extends Component {
 						<div style={{ lineHeight: 1 }}>
 							<MetadataNotRated className='' />
 						</div>
-						<div style={{ lineHeight: 1 }}>
-							<span className='gray800-14-opacity'>Not rated</span>
-						</div>
 					</Fragment>
 				);
 			}
@@ -636,6 +676,9 @@ class DatasetDetail extends Component {
 					<br />
 					<br />
 					The score relates to the amount of information available about the dataset, and not to the quality of the actual datasets.
+					<br />
+					<br />
+					Click to read more about how the score is calculated.
 					<br />
 					<br />
 					Click to read more about how the score is calculated.
@@ -682,7 +725,9 @@ class DatasetDetail extends Component {
 
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
-				<div style={{display:'grid'}}>
+				
+				{/* was <div style={{display:'grid'}}> */}
+				<Fragment>   
 					{data.datasetfields.metadataschema !== '' ? <DatasetSchema datasetSchema={data.datasetfields.metadataschema} /> : null}
 					<SearchBar
 						ref={this.searchBar}
@@ -767,7 +812,7 @@ class DatasetDetail extends Component {
 									<Row className='mt-2'>
 										<Col xs={12}>
 											<span className='badge-dataset'>
-												<SVGIcon name='dataseticon' fill={'#ffffff'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
+												<SVGIcon name='dataseticon' fill={'#113328'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 												<span>Dataset</span>
 											</span>
 											{!data.tags.features || data.tags.features.length <= 0
@@ -788,6 +833,7 @@ class DatasetDetail extends Component {
 												{data.counter === undefined ? ' view' : ' views'}
 											</span>
 										</Col>
+											{this.state.isLatestVersion && !this.state.isDatasetArchived && (
 										<Col sm={6} className='text-right'>
 											{!userState[0].loggedIn ? (
 												<button className='btn button-tertiary dark-14 float-right' onClick={() => this.showLoginModal(data.name)}>
@@ -820,6 +866,7 @@ class DatasetDetail extends Component {
 												</Fragment>
 											)}
 										</Col>
+										)}
 									</Row>
 								</div>
 							</Col>
@@ -863,7 +910,7 @@ class DatasetDetail extends Component {
 															<Row className='mt-3'>
 																<Col sm={12} className='gray800-14 overflowWrap'>
 																	<span className='gray800-14'>
-																		<ReactMarkdown source={data.description} />
+																		<ReactMarkdown source={formatLinks(data.description)} />
 																	</span>
 																</Col>
 															</Row>
@@ -893,7 +940,13 @@ class DatasetDetail extends Component {
 															v2data={v2data}
 															requiresModal={this.state.requiresModal}
 															toggleModal={this.toggleModal}
+															showLoginModal={() => {
+																this.showLoginModal(this.state.data.name);
+															}}
+															toggleDrawer={this.toggleDrawer}
 															showEmpty={showEmpty}
+															datasetid={this.state.data.datasetid}
+															loggedIn={this.state.userState[0].loggedIn}
 														/>
 													) : (
 														''
@@ -946,7 +999,7 @@ class DatasetDetail extends Component {
 																	</Col>
 																	{data.datasetfields.conformsTo ? (
 																		<Col sm={10} className='gray800-14 overflowWrap'>
-																			{data.datasetfields.conformsTo}
+																			<Linkify properties={{ target: '_blank' }}>{data.datasetfields.conformsTo}</Linkify>
 																		</Col>
 																	) : (
 																		<Col sm={10} className='gray800-14-opacity'>
@@ -984,7 +1037,7 @@ class DatasetDetail extends Component {
 																	</Col>
 																	{data.license ? (
 																		<Col sm={10} className='gray800-14'>
-																			{data.license}
+																			<Linkify properties={{ target: '_blank' }}>{data.license}</Linkify>
 																		</Col>
 																	) : (
 																		<Col sm={10} className='gray800-14-opacity'>
@@ -998,7 +1051,7 @@ class DatasetDetail extends Component {
 																	</Col>
 																	{data.datasetfields.accessRequestDuration ? (
 																		<Col sm={10} className='gray800-14'>
-																			{data.datasetfields.accessRequestDuration}
+																			<Linkify properties={{ target: '_blank' }}>{data.datasetfields.accessRequestDuration}</Linkify>
 																		</Col>
 																	) : (
 																		<Col sm={10} className='gray800-14-opacity'>
@@ -1126,7 +1179,7 @@ class DatasetDetail extends Component {
 																	</Col>
 																	{data.datasetfields.physicalSampleAvailability ? (
 																		<Col sm={9} className='gray800-14'>
-																			{data.datasetfields.physicalSampleAvailability}
+																			<Linkify properties={{ target: '_blank' }}>{data.datasetfields.physicalSampleAvailability}</Linkify>
 																		</Col>
 																	) : (
 																		<Col sm={9} className='gray800-14-opacity'>
@@ -1235,70 +1288,153 @@ class DatasetDetail extends Component {
 														</Col>
 													</Row>
 
-													{linkedDatasets.map(relation => (
-														<Row className='pixelGapTop'>
-															<Col sm={12} m={12}>
-																<div className='rectangle'>
-																	<Row className='gray800-14-bold'>
-																		<Col sm={9} m={9} lg={9}>
-																			<Row>
-																				<Col sm={1} m={1} lg={1}>
-																					<SVGIcon
-																						name={
-																							relation.type === 'gatewaylink'
-																								? 'dataseticon'
-																								: relation.type === 'externallink'
-																								? 'externallink'
-																								: 'searchicon'
-																						}
-																						fill={'#475da7'}
-																						className='svg-16 mr-2'
-																						viewBox='-2 -2 20 20'
-																					/>
-																				</Col>
-																				<Col sm={11} m={11} lg={11} className='datasetLinked'>
-																					{relation.type === 'gatewaylink' ? (
-																						<span>
-																							<a
-																								href={'/dataset/' + relation.id}
+													{!showAllLinkedDatasets
+														? linkedDatasets.slice(0, 10).map(relation => {
+																return (
+																	<Row className='pixelGapTop'>
+																		<Col sm={12} m={12}>
+																			<div className='rectangle'>
+																				<Row className='gray800-14-bold'>
+																					<Col sm={9} m={9} lg={9}>
+																						<Row>
+																							<Col sm={1} m={1} lg={1}>
+																								<SVGIcon
+																									name={
+																										relation.type === 'gatewaylink'
+																											? 'dataseticon'
+																											: relation.type === 'externallink'
+																											? 'externallink'
+																											: 'searchicon'
+																									}
+																									fill={'#475da7'}
+																									className='svg-16 mr-2'
+																									viewBox='-2 -2 20 20'
+																								/>
+																							</Col>
+																							<Col sm={11} m={11} lg={11} className='datasetLinked'>
+																								{relation.type === 'gatewaylink' ? (
+																									<span>
+																										<a
+																											href={'/dataset/' + relation.id}
+																											target='_blank'
+																											rel='noopener noreferrer'
+																											className='gray800-14-bold pointer overflowWrap'>
+																											{relation.title}
+																										</a>
+																									</span>
+																								) : relation.type === 'externallink' ? (
+																									<Linkify componentDecorator={componentDecorator}>{relation.title}</Linkify>
+																								) : (
+																									<span className='gray800-14-bold overflowWrap'>{relation.title}</span>
+																								)}
+																							</Col>
+																						</Row>
+																						<Row>
+																							<Col sm={1} m={1} lg={1} />
+																							<Col sm={11} m={11} lg={11} className='datasetLinked'>
+																								<span className='gray800-14'>{relation.info}</span>
+																							</Col>
+																						</Row>
+																					</Col>
+																					<Col sm={3} m={3} lg={3}>
+																						{relation.type === 'text' ? (
+																							<Button
+																								variant='white'
+																								href={'/search?search=' + relation.title}
 																								target='_blank'
-																								rel='noopener noreferrer'
-																								className='gray800-14-bold pointer overflowWrap'>
-																								{relation.title}
-																							</a>
-																						</span>
-																					) : relation.type === 'externallink' ? (
-																						<Linkify componentDecorator={componentDecorator}>{relation.title}</Linkify>
-																					) : (
-																						<span className='gray800-14-bold overflowWrap'>{relation.title}</span>
-																					)}
-																				</Col>
-																			</Row>
-																			<Row>
-																				<Col sm={1} m={1} lg={1} />
-																				<Col sm={11} m={11} lg={11} className='datasetLinked'>
-																					<span className='gray800-14'>{relation.info}</span>
-																				</Col>
-																			</Row>
-																		</Col>
-																		<Col sm={3} m={3} lg={3}>
-																			{relation.type === 'text' ? (
-																				<Button
-																					variant='white'
-																					href={'/search?search=' + relation.title}
-																					target='_blank'
-																					className='gatewaySearchButton floatRightLinkedDataset'>
-																					Search on gateway
-																				</Button>
-																			) : (
-																				''
-																			)}
+																								className='gatewaySearchButton floatRightLinkedDataset'>
+																								Search on gateway
+																							</Button>
+																						) : (
+																							''
+																						)}
+																					</Col>
+																				</Row>
+																			</div>
 																		</Col>
 																	</Row>
+																);
+														  })
+														: linkedDatasets.map(relation => {
+																return (
+																	<Row className='pixelGapTop'>
+																		<Col sm={12} m={12}>
+																			<div className='rectangle'>
+																				<Row className='gray800-14-bold'>
+																					<Col sm={9} m={9} lg={9}>
+																						<Row>
+																							<Col sm={1} m={1} lg={1}>
+																								<SVGIcon
+																									name={
+																										relation.type === 'gatewaylink'
+																											? 'dataseticon'
+																											: relation.type === 'externallink'
+																											? 'externallink'
+																											: 'searchicon'
+																									}
+																									fill={'#475da7'}
+																									className='svg-16 mr-2'
+																									viewBox='-2 -2 20 20'
+																								/>
+																							</Col>
+																							<Col sm={11} m={11} lg={11} className='datasetLinked'>
+																								{relation.type === 'gatewaylink' ? (
+																									<span>
+																										<a
+																											href={'/dataset/' + relation.id}
+																											target='_blank'
+																											rel='noopener noreferrer'
+																											className='gray800-14-bold pointer overflowWrap'>
+																											{relation.title}
+																										</a>
+																									</span>
+																								) : relation.type === 'externallink' ? (
+																									<Linkify componentDecorator={componentDecorator}>{relation.title}</Linkify>
+																								) : (
+																									<span className='gray800-14-bold overflowWrap'>{relation.title}</span>
+																								)}
+																							</Col>
+																						</Row>
+																						<Row>
+																							<Col sm={1} m={1} lg={1} />
+																							<Col sm={11} m={11} lg={11} className='datasetLinked'>
+																								<span className='gray800-14'>{relation.info}</span>
+																							</Col>
+																						</Row>
+																					</Col>
+																					<Col sm={3} m={3} lg={3}>
+																						{relation.type === 'text' ? (
+																							<Button
+																								variant='white'
+																								href={'/search?search=' + relation.title}
+																								target='_blank'
+																								className='gatewaySearchButton floatRightLinkedDataset'>
+																								Search on gateway
+																							</Button>
+																						) : (
+																							''
+																						)}
+																					</Col>
+																				</Row>
+																			</div>
+																		</Col>
+																	</Row>
+																);
+														  })}
+
+													{!showAllLinkedDatasets && linkedDatasets.length > 10 ? (
+														<Row className='pixelGapTop text-center'>
+															<Col sm={12} className='purple-14'>
+																<div className='rectangle'>
+																	<span onClick={() => this.showAllLinkedDatasets()} style={{ cursor: 'pointer' }}>
+																		Show all linked datasets
+																	</span>
 																</div>
 															</Col>
 														</Row>
-													))}
+													) : (
+														''
+													)}
 												</Fragment>
 											) : (
 												''
@@ -1444,7 +1580,7 @@ class DatasetDetail extends Component {
 
 													<Row>
 														{collections.map(collection => (
-															<Col sm={12} md={12} lg={6} style={{ 'text-align': '-webkit-center' }}>
+															<Col sm={12} md={12} lg={6} className='flexCenter'>
 																<CollectionCard data={collection} />
 															</Col>
 														))}
@@ -1474,7 +1610,7 @@ class DatasetDetail extends Component {
 					</ActionBar>
 
 					<DataSetModal open={showModal} closed={this.toggleModal} context={this.topicContext} userState={userState[0]} />
-				</div>
+				</Fragment>
 			</Sentry.ErrorBoundary>
 		);
 	}

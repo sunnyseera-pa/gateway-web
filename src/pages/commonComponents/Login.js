@@ -46,7 +46,7 @@ class Login extends React.Component {
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10}>
 							<div className='gray800-14' style={{ textAlign: 'center' }}>
-								<a href={baseURL + '/auth/google'} className='loginButtonHolder'>
+								<a href={baseURL + '/auth/google'} className='loginButtonHolder' data-test-id='btnGoogleSignIn'>
 									<Image className='loginImageOn' src={require('../../images/Google-default.png')} />
 									<Image className='loginImageOff' src={require('../../images/Google-hover.png')} />
 								</a>

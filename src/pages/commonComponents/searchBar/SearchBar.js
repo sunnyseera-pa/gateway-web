@@ -4,7 +4,7 @@ import classnames from 'classnames';
 
 import { Container, Row, Col, Dropdown } from 'react-bootstrap';
 import NotificationBadge from 'react-notification-badge';
-
+import { isEmpty } from 'lodash';
 import SVGIcon from '../../../images/SVGIcon';
 import { ReactComponent as ColourLogoSvg } from '../../../images/colour.svg';
 import { ReactComponent as ClearButtonSvg } from '../../../images/clear.svg';
@@ -15,13 +15,12 @@ import { ReactComponent as WhiteArrowDownSvg } from '../../../images/arrowDownWh
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import './SearchBar.scss'; 
 import FlagsTranslation from './FlagsTranslation';
-
-
-
+import '../uatBanner/UatBanner.scss';
 import moment from 'moment';
 import { cmsURL } from '../../../configs/url.config';
 
 var baseURL = require('../BaseURL').getURL();
+const urlEnv = require('../BaseURL').getURLEnv();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 	<a
@@ -74,12 +73,13 @@ class SearchBar extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state.userState = props.userState;
+		// set default textValue from props - for between tabs
+		this.state.textValue = props.search;
 		this.handleMouseHover = this.handleMouseHover.bind(this);
 	}
 
 	componentDidMount() {
 		this._isMounted = true;
-
 		window.addEventListener('scroll', this.handleScroll);
 		document.addEventListener('mousedown', this.handleClick, false);
 
@@ -117,6 +117,9 @@ class SearchBar extends React.Component {
 
 	logout = e => {
 		axios.get(baseURL + '/api/v1/auth/logout').then(res => {
+			if (localStorage.getItem('HDR_TEAM') !== null)
+				localStorage.removeItem('HDR_TEAM');
+
 			window.location.reload();
 		});
 	};
@@ -235,8 +238,22 @@ class SearchBar extends React.Component {
 		};
 	}
 
+	getLink = (publisherName = '') => {
+		if(!isEmpty(publisherName))
+			return `/account?tab=dataaccessrequests&team=${publisherName}`;
+
+		return `/account?tab=dataaccessrequests`;
+	}
+
+	getPublisherLink = (data) => {
+		let { messageDescription, publisherName } = data;
+		let link = this.getLink(publisherName);
+
+		return <a href={`${link}`} class='notificationInfo'>{messageDescription}</a>;
+	}
+
 	render() {
-		const { userState, newData, isLoading, clearMessage, isHovering } = this.state;
+		const { userState, newData, isLoading, clearMessage, isHovering, textValue } = this.state;
 
 		if (isLoading) {
 			return <></>;
@@ -257,12 +274,34 @@ class SearchBar extends React.Component {
 			'December',
 		];
 
+		let communityLink = 'https://discourse-dev.healthresearch.tools/';
+		if (window.location.href.includes('.www.')) communityLink = 'https://discourse.healthdatagateway.org/';
+		let showUatBanner = false;
+		let currentEnv = '';
+		if (urlEnv === 'uat' || urlEnv === 'uatbeta' || urlEnv === 'latest') {
+			showUatBanner = true;
+			if (urlEnv === 'uatbeta') {
+				currentEnv = 'UAT BETA';
+			} else if (urlEnv === 'uat') {
+				currentEnv = 'UAT';
+			} else if (urlEnv === 'latest') {
+				currentEnv = 'LATEST';
+			}
+		}
+
+		let col1Size = 5;
+		let col2Size = 7;
+		if (showUatBanner === true) {
+			col1Size = 6;
+			col2Size = 6;
+		}
+
 		return (
 			<Fragment>
 				<nav className={classnames('navbarShown', { navbarHidden: !this.state.visible })}>
 					<div className='searchBarBackground' id='desktopSearchBar'>
 						<Row className='whiteBackground'>
-							<Col lg={5}>
+							<Col lg={col1Size}>
 								<div className='navBarLogoSpacing'>
 									<a style={{ cursor: 'pointer' }} href="/">
 										<ColourLogoSvg className='ml-4 mt-3' />
@@ -280,9 +319,23 @@ class SearchBar extends React.Component {
 										Dashboard
 									</a>
 								</div> */}
+								{showUatBanner === true && (
+									<div class='uatSearchBarBanner uatBannerText'>
+										<span class='verticalMiddle'>
+											{currentEnv}
+											<br />
+											<a
+												class='floatRight uatBannerText'
+												href='https://discourse.healthdatagateway.org/t/using-the-uat-environment/451'
+												target='_blank'>
+												Read more
+											</a>
+										</span>
+									</div>
+								)}
 							</Col>
 
-							<Col lg={7} className='text-right'>
+							<Col lg={col2Size} className='text-right'>
 								<div className='nav-wrapper'>
 									<div className='navBarSearchBarSpacing'>
 										<Container>
@@ -294,13 +347,14 @@ class SearchBar extends React.Component {
 														</span>
 														<span>
 															<input
+																data-testid='searchbar'
 																type='text'
 																placeholder='Search Datasets'
 																id='searchInputSpanPink'
 																data-testid='searchbar'
 																onChange={this.onSearch}
 																onKeyDown={this.props.doSearchMethod}
-																value={this.props.searchString}
+																value={textValue}
 															/>
 														</span>
 														{this.props.searchString !== '' && this.props.searchString !== undefined ? (
@@ -320,11 +374,11 @@ class SearchBar extends React.Component {
 										if (userState[0].loggedIn === true) {
 											return (
 												<Fragment key='userNotifications'>
-													<div className='navBarNotificationSpacing' onClick={this.props.doToggleDrawer}>
+													<div className='navBarNotificationSpacing' onClick={this.props.doToggleDrawer} data-test-id='imgMessageBadge'>
 														<NotificationBadge count={this.state.messageCount} style={{ backgroundColor: '#29235c' }} />
 														<SVGIcon name='chat' fill={'#475da7'} width={20} height={20} id='notificationsBell' className={'pointer'} />
 													</div>
-													<div className='navBarNotificationSpacing'>
+													<div className='navBarNotificationSpacing' data-test-id='imgNotificationBadge'>
 														<Dropdown>
 															<Dropdown.Toggle as={CustomToggle} ref={node => (this.node = node)}>
 																<NotificationBadge count={this.state.count} style={{ backgroundColor: '#29235c' }} />
@@ -402,6 +456,41 @@ class SearchBar extends React.Component {
 																					<Dropdown.Divider style={{ margin: '0px' }} />
 																				</Fragment>
 																			);
+																		} else if (dat.messageType === 'workflow') {
+																			return (
+																				<Fragment key={`message-${index}`}>
+																					<Row className={dat.isRead === 'true' || clearMessage ? 'notificationReadBackground' : ''}>
+																						<Col xs={10}>
+																							<div className='notificationDate'>{messageDateString + '\n'}</div>
+																							<div className='notificationInfoHolder'>
+																								<a href={`/account?tab=workflows`} class='notificationInfo'>
+																									{dat.messageDescription}
+																								</a>
+																							</div>
+																						</Col>
+																						<Col xs={2}>
+																							{dat.isRead === 'false' && !clearMessage ? (
+																								<SVGIcon
+																									name='newnotificationicon'
+																									width={20}
+																									height={20}
+																									visble='true'
+																									style={{
+																										float: 'right',
+																										fill: '#3db28c',
+																										paddingRight: '0px',
+																										marginRight: '10px',
+																										marginTop: '5px',
+																									}}
+																									fill={'#3db28c'}
+																									stroke='none'
+																								/>
+																							) : null}
+																						</Col>
+																					</Row>
+																					<Dropdown.Divider style={{ margin: '0px' }} />
+																				</Fragment>
+																			);
 																		} else if (dat.messageType === 'data access request') {
 																			return (
 																				<Fragment key={`message-${index}`}>
@@ -412,6 +501,39 @@ class SearchBar extends React.Component {
 																								<a href={`/data-access-request/${dat.messageDataRequestID}`} class='notificationInfo'>
 																									{dat.messageDescription}
 																								</a>
+																							</div>
+																						</Col>
+																						<Col xs={2}>
+																							{dat.isRead === 'false' && !clearMessage ? (
+																								<SVGIcon
+																									name='newnotificationicon'
+																									width={20}
+																									height={20}
+																									visble='true'
+																									style={{
+																										float: 'right',
+																										fill: '#3db28c',
+																										paddingRight: '0px',
+																										marginRight: '10px',
+																										marginTop: '5px',
+																									}}
+																									fill={'#3db28c'}
+																									stroke='none'
+																								/>
+																							) : null}
+																						</Col>
+																					</Row>
+																					<Dropdown.Divider style={{ margin: '0px' }} />
+																				</Fragment>
+																			);
+																		} else if (dat.messageType === 'data access request received') {
+																			return (
+																				<Fragment key={`message-${index}`}>
+																					<Row className={dat.isRead === 'true' || clearMessage ? 'notificationReadBackground' : ''}>
+																						<Col xs={10}>
+																							<div className='notificationDate'>{messageDateString + '\n'}</div>
+																							<div className='notificationInfoHolder'>
+																								{ this.getPublisherLink(dat) }
 																							</div>
 																						</Col>
 																						<Col xs={2}>
@@ -609,9 +731,11 @@ class SearchBar extends React.Component {
 										{(() => {
 											if (userState[0].loggedIn === true) {
 												return (
-													<Dropdown>
+													<Dropdown data-test-id='ddUserNavigation'>
 														<Dropdown.Toggle as={CustomToggle}>
-															<span className='black-14'>{userState[0].name}</span>
+															<span className='black-14' data-test-id='lblUserName'>
+																{userState[0].name}
+															</span>
 															<span className='accountDropDownGap'></span>
 															<ArrowDownSvg />
 														</Dropdown.Toggle>
@@ -623,36 +747,37 @@ class SearchBar extends React.Component {
 															<Dropdown.Item href='/account?tab=youraccount' className='black-14'>
 																Your Account
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=tools' className='black-14'>
+															<Dropdown.Item href='/account?tab=tools' className='black-14' data-test-id='optTools'>
 																Tools
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=reviews' className='black-14'>
+															<Dropdown.Item href='/account?tab=reviews' className='black-14' data-test-id='optReviews'>
 																Reviews
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=projects' className='black-14'>
+															<Dropdown.Item href='/account?tab=projects' className='black-14' data-test-id='optProjects'>
 																Projects
 															</Dropdown.Item>
 															{/* <Dropdown.Item href="/account?tab=datasets" className="black-14">Datasets</Dropdown.Item> */}
 															{/* <Dropdown.Item href='/account?tab=papers' className='black-14'>
 																Papers
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=courses' className='black-14'>
+															<Dropdown.Item href='/account?tab=courses' className='black-14' data-test-id='optCourses'>
 																Courses
 															</Dropdown.Item> */}
-															<Dropdown.Item href='/account?tab=dataaccessrequests' className='black-14'>
+															<Dropdown.Item
+																href='/account?tab=dataaccessrequests'
+																className='black-14'
+																data-test-id='optDataAccessRequests'>
 																Data access requests
 															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=collections' className='black-14'>
+															<Dropdown.Item href='/account?tab=collections' className='black-14' data-test-id='optCollections'>
 																Collections
 															</Dropdown.Item>
-															{userState[0].role === 'Admin' ? (
-																<Dropdown.Item href='/account?tab=usersroles' className='black-14'>
+															{userState[0].role === 'Admin' && (
+																<Dropdown.Item href='/account?tab=usersroles' className='black-14' data-test-id='optUsersRoles'>
 																	Users and roles
 																</Dropdown.Item>
-															) : (
-																''
 															)}
-															<Dropdown.Item onClick={this.logout} className='black-14'>
+															<Dropdown.Item onClick={this.logout} className='black-14' data-test-id='optLogout'>
 																Logout
 															</Dropdown.Item>
 														</Dropdown.Menu>
@@ -664,6 +789,7 @@ class SearchBar extends React.Component {
 														<span
 															className={isHovering ? 'black-14 textUnderline' : 'black-14'}
 															id='myBtn'
+															data-test-id='btnLogin'
 															style={{ cursor: 'pointer' }}
 															onClick={e => {
 																this.showLoginModal();
@@ -694,10 +820,18 @@ class SearchBar extends React.Component {
 										</Dropdown.Toggle>
 
 										<Dropdown.Menu as={CustomMenu} className='mobileLoginMenu'>
+											{showUatBanner === true && (
+												<Dropdown.Item href='https://discourse.healthdatagateway.org/t/using-the-uat-environment/451' target='_blank'>
+													<span class='uatMobileSearchBarBanner uatBannerText'>
+														{currentEnv}
+														<span class='floatRight'>Read more</span>
+													</span>
+												</Dropdown.Item>
+											)}
 											<Dropdown.Item className='black-14' href={cmsURL + '/pages/about'}>
 												About
 											</Dropdown.Item>
-											<Dropdown.Item className='black-14' href={cmsURL + '/pages/community'}>
+											<Dropdown.Item className='black-14' href={communityLink}>
 												Community
 											</Dropdown.Item>
 											<Dropdown.Item className='black-14' href={'/dashboard'}>
@@ -777,7 +911,6 @@ class SearchBar extends React.Component {
 																<ColourLogoSvg className='ml-4 mt-3' />
 															</a>
 														</div>
-
 														<div className='navBarSearchIconHolder'>
 															<a href='#' onClick={this.showSearchBar}>
 																<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />

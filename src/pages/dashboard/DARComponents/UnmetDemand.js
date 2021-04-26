@@ -64,7 +64,7 @@ class UnmetDemand extends React.Component {
 		return (
 			<div>
 				<div>
-					<Row className='entryBox'>
+					<Row className='entryBox' data-test-id='unmetDemand-search'>
 						<Accordion defaultActiveKey='1' style={{ width: '100%' }}>
 							<Accordion.Toggle
 								as={Button}
@@ -82,7 +82,7 @@ class UnmetDemand extends React.Component {
 											{!data || !data._id ? (
 												'search term'
 											) : (
-												<a href={'/search?search=' + data._id} className='searchTermLink'>
+												<a href={'/search?search=' + data._id} className='searchTermLink' data-test-id='unmetDemand-search-term'>
 													{' '}
 													{data._id}{' '}
 												</a>
@@ -90,10 +90,10 @@ class UnmetDemand extends React.Component {
 										</span>
 									</Col>
 									<Col sm={2} lg={2} className='gray800-14'>
-										<span style={{ float: 'left' }}>{!data || !data.count ? 'number of searches' : data.count}</span>
+										<span style={{ float: 'left' }} data-test-id='unmetDemand-search-count'>{!data || !data.count ? 'number of searches' : data.count}</span>
 									</Col>
 									<Col sm={2} lg={2} className='gray800-14'>
-										<span style={{ float: 'left' }}>{this.getNumberOfResults(data)}</span>
+										<span style={{ float: 'left' }} data-test-id='unmetDemand-search-results'>{this.getNumberOfResults(data)}</span>
 									</Col>
 								</Row>
 							</Accordion.Toggle>

@@ -336,7 +336,7 @@ export const CourseDetail = props => {
 														<Col sm={12}>Description</Col>
 													</Row>
 													<Row className='mt-3'>
-														<Col sm={12} className='gray800-14'>
+														<Col sm={12} className='gray800-14 hdruk-section-body'>
 															<ReactMarkdown source={courseData.description} />
 														</Col>
 													</Row>
@@ -352,7 +352,7 @@ export const CourseDetail = props => {
 															<Col sm={12}>Results/Insights</Col>
 														</Row>
 														<Row className='mt-3'>
-															<Col sm={12} className='gray800-14'>
+															<Col sm={12} className='gray800-14 hdruk-section-body'>
 																<ReactMarkdown source={courseData.resultsInsights} />
 															</Col>
 														</Row>
@@ -374,7 +374,7 @@ export const CourseDetail = props => {
 															URL
 														</Col>
 														<Col sm={10} className='gray800-14'>
-															<a href={courseData.link} rel='noopener noreferrer' target='_blank' className='purple-14'>
+															<a href={courseData.link} rel='noopener noreferrer' target='_blank' className='purple-14 text-break'>
 																{courseData.link}
 															</a>
 														</Col>
@@ -466,14 +466,11 @@ export const CourseDetail = props => {
 										</Row>
 
 										<Row className='margin-top-8'>
-											{/* gray800-14-opacity */}
 											<Col sm={12}>
 												<div className='rectangle'>
 													<Row className='gray800-14-bold'>
 														<Col sm={12}>Dates and costs</Col>
 													</Row>
-													{/* TODO - MAP THROUGH THE ENTRIES IN DATE AND COSTS AND FOR EACH RETURN THE BELOW 3 ROWS WRAPPED IN TH TOP24 DIV */}
-													{/* courseOptions */}
 													{courseData.courseOptions.map(courseOption => {
 														return (
 															<div className='margin-top-24'>
@@ -528,7 +525,7 @@ export const CourseDetail = props => {
 										</Row>
 
 										<Row className='margin-top-8'>
-											<Col sm={12}>
+											<Col sm={12} className='mb-5'>
 												<div className='rectangle'>
 													<Row className='gray800-14-bold pad-bottom-8'>
 														<Col sm={12}>Requirements and certifications</Col>
@@ -660,7 +657,7 @@ export const CourseDetail = props => {
 
 												<Row>
 													{collections.map(collection => (
-														<Col sm={12} md={12} lg={6} style={{ 'text-align': '-webkit-center' }}>
+														<Col sm={12} md={12} lg={6} className='flexCenter'>
 															<CollectionCard data={collection} />
 														</Col>
 													))}

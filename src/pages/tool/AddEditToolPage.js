@@ -10,6 +10,7 @@ import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
+import { isEditMode } from '../../utils/GeneralHelper.util';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -17,7 +18,6 @@ class AddEditToolPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state.userState = props.userState;
-		if (props.isEdit) this.state.isEdit = props.isEdit;
 		this.searchBar = React.createRef();
 	}
 
@@ -44,7 +44,7 @@ class AddEditToolPage extends React.Component {
 		relatedObjectIds: [],
 		relatedObjects: [],
 		didDelete: false,
-		isEdit: false,
+		isEdit: isEditMode(window.location.pathname),
 		showDrawer: false,
 		showModal: false,
 		context: {},
@@ -323,7 +323,7 @@ class AddEditToolPage extends React.Component {
 		this.setState({ searchString: searchString });
 	};
 
-	doModalSearch = (e, type, page) => {
+	doModalSearch = (e, type = 'dataset', page = 0) => {
 		if (e.key === 'Enter' || e === 'click') {
 			var searchURL = '';
 
@@ -391,14 +391,15 @@ class AddEditToolPage extends React.Component {
 
 	removeObject = (id, type, datasetid) => {
 		let countOfRelatedObjects = this.state.relatedObjects.length;
-		let newRelatedObjects = [...this.state.relatedObjects].filter(obj => obj.objectId !== id && obj.objectId !== id.toString());
+		let newRelatedObjects = [...this.state.relatedObjects].filter(
+			obj => obj.objectId !== id && obj.objectId !== id.toString() && obj.pid !== id
+		);
 
 		//if an item was not removed try removing by datasetid for retro linkages
 		if (countOfRelatedObjects <= newRelatedObjects.length && type === 'dataset') {
 			newRelatedObjects = [...this.state.relatedObjects].filter(obj => obj.objectId !== datasetid && obj.objectId !== datasetid.toString());
 		}
-		this.setState({ relatedObjects: newRelatedObjects });
-		this.setState({ didDelete: true });
+		this.setState({ relatedObjects: newRelatedObjects, didDelete: true });
 	};
 
 	updateDeleteFlag = () => {

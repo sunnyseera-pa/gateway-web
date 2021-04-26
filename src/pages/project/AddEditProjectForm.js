@@ -5,20 +5,20 @@ import * as Yup from 'yup';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import moment from 'moment';
 import { Form, Button, Row, Col, Container } from 'react-bootstrap';
-
 import RelatedResources from '../commonComponents/relatedResources/RelatedResources';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
-
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
 import _ from 'lodash';
+import { isEditMode } from '../../utils/GeneralHelper.util';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const AddEditProjectForm = props => {
+	let isEdit = isEditMode(window.location.pathname);
 	//Fix for projects were features are set to null
-	if (props.isEdit && props.data && props.data.tags.features === null) props.data.tags.features = [];
+	if (isEdit && props.data && props.data.tags.features === null) props.data.tags.features = [];
 
 	// Pass the useFormik() hook initial form values and a submit function that will
 	// be called when the form is submitted
@@ -56,7 +56,7 @@ const AddEditProjectForm = props => {
 			//add via same post as add tool form - type set as 'project'
 			values.relatedObjects = props.relatedObjects;
 			values.toolCreator = props.userState[0];
-			if (props.isEdit) {
+			if (isEdit) {
 				axios.put(baseURL + '/api/v1/projects/' + props.data.id, values).then(res => {
 					window.location.href = window.location.search + '/project/' + props.data.id + '/?projectEdited=true';
 				});
@@ -70,7 +70,7 @@ const AddEditProjectForm = props => {
 
 	var listOfAuthors = [];
 
-	if (props.isEdit) {
+	if (isEdit) {
 		props.data.authors.forEach(author => {
 			props.combinedUsers.forEach(user => {
 				if (user.id === author) {
@@ -96,11 +96,12 @@ const AddEditProjectForm = props => {
 		});
 	}
 
-	function updateReason(id, reason, type) {
+	function updateReason(id, reason, type, pid) {
 		let inRelatedObject = false;
 		props.relatedObjects.map(object => {
 			if (object.objectId === id) {
 				inRelatedObject = true;
+				object.pid = pid;
 				object.reason = reason;
 				object.objectType = type;
 				object.user = props.userState[0].name;
@@ -111,6 +112,7 @@ const AddEditProjectForm = props => {
 		if (!inRelatedObject) {
 			props.relatedObjects.push({
 				objectId: id,
+				pid: pid,
 				reason: reason,
 				objectType: type,
 				user: props.userState[0].name,
@@ -138,13 +140,11 @@ const AddEditProjectForm = props => {
 						<div className='rectangle'>
 							<Row>
 								<Col sm={10} lg={10}>
-									<p className='black-20 margin-bottom-0 pad-bottom-8'>
-										{props.isEdit ? 'Edit your project' : 'Add a new research project'}
-									</p>
+									<p className='black-20 margin-bottom-0 pad-bottom-8'>{isEdit ? 'Edit your project' : 'Add a new research project'}</p>
 								</Col>
 								<Col sm={2} lg={2} className='text-right'>
 									<span className='badge-project'>
-										<SVGIcon name='newestprojecticon' fill={'#ffffff'} className='badgeSvg mr-2' />
+										<SVGIcon name='newestprojecticon' fill={'#472505'} className='badgeSvg mr-2' />
 										Project
 									</span>
 								</Col>
@@ -368,6 +368,7 @@ const AddEditProjectForm = props => {
 												<RelatedObject
 													showRelationshipQuestion={true}
 													objectId={object.objectId}
+													pid={object.pid}
 													objectType={object.objectType}
 													doRemoveObject={props.doRemoveObject}
 													doUpdateReason={updateReason}
@@ -418,19 +419,21 @@ const AddEditProjectForm = props => {
 			</Container>
 
 			<ActionBar userState={props.userState}>
-				<a style={{ cursor: 'pointer' }} href={'/account?tab=projects'}>
-					<Button variant='medium' className='cancelButton dark-14 mr-2'>
-						Cancel
+				<div className='floatRight'>
+					<a style={{ cursor: 'pointer' }} href={'/account?tab=projects'}>
+						<Button variant='medium' className='cancelButton dark-14 mr-2'>
+							Cancel
+						</Button>
+					</a>
+
+					<Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className='techDetailButton mr-2'>
+						+ Add resource
 					</Button>
-				</a>
 
-				<Button onClick={() => relatedResourcesRef.current.showModal()} variant='white' className='techDetailButton mr-2'>
-					+ Add resource
-				</Button>
-
-				<Button variant='primary' className='publishButton white-14-semibold mr-2' type='submit' onClick={formik.handleSubmit}>
-					{props.isEdit ? 'Update' : 'Publish'}
-				</Button>
+					<Button variant='primary' className='publishButton white-14-semibold mr-2' type='submit' onClick={formik.handleSubmit}>
+						{isEdit ? 'Update' : 'Publish'}
+					</Button>
+				</div>
 			</ActionBar>
 		</div>
 	);

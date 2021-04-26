@@ -83,7 +83,16 @@
 	border-right: 4px solid $teal !important;
 	a,
 	button {
+		display: flex;
+		align-items: center;
 		background-color: #f6f7f8;
+	}
+}
+
+.accountNav {
+	a, button {
+		display: flex;
+		align-items: center;
 	}
 }
 
@@ -118,6 +127,9 @@
 	background-color: $white;
 	width: 100%;
 	padding: 24px;
+	&-alt {
+		border-top: 1px solid#e2e2e2;
+	}
 }
 
 .accountBanner {
@@ -269,6 +281,10 @@ textarea {
 	padding: 4px 0px 0px 45px !important;
 }
 
+.teamSelectorMenu .dropdown-item {
+	white-space: normal;
+}
+
 .custom-dropdown {
 	max-width: 375px;
 	width: 100%;
@@ -326,12 +342,6 @@ textarea {
 	&:focus-within {
 		border: solid 2px $teal !important;
 	}
-}
-
-.checker {
-	width: 0% !important;
-	margin-left: 15px;
-	margin-right: 12px;
 }
 
 .colOneTerm {
@@ -401,3 +411,27 @@ textarea {
 .eyeFaded {
 	opacity: 0.7;
 }
+
+.entityDashboardPagination{
+	float: right;
+	margin-right: 15px;
+}
+
+.tm {
+	&-wrapper {
+		margin: 1.2rem 0;
+	}
+
+	&-notification {
+		display: flex;
+		align-items: center;
+	}
+
+	&-switch  {
+		display: flex;
+		align-items: center;
+		padding-right: 15px;
+	}
+}
+
+

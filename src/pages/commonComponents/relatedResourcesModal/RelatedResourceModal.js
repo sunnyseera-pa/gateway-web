@@ -66,14 +66,14 @@ class RelatedResourcesModal extends React.Component {
 
 	render() {
 		const { userState, datasetIndex, toolIndex, projectIndex, paperIndex, personIndex, courseIndex } = this.state;
-		var { key } = this.state;
+		let { key } = this.state;
 
-		var datasetCount = this.props.summary.datasets || 0;
-		var toolCount = this.props.summary.tools || 0;
-		var projectCount = this.props.summary.projects || 0;
-		var paperCount = this.props.summary.papers || 0;
-		var personCount = this.props.summary.persons || 0;
-		var courseCount = this.props.summary.courses || 0;
+		let datasetCount = this.props.summary.datasetCount || 0;
+		let toolCount = this.props.summary.toolCount || 0;
+		let projectCount = this.props.summary.projectCount || 0;
+		let paperCount = this.props.summary.paperCount || 0;
+		let personCount = this.props.summary.personCount || 0;
+		let courseCount = this.props.summary.courseCount || 0;
 
 		if (key === '' || typeof key === 'undefined') {
 			if (datasetCount > 0) {
@@ -98,7 +98,8 @@ class RelatedResourcesModal extends React.Component {
 		let projectPaginationItems = [];
 		let paperPaginationItems = [];
 		let personPaginationItems = [];
-		var maxResult = 40;
+		let coursePaginationItems = [];
+		let maxResult = 40;
 		for (let i = 1; i <= Math.ceil(datasetCount / maxResult); i++) {
 			datasetPaginationItems.push(
 				<Pagination.Item
@@ -160,7 +161,7 @@ class RelatedResourcesModal extends React.Component {
 			);
 		}
 		for (let i = 1; i <= Math.ceil(courseCount / maxResult); i++) {
-			personPaginationItems.push(
+			coursePaginationItems.push(
 				<Pagination.Item
 					key={i}
 					active={i === courseIndex / maxResult + 1}
@@ -172,13 +173,13 @@ class RelatedResourcesModal extends React.Component {
 			);
 		}
 
-		var editingObjectProject = 0;
-		var editingObjectTool = 0;
+		let editingObjectProject = 0;
+		let editingObjectTool = 0;
 
-		if (this.props.projectData.some(object => object.id === this.props.projectid)) {
+		if (this.props.projectData && this.props.projectData.some(object => object.id === this.props.projectid)) {
 			editingObjectProject = 1;
 		}
-		if (this.props.toolData.some(object => object.id === this.props.toolid)) {
+		if (this.props.toolData && this.props.toolData.some(object => object.id === this.props.toolid)) {
 			editingObjectTool = 1;
 		}
 
@@ -192,6 +193,7 @@ class RelatedResourcesModal extends React.Component {
 		if (this.props.relatedObjects) {
 			this.props.relatedObjects.map(object => {
 				this.state.relatedObjectIds.push(object.objectId);
+				this.state.relatedObjectIds.push(object.pid);
 
 				switch (object.objectType) {
 					case 'tool':
@@ -224,7 +226,12 @@ class RelatedResourcesModal extends React.Component {
 						break;
 					case 'dataset':
 						this.props.datasetData.map(dataset => {
-							if (object.objectId === dataset.datasetid || object.objectId === JSON.stringify(dataset.datasetid)) {
+							if (
+								object.objectId === dataset.datasetid ||
+								object.objectId === JSON.stringify(dataset.datasetid) ||
+								object.pid === dataset.pid ||
+								object.pid === JSON.stringify(dataset.pid)
+							) {
 								this.state.selected.datasets++;
 							}
 						});
@@ -250,15 +257,19 @@ class RelatedResourcesModal extends React.Component {
 							doUpdateSearchString={this.props.doUpdateSearchString}
 							userState={this.props.userState}
 						/>
-						{typeof this.props.summary.datasets !== 'undefined' ? (
+						{typeof this.props.summary.datasetCount !== 'undefined' ? (
 							<div className='searchTabsHolder'>
 								<div>
-									<Tabs className='tabsBackground-shadow-bottom gray700-13' activeKey={key} onSelect={this.handleSelect}>
+									<Tabs
+										data-test-id='related-resource-tabs'
+										className='tabsBackground-shadow-bottom gray700-13'
+										activeKey={key}
+										onSelect={this.handleSelect}>
 										<Tab
 											eventKey='Datasets'
 											title={
 												'Datasets (' +
-												(!this.props.summary.datasets ? '0' : this.props.summary.datasets - this.state.selected.datasets) +
+												(!this.props.summary.datasetCount ? '0' : this.props.summary.datasetCount - this.state.selected.datasets) +
 												')'
 											}
 										/>
@@ -266,7 +277,7 @@ class RelatedResourcesModal extends React.Component {
 											eventKey='Tools'
 											title={
 												'Tools (' +
-												(!this.props.summary.tools ? '0' : this.props.summary.tools - this.state.selected.tools - editingObjectTool) +
+												(!this.props.summary.toolCount ? '0' : this.props.summary.toolCount - this.state.selected.tools - editingObjectTool) +
 												')'
 											}
 										/>
@@ -274,26 +285,27 @@ class RelatedResourcesModal extends React.Component {
 											eventKey='Projects'
 											title={
 												'Projects (' +
-												(!this.props.summary.projects
+												(!this.props.summary.projectCount
 													? '0'
-													: this.props.summary.projects - this.state.selected.projects - editingObjectProject) +
+													: this.props.summary.projectCount - this.state.selected.projects - editingObjectProject) +
 												')'
 											}
 										/>
 										<Tab
 											eventKey='Course'
 											title={
-												'Courses (' + (!this.props.summary.courses ? '0' : this.props.summary.courses - this.state.selected.courses) + ')'
+												'Courses (' + (!this.props.summary.courseCount ? '0' : this.props.summary.courseCount - this.state.selected.courses) + ')'
 											}
 										/>
 										<Tab
+											data-test-id='related-papers'
 											eventKey='Papers'
-											title={'Papers (' + (!this.props.summary.papers ? '0' : this.props.summary.papers - this.state.selected.papers) + ')'}
+											title={'Papers (' + (!this.props.summary.paperCount ? '0' : this.props.summary.paperCount - this.state.selected.papers) + ')'}
 										/>
 										<Tab
 											eventKey='People'
 											title={
-												'People (' + (!this.props.summary.persons ? '0' : this.props.summary.persons - this.state.selected.persons) + ')'
+												'People (' + (!this.props.summary.personCount ? '0' : this.props.summary.personCount - this.state.selected.persons) + ')'
 											}
 										/>
 									</Tabs>
@@ -312,7 +324,7 @@ class RelatedResourcesModal extends React.Component {
 							<Col sm={10} lg={10} className='mt-2 mb-3'>
 								{key === 'Datasets'
 									? this.props.datasetData.map(dataset => {
-											if (this.state.relatedObjectIds.includes(dataset.datasetid)) {
+											if (this.state.relatedObjectIds.includes(dataset.datasetid) || this.state.relatedObjectIds.includes(dataset.pid)) {
 												return '';
 											} else {
 												let datasetPublisher;
@@ -472,7 +484,7 @@ class RelatedResourcesModal extends React.Component {
 
 									{key === 'People' && personCount > maxResult ? <Pagination>{personPaginationItems}</Pagination> : ''}
 
-									{key === 'Course' && courseCount > maxResult ? <Pagination>{personPaginationItems}</Pagination> : ''}
+									{key === 'Course' && courseCount > maxResult ? <Pagination>{coursePaginationItems}</Pagination> : ''}
 								</div>
 							</Col>
 							<Col sm={2} lg={2} />

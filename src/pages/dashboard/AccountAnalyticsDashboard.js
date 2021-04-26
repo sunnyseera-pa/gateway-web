@@ -205,6 +205,22 @@ class AccountAnalyticsDashboard extends React.Component {
 		});
 	}
 
+	renderNoResults(message) {
+		return (
+			<Fragment>
+				<Row>
+					<Col sm={12} lg={12}>
+						<Row className='subHeader entrybox gray800-14 noDars'>
+							<Col sm={12} lg={12}>
+								{message}
+							</Col>
+						</Row>
+					</Col>
+				</Row>
+			</Fragment>
+		);
+	}
+
 	render() {
 		const {
 			key,
@@ -246,7 +262,9 @@ class AccountAnalyticsDashboard extends React.Component {
 										<span className='black-20'>Dashboard</span>
 									</Col>
 									<Col sm={4} lg={4}>
-										<span className='gray700-13 floatRight'>Last updated: {moment().format('DD MMM YYYY, hh:mm')}</span>
+										<span className='gray700-13 floatRight' data-test-id='dashboard-metrics-last-updated'>
+											Last updated: {moment().format('DD MMM YYYY, hh:mm')}
+										</span>
 									</Col>
 								</Row>
 								<Row>
@@ -278,35 +296,47 @@ class AccountAnalyticsDashboard extends React.Component {
 
 						<Row className='kpiContainer'>
 							<Col sm={3} lg={3} className='kpiClass'>
-								<DashboardKPI kpiText='total datasets' kpiValue={statsDataType.dataset} />
+								<DashboardKPI kpiText='total datasets' kpiValue={statsDataType.dataset} testId='dashboard-dataset-count' />
 							</Col>
 							<Col sm={3} lg={3} className='kpiClass'>
 								<DashboardKPI
 									kpiText='datasets with technical metadata'
 									kpiValue={datasetsWithTechMetaData.toFixed(0)}
 									percentageFlag={true}
+									testId='dashboard-dataset-metadata-percent'
 								/>
 							</Col>
 							<Col sm={3} lg={3} className='kpiClass'>
-								<DashboardKPI kpiText='users this month' kpiValue={gaUsers} />
+								<DashboardKPI kpiText='users this month' kpiValue={gaUsers} testId='dashboard-users-monthly-count' />
 							</Col>
 							<Col sm={3} lg={3} className='kpiClass'>
-								<DashboardKPI kpiText='unique registered users' kpiValue={uniqueUsers.toFixed(0)} percentageFlag={true} />
+								<DashboardKPI
+									kpiText='unique registered users'
+									kpiValue={uniqueUsers.toFixed(0)}
+									percentageFlag={true}
+									testId='dashboard-users-registered-percent'
+								/>
 							</Col>
 						</Row>
 
 						<Row className='kpiContainer'>
 							<Col sm={3} lg={3} className='kpiClass'>
-								<DashboardKPI kpiText='searches with results this month' kpiValue={searchesWithResults.toFixed(0)} percentageFlag={true} />
+								<DashboardKPI
+									kpiText='searches with results this month'
+									kpiValue={searchesWithResults.toFixed(0)}
+									percentageFlag={true}
+									testId='dashboard-searches-results-percent'
+								/>
 							</Col>
 							<Col sm={3} lg={3} className='kpiClass'>
-								<DashboardKPI kpiText='new access requests' kpiValue={accessRequests} />
+								<DashboardKPI kpiText='new access requests' kpiValue={accessRequests} testId='dashboard-data-access-requests-count' />
 							</Col>
 							<Col sm={3} lg={3} className='kpiClass'>
 								<DashboardKPI
 									kpiText='uptime this month'
 									kpiValue={uptime.toFixed(2) % 1 === 0 ? Math.trunc(uptime.toFixed(2)) : uptime.toFixed(2)}
 									percentageFlag={true}
+									testId='dashboard-gateway-uptime-percent'
 								/>
 							</Col>
 							<Col sm={3} lg={3} className='kpiClass'>
@@ -329,24 +359,8 @@ class AccountAnalyticsDashboard extends React.Component {
 							</Col>
 						</Row>
 
-						<Fragment>
-							<Row>
-								<Col sm={12} lg={12}>
-									{topDatasets.length === 0 ? (
-										<Row className='subHeader entrybox gray800-14 noDars'>
-											<Col sm={12} lg={12}>
-												There were no data access requests this month{' '}
-											</Col>
-										</Row>
-									) : (
-										''
-									)}
-								</Col>
-							</Row>
-						</Fragment>
-
 						{topDatasets.length === 0 ? (
-							''
+							this.renderNoResults('There were no data access requests this month')
 						) : (
 							<Row className='entryBox noPadding'>
 								<Col sm={12} lg={12} className='resultsPadding'>
@@ -386,28 +400,30 @@ class AccountAnalyticsDashboard extends React.Component {
 								</Row>
 							</Col>
 						</Row>
-
-						<Fragment>
-							<Row>
-								<Col sm={12} lg={12}>
-									<Row className='subHeader entrybox gray800-14-bold'>
-										<Col sm={5} lg={6}>
-											Search term{' '}
-										</Col>
-										<Col sm={2} lg={2}>
-											Searches
-										</Col>
-										<Col sm={5} lg={4}>
-											Latest results
-										</Col>
-									</Row>
-									{topSearches.map((dat, i) => {
-										return <TopSearches key={i} data={dat} />;
-									})}
-								</Col>
-							</Row>
-						</Fragment>
-
+						{topSearches.length === 0 ? (
+							this.renderNoResults("There isn't enough data available for this month yet")
+						) : (
+							<Fragment>
+								<Row>
+									<Col sm={12} lg={12}>
+										<Row className='subHeader entrybox gray800-14-bold'>
+											<Col sm={5} lg={6}>
+												Search term{' '}
+											</Col>
+											<Col sm={2} lg={2}>
+												Searches
+											</Col>
+											<Col sm={5} lg={4}>
+												Latest results
+											</Col>
+										</Row>
+										{topSearches.map((dat, i) => {
+											return <TopSearches key={i} data={dat} />;
+										})}
+									</Col>
+								</Row>
+							</Fragment>
+						)}
 						<Row className='accountHeader margin-top-16'>
 							<Col sm={12} lg={12}>
 								<Row>
@@ -427,7 +443,11 @@ class AccountAnalyticsDashboard extends React.Component {
 
 						<Row className='tabsBackground'>
 							<Col sm={12} lg={12}>
-								<Tabs className='dataAccessTabs gray700-13' activeKey={this.state.key} onSelect={this.handleSelect.bind(this)}>
+								<Tabs
+									className='dataAccessTabs gray700-13'
+									data-test-id='unmet-tabs'
+									activeKey={this.state.key}
+									onSelect={this.handleSelect.bind(this)}>
 									<Tab eventKey='Datasets' title={'Datasets'}></Tab>
 									<Tab eventKey='Tools' title={'Tools'}></Tab>
 									<Tab eventKey='Projects' title={'Projects'}></Tab>
@@ -437,125 +457,127 @@ class AccountAnalyticsDashboard extends React.Component {
 							</Col>
 						</Row>
 
-						{(() => {
-							switch (key) {
-								case 'Datasets':
-									return (
-										<div>
-											<Row>
-												<Col sm={12} lg={12}>
-													<Row className='subHeader gray800-14-bold'>
-														<Col sm={8} lg={8}>
-															Search term{' '}
-														</Col>
-														<Col sm={2} lg={2}>
-															Searches
-														</Col>
-														<Col sm={2} lg={2}>
-															Dataset results
-														</Col>
-													</Row>
-													{data.map((dat, i) => {
-														return <UnmetDemand key={i} data={dat} />;
-													})}
-												</Col>
-											</Row>
-										</div>
-									);
-								case 'Tools':
-									return (
-										<div>
-											<Row>
-												<Col sm={12} lg={12}>
-													<Row className='subHeader mt-3 gray800-14-bold'>
-														<Col sm={8} lg={8}>
-															Search term{' '}
-														</Col>
-														<Col sm={2} lg={2}>
-															Searches
-														</Col>
-														<Col sm={2} lg={2}>
-															Tool results
+						{data.length === 0
+							? this.renderNoResults("There isn't enough data available for this month yet")
+							: (() => {
+									switch (key) {
+										case 'Datasets':
+											return (
+												<div>
+													<Row>
+														<Col sm={12} lg={12}>
+															<Row className='subHeader mt-3 gray800-14-bold'>
+																<Col sm={8} lg={8}>
+																	Search term{' '}
+																</Col>
+																<Col sm={2} lg={2}>
+																	Searches
+																</Col>
+																<Col sm={2} lg={2}>
+																	Dataset results
+																</Col>
+															</Row>
+															{data.map((dat, i) => {
+																return <UnmetDemand key={i} data={dat} />;
+															})}
 														</Col>
 													</Row>
-													{data.map(dat => {
-														return <UnmetDemand data={dat} />;
-													})}
-												</Col>
-											</Row>
-										</div>
-									);
-								case 'Projects':
-									return (
-										<div>
-											<Row>
-												<Col sm={12} lg={12}>
-													<Row className='subHeader mt-3 gray800-14-bold'>
-														<Col sm={8} lg={8}>
-															Search term{' '}
-														</Col>
-														<Col sm={2} lg={2}>
-															Searches
-														</Col>
-														<Col sm={2} lg={2}>
-															Project results
-														</Col>
-													</Row>
-													{data.map(dat => {
-														return <UnmetDemand data={dat} />;
-													})}
-												</Col>
-											</Row>
-										</div>
-									);
-								case 'Papers':
-									return (
-										<div>
-											<Row>
-												<Col sm={12} lg={12}>
-													<Row className='subHeader mt-3 gray800-14-bold'>
-														<Col sm={8} lg={8}>
-															Search term{' '}
-														</Col>
-														<Col sm={2} lg={2}>
-															Searches
-														</Col>
-														<Col sm={2} lg={2}>
-															Paper results
+												</div>
+											);
+										case 'Tools':
+											return (
+												<div>
+													<Row>
+														<Col sm={12} lg={12}>
+															<Row className='subHeader mt-3 gray800-14-bold'>
+																<Col sm={8} lg={8}>
+																	Search term{' '}
+																</Col>
+																<Col sm={2} lg={2}>
+																	Searches
+																</Col>
+																<Col sm={2} lg={2}>
+																	Tool results
+																</Col>
+															</Row>
+															{data.map(dat => {
+																return <UnmetDemand data={dat} />;
+															})}
 														</Col>
 													</Row>
-													{data.map(dat => {
-														return <UnmetDemand data={dat} />;
-													})}
-												</Col>
-											</Row>
-										</div>
-									);
-								case 'People':
-									return (
-										<div>
-											<Row>
-												<Col sm={12} lg={12}>
-													<Row className='subHeader mt-3 gray800-14-bold'>
-														<Col sm={8} lg={8}>
-															Search term{' '}
-														</Col>
-														<Col sm={2} lg={2}>
-															Searches
-														</Col>
-														<Col sm={2} lg={2}>
-															People results
+												</div>
+											);
+										case 'Projects':
+											return (
+												<div>
+													<Row>
+														<Col sm={12} lg={12}>
+															<Row className='subHeader mt-3 gray800-14-bold'>
+																<Col sm={8} lg={8}>
+																	Search term{' '}
+																</Col>
+																<Col sm={2} lg={2}>
+																	Searches
+																</Col>
+																<Col sm={2} lg={2}>
+																	Project results
+																</Col>
+															</Row>
+															{data.map(dat => {
+																return <UnmetDemand data={dat} />;
+															})}
 														</Col>
 													</Row>
-													{data.map(dat => {
-														return <UnmetDemand data={dat} />;
-													})}
-												</Col>
-											</Row>
-										</div>
-									);
-							}
-						})()}
+												</div>
+											);
+										case 'Papers':
+											return (
+												<div>
+													<Row>
+														<Col sm={12} lg={12}>
+															<Row className='subHeader mt-3 gray800-14-bold'>
+																<Col sm={8} lg={8}>
+																	Search term{' '}
+																</Col>
+																<Col sm={2} lg={2}>
+																	Searches
+																</Col>
+																<Col sm={2} lg={2}>
+																	Paper results
+																</Col>
+															</Row>
+															{data.map(dat => {
+																return <UnmetDemand data={dat} />;
+															})}
+														</Col>
+													</Row>
+												</div>
+											);
+										case 'People':
+											return (
+												<div>
+													<Row>
+														<Col sm={12} lg={12}>
+															<Row className='subHeader mt-3 gray800-14-bold'>
+																<Col sm={8} lg={8}>
+																	Search term{' '}
+																</Col>
+																<Col sm={2} lg={2}>
+																	Searches
+																</Col>
+																<Col sm={2} lg={2}>
+																	People results
+																</Col>
+															</Row>
+															{data.map(dat => {
+																return <UnmetDemand data={dat} />;
+															})}
+														</Col>
+													</Row>
+												</div>
+											);
+									}
+							  })()}
 					</Col>
 					<Col sm={1} lg={10} />
 				</Row>
@@ -573,9 +595,11 @@ const getDatesForDropdown = (req, res) => {
 	let currentDate = startDate;
 
 	while (currentDate <= stopDate) {
-		if (currentDate.getUTCDate() == 1) dateArray.push(currentDate);
-
-		currentDate = currentDate.addDays(1);
+		if (moment(currentDate).isDST() === false) {
+			currentDate.setHours(0);
+		}
+		dateArray.push(new Date(currentDate));
+		currentDate.setMonth(currentDate.getMonth() + 1);
 	}
 
 	return dateArray.reverse();

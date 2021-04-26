@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { History } from 'react-router';
-import { Container, Row, Col, Modal, Tabs, Tab, Alert, Tooltip } from 'react-bootstrap';
+import { Container, Row, Col, Modal, Tabs, Tab, Alert, Tooltip, Button } from 'react-bootstrap';
 import Winterfell from 'winterfell';
 import _ from 'lodash';
 import axios from 'axios';
@@ -10,6 +10,7 @@ import TypeaheadUser from './components/TypeaheadUser/TypeaheadUser';
 import TypeaheadMultiUser from './components/TypeaheadUser/TypeaheadMultiUser';
 import DatePickerCustom from './components/DatePickerCustom/DatepickerCustom';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
+import ActionBar from '../commonComponents/actionbar/ActionBar';
 import Loading from '../commonComponents/Loading';
 import NavItem from './components/NavItem/NavItem';
 import NavDropdown from './components/NavDropdown/NavDropdown';
@@ -41,6 +42,11 @@ import AboutApplication from './components/AboutApplication/AboutApplication';
 import Guidance from './components/Guidance/Guidance';
 import Uploads from './components/Uploads/Uploads';
 import UpdateRequestModal from './components/UpdateRequestModal/UpdateRequestModal';
+import MissingFieldsModal from './components/MissingFieldsModal/MissingFieldsModal';
+import ConfirmSubmissionModal from './components/ConfirmSubmissionModal/ConfirmSubmissionModal';
+import DeleteDraftModal from './components/DeleteDraftModal/DeleteDraftModal';
+import DuplicateApplicationModal from './components/DuplicateApplicationModal/DuplicateApplicationModal';
+import SelectDatasetModal from './components/SelectDatasetModal/SelectDatasetModal';
 
 class DataAccessRequest extends Component {
 	constructor(props) {
@@ -101,6 +107,7 @@ class DataAccessRequest extends Component {
 			allowsMultipleDatasets: false,
 			activeAccordionCard: 0,
 			allowedNavigation: true,
+			isCloneable: false,
 			projectNameValid: true,
 			ncsValid: true,
 			topicContext: {},
@@ -126,7 +133,13 @@ class DataAccessRequest extends Component {
 			roles: [],
 			nationalCoreStudiesProjects: [],
 			inReviewMode: false,
-			updateRequestModal: false
+			updateRequestModal: false,
+			showEmailModal: false,
+			showMissingFieldsModal: false,
+			showConfirmSubmissionModal: false,
+			showDeleteDraftModal: false,
+			showDuplicateApplicationModal: false,
+			showSelectDatasetModal: false,
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -196,9 +209,9 @@ class DataAccessRequest extends Component {
 			this.setState({
 				totalQuestions,
 			});
-		} catch (error) {
+		} catch (err) {
 			this.setState({ isLoading: false });
-			console.error(error);
+			console.error(err.message);
 		} finally {
 			this.setState({
 				roles: this.getUserRoles(),
@@ -226,6 +239,7 @@ class DataAccessRequest extends Component {
 						projectId,
 						workflow,
 						files,
+						isCloneable,
 					},
 				},
 			} = response;
@@ -244,10 +258,11 @@ class DataAccessRequest extends Component {
 				projectId,
 				workflow,
 				files,
+				isCloneable,
 			});
-		} catch (error) {
+		} catch (err) {
 			this.setState({ isLoading: false });
-			console.error(error);
+			console.error(err.message);
 		}
 	};
 
@@ -270,6 +285,7 @@ class DataAccessRequest extends Component {
 						projectId,
 						workflow,
 						files,
+						isCloneable,
 					},
 				},
 			} = response;
@@ -288,13 +304,14 @@ class DataAccessRequest extends Component {
 				projectId,
 				workflow,
 				files,
+				isCloneable,
 			});
 
 			// for local test uses formSchema.json
 			//  this.setState({jsonSchema: {...formSchema}, questionAnswers: {fullname: {"id":5385077600698822,"orcid":"12345678","name":"Paul McCafferty","bio":"Developer @ PA","email":"p*************y@p**************m"}, orcid:"12345678", email:"p*************y@p**************m"}, activePanelId: 'applicant', isLoading: false, applicationStatus: 'inProgress'});
-		} catch (error) {
+		} catch (err) {
 			this.setState({ isLoading: false });
-			console.error(error);
+			console.error(err.message);
 		}
 	};
 
@@ -308,9 +325,9 @@ class DataAccessRequest extends Component {
 			} = response;
 			// 3. Set up the DAR
 			this.setScreenData({ ...data });
-		} catch (error) {
+		} catch (err) {
 			this.setState({ isLoading: false });
-			console.error(error);
+			console.error(err.message);
 		}
 	};
 
@@ -338,6 +355,7 @@ class DataAccessRequest extends Component {
 			reviewSections = [],
 			workflow,
 			files,
+			isCloneable,
 		} = context;
 		let {
 			datasetfields: { publisher },
@@ -390,19 +408,18 @@ class DataAccessRequest extends Component {
 		// 6. Hide show submit application
 		if (applicationStatus === DarHelper.darStatus.inProgress) {
 			showSubmit = true;
-		} else if (
-			applicationStatus === DarHelper.darStatus.inReview ||
-			applicationStatus === DarHelper.darStatus.submitted
-		) {
+		} else if (applicationStatus === DarHelper.darStatus.inReview || applicationStatus === DarHelper.darStatus.submitted) {
 			if (activeParty === 'applicant' && answeredAmendments > 0) {
 				showSubmit = true;
 				submitButtonText = 'Submit updates';
 			}
 		}
 
+		// 7. Set initial panel as selected and scroll to top of view port
 		let initialPanel = jsonSchema.formPanels[0].panelId;
+		window.scrollTo(0, 0);
 
-		// 9. Set state
+		// 8. Set state
 		this.setState({
 			jsonSchema: { ...jsonSchema, ...classSchema },
 			activeParty,
@@ -437,6 +454,7 @@ class DataAccessRequest extends Component {
 			workflow,
 			workflowAssigned: !_.isEmpty(workflow) ? true : false,
 			files,
+			isCloneable,
 		});
 	};
 
@@ -460,27 +478,27 @@ class DataAccessRequest extends Component {
 			// Add form panel for 'about' & 'files'
 			jsonSchema.formPanels.unshift(DarHelper.staticContent.aboutPanel);
 			jsonSchema.formPanels.push(DarHelper.staticContent.filesPanel);
-		} 
+		}
 		// if activePanel, find active formPanel from formPanels, find pageId index from pages array
-		if(!_.isEmpty(this.state.activePanelId)) {
+		if (!_.isEmpty(this.state.activePanelId)) {
 			formPanel = [...formPanels].find(p => p.panelId === this.state.activePanelId);
 			currentPageIdx = [...pages].findIndex(page => page.pageId === formPanel.pageId);
 		}
 		// set active page
-		jsonSchema.pages.forEach(element => element.active = false);
+		jsonSchema.pages.forEach(element => (element.active = false));
 		jsonSchema.pages[currentPageIdx].active = true;
-		
+
 		// 7. Append review sections to jsonSchema if in review mode
 		jsonSchema.pages = [...jsonSchema.pages].map(page => {
 			let inReview =
-			[...reviewSections].includes(page.pageId.toLowerCase()) ||
-			page.pageId === DarHelper.darStaticPageIds.ABOUT ||
-			page.pageId === DarHelper.darStaticPageIds.FILES;
-			
+				[...reviewSections].includes(page.pageId.toLowerCase()) ||
+				page.pageId === DarHelper.darStaticPageIds.ABOUT ||
+				page.pageId === DarHelper.darStaticPageIds.FILES;
+
 			return { ...page, inReview: inReviewMode && inReview };
 		});
 		// add in the classes for winterfell, important
-		jsonSchema = {...jsonSchema, ...classSchema};
+		jsonSchema = { ...jsonSchema, ...classSchema };
 
 		return jsonSchema;
 	}
@@ -535,7 +553,7 @@ class DataAccessRequest extends Component {
 			let { key, data = {} } = obj;
 			// 2. set body params
 			let params = {
-				[`${key}`]: JSON.stringify(data),
+				[`${key}`]: data,
 				updatedQuestionId,
 			};
 			// 3. API Patch call
@@ -545,23 +563,24 @@ class DataAccessRequest extends Component {
 				} = response;
 				let { applicationStatus } = this.state;
 				// 4. remove blank values from schema updates - omit values if they are blank, important for jsonSchema
-				if(!_.isNil(jsonSchema))
-					jsonSchema = this.injectStaticContent(jsonSchema, false, this.state.reviewSections);
+				if (!_.isNil(jsonSchema)) jsonSchema = this.injectStaticContent(jsonSchema, false, this.state.reviewSections);
 
-				let schemaUpdates = 	_.omitBy({
-					unansweredAmendments,
-					answeredAmendments,
-					showSubmit: applicationStatus === DarHelper.darStatus.inProgress || answeredAmendments > 0,
-					jsonSchema
-				}, _.isNil);
+				let schemaUpdates = _.omitBy(
+					{
+						unansweredAmendments,
+						answeredAmendments,
+						showSubmit: applicationStatus === DarHelper.darStatus.inProgress || answeredAmendments > 0,
+						jsonSchema,
+					},
+					_.isNil
+				);
 
 				this.setState({
-					...schemaUpdates
+					...schemaUpdates,
 				});
-
 			});
-		} catch (error) {
-			console.log(`API PUT ERROR ${error}`);
+		} catch (err) {
+			console.error(`API PUT ERROR ${err.message}`);
 		}
 	};
 
@@ -572,12 +591,7 @@ class DataAccessRequest extends Component {
 		return id === userId;
 	};
 
-	/**
-	 * [Form Submit]
-	 * @desc Submitting data access request
-	 * @params  Object{questionAnswers}
-	 */
-	onFormSubmit = async () => {
+	onSubmitClick = () => {
 		let invalidQuestions = DarValidation.getQuestionPanelInvalidQuestions(
 			Winterfell,
 			this.state.jsonSchema.questionSets,
@@ -589,35 +603,45 @@ class DataAccessRequest extends Component {
 		let isValid = Object.keys(errors).length ? false : true;
 
 		if (isValid) {
-			try {
-				let { _id } = this.state;
-				// 1. POST
-				await axios.post(`${baseURL}/api/v1/data-access-request/${_id}`, {});
-				const lastSaved = DarHelper.saveTime();
-				this.setState({ lastSaved });
-
-				let alert = {
-					tab: 'submitted',
-					message:
-						this.state.applicationStatus === 'inProgress'
-							? 'Your application was submitted successfully'
-							: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
-					publisher: 'user',
-				};
-				this.props.history.push({
-					pathname: '/account',
-					search: '?tab=dataaccessrequests',
-					state: { alert },
-				});
-			} catch (err) {
-				console.log(err);
-			}
+			this.setState({ showConfirmSubmissionModal: true });
 		} else {
 			let activePage = _.get(_.keys({ ...errors }), 0);
 			let activePanel = _.get(_.keys({ ...errors }[activePage]), 0);
 			let validationMessages = validationSectionMessages;
-			alert('Some validation issues have been found. Please see all items highlighted in red on this page.');
+			this.setState({ showMissingFieldsModal: true });
 			this.updateNavigation({ pageId: activePage, panelId: activePanel }, validationMessages);
+		}
+	};
+
+	/**
+	 * [Form Submit]
+	 * @desc Submitting data access request
+	 * @params  Object{questionAnswers}
+	 */
+	onFormSubmit = async () => {
+		try {
+			let { _id } = this.state;
+			// 1. POST
+			await axios.post(`${baseURL}/api/v1/data-access-request/${_id}`, {});
+			const lastSaved = DarHelper.saveTime();
+			this.setState({ lastSaved });
+
+			let alert = {
+				tab: 'submitted',
+				message:
+					this.state.applicationStatus === 'inProgress'
+						? 'Your application was submitted successfully'
+						: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
+				publisher: 'user',
+			};
+
+			this.props.history.push({
+				pathname: '/account',
+				search: '?tab=dataaccessrequests',
+				state: { alert },
+			});
+		} catch (err) {
+			console.error(err.message);
 		}
 	};
 
@@ -629,7 +653,7 @@ class DataAccessRequest extends Component {
 			let { _id: id } = this.state;
 			// 3. Set up body params
 			let params = {
-				[`${key}`]: JSON.stringify(data),
+				[`${key}`]: data,
 			};
 			// 4. PATCH the data
 			const response = await axios.patch(`${baseURL}/api/v1/data-access-request/${id}`, params);
@@ -638,7 +662,7 @@ class DataAccessRequest extends Component {
 			// 5. Set state
 			this.setState({ [`${key}`]: { ...data }, lastSaved });
 		} catch (err) {
-			console.log(err);
+			console.error(err.message);
 		}
 	};
 
@@ -700,7 +724,7 @@ class DataAccessRequest extends Component {
 			if (_.isEmpty(panelId) || typeof panelId == 'undefined') {
 				({ panelId } = [...this.state.jsonSchema.formPanels].find(p => p.pageId === newFormState[newPageindex].pageId) || '');
 			}
-			
+
 			let countedQuestionAnswers = {};
 			let totalQuestions = '';
 			// if in the about panel, retrieve question answers count for entire application
@@ -724,7 +748,7 @@ class DataAccessRequest extends Component {
 				totalQuestions: totalQuestions,
 				validationErrors,
 				reviewWarning,
-				activeGuidance: ''
+				activeGuidance: '',
 			});
 		}
 	};
@@ -736,44 +760,66 @@ class DataAccessRequest extends Component {
 	};
 
 	/**
-	 * [onQuestionClick]
-	 * @desc Add's or Removes applicants dynamically
+	 * [onQuestionSetAction]
+	 * @desc Allows custom actions to be executed on specific question sets
 	 *
 	 * @param   {string}  questionSetId  [questionSetId]
 	 * @param   {string}  questionId     [questionId]
 	 */
-	onQuestionClick = async (questionSetId = '', questionId = '') => {
-		let questionSet, jsonSchema, questionAnswers, data, schema;
-
-		questionSet = DarHelper.findQuestionSet(questionSetId, { ...this.state.jsonSchema });
-
+	onQuestionSetAction = async (questionSetId = '', questionId = '') => {
+		// locate question set containing button invoking action
+		const questionSet = DarHelper.findQuestionSet(questionSetId, { ...this.state.jsonSchema });
 		if (!_.isEmpty(questionSet) && !_.isEmpty(questionId)) {
-			// remove about and files from pages to stop duplicate, about / files added to DAR on init
-			schema = DarHelper.removeStaticPages({ ...this.state.jsonSchema });
-
+			// deconstruct action to invoke from schema
 			let {
-				input: { action },
-			} = DarHelper.findQuestion(questionId, questionSet);
-			switch (action) {
-				case 'addApplicant':
-					let duplicateQuestionSet = DarHelper.questionSetToDuplicate(questionSetId, { ...schema });
-					jsonSchema = DarHelper.insertSchemaUpdates(questionSetId, duplicateQuestionSet, { ...schema });
-					data = { key: 'jsonSchema', data: jsonSchema };
-					// post to API to do of new jsonSchema
-					await this.updateApplication(data);
-					break;
-				case 'removeApplicant':
-					jsonSchema = DarHelper.removeQuestionReferences(questionSetId, questionId, { ...schema });
-					questionAnswers = DarHelper.removeQuestionAnswers(questionId, { ...this.state.questionAnswers });
-					// post to API of new jsonSchema
-					await this.updateApplication({ key: 'jsonSchema', data: jsonSchema });
-					await this.updateApplication({ key: 'questionAnswers', data: questionAnswers });
-					break;
-				default:
-					console.log(questionSetId);
-					break;
+				input: { action = '', questionIds = [], separatorText = '' },
+			} = DarHelper.getActiveQuestion(questionSet.questions, questionId);
+			// ensure valid action was found for question set button click
+			if (_.isEmpty(action)) {
+				return console.error(`Action could not be invoked for question set - ${questionSetId}, question - ${questionId}`);
 			}
+			// call API with action, questionId and questionSetId
+			const stateObj = await this.postQuestionSetAction(questionSetId, questionId, questionIds, action, separatorText);
+			// count question/answers for the current section
+			const countedQuestionAnswers = DarHelper.totalQuestionsAnswered(
+				this,
+				this.state.activePanelId,
+				this.state.questionAnswers,
+				stateObj.jsonSchema
+			);
+			const totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered in this section`;
+			// spread json schema response into state and reload static content including updated question counter
+			this.setState({ ...stateObj, totalQuestions });
+		} else {
+			console.error(`Action could not be invoked as question set - ${questionSetId}, question - ${questionId} could not be found`);
 		}
+	};
+
+	/**
+	 * [postQuestionSetAction]
+	 * @desc Allows custom actions to be executed on specific questions or question sets
+	 *
+	 * @param   {string}  questionSetId  [questionSetId]
+	 * @param   {string}  questionId     [questionId]
+	 * @param	{string}  mode			 [mode]
+	 */
+	postQuestionSetAction = async (questionSetId, questionId, questionIds = [], mode, separatorText = '') => {
+		// post requested action to the API to perform an update to the application form
+		let response = await axios.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/actions`, {
+			questionSetId,
+			questionId,
+			questionIds,
+			mode,
+			separatorText,
+		});
+		// deconstruct the response containing the modified schema
+		let {
+			accessRecord: { jsonSchema, questionAnswers },
+		} = response.data;
+		// add in static content to schema (includes about application, file upload panels etc.)
+		jsonSchema = this.injectStaticContent(jsonSchema, this.state.inReviewMode, this.state.reviewSections);
+		// return the updated schema to allow it to be spread into state later
+		return { jsonSchema, questionAnswers };
 	};
 
 	/**
@@ -782,7 +828,7 @@ class DataAccessRequest extends Component {
 	 * @params {event, questionSetId, questionId, key}
 	 */
 	onQuestionAction = async (e = '', questionSetId = '', questionId = '', key = '') => {
-		let mode,  stateObj;
+		let mode, stateObj;
 		switch (key) {
 			case DarHelper.actionKeys.GUIDANCE:
 				const activeGuidance = this.getActiveQuestionGuidance(questionId);
@@ -808,7 +854,6 @@ class DataAccessRequest extends Component {
 				this.setState({ ...stateObj });
 				break;
 			default:
-				console.log(questionId);
 				break;
 		}
 	};
@@ -816,7 +861,7 @@ class DataAccessRequest extends Component {
 	/**
 	 * getActiveQuestionGuidance
 	 * @desc - Returns the guidance based on the active question
-	 * @param   {string}  questionId 
+	 * @param   {string}  questionId
 	 * @return  {string} guidance
 	 */
 	getActiveQuestionGuidance(questionId = '') {
@@ -826,7 +871,8 @@ class DataAccessRequest extends Component {
 				jsonSchema: { questionSets },
 			} = this.state;
 			// 1. get active question set
-			({ questions } = [...questionSets].find(q => q.questionSetId === this.state.activePanelId) || []);
+			let questionList = [...questionSets].filter(q => q.questionSetId.includes(this.state.activePanelId)) || [];
+			questions = questionList.map(({ questions }) => questions).flat();
 			if (!_.isEmpty(questions)) {
 				// 2. loop over and find active question
 				let activeQuestion = DarHelper.getActiveQuestion([...questions], questionId);
@@ -840,20 +886,29 @@ class DataAccessRequest extends Component {
 	}
 
 	postQuestionAction = async (questionSetId, questionId, mode) => {
-		let response = await axios.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/amendments`, { questionSetId, questionId, mode });
-		let {accessRecord: { jsonSchema, questionAnswers = null, answeredAmendments, unansweredAmendments, amendmentIterations } } = response.data;
+		let response = await axios.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/amendments`, {
+			questionSetId,
+			questionId,
+			mode,
+		});
+		let {
+			accessRecord: { jsonSchema, questionAnswers = null, answeredAmendments, unansweredAmendments, amendmentIterations },
+		} = response.data;
 		jsonSchema = this.injectStaticContent(jsonSchema, this.state.inReviewMode, this.state.reviewSections);
 
-		let stateObj = _.omitBy({
-			jsonSchema,
-			questionAnswers,
-			answeredAmendments,
-			unansweredAmendments,
-			amendmentIterations
-		}, _.isNil);
+		let stateObj = _.omitBy(
+			{
+				jsonSchema,
+				questionAnswers,
+				answeredAmendments,
+				unansweredAmendments,
+				amendmentIterations,
+			},
+			_.isNil
+		);
 
-		return stateObj; 
-	}
+		return stateObj;
+	};
 
 	/**
 	 * removeActiveQuestionClass
@@ -982,7 +1037,7 @@ class DataAccessRequest extends Component {
 		// 1. Deconstruct aboutApplication from state
 		let { aboutApplication } = this.state;
 		// 2. Update about application object
-		aboutApplication.nationalCoreStudiesProjectId = e;
+		aboutApplication.nationalCoreStudiesProjectId = e.toString();
 		// 3. Set state updating validation
 		this.setState({
 			aboutApplication,
@@ -993,7 +1048,7 @@ class DataAccessRequest extends Component {
 	getNationalCoreStudiesProjects = async () => {
 		try {
 			// 1. Call endpoint to retrieve NCS projects
-			let response = await axios.get(`${baseURL}/api/v1/tools/project/tag/NCS`);
+			let response = await axios.get(`${baseURL}/api/v1/tools/project/tag/?name=NCS,National Core Study`);
 			const {
 				data: { entities },
 			} = response;
@@ -1002,7 +1057,7 @@ class DataAccessRequest extends Component {
 				nationalCoreStudiesProjects: entities,
 			});
 		} catch (err) {
-			console.error(err);
+			console.error(err.message);
 			return [];
 		}
 	};
@@ -1051,7 +1106,7 @@ class DataAccessRequest extends Component {
 	};
 
 	onCustodianAction = value => {
-		value === 'AssignWorkflow' ? this.toggleAssignWorkflowModal() : this.toggleActionModal(value);
+		value.toUpperCase() === 'ASSIGNWORKFLOW' ? this.toggleAssignWorkflowModal() : this.toggleActionModal(value);
 	};
 
 	completeActivePhase = async () => {
@@ -1061,8 +1116,8 @@ class DataAccessRequest extends Component {
 				this.loadDataAccessRequest(this.state._id);
 				this.toggleWorkflowReviewModal();
 			})
-			.catch(error => {
-				console.log(error);
+			.catch(err => {
+				console.error(err.message);
 			});
 	};
 
@@ -1222,6 +1277,18 @@ class DataAccessRequest extends Component {
 		this.setState({ authorIds });
 	};
 
+	onClickMailDAR = async () => {
+		let { _id } = this.state;
+		await axios
+			.post(`${baseURL}/api/v1/data-access-request/${_id}/email`, {})
+			.then(response => {
+				window.location.reload();
+			})
+			.catch(err => {
+				console.error(err.message);
+			});
+	};
+
 	redirectDashboard = e => {
 		e.preventDefault();
 		this.props.history.push({
@@ -1264,6 +1331,51 @@ class DataAccessRequest extends Component {
 		}
 	};
 
+	onDuplicateApplication = async (appIdToCloneInto = '', selectedDatasets = []) => {
+		!_.isEmpty(appIdToCloneInto) ? this.toggleDuplicateApplicationModal() : this.toggleSelectDatasetModal();
+
+		let datasetIds = [];
+		let datasetTitles = [];
+		let publisher = '';
+
+		if (!_.isEmpty(selectedDatasets)) {
+			publisher = selectedDatasets[0].publisher;
+			selectedDatasets.forEach(dataset => {
+				datasetIds.push(dataset.datasetId);
+				datasetTitles.push(dataset.name);
+			});
+		}
+
+		axios
+			.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/clone`, {
+				datasetIds,
+				datasetTitles,
+				publisher,
+				appIdToCloneInto,
+			})
+			.then(res => {
+				let message = '';
+				let projectName = this.state.projectName || this.state.datasets[0].name;
+
+				if (_.isEmpty(appIdToCloneInto)) {
+					message = `You have successfully duplicated your application '${projectName}' into a new application`;
+				} else {
+					let { aboutApplication: { projectName: projectNameCloneInto } = {} } = res.data.accessRecord;
+					projectNameCloneInto = _.isNil(projectNameCloneInto) ? 'your selected application' : `'${projectNameCloneInto}'`;
+					message = `You have successfully duplicated your application '${projectName}' into ${projectNameCloneInto}`;
+				}
+
+				let alert = {
+					message: message,
+					publisher: 'user',
+				};
+				this.setState({ alert: alert });
+				setTimeout(() => this.setState({ alert: {} }), 10000);
+
+				this.props.history.push({ pathname: `/data-access-request/${res.data.accessRecord._id}` });
+			});
+	};
+
 	getUserRoles() {
 		let { teams } = this.props.userState[0];
 		let foundTeam = teams.filter(team => team.name === this.state.datasets[0].datasetfields.publisher);
@@ -1287,47 +1399,57 @@ class DataAccessRequest extends Component {
 	onUpdateRequest = e => {
 		let fullAmendments = {};
 		let updateRequestModal = this.state.updateRequestModal;
-		let { pages, questionPanels, questionSets } = {...this.state.jsonSchema};
+		let { pages, questionPanels, questionSets } = { ...this.state.jsonSchema };
 		// Get the last amendmentIteration in the array
 		let amendmentsIterations = _.last([...this.state.amendmentIterations]);
-		if(!_.isEmpty(amendmentsIterations)) {
+		if (!_.isEmpty(amendmentsIterations)) {
 			// get the questionAnswers object {role: {}, lastName: {}}
-			let { questionAnswers } = {...amendmentsIterations};
+			let { questionAnswers } = { ...amendmentsIterations };
 			// get all the questionIds into a iterable array from questionAnswers
-			if(!_.isEmpty(questionAnswers)) {
+			if (!_.isEmpty(questionAnswers)) {
 				// set up default variables
-				let questionSetId, answer, section, pageId, page, questions, question = '';
+				let questionSetId,
+					answer,
+					section,
+					pageId,
+					page,
+					questions,
+					question = '';
 				// reduce over questionanswers object using lodash
-			 	fullAmendments = _.reduce(questionAnswers, (obj, value, key) => {
-					// currentItem {questionSetId, answer}
-					({questionSetId, answer}= questionAnswers[key]);
-					// find the active questionPanel ie questionPanels: [{navHeader, pageId, panelId, questionSets:[]}]
-					let activeQuestionPanel = [...questionPanels].find(panel => panel.panelId === questionSetId);
-					// Get the section {navHeader: panelHeader: 'Applicant', pageId: 'safePeople'}
-					({navHeader: section, pageId} = activeQuestionPanel);
-					// find the active page ie pages: [{pageId: 'safepeople', title: pageTitle: 'Safe People'}]
-					let activePage = [...pages].find(pageItem => pageItem.pageId === pageId);
-					// Get the page title from page item
-					({title: page} = activePage);
-					// Get the list of questions for questionPanelId from questionSets
-					({ questions } = [...questionSets].find(questionSet => questionSet.questionSetId === questionSetId));
-					// Get question checks for nested questions also
-					({ question } = DarHelper.getActiveQuestion(questions, key));
-					// Safe People | Applicant
-					let location = `${page} | ${section}`;
-					// build up our object of data for display
-					if(!obj[location]) {
-						obj = {...obj, [location]: [ {question, answer} ]}
-					} else if(obj[location]) {
-						let arr = [...obj[location], {question, answer}];
-						obj[location] = arr;
-					}
-					return obj;
-				}, {});
+				fullAmendments = _.reduce(
+					questionAnswers,
+					(obj, value, key) => {
+						// currentItem {questionSetId, answer}
+						({ questionSetId, answer } = questionAnswers[key]);
+						// find the active questionPanel ie questionPanels: [{navHeader, pageId, panelId, questionSets:[]}]
+						let activeQuestionPanel = [...questionPanels].find(panel => panel.panelId === questionSetId);
+						// Get the section {navHeader: panelHeader: 'Applicant', pageId: 'safePeople'}
+						({ navHeader: section, pageId } = activeQuestionPanel);
+						// find the active page ie pages: [{pageId: 'safepeople', title: pageTitle: 'Safe People'}]
+						let activePage = [...pages].find(pageItem => pageItem.pageId === pageId);
+						// Get the page title from page item
+						({ title: page } = activePage);
+						// Get the list of questions for questionPanelId from questionSets
+						({ questions } = [...questionSets].find(questionSet => questionSet.questionSetId === questionSetId));
+						// Get question checks for nested questions also
+						({ question } = DarHelper.getActiveQuestion(questions, key));
+						// Safe People | Applicant
+						let location = `${page} | ${section}`;
+						// build up our object of data for display
+						if (!obj[location]) {
+							obj = { ...obj, [location]: [{ question, answer }] };
+						} else if (obj[location]) {
+							let arr = [...obj[location], { question, answer }];
+							obj[location] = arr;
+						}
+						return obj;
+					},
+					{}
+				);
 			}
 		}
-		this.setState({updateRequestModal: !updateRequestModal, fullAmendments});
-	}
+		this.setState({ updateRequestModal: !updateRequestModal, fullAmendments });
+	};
 
 	toggleUpdateRequestModal = () => {
 		this.setState(prevState => {
@@ -1337,11 +1459,80 @@ class DataAccessRequest extends Component {
 		});
 	};
 
+	toggleEmailModal = showModal => {
+		this.setState({ showEmailModal: showModal });
+	};
+
+	toggleMissingFieldsModal = () => {
+		this.setState(prevState => {
+			return {
+				showMissingFieldsModal: !prevState.showMissingFieldsModal,
+			};
+		});
+	};
+
+	toggleConfirmSubmissionModal = () => {
+		this.setState(prevState => {
+			return {
+				showConfirmSubmissionModal: !prevState.showConfirmSubmissionModal,
+			};
+		});
+	};
+
+	toggleDeleteDraftModal = () => {
+		this.setState(prevState => {
+			return {
+				showDeleteDraftModal: !prevState.showDeleteDraftModal,
+			};
+		});
+	};
+
+	toggleDuplicateApplicationModal = () => {
+		this.setState(prevState => {
+			return {
+				showDuplicateApplicationModal: !prevState.showDuplicateApplicationModal,
+			};
+		});
+	};
+
+	onDeleteDraft = async () => {
+		try {
+			let { _id } = this.state;
+			let projectName = this.state.projectName || this.state.datasets[0].name;
+			await axios.delete(`${baseURL}/api/v1/data-access-request/${_id}`, {});
+			let alert = {
+				tab: 'all',
+				message: `You have deleted the data access request for '${projectName}' project`,
+				publisher: 'user',
+			};
+			this.props.history.push({
+				pathname: '/account',
+				search: '?tab=dataaccessrequests',
+				state: { alert },
+			});
+		} catch (err) {
+			console.error(err.message);
+		}
+	};
+	toggleSelectDatasetModal = () => {
+		this.setState(prevState => {
+			return {
+				showSelectDatasetModal: !prevState.showSelectDatasetModal,
+			};
+		});
+	};
+
+	showDatasetModal = () => {
+		this.toggleSelectDatasetModal();
+		this.toggleDuplicateApplicationModal();
+	};
+
 	renderApp = () => {
 		let { activePanelId } = this.state;
 		if (activePanelId === 'about') {
 			return (
 				<AboutApplication
+					key={this.state._id}
 					activeAccordionCard={this.state.activeAccordionCard}
 					allowedNavigation={this.state.allowedNavigation}
 					userType={this.state.userType}
@@ -1375,14 +1566,7 @@ class DataAccessRequest extends Component {
 				/>
 			);
 		} else if (activePanelId === 'files') {
-			return (
-				<Uploads
-					onFilesUpdate={this.onFilesUpdate}
-					id={this.state._id}
-					files={this.state.files}
-					initialFilesLoad={this.state.initialFilesLoad}
-				/>
-			);
+			return <Uploads onFilesUpdate={this.onFilesUpdate} id={this.state._id} files={this.state.files} readOnly={this.state.readOnly} />;
 		} else {
 			return (
 				<Winterfell
@@ -1393,7 +1577,7 @@ class DataAccessRequest extends Component {
 					readOnly={this.state.readOnly}
 					validationErrors={this.state.validationErrors}
 					renderRequiredAsterisk={() => <span>{'*'}</span>}
-					onQuestionClick={this.onQuestionClick}
+					onQuestionClick={this.onQuestionSetAction}
 					onQuestionAction={this.onQuestionAction}
 					onUpdate={this.onFormUpdate}
 					onSubmit={this.onFormSubmit}
@@ -1425,6 +1609,8 @@ class DataAccessRequest extends Component {
 			userType,
 			actionModalConfig,
 			roles,
+			showEmailModal,
+			alert,
 		} = this.state;
 		const { userState, location } = this.props;
 
@@ -1434,14 +1620,14 @@ class DataAccessRequest extends Component {
 		Winterfell.addInputType('datePickerCustom', DatePickerCustom);
 		Winterfell.addInputType('typeaheadUser', TypeaheadUser);
 		Winterfell.validation.default.addValidationMethods({
-			'isCustomDate': (value) => {
+			isCustomDate: value => {
 				if (_.isEmpty(value) || _.isNil(value) || moment(value, 'DD/MM/YYYY').isValid()) {
 					return true;
 				}
 				return false;
 			},
 		});
-	
+
 		if (isLoading) {
 			return (
 				<Container>
@@ -1485,6 +1671,16 @@ class DataAccessRequest extends Component {
 								Save now
 							</a>
 						}
+						{userType.toUpperCase() === 'APPLICANT' && !this.state.readOnly ? (
+							<a
+								className={`linkButton white-14-semibold ml-2 ${allowedNavigation ? '' : 'disabled'}`}
+								href='javascript:;'
+								onClick={e => this.toggleEmailModal(true)}>
+								Email me a copy
+							</a>
+						) : (
+							''
+						)}
 						<CloseButtonSvg width='16px' height='16px' fill='#fff' onClick={e => this.redirectDashboard(e)} />
 					</Col>
 				</Row>
@@ -1519,13 +1715,16 @@ class DataAccessRequest extends Component {
 						))}
 					</div>
 					<div id='darCenterCol' className={isWideForm ? 'extended' : ''}>
-						{this.state.reviewWarning ? (
+						{this.state.reviewWarning && (
 							<Alert variant='warning' className=''>
 								<SVGIcon name='attention' width={24} height={24} fill={'#f0bb24'} viewBox='2 -9 22 22'></SVGIcon>
 								You are not assigned to this section but can still view the form
 							</Alert>
-						) : (
-							''
+						)}
+						{!_.isEmpty(alert) && (
+							<Alert variant={'success'} className='main-alert'>
+								<SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert.message}
+							</Alert>
 						)}
 						<div id='darDropdownNav'>
 							<NavDropdown
@@ -1560,58 +1759,61 @@ class DataAccessRequest extends Component {
 					{isWideForm ? null : (
 						<div id='darRightCol' className='scrollable-sticky-column'>
 							<div className='darTab'>
-								<Guidance
-									activeGuidance={activeGuidance}
-									resetGuidance={this.resetGuidance}
-								/>
-							</div> 
+								<Guidance activeGuidance={activeGuidance} resetGuidance={this.resetGuidance} />
+							</div>
 						</div>
 					)}
 				</div>
 
-				<div className='action-bar'>
-					<div className='action-bar--questions'>
-						{applicationStatus === 'inProgress' ? (
-							''
-						) : (
-							<SLA classProperty={DarHelper.darStatusColours[applicationStatus]} text={DarHelper.darSLAText[applicationStatus]} />
-						)}
-						<div className='action-bar-status'>
-							{totalQuestions} &nbsp;|&nbsp; {projectId}
+				<ActionBar userState={userState}>
+					<div className='action-bar'>
+						<div className='action-bar--questions'>
+							{applicationStatus === 'inProgress' ? (
+								''
+							) : (
+								<SLA classProperty={DarHelper.darStatusColours[applicationStatus]} text={DarHelper.darSLAText[applicationStatus]} />
+							)}
+							<div className='action-bar-status'>
+								{totalQuestions} &nbsp;|&nbsp; {projectId}
+							</div>
+						</div>
+						<div className='action-bar-actions'>
+							<AmendmentCount answeredAmendments={this.state.answeredAmendments} unansweredAmendments={this.state.unansweredAmendments} />
+							{userType.toUpperCase() === 'APPLICANT' ? (
+								<ApplicantActionButtons
+									allowedNavigation={allowedNavigation}
+									isCloneable={this.state.isCloneable}
+									onNextClick={this.onNextClick}
+									onSubmitClick={this.onSubmitClick}
+									onShowContributorModal={this.toggleContributorModal}
+									onEditForm={this.onEditForm}
+									showSubmit={this.state.showSubmit}
+									submitButtonText={this.state.submitButtonText}
+									onDeleteDraftClick={this.toggleDeleteDraftModal}
+									applicationStatus={applicationStatus}
+									onDuplicateClick={this.toggleDuplicateApplicationModal}
+								/>
+							) : (
+								<CustodianActionButtons
+									activeParty={this.state.activeParty}
+									allowedNavigation={allowedNavigation}
+									unansweredAmendments={this.state.unansweredAmendments}
+									onUpdateRequest={this.onUpdateRequest}
+									onActionClick={this.onCustodianAction}
+									onWorkflowReview={this.toggleWorkflowReviewModal}
+									onWorkflowReviewDecisionClick={this.toggleWorkflowReviewDecisionModal}
+									onNextClick={this.onNextClick}
+									workflowEnabled={this.state.workflowEnabled}
+									workflowAssigned={this.state.workflowAssigned}
+									inReviewMode={this.state.inReviewMode}
+									hasRecommended={this.state.hasRecommended}
+									applicationStatus={applicationStatus}
+									roles={roles}
+								/>
+							)}
 						</div>
 					</div>
-					<div className='action-bar-actions'>
-						<AmendmentCount answeredAmendments={this.state.answeredAmendments} unansweredAmendments={this.state.unansweredAmendments} />
-						{userType.toUpperCase() === 'APPLICANT' ? (
-							<ApplicantActionButtons
-								allowedNavigation={allowedNavigation}
-								onNextClick={this.onNextClick}
-								onFormSubmit={this.onFormSubmit}
-								onShowContributorModal={this.toggleContributorModal}
-								onEditForm={this.onEditForm}
-								showSubmit={this.state.showSubmit}
-								submitButtonText={this.state.submitButtonText}
-							/>
-						) : (
-							<CustodianActionButtons
-								activeParty={this.state.activeParty}
-								allowedNavigation={allowedNavigation}
-								unansweredAmendments={this.state.unansweredAmendments}
-								onUpdateRequest={this.onUpdateRequest}
-								onActionClick={this.onCustodianAction}
-								onWorkflowReview={this.toggleWorkflowReviewModal}
-								onWorkflowReviewDecisionClick={this.toggleWorkflowReviewDecisionModal}
-								onNextClick={this.onNextClick}
-								workflowEnabled={this.state.workflowEnabled}
-								workflowAssigned={this.state.workflowAssigned}
-								inReviewMode={this.state.inReviewMode}
-								hasRecommended={this.state.hasRecommended}
-								applicationStatus={applicationStatus}
-								roles={roles}
-							/>
-						)}
-					</div>
-				</div>
+				</ActionBar>
 
 				<SideDrawer open={showDrawer} closed={e => this.toggleDrawer()}>
 					<UserMessages
@@ -1677,14 +1879,15 @@ class DataAccessRequest extends Component {
 					workflows={this.state.workflows}
 				/>
 
-				<UpdateRequestModal 
+				<UpdateRequestModal
 					open={this.state.updateRequestModal}
 					close={this.toggleUpdateRequestModal}
 					publisher={this.state.publisher}
 					projectName={projectName}
 					applicationId={this.state._id}
 					fullAmendments={this.state.fullAmendments}
-					amendmentIterations={this.state.amendmentIterations} />
+					amendmentIterations={this.state.amendmentIterations}
+				/>
 
 				<Modal
 					show={showMrcModal}
@@ -1697,6 +1900,55 @@ class DataAccessRequest extends Component {
 						{' '}
 					</iframe>
 				</Modal>
+
+				<Modal
+					show={showEmailModal}
+					onHide={e => this.toggleEmailModal(false)}
+					aria-labelledby='contained-modal-title-vcenter'
+					centered
+					className='workflowModal'>
+					<div className='workflowModal-header'>
+						<h1 className='black-20-semibold'>Email application</h1>
+						<CloseButtonSvg className='workflowModal-header--close' onClick={e => this.toggleEmailModal(false)} />
+					</div>
+
+					<div className='workflowModal-body'>
+						Are you sure you want to email yourself this application? This will be sent to the email address provided in your HDR UK
+						account, where it will be available for you to print.
+					</div>
+					<div className='workflowModal-footer'>
+						<div className='workflowModal-footer--wrap'>
+							<Button variant='white' className='techDetailButton mr-2' onClick={e => this.toggleEmailModal(false)}>
+								No, nevermind
+							</Button>
+							<Button variant='primary' className='white-14-semibold' onClick={this.onClickMailDAR}>
+								Email application
+							</Button>
+						</div>
+					</div>
+				</Modal>
+
+				<MissingFieldsModal open={this.state.showMissingFieldsModal} close={this.toggleMissingFieldsModal} />
+				<ConfirmSubmissionModal
+					open={this.state.showConfirmSubmissionModal}
+					close={this.toggleConfirmSubmissionModal}
+					confirm={this.onFormSubmit}
+				/>
+				<DeleteDraftModal open={this.state.showDeleteDraftModal} close={this.toggleDeleteDraftModal} confirm={this.onDeleteDraft} />
+
+				<DuplicateApplicationModal
+					isOpen={this.state.showDuplicateApplicationModal}
+					closeModal={this.toggleDuplicateApplicationModal}
+					duplicateApplication={this.onDuplicateApplication}
+					showDatasetModal={this.showDatasetModal}
+				/>
+
+				<SelectDatasetModal
+					isOpen={this.state.showSelectDatasetModal}
+					closeModal={this.toggleSelectDatasetModal}
+					duplicateApplication={this.onDuplicateApplication}
+					appToCloneId={this.state._id}
+				/>
 			</div>
 		);
 	}

@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { Fragment } from 'react';
+import { Link } from 'react-router-dom';
 import { Col, Row } from 'react-bootstrap';
 import '../Dataset.scss';
 import AboutCardElement from './AboutCardElement';
 import _ from 'lodash';
+import { Event } from '../../../tracking';
 
 class DatasetAboutCard extends React.Component {
 	state = {
 		v2data: {},
 		section: '',
 		showEmpty: false,
+		loggedIn: false,
 	};
 
 	constructor(props) {
@@ -276,21 +279,21 @@ class DatasetAboutCard extends React.Component {
 											tooltip={'The purpose(s) for which the dataset was collected.'}
 										/>
 									)}
-									{showEmpty === false && _.isEmpty(v2data.provenance.source) ? (
+									{showEmpty === false && _.isEmpty(v2data.provenance.origin.source) ? (
 										''
 									) : (
 										<AboutCardElement
 											label={'Source'}
-											description={v2data.provenance.source}
+											description={v2data.provenance.origin.source}
 											tooltip={'The source of the data extraction.'}
 										/>
 									)}
-									{showEmpty === false && _.isEmpty(v2data.provenance.collectionSituation) ? (
+									{showEmpty === false && _.isEmpty(v2data.provenance.origin.collectionSituation) ? (
 										''
 									) : (
 										<AboutCardElement
 											label={'Collection situation'}
-											description={v2data.provenance.collectionSituation}
+											description={v2data.provenance.origin.collectionSituation}
 											tooltip={'The setting(s) where data was collected. Multiple settings may be provided'}
 										/>
 									)}
@@ -365,48 +368,67 @@ class DatasetAboutCard extends React.Component {
 										<Col sm={12} className='mb-1'>
 											{section}
 
-											{this.props.requiresModal ? (
+											{!this.props.loggedIn ? (
+												<span className='purple-14 pointer float-right' onClick={() => this.props.showLoginModal()}>
+													Request access
+												</span>
+											) : this.props.requiresModal ? (
 												<span className='purple-14 pointer float-right' onClick={() => this.props.toggleModal()}>
 													How to request access
 												</span>
 											) : (
-												''
+												<Link
+													className='purple-14 pointer float-right'
+													to={{
+														pathname: `/data-access-request/dataset/${this.props.datasetid}`,
+													}}
+													onClick={() => Event('Buttons', 'Click', 'Request Access')}>
+													Request access
+												</Link>
 											)}
 										</Col>
 									</Row>
-									{showEmpty === false && _.isEmpty(v2data.summary.publisher.accessRights) ? (
+									{showEmpty === false &&
+									_.isEmpty(v2data.accessibility.access.accessRights) &&
+									_.isEmpty(v2data.summary.publisher.accessRights) ? (
 										''
 									) : (
 										<AboutCardElement
 											label={'Access information'}
-											description={v2data.summary.publisher.accessRights}
+											description={v2data.accessibility.access.accessRights || v2data.summary.publisher.accessRights}
 											tooltip={'The URL of a webpage where the data access request process and/or guidance is provided.'}
 										/>
 									)}
-									{showEmpty === false && _.isEmpty(v2data.summary.publisher.deliveryLeadTime) ? (
+									{showEmpty === false &&
+									_.isEmpty(v2data.accessibility.access.deliveryLeadTime) &&
+									_.isEmpty(v2data.summary.publisher.deliveryLeadTime) ? (
 										''
 									) : (
 										<AboutCardElement
 											label={'Processing time'}
-											description={v2data.summary.publisher.deliveryLeadTime}
+											description={v2data.accessibility.access.deliveryLeadTime || v2data.summary.publisher.deliveryLeadTime}
 											tooltip={'An indication of the typical processing times based on the types of requests typically received.'}
 										/>
 									)}
-									{showEmpty === false && _.isEmpty(v2data.summary.publisher.accessRequestCost) ? (
+									{showEmpty === false &&
+									_.isEmpty(v2data.accessibility.access.accessRequestCost) &&
+									_.isEmpty(v2data.summary.publisher.accessRequestCost) ? (
 										''
 									) : (
 										<AboutCardElement
 											label={'Access request cost'}
-											description={v2data.summary.publisher.accessRequestCost}
+											description={v2data.accessibility.access.accessRequestCost || v2data.summary.publisher.accessRequestCost}
 											tooltip={'Indication of cost (in GBP) for processing each data access request by the data custodian.'}
 										/>
 									)}
-									{showEmpty === false && _.isEmpty(v2data.summary.publisher.accessService) ? (
+									{showEmpty === false &&
+									_.isEmpty(v2data.accessibility.access.accessService) &&
+									_.isEmpty(v2data.summary.publisher.accessService) ? (
 										''
 									) : (
 										<AboutCardElement
 											label={'Access environment'}
-											description={v2data.summary.publisher.accessService}
+											description={v2data.accessibility.access.accessService || v2data.summary.publisher.accessService}
 											tooltip={'A brief description of the environment where data can be accessed by researchers.'}
 										/>
 									)}
@@ -421,23 +443,27 @@ class DatasetAboutCard extends React.Component {
 											}
 										/>
 									)}
-									{showEmpty === false && _.isEmpty(v2data.summary.publisher.accessService.dataUseLimitation) ? (
+									{showEmpty === false &&
+									_.isEmpty(v2data.accessibility.usage.dataUseLimitation) &&
+									_.isEmpty(v2data.summary.publisher.dataUseLimitation) ? (
 										''
 									) : (
 										<AboutCardElement
 											label={'Limitations'}
-											description={v2data.summary.publisher.accessService.dataUseLimitation}
+											description={v2data.accessibility.usage.dataUseLimitation || v2data.summary.publisher.dataUseLimitation}
 											tooltip={
 												'An indication of consent permissions for datasets and/or materials, and relates to the purposes for which datasets and/or material might be removed, stored or used.'
 											}
 										/>
 									)}
-									{showEmpty === false && _.isEmpty(v2data.summary.publisher.accessService.dataUseRequirements) ? (
+									{showEmpty === false &&
+									_.isEmpty(v2data.accessibility.usage.dataUseRequirements) &&
+									_.isEmpty(v2data.summary.publisher.dataUseRequirements) ? (
 										''
 									) : (
 										<AboutCardElement
 											label={'Requirements'}
-											description={v2data.summary.publisher.accessService.dataUseRequirements}
+											description={v2data.accessibility.usage.dataUseRequirements || v2data.summary.publisher.dataUseRequirements}
 											tooltip={'Any additional conditions set for use if any.'}
 										/>
 									)}

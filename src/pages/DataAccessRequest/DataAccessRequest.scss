@@ -10,7 +10,7 @@
 	background: #f6f7f8;
 }
 
-.active-group:after{
+.active-group:after {
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -36,13 +36,13 @@
 	margin-bottom: 8px !important;
 	font-size: 14px;
 	padding: 12px 1.25rem;
-	
-  &-warning {
-    border:2px solid #f0bb24 !important;
+
+	&-warning {
+		border: 2px solid #f0bb24 !important;
 	}
-	
+
 	&-success {
-		border: 2px solid #3db28c !important
+		border: 2px solid #3db28c !important;
 	}
 
 	&-danger {
@@ -52,20 +52,24 @@
 		}
 	}
 
-  &-wrap {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    justify-content: space-between;
-    & > div:first-child {
-      margin-right: auto;
+	&-wrap {
+		display: flex;
+		flex-flow: row nowrap;
+		align-items: center;
+		justify-content: space-between;
+		& > div:first-child {
+			margin-right: auto;
 		}
 		& > div:nth-child(2) {
 			cursor: pointer;
 			font-weight: bold;
 			text-align: right;
 		}
-  }
+	}
+}
+
+#darContainer {
+	margin-bottom: 100px;
 }
 
 .toolTip {
@@ -86,16 +90,16 @@
 	border-radius: 6px;
 	z-index: 1;
 	opacity: 0;
-	transition: opacity .4s;
+	transition: opacity 0.4s;
 }
 
-.toolTip i:hover + .toolTipText { 
+.toolTip i:hover + .toolTipText {
 	visibility: visible;
-  opacity: 1;
+	opacity: 1;
 }
 
 span.toolTipText:after {
-	content: "";
+	content: '';
 	position: absolute;
 	top: 100%;
 	left: 50%;
@@ -403,8 +407,8 @@ span.toolTipText:after {
 	background: #eee !important;
 }
 
-input[type=text]:disabled {
-		background-color: #eee !important;	
+input[type='text']:disabled {
+	background-color: #eee !important;
 }
 
 input[type='text']:disabled,
@@ -511,24 +515,13 @@ input[type='radio']:disabled {
 	display: flex;
 	flex-flow: row nowrap;
 	align-items: center;
-	box-sizing: border-box;
-	position: sticky !important;
-	margin-bottom: -30px;
-	padding: 0 24px;
-	left: 0;
-	bottom: 0;
 	width: 100%;
-	min-height: 72px;
-	background-color: $white;
-	box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.09);
-	z-index: 1000;
 
 	&-status {
 		display: inline-block;
 	}
 
 	&--questions {
-		flex: 1 0 0;
 		@include font-source(14px, $gray-800, $font-weight-semibold);
 		p {
 			margin-bottom: 0;
@@ -577,7 +570,7 @@ input[type='radio']:disabled {
 	}
 }
 
-.datasetName {
+.optionName {
 	@include font-source(14px, $gray-800, $font-weight-semibold);
 	width: 100%;
 	white-space: nowrap;
@@ -585,7 +578,7 @@ input[type='radio']:disabled {
 	text-overflow: ellipsis;
 }
 
-.datasetDescription {
+.optionDescription {
 	@include font-source(14px, $gray-600, $font-weight-semibold);
 	width: 100%;
 	white-space: nowrap;
@@ -632,6 +625,7 @@ input[type='radio']:disabled {
 			@include font-source(14px, $gray-800, $font-weight-semibold);
 			margin-bottom: 5px;
 			width: 90%;
+			white-space: pre-line;
 		}
 	}
 }
@@ -732,9 +726,9 @@ input[type='radio']:disabled {
 	cursor: pointer;
 	min-width: 32px;
 	height: 32px;
-	opacity:0;
+	opacity: 0;
 	transition: visibility 0.55s linear, opacity 0.35s ease-in-out;
-	
+
 	& > i {
 		padding: 0 5px;
 	}
@@ -754,7 +748,7 @@ input[type='radio']:disabled {
 		background: #f6f7f8;
 		> .action-control {
 			visibility: visible;
-			opacity:1;
+			opacity: 1;
 			background: $white;
 			box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03);
 		}
@@ -820,7 +814,7 @@ input[type='checkbox']:after {
 
 .makeADecisionDropdown {
 	position: relative;
-	left:-87px !important;
+	left: -87px !important;
 	width: 320px !important;
 	max-height: 314px !important;
 	box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03) !important;
@@ -859,4 +853,10 @@ input[type='checkbox']:after {
 		z-index: 1000;
 		content: '';
 	}
+}
+
+.btn-link-delete {
+	color: red !important;
+	text-decoration: underline;
+	outline: none !important;
 }

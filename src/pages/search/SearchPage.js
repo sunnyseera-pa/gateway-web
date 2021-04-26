@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import axios from 'axios';
 import { PageView, initGA } from '../../tracking';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
+import { Container, Button, Row, Col, Tabs, Tab, Pagination, Dropdown } from 'react-bootstrap';
 import moment from 'moment';
 import _ from 'lodash';
-
-import { Container, Button, Row, Col, Tabs, Tab, Pagination, Dropdown } from 'react-bootstrap';
-
+import { toTitleCase } from '../../utils/GeneralHelper.util';
+import Filter from './components/Filter';
+import FilterSelection from './components/FilterSelection';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
+import CollectionCard from '../commonComponents/collectionCard/CollectionCard';
 import Loading from '../commonComponents/Loading';
 import Filters from './Filters';
 import NoResults from '../commonComponents/NoResults';
@@ -21,11 +23,20 @@ import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import './Search.scss';
 import AboutPage from '../commonComponents/AboutPage';
 
-var baseURL = require('../commonComponents/BaseURL').getURL();
+let baseURL = require('../commonComponents/BaseURL').getURL();
+const typeMapper = {
+	Datasets: 'dataset',
+	Tools: 'tool',
+	Projects: 'project',
+	Papers: 'paper',
+	People: 'person',
+	Courses: 'course',
+	Collections: 'collection',
+};
 
 class SearchPage extends React.Component {
 	state = {
-		searchString: '',
+		search: '',
 		datasetSort: '',
 		toolSort: '',
 		projectSort: '',
@@ -38,24 +49,19 @@ class SearchPage extends React.Component {
 		paperIndex: 0,
 		personIndex: 0,
 		courseIndex: 0,
+		collectionIndex: 0,
 		datasetData: [],
 		toolData: [],
 		projectData: [],
 		paperData: [],
 		personData: [],
 		courseData: [],
+		collectionData: [],
 		filterOptions: [],
 		allFilters: [],
-		licensesSelected: [],
-		sampleAvailabilitySelected: [],
-		keywordsSelected: [],
-		publishersSelected: [],
-		ageBandsSelected: [],
-		geoCoverageSelected: [],
-		phenotypesSelected: [],
 		toolCategoriesSelected: [],
-		languageSelected: [],
-		featuresSelected: [],
+		toolProgrammingLanguageSelected: [],
+		toolfeaturesSelected: [],
 		toolTopicsSelected: [],
 		projectCategoriesSelected: [],
 		projectFeaturesSelected: [],
@@ -72,6 +78,8 @@ class SearchPage extends React.Component {
 		courseKeywordsSelected: [],
 		courseFrameworkSelected: [],
 		coursePrioritySelected: [],
+		collectionKeywordsSelected: [],
+		collectionPublishersSelected: [],
 		summary: [],
 		key: 'Datasets',
 		isLoading: true,
@@ -89,12 +97,15 @@ class SearchPage extends React.Component {
 				name: null,
 			},
 		],
+		filtersV2: [],
+		selectedV2: [],
 	};
 
 	constructor(props) {
 		super(props);
+		let { search = '' } = queryString.parse(window.location.search);
 		this.state.userState = props.userState;
-		this.state.searchString = props.searchString || null;
+		this.state.search = search || props.search;
 		this.searchBar = React.createRef();
 	}
 
@@ -107,381 +118,327 @@ class SearchPage extends React.Component {
 	};
 
 	async componentDidMount() {
-		//fires on first time in or page is refreshed/url loaded
+		initGA('UA-183238557-1');
+		PageView();
+		// 1. call filters - this will need parameterised when tools, projects etc move to v2
+		await this.getFilters();
+		// 2. fires on first time in or page is refreshed/url loaded / has search location
 		if (!!window.location.search) {
-			var values = queryString.parse(window.location.search);
-			if (this.state.userState[0].loggedIn === true && values.loginReferrer) window.location.href = values.loginReferrer;
-			else if (this.state.userState[0].loggedIn === true && values.logout === 'true') {
+			// 3. splits location search into object { search: search, tab: Datasets}
+			let queryParams = queryString.parse(window.location.search);
+			// 4. if values has loginReferrer set location href to it.
+			if (this.state.userState[0].loggedIn && queryParams.loginReferrer) {
+				window.location.href = queryParams.loginReferrer;
+			}
+			// 5. if logout in params and is true redirect to logout and reload route
+			else if (this.state.userState[0].loggedIn && queryParams.logout === 'true') {
 				axios.get(baseURL + '/api/v1/auth/logout').then(res => {
 					window.location.reload();
 				});
 			}
-
-			await Promise.all([this.updateFilterStates(values)]);
-			this.doSearchCall();
-			initGA('UA-183238557-1');
-			PageView();
-		} else {
-			this.setState({ data: [], searchString: '', isLoading: true });
-			this.doSearchCall();
-			initGA('UA-183238557-1');
-			PageView();
-		}
-	}
-
-	async componentWillReceiveProps() {
-		if (!!window.location.search) {
-			var values = queryString.parse(window.location.search);
-
-			if (
-				values.search !== this.state.searchString ||
-				(((typeof values.license === 'undefined' && this.state.licensesSelected.length !== 0) ||
-					(typeof values.license !== 'undefined' && this.state.licensesSelected.length === 0)) &&
-					!this.state.licensesSelected.includes(values.license)) ||
-				(((typeof values.sampleavailability === 'undefined' && this.state.sampleAvailabilitySelected.length !== 0) ||
-					(typeof values.sampleavailability !== 'undefined' && this.state.sampleAvailabilitySelected.length === 0)) &&
-					!this.state.sampleAvailabilitySelected.includes(values.sampleavailability)) ||
-				(((typeof values.keywords === 'undefined' && this.state.keywordsSelected.length !== 0) ||
-					(typeof values.keywords !== 'undefined' && this.state.keywordsSelected.length === 0)) &&
-					!this.state.keywordsSelected.includes(values.keywords)) ||
-				(((typeof values.publisher === 'undefined' && this.state.publishersSelected.length !== 0) ||
-					(typeof values.publisher !== 'undefined' && this.state.publishersSelected.length === 0)) &&
-					!this.state.publishersSelected.includes(values.publisher)) ||
-				(((typeof values.ageband === 'undefined' && this.state.ageBandsSelected.length !== 0) ||
-					(typeof values.ageband !== 'undefined' && this.state.ageBandsSelected.length === 0)) &&
-					!this.state.ageBandsSelected.includes(values.ageband)) ||
-				(((typeof values.geographiccover === 'undefined' && this.state.geoCoverageSelected.length !== 0) ||
-					(typeof values.geographiccover !== 'undefined' && this.state.geoCoverageSelected.length === 0)) &&
-					!this.state.geoCoverageSelected.includes(values.geographiccover)) ||
-				(((typeof values.phenotypes === 'undefined' && this.state.phenotypesSelected.length !== 0) ||
-					(typeof values.phenotypes !== 'undefined' && this.state.phenotypesSelected.length === 0)) &&
-					!this.state.phenotypesSelected.includes(values.phenotypes)) ||
-				(((typeof values.toolcategories === 'undefined' && this.state.toolCategoriesSelected.length !== 0) ||
-					(typeof values.toolcategories !== 'undefined' && this.state.toolCategoriesSelected.length === 0)) &&
-					!this.state.toolCategoriesSelected.includes(values.toolcategories)) ||
-				(((typeof values.programmingLanguage === 'undefined' && this.state.languageSelected.length !== 0) ||
-					(typeof values.programmingLanguage !== 'undefined' && this.state.languageSelected.length === 0)) &&
-					!this.state.languageSelected.includes(values.programmingLanguage)) ||
-				(((typeof values.features === 'undefined' && this.state.featuresSelected.length !== 0) ||
-					(typeof values.features !== 'undefined' && this.state.featuresSelected.length === 0)) &&
-					!this.state.featuresSelected.includes(values.features)) ||
-				(((typeof values.tooltopics === 'undefined' && this.state.toolTopicsSelected.length !== 0) ||
-					(typeof values.tooltopics !== 'undefined' && this.state.toolTopicsSelected.length === 0)) &&
-					!this.state.toolTopicsSelected.includes(values.tooltopics)) ||
-				(((typeof values.projectcategories === 'undefined' && this.state.projectCategoriesSelected.length !== 0) ||
-					(typeof values.projectcategories !== 'undefined' && this.state.projectCategoriesSelected.length === 0)) &&
-					!this.state.projectCategoriesSelected.includes(values.projectcategories)) ||
-				(((typeof values.projectfeatures === 'undefined' && this.state.projectFeaturesSelected.length !== 0) ||
-					(typeof values.projectfeatures !== 'undefined' && this.state.projectFeaturesSelected.length === 0)) &&
-					!this.state.projectFeaturesSelected.includes(values.projectfeatures)) ||
-				(((typeof values.projecttopics === 'undefined' && this.state.projectTopicsSelected.length !== 0) ||
-					(typeof values.projecttopics !== 'undefined' && this.state.projectTopicsSelected.length === 0)) &&
-					!this.state.projectTopicsSelected.includes(values.projecttopics)) ||
-				(((typeof values.paperfeatures === 'undefined' && this.state.paperFeaturesSelected.length !== 0) ||
-					(typeof values.paperfeatures !== 'undefined' && this.state.paperFeaturesSelected.length === 0)) &&
-					!this.state.paperFeaturesSelected.includes(values.paperfeatures)) ||
-				(((typeof values.papertopics === 'undefined' && this.state.paperTopicsSelected.length !== 0) ||
-					(typeof values.papertopics !== 'undefined' && this.state.paperTopicsSelected.length === 0)) &&
-					!this.state.paperTopicsSelected.includes(values.papertopics)) ||
-				(((typeof values.coursestartdates === 'undefined' && this.state.courseStartDatesSelected.length !== 0) ||
-					(typeof values.coursestartdates !== 'undefined' && this.state.courseStartDatesSelected.length === 0)) &&
-					!this.state.courseStartDatesSelected.includes(values.coursestartdates)) ||
-				(((typeof values.courseprovider === 'undefined' && this.state.courseProviderSelected.length !== 0) ||
-					(typeof values.courseprovider !== 'undefined' && this.state.courseProviderSelected.length === 0)) &&
-					!this.state.courseProviderSelected.includes(values.courseprovider)) ||
-				(((typeof values.courselocation === 'undefined' && this.state.courseLocationSelected.length !== 0) ||
-					(typeof values.courselocation !== 'undefined' && this.state.courseLocationSelected.length === 0)) &&
-					!this.state.courseLocationSelected.includes(values.courselocation)) ||
-				(((typeof values.coursestudymode === 'undefined' && this.state.courseStudyModeSelected.length !== 0) ||
-					(typeof values.coursestudymode !== 'undefined' && this.state.courseStudyModeSelected.length === 0)) &&
-					!this.state.courseStudyModeSelected.includes(values.coursestudymode)) ||
-				(((typeof values.courseaward === 'undefined' && this.state.courseAwardSelected.length !== 0) ||
-					(typeof values.courseaward !== 'undefined' && this.state.courseAwardSelected.length === 0)) &&
-					!this.state.courseAwardSelected.includes(values.courseaward)) ||
-				(((typeof values.courseentrylevel === 'undefined' && this.state.courseEntryLevelSelected.length !== 0) ||
-					(typeof values.courseentrylevel !== 'undefined' && this.state.courseEntryLevelSelected.length === 0)) &&
-					!this.state.courseEntryLevelSelected.includes(values.courseentrylevel)) ||
-				(((typeof values.coursedomains === 'undefined' && this.state.courseDomainsSelected.length !== 0) ||
-					(typeof values.coursedomains !== 'undefined' && this.state.courseDomainsSelected.length === 0)) &&
-					!this.state.courseDomainsSelected.includes(values.coursedomains)) ||
-				(((typeof values.coursekeywords === 'undefined' && this.state.courseKeywordsSelected.length !== 0) ||
-					(typeof values.coursekeywords !== 'undefined' && this.state.courseKeywordsSelected.length === 0)) &&
-					!this.state.courseKeywordsSelected.includes(values.coursekeywords)) ||
-				(((typeof values.courseframework === 'undefined' && this.state.courseFrameworkSelected.length !== 0) ||
-					(typeof values.courseframework !== 'undefined' && this.state.courseFrameworkSelected.length === 0)) &&
-					!this.state.courseFrameworkSelected.includes(values.courseframework)) ||
-				(((typeof values.coursepriority === 'undefined' && this.state.coursePrioritySelected.length !== 0) ||
-					(typeof values.coursepriority !== 'undefined' && this.state.coursePrioritySelected.length === 0)) &&
-					!this.state.coursePrioritySelected.includes(values.coursepriority)) ||
-				(((typeof values.datasetIndex === 'undefined' && this.state.datasetIndex !== 0) ||
-					(typeof values.datasetIndex !== 'undefined' && this.state.datasetIndex === 0)) &&
-					this.state.datasetIndex !== values.datasetIndex) ||
-				(((typeof values.toolIndex === 'undefined' && this.state.toolIndex !== 0) ||
-					(typeof values.toolIndex !== 'undefined' && this.state.toolIndex === 0)) &&
-					this.state.toolIndex !== values.toolIndex) ||
-				(((typeof values.projectIndex === 'undefined' && this.state.projectIndex !== 0) ||
-					(typeof values.projectIndex !== 'undefined' && this.state.projectIndex === 0)) &&
-					this.state.projectIndex !== values.projectIndex) ||
-				(((typeof values.paperIndex === 'undefined' && this.state.paperIndex !== 0) ||
-					(typeof values.paperIndex !== 'undefined' && this.state.paperIndex === 0)) &&
-					this.state.paperIndex !== values.paperIndex) ||
-				(((typeof values.personIndex === 'undefined' && this.state.personIndex !== 0) ||
-					(typeof values.personIndex !== 'undefined' && this.state.personIndex === 0)) &&
-					this.state.personIndex !== values.personIndex) ||
-				(((typeof values.courseIndex === 'undefined' && this.state.courseIndex !== 0) ||
-					(typeof values.courseIndex !== 'undefined' && this.state.courseIndex === 0)) &&
-					this.state.courseIndex !== values.courseIndex) ||
-				(((typeof values.datasetSort === 'undefined' && this.state.datasetSort !== '') ||
-					(typeof values.datasetSort !== 'undefined' && this.state.datasetSort === '')) &&
-					this.state.datasetSort !== values.datasetSort) ||
-				(((typeof values.toolSort === 'undefined' && this.state.toolSort !== '') ||
-					(typeof values.toolSort !== 'undefined' && this.state.toolSort === '')) &&
-					this.state.toolSort !== values.toolSort) ||
-				(((typeof values.projectSort === 'undefined' && this.state.projectSort !== '') ||
-					(typeof values.projectSort !== 'undefined' && this.state.projectSort === '')) &&
-					this.state.projectSort !== values.projectSort) ||
-				(((typeof values.paperSort === 'undefined' && this.state.paperSort !== '') ||
-					(typeof values.paperSort !== 'undefined' && this.state.paperSort === '')) &&
-					this.state.paperSort !== values.paperSort) ||
-				(((typeof values.personSort === 'undefined' && this.state.personSort !== '') ||
-					(typeof values.personSort !== 'undefined' && this.state.personSort === '')) &&
-					this.state.personSort !== values.personSort) ||
-				(((typeof values.courseSort === 'undefined' && this.state.courseSort !== '') ||
-					(typeof values.courseSort !== 'undefined' && this.state.courseSort === '')) &&
-					this.state.courseSort !== values.courseSort)
-			) {
-				await Promise.all([this.updateFilterStates(values)]);
-				this.doSearchCall(true);
-			} else if (this.state.key !== values.tab) {
-				this.setState({ key: values.tab });
+			// 6 if openUserMessages is true open the user messages
+			else if (this.state.userState[0].loggedIn && queryParams.openUserMessages === 'true') {
+				this.toggleDrawer();
 			}
+			// 7. set the selectedFilter states from queryParams ** does not return anything **
+			await this.updateFilterStates(queryParams);
+			// 8. call search API
+			this.doSearchCall();
 		} else {
-			this.setState({ data: [], searchString: '', isLoading: true });
+			this.setState({ data: [], search: '', isLoading: true });
 			this.doSearchCall();
 		}
 	}
 
-	doSearch = async e => {
-		//fires on enter on searchbar
-		if (e.key === 'Enter') {
-			this.setState({ isResultsLoading: true });
-			await Promise.all([this.clearFilterStates()]);
+	async componentWillReceiveProps(nextProps) {
+		let queryParams = queryString.parse(window.location.search);
+		// 1. set search string
+		this.setState({ search: queryParams['search'] });
+		// 2. if tabs are different update
+		if (this.state.key !== queryParams.tab) {
+			this.setState({ key: queryParams.tab || 'Datasets' });
+		}
+	}
 
-			this.doSearchCall();
+	doSearch = e => {
+		// fires on enter on searchbar
+		if (e.key === 'Enter') {
+			// reload window and test for search if entered
+			this.setState({ isResultsLoading: true }, () => {
+				this.clearFilterStates();
+			});
 		}
 	};
 
-	doClear = async e => {
-		this.setState({ isResultsLoading: true, searchString: '' });
-		await Promise.all([this.clearFilterStates()]);
-		this.doSearchCall();
+	doClear = e => {
+		this.setState({ isResultsLoading: true, search: '' }, () => {
+			this.clearFilterStates();
+		});
 	};
 
-	updateFilterStates(values) {
-		values.search ? this.setState({ searchString: values.search }) : this.setState({ searchString: '' });
-
-		values.license ? this.setState({ licensesSelected: values.license.split('::') }) : this.setState({ licensesSelected: [] });
-		values.sampleavailability
-			? this.setState({ sampleAvailabilitySelected: values.sampleavailability.split('::') })
-			: this.setState({ sampleAvailabilitySelected: [] });
-		values.keywords ? this.setState({ keywordsSelected: values.keywords.split('::') }) : this.setState({ keywordsSelected: [] });
-		values.publisher ? this.setState({ publishersSelected: values.publisher.split('::') }) : this.setState({ publishersSelected: [] });
-		values.ageband ? this.setState({ ageBandsSelected: values.ageband.split('::') }) : this.setState({ ageBandsSelected: [] });
-		values.geographiccover
-			? this.setState({ geoCoverageSelected: values.geographiccover.split('::') })
-			: this.setState({ geoCoverageSelected: [] });
-		values.phenotypes ? this.setState({ phenotypesSelected: values.phenotypes.split('::') }) : this.setState({ phenotypesSelected: [] });
-
-		values.toolcategories
-			? this.setState({ toolCategoriesSelected: values.toolcategories.split('::') })
+	/**
+	 * UpdateFilterStates
+	 *
+	 * @desc Sets selectedStates for filters including search string
+	 */
+	async updateFilterStates(queryParams) {
+		let filtersV2, selectedV2;
+		if (!_.isEmpty(this.state.filtersV2)) {
+			// 1. take copy of filters data
+			filtersV2 = [...this.state.filtersV2];
+			selectedV2 = [...this.state.selectedV2];
+			// 2. turns keys into array for looping ['publisher', 'phenotype']
+			if (!_.isEmpty(Object.keys(queryParams))) {
+				// 3. loop over queryKeys
+				for (const key of Object.keys(queryParams)) {
+					// 4. convert queryString into array of values
+					let queryValues = queryParams[key].split('::');
+					// 5. check if key exists in our tree, return {} or undefined
+					let parentNode = this.findParentNode(filtersV2, key);
+					if (!_.isNil(parentNode)) {
+						let { filters } = parentNode;
+						// 6. loop over query values
+						queryValues.forEach(node => {
+							// 7. get the selected values
+							let foundNode = this.findNode(filters, node);
+							if (!_.isEmpty(foundNode)) {
+								// 8. set check value
+								foundNode.checked = !foundNode.checked;
+								// 9. increment highest parent count
+								parentNode.selectedCount += 1;
+								// 10. prep new selected Item for selected showing
+								let selectedNode = {
+									parentKey: key,
+									id: foundNode.id,
+									label: foundNode.label,
+								};
+								// 11. fn for handling the *selected showing* returns new state
+								let selected = this.handleSelected(selectedNode, foundNode.checked);
+								// 12. update selectedV2 array with our new returned value
+								selectedV2 = [...selectedV2, ...selected];
+							}
+						});
+					}
+				}
+				// 13. set the state of filters and selected options
+				this.setState({ filtersV2, selectedV2 });
+			}
+		}
+		// 14. original filters setting of data remove if entity moves to V2 for correct filter
+		queryParams.search ? this.setState({ search: queryParams.search }) : this.setState({ search: '' });
+		// V1 Tools
+		queryParams.toolcategories
+			? this.setState({ toolCategoriesSelected: queryParams.toolcategories.split('::') })
 			: this.setState({ toolCategoriesSelected: [] });
-		values.programmingLanguage
-			? this.setState({ languageSelected: values.programmingLanguage.split('::') })
-			: this.setState({ languageSelected: [] });
-		values.features ? this.setState({ featuresSelected: values.features.split('::') }) : this.setState({ featuresSelected: [] });
-		values.tooltopics ? this.setState({ toolTopicsSelected: values.tooltopics.split('::') }) : this.setState({ toolTopicsSelected: [] });
-
-		values.projectcategories
-			? this.setState({ projectCategoriesSelected: values.projectcategories.split('::') })
+		queryParams.toolprogrammingLanguage
+			? this.setState({ toolProgrammingLanguageSelected: queryParams.toolprogrammingLanguage.split('::') })
+			: this.setState({ toolProgrammingLanguageSelected: [] });
+		queryParams.toolfeatures
+			? this.setState({ toolFeaturesSelected: queryParams.features.split('::') })
+			: this.setState({ toolFeaturesSelected: [] });
+		queryParams.tooltopics
+			? this.setState({ toolTopicsSelected: queryParams.tooltopics.split('::') })
+			: this.setState({ toolTopicsSelected: [] });
+		// V1 Projects
+		queryParams.projectcategories
+			? this.setState({ projectCategoriesSelected: queryParams.projectcategories.split('::') })
 			: this.setState({ projectCategoriesSelected: [] });
-		values.projectfeatures
-			? this.setState({ projectFeaturesSelected: values.projectfeatures.split('::') })
+		queryParams.projectfeatures
+			? this.setState({ projectFeaturesSelected: queryParams.projectfeatures.split('::') })
 			: this.setState({ projectFeaturesSelected: [] });
-		values.projecttopics
-			? this.setState({ projectTopicsSelected: values.projecttopics.split('::') })
+		queryParams.projecttopics
+			? this.setState({ projectTopicsSelected: queryParams.projecttopics.split('::') })
 			: this.setState({ projectTopicsSelected: [] });
-
-		values.paperfeatures
-			? this.setState({ paperFeaturesSelected: values.paperfeatures.split('::') })
+		// V1 Papers
+		queryParams.paperfeatures
+			? this.setState({ paperFeaturesSelected: queryParams.paperfeatures.split('::') })
 			: this.setState({ paperFeaturesSelected: [] });
-		values.papertopics
-			? this.setState({ paperTopicsSelected: values.papertopics.split('::') })
+		queryParams.papertopics
+			? this.setState({ paperTopicsSelected: queryParams.papertopics.split('::') })
 			: this.setState({ paperTopicsSelected: [] });
-
-		values.coursestartdates
-			? this.setState({ courseStartDatesSelected: values.coursestartdates.split('::') })
+		// V1 Courses
+		queryParams.coursestartdates
+			? this.setState({ courseStartDatesSelected: queryParams.coursestartdates.split('::') })
 			: this.setState({ courseStartDatesSelected: [] });
-		values.courseprovider
-			? this.setState({ coursePrioritySelected: values.courseprovider.split('::') })
+		queryParams.courseprovider
+			? this.setState({ coursePrioritySelected: queryParams.courseprovider.split('::') })
 			: this.setState({ coursePrioritySelected: [] });
-		values.courselocation
-			? this.setState({ courseLocationSelected: values.courselocation.split('::') })
+		queryParams.courselocation
+			? this.setState({ courseLocationSelected: queryParams.courselocation.split('::') })
 			: this.setState({ courseLocationSelected: [] });
-		values.coursestudymode
-			? this.setState({ courseStudyModeSelected: values.coursestudymode.split('::') })
+		queryParams.coursestudymode
+			? this.setState({ courseStudyModeSelected: queryParams.coursestudymode.split('::') })
 			: this.setState({ courseStudyModeSelected: [] });
-		values.courseaward
-			? this.setState({ courseAwardSelected: values.courseaward.split('::') })
+		queryParams.courseaward
+			? this.setState({ courseAwardSelected: queryParams.courseaward.split('::') })
 			: this.setState({ courseAwardSelected: [] });
-		values.courseentrylevel
-			? this.setState({ courseEntryLevelSelected: values.courseentrylevel.split('::') })
+		queryParams.courseentrylevel
+			? this.setState({ courseEntryLevelSelected: queryParams.courseentrylevel.split('::') })
 			: this.setState({ courseEntryLevelSelected: [] });
-		values.coursedomains
-			? this.setState({ courseDomainsSelected: values.coursedomains.split('::') })
+		queryParams.coursedomains
+			? this.setState({ courseDomainsSelected: queryParams.coursedomains.split('::') })
 			: this.setState({ courseDomainsSelected: [] });
-		values.coursekeywords
-			? this.setState({ courseKeywordsSelected: values.coursekeywords.split('::') })
+		queryParams.coursekeywords
+			? this.setState({ courseKeywordsSelected: queryParams.coursekeywords.split('::') })
 			: this.setState({ courseKeywordsSelected: [] });
-		values.courseframework
-			? this.setState({ courseFrameworkSelected: values.courseframework.split('::') })
+		queryParams.courseframework
+			? this.setState({ courseFrameworkSelected: queryParams.courseframework.split('::') })
 			: this.setState({ courseFrameworkSelected: [] });
-		values.coursepriority
-			? this.setState({ coursePrioritySelected: values.coursepriority.split('::') })
+		queryParams.coursepriority
+			? this.setState({ coursePrioritySelected: queryParams.coursepriority.split('::') })
 			: this.setState({ coursePrioritySelected: [] });
+		// V1 Collections
+		queryParams.collectionkeywords
+			? this.setState({ collectionKeywordsSelected: queryParams.collectionkeywords.split('::') })
+			: this.setState({ collectionKeywordsSelected: [] });
+		queryParams.collectionpublisher
+			? this.setState({ collectionPublisherSelected: queryParams.collectionpublisher.split('::') })
+			: this.setState({ collectionPublisherSelected: [] });
 
-		values.tab ? this.setState({ key: values.tab }) : this.setState({ key: 'Datasets' });
-		values.datasetIndex ? this.setState({ datasetIndex: values.datasetIndex }) : this.setState({ datasetIndex: 0 });
-		values.toolIndex ? this.setState({ toolIndex: values.toolIndex }) : this.setState({ toolIndex: 0 });
-		values.projectIndex ? this.setState({ projectIndex: values.projectIndex }) : this.setState({ projectIndex: 0 });
-		values.paperIndex ? this.setState({ paperIndex: values.paperIndex }) : this.setState({ paperIndex: 0 });
-		values.personIndex ? this.setState({ personIndex: values.personIndex }) : this.setState({ personIndex: 0 });
-		values.courseIndex ? this.setState({ courseIndex: values.courseIndex }) : this.setState({ projectIndex: 0 });
-
-		values.datasetSort ? this.setState({ datasetSort: values.datasetSort }) : this.setState({ datasetSort: '' });
-		values.toolSort ? this.setState({ toolSort: values.toolSort }) : this.setState({ toolSort: '' });
-		values.projectSort ? this.setState({ projectSort: values.projectSort }) : this.setState({ projectSort: '' });
-		values.paperSort ? this.setState({ paperSort: values.paperSort }) : this.setState({ paperSort: '' });
-		values.personSort ? this.setState({ personSort: values.personSort }) : this.setState({ personSort: '' });
-		values.courseSort ? this.setState({ courseSort: values.courseSort }) : this.setState({ courseSort: '' });
+		// Tab
+		queryParams.tab ? this.setState({ key: queryParams.tab }) : this.setState({ key: 'Datasets' });
+		// PageNumbers - should be datasetPageNo etc better convention
+		queryParams.datasetIndex ? this.setState({ datasetIndex: queryParams.datasetIndex }) : this.setState({ datasetIndex: 0 });
+		queryParams.toolIndex ? this.setState({ toolIndex: queryParams.toolIndex }) : this.setState({ toolIndex: 0 });
+		queryParams.projectIndex ? this.setState({ projectIndex: queryParams.projectIndex }) : this.setState({ projectIndex: 0 });
+		queryParams.paperIndex ? this.setState({ paperIndex: queryParams.paperIndex }) : this.setState({ paperIndex: 0 });
+		queryParams.personIndex ? this.setState({ personIndex: queryParams.personIndex }) : this.setState({ personIndex: 0 });
+		queryParams.courseIndex ? this.setState({ courseIndex: queryParams.courseIndex }) : this.setState({ courseIndex: 0 });
+		queryParams.collectionIndex ? this.setState({ collectionIndex: queryParams.collectionIndex }) : this.setState({ collectionIndex: 0 });
+		// Sort for each tab
+		queryParams.datasetSort ? this.setState({ datasetSort: queryParams.datasetSort }) : this.setState({ datasetSort: '' });
+		queryParams.toolSort ? this.setState({ toolSort: queryParams.toolSort }) : this.setState({ toolSort: '' });
+		queryParams.projectSort ? this.setState({ projectSort: queryParams.projectSort }) : this.setState({ projectSort: '' });
+		queryParams.paperSort ? this.setState({ paperSort: queryParams.paperSort }) : this.setState({ paperSort: '' });
+		queryParams.personSort ? this.setState({ personSort: queryParams.personSort }) : this.setState({ personSort: '' });
+		queryParams.courseSort ? this.setState({ courseSort: queryParams.courseSort }) : this.setState({ courseSort: '' });
 	}
 
 	clearFilterStates() {
-		this.setState({ licensesSelected: [] });
-		this.setState({ sampleAvailabilitySelected: [] });
-		this.setState({ keywordsSelected: [] });
-		this.setState({ publishersSelected: [] });
-		this.setState({ ageBandsSelected: [] });
-		this.setState({ geoCoverageSelected: [] });
-		this.setState({ phenotypesSelected: [] });
+		// 1. v2 take copy of data
+		let filtersV2Data = [...this.state.filtersV2];
+		// 2. v2 resets the filters UI tree back to default
+		let filtersV2 = this.resetTreeChecked(filtersV2Data);
 
-		this.setState({ toolCategoriesSelected: [] });
-		this.setState({ languageSelected: [] });
-		this.setState({ featuresSelected: [] });
-		this.setState({ toolTopicsSelected: [] });
-
-		this.setState({ projectCategoriesSelected: [] });
-		this.setState({ projectFeaturesSelected: [] });
-		this.setState({ projectTopicsSelected: [] });
-
-		this.setState({ paperFeaturesSelected: [] });
-		this.setState({ paperTopicsSelected: [] });
-
-		this.setState({ courseStartDatesSelected: [] });
-		this.setState({ courseProviderSelected: [] });
-		this.setState({ courseLocationSelected: [] });
-		this.setState({ courseStudyModeSelected: [] });
-		this.setState({ courseAwardSelected: [] });
-		this.setState({ courseEntryLevelSelected: [] });
-		this.setState({ courseDomainsSelected: [] });
-		this.setState({ courseKeywordsSelected: [] });
-		this.setState({ courseFrameworkSelected: [] });
-		this.setState({ coursePrioritySelected: [] });
-
-		this.setState({ datasetIndex: 0 });
-		this.setState({ toolIndex: 0 });
-		this.setState({ projectIndex: 0 });
-		this.setState({ paperIndex: 0 });
-		this.setState({ personIndex: 0 });
-		this.setState({ courseIndex: 0 });
-
-		this.setState({ datasetSort: '' });
-		this.setState({ toolSort: '' });
-		this.setState({ projectSort: '' });
-		this.setState({ paperSort: '' });
-		this.setState({ personSort: '' });
-		this.setState({ courseSort: '' });
+		this.setState(
+			{
+				filtersV2,
+				selectedV2: [],
+				toolCategoriesSelected: [],
+				toolProgrammingLanguageSelected: [],
+				toolFeaturesSelected: [],
+				toolTopicsSelected: [],
+				projectCategoriesSelected: [],
+				projectFeaturesSelected: [],
+				projectTopicsSelected: [],
+				paperFeaturesSelected: [],
+				paperTopicsSelected: [],
+				courseStartDatesSelected: [],
+				courseProviderSelected: [],
+				courseLocationSelected: [],
+				courseStudyModeSelected: [],
+				courseAwardSelected: [],
+				courseEntryLevelSelected: [],
+				courseDomainsSelected: [],
+				courseKeywordsSelected: [],
+				courseFrameworkSelected: [],
+				coursePrioritySelected: [],
+				collectionKeywordsSelected: [],
+				collectionPublisherSelected: [],
+				datasetIndex: 0,
+				toolIndex: 0,
+				projectIndex: 0,
+				paperIndex: 0,
+				personIndex: 0,
+				courseIndex: 0,
+				collectionIndex: 0,
+				datasetSort: '',
+				toolSort: '',
+				projectSort: '',
+				paperSort: '',
+				personSort: '',
+				courseSort: '',
+			},
+			() => {
+				this.doSearchCall();
+			}
+		);
 	}
 
-	updateOnFilterBadge = async (filterGroup, filter) => {
-		if (!this.state[filterGroup].find(x => x === filter)) {
+	updateOnFilterBadge = (filterGroup, filter) => {
+		// 1. test type of filter if v2 it will be an object
+		if (typeof filter === 'object' && !_.isEmpty(filter)) {
+			// 2. title case to match the backend cache implmentation of label value
+			let { parentKey, label } = filter;
+			let node = {
+				parentKey,
+				label: toTitleCase(label),
+			};
+			// 3. the filter will contain {label, parentKey (parentKey is defined the filters.mapper API)}
+			this.handleInputChange(node, parentKey, true);
+		} else if (!this.state[filterGroup].find(x => x === filter)) {
+			// 4. V1 for Tools, Projects, Papers, Collections, Courses
 			this.state[filterGroup].push(filter);
 			this.updateOnFilter();
+		} else {
+			return;
 		}
 	};
 
-	updateOnFilter = async () => {
-		await Promise.all([
-			this.setState({ datasetIndex: 0 }),
-			this.setState({ toolIndex: 0 }),
-			this.setState({ projectIndex: 0 }),
-			this.setState({ paperIndex: 0 }),
-			this.setState({ personIndex: 0 }),
-			this.setState({ courseIndex: 0 }),
-		]);
-		this.doSearchCall();
-		this.setState({ isResultsLoading: true });
+	updateOnFilter = () => {
+		this.setState(
+			{ datasetIndex: 0, toolIndex: 0, projectIndex: 0, paperIndex: 0, personIndex: 0, courseIndex: 0, isResultsLoading: true },
+			() => {
+				this.doSearchCall();
+			}
+		);
 	};
 
-	clearFilter = async (filter, filterGroup) => {
+	/**
+	 * ClearFilter V1 function
+	 */
+	clearFilter = (filter, filterGroup) => {
 		if (filter === 'All') {
-			await Promise.all([this.clearFilterStates()]);
+			this.clearFilterStates();
 		} else {
 			this.state[filterGroup].splice(this.state[filterGroup].indexOf(filter), 1);
 		}
 
-		this.doSearchCall();
-		this.setState({ isResultsLoading: true });
+		this.setState({ isResultsLoading: true }, () => {
+			this.doSearchCall();
+		});
 	};
 
 	doSearchCall(skipHistory) {
-		var searchURL = '';
-
-		if (this.state.licensesSelected.length > 0)
-			searchURL += '&license=' + encodeURIComponent(this.state.licensesSelected.toString().split(',').join('::'));
-		if (this.state.sampleAvailabilitySelected.length > 0)
-			searchURL += '&sampleavailability=' + encodeURIComponent(this.state.sampleAvailabilitySelected.toString().split(',').join('::'));
-		if (this.state.keywordsSelected.length > 0)
-			searchURL += '&keywords=' + encodeURIComponent(this.state.keywordsSelected.toString().split(',').join('::'));
-		if (this.state.publishersSelected.length > 0)
-			searchURL += '&publisher=' + encodeURIComponent(this.state.publishersSelected.toString().split(',').join('::'));
-		if (this.state.ageBandsSelected.length > 0)
-			searchURL += '&ageband=' + encodeURIComponent(this.state.ageBandsSelected.toString().split(',').join('::'));
-		if (this.state.geoCoverageSelected.length > 0)
-			searchURL += '&geographiccover=' + encodeURIComponent(this.state.geoCoverageSelected.toString().split(',').join('::'));
-		if (this.state.phenotypesSelected.length > 0)
-			searchURL += '&phenotypes=' + encodeURIComponent(this.state.phenotypesSelected.toString().split(',').join('::'));
-
+		let searchURL = '';
+		let filtersV2 = [];
+		// 1. build search object from list of selected fitlers v2 only
+		const searchObj = this.buildSearchObj(this.state.selectedV2);
+		// 2. dynamically build the searchUrl v2 only
+		searchURL = this.buildSearchUrl(searchObj);
+		// 3. build up V1 Tools / early filters, no change from original implementation
 		if (this.state.toolCategoriesSelected.length > 0)
 			searchURL += '&toolcategories=' + encodeURIComponent(this.state.toolCategoriesSelected.toString().split(',').join('::'));
-		if (this.state.languageSelected.length > 0)
-			searchURL += '&programmingLanguage=' + encodeURIComponent(this.state.languageSelected.toString().split(',').join('::'));
-		if (this.state.featuresSelected.length > 0)
-			searchURL += '&features=' + encodeURIComponent(this.state.featuresSelected.toString().split(',').join('::'));
+		if (this.state.toolProgrammingLanguageSelected.length > 0)
+			searchURL +=
+				'&toolprogrammingLanguage=' + encodeURIComponent(this.state.toolProgrammingLanguageSelected.toString().split(',').join('::'));
+		if (this.state.toolFeaturesSelected.length > 0)
+			searchURL += '&toolfeatures=' + encodeURIComponent(this.state.toolFeaturesSelected.toString().split(',').join('::'));
 		if (this.state.toolTopicsSelected.length > 0)
 			searchURL += '&tooltopics=' + encodeURIComponent(this.state.toolTopicsSelected.toString().split(',').join('::'));
-
+		// V1 Projects
 		if (this.state.projectCategoriesSelected.length > 0)
 			searchURL += '&projectcategories=' + encodeURIComponent(this.state.projectCategoriesSelected.toString().split(',').join('::'));
 		if (this.state.projectFeaturesSelected.length > 0)
 			searchURL += '&projectfeatures=' + encodeURIComponent(this.state.projectFeaturesSelected.toString().split(',').join('::'));
 		if (this.state.projectTopicsSelected.length > 0)
 			searchURL += '&projecttopics=' + encodeURIComponent(this.state.projectTopicsSelected.toString().split(',').join('::'));
-
+		// V1 Papers
 		if (this.state.paperFeaturesSelected.length > 0)
 			searchURL += '&paperfeatures=' + encodeURIComponent(this.state.paperFeaturesSelected.toString().split(',').join('::'));
 		if (this.state.paperTopicsSelected.length > 0)
 			searchURL += '&papertopics=' + encodeURIComponent(this.state.paperTopicsSelected.toString().split(',').join('::'));
-
+		// V1 Courses
 		if (this.state.courseStartDatesSelected.length > 0)
 			searchURL += '&coursestartdates=' + encodeURIComponent(this.state.courseStartDatesSelected.toString().split(',').join('::'));
 		if (this.state.courseProviderSelected.length > 0)
@@ -502,102 +459,454 @@ class SearchPage extends React.Component {
 			searchURL += '&courseframework=' + encodeURIComponent(this.state.courseFrameworkSelected.toString().split(',').join('::'));
 		if (this.state.coursePrioritySelected.length > 0)
 			searchURL += '&coursepriority=' + encodeURIComponent(this.state.coursePrioritySelected.toString().split(',').join('::'));
-
+		// V1 Collections
+		if (this.state.collectionKeywordsSelected.length > 0)
+			searchURL += '&collectionkeywords=' + encodeURIComponent(this.state.collectionKeywordsSelected.toString().split(',').join('::'));
+		if (this.state.collectionPublisherSelected.length > 0)
+			searchURL += '&collectionpublisher=' + encodeURIComponent(this.state.collectionPublisherSelected.toString().split(',').join('::'));
+		// PageNumbers = (entityNameIndex) N.B. should be datasetPageNo, toolPageNo, projectPageNo, paperPageNo, coursePageNo
 		if (this.state.datasetIndex > 0) searchURL += '&datasetIndex=' + encodeURIComponent(this.state.datasetIndex);
 		if (this.state.toolIndex > 0) searchURL += '&toolIndex=' + encodeURIComponent(this.state.toolIndex);
 		if (this.state.projectIndex > 0) searchURL += '&projectIndex=' + encodeURIComponent(this.state.projectIndex);
 		if (this.state.paperIndex > 0) searchURL += '&paperIndex=' + encodeURIComponent(this.state.paperIndex);
 		if (this.state.personIndex > 0) searchURL += '&personIndex=' + encodeURIComponent(this.state.personIndex);
 		if (this.state.courseIndex > 0) searchURL += '&courseIndex=' + encodeURIComponent(this.state.courseIndex);
-
+		if (this.state.collectionIndex > 0) searchURL += '&collectionIndex=' + encodeURIComponent(this.state.collectionIndex);
+		// sorting across the filter range
 		if (this.state.datasetSort !== '') searchURL += '&datasetSort=' + encodeURIComponent(this.state.datasetSort);
 		if (this.state.toolSort !== '') searchURL += '&toolSort=' + encodeURIComponent(this.state.toolSort);
 		if (this.state.projectSort !== '') searchURL += '&projectSort=' + encodeURIComponent(this.state.projectSort);
 		if (this.state.paperSort !== '') searchURL += '&paperSort=' + encodeURIComponent(this.state.paperSort);
 		if (this.state.personSort !== '') searchURL += '&personSort=' + encodeURIComponent(this.state.personSort);
 		if (this.state.courseSort !== '') searchURL += '&courseSort=' + encodeURIComponent(this.state.courseSort);
-
+		// login status handler
 		if (this.state.userState[0].loggedIn === false) {
-			var values = queryString.parse(window.location.search);
+			let values = queryString.parse(window.location.search);
 			if (values.showLogin === 'true' && values.loginReferrer !== '')
 				searchURL += '&loginReferrer=' + encodeURIComponent(values.loginReferrer);
 			else if (values.showLogin === 'true' && document.referrer !== '')
 				searchURL += '&loginReferrer=' + encodeURIComponent(document.referrer);
 		}
 
-		this.setState({showAboutPage:window.location.href.indexOf("aboutPage") != -1})
-		
+		this.setState({ showAboutPage: window.location.href.indexOf('aboutPage') != -1 });
+
 		if (!skipHistory) {
 			if (this.state.key) searchURL += '&tab=' + this.state.key;
-			this.props.history.push(`${window.location.pathname}?search=${this.state.searchString}` + searchURL);
+
+			this.props.history.push(`${window.location.pathname}?search=${this.state.search}` + searchURL);
 		}
 
 		if (this.state.key !== 'People') {
-			axios.get(baseURL + '/api/v1/search/filter?search=' + this.state.searchString + searchURL).then(res => {
-				this.setState({
-					allFilters: res.data.allFilters || [],
-					filterOptions: res.data.filterOptions || [],
-				});
+			// remove once full migration to v2 filters for all other entities 'Tools, Projects, Courses and Papers'
+			axios.get(baseURL + '/api/v1/search/filter?search=' + this.state.search + searchURL).then(res => {
+				const entityType = typeMapper[`${this.state.key}`];
+				let filters = this.getFilterState(entityType, res);
+				// test the type and set relevant state
+				if (entityType === 'dataset') {
+					filtersV2 = this.setHighlightedFilters(filters, [...this.state.filtersV2]);
+					this.setState({ filtersV2 });
+				} else {
+					this.setState({ ...filters });
+				}
 			});
 		}
+		// search call brings back search results and now filters highlighting for v2
+		axios
+			.get(baseURL + '/api/v1/search?search=' + this.state.search + searchURL)
+			.then(res => {
+				// get the correct entity type from our mapper via the selected tab ie..'Dataset, Tools'
+				const entityType = typeMapper[`${this.state.key}`];
+				// pull out the dynamic key : set data and filters
+				let {
+					[`${entityType}Results`]: { data = [] },
+					summary = [],
+				} = res.data;
 
-		axios.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL).then(res => {
-			this.setState({
-				datasetData: res.data.datasetResults || [],
-				toolData: res.data.toolResults || [],
-				projectData: res.data.projectResults || [],
-				paperData: res.data.paperResults || [],
-				personData: res.data.personResults || [],
-				courseData: res.data.courseResults || [],
-				summary: res.data.summary || [],
-				isLoading: false,
-				isResultsLoading: false,
+				this.setState({
+					[`${entityType}Data`]: data,
+					isLoading: false,
+					isResultsLoading: false,
+					summary,
+				});
+				window.scrollTo(0, 0);
+			})
+			.catch(err => {
+				console.error(err.message);
 			});
-		});
 	}
-
-	updateSearchString = searchString => {
-		this.setState({ searchString });
+	/**
+	 * GetFilterState
+	 *
+	 * @desc return correct filter state for either a V1 or V2 option
+	 * @return {object}
+	 */
+	getFilterState = (tab = '', response = {}) => {
+		const {
+			data: { filters = {}, allFilters = [], filterOptions = [] },
+		} = response;
+		if (tab === 'dataset') {
+			return filters;
+		} else {
+			return {
+				allFilters,
+				filterOptions,
+			};
+		}
 	};
 
-	handleSelect = async key => {
-		await Promise.all([this.setState({ key: key, isResultsLoading: true })]);
-		var values = queryString.parse(window.location.search);
+	setHighlightedFilters = (filters = {}, tree) => {
+		for (let key in filters) {
+			// 2. find parent obj - recursive
+			let parentNode = this.findParentNode(tree, key);
+			// 3. if parentNode exists
+			if (!_.isEmpty(parentNode) && typeof parentNode.highlighted !== 'undefined') {
+				let lowerCasedFilters = filters[key].map(value => value.toLowerCase());
+				parentNode.highlighted = _.uniq(lowerCasedFilters);
+			}
+		}
+		return tree;
+	};
+
+	updateSearchString = search => {
+		this.setState({ search });
+	};
+
+	handleSelect = key => {
+		let values = queryString.parse(window.location.search);
 		values.tab = key;
 		this.props.history.push(window.location.pathname + '?' + queryString.stringify(values));
-
-		this.doSearchCall();
-	};
-
-	handleSort = async sort => {
-		await new Promise((resolve, reject) => {
-			if (this.state.key === 'Datasets') this.setState({ datasetSort: sort, isResultsLoading: true });
-			else if (this.state.key === 'Tools') this.setState({ toolSort: sort, isResultsLoading: true });
-			else if (this.state.key === 'Projects') this.setState({ projectSort: sort, isResultsLoading: true });
-			else if (this.state.key === 'Papers') this.setState({ paperSort: sort, isResultsLoading: true });
-			else if (this.state.key === 'People') this.setState({ personSort: sort, isResultsLoading: true });
-			else if (this.state.key === 'Courses') this.setState({ courseSort: sort, isResultsLoading: true });
-			resolve();
+		this.setState({ key: key, isResultsLoading: true }, () => {
+			this.doSearchCall();
 		});
-
-		this.doSearchCall();
 	};
 
-	handlePagination = async (type, page) => {
-		if (type === 'dataset') {
-			await Promise.all([this.setState({ datasetIndex: page })]);
-		} else if (type === 'tool') {
-			await Promise.all([this.setState({ toolIndex: page })]);
-		} else if (type === 'project') {
-			await Promise.all([this.setState({ projectIndex: page })]);
-		} else if (type === 'paper') {
-			await Promise.all([this.setState({ paperIndex: page })]);
-		} else if (type === 'person') {
-			await Promise.all([this.setState({ personIndex: page })]);
-		} else if (type === 'course') {
-			await Promise.all([this.setState({ courseIndex: page })]);
+	handleSort = sort => {
+		const entityType = typeMapper[`${this.state.key}`];
+		this.setState({ [`${entityType}Sort`]: sort, isResultsLoading: true }, () => {
+			this.doSearchCall();
+		});
+	};
+
+	handlePagination = (type = '', page = 0) => {
+		if (!_.isEmpty(type)) {
+			this.setState({ [`${type}Index`]: page, isResultsLoading: true }, () => {
+				window.scrollTo(0, 0);
+				this.doSearchCall();
+			});
 		}
-		this.doSearchCall();
+	};
+
+	/**
+	 * GetFilters
+	 *
+	 * @desc Get all the filters for dataset
+	 */
+	getFilters = async () => {
+		try {
+			let response = await axios.get(`${baseURL}/api/v2/filters/dataset`);
+			let {
+				data: { data },
+			} = response;
+			if (!_.isEmpty(data)) {
+				this.setState({ filtersV2: data });
+			}
+		} catch (error) {
+			console.error(error.message);
+		}
+	};
+
+	/**
+	 * PerformSearch
+	 *
+	 * @desc builds url string from searchObj from selected filters
+	 * @param {object}
+	 */
+	buildSearchUrl = searchObj => {
+		let searchUrl = '';
+		if (searchObj) {
+			for (let key of Object.keys(searchObj)) {
+				let values = searchObj[key];
+				searchUrl += `&${key}=${encodeURIComponent(values.toString().split(',').join('::'))}`;
+			}
+		}
+		return searchUrl;
+	};
+
+	/**
+	 * BuildSearchObj
+	 *
+	 * @desc builds filters obj ready for parsing
+	 * @param {array} FilterArr
+	 * @return {object} New Filters Object
+	 */
+	buildSearchObj = arr => {
+		// 1. reduce over array of selected values [{id, label, parentkey}, {}...]
+		return [...arr].reduce((obj, { parentKey, label, alias }) => {
+			// we need to use alias here if it is defiend to use as override so names do not conflict with other tabs
+			let queryParam = alias ? alias : parentKey;
+
+			// 2. group by key { 'publisher': [] }
+			if (!obj[queryParam]) obj[queryParam] = [];
+
+			// 3. if key exists push in label value
+			obj[queryParam].push(label);
+			// 4. return obj iteration
+			return obj;
+		}, {});
+	};
+
+	/**
+	 * HandleClearFilters
+	 *
+	 * @desc function to handle filters applied functionality
+	 * @param {string | object} selectedNode
+	 */
+	handleClearSelection = selectedNode => {
+		let selectedV2, filtersV2, parentNode;
+		if (!_.isEmpty(selectedNode)) {
+			// 1. take label and parentId values from the node
+			let { parentKey, label } = selectedNode;
+			// 2. copy state data *avoid mutation*
+			filtersV2 = [...this.state.filtersV2];
+			// 3. find parentNode in the tree
+			parentNode = this.findParentNode(filtersV2, parentKey);
+			if (!_.isEmpty(parentNode)) {
+				// 4. decrement the count on the parent
+				--parentNode.selectedCount;
+				// 5. get the filters
+				let { filters } = parentNode;
+				if (!_.isEmpty(filters)) {
+					// 6. get child node
+					let foundNode = this.findNode(filters, label);
+					// 7. set checked value
+					foundNode.checked = false;
+					// 8. remove from selectedV2 array
+					selectedV2 = this.handleSelected(selectedNode, false);
+					// 9. set state
+					this.setState({ filtersV2, selectedV2, isResultsLoading: true }, () => {
+						// 10. callback wait for state to update
+						this.doSearchCall();
+					});
+				}
+			}
+		}
+	};
+
+	/**
+	 * ResetTreeChecked
+	 *
+	 * @desc Resets the selected filter options back in the tree for checked and selected counts
+	 * @param {object | array} tree
+	 * @return new tree
+	 */
+	resetTreeChecked = tree => {
+		if (_.isEmpty(tree)) return;
+
+		tree.forEach(node => {
+			if (typeof node.selectedCount !== 'undefined') node.selectedCount = 0;
+
+			if (typeof node.checked !== 'undefined') {
+				node.checked = false;
+			} else {
+				let child = this.resetTreeChecked(node.filters);
+				return child;
+			}
+		});
+		return tree;
+	};
+
+	/**
+	 * HandleClearAll
+	 *
+	 * @desc User clicks clear all in the filters all section it will reset the tree
+	 */
+	handleClearAll = () => {
+		// 1. take copy of data
+		let filtersV2Data = [...this.state.filtersV2];
+		// 2. resets the filters UI tree back to default
+		let filtersV2 = this.resetTreeChecked(filtersV2Data);
+		// 3. set state and call search
+		this.setState({ filtersV2, selectedV2: [], isResultsLoading: true }, () => {
+			this.doSearchCall();
+		});
+	};
+
+	/**
+	 * Filter method for v2Selected options
+	 * returns new array
+	 *
+	 * @desc    Returns new selected array for selected items in v2
+	 * @param		{object} selected
+	 * @param 	{boolena} checked
+	 * @return	{array} array of selected items
+	 */
+	handleSelected = (selected = {}, checked = false) => {
+		let selectedV2 = [...this.state.selectedV2];
+		let results = [];
+		if (!_.isEmpty(selected)) {
+			if (checked) {
+				results = [...selectedV2, selected];
+			} else {
+				// id important to filter by as labels are not unique
+				results = [...selectedV2].filter(node => node.id != selected.id);
+			}
+		}
+		return results;
+	};
+
+	/**
+	 * FindParentNode
+	 *
+	 * @desc 		Do a recursive loop to find the parent node
+	 * @param		{array} tree
+	 * @param		{number} nodeId
+	 * @return	{object} parentNode object
+	 */
+	findParentNode = (tree, key) => {
+		// 1. find if matches key || alias if provided for an override for the queryParam if it conflicts with another key from
+		// another entity
+		let found = tree.find(node => {
+			if (typeof node.alias !== 'undefined' && node.alias === key) return node;
+
+			if (node.key === key) return node;
+		});
+		// 2. if not found start recursive loop
+		if (!found) {
+			let i = 0;
+			// 3. if not found and current tree has length
+			while (!found && i < tree.length) {
+				// 4. current tree item get filters check if length
+				if (tree[i].filters && tree[i].filters.length) {
+					// 5. if filters has length set the current iteration of filters and recall found as findParentNode
+					found = this.findParentNode(tree[i].filters, key);
+				}
+				// 6. increment count
+				i++;
+			}
+		}
+		// 7. return found can be node or function findParentNode
+		return found;
+	};
+
+	/**
+	 * FindNode
+	 *
+	 * @desc 		Finds the selected node item or obj inside filters array already in parent
+	 * @param		{array} filters
+	 * @param		{string} label
+	 * @return	{object} object of {label, value...}
+	 */
+	findNode = (filters = [], label) => {
+		if (!_.isEmpty(filters)) {
+			return [...filters].find(node => node.label === label) || {};
+		}
+		return {};
+	};
+
+	/**
+	 * HandleSelection
+	 *
+	 * @desc remove item from filters applied and update tree
+	 * @param {object} node
+	 */
+	handleClearSection = node => {
+		let selectedV2, filtersV2, parentNode, selectedNodeFilters;
+		let { key, filters } = node;
+		selectedV2 = [...this.state.selectedV2];
+		// 1. find the filters
+		if (!_.isEmpty(filters)) {
+			selectedNodeFilters = filters
+				.filter(nodeItem => nodeItem.checked)
+				.map(node => {
+					return { ...node, checked: false };
+				});
+			// 1. copy state - stop mutation
+			filtersV2 = [...this.state.filtersV2];
+			// 2. find parent obj - recursive
+			parentNode = this.findParentNode(filtersV2, key);
+			if (!_.isEmpty(parentNode)) {
+				let { filters } = parentNode;
+				// 3. loop over selected nodes
+				selectedNodeFilters.forEach(node => {
+					let foundNode = this.findNode(filters, node.label);
+					if (!_.isEmpty(foundNode)) {
+						// 4. set check value
+						foundNode.checked = false;
+						// 5. increment highest parent count
+						--parentNode.selectedCount;
+						// 7. fn for handling the *selected showing* returns new state
+						selectedV2 = [...selectedV2].filter(node => node.id != foundNode.id);
+						// searchObj = this.buildSearchObj(selectedV2);
+					}
+				});
+				// 9. set state
+				this.setState({ filtersV2, selectedV2, isResultsLoading: true }, () => {
+					this.doSearchCall();
+				});
+			}
+		}
+	};
+
+	/**
+	 * Handle Filter event bubble for option click
+	 * within the filter panel
+	 *
+	 * @param {object} node
+	 * @param {string} parentKey
+	 * @param {boolean} checkValue
+	 */
+	handleInputChange = (node, parentKey, checkValue) => {
+		// 1. copy state - stop mutation
+		let filtersV2 = [...this.state.filtersV2];
+		// 2. find parent obj - recursive
+		let parentNode = this.findParentNode(filtersV2, parentKey);
+		if (!_.isEmpty(parentNode)) {
+			// deconstruct important to take alias incase key needs overwritten for query string
+			let { filters, key, alias } = parentNode;
+			// 3. find checkbox obj
+			let foundNode = this.findNode(filters, node.label);
+			if (!_.isEmpty(foundNode)) {
+				// 4. set check value
+				foundNode.checked = checkValue;
+				// 5. increment highest parent count
+				checkValue ? ++parentNode.selectedCount : --parentNode.selectedCount;
+				// 6. set new object for handle selected *showing*
+				let selectedNode = {
+					parentKey: alias || key,
+					id: foundNode.id,
+					label: foundNode.label,
+				};
+				// 7. fn for handling the *selected showing* returns new state
+				const selectedV2 = this.handleSelected(selectedNode, checkValue);
+				// 8. set state
+				this.setState({ filtersV2, selectedV2, isResultsLoading: true }, () => {
+					// callback once state has updated
+					this.doSearchCall();
+				});
+			}
+		}
+	};
+
+	/**
+	 * HandleToggle V2
+	 *
+	 * @desc Handles filters menu up and down toggle V2
+	 * @param {object} node
+	 */
+	handleToggle = node => {
+		let parentNode;
+		if (!_.isEmpty(node)) {
+			// 1. copy state - stop mutation
+			let filtersV2 = [...this.state.filtersV2];
+			// 2. find parent obj - recursive
+			let { key } = node;
+			// 3. return parent node of toggled
+			parentNode = this.findParentNode(filtersV2, key);
+			if (!_.isEmpty(parentNode)) {
+				parentNode.closed = !parentNode.closed;
+				this.setState({ filtersV2 });
+			}
+		}
 	};
 
 	toggleDrawer = () => {
@@ -616,32 +925,26 @@ class SearchPage extends React.Component {
 	};
 
 	render() {
-		const {
+		let {
 			summary,
-			searchString,
+			search,
 			datasetData,
 			toolData,
 			projectData,
 			paperData,
 			personData,
 			courseData,
+			collectionData,
 			filterOptions,
 			allFilters,
 			userState,
 			isLoading,
 			isResultsLoading,
 
-			publishersSelected,
-			licensesSelected,
-			geoCoverageSelected,
-			sampleAvailabilitySelected,
-			keywordsSelected,
-			phenotypesSelected,
-
-			languageSelected,
+			toolProgrammingLanguageSelected,
 			toolTopicsSelected,
 			toolCategoriesSelected,
-			featuresSelected,
+			toolFeaturesSelected,
 
 			projectTopicsSelected,
 			projectFeaturesSelected,
@@ -661,12 +964,16 @@ class SearchPage extends React.Component {
 			courseFrameworkSelected,
 			coursePrioritySelected,
 
+			collectionKeywordsSelected,
+			collectionPublisherSelected,
+
 			datasetIndex,
 			toolIndex,
 			projectIndex,
 			paperIndex,
 			personIndex,
 			courseIndex,
+			collectionIndex,
 
 			datasetSort,
 			toolSort,
@@ -674,12 +981,15 @@ class SearchPage extends React.Component {
 			paperSort,
 			personSort,
 
+			filtersV2,
+			selectedV2,
+
 			showDrawer,
 			showModal,
 			context,
-		} = this.state;
 
-		var { key } = this.state;
+			key,
+		} = this.state;
 
 		if (isLoading) {
 			return (
@@ -688,14 +998,17 @@ class SearchPage extends React.Component {
 				</Container>
 			);
 		}
-
-		var datasetCount = summary.datasets || 0;
-		var toolCount = summary.tools || 0;
-		var projectCount = summary.projects || 0;
-		var paperCount = summary.papers || 0;
-		var personCount = summary.persons || 0;
-		var courseCount = summary.courses || 0;
-
+		// destructure counts from summary
+		let {
+			datasetCount = 0,
+			toolCount = 0,
+			projectCount = 0,
+			paperCount = 0,
+			personCount = 0,
+			courseCount = 0,
+			collectionCount = 0,
+		} = summary;
+		// clean needed here at later date
 		if (key === '' || typeof key === 'undefined') {
 			if (datasetCount > 0) {
 				key = 'Datasets';
@@ -709,18 +1022,22 @@ class SearchPage extends React.Component {
 				key = 'People';
 			} else if (courseCount > 0) {
 				key = 'Course';
+			} else if (collectionCount > 0) {
+				key = 'Collections';
 			} else {
 				key = 'Datasets';
 			}
 		}
-
-		var showSort = true;
+		// default show sort
+		let showSort = true;
+		// clean needed here at later date
 		if ((key === '' || key === 'Datasets') && datasetCount === 0) showSort = false;
 		if (key === 'Tools' && toolCount === 0) showSort = false;
 		if (key === 'Projects' && projectCount === 0) showSort = false;
 		if (key === 'Papers' && paperCount === 0) showSort = false;
 		if (key === 'People' && personCount === 0) showSort = false;
-		if (key === 'Courses') showSort = false;
+		if (key === 'Courses' && courseCount === 0) showSort = false;
+		if (key === 'Collections') showSort = false;
 
 		let datasetPaginationItems = [];
 		let toolPaginationItems = [];
@@ -728,63 +1045,81 @@ class SearchPage extends React.Component {
 		let paperPaginationItems = [];
 		let personPaginationItems = [];
 		let coursePaginationItems = [];
-		var maxResult = 40;
-		for (let i = 1; i <= Math.ceil(datasetCount / maxResult); i++) {
+		let collectionPaginationItems = [];
+		let maxResult = 40;
+		// Dataset pagination
+		for (let i = 1; i <= Math.max(Math.ceil(datasetCount / maxResult), 1); i++) {
 			datasetPaginationItems.push(
 				<Pagination.Item
 					key={i}
 					active={i === datasetIndex / maxResult + 1}
-					onClick={() => this.handlePagination('dataset', (i - 1) * maxResult)}>
+					onClick={() => this.handlePagination(typeMapper.Datasets, (i - 1) * maxResult)}>
 					{i}
 				</Pagination.Item>
 			);
 		}
+		// Tool Pagination
 		for (let i = 1; i <= Math.ceil(toolCount / maxResult); i++) {
 			toolPaginationItems.push(
 				<Pagination.Item
 					key={i}
 					active={i === toolIndex / maxResult + 1}
-					onClick={() => this.handlePagination('tool', (i - 1) * maxResult)}>
+					onClick={() => this.handlePagination(typeMapper.Tools, (i - 1) * maxResult)}>
 					{i}
 				</Pagination.Item>
 			);
 		}
+		// Project Pagination
 		for (let i = 1; i <= Math.ceil(projectCount / maxResult); i++) {
 			projectPaginationItems.push(
 				<Pagination.Item
 					key={i}
 					active={i === projectIndex / maxResult + 1}
-					onClick={() => this.handlePagination('project', (i - 1) * maxResult)}>
+					onClick={() => this.handlePagination(typeMapper.Projects, (i - 1) * maxResult)}>
 					{i}
 				</Pagination.Item>
 			);
 		}
+		// Paper Pagination
 		for (let i = 1; i <= Math.ceil(paperCount / maxResult); i++) {
 			paperPaginationItems.push(
 				<Pagination.Item
 					key={i}
 					active={i === paperIndex / maxResult + 1}
-					onClick={() => this.handlePagination('paper', (i - 1) * maxResult)}>
+					onClick={() => this.handlePagination(typeMapper.Papers, (i - 1) * maxResult)}>
 					{i}
 				</Pagination.Item>
 			);
 		}
+		// Person Pagination
 		for (let i = 1; i <= Math.ceil(personCount / maxResult); i++) {
 			personPaginationItems.push(
 				<Pagination.Item
 					key={i}
 					active={i === personIndex / maxResult + 1}
-					onClick={() => this.handlePagination('person', (i - 1) * maxResult)}>
+					onClick={() => this.handlePagination(typeMapper.People, (i - 1) * maxResult)}>
 					{i}
 				</Pagination.Item>
 			);
 		}
+		// Course Pagination
 		for (let i = 1; i <= Math.ceil(courseCount / maxResult); i++) {
 			coursePaginationItems.push(
 				<Pagination.Item
 					key={i}
 					active={i === courseIndex / maxResult + 1}
-					onClick={() => this.handlePagination('course', (i - 1) * maxResult)}>
+					onClick={() => this.handlePagination(typeMapper.Courses, (i - 1) * maxResult)}>
+					{i}
+				</Pagination.Item>
+			);
+		}
+		// Collection Pagination
+		for (let i = 1; i <= Math.ceil(collectionCount / maxResult); i++) {
+			collectionPaginationItems.push(
+				<Pagination.Item
+					key={i}
+					active={i === collectionIndex / maxResult + 1}
+					onClick={() => this.handlePagination(typeMapper.Collections, (i - 1) * maxResult)}>
 					{i}
 				</Pagination.Item>
 			);
@@ -795,7 +1130,7 @@ class SearchPage extends React.Component {
 				<div>
 					<SearchBar
 						ref={this.searchBar}
-						searchString={searchString}
+						search={search}
 						doSearchMethod={this.doSearch}
 						onClearMethod={this.doClear}
 						doUpdateSearchString={this.updateSearchString}
@@ -809,10 +1144,11 @@ class SearchPage extends React.Component {
 								<Tab eventKey='Datasets' title={'Datasets (' + datasetCount + ')'} />
 								<Tab eventKey='Tools' title={'Tools (' + toolCount + ')'} />
 								<Tab eventKey='Projects' title={'Projects (' + projectCount + ')'} />
+								<Tab eventKey='Collections' title={'Collections (' + collectionCount + ')'} />
 								{/* <Tab eventKey='Courses' title={'Courses (' + courseCount + ')'} />
 								<Tab eventKey='Papers' title={'Papers (' + paperCount + ')'} /> */}
 								<Tab eventKey='People' title={'People (' + personCount + ')'}>
-									{personCount <= 0 && !isResultsLoading ? <NoResults type='profiles' searchString={searchString} /> : ''}
+									{personCount <= 0 && !isResultsLoading ? <NoResults type='profiles' search={search} /> : ''}
 								</Tab>
 							</Tabs>
 						</div>
@@ -821,155 +1157,26 @@ class SearchPage extends React.Component {
 					<Container>
 						<Row>
 							{key !== 'People' ? (
-								<Col sm={12} md={12} lg={3} className='mt-4'>
+								<Col sm={12} md={12} lg={3} className='mt-4 mb-5'>
 									{key === 'Datasets' ? (
-										<>
+										<Fragment>
 											<div className='filterHolder'>
-												{publishersSelected.length !== 0 ||
-												licensesSelected.length !== 0 ||
-												keywordsSelected.length !== 0 ||
-												geoCoverageSelected.length !== 0 ||
-												sampleAvailabilitySelected.length !== 0 ||
-												phenotypesSelected.length !== 0 ? (
-													<div className='filterCard mb-2'>
-														<Row>
-															<Col className='mb-2'>
-																<div className='inlineBlock'>
-																	<div className='gray500-13'>Showing:</div>
-																</div>
-																<div className='floatRight'>
-																	<div className='purple-13 pointer' onClick={() => this.clearFilter('All')}>
-																		Clear all
-																	</div>
-																</div>
-															</Col>
-														</Row>
-
-														{!publishersSelected || publishersSelected.length <= 0
-															? ''
-															: publishersSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'publishersSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!licensesSelected || licensesSelected.length <= 0
-															? ''
-															: licensesSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'licensesSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!keywordsSelected || keywordsSelected.length <= 0
-															? ''
-															: keywordsSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'keywordsSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!geoCoverageSelected || geoCoverageSelected.length <= 0
-															? ''
-															: geoCoverageSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'geoCoverageSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!sampleAvailabilitySelected || sampleAvailabilitySelected.length <= 0
-															? ''
-															: sampleAvailabilitySelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'sampleAvailabilitySelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!phenotypesSelected || phenotypesSelected.length <= 0
-															? ''
-															: phenotypesSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'phenotypesSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-													</div>
-												) : (
-													''
+												{selectedV2.length > 0 && (
+													<FilterSelection
+														selectedCount={selectedV2.length}
+														selectedItems={selectedV2}
+														onHandleClearSelection={this.handleClearSelection}
+														onHandelClearAll={this.handleClearAll}
+													/>
 												)}
-											
-												<Filters
-													data={filterOptions.datasetFeaturesFilterOptions}
-													allFilters={allFilters.datasetFeatureFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={keywordsSelected}
-													title='Keywords'
+												<Filter
+													data={filtersV2}
+													onHandleInputChange={this.handleInputChange}
+													onHandleClearSection={this.handleClearSection}
+													onHandleToggle={this.handleToggle}
 												/>
-												<Filters
-													data={filterOptions.geographicCoverageFilterOptions}
-													allFilters={allFilters.geographicCoverageFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={geoCoverageSelected}
-													title='Geographic coverage'
-												/>
-												{/* <Filters
-													data={filterOptions.sampleFilterOptions}
-													allFilters={allFilters.sampleFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={sampleAvailabilitySelected}
-													title='Physical sample availability'
-												/>
-												<Filters
-													data={filterOptions.phenotypesOptions}
-													allFilters={allFilters.phenotypesFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={phenotypesSelected}
-													title='Phenotype'
-												/> */}
-												{/* <Filters data={filterOptions.ageBandFilterOptions} updateOnFilter={this.updateOnFilter} selected={ageBandsSelected} title="Age Bands" /> */}
 											</div>
-										</>
+										</Fragment>
 									) : (
 										''
 									)}
@@ -978,8 +1185,8 @@ class SearchPage extends React.Component {
 										<>
 											<div className='filterHolder'>
 												{toolCategoriesSelected.length !== 0 ||
-												languageSelected.length !== 0 ||
-												featuresSelected.length !== 0 ||
+												toolProgrammingLanguageSelected.length !== 0 ||
+												toolFeaturesSelected.length !== 0 ||
 												toolTopicsSelected.length !== 0 ? (
 													<div className='filterCard mb-2'>
 														<Row>
@@ -1010,30 +1217,30 @@ class SearchPage extends React.Component {
 																	);
 															  })}
 
-														{!languageSelected || languageSelected.length <= 0
+														{!toolProgrammingLanguageSelected || toolProgrammingLanguageSelected.length <= 0
 															? ''
-															: languageSelected.map(selected => {
+															: toolProgrammingLanguageSelected.map(selected => {
 																	return (
 																		<div className='badge-tag'>
 																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
 																			<span
 																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'languageSelected')}>
+																				onClick={() => this.clearFilter(selected, 'toolProgrammingLanguageSelected')}>
 																				X
 																			</span>
 																		</div>
 																	);
 															  })}
 
-														{!featuresSelected || featuresSelected.length <= 0
+														{!toolFeaturesSelected || toolFeaturesSelected.length <= 0
 															? ''
-															: featuresSelected.map(selected => {
+															: toolFeaturesSelected.map(selected => {
 																	return (
 																		<div className='badge-tag'>
 																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
 																			<span
 																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'featuresSelected')}>
+																				onClick={() => this.clearFilter(selected, 'toolFeaturesSelected')}>
 																				X
 																			</span>
 																		</div>
@@ -1069,14 +1276,14 @@ class SearchPage extends React.Component {
 													data={filterOptions.programmingLanguageFilterOptions}
 													allFilters={allFilters.toolLanguageFilter}
 													updateOnFilter={this.updateOnFilter}
-													selected={languageSelected}
+													selected={toolProgrammingLanguageSelected}
 													title='Programming language'
 												/>
 												<Filters
 													data={filterOptions.featuresFilterOptions}
 													allFilters={allFilters.toolFeatureFilter}
 													updateOnFilter={this.updateOnFilter}
-													selected={featuresSelected}
+													selected={toolFeaturesSelected}
 													title='Keywords'
 												/>
 												<Filters
@@ -1180,6 +1387,86 @@ class SearchPage extends React.Component {
 													updateOnFilter={this.updateOnFilter}
 													selected={projectTopicsSelected}
 													title='Domain'
+												/>
+											</div>
+										</>
+									) : (
+										''
+									)}
+
+									{key === 'Collections' ? (
+										<>
+											<div className='filterHolder'>
+												{collectionKeywordsSelected.length !== 0 || collectionPublisherSelected.length !== 0 ? (
+													<div className='filterCard mb-2'>
+														<Row>
+															<Col className='mb-2'>
+																<div className='inlineBlock'>
+																	<div className='gray500-13'>Showing:</div>
+																</div>
+																<div className='floatRight'>
+																	<div className='purple-13 pointer' onClick={() => this.clearFilter('All')}>
+																		Clear all
+																	</div>
+																</div>
+															</Col>
+														</Row>
+
+														{!collectionKeywordsSelected || collectionKeywordsSelected.length <= 0
+															? ''
+															: collectionKeywordsSelected.map(selected => {
+																	return (
+																		<div className='badge-tag'>
+																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
+																			<span
+																				className='gray800-14-opacity pointer'
+																				onClick={() => this.clearFilter(selected, 'collectionKeywordsSelected')}>
+																				X
+																			</span>
+																		</div>
+																	);
+															  })}
+
+														{!collectionPublisherSelected || collectionPublisherSelected.length <= 0
+															? ''
+															: collectionPublisherSelected.map(selected => {
+																	if (!_.isNil(allFilters.collectionPublisherFilter)) {
+																		const collectionPublisherFilters = Object.values(allFilters.collectionPublisherFilter);
+
+																		return collectionPublisherFilters.map(filter => {
+																			if (selected === filter.result.toString()) {
+																				return (
+																					<div className='badge-tag'>
+																						{filter.value.substr(0, 80)} {filter.value.length > 80 ? '...' : ''}{' '}
+																						<span
+																							className='gray800-14-opacity pointer'
+																							onClick={() => this.clearFilter(selected, 'collectionPublisherSelected')}>
+																							X
+																						</span>
+																					</div>
+																				);
+																			}
+																		});
+																	}
+															  })}
+													</div>
+												) : (
+													''
+												)}
+												<Filters
+													data={filterOptions.collectionKeywordsFilterOptions}
+													allFilters={allFilters.collectionKeywordFilter}
+													updateOnFilter={this.updateOnFilter}
+													selected={collectionKeywordsSelected}
+													title='Keywords'
+												/>
+												<Filters
+													data={filterOptions.collectionPublisherFilterOptions}
+													allFilters={allFilters.collectionPublisherFilter}
+													updateOnFilter={this.updateOnFilter}
+													selected={collectionPublisherSelected}
+													title='Publisher'
+													isKeyValue={true}
 												/>
 											</div>
 										</>
@@ -1519,7 +1806,7 @@ class SearchPage extends React.Component {
 							)}
 
 							{!isResultsLoading ? (
-								<Col sm={12} md={12} lg={9} className='mt-4'>
+								<Col sm={12} md={12} lg={9} className='mt-4 mb-5'>
 									{!showSort ? (
 										''
 									) : (
@@ -1529,21 +1816,22 @@ class SearchPage extends React.Component {
 													<Dropdown.Toggle variant='info' id='dropdown-menu-align-right' className='gray800-14'>
 														{(() => {
 															if (key === 'Datasets') {
-																if (datasetSort === 'popularity') return 'Sort by popularity';
+																if (datasetSort === 'popularity') return 'Number of views (highest to lowest)';
 																else if (datasetSort === 'metadata') return 'Sort by metadata quality';
-																else return 'Sort by relevance';
+																else return 'Match to search terms (closest first)';
 															} else if (key === 'Tools') {
-																if (toolSort === 'popularity') return 'Sort by popularity';
-																else return 'Sort by relevance';
+																if (toolSort === 'popularity') return 'Number of views (highest to lowest)';
+																else return 'Match to search terms (closest first)';
 															} else if (key === 'Projects') {
-																if (projectSort === 'popularity') return 'Sort by popularity';
-																else return 'Sort by relevance';
+																if (projectSort === 'popularity') return 'Number of views (highest to lowest)';
+																else return 'Match to search terms (closest first)';
 															} else if (key === 'Papers') {
-																if (paperSort === 'popularity') return 'Sort by popularity';
-																else return 'Sort by relevance';
+																if (paperSort === 'popularity') return 'Number of views (highest to lowest)';
+																else return 'Match to search terms (closest first)';
 															} else if (key === 'People') {
-																if (personSort === 'popularity') return 'Sort by popularity';
-																else return 'Sort by relevance';
+																if (personSort === 'popularity') return 'Number of views (highest to lowest)';
+																else if (personSort === 'latest') return 'Latest (recently updated first)';
+																else return 'Match to search terms (closest first)';
 															}
 														})()}
 														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -1551,14 +1839,21 @@ class SearchPage extends React.Component {
 
 													<Dropdown.Menu>
 														<Dropdown.Item eventKey='relevance' className='gray800-14 '>
-															Sort by relevance
+															Match to search terms (closest first)
 														</Dropdown.Item>
 														<Dropdown.Item eventKey='popularity' className='gray800-14'>
-															Sort by popularity
+															Number of views (highest to lowest)
 														</Dropdown.Item>
 														{key === 'Datasets' ? (
 															<Dropdown.Item eventKey='metadata' className='gray800-14'>
 																Sort by metadata quality
+															</Dropdown.Item>
+														) : (
+															''
+														)}
+														{key === 'People' ? (
+															<Dropdown.Item eventKey='latest' className='gray800-14'>
+																Latest (recently updated first)
 															</Dropdown.Item>
 														) : (
 															''
@@ -1569,15 +1864,11 @@ class SearchPage extends React.Component {
 										</Row>
 									)}
 
-									{this.state.showAboutPage === true ? (
-											<AboutPage />
-										) : (
-											''
-										)}	
+									{this.state.showAboutPage === true ? <AboutPage /> : ''}
 
 									{this.state.showAboutPage === false && key === 'Datasets' ? (
 										datasetCount <= 0 && !isResultsLoading ? (
-											<NoResults type='datasets' searchString={searchString} />
+											<NoResults type='datasets' search={search} />
 										) : (
 											datasetData.map(dataset => {
 												let datasetPublisher;
@@ -1611,8 +1902,8 @@ class SearchPage extends React.Component {
 									)}
 
 									{key === 'Tools' ? (
-										toolCount <= 0 && !isResultsLoading ? (
-											<NoResults type='tools' searchString={searchString} />
+										toolCount <= 0 ? (
+											<NoResults type='tools' search={search} />
 										) : (
 											toolData.map(tool => {
 												return (
@@ -1631,8 +1922,8 @@ class SearchPage extends React.Component {
 									)}
 
 									{key === 'Projects' ? (
-										projectCount <= 0 && !isResultsLoading ? (
-											<NoResults type='projects' searchString={searchString} />
+										projectCount <= 0 ? (
+											<NoResults type='projects' search={search} />
 										) : (
 											projectData.map(project => {
 												return (
@@ -1650,9 +1941,27 @@ class SearchPage extends React.Component {
 										''
 									)}
 
+									{key === 'Collections' ? (
+										collectionCount <= 0 ? (
+											<NoResults type='collections' search={search} />
+										) : (
+											<Row className='mt-5'>
+												{collectionData.map(collection => {
+													return (
+														<Col sm={12} md={12} lg={6} style={{ 'text-align': '-webkit-center' }}>
+															<CollectionCard key={collection.id} data={collection} />
+														</Col>
+													);
+												})}
+											</Row>
+										)
+									) : (
+										''
+									)}
+
 									{key === 'Papers' ? (
-										paperCount <= 0 && !isResultsLoading ? (
-											<NoResults type='papers' searchString={searchString} />
+										paperCount <= 0 ? (
+											<NoResults type='papers' search={search} />
 										) : (
 											paperData.map(paper => {
 												return (
@@ -1687,7 +1996,7 @@ class SearchPage extends React.Component {
 									{(() => {
 										if (key === 'Courses') {
 											let courseRender = [];
-											if (courseCount <= 0 && !isResultsLoading) return <NoResults type='courses' searchString={searchString} />;
+											if (courseCount <= 0) return <NoResults type='courses' search={search} />;
 											else {
 												let currentHeader = '';
 												courseData.map(course => {
@@ -1729,10 +2038,7 @@ class SearchPage extends React.Component {
 											return <>{courseRender}</>;
 										}
 									})()}
-
-
-
-
+									{/* PAGINATION */}
 									<div className='text-center'>
 										{key === 'Datasets' && datasetCount > maxResult ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
 
@@ -1745,27 +2051,27 @@ class SearchPage extends React.Component {
 										{key === 'People' && personCount > maxResult ? <Pagination>{personPaginationItems}</Pagination> : ''}
 
 										{key === 'Courses' && courseCount > maxResult ? <Pagination>{coursePaginationItems}</Pagination> : ''}
+
+										{key === 'Collections' && collectionCount > maxResult ? <Pagination>{collectionPaginationItems}</Pagination> : ''}
 									</div>
 									<Row className='mt-3'>
 										<Col className='text-center'>
-										<Button
-											className='addButton'
-											onClick={e => {
-											window.location.href = `/search?search=&tab=Datasets`;
-										}}>
-										SEARCH DATASETS
-										</Button>
-							</Col>
-						</Row>
+											<Button
+												className='addButton'
+												onClick={e => {
+													window.location.href = `/search?search=&tab=Datasets`;
+												}}>
+												SEARCH DATASETS
+											</Button>
+										</Col>
+									</Row>
 								</Col>
-								
 							) : (
-								<Col sm={12} md={12} lg={9}>
+								<Col style={{ marginTop: '60px' }} sm={12} md={12} lg={9}>
 									<Loading />
 								</Col>
 							)}
 						</Row>
-						
 					</Container>
 					<NotificationContainer />
 					<SideDrawer open={showDrawer} closed={this.toggleDrawer}>

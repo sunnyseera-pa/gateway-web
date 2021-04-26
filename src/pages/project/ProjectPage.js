@@ -88,10 +88,10 @@ export const ProjectDetail = props => {
 				} else {
 					const localProjectData = res.data.data[0];
 					document.title = localProjectData.name.trim();
-					
+
 					let counter = !localProjectData.counter ? 1 : localProjectData.counter + 1;
 					updateCounter(props.match.params.projectID, counter);
-					
+
 					if (!_.isUndefined(localProjectData.relatedObjects)) {
 						let localAdditionalObjInfo = await getAdditionalObjectInfo(localProjectData.relatedObjects);
 						await populateRelatedObjects(localProjectData, localAdditionalObjInfo);
@@ -106,7 +106,7 @@ export const ProjectDetail = props => {
 			});
 	};
 
-	const popluateCollections = (localProjectData) => {
+	const popluateCollections = localProjectData => {
 		setIsLoading(true);
 		axios.get(baseURL + '/api/v1/collections/entityid/' + localProjectData.id).then(res => {
 			setCollections(res.data.data || []);
@@ -284,7 +284,7 @@ export const ProjectDetail = props => {
 								<Row className='margin-top-16'>
 									<Col xs={12}>
 										<span className='badge-project'>
-											<SVGIcon name='newestprojecticon' fill={'#ffffff'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
+											<SVGIcon name='newestprojecticon' fill={'#472505'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 											<span>Project</span>
 										</span>
 
@@ -320,7 +320,7 @@ export const ProjectDetail = props => {
 														<Col sm={12}>Description</Col>
 													</Row>
 													<Row className='mt-3'>
-														<Col sm={12} className='gray800-14'>
+														<Col sm={12} className='gray800-14 hdruk-section-body'>
 															<ReactMarkdown source={projectData.description} />
 														</Col>
 													</Row>
@@ -336,7 +336,7 @@ export const ProjectDetail = props => {
 															<Col sm={12}>Results/Insights</Col>
 														</Row>
 														<Row className='mt-3'>
-															<Col sm={12} className='gray800-14'>
+															<Col sm={12} className='gray800-14 hdruk-section-body'>
 																<ReactMarkdown source={projectData.resultsInsights} />
 															</Col>
 														</Row>
@@ -358,7 +358,7 @@ export const ProjectDetail = props => {
 															URL
 														</Col>
 														<Col sm={10} className='gray800-14'>
-															<a href={projectData.link} rel='noopener noreferrer' target='_blank' className='purple-14'>
+															<a href={projectData.link} rel='noopener noreferrer' target='_blank' className='purple-14 text-break'>
 																{projectData.link}
 															</a>
 														</Col>
@@ -434,7 +434,7 @@ export const ProjectDetail = props => {
 										</Row>
 
 										<Row className='mt-2'>
-											<Col sm={12}>
+											<Col sm={12} className='mb-5'>
 												<div className='rectangle'>
 													<Row className='gray800-14-bold'>
 														<Col sm={12}>Collaborators</Col>
@@ -484,7 +484,7 @@ export const ProjectDetail = props => {
 
 												<Row>
 													{collections.map(collection => (
-														<Col sm={12} md={12} lg={6} style={{ 'text-align': '-webkit-center' }}>
+														<Col sm={12} md={12} lg={6} className='flexCenter'>
 															<CollectionCard data={collection} />
 														</Col>
 													))}

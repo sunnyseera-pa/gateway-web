@@ -6,6 +6,7 @@
 }
 
 .collection-rectangle {
+	word-break: break-word;
 	width: 100%;
 	box-shadow: 1px 1px 3px 0 #00000017;
 	background-color: $white;
@@ -87,4 +88,8 @@
 	border: solid 2px $gray-300;
 	background-color: #ffffff;
 	border-radius: 50%;
+}
+
+.underlined:hover {
+	text-decoration: underline;
 }

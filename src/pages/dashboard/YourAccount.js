@@ -8,7 +8,8 @@ import queryString from 'query-string';
 import Loading from '../commonComponents/Loading';
 import _ from 'lodash';
 import './Dashboard.scss';
-import SVGIcon from '../../images/SVGIcon'; 
+import SVGIcon from '../../images/SVGIcon';
+import DevelopmentAndImprovementBanner from '../commonComponents/DevelopmentAndImprovementBanner';
 import {useTranslation} from "react-i18next";
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -79,7 +80,7 @@ class YourAccount extends React.Component {
 				});
 			})
 			.catch(err => {
-				console.log(err);
+				console.error(err.message);
 			});
 	}
 
@@ -183,8 +184,9 @@ const YourAccountForm = props => {
 	let showOrcid = props.showOrcid;
 
 	let profileComplete = props.profileComplete;
-	let initialEmailNotifications = profileComplete ? props.data.emailNotifications || false : true;
 	let initialTerms = profileComplete ? props.data.terms || false : false;
+	let optInFeedback = props.optInFeedback || false;
+	let optInNews = props.optInNews || false;
 
 	//tool tips for eyes
 	const mandatoryShowFieldMsg = 'This will be visible to others. You cannot change this.';
@@ -262,7 +264,8 @@ const YourAccountForm = props => {
 			bio: props.data.bio || '',
 			link: props.data.link || '',
 			orcid: props.data.orcid || '',
-			emailNotifications: initialEmailNotifications || false,
+			feedback: optInFeedback || false,
+			news: optInNews || false,
 			terms: initialTerms || false,
 			sector: props.data.sector || '',
 			organisation: props.data.organisation || '',
@@ -323,7 +326,8 @@ const YourAccountForm = props => {
 			) : (
 				''
 			)}
-			<Row className='pixelGapBottom'>
+			<DevelopmentAndImprovementBanner />
+			<Row className='pixelGapBottom margin-top-24'>
 				<Col>
 					<div className='rectangle pad-bottom-2'>
 						<p className='black-20 mb-0'>Your details</p>
@@ -337,7 +341,7 @@ const YourAccountForm = props => {
 			<Form onSubmit={formik.handleSubmit}>
 				<Row>
 					<Col>
-						<div className='rectangle'>
+						<div className='rectangle pb-1'>
 							<Form.Group className='pb-2'>
 								<Form.Label className='gray800-14'>First name</Form.Label>
 								<Row>
@@ -350,6 +354,7 @@ const YourAccountForm = props => {
 											onChange={formik.handleChange}
 											value={formik.values.firstname}
 											onBlur={formik.handleBlur}
+											data-test-id='user-account-first-name'
 										/>
 									</Col>
 									<Col
@@ -370,7 +375,9 @@ const YourAccountForm = props => {
 								</Row>
 
 								{formik.touched.firstname && formik.errors.firstname ? (
-									<div className='errorMessages'>{formik.errors.firstname}</div>
+									<div className='errorMessages' data-test-id='user-account-first-name-validation'>
+										{formik.errors.firstname}
+									</div>
 								) : null}
 							</Form.Group>
 
@@ -386,6 +393,7 @@ const YourAccountForm = props => {
 											onChange={formik.handleChange}
 											value={formik.values.lastname}
 											onBlur={formik.handleBlur}
+											data-test-id='user-account-last-name'
 										/>
 									</Col>
 									<Col
@@ -406,7 +414,11 @@ const YourAccountForm = props => {
 										</button>
 									</Col>
 								</Row>
-								{formik.touched.lastname && formik.errors.lastname ? <div className='errorMessages'>{formik.errors.lastname}</div> : null}
+								{formik.touched.lastname && formik.errors.lastname ? (
+									<div className='errorMessages' data-test-id='user-account-last-name-validation'>
+										{formik.errors.lastname}
+									</div>
+								) : null}
 							</Form.Group>
 
 							<Form.Group className='pb-2'>
@@ -421,6 +433,7 @@ const YourAccountForm = props => {
 											onChange={formik.handleChange}
 											value={formik.values.email}
 											onBlur={formik.handleBlur}
+											data-test-id='user-account-email-address'
 										/>
 									</Col>
 									<Col
@@ -439,7 +452,11 @@ const YourAccountForm = props => {
 										</button>
 									</Col>
 								</Row>
-								{formik.touched.email && formik.errors.email ? <div className='errorMessages'>{formik.errors.email}</div> : null}
+								{formik.touched.email && formik.errors.email ? (
+									<div className='errorMessages' data-test-id='user-account-email-address-validation'>
+										{formik.errors.email}
+									</div>
+								) : null}
 							</Form.Group>
 
 							<Form.Group className='pb-2 form-group'>
@@ -473,9 +490,14 @@ const YourAccountForm = props => {
 											value={formik.values.sector}
 											onBlur={() => formik.setFieldTouched('sector', true)}
 											touched={formik.touched.sector}
-											onSelect={selected => handleSectorSelect(selected)}>
+											onSelect={selected => handleSectorSelect(selected)}
+											id='user-account-sector'>
 											 {t('industrySectors',{ returnObjects: true }).map((sec, i) => (
-												<Dropdown.Item className='gray800-14 width-100' key={sec} eventKey={sec}>
+												<Dropdown.Item
+													className='gray800-14 width-100'
+													key={sec}
+													eventKey={sec}
+													data-test-id={`user-account-sector-option-${i}`}>
 													{sec}
 												</Dropdown.Item>
 											))}
@@ -507,7 +529,9 @@ const YourAccountForm = props => {
 									</Col>
 								</Row>
 								{formik.touched.sector && formik.errors.sector ? (
-									<div className='errorMessages margin-top-8'>{formik.errors.sector}</div>
+									<div className='errorMessages margin-top-8' data-test-id='user-account-sector-validation'>
+										{formik.errors.sector}
+									</div>
 								) : null}
 							</Form.Group>
 
@@ -518,7 +542,7 @@ const YourAccountForm = props => {
 									<span className='gray700-13'>Your affiliation or company, if applicable</span>
 									<Form.Group>
 										<Row>
-											<Col sm={11} lg={11}>
+											<Col sm={11} lg={11} data-test-id='user-account-organisation'>
 												<Typeahead
 													id='organisation'
 													name='organisation'
@@ -570,7 +594,9 @@ const YourAccountForm = props => {
 										formik.values.organisation === '' &&
 										formik.errors.organisation &&
 										typeof formik.errors.organisation !== 'undefined' ? (
-											<div className='errorMessages'>{formik.errors.organisation}</div>
+											<div className='errorMessages' data-test-id='user-account-organisation-validation'>
+												{formik.errors.organisation}
+											</div>
 										) : (
 											''
 										)}
@@ -606,8 +632,13 @@ const YourAccountForm = props => {
 											value={formik.values.bio}
 											onBlur={formik.handleBlur}
 											onKeyUp={bioCount}
+											data-test-id='user-account-bio'
 										/>
-										{formik.touched.bio && formik.errors.bio ? <div className='errorMessages'>{formik.errors.bio}</div> : null}
+										{formik.touched.bio && formik.errors.bio ? (
+											<div className='errorMessages' data-test-id='user-account-bio-validation'>
+												{formik.errors.bio}
+											</div>
+										) : null}
 									</Col>
 									<Col sm={1} lg={1} className='eyeColumn' onMouseEnter={() => setBioHover(true)} onMouseLeave={() => setBioHover(false)}>
 										{inBioHover && (
@@ -635,7 +666,7 @@ const YourAccountForm = props => {
 								<Form.Label className='gray800-14'>Domain (optional)</Form.Label>
 								<br />
 								<Row>
-									<Col sm={11} lg={11}>
+									<Col sm={11} lg={11} data-test-id='user-account-domain'>
 										<Typeahead
 											id='tags.topics'
 											labelKey='topics'
@@ -694,6 +725,7 @@ const YourAccountForm = props => {
 											onChange={formik.handleChange}
 											value={formik.values.link}
 											onBlur={formik.handleBlur}
+											data-test-id='user-account-link'
 										/>
 									</Col>
 									<Col sm={1} lg={1} className='eyeColumn' onMouseEnter={() => setLinkHover(true)} onMouseLeave={() => setLinkHover(false)}>
@@ -732,6 +764,7 @@ const YourAccountForm = props => {
 											onChange={formik.handleChange}
 											value={formik.values.orcid}
 											onBlur={formik.handleBlur}
+											data-test-id='user-account-orcid'
 										/>
 									</Col>
 									<Col
@@ -760,22 +793,6 @@ const YourAccountForm = props => {
 									</Col>
 								</Row>
 							</Form.Group>
-							<Form.Group className='pb-2'>
-								<Row className='mt-2'>
-									<Form.Control
-										type='checkbox'
-										className='checker'
-										id='emailNotficiations'
-										name='emailNotifications'
-										// defaultChecked={profileComplete ? formik.values.emailNotifications : true}
-										checked={formik.values.emailNotifications}
-										onChange={formik.handleChange}
-									/>
-									<span className='gray800-14 ml-4 margin-top-2'>
-										I want to receive email notifications about activity relating to my account or content
-									</span>
-								</Row>
-							</Form.Group>
 
 							<Form.Group className='pb-2'>
 								<Row className='mt-2'>
@@ -787,30 +804,108 @@ const YourAccountForm = props => {
 										default={profileComplete ? formik.values.emailNotifications : false}
 										checked={formik.values.terms}
 										onChange={formik.handleChange}
+										data-test-id='user-account-terms-conditions'
 									/>
-								<span className="gray800-14 ml-4 margin-top-2">I agree to the ICODA <a href='https://icoda-research.org/terms-conditions/' target="_blank">Terms and Conditions</a></span>
+									<span className='gray800-14 ml-4 margin-top-2'>
+										I agree to the ICODA{' '}
+										<a
+											href='https://icoda-research.org/terms-conditions/'
+											target='_blank'
+											data-test-id='user-account-terms-conditions-link'>
+											Terms and Conditions
+										</a>
+									</span>
 								</Row>
 								<Row className='mt-2'>
 									{formik.touched.terms && formik.errors.terms ? (
-										<div className='errorMessages margin-left-16'>{formik.errors.terms}</div>
+										<div className='errorMessages margin-left-16' data-test-id='user-account-terms-conditions-validation'>
+											{formik.errors.terms}
+										</div>
 									) : null}
 								</Row>
 							</Form.Group>
 						</div>
+
+						<div className='rectangle margin-top-16'>
+							<Row className='mt-2 '>
+								<span className='divider-lines' />
+								<Col sm={12} className='gray800-14-bold'>
+									Keeping you updated
+								</Col>
+							</Row>
+							<Form.Group>
+								<Row className='mt-2 gray800-14'>
+									<span className='divider-lines' />
+									<Col md={1} sm={2} xs={3}>
+										Feedback
+									</Col>
+									<Col md={1} sm={2} xs={3}>
+										<Form.Control
+											type='checkbox'
+											className='checker'
+											id='feedback'
+											checked={formik.values.feedback}
+											onChange={formik.handleChange}
+											data-test-id='user-account-feedback'
+										/>
+									</Col>
+									<Col md={10} sm={8} xs={6} className='gray800-14 pl-0'>
+										I am happy to be contacted to share and give feedback on my experience with the Gateway
+									</Col>
+								</Row>
+							</Form.Group>
+
+							<Form.Group>
+								<Row className='mt-2 gray800-14'>
+									<span className='divider-lines' />
+									<Col md={1} sm={2} xs={3}>
+										News
+									</Col>
+									<Col md={1} sm={2} xs={3}>
+										<Form.Control
+											type='checkbox'
+											className='checker'
+											id='news'
+											checked={formik.values.news}
+											onChange={formik.handleChange}
+											data-test-id='user-account-news'
+										/>
+									</Col>
+									<Col md={10} sm={8} xs={6} className='gray800-14 pl-0'>
+										I want to receive news, updates and curated marketing from the Gateway&nbsp;&nbsp;&nbsp;&nbsp;
+										<a target='_blank' href='https://mailchi.mp/hdruk.ac.uk/explore-and-access-the-uks-health-research-datasets'>
+											Show me an example
+										</a>
+									</Col>
+								</Row>
+							</Form.Group>
+
+							<Row className='gray800-14 margin-top-2'>
+								<span className='divider-lines' />
+								<Col sm={12}>
+									As a user of the Gateway we take the privacy and security of your personal data seriously. Our{' '}
+									<a target='_blank' href='https://www.hdruk.ac.uk/infrastructure/gateway/privacy-policy/'>
+										privacy policy
+									</a>{' '}
+									aims to give you information on how Health Data Research UK collects and processes your personal data through your use of
+									this Gateway, including any data you may provide by emailing us.
+								</Col>
+							</Row>
+						</div>
 					</Col>
 				</Row>
-
-				<Row className='mt-3'>
+				<Row className='mt-3 mb-5'>
 					<Col className='text-right'>
 						<Button
 							variant='medium'
 							className='dark-14 mr-2'
 							onClick={e => {
 								window.location.href = `/person/${props.userdata.id}`;
-							}}>
+							}}
+							data-test-id='user-account-view-profile'>
 							View my profile
 						</Button>
-						<Button variant='primary' type='submit' className='addButton'>
+						<Button variant='primary' type='submit' className='addButton' data-test-id='user-account-save-changes'>
 							Save changes
 						</Button>
 					</Col>

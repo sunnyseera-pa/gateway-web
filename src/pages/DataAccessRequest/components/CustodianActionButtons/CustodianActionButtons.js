@@ -108,7 +108,7 @@ const CustodianActionButtons = ({
 			)}
 
 			{showSendUpdateRequest && (
-				<button className='button-secondary' onClick={e => onUpdateRequest(e)} value='SendUpdateRequest'>
+				<button className='button-secondary' onClick={e => onUpdateRequest(e)}>
 					Send update request
 				</button>
 			)}

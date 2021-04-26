@@ -43,7 +43,21 @@
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-5PHG2WK');</script>
+    })(window,document,'script','dataLayer','GTM-5PHG2WK');
+
+    setTimeout(function () {
+        var _gaq = [];
+        var a = document.getElementsByTagName('a');
+        var regex = /^https:///i;
+        for(var i = 0; i < a.length; i++){
+            if (a[i].href.indexOf(location.host) == -1 && a[i].href.match(regex)){
+                a[i].onclick = function(){
+                    _gaq.push(['_trackEvent', 'outgoing_links', this.href.replace(regex)]);
+                }
+            }
+        }
+    }, 5000);
+    </script>
     <!-- End Google Tag Manager -->
 </head>
 

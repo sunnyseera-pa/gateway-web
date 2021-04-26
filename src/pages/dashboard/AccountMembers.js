@@ -1,12 +1,13 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import axios from 'axios';
+import { isEmpty, upperFirst } from 'lodash';
 import { Row, Col, Button } from 'react-bootstrap';
 import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading';
-import '../../css/styles.scss';
-import './Dashboard.scss';
 import AccountMembersModal from './AccountMemberModal';
 import { initGA } from '../../tracking';
+import '../../css/styles.scss';
+import './Dashboard.scss';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -16,19 +17,33 @@ export const AccountMembers = props => {
 	const [members, setMembers] = useState([]);
 	const [userIsManager, setUserIsManager] = useState(false);
 	const [showAccountAddMemberModal, setShowAccountAddMemberModal] = useState(false);
-	const [accountMembersId] = useState(props.teamId);
+	const [teamId, setTeamId] = useState('');
 
 	useEffect(() => {
 		initGA('UA-183238557-1');
+		if (!isEmpty(props.team) && isEmpty(teamId)) {
+			const foundTeamId = getTeamId(props.team);
+			setTeamId(foundTeamId);
+		}
 		doMembersCall();
-	}, []);
+	}, [teamId]);
+
+	const getTeamId = team => {
+		const { teams } = userState[0];
+		if (!isEmpty(teams)) {
+			return teams.filter(t => {
+				return t.name.toUpperCase() === team.toUpperCase();
+			})[0]._id;
+		}
+		return null;
+	};
 
 	const doMembersCall = async () => {
-		if (accountMembersId) {
+		if (!isEmpty(teamId)) {
 			setIsLoading(true);
-			await axios.get(baseURL + `/api/v1/teams/${accountMembersId}/members`).then(async res => {
+			await axios.get(baseURL + `/api/v1/teams/${teamId}/members`).then(async res => {
 				setMembers(res.data.members);
-				setUserIsManager(res.data.members.filter(m => m.id === userState[0].id).map(m => m.roles[0] === 'manager')[0]);
+				setUserIsManager(res.data.members.filter(m => m.id === userState[0].id).map(m => m.roles.includes('manager')));
 			});
 		}
 		setIsLoading(false);
@@ -41,6 +56,14 @@ export const AccountMembers = props => {
 	const onMemberAdded = members => {
 		setMembers(members);
 	};
+
+	const renderRoles = roles => {
+		if (!isEmpty(roles)) {
+			let sortedRoles = roles.sort();
+			return sortedRoles.map(role => `${upperFirst(role)}${roles.length > 1  && roles.indexOf(role) !== roles.length - 1 ? ', ' : ' '}`);
+		}
+		return '';
+	}
 
 	if (isLoading) {
 		return (
@@ -59,9 +82,9 @@ export const AccountMembers = props => {
 			<Row>
 				<Col xs={1}></Col>
 				<Col xs={10}>
-					<Row className='accountHeader'>
+					<div className='accountHeader d-flex'>
 						<Col sm={12} md={9}>
-							<Row className=''>
+							<Row>
 								<span className='black-20'>Members</span>
 							</Row>
 							<Row>
@@ -97,7 +120,7 @@ export const AccountMembers = props => {
 								''
 							)}
 						</Col>
-					</Row>
+					</div>
 
 					{(() => {
 						return (
@@ -105,11 +128,11 @@ export const AccountMembers = props => {
 								{members.length <= 0 ? (
 									''
 								) : (
-									<Row className='subHeader mt-3 gray800-14-bold'>
+									<div className='subHeader mt-3 gray800-14-bold'>
 										<Col xs={5}>Name</Col>
 										<Col xs={4}>Role</Col>
 										<Col xs={3}></Col>
-									</Row>
+									</div>
 								)}
 								{members.length <= 0 ? (
 									<Row className='margin-right-15'>
@@ -118,7 +141,7 @@ export const AccountMembers = props => {
 								) : (
 									members.map(m => {
 										return (
-											<Row className='entryBox padding-left-20 '>
+											<div className='entryBox padding-left-20'>
 												<Col sm={12} lg={5}>
 													<a href={'/person/' + m.id} className='purple-14'>
 														{m.firstname} {m.lastname}
@@ -130,9 +153,9 @@ export const AccountMembers = props => {
 													</Row>
 												</Col>
 												<Col sm={4} lg={4} className='black-14'>
-													{m.roles[0].charAt(0).toUpperCase() + m.roles[0].slice(1)}
+													{renderRoles(m.roles)}
 												</Col>
-											</Row>
+											</div>
 										);
 									})
 								)}
@@ -140,7 +163,7 @@ export const AccountMembers = props => {
 								<AccountMembersModal
 									open={showAccountAddMemberModal}
 									close={onShowAccountMembersModal}
-									teamId={accountMembersId}
+									teamId={teamId}
 									onMemberAdded={onMemberAdded}></AccountMembersModal>
 							</div>
 						);
