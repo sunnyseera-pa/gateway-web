@@ -14,7 +14,6 @@ import AccountCollections from './AccountCollections';
 import AccountTeamManagement from './AccountTeamManagement';
 import AccountAnalyticsDashboard from './AccountAnalyticsDashboard';
 import AccountUsers from './AccountUsers';
-import AccountMembers from './AccountMembers';
 import ReviewTools from './ReviewTools';
 import YourAccount from './YourAccount';
 import DataAccessRequests from './DataAccessRequests/DataAccessRequests';
@@ -25,11 +24,14 @@ import SVGIcon from '../../images/SVGIcon';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
+import { tabTypes } from './Team/teamUtil';
+
 import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
-import { ReactComponent as MembersSvg } from '../../images/members.svg';
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
+import axios from 'axios';
 
 import './Dashboard.scss';
+var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 	<a
@@ -74,6 +76,7 @@ class Account extends Component {
 			},
 		],
 		tabId: '',
+		innertab: '',
 		activeKey: '',
 		team: 'user',
 		teamId: '',
@@ -91,7 +94,8 @@ class Account extends Component {
 		profileComplete: true,
 		savedTeamNotificationSuccess: false,
 		isSubmitting: false,
-		teamManagementInternalTab: 'Notifications'
+		teamManagementInternalTab: 'Notifications',
+		accountUpdated: false,
 	};
 
 	constructor(props) {
@@ -126,6 +130,7 @@ class Account extends Component {
 				tab = this.checkRedirect(values);
 				this.setState({
 					tabId: tab,
+					innertab: values.innertab ? values.innertab : '',
 					isDeleted: values.toolDeleted,
 					isApproved: values.toolApproved,
 					isRejected: values.toolRejected,
@@ -133,12 +138,14 @@ class Account extends Component {
 					isProjectRejected: values.projectRejected,
 					isReviewApproved: values.reviewApproved,
 					isReviewRejected: values.reviewRejected,
+					accountUpdated: !!values.accountUpdated,
 				});
 				this.toggleNav(tab);
 			}
 		}
 		if (!this.state.profileComplete) {
 			this.setState({ tabId: 'youraccount' });
+			this.setProfileComplete();
 		}
 	}
 
@@ -147,6 +154,9 @@ class Account extends Component {
 			let values = queryString.parse(window.location.search);
 			let team = 'user';
 			if (values.tab !== this.state.tabId || typeof values.tab !== 'undefined' || typeof values.tab !== null) {
+				if (values.tab !== 'youraccount' && this.state.accountUpdated) {
+					this.setState({ accountUpdated: false });
+				}
 				if (_.has(nextProps, 'location.state.team') && nextProps.location.state.team !== '') {
 					team = nextProps.location.state.team;
 					localStorage.setItem('HDR_TEAM', nextProps.location.state.team);
@@ -170,6 +180,14 @@ class Account extends Component {
 		}
 		if (!this.state.profileComplete) {
 			this.setState({ tabId: 'youraccount' });
+			this.setProfileComplete();
+		}
+	}
+
+	setProfileComplete() {
+		if (this.state.userState[0].terms) {
+			this.setState({ profileComplete: true });
+			axios.patch(baseURL + `/api/v1/person/profileComplete/${this.state.userState[0].id}`);
 		}
 	}
 
@@ -357,8 +375,12 @@ class Account extends Component {
 		this.setState({ isSubmitting, savedTeamNotificationSuccess });
 	};
 
-	onTeamManagementTabChange = (teamManagementTab) => {
-		this.setState({ teamManagementTab: teamManagementTab});
+	onTeamManagementTabChange = teamManagementTab => {
+		this.setState({ teamManagementTab: teamManagementTab });
+	};
+
+	onClearInnerTab = () => {
+		this.setState({ innertab: ''});
 	}
 
 	render() {
@@ -367,6 +389,7 @@ class Account extends Component {
 			data,
 			userState,
 			tabId,
+			innertab,
 			showDrawer,
 			showModal,
 			context,
@@ -377,7 +400,8 @@ class Account extends Component {
 			datasetAccordion,
 			savedTeamNotificationSuccess,
 			isSubmitting,
-			teamManagementTab
+			teamManagementTab,
+			accountUpdated,
 		} = this.state;
 		if (typeof data.datasetids === 'undefined') {
 			data.datasetids = [];
@@ -592,7 +616,7 @@ class Account extends Component {
 					<div className='col-sm-12 col-md-10 margin-top-32'>
 						{tabId === 'dashboard' ? <AccountAnalyticsDashboard userState={userState} /> : ''}
 
-						{tabId === 'youraccount' ? <YourAccount userState={userState} /> : ''}
+						{tabId === 'youraccount' ? <YourAccount userState={userState} accountUpdated={accountUpdated} /> : ''}
 
 						{tabId === 'tools' ? <AccountTools userState={userState} /> : ''}
 
@@ -620,11 +644,13 @@ class Account extends Component {
 							<AccountTeamManagement
 								userState={userState}
 								team={team}
+								innertab={innertab}
 								forwardRef={c => {
 									this.saveNotifiations = c;
 								}}
 								onTeamManagementSave={this.onTeamManagementSave}
 								onTeamManagementTabChange={this.onTeamManagementTabChange}
+								onClearInnerTab={this.onClearInnerTab}
 							/>
 						) : (
 							''
@@ -644,11 +670,9 @@ class Account extends Component {
 						drawerIsOpen={this.state.showDrawer}
 					/>
 				</SideDrawer>
-				{tabId === 'teamManagement' && teamManagementTab == 'Notifications' && (
+				{tabId === 'teamManagement' && teamManagementTab == tabTypes.Notifications && (
 					<ActionBar userState={userState}>
 						<div>
-							{/* <button className='btn btn-primary white-14-semibold' onClick={this.onSaveNotificationsClick} type='button'>Save</button> */}
-
 							<button
 								className={savedTeamNotificationSuccess ? 'button-teal' : 'button-primary'}
 								type='button'

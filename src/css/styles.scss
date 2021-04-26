@@ -2,6 +2,13 @@
 @import './typography';
 @import './mixins';
 
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+	text-shadow: rgba(0,0,0,.01) 0 0 1px;
+}
+
 body {
 	margin: 0;
 	padding: 0;
