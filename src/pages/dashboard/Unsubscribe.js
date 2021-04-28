@@ -69,7 +69,7 @@ class Unsubscribe extends Component {
 		//fires on enter on searchbar
 		if (e.key === 'Enter') {
 			if (!!this.state.searchString) {
-				window.location.href = window.location.search + '/search?search=' + this.state.searchString;
+				window.location.href = `/search?search=${encodeURIComponent(this.state.searchString)}`;
 			}
 		}
 	};
