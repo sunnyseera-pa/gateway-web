@@ -89,7 +89,7 @@ const AboutApplication = props => {
 									/>
 								</div>
 								{_.isEmpty(selectedDatasets) ? <div className='errorMessages'>You must select at least one dataset</div> : null}
-								<div className='panConfirm'>
+								<div className='panConfirm d-flex justify-content-end'>
 									{userType.toUpperCase() === 'APPLICANT' ? (
 										<button
 											type='input'
@@ -192,7 +192,7 @@ const AboutApplication = props => {
 										</div>
 									</Fragment>
 								) : null}
-								<div className='panConfirm'>
+								<div className='panConfirm d-flex justify-content-end'>
 									{userType.toUpperCase() === 'APPLICANT' ? (
 										<button
 											type='input'
