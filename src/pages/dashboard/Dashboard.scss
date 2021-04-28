@@ -377,6 +377,11 @@ textarea {
 	width: 100%;
 	transform: translate(0px, 50px) !important;
 	box-sizing: border-box;
+
+	overflow-x: hidden;
+	overflow-y: scroll;
+	max-height: 400px;
+	word-wrap: break-word;
 }
 
 .teamSelectorHeader {
@@ -412,7 +417,7 @@ textarea {
 	opacity: 0.7;
 }
 
-.entityDashboardPagination{
+.entityDashboardPagination {
 	float: right;
 	margin-right: 15px;
 }
