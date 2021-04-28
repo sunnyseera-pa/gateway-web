@@ -89,7 +89,7 @@ const AboutApplication = props => {
 									/>
 								</div>
 								{_.isEmpty(selectedDatasets) ? <div className='errorMessages'>You must select at least one dataset</div> : null}
-								<div className=' d-flex justify-content-end'>
+								<div className='panConfirm d-flex justify-content-end'>
 									{userType.toUpperCase() === 'APPLICANT' ? (
 										<button
 											type='input'
