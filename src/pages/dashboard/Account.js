@@ -2,6 +2,7 @@ import React, { Component, Fragment, useState } from 'react';
 import queryString from 'query-string';
 import { Nav, Accordion, Dropdown } from 'react-bootstrap';
 import _ from 'lodash';
+import axios from 'axios';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import AccountTools from './AccountTools';
@@ -14,7 +15,6 @@ import AccountCollections from './AccountCollections';
 import AccountTeamManagement from './AccountTeamManagement';
 import AccountAnalyticsDashboard from './AccountAnalyticsDashboard';
 import AccountUsers from './AccountUsers';
-import AccountMembers from './AccountMembers';
 import ReviewTools from './ReviewTools';
 import YourAccount from './YourAccount';
 import DataAccessRequests from './DataAccessRequests/DataAccessRequests';
@@ -25,11 +25,13 @@ import SVGIcon from '../../images/SVGIcon';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
-import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
-import { ReactComponent as MembersSvg } from '../../images/members.svg';
-import { ReactComponent as CheckSVG } from '../../images/check.svg';
+import { tabTypes } from './Team/teamUtil';
 
+import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
+import { ReactComponent as CheckSVG } from '../../images/check.svg';
 import './Dashboard.scss';
+
+var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 	<a
@@ -74,9 +76,9 @@ class Account extends Component {
 			},
 		],
 		tabId: '',
+		innertab: '',
 		activeKey: '',
 		team: 'user',
-		teamId: '',
 		alert: {},
 		isDeleted: false,
 		isApproved: false,
@@ -89,22 +91,37 @@ class Account extends Component {
 		datasetAccordion: -1,
 		context: {},
 		profileComplete: true,
+		allowWorkflow: true,
+		allowAccessRequestManagement: true,
 		savedTeamNotificationSuccess: false,
 		isSubmitting: false,
-		teamManagementInternalTab: 'Notifications'
+		teamManagementInternalTab: 'Notifications',
+		accountUpdated: false,
 	};
 
 	constructor(props) {
 		super(props);
 		this.state.userState = props.userState;
-		// create Refs for parent to child fn calls
 		this.searchBar = React.createRef();
 		// 1. used for DAR custodian update status of application
 		if (_.has(props, 'location.state.alert')) {
 			this.state.alert = props.location.state.alert;
 			this.alertTimeOut = setTimeout(() => this.setState({ alert: {} }), 10000);
 		}
-		if (_.has(props, 'location.state.team') && props.location.state.team !== '') {
+		let values = queryString.parse(window.location.search);
+		if (values.team === 'user') {
+			this.state.team = 'user';
+			localStorage.setItem('HDR_TEAM', 'user');
+		} else if (values.team === 'admin') {
+			this.state.team = 'admin';
+			localStorage.setItem('HDR_TEAM', 'admin');
+		} else if (!_.isEmpty(values.team)) {
+			this.state.team = values.team;
+			localStorage.setItem('HDR_TEAM', values.team);
+		} else if (
+			(_.has(props, 'location.state.team') && props.location.state.team !== '') ||
+			(_.has(props, 'location.state.publisher') && props.location.state.team !== '')
+		) {
 			this.state.team = props.location.state.team;
 			localStorage.setItem('HDR_TEAM', props.location.state.team);
 		} else if (!_.isEmpty(localStorage.getItem('HDR_TEAM'))) {
@@ -113,12 +130,13 @@ class Account extends Component {
 			this.state.team = 'user';
 			localStorage.setItem('HDR_TEAM', 'user');
 		}
+
 		if (_.has(props, 'profileComplete')) {
 			this.state.profileComplete = props.profileComplete;
 		}
 	}
 
-	componentDidMount() {
+	async componentDidMount() {
 		if (window.location.search) {
 			let tab = '';
 			let values = queryString.parse(window.location.search);
@@ -126,6 +144,7 @@ class Account extends Component {
 				tab = this.checkRedirect(values);
 				this.setState({
 					tabId: tab,
+					innertab: values.innertab ? values.innertab : '',
 					isDeleted: values.toolDeleted,
 					isApproved: values.toolApproved,
 					isRejected: values.toolRejected,
@@ -133,20 +152,27 @@ class Account extends Component {
 					isProjectRejected: values.projectRejected,
 					isReviewApproved: values.reviewApproved,
 					isReviewRejected: values.reviewRejected,
+					accountUpdated: !!values.accountUpdated,
 				});
 				this.toggleNav(tab);
 			}
 		}
+
 		if (!this.state.profileComplete) {
-			this.setState({ tabId: 'youraccount' });
+			this.setState({ tabId: 'youraccount', team: 'user' });
+			localStorage.setItem('HDR_TEAM', 'user');
+			this.setProfileComplete();
 		}
 	}
 
-	componentWillReceiveProps(nextProps) {
+	async componentWillReceiveProps(nextProps) {
 		if (window.location.search) {
 			let values = queryString.parse(window.location.search);
 			let team = 'user';
 			if (values.tab !== this.state.tabId || typeof values.tab !== 'undefined' || typeof values.tab !== null) {
+				if (values.tab !== 'youraccount' && this.state.accountUpdated) {
+					this.setState({ accountUpdated: false });
+				}
 				if (_.has(nextProps, 'location.state.team') && nextProps.location.state.team !== '') {
 					team = nextProps.location.state.team;
 					localStorage.setItem('HDR_TEAM', nextProps.location.state.team);
@@ -166,10 +192,32 @@ class Account extends Component {
 					team,
 					activeAccordion: values.tab === 'dataaccessrequests' || values.tab === 'workflows' ? '0' : -1,
 				});
+
+				if (team !== 'user' && team !== 'admin') {
+					await axios.get(baseURL + `/api/v1/publishers/${team}`).then(res => {
+						let publisherDetails = res.data.publisher;
+						if (!publisherDetails.allowAccessRequestManagement && values.tab === 'dataaccessrequests')
+							this.setState({ tabId: 'teamManagement' });
+						this.setState({
+							allowWorkflow: publisherDetails.workflowEnabled,
+							allowAccessRequestManagement: publisherDetails.allowAccessRequestManagement,
+						});
+					});
+				}
 			}
 		}
+
 		if (!this.state.profileComplete) {
-			this.setState({ tabId: 'youraccount' });
+			this.setState({ tabId: 'youraccount', team: 'user' });
+			localStorage.setItem('HDR_TEAM', 'user');
+			this.setProfileComplete();
+		}
+	}
+
+	setProfileComplete() {
+		if (this.state.userState[0].terms) {
+			this.setState({ profileComplete: true });
+			axios.patch(baseURL + `/api/v1/person/profileComplete/${this.state.userState[0].id}`);
 		}
 	}
 
@@ -251,14 +299,17 @@ class Account extends Component {
 			if (!_.isEmpty(filterPublishers)) {
 				return filterPublishers.map((pub, index) => {
 					return (
-						<Dropdown.Item
-							className='gray700-13'
-							onClick={e => {
-								this.toggleNav(`${this.state.tabId}&team=${pub.name}`);
-								this.setState({ teamId: pub._id });
-							}}>
-							{pub.name}
-						</Dropdown.Item>
+						<>
+							{index == 0 ? <hr /> : ''}
+							<Dropdown.Item
+								className='gray700-13'
+								onClick={e => {
+									this.toggleNav(`${this.state.tabId}&team=${pub._id}`);
+									this.setState({ team: pub._id });
+								}}>
+								{pub.name}
+							</Dropdown.Item>
+						</>
 					);
 				});
 			} else {
@@ -266,6 +317,45 @@ class Account extends Component {
 			}
 		} else {
 			return '';
+		}
+	}
+
+	/**
+	 * [renderAdmin Renders out admin entry if admin team is found]
+	 *
+	 * @return  {[Nav.item]}  [return Nav.Item]
+	 */
+	renderAdmin() {
+		let { userState } = this.state;
+		let [user] = userState;
+		const isAdmin = [...user.teams].filter(p => p.type === 'admin');
+
+		if (!_.isEmpty(isAdmin)) {
+			return (
+				<Dropdown.Item
+					className='gray700-13'
+					onClick={e => {
+						this.toggleNav(`datasets&team=admin`);
+						this.setState({ team: 'admin' });
+					}}>
+					HDR Admin
+				</Dropdown.Item>
+			);
+		} else {
+			return '';
+		}
+	}
+
+	renderCurrentTeam() {
+		let { team, userState } = this.state;
+		if (team === 'user') return <>{userState[0].name}</>;
+		else if (team === 'admin') return <>HDR Admin</>;
+		else {
+			const teamIs = this.state.userState[0].teams.filter(t => {
+				return t._id === team;
+			})[0];
+
+			return <>{teamIs.name}</>;
 		}
 	}
 
@@ -284,7 +374,6 @@ class Account extends Component {
 		if (!_.isEmpty(tabId)) {
 			// 3. need to check for teams returns {tabId: '', team: ''}; eg dataccessrequests&team=ALLIANCE
 			let tab = this.generateTabObject(tabId);
-
 			// 4. check if user has teams and the current nav is dataaccessrequests, keep expanded
 			if (
 				!_.isEmpty(user.teams) &&
@@ -301,7 +390,13 @@ class Account extends Component {
 
 			if (!_.isEmpty(tab.team)) {
 				localStorage.setItem('HDR_TEAM', tab.team);
-				if (tab.team !== 'user') tab.tabId = 'dataaccessrequests';
+				if (tab.team !== 'user' && tab.team !== 'admin') {
+					if (_.isEmpty(tab.tabId) || !['dataaccessrequests', 'datasets', 'teamManagement'].includes(tab.tabId)) {
+						if (this.userHasRole(tab.team, ['manager', 'reviewer'])) tab.tabId = 'dataaccessrequests';
+						else if (this.userHasRole(tab.team, 'metadata_editor')) tab.tabId = 'datasets';
+						else tab.tabId = 'teamManagement';
+					}
+				}
 			} else if (localStorage.getItem('HDR_TEAM') == '') localStorage.setItem('HDR_TEAM', 'user');
 			// 6. set state
 			this.setState({
@@ -325,26 +420,11 @@ class Account extends Component {
 		this.setState({ datasetAccordion: '0' });
 	};
 
-	getTeamId = team => {
-		const { teams } = this.state.userState[0];
-		if (!_.isEmpty(teams)) {
-			return [...teams].filter(t => {
-				return t.name.toUpperCase() === team.toUpperCase();
-			})[0]._id;
-		}
-		return null;
-	};
-
 	userHasRole(teamId, role) {
-		if (_.isEmpty(teamId) && !_.isEmpty(this.state.team)) {
-			teamId = this.getTeamId(this.state.team);
-		}
-
 		const team = this.state.userState[0].teams.filter(t => {
 			return t._id === teamId;
 		})[0];
-
-		return team && team.roles.includes(role);
+		return team && team.roles.some(r => role.includes(r));
 	}
 
 	onSaveNotificationsClick = () => {
@@ -357,9 +437,13 @@ class Account extends Component {
 		this.setState({ isSubmitting, savedTeamNotificationSuccess });
 	};
 
-	onTeamManagementTabChange = (teamManagementTab) => {
-		this.setState({ teamManagementTab: teamManagementTab});
-	}
+	onTeamManagementTabChange = teamManagementTab => {
+		this.setState({ teamManagementTab: teamManagementTab });
+	};
+
+	onClearInnerTab = () => {
+		this.setState({ innertab: '' });
+	};
 
 	render() {
 		const {
@@ -367,17 +451,20 @@ class Account extends Component {
 			data,
 			userState,
 			tabId,
+			innertab,
 			showDrawer,
 			showModal,
 			context,
 			team,
-			teamId,
 			alert,
 			activeAccordion,
 			datasetAccordion,
+			allowWorkflow,
+			allowAccessRequestManagement,
 			savedTeamNotificationSuccess,
 			isSubmitting,
-			teamManagementTab
+			teamManagementTab,
+			accountUpdated,
 		} = this.state;
 		if (typeof data.datasetids === 'undefined') {
 			data.datasetids = [];
@@ -400,7 +487,7 @@ class Account extends Component {
 							<Dropdown>
 								<Dropdown.Toggle as={CustomToggle}>
 									<div className='teamSelectorHeader'>
-										<span className='gray700-13'>{team === 'user' ? userState[0].name : team}</span>
+										<span className='gray700-13'>{this.renderCurrentTeam()}</span>
 										<ChevronRightSvg fill={'#475da7'} className='dataClassArrow pointer' />
 									</div>
 								</Dropdown.Toggle>
@@ -409,6 +496,7 @@ class Account extends Component {
 									<Dropdown.Item className='gray700-13' onClick={e => this.toggleNav(`youraccount&team=user`)}>
 										{userState[0].name || ''}
 									</Dropdown.Item>
+									{this.renderAdmin()}
 									{this.renderPublishers()}
 								</Dropdown.Menu>
 							</Dropdown>
@@ -461,12 +549,6 @@ class Account extends Component {
 												</Accordion.Toggle>
 												<Accordion.Collapse eventKey='0'>
 													<div>
-														<Nav.Link
-															onClick={e => this.toggleNav('datasets')}
-															bsPrefix='nav-block'
-															className={`gray700-13 ${tabId === 'datasets' ? 'nav-item-active' : ''}`}>
-															<span className='subLinkItem'>Datasets</span>
-														</Nav.Link>
 														<Nav.Link
 															data-test-id='advanced-search'
 															onClick={e => this.toggleNav('datasetsAdvancedSearch')}
@@ -522,6 +604,23 @@ class Account extends Component {
 									)}
 								</Fragment>
 							) : (
+								''
+							)}
+
+							{team === 'admin' ? (
+								<Fragment>
+									<div className={`${tabId === 'datasets' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('datasets')}>
+										<Nav.Link className='verticalNavBar gray700-13'>
+											<SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
+											<span style={{ 'margin-left': '11px' }}>Datasets</span>
+										</Nav.Link>
+									</div>
+								</Fragment>
+							) : (
+								''
+							)}
+
+							{team !== 'user' && team !== 'admin' ? (
 								<Fragment>
 									<div
 										className={`${tabId === 'teamManagement' ? 'activeCard' : 'accountNav'}`}
@@ -532,11 +631,11 @@ class Account extends Component {
 										</Nav.Link>
 									</div>
 
-									<div
-										className={`${
-											tabId === 'dataaccessrequests' || tabId === 'workflows' || tabId === 'addeditworkflow' ? 'activeCard' : ''
-										}`}>
-										{this.isPublisher() ? (
+									{allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
+										<div
+											className={`${
+												tabId === 'dataaccessrequests' || tabId === 'workflows' || tabId === 'addeditworkflow' ? 'activeCard' : 'accountNav'
+											}`}>
 											<Accordion activeKey={activeAccordion} onSelect={this.accordionClick}>
 												<Fragment>
 													<Accordion.Toggle variant='link' className='verticalNavBar gray700-13 navLinkButton' eventKey='0'>
@@ -551,7 +650,7 @@ class Account extends Component {
 																className={`gray700-13 ${tabId === 'dataaccessrequests' ? 'nav-item-active' : ''}`}>
 																<span className='subLinkItem'>Applications</span>
 															</Nav.Link>
-															{this.userHasRole(teamId, 'manager') && (
+															{allowWorkflow && this.userHasRole(team, 'manager') && (
 																<Nav.Link
 																	onClick={e => this.toggleNav(`workflows`)}
 																	bsPrefix='nav-block'
@@ -563,21 +662,16 @@ class Account extends Component {
 													</Accordion.Collapse>
 												</Fragment>
 											</Accordion>
-										) : (
-											<Fragment>
-												<Nav.Link onClick={e => this.toggleNav('dataaccessrequests')} className='verticalNavBar gray700-13'>
-													<SVGIcon name='dataaccessicon' fill={'#b3b8bd'} className='accountSvgs' />
-													<span className='navLinkItem'>Data access requests</span>
-												</Nav.Link>
-											</Fragment>
-										)}
-									</div>
-									{/* <div className={`${tabId === 'members' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('members')}>
-										<Nav.Link className='verticalNavBar gray700-13'>
-											<MembersSvg className='membersSvg' />
-											<span style={{ marginLeft: '11px' }}>Members</span>
-										</Nav.Link>
-									</div> */}
+										</div>
+									)}
+									{this.userHasRole(team, ['manager', 'metadata_editor']) && (
+										<div className={`${tabId === 'datasets' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('datasets')}>
+											<Nav.Link className='verticalNavBar gray700-13'>
+												<SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
+												<span style={{ 'margin-left': '11px' }}>Datasets</span>
+											</Nav.Link>
+										</div>
+									)}
 									<div className={`${tabId === 'help' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('help')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='info' fill={'#b3b8bd'} className='accountSvgs' />
@@ -585,54 +679,74 @@ class Account extends Component {
 										</Nav.Link>
 									</div>
 								</Fragment>
+							) : (
+								''
 							)}
 						</div>
 					</div>
 
 					<div className='col-sm-12 col-md-10 margin-top-32'>
-						{tabId === 'dashboard' ? <AccountAnalyticsDashboard userState={userState} /> : ''}
+						{team === 'user' && (
+							<>
+								{tabId === 'dashboard' ? <AccountAnalyticsDashboard userState={userState} /> : ''}
 
-						{tabId === 'youraccount' ? <YourAccount userState={userState} /> : ''}
+								{tabId === 'youraccount' ? <YourAccount userState={userState} accountUpdated={accountUpdated} /> : ''}
 
-						{tabId === 'tools' ? <AccountTools userState={userState} /> : ''}
+								{tabId === 'tools' ? <AccountTools userState={userState} /> : ''}
 
-						{tabId === 'reviews' ? <ReviewTools userState={userState} /> : ''}
+								{tabId === 'reviews' ? <ReviewTools userState={userState} /> : ''}
 
-						{tabId === 'projects' ? <AccountProjects userState={userState} /> : ''}
+								{tabId === 'projects' ? <AccountProjects userState={userState} /> : ''}
 
-						{tabId === 'datasets' ? <AccountDatasets userState={userState} /> : ''}
+								{tabId === 'datasetsAdvancedSearch' ? <AccountAdvancedSearch userState={userState} /> : ''}
 
-						{tabId === 'datasetsAdvancedSearch' ? <AccountAdvancedSearch userState={userState} /> : ''}
+								{tabId === 'papers' ? <AccountPapers userState={userState} /> : ''}
 
-						{tabId === 'papers' ? <AccountPapers userState={userState} /> : ''}
+								{tabId === 'courses' ? <AccountCourses userState={userState} /> : ''}
 
-						{tabId === 'courses' ? <AccountCourses userState={userState} /> : ''}
+								{tabId === 'dataaccessrequests' ? <DataAccessRequests userState={userState} team={team} alert={alert} /> : ''}
 
-						{tabId === 'dataaccessrequests' ? <DataAccessRequests userState={userState} team={team} alert={alert} /> : ''}
+								{tabId === 'collections' ? <AccountCollections userState={userState} /> : ''}
 
-						{tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}
+								{tabId === 'usersroles' ? <AccountUsers userState={userState} /> : ''}
+							</>
+						)}
 
-						{tabId === 'collections' ? <AccountCollections userState={userState} /> : ''}
+						{team !== 'user' ? (
+							<>
+								{allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
+									<>{tabId === 'dataaccessrequests' ? <DataAccessRequests userState={userState} team={team} alert={alert} /> : ''}</>
+								)}
 
-						{tabId === 'usersroles' ? <AccountUsers userState={userState} /> : ''}
+								{(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') && (
+									<>{tabId === 'datasets' ? <AccountDatasets userState={userState} team={team} alert={alert} /> : ''}</>
+								)}
 
-						{tabId === 'teamManagement' ? (
-							<AccountTeamManagement
-								userState={userState}
-								team={team}
-								forwardRef={c => {
-									this.saveNotifiations = c;
-								}}
-								onTeamManagementSave={this.onTeamManagementSave}
-								onTeamManagementTabChange={this.onTeamManagementTabChange}
-							/>
+								{allowWorkflow && this.userHasRole(team, 'manager') && (
+									<>{tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}</>
+								)}
+
+								{tabId === 'teamManagement' ? (
+									<AccountTeamManagement
+										userState={userState}
+										team={team}
+										innertab={innertab}
+										forwardRef={c => {
+											this.saveNotifiations = c;
+										}}
+										onTeamManagementSave={this.onTeamManagementSave}
+										onTeamManagementTabChange={this.onTeamManagementTabChange}
+										onClearInnerTab={this.onClearInnerTab}
+									/>
+								) : (
+									''
+								)}
+
+								{tabId === 'help' ? <TeamHelp /> : ''}
+							</>
 						) : (
 							''
 						)}
-
-						{/* {tabId === 'members' ? <AccountMembers userState={userState} team={team} teamId={teamId} /> : ''} */}
-
-						{tabId === 'help' ? <TeamHelp /> : ''}
 					</div>
 				</div>
 
@@ -644,11 +758,9 @@ class Account extends Component {
 						drawerIsOpen={this.state.showDrawer}
 					/>
 				</SideDrawer>
-				{tabId === 'teamManagement' && teamManagementTab == 'Notifications' && (
+				{tabId === 'teamManagement' && teamManagementTab == tabTypes.Notifications && (
 					<ActionBar userState={userState}>
 						<div>
-							{/* <button className='btn btn-primary white-14-semibold' onClick={this.onSaveNotificationsClick} type='button'>Save</button> */}
-
 							<button
 								className={savedTeamNotificationSuccess ? 'button-teal' : 'button-primary'}
 								type='button'

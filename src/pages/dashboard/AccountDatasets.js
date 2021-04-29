@@ -1,169 +1,309 @@
-import React from 'react';
-import { Col, Row, Accordion, Card, Button } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Col, Row, Button, Tabs, Tab, Alert } from 'react-bootstrap';
+import { Event, initGA } from '../../tracking';
+import _ from 'lodash';
+import Loading from '../commonComponents/Loading';
+import DatasetCard from '../commonComponents/DatasetCard';
+import NotFound from '../commonComponents/NotFound';
+import SVGIcon from '../../images/SVGIcon';
 import './Dashboard.scss';
 
-class AccountDatasets extends React.Component {
-	// initialize our state
-	state = {
-		userState: [],
-		activeAccordionCard: 0,
-	};
+var baseURL = require('../commonComponents/BaseURL').getURL();
 
-	constructor(props) {
-		super(props);
-		this.state.userState = props.userState;
-	}
+const AccountDatasets = props => {
+	const [key, setKey] = useState(!_.isEmpty(props.alert.tab) ? props.alert.tab : 'active');
+	const [datasetList, setDatasetList] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
+	const [activeCount, setActiveCount] = useState(0);
+	const [reviewCount, setReviewCount] = useState(0);
+	const [archiveCount, setArchiveCount] = useState(0);
+	const [rejectedCount, setRejectedCount] = useState(0);
+	const [alert] = useState(props.alert);
+	const [team, setTeam, getTeam] = useState(props.team);
+	const [publisherID, setPublisherID] = useState('');
 
-	toggleCard = (e, eventKey) => {
-		e.preventDefault();
-		// 1. Deconstruct current state
-		let { activeAccordionCard } = this.state;
+	useEffect(() => {
+		setTeam(props.team);
+	}, [props]);
 
-		if (activeAccordionCard === eventKey) {
-			eventKey = -1;
-		}
+	useEffect(() => {
+		initGA('UA-166025838-1');
+		setIsLoading(true);
+		doDatasetsCall();
+	}, [team]);
 
-		// 2. Set new state
-		this.setState({
-			activeAccordionCard: eventKey,
+	const doDatasetsCall = async () => {
+		setIsLoading(true);
+		let isPublisher = getPublisherID();
+		setPublisherID(isPublisher);
+
+		await axios.get(baseURL + `/api/v1/dataset-onboarding/publisher/${isPublisher}`).then(res => {
+			setDatasetList(res.data.data.listOfDatasets);
+
+			let activeCount = 0;
+			let reviewCount = 0;
+			let archiveCount = 0;
+			let rejectedCount = 0;
+
+			res.data.data.listOfDatasets.forEach(dataset => {
+				if (dataset.activeflag === 'active' || dataset.activeflag === 'draft') activeCount++;
+				else if (dataset.activeflag === 'inReview') reviewCount++;
+				else if (dataset.activeflag === 'archive') archiveCount++;
+				else if (dataset.activeflag === 'rejected') rejectedCount++;
+			});
+
+			setActiveCount(activeCount);
+			setReviewCount(reviewCount);
+			setArchiveCount(archiveCount);
+			setRejectedCount(rejectedCount);
+			if (isPublisher === 'admin') setKey('inReview');
+			setIsLoading(false);
 		});
 	};
 
-	render() {
-		const { activeAccordionCard } = this.state;
+	const getPublisherID = () => {
+		let { teams } = props.userState[0];
+		let foundAdmin = teams.filter(x => x.type === team);
+		if (!_.isEmpty(foundAdmin)) {
+			return 'admin';
+		}
+		let foundTeam = teams.filter(x => x._id === team);
+		if (_.isEmpty(teams) || _.isEmpty(foundTeam)) {
+			return ['applicant']; //pass back to user
+		}
 
+		return foundTeam[0]._id;
+	};
+
+	const createNewDataset = e => {
+		e.preventDefault();
+		//call to API to create new dataset
+		setIsLoading(true);
+		let isPublisher = getPublisherID();
+		axios.post(baseURL + '/api/v1/dataset-onboarding', { publisherID: isPublisher }).then(res => {
+			let { id } = res.data.data;
+			//load dataset onboarding page
+			if (!_.isUndefined(id)) window.location.href = `/dataset-onboarding/${id}`;
+			else {
+				//show error message
+				setIsLoading(false);
+			}
+		});
+	};
+
+	const handleSelect = key => {
+		setKey(key);
+	};
+
+	const generateAlert = () => {
+		let { message = '' } = alert;
 		return (
-			<div>
-				<Row className='pixelGapBottom'>
-					<Col sm={1} lg={1} />
-					<Col sm={10} lg={10}>
-						<div className='rectangle'>
-							<p className='black-20-semibold margin-bottom-8'>Datasets</p>
-							<p className='gray800-15 margin-bottom-6'>
-								The Health Data Research Innovation Gateway does not hold patient data, only information about the datasets (metadata).
-								Adding new datasets or managing existing ones can be done via the metadata onboarding platform.
-							</p>
-						</div>
-					</Col>
-					<Col sm={1} lg={1} />
-				</Row>
+			<Row className='mt-3'>
+				<Col xs={1}></Col>
+				<Col xs={10}>
+					<Alert variant={'success'} className='col-sm-12 main-alert'>
+						<SVGIcon name='check' width={18} height={18} fill={'#2C8267'} /> {message}
+					</Alert>
+				</Col>
+				<Col xs={1}></Col>
+			</Row>
+		);
+	};
 
-				<Row>
-					<Col sm={1} lg={1} />
-					<Col sm={10} lg={10}>
-						<Accordion defaultActiveKey='0' activeKey={activeAccordionCard.toString()}>
-							<Card className={activeAccordionCard === 0 ? 'activeCard datasetCard' : 'datasetCard'}>
-								<Accordion.Toggle as={Card.Header} eventKey='0' onClick={e => this.toggleCard(e, 0)} className='datasetCard'>
-									<div className={activeAccordionCard === 0 ? 'stepNumber active' : 'stepNumber'}>1</div>
-									<span className='black-16 noTextDecoration'>Adding new datasets</span>
-								</Accordion.Toggle>
-								<Accordion.Collapse eventKey='0'>
-									<Card.Body className='datasetCard gray800-14'>
-										<ul className='gray800-14'>
-											<li>
-												If you have an account on the{' '}
-												<a href='https://hdruk-auth.metadata.works/auth' rel='noopener noreferrer' className='purple-14'>
-													HDR UK Onboarding Platform (HOP)
-												</a>
-												, you can access the metadata onboarding platform using the button below
-											</li>
-											<li>
-												If you do have an account on HOP, please request it by submitting a request{' '}
-												<a
-													href='https://metadata.atlassian.net/servicedesk/customer/portal/4/group/8/create/56'
-													rel='noopener noreferrer'
-													target='_blank'
-													className='purple-14'>
-													here
-												</a>
-												.
-											</li>
-											<li>Use your Innovation Gateway credentials to log in</li>
-
-											<li>You’ll be asked to provide details about the datasets, ranging from basic to technical details</li>
-											<li>You can save your progress and continue later</li>
-											<li>
-												The more information you add, the easier it will be for applicants to understand if your dataset fits their needs
-											</li>
-											<li>Anyone is welcome to add information about open datasets, even if they’re not the data custodian</li>
-											<li>All datasets will be reviewed and approved before going live</li>
-										</ul>
-									</Card.Body>
-								</Accordion.Collapse>
-							</Card>
-							<Card className={activeAccordionCard === 1 ? 'activeCard datasetCard' : 'datasetCard'}>
-								<Accordion.Toggle as={Card.Header} eventKey='1' onClick={e => this.toggleCard(e, 1)} className='datasetCard'>
-									<div className={activeAccordionCard === 1 ? 'stepNumber active' : 'stepNumber'}>2</div>
-									<span className='black-16 noTextDecoration'>Managing datasets</span>
-								</Accordion.Toggle>
-								<Accordion.Collapse eventKey='1'>
-									<Card.Body className='datasetCard gray800-14'>
-										<ul className='gray800-14'>
-											<li>You can access the metadata onboarding platform using the button below</li>
-											<li>Use your Innovation Gateway credentials to login</li>
-											<li>Edit or add more information about your datasets</li>
-											<li>You can save your progress and publish later</li>
-											<li>All datasets will be reviewed and approved before going live</li>
-										</ul>
-									</Card.Body>
-								</Accordion.Collapse>
-							</Card>
-							<Card className={activeAccordionCard === 2 ? 'activeCard datasetCard' : 'datasetCard'}>
-								<Accordion.Toggle as={Card.Header} eventKey='2' onClick={e => this.toggleCard(e, 2)} className='datasetCard'>
-									<div className={activeAccordionCard === 2 ? 'stepNumber active' : 'stepNumber'}>3</div>
-									<span className='black-16 noTextDecoration'>Help and support</span>
-								</Accordion.Toggle>
-								<Accordion.Collapse eventKey='2'>
-									<Card.Body className='datasetCard gray800-14'>
-										<ul className='gray800-14'>
-											<li>The User Guide contains how-to guides, descriptions and examples for each data field</li>
-											<li>If you cannot find the information you need in the User Guide, please submit a ticket using the Service Desk</li>
-											<li>Both can be accessed using the buttons below</li>
-											<li>
-												If you already had an account, you’ll need to be granted access again. If you have any issues, please submit a
-												ticket using the Service Desk
-											</li>
-										</ul>
-									</Card.Body>
-								</Accordion.Collapse>
-							</Card>
-						</Accordion>
-
-						<div className='rectangle text-right'>
-							<Button
-								variant='medium'
-								href='https://metadata.atlassian.net/servicedesk/customer/portal/4'
-								target='_blank'
-								id='serviceDeskButton'
-								className='dark-14 margin-right-8'
-								data-testid='servicedesk-button'>
-								Service desk
-							</Button>
-
-							<Button
-								variant='medium'
-								href='https://metadata.atlassian.net/wiki/spaces/HDR/overview'
-								target='_blank'
-								id='userguideButton'
-								className='dark-14 margin-right-8'
-								data-testid='userguide-button'>
-								User guide
-							</Button>
-
-							<Button
-								variant='primary'
-								href='https://hdruk-preprod-auth.metadata.works/auth'
-								id='metadataButton'
-								className='white-14-semibold'>
-								Access the metadata onboarding platform
-							</Button>
-						</div>
-					</Col>
-					<Col sm={1} lg={1} />
-				</Row>
-			</div>
+	if (isLoading) {
+		return (
+			<Row>
+				<Col xs={1}></Col>
+				<Col xs={10}>
+					<Loading />
+				</Col>
+				<Col xs={1}></Col>
+			</Row>
 		);
 	}
-}
+
+	return (
+		<div>
+			<>{!_.isEmpty(alert) ? generateAlert() : ''}</>
+			<Row>
+				<Col xs={1}></Col>
+				<Col xs={10}>
+					<div className='accountHeader'>
+						<Row>
+							<Col sm={12} md={8}>
+								<div>
+									<span className='black-20'>Datasets</span>
+								</div>
+								<div>
+									<span className='gray700-13 '>
+										{publisherID !== 'admin'
+											? 'View, add, edit, archive and check the status of your datasets.'
+											: 'Approve or reject pending datasets'}
+									</span>
+								</div>
+							</Col>
+							<Col sm={12} md={4} style={{ textAlign: 'right' }}>
+								<Button
+									variant='primary'
+									className='addButton'
+									onClick={(() => Event('Buttons', 'Click', 'Add a new paper'), createNewDataset)}>
+									+ Add a new dataset
+								</Button>
+							</Col>
+						</Row>
+					</div>
+					<div className='tabsBackground'>
+						<Row>
+							<Col sm={12} lg={12}>
+								{team === 'admin' ? (
+									<Tabs className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
+										<Tab eventKey='inReview' title={'Pending approval (' + reviewCount + ')'}>
+											{' '}
+										</Tab>
+									</Tabs>
+								) : (
+									<Tabs className='dataAccessTabs gray700-13' activeKey={key} onSelect={handleSelect}>
+										<Tab eventKey='active' title={'Active (' + activeCount + ')'}>
+											{' '}
+										</Tab>
+										<Tab eventKey='inReview' title={'Pending approval (' + reviewCount + ')'}>
+											{' '}
+										</Tab>
+										<Tab eventKey='rejected' title={'Rejected (' + rejectedCount + ')'}>
+											{' '}
+										</Tab>
+										<Tab eventKey='archive' title={'Archived (' + archiveCount + ')'}>
+											{' '}
+										</Tab>
+									</Tabs>
+								)}
+							</Col>
+						</Row>
+					</div>
+
+					{(() => {
+						switch (key) {
+							case 'active':
+								return (
+									<div>
+										{activeCount <= 0 ? (
+											<NotFound word='datasets' />
+										) : (
+											datasetList.map(dataset => {
+												if (dataset.activeflag !== 'active' && dataset.activeflag !== 'draft') {
+													return <></>;
+												} else {
+													return (
+														<DatasetCard
+															id={dataset._id}
+															title={dataset.name}
+															publisher={dataset.datasetv2.summary.publisher.name}
+															version={dataset.datasetVersion}
+															isDraft={true}
+															datasetStatus={dataset.activeflag}
+															timeStamps={dataset.timestamps}
+															completion={dataset.percentageCompleted}
+															listOfVersions={dataset.listOfVersions}
+														/>
+													);
+												}
+											})
+										)}
+									</div>
+								);
+							case 'inReview':
+								return (
+									<div>
+										{reviewCount <= 0 ? (
+											<NotFound word='datasets' />
+										) : (
+											datasetList.map(dataset => {
+												if (dataset.activeflag !== 'inReview') {
+													return <></>;
+												} else {
+													return (
+														<DatasetCard
+															id={dataset._id}
+															title={dataset.name}
+															publisher={dataset.datasetv2.summary.publisher.name}
+															version={dataset.datasetVersion}
+															isDraft={true}
+															datasetStatus={dataset.activeflag}
+															timeStamps={dataset.timestamps}
+															completion={dataset.percentageCompleted}
+															listOfVersions={dataset.listOfVersions}
+														/>
+													);
+												}
+											})
+										)}
+									</div>
+								);
+							case 'rejected':
+								return (
+									<div>
+										{rejectedCount <= 0 ? (
+											<NotFound word='datasets' />
+										) : (
+											datasetList.map(dataset => {
+												if (dataset.activeflag !== 'rejected') {
+													return <></>;
+												} else {
+													return (
+														<DatasetCard
+															id={dataset._id}
+															title={dataset.name}
+															publisher={dataset.datasetv2.summary.publisher.name}
+															version={dataset.datasetVersion}
+															isDraft={true}
+															datasetStatus={dataset.activeflag}
+															timeStamps={dataset.timestamps}
+															completion={dataset.percentageCompleted}
+															rejectionText={dataset.applicationStatusDesc}
+															listOfVersions={dataset.listOfVersions}
+														/>
+													);
+												}
+											})
+										)}
+									</div>
+								);
+							case 'archive':
+								return (
+									<div>
+										{archiveCount <= 0 ? (
+											<NotFound word='datasets' />
+										) : (
+											datasetList.map(dataset => {
+												if (dataset.activeflag !== 'archive') {
+													return <></>;
+												} else {
+													return (
+														<DatasetCard
+															id={dataset._id}
+															title={dataset.name}
+															//publisher={dataset.datasetv2.summary.publisher.name}
+															version={dataset.datasetVersion}
+															isDraft={true}
+															datasetStatus={dataset.activeflag}
+															timeStamps={dataset.timestamps}
+															completion={dataset.percentageCompleted}
+															listOfVersions={dataset.listOfVersions}
+														/>
+													);
+												}
+											})
+										)}
+									</div>
+								);
+						}
+					})()}
+				</Col>
+				<Col xs={1}></Col>
+			</Row>
+		</div>
+	);
+};
 
 export default AccountDatasets;

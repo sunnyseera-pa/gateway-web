@@ -1037,7 +1037,7 @@ class DataAccessRequest extends Component {
 		// 1. Deconstruct aboutApplication from state
 		let { aboutApplication } = this.state;
 		// 2. Update about application object
-		aboutApplication.nationalCoreStudiesProjectId = e;
+		aboutApplication.nationalCoreStudiesProjectId = e.toString();
 		// 3. Set state updating validation
 		this.setState({
 			aboutApplication,
