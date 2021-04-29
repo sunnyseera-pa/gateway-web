@@ -212,3 +212,7 @@ h6 {
 .gray-deep-14 {
 	@include font-source(14px, $gray-deep, $font-weight-semibold);
 }
+
+.dark-red-semibold-20 {
+	@include font-source(20px, $dark-red, $font-weight-semibold);
+}
