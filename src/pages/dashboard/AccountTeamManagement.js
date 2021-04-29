@@ -15,12 +15,20 @@ import { userTypes, tabTypes } from './Team/teamUtil';
 import SVGIcon from '../../images/SVGIcon';
 import './Dashboard.scss';
 
-const AccountTeamManagement = ({ userState = [], team = '', innertab, forwardRef, onTeamManagementSave, onTeamManagementTabChange , onClearInnerTab }) => {
+const AccountTeamManagement = ({
+	userState = [],
+	team = '',
+	innertab,
+	forwardRef,
+	onTeamManagementSave,
+	onTeamManagementTabChange,
+	onClearInnerTab,
+}) => {
 	// constants
 	const alertTypes = {
 		success: 'success',
-		warning: 'warning'
-	}
+		warning: 'warning',
+	};
 	let messageKey = 'message';
 	// state
 	const [isLoading, setLoading] = useState(false);
@@ -32,7 +40,7 @@ const AccountTeamManagement = ({ userState = [], team = '', innertab, forwardRef
 	]);
 	const [alertModal, setAlertModal] = useState(false);
 	const [teamEmailModal, setTeamEmailModal] = useState(false);
-	const [alertModalOptions, setAlertModalOptions] = useState({title: '', body:''});
+	const [alertModalOptions, setAlertModalOptions] = useState({ title: '', body: '' });
 	const [activeTabKey, setActiveTab] = useState(tabTypes.Members);
 	let history = useHistory();
 	forwardRef(() => saveNotifications());
@@ -46,34 +54,34 @@ const AccountTeamManagement = ({ userState = [], team = '', innertab, forwardRef
 	};
 
 	// generate an icon based on the type needed
-	const generateAlertIcon = (type) => {
+	const generateAlertIcon = type => {
 		switch (type) {
 			case alertTypes.success:
-				return <SVGIcon name='check' width={18} height={18} fill={'#2C8267'} />
+				return <SVGIcon name='check' width={18} height={18} fill={'#2C8267'} />;
 			case alertTypes.warning:
-				return <SVGIcon name='attention' width={18} height={18} fill={'#f0bb24'} />
+				return <SVGIcon name='attention' width={18} height={18} fill={'#f0bb24'} />;
 			default:
-				return <SVGIcon name='check' width={18} height={18} fill={'#2C8267'} />
+				return <SVGIcon name='check' width={18} height={18} fill={'#2C8267'} />;
 		}
-	}
+	};
 
 	// manage and insert alerts into the UI
 	const generateAlerts = () => {
-		if(!isEmpty(alerts)) {
-			return  alerts.map((alert, i) => {
-				let {type = '', message = ''} = alert;
-					return (
-						<Row className='mt-3' key={`alert-${i}`}>
-							<Col xs={1}></Col>
-							<Col xs={10}>
-								<Alert variant={type} className='col-sm-12 main-alert'>
-									{generateAlertIcon(type)} {message}
-								</Alert>
-							</Col>
-							<Col xs={1}></Col>
-						</Row>
-					);
-			})
+		if (!isEmpty(alerts)) {
+			return alerts.map((alert, i) => {
+				let { type = '', message = '' } = alert;
+				return (
+					<Row className='mt-3' key={`alert-${i}`}>
+						<Col xs={1}></Col>
+						<Col xs={10}>
+							<Alert variant={type} className='col-sm-12 main-alert'>
+								{generateAlertIcon(type)} {message}
+							</Alert>
+						</Col>
+						<Col xs={1}></Col>
+					</Row>
+				);
+			});
 		}
 		return '';
 	};
@@ -89,10 +97,10 @@ const AccountTeamManagement = ({ userState = [], team = '', innertab, forwardRef
 	};
 
 	const hasTeamNotificationOptIns = () => {
-		if(!isEmpty(teamGatewayNotifications)) {
+		if (!isEmpty(teamGatewayNotifications)) {
 			return teamGatewayNotifications.some(notification => notification.optIn === true);
 		}
-	}
+	};
 
 	const getTeamNotificationType = notificationType => {
 		return teamGatewayNotifications.findIndex(notification => notification.notificationType === notificationType);
@@ -190,7 +198,7 @@ const AccountTeamManagement = ({ userState = [], team = '', innertab, forwardRef
 		}
 	};
 
-  // remove row handle click
+	// remove row handle click
 	const handleRemoveClick = (index, notificationType = '') => {
 		if (teamGatewayNotifications.length && !isEmpty(notificationType)) {
 			let foundIndex = getTeamNotificationType(notificationType);
@@ -201,7 +209,7 @@ const AccountTeamManagement = ({ userState = [], team = '', innertab, forwardRef
 		}
 	};
 
-  // add row handle click
+	// add row handle click
 	const handleAddClick = (notificationType = '') => {
 		if (teamGatewayNotifications.length && !isEmpty(notificationType)) {
 			let foundIndex = getTeamNotificationType(notificationType);
@@ -217,18 +225,16 @@ const AccountTeamManagement = ({ userState = [], team = '', innertab, forwardRef
 
 	// modal for notifications ensures one notification is selected
 	const toggleAlertModal = (title = '', body = '') => {
-		if(!isEmpty(title) && !isEmpty(body))
-			setAlertModalOptions({ title, body });
+		if (!isEmpty(title) && !isEmpty(body)) setAlertModalOptions({ title, body });
 
 		setAlertModal(!alertModal);
 	};
 
 	// Email Alert for managers confirming Team Email addresses
-	const toggleTeamEmailsModal = (persistUpdate) => {
-		setTeamEmailModal(!teamEmailModal)
-		if(persistUpdate) 
-			updateNotifications();
-	}
+	const toggleTeamEmailsModal = persistUpdate => {
+		setTeamEmailModal(!teamEmailModal);
+		if (persistUpdate) updateNotifications();
+	};
 
 	// format subscribed emails for BE
 	const formatSubscribedEmails = () => {
@@ -238,9 +244,11 @@ const AccountTeamManagement = ({ userState = [], team = '', innertab, forwardRef
 				let { notificationType, optIn, subscribedEmails } = teamNotification;
 
 				if (!isEmpty(subscribedEmails)) {
-					emails = [...subscribedEmails].filter((item) => {
-                      return item.value !== '';
-                    }).map(value => value.value);
+					emails = [...subscribedEmails]
+						.filter(item => {
+							return item.value !== '';
+						})
+						.map(value => value.value);
 				}
 
 				arr = [...arr, { notificationType, optIn, subscribedEmails: emails }];
@@ -267,30 +275,26 @@ const AccountTeamManagement = ({ userState = [], team = '', innertab, forwardRef
 	};
 
 	const validEmailList = () => {
-		if(!isEmpty(teamGatewayNotifications)) {
+		if (!isEmpty(teamGatewayNotifications)) {
 			return [...teamGatewayNotifications].reduce((arr, teamNotification) => {
 				let emails = [];
 				let { subscribedEmails } = teamNotification;
-				if (!isEmpty(subscribedEmails)) 
-					emails = [...subscribedEmails].filter(item =>  !isEmpty(item.error) || !isEmpty(item.value));
+				if (!isEmpty(subscribedEmails)) emails = [...subscribedEmails].filter(item => !isEmpty(item.error) || !isEmpty(item.value));
 
-				if(emails.length > 0)
-					arr = [...arr, ...emails];
+				if (emails.length > 0) arr = [...arr, ...emails];
 
 				return arr;
 			}, []);
 		}
 		return [];
-	}
+	};
 
 	// Removes message from UI - ie mark as read clears member notification messages for all notification types
 	const updateMessageAlerts = () => {
-		axios
-			.put(`${baseURL}/api/v1/teams/${teamId}/notification-messages`)
-			.catch(err => {
-				console.error(err.message);
-			});
-	}
+		axios.put(`${baseURL}/api/v1/teams/${teamId}/notification-messages`).catch(err => {
+			console.error(err.message);
+		});
+	};
 
 	// Save Notifications API
 	const saveNotifications = async () => {
@@ -302,12 +306,15 @@ const AccountTeamManagement = ({ userState = [], team = '', innertab, forwardRef
 		let teamOptIns = hasTeamNotificationOptIns();
 		if (missingOptIns) {
 			// fire modal you must have one selected
-			toggleAlertModal('You must have one email address selected', 'At least one email address is needed to receive notifications from the gateway.');
+			toggleAlertModal(
+				'You must have one email address selected',
+				'At least one email address is needed to receive notifications from the gateway.'
+			);
 		} else if (!isValid) {
 			toggleAlertModal('Invalid Email address', 'Please fix the following email errors.');
 		} else if (isManager && teamGatewayNotifications.length > 0 && teamOptIns) {
-				// show modal with team email notifications if on only
-				setTeamEmailModal(true);
+			// show modal with team email notifications if on only
+			setTeamEmailModal(true);
 		} else {
 			updateNotifications();
 		}
@@ -343,7 +350,7 @@ const AccountTeamManagement = ({ userState = [], team = '', innertab, forwardRef
 					console.error(err.message);
 				});
 		}
-	}
+	};
 
 	const getTeamNotifications = teamId => {
 		if (!isEmpty(teamId)) {
@@ -355,18 +362,20 @@ const AccountTeamManagement = ({ userState = [], team = '', innertab, forwardRef
 					// will need updated once more notification types are defined
 					let { memberNotifications = [], teamNotifications = [] } = res.data;
 					// memberNotifications set
-					if (!isEmpty(memberNotifications))  {
+					if (!isEmpty(memberNotifications)) {
 						// set member notifications
 						setGatewayEmailNotification([...memberNotifications]);
 						// pull out messages from the member notifications and format in valid alerts for UI
-						messages = [...memberNotifications].filter(obj => Object.keys(obj).includes(messageKey) && !isEmpty(obj[messageKey])).map((value) => ({ message: value.message, type: alertTypes.warning})); 
+						messages = [...memberNotifications]
+							.filter(obj => Object.keys(obj).includes(messageKey) && !isEmpty(obj[messageKey]))
+							.map(value => ({ message: value.message, type: alertTypes.warning }));
 						// if messages exist from personal notifications
-						if(!isEmpty(messages)) {
+						if (!isEmpty(messages)) {
 							// set the alerts to show on the UI - once only
 							setAlerts(messages);
 							// post to back-end to remove all alerts so they do not show on repeat once we re-vist the page
 							// axios put remove teamNotificationMessage
-							updateMessageAlerts()
+							updateMessageAlerts();
 						} else {
 							setAlerts([]);
 						}
@@ -392,20 +401,18 @@ const AccountTeamManagement = ({ userState = [], team = '', innertab, forwardRef
 			localStorage.setItem('HDR_TEAM', team);
 		}
 
-		if(!isEmpty(innertab) && innertab === tabTypes.Notifications) {
+		if (!isEmpty(innertab) && innertab === tabTypes.Notifications) {
 			onTabChange(innertab);
 			onClearInnerTab();
 		}
 
 		// get and set teamId
-		const teamId = getTeamId(team);
+		//const teamId = getTeamId(team);
 		// set state
-		setTeamId(teamId);
+		setTeamId(team);
 
 		// only call get teamNotifications on tab change
-		if(activeTabKey  === tabTypes.Notifications)
-			getTeamNotifications(teamId);
-
+		if (activeTabKey === tabTypes.Notifications) getTeamNotifications(teamId);
 	}, [activeTabKey]);
 
 	if (isLoading) {
@@ -449,7 +456,7 @@ const AccountTeamManagement = ({ userState = [], team = '', innertab, forwardRef
 				<Col xs={1}></Col>
 			</Row>
 
-			{activeTabKey == tabTypes.Members && <AccountMembers userState={userState} team={team} teamId={teamId}/>}
+			{activeTabKey == tabTypes.Members && <AccountMembers userState={userState} team={team} teamId={teamId} />}
 
 			{activeTabKey === tabTypes.Notifications && (
 				<Row>
@@ -461,7 +468,7 @@ const AccountTeamManagement = ({ userState = [], team = '', innertab, forwardRef
 									<div className='black-20-semibold'>Email notifications</div>
 									<div className='gray700-14'>
 										Team related email notifications will automatically be sent to each team members gateway log in email. Data custodian
-										managers can choose to send notifications to additional email accounts. 
+										managers can choose to send notifications to additional email accounts.
 									</div>
 								</Row>
 							</Col>
@@ -494,10 +501,10 @@ const AccountTeamManagement = ({ userState = [], team = '', innertab, forwardRef
 												teamNotification={teamNotification}
 												toggleTeamNotifications={toggleTeamNotifications}
 											/>
-											{ teamNotification.optIn ?
-											<Fragment>
-												<div className='tm-wrapper'>
-													<div className='gray700-14'>Team email</div>
+											{teamNotification.optIn ? (
+												<Fragment>
+													<div className='tm-wrapper'>
+														<div className='gray700-14'>Team email</div>
 														<FieldRepeater
 															id={index}
 															teamId={teamId}
@@ -507,9 +514,11 @@ const AccountTeamManagement = ({ userState = [], team = '', innertab, forwardRef
 															handleRemoveClick={handleRemoveClick}
 															handleAddClick={handleAddClick}
 														/>
-												</div>
-											</Fragment>
-											: '' } 
+													</div>
+												</Fragment>
+											) : (
+												''
+											)}
 										</div>
 									);
 								})}
@@ -519,7 +528,12 @@ const AccountTeamManagement = ({ userState = [], team = '', innertab, forwardRef
 				</Row>
 			)}
 			<TeamEmailAlertModal open={alertModal} close={toggleAlertModal} options={alertModalOptions} />
-			<TeamNotificationsConfirmationModal open={teamEmailModal} close={toggleTeamEmailsModal} confirm={toggleTeamEmailsModal} teamNotifications={teamGatewayNotifications} />
+			<TeamNotificationsConfirmationModal
+				open={teamEmailModal}
+				close={toggleTeamEmailsModal}
+				confirm={toggleTeamEmailsModal}
+				teamNotifications={teamGatewayNotifications}
+			/>
 		</Fragment>
 	);
 };
