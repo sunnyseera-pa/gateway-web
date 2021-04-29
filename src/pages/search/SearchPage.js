@@ -103,9 +103,10 @@ class SearchPage extends React.Component {
 
 	constructor(props) {
 		super(props);
-		let { search = '' } = queryString.parse(window.location.search);
-		this.state.userState = props.userState;
-		this.state.search = search || props.search;
+		let query =  queryString.parse(window.location.search);
+		let { search = '' } = query;
+		let { userState } = props;
+		this.setState({ userState, search: search || props.search });
 		this.searchBar = React.createRef();
 	}
 
@@ -122,7 +123,6 @@ class SearchPage extends React.Component {
 		PageView();
 		// 1. call filters - this will need parameterised when tools, projects etc move to v2
 		await this.getFilters();
-		debugger;
 		// 2. fires on first time in or page is refreshed/url loaded / has search location
 		if (!!window.location.search) {
 			// 3. splits location search into object { search: search, tab: Datasets}
@@ -190,7 +190,6 @@ class SearchPage extends React.Component {
 			// 3. loop over queryKeys
 			for (const key of Object.keys(queryParams)) {
 				// 4. convert queryString into array of values
-				debugger;
 				let queryValues = queryParams[key].split('::');
 				// 5. check if key exists in our tree, return {} or undefined
 				let parentNode = this.findParentNode(filtersV2, key);
@@ -405,7 +404,6 @@ class SearchPage extends React.Component {
 		const searchObj = this.buildSearchObj(this.state.selectedV2);
 		// 2. dynamically build the searchUrl v2 only
 		searchURL = this.buildSearchUrl(searchObj);
-		debugger;
 		// 3. build up V1 Tools / early filters, no change from original implementation
 		if (this.state.toolCategoriesSelected.length > 0)
 			searchURL += '&toolcategories=' + encodeURIComponent(this.state.toolCategoriesSelected.toString().split(',').join('::'));
@@ -607,7 +605,6 @@ class SearchPage extends React.Component {
 	 */
 	buildSearchUrl = (searchObj) => {
 		let searchUrl = '';
-		debugger;
 		if(searchObj) {
 			for (let key of Object.keys(searchObj)) {
 				let values = searchObj[key];
