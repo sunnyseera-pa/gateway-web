@@ -497,7 +497,6 @@ class SearchPage extends React.Component {
 		if (this.state.key !== 'People') {
 			// remove once full migration to v2 filters for all other entities 'Tools, Projects, Courses and Papers'
 			const entityType = typeMapper[`${this.state.key}`];
-			console.log('search here 1');
 			axios.get(`${baseURL}/api/v1/search/filter?search=${encodeURIComponent(this.state.search)}${searchURL}`).then(res => {
 				let filters = this.getFilterState(entityType, res);
 				// test the type and set relevant state
