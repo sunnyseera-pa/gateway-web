@@ -34,7 +34,7 @@ const AccountTeamManagement = ({
 	const [isLoading, setLoading] = useState(false);
 	const [alerts, setAlerts] = useState([]);
 	const [teamId, setTeamId] = useState(null);
-	const [memberNotifications, setGatewayEmailNotification] = useState([{ optIn: false, notificationType: 'dataAccessRequest' }]);
+	const [memberNotifications, setGatewayEmailNotification] = useState([{ optIn: true, notificationType: 'dataAccessRequest' }]);
 	const [teamGatewayNotifications, setGatewayNotifications] = useState([
 		{ notificationType: 'dataAccessRequest', optIn: false, subscribedEmails: [{ value: '', error: '' }], message: 'Test message' },
 	]);
