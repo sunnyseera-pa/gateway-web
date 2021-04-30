@@ -101,10 +101,9 @@ class SearchPage extends React.Component {
 
 	constructor(props) {
 		super(props);
-		let query = queryString.parse(window.location.search);
-		let { search = '' } = query;
-		let { userState } = props;
-		this.setState({ userState, search: search || props.search });
+		let { search = '' } = queryString.parse(window.location.search);
+		this.state.userState = props.userState;
+		this.state.search = search || props.search;
 		this.searchBar = React.createRef();
 	}
 
