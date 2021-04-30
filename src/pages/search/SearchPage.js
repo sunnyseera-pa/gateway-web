@@ -3,7 +3,7 @@ import axios from 'axios';
 import { PageView, initGA } from '../../tracking';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
-import { Container, Row, Col, Tabs, Tab, Pagination, Dropdown } from 'react-bootstrap';
+import { Container, Row, Col, Tabs, Tab, Pagination } from 'react-bootstrap';
 import moment from 'moment';
 import _ from 'lodash';
 import { toTitleCase } from '../../utils/GeneralHelper.util';
@@ -20,6 +20,7 @@ import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
+import SortDropdown from './components/SortDropdown';
 import './Search.scss';
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
@@ -37,10 +38,10 @@ class SearchPage extends React.Component {
 	state = {
 		search: '',
 		datasetSort: '',
-		toolSort: '',
-		projectSort: '',
-		paperSort: '',
-		personSort: '',
+		toolSort: 'latest',
+		projectSort: 'latest',
+		paperSort: 'latest',
+		personSort: 'latest',
 		courseSort: '',
 		datasetIndex: 0,
 		toolIndex: 0,
@@ -306,10 +307,10 @@ class SearchPage extends React.Component {
 		queryParams.collectionIndex ? this.setState({ collectionIndex: queryParams.collectionIndex }) : this.setState({ collectionIndex: 0 });
 		// Sort for each tab
 		queryParams.datasetSort ? this.setState({ datasetSort: queryParams.datasetSort }) : this.setState({ datasetSort: '' });
-		queryParams.toolSort ? this.setState({ toolSort: queryParams.toolSort }) : this.setState({ toolSort: '' });
-		queryParams.projectSort ? this.setState({ projectSort: queryParams.projectSort }) : this.setState({ projectSort: '' });
-		queryParams.paperSort ? this.setState({ paperSort: queryParams.paperSort }) : this.setState({ paperSort: '' });
-		queryParams.personSort ? this.setState({ personSort: queryParams.personSort }) : this.setState({ personSort: '' });
+		queryParams.toolSort ? this.setState({ toolSort: queryParams.toolSort }) : this.setState({ toolSort: 'latest' });
+		queryParams.projectSort ? this.setState({ projectSort: queryParams.projectSort }) : this.setState({ projectSort: 'latest' });
+		queryParams.paperSort ? this.setState({ paperSort: queryParams.paperSort }) : this.setState({ paperSort: 'latest' });
+		queryParams.personSort ? this.setState({ personSort: queryParams.personSort }) : this.setState({ personSort: 'latest' });
 		queryParams.courseSort ? this.setState({ courseSort: queryParams.courseSort }) : this.setState({ courseSort: '' });
 	}
 
@@ -352,10 +353,10 @@ class SearchPage extends React.Component {
 				courseIndex: 0,
 				collectionIndex: 0,
 				datasetSort: '',
-				toolSort: '',
-				projectSort: '',
-				paperSort: '',
-				personSort: '',
+				toolSort: this.state.search === '' ? 'latest' : '',
+				projectSort: this.state.search === '' ? 'latest' : '',
+				paperSort: this.state.search === '' ? 'latest' : '',
+				personSort: this.state.search === '' ? 'latest' : '',
 				courseSort: '',
 			},
 			() => {
@@ -1809,54 +1810,55 @@ class SearchPage extends React.Component {
 									) : (
 										<Row>
 											<Col className='text-right'>
-												<Dropdown alignRight onSelect={this.handleSort}>
-													<Dropdown.Toggle variant='info' id='dropdown-menu-align-right' className='gray800-14'>
-														{(() => {
-															if (key === 'Datasets') {
-																if (datasetSort === 'popularity') return 'Number of views (highest to lowest)';
-																else if (datasetSort === 'metadata') return 'Sort by metadata quality';
-																else return 'Match to search terms (closest first)';
-															} else if (key === 'Tools') {
-																if (toolSort === 'popularity') return 'Number of views (highest to lowest)';
-																else return 'Match to search terms (closest first)';
-															} else if (key === 'Projects') {
-																if (projectSort === 'popularity') return 'Number of views (highest to lowest)';
-																else return 'Match to search terms (closest first)';
-															} else if (key === 'Papers') {
-																if (paperSort === 'popularity') return 'Number of views (highest to lowest)';
-																else return 'Match to search terms (closest first)';
-															} else if (key === 'People') {
-																if (personSort === 'popularity') return 'Number of views (highest to lowest)';
-																else if (personSort === 'latest') return 'Latest (recently updated first)';
-																else return 'Match to search terms (closest first)';
-															}
-														})()}
-														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													</Dropdown.Toggle>
+												{key === 'Tools' ? (
+													<SortDropdown
+														handleSort={this.handleSort}
+														sort={toolSort}
+														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+													/>
+												) : (
+													''
+												)}
 
-													<Dropdown.Menu>
-														<Dropdown.Item eventKey='relevance' className='gray800-14 '>
-															Match to search terms (closest first)
-														</Dropdown.Item>
-														<Dropdown.Item eventKey='popularity' className='gray800-14'>
-															Number of views (highest to lowest)
-														</Dropdown.Item>
-														{key === 'Datasets' ? (
-															<Dropdown.Item eventKey='metadata' className='gray800-14'>
-																Sort by metadata quality
-															</Dropdown.Item>
-														) : (
-															''
-														)}
-														{key === 'People' ? (
-															<Dropdown.Item eventKey='latest' className='gray800-14'>
-																Latest (recently updated first)
-															</Dropdown.Item>
-														) : (
-															''
-														)}
-													</Dropdown.Menu>
-												</Dropdown>
+												{key === 'Datasets' ? (
+													<SortDropdown
+														handleSort={this.handleSort}
+														sort={datasetSort}
+														dropdownItems={['relevance', 'popularity', 'metadata']}
+													/>
+												) : (
+													''
+												)}
+
+												{key === 'Projects' ? (
+													<SortDropdown
+														handleSort={this.handleSort}
+														sort={projectSort}
+														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+													/>
+												) : (
+													''
+												)}
+
+												{key === 'Papers' ? (
+													<SortDropdown
+														handleSort={this.handleSort}
+														sort={paperSort}
+														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+													/>
+												) : (
+													''
+												)}
+
+												{key === 'People' ? (
+													<SortDropdown
+														handleSort={this.handleSort}
+														sort={personSort}
+														dropdownItems={['relevance', 'popularity', 'latest']}
+													/>
+												) : (
+													''
+												)}
 											</Col>
 										</Row>
 									)}
