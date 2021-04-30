@@ -321,7 +321,7 @@ class SearchPage extends React.Component {
 		let filtersV2 = this.resetTreeChecked(filtersV2Data);
 
 		this.setState(
-			{
+			prevState => ({
 				filtersV2,
 				selectedV2: [],
 				toolCategoriesSelected: [],
@@ -353,12 +353,12 @@ class SearchPage extends React.Component {
 				courseIndex: 0,
 				collectionIndex: 0,
 				datasetSort: '',
-				toolSort: this.state.search === '' ? 'latest' : '',
-				projectSort: this.state.search === '' ? 'latest' : '',
-				paperSort: this.state.search === '' ? 'latest' : '',
-				personSort: this.state.search === '' ? 'latest' : '',
+				toolSort: prevState.search === '' ? 'latest' : '',
+				projectSort: prevState.search === '' ? 'latest' : '',
+				paperSort: prevState.search === '' ? 'latest' : '',
+				personSort: prevState.search === '' ? 'latest' : '',
 				courseSort: '',
-			},
+			}),
 			() => {
 				this.doSearchCall();
 			}
