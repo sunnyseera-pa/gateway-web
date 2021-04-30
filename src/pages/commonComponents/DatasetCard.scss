@@ -1,0 +1,23 @@
+@import '../../css/typography';
+
+.dataset-completion-wheels {
+	display: flex;
+	flex-flow: row;
+	max-width: 145px;
+	width: 100%;
+	align-items: center;
+	justify-content: space-between;
+	margin: 0 25px;
+}
+
+.version-list {
+	display: flex;
+	flex-flow: wrap;
+	align-items: flex-start !important;
+	word-break: break-word;
+	position: relative;
+	font-family: museo-sans-rounded;
+	font-weight: 500;
+	color: $gray-800;
+	font-size: 14px;
+}

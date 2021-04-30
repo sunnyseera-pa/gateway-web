@@ -102,9 +102,10 @@ class SearchPage extends React.Component {
 
 	constructor(props) {
 		super(props);
-		let { search = '' } = queryString.parse(window.location.search);
-		this.state.userState = props.userState;
-		this.state.search = search || props.search;
+		let query =  queryString.parse(window.location.search);
+		let { search = '' } = query;
+		let { userState } = props;
+		this.setState({ userState, search: search || props.search });
 		this.searchBar = React.createRef();
 	}
 
@@ -491,13 +492,13 @@ class SearchPage extends React.Component {
 		if (!skipHistory) {
 			if (this.state.key) searchURL += '&tab=' + this.state.key;
 
-			this.props.history.push(`${window.location.pathname}?search=${this.state.search}` + searchURL);
+			this.props.history.push(`${window.location.pathname}?search=${encodeURIComponent(this.state.search)}` + searchURL);
 		}
 
 		if (this.state.key !== 'People') {
 			// remove once full migration to v2 filters for all other entities 'Tools, Projects, Courses and Papers'
-			axios.get(baseURL + '/api/v1/search/filter?search=' + this.state.search + searchURL).then(res => {
-				const entityType = typeMapper[`${this.state.key}`];
+			const entityType = typeMapper[`${this.state.key}`];
+			axios.get(`${baseURL}/api/v1/search/filter?search=${encodeURIComponent(this.state.search)}${searchURL}`).then(res => {
 				let filters = this.getFilterState(entityType, res);
 				// test the type and set relevant state
 				if (entityType === 'dataset') {
@@ -508,9 +509,11 @@ class SearchPage extends React.Component {
 				}
 			});
 		}
+
+		console.log('search results call');
 		// search call brings back search results and now filters highlighting for v2
 		axios
-			.get(baseURL + '/api/v1/search?search=' + this.state.search + searchURL)
+			.get(`${baseURL}/api/v1/search?search=${encodeURIComponent(this.state.search)}${searchURL}`)
 			.then(res => {
 				// get the correct entity type from our mapper via the selected tab ie..'Dataset, Tools'
 				const entityType = typeMapper[`${this.state.key}`];
