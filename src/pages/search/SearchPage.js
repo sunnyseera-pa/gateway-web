@@ -101,7 +101,7 @@ class SearchPage extends React.Component {
 
 	constructor(props) {
 		super(props);
-		let query =  queryString.parse(window.location.search);
+		let query = queryString.parse(window.location.search);
 		let { search = '' } = query;
 		let { userState } = props;
 		this.setState({ userState, search: search || props.search });
@@ -138,7 +138,6 @@ class SearchPage extends React.Component {
 			// 6 if openUserMessages is true open the user messages
 			else if (this.state.userState[0].loggedIn && queryParams.openUserMessages === 'true') {
 				this.toggleDrawer();
-
 			}
 			// 7. set the selectedFilter states from queryParams ** does not return anything **
 			await this.updateFilterStates(queryParams);
@@ -191,33 +190,35 @@ class SearchPage extends React.Component {
 			if (!_.isEmpty(Object.keys(queryParams))) {
 				// 3. loop over queryKeys
 				for (const key of Object.keys(queryParams)) {
-					// 4. convert queryString into array of values
-					let queryValues = queryParams[key].split('::');
-					// 5. check if key exists in our tree, return {} or undefined
-					let parentNode = this.findParentNode(filtersV2, key);
-					if (!_.isNil(parentNode)) {
-						let { filters } = parentNode;
-						// 6. loop over query values
-						queryValues.forEach(node => {
-							// 7. get the selected values
-							let foundNode = this.findNode(filters, node);
-							if (!_.isEmpty(foundNode)) {
-								// 8. set check value
-								foundNode.checked = !foundNode.checked;
-								// 9. increment highest parent count
-								parentNode.selectedCount += 1;
-								// 10. prep new selected Item for selected showing
-								let selectedNode = {
-									parentKey: key,
-									id: foundNode.id,
-									label: foundNode.label,
-								};
-								// 11. fn for handling the *selected showing* returns new state
-								let selected = this.handleSelected(selectedNode, foundNode.checked);
-								// 12. update selectedV2 array with our new returned value
-								selectedV2 = [...selectedV2, ...selected];
-							}
-						});
+					if (!_.isNil(queryParams[key])) {
+						// 4. convert queryString into array of values
+						let queryValues = queryParams[key].split('::');
+						// 5. check if key exists in our tree, return {} or undefined
+						let parentNode = this.findParentNode(filtersV2, key);
+						if (!_.isNil(parentNode)) {
+							let { filters } = parentNode;
+							// 6. loop over query values
+							queryValues.forEach(node => {
+								// 7. get the selected values
+								let foundNode = this.findNode(filters, node);
+								if (!_.isEmpty(foundNode)) {
+									// 8. set check value
+									foundNode.checked = !foundNode.checked;
+									// 9. increment highest parent count
+									parentNode.selectedCount += 1;
+									// 10. prep new selected Item for selected showing
+									let selectedNode = {
+										parentKey: key,
+										id: foundNode.id,
+										label: foundNode.label,
+									};
+									// 11. fn for handling the *selected showing* returns new state
+									let selected = this.handleSelected(selectedNode, foundNode.checked);
+									// 12. update selectedV2 array with our new returned value
+									selectedV2 = [...selectedV2, ...selected];
+								}
+							});
+						}
 					}
 				}
 				// 13. set the state of filters and selected options
@@ -412,75 +413,111 @@ class SearchPage extends React.Component {
 	doSearchCall(skipHistory) {
 		let searchURL = '';
 		let filtersV2 = [];
+		let {
+			userState,
+			toolCategoriesSelected = [],
+			toolProgrammingLanguageSelected = [],
+			toolFeaturesSelected = [],
+			toolTopicsSelected = [],
+			projectCategoriesSelected = [],
+			projectFeaturesSelected = [],
+			projectTopicsSelected = [],
+			paperFeaturesSelected = [],
+			paperTopicsSelected = [],
+			courseStartDatesSelected = [],
+			courseProviderSelected = [],
+			courseLocationSelected = [],
+			courseStudyModeSelected = [],
+			courseAwardSelected = [],
+			courseEntryLevelSelected = [],
+			courseDomainsSelected = [],
+			courseKeywordsSelected = [],
+			courseFrameworkSelected = [],
+			coursePrioritySelected = [],
+			collectionKeywordsSelected = [],
+			collectionPublisherSelected = [],
+			datasetIndex = 0,
+			toolIndex = 0,
+			projectIndex = 0,
+			paperIndex = 0,
+			personIndex = 0,
+			courseIndex = 0,
+			collectionIndex = 0,
+			datasetSort = '',
+			toolSort = '',
+			projectSort = '',
+			paperSort = '',
+			personSort = '',
+			courseSort = '',
+		} = this.state;
 		// 1. build search object from list of selected fitlers v2 only
 		const searchObj = this.buildSearchObj(this.state.selectedV2);
 		// 2. dynamically build the searchUrl v2 only
 		searchURL = this.buildSearchUrl(searchObj);
 		// 3. build up V1 Tools / early filters, no change from original implementation
-		if (this.state.toolCategoriesSelected.length > 0)
-			searchURL += '&toolcategories=' + encodeURIComponent(this.state.toolCategoriesSelected.toString().split(',').join('::'));
-		if (this.state.toolProgrammingLanguageSelected.length > 0)
-			searchURL +=
-				'&toolprogrammingLanguage=' + encodeURIComponent(this.state.toolProgrammingLanguageSelected.toString().split(',').join('::'));
-		if (this.state.toolFeaturesSelected.length > 0)
-			searchURL += '&toolfeatures=' + encodeURIComponent(this.state.toolFeaturesSelected.toString().split(',').join('::'));
-		if (this.state.toolTopicsSelected.length > 0)
-			searchURL += '&tooltopics=' + encodeURIComponent(this.state.toolTopicsSelected.toString().split(',').join('::'));
+		if (toolCategoriesSelected.length > 0)
+			searchURL += '&toolcategories=' + encodeURIComponent(toolCategoriesSelected.toString().split(',').join('::'));
+		if (toolProgrammingLanguageSelected.length > 0)
+			searchURL += '&toolprogrammingLanguage=' + encodeURIComponent(toolProgrammingLanguageSelected.toString().split(',').join('::'));
+		if (toolFeaturesSelected.length > 0)
+			searchURL += '&toolfeatures=' + encodeURIComponent(toolFeaturesSelected.toString().split(',').join('::'));
+		if (toolTopicsSelected.length > 0)
+			searchURL += '&tooltopics=' + encodeURIComponent(toolTopicsSelected.toString().split(',').join('::'));
 		// V1 Projects
-		if (this.state.projectCategoriesSelected.length > 0)
-			searchURL += '&projectcategories=' + encodeURIComponent(this.state.projectCategoriesSelected.toString().split(',').join('::'));
-		if (this.state.projectFeaturesSelected.length > 0)
-			searchURL += '&projectfeatures=' + encodeURIComponent(this.state.projectFeaturesSelected.toString().split(',').join('::'));
-		if (this.state.projectTopicsSelected.length > 0)
-			searchURL += '&projecttopics=' + encodeURIComponent(this.state.projectTopicsSelected.toString().split(',').join('::'));
+		if (projectCategoriesSelected.length > 0)
+			searchURL += '&projectcategories=' + encodeURIComponent(projectCategoriesSelected.toString().split(',').join('::'));
+		if (projectFeaturesSelected.length > 0)
+			searchURL += '&projectfeatures=' + encodeURIComponent(projectFeaturesSelected.toString().split(',').join('::'));
+		if (projectTopicsSelected.length > 0)
+			searchURL += '&projecttopics=' + encodeURIComponent(projectTopicsSelected.toString().split(',').join('::'));
 		// V1 Papers
-		if (this.state.paperFeaturesSelected.length > 0)
-			searchURL += '&paperfeatures=' + encodeURIComponent(this.state.paperFeaturesSelected.toString().split(',').join('::'));
-		if (this.state.paperTopicsSelected.length > 0)
-			searchURL += '&papertopics=' + encodeURIComponent(this.state.paperTopicsSelected.toString().split(',').join('::'));
+		if (paperFeaturesSelected.length > 0)
+			searchURL += '&paperfeatures=' + encodeURIComponent(paperFeaturesSelected.toString().split(',').join('::'));
+		if (paperTopicsSelected.length > 0)
+			searchURL += '&papertopics=' + encodeURIComponent(paperTopicsSelected.toString().split(',').join('::'));
 		// V1 Courses
-		if (this.state.courseStartDatesSelected.length > 0)
-			searchURL += '&coursestartdates=' + encodeURIComponent(this.state.courseStartDatesSelected.toString().split(',').join('::'));
-		if (this.state.courseProviderSelected.length > 0)
-			searchURL += '&courseprovider=' + encodeURIComponent(this.state.courseProviderSelected.toString().split(',').join('::'));
-		if (this.state.courseLocationSelected.length > 0)
-			searchURL += '&courselocation=' + encodeURIComponent(this.state.courseLocationSelected.toString().split(',').join('::'));
-		if (this.state.courseStudyModeSelected.length > 0)
-			searchURL += '&coursestudymode=' + encodeURIComponent(this.state.courseStudyModeSelected.toString().split(',').join('::'));
-		if (this.state.courseAwardSelected.length > 0)
-			searchURL += '&courseaward=' + encodeURIComponent(this.state.courseAwardSelected.toString().split(',').join('::'));
-		if (this.state.courseEntryLevelSelected.length > 0)
-			searchURL += '&courseentrylevel=' + encodeURIComponent(this.state.courseEntryLevelSelected.toString().split(',').join('::'));
-		if (this.state.courseDomainsSelected.length > 0)
-			searchURL += '&coursedomains=' + encodeURIComponent(this.state.courseDomainsSelected.toString().split(',').join('::'));
-		if (this.state.courseKeywordsSelected.length > 0)
-			searchURL += '&coursekeywords=' + encodeURIComponent(this.state.courseKeywordsSelected.toString().split(',').join('::'));
-		if (this.state.courseFrameworkSelected.length > 0)
-			searchURL += '&courseframework=' + encodeURIComponent(this.state.courseFrameworkSelected.toString().split(',').join('::'));
-		if (this.state.coursePrioritySelected.length > 0)
-			searchURL += '&coursepriority=' + encodeURIComponent(this.state.coursePrioritySelected.toString().split(',').join('::'));
+		if (courseStartDatesSelected.length > 0)
+			searchURL += '&coursestartdates=' + encodeURIComponent(courseStartDatesSelected.toString().split(',').join('::'));
+		if (courseProviderSelected.length > 0)
+			searchURL += '&courseprovider=' + encodeURIComponent(courseProviderSelected.toString().split(',').join('::'));
+		if (courseLocationSelected.length > 0)
+			searchURL += '&courselocation=' + encodeURIComponent(courseLocationSelected.toString().split(',').join('::'));
+		if (courseStudyModeSelected.length > 0)
+			searchURL += '&coursestudymode=' + encodeURIComponent(courseStudyModeSelected.toString().split(',').join('::'));
+		if (courseAwardSelected.length > 0)
+			searchURL += '&courseaward=' + encodeURIComponent(courseAwardSelected.toString().split(',').join('::'));
+		if (courseEntryLevelSelected.length > 0)
+			searchURL += '&courseentrylevel=' + encodeURIComponent(courseEntryLevelSelected.toString().split(',').join('::'));
+		if (courseDomainsSelected.length > 0)
+			searchURL += '&coursedomains=' + encodeURIComponent(courseDomainsSelected.toString().split(',').join('::'));
+		if (courseKeywordsSelected.length > 0)
+			searchURL += '&coursekeywords=' + encodeURIComponent(courseKeywordsSelected.toString().split(',').join('::'));
+		if (courseFrameworkSelected.length > 0)
+			searchURL += '&courseframework=' + encodeURIComponent(courseFrameworkSelected.toString().split(',').join('::'));
+		if (coursePrioritySelected.length > 0)
+			searchURL += '&coursepriority=' + encodeURIComponent(coursePrioritySelected.toString().split(',').join('::'));
 		// V1 Collections
-		if (this.state.collectionKeywordsSelected.length > 0)
-			searchURL += '&collectionkeywords=' + encodeURIComponent(this.state.collectionKeywordsSelected.toString().split(',').join('::'));
-		if (this.state.collectionPublisherSelected.length > 0)
-			searchURL += '&collectionpublisher=' + encodeURIComponent(this.state.collectionPublisherSelected.toString().split(',').join('::'));
+		if (collectionKeywordsSelected.length > 0)
+			searchURL += '&collectionkeywords=' + encodeURIComponent(collectionKeywordsSelected.toString().split(',').join('::'));
+		if (collectionPublisherSelected.length > 0)
+			searchURL += '&collectionpublisher=' + encodeURIComponent(collectionPublisherSelected.toString().split(',').join('::'));
 		// PageNumbers = (entityNameIndex) N.B. should be datasetPageNo, toolPageNo, projectPageNo, paperPageNo, coursePageNo
-		if (this.state.datasetIndex > 0) searchURL += '&datasetIndex=' + encodeURIComponent(this.state.datasetIndex);
-		if (this.state.toolIndex > 0) searchURL += '&toolIndex=' + encodeURIComponent(this.state.toolIndex);
-		if (this.state.projectIndex > 0) searchURL += '&projectIndex=' + encodeURIComponent(this.state.projectIndex);
-		if (this.state.paperIndex > 0) searchURL += '&paperIndex=' + encodeURIComponent(this.state.paperIndex);
-		if (this.state.personIndex > 0) searchURL += '&personIndex=' + encodeURIComponent(this.state.personIndex);
-		if (this.state.courseIndex > 0) searchURL += '&courseIndex=' + encodeURIComponent(this.state.courseIndex);
-		if (this.state.collectionIndex > 0) searchURL += '&collectionIndex=' + encodeURIComponent(this.state.collectionIndex);
+		if (datasetIndex > 0) searchURL += '&datasetIndex=' + encodeURIComponent(datasetIndex);
+		if (toolIndex > 0) searchURL += '&toolIndex=' + encodeURIComponent(toolIndex);
+		if (projectIndex > 0) searchURL += '&projectIndex=' + encodeURIComponent(projectIndex);
+		if (paperIndex > 0) searchURL += '&paperIndex=' + encodeURIComponent(paperIndex);
+		if (personIndex > 0) searchURL += '&personIndex=' + encodeURIComponent(personIndex);
+		if (courseIndex > 0) searchURL += '&courseIndex=' + encodeURIComponent(courseIndex);
+		if (collectionIndex > 0) searchURL += '&collectionIndex=' + encodeURIComponent(collectionIndex);
 		// sorting across the filter range
-		if (this.state.datasetSort !== '') searchURL += '&datasetSort=' + encodeURIComponent(this.state.datasetSort);
-		if (this.state.toolSort !== '') searchURL += '&toolSort=' + encodeURIComponent(this.state.toolSort);
-		if (this.state.projectSort !== '') searchURL += '&projectSort=' + encodeURIComponent(this.state.projectSort);
-		if (this.state.paperSort !== '') searchURL += '&paperSort=' + encodeURIComponent(this.state.paperSort);
-		if (this.state.personSort !== '') searchURL += '&personSort=' + encodeURIComponent(this.state.personSort);
-		if (this.state.courseSort !== '') searchURL += '&courseSort=' + encodeURIComponent(this.state.courseSort);
+		if (datasetSort !== '') searchURL += '&datasetSort=' + encodeURIComponent(datasetSort);
+		if (toolSort !== '') searchURL += '&toolSort=' + encodeURIComponent(toolSort);
+		if (projectSort !== '') searchURL += '&projectSort=' + encodeURIComponent(projectSort);
+		if (paperSort !== '') searchURL += '&paperSort=' + encodeURIComponent(paperSort);
+		if (personSort !== '') searchURL += '&personSort=' + encodeURIComponent(personSort);
+		if (courseSort !== '') searchURL += '&courseSort=' + encodeURIComponent(courseSort);
 		// login status handler
-		if (this.state.userState[0].loggedIn === false) {
+		if (userState[0].loggedIn === false) {
 			let values = queryString.parse(window.location.search);
 			if (values.showLogin === 'true' && values.loginReferrer !== '')
 				searchURL += '&loginReferrer=' + encodeURIComponent(values.loginReferrer);

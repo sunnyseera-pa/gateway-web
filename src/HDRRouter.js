@@ -103,14 +103,14 @@ class HDRRouter extends Component {
 				return response;
 			},
 			function (error) {
-				if (error) {
-					if (error.response.status !== 404) {
-						console.log(error);
-						Sentry.captureException(error);
-						return Promise.reject(error).then(currentComponent.setState({ showError: true }));
-					}
+				// allow 404 errors to be handled by frontend logic
+				if (error.response && error.response.status === 404) {
 					return error;
 				}
+				// catch all and report any other error type to Sentry
+				console.error(error);
+				Sentry.captureException(error);
+				return Promise.reject(error).then(currentComponent.setState({ showError: true }));
 			}
 		);
 

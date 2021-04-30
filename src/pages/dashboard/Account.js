@@ -347,16 +347,24 @@ class Account extends Component {
 	}
 
 	renderCurrentTeam() {
-		let { team, userState } = this.state;
-		if (team === 'user') return <>{userState[0].name}</>;
-		else if (team === 'admin') return <>HDR Admin</>;
-		else {
-			const teamIs = this.state.userState[0].teams.filter(t => {
-				return t._id === team;
-			})[0];
-
-			return <>{teamIs.name}</>;
+		debugger;
+		let { team: teamSelector, userState } = this.state;
+		let currentTeam;
+		switch (teamSelector) {
+			case 'user':
+				currentTeam = <Fragment>{userState[0].name}</Fragment>;
+				break;
+			case 'admin':
+				currentTeam = <Fragment>HDR Admin</Fragment>;
+				break;
+			default:
+				const team = userState[0].teams.filter(t => {
+					return t._id === teamSelector;
+				})[0];
+				currentTeam = <Fragment>{team.name}</Fragment>;
+				break;
 		}
+		return currentTeam;
 	}
 
 	toggleNav = (tabId = '') => {
