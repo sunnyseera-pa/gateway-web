@@ -101,7 +101,10 @@ class SearchPage extends React.Component {
 
 	constructor(props) {
 		super(props);
-		let { search = '' } = queryString.parse(window.location.search);
+		let { search = '', tab = 'Datasets' } = queryString.parse(window.location.search);
+		if(!Object.keys(typeMapper).some(key => key === tab)) {
+			window.location.href = '/search?search=&tab=Datasets';
+		}
 		this.state.userState = props.userState;
 		this.state.search = search || props.search;
 		this.searchBar = React.createRef();
@@ -234,7 +237,7 @@ class SearchPage extends React.Component {
 			? this.setState({ toolProgrammingLanguageSelected: queryParams.toolprogrammingLanguage.split('::') })
 			: this.setState({ toolProgrammingLanguageSelected: [] });
 		queryParams.toolfeatures
-			? this.setState({ toolFeaturesSelected: queryParams.features.split('::') })
+			? this.setState({ toolFeaturesSelected: queryParams.toolfeatures.split('::') })
 			: this.setState({ toolFeaturesSelected: [] });
 		queryParams.tooltopics
 			? this.setState({ toolTopicsSelected: queryParams.tooltopics.split('::') })
@@ -261,8 +264,8 @@ class SearchPage extends React.Component {
 			? this.setState({ courseStartDatesSelected: queryParams.coursestartdates.split('::') })
 			: this.setState({ courseStartDatesSelected: [] });
 		queryParams.courseprovider
-			? this.setState({ coursePrioritySelected: queryParams.courseprovider.split('::') })
-			: this.setState({ coursePrioritySelected: [] });
+			? this.setState({ courseProviderSelected: queryParams.courseprovider.split('::') })
+			: this.setState({ courseProviderSelected: [] });
 		queryParams.courselocation
 			? this.setState({ courseLocationSelected: queryParams.courselocation.split('::') })
 			: this.setState({ courseLocationSelected: [] });
@@ -533,19 +536,23 @@ class SearchPage extends React.Component {
 		if (this.state.key !== 'People') {
 			// remove once full migration to v2 filters for all other entities 'Tools, Projects, Courses and Papers'
 			const entityType = typeMapper[`${this.state.key}`];
-			axios.get(`${baseURL}/api/v1/search/filter?search=${encodeURIComponent(this.state.search)}${searchURL}`).then(res => {
-				let filters = this.getFilterState(entityType, res);
-				// test the type and set relevant state
-				if (entityType === 'dataset') {
-					filtersV2 = this.setHighlightedFilters(filters, [...this.state.filtersV2]);
-					this.setState({ filtersV2 });
-				} else {
-					this.setState({ ...filters });
-				}
-			});
+			axios
+				.get(`${baseURL}/api/v1/search/filter?search=${encodeURIComponent(this.state.search)}${searchURL}`)
+				.then(res => {
+					let filters = this.getFilterState(entityType, res);
+					// test the type and set relevant state
+					if (entityType === 'dataset') {
+						let filtersV2State = this.state.filtersV2 || [];
+						filtersV2 = this.setHighlightedFilters(filters, [...filtersV2State]);
+						this.setState({ filtersV2 });
+					} else {
+						this.setState({ ...filters });
+					}
+				})
+				.catch(err => {
+					console.error(err.message);
+				});
 		}
-
-		console.log('search results call');
 		// search call brings back search results and now filters highlighting for v2
 		axios
 			.get(`${baseURL}/api/v1/search?search=${encodeURIComponent(this.state.search)}${searchURL}`)

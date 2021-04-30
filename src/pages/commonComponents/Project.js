@@ -41,14 +41,11 @@ class Project extends React.Component {
 
 	render() {
 		const { data, isLoading, activeLink } = this.state;
-
-		if (typeof data.datasetids === 'undefined') {
-			data.datasetids = [];
-		}
-
-		if (typeof data.toolids === 'undefined') {
-			data.toolids = [];
-		}
+		data = { 
+			...data, 
+			datasetids: data.datasetids || [],
+			toolids: data.toolids || []
+		};
 
 		if (isLoading) {
 			return <Loading />;

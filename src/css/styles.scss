@@ -189,7 +189,6 @@ button {
 }
 
 .subHeader {
-	display: flex;
 	box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
 	background-color: $white;
 	width: 100%;
@@ -198,6 +197,23 @@ button {
 }
 
 .entryBox {
+	width: 100%;
+	box-shadow: 1px 1px 3px 0 #00000017;
+	background-color: $white;
+	padding: 30px;
+	margin-bottom: 1px;
+}
+
+.subHeaderFlex {
+	display: flex;
+	box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
+	background-color: $white;
+	width: 100%;
+	padding: 10px 20px;
+	margin-bottom: 1px;
+}
+
+.entryBoxFlex {
 	display: flex;
 	width: 100%;
 	box-shadow: 1px 1px 3px 0 #00000017;

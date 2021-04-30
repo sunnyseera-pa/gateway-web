@@ -116,8 +116,7 @@ class SearchBar extends React.Component {
 
 	logout = e => {
 		axios.get(baseURL + '/api/v1/auth/logout').then(res => {
-			if (localStorage.getItem('HDR_TEAM') !== null)
-				localStorage.removeItem('HDR_TEAM');
+			if (localStorage.getItem('HDR_TEAM') !== null) localStorage.removeItem('HDR_TEAM');
 
 			window.location.reload();
 		});
@@ -126,7 +125,9 @@ class SearchBar extends React.Component {
 	onSearch = e => {
 		//onSearch
 		this.setState({ textValue: e.target.value });
-		this.props.doUpdateSearchString(e.target.value);
+		if (this.props.doUpdateSearchString) {
+			this.props.doUpdateSearchString(e.target.value);
+		}
 	};
 
 	doMessagesCall() {
