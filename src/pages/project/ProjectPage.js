@@ -48,6 +48,7 @@ export const ProjectDetail = props => {
 			},
 		]
 	);
+	let showError = false;
 
 	//componentDidMount - on loading of project detail page
 	useEffect(() => {
