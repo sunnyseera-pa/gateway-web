@@ -43,7 +43,7 @@ class Tool extends React.Component {
 	};
 
 	render() {
-		const { data, isLoading, reviewData, activeLink } = this.state;
+		let { data, isLoading, reviewData, activeLink } = this.state;
 		if (isLoading) {
 			return <Loading />;
 		}

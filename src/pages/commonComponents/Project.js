@@ -40,7 +40,7 @@ class Project extends React.Component {
 	};
 
 	render() {
-		const { data, isLoading, activeLink } = this.state;
+		let { data, isLoading, activeLink } = this.state;
 		data = { 
 			...data, 
 			datasetids: data.datasetids || [],
