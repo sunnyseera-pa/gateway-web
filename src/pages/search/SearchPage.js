@@ -3,7 +3,7 @@ import axios from 'axios';
 import { PageView, initGA } from '../../tracking';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
-import { Container, Row, Col, Tabs, Tab, Pagination, Dropdown } from 'react-bootstrap';
+import { Container, Row, Col, Tabs, Tab, Pagination } from 'react-bootstrap';
 import moment from 'moment';
 import _ from 'lodash';
 import { toTitleCase } from '../../utils/GeneralHelper.util';
@@ -20,6 +20,7 @@ import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
+import SortDropdown from './components/SortDropdown';
 import './Search.scss';
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
@@ -36,11 +37,11 @@ const typeMapper = {
 class SearchPage extends React.Component {
 	state = {
 		search: '',
-		datasetSort: '',
-		toolSort: '',
-		projectSort: '',
-		paperSort: '',
-		personSort: '',
+		datasetSort: 'metadata',
+		toolSort: 'latest',
+		projectSort: 'latest',
+		paperSort: 'latest',
+		personSort: 'latest',
 		courseSort: '',
 		datasetIndex: 0,
 		toolIndex: 0,
@@ -101,9 +102,10 @@ class SearchPage extends React.Component {
 
 	constructor(props) {
 		super(props);
-		let { search = '' } = queryString.parse(window.location.search);
-		this.state.userState = props.userState;
-		this.state.search = search || props.search;
+		let query = queryString.parse(window.location.search);
+		let { search = '' } = query;
+		let { userState } = props;
+		this.setState({ userState, search: search || props.search });
 		this.searchBar = React.createRef();
 	}
 
@@ -137,7 +139,6 @@ class SearchPage extends React.Component {
 			// 6 if openUserMessages is true open the user messages
 			else if (this.state.userState[0].loggedIn && queryParams.openUserMessages === 'true') {
 				this.toggleDrawer();
-
 			}
 			// 7. set the selectedFilter states from queryParams ** does not return anything **
 			await this.updateFilterStates(queryParams);
@@ -305,11 +306,11 @@ class SearchPage extends React.Component {
 		queryParams.courseIndex ? this.setState({ courseIndex: queryParams.courseIndex }) : this.setState({ courseIndex: 0 });
 		queryParams.collectionIndex ? this.setState({ collectionIndex: queryParams.collectionIndex }) : this.setState({ collectionIndex: 0 });
 		// Sort for each tab
-		queryParams.datasetSort ? this.setState({ datasetSort: queryParams.datasetSort }) : this.setState({ datasetSort: '' });
-		queryParams.toolSort ? this.setState({ toolSort: queryParams.toolSort }) : this.setState({ toolSort: '' });
-		queryParams.projectSort ? this.setState({ projectSort: queryParams.projectSort }) : this.setState({ projectSort: '' });
-		queryParams.paperSort ? this.setState({ paperSort: queryParams.paperSort }) : this.setState({ paperSort: '' });
-		queryParams.personSort ? this.setState({ personSort: queryParams.personSort }) : this.setState({ personSort: '' });
+		queryParams.datasetSort ? this.setState({ datasetSort: queryParams.datasetSort }) : this.setState({ datasetSort: 'metadata' });
+		queryParams.toolSort ? this.setState({ toolSort: queryParams.toolSort }) : this.setState({ toolSort: 'latest' });
+		queryParams.projectSort ? this.setState({ projectSort: queryParams.projectSort }) : this.setState({ projectSort: 'latest' });
+		queryParams.paperSort ? this.setState({ paperSort: queryParams.paperSort }) : this.setState({ paperSort: 'latest' });
+		queryParams.personSort ? this.setState({ personSort: queryParams.personSort }) : this.setState({ personSort: 'latest' });
 		queryParams.courseSort ? this.setState({ courseSort: queryParams.courseSort }) : this.setState({ courseSort: '' });
 	}
 
@@ -320,7 +321,7 @@ class SearchPage extends React.Component {
 		let filtersV2 = this.resetTreeChecked(filtersV2Data);
 
 		this.setState(
-			{
+			prevState => ({
 				filtersV2,
 				selectedV2: [],
 				toolCategoriesSelected: [],
@@ -351,13 +352,13 @@ class SearchPage extends React.Component {
 				personIndex: 0,
 				courseIndex: 0,
 				collectionIndex: 0,
-				datasetSort: '',
-				toolSort: '',
-				projectSort: '',
-				paperSort: '',
-				personSort: '',
+				datasetSort: prevState.search === '' ? 'metadata' : '',
+				toolSort: prevState.search === '' ? 'latest' : '',
+				projectSort: prevState.search === '' ? 'latest' : '',
+				paperSort: prevState.search === '' ? 'latest' : '',
+				personSort: prevState.search === '' ? 'latest' : '',
 				courseSort: '',
-			},
+			}),
 			() => {
 				this.doSearchCall();
 			}
@@ -490,13 +491,13 @@ class SearchPage extends React.Component {
 		if (!skipHistory) {
 			if (this.state.key) searchURL += '&tab=' + this.state.key;
 
-			this.props.history.push(`${window.location.pathname}?search=${this.state.search}` + searchURL);
+			this.props.history.push(`${window.location.pathname}?search=${encodeURIComponent(this.state.search)}` + searchURL);
 		}
 
 		if (this.state.key !== 'People') {
 			// remove once full migration to v2 filters for all other entities 'Tools, Projects, Courses and Papers'
-			axios.get(baseURL + '/api/v1/search/filter?search=' + this.state.search + searchURL).then(res => {
-				const entityType = typeMapper[`${this.state.key}`];
+			const entityType = typeMapper[`${this.state.key}`];
+			axios.get(`${baseURL}/api/v1/search/filter?search=${encodeURIComponent(this.state.search)}${searchURL}`).then(res => {
 				let filters = this.getFilterState(entityType, res);
 				// test the type and set relevant state
 				if (entityType === 'dataset') {
@@ -507,9 +508,10 @@ class SearchPage extends React.Component {
 				}
 			});
 		}
+
 		// search call brings back search results and now filters highlighting for v2
 		axios
-			.get(baseURL + '/api/v1/search?search=' + this.state.search + searchURL)
+			.get(`${baseURL}/api/v1/search?search=${encodeURIComponent(this.state.search)}${searchURL}`)
 			.then(res => {
 				// get the correct entity type from our mapper via the selected tab ie..'Dataset, Tools'
 				const entityType = typeMapper[`${this.state.key}`];
@@ -1809,54 +1811,55 @@ class SearchPage extends React.Component {
 									) : (
 										<Row>
 											<Col className='text-right'>
-												<Dropdown alignRight onSelect={this.handleSort}>
-													<Dropdown.Toggle variant='info' id='dropdown-menu-align-right' className='gray800-14'>
-														{(() => {
-															if (key === 'Datasets') {
-																if (datasetSort === 'popularity') return 'Number of views (highest to lowest)';
-																else if (datasetSort === 'metadata') return 'Sort by metadata quality';
-																else return 'Match to search terms (closest first)';
-															} else if (key === 'Tools') {
-																if (toolSort === 'popularity') return 'Number of views (highest to lowest)';
-																else return 'Match to search terms (closest first)';
-															} else if (key === 'Projects') {
-																if (projectSort === 'popularity') return 'Number of views (highest to lowest)';
-																else return 'Match to search terms (closest first)';
-															} else if (key === 'Papers') {
-																if (paperSort === 'popularity') return 'Number of views (highest to lowest)';
-																else return 'Match to search terms (closest first)';
-															} else if (key === 'People') {
-																if (personSort === 'popularity') return 'Number of views (highest to lowest)';
-																else if (personSort === 'latest') return 'Latest (recently updated first)';
-																else return 'Match to search terms (closest first)';
-															}
-														})()}
-														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													</Dropdown.Toggle>
+												{key === 'Tools' ? (
+													<SortDropdown
+														handleSort={this.handleSort}
+														sort={toolSort}
+														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+													/>
+												) : (
+													''
+												)}
 
-													<Dropdown.Menu>
-														<Dropdown.Item eventKey='relevance' className='gray800-14 '>
-															Match to search terms (closest first)
-														</Dropdown.Item>
-														<Dropdown.Item eventKey='popularity' className='gray800-14'>
-															Number of views (highest to lowest)
-														</Dropdown.Item>
-														{key === 'Datasets' ? (
-															<Dropdown.Item eventKey='metadata' className='gray800-14'>
-																Sort by metadata quality
-															</Dropdown.Item>
-														) : (
-															''
-														)}
-														{key === 'People' ? (
-															<Dropdown.Item eventKey='latest' className='gray800-14'>
-																Latest (recently updated first)
-															</Dropdown.Item>
-														) : (
-															''
-														)}
-													</Dropdown.Menu>
-												</Dropdown>
+												{key === 'Datasets' ? (
+													<SortDropdown
+														handleSort={this.handleSort}
+														sort={datasetSort}
+														dropdownItems={['relevance', 'popularity', 'metadata', 'latest', 'resources']}
+													/>
+												) : (
+													''
+												)}
+
+												{key === 'Projects' ? (
+													<SortDropdown
+														handleSort={this.handleSort}
+														sort={projectSort}
+														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+													/>
+												) : (
+													''
+												)}
+
+												{key === 'Papers' ? (
+													<SortDropdown
+														handleSort={this.handleSort}
+														sort={paperSort}
+														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+													/>
+												) : (
+													''
+												)}
+
+												{key === 'People' ? (
+													<SortDropdown
+														handleSort={this.handleSort}
+														sort={personSort}
+														dropdownItems={['relevance', 'popularity', 'latest']}
+													/>
+												) : (
+													''
+												)}
 											</Col>
 										</Row>
 									)}
