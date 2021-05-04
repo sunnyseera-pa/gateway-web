@@ -37,7 +37,7 @@ const typeMapper = {
 class SearchPage extends React.Component {
 	state = {
 		search: '',
-		datasetSort: '',
+		datasetSort: 'metadata',
 		toolSort: 'latest',
 		projectSort: 'latest',
 		paperSort: 'latest',
@@ -102,7 +102,7 @@ class SearchPage extends React.Component {
 
 	constructor(props) {
 		super(props);
-		let query =  queryString.parse(window.location.search);
+		let query = queryString.parse(window.location.search);
 		let { search = '' } = query;
 		let { userState } = props;
 		this.setState({ userState, search: search || props.search });
@@ -139,7 +139,6 @@ class SearchPage extends React.Component {
 			// 6 if openUserMessages is true open the user messages
 			else if (this.state.userState[0].loggedIn && queryParams.openUserMessages === 'true') {
 				this.toggleDrawer();
-
 			}
 			// 7. set the selectedFilter states from queryParams ** does not return anything **
 			await this.updateFilterStates(queryParams);
@@ -307,7 +306,7 @@ class SearchPage extends React.Component {
 		queryParams.courseIndex ? this.setState({ courseIndex: queryParams.courseIndex }) : this.setState({ courseIndex: 0 });
 		queryParams.collectionIndex ? this.setState({ collectionIndex: queryParams.collectionIndex }) : this.setState({ collectionIndex: 0 });
 		// Sort for each tab
-		queryParams.datasetSort ? this.setState({ datasetSort: queryParams.datasetSort }) : this.setState({ datasetSort: '' });
+		queryParams.datasetSort ? this.setState({ datasetSort: queryParams.datasetSort }) : this.setState({ datasetSort: 'metadata' });
 		queryParams.toolSort ? this.setState({ toolSort: queryParams.toolSort }) : this.setState({ toolSort: 'latest' });
 		queryParams.projectSort ? this.setState({ projectSort: queryParams.projectSort }) : this.setState({ projectSort: 'latest' });
 		queryParams.paperSort ? this.setState({ paperSort: queryParams.paperSort }) : this.setState({ paperSort: 'latest' });
@@ -353,7 +352,7 @@ class SearchPage extends React.Component {
 				personIndex: 0,
 				courseIndex: 0,
 				collectionIndex: 0,
-				datasetSort: '',
+				datasetSort: prevState.search === '' ? 'metadata' : '',
 				toolSort: prevState.search === '' ? 'latest' : '',
 				projectSort: prevState.search === '' ? 'latest' : '',
 				paperSort: prevState.search === '' ? 'latest' : '',
@@ -510,7 +509,6 @@ class SearchPage extends React.Component {
 			});
 		}
 
-		console.log('search results call');
 		// search call brings back search results and now filters highlighting for v2
 		axios
 			.get(`${baseURL}/api/v1/search?search=${encodeURIComponent(this.state.search)}${searchURL}`)
@@ -1827,7 +1825,7 @@ class SearchPage extends React.Component {
 													<SortDropdown
 														handleSort={this.handleSort}
 														sort={datasetSort}
-														dropdownItems={['relevance', 'popularity', 'metadata']}
+														dropdownItems={['relevance', 'popularity', 'metadata', 'latest', 'resources']}
 													/>
 												) : (
 													''
