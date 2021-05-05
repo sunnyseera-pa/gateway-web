@@ -39,24 +39,26 @@ const AccountDatasets = props => {
 		setPublisherID(isPublisher);
 
 		await axios.get(baseURL + `/api/v1/dataset-onboarding/publisher/${isPublisher}`).then(res => {
-			setDatasetList(res.data.data.listOfDatasets);
+			if (_.has(res, 'data.data.listOfDatasets')) {
+				setDatasetList(res.data.data.listOfDatasets);
 
-			let activeCount = 0;
-			let reviewCount = 0;
-			let archiveCount = 0;
-			let rejectedCount = 0;
+				let activeCount = 0;
+				let reviewCount = 0;
+				let archiveCount = 0;
+				let rejectedCount = 0;
 
-			res.data.data.listOfDatasets.forEach(dataset => {
-				if (dataset.activeflag === 'active' || dataset.activeflag === 'draft') activeCount++;
-				else if (dataset.activeflag === 'inReview') reviewCount++;
-				else if (dataset.activeflag === 'archive') archiveCount++;
-				else if (dataset.activeflag === 'rejected') rejectedCount++;
-			});
+				res.data.data.listOfDatasets.forEach(dataset => {
+					if (dataset.activeflag === 'active' || dataset.activeflag === 'draft') activeCount++;
+					else if (dataset.activeflag === 'inReview') reviewCount++;
+					else if (dataset.activeflag === 'archive') archiveCount++;
+					else if (dataset.activeflag === 'rejected') rejectedCount++;
+				});
 
-			setActiveCount(activeCount);
-			setReviewCount(reviewCount);
-			setArchiveCount(archiveCount);
-			setRejectedCount(rejectedCount);
+				setActiveCount(activeCount);
+				setReviewCount(reviewCount);
+				setArchiveCount(archiveCount);
+				setRejectedCount(rejectedCount);
+			}
 			if (isPublisher === 'admin') setKey('inReview');
 			setIsLoading(false);
 		});

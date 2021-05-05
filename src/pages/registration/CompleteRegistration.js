@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useState } from 'react';
+import React, { Component, Fragment, useState, useRef } from 'react';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import { Typeahead } from 'react-bootstrap-typeahead';
@@ -213,6 +213,7 @@ const YourAccountForm = props => {
 	let showDomain = props.showDomain;
 	let showLink = props.showLink;
 	let showOrcid = props.showOrcid;
+	let btnRef = useRef();
 
 	//tool tips for eyes
 	const mandatoryShowFieldMsg = 'This will be visible to others. You cannot change this.';
@@ -315,6 +316,10 @@ const YourAccountForm = props => {
 		}),
 
 		onSubmit: values => {
+			if (btnRef.current) {
+				btnRef.current.setAttribute('disabled', 'disabled');
+			}
+
 			axios.post(baseURL + '/api/v1/auth/register', values).then(res => {
 				const url = `${window.location.search}${res.data.data}`;
 				window.location.href = `${url}${url.includes('?') ? '&' : '?'}registrationCompleted=true`;
@@ -872,7 +877,7 @@ const YourAccountForm = props => {
 
 				<Row className='mt-3'>
 					<Col className='text-right'>
-						<Button variant='primary' type='submit' className='addButton'>
+						<Button ref={btnRef} variant='primary' type='submit' className='addButton'>
 							Update Details
 						</Button>
 					</Col>

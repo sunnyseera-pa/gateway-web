@@ -49,7 +49,12 @@ const PersonDetail = props => {
 				window.localStorage.setItem('redirectMsg', `Person not found for Id: ${props.match.params.personID}`);
 				props.history.push({ pathname: '/search?search=', search: '' });
 			} else {
-				setData(res.data.person);
+				let { person = {} } = res.data;
+				person = {
+					...person,
+					datasetids: person.datasetids || [],
+				};
+				setData(person);
 				setIsLoading(false);
 			}
 		});
@@ -83,10 +88,6 @@ const PersonDetail = props => {
 				<Loading />
 			</Container>
 		);
-	}
-
-	if (typeof data.datasetids === 'undefined') {
-		data.datasetids = [];
 	}
 
 	let tools = [];
