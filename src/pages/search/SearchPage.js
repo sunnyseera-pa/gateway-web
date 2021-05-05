@@ -42,6 +42,7 @@ class SearchPage extends React.Component {
 		projectSort: 'latest',
 		paperSort: 'latest',
 		personSort: 'latest',
+		collectionSort: 'latest',
 		courseSort: '',
 		datasetIndex: 0,
 		toolIndex: 0,
@@ -312,6 +313,7 @@ class SearchPage extends React.Component {
 		queryParams.projectSort ? this.setState({ projectSort: queryParams.projectSort }) : this.setState({ projectSort: 'latest' });
 		queryParams.paperSort ? this.setState({ paperSort: queryParams.paperSort }) : this.setState({ paperSort: 'latest' });
 		queryParams.personSort ? this.setState({ personSort: queryParams.personSort }) : this.setState({ personSort: 'latest' });
+		queryParams.collectionSort ? this.setState({ collectionSort: queryParams.collectionSort }) : this.setState({ collectionSort: 'latest' });
 		queryParams.courseSort ? this.setState({ courseSort: queryParams.courseSort }) : this.setState({ courseSort: '' });
 	}
 
@@ -358,6 +360,7 @@ class SearchPage extends React.Component {
 				projectSort: prevState.search === '' ? 'latest' : '',
 				paperSort: prevState.search === '' ? 'latest' : '',
 				personSort: prevState.search === '' ? 'latest' : '',
+				collectionSort: prevState.search === '' ? 'latest' : '',
 				courseSort: '',
 			}),
 			() => {
@@ -479,6 +482,7 @@ class SearchPage extends React.Component {
 		if (this.state.projectSort !== '') searchURL += '&projectSort=' + encodeURIComponent(this.state.projectSort);
 		if (this.state.paperSort !== '') searchURL += '&paperSort=' + encodeURIComponent(this.state.paperSort);
 		if (this.state.personSort !== '') searchURL += '&personSort=' + encodeURIComponent(this.state.personSort);
+		if (this.state.collectionSort !== '') searchURL += '&collectionSort=' + encodeURIComponent(this.state.collectionSort);
 		if (this.state.courseSort !== '') searchURL += '&courseSort=' + encodeURIComponent(this.state.courseSort);
 		// login status handler
 		if (this.state.userState[0].loggedIn === false) {
@@ -981,6 +985,7 @@ class SearchPage extends React.Component {
 			projectSort,
 			paperSort,
 			personSort,
+			collectionSort,
 
 			filtersV2,
 			selectedV2,
@@ -1857,6 +1862,16 @@ class SearchPage extends React.Component {
 													<SortDropdown
 														handleSort={this.handleSort}
 														sort={personSort}
+														dropdownItems={['relevance', 'popularity', 'latest']}
+													/>
+												) : (
+													''
+												)}
+
+												{key === 'Collections' ? (
+													<SortDropdown
+														handleSort={this.handleSort}
+														sort={collectionSort}
 														dropdownItems={['relevance', 'popularity', 'latest']}
 													/>
 												) : (
