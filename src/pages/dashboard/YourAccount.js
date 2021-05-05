@@ -314,10 +314,7 @@ const YourAccountForm = props => {
 				''
 			) : (
 				<Row className='accountBanner'>
-					<Col className='pad-left-24'>
-						Please accept the updated Terms and Conditions and update your profile details. You can now control the visibility of certain
-						fields.
-					</Col>
+					<Col className='pad-left-24'>Please accept the updated Terms and Conditions and update your profile details.</Col>
 				</Row>
 			)}
 			{props.profileComplete ? (
