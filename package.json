@@ -2,7 +2,6 @@
 	"name": "hdruk-rdt-web",
 	"version": "0.1.0",
 	"private": true,
-	"homepage": "./",
 	"type": "module",
 	"dependencies": {
 		"@kenshooui/react-multi-select": "^1.1.6",
