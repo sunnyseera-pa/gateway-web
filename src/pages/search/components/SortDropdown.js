@@ -1,6 +1,7 @@
 import React from 'react';
 import { Dropdown, Row, Col } from 'react-bootstrap';
 import SVGIcon from '../../../images/SVGIcon';
+import '../Search.scss';
 
 const SortDropdown = ({ handleSort, sort, dropdownItems }) => {
 	//by default sorted by relevance
@@ -21,7 +22,10 @@ const SortDropdown = ({ handleSort, sort, dropdownItems }) => {
 			<Dropdown.Menu>
 				{dropdownItems.map(item => {
 					return (
-						<Row className={sorting === item ? 'sort-dropdown-item sort-dropdown-item-selected' : 'sort-dropdown-item'}>
+						<Row
+							className={
+								sorting === item ? 'sort-dropdown-item sort-dropdown-item-selected sortingDropdown' : 'sort-dropdown-item sortingDropdown'
+							}>
 							<Col xs={10} className='p-0'>
 								<Dropdown.Item eventKey={item} className='gray800-14'>
 									{(() => {
