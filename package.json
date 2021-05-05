@@ -7,7 +7,9 @@
 		"@kenshooui/react-multi-select": "^1.1.6",
 		"@rjsf/core": "^2.0.1",
 		"@semantic-ui-react/event-stack": "^3.1.1",
-		"@sentry/react": "^5.22.3",
+		"@sentry/node": "^6.3.5",
+		"@sentry/react": "^5.30.0",
+		"@sentry/tracing": "^6.3.5",
 		"@testing-library/react": "^9.3.2",
 		"@testing-library/user-event": "^7.1.2",
 		"axios": "^0.19.2",
@@ -41,12 +43,11 @@
 		"react-rating": "^2.0.4",
 		"react-router-dom": "^5.1.2",
 		"react-schemaorg": "^1.1.0",
-		"react-scripts": "3.4.4",
 		"react-slidedown": "^2.4.5",
 		"react-switch": "^6.0.0",
 		"react-tabs": "^3.1.0",
 		"react-web-tabs": "^1.0.1",
-    "read-excel-file": "^5.0.0",
+		"read-excel-file": "^5.0.0",
 		"remove-markdown": "^0.3.0",
 		"semantic-ui-react": "^0.88.2",
 		"snyk": "^1.518.0",
@@ -88,7 +89,8 @@
 		"enzyme-adapter-react-16": "^1.15.2",
 		"jest": "24.9.0",
 		"jest-cli": "^26.0.1",
-		"moxios": "^0.4.0"
+		"moxios": "^0.4.0",
+		"react-scripts": "3.4.4"
 	},
 	"snyk": true
 }

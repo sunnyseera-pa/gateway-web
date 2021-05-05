@@ -43,7 +43,7 @@ class Tool extends React.Component {
 	};
 
 	render() {
-		const { data, isLoading, reviewData, activeLink } = this.state;
+		let { data, isLoading, reviewData, activeLink } = this.state;
 		if (isLoading) {
 			return <Loading />;
 		}
@@ -58,17 +58,12 @@ class Tool extends React.Component {
 		const ratingsCount = !!reviewData ? reviewData.length : 0;
 		const avgRating = !!reviewData && reviewData.length > 0 ? ratingsTotal / ratingsCount : '';
 
-		if (typeof data.datasetids === 'undefined') {
-			data.datasetids = [];
-		}
-
-		if (typeof data.projectids === 'undefined') {
-			data.projectids = [];
-		}
-
-		if (typeof data.authors === 'undefined') {
-			data.authors = [];
-		}
+		data = { 
+			...data, 
+			datasetids: data.datasetids || [],
+			projectids: data.projectids || [],
+			authors: data.authors || []
+		};
 
 		const monthNames = [
 			'January',
