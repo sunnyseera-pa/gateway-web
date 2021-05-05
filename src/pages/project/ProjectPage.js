@@ -26,7 +26,7 @@ var baseURL = require('../commonComponents/BaseURL').getURL();
 
 export const ProjectDetail = props => {
 	const [id] = useState('');
-	const [projectData, setProjectData] = useState([]);
+	const [projectData, setProjectData] = useState({});
 	const [isLoading, setIsLoading] = useState(true);
 	const [projectAdded, setProjectAdded] = useState(false);
 	const [projectEdited, setProjectEdited] = useState(false);
@@ -96,7 +96,6 @@ export const ProjectDetail = props => {
 						let localAdditionalObjInfo = await getAdditionalObjectInfo(localProjectData.relatedObjects);
 						await populateRelatedObjects(localProjectData, localAdditionalObjInfo);
 					}
-
 					setProjectData(localProjectData);
 					popluateCollections(localProjectData);
 				}
@@ -288,9 +287,11 @@ export const ProjectDetail = props => {
 											<span>Project</span>
 										</span>
 
-										<a href={'/search?search=&tab=Projects&projectcategories=' + projectData.categories.category}>
-											<div className='badge-tag'>{projectData.categories.category}</div>
-										</a>
+										{!_.isNil(projectData.categories) && (
+											<a href={'/search?search=&tab=Projects&projectcategories=' + projectData.categories.category}>
+												<div className='badge-tag'>{projectData.categories.category}</div>
+											</a>
+										)}
 									</Col>
 								</Row>
 
