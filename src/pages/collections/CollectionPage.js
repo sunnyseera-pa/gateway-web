@@ -457,7 +457,7 @@ export const CollectionPage = props => {
 											});
 											return (
 												<RelatedObject
-													key={object.idd}
+													key={object.id}
 													data={object}
 													activeLink={true}
 													showRelationshipAnswer={showAnswer}

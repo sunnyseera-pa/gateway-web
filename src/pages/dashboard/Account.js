@@ -64,7 +64,6 @@ class Account extends Component {
 	state = {
 		searchString: '',
 		id: '',
-		data: [],
 		isLoading: true,
 		userState: [
 			{
@@ -347,16 +346,31 @@ class Account extends Component {
 	}
 
 	renderCurrentTeam() {
-		let { team, userState } = this.state;
-		if (team === 'user') return <>{userState[0].name}</>;
-		else if (team === 'admin') return <>HDR Admin</>;
-		else {
-			const teamIs = this.state.userState[0].teams.filter(t => {
-				return t._id === team;
-			})[0];
-
-			return <>{teamIs.name}</>;
+		let { team: teamSelector, userState } = this.state;
+		let renderItem;
+		switch (teamSelector) {
+			case 'user':
+				renderItem = <Fragment>{userState[0].name}</Fragment>;
+				break;
+			case 'admin':
+				renderItem = <Fragment>HDR Admin</Fragment>;
+				break;
+			default:
+				const team = userState[0].teams.reduce((obj, team) => {
+					if(team._id === teamSelector) {
+						obj = {...team};
+					}
+					return obj;
+				}, {});
+				if(_.isEmpty(team)) {
+					this.setState({team: 'user'});
+					renderItem = <Fragment>{userState[0].name}</Fragment>;
+				} else {
+					renderItem = <Fragment>{team.name}</Fragment>;
+				}
+				break;
 		}
+		return renderItem;
 	}
 
 	toggleNav = (tabId = '') => {
@@ -448,7 +462,6 @@ class Account extends Component {
 	render() {
 		const {
 			searchString,
-			data,
 			userState,
 			tabId,
 			innertab,
@@ -466,9 +479,6 @@ class Account extends Component {
 			teamManagementTab,
 			accountUpdated,
 		} = this.state;
-		if (typeof data.datasetids === 'undefined') {
-			data.datasetids = [];
-		}
 
 		return (
 			<Fragment>
