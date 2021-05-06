@@ -3,10 +3,12 @@ import { Col, Row, Collapse } from 'react-bootstrap';
 import _ from 'lodash';
 import SVGIcon from '../../../images/SVGIcon';
 import '../Dataset.scss';
+import { ReactComponent as SubUnfilledSVG } from '../../../images/sub_unfilled.svg';
 import { ReactComponent as SubBronzeSVG } from '../../../images/sub_bronze.svg';
 import { ReactComponent as SubSilverSVG } from '../../../images/sub_silver.svg';
 import { ReactComponent as SubGoldSVG } from '../../../images/sub_gold.svg';
 import { ReactComponent as SubPlatinumSVG } from '../../../images/sub_platinum.svg';
+import { ReactComponent as UnfilledSVG } from '../../../images/unfilledUtility.svg';
 import { ReactComponent as BronzeSVG } from '../../../images/bronzeUtility.svg';
 import { ReactComponent as SilverSVG } from '../../../images/silverUtility.svg';
 import { ReactComponent as GoldSVG } from '../../../images/goldUtility.svg';
@@ -320,6 +322,7 @@ class DataQualityInfo extends React.Component {
 		}
 	}
 
+	//TODO - section rating - does this need updated with a new empty default for rating 0?
 	getSectionRating(rating) {
 		switch (rating) {
 			case 'Platinum':
@@ -328,8 +331,12 @@ class DataQualityInfo extends React.Component {
 				return <GoldSVG />;
 			case 'Silver':
 				return <SilverSVG />;
-			default:
+			// default:
+			// 	return <BronzeSVG />;
+			case 'Bronze':
 				return <BronzeSVG />;
+			default:
+				return <UnfilledSVG />;
 		}
 	}
 
@@ -343,8 +350,10 @@ class DataQualityInfo extends React.Component {
 				return <SubSilverSVG />;
 			case 'Bronze':
 				return <SubBronzeSVG />;
+			// TODO - are all other cases now going to be the empty 4 grey dots. Seem to be from Susheels message in ticket
 			default:
-				return '';
+				// return '';
+				return <SubUnfilledSVG />;
 		}
 	}
 

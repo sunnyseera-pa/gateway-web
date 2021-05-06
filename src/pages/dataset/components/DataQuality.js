@@ -71,6 +71,7 @@ class DataQuality extends React.Component {
 		await this.getWeights(this.props.datasetUtility);
 	}
 
+	//TODO - calculation of section weights needs to be updated here
 	async getWeights(
 		datasetUtility = {
 			metadata_richness: '',
@@ -95,45 +96,56 @@ class DataQuality extends React.Component {
 			let documentationWeight =
 				weights[
 					Math.floor(
-						(weights.indexOf(datasetUtility.metadata_richness.trim()) +
-							weights.indexOf(datasetUtility.availability_of_additional_documentation_and_support.trim()) +
-							weights.indexOf(datasetUtility.data_model.trim()) +
-							weights.indexOf(datasetUtility.data_dictionary.trim()) +
-							weights.indexOf(datasetUtility.provenance.trim())) /
+						(this.getSubSectionWeights(datasetUtility.metadata_richness.trim()) +
+							this.getSubSectionWeights(datasetUtility.availability_of_additional_documentation_and_support.trim()) +
+							this.getSubSectionWeights(datasetUtility.data_model.trim()) +
+							this.getSubSectionWeights(datasetUtility.data_dictionary.trim()) +
+							this.getSubSectionWeights(datasetUtility.provenance.trim())) /
 							5
 					)
 				];
+			console.log(`documentationWeight: ${documentationWeight}`);
 
 			let technicalQualityWeight =
 				weights[
 					Math.floor(
-						(weights.indexOf(datasetUtility.data_quality_management_process.trim()) +
-							weights.indexOf(datasetUtility.dama_quality_dimensions.trim())) /
+						(this.getSubSectionWeights(datasetUtility.data_quality_management_process.trim()) +
+							this.getSubSectionWeights(datasetUtility.dama_quality_dimensions.trim())) /
 							2
 					)
 				];
+			console.log(`technicalQualityWeight: ${technicalQualityWeight}`);
 
 			let accessProvisionWeight =
 				weights[
 					Math.floor(
-						(weights.indexOf(datasetUtility.allowable_uses.trim()) +
-							weights.indexOf(datasetUtility.time_lag.trim()) +
-							weights.indexOf(datasetUtility.timeliness.trim())) /
+						(this.getSubSectionWeights(datasetUtility.allowable_uses.trim()) +
+							this.getSubSectionWeights(datasetUtility.time_lag.trim()) +
+							this.getSubSectionWeights(datasetUtility.timeliness.trim())) /
 							3
 					)
 				];
+			console.log(`accessProvisionWeight: ${accessProvisionWeight}`);
 
 			let valueInterestWeight =
 				weights[
-					Math.floor((weights.indexOf(datasetUtility.linkages.trim()) + weights.indexOf(datasetUtility.data_enrichments.trim())) / 2)
+					Math.floor(
+						(this.getSubSectionWeights(datasetUtility.linkages.trim()) +
+							this.getSubSectionWeights(datasetUtility.data_enrichments.trim())) /
+							2
+					)
 				];
+			console.log(`valueInterestWeight: ${valueInterestWeight}`);
 
 			let coverageWeight =
 				weights[
 					Math.floor(
-						(weights.indexOf(datasetUtility.pathway_coverage.trim()) + weights.indexOf(datasetUtility.length_of_follow_up.trim())) / 2
+						(this.getSubSectionWeights(datasetUtility.pathway_coverage.trim()) +
+							this.getSubSectionWeights(datasetUtility.length_of_follow_up.trim())) /
+							2
 					)
 				];
+			console.log(`coverageWeight: ${coverageWeight}`);
 
 			this.setState({
 				documentationWeight: documentationWeight,
@@ -143,6 +155,28 @@ class DataQuality extends React.Component {
 				coverageWeight: coverageWeight,
 			});
 		}
+	}
+
+	// TODO
+	getSubSectionWeights(rating) {
+		let subSectionWeights = new Map([
+			['Other', 0],
+			['Other (please specify)', 0],
+			['Not Rated', 0],
+			['Not yet Bronze', 0.5],
+			['Bronze', 1],
+			['Silver', 2],
+			['Gold', 3],
+			['Platinum', 4],
+		]);
+
+		let subSectionWeight = subSectionWeights.get(rating);
+
+		if (_.isUndefined(subSectionWeight)) {
+			subSectionWeight = 0;
+		}
+
+		return subSectionWeight;
 	}
 
 	renderDataQualityInfo(displayOption) {
