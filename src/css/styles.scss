@@ -3,10 +3,10 @@
 @import './mixins';
 
 * {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 	text-rendering: optimizeLegibility;
-	text-shadow: rgba(0,0,0,.01) 0 0 1px;
+	text-shadow: rgba(0, 0, 0, 0.01) 0 0 1px;
 }
 
 body {
@@ -189,7 +189,6 @@ button {
 }
 
 .subHeader {
-	display: flex;
 	box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
 	background-color: $white;
 	width: 100%;
@@ -198,6 +197,23 @@ button {
 }
 
 .entryBox {
+	width: 100%;
+	box-shadow: 1px 1px 3px 0 #00000017;
+	background-color: $white;
+	padding: 30px;
+	margin-bottom: 1px;
+}
+
+.subHeaderFlex {
+	display: flex;
+	box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
+	background-color: $white;
+	width: 100%;
+	padding: 10px 20px;
+	margin-bottom: 1px;
+}
+
+.entryBoxFlex {
 	display: flex;
 	width: 100%;
 	box-shadow: 1px 1px 3px 0 #00000017;
@@ -219,6 +235,10 @@ button {
 
 .padding-left-20 {
 	padding-left: 20px !important;
+}
+
+.padding-left-25 {
+	padding-left: 25px !important;
 }
 
 .nav-tabs {
@@ -1237,6 +1257,10 @@ button a {
 	margin-top: 2px !important;
 }
 
+.margin-top-0 {
+	margin-top: 0px !important;
+}
+
 .margin-left-6 {
 	margin-left: 6px !important;
 }
@@ -1259,6 +1283,10 @@ button a {
 
 .margin-right-1 {
 	margin-right: 1px !important;
+}
+
+.margin-right-4 {
+	margin-right: 4px !important;
 }
 
 .margin-right-8 {

@@ -314,10 +314,7 @@ const YourAccountForm = props => {
 				''
 			) : (
 				<Row className='accountBanner'>
-					<Col className='pad-left-24'>
-						Please accept the updated Terms and Conditions and update your profile details. You can now control the visibility of certain
-						fields.
-					</Col>
+					<Col className='pad-left-24'>Please accept the updated Terms and Conditions and update your profile details.</Col>
 				</Row>
 			)}
 			{props.profileComplete ? (
@@ -333,7 +330,7 @@ const YourAccountForm = props => {
 			<AlertBannerBlue
 				message='Want to get involved in shaping the Gateway? Join our development and improvement group.'
 				href='https://discourse.healthdatagateway.org/t/about-the-development-and-improvement-group/498'
-				data-test-id='dev-and-improvement'
+				dataTestId='dev-and-improvement'
 			/>
 			<Row className='pixelGapBottom margin-top-24'>
 				<Col>

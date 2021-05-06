@@ -110,7 +110,9 @@ class RelatedObject extends React.Component {
 	};
 
 	updateOnFilterBadge = (filter, option) => {
-		this.props.updateOnFilterBadge(filter, option);
+		if (this.props.updateOnFilterBadge) {
+			this.props.updateOnFilterBadge(filter, option);
+		}
 	};
 
 	stripMarkdown = (value = '', truncate = 0) => {

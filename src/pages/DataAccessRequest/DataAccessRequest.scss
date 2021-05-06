@@ -246,6 +246,10 @@ span.toolTipText:after {
 	width: calc(58.33vw - 15px);
 }
 
+#darCenterCol.table {
+	width: calc(70.33vw - 15px);
+}
+
 #darRightCol {
 	max-height: calc(100vh - 79px);
 	height: min-content;
@@ -343,7 +347,8 @@ span.toolTipText:after {
 	}
 
 	#darCenterCol,
-	#darCenterCol.extended {
+	#darCenterCol.extended,
+	#darCenterCol.table {
 		width: calc(100vw - 15px);
 		margin-right: 15px;
 	}
