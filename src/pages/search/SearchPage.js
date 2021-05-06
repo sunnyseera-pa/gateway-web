@@ -1859,7 +1859,7 @@ class SearchPage extends React.Component {
 												{key === 'Tools' ? (
 													<SortDropdown
 														handleSort={this.handleSort}
-														sort={toolSort === '' ? 'latest' : toolSort}
+														sort={toolSort === '' ? (search === '' ? 'latest' : 'relevance') : toolSort}
 														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
 													/>
 												) : (
@@ -1869,7 +1869,7 @@ class SearchPage extends React.Component {
 												{key === 'Datasets' ? (
 													<SortDropdown
 														handleSort={this.handleSort}
-														sort={datasetSort === '' ? 'metadata' : datasetSort}
+														sort={datasetSort === '' ? (search === '' ? 'metadata' : 'relevance') : datasetSort}
 														dropdownItems={['relevance', 'popularity', 'metadata', 'latest', 'resources']}
 													/>
 												) : (
@@ -1879,7 +1879,7 @@ class SearchPage extends React.Component {
 												{key === 'Projects' ? (
 													<SortDropdown
 														handleSort={this.handleSort}
-														sort={projectSort === '' ? 'latest' : projectSort}
+														sort={projectSort === '' ? (search === '' ? 'latest' : 'relevance') : projectSort}
 														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
 													/>
 												) : (
@@ -1889,7 +1889,7 @@ class SearchPage extends React.Component {
 												{key === 'Papers' ? (
 													<SortDropdown
 														handleSort={this.handleSort}
-														sort={paperSort === '' ? 'latest' : paperSort}
+														sort={paperSort === '' ? (search === '' ? 'latest' : 'relevance') : paperSort}
 														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
 													/>
 												) : (
@@ -1899,7 +1899,7 @@ class SearchPage extends React.Component {
 												{key === 'People' ? (
 													<SortDropdown
 														handleSort={this.handleSort}
-														sort={personSort === '' ? 'latest' : personSort}
+														sort={personSort === '' ? (search === '' ? 'latest' : 'relevance') : personSort}
 														dropdownItems={['relevance', 'popularity', 'latest']}
 													/>
 												) : (
