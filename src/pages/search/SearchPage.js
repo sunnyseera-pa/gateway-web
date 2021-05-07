@@ -455,6 +455,7 @@ class SearchPage extends React.Component {
 			paperSort = '',
 			personSort = '',
 			courseSort = '',
+			collectionSort = '',
 		} = this.state;
 		// 1. build search object from list of selected fitlers v2 only
 		const searchObj = this.buildSearchObj(this.state.selectedV2);
@@ -1891,6 +1892,16 @@ class SearchPage extends React.Component {
 													''
 												)}
 
+												{key === 'Collections' ? (
+													<SortDropdown
+														handleSort={this.handleSort}
+														sort={collectionSort}
+														dropdownItems={['relevance', 'popularity', 'latest']}
+													/>
+												) : (
+													''
+												)}
+
 												{key === 'Papers' ? (
 													<SortDropdown
 														handleSort={this.handleSort}
@@ -1905,16 +1916,6 @@ class SearchPage extends React.Component {
 													<SortDropdown
 														handleSort={this.handleSort}
 														sort={personSort}
-														dropdownItems={['relevance', 'popularity', 'latest']}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'Collections' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={collectionSort}
 														dropdownItems={['relevance', 'popularity', 'latest']}
 													/>
 												) : (
