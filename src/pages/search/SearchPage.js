@@ -37,13 +37,13 @@ const typeMapper = {
 class SearchPage extends React.Component {
 	state = {
 		search: '',
-		datasetSort: 'metadata',
-		toolSort: 'latest',
-		projectSort: 'latest',
-		paperSort: 'latest',
-		personSort: 'latest',
-		collectionSort: 'latest',
+		datasetSort: '',
+		toolSort: '',
+		projectSort: '',
+		paperSort: '',
+		personSort: '',
 		courseSort: '',
+		collectionSort: '',
 		datasetIndex: 0,
 		toolIndex: 0,
 		projectIndex: 0,
@@ -104,7 +104,7 @@ class SearchPage extends React.Component {
 	constructor(props) {
 		super(props);
 		let { search = '', tab = 'Datasets' } = queryString.parse(window.location.search);
-		if(!Object.keys(typeMapper).some(key => key === tab)) {
+		if (!Object.keys(typeMapper).some(key => key === tab)) {
 			window.location.href = '/search?search=&tab=Datasets';
 		}
 		this.state.userState = props.userState;
@@ -311,13 +311,13 @@ class SearchPage extends React.Component {
 		queryParams.courseIndex ? this.setState({ courseIndex: queryParams.courseIndex }) : this.setState({ courseIndex: 0 });
 		queryParams.collectionIndex ? this.setState({ collectionIndex: queryParams.collectionIndex }) : this.setState({ collectionIndex: 0 });
 		// Sort for each tab
-		queryParams.datasetSort ? this.setState({ datasetSort: queryParams.datasetSort }) : this.setState({ datasetSort: 'metadata' });
-		queryParams.toolSort ? this.setState({ toolSort: queryParams.toolSort }) : this.setState({ toolSort: 'latest' });
-		queryParams.projectSort ? this.setState({ projectSort: queryParams.projectSort }) : this.setState({ projectSort: 'latest' });
-		queryParams.paperSort ? this.setState({ paperSort: queryParams.paperSort }) : this.setState({ paperSort: 'latest' });
-		queryParams.personSort ? this.setState({ personSort: queryParams.personSort }) : this.setState({ personSort: 'latest' });
-		queryParams.collectionSort ? this.setState({ collectionSort: queryParams.collectionSort }) : this.setState({ collectionSort: 'latest' });
+		queryParams.datasetSort ? this.setState({ datasetSort: queryParams.datasetSort }) : this.setState({ datasetSort: '' });
+		queryParams.toolSort ? this.setState({ toolSort: queryParams.toolSort }) : this.setState({ toolSort: '' });
+		queryParams.projectSort ? this.setState({ projectSort: queryParams.projectSort }) : this.setState({ projectSort: '' });
+		queryParams.paperSort ? this.setState({ paperSort: queryParams.paperSort }) : this.setState({ paperSort: '' });
+		queryParams.personSort ? this.setState({ personSort: queryParams.personSort }) : this.setState({ personSort: '' });
 		queryParams.courseSort ? this.setState({ courseSort: queryParams.courseSort }) : this.setState({ courseSort: '' });
+		queryParams.collectionSort ? this.setState({ collectionSort: queryParams.collectionSort }) : this.setState({ collectionSort: '' });
 	}
 
 	clearFilterStates() {
@@ -358,13 +358,13 @@ class SearchPage extends React.Component {
 				personIndex: 0,
 				courseIndex: 0,
 				collectionIndex: 0,
-				datasetSort: prevState.search === '' ? 'metadata' : '',
-				toolSort: prevState.search === '' ? 'latest' : '',
-				projectSort: prevState.search === '' ? 'latest' : '',
-				paperSort: prevState.search === '' ? 'latest' : '',
-				personSort: prevState.search === '' ? 'latest' : '',
-				collectionSort: prevState.search === '' ? 'latest' : '',
+				datasetSort: '',
+				toolSort: '',
+				projectSort: '',
+				paperSort: '',
+				personSort: '',
 				courseSort: '',
+				collectionSort: '',
 			}),
 			() => {
 				this.doSearchCall();
@@ -1865,7 +1865,7 @@ class SearchPage extends React.Component {
 												{key === 'Tools' ? (
 													<SortDropdown
 														handleSort={this.handleSort}
-														sort={toolSort}
+														sort={toolSort === '' ? (search === '' ? 'latest' : 'relevance') : toolSort}
 														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
 													/>
 												) : (
@@ -1875,7 +1875,7 @@ class SearchPage extends React.Component {
 												{key === 'Datasets' ? (
 													<SortDropdown
 														handleSort={this.handleSort}
-														sort={datasetSort}
+														sort={datasetSort === '' ? (search === '' ? 'metadata' : 'relevance') : datasetSort}
 														dropdownItems={['relevance', 'popularity', 'metadata', 'latest', 'resources']}
 													/>
 												) : (
@@ -1885,7 +1885,7 @@ class SearchPage extends React.Component {
 												{key === 'Projects' ? (
 													<SortDropdown
 														handleSort={this.handleSort}
-														sort={projectSort}
+														sort={projectSort === '' ? (search === '' ? 'latest' : 'relevance') : projectSort}
 														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
 													/>
 												) : (
@@ -1905,7 +1905,7 @@ class SearchPage extends React.Component {
 												{key === 'Papers' ? (
 													<SortDropdown
 														handleSort={this.handleSort}
-														sort={paperSort}
+														sort={paperSort === '' ? (search === '' ? 'latest' : 'relevance') : paperSort}
 														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
 													/>
 												) : (
@@ -1915,7 +1915,7 @@ class SearchPage extends React.Component {
 												{key === 'People' ? (
 													<SortDropdown
 														handleSort={this.handleSort}
-														sort={personSort}
+														sort={personSort === '' ? (search === '' ? 'latest' : 'relevance') : personSort}
 														dropdownItems={['relevance', 'popularity', 'latest']}
 													/>
 												) : (
