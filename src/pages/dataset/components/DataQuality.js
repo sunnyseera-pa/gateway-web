@@ -192,6 +192,7 @@ class DataQuality extends React.Component {
 										open={this.state.allOpen}
 										datasetUtility={this.state.datasetUtility}
 										documentationWeight={this.state.documentationWeight}
+										data-testid='documentationWeightOnly'
 									/>
 								</Col>
 							</Row>
@@ -219,36 +220,40 @@ class DataQuality extends React.Component {
 									) : (
 										''
 									)}
-
 									<DataQualityInfo
 										section={'Documentation'}
 										open={this.state.allOpen}
 										datasetUtility={this.state.datasetUtility}
 										documentationWeight={this.state.documentationWeight}
+										data-testid='documentationWeight'
 									/>
 									<DataQualityInfo
 										section={'TechQuality'}
 										open={this.state.allOpen}
 										datasetUtility={this.state.datasetUtility}
 										technicalQualityWeight={this.state.technicalQualityWeight}
+										data-testid='technicalQualityWeight'
 									/>
 									<DataQualityInfo
 										section={'Access'}
 										open={this.state.allOpen}
 										datasetUtility={this.state.datasetUtility}
 										accessProvisionWeight={this.state.accessProvisionWeight}
+										data-testid='accessProvisionWeight'
 									/>
 									<DataQualityInfo
 										section={'Value'}
 										open={this.state.allOpen}
 										datasetUtility={this.state.datasetUtility}
 										valueInterestWeight={this.state.valueInterestWeight}
+										data-testid='valueInterestWeight'
 									/>
 									<DataQualityInfo
 										section={'Coverage'}
 										open={this.state.allOpen}
 										datasetUtility={this.state.datasetUtility}
 										coverageWeight={this.state.coverageWeight}
+										data-testid='coverageWeight'
 									/>
 
 									<div className='height-16' />
@@ -260,7 +265,7 @@ class DataQuality extends React.Component {
 			default:
 				return (
 					<div className='notRatedRectangle' id='notYetRatedRow'>
-						<span className='badge-notRated'>
+						<span className='badge-notRated' data-testid='notRated'>
 							<span>Not yet rated</span>
 						</span>
 					</div>

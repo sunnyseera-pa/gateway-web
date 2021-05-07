@@ -328,13 +328,13 @@ class DataQualityInfo extends React.Component {
 			case 'Platinum':
 				return <PlatinumSVG />;
 			case 'Gold':
-				return <GoldSVG />;
+				return <GoldSVG data-testid='goldSvg' />;
 			case 'Silver':
 				return <SilverSVG />;
 			// default:
 			// 	return <BronzeSVG />;
 			case 'Bronze':
-				return <BronzeSVG />;
+				return <BronzeSVG data-testid='bronzeSvg' />;
 			default:
 				return <UnfilledSVG />;
 		}
@@ -343,17 +343,17 @@ class DataQualityInfo extends React.Component {
 	getSubSectionRating(rating) {
 		switch (rating) {
 			case 'Platinum':
-				return <SubPlatinumSVG />;
+				return <SubPlatinumSVG data-testid='platinumSubSvg' />;
 			case 'Gold':
-				return <SubGoldSVG />;
+				return <SubGoldSVG data-testid='goldSubSvg' />;
 			case 'Silver':
-				return <SubSilverSVG />;
+				return <SubSilverSVG data-testid='silverSubSvg' />;
 			case 'Bronze':
-				return <SubBronzeSVG />;
+				return <SubBronzeSVG data-testid='bronzeSubSvg' />;
 			// TODO - are all other cases now going to be the empty 4 grey dots. Seem to be from Susheels message in ticket
 			default:
 				// return '';
-				return <SubUnfilledSVG />;
+				return <SubUnfilledSVG data-testid='unfilledSubSvg' />;
 		}
 	}
 
@@ -438,10 +438,10 @@ class DataQualityInfo extends React.Component {
 										className={flagClosed === true ? 'svg-20 dataQualityArrow' : 'svg-20 flipSVG dataQualityArrow'}
 									/>
 								</Col>
-								<Col xs={8} sm={5} md={4} lg={3} xl={2} className='gray800-14 dataUtilityTitle'>
+								<Col xs={8} sm={5} md={4} lg={3} xl={2} className='gray800-14 dataUtilityTitle' data-testid='documentationWeight'>
 									Documentation
 								</Col>
-								<Col xs={2} sm={5} md={5} lg={8} xl={9} className='dataUtilitySvg'>
+								<Col xs={2} sm={5} md={5} lg={8} xl={9} className='dataUtilitySvg' data-testid='documentation'>
 									{this.getSectionRating(documentationWeight)}
 								</Col>
 							</Row>
@@ -469,7 +469,12 @@ class DataQualityInfo extends React.Component {
 													rating.dimension === 'Additional documentation and support' &&
 													rating.rating === availability_of_additional_documentation_and_support.trim()
 												) {
-													return <span className='gray800-13'> {rating.response} </span>;
+													return (
+														<span className='gray800-13' data-testid='addDocAndSupport'>
+															{' '}
+															{rating.response}{' '}
+														</span>
+													);
 												}
 											})}
 										</Col>
@@ -487,7 +492,12 @@ class DataQualityInfo extends React.Component {
 										<Col sm={8} lg={8}>
 											{ratings.map(rating => {
 												if (rating.dimension === 'Data Model' && rating.rating === data_model.trim()) {
-													return <span className='gray800-13'> {rating.response} </span>;
+													return (
+														<span className='gray800-13' data-testid='dataModel'>
+															{' '}
+															{rating.response}{' '}
+														</span>
+													);
 												}
 											})}
 										</Col>
@@ -502,7 +512,12 @@ class DataQualityInfo extends React.Component {
 										<Col sm={8} lg={8}>
 											{ratings.map(rating => {
 												if (rating.dimension === 'Data Dictionary' && rating.rating === data_dictionary.trim()) {
-													return <span className='gray800-13'> {rating.response} </span>;
+													return (
+														<span className='gray800-13' data-testid='dataDictionary'>
+															{' '}
+															{rating.response}{' '}
+														</span>
+													);
 												}
 											})}
 										</Col>
@@ -517,7 +532,12 @@ class DataQualityInfo extends React.Component {
 										<Col sm={8} lg={8}>
 											{ratings.map(rating => {
 												if (rating.dimension === 'Provenance' && rating.rating === provenance.trim()) {
-													return <span className='gray800-13'> {rating.response} </span>;
+													return (
+														<span className='gray800-13' data-testid='provenance'>
+															{' '}
+															{rating.response}{' '}
+														</span>
+													);
 												}
 											})}
 										</Col>
@@ -681,7 +701,12 @@ class DataQualityInfo extends React.Component {
 										<Col sm={8} lg={8}>
 											{ratings.map(rating => {
 												if (rating.dimension === 'Allowable uses' && rating.rating === allowable_uses.trim()) {
-													return <span className='gray800-13'> {rating.response} </span>;
+													return (
+														<span className='gray800-13' data-testid='allowableUses'>
+															{' '}
+															{rating.response}{' '}
+														</span>
+													);
 												}
 											})}
 										</Col>
@@ -696,7 +721,12 @@ class DataQualityInfo extends React.Component {
 										<Col sm={8} lg={8}>
 											{ratings.map(rating => {
 												if (rating.dimension === 'Time Lag' && rating.rating === time_lag.trim()) {
-													return <span className='gray800-13'> {rating.response} </span>;
+													return (
+														<span className='gray800-13' data-testid='timeLag'>
+															{' '}
+															{rating.response}{' '}
+														</span>
+													);
 												}
 											})}
 										</Col>
@@ -711,7 +741,12 @@ class DataQualityInfo extends React.Component {
 										<Col sm={8} lg={8}>
 											{ratings.map(rating => {
 												if (rating.dimension === 'Timeliness' && rating.rating === timeliness.trim()) {
-													return <span className='gray800-13'> {rating.response} </span>;
+													return (
+														<span className='gray800-13' data-testid='timeliness'>
+															{' '}
+															{rating.response}{' '}
+														</span>
+													);
 												}
 											})}
 										</Col>
