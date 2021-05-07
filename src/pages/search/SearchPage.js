@@ -1087,7 +1087,7 @@ class SearchPage extends React.Component {
 		if (key === 'Papers' && paperCount === 0) showSort = false;
 		if (key === 'People' && personCount === 0) showSort = false;
 		if (key === 'Courses' && courseCount === 0) showSort = false;
-		if (key === 'Collections') showSort = false;
+		if (key === 'Collections' && collectionCount === 0) showSort = false;
 
 		let datasetPaginationItems = [];
 		let toolPaginationItems = [];
@@ -1896,7 +1896,7 @@ class SearchPage extends React.Component {
 													<SortDropdown
 														handleSort={this.handleSort}
 														sort={collectionSort}
-														dropdownItems={['relevance', 'popularity', 'latest']}
+														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
 													/>
 												) : (
 													''
