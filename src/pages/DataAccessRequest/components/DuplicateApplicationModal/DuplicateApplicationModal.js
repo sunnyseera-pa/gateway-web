@@ -10,6 +10,7 @@ import axios from 'axios';
 import { baseURL } from '../../../../configs/url.config';
 import moment from 'moment';
 import _ from 'lodash';
+import DatasetOnboardingValidationUtil from '../../../../utils/DatasetOnboardingValidation.util';
 
 const DuplicateApplicationModal = ({ isOpen, closeModal, duplicateApplication, showDatasetModal, appToCloneId }) => {
 	const [applicationsToCloneInto, setApplicationsToCloneInto] = useState([]);
@@ -81,9 +82,9 @@ const DuplicateApplicationModal = ({ isOpen, closeModal, duplicateApplication, s
 							createdAt,
 						} = request;
 						return (
-							<button
+							<div
 								key={`request_${i}`}
-								className='duplicateApplicationModal-body-presubmittedappbutton'
+								className={`duplicateApplicationModal-body-presubmittedappbutton ${applicationId === _id ? 'active-duplicate' : ''}`}
 								onClick={() => {
 									setApplicationId(_id);
 									setIsNewApplication(false);
@@ -117,7 +118,7 @@ const DuplicateApplicationModal = ({ isOpen, closeModal, duplicateApplication, s
 									<div className='box-header'>Last activity</div>
 									<div className='box-field'>{moment(updatedAt).format('D MMMM YYYY HH:mm')}</div>
 								</div>
-							</button>
+							</div>
 						);
 					})}
 				</div>
