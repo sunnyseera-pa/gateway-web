@@ -322,7 +322,6 @@ class DataQualityInfo extends React.Component {
 		}
 	}
 
-	//TODO - section rating - does this need updated with a new empty default for rating 0?
 	getSectionRating(rating) {
 		switch (rating) {
 			case 'Platinum':
@@ -331,8 +330,6 @@ class DataQualityInfo extends React.Component {
 				return <GoldSVG data-testid='goldSvg' />;
 			case 'Silver':
 				return <SilverSVG />;
-			// default:
-			// 	return <BronzeSVG />;
 			case 'Bronze':
 				return <BronzeSVG data-testid='bronzeSvg' />;
 			default:
@@ -350,9 +347,7 @@ class DataQualityInfo extends React.Component {
 				return <SubSilverSVG data-testid='silverSubSvg' />;
 			case 'Bronze':
 				return <SubBronzeSVG data-testid='bronzeSubSvg' />;
-			// TODO - are all other cases now going to be the empty 4 grey dots. Seem to be from Susheels message in ticket
 			default:
-				// return '';
 				return <SubUnfilledSVG data-testid='unfilledSubSvg' />;
 		}
 	}

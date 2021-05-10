@@ -71,7 +71,6 @@ class DataQuality extends React.Component {
 		await this.getWeights(this.props.datasetUtility);
 	}
 
-	//TODO - calculation of section weights needs to be updated here
 	async getWeights(
 		datasetUtility = {
 			metadata_richness: '',
@@ -104,7 +103,6 @@ class DataQuality extends React.Component {
 							5
 					)
 				];
-			console.log(`documentationWeight: ${documentationWeight}`);
 
 			let technicalQualityWeight =
 				weights[
@@ -114,7 +112,6 @@ class DataQuality extends React.Component {
 							2
 					)
 				];
-			console.log(`technicalQualityWeight: ${technicalQualityWeight}`);
 
 			let accessProvisionWeight =
 				weights[
@@ -125,7 +122,6 @@ class DataQuality extends React.Component {
 							3
 					)
 				];
-			console.log(`accessProvisionWeight: ${accessProvisionWeight}`);
 
 			let valueInterestWeight =
 				weights[
@@ -135,7 +131,6 @@ class DataQuality extends React.Component {
 							2
 					)
 				];
-			console.log(`valueInterestWeight: ${valueInterestWeight}`);
 
 			let coverageWeight =
 				weights[
@@ -145,7 +140,6 @@ class DataQuality extends React.Component {
 							2
 					)
 				];
-			console.log(`coverageWeight: ${coverageWeight}`);
 
 			this.setState({
 				documentationWeight: documentationWeight,
@@ -157,7 +151,6 @@ class DataQuality extends React.Component {
 		}
 	}
 
-	// TODO
 	getSubSectionWeights(rating) {
 		let subSectionWeights = new Map([
 			['Other', 0],
