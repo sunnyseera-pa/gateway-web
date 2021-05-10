@@ -10,6 +10,10 @@
 		transform: translate(0%, 0%) !important;
 	}
 
+	.active-duplicate {
+		border: 3px solid #3db28c !important;
+	}
+
 	&-header {
 		display: flex;
 		flex-direction: column;
@@ -109,10 +113,7 @@
 			flex-direction: column;
 			justify-content: space-between;
 
-			&:focus {
-				outline-color: #3db28c !important ;
-				border-color: #3db28c !important;
-			}
+			
 			&-header {
 				width: 100%;
 				display: flex;
