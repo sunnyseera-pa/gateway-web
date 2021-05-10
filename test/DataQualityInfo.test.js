@@ -12,7 +12,6 @@ describe('<DataQualityInfo />', () => {
 		expect(wrapper.find('[data-testid="goldSvg"]').exists()).toEqual(true);
 		expect(wrapper.find('[data-testid="platinumSubSvg"]').length).toBe(3);
 		expect(wrapper.find('[data-testid="goldSubSvg"]').length).toBe(2);
-		expect(wrapper.find('[data-testid="platinumSubSvg"]').length).toBe(3);
 		expect(wrapper.find('[data-testid="addDocAndSupport"]').text().trim()).toEqual(
 			'As Gold, plus support personnel available to answer questions'
 		);
