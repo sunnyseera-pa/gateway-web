@@ -10,7 +10,6 @@ import axios from 'axios';
 import { baseURL } from '../../../../configs/url.config';
 import moment from 'moment';
 import _ from 'lodash';
-import DatasetOnboardingValidationUtil from '../../../../utils/DatasetOnboardingValidation.util';
 
 const DuplicateApplicationModal = ({ isOpen, closeModal, duplicateApplication, showDatasetModal, appToCloneId }) => {
 	const [applicationsToCloneInto, setApplicationsToCloneInto] = useState([]);
