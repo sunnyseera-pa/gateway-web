@@ -1344,9 +1344,8 @@ class DataAccessRequest extends Component {
 				datasetIds.push(dataset.datasetId);
 				datasetTitles.push(dataset.name);
 			});
-		}
 
-		axios
+			axios
 			.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/clone`, {
 				datasetIds,
 				datasetTitles,
@@ -1374,6 +1373,7 @@ class DataAccessRequest extends Component {
 
 				this.props.history.push({ pathname: `/data-access-request/${res.data.accessRecord._id}` });
 			});
+		}		
 	};
 
 	getUserRoles() {
