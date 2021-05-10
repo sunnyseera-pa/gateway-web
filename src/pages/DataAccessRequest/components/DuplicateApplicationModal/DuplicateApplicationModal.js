@@ -81,9 +81,9 @@ const DuplicateApplicationModal = ({ isOpen, closeModal, duplicateApplication, s
 							createdAt,
 						} = request;
 						return (
-							<button
+							<div
 								key={`request_${i}`}
-								className='duplicateApplicationModal-body-presubmittedappbutton'
+								className={`duplicateApplicationModal-body-presubmittedappbutton ${applicationId === _id ? 'active-duplicate' : ''}`}
 								onClick={() => {
 									setApplicationId(_id);
 									setIsNewApplication(false);
@@ -117,7 +117,7 @@ const DuplicateApplicationModal = ({ isOpen, closeModal, duplicateApplication, s
 									<div className='box-header'>Last activity</div>
 									<div className='box-field'>{moment(updatedAt).format('D MMMM YYYY HH:mm')}</div>
 								</div>
-							</button>
+							</div>
 						);
 					})}
 				</div>
