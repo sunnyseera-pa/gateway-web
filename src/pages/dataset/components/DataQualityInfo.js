@@ -325,15 +325,15 @@ class DataQualityInfo extends React.Component {
 	getSectionRating(rating) {
 		switch (rating) {
 			case 'Platinum':
-				return <PlatinumSVG />;
+				return <PlatinumSVG data-testid='platinumSvg' />;
 			case 'Gold':
 				return <GoldSVG data-testid='goldSvg' />;
 			case 'Silver':
-				return <SilverSVG />;
+				return <SilverSVG data-testid='silverSvg' />;
 			case 'Bronze':
 				return <BronzeSVG data-testid='bronzeSvg' />;
 			default:
-				return <UnfilledSVG />;
+				return <UnfilledSVG data-testid='unfilledSvg' />;
 		}
 	}
 
