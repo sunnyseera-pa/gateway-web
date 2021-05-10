@@ -273,12 +273,16 @@ export const CourseDetail = props => {
 							<div className='rectangle'>
 								<Row>
 									<Col>
-										<span className='black-16'>{courseData.title}</span>
+										<span data-test-id='course-title' className='black-16'>
+											{courseData.title}
+										</span>
 									</Col>
 								</Row>
 								<Row>
 									<Col>
-										<span className='black-14'>{courseData.provider}</span>
+										<span data-test-id='course-provider' className='black-14'>
+											{courseData.provider}
+										</span>
 									</Col>
 								</Row>
 								<Row className='margin-top-16'>
@@ -336,7 +340,7 @@ export const CourseDetail = props => {
 														<Col sm={12}>Description</Col>
 													</Row>
 													<Row className='mt-3'>
-														<Col sm={12} className='gray800-14 hdruk-section-body'>
+														<Col sm={12} data-test-id='course-description' className='gray800-14 hdruk-section-body'>
 															<ReactMarkdown source={courseData.description} />
 														</Col>
 													</Row>
@@ -374,7 +378,12 @@ export const CourseDetail = props => {
 															URL
 														</Col>
 														<Col sm={10} className='gray800-14'>
-															<a href={courseData.link} rel='noopener noreferrer' target='_blank' className='purple-14 text-break'>
+															<a
+																data-test-id='course-url'
+																href={courseData.link}
+																rel='noopener noreferrer'
+																target='_blank'
+																className='purple-14 text-break'>
 																{courseData.link}
 															</a>
 														</Col>
@@ -421,7 +430,7 @@ export const CourseDetail = props => {
 														<Col sm={2} className='gray800-14'>
 															Course location
 														</Col>
-														<Col sm={10} className='gray-deep-14 overflowWrap'>
+														<Col sm={10} className='gray-deep-14 overflowWrap' data-test-id='course-location'>
 															{courseData.location ? courseData.location : <span className='gray800-14-opacity'>Not specified</span>}
 														</Col>
 													</Row>
@@ -475,7 +484,7 @@ export const CourseDetail = props => {
 														return (
 															<div className='margin-top-24'>
 																<Row className='gray800-14-opacity'>
-																	<Col sm={12}>
+																	<Col sm={12} data-test-id='course-date'>
 																		{courseOption.flexibleDates ? 'Flexible' : moment(courseOption.startDate).format('dddd Do MMMM YYYY')}
 																	</Col>
 																</Row>
@@ -484,7 +493,7 @@ export const CourseDetail = props => {
 																		Course duration
 																	</Col>
 																	{courseOption.studyMode && courseOption.studyDurationNumber ? (
-																		<Col sm={10} className='gray-deep-14 overflowWrap'>
+																		<Col sm={10} className='gray-deep-14 overflowWrap' data-test-id='course-duration'>
 																			{courseOption.studyMode} | {courseOption.studyDurationNumber} {courseOption.studyDurationMeasure}
 																		</Col>
 																	) : (
@@ -503,7 +512,7 @@ export const CourseDetail = props => {
 																				return (
 																					<>
 																						{index > 0 ? <Col sm={2} /> : ''}
-																						<Col sm={10} className='gray-deep-14 overflowWrap'>
+																						<Col sm={10} className='gray-deep-14 overflowWrap' data-test-id='course-fees'>
 																							{fee.feeDescription} | £{fee.feeAmount}{' '}
 																							{fee.feePer ? <>per {fee.feePer.toLowerCase()}</> : ''}
 																						</Col>
@@ -541,8 +550,8 @@ export const CourseDetail = props => {
 																		return (
 																			<a href={'/search?search=&tab=Courses&courseentrylevel=' + entry.level}>
 																				<div className='badge-version'>
-																					<span>{entry.level}</span>
-																					<span>{entry.subject}</span>
+																					<span data-test-id='entry-level'>{entry.level}</span>
+																					<span data-test-id='entry-subject'>{entry.subject}</span>
 																				</div>
 																			</a>
 																		);
