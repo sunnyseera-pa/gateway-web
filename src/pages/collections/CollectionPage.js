@@ -68,6 +68,10 @@ export const CollectionPage = props => {
 				window.localStorage.setItem('redirectMsg', `Collection not found for Id: ${props.match.params.collectionID}`);
 				props.history.push({ pathname: '/search?search=', search: '' });
 			} else {
+				const localCollectionData = res.data.data[0];
+				let counter = !localCollectionData.counter ? 1 : localCollectionData.counter + 1;
+				updateCounter(props.match.params.collectionID, counter);
+
 				setCollectionData(res.data.data[0]);
 				getObjectData();
 				setIsLoading(false);
@@ -75,6 +79,10 @@ export const CollectionPage = props => {
 		});
 	};
 
+	const updateCounter = (id, counter) => {
+		axios.post(baseURL + '/api/v1/collectioncounter/update', { id, counter });
+	};
+	
 	const getObjectData = async () => {
 		await axios.get(baseURL + '/api/v1/collections/relatedobjects/' + props.match.params.collectionID).then(async res => {
 			setObjectData(res.data.data);
