@@ -10,7 +10,7 @@ const AccessActivity = ({
 	updatedAt,
 	applicants = '',
 	dateSubmitted = '',
-	team = '',
+	team = 'user',
 	publisher = '',
 	applicationStatus,
 	navigateToLocation,
