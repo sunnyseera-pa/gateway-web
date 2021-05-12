@@ -34,7 +34,7 @@ class DataAccessRequestsNew extends React.Component {
 		preSubmissionCount: 0,
 		submittedCount: 0,
 		inReviewCount: 0,
-		team: '',
+		team: 'user',
 		avgDecisionTime: 0,
 		alert: {},
 		showWorkflowReviewModal: false,
@@ -51,7 +51,7 @@ class DataAccessRequestsNew extends React.Component {
 		if (!_.isEmpty(teamIs)) {
 			this.state.team = teamIs.name;
 		} else {
-			this.state.team = '';
+			this.state.team = 'user';
 		}
 		if (!_.isEmpty(props.alert)) {
 			this.state.alert = props.alert;
