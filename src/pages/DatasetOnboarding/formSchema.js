@@ -403,7 +403,7 @@ export const formSchema = {
 					questionId: 'properties/coverage/spatial',
 					question: 'Spatial',
 					guidance:
-						'- The **geographical area** covered by the dataset.\n- Please enter a link to entries in a well-maintained gazetteer such as <https://www.geonames.org/>\n- However, for a limited time we will be accepting text based entries.\n- **Example**:\n- <https://www.geonames.org/11609043/north-yorkshire.html>\n- North Yorkshire',
+						'- The **geographical area** covered by the dataset.\n- Please enter a link to entries in a well-maintained gazetteer such as <https://www.geonames.org/>',
 					input: {
 						type: 'textInput',
 					},
