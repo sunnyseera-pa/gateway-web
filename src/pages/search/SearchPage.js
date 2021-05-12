@@ -43,6 +43,7 @@ class SearchPage extends React.Component {
 		paperSort: '',
 		personSort: '',
 		courseSort: '',
+		collectionSort: '',
 		datasetIndex: 0,
 		toolIndex: 0,
 		projectIndex: 0,
@@ -316,6 +317,7 @@ class SearchPage extends React.Component {
 		queryParams.paperSort ? this.setState({ paperSort: queryParams.paperSort }) : this.setState({ paperSort: '' });
 		queryParams.personSort ? this.setState({ personSort: queryParams.personSort }) : this.setState({ personSort: '' });
 		queryParams.courseSort ? this.setState({ courseSort: queryParams.courseSort }) : this.setState({ courseSort: '' });
+		queryParams.collectionSort ? this.setState({ collectionSort: queryParams.collectionSort }) : this.setState({ collectionSort: '' });
 	}
 
 	clearFilterStates() {
@@ -362,6 +364,7 @@ class SearchPage extends React.Component {
 				paperSort: '',
 				personSort: '',
 				courseSort: '',
+				collectionSort: '',
 			}),
 			() => {
 				this.doSearchCall();
@@ -452,6 +455,7 @@ class SearchPage extends React.Component {
 			paperSort = '',
 			personSort = '',
 			courseSort = '',
+			collectionSort = '',
 		} = this.state;
 		// 1. build search object from list of selected fitlers v2 only
 		const searchObj = this.buildSearchObj(this.state.selectedV2);
@@ -519,6 +523,7 @@ class SearchPage extends React.Component {
 		if (paperSort !== '') searchURL += '&paperSort=' + encodeURIComponent(paperSort);
 		if (personSort !== '') searchURL += '&personSort=' + encodeURIComponent(personSort);
 		if (courseSort !== '') searchURL += '&courseSort=' + encodeURIComponent(courseSort);
+		if (collectionSort !== '') searchURL += '&collectionSort=' + encodeURIComponent(collectionSort);
 		// login status handler
 		if (userState[0].loggedIn === false) {
 			let values = queryString.parse(window.location.search);
@@ -1024,6 +1029,7 @@ class SearchPage extends React.Component {
 			projectSort,
 			paperSort,
 			personSort,
+			collectionSort,
 
 			filtersV2,
 			selectedV2,
@@ -1081,7 +1087,7 @@ class SearchPage extends React.Component {
 		if (key === 'Papers' && paperCount === 0) showSort = false;
 		if (key === 'People' && personCount === 0) showSort = false;
 		if (key === 'Courses' && courseCount === 0) showSort = false;
-		if (key === 'Collections') showSort = false;
+		if (key === 'Collections' && collectionCount === 0) showSort = false;
 
 		let datasetPaginationItems = [];
 		let toolPaginationItems = [];
@@ -1880,6 +1886,16 @@ class SearchPage extends React.Component {
 													<SortDropdown
 														handleSort={this.handleSort}
 														sort={projectSort === '' ? (search === '' ? 'latest' : 'relevance') : projectSort}
+														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+													/>
+												) : (
+													''
+												)}
+
+												{key === 'Collections' ? (
+													<SortDropdown
+														handleSort={this.handleSort}
+														sort={collectionSort === '' ? (search === '' ? 'latest' : 'relevance') : collectionSort}
 														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
 													/>
 												) : (
