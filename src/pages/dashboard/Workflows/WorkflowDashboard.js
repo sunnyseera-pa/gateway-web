@@ -42,7 +42,7 @@ const WorkflowDashboard = ({ userState, team }) => {
 		if (!_.isEmpty(user) && !_.isEmpty(team)) {
 			let { teams = [] } = user;
 			if (!_.isEmpty(teams)) {
-				const teamObj = teams.find(to => to.name === team);
+				const teamObj = teams.find(to => to._id === team);
 				if (!_.isEmpty(teamObj)) {
 					return teamObj._id;
 				}
