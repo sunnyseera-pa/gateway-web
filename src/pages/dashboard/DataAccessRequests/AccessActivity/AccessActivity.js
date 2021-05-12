@@ -10,7 +10,7 @@ const AccessActivity = ({
 	updatedAt,
 	applicants = '',
 	dateSubmitted = '',
-	team = '',
+	team = 'user',
 	publisher = '',
 	applicationStatus,
 	navigateToLocation,
@@ -89,7 +89,6 @@ const AccessActivity = ({
 	const buildAccessRequest = () => {
 		const hasWorkflow = !_.isEmpty(workflowName) ? true : false;
 		const isTeam = team !== 'user' ? true : false;
-		debugger;
 		return (
 			<Fragment>
 				<div className='box gray800-14'>Datasets</div>
