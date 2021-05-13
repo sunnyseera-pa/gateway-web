@@ -8,6 +8,7 @@ import TopicList from './components/TopicList';
 import MessageHeader from './components/MessageHeader';
 import MessageItem from './components/MessageItem';
 import MessageFooter from './components/MessageFooter';
+import { EnquiryMessage } from './components/EnquiryMessage';
 import './UserMessages.scss';
 
 const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOpen = false }) => {
@@ -331,7 +332,9 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 						<div className='messageArea-body'>
 							{!_.isEmpty(activeTopic.topicMessages)
 								? activeTopic.topicMessages.map(message => <MessageItem key={message._id} {...message} />)
-								: ''}
+								: 
+								<EnquiryMessage />
+								}
 						</div>
 						<div className='messageArea-footer'>
 							{!_.isEmpty(activeTopic) ? (
