@@ -32,13 +32,8 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 		} = topicContext);
 
 	const [messageDescription, setMessageDescription] = useState('');
-
 	const [topics, setTopics] = useState([]);
-
 	const [activeTopic, setActiveTopic] = useState({});
-
-	const [textArea, resetTextArea] = useState('');
-
 	const [modalRequired, setRequiresModal] = useState(requiresModal);
 
 	/**
@@ -54,7 +49,8 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 				const {
 					data: { topics },
 				} = res;
-				// 1. clone topics from t
+				debugger;
+				// 1. clone topics
 				let topicsArr = [...topics];
 				// 2. check if  dataset id has been passed
 				if (_.isEmpty(datasets) && !_.isEmpty(topicsArr)) {
@@ -301,6 +297,16 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 			});
 	};
 
+	const isNewMessage = (activeTopic = {}) => {
+		if (!_.isEmpty(activeTopic)) {
+			// deconstruct createdData
+			let {createdDate = ''} = activeTopic;
+			// createdDate will contain New Message or date string - test for new massage
+			return createdDate.trim().toUpperCase() === 'NEW MESSAGE' ? true : false;
+		}
+		return false
+	}
+
 	useEffect(() => {
 		// 1. GET Topics for current user
 		if (drawerIsOpen) getUserTopics();
@@ -315,7 +321,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 			{topics.length > 0 ? (
 				<div className='sideDrawer-body'>
 					<TopicList topics={topics} onTopicClick={onTopicClick} />
-					<div className='messageArea'>
+					<div className='messageArea' style={{gridTemplateRows: `${isNewMessage(activeTopic) ? '1fr 10fr' : '1fr 10fr 170px'}`}}>
 						<div className='messageArea-header'>
 							{!_.isEmpty(activeTopic) ? (
 								<MessageHeader
@@ -332,17 +338,21 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 						<div className='messageArea-body'>
 							{!_.isEmpty(activeTopic.topicMessages)
 								? activeTopic.topicMessages.map(message => <MessageItem key={message._id} {...message} />)
-								: 
-								<EnquiryMessage />
+								: isNewMessage(activeTopic) ?
+									<EnquiryMessage />
+								: ''
 								}
 						</div>
-						<div className='messageArea-footer'>
-							{!_.isEmpty(activeTopic) ? (
-								<MessageFooter value={messageDescription} onSubmitMessage={onSubmitMessage} onMessageChange={onMessageChange} />
-							) : (
-								''
-							)}
-						</div>
+
+						{/* DONT SHOW FOOTER IF A NEW MESSAGE - EXTEND BODY */}
+						{!_.isEmpty(activeTopic) && !isNewMessage(activeTopic) ? (
+							<div className='messageArea-footer'>
+									<MessageFooter value={messageDescription} onSubmitMessage={onSubmitMessage} onMessageChange={onMessageChange} />
+							</div>
+								) : (
+									''
+						)}
+
 					</div>
 				</div>
 			) : (

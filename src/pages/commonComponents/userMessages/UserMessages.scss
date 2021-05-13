@@ -171,6 +171,27 @@
 	border-right: 4px solid $teal !important;
 }
 
+.enquiry-message {
+		&-container {
+			padding: 20px 0;
+		}
+
+		&-form {
+		padding: 20px 25px;
+
+		label {
+			margin-bottom: 0.2rem;
+			span {
+				display: flex;
+			}
+		}
+
+		textarea {
+			min-height: 85px;
+		}
+	}
+}
+
 // IE 11
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
 	.messageArea-item, .messageArea-item-header, .messageArea-footer  {
