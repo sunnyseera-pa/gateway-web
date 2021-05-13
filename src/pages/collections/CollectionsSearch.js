@@ -5,11 +5,11 @@ import '../commonComponents/searchBar/SearchBar.scss';
 import SortDropdown from '../search/components/SortDropdown';
 
 const CollectionsSearch = props => {
-	const { isLoading } = props;
+	const {} = props;
 	const [searchString, setSearchString] = useState('');
 
 	let col1Size = 7;
-	let col2Size = 2;
+	let col2Size = 3;
 	let collectionsPageSort = '';
 	const onSearch = e => {
 		setSearchString(e.target.value);
@@ -20,7 +20,7 @@ const CollectionsSearch = props => {
 	if (props.isLoading) {
 		return '';
 	}
-    
+
 	if (!props.isLoading) {
 		return (
 			<Row>
@@ -45,7 +45,7 @@ const CollectionsSearch = props => {
 				<Col lg={col2Size} className='text-right'>
 					<SortDropdown
 						handleSort={handleSort}
-						sort={collectionsPageSort === '' ? ({ searchString } === '' ? 'latest' : 'relevance') : collectionsPageSort}
+						sort={collectionsPageSort === '' ? (searchString  === '' ? 'latest' : 'relevance') : collectionsPageSort}
 						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
 					/>
 				</Col>
