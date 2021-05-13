@@ -292,6 +292,10 @@ export const CollectionPage = props => {
 					</Row>
 
 					<Row>
+						<div className="col-sm-12 mt-3 gray800-14 text-center">{collectionData.counter ? collectionData.counter : 0} views</div>
+					</Row>
+
+					<Row>
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10} className='collectionKeywords'>
 							{collectionData.keywords &&
