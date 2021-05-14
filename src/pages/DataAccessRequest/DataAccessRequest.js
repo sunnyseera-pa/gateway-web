@@ -1331,13 +1331,17 @@ class DataAccessRequest extends Component {
 	};
 
 	onDuplicateApplication = async (appIdToCloneInto = '', selectedDatasets = []) => {
-		!_.isEmpty(appIdToCloneInto) ? this.toggleDuplicateApplicationModal() : this.toggleSelectDatasetModal();
+		if (!_.isEmpty(appIdToCloneInto)) {
+			this.toggleDuplicateApplicationModal();
+		}
 
 		let datasetIds = [];
 		let datasetTitles = [];
 		let publisher = '';
 
 		if (!_.isEmpty(selectedDatasets)) {
+			this.toggleSelectDatasetModal();
+
 			publisher = selectedDatasets[0].publisher;
 			selectedDatasets.forEach(dataset => {
 				datasetIds.push(dataset.datasetId);
@@ -1345,33 +1349,33 @@ class DataAccessRequest extends Component {
 			});
 
 			axios
-			.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/clone`, {
-				datasetIds,
-				datasetTitles,
-				publisher,
-				appIdToCloneInto,
-			})
-			.then(res => {
-				let message = '';
-				let projectName = this.state.projectName || this.state.datasets[0].name;
+				.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/clone`, {
+					datasetIds,
+					datasetTitles,
+					publisher,
+					appIdToCloneInto,
+				})
+				.then(res => {
+					let message = '';
+					let projectName = this.state.projectName || this.state.datasets[0].name;
 
-				if (_.isEmpty(appIdToCloneInto)) {
-					message = `You have successfully duplicated your application '${projectName}' into a new application`;
-				} else {
-					let { aboutApplication: { projectName: projectNameCloneInto } = {} } = res.data.accessRecord;
-					projectNameCloneInto = _.isNil(projectNameCloneInto) ? 'your selected application' : `'${projectNameCloneInto}'`;
-					message = `You have successfully duplicated your application '${projectName}' into ${projectNameCloneInto}`;
-				}
+					if (_.isEmpty(appIdToCloneInto)) {
+						message = `You have successfully duplicated your application '${projectName}' into a new application`;
+					} else {
+						let { aboutApplication: { projectName: projectNameCloneInto } = {} } = res.data.accessRecord;
+						projectNameCloneInto = _.isNil(projectNameCloneInto) ? 'your selected application' : `'${projectNameCloneInto}'`;
+						message = `You have successfully duplicated your application '${projectName}' into ${projectNameCloneInto}`;
+					}
 
-				let alert = {
-					message: message,
-					publisher: 'user',
-				};
-				this.setState({ alert: alert });
-				setTimeout(() => this.setState({ alert: {} }), 10000);
+					let alert = {
+						message: message,
+						publisher: 'user',
+					};
+					this.setState({ alert: alert });
+					setTimeout(() => this.setState({ alert: {} }), 10000);
 
-				this.props.history.push({ pathname: `/data-access-request/${res.data.accessRecord._id}` });
-			});
+					this.props.history.push({ pathname: `/data-access-request/${res.data.accessRecord._id}` });
+				});
 		}
 	};
 
@@ -1609,7 +1613,7 @@ class DataAccessRequest extends Component {
 			actionModalConfig,
 			roles,
 			showEmailModal,
-			alert
+			alert,
 		} = this.state;
 		const { userState, location } = this.props;
 
