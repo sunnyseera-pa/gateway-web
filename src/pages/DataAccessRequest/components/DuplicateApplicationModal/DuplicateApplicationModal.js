@@ -9,7 +9,7 @@ import TimeDuration from '../../../commonComponents/timeDuration/TimeDuration';
 import axios from 'axios';
 import { baseURL } from '../../../../configs/url.config';
 import moment from 'moment';
-import _, { divide } from 'lodash';
+import _ from 'lodash';
 
 const DuplicateApplicationModal = ({ isOpen, closeModal, duplicateApplication, showDatasetModal, appToCloneId }) => {
 	const [applicationsToCloneInto, setApplicationsToCloneInto] = useState([]);
@@ -35,7 +35,7 @@ const DuplicateApplicationModal = ({ isOpen, closeModal, duplicateApplication, s
 
 	const resetModalState = () => {
 		setIsNewApplication(false);
-		setApplicationId = null;
+		setApplicationId(null);
 	};
 
 	return (
@@ -63,7 +63,12 @@ const DuplicateApplicationModal = ({ isOpen, closeModal, duplicateApplication, s
 							<div className='newAppButtonText'>Create new application</div>
 						</button>
 					) : (
-						<button className='duplicateApplicationModal-body-newappbutton' onClick={() => setIsNewApplication(true)}>
+						<button
+							className='duplicateApplicationModal-body-newappbutton'
+							onClick={() => {
+								setIsNewApplication(true); 
+								setApplicationId(null);
+							}}>
 							<SVGIcon className='newAppButtonIcon' name='plusChunky' width={20} height={20} fill={'#475da7'} />
 							<div className='newAppButtonText'>Create new application</div>{' '}
 						</button>
@@ -81,7 +86,7 @@ const DuplicateApplicationModal = ({ isOpen, closeModal, duplicateApplication, s
 							createdAt,
 						} = request;
 						return (
-							<divide
+							<div
 								key={`request_${i}`}
 								className={`duplicateApplicationModal-body-presubmittedappbutton ${applicationId === _id ? 'active-duplicate' : ''}`}
 								onClick={() => {
@@ -117,7 +122,7 @@ const DuplicateApplicationModal = ({ isOpen, closeModal, duplicateApplication, s
 									<div className='box-header'>Last activity</div>
 									<div className='box-field'>{moment(updatedAt).format('D MMMM YYYY HH:mm')}</div>
 								</div>
-							</divide>
+							</div>
 						);
 					})}
 				</div>
