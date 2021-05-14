@@ -95,11 +95,11 @@ class DataQuality extends React.Component {
 			let documentationWeight =
 				weights[
 					Math.floor(
-						(weights.indexOf(datasetUtility.metadata_richness.trim()) +
-							weights.indexOf(datasetUtility.availability_of_additional_documentation_and_support.trim()) +
-							weights.indexOf(datasetUtility.data_model.trim()) +
-							weights.indexOf(datasetUtility.data_dictionary.trim()) +
-							weights.indexOf(datasetUtility.provenance.trim())) /
+						(this.getSubSectionWeights(datasetUtility.metadata_richness) +
+							this.getSubSectionWeights(datasetUtility.availability_of_additional_documentation_and_support) +
+							this.getSubSectionWeights(datasetUtility.data_model) +
+							this.getSubSectionWeights(datasetUtility.data_dictionary) +
+							this.getSubSectionWeights(datasetUtility.provenance)) /
 							5
 					)
 				];
@@ -107,8 +107,8 @@ class DataQuality extends React.Component {
 			let technicalQualityWeight =
 				weights[
 					Math.floor(
-						(weights.indexOf(datasetUtility.data_quality_management_process.trim()) +
-							weights.indexOf(datasetUtility.dama_quality_dimensions.trim())) /
+						(this.getSubSectionWeights(datasetUtility.data_quality_management_process) +
+							this.getSubSectionWeights(datasetUtility.dama_quality_dimensions)) /
 							2
 					)
 				];
@@ -116,22 +116,22 @@ class DataQuality extends React.Component {
 			let accessProvisionWeight =
 				weights[
 					Math.floor(
-						(weights.indexOf(datasetUtility.allowable_uses.trim()) +
-							weights.indexOf(datasetUtility.time_lag.trim()) +
-							weights.indexOf(datasetUtility.timeliness.trim())) /
+						(this.getSubSectionWeights(datasetUtility.allowable_uses) +
+							this.getSubSectionWeights(datasetUtility.time_lag) +
+							this.getSubSectionWeights(datasetUtility.timeliness)) /
 							3
 					)
 				];
 
 			let valueInterestWeight =
 				weights[
-					Math.floor((weights.indexOf(datasetUtility.linkages.trim()) + weights.indexOf(datasetUtility.data_enrichments.trim())) / 2)
+					Math.floor((this.getSubSectionWeights(datasetUtility.linkages) + this.getSubSectionWeights(datasetUtility.data_enrichments)) / 2)
 				];
 
 			let coverageWeight =
 				weights[
 					Math.floor(
-						(weights.indexOf(datasetUtility.pathway_coverage.trim()) + weights.indexOf(datasetUtility.length_of_follow_up.trim())) / 2
+						(this.getSubSectionWeights(datasetUtility.pathway_coverage) + this.getSubSectionWeights(datasetUtility.length_of_follow_up)) / 2
 					)
 				];
 
@@ -143,6 +143,27 @@ class DataQuality extends React.Component {
 				coverageWeight: coverageWeight,
 			});
 		}
+	}
+
+	getSubSectionWeights(rating) {
+		let subSectionWeights = new Map([
+			['Other', 0],
+			['Other (please specify)', 0],
+			['Not Rated', 0],
+			['Not yet Bronze', 0.5],
+			['Bronze', 1],
+			['Silver', 2],
+			['Gold', 3],
+			['Platinum', 4],
+		]);
+
+		let subSectionWeight = subSectionWeights.get(rating.trim());
+
+		if (_.isUndefined(subSectionWeight)) {
+			subSectionWeight = 0;
+		}
+
+		return subSectionWeight;
 	}
 
 	renderDataQualityInfo(displayOption) {
@@ -158,6 +179,7 @@ class DataQuality extends React.Component {
 										open={this.state.allOpen}
 										datasetUtility={this.state.datasetUtility}
 										documentationWeight={this.state.documentationWeight}
+										data-testid='documentationWeightOnly'
 									/>
 								</Col>
 							</Row>
@@ -185,36 +207,40 @@ class DataQuality extends React.Component {
 									) : (
 										''
 									)}
-
 									<DataQualityInfo
 										section={'Documentation'}
 										open={this.state.allOpen}
 										datasetUtility={this.state.datasetUtility}
 										documentationWeight={this.state.documentationWeight}
+										data-testid='documentationWeight'
 									/>
 									<DataQualityInfo
 										section={'TechQuality'}
 										open={this.state.allOpen}
 										datasetUtility={this.state.datasetUtility}
 										technicalQualityWeight={this.state.technicalQualityWeight}
+										data-testid='technicalQualityWeight'
 									/>
 									<DataQualityInfo
 										section={'Access'}
 										open={this.state.allOpen}
 										datasetUtility={this.state.datasetUtility}
 										accessProvisionWeight={this.state.accessProvisionWeight}
+										data-testid='accessProvisionWeight'
 									/>
 									<DataQualityInfo
 										section={'Value'}
 										open={this.state.allOpen}
 										datasetUtility={this.state.datasetUtility}
 										valueInterestWeight={this.state.valueInterestWeight}
+										data-testid='valueInterestWeight'
 									/>
 									<DataQualityInfo
 										section={'Coverage'}
 										open={this.state.allOpen}
 										datasetUtility={this.state.datasetUtility}
 										coverageWeight={this.state.coverageWeight}
+										data-testid='coverageWeight'
 									/>
 
 									<div className='height-16' />
@@ -226,7 +252,7 @@ class DataQuality extends React.Component {
 			default:
 				return (
 					<div className='notRatedRectangle' id='notYetRatedRow'>
-						<span className='badge-notRated'>
+						<span className='badge-notRated' data-testid='notRated'>
 							<span>Not yet rated</span>
 						</span>
 					</div>
