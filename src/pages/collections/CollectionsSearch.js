@@ -7,12 +7,13 @@ import SortDropdown from '../search/components/SortDropdown';
 const CollectionsSearch = props => {
 	const {} = props;
 	const [searchString, setSearchString] = useState('');
+    const [searchValue, setSearchValue] = useState('');
 
 	let col1Size = 7;
 	let col2Size = 3;
 	let collectionsPageSort = '';
 	const onSearch = e => {
-		setSearchString(e.target.value);
+        setSearchValue(e.target.value);
 	};
 
 	const handleSort = sort => {};
@@ -36,7 +37,7 @@ const CollectionsSearch = props => {
 								type='text'
 								placeholder='Search within collection'
 								onChange={onSearch}
-								value={searchString}
+								value={searchValue}
 							/>
 						</span>
 					</span>
@@ -45,7 +46,7 @@ const CollectionsSearch = props => {
 				<Col lg={col2Size} className='text-right'>
 					<SortDropdown
 						handleSort={handleSort}
-						sort={collectionsPageSort === '' ? (searchString  === '' ? 'latest' : 'relevance') : collectionsPageSort}
+						sort={collectionsPageSort === '' ? (searchString  === '' ?  'relevance' : 'latest') : collectionsPageSort}
 						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
 					/>
 				</Col>
