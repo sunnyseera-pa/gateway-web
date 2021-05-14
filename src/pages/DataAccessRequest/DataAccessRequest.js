@@ -1332,13 +1332,17 @@ class DataAccessRequest extends Component {
 	};
 
 	onDuplicateApplication = async (appIdToCloneInto = '', selectedDatasets = []) => {
-		!_.isEmpty(appIdToCloneInto) ? this.toggleDuplicateApplicationModal() : this.toggleSelectDatasetModal();
+		if (!_.isEmpty(appIdToCloneInto)) {
+			this.toggleDuplicateApplicationModal();
+		}
 
 		let datasetIds = [];
 		let datasetTitles = [];
 		let publisher = '';
 
 		if (!_.isEmpty(selectedDatasets)) {
+			this.toggleSelectDatasetModal();
+			
 			publisher = selectedDatasets[0].publisher;
 			selectedDatasets.forEach(dataset => {
 				datasetIds.push(dataset.datasetId);
