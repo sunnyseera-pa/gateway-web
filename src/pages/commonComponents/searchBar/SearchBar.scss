@@ -38,7 +38,8 @@ body.modal-open {
 		vertical-align: middle;
 		display: inline-block;
 		margin-top: 12px;
-		padding: 0px 0px 0px 30px;
+		// padding: 0px 0px 0px 30px;
+		padding: 0px 0px 0px 24px;
 	}
 
 	.navBarLoginSpacing {
@@ -69,7 +70,7 @@ body.modal-open {
 		outline: none;
 		border: 0;
 		font-size: 16px;
-		background-color: #f6f7f8;
+		background-color: #f8f6f6;
 		color: $gray-800;
 		padding-top: 7px;
 	}
@@ -341,4 +342,77 @@ body.modal-open {
 	#mobileSearchBar {
 		display: none;
 	}
+}
+
+// TODO - Craft CMS nav dropdowns css below here
+.dropdown-subitem {
+	font-size: 14px;
+	color: $gray-800;
+	margin-top: -10px;
+	padding: 3px 23px 0px 24px;
+}
+
+.dropdown-subitem:hover {
+	// font-weight: bold;
+	color: #191919;
+	text-decoration: none;
+	background-color: $gray-light;
+}
+
+// TODO - need to add a class name to the div containing the 'dropdown-header' for the 'Help' dropdown in CMS to use as a prepend below
+.dropdown-item-container .dropdown-header,
+.explore-right-container .dropdown-header {
+	font-size: 16px;
+	color: $gray-dark;
+}
+
+.dropdown-item {
+	font-size: 14px;
+	white-space: break-spaces;
+	color: #212529;
+}
+
+.dropdown-button {
+	background-color: $gray-200;
+	border: none;
+	width: 57%;
+	color: $indigo;
+	font-size: 14px;
+	float: right;
+	margin-right: 15px;
+	text-align: center;
+	padding: 10px;
+	margin-top: auto;
+	align-self: flex-end;
+}
+.dropdown-button:focus {
+	outline: none;
+}
+
+.dropdown-item-container:hover {
+	text-decoration: none;
+}
+
+.viewAllCollectionsLink {
+	color: $indigo;
+}
+.viewAllCollectionsLink:hover {
+	color: $indigo;
+	text-decoration: none;
+}
+
+.cmsDropdownTitle:hover {
+	text-decoration: none;
+}
+
+// .divider {
+// 	border-left: 1px solid #d8d8d8;
+// 	height: 95%;
+// 	position: absolute;
+// 	left: 55%;
+// }
+
+.cmsDropdown .cmsDropdownMenu {
+	// position: static;
+	margin-top: 8px;
 }

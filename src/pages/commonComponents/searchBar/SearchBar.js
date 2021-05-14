@@ -18,6 +18,8 @@ import '../uatBanner/UatBanner.scss';
 import moment from 'moment';
 import { cmsURL } from '../../../configs/url.config';
 
+import CmsDropdown from './CmsDropdown';
+
 var baseURL = require('../BaseURL').getURL();
 const urlEnv = require('../BaseURL').getURLEnv();
 
@@ -310,9 +312,24 @@ class SearchBar extends React.Component {
 										<ColourLogoSvg className='ml-4 mt-3' />
 									</a>
 								</div>
+
+								{/* TODO - add new dropdown items here  */}
 								<div className='navBarLinkSpacing'>
-									<a href={cmsURL + '/pages/about'} className='black-14' data-test-id='lnkAbout'>
-										About
+									<CmsDropdown dropdownUrl='exploreDropdown' />
+								</div>
+								<div className='navBarLinkSpacing'>
+									<CmsDropdown dropdownUrl='helpDropdown' />
+								</div>
+								<div className='navBarLinkSpacing'>
+									<CmsDropdown dropdownUrl='usageDataDropdown' />
+								</div>
+								<div className='navBarLinkSpacing'>
+									<CmsDropdown dropdownUrl='aboutUsDropdown' />
+								</div>
+
+								<div className='navBarLinkSpacing'>
+									<a href={cmsURL + '/pages/latest-news'} className='black-14' data-test-id='lnkCommunity'>
+										News
 									</a>
 								</div>
 								<div className='navBarLinkSpacing'>
@@ -320,11 +337,7 @@ class SearchBar extends React.Component {
 										Community
 									</a>
 								</div>
-								<div className='navBarLinkSpacing'>
-									<a href={'/dashboard'} className='black-14' data-test-id='lnkPublicDashboard'>
-										Dashboard
-									</a>
-								</div>
+
 								{showUatBanner === true && (
 									<div class='uatSearchBarBanner uatBannerText'>
 										<span class='verticalMiddle'>
@@ -952,6 +965,7 @@ class SearchBar extends React.Component {
 						</Row>
 					</div>
 
+					{/* TODO - MOBILE NAVBAR  */}
 					<div id='mobileSearchBar' className={!this.state.visible ? 'navbarHidden' : ''}>
 						<div className='searchBarBackground'>
 							<Row className='whiteBackground'>
@@ -970,6 +984,11 @@ class SearchBar extends React.Component {
 													</span>
 												</Dropdown.Item>
 											)}
+
+											<Dropdown.Item className='black-14'>
+												<CmsDropdown dropdownUrl='aboutUsDropdown' />
+											</Dropdown.Item>
+
 											<Dropdown.Item className='black-14' href={cmsURL + '/pages/about'}>
 												About
 											</Dropdown.Item>
