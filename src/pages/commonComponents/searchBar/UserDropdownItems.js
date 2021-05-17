@@ -10,7 +10,10 @@ export const UserDropdownItems = isAdmin => {
 			<Dropdown.Item href='/account?tab=youraccount&team=user' className='black-14 user-dropdown-item' data-test-id='optAccount'>
 				My Account
 			</Dropdown.Item>
-			<Dropdown.Item href='/account?tab=datasetsAdvancedSearch&team=user' className='black-14 user-dropdown-item'>
+			<Dropdown.Item
+				href='/account?tab=datasetsAdvancedSearch&team=user'
+				className='black-14 user-dropdown-item'
+				data-test-id='optDatasets'>
 				Datasets
 			</Dropdown.Item>
 			<Dropdown.Item
