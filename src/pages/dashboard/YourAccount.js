@@ -9,6 +9,7 @@ import Loading from '../commonComponents/Loading';
 import _ from 'lodash';
 import './Dashboard.scss';
 import SVGIcon from '../../images/SVGIcon';
+import AlertBannerBlue from '../commonComponents/AlertBannerBlue';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -20,7 +21,7 @@ class YourAccount extends React.Component {
 		userState: [],
 		topicData: [],
 		isLoading: true,
-		isUpdated: false,
+		accountUpdated: false,
 		showOrg: true,
 		combinedOrganisations: [],
 		showSector: true,
@@ -35,6 +36,7 @@ class YourAccount extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state.userState = props.userState;
+		this.state.accountUpdated = props.accountUpdated;
 	}
 
 	componentDidMount() {
@@ -128,6 +130,7 @@ class YourAccount extends React.Component {
 			showLink,
 			showOrcid,
 			showOrganisation,
+			accountUpdated,
 		} = this.state;
 
 		if (isLoading) {
@@ -152,6 +155,7 @@ class YourAccount extends React.Component {
 							userdata={userdata}
 							isUpdated={isUpdated}
 							profileComplete={profileComplete}
+							accountUpdated={accountUpdated}
 							topicData={topicData}
 							combinedOrganisations={combinedOrganisations}
 							showOrg={showOrg}
@@ -183,8 +187,9 @@ const YourAccountForm = props => {
 	let showOrcid = props.showOrcid;
 
 	let profileComplete = props.profileComplete;
-	let initialEmailNotifications = profileComplete ? props.data.emailNotifications || false : true;
-	let initialTerms = profileComplete ? props.data.terms || false : false;
+	let initialTerms = props.data.terms || false;
+	let optInFeedback = props.data.feedback || false;
+	let optInNews = props.data.news || false;
 
 	//tool tips for eyes
 	const mandatoryShowFieldMsg = 'This will be visible to others. You cannot change this.';
@@ -262,7 +267,8 @@ const YourAccountForm = props => {
 			bio: props.data.bio || '',
 			link: props.data.link || '',
 			orcid: props.data.orcid || '',
-			emailNotifications: initialEmailNotifications || false,
+			feedback: optInFeedback || false,
+			news: optInNews || false,
 			terms: initialTerms || false,
 			sector: props.data.sector || '',
 			organisation: props.data.organisation || '',
@@ -304,24 +310,29 @@ const YourAccountForm = props => {
 
 	return (
 		<div>
-			{props.profileComplete ? (
+			{initialTerms ? (
 				''
 			) : (
 				<Row className='accountBanner'>
-					<Col className='pad-left-24'>
-						Please accept the updated Terms and Conditions and update your profile details. You can now control the visibility of certain
-						fields.
-					</Col>
+					<Col className='pad-left-24'>Please accept the updated Terms and Conditions and update your profile details.</Col>
 				</Row>
 			)}
-			{props.isUpdated ? (
-				<Alert variant='success' className='mt-3'>
-					Done! Your account details have been updated
-				</Alert>
-			) : (
+			{props.profileComplete ? (
 				''
+			) : (
+				<AlertBannerBlue
+					className='margin-bottom-12'
+					message='Our new account page allows you to easily update your preferences regarding participating in feedback and receiving our
+				newsletter.'
+				/>
 			)}
-			<Row className='pixelGapBottom'>
+			{props.accountUpdated ? <Alert variant='success'>Done! Your account details have been updated</Alert> : ''}
+			<AlertBannerBlue
+				message='Want to get involved in shaping the Gateway? Join our development and improvement group.'
+				href='https://discourse.healthdatagateway.org/t/about-the-development-and-improvement-group/498'
+				dataTestId='dev-and-improvement'
+			/>
+			<Row className='pixelGapBottom margin-top-24'>
 				<Col>
 					<div className='rectangle pad-bottom-2'>
 						<p className='black-20 mb-0'>Your details</p>
@@ -335,7 +346,7 @@ const YourAccountForm = props => {
 			<Form onSubmit={formik.handleSubmit}>
 				<Row>
 					<Col>
-						<div className='rectangle'>
+						<div className='rectangle pb-1'>
 							<Form.Group className='pb-2'>
 								<Form.Label className='gray800-14'>First name</Form.Label>
 								<Row>
@@ -787,23 +798,6 @@ const YourAccountForm = props => {
 									</Col>
 								</Row>
 							</Form.Group>
-							<Form.Group className='pb-2'>
-								<Row className='mt-2'>
-									<Form.Control
-										type='checkbox'
-										className='checker'
-										id='emailNotifications'
-										name='emailNotifications'
-										// defaultChecked={profileComplete ? formik.values.emailNotifications : true}
-										checked={formik.values.emailNotifications}
-										onChange={formik.handleChange}
-										data-test-id='user-account-opt-notifications'
-									/>
-									<span className='gray800-14 ml-4 margin-top-2'>
-										I want to receive email notifications about activity relating to my account or content
-									</span>
-								</Row>
-							</Form.Group>
 
 							<Form.Group className='pb-2'>
 								<Row className='mt-2'>
@@ -836,9 +830,77 @@ const YourAccountForm = props => {
 								</Row>
 							</Form.Group>
 						</div>
+
+						<div className='rectangle margin-top-16'>
+							<Row className='mt-2 '>
+								<span className='divider-lines' />
+								<Col sm={12} className='gray800-14-bold'>
+									Keeping you updated
+								</Col>
+							</Row>
+							<Form.Group>
+								<Row className='mt-2 gray800-14'>
+									<span className='divider-lines' />
+									<Col md={1} sm={2} xs={3}>
+										Feedback
+									</Col>
+									<Col md={1} sm={2} xs={3}>
+										<Form.Control
+											type='checkbox'
+											className='checker'
+											id='feedback'
+											name='feedback'
+											checked={formik.values.feedback}
+											onChange={formik.handleChange}
+											data-test-id='user-account-feedback'
+										/>
+									</Col>
+									<Col md={10} sm={8} xs={6} className='gray800-14 pl-0'>
+										I am happy to be contacted to share and give feedback on my experience with the Gateway
+									</Col>
+								</Row>
+							</Form.Group>
+
+							<Form.Group>
+								<Row className='mt-2 gray800-14'>
+									<span className='divider-lines' />
+									<Col md={1} sm={2} xs={3}>
+										News
+									</Col>
+									<Col md={1} sm={2} xs={3}>
+										<Form.Control
+											type='checkbox'
+											className='checker'
+											id='news'
+											name='news'
+											checked={formik.values.news}
+											onChange={formik.handleChange}
+											data-test-id='user-account-news'
+										/>
+									</Col>
+									<Col md={10} sm={8} xs={6} className='gray800-14 pl-0'>
+										I want to receive news, updates and curated marketing from the Gateway&nbsp;&nbsp;&nbsp;&nbsp;
+										<a target='_blank' href='https://mailchi.mp/hdruk.ac.uk/explore-and-access-the-uks-health-research-datasets'>
+											Show me an example
+										</a>
+									</Col>
+								</Row>
+							</Form.Group>
+
+							<Row className='gray800-14 margin-top-2'>
+								<span className='divider-lines' />
+								<Col sm={12}>
+									As a user of the Gateway we take the privacy and security of your personal data seriously. Our{' '}
+									<a target='_blank' href='https://www.hdruk.ac.uk/infrastructure/gateway/privacy-policy/'>
+										privacy policy
+									</a>{' '}
+									aims to give you information on how Health Data Research UK collects and processes your personal data through your use of
+									this Gateway, including any data you may provide by emailing us.
+								</Col>
+							</Row>
+						</div>
 					</Col>
 				</Row>
-
 				<Row className='mt-3 mb-5'>
 					<Col className='text-right'>
 						<Button

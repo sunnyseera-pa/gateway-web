@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Row, Col, Button } from 'react-bootstrap';
+import { isEmpty } from 'lodash';
 import NotFound from '../commonComponents/NotFound';
 import Loading from '../commonComponents/Loading';
 import '../../css/styles.scss';
@@ -46,7 +47,15 @@ export const AccountMembers = props => {
 		setMembers(members);
 	};
 
-	let roles = {
+	const renderRoles = roles => {
+		if (!isEmpty(roles)) {
+			let sortedRoles = roles.sort();
+			return sortedRoles.map(role => `${roleList[role]}${roles.length > 1 && roles.indexOf(role) !== roles.length - 1 ? ', ' : ' '}`);
+		}
+		return '';
+	};
+
+	let roleList = {
 		manager: 'Manager',
 		reviewer: 'Reviewer',
 		metadata_editor: 'Metadata Editor',
@@ -69,9 +78,9 @@ export const AccountMembers = props => {
 			<Row>
 				<Col xs={1}></Col>
 				<Col xs={10}>
-					<Row className='accountHeader'>
+					<div className='accountHeader d-flex'>
 						<Col sm={12} md={9}>
-							<Row className=''>
+							<Row>
 								<span className='black-20'>Members</span>
 							</Row>
 							<Row>
@@ -107,7 +116,7 @@ export const AccountMembers = props => {
 								''
 							)}
 						</Col>
-					</Row>
+					</div>
 
 					{(() => {
 						return (
@@ -115,11 +124,11 @@ export const AccountMembers = props => {
 								{members.length <= 0 ? (
 									''
 								) : (
-									<Row className='subHeader mt-3 gray800-14-bold'>
+									<div className='subHeaderFlex mt-3 gray800-14-bold'>
 										<Col xs={5}>Name</Col>
 										<Col xs={4}>Role</Col>
 										<Col xs={3}></Col>
-									</Row>
+									</div>
 								)}
 								{members.length <= 0 ? (
 									<Row className='margin-right-15'>
@@ -128,7 +137,7 @@ export const AccountMembers = props => {
 								) : (
 									members.map(m => {
 										return (
-											<Row className='entryBox padding-left-20 '>
+											<div className='entryBoxFlex padding-left-20'>
 												<Col sm={12} lg={5}>
 													<a href={'/person/' + m.id} className='purple-14'>
 														{m.firstname} {m.lastname}
@@ -140,16 +149,9 @@ export const AccountMembers = props => {
 													</Row>
 												</Col>
 												<Col sm={4} lg={4} className='black-14'>
-													{m.roles.map(n => {
-														return (
-															<>
-																{roles[n]}
-																<br />
-															</>
-														);
-													})}
+													{renderRoles(m.roles)}
 												</Col>
-											</Row>
+											</div>
 										);
 									})
 								)}

@@ -68,6 +68,10 @@ export const CollectionPage = props => {
 				window.localStorage.setItem('redirectMsg', `Collection not found for Id: ${props.match.params.collectionID}`);
 				props.history.push({ pathname: '/search?search=', search: '' });
 			} else {
+				const localCollectionData = res.data.data[0];
+				let counter = !localCollectionData.counter ? 1 : localCollectionData.counter + 1;
+				updateCounter(props.match.params.collectionID, counter);
+
 				setCollectionData(res.data.data[0]);
 				getObjectData();
 				setIsLoading(false);
@@ -75,6 +79,10 @@ export const CollectionPage = props => {
 		});
 	};
 
+	const updateCounter = (id, counter) => {
+		axios.post(baseURL + '/api/v1/collectioncounter/update', { id, counter });
+	};
+	
 	const getObjectData = async () => {
 		await axios.get(baseURL + '/api/v1/collections/relatedobjects/' + props.match.params.collectionID).then(async res => {
 			setObjectData(res.data.data);
@@ -123,7 +131,7 @@ export const CollectionPage = props => {
 
 	const doSearch = e => {
 		//fires on enter on searchbar
-		if (e.key === 'Enter') window.location.href = '/search?search=' + searchString;
+		if (e.key === 'Enter') window.location.href = `/search?search=${encodeURIComponent(searchString)}`;
 	};
 
 	const updateSearchString = searchString => {
@@ -228,14 +236,14 @@ export const CollectionPage = props => {
 						<Col md={2} lg={1} className='privatePublicDisplayCol'>
 							{collectionData.publicflag === true ? (
 								<div className='privatePublicDisplay'>
-									<SVGIcon name='eye' width={24} height={24} fill={'#000000'} className={'pointer margin-right-8'} />
+									<SVGIcon name='eye' width={24} height={24} fill={'#000000'} className={'margin-right-8'} />
 									<span className='deepBlack-14 alignSuper' data-testid='publicBadge'>
 										Public
 									</span>
 								</div>
 							) : (
 								<div className='privatePublicDisplay'>
-									<SVGIcon name='eyeCrossed' width={24} height={24} fill={'#000000'} className={'pointer margin-right-8'} />
+									<SVGIcon name='eyeCrossed' width={24} height={24} fill={'#000000'} className={'margin-right-8'} />
 									<span className='deepBlack-14 alignSuper' data-testid='privateBadge'>
 										Private
 									</span>
@@ -457,7 +465,7 @@ export const CollectionPage = props => {
 											});
 											return (
 												<RelatedObject
-													key={object.idd}
+													key={object.id}
 													data={object}
 													activeLink={true}
 													showRelationshipAnswer={showAnswer}

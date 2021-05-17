@@ -218,9 +218,12 @@ class DatasetDetail extends Component {
 	getTechnicalMetadata() {
 		this.setState({ isLoading: true });
 		axios.get(baseURL + '/api/v1/datasets/' + this.state.data.datasetid).then(res => {
-			this.setState({
-				technicalMetadata: res.data.data.datasetfields.technicaldetails || [],
-			});
+			if (res.data) {
+				const { data: { datasetfields: { technicaldetails: technicalMetadata = [] } } } = res.data
+				this.setState({
+					technicalMetadata,
+				});
+			}
 		});
 	}
 
@@ -440,7 +443,7 @@ class DatasetDetail extends Component {
 
 	doSearch = e => {
 		//fires on enter on searchbar
-		if (e.key === 'Enter') window.location.href = '/search?search=' + this.state.searchString;
+		if (e.key === 'Enter') window.location.href = `/search?search=${encodeURIComponent(this.state.searchString)}`;
 	};
 
 	checkAlerts = () => {

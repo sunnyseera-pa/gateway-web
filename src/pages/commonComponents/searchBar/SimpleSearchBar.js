@@ -25,7 +25,9 @@ class SimpleSearchBar extends React.Component {
 
 	changeText = e => {
 		this.setState({ textValue: e.target.value });
-		this.props.doUpdateSearchString(e.target.value);
+		if (this.props.doUpdateSearchString) {
+			this.props.doUpdateSearchString(e.target.value);
+		}
 	};
 
 	render() {

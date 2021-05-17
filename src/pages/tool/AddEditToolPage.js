@@ -316,7 +316,7 @@ class AddEditToolPage extends React.Component {
 
 	doSearch = e => {
 		//fires on enter on searchbar
-		if (e.key === 'Enter') window.location.href = '/search?search=' + this.state.searchString;
+		if (e.key === 'Enter') window.location.href = `/search?search=${encodeURIComponent(this.state.searchString)}`;
 	};
 
 	updateSearchString = searchString => {
@@ -335,7 +335,7 @@ class AddEditToolPage extends React.Component {
 			if (type === 'course' && page > 0) searchURL += '&courseIndex=' + page;
 
 			axios
-				.get(baseURL + '/api/v1/search?search=' + this.state.searchString + searchURL, {
+				.get(baseURL + '/api/v1/search?search=' + encodeURIComponent(this.state.searchString) + searchURL, {
 					params: {
 						form: true,
 						userID: this.state.userState[0].id,

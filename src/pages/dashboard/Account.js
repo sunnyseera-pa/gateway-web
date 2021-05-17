@@ -4,6 +4,7 @@ import { Nav, Accordion, Dropdown } from 'react-bootstrap';
 import _ from 'lodash';
 import axios from 'axios';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
+import ActionBar from '../commonComponents/actionbar/ActionBar';
 import AccountTools from './AccountTools';
 import AccountProjects from './AccountProjects';
 import AccountDatasets from './AccountDatasets';
@@ -11,9 +12,9 @@ import AccountAdvancedSearch from './AccountAdvancedSearch';
 import AccountPapers from './AccountPapers';
 import AccountCourses from './AccountCourses';
 import AccountCollections from './AccountCollections';
+import AccountTeamManagement from './AccountTeamManagement';
 import AccountAnalyticsDashboard from './AccountAnalyticsDashboard';
 import AccountUsers from './AccountUsers';
-import AccountMembers from './AccountMembers';
 import ReviewTools from './ReviewTools';
 import YourAccount from './YourAccount';
 import DataAccessRequests from './DataAccessRequests/DataAccessRequests';
@@ -24,8 +25,10 @@ import SVGIcon from '../../images/SVGIcon';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
+import { tabTypes } from './Team/teamUtil';
+
 import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
-import { ReactComponent as MembersSvg } from '../../images/members.svg';
+import { ReactComponent as CheckSVG } from '../../images/check.svg';
 import './Dashboard.scss';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -61,7 +64,6 @@ class Account extends Component {
 	state = {
 		searchString: '',
 		id: '',
-		data: [],
 		isLoading: true,
 		userState: [
 			{
@@ -73,6 +75,7 @@ class Account extends Component {
 			},
 		],
 		tabId: '',
+		innertab: '',
 		activeKey: '',
 		team: 'user',
 		alert: {},
@@ -89,6 +92,10 @@ class Account extends Component {
 		profileComplete: true,
 		allowWorkflow: true,
 		allowAccessRequestManagement: true,
+		savedTeamNotificationSuccess: false,
+		isSubmitting: false,
+		teamManagementInternalTab: 'Notifications',
+		accountUpdated: false,
 	};
 
 	constructor(props) {
@@ -128,11 +135,43 @@ class Account extends Component {
 		}
 	}
 
+	async componentDidMount() {
+		if (window.location.search) {
+			let tab = '';
+			let values = queryString.parse(window.location.search);
+			if (values.tab !== this.state.tabId || typeof values.tab !== 'undefined' || typeof values.tab !== null) {
+				tab = this.checkRedirect(values);
+				this.setState({
+					tabId: tab,
+					innertab: values.innertab ? values.innertab : '',
+					isDeleted: values.toolDeleted,
+					isApproved: values.toolApproved,
+					isRejected: values.toolRejected,
+					isProjectApproved: values.projectApproved,
+					isProjectRejected: values.projectRejected,
+					isReviewApproved: values.reviewApproved,
+					isReviewRejected: values.reviewRejected,
+					accountUpdated: !!values.accountUpdated,
+				});
+				this.toggleNav(tab);
+			}
+		}
+
+		if (!this.state.profileComplete) {
+			this.setState({ tabId: 'youraccount', team: 'user' });
+			localStorage.setItem('HDR_TEAM', 'user');
+			this.setProfileComplete();
+		}
+	}
+
 	async componentWillReceiveProps(nextProps) {
 		if (window.location.search) {
 			let values = queryString.parse(window.location.search);
 			let team = 'user';
 			if (values.tab !== this.state.tabId || typeof values.tab !== 'undefined' || typeof values.tab !== null) {
+				if (values.tab !== 'youraccount' && this.state.accountUpdated) {
+					this.setState({ accountUpdated: false });
+				}
 				if (_.has(nextProps, 'location.state.team') && nextProps.location.state.team !== '') {
 					team = nextProps.location.state.team;
 					localStorage.setItem('HDR_TEAM', nextProps.location.state.team);
@@ -156,7 +195,8 @@ class Account extends Component {
 				if (team !== 'user' && team !== 'admin') {
 					await axios.get(baseURL + `/api/v1/publishers/${team}`).then(res => {
 						let publisherDetails = res.data.publisher;
-						if (!publisherDetails.allowAccessRequestManagement && values.tab === 'dataaccessrequests') this.setState({ tabId: 'members' });
+						if (!publisherDetails.allowAccessRequestManagement && values.tab === 'dataaccessrequests')
+							this.setState({ tabId: 'teamManagement' });
 						this.setState({
 							allowWorkflow: publisherDetails.workflowEnabled,
 							allowAccessRequestManagement: publisherDetails.allowAccessRequestManagement,
@@ -169,32 +209,14 @@ class Account extends Component {
 		if (!this.state.profileComplete) {
 			this.setState({ tabId: 'youraccount', team: 'user' });
 			localStorage.setItem('HDR_TEAM', 'user');
+			this.setProfileComplete();
 		}
 	}
 
-	async componentDidMount() {
-		if (window.location.search) {
-			let tab = '';
-			let values = queryString.parse(window.location.search);
-			if (values.tab !== this.state.tabId || typeof values.tab !== 'undefined' || typeof values.tab !== null) {
-				tab = this.checkRedirect(values);
-				this.setState({
-					tabId: tab,
-					isDeleted: values.toolDeleted,
-					isApproved: values.toolApproved,
-					isRejected: values.toolRejected,
-					isProjectApproved: values.projectApproved,
-					isProjectRejected: values.projectRejected,
-					isReviewApproved: values.reviewApproved,
-					isReviewRejected: values.reviewRejected,
-				});
-				this.toggleNav(tab);
-			}
-		}
-
-		if (!this.state.profileComplete) {
-			this.setState({ tabId: 'youraccount', team: 'user' });
-			localStorage.setItem('HDR_TEAM', 'user');
+	setProfileComplete() {
+		if (this.state.userState[0].terms) {
+			this.setState({ profileComplete: true });
+			axios.patch(baseURL + `/api/v1/person/profileComplete/${this.state.userState[0].id}`);
 		}
 	}
 
@@ -211,7 +233,7 @@ class Account extends Component {
 
 	doSearch = e => {
 		// 1. fires on enter on searchbar
-		if (e.key === 'Enter') window.location.href = '/search?search=' + this.state.searchString;
+		if (e.key === 'Enter') window.location.href = `/search?search=${encodeURIComponent(this.state.searchString)}`;
 	};
 
 	updateSearchString = searchString => {
@@ -324,16 +346,31 @@ class Account extends Component {
 	}
 
 	renderCurrentTeam() {
-		let { team, userState } = this.state;
-		if (team === 'user') return <>{userState[0].name}</>;
-		else if (team === 'admin') return <>HDR Admin</>;
-		else {
-			const teamIs = this.state.userState[0].teams.filter(t => {
-				return t._id === team;
-			})[0];
-
-			return <>{teamIs.name}</>;
+		let { team: teamSelector, userState } = this.state;
+		let renderItem;
+		switch (teamSelector) {
+			case 'user':
+				renderItem = <Fragment>{userState[0].name}</Fragment>;
+				break;
+			case 'admin':
+				renderItem = <Fragment>HDR Admin</Fragment>;
+				break;
+			default:
+				const team = userState[0].teams.reduce((obj, team) => {
+					if(team._id === teamSelector) {
+						obj = {...team};
+					}
+					return obj;
+				}, {});
+				if(_.isEmpty(team)) {
+					this.setState({team: 'user'});
+					renderItem = <Fragment>{userState[0].name}</Fragment>;
+				} else {
+					renderItem = <Fragment>{team.name}</Fragment>;
+				}
+				break;
 		}
+		return renderItem;
 	}
 
 	toggleNav = (tabId = '') => {
@@ -368,10 +405,10 @@ class Account extends Component {
 			if (!_.isEmpty(tab.team)) {
 				localStorage.setItem('HDR_TEAM', tab.team);
 				if (tab.team !== 'user' && tab.team !== 'admin') {
-					if (_.isEmpty(tab.tabId) || !['dataaccessrequests', 'datasets', 'members'].includes(tab.tabId)) {
+					if (_.isEmpty(tab.tabId) || !['dataaccessrequests', 'datasets', 'teamManagement'].includes(tab.tabId)) {
 						if (this.userHasRole(tab.team, ['manager', 'reviewer'])) tab.tabId = 'dataaccessrequests';
 						else if (this.userHasRole(tab.team, 'metadata_editor')) tab.tabId = 'datasets';
-						else tab.tabId = 'members';
+						else tab.tabId = 'teamManagement';
 					}
 				}
 			} else if (localStorage.getItem('HDR_TEAM') == '') localStorage.setItem('HDR_TEAM', 'user');
@@ -404,12 +441,30 @@ class Account extends Component {
 		return team && team.roles.some(r => role.includes(r));
 	}
 
+	onSaveNotificationsClick = () => {
+		// using forward ref call our save function inside child component
+		this.saveNotifiations();
+	};
+
+	// the onchange handler for when the user saves team management
+	onTeamManagementSave = (isSubmitting, savedTeamNotificationSuccess) => {
+		this.setState({ isSubmitting, savedTeamNotificationSuccess });
+	};
+
+	onTeamManagementTabChange = teamManagementTab => {
+		this.setState({ teamManagementTab: teamManagementTab });
+	};
+
+	onClearInnerTab = () => {
+		this.setState({ innertab: '' });
+	};
+
 	render() {
 		const {
 			searchString,
-			data,
 			userState,
 			tabId,
+			innertab,
 			showDrawer,
 			showModal,
 			context,
@@ -419,10 +474,11 @@ class Account extends Component {
 			datasetAccordion,
 			allowWorkflow,
 			allowAccessRequestManagement,
+			savedTeamNotificationSuccess,
+			isSubmitting,
+			teamManagementTab,
+			accountUpdated,
 		} = this.state;
-		if (typeof data.datasetids === 'undefined') {
-			data.datasetids = [];
-		}
 
 		return (
 			<Fragment>
@@ -457,35 +513,35 @@ class Account extends Component {
 
 							{team === 'user' ? (
 								<Fragment>
-									<div className={`${tabId === 'dashboard' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('dashboard')}>
+									<div className={`${tabId === 'dashboard' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('dashboard')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='dashboard' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Dashboard</span>
 										</Nav.Link>
 									</div>
 
-									<div className={`${tabId === 'youraccount' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('youraccount')}>
+									<div className={`${tabId === 'youraccount' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('youraccount')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='accounticon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Account</span>
 										</Nav.Link>
 									</div>
 
-									<div className={`${tabId === 'tools' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('tools')}>
+									<div className={`${tabId === 'tools' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('tools')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='newtoolicon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Tools</span>
 										</Nav.Link>
 									</div>
 
-									<div className={`${tabId === 'reviews' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('reviews')}>
+									<div className={`${tabId === 'reviews' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('reviews')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='reviewsicon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Reviews</span>
 										</Nav.Link>
 									</div>
 
-									<div className={`${tabId === 'projects' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('projects')}>
+									<div className={`${tabId === 'projects' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('projects')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='newestprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Projects</span>
@@ -494,7 +550,7 @@ class Account extends Component {
 
 									<div
 										data-test-id='datasets'
-										className={`${tabId === 'datasets' || tabId === 'datasetsAdvancedSearch' ? 'activeCard' : ''}`}>
+										className={`${tabId === 'datasets' || tabId === 'datasetsAdvancedSearch' ? 'activeCard' : 'accountNav'}`}>
 										<Accordion activeKey={datasetAccordion} onSelect={this.datasetAccordionClick}>
 											<Fragment>
 												<Accordion.Toggle variant='link' className='verticalNavBar gray700-13 navLinkButton' eventKey='0'>
@@ -516,14 +572,14 @@ class Account extends Component {
 										</Accordion>
 									</div>
 
-									<div className={`${tabId === 'papers' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('papers')}>
+									<div className={`${tabId === 'papers' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('papers')}>
 										<Nav.Link eventKey={'papers'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Papers</span>
 										</Nav.Link>
 									</div>
 
-									<div className={`${tabId === 'courses' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('courses')}>
+									<div className={`${tabId === 'courses' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('courses')}>
 										<Nav.Link eventKey={'courses'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='educationicon' fill={'#b3b8bd'} className='svg-20' />
 											<span className='navLinkItem'>Courses</span>
@@ -531,7 +587,7 @@ class Account extends Component {
 									</div>
 
 									<div
-										className={`${tabId === 'dataaccessrequests' ? 'activeCard' : ''}`}
+										className={`${tabId === 'dataaccessrequests' ? 'activeCard' : 'accountNav'}`}
 										onClick={e => this.toggleNav('dataaccessrequests')}>
 										<Nav.Link eventKey={'dataaccessrequests'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='newprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
@@ -539,7 +595,7 @@ class Account extends Component {
 										</Nav.Link>
 									</div>
 
-									<div className={`${tabId === 'collections' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('collections')}>
+									<div className={`${tabId === 'collections' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('collections')}>
 										<Nav.Link eventKey={'collections'} className='verticalNavBar gray700-13'>
 											<SVGIcon name='collections' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Collections</span>
@@ -547,7 +603,7 @@ class Account extends Component {
 									</div>
 
 									{userState[0].role === 'Admin' ? (
-										<div className={`${tabId === 'usersroles' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('usersroles')}>
+										<div className={`${tabId === 'usersroles' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('usersroles')}>
 											<Nav.Link eventKey={'usersroles'} className='verticalNavBar gray700-13'>
 												<SVGIcon name='rolesicon' fill={'#b3b8bd'} className='accountSvgs' />
 												<span className='navLinkItem'>Users and roles</span>
@@ -563,7 +619,7 @@ class Account extends Component {
 
 							{team === 'admin' ? (
 								<Fragment>
-									<div className={`${tabId === 'datasets' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('datasets')}>
+									<div className={`${tabId === 'datasets' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('datasets')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span style={{ 'margin-left': '11px' }}>Datasets</span>
@@ -576,10 +632,19 @@ class Account extends Component {
 
 							{team !== 'user' && team !== 'admin' ? (
 								<Fragment>
+									<div
+										className={`${tabId === 'teamManagement' ? 'activeCard' : 'accountNav'}`}
+										onClick={e => this.toggleNav('teamManagement')}>
+										<Nav.Link className='verticalNavBar gray700-13'>
+											<SVGIcon name='rolesicon' fill={'#b3b8bd'} className='accountSvgs' />
+											<span style={{ marginLeft: '11px' }}>Team Management</span>
+										</Nav.Link>
+									</div>
+
 									{allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
 										<div
 											className={`${
-												tabId === 'dataaccessrequests' || tabId === 'workflows' || tabId === 'addeditworkflow' ? 'activeCard' : ''
+												tabId === 'dataaccessrequests' || tabId === 'workflows' || tabId === 'addeditworkflow' ? 'activeCard' : 'accountNav'
 											}`}>
 											<Accordion activeKey={activeAccordion} onSelect={this.accordionClick}>
 												<Fragment>
@@ -610,20 +675,14 @@ class Account extends Component {
 										</div>
 									)}
 									{this.userHasRole(team, ['manager', 'metadata_editor']) && (
-										<div className={`${tabId === 'datasets' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('datasets')}>
+										<div className={`${tabId === 'datasets' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('datasets')}>
 											<Nav.Link className='verticalNavBar gray700-13'>
 												<SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
 												<span style={{ 'margin-left': '11px' }}>Datasets</span>
 											</Nav.Link>
 										</div>
 									)}
-									<div className={`${tabId === 'members' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('members')}>
-										<Nav.Link className='verticalNavBar gray700-13'>
-											<MembersSvg className='membersSvg' />
-											<span style={{ 'margin-left': '11px' }}>Members</span>
-										</Nav.Link>
-									</div>
-									<div className={`${tabId === 'help' ? 'activeCard' : ''}`} onClick={e => this.toggleNav('help')}>
+									<div className={`${tabId === 'help' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('help')}>
 										<Nav.Link className='verticalNavBar gray700-13'>
 											<SVGIcon name='info' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Help</span>
@@ -641,7 +700,7 @@ class Account extends Component {
 							<>
 								{tabId === 'dashboard' ? <AccountAnalyticsDashboard userState={userState} /> : ''}
 
-								{tabId === 'youraccount' ? <YourAccount userState={userState} /> : ''}
+								{tabId === 'youraccount' ? <YourAccount userState={userState} accountUpdated={accountUpdated} /> : ''}
 
 								{tabId === 'tools' ? <AccountTools userState={userState} /> : ''}
 
@@ -677,7 +736,21 @@ class Account extends Component {
 									<>{tabId === 'workflows' ? <WorkflowDashboard userState={userState} team={team} /> : ''}</>
 								)}
 
-								{tabId === 'members' ? <AccountMembers userState={userState} team={team} /> : ''}
+								{tabId === 'teamManagement' ? (
+									<AccountTeamManagement
+										userState={userState}
+										team={team}
+										innertab={innertab}
+										forwardRef={c => {
+											this.saveNotifiations = c;
+										}}
+										onTeamManagementSave={this.onTeamManagementSave}
+										onTeamManagementTabChange={this.onTeamManagementTabChange}
+										onClearInnerTab={this.onClearInnerTab}
+									/>
+								) : (
+									''
+								)}
 
 								{tabId === 'help' ? <TeamHelp /> : ''}
 							</>
@@ -695,7 +768,26 @@ class Account extends Component {
 						drawerIsOpen={this.state.showDrawer}
 					/>
 				</SideDrawer>
-
+				{tabId === 'teamManagement' && teamManagementTab == tabTypes.Notifications && (
+					<ActionBar userState={userState}>
+						<div>
+							<button
+								className={savedTeamNotificationSuccess ? 'button-teal' : 'button-primary'}
+								type='button'
+								onClick={this.onSaveNotificationsClick}
+								disabled={isSubmitting}>
+								{' '}
+								{savedTeamNotificationSuccess ? (
+									<div>
+										<CheckSVG fill='#fff' className='submitClose' /> Saved
+									</div>
+								) : (
+									'Save'
+								)}
+							</button>
+						</div>
+					</ActionBar>
+				)}
 				<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
 			</Fragment>
 		);

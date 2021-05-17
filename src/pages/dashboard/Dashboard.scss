@@ -83,7 +83,16 @@
 	border-right: 4px solid $teal !important;
 	a,
 	button {
+		display: flex;
+		align-items: center;
 		background-color: #f6f7f8;
+	}
+}
+
+.accountNav {
+	a, button {
+		display: flex;
+		align-items: center;
 	}
 }
 
@@ -118,6 +127,9 @@
 	background-color: $white;
 	width: 100%;
 	padding: 24px;
+	&-alt {
+		border-top: 1px solid#e2e2e2;
+	}
 }
 
 .accountBanner {
@@ -409,3 +421,22 @@ textarea {
 	float: right;
 	margin-right: 15px;
 }
+
+.tm {
+	&-wrapper {
+		margin: 1.2rem 0;
+	}
+
+	&-notification {
+		display: flex;
+		align-items: center;
+	}
+
+	&-switch  {
+		display: flex;
+		align-items: center;
+		padding-right: 15px;
+	}
+}
+
+
