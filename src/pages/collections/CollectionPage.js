@@ -162,14 +162,14 @@ export const CollectionPage = props => {
 	const doCollectionsSearch = e => {
 		//fires on enter on searchbar
 		if (e.key === 'Enter') {
-			let test = objectData.map(object => {
+			let filteredCollectionItems = objectData.map(object => {
 				return object.name.includes(searchCollectionsString) ||
 					object.description.includes(searchCollectionsString) ||
 					object.tags.features.includes(searchCollectionsString)
 					? object
 					: '';
 			});
-			setFilteredData(test);
+			setFilteredData(filteredCollectionItems);
 		}
 	};
 
