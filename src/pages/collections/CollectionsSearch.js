@@ -14,6 +14,13 @@ const CollectionsSearch = props => {
 	let collectionsPageSort = '';
 	const onSearch = e => {
         setSearchValue(e.target.value);
+		if (props.doUpdateCollectionsSearchString) {
+			props.doUpdateCollectionsSearchString(e.target.value);
+		}
+	};
+
+	const doSearch = () => {
+        setSearchString(searchValue);
 	};
 
 	const handleSort = sort => {};
@@ -38,6 +45,7 @@ const CollectionsSearch = props => {
 								placeholder='Search within collection'
 								onChange={onSearch}
 								value={searchValue}
+								onKeyDown={props.doCollectionsSearchMethod}
 							/>
 						</span>
 					</span>

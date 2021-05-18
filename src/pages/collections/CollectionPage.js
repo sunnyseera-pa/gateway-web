@@ -33,6 +33,7 @@ export const CollectionPage = props => {
 	const [collectionAdded, setCollectionAdded] = useState(false);
 	const [collectionEdited, setCollectionEdited] = useState(false);
 	const [searchString, setSearchString] = useState('');
+	const [searchCollectionsString, setCollectionsSearchString] = useState('');
 	const [discoursePostCount, setDiscoursePostCount] = useState(0);
 	const [key, setKey] = useState('Datasets');
 	const [searchBar] = useState(React.createRef());
@@ -40,6 +41,7 @@ export const CollectionPage = props => {
 	const [showModal, setShowModal] = useState(false);
 	const [context, setContext] = useState({});
 	const [objectData, setObjectData] = useState([]);
+	const [filteredData, setFilteredData] = useState([]);
 	const [userState] = useState(
 		props.userState || [
 			{
@@ -87,6 +89,7 @@ export const CollectionPage = props => {
 	const getObjectData = async () => {
 		await axios.get(baseURL + '/api/v1/collections/relatedobjects/' + props.match.params.collectionID).then(async res => {
 			setObjectData(res.data.data);
+			setFilteredData(res.data.data);
 			countEntities(res.data.data);
 		});
 		setIsResultsLoading(false);
@@ -154,6 +157,24 @@ export const CollectionPage = props => {
 		setShowModal(!showModal);
 		setContext(context);
 		setShowDrawer(showEnquiry);
+	};
+
+	const doCollectionsSearch = e => {
+		//fires on enter on searchbar
+		if (e.key === 'Enter') {
+			let test = objectData.map(object => {
+				return object.name.includes(searchCollectionsString) ||
+					object.description.includes(searchCollectionsString) ||
+					object.tags.features.includes(searchCollectionsString)
+					? object
+					: '';
+			});
+			setFilteredData(test);
+		}
+	};
+
+	const updateCollectionsSearchString = searchCollectionsString => {
+		setCollectionsSearchString(searchCollectionsString);
 	};
 
 	let datasetPublisher;
@@ -292,7 +313,7 @@ export const CollectionPage = props => {
 					</Row>
 
 					<Row>
-						<div className="col-sm-12 mt-3 gray800-14 text-center">{collectionData.counter ? collectionData.counter : 0} views</div>
+						<div className='col-sm-12 mt-3 gray800-14 text-center'>{collectionData.counter ? collectionData.counter : 0} views</div>
 					</Row>
 
 					<Row>
@@ -356,13 +377,16 @@ export const CollectionPage = props => {
 						</Col>
 					</Row>
 				)}
-				<CollectionsSearch 
-					isLoading = {isResultsLoading} />
+				<CollectionsSearch
+					doCollectionsSearchMethod={doCollectionsSearch}
+					doUpdateCollectionsSearchString={updateCollectionsSearchString}
+					isLoading={isResultsLoading}
+				/>
 				<Row>
 					<Col sm={1} lg={1} />
 					<Col sm={10} lg={10}>
 						{key === 'Datasets'
-							? objectData.map(object => {
+							? filteredData.map(object => {
 									if (
 										object.activeflag === 'active' ||
 										(object.activeflag === 'archive' && object.type === 'dataset') ||
@@ -417,7 +441,7 @@ export const CollectionPage = props => {
 							: ''}
 
 						{key === 'Tools'
-							? objectData.map(object => {
+							? filteredData.map(object => {
 									if (
 										object.activeflag === 'active' ||
 										(object.type === 'tool' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
@@ -452,7 +476,7 @@ export const CollectionPage = props => {
 							: ''}
 
 						{key === 'Projects'
-							? objectData.map(object => {
+							? filteredData.map(object => {
 									if (
 										object.activeflag === 'active' ||
 										(object.type === 'project' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
@@ -487,7 +511,7 @@ export const CollectionPage = props => {
 							: ''}
 
 						{key === 'Papers'
-							? objectData.map(object => {
+							? filteredData.map(object => {
 									if (
 										object.activeflag === 'active' ||
 										(object.type === 'paper' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
@@ -523,7 +547,7 @@ export const CollectionPage = props => {
 							: ''}
 
 						{key === 'People'
-							? objectData.map(object => {
+							? filteredData.map(object => {
 									if (
 										object.activeflag === 'active' ||
 										(object.type === 'person' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
@@ -558,7 +582,7 @@ export const CollectionPage = props => {
 							: ''}
 
 						{key === 'Course'
-							? objectData.map(object => {
+							? filteredData.map(object => {
 									if (
 										object.activeflag === 'active' ||
 										(object.type === 'course' && object.activeflag === 'review' && object.creator[0].id === userState[0].id)
