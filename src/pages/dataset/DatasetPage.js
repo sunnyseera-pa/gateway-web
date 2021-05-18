@@ -1290,9 +1290,9 @@ class DatasetDetail extends Component {
 													</Row>
 
 													{!showAllLinkedDatasets
-														? linkedDatasets.slice(0, 10).map(relation => {
+														? linkedDatasets.slice(0, 10).map((relation, index) => {
 																return (
-																	<Row className='pixelGapTop'>
+																	<Row className='pixelGapTop' key={`linkedDatasets-${index}`}>
 																		<Col sm={12} m={12}>
 																			<div className='rectangle'>
 																				<Row className='gray800-14-bold'>
@@ -1567,9 +1567,11 @@ class DatasetDetail extends Component {
 											{data.relatedObjects && data.relatedObjects.length <= 0 ? (
 												<NotFound word='related resources' />
 											) : (
-												relatedObjects.map(object => (
-													<RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />
-												))
+												relatedObjects.map((object, index) => (
+													<div key={`object-${index}`}>
+														<RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />
+													</div>
+													))
 											)}
 										</Tab>
 										<Tab eventKey='Collections' title={'Collections (' + collections.length + ')'}>

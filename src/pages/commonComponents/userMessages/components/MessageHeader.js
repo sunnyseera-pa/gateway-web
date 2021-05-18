@@ -26,6 +26,7 @@ const MessageHeader = ({ userState, topic, modalRequired, onRequestAccess, onSho
 
 	useEffect(() => {
 		showDashboardOption();
+		console.log(topic);
 	}, [topic]);
 
 	return (
@@ -34,7 +35,7 @@ const MessageHeader = ({ userState, topic, modalRequired, onRequestAccess, onSho
 				<h1 className='black-20 '>{topic.title}</h1>
 				{topic.tags.map((tag, index) => (
 					<div key={`tag-${index}`} className='badge-tag'>
-						{tag}
+						{tag.name || tag}
 					</div>
 				))}
 			</div>

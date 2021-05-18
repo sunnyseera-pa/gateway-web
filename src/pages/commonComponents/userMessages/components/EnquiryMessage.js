@@ -1,13 +1,12 @@
-import React, { useState, useRef } from 'react';
-import _ from 'lodash';
+import React, { useState, useRef, useEffect } from 'react';
+import { isEmpty, has } from 'lodash';
 import * as Yup from 'yup';
 import { Formik, Field, Form } from 'formik';
 import TypeaheadDataset from '../../../DataAccessRequest/components/TypeaheadDataset/TypeaheadDataset';
 
-export const EnquiryMessage = () => {
-  const [selectedDatasets, setSelectedDatasets] = useState([]);
-
+export const EnquiryMessage = ({ topic, onDatasetsRequested }) => {
   const formRef = useRef();
+  const [selectedDatasets, setSelectedDatasets] = useState([]);
 
   const initalValues = {
     safepeopleprimaryapplicantfullname: '',
@@ -16,7 +15,7 @@ export const EnquiryMessage = () => {
     safepeopleprimaryapplicanttelephone: '',
     projectTitle: '',
     projectAim: '',
-    datasetsRequested: [{}],
+    datasetsRequested: selectedDatasets,
     linkedDatasets: '',
     datasetNames: '',
     datasetsInterestedIn:  '',
@@ -25,23 +24,25 @@ export const EnquiryMessage = () => {
   }
 
   const schema = Yup.object({
-    safepeopleprimaryapplicantfullname: Yup.string().trim().required('Applicant name is required'),
-    safepeopleprimaryapplicantorganisationname: Yup.string().trim().required('Organisation is required'),
-    safepeopleprimaryapplicantemail: Yup.string().trim().email().required('Email is required'),
+    safepeopleprimaryapplicantfullname: Yup.string().trim().required('Required'),
+    safepeopleprimaryapplicantorganisationname: Yup.string().trim().required('Required'),
+    safepeopleprimaryapplicantemail: Yup.string().trim().email().required('Required'),
     safepeopleprimaryapplicanttelephone: Yup.string()
       .matches(
           /^([0]{1}|\+?[234]{3})([7-9]{1})([0|1]{1})([\d]{1})([\d]{7})$/g,
         "Invalid phone number"
       ),
-    projectTitle: Yup.string().trim().required('Project title is required'),
-    projectAim: Yup.string().trim().required('Project aim is required'),
-    datasetsRequested: Yup.array().of(Yup.string()).required('You must select at least one dataset'),
+    projectTitle: Yup.string().trim().required('Required'),
+    projectAim: Yup.string().trim().required('Required'),
+    datasetsRequested: Yup.array()
+    .required('Required')
+    .min(1, 'Reequired'),
     linkedDatasets: Yup.string().required('Select an option'),
-    datasetNames: Yup.string().when('linkedDatasets',{ is: "Yes", then: Yup.string().required('Please identify the names of the dataset(s)')}),
+    datasetNames: Yup.string().when('linkedDatasets',{ is: "Yes", then: Yup.string().required('Required')}),
     datasetsInterestedIn: Yup.string().required('Select an option'),
-    datasetParts: Yup.string().when('datasetsInterestedIn',{ is: "Yes", then: Yup.string().required('Please provide which parts of the dataset')}),
-    funding: Yup.string().trim().required('Funding is required'),
-    researchBenefits: Yup.string().trim().required('Research benefits is required')
+    datasetParts: Yup.string().when('datasetsInterestedIn',{ is: "Yes", then: Yup.string().required('Required')}),
+    funding: Yup.string().trim().required('Required'),
+    researchBenefits: Yup.string().trim().required('Required')
   });
 
   /**
@@ -51,7 +52,7 @@ export const EnquiryMessage = () => {
    * @param   {[Object]}  errors   [errors]
    * @param   {[String]}  field    [field]
    *
-   * @return  {[boolean]}           [return valid]
+   * @return  {[boolean]}  [return valid]
    */
   const hasErrors = (touched, errors, field) => {
 		if (
@@ -67,28 +68,43 @@ export const EnquiryMessage = () => {
 		return false;
 	};
 
-  const onHandleDataSetChange = (e) => {
-    console.log(e);
+  const onHandleDataSetChange = (selected, key, setFieldValue) => {
+    console.log(selected);
+    // set field value using formik hook - setFieldValue
+    setFieldValue(key, selected);
+    // update dataset selection in message header
+    onDatasetsRequested(selected);
   }
 
   const handleFormSubmission = async () => {
-    console.log('Submission');
+    let {
+			current: { values, setSubmitting },
+		} = formRef;
+
+    console.log(formRef);
+    console.log(values);
   };
+
+  // useEffect(() => {
+  //   if(has(topic, 'tags') && !isEmpty(topic.tags)) {
+  //     setSelectedDatasets(topic.tags);
+  //   }
+  // }, []);
+
 
   return (
     <div className="enquiry-message-container">
       <div className="gray700-13 text-center">After submitting the information below you will be able to message the data custodian freely.</div>
       <Formik
-        innerRef={formRef}
+        enableReinitialize
         initialValues={initalValues}
         validationSchema={schema}
-				onSubmit={async (values) => {
-					// await handleFormSubmission(values)
-          await new Promise((r) => setTimeout(r, 500));
-          alert(JSON.stringify(values, null, 2));
+        innerRef={formRef}
+				onSubmit={async () => {
+					await handleFormSubmission();
 				}}>
           {(
-            { touched, errors, values }) => (
+            { isSubmitting, values, errors, touched, setFieldValue }) => (
               <Form autoComplete='off'>
                 <div className="enquiry-message-form">
 
@@ -189,15 +205,19 @@ export const EnquiryMessage = () => {
 
                 {/* DATASETS  REQUESTED */}
                 <div className='form-group gray800-14'>
-                  <label htmlFor={`datasetsRequested`} className='form-label'>
+                  <label htmlFor={`datasetsRequested`} className='form-label gray800-14'>
                     Datasets being requested *
                   </label>
                   <TypeaheadDataset
-                    key={0}
-										selectedDatasets={selectedDatasets}
-										onHandleDataSetChange={e => onHandleDataSetChange(e)}
-										readOnly={false}
-										allowAllCustodians={false}
+										selectedDatasets={topic.tags}
+                    readOnly={false}
+                    allowAllCustodians={false}
+										onHandleDataSetChange={selected => {
+                      onHandleDataSetChange(selected, 'datasetsRequested', setFieldValue);
+                    }}
+                    typeaheadClass={`${
+                      hasErrors(touched, errors, 'datasetsRequested') ? 'is-invalid' : ''
+                    }`}
                   />
                   { hasErrors(touched, errors, 'datasetsRequested') ? (
                     <div className='errorMessages'>{errors.datasetsRequested}</div>
@@ -209,7 +229,7 @@ export const EnquiryMessage = () => {
                   <label htmlFor={`linkedDatasets`} className='form-label gray800-14'>
                     Do you have any datasets you would like to link with this one? *                    
                   </label>
-                  <div class="form-check">
+                  <div className="form-check">
                     <Field type="radio" name="linkedDatasets" value="Yes" />
                     <label className={`
                         form-check-label 
@@ -255,7 +275,7 @@ export const EnquiryMessage = () => {
                   <label htmlFor={`datasetsInterestedIn`} className='form-label gray800-14'>
                     Do you know which parts of the dataset you are interested in? *                 
                   </label>
-                  <div class="form-check">
+                  <div className="form-check">
                     <Field type="radio" name="datasetsInterestedIn" value="Yes" />
                     <label className={`
                         form-check-label 
@@ -331,7 +351,7 @@ export const EnquiryMessage = () => {
                 </div>
 
                 {/* SUBMIT */}
-                <div class="d-flex flex-row-reverse p-2">
+                <div className="d-flex flex-row-reverse p-2">
                   <button className='button-secondary' type="submit">Send message</button>
                 </div>
                 

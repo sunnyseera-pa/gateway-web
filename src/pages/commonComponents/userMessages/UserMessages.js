@@ -96,7 +96,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 				_id: '',
 				title,
 				subTitle,
-				tags,
+				tags: [{_id: relatedObjectIds[0], name: subTitle, publisher: datasets[0].publisher}],
 				recipients: [],
 				status: 'active',
 				isDeleted: false,
@@ -108,6 +108,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 				dataRequestModalContent,
 				datasets,
 			};
+			debugger;
 			return topic;
 		}
 		return {};
@@ -307,6 +308,16 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 		return false
 	}
 
+	/**
+	 * onDatasetsRequested
+	 *
+	 * @description - Callback function to handle selection of datasets from first message
+	 * @param   {[Array]}  datasets  [A list of datasets selected from typeahead]
+	 */
+	const onDatasetsRequested = (datasets) => {
+		setActiveTopic({...activeTopic, tags: [...datasets]});
+	}
+
 	useEffect(() => {
 		// 1. GET Topics for current user
 		if (drawerIsOpen) getUserTopics();
@@ -338,8 +349,11 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 						<div className='messageArea-body'>
 							{!_.isEmpty(activeTopic.topicMessages)
 								? activeTopic.topicMessages.map(message => <MessageItem key={message._id} {...message} />)
-								: isNewMessage(activeTopic) ?
-									<EnquiryMessage />
+								: (!_.isEmpty(activeTopic) && isNewMessage(activeTopic)) ?
+									<EnquiryMessage 
+										topic={activeTopic}
+										onDatasetsRequested={onDatasetsRequested}
+									/>
 								: ''
 								}
 						</div>
