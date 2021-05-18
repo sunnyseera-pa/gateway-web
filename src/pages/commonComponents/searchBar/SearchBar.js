@@ -941,8 +941,8 @@ class SearchBar extends React.Component {
 															<Dropdown data-test-id='ddUserNavigation'>
 																{!isEmpty(userState[0].teams) ? (
 																	<Fragment>
-																		<Dropdown.Toggle as={CustomToggleInner}>
-																			<span className='black-14' data-test-id='lblUserName'>
+																		<Dropdown.Toggle data-test-id='ddUserNavigationToggle' as={CustomToggleInner}>
+																			<span className='black-14' data-test-id='ddUserNavigationSubMenu'>
 																				{userState[0].name}
 																			</span>
 																			<span className='addNewDropDownGap'></span>
@@ -954,7 +954,7 @@ class SearchBar extends React.Component {
 																	</Fragment>
 																) : (
 																	<Fragment>
-																		<Dropdown.Item className='black-14 user-dropdown-item' data-test-id='optAccount'>
+																		<Dropdown.Item className='black-14 user-dropdown-item'>
 																			<span className='gray700-14' data-test-id='lblUserName'>
 																				{userState[0].name}
 																			</span>
