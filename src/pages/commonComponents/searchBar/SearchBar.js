@@ -311,7 +311,7 @@ class SearchBar extends React.Component {
 									</a>
 								</div>
 								<div className='navBarLinkSpacing'>
-									<a href={cmsURL + '/pages/our-mission-and-purpose'} className='black-14' data-test-id='lnkAbout'>
+									<a href={cmsURL + '/about/our-mission-and-purpose'} className='black-14' data-test-id='lnkAbout'>
 										About
 									</a>
 								</div>
