@@ -18,6 +18,7 @@ import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import SVGIcon from '../../images/SVGIcon';
 import './Collections.scss';
+import CollectionsSearch from './CollectionsSearch';
 
 export const CollectionPage = props => {
 	const [collectionData, setCollectionData] = useState([]);
@@ -355,6 +356,8 @@ export const CollectionPage = props => {
 						</Col>
 					</Row>
 				)}
+				<CollectionsSearch 
+					isLoading = {isResultsLoading} />
 				<Row>
 					<Col sm={1} lg={1} />
 					<Col sm={10} lg={10}>
