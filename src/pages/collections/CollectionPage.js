@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
 import queryString from 'query-string';
-import { Row, Col, Tabs, Tab, Container, Alert } from 'react-bootstrap';
+import { Row, Col, Tabs, Tab, Container, Alert, Pagination } from 'react-bootstrap';
 import Loading from '../commonComponents/Loading';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
@@ -30,6 +30,12 @@ export const CollectionPage = props => {
 	const [projectCount, setProjectCount] = useState(0);
 	const [paperCount, setPaperCount] = useState(0);
 	const [courseCount, setCourseCount] = useState(0);
+	const [datasetIndex, setDatasetIndex] = useState(0);
+	const [toolIndex, setToolIndex] = useState(0);
+	const [projectIndex, setProjectIndex] = useState(0);
+	const [paperIndex, setPaperIndex] = useState(0);
+	const [personIndex, setPersonIndex] = useState(0);
+	const [courseIndex, setCourseIndex] = useState(0);
 	const [collectionAdded, setCollectionAdded] = useState(false);
 	const [collectionEdited, setCollectionEdited] = useState(false);
 	const [searchString, setSearchString] = useState('');
@@ -159,13 +165,22 @@ export const CollectionPage = props => {
 		setShowDrawer(showEnquiry);
 	};
 
+	const handlePaginatedItems = index => {
+		let paginatedItems = _.chunk(filteredData, 10);
+		if (paginatedItems.length > 0) {
+			return paginatedItems[index];
+		} else {
+			return [];
+		}
+	};
+
 	const doCollectionsSearch = e => {
 		//fires on enter on searchbar
 		if (e.key === 'Enter') {
 			let filteredCollectionItems = objectData.map(object => {
 				return object.name.toLowerCase().includes(searchCollectionsString.toLowerCase()) ||
 					object.description.toLowerCase().includes(searchCollectionsString.toLowerCase()) ||
-					new RegExp( object.tags.features.join( "|" ), "i").test(searchCollectionsString)
+					new RegExp(object.tags.features.join('|'), 'i').test(searchCollectionsString)
 					? object
 					: '';
 			});
@@ -178,8 +193,104 @@ export const CollectionPage = props => {
 		setCollectionsSearchString(searchCollectionsString);
 	};
 
+	const handlePagination = async (type, page, e) => {
+		if (type === 'dataset') {
+			await Promise.all([setDatasetIndex(page)]);
+		} else if (type === 'tool') {
+			await Promise.all([setToolIndex(page)]);
+		} else if (type === 'project') {
+			await Promise.all([setProjectIndex(page)]);
+		} else if (type === 'paper') {
+			await Promise.all([setPaperIndex(page)]);
+		} else if (type === 'person') {
+			await Promise.all([setPersonIndex(page)]);
+		} else if (type === 'course') {
+			await Promise.all([setCourseIndex(page)]);
+		}
+	};
+
 	let datasetPublisher;
 	let datasetLogo;
+
+	let datasetPaginationItems = [];
+	let toolPaginationItems = [];
+	let projectPaginationItems = [];
+	let paperPaginationItems = [];
+	let personPaginationItems = [];
+	let coursePaginationItems = [];
+	let maxResult = 10;
+	for (let i = 1; i <= Math.ceil(datasetCount / maxResult); i++) {
+		datasetPaginationItems.push(
+			<Pagination.Item
+				key={i}
+				active={i === datasetIndex / maxResult + 1}
+				onClick={e => {
+					handlePagination('dataset', i - 1, 'click');
+				}}>
+				{i}
+			</Pagination.Item>
+		);
+	}
+	for (let i = 1; i <= Math.ceil(toolCount / maxResult); i++) {
+		toolPaginationItems.push(
+			<Pagination.Item
+				key={i}
+				active={i === toolIndex / maxResult + 1}
+				onClick={e => {
+					handlePagination('tool', i - 1, 'click');
+				}}>
+				{i}
+			</Pagination.Item>
+		);
+	}
+	for (let i = 1; i <= Math.ceil(projectCount / maxResult); i++) {
+		projectPaginationItems.push(
+			<Pagination.Item
+				key={i}
+				active={i === projectIndex / maxResult + 1}
+				onClick={e => {
+					this.handlePagination('project', i - 1, 'click');
+				}}>
+				{i}
+			</Pagination.Item>
+		);
+	}
+	for (let i = 1; i <= Math.ceil(paperCount / maxResult); i++) {
+		paperPaginationItems.push(
+			<Pagination.Item
+				key={i}
+				active={i === paperIndex / maxResult + 1}
+				onClick={e => {
+					handlePagination('paper', i - 1, 'click');
+				}}>
+				{i}
+			</Pagination.Item>
+		);
+	}
+	for (let i = 1; i <= Math.ceil(personCount / maxResult); i++) {
+		personPaginationItems.push(
+			<Pagination.Item
+				key={i}
+				active={i === personIndex / maxResult + 1}
+				onClick={e => {
+					handlePagination('person', (i - 1) * maxResult, 'click');
+				}}>
+				{i}
+			</Pagination.Item>
+		);
+	}
+	for (let i = 1; i <= Math.ceil(courseCount / maxResult); i++) {
+		coursePaginationItems.push(
+			<Pagination.Item
+				key={i}
+				active={i === courseIndex / maxResult + 1}
+				onClick={e => {
+					handlePagination('course', i - 1, 'click');
+				}}>
+				{i}
+			</Pagination.Item>
+		);
+	}
 
 	if (isLoading) {
 		return (
@@ -387,7 +498,7 @@ export const CollectionPage = props => {
 					<Col sm={1} lg={1} />
 					<Col sm={10} lg={10}>
 						{key === 'Datasets'
-							? filteredData.map(object => {
+							? handlePaginatedItems(datasetIndex).map(object => {
 									if (
 										object.activeflag === 'active' ||
 										(object.activeflag === 'archive' && object.type === 'dataset') ||
@@ -616,6 +727,20 @@ export const CollectionPage = props => {
 									}
 							  })
 							: ''}
+
+						<div className='text-center'>
+							{key === 'Datasets' && datasetCount > maxResult ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
+
+							{key === 'Tools' && toolCount > maxResult ? <Pagination>{toolPaginationItems}</Pagination> : ''}
+
+							{key === 'Projects' && projectCount > maxResult ? <Pagination>{projectPaginationItems}</Pagination> : ''}
+
+							{key === 'Papers' && paperCount > maxResult ? <Pagination>{paperPaginationItems}</Pagination> : ''}
+
+							{key === 'People' && personCount > maxResult ? <Pagination>{personPaginationItems}</Pagination> : ''}
+
+							{key === 'Course' && courseCount > maxResult ? <Pagination>{coursePaginationItems}</Pagination> : ''}
+						</div>
 					</Col>
 					<Col sm={1} lg={10} />
 				</Row>
