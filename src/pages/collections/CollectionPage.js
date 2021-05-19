@@ -186,6 +186,7 @@ export const CollectionPage = props => {
 			});
 			setFilteredData(filteredCollectionItems);
 			countEntities(filteredCollectionItems);
+			handlePagination(key, 0);
 		}
 	};
 
@@ -193,20 +194,21 @@ export const CollectionPage = props => {
 		setCollectionsSearchString(searchCollectionsString);
 	};
 
-	const handlePagination = async (type, page, e) => {
-		if (type === 'dataset') {
-			await Promise.all([setDatasetIndex(page)]);
-		} else if (type === 'tool') {
-			await Promise.all([setToolIndex(page)]);
-		} else if (type === 'project') {
-			await Promise.all([setProjectIndex(page)]);
-		} else if (type === 'paper') {
-			await Promise.all([setPaperIndex(page)]);
-		} else if (type === 'person') {
-			await Promise.all([setPersonIndex(page)]);
-		} else if (type === 'course') {
-			await Promise.all([setCourseIndex(page)]);
+	const handlePagination = (type, page) => {
+		if (type === 'Datasets') {
+			setDatasetIndex(page);
+		} else if (type === 'Tools') {
+			setToolIndex(page);
+		} else if (type === 'Projects') {
+			setProjectIndex(page);
+		} else if (type === 'Papers') {
+			setPaperIndex(page);
+		} else if (type === 'People') {
+			setPersonIndex(page);
+		} else if (type === 'Courses') {
+			setCourseIndex(page);
 		}
+		window.scrollTo(0, 0);
 	};
 
 	let datasetPublisher;
@@ -223,9 +225,9 @@ export const CollectionPage = props => {
 		datasetPaginationItems.push(
 			<Pagination.Item
 				key={i}
-				active={i === datasetIndex / maxResult + 1}
+				active={i === datasetIndex + 1}
 				onClick={e => {
-					handlePagination('dataset', i - 1, 'click');
+					handlePagination('Datasets', i - 1);
 				}}>
 				{i}
 			</Pagination.Item>
@@ -235,9 +237,9 @@ export const CollectionPage = props => {
 		toolPaginationItems.push(
 			<Pagination.Item
 				key={i}
-				active={i === toolIndex / maxResult + 1}
+				active={i === toolIndex + 1}
 				onClick={e => {
-					handlePagination('tool', i - 1, 'click');
+					handlePagination('Tools', i - 1);
 				}}>
 				{i}
 			</Pagination.Item>
@@ -247,9 +249,9 @@ export const CollectionPage = props => {
 		projectPaginationItems.push(
 			<Pagination.Item
 				key={i}
-				active={i === projectIndex / maxResult + 1}
+				active={i === projectIndex + 1}
 				onClick={e => {
-					this.handlePagination('project', i - 1, 'click');
+					this.handlePagination('Projects', i - 1);
 				}}>
 				{i}
 			</Pagination.Item>
@@ -259,9 +261,9 @@ export const CollectionPage = props => {
 		paperPaginationItems.push(
 			<Pagination.Item
 				key={i}
-				active={i === paperIndex / maxResult + 1}
+				active={i === paperIndex + 1}
 				onClick={e => {
-					handlePagination('paper', i - 1, 'click');
+					handlePagination('Papers', i - 1);
 				}}>
 				{i}
 			</Pagination.Item>
@@ -271,9 +273,9 @@ export const CollectionPage = props => {
 		personPaginationItems.push(
 			<Pagination.Item
 				key={i}
-				active={i === personIndex / maxResult + 1}
+				active={i === personIndex + 1}
 				onClick={e => {
-					handlePagination('person', (i - 1) * maxResult, 'click');
+					handlePagination('People', (i - 1) * maxResult);
 				}}>
 				{i}
 			</Pagination.Item>
@@ -283,9 +285,9 @@ export const CollectionPage = props => {
 		coursePaginationItems.push(
 			<Pagination.Item
 				key={i}
-				active={i === courseIndex / maxResult + 1}
+				active={i === courseIndex + 1}
 				onClick={e => {
-					handlePagination('course', i - 1, 'click');
+					handlePagination('Courses', i - 1);
 				}}>
 				{i}
 			</Pagination.Item>
@@ -553,7 +555,7 @@ export const CollectionPage = props => {
 							: ''}
 
 						{key === 'Tools'
-							? filteredData.map(object => {
+							? handlePaginatedItems(toolIndex).map(object => {
 									if (
 										object.activeflag === 'active' ||
 										(object.type === 'tool' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
@@ -588,7 +590,7 @@ export const CollectionPage = props => {
 							: ''}
 
 						{key === 'Projects'
-							? filteredData.map(object => {
+							? handlePaginatedItems(projectIndex).map(object => {
 									if (
 										object.activeflag === 'active' ||
 										(object.type === 'project' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
@@ -623,7 +625,7 @@ export const CollectionPage = props => {
 							: ''}
 
 						{key === 'Papers'
-							? filteredData.map(object => {
+							? handlePaginatedItems(paperIndex).map(object => {
 									if (
 										object.activeflag === 'active' ||
 										(object.type === 'paper' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
@@ -659,7 +661,7 @@ export const CollectionPage = props => {
 							: ''}
 
 						{key === 'People'
-							? filteredData.map(object => {
+							? handlePaginatedItems(personIndex).map(object => {
 									if (
 										object.activeflag === 'active' ||
 										(object.type === 'person' && object.activeflag === 'review' && object.authors.includes(userState[0].id))
@@ -730,15 +732,10 @@ export const CollectionPage = props => {
 
 						<div className='text-center'>
 							{key === 'Datasets' && datasetCount > maxResult ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
-
 							{key === 'Tools' && toolCount > maxResult ? <Pagination>{toolPaginationItems}</Pagination> : ''}
-
 							{key === 'Projects' && projectCount > maxResult ? <Pagination>{projectPaginationItems}</Pagination> : ''}
-
 							{key === 'Papers' && paperCount > maxResult ? <Pagination>{paperPaginationItems}</Pagination> : ''}
-
 							{key === 'People' && personCount > maxResult ? <Pagination>{personPaginationItems}</Pagination> : ''}
-
 							{key === 'Course' && courseCount > maxResult ? <Pagination>{coursePaginationItems}</Pagination> : ''}
 						</div>
 					</Col>
