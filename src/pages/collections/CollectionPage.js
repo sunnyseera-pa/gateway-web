@@ -95,8 +95,8 @@ export const CollectionPage = props => {
 		setIsResultsLoading(false);
 	};
 
-	const countEntities = objectData => {
-		const entityCounts = objectData.reduce((entityCountsByType, currentValue) => {
+	const countEntities = filteredData => {
+		const entityCounts = filteredData.reduce((entityCountsByType, currentValue) => {
 			let type = currentValue.type;
 			if (!entityCountsByType.hasOwnProperty(type)) {
 				entityCountsByType[type] = 0;
@@ -163,13 +163,14 @@ export const CollectionPage = props => {
 		//fires on enter on searchbar
 		if (e.key === 'Enter') {
 			let filteredCollectionItems = objectData.map(object => {
-				return object.name.includes(searchCollectionsString) ||
-					object.description.includes(searchCollectionsString) ||
-					object.tags.features.includes(searchCollectionsString)
+				return object.name.toLowerCase().includes(searchCollectionsString.toLowerCase()) ||
+					object.description.toLowerCase().includes(searchCollectionsString.toLowerCase()) ||
+					new RegExp( object.tags.features.join( "|" ), "i").test(searchCollectionsString)
 					? object
 					: '';
 			});
 			setFilteredData(filteredCollectionItems);
+			countEntities(filteredCollectionItems);
 		}
 	};
 
