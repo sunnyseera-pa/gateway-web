@@ -339,7 +339,6 @@ body.modal-open {
 	}
 }
 
-// TODO - Craft CMS nav dropdowns css below here
 .dropdown-subitem {
 	font-size: 14px;
 	color: $gray-800;
@@ -348,7 +347,6 @@ body.modal-open {
 }
 
 .dropdown-subitem:hover {
-	// font-weight: bold;
 	color: #191919;
 	text-decoration: none;
 	background-color: $gray-light;
@@ -424,15 +422,17 @@ body.modal-open {
 
 .cmsDropdown {
 	@include mq('tablet-wide', max) {
-		// padding: 4px 24px;
 		padding: 8px 24px;
 	}
 }
 
 .cmsDropdown .cmsDropdownMenu {
 	margin-top: 8px;
-	// TODO - this to override whats on cms to match specs
-	// transform: translate3d(0px, 43px, 0px) !important;
+	min-width: 300px;
+}
+
+.cmsDropdownMenu .list-unstyled {
+	margin-bottom: 0px;
 }
 
 .explore-container {

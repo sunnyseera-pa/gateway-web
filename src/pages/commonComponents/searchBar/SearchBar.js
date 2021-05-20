@@ -19,6 +19,7 @@ import { cmsURL } from '../../../configs/url.config';
 import { ReactComponent as ChevronBottom } from '../../../images/chevron-bottom.svg';
 import UserDropdownItems from './UserDropdownItems';
 import UserDropdownTeams from './UserDropdownTeams';
+import UatBanner from '../../commonComponents/uatBanner/UatBanner';
 
 import CmsDropdown from './CmsDropdown';
 
@@ -337,28 +338,19 @@ class SearchBar extends React.Component {
 			}
 		}
 
-		// let col1Size = 5;
-		// let col2Size = 7;
-		let col1Size = 7;
-		let col2Size = 5;
-		if (showUatBanner === true) {
-			col1Size = 6;
-			col2Size = 6;
-		}
-
 		return (
 			<Fragment>
+				{showUatBanner === true && <UatBanner currentEnv={currentEnv} />}
 				<nav className={classnames('navbarShown', { navbarHidden: !this.state.visible })}>
 					<div className='searchBarBackground' id='desktopSearchBar'>
 						<Row className='whiteBackground'>
-							<Col lg={col1Size} className='pr-0 pl-2'>
+							<Col lg={7} className='pr-0 pl-2'>
 								<div className='navBarLogoSpacing'>
 									<a style={{ cursor: 'pointer' }} href={cmsURL}>
 										<ColourLogoSvg className='ml-4 mt-3' />
 									</a>
 								</div>
 
-								{/* TODO - add new dropdown items here  */}
 								<div className='navBarLinkSpacing'>
 									<CmsDropdown dropdownUrl='exploreDropdown' />
 								</div>
@@ -382,24 +374,9 @@ class SearchBar extends React.Component {
 										Community
 									</a>
 								</div>
-
-								{showUatBanner === true && (
-									<div class='uatSearchBarBanner uatBannerText'>
-										<span class='verticalMiddle'>
-											{currentEnv}
-											<br />
-											<a
-												class='floatRight uatBannerText'
-												href='https://discourse.healthdatagateway.org/t/using-the-uat-environment/451'
-												target='_blank'>
-												Read more
-											</a>
-										</span>
-									</div>
-								)}
 							</Col>
 
-							<Col lg={col2Size} className='text-right'>
+							<Col lg={5} className='text-right'>
 								<div className='nav-wrapper'>
 									<div className='navBarSearchBarSpacing'>
 										<Container>
@@ -1012,7 +989,6 @@ class SearchBar extends React.Component {
 						</Row>
 					</div>
 
-					{/* TODO - MOBILE NAVBAR  */}
 					<div id='mobileSearchBar' className={!this.state.visible ? 'navbarHidden' : ''}>
 						<div className='searchBarBackground'>
 							<Row className='whiteBackground'>
@@ -1033,7 +1009,6 @@ class SearchBar extends React.Component {
 											)}
 
 											<div>
-												{/* TODO - pass through isMobile variable */}
 												<CmsDropdown dropdownUrl='exploreDropdown' isMobile={true} />
 												<CmsDropdown dropdownUrl='helpDropdown' isMobile={true} />
 												<CmsDropdown dropdownUrl='usageDataDropdown' isMobile={true} />
