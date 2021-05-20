@@ -1,5 +1,5 @@
-import React, { Component, Fragment, useState } from 'react';
-import { Container, Row, Col, Modal, Alert, Tooltip, Button, Dropdown } from 'react-bootstrap';
+import React, { Component, Fragment } from 'react';
+import { Container, Row, Col, Modal, Alert, Tooltip, Button } from 'react-bootstrap';
 import Winterfell from 'winterfell';
 import queryString from 'query-string';
 import _ from 'lodash';
@@ -48,30 +48,6 @@ import DeleteDraftModal from './components/DeleteDraftModal/DeleteDraftModal';
 import DuplicateApplicationModal from './components/DuplicateApplicationModal/DuplicateApplicationModal';
 import SelectDatasetModal from './components/SelectDatasetModal/SelectDatasetModal';
 import VersionSelector from '../commonComponents/versionSelector/VersionSelector';
-
-const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-	<a
-		href=''
-		ref={ref}
-		onClick={e => {
-			e.preventDefault();
-			onClick(e);
-		}}>
-		{children}
-	</a>
-));
-
-const CustomMenu = React.forwardRef(({ children, style, className, 'aria-labelledby': labeledBy }, ref) => {
-	const [value] = useState('');
-
-	return (
-		<div ref={ref} style={style} className={className} aria-labelledby={labeledBy}>
-			<ul className='list-unstyled margin-bottom-0'>
-				{React.Children.toArray(children).filter(child => !value || child.props.children.toLowerCase().startsWith(value))}
-			</ul>
-		</div>
-	);
-});
 
 class DataAccessRequest extends Component {
 	constructor(props) {
