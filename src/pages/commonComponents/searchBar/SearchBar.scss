@@ -28,6 +28,18 @@ body.modal-open {
 	box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.09);
 }
 
+.navBarLoginSpacing {
+	padding: 0px 24px 0px 0px;
+
+	@include mq('desktop', max) {
+		padding: 0px 16px 0px 0px;
+	}
+}
+
+.navBarNotificationSpacing {
+	padding: 0px 16px;
+}
+
 @media (min-width: 1286px) {
 	.navBarLogoSpacing {
 		vertical-align: middle;
@@ -41,12 +53,8 @@ body.modal-open {
 		padding: 0px 0px 0px 24px;
 	}
 
-	.navBarLoginSpacing {
-		padding: 0px 40px 0px 0px;
-	}
-
-	.navBarNotificationSpacing {
-		padding: 0px 16px;
+	.navBarBellNotificationSpacing {
+		padding: 0px 16px 0px 0px;
 	}
 
 	.navBarSearchBarSpacing {
@@ -104,12 +112,8 @@ body.modal-open {
 		padding: 0px 0px 0px 15px;
 	}
 
-	.navBarLoginSpacing {
-		padding: 0px 20px 0px 0px;
-	}
-
-	.navBarNotificationSpacing {
-		padding: 0px 15px 0px 15px;
+	.navBarBellNotificationSpacing {
+		padding: 0px 16px 0px 0px;
 		display: flex;
 		flex-flow: row;
 		justify-content: center;
@@ -159,6 +163,16 @@ body.modal-open {
 	}
 }
 
+.navBarSearchIconHolder {
+	@include mq('tablet-wide', max) {
+		float: right;
+		background-color: #f6f7f8;
+		padding: 10px 10px 5px 10px;
+		border-radius: 15px;
+		margin-top: 20px;
+	}
+}
+
 @media (max-width: 991px) {
 	.navBarLogoSpacing {
 		vertical-align: middle;
@@ -170,26 +184,9 @@ body.modal-open {
 		padding: 0px 0px 0px 5px;
 	}
 
-	.navBarLoginSpacing {
-		padding: 0px 20px 0px 0px;
-	}
-
-	.navBarNotificationSpacing {
-		margin-right: 30px;
-		padding: 0px 0px 0px 5px;
-	}
-
 	.navBarSearchBarSpacing {
 		width: 100%;
 		text-align: left;
-	}
-
-	.navBarSearchIconHolder {
-		float: right;
-		background-color: #f6f7f8;
-		padding: 10px 10px 5px 10px;
-		border-radius: 15px;
-		margin-top: 20px;
 	}
 
 	.navBarSearchIconHolderAlt {
@@ -258,10 +255,6 @@ body.modal-open {
 .searchInputClearGrey {
 	float: right;
 	padding: 8px 10px 0px 0px;
-}
-
-.navBarNotificationSpacing {
-	position: relative;
 }
 
 #notificationsBell:hover {
@@ -452,7 +445,6 @@ body.modal-open {
 }
 
 .explore-left-container {
-	// width: 60%;
 	width: 55%;
 	@include mq('tablet-wide', max) {
 		width: 100%;
@@ -463,7 +455,6 @@ body.modal-open {
 	display: flex;
 	flex-direction: column;
 	width: 45%;
-	// width: 40%;
 	@include mq('tablet-wide', max) {
 		width: 100%;
 		border-top: 1px solid #d8d8d8;

@@ -337,8 +337,10 @@ class SearchBar extends React.Component {
 			}
 		}
 
-		let col1Size = 5;
-		let col2Size = 7;
+		// let col1Size = 5;
+		// let col2Size = 7;
+		let col1Size = 7;
+		let col2Size = 5;
 		if (showUatBanner === true) {
 			col1Size = 6;
 			col2Size = 6;
@@ -349,7 +351,7 @@ class SearchBar extends React.Component {
 				<nav className={classnames('navbarShown', { navbarHidden: !this.state.visible })}>
 					<div className='searchBarBackground' id='desktopSearchBar'>
 						<Row className='whiteBackground'>
-							<Col lg={col1Size}>
+							<Col lg={col1Size} className='pr-0 pl-2'>
 								<div className='navBarLogoSpacing'>
 									<a style={{ cursor: 'pointer' }} href={cmsURL}>
 										<ColourLogoSvg className='ml-4 mt-3' />
@@ -447,7 +449,7 @@ class SearchBar extends React.Component {
 														<NotificationBadge count={this.state.messageCount} style={{ backgroundColor: '#29235c' }} />
 														<SVGIcon name='chat' fill={'#475da7'} width={20} height={20} id='notificationsBell' className={'pointer'} />
 													</div>
-													<div className='navBarNotificationSpacing' data-test-id='imgNotificationBadge'>
+													<div className='navBarBellNotificationSpacing' data-test-id='imgNotificationBadge'>
 														<Dropdown>
 															<Dropdown.Toggle as={CustomToggle} ref={node => (this.node = node)}>
 																<NotificationBadge count={this.state.count} className='notificationsBellBadge' />
@@ -1162,7 +1164,7 @@ class SearchBar extends React.Component {
 													</div>
 												</Col>
 												<Col xs={2} className='text-right'>
-													<div className='navBarNotificationSpacing'>
+													<div className='navBarBellNotificationSpacing'>
 														<Dropdown>
 															<Dropdown.Toggle as={CustomToggle} ref={nodeMobile => (this.nodeMobile = nodeMobile)}>
 																<NotificationBadge count={this.state.count} style={{ backgroundColor: '#29235c' }} />
