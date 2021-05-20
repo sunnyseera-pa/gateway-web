@@ -1341,11 +1341,11 @@ class DataAccessRequest extends Component {
 		if (_.isEmpty(appIdToCloneInto) && _.isEmpty(selectedDatasets)) {
 			return;
 		}
-
+	
 		let datasetIds = [];
 		let datasetTitles = [];
 		let publisher = '';
-
+	
 		if (!_.isEmpty(appIdToCloneInto)) {
 			this.toggleDuplicateApplicationModal();
 		} else if (!_.isEmpty(selectedDatasets)) {
@@ -1356,7 +1356,7 @@ class DataAccessRequest extends Component {
 				datasetTitles.push(dataset.name);
 			});
 		}
-
+	
 		axios
 			.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/clone`, {
 				datasetIds,
@@ -1367,7 +1367,7 @@ class DataAccessRequest extends Component {
 			.then(res => {
 				let message = '';
 				let projectName = this.state.projectName || this.state.datasets[0].name;
-
+	
 				if (_.isEmpty(appIdToCloneInto)) {
 					message = `You have successfully duplicated your application '${projectName}' into a new application`;
 				} else {
@@ -1375,14 +1375,14 @@ class DataAccessRequest extends Component {
 					projectNameCloneInto = _.isNil(projectNameCloneInto) ? 'your selected application' : `'${projectNameCloneInto}'`;
 					message = `You have successfully duplicated your application '${projectName}' into ${projectNameCloneInto}`;
 				}
-
+	
 				let alert = {
 					message: message,
 					publisher: 'user',
 				};
 				this.setState({ alert: alert });
 				setTimeout(() => this.setState({ alert: {} }), 10000);
-
+	
 				this.props.history.push({ pathname: `/data-access-request/${res.data.accessRecord._id}` });
 			});
 	};
