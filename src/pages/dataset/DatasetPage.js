@@ -219,7 +219,11 @@ class DatasetDetail extends Component {
 		this.setState({ isLoading: true });
 		axios.get(baseURL + '/api/v1/datasets/' + this.state.data.datasetid).then(res => {
 			if (res.data) {
-				const { data: { datasetfields: { technicaldetails: technicalMetadata = [] } } } = res.data
+				const {
+					data: {
+						datasetfields: { technicaldetails: technicalMetadata = [] },
+					},
+				} = res.data;
 				this.setState({
 					technicalMetadata,
 				});
@@ -899,9 +903,7 @@ class DatasetDetail extends Component {
 												</Row>
 											)}
 
-											{!data.description ? (
-												''
-											) : (
+											{!_.isEmpty(v2data.documentation.description) ? (
 												<Row className='mt-1'>
 													<Col sm={12}>
 														<div className='rectangle'>
@@ -911,13 +913,15 @@ class DatasetDetail extends Component {
 															<Row className='mt-3'>
 																<Col sm={12} className='gray800-14 overflowWrap'>
 																	<span className='gray800-14'>
-																		<ReactMarkdown source={formatLinks(data.description)} />
+																		<ReactMarkdown source={formatLinks(v2data.documentation.description)} />
 																	</span>
 																</Col>
 															</Row>
 														</div>
 													</Col>
 												</Row>
+											) : (
+												''
 											)}
 
 											{/* V2 DATASETS  */}
