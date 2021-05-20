@@ -46,21 +46,22 @@ body.modal-open {
 	}
 
 	.navBarNotificationSpacing {
-		padding: 0px 25px;
+		padding: 0px 16px;
 	}
 
 	.navBarSearchBarSpacing {
-		width: 50%;
 		text-align: left;
 	}
 
 	.searchBarInputGrey {
 		border: 0;
 		background-color: #f6f7f8;
-		display: inline-block;
+		display: flex;
+		align-content: center;
 		border-radius: 4px;
 		padding: 5px;
 		width: 100%;
+		max-width: 220px;
 	}
 
 	#searchInputSpanGrey {
@@ -75,9 +76,9 @@ body.modal-open {
 	}
 
 	.desktopLoginMenu {
-		width: 200px;
-		top: 28px !important;
-		left: -28px !important;
+		width: 375px;
+		top: 27px !important;
+		left: -20px !important;
 	}
 
 	.desktopNotificationMenu {
@@ -144,8 +145,8 @@ body.modal-open {
 
 	.desktopLoginMenu {
 		width: 200px;
-		top: 29px !important;
-		left: -31px !important;
+		top: 18px !important;
+		left: 0px !important;
 	}
 
 	.desktopNotificationMenu {
@@ -203,7 +204,7 @@ body.modal-open {
 	.searchBarInputGrey {
 		border: 0;
 		background-color: #f6f7f8;
-		display: inline-block;
+		display: flex;
 		border-radius: 4px;
 		margin-top: 16px;
 		padding: 5px;
@@ -273,6 +274,12 @@ body.modal-open {
 	background-size: 40px, 40px;
 	background: $gray-300;
 	@include rounded(70px);
+}
+
+.notificationsBellBadge {
+	top: -13px !important;
+	right: -30px !important;
+	background-color: #29235c !important;
 }
 
 .desktopNotificationMenu {
@@ -466,4 +473,24 @@ body.modal-open {
 
 .floatRightChevron {
 	float: right;
+}
+
+.navBarAvatarSpacing {
+	padding: 0px 8px;
+}
+
+.dropdown-sub-menu {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 4px 16px 4px 16px;
+}
+
+.user-dropdown-menu {
+	display: flex;
+	align-items: center;
+}
+
+.user-dropdown-item {
+	padding: 4px 16px 4px 16px !important;
 }

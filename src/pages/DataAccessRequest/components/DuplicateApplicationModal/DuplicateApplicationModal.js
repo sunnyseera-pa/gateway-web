@@ -35,7 +35,7 @@ const DuplicateApplicationModal = ({ isOpen, closeModal, duplicateApplication, s
 
 	const resetModalState = () => {
 		setIsNewApplication(false);
-		setApplicationId = null;
+		setApplicationId(null);
 	};
 
 	return (
@@ -63,7 +63,12 @@ const DuplicateApplicationModal = ({ isOpen, closeModal, duplicateApplication, s
 							<div className='newAppButtonText'>Create new application</div>
 						</button>
 					) : (
-						<button className='duplicateApplicationModal-body-newappbutton' onClick={() => setIsNewApplication(true)}>
+						<button
+							className='duplicateApplicationModal-body-newappbutton'
+							onClick={() => {
+								setIsNewApplication(true); 
+								setApplicationId(null);
+							}}>
 							<SVGIcon className='newAppButtonIcon' name='plusChunky' width={20} height={20} fill={'#475da7'} />
 							<div className='newAppButtonText'>Create new application</div>{' '}
 						</button>

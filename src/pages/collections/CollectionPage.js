@@ -18,6 +18,7 @@ import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import SVGIcon from '../../images/SVGIcon';
 import './Collections.scss';
+import CollectionsSearch from './CollectionsSearch';
 
 export const CollectionPage = props => {
 	const [collectionData, setCollectionData] = useState([]);
@@ -291,6 +292,10 @@ export const CollectionPage = props => {
 					</Row>
 
 					<Row>
+						<div className="col-sm-12 mt-3 gray800-14 text-center">{collectionData.counter ? collectionData.counter : 0} views</div>
+					</Row>
+
+					<Row>
 						<Col sm={1} lg={1} />
 						<Col sm={10} lg={10} className='collectionKeywords'>
 							{collectionData.keywords &&
@@ -351,6 +356,8 @@ export const CollectionPage = props => {
 						</Col>
 					</Row>
 				)}
+				<CollectionsSearch 
+					isLoading = {isResultsLoading} />
 				<Row>
 					<Col sm={1} lg={1} />
 					<Col sm={10} lg={10}>
