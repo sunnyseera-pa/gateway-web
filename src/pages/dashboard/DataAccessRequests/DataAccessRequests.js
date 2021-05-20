@@ -14,6 +14,7 @@ import AccessActivity from './AccessActivity/AccessActivity';
 import { initGA } from '../../../tracking';
 import { baseURL } from '../../../configs/url.config';
 import DarHelperUtil from '../../../utils/DarHelper.util';
+import VersionSelector from '../../commonComponents/versionSelector/VersionSelector';
 import './DataAccessRequests.scss';
 
 class DataAccessRequestsNew extends React.Component {
@@ -39,6 +40,7 @@ class DataAccessRequestsNew extends React.Component {
 		alert: {},
 		showWorkflowReviewModal: false,
 		canViewSubmitted: false,
+		flagClosed: true,
 	};
 
 	constructor(props) {
@@ -244,7 +246,10 @@ class DataAccessRequestsNew extends React.Component {
 		// 1. split the id up into two parts
 		let [id, uniqueId] = e.currentTarget.id.split('_');
 		// 2. test the Id we have clicked on
+		debugger;
 		switch (id) {
+			case 'versionSelector':
+				return;
 			case 'workflow':
 				// 3. get workflows remove undefined values from map
 				const workflows = _.without(
@@ -291,12 +296,9 @@ class DataAccessRequestsNew extends React.Component {
 
 	render() {
 		const {
-			key,
 			isLoading,
-			data,
 			approvedCount,
 			rejectedCount,
-			archivedCount,
 			preSubmissionCount,
 			submittedCount,
 			inReviewCount,
@@ -379,19 +381,47 @@ class DataAccessRequestsNew extends React.Component {
 								_id,
 								decisionDate,
 								amendmentStatus = '',
+								versions = [
+									{
+										_id: 'sfsdfsfsfds',
+										number: '2.0',
+										latest: true,
+										current: false,
+										link: '/data-access-request/sfsdfsfsfds?version=2.0',
+										displayTitle: 'Version 2.0 (latest)',
+										detailedTitle: 'Version 2.0 (latest) | Amendment',
+									},
+									{
+										_id: 'blablabla',
+										number: '1.1',
+										current: true,
+										link: '/data-access-request/blablabla?version=1.1',
+										displayTitle: 'Version 1.1',
+										detailedTitle: 'Version 1.1 | Update',
+									},
+									{
+										_id: 'blablabla',
+										number: '1.0',
+										link: '/data-access-request/blablabla?version=1.0',
+										displayTitle: 'Version 1.0',
+										detailedTitle: 'Version 1.0',
+									},
+								],
 							} = request;
 							return (
-								<Row
-									key={`request_${i}`}
-									// onClick={event =>  window.location.href=`/data-access-request/${request._id}`}>
-									onClick={e => this.navigateToLocation(e, _id, applicationStatus)}>
+								<Row key={`request_${i}`} onClick={e => this.navigateToLocation(e, _id, applicationStatus)}>
 									<div className='col-md-12'>
 										<div className='layoutCard'>
-											<div className='header'>
-												<div className='header-title'>
+											<div className='header-version'>
+												<div className='header-version-title'>
 													<h1>{projectName}</h1>
+													{versions.length > 0 ? (
+														<VersionSelector versionList={versions} displayType='chevron' onToggleClick={this.navigateToLocation} />
+													) : (
+														<span className='gray800-14 mb-2'>Version 1.0</span>
+													)}
 												</div>
-												<div className='header-status'>
+												<div className='header-version-status'>
 													{this.renderDuration(request, team)}
 													<SLA
 														classProperty={DarHelperUtil.darStatusColours[request.applicationStatus]}

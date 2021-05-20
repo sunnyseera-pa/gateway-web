@@ -900,6 +900,18 @@ input[type='checkbox']:after {
 	box-shadow: none !important;
 }
 
+.listOfVersionsButton::after {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 0.255em;
+    vertical-align: 0.255em;
+    content: "";
+    border-top: 0.3em solid;
+    border-right: 0.3em solid transparent;
+    border-left: 0.3em solid transparent;
+}
+
 .listOfVersionsDropdown {
 	width: 200px !important;
 	max-height: 176px !important;

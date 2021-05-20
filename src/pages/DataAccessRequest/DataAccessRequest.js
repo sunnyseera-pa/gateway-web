@@ -1,7 +1,7 @@
-import React, { Component, Fragment } from 'react';
-import { History } from 'react-router';
-import { Container, Row, Col, Modal, Tabs, Tab, Alert, Tooltip, Button } from 'react-bootstrap';
+import React, { Component, Fragment, useState } from 'react';
+import { Container, Row, Col, Modal, Alert, Tooltip, Button, Dropdown } from 'react-bootstrap';
 import Winterfell from 'winterfell';
+import queryString from 'query-string';
 import _ from 'lodash';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
@@ -47,6 +47,31 @@ import ConfirmSubmissionModal from './components/ConfirmSubmissionModal/ConfirmS
 import DeleteDraftModal from './components/DeleteDraftModal/DeleteDraftModal';
 import DuplicateApplicationModal from './components/DuplicateApplicationModal/DuplicateApplicationModal';
 import SelectDatasetModal from './components/SelectDatasetModal/SelectDatasetModal';
+import VersionSelector from '../commonComponents/versionSelector/VersionSelector';
+
+const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+	<a
+		href=''
+		ref={ref}
+		onClick={e => {
+			e.preventDefault();
+			onClick(e);
+		}}>
+		{children}
+	</a>
+));
+
+const CustomMenu = React.forwardRef(({ children, style, className, 'aria-labelledby': labeledBy }, ref) => {
+	const [value] = useState('');
+
+	return (
+		<div ref={ref} style={style} className={className} aria-labelledby={labeledBy}>
+			<ul className='list-unstyled margin-bottom-0'>
+				{React.Children.toArray(children).filter(child => !value || child.props.children.toLowerCase().startsWith(value))}
+			</ul>
+		</div>
+	);
+});
 
 class DataAccessRequest extends Component {
 	constructor(props) {
@@ -174,6 +199,7 @@ class DataAccessRequest extends Component {
 			//	b) Message Panel - route will contain only the 'publisherId' with historic state passed from the message panel component which includes datasetId(s)
 			// 	c/d) Data Access Request User Area / Direct Link - route will contain a data access request 'accessId' which specifically links all associated data to one application
 			const { datasetId, accessId, publisherId } = this.props.match.params;
+			const { version } = queryString.parse(window.location.search);
 			let countedQuestionAnswers = {},
 				totalQuestions = '';
 
@@ -194,7 +220,7 @@ class DataAccessRequest extends Component {
 				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered`;
 			} else if (accessId) {
 				// c/d) Data Access Request/Direct Link (To be extended for readonly mode)
-				await this.loadDataAccessRequest(accessId);
+				await this.loadDataAccessRequest(accessId, version);
 				// Populate the question/answers count if still in progress, otherwise display project status and date last updated
 				const { applicationStatus, updatedAt } = this.state;
 				if (applicationStatus === 'inProgress') {
@@ -240,7 +266,6 @@ class DataAccessRequest extends Component {
 						workflow,
 						files,
 						isCloneable,
-						formType,
 					},
 				},
 			} = response;
@@ -260,7 +285,6 @@ class DataAccessRequest extends Component {
 				workflow,
 				files,
 				isCloneable,
-				formType
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -288,7 +312,6 @@ class DataAccessRequest extends Component {
 						workflow,
 						files,
 						isCloneable,
-						formType,
 					},
 				},
 			} = response;
@@ -308,7 +331,6 @@ class DataAccessRequest extends Component {
 				workflow,
 				files,
 				isCloneable,
-				formType,
 			});
 
 			// for local test uses formSchema.json
@@ -319,12 +341,12 @@ class DataAccessRequest extends Component {
 		}
 	};
 
-	loadDataAccessRequest = async accessId => {
+	loadDataAccessRequest = async (accessId, version) => {
 		try {
 			// 1. Make API call to find and return the application form schema and answers matching this Id
-			let response = await axios.get(`${baseURL}/api/v1/data-access-request/${accessId}`);
+			const response = await axios.get(`${baseURL}/api/v1/data-access-request/${accessId}${version ? `?version=${version}` : ''}`);
 			// 2. Destructure backend response for this context containing details of DAR including question set and current progress
-			let {
+			const {
 				data: { data },
 			} = response;
 			// 3. Set up the DAR
@@ -360,7 +382,8 @@ class DataAccessRequest extends Component {
 			workflow,
 			files,
 			isCloneable,
-			formType
+			version = 1,
+			versions = [],
 		} = context;
 		let {
 			datasetfields: { publisher },
@@ -403,7 +426,7 @@ class DataAccessRequest extends Component {
 		// 4. Set messaging and modal context
 		let topicContext = DarHelper.createTopicContext(aboutApplication.selectedDatasets);
 		let modalContext = DarHelper.createModalContext(aboutApplication.selectedDatasets);
-		let allowsMultipleDatasets = formType === '5 safe';
+		let allowsMultipleDatasets = topicContext.requiresModal || false;
 
 		// 5. If multiple datasets are allowed, append 'about this application' section
 		if (allowsMultipleDatasets) {
@@ -460,6 +483,8 @@ class DataAccessRequest extends Component {
 			workflowAssigned: !_.isEmpty(workflow) ? true : false,
 			files,
 			isCloneable,
+			version,
+			versions
 		});
 	};
 
@@ -1340,11 +1365,11 @@ class DataAccessRequest extends Component {
 		if (_.isEmpty(appIdToCloneInto) && _.isEmpty(selectedDatasets)) {
 			return;
 		}
-	
+
 		let datasetIds = [];
 		let datasetTitles = [];
 		let publisher = '';
-	
+
 		if (!_.isEmpty(appIdToCloneInto)) {
 			this.toggleDuplicateApplicationModal();
 		} else if (!_.isEmpty(selectedDatasets)) {
@@ -1355,7 +1380,7 @@ class DataAccessRequest extends Component {
 				datasetTitles.push(dataset.name);
 			});
 		}
-	
+
 		axios
 			.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/clone`, {
 				datasetIds,
@@ -1366,7 +1391,7 @@ class DataAccessRequest extends Component {
 			.then(res => {
 				let message = '';
 				let projectName = this.state.projectName || this.state.datasets[0].name;
-	
+
 				if (_.isEmpty(appIdToCloneInto)) {
 					message = `You have successfully duplicated your application '${projectName}' into a new application`;
 				} else {
@@ -1374,14 +1399,14 @@ class DataAccessRequest extends Component {
 					projectNameCloneInto = _.isNil(projectNameCloneInto) ? 'your selected application' : `'${projectNameCloneInto}'`;
 					message = `You have successfully duplicated your application '${projectName}' into ${projectNameCloneInto}`;
 				}
-	
+
 				let alert = {
 					message: message,
 					publisher: 'user',
 				};
 				this.setState({ alert: alert });
 				setTimeout(() => this.setState({ alert: {} }), 10000);
-	
+
 				this.props.history.push({ pathname: `/data-access-request/${res.data.accessRecord._id}` });
 			});
 	};
@@ -1426,6 +1451,7 @@ class DataAccessRequest extends Component {
 					questions,
 					question = '';
 				// reduce over questionanswers object using lodash
+				debugger;
 				fullAmendments = _.reduce(
 					questionAnswers,
 					(obj, value, key) => {
@@ -1597,7 +1623,7 @@ class DataAccessRequest extends Component {
 	};
 
 	render() {
-		const {
+		let {
 			lastSaved,
 			searchString,
 			totalQuestions,
@@ -1621,6 +1647,7 @@ class DataAccessRequest extends Component {
 			roles,
 			showEmailModal,
 			alert,
+			versions
 		} = this.state;
 		const { userState, location } = this.props;
 
@@ -1643,6 +1670,34 @@ class DataAccessRequest extends Component {
 				</Container>
 			);
 		}
+
+		versions = [
+			{
+				_id: 'sfsdfsfsfds',
+				number: '2.0',
+				latest: true,
+				current: false,
+				link: '/data-access-request/sfsdfsfsfds?version=2.0',
+				displayTitle: 'Version 2.0 (latest)',
+				detailedTitle: 'Version 2.0 (latest) | Amendment',
+			},
+			{
+				_id: 'blablabla',
+				number: '1.1',
+				current: true,
+				link: '/data-access-request/blablabla?version=1.1',
+				displayTitle: 'Version 1.1',
+				detailedTitle: 'Version 1.1 | Update',
+			},
+			{
+				_id: 'blablabla',
+				number: '1.0',
+				link: '/data-access-request/blablabla?version=1.0',
+				displayTitle: 'Version 1.0',
+				detailedTitle: 'Version 1.0',
+			},
+		];
+
 
 		return (
 			<div>
@@ -1667,6 +1722,11 @@ class DataAccessRequest extends Component {
 							<span className='white-16-semibold pr-5'>
 								{datasets[0].name} | {datasets[0].datasetfields.publisher}
 							</span>
+						)}
+						{versions.length > 1 && (
+						<span className='white-16-semibold pr-5' style={{ display: 'inline-block' }}>
+							<VersionSelector versionList={versions} displayType='smallTriangle' icon='smallArrow' />
+						</span>
 						)}
 					</Col>
 					<Col sm={12} md={4} className='d-flex justify-content-end align-items-center banner-right'>
