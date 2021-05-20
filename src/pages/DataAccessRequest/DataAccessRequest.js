@@ -1427,7 +1427,6 @@ class DataAccessRequest extends Component {
 					questions,
 					question = '';
 				// reduce over questionanswers object using lodash
-				debugger;
 				fullAmendments = _.reduce(
 					questionAnswers,
 					(obj, value, key) => {
@@ -1701,7 +1700,7 @@ class DataAccessRequest extends Component {
 						)}
 						{versions.length > 1 && (
 						<span className='white-16-semibold pr-5' style={{ display: 'inline-block' }}>
-							<VersionSelector versionList={versions} displayType='smallTriangle' icon='smallArrow' />
+							<VersionSelector versionList={versions} displayType='smallTriangle'/>
 						</span>
 						)}
 					</Col>

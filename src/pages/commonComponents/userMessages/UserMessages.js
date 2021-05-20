@@ -177,7 +177,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 					let { datasets: [publisherObj = {}, ...rest] = [] } = topic;
 					const {
 						data: { publisher = {} },
-					} = await getPublisher(publisherObj.publisher);
+					} = await getPublisherById(publisherObj.publisher);
 					if (!_.isEmpty(publisher)) {
 						({ dataRequestModalContent } = publisher);
 						setRequiresModal(!_.isEmpty(dataRequestModalContent) ? true : false);
@@ -202,7 +202,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 		}
 	};
 
-	const getPublisher = (publisherId = '') => {
+	const getPublisherById = (publisherId = '') => {
 		if (!_.isEmpty(publisherId)) {
 			const response = axios.get(`${baseURL}/api/v1/publishers/${publisherId}`);
 			return response;
