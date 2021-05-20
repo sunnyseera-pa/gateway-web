@@ -73,7 +73,7 @@ export const CollectionPage = props => {
 		setIsLoading(true);
 		await axios.get(baseURL + '/api/v1/collections/' + props.match.params.collectionID).then(async res => {
 			if (_.isNil(res.data)) {
-				//redirect user if invalid collection id is supplied
+				// Redirect user if invalid collection id is supplied
 				window.localStorage.setItem('redirectMsg', `Collection not found for Id: ${props.match.params.collectionID}`);
 				props.history.push({ pathname: '/search?search=', search: '' });
 			} else {
@@ -140,7 +140,7 @@ export const CollectionPage = props => {
 	};
 
 	const doSearch = e => {
-		//fires on enter on searchbar
+		// Fires on enter on searchbar
 		if (e.key === 'Enter') window.location.href = `/search?search=${encodeURIComponent(searchString)}`;
 	};
 
@@ -166,10 +166,12 @@ export const CollectionPage = props => {
 	};
 
 	const handlePaginatedItems = index => {
+		// Returns the related resources that have the same object type as the current active tab and performs a chunk on them to ensure each page returns 24 results
 		let paginatedItems = _.chunk(
 			filteredData.filter(object => object.type === key),
-			10
+			24
 		);
+		// If there are items to show based on search results, display them on the currently active page
 		if (paginatedItems.length > 0) {
 			return paginatedItems[index];
 		} else {
@@ -178,9 +180,10 @@ export const CollectionPage = props => {
 	};
 
 	const doCollectionsSearch = e => {
-		//fires on enter on searchbar
+		// Fires on enter on searchbar
 		if (e.key === 'Enter') {
 			let filteredCollectionItems = objectData.map(object => {
+				// Searching functionality - searches through object data and returns true if there is a match with the search term
 				if (
 					_.has(object, 'name')
 						? object.name.toLowerCase().includes(searchCollectionsString.toLowerCase())
