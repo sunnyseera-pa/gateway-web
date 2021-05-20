@@ -38,7 +38,6 @@ body.modal-open {
 		vertical-align: middle;
 		display: inline-block;
 		margin-top: 12px;
-		// padding: 0px 0px 0px 30px;
 		padding: 0px 0px 0px 24px;
 	}
 
@@ -323,24 +322,20 @@ body.modal-open {
 }
 
 #desktopSearchBar {
-	display: none;
+	display: block;
+	@include mq('tablet-wide', max) {
+		display: none;
+	}
 }
 
 #mobileSearchBar {
-	display: block;
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-}
-
-@media (min-width: 1020px) {
-	#desktopSearchBar {
+	display: none;
+	@include mq('tablet-wide', max) {
 		display: block;
-	}
-
-	#mobileSearchBar {
-		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
 	}
 }
 
@@ -359,17 +354,27 @@ body.modal-open {
 	background-color: $gray-light;
 }
 
-// TODO - need to add a class name to the div containing the 'dropdown-header' for the 'Help' dropdown in CMS to use as a prepend below
-.dropdown-item-container .dropdown-header,
-.explore-right-container .dropdown-header {
-	font-size: 16px;
-	color: $gray-dark;
+.cmsDropdownTitle:hover {
+	font-weight: bold;
+	text-decoration: none;
 }
 
-.dropdown-item {
+.helpDropdownHeader,
+.dropdown-item-container .dropdown-header,
+.explore-right-container .dropdown-header {
+	font-size: 16px !important;
+	color: $gray-dark !important;
+}
+
+.cmsDropdown .dropdown-item,
+.cmsDropdownMenu .dropdown-item {
 	font-size: 14px;
 	white-space: break-spaces;
-	color: #212529;
+	color: #3c3c3b;
+}
+.cmsDropdown .dropdown-item:hover,
+.cmsDropdownMenu .dropdown-item:hover {
+	width: auto;
 }
 
 .dropdown-button {
@@ -378,12 +383,17 @@ body.modal-open {
 	width: 57%;
 	color: $indigo;
 	font-size: 14px;
-	float: right;
+	// float: right;
 	margin-right: 15px;
 	text-align: center;
 	padding: 10px;
 	margin-top: auto;
 	align-self: flex-end;
+
+	@include mq('tablet-wide', max) {
+		align-self: flex-start;
+		margin-left: 24px;
+	}
 }
 .dropdown-button:focus {
 	outline: none;
@@ -401,18 +411,59 @@ body.modal-open {
 	text-decoration: none;
 }
 
-.cmsDropdownTitle:hover {
-	text-decoration: none;
+.divider {
+	border-left: 1px solid #d8d8d8;
+	height: 95%;
+	position: absolute;
+	left: 55%;
+
+	@include mq('tablet-wide', max) {
+		border: none;
+	}
 }
 
-// .divider {
-// 	border-left: 1px solid #d8d8d8;
-// 	height: 95%;
-// 	position: absolute;
-// 	left: 55%;
-// }
+.cmsDropdown {
+	@include mq('tablet-wide', max) {
+		// padding: 4px 24px;
+		padding: 8px 24px;
+	}
+}
 
 .cmsDropdown .cmsDropdownMenu {
-	// position: static;
 	margin-top: 8px;
+	// TODO - this to override whats on cms to match specs
+	// transform: translate3d(0px, 43px, 0px) !important;
+}
+
+.explore-container {
+	display: flex;
+	min-width: 600px;
+	@include mq('tablet-wide', max) {
+		display: block;
+		min-width: 0px;
+	}
+}
+
+.explore-left-container {
+	// width: 60%;
+	width: 55%;
+	@include mq('tablet-wide', max) {
+		width: 100%;
+	}
+}
+
+.explore-right-container {
+	display: flex;
+	flex-direction: column;
+	width: 45%;
+	// width: 40%;
+	@include mq('tablet-wide', max) {
+		width: 100%;
+		border-top: 1px solid #d8d8d8;
+		margin-top: 8px;
+	}
+}
+
+.floatRightChevron {
+	float: right;
 }

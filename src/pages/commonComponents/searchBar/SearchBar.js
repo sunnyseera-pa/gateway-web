@@ -328,12 +328,12 @@ class SearchBar extends React.Component {
 								</div>
 
 								<div className='navBarLinkSpacing'>
-									<a href={cmsURL + '/pages/latest-news'} className='black-14' data-test-id='lnkCommunity'>
+									<a href={cmsURL + '/pages/latest-news'} className='black-14 cmsDropdownTitle'>
 										News
 									</a>
 								</div>
 								<div className='navBarLinkSpacing'>
-									<a href={communityLink} className='black-14' data-test-id='lnkCommunity'>
+									<a href={communityLink} className='black-14 cmsDropdownTitle' data-test-id='lnkCommunity'>
 										Community
 									</a>
 								</div>
@@ -985,19 +985,21 @@ class SearchBar extends React.Component {
 												</Dropdown.Item>
 											)}
 
-											<Dropdown.Item className='black-14'>
-												<CmsDropdown dropdownUrl='aboutUsDropdown' />
-											</Dropdown.Item>
+											<div>
+												{/* TODO - pass through isMobile variable */}
+												<CmsDropdown dropdownUrl='exploreDropdown' isMobile={true} />
+												<CmsDropdown dropdownUrl='helpDropdown' isMobile={true} />
+												<CmsDropdown dropdownUrl='usageDataDropdown' isMobile={true} />
+												<CmsDropdown dropdownUrl='aboutUsDropdown' isMobile={true} />
+											</div>
 
-											<Dropdown.Item className='black-14' href={cmsURL + '/pages/about'}>
-												About
+											<Dropdown.Item className='black-14' href={cmsURL + '/pages/latest-news'}>
+												News
 											</Dropdown.Item>
 											<Dropdown.Item className='black-14' href={communityLink}>
 												Community
 											</Dropdown.Item>
-											<Dropdown.Item className='black-14' href={'/dashboard'}>
-												Dashboard
-											</Dropdown.Item>
+
 											<Dropdown.Divider />
 											{(() => {
 												if (userState[0].loggedIn === true) {

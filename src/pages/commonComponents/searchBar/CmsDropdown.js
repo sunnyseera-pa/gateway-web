@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import axios from 'axios';
 import '../../commonComponents/CommonComponents.scss';
 import { Dropdown } from 'react-bootstrap';
@@ -19,13 +19,39 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 			onClick(e);
 		}}>
 		{children}
-		<SVGIcon name='chevronbottom' fill={'#475DA7'} className='svg-16' />
+		<SVGIcon name='chevronbottom' fill={'#475DA7'} className='svg-16 floatRightChevron' />
 	</a>
 ));
+
+const CustomMenu = React.forwardRef(({ children, style, className, 'aria-labelledby': labeledBy }, ref) => {
+	const [value] = useState('');
+
+	return (
+		<div ref={ref} style={style} className={className} aria-labelledby={labeledBy}>
+			<ul className='list-unstyled'>
+				{React.Children.toArray(children).filter(child => !value || child.props.children.toLowerCase().startsWith(value))}
+			</ul>
+		</div>
+	);
+});
+
+const CustomSubMenu = React.forwardRef(({ children, style, className, show, 'aria-labelledby': labeledBy }, ref) => {
+	const [value] = useState('');
+	if (show) {
+		return (
+			<Fragment ref={ref} style={style} className={className} aria-labelledby={labeledBy}>
+				<ul className='list-unstyled'>
+					{React.Children.toArray(children).filter(child => !value || child.props.children.toLowerCase().startsWith(value))}
+				</ul>
+			</Fragment>
+		);
+	}
+});
 
 export const CmsDropdown = props => {
 	const [dropdownUrl] = useState(props.dropdownUrl);
 	const [dropdownLinks, setDropdownLinks] = useState('');
+	const [isMobile] = useState(props.isMobile);
 
 	//componentDidMount - on loading of page detail page
 	useEffect(() => {
@@ -58,8 +84,7 @@ export const CmsDropdown = props => {
 				<span className='black-14'>{getDropdownTitle(dropdownUrl)}</span>
 			</Dropdown.Toggle>
 
-			{/* <Dropdown.Menu as={CustomMenu} className='desktopLoginMenu'> */}
-			<Dropdown.Menu className='cmsDropdownMenu'>
+			<Dropdown.Menu as={isMobile === true ? CustomSubMenu : CustomMenu} className='cmsDropdownMenu'>
 				{dropdownLinks !== '' ? <div dangerouslySetInnerHTML={{ __html: dropdownLinks }} /> : <div className='footerBottom' />}{' '}
 			</Dropdown.Menu>
 		</Dropdown>
