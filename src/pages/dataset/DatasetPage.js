@@ -184,7 +184,7 @@ class DatasetDetail extends Component {
 
 				if (!isEmpty(this.topicContext.title)) {
 					const publisherId = this.topicContext.title;
-					await this.getPublisher(publisherId);
+					await this.getPublisherById(publisherId);
 				}
 
 				if (!res.data.isLatestVersion) {
@@ -527,7 +527,7 @@ class DatasetDetail extends Component {
 		this.setState({ discoursePostCount: count });
 	};
 
-	getPublisher = async publisherId => {
+	getPublisherById = async publisherId => {
 		await axios
 			.get(`${baseURL}/api/v1/publishers/${publisherId}`)
 			.then(response => {
