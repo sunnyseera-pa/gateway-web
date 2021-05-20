@@ -246,7 +246,6 @@ class DataAccessRequestsNew extends React.Component {
 		// 1. split the id up into two parts
 		let [id, uniqueId] = e.currentTarget.id.split('_');
 		// 2. test the Id we have clicked on
-		debugger;
 		switch (id) {
 			case 'versionSelector':
 				return;
