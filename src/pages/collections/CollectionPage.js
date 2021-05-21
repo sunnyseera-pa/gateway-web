@@ -174,41 +174,53 @@ export const CollectionPage = props => {
 				break;
 			}
 			case 'latest': {
-				console.log('latest');
+				sortByLatest();
 				break;
 			}
 			case 'resources': {
-				console.log('resources');
+				sortByResources();
 				break;
 			}
 			case 'relevance': {
-				console.log('relevance');
+				sortByRelevance();
 				break;
 			}
 			case 'popularity': {
-				console.log('popularity');
+				sortByPopularity();
 				break;
 			}
 		}
 	};
 
-	const sortByLatest = () => {
-		filteredData.sort((a, b) => {
-			if (a.updated > b.updated) return 1;
-			if (a.updated < b.updated) return -1;
-			return 0;
-		});
-	};
-
 	const sortByMetadataQuality = () => {
 		filteredData.sort((a, b) => {
 			if (a.type === 'dataset' && b.type === 'dataset') {
-				console.log('a.datasetfields.metadataquality.quality_score', a.datasetfields.metadataquality.quality_score)
 				if (a.datasetfields.metadataquality.quality_score > b.datasetfields.metadataquality.quality_score) return 1;
 				if (a.datasetfields.metadataquality.quality_score < b.datasetfields.metadataquality.quality_score) return -1;
 				return 0;
 			}
 		});
+	};
+
+	const sortByLatest = () => {
+		console.log(filteredData.sort((a, b) => b.updated - a.updated));
+		return filteredData.sort((a, b) => b.updated - a.updated);
+	};
+
+	const sortByResources = () => {
+		return filteredData.sort((a, b) => b.relatedresources - a.relatedresources);
+	};
+
+	const sortByRelevance = () => {
+		if (key === 'person') {
+			return filteredData.sort((a, b) => b.lastname - a.lastname);
+		} else {
+			return filteredData.sort((a, b) => b.name - a.name);
+		}
+	};
+
+	const sortByPopularity = () => {
+		return filteredData.sort((a, b) => b.counter - a.counter);
 	};
 
 	const handlePaginatedItems = index => {
@@ -244,7 +256,11 @@ export const CollectionPage = props => {
 					return '';
 				}
 			});
-			setFilteredData(filteredCollectionItems);
+			setFilteredData(
+				filteredCollectionItems.filter(dat => {
+					return dat !== '';
+				})
+			);
 			countEntities(filteredCollectionItems);
 			handlePagination(key, 0);
 		}

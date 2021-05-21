@@ -49,9 +49,9 @@ const CollectionsSearch = props => {
 
 				<Col lg={col2Size} className='text-right'>
 					<SortDropdown
-						handleSort={handleSort}
-						sort={collectionsPageSort === '' ? (searchString  === '' ?  'relevance' : 'latest') : collectionsPageSort}
-						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+						handleSort={props.handleSort}
+						sort={props.sort}
+						dropdownItems={props.dropdownItems}
 					/>
 				</Col>
 				<Col sm={1} lg={1} />
