@@ -284,7 +284,7 @@ class DatasetDetail extends Component {
 		) {
 			this.setState({ emptyFlagProvenance: true });
 		}
-		debugger;
+
 		if (isEmpty(v2data.observations)) {
 			this.setState({ emptyFlagObservations: true });
 		}
