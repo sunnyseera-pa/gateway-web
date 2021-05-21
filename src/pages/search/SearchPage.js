@@ -1138,952 +1138,956 @@ class SearchPage extends React.Component {
 						userState={userState}
 					/>
 
-					<div className='searchTabsHolder'>
-						<div>
-							<Tabs className='tabsBackground gray700-13' activeKey={key} onSelect={this.handleSelect}>
-								<Tab eventKey='Datasets' title={'Datasets (' + datasetCount + ')'} />
-								<Tab eventKey='Tools' title={'Tools (' + toolCount + ')'} />
-								<Tab eventKey='Projects' title={'Projects (' + projectCount + ')'} />
-								<Tab eventKey='Collections' title={'Collections (' + collectionCount + ')'} />
-								{/* <Tab eventKey='Courses' title={'Courses (' + courseCount + ')'} />
+					{this.state.showAboutPage === false ? (
+						<>
+							<div className='searchTabsHolder'>
+								<div>
+									<Tabs className='tabsBackground gray700-13' activeKey={key} onSelect={this.handleSelect}>
+										<Tab eventKey='Datasets' title={'Datasets (' + datasetCount + ')'} />
+										<Tab eventKey='Tools' title={'Tools (' + toolCount + ')'} />
+										<Tab eventKey='Projects' title={'Projects (' + projectCount + ')'} />
+										<Tab eventKey='Collections' title={'Collections (' + collectionCount + ')'} />
+										{/* <Tab eventKey='Courses' title={'Courses (' + courseCount + ')'} />
 								<Tab eventKey='Papers' title={'Papers (' + paperCount + ')'} /> */}
-								<Tab eventKey='People' title={'People (' + personCount + ')'}>
-									{personCount <= 0 && !isResultsLoading ? <NoResults type='profiles' search={search} /> : ''}
-								</Tab>
-							</Tabs>
-						</div>
-					</div>
+										<Tab eventKey='People' title={'People (' + personCount + ')'}>
+											{personCount <= 0 && !isResultsLoading ? <NoResults type='profiles' search={search} /> : ''}
+										</Tab>
+									</Tabs>
+								</div>
+							</div>
 
-					<Container>
-						<Row>
-							{key !== 'People' ? (
-								<Col sm={12} md={12} lg={3} className='mt-4 mb-5'>
-									{key === 'Datasets' ? (
-										<Fragment>
-											<div className='filterHolder'>
-												{selectedV2.length > 0 && (
-													<FilterSelection
-														selectedCount={selectedV2.length}
-														selectedItems={selectedV2}
-														onHandleClearSelection={this.handleClearSelection}
-														onHandelClearAll={this.handleClearAll}
-													/>
-												)}
-												<Filter
-													data={filtersV2}
-													onHandleInputChange={this.handleInputChange}
-													onHandleClearSection={this.handleClearSection}
-													onHandleToggle={this.handleToggle}
-												/>
-											</div>
-										</Fragment>
-									) : (
-										''
-									)}
-
-									{key === 'Tools' ? (
-										<>
-											<div className='filterHolder'>
-												{toolCategoriesSelected.length !== 0 ||
-												toolProgrammingLanguageSelected.length !== 0 ||
-												toolFeaturesSelected.length !== 0 ||
-												toolTopicsSelected.length !== 0 ? (
-													<div className='filterCard mb-2'>
-														<Row>
-															<Col className='mb-2'>
-																<div className='inlineBlock'>
-																	<div className='gray500-13'>Showing:</div>
-																</div>
-																<div className='floatRight'>
-																	<div className='purple-13 pointer' onClick={() => this.clearFilter('All')}>
-																		Clear all
-																	</div>
-																</div>
-															</Col>
-														</Row>
-
-														{!toolCategoriesSelected || toolCategoriesSelected.length <= 0
-															? ''
-															: toolCategoriesSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'toolCategoriesSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!toolProgrammingLanguageSelected || toolProgrammingLanguageSelected.length <= 0
-															? ''
-															: toolProgrammingLanguageSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'toolProgrammingLanguageSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!toolFeaturesSelected || toolFeaturesSelected.length <= 0
-															? ''
-															: toolFeaturesSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'toolFeaturesSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!toolTopicsSelected || toolTopicsSelected.length <= 0
-															? ''
-															: toolTopicsSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'toolTopicsSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-													</div>
-												) : (
-													''
-												)}
-												<Filters
-													data={filterOptions.toolCategoriesFilterOptions}
-													allFilters={allFilters.toolCategoryFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={toolCategoriesSelected}
-													title='Type'
-												/>
-												<Filters
-													data={filterOptions.programmingLanguageFilterOptions}
-													allFilters={allFilters.toolLanguageFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={toolProgrammingLanguageSelected}
-													title='Programming language'
-												/>
-												<Filters
-													data={filterOptions.featuresFilterOptions}
-													allFilters={allFilters.toolFeatureFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={toolFeaturesSelected}
-													title='Keywords'
-												/>
-												<Filters
-													data={filterOptions.toolTopicsFilterOptions}
-													allFilters={allFilters.toolTopicFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={toolTopicsSelected}
-													title='Domain'
-												/>
-											</div>
-										</>
-									) : (
-										''
-									)}
-
-									{key === 'Projects' ? (
-										<>
-											<div className='filterHolder'>
-												{projectCategoriesSelected.length !== 0 ||
-												projectFeaturesSelected.length !== 0 ||
-												projectTopicsSelected.length !== 0 ? (
-													<div className='filterCard mb-2'>
-														<Row>
-															<Col className='mb-2'>
-																<div className='inlineBlock'>
-																	<div className='gray500-13'>Showing:</div>
-																</div>
-																<div className='floatRight'>
-																	<div className='purple-13 pointer' onClick={() => this.clearFilter('All')}>
-																		Clear all
-																	</div>
-																</div>
-															</Col>
-														</Row>
-
-														{!projectCategoriesSelected || projectCategoriesSelected.length <= 0
-															? ''
-															: projectCategoriesSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'projectCategoriesSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!projectFeaturesSelected || projectFeaturesSelected.length <= 0
-															? ''
-															: projectFeaturesSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'projectFeaturesSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!projectTopicsSelected || projectTopicsSelected.length <= 0
-															? ''
-															: projectTopicsSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'projectTopicsSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-													</div>
-												) : (
-													''
-												)}
-												<Filters
-													data={filterOptions.projectCategoriesFilterOptions}
-													allFilters={allFilters.projectCategoryFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={projectCategoriesSelected}
-													title='Type'
-												/>
-												<Filters
-													data={filterOptions.projectFeaturesFilterOptions}
-													allFilters={allFilters.projectFeatureFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={projectFeaturesSelected}
-													title='Keywords'
-												/>
-												<Filters
-													data={filterOptions.projectTopicsFilterOptions}
-													allFilters={allFilters.projectTopicFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={projectTopicsSelected}
-													title='Domain'
-												/>
-											</div>
-										</>
-									) : (
-										''
-									)}
-
-									{key === 'Collections' ? (
-										<>
-											<div className='filterHolder'>
-												{collectionKeywordsSelected.length !== 0 || collectionPublisherSelected.length !== 0 ? (
-													<div className='filterCard mb-2'>
-														<Row>
-															<Col className='mb-2'>
-																<div className='inlineBlock'>
-																	<div className='gray500-13'>Showing:</div>
-																</div>
-																<div className='floatRight'>
-																	<div className='purple-13 pointer' onClick={() => this.clearFilter('All')}>
-																		Clear all
-																	</div>
-																</div>
-															</Col>
-														</Row>
-
-														{!collectionKeywordsSelected || collectionKeywordsSelected.length <= 0
-															? ''
-															: collectionKeywordsSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'collectionKeywordsSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!collectionPublisherSelected || collectionPublisherSelected.length <= 0
-															? ''
-															: collectionPublisherSelected.map(selected => {
-																	if (!_.isNil(allFilters.collectionPublisherFilter)) {
-																		const collectionPublisherFilters = Object.values(allFilters.collectionPublisherFilter);
-
-																		return collectionPublisherFilters.map(filter => {
-																			if (selected === filter.result.toString()) {
-																				return (
-																					<div className='badge-tag'>
-																						{filter.value.substr(0, 80)} {filter.value.length > 80 ? '...' : ''}{' '}
-																						<span
-																							className='gray800-14-opacity pointer'
-																							onClick={() => this.clearFilter(selected, 'collectionPublisherSelected')}>
-																							X
-																						</span>
-																					</div>
-																				);
-																			}
-																		});
-																	}
-															  })}
-													</div>
-												) : (
-													''
-												)}
-												<Filters
-													data={filterOptions.collectionKeywordsFilterOptions}
-													allFilters={allFilters.collectionKeywordFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={collectionKeywordsSelected}
-													title='Keywords'
-												/>
-												<Filters
-													data={filterOptions.collectionPublisherFilterOptions}
-													allFilters={allFilters.collectionPublisherFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={collectionPublisherSelected}
-													title='Publisher'
-													isKeyValue={true}
-												/>
-											</div>
-										</>
-									) : (
-										''
-									)}
-
-									{key === 'Papers' ? (
-										<>
-											<div className='filterHolder'>
-												{paperFeaturesSelected.length !== 0 || paperTopicsSelected.length !== 0 ? (
-													<div className='filterCard mb-2'>
-														<Row>
-															<Col className='mb-2'>
-																<div className='inlineBlock'>
-																	<div className='gray500-13'>Showing:</div>
-																</div>
-																<div className='floatRight'>
-																	<div className='purple-13 pointer' onClick={() => this.clearFilter('All')}>
-																		Clear all
-																	</div>
-																</div>
-															</Col>
-														</Row>
-
-														{!paperFeaturesSelected || paperFeaturesSelected.length <= 0
-															? ''
-															: paperFeaturesSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'paperFeaturesSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!paperTopicsSelected || paperTopicsSelected.length <= 0
-															? ''
-															: paperTopicsSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'paperTopicsSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-													</div>
-												) : (
-													''
-												)}
-												<Filters
-													data={filterOptions.paperFeaturesFilterOptions}
-													allFilters={allFilters.paperFeatureFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={paperFeaturesSelected}
-													title='Keywords'
-												/>
-												<Filters
-													data={filterOptions.paperTopicsFilterOptions}
-													allFilters={allFilters.paperTopicFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={paperTopicsSelected}
-													title='Domain'
-												/>
-											</div>
-										</>
-									) : (
-										''
-									)}
-
-									{key === 'Courses' ? (
-										<>
-											<div className='filterHolder'>
-												{courseStartDatesSelected.length !== 0 ||
-												courseProviderSelected.length !== 0 ||
-												courseLocationSelected.length !== 0 ||
-												courseStudyModeSelected.length !== 0 ||
-												courseAwardSelected.length !== 0 ||
-												courseEntryLevelSelected.length !== 0 ||
-												courseDomainsSelected.length !== 0 ||
-												courseKeywordsSelected.length !== 0 ||
-												courseFrameworkSelected.length !== 0 ||
-												coursePrioritySelected.length !== 0 ? (
-													<div className='filterCard mb-2'>
-														<Row>
-															<Col className='mb-2'>
-																<div className='inlineBlock'>
-																	<div className='gray500-13'>Showing:</div>
-																</div>
-																<div className='floatRight'>
-																	<div className='purple-13 pointer' onClick={() => this.clearFilter('All')}>
-																		Clear all
-																	</div>
-																</div>
-															</Col>
-														</Row>
-
-														{!courseStartDatesSelected || courseStartDatesSelected.length <= 0
-															? ''
-															: courseStartDatesSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseStartDatesSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseProviderSelected || courseProviderSelected.length <= 0
-															? ''
-															: courseProviderSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseProviderSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseLocationSelected || courseLocationSelected.length <= 0
-															? ''
-															: courseLocationSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseLocationSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseStudyModeSelected || courseStudyModeSelected.length <= 0
-															? ''
-															: courseStudyModeSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseStudyModeSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseAwardSelected || courseAwardSelected.length <= 0
-															? ''
-															: courseAwardSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseAwardSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseEntryLevelSelected || courseEntryLevelSelected.length <= 0
-															? ''
-															: courseEntryLevelSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseEntryLevelSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseDomainsSelected || courseDomainsSelected.length <= 0
-															? ''
-															: courseDomainsSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseDomainsSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseKeywordsSelected || courseKeywordsSelected.length <= 0
-															? ''
-															: courseKeywordsSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseKeywordsSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!courseFrameworkSelected || courseFrameworkSelected.length <= 0
-															? ''
-															: courseFrameworkSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'courseFrameworkSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!coursePrioritySelected || coursePrioritySelected.length <= 0
-															? ''
-															: coursePrioritySelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'coursePrioritySelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-													</div>
-												) : (
-													''
-												)}
-												<Filters
-													data={filterOptions.courseStartDatesFilterOptions}
-													allFilters={allFilters.courseStartDatesFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseStartDatesSelected}
-													title='Start date'
-												/>
-												<Filters
-													data={filterOptions.courseProviderFilterOptions}
-													allFilters={allFilters.courseProviderFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseProviderSelected}
-													title='Provider'
-												/>
-												<Filters
-													data={filterOptions.courseLocationFilterOptions}
-													allFilters={allFilters.courseLocationFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseLocationSelected}
-													title='Location'
-												/>
-												<Filters
-													data={filterOptions.courseStudyModeFilterOptions}
-													allFilters={allFilters.courseStudyModeFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseStudyModeSelected}
-													title='Study mode'
-												/>
-												<Filters
-													data={filterOptions.courseAwardFilterOptions}
-													allFilters={allFilters.courseAwardFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseAwardSelected}
-													title='Award'
-												/>
-												<Filters
-													data={filterOptions.courseEntryLevelFilterOptions}
-													allFilters={allFilters.courseEntryLevelFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseEntryLevelSelected}
-													title='Entry requirements'
-												/>
-												<Filters
-													data={filterOptions.courseDomainsFilterOptions}
-													allFilters={allFilters.courseDomainsFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseDomainsSelected}
-													title='Domain'
-												/>
-												<Filters
-													data={filterOptions.courseKeywordsFilterOptions}
-													allFilters={allFilters.courseKeywordsFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseKeywordsSelected}
-													title='Keywords'
-												/>
-												<Filters
-													data={filterOptions.courseFrameworkFilterOptions}
-													allFilters={allFilters.courseFrameworkFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={courseFrameworkSelected}
-													title='Competency framework'
-												/>
-												<Filters
-													data={filterOptions.coursePriorityFilterOptions}
-													allFilters={allFilters.coursePriorityFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={coursePrioritySelected}
-													title='National priority areas'
-												/>
-											</div>
-										</>
-									) : (
-										''
-									)}
-								</Col>
-							) : (
-								<Col sm={12} md={12} lg={3} />
-							)}
-
-							{!isResultsLoading ? (
-								<Col sm={12} md={12} lg={9} className='mt-4 mb-5'>
-									{!showSort ? (
-										''
-									) : (
-										<Row>
-											<Col className='text-right'>
-												<Dropdown alignRight onSelect={this.handleSort}>
-													<Dropdown.Toggle variant='info' id='dropdown-menu-align-right' className='gray800-14'>
-														{(() => {
-															if (key === 'Datasets') {
-																if (datasetSort === 'popularity') return 'Number of views (highest to lowest)';
-																else if (datasetSort === 'metadata') return 'Sort by metadata quality';
-																else return 'Match to search terms (closest first)';
-															} else if (key === 'Tools') {
-																if (toolSort === 'popularity') return 'Number of views (highest to lowest)';
-																else return 'Match to search terms (closest first)';
-															} else if (key === 'Projects') {
-																if (projectSort === 'popularity') return 'Number of views (highest to lowest)';
-																else return 'Match to search terms (closest first)';
-															} else if (key === 'Papers') {
-																if (paperSort === 'popularity') return 'Number of views (highest to lowest)';
-																else return 'Match to search terms (closest first)';
-															} else if (key === 'People') {
-																if (personSort === 'popularity') return 'Number of views (highest to lowest)';
-																else if (personSort === 'latest') return 'Latest (recently updated first)';
-																else return 'Match to search terms (closest first)';
-															}
-														})()}
-														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-													</Dropdown.Toggle>
-
-													<Dropdown.Menu>
-														<Dropdown.Item eventKey='relevance' className='gray800-14 '>
-															Match to search terms (closest first)
-														</Dropdown.Item>
-														<Dropdown.Item eventKey='popularity' className='gray800-14'>
-															Number of views (highest to lowest)
-														</Dropdown.Item>
-														{key === 'Datasets' ? (
-															<Dropdown.Item eventKey='metadata' className='gray800-14'>
-																Sort by metadata quality
-															</Dropdown.Item>
-														) : (
-															''
+							<Container>
+								<Row>
+									{key !== 'People' ? (
+										<Col sm={12} md={12} lg={3} className='mt-4 mb-5'>
+											{key === 'Datasets' ? (
+												<Fragment>
+													<div className='filterHolder'>
+														{selectedV2.length > 0 && (
+															<FilterSelection
+																selectedCount={selectedV2.length}
+																selectedItems={selectedV2}
+																onHandleClearSelection={this.handleClearSelection}
+																onHandelClearAll={this.handleClearAll}
+															/>
 														)}
-														{key === 'People' ? (
-															<Dropdown.Item eventKey='latest' className='gray800-14'>
-																Latest (recently updated first)
-															</Dropdown.Item>
-														) : (
-															''
-														)}
-													</Dropdown.Menu>
-												</Dropdown>
-											</Col>
-										</Row>
-									)}
-
-									{this.state.showAboutPage === true ? <AboutPage /> : ''}
-
-									{this.state.showAboutPage === false && key === 'Datasets' ? (
-										datasetCount <= 0 && !isResultsLoading ? (
-											<NoResults type='datasets' search={search} />
-										) : (
-											datasetData.map(dataset => {
-												let datasetPublisher;
-												let datasetLogo;
-												{
-													!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.name')
-														? (datasetPublisher = dataset.datasetv2.summary.publisher.name)
-														: (datasetPublisher = '');
-												}
-												{
-													!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.logo')
-														? (datasetLogo = dataset.datasetv2.summary.publisher.logo)
-														: (datasetLogo = '');
-												}
-
-												return (
-													<RelatedObject
-														key={dataset.id}
-														data={dataset}
-														activeLink={true}
-														onSearchPage={true}
-														updateOnFilterBadge={this.updateOnFilterBadge}
-														datasetPublisher={datasetPublisher}
-														datasetLogo={datasetLogo}
-													/>
-												);
-											})
-										)
-									) : (
-										''
-									)}
-
-									{key === 'Tools' ? (
-										toolCount <= 0 ? (
-											<NoResults type='tools' search={search} />
-										) : (
-											toolData.map(tool => {
-												return (
-													<RelatedObject
-														key={tool.id}
-														data={tool}
-														activeLink={true}
-														onSearchPage={true}
-														updateOnFilterBadge={this.updateOnFilterBadge}
-													/>
-												);
-											})
-										)
-									) : (
-										''
-									)}
-
-									{key === 'Projects' ? (
-										projectCount <= 0 ? (
-											<NoResults type='projects' search={search} />
-										) : (
-											projectData.map(project => {
-												return (
-													<RelatedObject
-														key={project.id}
-														data={project}
-														activeLink={true}
-														onSearchPage={true}
-														updateOnFilterBadge={this.updateOnFilterBadge}
-													/>
-												);
-											})
-										)
-									) : (
-										''
-									)}
-
-									{key === 'Collections' ? (
-										collectionCount <= 0 ? (
-											<NoResults type='collections' search={search} />
-										) : (
-											<Row className='mt-5'>
-												{collectionData.map(collection => {
-													return (
-														<Col sm={12} md={12} lg={6} style={{ 'text-align': '-webkit-center' }}>
-															<CollectionCard key={collection.id} data={collection} />
-														</Col>
-													);
-												})}
-											</Row>
-										)
-									) : (
-										''
-									)}
-
-									{key === 'Papers' ? (
-										paperCount <= 0 ? (
-											<NoResults type='papers' search={search} />
-										) : (
-											paperData.map(paper => {
-												return (
-													<RelatedObject
-														key={paper.id}
-														data={paper}
-														activeLink={true}
-														onSearchPage={true}
-														updateOnFilterBadge={this.updateOnFilterBadge}
-													/>
-												);
-											})
-										)
-									) : (
-										''
-									)}
-
-									{key === 'People'
-										? personData.map(person => {
-												return (
-													<RelatedObject
-														key={person.id}
-														data={person}
-														activeLink={true}
-														onSearchPage={true}
-														updateOnFilterBadge={this.updateOnFilterBadge}
-													/>
-												);
-										  })
-										: ''}
-
-									{(() => {
-										if (key === 'Courses') {
-											let courseRender = [];
-											if (courseCount <= 0) return <NoResults type='courses' search={search} />;
-											else {
-												let currentHeader = '';
-												courseData.map(course => {
-													let showHeader = false;
-
-													if (!showHeader && course.courseOptions.flexibleDates && currentHeader !== 'Flexible') {
-														currentHeader = 'Flexible';
-														showHeader = true;
-													} else if (
-														!showHeader &&
-														course.courseOptions.startDate &&
-														currentHeader !== moment(course.courseOptions.startDate).format('MMMM')
-													) {
-														currentHeader = moment(course.courseOptions.startDate).format('MMMM');
-														showHeader = true;
-													}
-
-													if (showHeader) {
-														courseRender.push(
-															<Row className='courseDateHeader'>
-																<Col>
-																	<span className='black-20-semibold '>{currentHeader}</span>
-																</Col>
-															</Row>
-														);
-													}
-
-													courseRender.push(
-														<RelatedObject
-															key={course.id}
-															data={course}
-															activeLink={true}
-															onSearchPage={true}
-															updateOnFilterBadge={this.updateOnFilterBadge}
+														<Filter
+															data={filtersV2}
+															onHandleInputChange={this.handleInputChange}
+															onHandleClearSection={this.handleClearSection}
+															onHandleToggle={this.handleToggle}
 														/>
-													);
-												});
-											}
-											return <>{courseRender}</>;
-										}
-									})()}
-									{/* PAGINATION */}
-									<div className='text-center'>
-										{key === 'Datasets' && datasetCount > maxResult ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
+													</div>
+												</Fragment>
+											) : (
+												''
+											)}
 
-										{key === 'Tools' && toolCount > maxResult ? <Pagination>{toolPaginationItems}</Pagination> : ''}
+											{key === 'Tools' ? (
+												<>
+													<div className='filterHolder'>
+														{toolCategoriesSelected.length !== 0 ||
+														toolProgrammingLanguageSelected.length !== 0 ||
+														toolFeaturesSelected.length !== 0 ||
+														toolTopicsSelected.length !== 0 ? (
+															<div className='filterCard mb-2'>
+																<Row>
+																	<Col className='mb-2'>
+																		<div className='inlineBlock'>
+																			<div className='gray500-13'>Showing:</div>
+																		</div>
+																		<div className='floatRight'>
+																			<div className='purple-13 pointer' onClick={() => this.clearFilter('All')}>
+																				Clear all
+																			</div>
+																		</div>
+																	</Col>
+																</Row>
 
-										{key === 'Projects' && projectCount > maxResult ? <Pagination>{projectPaginationItems}</Pagination> : ''}
+																{!toolCategoriesSelected || toolCategoriesSelected.length <= 0
+																	? ''
+																	: toolCategoriesSelected.map(selected => {
+																			return (
+																				<div className='badge-tag'>
+																					{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
+																					<span
+																						className='gray800-14-opacity pointer'
+																						onClick={() => this.clearFilter(selected, 'toolCategoriesSelected')}>
+																						X
+																					</span>
+																				</div>
+																			);
+																	  })}
 
-										{key === 'Papers' && paperCount > maxResult ? <Pagination>{paperPaginationItems}</Pagination> : ''}
+																{!toolProgrammingLanguageSelected || toolProgrammingLanguageSelected.length <= 0
+																	? ''
+																	: toolProgrammingLanguageSelected.map(selected => {
+																			return (
+																				<div className='badge-tag'>
+																					{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
+																					<span
+																						className='gray800-14-opacity pointer'
+																						onClick={() => this.clearFilter(selected, 'toolProgrammingLanguageSelected')}>
+																						X
+																					</span>
+																				</div>
+																			);
+																	  })}
 
-										{key === 'People' && personCount > maxResult ? <Pagination>{personPaginationItems}</Pagination> : ''}
+																{!toolFeaturesSelected || toolFeaturesSelected.length <= 0
+																	? ''
+																	: toolFeaturesSelected.map(selected => {
+																			return (
+																				<div className='badge-tag'>
+																					{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
+																					<span
+																						className='gray800-14-opacity pointer'
+																						onClick={() => this.clearFilter(selected, 'toolFeaturesSelected')}>
+																						X
+																					</span>
+																				</div>
+																			);
+																	  })}
 
-										{key === 'Courses' && courseCount > maxResult ? <Pagination>{coursePaginationItems}</Pagination> : ''}
+																{!toolTopicsSelected || toolTopicsSelected.length <= 0
+																	? ''
+																	: toolTopicsSelected.map(selected => {
+																			return (
+																				<div className='badge-tag'>
+																					{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
+																					<span
+																						className='gray800-14-opacity pointer'
+																						onClick={() => this.clearFilter(selected, 'toolTopicsSelected')}>
+																						X
+																					</span>
+																				</div>
+																			);
+																	  })}
+															</div>
+														) : (
+															''
+														)}
+														<Filters
+															data={filterOptions.toolCategoriesFilterOptions}
+															allFilters={allFilters.toolCategoryFilter}
+															updateOnFilter={this.updateOnFilter}
+															selected={toolCategoriesSelected}
+															title='Type'
+														/>
+														<Filters
+															data={filterOptions.programmingLanguageFilterOptions}
+															allFilters={allFilters.toolLanguageFilter}
+															updateOnFilter={this.updateOnFilter}
+															selected={toolProgrammingLanguageSelected}
+															title='Programming language'
+														/>
+														<Filters
+															data={filterOptions.featuresFilterOptions}
+															allFilters={allFilters.toolFeatureFilter}
+															updateOnFilter={this.updateOnFilter}
+															selected={toolFeaturesSelected}
+															title='Keywords'
+														/>
+														<Filters
+															data={filterOptions.toolTopicsFilterOptions}
+															allFilters={allFilters.toolTopicFilter}
+															updateOnFilter={this.updateOnFilter}
+															selected={toolTopicsSelected}
+															title='Domain'
+														/>
+													</div>
+												</>
+											) : (
+												''
+											)}
 
-										{key === 'Collections' && collectionCount > maxResult ? <Pagination>{collectionPaginationItems}</Pagination> : ''}
-									</div>
-									<Row className='mt-3'>
-										<Col className='text-center'>
-											<Button
-												className='addButton'
-												onClick={e => {
-													window.location.href = `/search?search=&tab=Datasets`;
-												}}>
-												SEARCH DATASETS
-											</Button>
+											{key === 'Projects' ? (
+												<>
+													<div className='filterHolder'>
+														{projectCategoriesSelected.length !== 0 ||
+														projectFeaturesSelected.length !== 0 ||
+														projectTopicsSelected.length !== 0 ? (
+															<div className='filterCard mb-2'>
+																<Row>
+																	<Col className='mb-2'>
+																		<div className='inlineBlock'>
+																			<div className='gray500-13'>Showing:</div>
+																		</div>
+																		<div className='floatRight'>
+																			<div className='purple-13 pointer' onClick={() => this.clearFilter('All')}>
+																				Clear all
+																			</div>
+																		</div>
+																	</Col>
+																</Row>
+
+																{!projectCategoriesSelected || projectCategoriesSelected.length <= 0
+																	? ''
+																	: projectCategoriesSelected.map(selected => {
+																			return (
+																				<div className='badge-tag'>
+																					{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
+																					<span
+																						className='gray800-14-opacity pointer'
+																						onClick={() => this.clearFilter(selected, 'projectCategoriesSelected')}>
+																						X
+																					</span>
+																				</div>
+																			);
+																	  })}
+
+																{!projectFeaturesSelected || projectFeaturesSelected.length <= 0
+																	? ''
+																	: projectFeaturesSelected.map(selected => {
+																			return (
+																				<div className='badge-tag'>
+																					{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
+																					<span
+																						className='gray800-14-opacity pointer'
+																						onClick={() => this.clearFilter(selected, 'projectFeaturesSelected')}>
+																						X
+																					</span>
+																				</div>
+																			);
+																	  })}
+
+																{!projectTopicsSelected || projectTopicsSelected.length <= 0
+																	? ''
+																	: projectTopicsSelected.map(selected => {
+																			return (
+																				<div className='badge-tag'>
+																					{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
+																					<span
+																						className='gray800-14-opacity pointer'
+																						onClick={() => this.clearFilter(selected, 'projectTopicsSelected')}>
+																						X
+																					</span>
+																				</div>
+																			);
+																	  })}
+															</div>
+														) : (
+															''
+														)}
+														<Filters
+															data={filterOptions.projectCategoriesFilterOptions}
+															allFilters={allFilters.projectCategoryFilter}
+															updateOnFilter={this.updateOnFilter}
+															selected={projectCategoriesSelected}
+															title='Type'
+														/>
+														<Filters
+															data={filterOptions.projectFeaturesFilterOptions}
+															allFilters={allFilters.projectFeatureFilter}
+															updateOnFilter={this.updateOnFilter}
+															selected={projectFeaturesSelected}
+															title='Keywords'
+														/>
+														<Filters
+															data={filterOptions.projectTopicsFilterOptions}
+															allFilters={allFilters.projectTopicFilter}
+															updateOnFilter={this.updateOnFilter}
+															selected={projectTopicsSelected}
+															title='Domain'
+														/>
+													</div>
+												</>
+											) : (
+												''
+											)}
+
+											{key === 'Collections' ? (
+												<>
+													<div className='filterHolder'>
+														{collectionKeywordsSelected.length !== 0 || collectionPublisherSelected.length !== 0 ? (
+															<div className='filterCard mb-2'>
+																<Row>
+																	<Col className='mb-2'>
+																		<div className='inlineBlock'>
+																			<div className='gray500-13'>Showing:</div>
+																		</div>
+																		<div className='floatRight'>
+																			<div className='purple-13 pointer' onClick={() => this.clearFilter('All')}>
+																				Clear all
+																			</div>
+																		</div>
+																	</Col>
+																</Row>
+
+																{!collectionKeywordsSelected || collectionKeywordsSelected.length <= 0
+																	? ''
+																	: collectionKeywordsSelected.map(selected => {
+																			return (
+																				<div className='badge-tag'>
+																					{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
+																					<span
+																						className='gray800-14-opacity pointer'
+																						onClick={() => this.clearFilter(selected, 'collectionKeywordsSelected')}>
+																						X
+																					</span>
+																				</div>
+																			);
+																	  })}
+
+																{!collectionPublisherSelected || collectionPublisherSelected.length <= 0
+																	? ''
+																	: collectionPublisherSelected.map(selected => {
+																			if (!_.isNil(allFilters.collectionPublisherFilter)) {
+																				const collectionPublisherFilters = Object.values(allFilters.collectionPublisherFilter);
+
+																				return collectionPublisherFilters.map(filter => {
+																					if (selected === filter.result.toString()) {
+																						return (
+																							<div className='badge-tag'>
+																								{filter.value.substr(0, 80)} {filter.value.length > 80 ? '...' : ''}{' '}
+																								<span
+																									className='gray800-14-opacity pointer'
+																									onClick={() => this.clearFilter(selected, 'collectionPublisherSelected')}>
+																									X
+																								</span>
+																							</div>
+																						);
+																					}
+																				});
+																			}
+																	  })}
+															</div>
+														) : (
+															''
+														)}
+														<Filters
+															data={filterOptions.collectionKeywordsFilterOptions}
+															allFilters={allFilters.collectionKeywordFilter}
+															updateOnFilter={this.updateOnFilter}
+															selected={collectionKeywordsSelected}
+															title='Keywords'
+														/>
+														<Filters
+															data={filterOptions.collectionPublisherFilterOptions}
+															allFilters={allFilters.collectionPublisherFilter}
+															updateOnFilter={this.updateOnFilter}
+															selected={collectionPublisherSelected}
+															title='Publisher'
+															isKeyValue={true}
+														/>
+													</div>
+												</>
+											) : (
+												''
+											)}
+
+											{key === 'Papers' ? (
+												<>
+													<div className='filterHolder'>
+														{paperFeaturesSelected.length !== 0 || paperTopicsSelected.length !== 0 ? (
+															<div className='filterCard mb-2'>
+																<Row>
+																	<Col className='mb-2'>
+																		<div className='inlineBlock'>
+																			<div className='gray500-13'>Showing:</div>
+																		</div>
+																		<div className='floatRight'>
+																			<div className='purple-13 pointer' onClick={() => this.clearFilter('All')}>
+																				Clear all
+																			</div>
+																		</div>
+																	</Col>
+																</Row>
+
+																{!paperFeaturesSelected || paperFeaturesSelected.length <= 0
+																	? ''
+																	: paperFeaturesSelected.map(selected => {
+																			return (
+																				<div className='badge-tag'>
+																					{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
+																					<span
+																						className='gray800-14-opacity pointer'
+																						onClick={() => this.clearFilter(selected, 'paperFeaturesSelected')}>
+																						X
+																					</span>
+																				</div>
+																			);
+																	  })}
+
+																{!paperTopicsSelected || paperTopicsSelected.length <= 0
+																	? ''
+																	: paperTopicsSelected.map(selected => {
+																			return (
+																				<div className='badge-tag'>
+																					{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
+																					<span
+																						className='gray800-14-opacity pointer'
+																						onClick={() => this.clearFilter(selected, 'paperTopicsSelected')}>
+																						X
+																					</span>
+																				</div>
+																			);
+																	  })}
+															</div>
+														) : (
+															''
+														)}
+														<Filters
+															data={filterOptions.paperFeaturesFilterOptions}
+															allFilters={allFilters.paperFeatureFilter}
+															updateOnFilter={this.updateOnFilter}
+															selected={paperFeaturesSelected}
+															title='Keywords'
+														/>
+														<Filters
+															data={filterOptions.paperTopicsFilterOptions}
+															allFilters={allFilters.paperTopicFilter}
+															updateOnFilter={this.updateOnFilter}
+															selected={paperTopicsSelected}
+															title='Domain'
+														/>
+													</div>
+												</>
+											) : (
+												''
+											)}
+
+											{key === 'Courses' ? (
+												<>
+													<div className='filterHolder'>
+														{courseStartDatesSelected.length !== 0 ||
+														courseProviderSelected.length !== 0 ||
+														courseLocationSelected.length !== 0 ||
+														courseStudyModeSelected.length !== 0 ||
+														courseAwardSelected.length !== 0 ||
+														courseEntryLevelSelected.length !== 0 ||
+														courseDomainsSelected.length !== 0 ||
+														courseKeywordsSelected.length !== 0 ||
+														courseFrameworkSelected.length !== 0 ||
+														coursePrioritySelected.length !== 0 ? (
+															<div className='filterCard mb-2'>
+																<Row>
+																	<Col className='mb-2'>
+																		<div className='inlineBlock'>
+																			<div className='gray500-13'>Showing:</div>
+																		</div>
+																		<div className='floatRight'>
+																			<div className='purple-13 pointer' onClick={() => this.clearFilter('All')}>
+																				Clear all
+																			</div>
+																		</div>
+																	</Col>
+																</Row>
+
+																{!courseStartDatesSelected || courseStartDatesSelected.length <= 0
+																	? ''
+																	: courseStartDatesSelected.map(selected => {
+																			return (
+																				<div className='badge-tag'>
+																					{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
+																					<span
+																						className='gray800-14-opacity pointer'
+																						onClick={() => this.clearFilter(selected, 'courseStartDatesSelected')}>
+																						X
+																					</span>
+																				</div>
+																			);
+																	  })}
+
+																{!courseProviderSelected || courseProviderSelected.length <= 0
+																	? ''
+																	: courseProviderSelected.map(selected => {
+																			return (
+																				<div className='badge-tag'>
+																					{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
+																					<span
+																						className='gray800-14-opacity pointer'
+																						onClick={() => this.clearFilter(selected, 'courseProviderSelected')}>
+																						X
+																					</span>
+																				</div>
+																			);
+																	  })}
+
+																{!courseLocationSelected || courseLocationSelected.length <= 0
+																	? ''
+																	: courseLocationSelected.map(selected => {
+																			return (
+																				<div className='badge-tag'>
+																					{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
+																					<span
+																						className='gray800-14-opacity pointer'
+																						onClick={() => this.clearFilter(selected, 'courseLocationSelected')}>
+																						X
+																					</span>
+																				</div>
+																			);
+																	  })}
+
+																{!courseStudyModeSelected || courseStudyModeSelected.length <= 0
+																	? ''
+																	: courseStudyModeSelected.map(selected => {
+																			return (
+																				<div className='badge-tag'>
+																					{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
+																					<span
+																						className='gray800-14-opacity pointer'
+																						onClick={() => this.clearFilter(selected, 'courseStudyModeSelected')}>
+																						X
+																					</span>
+																				</div>
+																			);
+																	  })}
+
+																{!courseAwardSelected || courseAwardSelected.length <= 0
+																	? ''
+																	: courseAwardSelected.map(selected => {
+																			return (
+																				<div className='badge-tag'>
+																					{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
+																					<span
+																						className='gray800-14-opacity pointer'
+																						onClick={() => this.clearFilter(selected, 'courseAwardSelected')}>
+																						X
+																					</span>
+																				</div>
+																			);
+																	  })}
+
+																{!courseEntryLevelSelected || courseEntryLevelSelected.length <= 0
+																	? ''
+																	: courseEntryLevelSelected.map(selected => {
+																			return (
+																				<div className='badge-tag'>
+																					{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
+																					<span
+																						className='gray800-14-opacity pointer'
+																						onClick={() => this.clearFilter(selected, 'courseEntryLevelSelected')}>
+																						X
+																					</span>
+																				</div>
+																			);
+																	  })}
+
+																{!courseDomainsSelected || courseDomainsSelected.length <= 0
+																	? ''
+																	: courseDomainsSelected.map(selected => {
+																			return (
+																				<div className='badge-tag'>
+																					{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
+																					<span
+																						className='gray800-14-opacity pointer'
+																						onClick={() => this.clearFilter(selected, 'courseDomainsSelected')}>
+																						X
+																					</span>
+																				</div>
+																			);
+																	  })}
+
+																{!courseKeywordsSelected || courseKeywordsSelected.length <= 0
+																	? ''
+																	: courseKeywordsSelected.map(selected => {
+																			return (
+																				<div className='badge-tag'>
+																					{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
+																					<span
+																						className='gray800-14-opacity pointer'
+																						onClick={() => this.clearFilter(selected, 'courseKeywordsSelected')}>
+																						X
+																					</span>
+																				</div>
+																			);
+																	  })}
+
+																{!courseFrameworkSelected || courseFrameworkSelected.length <= 0
+																	? ''
+																	: courseFrameworkSelected.map(selected => {
+																			return (
+																				<div className='badge-tag'>
+																					{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
+																					<span
+																						className='gray800-14-opacity pointer'
+																						onClick={() => this.clearFilter(selected, 'courseFrameworkSelected')}>
+																						X
+																					</span>
+																				</div>
+																			);
+																	  })}
+
+																{!coursePrioritySelected || coursePrioritySelected.length <= 0
+																	? ''
+																	: coursePrioritySelected.map(selected => {
+																			return (
+																				<div className='badge-tag'>
+																					{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
+																					<span
+																						className='gray800-14-opacity pointer'
+																						onClick={() => this.clearFilter(selected, 'coursePrioritySelected')}>
+																						X
+																					</span>
+																				</div>
+																			);
+																	  })}
+															</div>
+														) : (
+															''
+														)}
+														<Filters
+															data={filterOptions.courseStartDatesFilterOptions}
+															allFilters={allFilters.courseStartDatesFilter}
+															updateOnFilter={this.updateOnFilter}
+															selected={courseStartDatesSelected}
+															title='Start date'
+														/>
+														<Filters
+															data={filterOptions.courseProviderFilterOptions}
+															allFilters={allFilters.courseProviderFilter}
+															updateOnFilter={this.updateOnFilter}
+															selected={courseProviderSelected}
+															title='Provider'
+														/>
+														<Filters
+															data={filterOptions.courseLocationFilterOptions}
+															allFilters={allFilters.courseLocationFilter}
+															updateOnFilter={this.updateOnFilter}
+															selected={courseLocationSelected}
+															title='Location'
+														/>
+														<Filters
+															data={filterOptions.courseStudyModeFilterOptions}
+															allFilters={allFilters.courseStudyModeFilter}
+															updateOnFilter={this.updateOnFilter}
+															selected={courseStudyModeSelected}
+															title='Study mode'
+														/>
+														<Filters
+															data={filterOptions.courseAwardFilterOptions}
+															allFilters={allFilters.courseAwardFilter}
+															updateOnFilter={this.updateOnFilter}
+															selected={courseAwardSelected}
+															title='Award'
+														/>
+														<Filters
+															data={filterOptions.courseEntryLevelFilterOptions}
+															allFilters={allFilters.courseEntryLevelFilter}
+															updateOnFilter={this.updateOnFilter}
+															selected={courseEntryLevelSelected}
+															title='Entry requirements'
+														/>
+														<Filters
+															data={filterOptions.courseDomainsFilterOptions}
+															allFilters={allFilters.courseDomainsFilter}
+															updateOnFilter={this.updateOnFilter}
+															selected={courseDomainsSelected}
+															title='Domain'
+														/>
+														<Filters
+															data={filterOptions.courseKeywordsFilterOptions}
+															allFilters={allFilters.courseKeywordsFilter}
+															updateOnFilter={this.updateOnFilter}
+															selected={courseKeywordsSelected}
+															title='Keywords'
+														/>
+														<Filters
+															data={filterOptions.courseFrameworkFilterOptions}
+															allFilters={allFilters.courseFrameworkFilter}
+															updateOnFilter={this.updateOnFilter}
+															selected={courseFrameworkSelected}
+															title='Competency framework'
+														/>
+														<Filters
+															data={filterOptions.coursePriorityFilterOptions}
+															allFilters={allFilters.coursePriorityFilter}
+															updateOnFilter={this.updateOnFilter}
+															selected={coursePrioritySelected}
+															title='National priority areas'
+														/>
+													</div>
+												</>
+											) : (
+												''
+											)}
 										</Col>
-									</Row>
-								</Col>
-							) : (
-								<Col style={{ marginTop: '60px' }} sm={12} md={12} lg={9}>
-									<Loading />
-								</Col>
-							)}
-						</Row>
-					</Container>
-					<NotificationContainer />
-					<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
-						<UserMessages
-							userState={userState[0]}
-							closed={this.toggleDrawer}
-							toggleModal={this.toggleModal}
-							drawerIsOpen={this.state.showDrawer}
-						/>
-					</SideDrawer>
+									) : (
+										<Col sm={12} md={12} lg={3} />
+									)}
 
-					<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
+									{!isResultsLoading ? (
+										<Col sm={12} md={12} lg={9} className='mt-4 mb-5'>
+											{!showSort ? (
+												''
+											) : (
+												<Row>
+													<Col className='text-right'>
+														<Dropdown alignRight onSelect={this.handleSort}>
+															<Dropdown.Toggle variant='info' id='dropdown-menu-align-right' className='gray800-14'>
+																{(() => {
+																	if (key === 'Datasets') {
+																		if (datasetSort === 'popularity') return 'Number of views (highest to lowest)';
+																		else if (datasetSort === 'metadata') return 'Sort by metadata quality';
+																		else return 'Match to search terms (closest first)';
+																	} else if (key === 'Tools') {
+																		if (toolSort === 'popularity') return 'Number of views (highest to lowest)';
+																		else return 'Match to search terms (closest first)';
+																	} else if (key === 'Projects') {
+																		if (projectSort === 'popularity') return 'Number of views (highest to lowest)';
+																		else return 'Match to search terms (closest first)';
+																	} else if (key === 'Papers') {
+																		if (paperSort === 'popularity') return 'Number of views (highest to lowest)';
+																		else return 'Match to search terms (closest first)';
+																	} else if (key === 'People') {
+																		if (personSort === 'popularity') return 'Number of views (highest to lowest)';
+																		else if (personSort === 'latest') return 'Latest (recently updated first)';
+																		else return 'Match to search terms (closest first)';
+																	}
+																})()}
+																&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+															</Dropdown.Toggle>
+
+															<Dropdown.Menu>
+																<Dropdown.Item eventKey='relevance' className='gray800-14 '>
+																	Match to search terms (closest first)
+																</Dropdown.Item>
+																<Dropdown.Item eventKey='popularity' className='gray800-14'>
+																	Number of views (highest to lowest)
+																</Dropdown.Item>
+																{key === 'Datasets' ? (
+																	<Dropdown.Item eventKey='metadata' className='gray800-14'>
+																		Sort by metadata quality
+																	</Dropdown.Item>
+																) : (
+																	''
+																)}
+																{key === 'People' ? (
+																	<Dropdown.Item eventKey='latest' className='gray800-14'>
+																		Latest (recently updated first)
+																	</Dropdown.Item>
+																) : (
+																	''
+																)}
+															</Dropdown.Menu>
+														</Dropdown>
+													</Col>
+												</Row>
+											)}
+
+											{key === 'Datasets' ? (
+												datasetCount <= 0 && !isResultsLoading ? (
+													<NoResults type='datasets' search={search} />
+												) : (
+													datasetData.map(dataset => {
+														let datasetPublisher;
+														let datasetLogo;
+														{
+															!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.name')
+																? (datasetPublisher = dataset.datasetv2.summary.publisher.name)
+																: (datasetPublisher = '');
+														}
+														{
+															!_.isEmpty(dataset.datasetv2) && _.has(dataset, 'datasetv2.summary.publisher.logo')
+																? (datasetLogo = dataset.datasetv2.summary.publisher.logo)
+																: (datasetLogo = '');
+														}
+
+														return (
+															<RelatedObject
+																key={dataset.id}
+																data={dataset}
+																activeLink={true}
+																onSearchPage={true}
+																updateOnFilterBadge={this.updateOnFilterBadge}
+																datasetPublisher={datasetPublisher}
+																datasetLogo={datasetLogo}
+															/>
+														);
+													})
+												)
+											) : (
+												''
+											)}
+
+											{key === 'Tools' ? (
+												toolCount <= 0 ? (
+													<NoResults type='tools' search={search} />
+												) : (
+													toolData.map(tool => {
+														return (
+															<RelatedObject
+																key={tool.id}
+																data={tool}
+																activeLink={true}
+																onSearchPage={true}
+																updateOnFilterBadge={this.updateOnFilterBadge}
+															/>
+														);
+													})
+												)
+											) : (
+												''
+											)}
+
+											{key === 'Projects' ? (
+												projectCount <= 0 ? (
+													<NoResults type='projects' search={search} />
+												) : (
+													projectData.map(project => {
+														return (
+															<RelatedObject
+																key={project.id}
+																data={project}
+																activeLink={true}
+																onSearchPage={true}
+																updateOnFilterBadge={this.updateOnFilterBadge}
+															/>
+														);
+													})
+												)
+											) : (
+												''
+											)}
+
+											{key === 'Collections' ? (
+												collectionCount <= 0 ? (
+													<NoResults type='collections' search={search} />
+												) : (
+													<Row className='mt-5'>
+														{collectionData.map(collection => {
+															return (
+																<Col sm={12} md={12} lg={6} style={{ 'text-align': '-webkit-center' }}>
+																	<CollectionCard key={collection.id} data={collection} />
+																</Col>
+															);
+														})}
+													</Row>
+												)
+											) : (
+												''
+											)}
+
+											{key === 'Papers' ? (
+												paperCount <= 0 ? (
+													<NoResults type='papers' search={search} />
+												) : (
+													paperData.map(paper => {
+														return (
+															<RelatedObject
+																key={paper.id}
+																data={paper}
+																activeLink={true}
+																onSearchPage={true}
+																updateOnFilterBadge={this.updateOnFilterBadge}
+															/>
+														);
+													})
+												)
+											) : (
+												''
+											)}
+
+											{key === 'People'
+												? personData.map(person => {
+														return (
+															<RelatedObject
+																key={person.id}
+																data={person}
+																activeLink={true}
+																onSearchPage={true}
+																updateOnFilterBadge={this.updateOnFilterBadge}
+															/>
+														);
+												  })
+												: ''}
+
+											{(() => {
+												if (key === 'Courses') {
+													let courseRender = [];
+													if (courseCount <= 0) return <NoResults type='courses' search={search} />;
+													else {
+														let currentHeader = '';
+														courseData.map(course => {
+															let showHeader = false;
+
+															if (!showHeader && course.courseOptions.flexibleDates && currentHeader !== 'Flexible') {
+																currentHeader = 'Flexible';
+																showHeader = true;
+															} else if (
+																!showHeader &&
+																course.courseOptions.startDate &&
+																currentHeader !== moment(course.courseOptions.startDate).format('MMMM')
+															) {
+																currentHeader = moment(course.courseOptions.startDate).format('MMMM');
+																showHeader = true;
+															}
+
+															if (showHeader) {
+																courseRender.push(
+																	<Row className='courseDateHeader'>
+																		<Col>
+																			<span className='black-20-semibold '>{currentHeader}</span>
+																		</Col>
+																	</Row>
+																);
+															}
+
+															courseRender.push(
+																<RelatedObject
+																	key={course.id}
+																	data={course}
+																	activeLink={true}
+																	onSearchPage={true}
+																	updateOnFilterBadge={this.updateOnFilterBadge}
+																/>
+															);
+														});
+													}
+													return <>{courseRender}</>;
+												}
+											})()}
+											{/* PAGINATION */}
+											<div className='text-center'>
+												{key === 'Datasets' && datasetCount > maxResult ? <Pagination>{datasetPaginationItems}</Pagination> : ''}
+
+												{key === 'Tools' && toolCount > maxResult ? <Pagination>{toolPaginationItems}</Pagination> : ''}
+
+												{key === 'Projects' && projectCount > maxResult ? <Pagination>{projectPaginationItems}</Pagination> : ''}
+
+												{key === 'Papers' && paperCount > maxResult ? <Pagination>{paperPaginationItems}</Pagination> : ''}
+
+												{key === 'People' && personCount > maxResult ? <Pagination>{personPaginationItems}</Pagination> : ''}
+
+												{key === 'Courses' && courseCount > maxResult ? <Pagination>{coursePaginationItems}</Pagination> : ''}
+
+												{key === 'Collections' && collectionCount > maxResult ? <Pagination>{collectionPaginationItems}</Pagination> : ''}
+											</div>
+											<Row className='mt-3'>
+												<Col className='text-center'>
+													<Button
+														className='addButton'
+														onClick={e => {
+															window.location.href = `/search?search=&tab=Datasets`;
+														}}>
+														SEARCH DATASETS
+													</Button>
+												</Col>
+											</Row>
+										</Col>
+									) : (
+										<Col style={{ marginTop: '60px' }} sm={12} md={12} lg={9}>
+											<Loading />
+										</Col>
+									)}
+								</Row>
+							</Container>
+							<NotificationContainer />
+							<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
+								<UserMessages
+									userState={userState[0]}
+									closed={this.toggleDrawer}
+									toggleModal={this.toggleModal}
+									drawerIsOpen={this.state.showDrawer}
+								/>
+							</SideDrawer>
+
+							<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
+						</>
+					) : (
+						<AboutPage />
+					)}
 				</div>
 			</Sentry.ErrorBoundary>
 		);

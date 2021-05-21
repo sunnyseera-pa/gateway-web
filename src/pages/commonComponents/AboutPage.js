@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Button } from 'react-bootstrap';
 import Iframe from 'react-iframe';
 import DefaultAboutPage from './DefaultAboutPage';
 import './AboutPage.scss';
@@ -17,7 +17,7 @@ class AboutPage extends React.Component {
 
 	async componentDidMount() {
 		axios
-			.head('https://icoda-research.org/icoda-gatway/', { withCredentials: false })
+			.head('', { withCredentials: false })
 			.then(res => {
 				this.setState({
 					isAvailable: true,
@@ -35,29 +35,40 @@ class AboutPage extends React.Component {
 		const { isAvailable } = this.state;
 
 		return (
-			<div class='resource-card-row row'>
-				<Col>
-					{isAvailable ? (
-						<div className='collection-rectangle'>
-							<Row className='noMargin'>
-								<div className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16 col-lg-12 col-sm-12' />
-								<Iframe
-									url='https://icoda-research.org/icoda-gateway/'
-									width='100%'
-									height='900px'
-									id='aboutIframe'
-									frameBorder='0'
-									display='initial'
-									position='relative'
-								/>
-							</Row>
-						</div>
-					) : (
-						<div className='collection-rectangle'>
-							<DefaultAboutPage />
-						</div>
-					)}
-				</Col>
+			<div className='searchTabsHolder'>
+				<div className='about-page-header'>
+					<div className='about-page-header-title'>About the International COVID-19 Data Alliance Gateway</div>
+					<div className='about-page-header-subtitle'>
+						Use this headline to give more details about the content of the page and what problems it solves
+					</div>
+				</div>
+				<div className='about-page-button text-center'>
+					<Button
+						className='addButton'
+						onClick={e => {
+							window.location.href = `/search?search=&tab=Datasets`;
+						}}>
+						Search for datasets
+					</Button>
+				</div>
+				{isAvailable ? (
+					<div className='collection-rectangle about-page-body'>
+						<div className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16 col-lg-12 col-sm-12' />
+						<Iframe
+							url='https://icoda-research.org/icoda-gateway/'
+							width='100%'
+							height='900px'
+							id='aboutIframe'
+							frameBorder='0'
+							display='initial'
+							position='relative'
+						/>
+					</div>
+				) : (
+					<div className='collection-rectangle about-page-body'>
+						<DefaultAboutPage />
+					</div>
+				)}
 			</div>
 		);
 	}

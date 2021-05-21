@@ -1,6 +1,47 @@
 @import '../../css/variables';
 
-#aboutIframe{
-    padding:16px;
-    top:-60px;
+#aboutIframe {
+	padding: 16px;
+	top: -60px;
+}
+
+.about-page-header {
+	text-align: center;
+	color: #ffffff;
+	min-height: 274px;
+	background-image: url('./../../images/aboutPageHeader.png');
+	background-size: cover;
+	background-position: center center;
+}
+
+.about-page-button {
+	background-color: #e1e7ec;
+	padding-top: 16px;
+	padding-bottom: 16px;
+}
+
+.about-page-button > .addButton {
+	background-color: #04365f;
+	border: none;
+}
+
+.about-page-header-title {
+	font-size: 40px;
+	padding-top: 70px;
+	padding-bottom: 18px;
+	margin-left: 25%;
+	margin-right: 25%;
+}
+
+.about-page-header-subtitle {
+	font-size: 16px;
+	margin-left: 25%;
+	margin-right: 25%;
+	padding-bottom: 50px;
+}
+
+.about-page-body {
+	padding-top: 3%;
+	padding-left: 20%;
+	padding-right: 20%;
 }
