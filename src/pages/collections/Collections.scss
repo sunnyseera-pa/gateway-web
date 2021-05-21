@@ -133,3 +133,12 @@
 	min-width: 40px;
 	padding: 2px 0px 0px 4px;
 }
+
+.collectionsSorting {
+	width: 250px;
+	text-align: left !important;
+}
+.dropdown-toggle::after {
+	float: right;
+	margin-top: 3%;
+}

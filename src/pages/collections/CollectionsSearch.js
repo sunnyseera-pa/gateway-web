@@ -50,6 +50,7 @@ const CollectionsSearch = props => {
 				<Col lg={col2Size} className='text-right'>
 					<SortDropdown
 						handleSort={props.handleSort}
+						isCollectionsSearch={props.isCollectionsSearch}
 						sort={props.sort}
 						dropdownItems={props.dropdownItems}
 					/>

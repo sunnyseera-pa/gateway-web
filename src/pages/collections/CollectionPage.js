@@ -40,7 +40,7 @@ export const CollectionPage = props => {
 	const [collectionEdited, setCollectionEdited] = useState(false);
 	const [searchString, setSearchString] = useState('');
 	const [searchCollectionsString, setCollectionsSearchString] = useState('');
-	const [collectionsPageSort, setCollectionsPageSort] = useState('latest');
+	const [collectionsPageSort, setCollectionsPageSort] = useState('recentlyadded');
 	const [discoursePostCount, setDiscoursePostCount] = useState(0);
 	const [key, setKey] = useState('dataset');
 	const [searchBar] = useState(React.createRef());
@@ -173,8 +173,8 @@ export const CollectionPage = props => {
 				sortByMetadataQuality();
 				break;
 			}
-			case 'latest': {
-				sortByLatest();
+			case 'recentlyadded': {
+				sortByRecentlyAdded();
 				break;
 			}
 			case 'resources': {
@@ -193,17 +193,15 @@ export const CollectionPage = props => {
 	};
 
 	const sortByMetadataQuality = () => {
-		filteredData.sort((a, b) => {
-			if (a.type === 'dataset' && b.type === 'dataset') {
-				if (a.datasetfields.metadataquality.quality_score > b.datasetfields.metadataquality.quality_score) return 1;
-				if (a.datasetfields.metadataquality.quality_score < b.datasetfields.metadataquality.quality_score) return -1;
-				return 0;
-			}
-		});
+		if (key === 'dataset') {
+			filteredData.sort((a, b) => {
+				if (_.has(a, 'datasetfields.metadataquality.quality_score' ) && _.has(b, 'datasetfields.metadataquality.quality_score' ))
+				return b.datasetfields.metadataquality.quality_score - a.datasetfields.metadataquality.quality_score
+			});
+		}
 	};
 
-	const sortByLatest = () => {
-		console.log(filteredData.sort((a, b) => b.updated - a.updated));
+	const sortByRecentlyAdded = () => {
 		return filteredData.sort((a, b) => b.updated - a.updated);
 	};
 
@@ -376,6 +374,15 @@ export const CollectionPage = props => {
 				<Loading data-testid='isLoading' />
 			</Container>
 		);
+	}
+
+	let dropdownItems;
+	if (key === 'dataset') {
+		dropdownItems = ['relevance', 'popularity', 'latest', 'resources', 'metadata'];
+	} else if (key === 'person') {
+		dropdownItems = ['relevance', 'popularity', 'latest'];
+	} else {
+		dropdownItems = ['relevance', 'popularity', 'latest', 'resources'];
 	}
 
 	return (
@@ -567,18 +574,17 @@ export const CollectionPage = props => {
 						</Col>
 					</Row>
 				)}
-				<CollectionsSearch
-					doCollectionsSearchMethod={doCollectionsSearch}
-					doUpdateCollectionsSearchString={updateCollectionsSearchString}
-					isLoading={isResultsLoading}
-					handleSort={handleSort}
-					dropdownItems={
-						key === 'dataset'
-							? ['relevance', 'popularity', 'latest', 'resources', 'metadata']
-							: ['relevance', 'popularity', 'latest', 'resources']
-					}
-					sort={collectionsPageSort === '' ? (searchString === '' ? 'relevance' : 'latest') : collectionsPageSort}
-				/>
+				{key !== 'Collaboration' && (
+					<CollectionsSearch
+						doCollectionsSearchMethod={doCollectionsSearch}
+						doUpdateCollectionsSearchString={updateCollectionsSearchString}
+						isLoading={isResultsLoading}
+						handleSort={handleSort}
+						isCollectionsSearch={true}
+						dropdownItems={dropdownItems}
+						sort={collectionsPageSort === '' ? (searchString === '' ? 'relevance' : 'recentlyadded') : collectionsPageSort}
+					/>
+				)}
 				<Row>
 					<Col sm={1} lg={1} />
 					<Col sm={10} lg={10}>

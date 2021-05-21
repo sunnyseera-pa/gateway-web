@@ -3,18 +3,19 @@ import { Dropdown, Row, Col } from 'react-bootstrap';
 import SVGIcon from '../../../images/SVGIcon';
 import '../Search.scss';
 
-const SortDropdown = ({ handleSort, sort, dropdownItems }) => {
+const SortDropdown = ({ handleSort, sort, dropdownItems, isCollectionsSearch }) => {
 	//by default sorted by relevance
 	const sorting = sort === '' ? 'relevance' : sort;
 
 	return (
 		<Dropdown className='sorting-dropdown' alignRight onSelect={handleSort}>
-			<Dropdown.Toggle variant='info' id='dropdown-menu-align-right' className='gray800-14'>
+			<Dropdown.Toggle variant='info' id='dropdown-menu-align-right' className={isCollectionsSearch ? 'collectionsSorting gray800-14' : 'gray800-14'}>
 				{(() => {
 					if (sorting === 'popularity') return 'Sort by number of views';
 					else if (sorting === 'metadata') return 'Sort by metadata quality';
 					else if (sorting === 'resources') return 'Sort by related resources';
 					else if (sorting === 'latest') return 'Sort by latest';
+					else if (sorting === 'recentlyadded') return 'Sort by recently added';
 					else return 'Sort by match to search terms';
 				})()}
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -30,9 +31,10 @@ const SortDropdown = ({ handleSort, sort, dropdownItems }) => {
 								<Dropdown.Item eventKey={item} className='gray800-14'>
 									{(() => {
 										if (item === 'popularity') return 'Number of views (highest to lowest)';
-										else if (item === 'metadata') return 'Sort by metadata quality';
+										else if (item === 'metadata') return 'Metadata quality (platinum to bronze)';
 										else if (item === 'resources') return 'Related resources (most first)';
 										else if (item === 'latest') return 'Latest (recently updated first)';
+										else if (item === 'recentlyadded') return 'Recently added to collection (newest first)';
 										else if (item === 'relevance') return 'Match to search terms (closest first)';
 									})()}
 								</Dropdown.Item>
