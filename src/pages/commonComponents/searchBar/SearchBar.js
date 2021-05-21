@@ -26,7 +26,7 @@ import CmsDropdown from './CmsDropdown';
 var baseURL = require('../BaseURL').getURL();
 const urlEnv = require('../BaseURL').getURLEnv();
 
-const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+const CustomToggle = React.forwardRef(({ children, onClick, subToggle }, ref) => (
 	<a
 		href=''
 		ref={ref}
@@ -34,7 +34,7 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 			e.preventDefault();
 			onClick(e);
 		}}
-		className='user-dropdown-menu'>
+		className={subToggle ? 'dropdown-sub-menu' : 'user-dropdown-menu'}>
 		{children}
 	</a>
 ));
@@ -50,19 +50,6 @@ const CustomMenu = React.forwardRef(({ children, style, className, 'aria-labelle
 		</div>
 	);
 });
-
-const CustomToggleInner = React.forwardRef(({ children, onClick }, ref) => (
-	<a
-		href=''
-		ref={ref}
-		onClick={e => {
-			e.preventDefault();
-			onClick(e);
-		}}
-		className='dropdown-sub-menu'>
-		{children}
-	</a>
-));
 
 const CustomSubMenu = React.forwardRef(({ children, style, className, show, 'aria-labelledby': labeledBy }, ref) => {
 	const [value] = useState('');
@@ -161,6 +148,10 @@ class SearchBar extends React.Component {
 		if (this.props.doUpdateSearchString) {
 			this.props.doUpdateSearchString(e.target.value);
 		}
+	};
+
+	doSearchMobile = e => {
+		if (e.key === 'Enter') window.location.href = `/search?search=${encodeURIComponent(this.state.textValue)}`;
 	};
 
 	doMessagesCall() {
@@ -933,7 +924,7 @@ class SearchBar extends React.Component {
 															<Dropdown data-test-id='ddUserNavigation'>
 																{!isEmpty(userState[0].teams) ? (
 																	<Fragment>
-																		<Dropdown.Toggle data-test-id='ddUserNavigationToggle' as={CustomToggleInner}>
+																		<Dropdown.Toggle data-test-id='ddUserNavigationToggle' subToggle={true} as={CustomToggle}>
 																			<span className='black-14' data-test-id='ddUserNavigationSubMenu'>
 																				{userState[0].name}
 																			</span>
@@ -1008,6 +999,30 @@ class SearchBar extends React.Component {
 												</Dropdown.Item>
 											)}
 
+											<span className='searchBarInputGrey searchBarInputMobile'>
+												<span className='searchInputIconGrey'>
+													<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />
+												</span>
+												<span>
+													<input
+														data-testid='searchbar'
+														type='text'
+														placeholder=''
+														id='searchInputSpanGrey'
+														onChange={this.onSearch}
+														onKeyDown={this.doSearchMobile}
+														value={textValue}
+													/>
+												</span>
+												{this.props.searchString !== '' && this.props.searchString !== undefined ? (
+													<span className='searchInputClearGrey' data-testid='searchbar-clear-btn'>
+														<span style={{ cursor: 'pointer' }} onClick={this.props.onClearMethod}>
+															<ClearButtonSvg />
+														</span>
+													</span>
+												) : null}
+											</span>
+
 											<div>
 												<CmsDropdown dropdownUrl='exploreDropdown' isMobile={true} />
 												<CmsDropdown dropdownUrl='helpDropdown' isMobile={true} />
@@ -1027,45 +1042,24 @@ class SearchBar extends React.Component {
 												if (userState[0].loggedIn === true) {
 													return (
 														<>
-															<Dropdown.Item href='/account?tab=dashboard&team=user' className='black-14'>
-																Dashboard
-															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=youraccount&team=user' className='black-14'>
-																Your Account
-															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=tools&team=user' className='black-14'>
-																Tools
-															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=reviews&team=user' className='black-14'>
-																Reviews
-															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=projects&team=user' className='black-14'>
-																Projects
-															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=datasetsAdvancedSearch&team=user' className='black-14'>
-																Datasets
-															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=papers&team=user' className='black-14'>
-																Papers
-															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=courses&team=user' className='black-14'>
-																Courses
-															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=dataaccessrequests&team=user' className='black-14'>
-																Data access requests
-															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=collections&team=user' className='black-14'>
-																Collections
-															</Dropdown.Item>
-															{userState[0].role === 'Admin' ? (
-																<Dropdown.Item href='/account?tab=usersroles&team=user' className='black-14'>
-																	Users and roles
-																</Dropdown.Item>
-															) : (
-																''
-															)}
-															<Dropdown.Item className='black-14' onClick={this.logout}>
-																Logout ({userState[0].name})
+															<Dropdown data-test-id='ddUserNavigation'>
+																<Fragment>
+																	<Dropdown.Toggle data-test-id='ddUserNavigationToggle' subToggle={true} as={CustomToggle}>
+																		<span className='black-14' data-test-id='ddUserNavigationSubMenu'>
+																			{userState[0].name}
+																		</span>
+																		<span className='addNewDropDownGap'></span>
+																		<SVGIcon name='chevronbottom' fill={'#475DA7'} className='svg-16 floatRightChevron' />
+																	</Dropdown.Toggle>
+																	<Dropdown.Menu as={CustomSubMenu}>
+																		<UserDropdownItems isAdmin={userState[0].role === 'Admin'}></UserDropdownItems>
+																	</Dropdown.Menu>
+																</Fragment>
+															</Dropdown>
+															<UserDropdownTeams teams={[...userState[0].teams]} isMobile={true} />
+															<Dropdown.Divider className='mb-1 mt-1' />
+															<Dropdown.Item onClick={this.logout} className='black-14 user-dropdown-item' data-test-id='optLogout'>
+																Sign out
 															</Dropdown.Item>
 														</>
 													);
@@ -1077,7 +1071,7 @@ class SearchBar extends React.Component {
 																onClick={e => {
 																	this.showLoginModal();
 																}}>
-																Sign in or create a new account
+																Sign / Create account
 															</Dropdown.Item>
 														</>
 													);
@@ -1091,58 +1085,34 @@ class SearchBar extends React.Component {
 									if (userState[0].loggedIn === true) {
 										return (
 											<>
-												<Col xs={8}>
+												<Col xs={6}>
 													<div id='mobileSearchBarHidden' style={{ display: 'block' }}>
 														<div className='navBarLogoSpacing'>
 															<a href={cmsURL}>
 																<ColourLogoSvg className='ml-4 mt-3' />
 															</a>
 														</div>
-														<div className='navBarSearchIconHolder'>
-															<a href='#' onClick={this.showSearchBar}>
-																<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />
-															</a>
-														</div>
 													</div>
-
-													<div id='mobileSearchBarRevealed' style={{ display: 'none' }}>
-														<div className='navBarSearchBarSpacing'>
-															<Container>
-																<Row>
-																	<Col>
-																		<span className='searchBarInputGrey'>
-																			<span className='searchInputIconGrey'>
-																				<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />
-																			</span>
-																			<span>
-																				<input
-																					type='text'
-																					placeholder='Search'
-																					id='searchInputSpanGrey'
-																					onChange={this.onSearch}
-																					onKeyDown={this.props.doSearchMethod}
-																					value={this.props.searchString}
-																				/>
-																			</span>
-																			{this.props.searchString !== '' && this.props.searchString !== undefined ? (
-																				<span className='searchInputClearGrey'>
-																					<a style={{ cursor: 'pointer' }} href={'/search?search='}>
-																						<ClearButtonSvg />
-																					</a>
-																				</span>
-																			) : null}
-																		</span>
-																	</Col>
-																</Row>
-															</Container>
-														</div>
+												</Col>
+												<Col xs={2} className='navBarMessageSpacing'>
+													<div onClick={this.props.doToggleDrawer} data-test-id='imgMessageBadge'>
+														<NotificationBadge
+															count={this.state.messageCount}
+															style={{ backgroundColor: '#29235c' }}
+															className='messageBadgeMobile'
+														/>
+														<SVGIcon name='chat' fill={'#475da7'} width={20} height={20} id='notificationsBell' className={'pointer'} />
 													</div>
 												</Col>
 												<Col xs={2} className='text-right'>
 													<div className='navBarBellNotificationSpacing'>
 														<Dropdown>
 															<Dropdown.Toggle as={CustomToggle} ref={nodeMobile => (this.nodeMobile = nodeMobile)}>
-																<NotificationBadge count={this.state.count} style={{ backgroundColor: '#29235c' }} />
+																<NotificationBadge
+																	count={this.state.count}
+																	style={{ backgroundColor: '#29235c' }}
+																	className='notificationBadgeMobile'
+																/>
 																<SVGIcon
 																	name='bell'
 																	fill={'#475da7'}
@@ -1335,45 +1305,6 @@ class SearchBar extends React.Component {
 														<a href={cmsURL}>
 															<ColourLogoSvg className='ml-4 mt-3' />
 														</a>
-													</div>
-
-													<div className='navBarSearchIconHolderAlt'>
-														<a href='#' onClick={this.showSearchBar}>
-															<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />
-														</a>
-													</div>
-												</div>
-
-												<div id='mobileSearchBarRevealed' style={{ display: 'none' }}>
-													<div className='navBarSearchBarSpacing'>
-														<Container>
-															<Row>
-																<Col>
-																	<span className='searchBarInputGrey'>
-																		<span className='searchInputIconGrey'>
-																			<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />
-																		</span>
-																		<span>
-																			<input
-																				type='text'
-																				placeholder='Search'
-																				id='searchInputSpanGrey'
-																				onChange={this.onSearch}
-																				onKeyDown={this.props.doSearchMethod}
-																				value={this.props.searchString}
-																			/>
-																		</span>
-																		{this.props.searchString !== '' && this.props.searchString !== undefined ? (
-																			<span className='searchInputClearGrey'>
-																				<a style={{ cursor: 'pointer' }} href={'/search?search='}>
-																					<ClearButtonSvg />
-																				</a>
-																			</span>
-																		) : null}
-																	</span>
-																</Col>
-															</Row>
-														</Container>
 													</div>
 												</div>
 											</Col>

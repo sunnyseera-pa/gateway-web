@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
+import SVGIcon from '../../../images/SVGIcon';
 import { ReactComponent as ChevronBottom } from '../../../images/chevron-bottom.svg';
 
 const CustomToggleInner = React.forwardRef(({ children, onClick }, ref) => (
@@ -46,7 +47,7 @@ const UserDropdownTeams = props => {
 					<Dropdown.Toggle as={CustomToggleInner}>
 						<span className='black-14'>{team.type === 'admin' ? 'HDR Admin' : team.name}</span>
 						<span className='addNewDropDownGap'></span>
-						<ChevronBottom />
+						{props.isMobile ? <SVGIcon name='chevronbottom' fill={'#475DA7'} className='svg-16 floatRightChevron' /> : <ChevronBottom />}
 					</Dropdown.Toggle>
 					<Dropdown.Menu as={CustomSubMenu}>
 						{team.type === 'admin' ? (
