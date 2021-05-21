@@ -9,7 +9,10 @@ const SortDropdown = ({ handleSort, sort, dropdownItems, isCollectionsSearch }) 
 
 	return (
 		<Dropdown className='sorting-dropdown' alignRight onSelect={handleSort}>
-			<Dropdown.Toggle variant='info' id='dropdown-menu-align-right' className={isCollectionsSearch ? 'collectionsSorting gray800-14' : 'gray800-14'}>
+			<Dropdown.Toggle
+				variant='info'
+				id='dropdown-menu-align-right'
+				className={isCollectionsSearch ? 'collectionsSorting gray800-14' : 'gray800-14'}>
 				{(() => {
 					if (sorting === 'popularity') return 'Sort by number of views';
 					else if (sorting === 'metadata') return 'Sort by metadata quality';
