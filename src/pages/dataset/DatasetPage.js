@@ -1,6 +1,6 @@
 // /ShowObjects.js
 import React, { Component, Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import _ from 'lodash';
 import axios from 'axios';
@@ -39,6 +39,7 @@ import DataQuality from './components/DataQuality';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import DatasetAboutCard from './components/DatasetAboutCard';
+import CommunicateWithDataCustodianModal from '../commonComponents/communicateDataCustodianModal/CommunicateDataCustodianModal';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
@@ -82,6 +83,7 @@ class DatasetDetail extends Component {
 		],
 		showDrawer: false,
 		showModal: false,
+		showCustodianModal: false,
 		showError: false,
 		requiresModal: false,
 		allowsMessaging: false,
@@ -102,6 +104,7 @@ class DatasetDetail extends Component {
 		isLatestVersion: true,
 		isDatasetArchived: false,
 	};
+
 
 	topicContext = {};
 
@@ -586,6 +589,42 @@ class DatasetDetail extends Component {
 		}
 	};
 
+	// toggleModal = (action) => {
+	// 	this.setState(prevState => {
+	// 		return { showModal: !prevState.showModal };
+	// 	});
+
+	// 	if(action === 'SUBMIT_APPLICATION') {
+	// 		this.toggleCustodianModal();
+	// 	} else if (action === 'ENQUIRY') {
+	// 				this.topicContext = {
+	// 			...this.topicContext,
+	// 			allowNewMessage: true,
+	// 		};
+	// 		this.toggleDrawer();
+	// 	}
+	// };
+
+	// toggleCustodianModal = (action = '') => {
+	// 	this.setState(prevState => {
+	// 		return { showCustodianModal: !prevState.showCustodianModal };
+	// 	});
+
+	// 	if(action === 'ENQUIRY') {
+	// 		console.log('Show message drawer');
+	// 		this.topicContext = {
+	// 			...this.topicContext,
+	// 			allowNewMessage: true,
+	// 		};
+	// 		this.toggleDrawer();
+	// 	} else if (action === 'SUBMIT_APPLICATION') {
+	// 		console.log('Take user to application');
+	// 		const { publisher } = this.topicContext.datasets[0];
+	// 		Event('Buttons', 'Click', 'Request Access');
+	// 		this.props.history.push({ pathname: `/data-access-request/publisher/${publisher}` }, { datasets: this.topicContext.datasets });
+	// 	} 
+	// }
+
 	showAllPhenotypes = () => {
 		this.setState({ showAllPhenotype: true });
 	};
@@ -608,6 +647,7 @@ class DatasetDetail extends Component {
 			discoursePostCount,
 			showDrawer,
 			showModal,
+			showCustodianModal,
 			requiresModal,
 			allowsMessaging,
 			showAllPhenotype,
@@ -1613,6 +1653,8 @@ class DatasetDetail extends Component {
 					</ActionBar>
 
 					<DataSetModal open={showModal} closed={this.toggleModal} context={this.topicContext} userState={userState[0]} />
+
+					{/* <CommunicateWithDataCustodianModal open={showCustodianModal} closed={this.toggleCustodianModal} /> */}
 				</Fragment>
 			</Sentry.ErrorBoundary>
 		);

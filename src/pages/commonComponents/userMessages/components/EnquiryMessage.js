@@ -1,48 +1,65 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { isEmpty, has } from 'lodash';
+import { isEmpty, has, isString, isObject } from 'lodash';
 import * as Yup from 'yup';
 import { Formik, Field, Form } from 'formik';
 import TypeaheadDataset from '../../../DataAccessRequest/components/TypeaheadDataset/TypeaheadDataset';
 
-export const EnquiryMessage = ({ topic, onDatasetsRequested }) => {
+export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmit }) => {
   const formRef = useRef();
   const [selectedDatasets, setSelectedDatasets] = useState([]);
+  const valueMapper = {
+    "safepeopleprimaryapplicantfullname": { title: 'Applicant name' },
+    "safepeopleprimaryapplicantorganisationname":  { title: 'Organisation' },
+    "safepeopleprimaryapplicantemail": { title: 'Email' },
+    "safepeopleprimaryapplicanttelephone": { title: 'Contact number' },
+    "safeprojectprojectdetailstitle": { title: 'Project title' },
+    "safeprojectprojectdetailsaimsobjectivesrationale": {title: "Project aim" },
+    datasetsRequested:  {title: "Datasets being requested" },
+    "safedata-otherdatasetsintentiontolinkdata":  {title: "Datasets you would like to link to link with this one" },
+    "safedataotherdatasetslinkadditionaldatasetslinkagedetails": {title: "Names of the linked datasets" },
+    datasetsInterestedIn:  {title: 'Do you know which parts of the dataset you are interested in?'},
+    "safedatadatafieldsdatarequiredjustification": {title: 'Parts of the dataset interesed in'},
+    funding: {title: 'Funding'},
+    "safeprojectprojectdetailspublicbenefitimpact": {title: 'Research benefits'},
+  }
 
+  // Funding do not map as per zeplin design
   const initalValues = {
-    safepeopleprimaryapplicantfullname: '',
-    safepeopleprimaryapplicantorganisationname: '',
-    safepeopleprimaryapplicantemail: '',
-    safepeopleprimaryapplicanttelephone: '',
-    projectTitle: '',
-    projectAim: '',
+    "safepeopleprimaryapplicantfullname": '',
+    "safepeopleprimaryapplicantorganisationname": '',
+    "safepeopleprimaryapplicantemail": '',
+    "safepeopleprimaryapplicanttelephone": '',
+    "safeprojectprojectdetailstitle": '',
+    "safeprojectprojectdetailsaimsobjectivesrationale": '',
     datasetsRequested: selectedDatasets,
-    linkedDatasets: '',
-    datasetNames: '',
+    "safedata-otherdatasetsintentiontolinkdata": '',
+    "safedataotherdatasetslinkadditionaldatasetslinkagedetails": '',
     datasetsInterestedIn:  '',
+    "safedatadatafieldsdatarequiredjustification": '',
     funding: '',
-    researchBenefits: '',
+    "safeprojectprojectdetailspublicbenefitimpact": '',
   }
 
   const schema = Yup.object({
-    safepeopleprimaryapplicantfullname: Yup.string().trim().required('Required'),
-    safepeopleprimaryapplicantorganisationname: Yup.string().trim().required('Required'),
-    safepeopleprimaryapplicantemail: Yup.string().trim().email().required('Required'),
-    safepeopleprimaryapplicanttelephone: Yup.string()
+    "safepeopleprimaryapplicantfullname": Yup.string().trim().required('Required'),
+    "safepeopleprimaryapplicantorganisationname": Yup.string().trim().required('Required'),
+    "safepeopleprimaryapplicantemail": Yup.string().trim().email().required('Required'),
+    "safepeopleprimaryapplicanttelephone": Yup.string()
       .matches(
           /^([0]{1}|\+?[234]{3})([7-9]{1})([0|1]{1})([\d]{1})([\d]{7})$/g,
         "Invalid phone number"
       ),
-    projectTitle: Yup.string().trim().required('Required'),
-    projectAim: Yup.string().trim().required('Required'),
+    "safeprojectprojectdetailstitle": Yup.string().trim().required('Required'),
+    "safeprojectprojectdetailsaimsobjectivesrationale": Yup.string().trim().required('Required'),
     datasetsRequested: Yup.array()
-    .required('Required')
-    .min(1, 'Reequired'),
-    linkedDatasets: Yup.string().required('Select an option'),
-    datasetNames: Yup.string().when('linkedDatasets',{ is: "Yes", then: Yup.string().required('Required')}),
+      .required('Required')
+      .min(1, 'Required'),
+    "safedata-otherdatasetsintentiontolinkdata": Yup.string().required('Select an option'),
+    "safedataotherdatasetslinkadditionaldatasetslinkagedetails": Yup.string().when("safedata-otherdatasetsintentiontolinkdata",{ is: "Yes", then: Yup.string().required('Required')}),
     datasetsInterestedIn: Yup.string().required('Select an option'),
-    datasetParts: Yup.string().when('datasetsInterestedIn',{ is: "Yes", then: Yup.string().required('Required')}),
+    "safedatadatafieldsdatarequiredjustification": Yup.string().when('datasetsInterestedIn',{ is: "Yes", then: Yup.string().required('Required')}),
     funding: Yup.string().trim().required('Required'),
-    researchBenefits: Yup.string().trim().required('Required')
+    "safeprojectprojectdetailspublicbenefitimpact": Yup.string().trim().required('Required')
   });
 
   /**
@@ -76,20 +93,67 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested }) => {
     onDatasetsRequested(selected);
   }
 
+  /**
+   * [getFormattedValue]
+   *
+   * @desc formats each value based on type string | array 
+   * @param   {String|Array}  value  [value of the field from fromik]
+   * @return  {String}  [return in string format]
+   */
+  const getFormattedValue = (value) => {
+    if (isString(value) && !isEmpty(value))
+      return value;
+
+    if (Array.isArray(value)) {
+      return [...value].reduce((message, val) => {
+          let { name = '' } = val;
+          message += `${name} `;
+          return message;
+      }, '');
+    }
+
+    return '';
+  }
+
+  /**
+   * handleFormSubmission
+   * @desc  Handles formik valid submission, API call
+   */
   const handleFormSubmission = async () => {
     let {
 			current: { values, setSubmitting },
 		} = formRef;
 
     console.log(formRef);
-    console.log(values);
+    // new message that is formatted
+    let message = '';
+    // from formik get the keys of our questionIds
+    const keys = Object.keys(values);
+    // if keys loop and get readable values Applicant name: 'Rose Clarke'....
+    if(keys.length) {
+      // loop keys
+      for (let key of keys) {
+        // get readable quesiton
+        const {title} = valueMapper[key];
+        // get the value as we have different types, string...array etc
+        const value = getFormattedValue(values[key]);
+        // build our message with line breaks
+        if(!isEmpty(value))
+          message += `${title}: ${value} \n`;
+      }
+      // clear formik form of value
+      // TODO 
+      // send to parent component UserMessages
+      onFirstMessageSubmit(message);
+    }
+
   };
 
-  // useEffect(() => {
-  //   if(has(topic, 'tags') && !isEmpty(topic.tags)) {
-  //     setSelectedDatasets(topic.tags);
-  //   }
-  // }, []);
+  useEffect(() => {
+    if(has(topic, 'tags') && !isEmpty(topic.tags)) {
+      setSelectedDatasets(topic.tags);
+    }
+  }, []);
 
 
   return (
@@ -117,10 +181,10 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested }) => {
                     type='text'
                     name={`safepeopleprimaryapplicantfullname`}
                     data-test-id={`safepeopleprimaryapplicantfullname`}
-                    className={`form-control ${hasErrors(touched, errors, 'safepeopleprimaryapplicantfullname') ? 'is-invalid' : '' }`}
+                    className={`form-control gray800-14 ${hasErrors(touched, errors, 'safepeopleprimaryapplicantfullname') ? 'is-invalid' : '' }`}
                   />
                   {hasErrors(touched, errors, 'safepeopleprimaryapplicantfullname') ? (
-                    <div className='errorMessages'>{errors.safepeopleprimaryapplicantfullname}</div>
+                    <div className='errorMessages'>{errors["safepeopleprimaryapplicantfullname"]}</div>
                   ) : null}
                 </div>
 
@@ -133,10 +197,10 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested }) => {
                     type='text'
                     name={`safepeopleprimaryapplicantorganisationname`}
                     data-test-id={`safepeopleprimaryapplicantorganisationname`}
-                    className={`form-control ${hasErrors(touched, errors, 'safepeopleprimaryapplicantorganisationname') ? 'is-invalid' : '' }`}
+                    className={`form-control gray800-14 ${hasErrors(touched, errors, 'safepeopleprimaryapplicantorganisationname') ? 'is-invalid' : '' }`}
                   />
                   {hasErrors(touched, errors, 'safepeopleprimaryapplicantorganisationname') ? (
-                    <div className='errorMessages'>{errors.safepeopleprimaryapplicantorganisationname}</div>
+                    <div className='errorMessages'>{errors["safepeopleprimaryapplicantorganisationname"]}</div>
                   ) : null}
                 </div>
 
@@ -150,10 +214,10 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested }) => {
                     type='email'
                     name={`safepeopleprimaryapplicantemail`}
                     data-test-id={`safepeopleprimaryapplicantemail`}
-                    className={`form-control ${hasErrors(touched, errors, 'safepeopleprimaryapplicantemail') ? 'is-invalid' : '' }`}
+                    className={`form-control gray800-14 ${hasErrors(touched, errors, 'safepeopleprimaryapplicantemail') ? 'is-invalid' : '' }`}
                   />
                   { hasErrors(touched, errors, 'safepeopleprimaryapplicantemail') ? (
-                    <div className='errorMessages'>{errors.safepeopleprimaryapplicantemail}</div>
+                    <div className='errorMessages'>{errors["safepeopleprimaryapplicantemail"]}</div>
                   ) : null }
                 </div>
 
@@ -165,41 +229,41 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested }) => {
                   <Field
                     type='text'
                     name={`safepeopleprimaryapplicanttelephone`}
-                    data-test-id={`safepeopleprimaryapplicanttelephone`}
-                    className={`form-control`}
+                    data-test-id={`safepeoplesafepeopleprimaryapplicanttelephone`}
+                    className={`form-control gray800-14`}
                   />
                 </div>
 
                 {/* PROJECT TITLE */}
                 <div className='form-group gray800-14'>
-                  <label htmlFor={`projectTitle`} className='form-label'>
+                  <label htmlFor={`safeprojectprojectdetailstitle`} className='form-label'>
                     Project title *
                   </label>
                   <Field
                     type='text'
-                    name={`projectTitle`}
-                    data-test-id={`projectTitle`}
-                    className={`form-control ${hasErrors(touched, errors, 'projectTitle') ? 'is-invalid' : '' }`}
+                    name={`safeprojectprojectdetailstitle`}
+                    data-test-id={`safeprojectprojectdetailstitle`}
+                    className={`form-control gray800-14 ${hasErrors(touched, errors, 'safeprojectprojectdetailstitle') ? 'is-invalid' : '' }`}
                   />
-                  { hasErrors(touched, errors, 'projectTitle') ? (
-                    <div className='errorMessages'>{errors.projectTitle}</div>
+                  { hasErrors(touched, errors, 'safeprojectprojectdetailstitle') ? (
+                    <div className='errorMessages'>{errors["safeprojectprojectdetailstitle"]}</div>
                   ) : null }
                 </div>
 
                 {/* PROJECT AIM */}
                 <div className='form-group gray800-14'>
-                  <label htmlFor={`projectAim`} className='form-label'>
+                  <label htmlFor={`safeprojectprojectdetailsaimsobjectivesrationale`} className='form-label'>
                     Project aim *
                     <span className="gray700-13">Please briefly explain the purpose of your research and why you require this dataset</span>
                   </label>
                   <Field
                     as="textarea"
-                    name={`projectAim`}
-                    data-test-id={`projectAim `}
-                    className={`form-control ${hasErrors(touched, errors, 'projectAim') ? 'is-invalid' : '' }`}
+                    name={`safeprojectprojectdetailsaimsobjectivesrationale`}
+                    data-test-id={`safeprojectprojectdetailsaimsobjectivesrationale`}
+                    className={`form-control gray800-14 ${hasErrors(touched, errors, 'safeprojectprojectdetailsaimsobjectivesrationale') ? 'is-invalid' : '' }`}
                   />
-                  { hasErrors(touched, errors, 'projectAim') ? (
-                    <div className='errorMessages'>{errors.projectAim}</div>
+                  { hasErrors(touched, errors, 'safeprojectprojectdetailsaimsobjectivesrationale') ? (
+                    <div className='errorMessages'>{errors["safeprojectprojectdetailsaimsobjectivesrationale"]}</div>
                   ) : null }
                 </div>
 
@@ -226,46 +290,46 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested }) => {
 
                 {/* DATASETS LINK WITH RADIO */}
                 <div className='form-group'>
-                  <label htmlFor={`linkedDatasets`} className='form-label gray800-14'>
+                  <label htmlFor={`safedata-otherdatasetsintentiontolinkdata`} className='form-label gray800-14'>
                     Do you have any datasets you would like to link with this one? *                    
                   </label>
                   <div className="form-check">
-                    <Field type="radio" name="linkedDatasets" value="Yes" />
+                    <Field type="radio" name="safedata-otherdatasetsintentiontolinkdata" value="Yes" />
                     <label className={`
                         form-check-label 
                         gray800-14`} 
-                        htmlFor="linkedDatasets">
+                        htmlFor="safedata-otherdatasetsintentiontolinkdata">
                       Yes
                     </label>
                   </div>
                   <div className="form-check">
-                  <Field type="radio" name="linkedDatasets" value="No" />
+                  <Field type="radio" name="safedata-otherdatasetsintentiontolinkdata" value="No" />
                     <label className={`
                         form-check-label 
                         gray800-14`} 
-                        htmlFor="linkedDatasets">
+                        htmlFor="safedata-otherdatasetsintentiontolinkdata">
                       No
                     </label>
                   </div>
-                  { hasErrors(touched, errors, 'linkedDatasets') ? (
-                    <div className='errorMessages'>{errors.linkedDatasets}</div>
+                  { hasErrors(touched, errors, 'safedata-otherdatasetsintentiontolinkdata') ? (
+                    <div className='errorMessages'>{errors["safedata-otherdatasetsintentiontolinkdata"]}</div>
                   ) : null }
                 </div>
 
                 {/* IDENTIFY NAMES OF DATASETS */}
-                {  values && values.linkedDatasets === "Yes"  ?
+                {  values && values["safedata-otherdatasetsintentiontolinkdata"] === "Yes"  ?
                 <div className='form-group gray800-14'>
-                  <label htmlFor={`datasetNames`} className='form-label'>
+                  <label htmlFor={`safedataotherdatasetslinkadditionaldatasetslinkagedetails`} className='form-label'>
                     Please identify the names of the datasets *
                   </label>
                   <Field
                     as="textarea"
-                    name={`datasetNames`}
-                    data-test-id={`datasetNames`}
-                    className={`form-control ${hasErrors(touched, errors, 'datasetNames') ? 'is-invalid' : '' }`}
+                    name={`safedataotherdatasetslinkadditionaldatasetslinkagedetails`}
+                    data-test-id={`safedataotherdatasetslinkadditionaldatasetslinkagedetails`}
+                    className={`form-control gray800-14 ${hasErrors(touched, errors, 'safedataotherdatasetslinkadditionaldatasetslinkagedetails') ? 'is-invalid' : '' }`}
                   />
-                   { hasErrors(touched, errors, 'datasetNames') ? (
-                    <div className='errorMessages'>{errors.datasetNames}</div>
+                   { hasErrors(touched, errors, 'safedataotherdatasetslinkadditionaldatasetslinkagedetails') ? (
+                    <div className='errorMessages'>{errors["safedataotherdatasetslinkadditionaldatasetslinkagedetails"]}</div>
                   ) : null }
                 </div>
                 :  '' }
@@ -301,17 +365,17 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested }) => {
                 {/* EXPLAIN PARTS  OF DATASETS */}
                 {  values && values.datasetsInterestedIn === "Yes"  ?
                 <div className='form-group gray800-14'>
-                  <label htmlFor={`datasetParts`} className='form-label'>
+                  <label htmlFor={`safedatadatafieldsdatarequiredjustification`} className='form-label'>
                     Please explain which parts of the dataset * 
                   </label>
                   <Field
                     as="textarea"
-                    name={`datasetParts`}
-                    data-test-id={`datasetParts`}
-                    className={`form-control ${hasErrors(touched, errors, 'datasetParts') ? 'is-invalid' : '' }`}
+                    name={`safedatadatafieldsdatarequiredjustification`}
+                    data-test-id={`safedatadatafieldsdatarequiredjustification`}
+                    className={`form-control gray800-14 ${hasErrors(touched, errors, 'safedatadatafieldsdatarequiredjustification') ? 'is-invalid' : '' }`}
                   />
-                   { hasErrors(touched, errors, 'datasetParts') ? (
-                    <div className='errorMessages'>{errors.datasetParts}</div>
+                   { hasErrors(touched, errors, 'safedatadatafieldsdatarequiredjustification') ? (
+                    <div className='errorMessages'>{errors["safedatadatafieldsdatarequiredjustification"]}</div>
                   ) : null }
                 </div>
                 :  '' }
@@ -335,18 +399,18 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested }) => {
 
                 {/* RESEARCH BENEFITS */}
                 <div className='form-group gray800-14'>
-                  <label htmlFor={`researchBenefits`} className='form-label'>
+                  <label htmlFor={`safeprojectprojectdetailspublicbenefitimpact`} className='form-label'>
                     Research benefits *
                     <span className="gray700-13">Please provide evidence of how your research will benefit the health and social care system</span>
                   </label>
                   <Field
                     as="textarea"
-                    name={`researchBenefits`}
-                    data-test-id={`researchBenefits`}
-                    className={`form-control ${hasErrors(touched, errors, 'researchBenefits') ? 'is-invalid' : '' }`}
+                    name={`safeprojectprojectdetailspublicbenefitimpact`}
+                    data-test-id={`safeprojectprojectdetailspublicbenefitimpact`}
+                    className={`form-control gray800-14 ${hasErrors(touched, errors, 'safeprojectprojectdetailspublicbenefitimpact') ? 'is-invalid' : '' }`}
                   />
-                  { hasErrors(touched, errors, 'researchBenefits') ? (
-                    <div className='errorMessages'>{errors.researchBenefits}</div>
+                  { hasErrors(touched, errors, 'safeprojectprojectdetailspublicbenefitimpact') ? (
+                    <div className='errorMessages'>{errors["safeprojectprojectdetailspublicbenefitimpact"]}</div>
                   ) : null }
                 </div>
 

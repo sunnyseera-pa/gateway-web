@@ -49,7 +49,6 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 				const {
 					data: { topics },
 				} = res;
-				debugger;
 				// 1. clone topics
 				let topicsArr = [...topics];
 				// 2. check if  dataset id has been passed
@@ -108,7 +107,6 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 				dataRequestModalContent,
 				datasets,
 			};
-			debugger;
 			return topic;
 		}
 		return {};
@@ -318,6 +316,21 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 		setActiveTopic({...activeTopic, tags: [...datasets]});
 	}
 
+	/**
+	 * onFirstMessageSubmit
+	 */
+	const onFirstMessageSubmit = (data) => {
+		// post the data as a new message
+
+		// hide the form
+
+		// get the data and update-state
+
+
+		console.log('Hide First Message Form and format message for FE');
+		console.log(data);
+	}
+
 	useEffect(() => {
 		// 1. GET Topics for current user
 		if (drawerIsOpen) getUserTopics();
@@ -353,6 +366,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 									<EnquiryMessage 
 										topic={activeTopic}
 										onDatasetsRequested={onDatasetsRequested}
+										onFirstMessageSubmit={onFirstMessageSubmit}
 									/>
 								: ''
 								}

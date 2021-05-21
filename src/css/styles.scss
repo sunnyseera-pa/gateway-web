@@ -436,6 +436,10 @@ input[type='radio']:checked:after {
 	border: solid 2px #d6d6d6;
 }
 
+.modal-title {
+	@include font-source(20px, $gray-800, $font-weight-semibold);
+}
+
 .modal-body input[type='radio']:after {
 	width: 24px;
 	height: 24px;

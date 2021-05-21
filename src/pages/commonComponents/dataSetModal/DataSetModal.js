@@ -29,6 +29,7 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 		}
 	};
 
+	
 	const onRequestAccess = e => {
 		// 1. stop default click
 		e.preventDefault();
@@ -58,7 +59,7 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 			// 4. do normal operation
 			closed(showEnquiry);
 		}
-	};
+	}
 
 	useEffect(() => {
 		if (open) initScreenData();
@@ -71,7 +72,7 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 					<div className='appModal-header--wrap'>
 						<div className='appModal-head'>
 							<h1 className='black-20-semibold'>Data access requests</h1>
-							<CloseButtonSvg className='appModal-head--close' onClick={() => onCloseModal(false)} />
+							<CloseButtonSvg className='appModal-head--close' onClick={() => onCloseModal('CLOSE')} />
 						</div>
 						{!_.isEmpty(screenData.dataRequestModalContent) && typeof screenData.dataRequestModalContent.header !== 'undefined' ? (
 							<ReactMarkdown source={screenData.dataRequestModalContent.header} />

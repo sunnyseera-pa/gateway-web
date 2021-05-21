@@ -55,7 +55,6 @@ class TypeaheadDataset extends React.Component {
 		this.setState({
 			publisher,
 		}, () => {
-			debugger;
 			axios
 			.get(`${baseURL}/api/v2/datasets`, {
 				params: {
