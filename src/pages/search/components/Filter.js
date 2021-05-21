@@ -45,7 +45,7 @@ const TreeSubHeader = ({ node }) => {
 };
 
 const TreeHeader = ({ node }) => {
-	let { label, closed }= node;
+	let { label, closed, beta = false }= node;
 	let count = 0;
 
 	const getParentCounts = (tree) => {
@@ -73,6 +73,7 @@ const TreeHeader = ({ node }) => {
 		<Fragment>
 			<div className='node-title'>
 				<span className={closed ? '' : 'selected'}>{label}</span>
+				{ beta ? <div className="node-beta">BETA</div> : ''}
 			</div>
 			<div className="node-micro">
 				{renderCount()}
@@ -148,16 +149,16 @@ const TreeComponent = ({ node, parentKey, hasChildren, onHandleInputChange, onHa
 					</Fragment>
 				}
 				<div className={getSubClass()}>
-					{typeof node.filters !== 'undefined' && node.filters.length > 0 && !node.closed && (
-						<Filter 
-							data={node.filters} 
-							parentKey={node.key} 
-							highlighted={node.highlighted}
-							hasChildren={true}
-							searchValue={searchValue}
-							onHandleInputChange={onHandleInputChange}
-							onHandleClearSection={onHandleClearSection}
-							onHandleToggle={onHandleToggle}/>
+					{ typeof node.filters !== 'undefined' && node.filters.length > 0 && !node.closed && (
+							<Filter 
+								data={node.filters} 
+								parentKey={node.key} 
+								highlighted={node.highlighted}
+								hasChildren={true}
+								searchValue={searchValue}
+								onHandleInputChange={onHandleInputChange}
+								onHandleClearSection={onHandleClearSection}
+								onHandleToggle={onHandleToggle}/>
 					)}
 				</div>
 			</SlideDown>
