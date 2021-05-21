@@ -375,11 +375,11 @@ export const CollectionPage = props => {
 
 	let dropdownItems;
 	if (key === 'dataset') {
-		dropdownItems = ['relevance', 'popularity', 'latest', 'resources', 'metadata'];
+		dropdownItems = ['relevance', 'popularity', 'recentlyadded', 'resources', 'metadata'];
 	} else if (key === 'person') {
-		dropdownItems = ['relevance', 'popularity', 'latest'];
+		dropdownItems = ['relevance', 'popularity', 'recentlyadded'];
 	} else {
-		dropdownItems = ['relevance', 'popularity', 'latest', 'resources'];
+		dropdownItems = ['relevance', 'popularity', 'recentlyadded', 'resources'];
 	}
 
 	return (
@@ -579,7 +579,7 @@ export const CollectionPage = props => {
 						handleSort={handleSort}
 						isCollectionsSearch={true}
 						dropdownItems={dropdownItems}
-						sort={collectionsPageSort === '' ? (searchString === '' ? 'relevance' : 'recentlyadded') : collectionsPageSort}
+						sort={collectionsPageSort === '' ? (searchCollectionsString === '' ? 'recentlyadded' : 'relevance') : collectionsPageSort}
 					/>
 				)}
 				<Row>

@@ -136,9 +136,14 @@
 
 .collectionsSorting {
 	width: 100%;
+	height: 100%;
 	text-align: left !important;
 }
 .dropdown-toggle::after {
 	float: right;
 	margin-top: 3%;
+}
+
+.sorting-dropdown.dropdown {
+	height: 100%;
 }
