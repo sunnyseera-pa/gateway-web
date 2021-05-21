@@ -193,12 +193,10 @@ export const CollectionPage = props => {
 	};
 
 	const sortByMetadataQuality = () => {
-		if (key === 'dataset') {
-			filteredData.sort((a, b) => {
-				if (_.has(a, 'datasetfields.metadataquality.quality_score' ) && _.has(b, 'datasetfields.metadataquality.quality_score' ))
-				return b.datasetfields.metadataquality.quality_score - a.datasetfields.metadataquality.quality_score
-			});
-		}
+		filteredData.sort((a, b) => {
+			if (_.has(a, 'datasetfields.metadataquality.quality_score') && _.has(b, 'datasetfields.metadataquality.quality_score'))
+				return b.datasetfields.metadataquality.quality_score - a.datasetfields.metadataquality.quality_score;
+		});
 	};
 
 	const sortByRecentlyAdded = () => {
@@ -210,11 +208,10 @@ export const CollectionPage = props => {
 	};
 
 	const sortByRelevance = () => {
-		if (key === 'person') {
-			return filteredData.sort((a, b) => b.lastname - a.lastname);
-		} else {
-			return filteredData.sort((a, b) => b.name - a.name);
-		}
+		filteredData.sort((a, b) => {
+			if (_.has(a, 'lastname') && _.has(b, 'lastname')) return b.lastname - a.lastname;
+			else return b.name - a.name;
+		});
 	};
 
 	const sortByPopularity = () => {
