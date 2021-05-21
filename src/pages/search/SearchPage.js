@@ -104,11 +104,12 @@ class SearchPage extends React.Component {
 	constructor(props) {
 		super(props);
 		let { search = '', tab = 'Datasets' } = queryString.parse(window.location.search);
+		debugger;
 		if (!Object.keys(typeMapper).some(key => key === tab)) {
 			window.location.href = '/search?search=&tab=Datasets';
 		}
 		this.state.userState = props.userState;
-		this.state.search = search || props.search;
+		this.state.search = !_.isEmpty(search) ? search : props.location.search;
 		this.searchBar = React.createRef();
 	}
 
@@ -143,6 +144,7 @@ class SearchPage extends React.Component {
 			else if (this.state.userState[0].loggedIn && queryParams.openUserMessages === 'true') {
 				this.toggleDrawer();
 			}
+			debugger;
 			// 7. set the selectedFilter states from queryParams ** does not return anything **
 			await this.updateFilterStates(queryParams);
 			// 8. call search API
@@ -185,6 +187,7 @@ class SearchPage extends React.Component {
 	 * @desc Sets selectedStates for filters including search string
 	 */
 	async updateFilterStates(queryParams) {
+		debugger;
 		let filtersV2, selectedV2;
 		if (!_.isEmpty(this.state.filtersV2)) {
 			// 1. take copy of filters data
@@ -195,10 +198,12 @@ class SearchPage extends React.Component {
 				// 3. loop over queryKeys
 				for (const key of Object.keys(queryParams)) {
 					if (!_.isNil(queryParams[key])) {
+						debugger;
 						// 4. convert queryString into array of values
 						let queryValues = queryParams[key].split('::');
 						// 5. check if key exists in our tree, return {} or undefined
 						let parentNode = this.findParentNode(filtersV2, key);
+						debugger;
 						if (!_.isNil(parentNode)) {
 							let { filters } = parentNode;
 							// 6. loop over query values
@@ -206,6 +211,7 @@ class SearchPage extends React.Component {
 								// 7. get the selected values
 								let foundNode = this.findNode(filters, node);
 								if (!_.isEmpty(foundNode)) {
+									debugger;
 									// 8. set check value
 									foundNode.checked = !foundNode.checked;
 									// 9. increment highest parent count
@@ -218,6 +224,7 @@ class SearchPage extends React.Component {
 									};
 									// 11. fn for handling the *selected showing* returns new state
 									let selected = this.handleSelected(selectedNode, foundNode.checked);
+									debugger;
 									// 12. update selectedV2 array with our new returned value
 									selectedV2 = [...selectedV2, ...selected];
 								}
@@ -532,6 +539,7 @@ class SearchPage extends React.Component {
 			else if (values.showLogin === 'true' && document.referrer !== '')
 				searchURL += '&loginReferrer=' + encodeURIComponent(document.referrer);
 		}
+		debugger;
 
 		if (!skipHistory) {
 			if (this.state.key) searchURL += '&tab=' + this.state.key;
@@ -846,6 +854,7 @@ class SearchPage extends React.Component {
 	 * @return	{object} object of {label, value...}
 	 */
 	findNode = (filters = [], label) => {
+		console.log(filters);
 		if (!_.isEmpty(filters)) {
 			return [...filters].find(node => node.label === label) || {};
 		}
@@ -905,6 +914,7 @@ class SearchPage extends React.Component {
 	 * @param {boolean} checkValue
 	 */
 	handleInputChange = (node, parentKey, checkValue) => {
+		console.log(this.state.selectedV2);
 		// 1. copy state - stop mutation
 		let filtersV2 = [...this.state.filtersV2];
 		// 2. find parent obj - recursive
@@ -915,23 +925,27 @@ class SearchPage extends React.Component {
 			// 3. find checkbox obj
 			let foundNode = this.findNode(filters, node.label);
 			if (!_.isEmpty(foundNode)) {
-				// 4. set check value
-				foundNode.checked = checkValue;
-				// 5. increment highest parent count
-				checkValue ? ++parentNode.selectedCount : --parentNode.selectedCount;
-				// 6. set new object for handle selected *showing*
-				let selectedNode = {
-					parentKey: alias || key,
-					id: foundNode.id,
-					label: foundNode.label,
-				};
-				// 7. fn for handling the *selected showing* returns new state
-				const selectedV2 = this.handleSelected(selectedNode, checkValue);
-				// 8. set state
-				this.setState({ filtersV2, selectedV2, isResultsLoading: true }, () => {
-					// callback once state has updated
-					this.doSearchCall();
-				});
+				// find if the node already exists in the selectedV2 - if so we are unchecking / removing
+				const exists = [...this.state.selectedV2].some(selected => selected.id === foundNode.id);
+				if(!exists) {
+					// 4. set check value
+					foundNode.checked = checkValue;
+					// 5. increment highest parent count
+					checkValue ? ++parentNode.selectedCount : --parentNode.selectedCount;
+					// 6. set new object for handle selected *showing*
+					let selectedNode = {
+						parentKey: alias || key,
+						id: foundNode.id,
+						label: foundNode.label,
+					};
+					// 7. fn for handling the *selected showing* returns new state
+					const selectedV2 = this.handleSelected(selectedNode, checkValue);
+					// 8. set state
+					this.setState({ filtersV2, selectedV2, isResultsLoading: true }, () => {
+						// callback once state has updated
+						this.doSearchCall();
+					});
+				}
 			}
 		}
 	};

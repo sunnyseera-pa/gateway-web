@@ -820,7 +820,7 @@ class DatasetDetail extends Component {
 												? ''
 												: data.tags.features.map((keyword, index) => {
 														return (
-															<a key={`tag-${index}`} href={'/search?search=&tab=Datasets&keywords=' + keyword}>
+															<a key={`tag-${index}`} href={`/search?search=&tab=Datasets&datasetfeatures=${keyword}`}>
 																<div className='ml-2 badge-tag'>{keyword}</div>
 															</a>
 														);

@@ -110,6 +110,7 @@ class RelatedObject extends React.Component {
 	};
 
 	updateOnFilterBadge = (filter, option) => {
+		debugger;
 		if (this.props.updateOnFilterBadge) {
 			this.props.updateOnFilterBadge(filter, option);
 		}
