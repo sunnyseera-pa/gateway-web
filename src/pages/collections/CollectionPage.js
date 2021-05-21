@@ -40,6 +40,7 @@ export const CollectionPage = props => {
 	const [collectionEdited, setCollectionEdited] = useState(false);
 	const [searchString, setSearchString] = useState('');
 	const [searchCollectionsString, setCollectionsSearchString] = useState('');
+	const [collectionsPageSort, setCollectionsPageSort] = useState('latest');
 	const [discoursePostCount, setDiscoursePostCount] = useState(0);
 	const [key, setKey] = useState('dataset');
 	const [searchBar] = useState(React.createRef());
@@ -165,6 +166,51 @@ export const CollectionPage = props => {
 		setShowDrawer(showEnquiry);
 	};
 
+	const handleSort = sort => {
+		setCollectionsPageSort(sort);
+		switch (sort) {
+			case 'metadata': {
+				sortByMetadataQuality();
+				break;
+			}
+			case 'latest': {
+				console.log('latest');
+				break;
+			}
+			case 'resources': {
+				console.log('resources');
+				break;
+			}
+			case 'relevance': {
+				console.log('relevance');
+				break;
+			}
+			case 'popularity': {
+				console.log('popularity');
+				break;
+			}
+		}
+	};
+
+	const sortByLatest = () => {
+		filteredData.sort((a, b) => {
+			if (a.updated > b.updated) return 1;
+			if (a.updated < b.updated) return -1;
+			return 0;
+		});
+	};
+
+	const sortByMetadataQuality = () => {
+		filteredData.sort((a, b) => {
+			if (a.type === 'dataset' && b.type === 'dataset') {
+				console.log('a.datasetfields.metadataquality.quality_score', a.datasetfields.metadataquality.quality_score)
+				if (a.datasetfields.metadataquality.quality_score > b.datasetfields.metadataquality.quality_score) return 1;
+				if (a.datasetfields.metadataquality.quality_score < b.datasetfields.metadataquality.quality_score) return -1;
+				return 0;
+			}
+		});
+	};
+
 	const handlePaginatedItems = index => {
 		// Returns the related resources that have the same object type as the current active tab and performs a chunk on them to ensure each page returns 24 results
 		let paginatedItems = _.chunk(
@@ -185,17 +231,13 @@ export const CollectionPage = props => {
 			let filteredCollectionItems = objectData.map(object => {
 				// Searching functionality - searches through object data and returns true if there is a match with the search term
 				if (
-					_.has(object, 'name')
-						? object.name.toLowerCase().includes(searchCollectionsString.toLowerCase())
-						: false || _.has(object, 'firstname')
-						? object.firstname.toLowerCase().includes(searchCollectionsString.toLowerCase())
-						: false || _.has(object, 'lastname')
-						? object.lastname.toLowerCase().includes(searchCollectionsString.toLowerCase())
-						: false || _.has(object, 'description')
-						? object.description.toLowerCase().includes(searchCollectionsString.toLowerCase())
-						: false || _.has(object, 'tags.features')
+					(_.has(object, 'name') ? object.name.toLowerCase().includes(searchCollectionsString.toLowerCase()) : false) ||
+					(_.has(object, 'firstname') ? object.firstname.toLowerCase().includes(searchCollectionsString.toLowerCase()) : false) ||
+					(_.has(object, 'lastname') ? object.lastname.toLowerCase().includes(searchCollectionsString.toLowerCase()) : false) ||
+					(_.has(object, 'description') ? object.description.toLowerCase().includes(searchCollectionsString.toLowerCase()) : false) ||
+					(_.has(object, 'tags.features') && object.tags.features && object.tags.features.length > 0
 						? new RegExp(object.tags.features.join('|'), 'i').test(searchCollectionsString)
-						: false
+						: false)
 				) {
 					return object;
 				} else {
@@ -238,7 +280,7 @@ export const CollectionPage = props => {
 	let paperPaginationItems = [];
 	let personPaginationItems = [];
 	let coursePaginationItems = [];
-	let maxResult = 10;
+	let maxResult = 24;
 	for (let i = 1; i <= Math.ceil(datasetCount / maxResult); i++) {
 		datasetPaginationItems.push(
 			<Pagination.Item
@@ -293,7 +335,7 @@ export const CollectionPage = props => {
 				key={i}
 				active={i === personIndex + 1}
 				onClick={e => {
-					handlePagination('person', (i - 1) * maxResult);
+					handlePagination('person', i - 1);
 				}}>
 				{i}
 			</Pagination.Item>
@@ -513,6 +555,13 @@ export const CollectionPage = props => {
 					doCollectionsSearchMethod={doCollectionsSearch}
 					doUpdateCollectionsSearchString={updateCollectionsSearchString}
 					isLoading={isResultsLoading}
+					handleSort={handleSort}
+					dropdownItems={
+						key === 'dataset'
+							? ['relevance', 'popularity', 'latest', 'resources', 'metadata']
+							: ['relevance', 'popularity', 'latest', 'resources']
+					}
+					sort={collectionsPageSort === '' ? (searchString === '' ? 'relevance' : 'latest') : collectionsPageSort}
 				/>
 				<Row>
 					<Col sm={1} lg={1} />
