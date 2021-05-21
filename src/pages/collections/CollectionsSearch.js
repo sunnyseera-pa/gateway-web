@@ -6,20 +6,16 @@ import SortDropdown from '../search/components/SortDropdown';
 
 const CollectionsSearch = props => {
 	const {} = props;
-	const [searchString, setSearchString] = useState('');
 	const [searchValue, setSearchValue] = useState('');
 
 	let col1Size = 7;
 	let col2Size = 3;
-	let collectionsPageSort = '';
 	const onSearch = e => {
 		setSearchValue(e.target.value);
 		if (props.doUpdateCollectionsSearchString) {
 			props.doUpdateCollectionsSearchString(e.target.value);
 		}
 	};
-
-	const handleSort = sort => {};
 
 	if (props.isLoading) {
 		return '';
