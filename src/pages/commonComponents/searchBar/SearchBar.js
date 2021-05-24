@@ -8,15 +8,20 @@ import { isEmpty } from 'lodash';
 import SVGIcon from '../../../images/SVGIcon';
 import { ReactComponent as ColourLogoSvg } from '../../../images/colour.svg';
 import { ReactComponent as ClearButtonSvg } from '../../../images/clear.svg';
-import { ReactComponent as NotificationsBellSvg } from '../../../images/bell.svg';
 import { ReactComponent as HamBurgerSvg } from '../../../images/hamburger.svg';
-import { ReactComponent as ArrowDownSvg } from '../../../images/stock.svg';
 import { ReactComponent as WhiteArrowDownSvg } from '../../../images/arrowDownWhite.svg';
-import { NotificationContainer, NotificationManager } from 'react-notifications';
+import { NotificationManager } from 'react-notifications';
+import AddNewEntity from './AddNewEntity';
 import './SearchBar.scss';
 import '../uatBanner/UatBanner.scss';
 import moment from 'moment';
 import { cmsURL } from '../../../configs/url.config';
+import { ReactComponent as ChevronBottom } from '../../../images/chevron-bottom.svg';
+import UserDropdownItems from './UserDropdownItems';
+import UserDropdownTeams from './UserDropdownTeams';
+import UatBanner from '../../commonComponents/uatBanner/UatBanner';
+
+import CmsDropdown from './CmsDropdown';
 
 var baseURL = require('../BaseURL').getURL();
 const urlEnv = require('../BaseURL').getURLEnv();
@@ -28,7 +33,8 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 		onClick={e => {
 			e.preventDefault();
 			onClick(e);
-		}}>
+		}}
+		className='user-dropdown-menu'>
 		{children}
 	</a>
 ));
@@ -38,11 +44,37 @@ const CustomMenu = React.forwardRef(({ children, style, className, 'aria-labelle
 
 	return (
 		<div ref={ref} style={style} className={className} aria-labelledby={labeledBy}>
-			<ul className='list-unstyled'>
+			<ul className='list-unstyled  mb-0 mt-0'>
 				{React.Children.toArray(children).filter(child => !value || child.props.children.toLowerCase().startsWith(value))}
 			</ul>
 		</div>
 	);
+});
+
+const CustomToggleInner = React.forwardRef(({ children, onClick }, ref) => (
+	<a
+		href=''
+		ref={ref}
+		onClick={e => {
+			e.preventDefault();
+			onClick(e);
+		}}
+		className='dropdown-sub-menu'>
+		{children}
+	</a>
+));
+
+const CustomSubMenu = React.forwardRef(({ children, style, className, show, 'aria-labelledby': labeledBy }, ref) => {
+	const [value] = useState('');
+	if (show) {
+		return (
+			<Fragment ref={ref} style={style} className={className} aria-labelledby={labeledBy}>
+				<ul className='list-unstyled'>
+					{React.Children.toArray(children).filter(child => !value || child.props.children.toLowerCase().startsWith(value))}
+				</ul>
+			</Fragment>
+		);
+	}
 });
 
 class SearchBar extends React.Component {
@@ -56,6 +88,7 @@ class SearchBar extends React.Component {
 				role: 'Reader',
 				id: null,
 				name: null,
+				teams: [],
 			},
 		],
 		dropdownOpen: false,
@@ -255,9 +288,22 @@ class SearchBar extends React.Component {
 		);
 	};
 
+	getUserInitials = name => {
+		let initials = '';
+
+		if (!isEmpty(name)) {
+			initials = name.charAt(0).toUpperCase();
+			let surname = name.split(' ');
+			let secondLetter = surname[1].charAt(0);
+
+			initials += secondLetter;
+		}
+
+		return initials;
+	};
+
 	render() {
 		const { userState, newData, isLoading, clearMessage, isHovering, textValue } = this.state;
-
 		if (isLoading) {
 			return <></>;
 		}
@@ -292,61 +338,50 @@ class SearchBar extends React.Component {
 			}
 		}
 
-		let col1Size = 5;
-		let col2Size = 7;
-		if (showUatBanner === true) {
-			col1Size = 6;
-			col2Size = 6;
-		}
-
 		return (
 			<Fragment>
+				{showUatBanner === true && <UatBanner currentEnv={currentEnv} />}
 				<nav className={classnames('navbarShown', { navbarHidden: !this.state.visible })}>
 					<div className='searchBarBackground' id='desktopSearchBar'>
 						<Row className='whiteBackground'>
-							<Col lg={col1Size}>
+							<Col lg={7} className='pr-0 pl-2'>
 								<div className='navBarLogoSpacing'>
 									<a style={{ cursor: 'pointer' }} href={cmsURL}>
 										<ColourLogoSvg className='ml-4 mt-3' />
 									</a>
 								</div>
+
 								<div className='navBarLinkSpacing'>
-									<a href={cmsURL + '/pages/about'} className='black-14' data-test-id='lnkAbout'>
-										About
+									<CmsDropdown dropdownUrl='exploreDropdown' />
+								</div>
+								<div className='navBarLinkSpacing'>
+									<CmsDropdown dropdownUrl='helpDropdown' />
+								</div>
+								<div className='navBarLinkSpacing'>
+									<CmsDropdown dropdownUrl='usageDataDropdown' />
+								</div>
+								<div className='navBarLinkSpacing'>
+									<CmsDropdown dropdownUrl='aboutUsDropdown' />
+								</div>
+
+								<div className='navBarLinkSpacing'>
+									<a href={cmsURL + '/pages/latest-news'} className='black-14 cmsDropdownTitle'>
+										News
 									</a>
 								</div>
 								<div className='navBarLinkSpacing'>
-									<a href={communityLink} className='black-14' data-test-id='lnkCommunity'>
+									<a href={communityLink} className='black-14 cmsDropdownTitle' data-test-id='lnkCommunity'>
 										Community
 									</a>
 								</div>
-								<div className='navBarLinkSpacing'>
-									<a href={'/dashboard'} className='black-14' data-test-id='lnkPublicDashboard'>
-										Dashboard
-									</a>
-								</div>
-								{showUatBanner === true && (
-									<div class='uatSearchBarBanner uatBannerText'>
-										<span class='verticalMiddle'>
-											{currentEnv}
-											<br />
-											<a
-												class='floatRight uatBannerText'
-												href='https://discourse.healthdatagateway.org/t/using-the-uat-environment/451'
-												target='_blank'>
-												Read more
-											</a>
-										</span>
-									</div>
-								)}
 							</Col>
 
-							<Col lg={col2Size} className='text-right'>
+							<Col lg={5} className='text-right'>
 								<div className='nav-wrapper'>
 									<div className='navBarSearchBarSpacing'>
 										<Container>
 											<Row>
-												<Col>
+												<Col className='pr-0'>
 													<span className='searchBarInputGrey'>
 														<span className='searchInputIconGrey'>
 															<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />
@@ -355,7 +390,7 @@ class SearchBar extends React.Component {
 															<input
 																data-testid='searchbar'
 																type='text'
-																placeholder='Search'
+																placeholder=''
 																id='searchInputSpanGrey'
 																onChange={this.onSearch}
 																onKeyDown={this.props.doSearchMethod}
@@ -374,7 +409,15 @@ class SearchBar extends React.Component {
 											</Row>
 										</Container>
 									</div>
-
+									<div>
+										<Container>
+											<Row>
+												<Col className='pl-0 pr-0'>
+													<AddNewEntity />
+												</Col>
+											</Row>
+										</Container>
+									</div>
 									{(() => {
 										if (userState[0].loggedIn === true) {
 											return (
@@ -383,10 +426,10 @@ class SearchBar extends React.Component {
 														<NotificationBadge count={this.state.messageCount} style={{ backgroundColor: '#29235c' }} />
 														<SVGIcon name='chat' fill={'#475da7'} width={20} height={20} id='notificationsBell' className={'pointer'} />
 													</div>
-													<div className='navBarNotificationSpacing' data-test-id='imgNotificationBadge'>
+													<div className='navBarBellNotificationSpacing' data-test-id='imgNotificationBadge'>
 														<Dropdown>
 															<Dropdown.Toggle as={CustomToggle} ref={node => (this.node = node)}>
-																<NotificationBadge count={this.state.count} style={{ backgroundColor: '#29235c' }} />
+																<NotificationBadge count={this.state.count} className='notificationsBellBadge' />
 																<SVGIcon
 																	name='bell'
 																	fill={'#475da7'}
@@ -856,6 +899,11 @@ class SearchBar extends React.Component {
 														</Dropdown>
 														{this.checkRedirectToast()}
 													</div>
+													<div className='navBarAvatarSpacing'>
+														<div class='avatar-circle'>
+															<span class='initials'>{this.getUserInitials(userState[0].name)}</span>
+														</div>
+													</div>
 												</Fragment>
 											);
 										} else {
@@ -878,50 +926,39 @@ class SearchBar extends React.Component {
 																{userState[0].name}
 															</span>
 															<span className='accountDropDownGap'></span>
-															<ArrowDownSvg />
+															<ChevronBottom />
 														</Dropdown.Toggle>
 
 														<Dropdown.Menu as={CustomMenu} className='desktopLoginMenu'>
-															<Dropdown.Item href='/account?tab=dashboard&team=user' className='black-14' data-test-id='optDashboard'>
-																Dashboard
-															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=youraccount&team=user' className='black-14' data-test-id='optAccount'>
-																Your Account
-															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=tools&team=user' className='black-14' data-test-id='optTools'>
-																Tools
-															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=reviews&team=user' className='black-14' data-test-id='optReviews'>
-																Reviews
-															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=projects&team=user' className='black-14' data-test-id='optProjects'>
-																Projects
-															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=datasetsAdvancedSearch&team=user' className='black-14'>
-																Datasets
-															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=papers&team=user' className='black-14' data-test-id='optPapers'>
-																Papers
-															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=courses&team=user' className='black-14' data-test-id='optCourses'>
-																Courses
-															</Dropdown.Item>
-															<Dropdown.Item
-																href='/account?tab=dataaccessrequests&team=user'
-																className='black-14'
-																data-test-id='optDataAccessRequests'>
-																Data access requests
-															</Dropdown.Item>
-															<Dropdown.Item href='/account?tab=collections&team=user' className='black-14' data-test-id='optCollections'>
-																Collections
-															</Dropdown.Item>
-															{userState[0].role === 'Admin' && (
-																<Dropdown.Item href='/account?tab=usersroles&team=user' className='black-14' data-test-id='optUsersRoles'>
-																	Users and roles
-																</Dropdown.Item>
-															)}
-															<Dropdown.Item onClick={this.logout} className='black-14' data-test-id='optLogout'>
-																Logout
+															<Dropdown data-test-id='ddUserNavigation'>
+																{!isEmpty(userState[0].teams) ? (
+																	<Fragment>
+																		<Dropdown.Toggle data-test-id='ddUserNavigationToggle' as={CustomToggleInner}>
+																			<span className='black-14' data-test-id='ddUserNavigationSubMenu'>
+																				{userState[0].name}
+																			</span>
+																			<span className='addNewDropDownGap'></span>
+																			<ChevronBottom />
+																		</Dropdown.Toggle>
+																		<Dropdown.Menu as={CustomSubMenu}>
+																			<UserDropdownItems isAdmin={userState[0].role === 'Admin'}></UserDropdownItems>
+																		</Dropdown.Menu>
+																	</Fragment>
+																) : (
+																	<Fragment>
+																		<Dropdown.Item className='black-14 user-dropdown-item'>
+																			<span className='gray700-14' data-test-id='lblUserName'>
+																				{userState[0].name}
+																			</span>
+																		</Dropdown.Item>
+																		<UserDropdownItems isAdmin={userState[0].role === 'Admin'}></UserDropdownItems>
+																	</Fragment>
+																)}
+															</Dropdown>
+															<UserDropdownTeams teams={[...userState[0].teams]} />
+															<Dropdown.Divider className='mb-1 mt-1' />
+															<Dropdown.Item onClick={this.logout} className='black-14 user-dropdown-item' data-test-id='optLogout'>
+																Sign out
 															</Dropdown.Item>
 														</Dropdown.Menu>
 													</Dropdown>
@@ -970,15 +1007,21 @@ class SearchBar extends React.Component {
 													</span>
 												</Dropdown.Item>
 											)}
-											<Dropdown.Item className='black-14' href={cmsURL + '/pages/about'}>
-												About
+
+											<div>
+												<CmsDropdown dropdownUrl='exploreDropdown' isMobile={true} />
+												<CmsDropdown dropdownUrl='helpDropdown' isMobile={true} />
+												<CmsDropdown dropdownUrl='usageDataDropdown' isMobile={true} />
+												<CmsDropdown dropdownUrl='aboutUsDropdown' isMobile={true} />
+											</div>
+
+											<Dropdown.Item className='black-14' href={cmsURL + '/pages/latest-news'}>
+												News
 											</Dropdown.Item>
 											<Dropdown.Item className='black-14' href={communityLink}>
 												Community
 											</Dropdown.Item>
-											<Dropdown.Item className='black-14' href={'/dashboard'}>
-												Dashboard
-											</Dropdown.Item>
+
 											<Dropdown.Divider />
 											{(() => {
 												if (userState[0].loggedIn === true) {
@@ -1096,7 +1139,7 @@ class SearchBar extends React.Component {
 													</div>
 												</Col>
 												<Col xs={2} className='text-right'>
-													<div className='navBarNotificationSpacing'>
+													<div className='navBarBellNotificationSpacing'>
 														<Dropdown>
 															<Dropdown.Toggle as={CustomToggle} ref={nodeMobile => (this.nodeMobile = nodeMobile)}>
 																<NotificationBadge count={this.state.count} style={{ backgroundColor: '#29235c' }} />

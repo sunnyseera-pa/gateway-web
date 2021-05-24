@@ -1,0 +1,46 @@
+@import '../../../css/variables';
+
+@media (min-width: 1286px) {
+	.addNewEntityMenu {
+		width: 190px;
+		top: 16px !important;
+		left: 0px !important;
+	}
+}
+
+@media (max-width: 1285px) {
+	.addNewEntityMenu {
+		width: 190px;
+		top: 16px !important;
+		left: 0px !important;
+	}
+}
+
+.addNewEntityDropdown {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	min-width: 120px;
+	max-width: 120px;
+	min-height: 47px;
+	border: none;
+	font-size: 14px;
+	border-radius: 4px;
+	margin: 0px 8px 0px 0px;
+	padding-left: 8px;
+	color: $indigo;
+	&:focus {
+		outline: 0;
+	}
+	button {
+		background-color: $background;
+
+		&:hover {
+			background-color: $gray-pale;
+		}
+	}
+}
+
+.addNewDropDownGap {
+	margin-left: 6px;
+}

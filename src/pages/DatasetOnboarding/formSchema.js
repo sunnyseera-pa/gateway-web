@@ -254,7 +254,7 @@ export const formSchema = {
 			questionSetHeader: 'Dataset',
 			questions: [
 				{
-					questionId: 'summary/title',
+					questionId: 'properties/summary/title',
 					question: 'Title *',
 					text: 'This title must be unique',
 					guidance:
@@ -278,7 +278,7 @@ export const formSchema = {
 					],
 				},
 				{
-					questionId: 'summary/abstract',
+					questionId: 'properties/summary/abstract',
 					question: 'Abstract *',
 					guidance:
 						'- The abstract should provide a **clear and brief descriptive** signpost for researchers who are searching for data that may be relevant to their research.\n- The abstract should allow the reader to determine the **scope of the data collection and accurately summarise its content**.\n- Effective abstracts should **avoid long sentences and abbreviations** where possible.\n- Note: Researchers will view Titles and Abstracts when searching for datasets and choosing whether to explore their content further. **Abstracts should be different from the full description** for a dataset.\n- **Example**: CPRD Aurum contains primary care data contributed by General Practitioner (GP) practices using EMIS Web® including patient registration information and all care events that GPs have chosen to record as part of their usual medical practice.',
@@ -294,7 +294,7 @@ export const formSchema = {
 					],
 				},
 				{
-					questionId: 'summary/contactPoint',
+					questionId: 'properties/summary/contactPoint',
 					question: 'Contact point *',
 					guidance:
 						'- Please provide a **valid email address** that can be used to coordinate data access requests with the publisher.\n- Organisations are expected to provide a **dedicated email address associated** with the data access request process.\n- Notes: An **employee’s email address can only be provided on a temporary basis** and if one is provided an **explicit consent must be obtained** for this purpose.\n- **Example**: <SAILDatabank@swansea.ac.uk>',
@@ -308,7 +308,7 @@ export const formSchema = {
 					],
 				},
 				{
-					questionId: 'summary/keywords',
+					questionId: 'properties/summary/keywords',
 					question: 'Keywords *',
 					guidance:
 						'- Please provide **relevant** and **specific keywords** that can **improve the search engine optimization** of your dataset.\n- Please **enter one keyword at a time** and click **Add New Field** to add further keywords.\n- Text from the title is automatically included in the search, there is no need to include this in the keywords.\n- Include words that researcher may include in their searches.\n- **Example**: Health Data, Research, SAIL, Primary care, GP',
@@ -323,7 +323,7 @@ export const formSchema = {
 					],
 				},
 				{
-					questionId: 'summary/doiName',
+					questionId: 'properties/summary/doiName',
 					question: 'DOI',
 					guidance:
 						'- Please note: This is **not** the DOI of the publication(s) associated with the dataset.\n- All HDR UK registered **datasets** should either have a **Digital Object Identifier (DOI)** or be working towards obtaining one.\n- If a DOI is available, please provide the DOI.\n- **Example**: 10.1093/ije/dyx196\n- **What happens if I do not have a DOI?**: Contact your academic organisation to find out if there is an existing relationship with a DOI provider. If that is not available, sites such as figshare offer free services to mint a DOI for your dataset. Subsequent versions of the Metadata Exchange will provide a DOI minting service.',
@@ -403,7 +403,7 @@ export const formSchema = {
 					questionId: 'properties/coverage/spatial',
 					question: 'Spatial',
 					guidance:
-						'- The **geographical area** covered by the dataset.\n- Please enter a link to entries in a well-maintained gazetteer such as <https://www.geonames.org/>\n- However, for a limited time we will be accepting text based entries.\n- **Example**:\n- <https://www.geonames.org/11609043/north-yorkshire.html>\n- North Yorkshire',
+						'- The **geographical area** covered by the dataset.\n- Please enter a link to entries in a well-maintained gazetteer such as <https://www.geonames.org/>',
 					input: {
 						type: 'textInput',
 					},

@@ -1,8 +1,7 @@
-// /ShowObjects.js
 import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import _ from 'lodash';
+import { has, isNil, isEmpty, isUndefined } from 'lodash';
 import axios from 'axios';
 import * as Sentry from '@sentry/react';
 import { Row, Col, Container, Tabs, Tab, Alert, Tooltip, Button, OverlayTrigger } from 'react-bootstrap/';
@@ -21,7 +20,6 @@ import { ReactComponent as MetadataPlatinum } from '../../images/platinumNew.svg
 import { ReactComponent as MetadataNotRated } from '../../images/notRatedNew.svg';
 import { PageView, initGA } from '../../tracking';
 import { Event } from '../../tracking';
-import moment from 'moment';
 import Linkify from 'react-linkify';
 import DatasetSchema from './DatasetSchema';
 import TechnicalMetadata from './components/TechnicalMetadata';
@@ -94,6 +92,7 @@ class DatasetDetail extends Component {
 		emptyFlagCoverage: false,
 		emptyFlagFormats: false,
 		emptyFlagProvenance: false,
+		emptyFlagObservations: false,
 		emptyFlagDAR: false,
 		emptyFlagRelRes: false,
 		emptyFieldsCount: 0,
@@ -140,7 +139,7 @@ class DatasetDetail extends Component {
 	getDataset = async () => {
 		this.setState({ isLoading: true });
 		await axios.get(baseURL + '/api/v1/datasets/' + this.props.match.params.datasetID).then(async res => {
-			if (_.isNil(res.data)) {
+			if (isNil(res.data)) {
 				window.localStorage.setItem('redirectMsg', `Dataset not found for Id: ${this.props.match.params.datasetID}`);
 				this.props.history.push({ pathname: '/search?search=', search: '' });
 			} else {
@@ -153,13 +152,13 @@ class DatasetDetail extends Component {
 				});
 				this.getTechnicalMetadata();
 				this.getCollections();
-				if (!_.isEmpty(res.data.data.datasetv2)) {
+				if (!isEmpty(res.data.data.datasetv2)) {
 					this.updateV2Flags(res.data.data.datasetv2);
 					this.getEmptyFieldsCount(res.data.data.datasetv2);
 					this.updatePublisherLogo(res.data.data.datasetv2.summary.publisher.name);
 				}
-				if (!_.isEmpty(res.data.data.datasetv2) && !_.isEmpty(res.data.data.datasetv2.enrichmentAndLinkage.qualifiedRelation)) {
-					res.data.data.datasetv2.enrichmentAndLinkage.qualifiedRelation.map(relation => {
+				if (!isEmpty(res.data.data.datasetv2) && !isEmpty(res.data.data.datasetv2.enrichmentAndLinkage.qualifiedRelation)) {
+					res.data.data.datasetv2.enrichmentAndLinkage.qualifiedRelation.forEach(relation => {
 						this.getLinkedDatasets(relation);
 					});
 				}
@@ -178,11 +177,11 @@ class DatasetDetail extends Component {
 
 				this.updateCounter(this.state.data.datasetid, counter);
 
-				if (!_.isUndefined(res.data.data.relatedObjects)) {
-					await this.getAdditionalObjectInfo(res.data.data.relatedObjects);
+				if (!isUndefined(res.data.data.relatedObjects)) {
+					this.getAdditionalObjectInfo(res.data.data.relatedObjects);
 				}
 
-				if (!_.isEmpty(this.topicContext.title)) {
+				if (!isEmpty(this.topicContext.title)) {
 					const publisherId = this.topicContext.title;
 					await this.getPublisherById(publisherId);
 				}
@@ -216,10 +215,13 @@ class DatasetDetail extends Component {
 	};
 
 	getTechnicalMetadata() {
-		this.setState({ isLoading: true });
 		axios.get(baseURL + '/api/v1/datasets/' + this.state.data.datasetid).then(res => {
 			if (res.data) {
-				const { data: { datasetfields: { technicaldetails: technicalMetadata = [] } } } = res.data
+				const {
+					data: {
+						datasetfields: { technicaldetails: technicalMetadata = [] },
+					},
+				} = res.data;
 				this.setState({
 					technicalMetadata,
 				});
@@ -228,7 +230,6 @@ class DatasetDetail extends Component {
 	}
 
 	getCollections() {
-		this.setState({ isLoading: true });
 		axios.get(baseURL + '/api/v1/collections/entityid/' + this.state.data.pid).then(res => {
 			this.setState({
 				collections: res.data.data || [],
@@ -238,74 +239,78 @@ class DatasetDetail extends Component {
 
 	updateV2Flags(v2data) {
 		if (
-			_.isEmpty(v2data.summary.doiName) &&
-			_.isEmpty(v2data.provenance.temporal.distributionReleaseDate) &&
-			_.isEmpty(v2data.provenance.temporal.accrualPeriodicity) &&
-			_.isEmpty(v2data.issued) &&
-			_.isEmpty(v2data.modified) &&
-			_.isEmpty(v2data.version) &&
-			_.isEmpty(v2data.accessibility.usage.resourceCreator)
+			isEmpty(v2data.summary.doiName) &&
+			isEmpty(v2data.provenance.temporal.distributionReleaseDate) &&
+			isEmpty(v2data.provenance.temporal.accrualPeriodicity) &&
+			isEmpty(v2data.issued) &&
+			isEmpty(v2data.modified) &&
+			isEmpty(v2data.version) &&
+			isEmpty(v2data.accessibility.usage.resourceCreator)
 		) {
 			this.setState({ emptyFlagDetails: true });
 		}
 
 		if (
-			(_.isEmpty(v2data.provenance.temporal.startDate) || _.isEmpty(v2data.provenance.temporal.endDate)) &&
-			_.isEmpty(v2data.provenance.temporal.timeLag) &&
-			_.isEmpty(v2data.coverage.spatial) &&
-			_.isEmpty(v2data.coverage.typicalAgeRange) &&
-			_.isEmpty(v2data.coverage.physicalSampleAvailability) &&
-			_.isEmpty(v2data.coverage.followup) &&
-			_.isEmpty(v2data.coverage.pathway)
+			(isEmpty(v2data.provenance.temporal.startDate) || isEmpty(v2data.provenance.temporal.endDate)) &&
+			isEmpty(v2data.provenance.temporal.timeLag) &&
+			isEmpty(v2data.coverage.spatial) &&
+			isEmpty(v2data.coverage.typicalAgeRange) &&
+			isEmpty(v2data.coverage.physicalSampleAvailability) &&
+			isEmpty(v2data.coverage.followup) &&
+			isEmpty(v2data.coverage.pathway)
 		) {
 			this.setState({ emptyFlagCoverage: true });
 		}
 
 		if (
-			_.isEmpty(v2data.accessibility.formatAndStandards.vocabularyEncodingScheme) &&
-			_.isEmpty(v2data.accessibility.formatAndStandards.conformsTo) &&
-			_.isEmpty(v2data.accessibility.formatAndStandards.language) &&
-			_.isEmpty(v2data.accessibility.formatAndStandards.format)
+			isEmpty(v2data.accessibility.formatAndStandards.vocabularyEncodingScheme) &&
+			isEmpty(v2data.accessibility.formatAndStandards.conformsTo) &&
+			isEmpty(v2data.accessibility.formatAndStandards.language) &&
+			isEmpty(v2data.accessibility.formatAndStandards.format)
 		) {
 			this.setState({ emptyFlagFormats: true });
 		}
 
 		if (
-			_.isEmpty(v2data.provenance.origin.purpose) &&
-			_.isEmpty(v2data.provenance.source) &&
-			_.isEmpty(v2data.provenance.collectionSituation) &&
-			_.isEmpty(v2data.enrichmentAndLinkage.derivation) &&
-			_.isEmpty(v2data.observations.observedNode) &&
-			_.isEmpty(v2data.observations.disambiguatingDescription) &&
-			_.isEmpty(v2data.observations.measuredValue) &&
-			_.isEmpty(v2data.observations.measuredProperty) &&
-			_.isEmpty(v2data.observations.observationDate)
+			isEmpty(v2data.provenance.origin.purpose) &&
+			isEmpty(v2data.provenance.source) &&
+			isEmpty(v2data.provenance.collectionSituation) &&
+			isEmpty(v2data.enrichmentAndLinkage.derivation) &&
+			isEmpty(v2data.observations.observedNode) &&
+			isEmpty(v2data.observations.disambiguatingDescription) &&
+			isEmpty(v2data.observations.measuredValue) &&
+			isEmpty(v2data.observations.measuredProperty) &&
+			isEmpty(v2data.observations.observationDate)
 		) {
 			this.setState({ emptyFlagProvenance: true });
 		}
 
+		if (isEmpty(v2data.observations)) {
+			this.setState({ emptyFlagObservations: true });
+		}
+
 		if (
-			_.isEmpty(v2data.summary.publisher.accessRights) &&
-			_.isEmpty(v2data.summary.publisher.deliveryLeadTime) &&
-			_.isEmpty(v2data.summary.publisher.accessRequestCost) &&
-			_.isEmpty(v2data.summary.publisher.accessService) &&
-			_.isEmpty(v2data.accessibility.access.accessRequestCost) &&
-			_.isEmpty(v2data.accessibility.access.accessRights) &&
-			_.isEmpty(v2data.accessibility.access.deliveryLeadTime) &&
-			_.isEmpty(v2data.accessibility.access.accessService) &&
-			_.isEmpty(v2data.accessibility.access.jurisdiction) &&
-			_.isEmpty(v2data.summary.publisher.accessService.dataUseLimitation) &&
-			_.isEmpty(v2data.summary.publisher.accessService.dataUseRequirements) &&
-			_.isEmpty(v2data.accessibility.access.dataController) &&
-			_.isEmpty(v2data.accessibility.access.dataProcessor)
+			isEmpty(v2data.summary.publisher.accessRights) &&
+			isEmpty(v2data.summary.publisher.deliveryLeadTime) &&
+			isEmpty(v2data.summary.publisher.accessRequestCost) &&
+			isEmpty(v2data.summary.publisher.accessService) &&
+			isEmpty(v2data.accessibility.access.accessRequestCost) &&
+			isEmpty(v2data.accessibility.access.accessRights) &&
+			isEmpty(v2data.accessibility.access.deliveryLeadTime) &&
+			isEmpty(v2data.accessibility.access.accessService) &&
+			isEmpty(v2data.accessibility.access.jurisdiction) &&
+			isEmpty(v2data.summary.publisher.accessService.dataUseLimitation) &&
+			isEmpty(v2data.summary.publisher.accessService.dataUseRequirements) &&
+			isEmpty(v2data.accessibility.access.dataController) &&
+			isEmpty(v2data.accessibility.access.dataProcessor)
 		) {
 			this.setState({ emptyFlagDAR: true });
 		}
 
 		if (
-			_.isEmpty(v2data.accessibility.usage.isReferencedBy) &&
-			_.isEmpty(v2data.enrichmentAndLinkage.tools) &&
-			_.isEmpty(v2data.accessibility.usage.investigations)
+			isEmpty(v2data.accessibility.usage.isReferencedBy) &&
+			isEmpty(v2data.enrichmentAndLinkage.tools) &&
+			isEmpty(v2data.accessibility.usage.investigations)
 		) {
 			this.setState({ emptyFlagRelRes: true });
 		}
@@ -330,7 +335,7 @@ class DatasetDetail extends Component {
 			// 2. Check if relation is a String that matches a dataset title
 			await axios.get(baseURL + '/api/v1/relatedobject/linkeddatasets/' + encodeURIComponent(relation)).then(async res => {
 				const { datasetFound, pid, name, publisher } = res.data;
-				if (datasetFound && !_.isNil(pid)) {
+				if (datasetFound && !isNil(pid)) {
 					if (pid !== this.state.data.pid) {
 						linkedDatasets.unshift({
 							title: name,
@@ -355,7 +360,7 @@ class DatasetDetail extends Component {
 
 	getEmptyFieldsCount(v2data) {
 		let temporalCoverage = '';
-		if (!_.isEmpty(v2data.provenance.temporal.startDate) && !_.isEmpty(v2data.provenance.temporal.endDate)) {
+		if (!isEmpty(v2data.provenance.temporal.startDate) && !isEmpty(v2data.provenance.temporal.endDate)) {
 			temporalCoverage = v2data.provenance.temporal.startDate + ' - ' + v2data.provenance.temporal.endDate;
 		}
 
@@ -379,32 +384,23 @@ class DatasetDetail extends Component {
 			v2data.accessibility.formatAndStandards.language,
 			v2data.accessibility.formatAndStandards.format,
 			v2data.provenance.origin.purpose,
-			v2data.provenance.source,
-			v2data.provenance.collectionSituation,
+			v2data.provenance.origin.source,
+			v2data.provenance.origin.collectionSituation,
 			v2data.enrichmentAndLinkage.derivation,
-			v2data.observations.observedNode,
-			v2data.observations.disambiguatingDescription,
-			v2data.observations.measuredValue,
-			v2data.observations.measuredProperty,
-			v2data.observations.observationDate,
-			v2data.summary.publisher.accessRights,
-			v2data.summary.publisher.deliveryLeadTime,
-			v2data.summary.publisher.accessRequestCost,
-			v2data.summary.publisher.accessService,
-			v2data.accessibility.access.jurisdiction,
-			v2data.accessibility.access.accessRequestCost,
-			v2data.accessibility.access.accessRights,
-			v2data.accessibility.access.deliveryLeadTime,
-			v2data.accessibility.access.accessService,
-			v2data.summary.publisher.accessService.dataUseLimitation,
-			v2data.summary.publisher.accessService.dataUseRequirements,
+			v2data.observations,
+			v2data.accessibility.access.accessRights || v2data.summary.publisher.accessRights,
+			v2data.accessibility.access.deliveryLeadTime || v2data.summary.publisher.deliveryLeadTime,
+			v2data.accessibility.access.accessRequestCost || v2data.summary.publisher.accessRequestCost,
+			v2data.accessibility.access.accessService || v2data.summary.publisher.accessService,
+			v2data.accessibility.usage.dataUseLimitation || v2data.summary.publisher.dataUseLimitation,
+			v2data.accessibility.usage.dataUseRequirements || v2data.summary.publisher.dataUseRequirements,
 			v2data.accessibility.access.dataController,
 			v2data.accessibility.access.dataProcessor,
 			v2data.accessibility.usage.isReferencedBy,
 			v2data.enrichmentAndLinkage.tools,
 			v2data.accessibility.usage.investigations,
 		];
-		let emptyFieldsArray = requiredFieldsArray.filter(field => _.isEmpty(field));
+		let emptyFieldsArray = requiredFieldsArray.filter(field => isEmpty(field));
 		let tempEmptyFieldsCount = emptyFieldsArray.length;
 
 		this.setState({ emptyFieldsCount: tempEmptyFieldsCount });
@@ -424,6 +420,7 @@ class DatasetDetail extends Component {
 				emptyFlagCoverage: false,
 				emptyFlagFormats: false,
 				emptyFlagProvenance: false,
+				emptyFlagObservations: false,
 				emptyFlagDAR: false,
 				emptyFlagRelRes: false,
 				showEmpty: true,
@@ -539,8 +536,8 @@ class DatasetDetail extends Component {
 					},
 				} = response;
 				const stateObj = {
-					requiresModal: !_.isEmpty(dataRequestModalContent) ? true : false,
-					allowNewMessage: allowsMessaging && _.isEmpty(dataRequestModalContent) ? true : false,
+					requiresModal: !isEmpty(dataRequestModalContent) ? true : false,
+					allowNewMessage: allowsMessaging && isEmpty(dataRequestModalContent) ? true : false,
 					allowsMessaging,
 					dataRequestModalContent,
 				};
@@ -617,6 +614,7 @@ class DatasetDetail extends Component {
 			emptyFlagCoverage,
 			emptyFlagFormats,
 			emptyFlagProvenance,
+			emptyFlagObservations,
 			emptyFlagDAR,
 			emptyFlagRelRes,
 			showEmpty,
@@ -625,7 +623,7 @@ class DatasetDetail extends Component {
 			publisherLogoURL,
 		} = this.state;
 
-		let publisherLogo = !_.isEmpty(v2data) && !_.isEmpty(v2data.summary.publisher.logo) ? v2data.summary.publisher.logo : publisherLogoURL;
+		let publisherLogo = !isEmpty(v2data) && !isEmpty(v2data.summary.publisher.logo) ? v2data.summary.publisher.logo : publisherLogoURL;
 
 		const componentDecorator = (href, text, key) => (
 			<span>
@@ -637,7 +635,7 @@ class DatasetDetail extends Component {
 		);
 
 		const formatLinks = source => {
-			const reUrl = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
+			const reUrl = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/gi;
 			return source.replace(reUrl, '[$1]($1) ');
 		};
 
@@ -649,10 +647,10 @@ class DatasetDetail extends Component {
 			);
 		}
 
-		if (_.isNil(data.relatedObjects)) {
+		if (isNil(data.relatedObjects)) {
 			data.relatedObjects = [];
 		}
-		if (_.has(data, 'datasetfields.phenotypes') && data.datasetfields.phenotypes.length > 0) {
+		if (has(data, 'datasetfields.phenotypes') && data.datasetfields.phenotypes.length > 0) {
 			data.datasetfields.phenotypes.sort((a, b) =>
 				a.name.toLowerCase() > b.name.toLowerCase() ? 1 : b.name.toLowerCase() > a.name.toLowerCase() ? -1 : 0
 			);
@@ -661,7 +659,7 @@ class DatasetDetail extends Component {
 		function Metadata() {
 			var rating = 'Not Rated';
 
-			if (data.datasetfields.metadataquality && !_.isNil(data.datasetfields.metadataquality.weighted_quality_rating)) {
+			if (data.datasetfields.metadataquality && !isNil(data.datasetfields.metadataquality.weighted_quality_rating)) {
 				rating = data.datasetfields.metadataquality.weighted_quality_rating;
 			} else {
 				return (
@@ -684,14 +682,7 @@ class DatasetDetail extends Component {
 					Click to read more about how the score is calculated.
 					<br />
 					<br />
-					Click to read more about how the score is calculated.
-					<br />
-					<br />
-					{Math.trunc(data.datasetfields.metadataquality.completeness_percent)} Completeness %
-					<br />
 					{Math.trunc(data.datasetfields.metadataquality.weighted_completeness_percent)} Weighted completeness %
-					<br />
-					{Math.trunc(data.datasetfields.metadataquality.error_percent)} Error %
 					<br />
 					{Math.trunc(data.datasetfields.metadataquality.weighted_error_percent)} Weighted error %
 				</Tooltip>
@@ -729,7 +720,7 @@ class DatasetDetail extends Component {
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
 				<Fragment>
-					{data.datasetfields.metadataschema !== '' ? <DatasetSchema datasetSchema={data.datasetfields.metadataschema} /> : null}
+					<DatasetSchema data={data} />
 					<SearchBar
 						ref={this.searchBar}
 						searchString={searchString}
@@ -745,70 +736,51 @@ class DatasetDetail extends Component {
 								{alert ? <Alert variant={alert.type}>{alert.message}</Alert> : null}
 								<div className='rectangle'>
 									<Row>
-										{!_.isEmpty(v2data) ? (
-											<>
-												<Col xs={1} md={1}>
-													<div
-														className='datasetImageCircle'
-														style={{
-															backgroundImage: `url('${publisherLogo}')`,
-															backgroundRepeat: 'no-repeat',
-															backgroundPosition: 'center',
-															backgroundSize: 'contain',
-															backgroundOrigin: 'content-box',
-														}}
-													/>
-												</Col>
-												<Col xs={7} md={9} className='datasetTitle'>
-													<span className='black-16'> {data.name} </span>
-													<br />
-													<span>
-														{!_.isEmpty(v2data.summary.publisher.memberOf) ? (
-															<>
-																<span onMouseEnter={this.handleMouseHoverShield} onMouseLeave={this.handleMouseHoverShield}>
-																	<SVGIcon name='shield' fill={'#475da7'} className='svg-16 mr-2' viewBox='0 0 16 16' />
-																</span>
+										<Col xs={1} md={1}>
+											<div
+												className='datasetImageCircle'
+												style={{
+													backgroundImage: `url('${publisherLogo}')`,
+													backgroundRepeat: 'no-repeat',
+													backgroundPosition: 'center',
+													backgroundSize: 'contain',
+													backgroundOrigin: 'content-box',
+												}}
+											/>
+										</Col>
+										<Col xs={7} md={9} className='datasetTitle'>
+											<span className='black-16'> {data.name} </span>
+											<br />
+											<span>
+												{!isEmpty(v2data.summary.publisher.memberOf) ? (
+													<>
+														<span onMouseEnter={this.handleMouseHoverShield} onMouseLeave={this.handleMouseHoverShield}>
+															<SVGIcon name='shield' fill={'#475da7'} className='svg-16 mr-2' viewBox='0 0 16 16' />
+														</span>
 
-																{this.state.isHoveringShield && (
-																	<div className='dataShieldToolTip'>
-																		<span className='white-13-semibold'>
-																			{v2data.summary.publisher.memberOf.charAt(0).toUpperCase() +
-																				v2data.summary.publisher.memberOf.slice(1).toLowerCase()}{' '}
-																			member
-																		</span>
-																	</div>
-																)}
-															</>
-														) : (
-															''
+														{this.state.isHoveringShield && (
+															<div className='dataShieldToolTip'>
+																<span className='white-13-semibold'>
+																	{v2data.summary.publisher.memberOf.charAt(0).toUpperCase() +
+																		v2data.summary.publisher.memberOf.slice(1).toLowerCase()}{' '}
+																	member
+																</span>
+															</div>
 														)}
-														{!_.isEmpty(v2data.summary.publisher.name) ? (
-															<span className='gray800-14'>{v2data.summary.publisher.name}</span>
-														) : (
-															<span className='gray800-14-opacity'>Not specified</span>
-														)}
-													</span>
-												</Col>
-												<Col xs={4} md={2} className='text-right'>
-													<Metadata />
-												</Col>
-											</>
-										) : (
-											<>
-												<Col xs={8} md={10}>
-													<span className='black-16'>{data.name} </span>
-													<br />
-													{data.datasetfields.publisher ? (
-														<span className='gray800-14'>{data.datasetfields.publisher}</span>
-													) : (
-														<span className='gray800-14-opacity'>Not specified</span>
-													)}
-												</Col>
-												<Col xs={4} md={2} className='text-right'>
-													<Metadata />
-												</Col>
-											</>
-										)}
+													</>
+												) : (
+													''
+												)}
+												{!isEmpty(v2data.summary.publisher.name) ? (
+													<span className='gray800-14'>{v2data.summary.publisher.name}</span>
+												) : (
+													<span className='gray800-14-opacity'>Not specified</span>
+												)}
+											</span>
+										</Col>
+										<Col xs={4} md={2} className='text-right'>
+											<Metadata />
+										</Col>
 									</Row>
 									<Row className='mt-2'>
 										<Col xs={12}>
@@ -880,9 +852,7 @@ class DatasetDetail extends Component {
 								<div>
 									<Tabs className='tabsBackground gray700-13 margin-bottom-16'>
 										<Tab eventKey='About' title={'About'}>
-											{!data.datasetfields.abstract ? (
-												''
-											) : (
+											{!isEmpty(v2data.summary.abstract) ? (
 												<Row className='mt-1'>
 													<Col sm={12}>
 														<div className='rectangle'>
@@ -891,17 +861,17 @@ class DatasetDetail extends Component {
 															</Row>
 															<Row className='mt-3'>
 																<Col sm={12} className='gray800-14'>
-																	<span className='gray800-14'>{data.datasetfields.abstract}</span>
+																	<span className='gray800-14'>{v2data.summary.abstract}</span>
 																</Col>
 															</Row>
 														</div>
 													</Col>
 												</Row>
+											) : (
+												''
 											)}
 
-											{!data.description ? (
-												''
-											) : (
+											{!isEmpty(v2data.documentation.description) ? (
 												<Row className='mt-1'>
 													<Col sm={12}>
 														<div className='rectangle'>
@@ -911,290 +881,53 @@ class DatasetDetail extends Component {
 															<Row className='mt-3'>
 																<Col sm={12} className='gray800-14 overflowWrap'>
 																	<span className='gray800-14'>
-																		<ReactMarkdown source={formatLinks(data.description)} />
+																		<ReactMarkdown source={formatLinks(v2data.documentation.description)} />
 																	</span>
 																</Col>
 															</Row>
 														</div>
 													</Col>
 												</Row>
-											)}
-
-											{/* V2 DATASETS  */}
-											{!_.isEmpty(v2data) ? (
-												<>
-													{emptyFlagDetails === false ? <DatasetAboutCard section='Details' v2data={v2data} showEmpty={showEmpty} /> : ''}
-													{emptyFlagCoverage === false ? <DatasetAboutCard section='Coverage' v2data={v2data} showEmpty={showEmpty} /> : ''}
-													{emptyFlagFormats === false ? (
-														<DatasetAboutCard section='Formats and standards' v2data={v2data} showEmpty={showEmpty} />
-													) : (
-														''
-													)}
-													{emptyFlagProvenance === false ? (
-														<DatasetAboutCard section='Provenance' v2data={v2data} showEmpty={showEmpty} />
-													) : (
-														''
-													)}
-													{emptyFlagDAR === false ? (
-														<DatasetAboutCard
-															section='Data access request'
-															v2data={v2data}
-															requiresModal={this.state.requiresModal}
-															toggleModal={this.toggleModal}
-															showLoginModal={() => {
-																this.showLoginModal(this.state.data.name);
-															}}
-															toggleDrawer={this.toggleDrawer}
-															showEmpty={showEmpty}
-															datasetid={this.state.data.datasetid}
-															loggedIn={this.state.userState[0].loggedIn}
-														/>
-													) : (
-														''
-													)}
-													{emptyFlagRelRes === false ? (
-														<DatasetAboutCard section='Related resources' v2data={v2data} showEmpty={showEmpty} />
-													) : (
-														''
-													)}
-												</>
 											) : (
-												<>
-													<Row className='mt-1'>
-														<Col sm={12}>
-															<div className='rectangle'>
-																<Row className='gray800-14-bold'>
-																	<Col sm={12}>Details</Col>
-																</Row>
-																<Row className='mt-3'>
-																	<Col sm={2} className='gray800-14'>
-																		Release date
-																	</Col>
-																	{data.datasetfields.releaseDate ? (
-																		<Col sm={10} className='gray800-14'>
-																			{moment(data.datasetfields.releaseDate).format('DD MMMM YYYY')}
-																		</Col>
-																	) : (
-																		<Col sm={10} className='gray800-14-opacity'>
-																			Not specified
-																		</Col>
-																	)}
-																</Row>
-																<Row className='mt-2'>
-																	<Col sm={2} className='gray800-14'>
-																		Periodicity
-																	</Col>
-																	{data.datasetfields.periodicity ? (
-																		<Col sm={10} className='gray800-14'>
-																			{data.datasetfields.periodicity}
-																		</Col>
-																	) : (
-																		<Col sm={10} className='gray800-14-opacity'>
-																			Not specified
-																		</Col>
-																	)}
-																</Row>
-																<Row className='mt-2'>
-																	<Col sm={2} className='gray800-14'>
-																		Standard
-																	</Col>
-																	{data.datasetfields.conformsTo ? (
-																		<Col sm={10} className='gray800-14 overflowWrap'>
-																			<Linkify properties={{ target: '_blank' }}>{data.datasetfields.conformsTo}</Linkify>
-																		</Col>
-																	) : (
-																		<Col sm={10} className='gray800-14-opacity'>
-																			Not specified
-																		</Col>
-																	)}
-																</Row>
-															</div>
-														</Col>
-													</Row>
-
-													<Row className='mt-1'>
-														<Col sm={12}>
-															<div className='rectangle'>
-																<Row className='gray800-14-bold'>
-																	<Col sm={12}>Data access</Col>
-																</Row>
-																<Row className='mt-3'>
-																	<Col sm={2} className='gray800-14'>
-																		Access rights
-																	</Col>
-																	{data.datasetfields.accessRights ? (
-																		<Col sm={10} className='gray800-14'>
-																			<Linkify properties={{ target: '_blank' }}>{data.datasetfields.accessRights}</Linkify>
-																		</Col>
-																	) : (
-																		<Col sm={10} className='gray800-14-opacity'>
-																			Not specified
-																		</Col>
-																	)}
-																</Row>
-																<Row className='mt-2'>
-																	<Col sm={2} className='gray800-14'>
-																		License
-																	</Col>
-																	{data.license ? (
-																		<Col sm={10} className='gray800-14'>
-																			<Linkify properties={{ target: '_blank' }}>{data.license}</Linkify>
-																		</Col>
-																	) : (
-																		<Col sm={10} className='gray800-14-opacity'>
-																			Not specified
-																		</Col>
-																	)}
-																</Row>
-																<Row className='mt-2'>
-																	<Col sm={2} className='gray800-14'>
-																		Request time
-																	</Col>
-																	{data.datasetfields.accessRequestDuration ? (
-																		<Col sm={10} className='gray800-14'>
-																			<Linkify properties={{ target: '_blank' }}>{data.datasetfields.accessRequestDuration}</Linkify>
-																		</Col>
-																	) : (
-																		<Col sm={10} className='gray800-14-opacity'>
-																			Not specified
-																		</Col>
-																	)}
-																</Row>
-															</div>
-														</Col>
-													</Row>
-
-													<Row className='mt-1'>
-														<Col sm={12}>
-															<div className='rectangle'>
-																<Row className='gray800-14-bold'>
-																	<Col sm={10}>Coverage</Col>
-																</Row>
-																<Row className='mt-3'>
-																	<Col sm={3} className='gray800-14'>
-																		Jurisdiction
-																	</Col>
-																	{data.datasetfields.jurisdiction ? (
-																		<Col sm={9} className='gray800-14'>
-																			{data.datasetfields.jurisdiction}
-																		</Col>
-																	) : (
-																		<Col sm={9} className='gray800-14-opacity'>
-																			Not specified
-																		</Col>
-																	)}
-																</Row>
-																<Row className='mt-2'>
-																	<Col sm={3} className='gray800-14'>
-																		Geographic coverage
-																	</Col>
-																	{data.datasetfields.geographicCoverage ? (
-																		<Col sm={9} className='gray800-14'>
-																			{data.datasetfields.geographicCoverage.toString()}
-																		</Col>
-																	) : (
-																		<Col sm={9} className='gray800-14-opacity'>
-																			Not specified
-																		</Col>
-																	)}
-																</Row>
-																<Row className='mt-2'>
-																	<Col sm={3} className='gray800-14'>
-																		Dataset start date
-																	</Col>
-																	{data.datasetfields.datasetStartDate ? (
-																		<Col sm={9} className='gray800-14'>
-																			{data.datasetfields.datasetStartDate}
-																		</Col>
-																	) : (
-																		<Col sm={9} className='gray800-14-opacity'>
-																			Not specified
-																		</Col>
-																	)}
-																</Row>
-																<Row className='mt-2'>
-																	<Col sm={3} className='gray800-14'>
-																		Dataset end date
-																	</Col>
-																	{data.datasetfields.datasetEndDate ? (
-																		<Col sm={9} className='gray800-14'>
-																			{data.datasetfields.datasetEndDate}
-																		</Col>
-																	) : (
-																		<Col sm={9} className='gray800-14-opacity'>
-																			Not specified
-																		</Col>
-																	)}
-																</Row>
-															</div>
-														</Col>
-													</Row>
-
-													<Row className='mt-1'>
-														<Col sm={12}>
-															<div className='rectangle'>
-																<Row className='gray800-14-bold'>
-																	<Col sm={12}>Demographics</Col>
-																</Row>
-																<Row className='mt-3'>
-																	<Col sm={3} className='gray800-14'>
-																		Statistical population
-																	</Col>
-																	{data.datasetfields.statisticalPopulation ? (
-																		<Col sm={9} className='gray800-14'>
-																			{data.datasetfields.statisticalPopulation}
-																		</Col>
-																	) : (
-																		<Col sm={9} className='gray800-14-opacity'>
-																			Not specified
-																		</Col>
-																	)}
-																</Row>
-																<Row className='mt-2'>
-																	<Col sm={3} className='gray800-14'>
-																		Age band
-																	</Col>
-																	{data.datasetfields.ageBand ? (
-																		<Col sm={9} className='gray800-14'>
-																			{data.datasetfields.ageBand}
-																		</Col>
-																	) : (
-																		<Col sm={9} className='gray800-14-opacity'>
-																			Not specified
-																		</Col>
-																	)}
-																</Row>
-															</div>
-														</Col>
-													</Row>
-
-													<Row className='mt-1'>
-														<Col sm={12}>
-															<div className='rectangle'>
-																<Row className='gray800-14-bold'>
-																	<Col sm={12}>Related resources</Col>
-																</Row>
-																<Row className='mt-3'>
-																	<Col sm={3} className='gray800-14'>
-																		Physical sample availability
-																	</Col>
-																	{data.datasetfields.physicalSampleAvailability ? (
-																		<Col sm={9} className='gray800-14'>
-																			<Linkify properties={{ target: '_blank' }}>{data.datasetfields.physicalSampleAvailability}</Linkify>
-																		</Col>
-																	) : (
-																		<Col sm={9} className='gray800-14-opacity'>
-																			Not specified
-																		</Col>
-																	)}
-																</Row>
-															</div>
-														</Col>
-													</Row>
-												</>
+												''
 											)}
 
-											{!_.isNil(data.datasetfields.phenotypes) && data.datasetfields.phenotypes.length > 0 ? (
+											{emptyFlagDetails === false ? <DatasetAboutCard section='Details' v2data={v2data} showEmpty={showEmpty} /> : ''}
+											{emptyFlagCoverage === false ? <DatasetAboutCard section='Coverage' v2data={v2data} showEmpty={showEmpty} /> : ''}
+											{emptyFlagFormats === false ? (
+												<DatasetAboutCard section='Formats and standards' v2data={v2data} showEmpty={showEmpty} />
+											) : (
+												''
+											)}
+											{emptyFlagProvenance === false ? <DatasetAboutCard section='Provenance' v2data={v2data} showEmpty={showEmpty} /> : ''}
+											{emptyFlagObservations === false ? (
+												<DatasetAboutCard section='Observations' v2data={v2data} showEmpty={showEmpty} />
+											) : (
+												''
+											)}
+											{emptyFlagDAR === false ? (
+												<DatasetAboutCard
+													section='Data access request'
+													v2data={v2data}
+													showEmpty={showEmpty}
+													requiresModal={this.state.requiresModal}
+													toggleModal={this.toggleModal}
+													showLoginModal={() => {
+														this.showLoginModal(this.state.data.name);
+													}}
+													datasetid={this.state.data.datasetid}
+													loggedIn={this.state.userState[0].loggedIn}
+												/>
+											) : (
+												''
+											)}
+											{emptyFlagRelRes === false ? (
+												<DatasetAboutCard section='Related resources' v2data={v2data} showEmpty={showEmpty} />
+											) : (
+												''
+											)}
+
+											{!isNil(data.datasetfields.phenotypes) && data.datasetfields.phenotypes.length > 0 ? (
 												<Fragment>
 													<Row className='mt-1'>
 														<Col sm={12}>
@@ -1275,7 +1008,7 @@ class DatasetDetail extends Component {
 												''
 											)}
 
-											{!_.isEmpty(v2data) && !_.isEmpty(v2data.enrichmentAndLinkage.qualifiedRelation) ? (
+											{!isEmpty(v2data) && !isEmpty(v2data.enrichmentAndLinkage.qualifiedRelation) ? (
 												<Fragment>
 													<Row className='mt-1'>
 														<Col sm={12}>
@@ -1441,7 +1174,7 @@ class DatasetDetail extends Component {
 												''
 											)}
 
-											{!_.isEmpty(v2data) ? (
+											{!isEmpty(v2data) ? (
 												<>
 													<Row>
 														<Col sm={12} lg={12} className='gray800-14 datasetEmptyInfo'>
