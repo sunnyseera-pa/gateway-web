@@ -1030,10 +1030,10 @@ class SearchBar extends React.Component {
 												<CmsDropdown dropdownUrl='aboutUsDropdown' isMobile={true} />
 											</div>
 
-											<Dropdown.Item className='black-14' href={cmsURL + '/pages/latest-news'}>
+											<Dropdown.Item className='black-14 cmsDropdown' href={cmsURL + '/pages/latest-news'}>
 												News
 											</Dropdown.Item>
-											<Dropdown.Item className='black-14' href={communityLink}>
+											<Dropdown.Item className='black-14 cmsDropdown' href={communityLink}>
 												Community
 											</Dropdown.Item>
 
