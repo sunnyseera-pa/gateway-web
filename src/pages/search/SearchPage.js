@@ -844,7 +844,6 @@ class SearchPage extends React.Component {
 	 * @return	{object} object of {label, value...}
 	 */
 	findNode = (filters = [], label) => {
-		console.log(filters);
 		if (!_.isEmpty(filters)) {
 			return [...filters].find(node => node.label.toUpperCase() === label.toUpperCase()) || {};
 		}
