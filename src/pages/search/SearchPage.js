@@ -104,7 +104,6 @@ class SearchPage extends React.Component {
 	constructor(props) {
 		super(props);
 		let { search = '', tab = 'Datasets' } = queryString.parse(window.location.search);
-		debugger;
 		if (!Object.keys(typeMapper).some(key => key === tab)) {
 			window.location.href = '/search?search=&tab=Datasets';
 		}
@@ -144,7 +143,6 @@ class SearchPage extends React.Component {
 			else if (this.state.userState[0].loggedIn && queryParams.openUserMessages === 'true') {
 				this.toggleDrawer();
 			}
-			debugger;
 			// 7. set the selectedFilter states from queryParams ** does not return anything **
 			await this.updateFilterStates(queryParams);
 			// 8. call search API
@@ -155,11 +153,9 @@ class SearchPage extends React.Component {
 		}
 	}
 
-	async componentWillReceiveProps(nextProps) {
+	async componentWillReceiveProps() {
 		let queryParams = queryString.parse(window.location.search);
-		// 1. set search string
-		this.setState({ search: queryParams['search'] });
-		// 2. if tabs are different update
+		// 1. if tabs are different update
 		if (this.state.key !== queryParams.tab) {
 			this.setState({ key: queryParams.tab || 'Datasets' });
 		}
@@ -187,7 +183,6 @@ class SearchPage extends React.Component {
 	 * @desc Sets selectedStates for filters including search string
 	 */
 	async updateFilterStates(queryParams) {
-		debugger;
 		let filtersV2, selectedV2;
 		if (!_.isEmpty(this.state.filtersV2)) {
 			// 1. take copy of filters data
@@ -198,12 +193,10 @@ class SearchPage extends React.Component {
 				// 3. loop over queryKeys
 				for (const key of Object.keys(queryParams)) {
 					if (!_.isNil(queryParams[key])) {
-						debugger;
 						// 4. convert queryString into array of values
 						let queryValues = queryParams[key].split('::');
 						// 5. check if key exists in our tree, return {} or undefined
 						let parentNode = this.findParentNode(filtersV2, key);
-						debugger;
 						if (!_.isNil(parentNode)) {
 							let { filters } = parentNode;
 							// 6. loop over query values
@@ -211,7 +204,6 @@ class SearchPage extends React.Component {
 								// 7. get the selected values
 								let foundNode = this.findNode(filters, node);
 								if (!_.isEmpty(foundNode)) {
-									debugger;
 									// 8. set check value
 									foundNode.checked = !foundNode.checked;
 									// 9. increment highest parent count
@@ -224,7 +216,6 @@ class SearchPage extends React.Component {
 									};
 									// 11. fn for handling the *selected showing* returns new state
 									let selected = this.handleSelected(selectedNode, foundNode.checked);
-									debugger;
 									// 12. update selectedV2 array with our new returned value
 									selectedV2 = [...selectedV2, ...selected];
 								}
@@ -539,7 +530,6 @@ class SearchPage extends React.Component {
 			else if (values.showLogin === 'true' && document.referrer !== '')
 				searchURL += '&loginReferrer=' + encodeURIComponent(document.referrer);
 		}
-		debugger;
 
 		if (!skipHistory) {
 			if (this.state.key) searchURL += '&tab=' + this.state.key;
@@ -856,7 +846,7 @@ class SearchPage extends React.Component {
 	findNode = (filters = [], label) => {
 		console.log(filters);
 		if (!_.isEmpty(filters)) {
-			return [...filters].find(node => node.label === label) || {};
+			return [...filters].find(node => node.label.toUpperCase() === label.toUpperCase()) || {};
 		}
 		return {};
 	};
@@ -914,7 +904,6 @@ class SearchPage extends React.Component {
 	 * @param {boolean} checkValue
 	 */
 	handleInputChange = (node, parentKey, checkValue) => {
-		console.log(this.state.selectedV2);
 		// 1. copy state - stop mutation
 		let filtersV2 = [...this.state.filtersV2];
 		// 2. find parent obj - recursive
