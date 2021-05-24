@@ -512,3 +512,35 @@ body.modal-open {
 	margin: 10px;
 	max-width: 275px;
 }
+
+.notificationOverallStyle {
+	display: flex;
+	flex-wrap: nowrap !important;
+	justify-content: space-evenly;
+	margin-left: -5px !important;
+	@include mq('tablet-wide', max) {
+		margin-left: 90px !important;
+	}
+	@include mq('tablet-small', max) {
+		margin-left: 60px !important;
+	}
+	@include mq('phablet', max) {
+		margin-left: 5px !important;
+	}
+	@include mq('phone', max) {
+		margin-left: -15px !important;
+	}
+}
+
+.searchBarRow {
+	padding-left: 0px;
+}
+
+.logoSVGMobile {
+	display: flex;
+	align-items: center;
+	padding-left: 0px !important;
+	@include mq('phablet', max) {
+		padding-left: 15px !important;
+	}
+}
