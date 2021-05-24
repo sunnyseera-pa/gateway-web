@@ -422,7 +422,7 @@ body.modal-open {
 
 .cmsDropdown {
 	@include mq('tablet-wide', max) {
-		padding: 8px 24px;
+		padding: 8px 24px !important;
 	}
 }
 
