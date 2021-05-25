@@ -12,8 +12,8 @@ import { ReactComponent as NotificationsBellSvg } from '../../../images/bell.svg
 import { ReactComponent as HamBurgerSvg } from '../../../images/hamburger.svg';
 import { ReactComponent as ArrowDownSvg } from '../../../images/stock.svg';
 import { ReactComponent as WhiteArrowDownSvg } from '../../../images/arrowDownWhite.svg';
-import {NotificationContainer, NotificationManager} from 'react-notifications';
-import './SearchBar.scss'; 
+import { NotificationContainer, NotificationManager } from 'react-notifications';
+import './SearchBar.scss';
 import FlagsTranslation from './FlagsTranslation';
 import '../uatBanner/UatBanner.scss';
 import moment from 'moment';
@@ -117,8 +117,7 @@ class SearchBar extends React.Component {
 
 	logout = e => {
 		axios.get(baseURL + '/api/v1/auth/logout').then(res => {
-			if (localStorage.getItem('HDR_TEAM') !== null)
-				localStorage.removeItem('HDR_TEAM');
+			if (localStorage.getItem('HDR_TEAM') !== null) localStorage.removeItem('HDR_TEAM');
 
 			window.location.reload();
 		});
@@ -239,18 +238,21 @@ class SearchBar extends React.Component {
 	}
 
 	getLink = (publisherName = '') => {
-		if(!isEmpty(publisherName))
-			return `/account?tab=dataaccessrequests&team=${publisherName}`;
+		if (!isEmpty(publisherName)) return `/account?tab=dataaccessrequests&team=${publisherName}`;
 
 		return `/account?tab=dataaccessrequests`;
-	}
+	};
 
-	getPublisherLink = (data) => {
+	getPublisherLink = data => {
 		let { messageDescription, publisherName } = data;
 		let link = this.getLink(publisherName);
 
-		return <a href={`${link}`} class='notificationInfo'>{messageDescription}</a>;
-	}
+		return (
+			<a href={`${link}`} class='notificationInfo'>
+				{messageDescription}
+			</a>
+		);
+	};
 
 	render() {
 		const { userState, newData, isLoading, clearMessage, isHovering, textValue } = this.state;
@@ -303,17 +305,22 @@ class SearchBar extends React.Component {
 						<Row className='whiteBackground'>
 							<Col lg={col1Size}>
 								<div className='navBarLogoSpacing'>
-									<a style={{ cursor: 'pointer' }} href="/">
+									<a style={{ cursor: 'pointer' }} href='/'>
 										<ColourLogoSvg className='ml-4 mt-3' />
 									</a>
 								</div>
-								<div className="navBarLinkSpacing">
-									<a href={'/search?aboutPage=true&search='} className='black-14'>About</a>
-                            	</div>
-                            	<div className="navBarLinkSpacing">
-                                	<a href="https://icoda-research.org/public/" className="black-14">Community</a>
-                            	</div>
-								
+								<div className='navBarLinkSpacing'>
+									<a href={'/search?aboutPage=true&search='} style={{ color: '#04365f', fontSize: '14px' }}>
+										About the Gateway
+									</a>
+								</div>
+								<div className='navBarLinkSpacing'>
+									<a href='https://icoda-research.org/public/' style={{ color: '#04365f', fontSize: '14px' }}>
+										About ICODA
+									</a>
+									<SVGIcon name='externalLink' width={16} height={16} fill={'#04365f'} viewBox='-10 0 22 22' />
+								</div>
+
 								{/* <div className='navBarLinkSpacing'>
 									<a href={'/dashboard'} className='black-14'>
 										Dashboard
@@ -349,7 +356,7 @@ class SearchBar extends React.Component {
 															<input
 																data-testid='searchbar'
 																type='text'
-																placeholder='Search Datasets'
+																placeholder='Search datasets'
 																id='searchInputSpanPink'
 																data-testid='searchbar'
 																onChange={this.onSearch}
@@ -532,9 +539,7 @@ class SearchBar extends React.Component {
 																					<Row className={dat.isRead === 'true' || clearMessage ? 'notificationReadBackground' : ''}>
 																						<Col xs={10}>
 																							<div className='notificationDate'>{messageDateString + '\n'}</div>
-																							<div className='notificationInfoHolder'>
-																								{ this.getPublisherLink(dat) }
-																							</div>
+																							<div className='notificationInfoHolder'>{this.getPublisherLink(dat)}</div>
 																						</Col>
 																						<Col xs={2}>
 																							{dat.isRead === 'false' && !clearMessage ? (
