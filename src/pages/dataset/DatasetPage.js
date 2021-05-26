@@ -725,9 +725,8 @@ class DatasetDetail extends Component {
 
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
-				
 				{/* was <div style={{display:'grid'}}> */}
-				<Fragment>   
+				<Fragment>
 					{data.datasetfields.metadataschema !== '' ? <DatasetSchema datasetSchema={data.datasetfields.metadataschema} /> : null}
 					<SearchBar
 						ref={this.searchBar}
@@ -833,39 +832,40 @@ class DatasetDetail extends Component {
 												{data.counter === undefined ? ' view' : ' views'}
 											</span>
 										</Col>
-											{this.state.isLatestVersion && !this.state.isDatasetArchived && (
-										<Col sm={6} className='text-right'>
-											{!userState[0].loggedIn ? (
-												<button className='btn button-tertiary dark-14 float-right' onClick={() => this.showLoginModal(data.name)}>
-													Request access
-												</button>
-											) : requiresModal ? (
-												<button
-													className='btn btn-primary addButton pointer float-right'
-													onClick={() => {
-														this.toggleModal();
-													}}>
-													How to request access
-												</button>
-											) : (
-												<Fragment>
-													{allowsMessaging ? (
-														
-														<button className={`btn button-tertiary dark-14  ${allowsMessaging ? 'mr-2' : 'float-right'}`} onClick={() => this.toggleDrawer()}>
-															Ask a question
-														</button>
-													) : null}
-													<Link
-														className='btn button-primary addButton pointer'
-														to={{
-															pathname: `/data-access-request/dataset/${data.datasetid}`,
-														}}
-														onClick={() => Event('Buttons', 'Click', 'Request Access')}>
+										{this.state.isLatestVersion && !this.state.isDatasetArchived && (
+											<Col sm={6} className='text-right'>
+												{!userState[0].loggedIn ? (
+													<button className='btn button-tertiary dark-14 float-right' onClick={() => this.showLoginModal(data.name)}>
 														Request access
-													</Link>
-												</Fragment>
-											)}
-										</Col>
+													</button>
+												) : requiresModal ? (
+													<button
+														className='btn btn-primary addButton pointer float-right'
+														onClick={() => {
+															this.toggleModal();
+														}}>
+														How to request access
+													</button>
+												) : (
+													<Fragment>
+														{allowsMessaging ? (
+															<button
+																className={`btn button-tertiary dark-14  ${allowsMessaging ? 'mr-2' : 'float-right'}`}
+																onClick={() => this.toggleDrawer()}>
+																Ask a question
+															</button>
+														) : null}
+														<Link
+															className='btn button-primary addButton pointer'
+															to={{
+																pathname: `/data-access-request/dataset/${data.datasetid}`,
+															}}
+															onClick={() => Event('Buttons', 'Click', 'Request Access')}>
+															Request access
+														</Link>
+													</Fragment>
+												)}
+											</Col>
 										)}
 									</Row>
 								</div>
@@ -1467,7 +1467,7 @@ class DatasetDetail extends Component {
 											{dataClassOpen === -1 ? (
 												<Fragment>
 													<Col sm={12} lg={12} className='subHeader gray800-14-bold pad-bottom-24 pad-top-24'>
-														<span className='black-16-semibold mr-3'>Data Classes</span>
+														<span className='black-16-semibold mr-3'>Data classes</span>
 														<span onMouseEnter={this.handleMouseHover} onMouseLeave={this.handleMouseHover}>
 															{this.state.isHovering ? <InfoFillSVG /> : <InfoSVG />}
 														</span>

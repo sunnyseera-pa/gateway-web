@@ -83,7 +83,7 @@ class DatasetAboutCard extends React.Component {
 										''
 									) : (
 										<AboutCardElement
-											label={'Creation Date'}
+											label={'Creation date'}
 											description={v2data.issued}
 											tooltip={'Date when the information about this dataset was added to our database.'}
 										/>
@@ -216,7 +216,7 @@ class DatasetAboutCard extends React.Component {
 										''
 									) : (
 										<AboutCardElement
-											label={'Semantic Annotations'}
+											label={'Semantic annotations'}
 											description={v2data.accessibility.formatAndStandards.vocabularyEncodingScheme}
 											tooltip={
 												'Relevant terminologies / ontologies / controlled vocabularies, such as ICD 10 Codes, NHS Data Dictionary National Codes or SNOMED CT International, that are being used by the dataset.'
@@ -471,7 +471,7 @@ class DatasetAboutCard extends React.Component {
 										''
 									) : (
 										<AboutCardElement
-											label={'Data Controller'}
+											label={'Data controller'}
 											description={v2data.accessibility.access.dataController}
 											tooltip={
 												'Data Controller means a person/entity who (either alone or jointly or in common with other persons/entities) determines the purposes for which and the way any Data Subject data, specifically personal data or are to be processed. For most organisations this will be the same as the publisher of the dataset. If this is not the case, this should be indicated here.'
@@ -482,7 +482,7 @@ class DatasetAboutCard extends React.Component {
 										''
 									) : (
 										<AboutCardElement
-											label={'Data Processor'}
+											label={'Data processor'}
 											description={v2data.accessibility.access.dataProcessor}
 											tooltip={
 												'A Data Processor, in relation to any Data Subject data, specifically personal data, means any person/entity (other than an employee of the data controller) who processes the data on behalf of the data controller.'
