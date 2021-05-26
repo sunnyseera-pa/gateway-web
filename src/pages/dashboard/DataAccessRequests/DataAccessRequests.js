@@ -380,33 +380,10 @@ class DataAccessRequestsNew extends React.Component {
 								_id,
 								decisionDate,
 								amendmentStatus = '',
-								versions = [
-									{
-										_id: 'sfsdfsfsfds',
-										number: '2.0',
-										latest: true,
-										current: false,
-										link: '/data-access-request/sfsdfsfsfds?version=2.0',
-										displayTitle: 'Version 2.0 (latest)',
-										detailedTitle: 'Version 2.0 (latest) | Amendment',
-									},
-									{
-										_id: 'blablabla',
-										number: '1.1',
-										current: true,
-										link: '/data-access-request/blablabla?version=1.1',
-										displayTitle: 'Version 1.1',
-										detailedTitle: 'Version 1.1 | Update',
-									},
-									{
-										_id: 'blablabla',
-										number: '1.0',
-										link: '/data-access-request/blablabla?version=1.0',
-										displayTitle: 'Version 1.0',
-										detailedTitle: 'Version 1.0',
-									},
-								],
+								versions = [],
 							} = request;
+
+							const selectedVersion = _.isEmpty(versions) ? 'Version 1.0' : versions[0].displayTitle;
 							return (
 								<Row key={`request_${i}`} onClick={e => this.navigateToLocation(e, _id, applicationStatus)}>
 									<div className='col-md-12'>
@@ -414,8 +391,8 @@ class DataAccessRequestsNew extends React.Component {
 											<div className='header-version'>
 												<div className='header-version-title'>
 													<h1>{projectName}</h1>
-													{versions.length > 0 ? (
-														<VersionSelector versionList={versions} displayType='chevron' onToggleClick={this.navigateToLocation} />
+													{versions.length > 1 ? (
+														<VersionSelector selectedVersion={selectedVersion} versionList={versions} displayType='chevron' onToggleClick={this.navigateToLocation} />
 													) : (
 														<span className='gray800-14 mb-2'>Version 1.0</span>
 													)}
