@@ -7,9 +7,9 @@ import SVGIcon from '../../../../images/SVGIcon';
 import { ReactComponent as InfoSVG } from '../../../../images/info.svg';
 import TypeaheadDataset from '../TypeaheadDataset/TypeaheadDataset';
 
-import {useTranslation} from "react-i18next";
+import { useTranslation } from 'react-i18next';
 
-const AboutApplication = (props) => {
+const AboutApplication = props => {
 	let {
 		key,
 		activeAccordionCard,
@@ -44,7 +44,7 @@ const AboutApplication = (props) => {
 		context,
 	} = props;
 
-	const {t} = useTranslation('common');
+	const { t } = useTranslation('common');
 
 	return (
 		<div className='aboutAccordion'>
@@ -67,17 +67,16 @@ const AboutApplication = (props) => {
 					<Accordion.Collapse eventKey='0'>
 						<Card.Body className='gray800-14'>
 							<div style={{ whiteSpace: 'pre-line' }} className='margin-bottom-16'>
-							{t('dataAccessRequestForm.aboutThisApplicationSection.datasets.paragraphOne')} {' '}
+								{t('dataAccessRequestForm.aboutThisApplicationSection.datasets.paragraphOne')}{' '}
 								<Link
 									id='messageLink'
 									className={allowedNavigation && userType.toUpperCase() !== 'CUSTODIAN' ? '' : 'disabled'}
-									onClick={(e) => toggleDrawer()}
-								>
-									 {t('dataAccessRequestForm.aboutThisApplicationSection.datasets.paragraphTwo')} 
-								</Link> {' '}
+									onClick={e => toggleDrawer()}>
+									{t('dataAccessRequestForm.aboutThisApplicationSection.datasets.paragraphTwo')}
+								</Link>{' '}
 							</div>
 							<div>
-							<span>{t('dataAccessRequestForm.aboutThisApplicationSection.datasets.paragraphThree')}</span>
+								<span>{t('dataAccessRequestForm.aboutThisApplicationSection.datasets.paragraphThree')}</span>
 								<div className='form-group'>
 									<TypeaheadDataset
 										key={key}
@@ -87,7 +86,9 @@ const AboutApplication = (props) => {
 										allowAllCustodians={false}
 									/>
 								</div>
-								{_.isEmpty(selectedDatasets) ? <div className='errorMessages'>{t('dataAccessRequestForm.aboutThisApplicationSection.datasets.errorOne')}</div> : null}
+								{_.isEmpty(selectedDatasets) ? (
+									<div className='errorMessages'>{t('dataAccessRequestForm.aboutThisApplicationSection.datasets.errorOne')}</div>
+								) : null}
 								<div className='panConfirm'>
 									{userType.toUpperCase() === 'APPLICANT' ? (
 										<button
@@ -96,8 +97,7 @@ const AboutApplication = (props) => {
 											disabled={!allowedNavigation}
 											onClick={e => {
 												onNextStep(allowedNavigation);
-											}}
-										>
+											}}>
 											{t('button.confirm')}
 										</button>
 									) : (
@@ -125,9 +125,7 @@ const AboutApplication = (props) => {
 					</Accordion.Toggle>
 					<Accordion.Collapse eventKey='1'>
 						<Card.Body className='gray800-14'>
-							<div className='margin-bottom-16'>
-							{t('dataAccessRequestForm.aboutThisApplicationSection.applicationName.paragraphOne')}
-							</div>
+							<div className='margin-bottom-16'>{t('dataAccessRequestForm.aboutThisApplicationSection.applicationName.paragraphOne')}</div>
 							<div>
 								<span>{t('dataAccessRequestForm.aboutThisApplicationSection.applicationName.paragraphTwo')}</span>
 								<div className='form-group'>
@@ -139,7 +137,9 @@ const AboutApplication = (props) => {
 										value={projectName}
 										disabled={readOnly}
 									/>
-									{!projectNameValid && _.isEmpty(projectName) ? <div className='errorMessages'>{t('dataAccessRequestForm.aboutThisApplicationSection.applicationName.errorOne')}</div> : null}
+									{!projectNameValid && _.isEmpty(projectName) ? (
+										<div className='errorMessages'>{t('dataAccessRequestForm.aboutThisApplicationSection.applicationName.errorOne')}</div>
+									) : null}
 								</div>
 								<div className='panConfirm'>
 									{userType.toUpperCase() === 'APPLICANT' ? (
@@ -147,9 +147,8 @@ const AboutApplication = (props) => {
 											type='input'
 											className={`button-primary ${allowedNavigation ? '' : 'disabled'}`}
 											disabled={!allowedNavigation}
-											onClick={(e) => onNextStep(allowedNavigation)}
-										>
-												{t('button.confirm')}
+											onClick={e => onNextStep(allowedNavigation)}>
+											{t('button.confirm')}
 										</button>
 									) : (
 										''
@@ -363,12 +362,12 @@ const AboutApplication = (props) => {
 						</Card.Body>
 					</Accordion.Collapse>
 				</Card> */}
-				<Card className={activeAccordionCard === 6 ? 'activeCard' : ''}>
+				<Card className={activeAccordionCard === 2 ? 'activeCard' : ''}>
 					<Accordion.Toggle
 						as={Card.Header}
-						className={DarHelper.calcAccordionClasses(activeAccordionCard === 6, allowedNavigation)}
-						eventKey='6'
-						onClick={e => toggleCard(e, 6)}>
+						className={DarHelper.calcAccordionClasses(activeAccordionCard === 2, allowedNavigation)}
+						eventKey='2'
+						onClick={e => toggleCard(e, 2)}>
 						{completedSubmitAdvice ? (
 							<div className='stepNumber completed'>
 								<SVGIcon name='check' width={24} height={24} fill={'#ffffff'} />
@@ -378,10 +377,12 @@ const AboutApplication = (props) => {
 						)}
 						{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.title')}
 					</Accordion.Toggle>
-					<Accordion.Collapse eventKey='6'>
+					<Accordion.Collapse eventKey='2'>
 						<Card.Body className='gray800-14'>
 							<Fragment>
-								<div className='margin-bottom-16'>{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.paragraphOne')}</div>
+								<div className='margin-bottom-16'>
+									{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.paragraphOne')}
+								</div>
 								<div className='margin-bottom-16'>
 									<ul>
 										<li>{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.paragraphTwo')}</li>
@@ -389,7 +390,9 @@ const AboutApplication = (props) => {
 										<li>{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.paragraphFour')}</li>
 									</ul>
 								</div>
-								<div className='margin-bottom-16'>{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.paragraphFive')}</div>
+								<div className='margin-bottom-16'>
+									{t('dataAccessRequestForm.aboutThisApplicationSection.AfterYourSubmission.paragraphFive')}
+								</div>
 								<div className='dar-form-check-group'>
 									<input
 										type='checkbox'
