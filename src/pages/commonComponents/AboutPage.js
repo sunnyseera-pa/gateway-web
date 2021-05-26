@@ -46,7 +46,7 @@ class AboutPage extends React.Component {
 					<Button
 						className='addButton'
 						onClick={e => {
-							window.location.href = `/search?search=&tab=Datasets`;
+							window.location.href = `/search?search=&tab=Collections`;
 						}}>
 						Search for datasets
 					</Button>

@@ -315,7 +315,7 @@ class SearchBar extends React.Component {
 									</a>
 								</div>
 								<div className='navBarLinkSpacing'>
-									<a href='https://icoda-research.org/public/' style={{ color: '#04365f', fontSize: '14px' }}>
+									<a href='https://icoda-research.org/about/about-us/' target='_blank' style={{ color: '#04365f', fontSize: '14px' }}>
 										About ICODA
 									</a>
 									<SVGIcon name='externalLink' width={16} height={16} fill={'#04365f'} viewBox='-10 0 22 22' />

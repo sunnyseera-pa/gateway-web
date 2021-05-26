@@ -2054,17 +2054,6 @@ class SearchPage extends React.Component {
 
 												{key === 'Collections' && collectionCount > maxResult ? <Pagination>{collectionPaginationItems}</Pagination> : ''}
 											</div>
-											<Row className='mt-3'>
-												<Col className='text-center'>
-													<Button
-														className='addButton'
-														onClick={e => {
-															window.location.href = `/search?search=&tab=Datasets`;
-														}}>
-														SEARCH DATASETS
-													</Button>
-												</Col>
-											</Row>
 										</Col>
 									) : (
 										<Col style={{ marginTop: '60px' }} sm={12} md={12} lg={9}>
