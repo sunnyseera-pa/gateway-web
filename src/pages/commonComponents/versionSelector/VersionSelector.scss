@@ -4,17 +4,12 @@
 .versionDropdown {
 	width: fit-content;
 
+	a {
+		text-decoration: none !important;
+	}
+
 	.selected {
-		display: inline-block !important;
-		border-radius: 16px !important;
-		font-family: museo-sans-rounded !important;
-		font-size: 14px !important;
-		line-height: 20px !important;
-		font-weight: 300 !important;
-		margin-right: 4px !important;
-		margin-bottom: 4px !important;
 		background-color: $white;
-		min-width: 100px;
 
 		&-up::after {
 			display: inline-block;
@@ -37,17 +32,11 @@
 		}
 	}
 
-	.selected:focus {
-		box-shadow: none !important;
-	}
-
 	.menu {
 		width: fit-content;
-		max-height: 176px !important;
 		box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03) !important;
 		background-color: $white !important;
-		overflow-x: hidden !important;
-		overflow-y: hidden !important;
+		overflow: hidden;
 		margin-bottom: 16px !important;
 		padding-top: 12px !important;
 		padding-bottom: 12px !important;

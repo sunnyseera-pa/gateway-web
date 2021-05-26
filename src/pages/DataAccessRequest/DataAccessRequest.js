@@ -176,8 +176,7 @@ class DataAccessRequest extends Component {
 			// 	c/d) Data Access Request User Area / Direct Link - route will contain a data access request 'accessId' which specifically links all associated data to one application
 			const { datasetId, accessId, publisherId } = this.props.match.params;
 			const { version } = queryString.parse(window.location.search);
-			let countedQuestionAnswers = {},
-				totalQuestions = '';
+			let countedQuestionAnswers = {}, totalQuestions = '';
 
 			if (datasetId) {
 				// a) Dataset
@@ -271,7 +270,7 @@ class DataAccessRequest extends Component {
 	loadSingleDatasetMode = async datasetId => {
 		try {
 			// 1. Make API call to find and return the json schema for this dataset's application along with any existing answers
-			let response = await axios.get(`${baseURL}/api/v1/data-access-request/dataset/${datasetId}`);
+			let response = await axios.get(`${baseURL}/api/v1/data-access-request/datasets/${datasetId}`);
 			const {
 				data: {
 					data: {
@@ -280,7 +279,7 @@ class DataAccessRequest extends Component {
 						_id,
 						applicationStatus,
 						aboutApplication = {},
-						dataset,
+						datasets,
 						mainApplicant,
 						userId,
 						authorIds,
@@ -299,7 +298,7 @@ class DataAccessRequest extends Component {
 				_id,
 				applicationStatus,
 				aboutApplication,
-				datasets: [dataset],
+				datasets,
 				mainApplicant,
 				userId,
 				authorIds,
@@ -308,9 +307,6 @@ class DataAccessRequest extends Component {
 				files,
 				isCloneable,
 			});
-
-			// for local test uses formSchema.json
-			//  this.setState({jsonSchema: {...formSchema}, questionAnswers: {fullname: {"id":5385077600698822,"orcid":"12345678","name":"Paul McCafferty","bio":"Developer @ PA","email":"p*************y@p**************m"}, orcid:"12345678", email:"p*************y@p**************m"}, activePanelId: 'applicant', isLoading: false, applicationStatus: 'inProgress'});
 		} catch (err) {
 			this.setState({ isLoading: false });
 			console.error(err.message);
@@ -358,7 +354,7 @@ class DataAccessRequest extends Component {
 			workflow,
 			files,
 			isCloneable,
-			version = 1,
+			version = 'Version 1.0',
 			versions = [],
 		} = context;
 		let {
@@ -1598,7 +1594,7 @@ class DataAccessRequest extends Component {
 	};
 
 	render() {
-		let {
+		const {
 			lastSaved,
 			searchString,
 			totalQuestions,
@@ -1622,7 +1618,8 @@ class DataAccessRequest extends Component {
 			roles,
 			showEmailModal,
 			alert,
-			versions
+			versions,
+			version
 		} = this.state;
 		const { userState, location } = this.props;
 
@@ -1645,34 +1642,6 @@ class DataAccessRequest extends Component {
 				</Container>
 			);
 		}
-
-		versions = [
-			{
-				_id: 'sfsdfsfsfds',
-				number: '2.0',
-				latest: true,
-				current: false,
-				link: '/data-access-request/sfsdfsfsfds?version=2.0',
-				displayTitle: 'Version 2.0 (latest)',
-				detailedTitle: 'Version 2.0 (latest) | Amendment',
-			},
-			{
-				_id: 'blablabla',
-				number: '1.1',
-				current: true,
-				link: '/data-access-request/blablabla?version=1.1',
-				displayTitle: 'Version 1.1',
-				detailedTitle: 'Version 1.1 | Update',
-			},
-			{
-				_id: 'blablabla',
-				number: '1.0',
-				link: '/data-access-request/blablabla?version=1.0',
-				displayTitle: 'Version 1.0',
-				detailedTitle: 'Version 1.0',
-			},
-		];
-
 
 		return (
 			<div>
@@ -1700,7 +1669,7 @@ class DataAccessRequest extends Component {
 						)}
 						{versions.length > 1 && (
 						<span className='white-16-semibold pr-5' style={{ display: 'inline-block' }}>
-							<VersionSelector versionList={versions} displayType='smallTriangle'/>
+							<VersionSelector selectedVersion={version} versionList={versions} displayType='smallTriangle'/>
 						</span>
 						)}
 					</Col>

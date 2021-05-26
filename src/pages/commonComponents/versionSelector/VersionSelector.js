@@ -15,7 +15,7 @@ const CustomMenu = React.forwardRef(({ children, style, className, 'aria-labelle
 	);
 });
 
-const VersionSelector = ({ versionList, displayType = 'smallTriangle', onToggleClick = () => {} }) => {
+const VersionSelector = ({ selectedVersion = 'Version 1.0', versionList, displayType = 'smallTriangle', onToggleClick = () => {} }) => {
 	const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 		<a
 			id='versionSelector'
@@ -29,24 +29,22 @@ const VersionSelector = ({ versionList, displayType = 'smallTriangle', onToggleC
 			{children}
 		</a>
 	));
-	
+
 	const [isToggled, setIsToggled] = useState(false);
 
 	const variants = {
 		smallTriangle: {
-			toggleClass: 'listOfVersionsButton'
+			toggleClass: 'listOfVersionsButton',
 		},
 		chevron: {
-			toggleClass: `selected selected-${isToggled ? 'down' : 'up'}`
-		}
-	}
-
-	const { displayTitle: currentVersion = 'Version 1.0' } = versionList.find(version => version.current === true) || {};
+			toggleClass: `selected selected-${isToggled ? 'down' : 'up'}`,
+		},
+	};
 
 	return (
 		<Dropdown className='versionDropdown' onToggle={() => setIsToggled(prevState => !prevState)}>
 			<Dropdown.Toggle as={CustomToggle}>
-				<span className={variants[displayType].toggleClass}>{currentVersion}</span>
+				<span className={`gray800-14 ${variants[displayType].toggleClass}`}>{selectedVersion}</span>
 			</Dropdown.Toggle>
 			<Dropdown.Menu as={CustomMenu} className='menu'>
 				{versionList.map((version, index) => {
@@ -54,7 +52,9 @@ const VersionSelector = ({ versionList, displayType = 'smallTriangle', onToggleC
 						<Dropdown.Item key={`version_${index}`} href={version.link} className='black-14 menu-item'>
 							<div>{version.detailedTitle}</div>
 							<div className='menu-item-check'>
-								{version.current && <SVGIcon name='checkicon' width={16} height={16} viewbox='0 0 16 16' fill={'#2c8267'} />}
+								{selectedVersion.includes(version.number) && (
+									<SVGIcon name='checkicon' width={16} height={16} viewbox='0 0 16 16' fill={'#2c8267'} />
+								)}
 							</div>
 						</Dropdown.Item>
 					);
