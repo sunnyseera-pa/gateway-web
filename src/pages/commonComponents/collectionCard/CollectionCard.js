@@ -31,9 +31,11 @@ class CollectionCard extends React.Component {
 								<span className='badge-paper collectionBadge'>Collection</span>
 							</div>
 						) : (
-							<div className='collectionCardImage' style={{ backgroundImage: `url(${data.imageLink})` }}>
-								<span className='badge-paper collectionBadge'>Collection</span>
-							</div>
+							<a style={{ cursor: 'pointer' }} href={'/collection/' + data.id}>
+								<div className='collectionCardImage' style={{ backgroundImage: `url(${data.imageLink})` }}>
+									<span className='badge-paper collectionBadge'>Collection</span>
+								</div>
+							</a>
 						)}
 
 						<div className='collectionCardContent'>
