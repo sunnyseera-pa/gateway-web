@@ -37,10 +37,7 @@ class AboutPage extends React.Component {
 		return (
 			<div className='searchTabsHolder'>
 				<div className='about-page-header'>
-					<div className='about-page-header-title'>About the International COVID-19 Data Alliance Gateway</div>
-					<div className='about-page-header-subtitle'>
-						Use this headline to give more details about the content of the page and what problems it solves
-					</div>
+					<div className='about-page-header-title'>ICODA Gateway</div>
 				</div>
 				<div className='about-page-button text-center'>
 					<Button
