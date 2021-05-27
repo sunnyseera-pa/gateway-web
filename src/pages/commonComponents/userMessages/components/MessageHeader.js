@@ -50,7 +50,7 @@ const MessageHeader = ({ userState, topic, modalRequired, onRequestAccess, onSho
 						</button>
 					</Fragment>
 				) : (
-						<Fragment>
+					<Fragment>
 						<button className='button-tertiary' onClick={e => onShowModal(e)}>
 							How to request access
 						</button>

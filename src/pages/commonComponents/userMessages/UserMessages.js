@@ -95,7 +95,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 				_id: '',
 				title,
 				subTitle,
-				tags: [{_id: relatedObjectIds[0], name: subTitle, publisher: datasets[0].publisher}],
+				tags: [{ _id: relatedObjectIds[0], name: subTitle, publisher: datasets[0].publisher }],
 				recipients: [],
 				status: 'active',
 				isDeleted: false,
@@ -298,13 +298,14 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 
 	const isNewMessage = (activeTopic = {}) => {
 		if (!_.isEmpty(activeTopic)) {
+			console.log(`here: ${JSON.stringify(activeTopic)}`);
 			// deconstruct createdData
-			let {createdDate = ''} = activeTopic;
+			let { createdDate = '' } = activeTopic;
 			// createdDate will contain New Message or date string - test for new massage
 			return createdDate.trim().toUpperCase() === 'NEW MESSAGE' ? true : false;
 		}
-		return false
-	}
+		return false;
+	};
 
 	/**
 	 * onDatasetsRequested
@@ -312,24 +313,23 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 	 * @description - Callback function to handle selection of datasets from first message
 	 * @param   {[Array]}  datasets  [A list of datasets selected from typeahead]
 	 */
-	const onDatasetsRequested = (datasets) => {
-		setActiveTopic({...activeTopic, tags: [...datasets]});
-	}
+	const onDatasetsRequested = datasets => {
+		setActiveTopic({ ...activeTopic, tags: [...datasets] });
+	};
 
 	/**
 	 * onFirstMessageSubmit
 	 */
-	const onFirstMessageSubmit = (data) => {
+	const onFirstMessageSubmit = data => {
 		// post the data as a new message
 
 		// hide the form
 
 		// get the data and update-state
 
-
 		console.log('Hide First Message Form and format message for FE');
 		console.log(data);
-	}
+	};
 
 	useEffect(() => {
 		// 1. GET Topics for current user
@@ -342,11 +342,13 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 				<div>Messages</div>
 				<CloseButtonSvg className='sideDrawer-header--close' onClick={() => onCloseDrawer()} />
 			</div>
+			{console.log(`topics: ${JSON.stringify(topics)}`)}
 			{topics.length > 0 ? (
 				<div className='sideDrawer-body'>
 					<TopicList topics={topics} onTopicClick={onTopicClick} />
-					<div className='messageArea' style={{gridTemplateRows: `${isNewMessage(activeTopic) ? '1fr 10fr' : '1fr 10fr 170px'}`}}>
+					<div className='messageArea' style={{ gridTemplateRows: `${isNewMessage(activeTopic) ? '1fr 10fr' : '1fr 10fr 170px'}` }}>
 						<div className='messageArea-header'>
+							{console.log(`activeTopic: ${JSON.stringify(activeTopic)}`)}
 							{!_.isEmpty(activeTopic) ? (
 								<MessageHeader
 									userState={userState}
@@ -360,27 +362,23 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 							)}
 						</div>
 						<div className='messageArea-body'>
-							{!_.isEmpty(activeTopic.topicMessages)
-								? activeTopic.topicMessages.map(message => <MessageItem key={message._id} {...message} />)
-								: (!_.isEmpty(activeTopic) && isNewMessage(activeTopic)) ?
-									<EnquiryMessage 
-										topic={activeTopic}
-										onDatasetsRequested={onDatasetsRequested}
-										onFirstMessageSubmit={onFirstMessageSubmit}
-									/>
-								: ''
-								}
+							{!_.isEmpty(activeTopic.topicMessages) ? (
+								activeTopic.topicMessages.map(message => <MessageItem key={message._id} {...message} />)
+							) : !_.isEmpty(activeTopic) && isNewMessage(activeTopic) ? (
+								<EnquiryMessage topic={activeTopic} onDatasetsRequested={onDatasetsRequested} onFirstMessageSubmit={onFirstMessageSubmit} />
+							) : (
+								''
+							)}
 						</div>
 
 						{/* DONT SHOW FOOTER IF A NEW MESSAGE - EXTEND BODY */}
 						{!_.isEmpty(activeTopic) && !isNewMessage(activeTopic) ? (
 							<div className='messageArea-footer'>
-									<MessageFooter value={messageDescription} onSubmitMessage={onSubmitMessage} onMessageChange={onMessageChange} />
+								<MessageFooter value={messageDescription} onSubmitMessage={onSubmitMessage} onMessageChange={onMessageChange} />
 							</div>
-								) : (
-									''
+						) : (
+							''
 						)}
-
 					</div>
 				</div>
 			) : (
