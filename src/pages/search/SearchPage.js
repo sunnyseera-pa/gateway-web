@@ -107,6 +107,7 @@ class SearchPage extends React.Component {
 		this.state.userState = props.userState;
 		this.state.search = search || props.search;
 		this.searchBar = React.createRef();
+		this.state.showAboutPage = window.location.href.indexOf('aboutPage') != -1;
 	}
 
 	showModal = () => {
@@ -488,10 +489,10 @@ class SearchPage extends React.Component {
 				searchURL += '&loginReferrer=' + encodeURIComponent(document.referrer);
 		}
 
-		this.setState({ showAboutPage: window.location.href.indexOf('aboutPage') != -1 });
-
 		if (!skipHistory) {
 			if (this.state.key) searchURL += '&tab=' + this.state.key;
+
+			if (this.state.showAboutPage) searchURL += '&aboutPage=true';
 
 			this.props.history.push(`${window.location.pathname}?search=${this.state.search}` + searchURL);
 		}
