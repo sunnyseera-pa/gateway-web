@@ -176,7 +176,8 @@ class DataAccessRequest extends Component {
 			// 	c/d) Data Access Request User Area / Direct Link - route will contain a data access request 'accessId' which specifically links all associated data to one application
 			const { datasetId, accessId, publisherId } = this.props.match.params;
 			const { version } = queryString.parse(window.location.search);
-			let countedQuestionAnswers = {}, totalQuestions = '';
+			let countedQuestionAnswers = {},
+				totalQuestions = '';
 
 			if (datasetId) {
 				// a) Dataset
@@ -209,6 +210,7 @@ class DataAccessRequest extends Component {
 			// Update state to display question answer count
 			this.setState({
 				totalQuestions,
+				versionNumber: version,
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -456,7 +458,7 @@ class DataAccessRequest extends Component {
 			files,
 			isCloneable,
 			version,
-			versions
+			versions,
 		});
 	};
 
@@ -1338,6 +1340,7 @@ class DataAccessRequest extends Component {
 			return;
 		}
 
+		const { versionNumber } = this.state;
 		let datasetIds = [];
 		let datasetTitles = [];
 		let publisher = '';
@@ -1354,7 +1357,7 @@ class DataAccessRequest extends Component {
 		}
 
 		axios
-			.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/clone`, {
+			.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/clone${versionNumber ? `?version=${versionNumber}` : ''}`, {
 				datasetIds,
 				datasetTitles,
 				publisher,
@@ -1376,7 +1379,7 @@ class DataAccessRequest extends Component {
 					message: message,
 					publisher: 'user',
 				};
-				this.setState({ alert: alert });
+				this.setState({ alert, activePanelId: 'about' });
 				setTimeout(() => this.setState({ alert: {} }), 10000);
 
 				this.props.history.push({ pathname: `/data-access-request/${res.data.accessRecord._id}` });
@@ -1619,7 +1622,7 @@ class DataAccessRequest extends Component {
 			showEmailModal,
 			alert,
 			versions,
-			version
+			version,
 		} = this.state;
 		const { userState, location } = this.props;
 
@@ -1668,9 +1671,9 @@ class DataAccessRequest extends Component {
 							</span>
 						)}
 						{versions.length > 1 && (
-						<span className='white-16-semibold pr-5' style={{ display: 'inline-block' }}>
-							<VersionSelector selectedVersion={version} versionList={versions} displayType='smallTriangle'/>
-						</span>
+							<span className='white-16-semibold pr-5' style={{ display: 'inline-block' }}>
+								<VersionSelector selectedVersion={version} versionList={versions} displayType='smallTriangle' />
+							</span>
 						)}
 					</Col>
 					<Col sm={12} md={4} className='d-flex justify-content-end align-items-center banner-right'>
