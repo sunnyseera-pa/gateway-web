@@ -910,7 +910,7 @@ class DatasetDetail extends Component {
 															<Row className='mt-3'>
 																<Col sm={12} className='gray800-14 overflowWrap'>
 																	<span className='gray800-14'>
-																		<ReactMarkdown source={formatLinks(data.description)} />
+																		<ReactMarkdown source={data.description} transformLinkUri={null} linkTarget='_blank' />
 																	</span>
 																</Col>
 															</Row>
