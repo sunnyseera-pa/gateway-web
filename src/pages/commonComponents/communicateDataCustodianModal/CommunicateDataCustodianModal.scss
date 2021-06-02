@@ -1,0 +1,27 @@
+@import '../../../css/variables';
+@import '../../../css/typography';
+
+
+.cdc-modal {
+  .modal-dialog {
+    max-width: 620px;
+    width: 100%;
+  }
+
+  .modal-content {
+    padding: 32px;
+  }
+   
+  .modal-header {
+    @include font-source(20px, $gray-700, 300);
+  }
+
+  .modal-body {
+    @include font-source(14px, $gray-800, 500);
+  }
+
+  .close {
+    outline: 0;
+    @include font-source(30px, $purple, 600);
+  }
+}

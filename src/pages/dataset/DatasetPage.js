@@ -80,6 +80,7 @@ class DatasetDetail extends Component {
 		],
 		showDrawer: false,
 		showModal: false,
+		showCustodianModal: false,
 		showError: false,
 		requiresModal: false,
 		allowsMessaging: false,
@@ -583,6 +584,42 @@ class DatasetDetail extends Component {
 		}
 	};
 
+	// toggleModal = (action) => {
+	// 	this.setState(prevState => {
+	// 		return { showModal: !prevState.showModal };
+	// 	});
+
+	// 	if(action === 'SUBMIT_APPLICATION') {
+	// 		this.toggleCustodianModal();
+	// 	} else if (action === 'ENQUIRY') {
+	// 				this.topicContext = {
+	// 			...this.topicContext,
+	// 			allowNewMessage: true,
+	// 		};
+	// 		this.toggleDrawer();
+	// 	}
+	// };
+
+	// toggleCustodianModal = (action = '') => {
+	// 	this.setState(prevState => {
+	// 		return { showCustodianModal: !prevState.showCustodianModal };
+	// 	});
+
+	// 	if(action === 'ENQUIRY') {
+	// 		console.log('Show message drawer');
+	// 		this.topicContext = {
+	// 			...this.topicContext,
+	// 			allowNewMessage: true,
+	// 		};
+	// 		this.toggleDrawer();
+	// 	} else if (action === 'SUBMIT_APPLICATION') {
+	// 		console.log('Take user to application');
+	// 		const { publisher } = this.topicContext.datasets[0];
+	// 		Event('Buttons', 'Click', 'Request Access');
+	// 		this.props.history.push({ pathname: `/data-access-request/publisher/${publisher}` }, { datasets: this.topicContext.datasets });
+	// 	}
+	// }
+
 	showAllPhenotypes = () => {
 		this.setState({ showAllPhenotype: true });
 	};
@@ -1023,9 +1060,9 @@ class DatasetDetail extends Component {
 													</Row>
 
 													{!showAllLinkedDatasets
-														? linkedDatasets.slice(0, 10).map(relation => {
+														? linkedDatasets.slice(0, 10).map((relation, index) => {
 																return (
-																	<Row className='pixelGapTop'>
+																	<Row className='pixelGapTop' key={`linkedDatasets-${index}`}>
 																		<Col sm={12} m={12}>
 																			<div className='rectangle'>
 																				<Row className='gray800-14-bold'>
@@ -1300,8 +1337,10 @@ class DatasetDetail extends Component {
 											{data.relatedObjects && data.relatedObjects.length <= 0 ? (
 												<NotFound word='related resources' />
 											) : (
-												relatedObjects.map(object => (
-													<RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />
+												relatedObjects.map((object, index) => (
+													<div key={`object-${index}`}>
+														<RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />
+													</div>
 												))
 											)}
 										</Tab>
@@ -1344,6 +1383,8 @@ class DatasetDetail extends Component {
 					</ActionBar>
 
 					<DataSetModal open={showModal} closed={this.toggleModal} context={this.topicContext} userState={userState[0]} />
+
+					{/* <CommunicateWithDataCustodianModal open={showCustodianModal} closed={this.toggleCustodianModal} /> */}
 				</Fragment>
 			</Sentry.ErrorBoundary>
 		);
