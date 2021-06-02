@@ -165,7 +165,7 @@ class SearchPage extends React.Component {
 		// fires on enter on searchbar
 		if (e.key === 'Enter') {
 			// reload window and test for search if entered
-			this.setState({ isResultsLoading: true }, () => {
+			this.setState({ isResultsLoading: true, showAboutPage: false }, () => {
 				this.clearFilterStates();
 			});
 		}
