@@ -26,7 +26,6 @@ const MessageHeader = ({ userState, topic, modalRequired, onRequestAccess, onSho
 
 	useEffect(() => {
 		showDashboardOption();
-		console.log(topic);
 	}, [topic]);
 
 	return (
