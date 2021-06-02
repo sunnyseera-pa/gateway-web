@@ -304,7 +304,10 @@ class RelatedObject extends React.Component {
 														if (activeLink === true) {
 															if (onSearchPage === true) {
 																return (
-																	<span className='pointer' onClick={event => this.updateOnFilterBadge('toolFeaturesSelected', feature)} key={`feature-${index}`}>
+																	<span
+																		className='pointer'
+																		onClick={event => this.updateOnFilterBadge('toolFeaturesSelected', feature)}
+																		key={`feature-${index}`}>
 																		<div className='badge-tag'>{feature}</div>
 																	</span>
 																);
@@ -316,7 +319,11 @@ class RelatedObject extends React.Component {
 																);
 															}
 														} else {
-															return <div className='badge-tag' key={`feature-${index}`}>{feature}</div>;
+															return (
+																<div className='badge-tag' key={`feature-${index}`}>
+																	{feature}
+																</div>
+															);
 														}
 												  })}
 
@@ -326,7 +333,10 @@ class RelatedObject extends React.Component {
 														if (activeLink === true) {
 															if (onSearchPage === true) {
 																return (
-																	<span className='pointer' onClick={event => this.updateOnFilterBadge('toolTopicsSelected', topic)} key={`topic-${index}`}>
+																	<span
+																		className='pointer'
+																		onClick={event => this.updateOnFilterBadge('toolTopicsSelected', topic)}
+																		key={`topic-${index}`}>
 																		<div className='badge-tag'>{topic}</div>
 																	</span>
 																);
@@ -338,7 +348,11 @@ class RelatedObject extends React.Component {
 																);
 															}
 														} else {
-															return <div className='badge-tag' key={`topic-${index}`}>{topic}</div>;
+															return (
+																<div className='badge-tag' key={`topic-${index}`}>
+																	{topic}
+																</div>
+															);
 														}
 												  })}
 										</Col>
@@ -377,7 +391,7 @@ class RelatedObject extends React.Component {
 															);
 														} else {
 															return (
-																<span className='gray800-14' key={`perosn-${index}`} key={`perosn-${index}`}>
+																<span className='gray800-14' key={`perosn-${index}`}>
 																	, {person.firstname} {person.lastname}
 																</span>
 															);
@@ -440,7 +454,10 @@ class RelatedObject extends React.Component {
 														if (activeLink === true) {
 															if (onSearchPage === true) {
 																return (
-																	<span className='pointer' onClick={event => this.updateOnFilterBadge('projectFeaturesSelected', feature)} key={`tagFeature-${index}`}>
+																	<span
+																		className='pointer'
+																		onClick={event => this.updateOnFilterBadge('projectFeaturesSelected', feature)}
+																		key={`tagFeature-${index}`}>
 																		<div className='badge-tag'>{feature}</div>
 																	</span>
 																);
@@ -452,7 +469,11 @@ class RelatedObject extends React.Component {
 																);
 															}
 														} else {
-															return <div className='badge-tag' key={`tagFeature-${index}`}>{feature}</div>;
+															return (
+																<div className='badge-tag' key={`tagFeature-${index}`}>
+																	{feature}
+																</div>
+															);
 														}
 												  })}
 
@@ -462,7 +483,10 @@ class RelatedObject extends React.Component {
 														if (activeLink === true) {
 															if (onSearchPage === true) {
 																return (
-																	<span className='pointer' onClick={event => this.updateOnFilterBadge('projectTopicsSelected', topic)} key={`tagTopic-${index}`}>
+																	<span
+																		className='pointer'
+																		onClick={event => this.updateOnFilterBadge('projectTopicsSelected', topic)}
+																		key={`tagTopic-${index}`}>
 																		<div className='badge-tag'>{topic}</div>
 																	</span>
 																);
@@ -474,7 +498,11 @@ class RelatedObject extends React.Component {
 																);
 															}
 														} else {
-															return <div className='badge-tag' key={`tagTopic-${index}`}>{topic}</div>;
+															return (
+																<div className='badge-tag' key={`tagTopic-${index}`}>
+																	{topic}
+																</div>
+															);
 														}
 												  })}
 										</Col>

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { isEmpty, has, isString, isObject } from 'lodash';
+import { isEmpty, has, isString } from 'lodash';
 import * as Yup from 'yup';
 import { Formik, Field, Form } from 'formik';
 import TypeaheadDataset from '../../../DataAccessRequest/components/TypeaheadDataset/TypeaheadDataset';
@@ -129,7 +129,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 	 */
 	const handleFormSubmission = async () => {
 		let {
-			current: { values, setSubmitting },
+			current: { values },
 		} = formRef;
 
 		// new message that is formatted
