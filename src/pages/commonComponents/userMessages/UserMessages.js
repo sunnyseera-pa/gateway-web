@@ -240,22 +240,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 		setMessageDescription(e.target.value);
 	};
 
-	/**
-	 * onSubmitMessage
-	 * @param event {<Object>}
-	 * @desc Event to Post message to db
-	 */
-	const onSubmitMessage = e => {
-		e.preventDefault();
-		if (_.isEmpty(messageDescription)) return false;
-
-		let params = {
-			messageType: 'message',
-			topic: activeTopic._id,
-			relatedObjectIds: activeTopic.relatedObjectIds,
-			messageDescription,
-		};
-		// do post here
+	const postMessage = params => {
 		axios
 			.post(`${baseURL}/api/v1/messages`, params)
 			.then(response => {
@@ -264,7 +249,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 				// 2. deconstruct message obj
 				const {
 					data: {
-						message: { messageDescription, createdDate, createdByName, _id, topic },
+						message: { messageDescription, createdDate, createdByName, _id, topic, firstMessage },
 					},
 				} = response;
 				// 3. copy new message
@@ -287,6 +272,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 					messageDescription,
 					createdDate,
 					createdBy: createdByName,
+					firstMessage,
 				});
 				// 6. set the active topic
 				setActiveTopic(newTopic);
@@ -296,12 +282,29 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 			});
 	};
 
+	/**
+	 * onSubmitMessage
+	 * @param event {<Object>}
+	 * @desc Event to Post message to db
+	 */
+	const onSubmitMessage = e => {
+		e.preventDefault();
+		if (_.isEmpty(messageDescription)) return false;
+
+		let params = {
+			messageType: 'message',
+			topic: activeTopic._id,
+			relatedObjectIds: activeTopic.relatedObjectIds,
+			messageDescription,
+		};
+
+		postMessage(params);
+	};
+
 	const isNewMessage = (activeTopic = {}) => {
 		if (!_.isEmpty(activeTopic)) {
-			console.log(`here: ${JSON.stringify(activeTopic)}`);
 			// deconstruct createdData
 			let { createdDate = '' } = activeTopic;
-			// createdDate will contain New Message or date string - test for new massage
 			return createdDate.trim().toUpperCase() === 'NEW MESSAGE' ? true : false;
 		}
 		return false;
@@ -321,14 +324,22 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 	 * onFirstMessageSubmit
 	 */
 	const onFirstMessageSubmit = data => {
-		// post the data as a new message
+		let params = {
+			messageType: 'message',
+			topic: activeTopic._id,
+			relatedObjectIds: getRelatedObjectIds(activeTopic.tags),
+			messageDescription: data.messageDescription,
+			firstMessage: data.firstMessage,
+		};
 
-		// hide the form
+		postMessage(params);
+	};
 
-		// get the data and update-state
+	const getRelatedObjectIds = activeTopicTags => {
+		let tempRelatedObjectIds = [];
+		activeTopicTags.map(tag => tempRelatedObjectIds.push(tag._id));
 
-		console.log('Hide First Message Form and format message for FE');
-		console.log(data);
+		return tempRelatedObjectIds;
 	};
 
 	useEffect(() => {
@@ -342,13 +353,11 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 				<div>Messages</div>
 				<CloseButtonSvg className='sideDrawer-header--close' onClick={() => onCloseDrawer()} />
 			</div>
-			{console.log(`topics: ${JSON.stringify(topics)}`)}
 			{topics.length > 0 ? (
 				<div className='sideDrawer-body'>
 					<TopicList topics={topics} onTopicClick={onTopicClick} />
 					<div className='messageArea' style={{ gridTemplateRows: `${isNewMessage(activeTopic) ? '1fr 10fr' : '1fr 10fr 170px'}` }}>
 						<div className='messageArea-header'>
-							{console.log(`activeTopic: ${JSON.stringify(activeTopic)}`)}
 							{!_.isEmpty(activeTopic) ? (
 								<MessageHeader
 									userState={userState}

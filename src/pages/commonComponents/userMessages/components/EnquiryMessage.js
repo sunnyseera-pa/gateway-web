@@ -15,7 +15,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 		safeprojectprojectdetailstitle: { title: 'Project title' },
 		safeprojectprojectdetailsaimsobjectivesrationale: { title: 'Project aim' },
 		datasetsRequested: { title: 'Datasets being requested' },
-		'safedata-otherdatasetsintentiontolinkdata': { title: 'Datasets you would like to link to link with this one' },
+		'safedata-otherdatasetsintentiontolinkdata': { title: 'Do you have any datasets you would like to link with this one?' },
 		safedataotherdatasetslinkadditionaldatasetslinkagedetails: { title: 'Names of the linked datasets' },
 		datasetsInterestedIn: { title: 'Do you know which parts of the dataset you are interested in?' },
 		safedatadatafieldsdatarequiredjustification: { title: 'Parts of the dataset interesed in' },
@@ -43,11 +43,12 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 	const schema = Yup.object({
 		safepeopleprimaryapplicantfullname: Yup.string().trim().required('Required'),
 		safepeopleprimaryapplicantorganisationname: Yup.string().trim().required('Required'),
-		safepeopleprimaryapplicantemail: Yup.string().trim().email().required('Required'),
-		safepeopleprimaryapplicanttelephone: Yup.string().matches(
-			/^([0]{1}|\+?[234]{3})([7-9]{1})([0|1]{1})([\d]{1})([\d]{7})$/g,
-			'Invalid phone number'
-		),
+		safepeopleprimaryapplicantemail: Yup.string().trim().email('This must be a valid email').required('Required'),
+		safepeopleprimaryapplicanttelephone: Yup.string()
+			.trim()
+			.matches(/((\+44(\s\(0\)\s|\s0\s|\s)?)|0)7\d{3}(\s)?\d{6}/g, {
+				message: 'Invalid phone number',
+			}),
 		safeprojectprojectdetailstitle: Yup.string().trim().required('Required'),
 		safeprojectprojectdetailsaimsobjectivesrationale: Yup.string().trim().required('Required'),
 		datasetsRequested: Yup.array().required('Required').min(1, 'Required'),
@@ -89,7 +90,6 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 	};
 
 	const onHandleDataSetChange = (selected, key, setFieldValue) => {
-		console.log(selected);
 		// set field value using formik hook - setFieldValue
 		setFieldValue(key, selected);
 		// update dataset selection in message header
@@ -107,9 +107,15 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 		if (isString(value) && !isEmpty(value)) return value;
 
 		if (Array.isArray(value)) {
-			return [...value].reduce((message, val) => {
+			return [...value].reduce((message, val, index) => {
 				let { name = '' } = val;
-				message += `${name} `;
+
+				if (!isEmpty(name) && index !== 0) {
+					message += `, ${name}`;
+				} else if (!isEmpty(name) && index === 0) {
+					message += `${name}`;
+				}
+
 				return message;
 			}, '');
 		}
@@ -126,7 +132,6 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 			current: { values, setSubmitting },
 		} = formRef;
 
-		console.log(formRef);
 		// new message that is formatted
 		let message = '';
 		// from formik get the keys of our questionIds
@@ -140,12 +145,15 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 				// get the value as we have different types, string...array etc
 				const value = getFormattedValue(values[key]);
 				// build our message with line breaks
-				if (!isEmpty(value)) message += `${title}: ${value} \n`;
+				if (!isEmpty(value)) message += `\n ${title}: ${value}`;
 			}
-			// clear formik form of value
-			// TODO
-			// send to parent component UserMessages
-			onFirstMessageSubmit(message);
+
+			let data = {
+				messageDescription: message.trim(),
+				firstMessage: values,
+			};
+
+			onFirstMessageSubmit(data);
 		}
 	};
 
@@ -232,9 +240,13 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 									type='text'
 									name={`safepeopleprimaryapplicanttelephone`}
 									data-test-id={`safepeoplesafepeopleprimaryapplicanttelephone`}
-									// className={`form-control gray800-14`}
-									className={`form-control gray800-14`}
+									className={`form-control gray800-14 ${
+										hasErrors(touched, errors, 'safepeopleprimaryapplicanttelephone') ? 'is-invalid' : ''
+									}`}
 								/>
+								{hasErrors(touched, errors, 'safepeopleprimaryapplicanttelephone') ? (
+									<div className='errorMessages'>{errors['safepeopleprimaryapplicanttelephone']}</div>
+								) : null}
 							</div>
 
 							{/* PROJECT TITLE */}
