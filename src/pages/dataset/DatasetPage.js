@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { has, isNil, isEmpty, isUndefined } from 'lodash';
 import axios from 'axios';
@@ -37,7 +37,6 @@ import DataQuality from './components/DataQuality';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import DatasetAboutCard from './components/DatasetAboutCard';
-import CommunicateWithDataCustodianModal from '../commonComponents/communicateDataCustodianModal/CommunicateDataCustodianModal';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
@@ -103,7 +102,6 @@ class DatasetDetail extends Component {
 		isLatestVersion: true,
 		isDatasetArchived: false,
 	};
-
 
 	topicContext = {};
 
@@ -619,7 +617,7 @@ class DatasetDetail extends Component {
 	// 		const { publisher } = this.topicContext.datasets[0];
 	// 		Event('Buttons', 'Click', 'Request Access');
 	// 		this.props.history.push({ pathname: `/data-access-request/publisher/${publisher}` }, { datasets: this.topicContext.datasets });
-	// 	} 
+	// 	}
 	// }
 
 	showAllPhenotypes = () => {
@@ -644,7 +642,6 @@ class DatasetDetail extends Component {
 			discoursePostCount,
 			showDrawer,
 			showModal,
-			showCustodianModal,
 			requiresModal,
 			allowsMessaging,
 			showAllPhenotype,
@@ -1344,7 +1341,7 @@ class DatasetDetail extends Component {
 													<div key={`object-${index}`}>
 														<RelatedObject relatedObject={object} activeLink={true} showRelationshipAnswer={true} />
 													</div>
-													))
+												))
 											)}
 										</Tab>
 										<Tab eventKey='Collections' title={'Collections (' + collections.length + ')'}>

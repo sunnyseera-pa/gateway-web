@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { isEmpty, has, isString, isObject } from 'lodash';
+import { isEmpty, has, isString } from 'lodash';
 import * as Yup from 'yup';
 import { Formik, Field, Form } from 'formik';
 import TypeaheadDataset from '../../../DataAccessRequest/components/TypeaheadDataset/TypeaheadDataset';
@@ -129,7 +129,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 	 */
 	const handleFormSubmission = async () => {
 		let {
-			current: { values, setSubmitting },
+			current: { values },
 		} = formRef;
 
 		// new message that is formatted
@@ -165,7 +165,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 
 	return (
 		<div className='enquiry-message-container'>
-			<div className='gray700-13 text-center'>
+			<div className='gray700-13 text-center' data-test-id='formIntroText'>
 				After submitting the information below you will be able to message the data custodian freely.
 			</div>
 			<Formik
@@ -175,7 +175,8 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 				innerRef={formRef}
 				onSubmit={async () => {
 					await handleFormSubmission();
-				}}>
+				}}
+				data-test-id='formik'>
 				{({ isSubmitting, values, errors, touched, setFieldValue }) => (
 					<Form autoComplete='off'>
 						<div className='enquiry-message-form'>

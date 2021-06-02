@@ -26,15 +26,16 @@ const MessageHeader = ({ userState, topic, modalRequired, onRequestAccess, onSho
 
 	useEffect(() => {
 		showDashboardOption();
-		console.log(topic);
 	}, [topic]);
 
 	return (
 		<Fragment>
 			<div className='messageArea-header-desc'>
-				<h1 className='black-20 '>{topic.title}</h1>
+				<h1 className='black-20 ' data-test-id='headerTitle'>
+					{topic.title}
+				</h1>
 				{topic.tags.map((tag, index) => (
-					<div key={`tag-${index}`} className='badge-tag'>
+					<div key={`tag-${index}`} className='badge-tag' data-test-id={`headerTag-${index}`}>
 						{tag.name || tag}
 					</div>
 				))}
