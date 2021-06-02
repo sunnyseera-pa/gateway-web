@@ -72,7 +72,7 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 					<div className='appModal-header--wrap'>
 						<div className='appModal-head'>
 							<h1 className='black-20-semibold'>Data access requests</h1>
-							<CloseButtonSvg className='appModal-head--close' onClick={() => onCloseModal('CLOSE')} />
+							<CloseButtonSvg className='appModal-head--close' onClick={() => onCloseModal(false)} />
 						</div>
 						{!_.isEmpty(screenData.dataRequestModalContent) && typeof screenData.dataRequestModalContent.header !== 'undefined' ? (
 							<ReactMarkdown source={screenData.dataRequestModalContent.header} />
