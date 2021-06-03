@@ -57,7 +57,7 @@ const MessageHeader = ({ userState, topic, modalRequired, onRequestAccess, onSho
 						</button>
 						{is5Safes ? (
 							<button className='btn btn-primary ml-2 addButton' onClick={e => onRequestAccess(e)}>
-								Request access
+								Submit application
 							</button>
 						) : null}
 					</Fragment>
