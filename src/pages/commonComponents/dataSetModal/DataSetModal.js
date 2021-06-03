@@ -9,7 +9,7 @@ import DataSetHelper from '../../../utils/DataSetHelper.util';
 
 import './DataSetModal.scss';
 
-const DataSetModal = ({ open, closed, context, userState }) => {
+const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginModal}) => {
 	let datasets = [],
 		title = '',
 		subTitle = '',
@@ -72,7 +72,7 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 					<div className='appModal-header--wrap'>
 						<div className='appModal-head'>
 							<h1 className='black-20-semibold'>Data access requests</h1>
-							<CloseButtonSvg className='appModal-head--close' onClick={() => onCloseModal(false)} />
+							<CloseButtonSvg className='appModal-head--close' onClick={() => onCloseModal('CLOSE')} />
 						</div>
 						{!_.isEmpty(screenData.dataRequestModalContent) && typeof screenData.dataRequestModalContent.header !== 'undefined' ? (
 							<ReactMarkdown source={screenData.dataRequestModalContent.header} />
@@ -93,11 +93,13 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 				<div className='appModal-footer'>
 					{screenData.showActionButtons ? (
 						<div className='appModal-footer--wrap'>
-							<button className='button-secondary mr-2' onClick={e => onRequestAccess(e)}>
+							{ is5Safes ?
+							<button className='button-secondary mr-2' onClick={() => {isLoggedIn ? onCloseModal('SUBMIT_APPLICATION') : showLoginModal()}}>
 								Request access
-							</button>
-							<button className='btn btn-primary addButton' onClick={() => onCloseModal(true)}>
-								Send a message to the custodian
+							</button> 
+							: null}
+							<button className='btn btn-primary addButton' onClick={() => {isLoggedIn ? onCloseModal('ENQUIRY') : showLoginModal()}}>
+								Make an enquiry
 							</button>
 						</div>
 					) : null}
