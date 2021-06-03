@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import _, { isNil } from 'lodash';
+import _ from 'lodash';
 
 const MessageHeader = ({ userState, topic, modalRequired, onRequestAccess, onShowModal, is5Safes }) => {
 	let [showDashboard, setShowDashboard] = useState(false);
