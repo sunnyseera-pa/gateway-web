@@ -103,14 +103,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 		// update dataset selection in message header
 		onDatasetsRequested(selected);
 	};
-
-	const onHandleStartDateChange = (selected, key, setFieldValue) => {
-		// set field value using formik hook - setFieldValue
-		setFieldValue(key, selected);
-		// update dataset selection in message header
-		onDatasetsRequested(selected);
-	};
-
+	
 	/**
 	 * [getFormattedValue]
 	 *
