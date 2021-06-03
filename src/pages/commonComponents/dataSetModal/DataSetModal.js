@@ -29,25 +29,6 @@ const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginMod
 		}
 	};
 
-	
-	const onRequestAccess = e => {
-		// 1. stop default click
-		e.preventDefault();
-		// 2. close modal and do not show enquiry - false
-		closed(false);
-		// 3. check user loggedIn status if not make user login
-		if (!isLoggedIn) {
-			// 3a. Show the loginPanel
-			DataSetHelper.showLoginPanel(window, _.isEmpty(title) ? screenData.subTitle : title);
-		} else {
-			// 3. log google analytics event (Category-Action-Label)
-			Event('Buttons', 'Click', 'Request Access');
-			// 4. redirect to access request
-			const { publisher } = context.datasets[0];
-			history.push({ pathname: `/data-access-request/publisher/${publisher}` }, { datasets: context.datasets });
-		}
-	};
-
 	const onCloseModal = (showEnquiry = false) => {
 		// 1. if user is not loggedIn and wants to make enquiry make them sign in
 		if (!isLoggedIn && showEnquiry) {

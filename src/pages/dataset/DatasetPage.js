@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { has, isNil, isEmpty, isUndefined } from 'lodash';
 import axios from 'axios';
@@ -567,24 +566,6 @@ class DatasetDetail extends Component {
 		});
 	};
 
-	toggleModal = (showEnquiry = false, context = {}) => {
-		this.setState(prevState => {
-			return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
-		});
-
-		if (showEnquiry) {
-			this.topicContext = {
-				...this.topicContext,
-				allowNewMessage: true,
-			};
-		} else {
-			this.topicContext = {
-				...this.topicContext,
-				allowNewMessage: false,
-			};
-		}
-	};
-
 	toggleModal = action => {
 		this.setState(prevState => {
 			return { showModal: !prevState.showModal };
@@ -644,8 +625,6 @@ class DatasetDetail extends Component {
 			showDrawer,
 			showModal,
 			showCustodianModal,
-			requiresModal,
-			allowsMessaging,
 			showAllPhenotype,
 			showAllLinkedDatasets,
 			collections,
