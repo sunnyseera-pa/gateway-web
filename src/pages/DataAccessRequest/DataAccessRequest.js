@@ -141,6 +141,7 @@ class DataAccessRequest extends Component {
 			showDeleteDraftModal: false,
 			showDuplicateApplicationModal: false,
 			showSelectDatasetModal: false,
+			applicationType: ''
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -243,6 +244,7 @@ class DataAccessRequest extends Component {
 						workflow,
 						files,
 						isCloneable,
+						applicationType
 					},
 				},
 			} = response;
@@ -262,6 +264,7 @@ class DataAccessRequest extends Component {
 				workflow,
 				files,
 				isCloneable,
+				applicationType
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -289,6 +292,7 @@ class DataAccessRequest extends Component {
 						workflow,
 						files,
 						isCloneable,
+						applicationType
 					},
 				},
 			} = response;
@@ -308,6 +312,7 @@ class DataAccessRequest extends Component {
 				workflow,
 				files,
 				isCloneable,
+				applicationType
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -358,6 +363,7 @@ class DataAccessRequest extends Component {
 			isCloneable,
 			version = 'Version 1.0',
 			versions = [],
+			applicationType
 		} = context;
 		let {
 			datasetfields: { publisher },
@@ -459,6 +465,7 @@ class DataAccessRequest extends Component {
 			isCloneable,
 			version,
 			versions,
+			applicationType
 		});
 	};
 
@@ -596,6 +603,11 @@ class DataAccessRequest extends Component {
 	};
 
 	onSubmitClick = () => {
+
+		// test applicationType from state
+		console.log(this.state.applicationType);
+		
+
 		let invalidQuestions = DarValidation.getQuestionPanelInvalidQuestions(
 			Winterfell,
 			this.state.jsonSchema.questionSets,
@@ -607,6 +619,7 @@ class DataAccessRequest extends Component {
 		let isValid = Object.keys(errors).length ? false : true;
 
 		if (isValid) {
+			// if 'amendment' show new amendment modal
 			this.setState({ showConfirmSubmissionModal: true });
 		} else {
 			let activePage = _.get(_.keys({ ...errors }), 0);
