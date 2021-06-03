@@ -3,6 +3,7 @@ import { isEmpty, has, isString } from 'lodash';
 import * as Yup from 'yup';
 import { Formik, Field, Form } from 'formik';
 import DatePicker from 'react-datepicker';
+import moment from 'moment';
 import TypeaheadDataset from '../../../DataAccessRequest/components/TypeaheadDataset/TypeaheadDataset';
 
 export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmit }) => {
@@ -103,7 +104,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 		// update dataset selection in message header
 		onDatasetsRequested(selected);
 	};
-	
+
 	/**
 	 * [getFormattedValue]
 	 *
@@ -439,7 +440,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 									dateFormat='dd/MM/yyyy'
 									selected={values['safeproject-projectdetails-startdate'] ? new Date(values['safeproject-projectdetails-startdate']) : ''}
 									onChange={date => {
-										values['safeproject-projectdetails-startdate'] = date;
+										values['safeproject-projectdetails-startdate'] = moment(date).format('DD MMM YYYY');
 										setFieldValue();
 									}}
 								/>
