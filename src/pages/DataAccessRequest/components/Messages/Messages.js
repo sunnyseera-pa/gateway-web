@@ -13,17 +13,17 @@ const Messages = ({ activeMessages, applicationShared, toggleDrawer, setMessageD
 
 	const messagesEndRef = useRef(null);
 
-	const scrollToBottom = () => {
-		messagesEndRef.current.scrollIntoView(false);
-	};
-
-	useEffect(() => {
-		scrollToBottom();
-	});
-
 	useEffect(() => {
 		retrieveMessageThread();
 	}, []);
+
+	useEffect(() => {
+		scrollToBottom();
+	}, [messageThread]);
+
+	const scrollToBottom = () => {
+		messagesEndRef.current.scrollIntoView(false);
+	};
 
 	const onShowShareFormModal = () => {
 		setShowShareFormModal(!showShareFormModal);

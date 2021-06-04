@@ -11,17 +11,17 @@ const Notes = ({ activeNotes, userState, userType }) => {
 
 	const notesEndRef = useRef(null);
 
-	// const scrollToBottom = () => {
-	// 	notesEndRef.current.scrollIntoView(false);
-	// };
-
-	// useEffect(() => {
-	// 	scrollToBottom();
-	// });
-
 	useEffect(() => {
 		retrieveNotesThread();
 	}, []);
+
+	useEffect(() => {
+		scrollToBottom();
+	}, [notesThread]);
+
+	const scrollToBottom = () => {
+		notesEndRef.current.scrollIntoView(false);
+	};
 
 	const handleSendNote = message => {
 		if (!message) {
