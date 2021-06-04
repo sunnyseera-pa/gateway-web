@@ -372,7 +372,7 @@ export const formSchema = {
 					validations: [
 						{
 							type: 'isMultiFieldURL',
-							message: 'Please enter a valid URL',
+							message: 'Please enter a valid URL. Must include http(s)://',
 						},
 					],
 				},
@@ -410,7 +410,7 @@ export const formSchema = {
 					validations: [
 						{
 							type: 'isURLValid',
-							message: 'Please enter a valid URL',
+							message: 'Please enter a valid URL. Must include http(s)://',
 						},
 					],
 				},
@@ -858,7 +858,7 @@ export const formSchema = {
 					validations: [
 						{
 							type: 'isMultiFieldURL',
-							message: 'Please enter a valid URL',
+							message: 'Please enter a valid URL. Must include http(s)://',
 						},
 					],
 				},
@@ -894,7 +894,7 @@ export const formSchema = {
 					validations: [
 						{
 							type: 'isMultiFieldURLRequired',
-							message: 'Please enter a valid URL',
+							message: 'Please enter a valid URL. Must include http(s)://',
 						},
 					],
 				},
@@ -1595,7 +1595,7 @@ export const formSchema = {
 					validations: [
 						{
 							type: 'isMultiFieldURL',
-							message: 'Please enter a valid URL',
+							message: 'Please enter a valid URL. Must include http(s)://',
 						},
 					],
 				},

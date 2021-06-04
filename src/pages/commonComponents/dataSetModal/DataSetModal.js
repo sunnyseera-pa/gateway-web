@@ -29,6 +29,7 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 		}
 	};
 
+	
 	const onRequestAccess = e => {
 		// 1. stop default click
 		e.preventDefault();
@@ -58,7 +59,7 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 			// 4. do normal operation
 			closed(showEnquiry);
 		}
-	};
+	}
 
 	useEffect(() => {
 		if (open) initScreenData();

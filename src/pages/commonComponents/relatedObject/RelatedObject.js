@@ -155,7 +155,7 @@ class RelatedObject extends React.Component {
 		}
 
 		return (
-			<Row className='resource-card-row'>
+			<Row className='resource-card-row' key={this.props.key}>
 				<Col>
 					<div
 						className={rectangleClassName}
@@ -197,16 +197,16 @@ class RelatedObject extends React.Component {
 													if (index > 0) {
 														if (activeLink === true) {
 															return (
-																<>
+																<div key={`person-${index}`}>
 																	<span className='reviewTitleGap gray800-14'>·</span>
 																	<a className='gray800-14' href={'/person/' + person.id}>
 																		{person.firstname} {person.lastname}
 																	</a>
-																</>
+																</div>
 															);
 														} else {
 															return (
-																<span className='gray800-14'>
+																<span className='gray800-14' key={`person-${index}`}>
 																	, {person.firstname} {person.lastname}{' '}
 																</span>
 															);
@@ -214,13 +214,13 @@ class RelatedObject extends React.Component {
 													} else {
 														if (activeLink === true) {
 															return (
-																<a className='gray800-14' href={'/person/' + person.id}>
+																<a className='gray800-14' href={'/person/' + person.id} key={`person-${index}`}>
 																	{person.firstname} {person.lastname}
 																</a>
 															);
 														} else {
 															return (
-																<span className='gray800-14'>
+																<span className='gray800-14' key={`person-${index}`}>
 																	{person.firstname} {person.lastname}
 																</span>
 															);
@@ -300,45 +300,59 @@ class RelatedObject extends React.Component {
 
 											{!data.tags.features || data.tags.features.length <= 0
 												? ''
-												: data.tags.features.map(feature => {
+												: data.tags.features.map((feature, index) => {
 														if (activeLink === true) {
 															if (onSearchPage === true) {
 																return (
-																	<span className='pointer' onClick={event => this.updateOnFilterBadge('toolFeaturesSelected', feature)}>
+																	<span
+																		className='pointer'
+																		onClick={event => this.updateOnFilterBadge('toolFeaturesSelected', feature)}
+																		key={`feature-${index}`}>
 																		<div className='badge-tag'>{feature}</div>
 																	</span>
 																);
 															} else {
 																return (
-																	<a href={'/search?search=&tab=Tools&toolfeatures=' + feature}>
+																	<a href={'/search?search=&tab=Tools&toolfeatures=' + feature} key={`feature-${index}`}>
 																		<div className='badge-tag'>{feature}</div>
 																	</a>
 																);
 															}
 														} else {
-															return <div className='badge-tag'>{feature}</div>;
+															return (
+																<div className='badge-tag' key={`feature-${index}`}>
+																	{feature}
+																</div>
+															);
 														}
 												  })}
 
 											{!data.tags.topics || data.tags.topics.length <= 0
 												? ''
-												: data.tags.topics.map(topic => {
+												: data.tags.topics.map((topic, index) => {
 														if (activeLink === true) {
 															if (onSearchPage === true) {
 																return (
-																	<span className='pointer' onClick={event => this.updateOnFilterBadge('toolTopicsSelected', topic)}>
+																	<span
+																		className='pointer'
+																		onClick={event => this.updateOnFilterBadge('toolTopicsSelected', topic)}
+																		key={`topic-${index}`}>
 																		<div className='badge-tag'>{topic}</div>
 																	</span>
 																);
 															} else {
 																return (
-																	<a href={'/search?search=&tab=Tools&tooltopics=' + topic}>
+																	<a href={'/search?search=&tab=Tools&tooltopics=' + topic} key={`topic-${index}`}>
 																		<div className='badge-tag'>{topic}</div>
 																	</a>
 																);
 															}
 														} else {
-															return <div className='badge-tag'>{topic}</div>;
+															return (
+																<div className='badge-tag' key={`topic-${index}`}>
+																	{topic}
+																</div>
+															);
 														}
 												  })}
 										</Col>
@@ -368,16 +382,16 @@ class RelatedObject extends React.Component {
 													if (index > 0) {
 														if (activeLink === true) {
 															return (
-																<>
+																<div key={`perosn-${index}`}>
 																	<span className='reviewTitleGap gray800-14'>·</span>
 																	<a className='gray800-14' href={'/person/' + person.id}>
 																		{person.firstname} {person.lastname}
 																	</a>
-																</>
+																</div>
 															);
 														} else {
 															return (
-																<span className='gray800-14'>
+																<span className='gray800-14' key={`perosn-${index}`}>
 																	, {person.firstname} {person.lastname}
 																</span>
 															);
@@ -385,13 +399,13 @@ class RelatedObject extends React.Component {
 													} else {
 														if (activeLink === true) {
 															return (
-																<a className='gray800-14' href={'/person/' + person.id}>
+																<a className='gray800-14' href={'/person/' + person.id} key={`perosn-${index}`}>
 																	{person.firstname} {person.lastname}
 																</a>
 															);
 														} else {
 															return (
-																<span className='gray800-14'>
+																<span className='gray800-14' key={`perosn-${index}`}>
 																	{person.firstname} {person.lastname}
 																</span>
 															);
@@ -436,45 +450,59 @@ class RelatedObject extends React.Component {
 
 											{!data.tags.features || data.tags.features.length <= 0
 												? ''
-												: data.tags.features.map(feature => {
+												: data.tags.features.map((feature, index) => {
 														if (activeLink === true) {
 															if (onSearchPage === true) {
 																return (
-																	<span className='pointer' onClick={event => this.updateOnFilterBadge('projectFeaturesSelected', feature)}>
+																	<span
+																		className='pointer'
+																		onClick={event => this.updateOnFilterBadge('projectFeaturesSelected', feature)}
+																		key={`tagFeature-${index}`}>
 																		<div className='badge-tag'>{feature}</div>
 																	</span>
 																);
 															} else {
 																return (
-																	<a href={'/search?search=&tab=Projects&projectfeatures=' + feature}>
+																	<a href={'/search?search=&tab=Projects&projectfeatures=' + feature} key={`tagFeature-${index}`}>
 																		<div className='badge-tag'>{feature}</div>
 																	</a>
 																);
 															}
 														} else {
-															return <div className='badge-tag'>{feature}</div>;
+															return (
+																<div className='badge-tag' key={`tagFeature-${index}`}>
+																	{feature}
+																</div>
+															);
 														}
 												  })}
 
 											{!data.tags.topics || data.tags.topics.length <= 0
 												? ''
-												: data.tags.topics.map(topic => {
+												: data.tags.topics.map((topic, index) => {
 														if (activeLink === true) {
 															if (onSearchPage === true) {
 																return (
-																	<span className='pointer' onClick={event => this.updateOnFilterBadge('projectTopicsSelected', topic)}>
+																	<span
+																		className='pointer'
+																		onClick={event => this.updateOnFilterBadge('projectTopicsSelected', topic)}
+																		key={`tagTopic-${index}`}>
 																		<div className='badge-tag'>{topic}</div>
 																	</span>
 																);
 															} else {
 																return (
-																	<a href={'/search?search=&tab=Projects&projecttopics=' + topic}>
+																	<a href={'/search?search=&tab=Projects&projecttopics=' + topic} key={`tagTopic-${index}`}>
 																		<div className='badge-tag'>{topic}</div>
 																	</a>
 																);
 															}
 														} else {
-															return <div className='badge-tag'>{topic}</div>;
+															return (
+																<div className='badge-tag' key={`tagTopic-${index}`}>
+																	{topic}
+																</div>
+															);
 														}
 												  })}
 										</Col>
@@ -504,16 +532,16 @@ class RelatedObject extends React.Component {
 													if (index > 0) {
 														if (activeLink === true) {
 															return (
-																<>
+																<div key={`dataPerson-${index}`}>
 																	<span className='reviewTitleGap gray800-14'>·</span>
 																	<a className='gray800-14' href={'/person/' + person.id}>
 																		{person.firstname} {person.lastname}
 																	</a>
-																</>
+																</div>
 															);
 														} else {
 															return (
-																<span className='gray800-14'>
+																<span className='gray800-14' key={`dataPerson-${index}`}>
 																	, {person.firstname} {person.lastname}
 																</span>
 															);
@@ -521,13 +549,13 @@ class RelatedObject extends React.Component {
 													} else {
 														if (activeLink === true) {
 															return (
-																<a className='gray800-14' href={'/person/' + person.id}>
+																<a className='gray800-14' href={'/person/' + person.id} key={`dataPerson-${index}`}>
 																	{person.firstname} {person.lastname}
 																</a>
 															);
 														} else {
 															return (
-																<span className='gray800-14'>
+																<span className='gray800-14' key={`dataPerson-${index}`}>
 																	{person.firstname} {person.lastname}
 																</span>
 															);
