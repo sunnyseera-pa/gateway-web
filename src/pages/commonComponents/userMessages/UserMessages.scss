@@ -93,7 +93,6 @@
 	}
 }
 .messageArea {
-	display: -ms-grid;
 	display: grid;
 	-ms-grid-column: 2;
 	-ms-grid-rows: 165px 10fr 170px;
@@ -101,6 +100,7 @@
 	box-sizing: border-box;
 	height: calc(100vh - 40px);
 	overflow-wrap: break-word;
+	overflow-y: auto;
 
 	&-header {
 		-ms-grid-row: 1;
@@ -155,6 +155,9 @@
 			margin-bottom: 12px;
 			justify-content: space-between;
 		}
+		span {
+			white-space: pre-line;
+		}
 	}
 
 	&-footer {
@@ -171,9 +174,32 @@
 	border-right: 4px solid $teal !important;
 }
 
+.enquiry-message {
+	&-container {
+		padding: 20px 0;
+	}
+
+	&-form {
+		padding: 20px 25px;
+
+		label {
+			margin-bottom: 0.2rem;
+			span {
+				display: flex;
+			}
+		}
+
+		textarea {
+			min-height: 85px;
+		}
+	}
+}
+
 // IE 11
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-	.messageArea-item, .messageArea-item-header, .messageArea-footer  {
+	.messageArea-item,
+	.messageArea-item-header,
+	.messageArea-footer {
 		max-width: 478px;
 	}
 

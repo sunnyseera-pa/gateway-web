@@ -1,19 +1,9 @@
 @import '../../../css/variables';
 
-@media (min-width: 1286px) {
-	.addNewEntityMenu {
-		width: 190px;
-		top: 16px !important;
-		left: 0px !important;
-	}
-}
-
-@media (max-width: 1285px) {
-	.addNewEntityMenu {
-		width: 190px;
-		top: 16px !important;
-		left: 0px !important;
-	}
+.addNewEntityMenu {
+	width: 190px;
+	top: 15px !important;
+	left: -70px !important;
 }
 
 .addNewEntityDropdown {

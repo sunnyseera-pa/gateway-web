@@ -1,6 +1,5 @@
-import React, { useState, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import moment from 'moment';
-import { create } from 'lodash';
 
 const Message = ({ messageDescription, createdBy, createdDate }) => {
 	const getName = () => {
@@ -19,7 +18,7 @@ const Message = ({ messageDescription, createdBy, createdDate }) => {
 					<div className='black-14-bold'>{getName()}</div>
 					<div className='gray500-13'>{moment(createdDate).format('DD MMM HH:mm')}</div>
 				</div>
-				<p>{messageDescription}</p>
+				<span> {messageDescription.trim()} </span>
 			</div>
 		</Fragment>
 	);

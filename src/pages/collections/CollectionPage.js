@@ -241,7 +241,9 @@ export const CollectionPage = props => {
 					(_.has(object, 'name') ? object.name.toLowerCase().includes(searchCollectionsString.toLowerCase()) : false) ||
 					(_.has(object, 'firstname') ? object.firstname.toLowerCase().includes(searchCollectionsString.toLowerCase()) : false) ||
 					(_.has(object, 'lastname') ? object.lastname.toLowerCase().includes(searchCollectionsString.toLowerCase()) : false) ||
-					(_.has(object, 'description') ? object.description.toLowerCase().includes(searchCollectionsString.toLowerCase()) : false) ||
+					(_.has(object, 'description' && !_.isNull(object.description))
+						? object.description.toLowerCase().includes(searchCollectionsString.toLowerCase())
+						: false) ||
 					(_.has(object, 'tags.features') && object.tags.features && object.tags.features.length > 0
 						? new RegExp(object.tags.features.join('|'), 'i').test(searchCollectionsString)
 						: false)

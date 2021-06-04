@@ -108,7 +108,7 @@ class SearchPage extends React.Component {
 			window.location.href = '/search?search=&tab=Datasets';
 		}
 		this.state.userState = props.userState;
-		this.state.search = search || props.search;
+		this.state.search = !_.isEmpty(search) ? search : props.location.search;
 		this.searchBar = React.createRef();
 	}
 
@@ -153,11 +153,9 @@ class SearchPage extends React.Component {
 		}
 	}
 
-	async componentWillReceiveProps(nextProps) {
+	async componentWillReceiveProps() {
 		let queryParams = queryString.parse(window.location.search);
-		// 1. set search string
-		this.setState({ search: queryParams['search'] });
-		// 2. if tabs are different update
+		// 1. if tabs are different update
 		if (this.state.key !== queryParams.tab) {
 			this.setState({ key: queryParams.tab || 'Datasets' });
 		}
@@ -847,7 +845,7 @@ class SearchPage extends React.Component {
 	 */
 	findNode = (filters = [], label) => {
 		if (!_.isEmpty(filters)) {
-			return [...filters].find(node => node.label === label) || {};
+			return [...filters].find(node => node.label.toUpperCase() === label.toUpperCase()) || {};
 		}
 		return {};
 	};
@@ -915,23 +913,27 @@ class SearchPage extends React.Component {
 			// 3. find checkbox obj
 			let foundNode = this.findNode(filters, node.label);
 			if (!_.isEmpty(foundNode)) {
-				// 4. set check value
-				foundNode.checked = checkValue;
-				// 5. increment highest parent count
-				checkValue ? ++parentNode.selectedCount : --parentNode.selectedCount;
-				// 6. set new object for handle selected *showing*
-				let selectedNode = {
-					parentKey: alias || key,
-					id: foundNode.id,
-					label: foundNode.label,
-				};
-				// 7. fn for handling the *selected showing* returns new state
-				const selectedV2 = this.handleSelected(selectedNode, checkValue);
-				// 8. set state
-				this.setState({ filtersV2, selectedV2, isResultsLoading: true }, () => {
-					// callback once state has updated
-					this.doSearchCall();
-				});
+				// find if the node already exists in the selectedV2 - if so we are unchecking / removing
+				const exists = [...this.state.selectedV2].some(selected => selected.id === foundNode.id);
+				if (!exists || (exists && foundNode.checked != checkValue)) {
+					// 4. set check value
+					foundNode.checked = checkValue;
+					// 5. increment highest parent count
+					checkValue ? ++parentNode.selectedCount : --parentNode.selectedCount;
+					// 6. set new object for handle selected *showing*
+					let selectedNode = {
+						parentKey: alias || key,
+						id: foundNode.id,
+						label: foundNode.label,
+					};
+					// 7. fn for handling the *selected showing* returns new state
+					const selectedV2 = this.handleSelected(selectedNode, checkValue);
+					// 8. set state
+					this.setState({ filtersV2, selectedV2, isResultsLoading: true }, () => {
+						// callback once state has updated
+						this.doSearchCall();
+					});
+				}
 			}
 		}
 	};

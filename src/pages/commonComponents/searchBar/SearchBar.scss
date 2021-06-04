@@ -69,7 +69,6 @@ body.modal-open {
 		border-radius: 4px;
 		padding: 5px;
 		width: 100%;
-		max-width: 220px;
 	}
 
 	#searchInputSpanGrey {
@@ -86,7 +85,7 @@ body.modal-open {
 	.desktopLoginMenu {
 		width: 375px;
 		top: 27px !important;
-		left: -20px !important;
+		left: 15px !important;
 	}
 
 	.desktopNotificationMenu {
@@ -150,7 +149,7 @@ body.modal-open {
 	.desktopLoginMenu {
 		width: 200px;
 		top: 18px !important;
-		left: 0px !important;
+		left: 16px !important;
 	}
 
 	.desktopNotificationMenu {
@@ -223,6 +222,8 @@ body.modal-open {
 		width: 300px;
 		top: 16px !important;
 		left: -5px !important;
+		max-height: 500px;
+		overflow-y: scroll;
 	}
 
 	.mobileNotificationMenu {
@@ -422,7 +423,7 @@ body.modal-open {
 
 .cmsDropdown {
 	@include mq('tablet-wide', max) {
-		padding: 8px 24px;
+		padding: 8px 24px !important;
 	}
 }
 
@@ -475,6 +476,9 @@ body.modal-open {
 	align-items: center;
 	justify-content: space-between;
 	padding: 4px 16px 4px 16px;
+	@include mq('tablet-wide', max) {
+		padding: 8px 24px;
+	}
 }
 
 .user-dropdown-menu {
@@ -484,4 +488,59 @@ body.modal-open {
 
 .user-dropdown-item {
 	padding: 4px 16px 4px 16px !important;
+	@include mq('tablet-wide', max) {
+		padding: 4px 24px !important;
+	}
+}
+
+.navBarMessageSpacing {
+	display: flex;
+	align-items: center;
+}
+
+.notificationBadgeMobile {
+	top: -18px !important;
+	right: -30px !important;
+}
+
+.messageBadgeMobile {
+	top: -8px !important;
+	right: -15px !important;
+}
+
+.searchBarInputMobile {
+	margin: 10px;
+	max-width: 275px;
+}
+
+.notificationOverallStyle {
+	display: flex;
+	flex-wrap: nowrap !important;
+	justify-content: space-evenly;
+	margin-left: -5px !important;
+	@include mq('tablet-wide', max) {
+		margin-left: 90px !important;
+	}
+	@include mq('tablet-small', max) {
+		margin-left: 60px !important;
+	}
+	@include mq('phablet', max) {
+		margin-left: 5px !important;
+	}
+	@include mq('phone', max) {
+		margin-left: -15px !important;
+	}
+}
+
+.searchBarRow {
+	padding-left: 0px;
+}
+
+.logoSVGMobile {
+	display: flex;
+	align-items: center;
+	padding-left: 0px !important;
+	@include mq('phablet', max) {
+		padding-left: 15px !important;
+	}
 }
