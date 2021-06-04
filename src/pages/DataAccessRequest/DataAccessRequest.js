@@ -44,6 +44,7 @@ import Uploads from './components/Uploads/Uploads';
 import UpdateRequestModal from './components/UpdateRequestModal/UpdateRequestModal';
 import MissingFieldsModal from './components/MissingFieldsModal/MissingFieldsModal';
 import ConfirmSubmissionModal from './components/ConfirmSubmissionModal/ConfirmSubmissionModal';
+import SubmitAmendmentModal from './components/SubmitAmendmentModal/SubmitAmendmentModal';
 import DeleteDraftModal from './components/DeleteDraftModal/DeleteDraftModal';
 import DuplicateApplicationModal from './components/DuplicateApplicationModal/DuplicateApplicationModal';
 import SelectDatasetModal from './components/SelectDatasetModal/SelectDatasetModal';
@@ -138,6 +139,7 @@ class DataAccessRequest extends Component {
 			showEmailModal: false,
 			showMissingFieldsModal: false,
 			showConfirmSubmissionModal: false,
+			showSubmitAmendmentModal: false,
 			showDeleteDraftModal: false,
 			showDuplicateApplicationModal: false,
 			showSelectDatasetModal: false,
@@ -620,7 +622,7 @@ class DataAccessRequest extends Component {
 
 		if (isValid) {
 			// if 'amendment' show new amendment modal
-			this.setState({ showConfirmSubmissionModal: true });
+			this.state.applicationType === "amendment" ? this.setState({ showSubmitAmendmentModal: true }) : this.setState({ showConfirmSubmissionModal: true });
 		} else {
 			let activePage = _.get(_.keys({ ...errors }), 0);
 			let activePanel = _.get(_.keys({ ...errors }[activePage]), 0);
@@ -1502,6 +1504,14 @@ class DataAccessRequest extends Component {
 		});
 	};
 
+	toggleSubmitAmendmentModal = () => {
+		this.setState(prevState => {
+			return {
+				showSubmitAmendmentModal: !prevState.showSubmitAmendmentModal,
+			};
+		});
+	};
+
 	toggleDeleteDraftModal = () => {
 		this.setState(prevState => {
 			return {
@@ -1960,6 +1970,11 @@ class DataAccessRequest extends Component {
 				<ConfirmSubmissionModal
 					open={this.state.showConfirmSubmissionModal}
 					close={this.toggleConfirmSubmissionModal}
+					confirm={this.onFormSubmit}
+				/>
+				<SubmitAmendmentModal
+					open={this.state.showSubmitAmendmentModal}
+					close={this.toggleSubmitAmendmentModal}
 					confirm={this.onFormSubmit}
 				/>
 				<DeleteDraftModal open={this.state.showDeleteDraftModal} close={this.toggleDeleteDraftModal} confirm={this.onDeleteDraft} />
