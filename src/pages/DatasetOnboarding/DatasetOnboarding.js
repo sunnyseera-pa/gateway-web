@@ -1207,7 +1207,7 @@ class DatasetOnboarding extends Component {
 			},
 			isURLValid: value => {
 				if (_.isEmpty(value)) return true;
-				return !!value.match(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/);
+				return !!value.match(/^(?:[a-z][a-z0-9+\-.]*:)(?:\/?\/)?[^\s]*$/i);
 			},
 			isMultiFieldRequired: value => {
 				if (!_.isArray(value)) return !_.isEmpty(value);
@@ -1220,28 +1220,25 @@ class DatasetOnboarding extends Component {
 				}
 			},
 			isMultiFieldURLRequired: value => {
-				if (!_.isArray(value))
-					return !_.isEmpty(value) && !!value.match(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/);
+				if (!_.isArray(value)) return !_.isEmpty(value) && !!value.match(/^(?:[a-z][a-z0-9+\-.]*:)(?:\/?\/)?[^\s]*$/i);
 
 				let isNoError = true;
 				value.forEach(url => {
-					if (!url.match(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/)) isNoError = false;
+					if (!url.match(/^(?:[a-z][a-z0-9+\-.]*:)(?:\/?\/)?[^\s]*$/i)) isNoError = false;
 				});
 				return isNoError;
 			},
 			isMultiFieldURL: value => {
-				if (!_.isArray(value))
-					return _.isEmpty(value) || !!value.match(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/);
+				if (!_.isArray(value)) return _.isEmpty(value) || !!value.match(/^(?:[a-z][a-z0-9+\-.]*:)(?:\/?\/)?[^\s]*$/i);
 
 				let isNoError = true;
 				value.forEach(url => {
-					if (!_.isEmpty(url) && !url.match(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/))
-						isNoError = false;
+					if (!_.isEmpty(url) && !url.match(/^(?:[a-z][a-z0-9+\-.]*:)(?:\/?\/)?[^\s]*$/i)) isNoError = false;
 				});
 				return isNoError;
 			},
 			isAgeRangeValid: value => {
-				return _.isEmpty(value) || !!value.match(/^[^\D-_](?!.*?[-_]{2,})([0-9-]{1,2})[^\D]*[^-_\D]$/);
+				return _.isEmpty(value) || !!value.match(/(150|1[0-4][0-9]|[0-9]|[1-8][0-9]|9[0-9])-(150|1[0-4][0-9]|[0-9]|[1-8][0-9]|9[0-9])/i);
 			},
 			isSelectedRequired: value => {
 				return !_.isEmpty(value) && value !== 'undefined';
