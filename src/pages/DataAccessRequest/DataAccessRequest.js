@@ -12,6 +12,7 @@ import DatePickerCustom from './components/DatePickerCustom/DatepickerCustom';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import Loading from '../commonComponents/Loading';
+import QuestionActionTabs from './components/QuestionActionTabs';
 import NavItem from './components/NavItem/NavItem';
 import NavDropdown from './components/NavDropdown/NavDropdown';
 import WorkflowReviewStepsModal from '../commonComponents/workflowReviewStepsModal/WorkflowReviewStepsModal';
@@ -55,6 +56,7 @@ class DataAccessRequest extends Component {
 		this.onFormSubmit = this.onFormSubmit.bind(this);
 		this.onFormUpdate = this.onFormUpdate.bind(this);
 		this.onHandleDataSetChange = this.onHandleDataSetChange.bind(this);
+		this.onHandleActionTabChange = this.onHandleActionTabChange.bind(this);
 		this.searchBar = React.createRef();
 
 		this.state = {
@@ -141,6 +143,14 @@ class DataAccessRequest extends Component {
 			showDeleteDraftModal: false,
 			showDuplicateApplicationModal: false,
 			showSelectDatasetModal: false,
+			actionTabSettings: {
+				key: '',
+				questionSetId: '',
+				questionId: '',
+			},
+			messageDescription: '',
+			messageCounts: 0,
+			noteCounts: 0,
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -831,8 +841,13 @@ class DataAccessRequest extends Component {
 	 * @desc 	Event raised from Winterfell for secondary question events
 	 * @params {event, questionSetId, questionId, key}
 	 */
-	onQuestionAction = async (e = '', questionSetId = '', questionId = '', key = '') => {
+	onQuestionAction = async (e = '', questionSetId = '', questionId = '', key = '', counts = { messages: 0, notes: 0 }) => {
 		let mode, stateObj;
+		//TODO EXPAND ACTION KEYS HELPER WITH MSGS AND NOTES
+		//TEST KEY TYPE
+		this.setState({ messageCounts: counts.messages, noteCounts: counts.notes });
+		//SET ACTIVE TAB FOR GUIANDCE MSGS OR NOTES
+		//call api with question set id and question id to get msgs and notes..
 		switch (key) {
 			case DarHelper.actionKeys.GUIDANCE:
 				const activeGuidance = this.getActiveQuestionGuidance(questionId);
@@ -841,7 +856,27 @@ class DataAccessRequest extends Component {
 					this.addActiveQuestionClass(e);
 				}
 				this.setState({ activeGuidance });
+				//CALL FUNC TO SET ACTIVE TAB
+				this.setState({ activeGuidance, actionTabSettings: { key, questionSetId, questionId } });
 				break;
+			case DarHelper.actionKeys.MESSAGES:
+				// call api with question set id and question id to get msgs
+				if (!_.isEmpty(e)) {
+					this.removeActiveQuestionClass();
+					this.addActiveQuestionClass(e);
+				}
+
+				//CALL FUNC TO SET ACTIVE TAB
+				this.setState({ actionTabSettings: { key, questionSetId, questionId } });
+				break;
+			case DarHelper.actionKeys.NOTES:
+				// call api with question set id and question id to get notes
+				if (!_.isEmpty(e)) {
+					this.removeActiveQuestionClass();
+					this.addActiveQuestionClass(e);
+				}
+				//CALL FUNC TO SET ACTIVE TAB
+				this.setState({ actionTabSettings: { key, questionSetId, questionId } });
 			case DarHelper.actionKeys.REQUESTAMENDMENT:
 				mode = DarHelper.amendmentModes.ADDED;
 				stateObj = await this.postQuestionAction(questionSetId, questionId, mode);
@@ -886,6 +921,34 @@ class DataAccessRequest extends Component {
 				}
 				return '';
 			}
+		}
+	}
+
+	onHandleActionTabChange(settings) {
+		const { key, questionId } = settings;
+		const activeGuidance = this.getActiveQuestionGuidance(questionId);
+
+		switch (key) {
+			case DarHelper.actionKeys.GUIDANCE:
+				console.log('guidance is ', key);
+				console.log('questionID is ', questionId);
+				// const activeGuidance = this.getActiveQuestionGuidance(questionId);
+				console.log('active guidance is ', activeGuidance);
+
+				this.setState({ activeGuidance, actionTabSettings: settings });
+				break;
+			case DarHelper.actionKeys.MESSAGES:
+				// call api for messages
+				console.log('call message api');
+				this.setState({ actionTabSettings: settings });
+				break;
+			case DarHelper.actionKeys.NOTES:
+				// call api for notes
+				console.log('call notes api');
+				this.setState({ actionTabSettings: settings });
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -1596,6 +1659,10 @@ class DataAccessRequest extends Component {
 		}
 	};
 
+	setMessageDescription = messageDescription => {
+		this.setState({ messageDescription: messageDescription });
+	};
+
 	render() {
 		const {
 			lastSaved,
@@ -1623,6 +1690,7 @@ class DataAccessRequest extends Component {
 			alert,
 			versions,
 			version,
+			messageDescription,
 		} = this.state;
 		const { userState, location } = this.props;
 
@@ -1774,7 +1842,16 @@ class DataAccessRequest extends Component {
 					{isWideForm ? null : (
 						<div id='darRightCol' className='scrollable-sticky-column'>
 							<div className='darTab'>
-								<Guidance activeGuidance={activeGuidance} resetGuidance={this.resetGuidance} />
+								<QuestionActionTabs
+									userState={userState}
+									settings={this.state.actionTabSettings}
+									activeGuidance={activeGuidance}
+									onHandleActionTabChange={this.onHandleActionTabChange}
+									toggleDrawer={this.toggleDrawer}
+									setMessageDescription={this.setMessageDescription}
+									userType={userType}
+									messageCounts={this.state.messageCounts}
+									noteCounts={this.state.noteCounts}></QuestionActionTabs>
 							</div>
 						</div>
 					)}
@@ -1837,6 +1914,7 @@ class DataAccessRequest extends Component {
 						toggleModal={this.toggleModal}
 						drawerIsOpen={this.state.showDrawer}
 						topicContext={this.state.topicContext}
+						msgDescription={messageDescription}
 					/>
 				</SideDrawer>
 

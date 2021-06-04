@@ -53,7 +53,7 @@
 		"snyk": "^1.518.0",
 		"uniqid": "^5.2.0",
 		"uuid": "^8.3.1",
-		"winterfell": "github:HDRUK/Winterfell",
+		"winterfell": "github:HDRUK/Winterfell#HDWIN-010-FlagActionsUpdate",
 		"yup": "^0.28.1"
 	},
 	"scripts": {
