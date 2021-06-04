@@ -8,10 +8,9 @@ import TopicList from './components/TopicList';
 import MessageHeader from './components/MessageHeader';
 import MessageItem from './components/MessageItem';
 import MessageFooter from './components/MessageFooter';
-import { EnquiryMessage } from './components/EnquiryMessage';
 import './UserMessages.scss';
 
-const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOpen = false, is5Safes }) => {
+const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOpen = false, msgDescription }) => {
 	const defaultMessage =
 		'Use messages to clarify questions with the data custodian before starting your application to request access to the data. Provide a brief description of your project and what datasets you are interested in.';
 
@@ -31,9 +30,14 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 			dataRequestModalContent = {},
 		} = topicContext);
 
-	const [messageDescription, setMessageDescription] = useState('');
+	const [messageDescription, setMessageDescription] = useState(msgDescription);
+
 	const [topics, setTopics] = useState([]);
+
 	const [activeTopic, setActiveTopic] = useState({});
+
+	const [textArea, resetTextArea] = useState('');
+
 	const [modalRequired, setRequiresModal] = useState(requiresModal);
 
 	/**
@@ -49,7 +53,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 				const {
 					data: { topics },
 				} = res;
-				// 1. clone topics
+				// 1. clone topics from t
 				let topicsArr = [...topics];
 				// 2. check if  dataset id has been passed
 				if (_.isEmpty(datasets) && !_.isEmpty(topicsArr)) {
@@ -95,7 +99,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 				_id: '',
 				title,
 				subTitle,
-				tags: [{ _id: relatedObjectIds[0], name: subTitle, publisher: datasets[0].publisher }],
+				tags,
 				recipients: [],
 				status: 'active',
 				isDeleted: false,
@@ -240,7 +244,22 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 		setMessageDescription(e.target.value);
 	};
 
-	const postMessage = params => {
+	/**
+	 * onSubmitMessage
+	 * @param event {<Object>}
+	 * @desc Event to Post message to db
+	 */
+	const onSubmitMessage = e => {
+		e.preventDefault();
+		if (_.isEmpty(messageDescription)) return false;
+
+		let params = {
+			messageType: 'message',
+			topic: activeTopic._id,
+			relatedObjectIds: activeTopic.relatedObjectIds,
+			messageDescription,
+		};
+		// do post here
 		axios
 			.post(`${baseURL}/api/v1/messages`, params)
 			.then(response => {
@@ -249,7 +268,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 				// 2. deconstruct message obj
 				const {
 					data: {
-						message: { messageDescription, createdDate, createdByName, _id, topic, firstMessage },
+						message: { messageDescription, createdDate, createdByName, _id, topic },
 					},
 				} = response;
 				// 3. copy new message
@@ -272,7 +291,6 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 					messageDescription,
 					createdDate,
 					createdBy: createdByName,
-					firstMessage,
 				});
 				// 6. set the active topic
 				setActiveTopic(newTopic);
@@ -282,70 +300,14 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 			});
 	};
 
-	/**
-	 * onSubmitMessage
-	 * @param event {<Object>}
-	 * @desc Event to Post message to db
-	 */
-	const onSubmitMessage = e => {
-		e.preventDefault();
-		if (_.isEmpty(messageDescription)) return false;
-
-		let params = {
-			messageType: 'message',
-			topic: activeTopic._id,
-			relatedObjectIds: activeTopic.relatedObjectIds,
-			messageDescription,
-		};
-
-		postMessage(params);
-	};
-
-	const isNewMessage = (activeTopic = {}) => {
-		if (!_.isEmpty(activeTopic)) {
-			// deconstruct createdData
-			let { createdDate = '' } = activeTopic;
-			return createdDate.trim().toUpperCase() === 'NEW MESSAGE' ? true : false;
-		}
-		return false;
-	};
-
-	/**
-	 * onDatasetsRequested
-	 *
-	 * @description - Callback function to handle selection of datasets from first message
-	 * @param   {[Array]}  datasets  [A list of datasets selected from typeahead]
-	 */
-	const onDatasetsRequested = datasets => {
-		setActiveTopic({ ...activeTopic, tags: [...datasets] });
-	};
-
-	/**
-	 * onFirstMessageSubmit
-	 */
-	const onFirstMessageSubmit = data => {
-		let params = {
-			messageType: 'message',
-			topic: activeTopic._id,
-			relatedObjectIds: getRelatedObjectIds(activeTopic.tags),
-			messageDescription: data.messageDescription,
-			firstMessage: data.firstMessage,
-		};
-
-		postMessage(params);
-	};
-
-	const getRelatedObjectIds = activeTopicTags => {
-		let tempRelatedObjectIds = [];
-		activeTopicTags.map(tag => tempRelatedObjectIds.push(tag._id));
-
-		return tempRelatedObjectIds;
-	};
-
 	useEffect(() => {
 		// 1. GET Topics for current user
 		if (drawerIsOpen) getUserTopics();
 	}, [drawerIsOpen, topicContext]);
+
+	useEffect(() => {
+		setMessageDescription(msgDescription);
+	}, [msgDescription]);
 
 	return (
 		<Fragment>
@@ -356,7 +318,7 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 			{topics.length > 0 ? (
 				<div className='sideDrawer-body'>
 					<TopicList topics={topics} onTopicClick={onTopicClick} />
-					<div className='messageArea' style={{ gridTemplateRows: `${isNewMessage(activeTopic) ? '1fr 10fr' : '1fr 10fr 170px'}` }}>
+					<div className='messageArea'>
 						<div className='messageArea-header'>
 							{!_.isEmpty(activeTopic) ? (
 								<MessageHeader
@@ -365,31 +327,23 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 									modalRequired={modalRequired}
 									onRequestAccess={onRequestAccess}
 									onShowModal={onShowModal}
-									is5Safes={is5Safes}
 								/>
 							) : (
 								''
 							)}
 						</div>
-
 						<div className='messageArea-body'>
-							{!_.isEmpty(activeTopic.topicMessages) ? (
-								activeTopic.topicMessages.map(message => <MessageItem key={message._id} {...message} />)
-							) : !_.isEmpty(activeTopic) && isNewMessage(activeTopic) ? (
-								<EnquiryMessage topic={activeTopic} onDatasetsRequested={onDatasetsRequested} onFirstMessageSubmit={onFirstMessageSubmit} />
+							{!_.isEmpty(activeTopic.topicMessages)
+								? activeTopic.topicMessages.map(message => <MessageItem key={message._id} {...message} />)
+								: ''}
+						</div>
+						<div className='messageArea-footer'>
+							{!_.isEmpty(activeTopic) ? (
+								<MessageFooter value={messageDescription} onSubmitMessage={onSubmitMessage} onMessageChange={onMessageChange} />
 							) : (
 								''
 							)}
 						</div>
-
-						{/* DONT SHOW FOOTER IF A NEW MESSAGE - EXTEND BODY */}
-						{!_.isEmpty(activeTopic) && !isNewMessage(activeTopic) ? (
-							<div className='messageArea-footer'>
-								<MessageFooter value={messageDescription} onSubmitMessage={onSubmitMessage} onMessageChange={onMessageChange} />
-							</div>
-						) : (
-							''
-						)}
 					</div>
 				</div>
 			) : (

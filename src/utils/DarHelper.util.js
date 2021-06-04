@@ -100,6 +100,8 @@ let actionKeys = {
 	REQUESTAMENDMENT: 'requestAmendment',
 	CANCELREQUEST: 'cancelRequest',
 	REVERTTOPREVIOUSANSWER: 'revertToPreviousAnswer',
+	MESSAGES: 'messages',
+	NOTES: 'notes',
 };
 
 const amendmentModes = {
