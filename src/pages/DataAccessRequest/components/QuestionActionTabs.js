@@ -7,6 +7,7 @@ import DarHelper from '../../../utils/DarHelper.util';
 import { capitalize, isEmpty } from 'lodash';
 
 const QuestionActionTabs = ({
+	applicationId,
 	userState,
 	settings,
 	activeGuidance,
@@ -17,6 +18,7 @@ const QuestionActionTabs = ({
 	userType,
 	messageCounts,
 	noteCounts,
+	isShared,
 }) => {
 	const [activeSettings, setActiveSettings] = useState({ key: '', questionSetId: '', questionId: '' });
 
@@ -26,6 +28,7 @@ const QuestionActionTabs = ({
 
 	useEffect(() => {
 		if (!isEmpty(settings)) {
+			if (settings.key === '') settings.key = DarHelper.actionKeys.GUIDANCE;
 			setActiveSettings(settings);
 		}
 	}, [settings]);
@@ -41,7 +44,11 @@ const QuestionActionTabs = ({
 							{capitalize(DarHelper.actionKeys.GUIDANCE)}
 						</Fragment>
 					}>
-					<Guidance activeGuidance={activeGuidance} resetGuidance={resetGuidance}></Guidance>
+					{!isEmpty(activeSettings.questionId) ? (
+						<Guidance activeGuidance={activeGuidance}></Guidance>
+					) : (
+						<div className='darTab-guidance'>Click on a question guidance to view details</div>
+					)}
 				</Tab>
 				<Tab
 					eventKey={DarHelper.actionKeys.MESSAGES}
@@ -49,14 +56,22 @@ const QuestionActionTabs = ({
 						<Fragment>
 							<i className={`far fa-comment-alt mr-2 ${activeSettings.key === DarHelper.actionKeys.MESSAGES ? 'tab-is-active' : ''}`} />
 							{capitalize(DarHelper.actionKeys.MESSAGES)}
-							<span className='tab-count'>33</span>
+							{!isEmpty(activeSettings.questionId) ? <span className='tab-count'>33</span> : ''}
 						</Fragment>
 					}>
-					<Messages
-						userState={userState}
-						toggleDrawer={toggleDrawer}
-						setMessageDescription={setMessageDescription}
-						userType={userType}></Messages>
+					{!isEmpty(activeSettings.questionId) ? (
+						<Messages
+							applicationId={applicationId}
+							userState={userState}
+							settings={settings}
+							applicationShared={isShared}
+							toggleDrawer={toggleDrawer}
+							setMessageDescription={setMessageDescription}
+							userType={userType}
+							isShared={isShared}></Messages>
+					) : (
+						<div className='darTab-guidance'>Click on a question message to view messages</div>
+					)}
 				</Tab>
 
 				<Tab
@@ -68,7 +83,11 @@ const QuestionActionTabs = ({
 							<span className='tab-count'>1</span>
 						</Fragment>
 					}>
-					<Notes userState={userState} userType={userType}></Notes>
+					{!isEmpty(activeSettings.questionId) ? (
+						<Notes userState={userState} userType={userType}></Notes>
+					) : (
+						<div className='darTab-guidance'>Click on a question note to view notes</div>
+					)}
 				</Tab>
 			</Tabs>
 		</div>

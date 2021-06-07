@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 
-const Guidance = ({ activeGuidance, resetGuidance }) => {
+const Guidance = ({ activeGuidance }) => {
 	return (
 		<Fragment>
 			{activeGuidance ? (

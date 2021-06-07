@@ -1,21 +1,34 @@
 import React, { Fragment, useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 import isEmpty from 'lodash';
 import ShareFormModal from './ShareFormModal';
+import Loading from '../../../commonComponents/Loading';
 import './Messages.scss';
-const baseURL = require('../../../commonComponents/BaseURL');
+import { baseURL } from '../../../../configs/url.config';
 
-const Messages = ({ activeMessages, applicationShared, toggleDrawer, setMessageDescription, userState, userType }) => {
+const Messages = ({
+	applicationId,
+	activeMessages,
+	settings,
+	applicationShared,
+	toggleDrawer,
+	setMessageDescription,
+	userState,
+	userType,
+}) => {
 	const [showShareFormModal, setShowShareFormModal] = useState(false);
 	const [currentMessage, setCurrentMessage] = useState('');
 	const [messageThread, setMessageThread] = useState([]);
 	const [applicationIsShared, setApplicationIsShared] = useState(applicationShared);
+	const [isloading, setIsloading] = useState(true);
 	// const [userState, setUserState] = useState(userState);
 
 	const messagesEndRef = useRef(null);
 
 	useEffect(() => {
+		setIsloading(true);
 		retrieveMessageThread();
-	}, []);
+	}, [settings]);
 
 	useEffect(() => {
 		scrollToBottom();
@@ -37,7 +50,7 @@ const Messages = ({ activeMessages, applicationShared, toggleDrawer, setMessageD
 		if (!applicationIsShared) {
 			onShowShareFormModal();
 		} else {
-			sendMessage();
+			sendMessage(message);
 		}
 		// sendMessage(); //delete this
 	};
@@ -61,49 +74,27 @@ const Messages = ({ activeMessages, applicationShared, toggleDrawer, setMessageD
 		sendMessage();
 	};
 
-	const sendMessage = () => {
+	const sendMessage = async message => {
 		// TODO: Post message to API
+		const { questionId } = settings;
+		let response = await axios.post(`${baseURL}/api/v1/data-access-request/${applicationId}/messages`, {
+			questionId,
+			messageType: 'DAR_Message',
+			messageBody: message,
+		});
+
 		setMessageThread([...messageThread, { name: userState[0].name, date: '01/01/2021', content: currentMessage, userType: userType }]);
 		setCurrentMessage('');
 	};
 
-	const retrieveMessageThread = () => {
+	const retrieveMessageThread = async () => {
 		// 1. api call to get messages
-		let messageThreadTestData = [
-			{
-				name: 'Richard Hobbs',
-				date: '1 Jun 2021 16:20',
-				content: 'Can you tell me more about this question please?',
-				userType: 'applicant',
-			},
-			{
-				name: 'Shannon Hoon',
-				date: '10 Jun 2021 16:20',
-				content: 'Yes this question is asking you for details about your.... blah blah blah blah blah',
-				userType: 'custodian',
-			},
-			{
-				name: 'Christopher man',
-				date: '11 Jun 2021 16:20',
-				content: 'You should also include details about .... blah blah blah blah blah and other stuff like that',
-				userType: 'custodian',
-			},
-			{
-				name: 'Richard Hobbs',
-				date: '12 Jun 2021 16:20',
-				content:
-					'Thanks for your help Shannon and Christoper man.  This will help me answer the question.  Test test test test test tets test test test.  Test test test test test tets test test test.  Test test test test test tets test test test',
-				userType: 'applicant',
-			},
-			{
-				name: 'Richard Hobbs',
-				date: '13 Jun 2021 16:20',
-				content: 'Thank you!',
-				userType: 'applicant',
-			},
-		];
-
-		setMessageThread(messageThreadTestData);
+		const { questionId } = settings;
+		const response = await axios.get(
+			`${baseURL}/api/v1/data-access-request/${applicationId}/messages?messageType=DAR_Message&questionId=${questionId}`
+		);
+		setIsloading(false);
+		setMessageThread(response.data.messages);
 	};
 
 	const buildMessageThread = () => {
@@ -126,7 +117,7 @@ const Messages = ({ activeMessages, applicationShared, toggleDrawer, setMessageD
 								userType.toUpperCase() === msg.userType.toUpperCase() ? 'message-bubble-sent' : 'message-bubble-received'
 							} message-bubble`}>
 							<div className='message-metadata'>
-								<span>{msg.name}</span>
+								<span>{msg.name} </span>
 								<span>{msg.date}</span>
 							</div>
 							{msg.content}
@@ -142,7 +133,14 @@ const Messages = ({ activeMessages, applicationShared, toggleDrawer, setMessageD
 			<div className='info-msg'>Both data custodian and applicants can see messages</div>
 			<div className='darTab-messages'>
 				<div className='messages'>
-					{buildMessageThread()}
+					{isloading ? (
+						<Fragment>
+							<Loading />
+						</Fragment>
+					) : (
+						buildMessageThread()
+					)}
+
 					<div ref={messagesEndRef} id='messageEndRef'></div>
 				</div>
 			</div>
