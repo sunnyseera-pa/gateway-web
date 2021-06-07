@@ -93,7 +93,6 @@
 	}
 }
 .messageArea {
-	display: -ms-grid;
 	display: grid;
 	-ms-grid-column: 2;
 	-ms-grid-rows: 165px 10fr 170px;
@@ -101,6 +100,7 @@
 	box-sizing: border-box;
 	height: calc(100vh - 40px);
 	overflow-wrap: break-word;
+	overflow-y: auto;
 
 	&-header {
 		-ms-grid-row: 1;
