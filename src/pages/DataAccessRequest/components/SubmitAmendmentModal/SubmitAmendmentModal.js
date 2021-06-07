@@ -1,15 +1,15 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import _ from 'lodash';
 import { Modal } from 'react-bootstrap';
 import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
-import './SubmitAmendmentModal.scss'
-
+import './SubmitAmendmentModal.scss';
 
 const SubmitAmendmentModal = ({ open, close }) => {
 	const onSaveChanges = () => {
 		close();
 	};
-
+	const [textValue, setTextValue] = useState('');
+	
 	return (
 		<Fragment>
 			<Modal show={open} onHide={close} size='lg' aria-labelledby='contained-modal-title-vcenter' centered className='amendmentModal'>
@@ -19,17 +19,21 @@ const SubmitAmendmentModal = ({ open, close }) => {
 							<h1 className='black-20-semibold'>Submit amendment</h1>
 							<CloseButtonSvg className='amendmentModal-head--close' onClick={() => close()} />
 						</div>
-						<p>Are you sure you want to submit a new version of this application? If yes, please explain the changes you have made and why.</p>
+						<p>
+							Are you sure you want to submit a new version of this application? If yes, please explain the changes you have made and why.
+						</p>
 					</div>
 				</div>
 
 				<div className='amendmentModal-body'>
 					<div className='amendmentModal-body--group'>
 						<label className='gray800-14'>Description</label>
-                        <textarea
-								className={`form-control`}
-								name='amendDesc'
-								rows='8'></textarea>
+						<textarea
+							className={`form-control`}
+							name='amendDesc'
+							onChange={e => setTextValue(e.target.value)}
+							value={textValue}
+							rows='8'></textarea>
 					</div>
 				</div>
 
@@ -38,7 +42,7 @@ const SubmitAmendmentModal = ({ open, close }) => {
 						<button className='button-secondary' onClick={() => close()}>
 							No, nevermind
 						</button>
-						<button className='button-primary' onClick={() => onSaveChanges()}>
+						<button className='button-primary' onClick={() => console.log(textValue)}>
 							Submit amendment
 						</button>
 					</div>
