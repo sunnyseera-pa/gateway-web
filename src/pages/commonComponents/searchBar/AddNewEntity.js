@@ -15,23 +15,33 @@ const CustomMenu = React.forwardRef(({ children, style, className, 'aria-labelle
 	);
 });
 
-const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+const CustomToggle = React.forwardRef(({ children, onClick, loggedIn, showLoginModal }, ref) => (
 	<button
 		href=''
 		ref={ref}
 		onClick={e => {
 			e.preventDefault();
-			onClick(e);
+			if (loggedIn) {
+				onClick(e);
+			} else {
+				showLoginModal();
+			}
 		}}
 		className='addNewEntityDropdown'>
 		{children}
 	</button>
 ));
 
-const AddNewEntity = () => {
+const AddNewEntity = props => {
+	const showLoginModal = () => {
+		let modalID = 'myModal';
+		document.getElementById(modalID).style.display = 'block';
+		document.getElementById('modalRequestSection').style.display = 'none';
+	};
+
 	return (
 		<Dropdown data-test-id='addNewEntityDropdown' className='addNewEntityDropdown'>
-			<Dropdown.Toggle as={CustomToggle}>
+			<Dropdown.Toggle as={CustomToggle} showLoginModal={showLoginModal} loggedIn={props.loggedIn}>
 				+ Add new
 				<span className='addNewDropDownGap'></span>
 				<ChevronBottom />
