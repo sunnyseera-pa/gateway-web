@@ -884,6 +884,7 @@ class DataAccessRequest extends Component {
 				}
 				//CALL FUNC TO SET ACTIVE TAB
 				this.setState({ actionTabSettings: { key, questionSetId, questionId } });
+				break;
 			case DarHelper.actionKeys.REQUESTAMENDMENT:
 				mode = DarHelper.amendmentModes.ADDED;
 				stateObj = await this.postQuestionAction(questionSetId, questionId, mode);
