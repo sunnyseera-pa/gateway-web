@@ -2,18 +2,22 @@ import React, { Fragment, useState, useEffect, useRef } from 'react';
 import isEmpty from 'lodash';
 import '../Messages/Messages.scss';
 import SVGIcon from '../../../../images/SVGIcon';
+import axios from 'axios';
+import Loading from '../../../commonComponents/Loading';
+import { baseURL } from '../../../../configs/url.config';
 
-const baseURL = require('../../../commonComponents/BaseURL');
-
-const Notes = ({ activeNotes, userState, userType }) => {
+const Notes = ({ applicationId, settings, userState, userType }) => {
 	const [currentNote, setCurrentNote] = useState('');
 	const [notesThread, setNotesThread] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
 
+	const noteType = userType.toUpperCase() === 'APPLICANT' ? 'DAR_Notes_Applicant' : 'DAR_Notes_Custodian';
 	const notesEndRef = useRef(null);
 
 	useEffect(() => {
+		setIsLoading(true);
 		retrieveNotesThread();
-	}, []);
+	}, [settings]);
 
 	useEffect(() => {
 		scrollToBottom();
@@ -23,45 +27,32 @@ const Notes = ({ activeNotes, userState, userType }) => {
 		notesEndRef.current.scrollIntoView(false);
 	};
 
-	const handleSendNote = message => {
-		if (!message) {
+	const handleSendNote = note => {
+		if (!note) {
 			return;
 		}
 		addNote();
 	};
 
-	const addNote = () => {
+	const addNote = async () => {
 		// TODO: Post message to API
+		const { questionId } = settings;
+		await axios.post(`${baseURL}/api/v1/data-access-request/${applicationId}/messages`, {
+			questionId,
+			messageType: noteType,
+			messageBody: currentNote,
+		});
 		setNotesThread([...notesThread, { name: userState[0].name, date: '01/01/2021', content: currentNote, userType: userType }]);
 		setCurrentNote('');
 	};
 
-	const retrieveNotesThread = () => {
-		// 1. api call to get messages
-		let notesThreadTestData = [
-			{
-				name: 'Richard Hobbs',
-				date: '1 Jun 2021 16:20',
-				content: 'These are my notes that only applicants can see',
-				userType: 'applicant',
-			},
-			{
-				name: 'Christopher veryLongSurname',
-				date: '11 Jun 2021 16:20',
-				content: 'That is most correct',
-				userType: 'applicant',
-			},
-			{
-				name: 'Richard Hobbs',
-				date: '12 Jun 2021 16:20',
-				content:
-					'Test test test test test tets test test test.  Test test test test test tets test test test.  Test test test test test tets test test test',
-				userType: 'applicant',
-			},
-		];
-
-		setNotesThread(notesThreadTestData);
-		setNotesThread([]);
+	const retrieveNotesThread = async () => {
+		const { questionId } = settings;
+		const response = await axios.get(
+			`${baseURL}/api/v1/data-access-request/${applicationId}/messages?messageType=${noteType}&questionId=${questionId}`
+		);
+		setIsLoading(false);
+		setNotesThread(response.data.messages);
 	};
 
 	const buildNotesThread = () => {
@@ -112,7 +103,13 @@ const Notes = ({ activeNotes, userState, userType }) => {
 			{getInfoMessage()}
 			<div className='darTab-notes'>
 				<div className='messages'>
-					{buildNotesThread()}
+					{isLoading ? (
+						<Fragment>
+							<Loading />
+						</Fragment>
+					) : (
+						buildNotesThread()
+					)}
 					<div ref={notesEndRef} id='messageEndRef'></div>
 				</div>
 			</div>
