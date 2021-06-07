@@ -84,7 +84,7 @@ const QuestionActionTabs = ({
 						</Fragment>
 					}>
 					{!isEmpty(activeSettings.questionId) ? (
-						<Notes userState={userState} userType={userType}></Notes>
+						<Notes applicationId={applicationId} userState={userState} settings={settings} userType={userType}></Notes>
 					) : (
 						<div className='darTab-guidance'>Click on a question note to view notes</div>
 					)}
