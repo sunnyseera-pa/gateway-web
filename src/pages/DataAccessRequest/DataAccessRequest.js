@@ -336,7 +336,7 @@ class DataAccessRequest extends Component {
 		let {
 			jsonSchema,
 			activeParty = '',
-			questionAnswers,
+			questionAnswers = {},
 			_id,
 			hasRecommended,
 			amendmentIterations = [],
@@ -356,7 +356,6 @@ class DataAccessRequest extends Component {
 			workflow,
 			files,
 			isCloneable,
-			version = 'Version 1.0',
 			versions = [],
 		} = context;
 		let {
@@ -457,7 +456,6 @@ class DataAccessRequest extends Component {
 			workflowAssigned: !_.isEmpty(workflow) ? true : false,
 			files,
 			isCloneable,
-			version,
 			versions,
 		});
 	};
@@ -631,7 +629,7 @@ class DataAccessRequest extends Component {
 			this.setState({ lastSaved });
 
 			let alert = {
-				tab: 'submitted',
+				tab: this.state.applicationStatus === 'inProgress' ? 'submitted' : 'inReview',
 				message:
 					this.state.applicationStatus === 'inProgress'
 						? 'Your application was submitted successfully'
@@ -1410,16 +1408,16 @@ class DataAccessRequest extends Component {
 		let fullAmendments = {};
 		let updateRequestModal = this.state.updateRequestModal;
 		let { pages, questionPanels, questionSets } = { ...this.state.jsonSchema };
+		let { questionAnswers } = { ...this.state };
 		// Get the last amendmentIteration in the array
 		let amendmentsIterations = _.last([...this.state.amendmentIterations]);
 		if (!_.isEmpty(amendmentsIterations)) {
 			// get the questionAnswers object {role: {}, lastName: {}}
-			let { questionAnswers } = { ...amendmentsIterations };
+			let { questionAnswers: updates } = { ...amendmentsIterations };
 			// get all the questionIds into a iterable array from questionAnswers
-			if (!_.isEmpty(questionAnswers)) {
+			if (!_.isEmpty(updates)) {
 				// set up default variables
 				let questionSetId,
-					answer,
 					section,
 					pageId,
 					page,
@@ -1427,10 +1425,11 @@ class DataAccessRequest extends Component {
 					question = '';
 				// reduce over questionanswers object using lodash
 				fullAmendments = _.reduce(
-					questionAnswers,
+					updates,
 					(obj, value, key) => {
 						// currentItem {questionSetId, answer}
-						({ questionSetId, answer } = questionAnswers[key]);
+						({ questionSetId } = updates[key]);
+						const answer = questionAnswers[key];
 						// find the active questionPanel ie questionPanels: [{navHeader, pageId, panelId, questionSets:[]}]
 						let activeQuestionPanel = [...questionPanels].find(panel => panel.panelId === questionSetId);
 						// Get the section {navHeader: panelHeader: 'Applicant', pageId: 'safePeople'}
@@ -1621,10 +1620,11 @@ class DataAccessRequest extends Component {
 			roles,
 			showEmailModal,
 			alert,
-			versions,
-			version,
+			versions = []
 		} = this.state;
-		const { userState, location } = this.props;
+		const { userState } = this.props;
+
+		const selectedVersion = !_.isEmpty(versions) ? versions.find(v => v.isCurrent).displayTitle : '';
 
 		Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
 		Winterfell.addInputType('datePickerCustom', DatePickerCustom);
@@ -1672,7 +1672,7 @@ class DataAccessRequest extends Component {
 						)}
 						{versions.length > 1 && (
 							<span className='white-16-semibold pr-5' style={{ display: 'inline-block' }}>
-								<VersionSelector selectedVersion={version} versionList={versions} displayType='smallTriangle' />
+								<VersionSelector selectedVersion={selectedVersion} versionList={versions} displayType='smallTriangle' />
 							</span>
 						)}
 					</Col>
