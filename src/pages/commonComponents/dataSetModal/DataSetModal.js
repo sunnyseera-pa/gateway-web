@@ -1,10 +1,8 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import _ from 'lodash';
 import ReactMarkdown from 'react-markdown';
 import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg';
-import { Event } from '../../../tracking';
 import DataSetHelper from '../../../utils/DataSetHelper.util';
 
 import './DataSetModal.scss';
@@ -19,8 +17,6 @@ const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginMod
 
 	const { loggedIn: isLoggedIn } = userState;
 	const [screenData, setScreenData] = useState({});
-
-	let history = useHistory();
 
 	const initScreenData = () => {
 		if (typeof context !== 'undefined' && !_.isEmpty(context) && !_.isEmpty(context.datasets)) {
