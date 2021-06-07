@@ -12,7 +12,6 @@ import DatePickerCustom from './components/DatePickerCustom/DatepickerCustom';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import Loading from '../commonComponents/Loading';
-import QuestionActionTabs from './components/QuestionActionTabs';
 import NavItem from './components/NavItem/NavItem';
 import NavDropdown from './components/NavDropdown/NavDropdown';
 import WorkflowReviewStepsModal from '../commonComponents/workflowReviewStepsModal/WorkflowReviewStepsModal';
@@ -40,6 +39,7 @@ import ContributorModal from './components/ContributorModal/ContributorModal';
 import AssignWorkflowModal from './components/AssignWorkflowModal/AssignWorkflowModal';
 import SLA from '../commonComponents/sla/SLA';
 import AboutApplication from './components/AboutApplication/AboutApplication';
+import Guidance from './components/Guidance/Guidance';
 import Uploads from './components/Uploads/Uploads';
 import UpdateRequestModal from './components/UpdateRequestModal/UpdateRequestModal';
 import MissingFieldsModal from './components/MissingFieldsModal/MissingFieldsModal';
@@ -55,7 +55,6 @@ class DataAccessRequest extends Component {
 		this.onFormSubmit = this.onFormSubmit.bind(this);
 		this.onFormUpdate = this.onFormUpdate.bind(this);
 		this.onHandleDataSetChange = this.onHandleDataSetChange.bind(this);
-		this.onHandleActionTabChange = this.onHandleActionTabChange.bind(this);
 		this.searchBar = React.createRef();
 
 		this.state = {
@@ -142,15 +141,6 @@ class DataAccessRequest extends Component {
 			showDeleteDraftModal: false,
 			showDuplicateApplicationModal: false,
 			showSelectDatasetModal: false,
-			actionTabSettings: {
-				key: '',
-				questionSetId: '',
-				questionId: '',
-			},
-			messageDescription: '',
-			messageCounts: 0,
-			noteCounts: 0,
-			isShared: false,
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -253,7 +243,6 @@ class DataAccessRequest extends Component {
 						workflow,
 						files,
 						isCloneable,
-						isShared,
 					},
 				},
 			} = response;
@@ -273,7 +262,6 @@ class DataAccessRequest extends Component {
 				workflow,
 				files,
 				isCloneable,
-				isShared,
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -301,7 +289,6 @@ class DataAccessRequest extends Component {
 						workflow,
 						files,
 						isCloneable,
-						isShared,
 					},
 				},
 			} = response;
@@ -321,7 +308,6 @@ class DataAccessRequest extends Component {
 				workflow,
 				files,
 				isCloneable,
-				isShared,
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -350,7 +336,7 @@ class DataAccessRequest extends Component {
 		let {
 			jsonSchema,
 			activeParty = '',
-			questionAnswers,
+			questionAnswers = {},
 			_id,
 			hasRecommended,
 			amendmentIterations = [],
@@ -370,8 +356,6 @@ class DataAccessRequest extends Component {
 			workflow,
 			files,
 			isCloneable,
-			isShared,
-			version = 'Version 1.0',
 			versions = [],
 		} = context;
 		let {
@@ -417,7 +401,7 @@ class DataAccessRequest extends Component {
 		let modalContext = DarHelper.createModalContext(aboutApplication.selectedDatasets);
 		let allowsMultipleDatasets = topicContext.requiresModal || false;
 
-		// 5. If multiple datasets are allowed, append 'about this application' section
+		// 5. If multiple datasets are allowed, append 'before you begin' section
 		if (allowsMultipleDatasets) {
 			// we need to inject About and File sections if first time running
 			jsonSchema = this.injectStaticContent(jsonSchema, inReviewMode, reviewSections);
@@ -472,8 +456,6 @@ class DataAccessRequest extends Component {
 			workflowAssigned: !_.isEmpty(workflow) ? true : false,
 			files,
 			isCloneable,
-			isShared,
-			version,
 			versions,
 		});
 	};
@@ -647,7 +629,7 @@ class DataAccessRequest extends Component {
 			this.setState({ lastSaved });
 
 			let alert = {
-				tab: 'submitted',
+				tab: this.state.applicationStatus === 'inProgress' ? 'submitted' : 'inReview',
 				message:
 					this.state.applicationStatus === 'inProgress'
 						? 'Your application was submitted successfully'
@@ -769,7 +751,6 @@ class DataAccessRequest extends Component {
 				validationErrors,
 				reviewWarning,
 				activeGuidance: '',
-				actionTabSettings: { key: '', questionSetId: '', questionId: '' },
 			});
 		}
 	};
@@ -848,13 +829,8 @@ class DataAccessRequest extends Component {
 	 * @desc 	Event raised from Winterfell for secondary question events
 	 * @params {event, questionSetId, questionId, key}
 	 */
-	onQuestionAction = async (e = '', questionSetId = '', questionId = '', key = '', counts = { messages: 0, notes: 0 }) => {
+	onQuestionAction = async (e = '', questionSetId = '', questionId = '', key = '') => {
 		let mode, stateObj;
-		//TODO EXPAND ACTION KEYS HELPER WITH MSGS AND NOTES
-		//TEST KEY TYPE
-		this.setState({ messageCounts: counts.messages, noteCounts: counts.notes });
-		//SET ACTIVE TAB FOR GUIANDCE MSGS OR NOTES
-		//call api with question set id and question id to get msgs and notes..
 		switch (key) {
 			case DarHelper.actionKeys.GUIDANCE:
 				const activeGuidance = this.getActiveQuestionGuidance(questionId);
@@ -863,27 +839,6 @@ class DataAccessRequest extends Component {
 					this.addActiveQuestionClass(e);
 				}
 				this.setState({ activeGuidance });
-				//CALL FUNC TO SET ACTIVE TAB
-				this.setState({ activeGuidance, actionTabSettings: { key, questionSetId, questionId } });
-				break;
-			case DarHelper.actionKeys.MESSAGES:
-				// call api with question set id and question id to get msgs
-				if (!_.isEmpty(e)) {
-					this.removeActiveQuestionClass();
-					this.addActiveQuestionClass(e);
-				}
-
-				//CALL FUNC TO SET ACTIVE TAB
-				this.setState({ actionTabSettings: { key, questionSetId, questionId } });
-				break;
-			case DarHelper.actionKeys.NOTES:
-				// call api with question set id and question id to get notes
-				if (!_.isEmpty(e)) {
-					this.removeActiveQuestionClass();
-					this.addActiveQuestionClass(e);
-				}
-				//CALL FUNC TO SET ACTIVE TAB
-				this.setState({ actionTabSettings: { key, questionSetId, questionId } });
 				break;
 			case DarHelper.actionKeys.REQUESTAMENDMENT:
 				mode = DarHelper.amendmentModes.ADDED;
@@ -929,33 +884,6 @@ class DataAccessRequest extends Component {
 				}
 				return '';
 			}
-		}
-	}
-
-	onHandleActionTabChange(settings) {
-		const { key, questionId } = settings;
-		const activeGuidance = this.getActiveQuestionGuidance(questionId);
-		switch (key) {
-			case DarHelper.actionKeys.GUIDANCE:
-				console.log('guidance is ', key);
-				console.log('questionID is ', questionId);
-				// const activeGuidance = this.getActiveQuestionGuidance(questionId);
-				console.log('active guidance is ', activeGuidance);
-
-				this.setState({ activeGuidance, actionTabSettings: settings });
-				break;
-			case DarHelper.actionKeys.MESSAGES:
-				// call api for messages
-				console.log('call message api');
-				this.setState({ actionTabSettings: settings });
-				break;
-			case DarHelper.actionKeys.NOTES:
-				// call api for notes
-				console.log('call notes api');
-				this.setState({ actionTabSettings: settings });
-				break;
-			default:
-				break;
 		}
 	}
 
@@ -1480,16 +1408,16 @@ class DataAccessRequest extends Component {
 		let fullAmendments = {};
 		let updateRequestModal = this.state.updateRequestModal;
 		let { pages, questionPanels, questionSets } = { ...this.state.jsonSchema };
+		let { questionAnswers } = { ...this.state };
 		// Get the last amendmentIteration in the array
 		let amendmentsIterations = _.last([...this.state.amendmentIterations]);
 		if (!_.isEmpty(amendmentsIterations)) {
 			// get the questionAnswers object {role: {}, lastName: {}}
-			let { questionAnswers } = { ...amendmentsIterations };
+			let { questionAnswers: updates } = { ...amendmentsIterations };
 			// get all the questionIds into a iterable array from questionAnswers
-			if (!_.isEmpty(questionAnswers)) {
+			if (!_.isEmpty(updates)) {
 				// set up default variables
 				let questionSetId,
-					answer,
 					section,
 					pageId,
 					page,
@@ -1497,10 +1425,11 @@ class DataAccessRequest extends Component {
 					question = '';
 				// reduce over questionanswers object using lodash
 				fullAmendments = _.reduce(
-					questionAnswers,
+					updates,
 					(obj, value, key) => {
 						// currentItem {questionSetId, answer}
-						({ questionSetId, answer } = questionAnswers[key]);
+						({ questionSetId } = updates[key]);
+						const answer = questionAnswers[key];
 						// find the active questionPanel ie questionPanels: [{navHeader, pageId, panelId, questionSets:[]}]
 						let activeQuestionPanel = [...questionPanels].find(panel => panel.panelId === questionSetId);
 						// Get the section {navHeader: panelHeader: 'Applicant', pageId: 'safePeople'}
@@ -1666,10 +1595,6 @@ class DataAccessRequest extends Component {
 		}
 	};
 
-	setMessageDescription = messageDescription => {
-		this.setState({ messageDescription: messageDescription });
-	};
-
 	render() {
 		const {
 			lastSaved,
@@ -1695,11 +1620,11 @@ class DataAccessRequest extends Component {
 			roles,
 			showEmailModal,
 			alert,
-			versions,
-			version,
-			messageDescription,
+			versions = []
 		} = this.state;
-		const { userState, location } = this.props;
+		const { userState } = this.props;
+
+		const selectedVersion = !_.isEmpty(versions) ? versions.find(v => v.isCurrent).displayTitle : '';
 
 		Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
 		Winterfell.addInputType('datePickerCustom', DatePickerCustom);
@@ -1747,7 +1672,7 @@ class DataAccessRequest extends Component {
 						)}
 						{versions.length > 1 && (
 							<span className='white-16-semibold pr-5' style={{ display: 'inline-block' }}>
-								<VersionSelector selectedVersion={version} versionList={versions} displayType='smallTriangle' />
+								<VersionSelector selectedVersion={selectedVersion} versionList={versions} displayType='smallTriangle' />
 							</span>
 						)}
 					</Col>
@@ -1849,18 +1774,7 @@ class DataAccessRequest extends Component {
 					{isWideForm ? null : (
 						<div id='darRightCol' className='scrollable-sticky-column'>
 							<div className='darTab'>
-								<QuestionActionTabs
-									applicationId={this.state._id}
-									userState={userState}
-									settings={this.state.actionTabSettings}
-									activeGuidance={activeGuidance}
-									onHandleActionTabChange={this.onHandleActionTabChange}
-									toggleDrawer={this.toggleDrawer}
-									setMessageDescription={this.setMessageDescription}
-									userType={userType}
-									messageCounts={this.state.messageCounts}
-									noteCounts={this.state.noteCounts}
-									isShared={this.state.isShared}></QuestionActionTabs>
+								<Guidance activeGuidance={activeGuidance} resetGuidance={this.resetGuidance} />
 							</div>
 						</div>
 					)}
@@ -1923,7 +1837,6 @@ class DataAccessRequest extends Component {
 						toggleModal={this.toggleModal}
 						drawerIsOpen={this.state.showDrawer}
 						topicContext={this.state.topicContext}
-						msgDescription={messageDescription}
 					/>
 				</SideDrawer>
 

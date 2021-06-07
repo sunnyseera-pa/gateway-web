@@ -413,10 +413,11 @@ class DataAccessRequestsNew extends React.Component {
 								_id,
 								decisionDate,
 								amendmentStatus = '',
-								versions = [],
+								versions = []
 							} = request;
 
-							const selectedVersion = _.isEmpty(versions) ? 'Version 1.0' : versions[0].displayTitle;
+							const selectedVersion = versions.find(v => v.isCurrent).displayTitle;
+
 							return (
 								<Row key={`request_${i}`} onClick={e => this.navigateToLocation(e, _id, applicationStatus)}>
 									<div className='col-md-12'>
