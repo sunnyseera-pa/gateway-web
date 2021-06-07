@@ -40,7 +40,6 @@ import ContributorModal from './components/ContributorModal/ContributorModal';
 import AssignWorkflowModal from './components/AssignWorkflowModal/AssignWorkflowModal';
 import SLA from '../commonComponents/sla/SLA';
 import AboutApplication from './components/AboutApplication/AboutApplication';
-import Guidance from './components/Guidance/Guidance';
 import Uploads from './components/Uploads/Uploads';
 import UpdateRequestModal from './components/UpdateRequestModal/UpdateRequestModal';
 import MissingFieldsModal from './components/MissingFieldsModal/MissingFieldsModal';
@@ -151,6 +150,7 @@ class DataAccessRequest extends Component {
 			messageDescription: '',
 			messageCounts: 0,
 			noteCounts: 0,
+			isShared: false,
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -253,6 +253,7 @@ class DataAccessRequest extends Component {
 						workflow,
 						files,
 						isCloneable,
+						isShared,
 					},
 				},
 			} = response;
@@ -272,6 +273,7 @@ class DataAccessRequest extends Component {
 				workflow,
 				files,
 				isCloneable,
+				isShared,
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -299,6 +301,7 @@ class DataAccessRequest extends Component {
 						workflow,
 						files,
 						isCloneable,
+						isShared,
 					},
 				},
 			} = response;
@@ -318,6 +321,7 @@ class DataAccessRequest extends Component {
 				workflow,
 				files,
 				isCloneable,
+				isShared,
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -366,6 +370,7 @@ class DataAccessRequest extends Component {
 			workflow,
 			files,
 			isCloneable,
+			isShared,
 			version = 'Version 1.0',
 			versions = [],
 		} = context;
@@ -467,6 +472,7 @@ class DataAccessRequest extends Component {
 			workflowAssigned: !_.isEmpty(workflow) ? true : false,
 			files,
 			isCloneable,
+			isShared,
 			version,
 			versions,
 		});
@@ -763,6 +769,7 @@ class DataAccessRequest extends Component {
 				validationErrors,
 				reviewWarning,
 				activeGuidance: '',
+				actionTabSettings: { key: '', questionSetId: '', questionId: '' },
 			});
 		}
 	};
@@ -927,7 +934,6 @@ class DataAccessRequest extends Component {
 	onHandleActionTabChange(settings) {
 		const { key, questionId } = settings;
 		const activeGuidance = this.getActiveQuestionGuidance(questionId);
-
 		switch (key) {
 			case DarHelper.actionKeys.GUIDANCE:
 				console.log('guidance is ', key);
@@ -1843,6 +1849,7 @@ class DataAccessRequest extends Component {
 						<div id='darRightCol' className='scrollable-sticky-column'>
 							<div className='darTab'>
 								<QuestionActionTabs
+									applicationId={this.state._id}
 									userState={userState}
 									settings={this.state.actionTabSettings}
 									activeGuidance={activeGuidance}
@@ -1851,7 +1858,8 @@ class DataAccessRequest extends Component {
 									setMessageDescription={this.setMessageDescription}
 									userType={userType}
 									messageCounts={this.state.messageCounts}
-									noteCounts={this.state.noteCounts}></QuestionActionTabs>
+									noteCounts={this.state.noteCounts}
+									isShared={this.state.isShared}></QuestionActionTabs>
 							</div>
 						</div>
 					)}
