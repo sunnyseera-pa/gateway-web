@@ -38,6 +38,16 @@ body.modal-open {
 
 .navBarNotificationSpacing {
 	padding: 0px 16px;
+	margin: auto;
+}
+
+// Internet Explorer
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+	.navBarNotificationSpacing {
+		padding: 0px 16px;
+		margin: auto;
+		width: 30%;
+	}
 }
 
 // Internet Explorer

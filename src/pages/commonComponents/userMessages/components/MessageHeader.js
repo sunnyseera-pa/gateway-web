@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import _ from 'lodash';
 
-const MessageHeader = ({ userState, topic, modalRequired, onRequestAccess, onShowModal }) => {
+const MessageHeader = ({ userState, topic, modalRequired, onRequestAccess, onShowModal, is5Safes }) => {
 	let [showDashboard, setShowDashboard] = useState(false);
 	let [publisher, setPubliser] = useState('');
 	let history = useHistory();
@@ -55,9 +55,11 @@ const MessageHeader = ({ userState, topic, modalRequired, onRequestAccess, onSho
 						<button className='button-tertiary' onClick={e => onShowModal(e)}>
 							How to request access
 						</button>
-						<button className='btn btn-primary ml-2 addButton' onClick={e => onRequestAccess(e)}>
-							Request access
-						</button>
+						{(topic.is5Safes) || (topic.createdDate === "New message" && is5Safes)? (
+							<button className='btn btn-primary ml-2 addButton' onClick={e => onRequestAccess(e)}>
+								Submit application
+							</button>
+						) : null}
 					</Fragment>
 				)}
 			</div>

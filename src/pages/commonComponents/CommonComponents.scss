@@ -2,7 +2,8 @@
 
 .login-modal {
 	background: rgba(0, 0, 0, 0.5);
-
+	z-index: 9999 !important;
+	
 	.modal-dialog {
 		margin: 10% auto 0 auto;
 	}
