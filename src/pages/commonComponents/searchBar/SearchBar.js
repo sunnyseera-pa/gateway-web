@@ -373,7 +373,7 @@ class SearchBar extends React.Component {
 									<div className='navBarSearchBarSpacing'>
 										<Container>
 											<Row className='searchBarRow'>
-												<Col className='pr-0'>
+												<Col>
 													<span className='searchBarInputGrey'>
 														<span className='searchInputIconGrey'>
 															<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />
