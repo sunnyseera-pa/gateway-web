@@ -23,7 +23,6 @@ class Footer extends React.Component {
 					footer: res.data,
 					isLoading: false,
 				});
-				console.log(res.data);
 			})
 			.catch(error => {
 				this.setState({
