@@ -50,12 +50,12 @@
 		margin: 0px 8px 0px 0px;
 		padding-left: 8px;
 		color: $indigo;
-		padding-top: 11px;
 		&:focus {
 			outline: 0;
 		}
 		button {
 			background-color: $background;
+			padding-top: 11px;
 
 			&:hover {
 				background-color: $gray-pale;
