@@ -371,18 +371,20 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 								''
 							)}
 						</div>
+
+						{/* Feature switch - first message */}
 						<div className='messageArea-body'>
-							{!_.isEmpty(activeTopic.topicMessages) ? (
-								activeTopic.topicMessages.map(message => <MessageItem key={message._id} {...message} />)
-							) : !_.isEmpty(activeTopic) && isNewMessage(activeTopic) ? (
-								<EnquiryMessage topic={activeTopic} onDatasetsRequested={onDatasetsRequested} onFirstMessageSubmit={onFirstMessageSubmit} />
-							) : (
-								''
-							)}
+							{!_.isEmpty(activeTopic.topicMessages)
+								? activeTopic.topicMessages.map(message => <MessageItem key={message._id} {...message} />)
+								: // : !_.isEmpty(activeTopic) && isNewMessage(activeTopic) ? (
+								  // 	<EnquiryMessage topic={activeTopic} onDatasetsRequested={onDatasetsRequested} onFirstMessageSubmit={onFirstMessageSubmit} />
+								  // )
+								  ''}
 						</div>
 
 						{/* DONT SHOW FOOTER IF A NEW MESSAGE - EXTEND BODY */}
-						{!_.isEmpty(activeTopic) && !isNewMessage(activeTopic) ? (
+						{!_.isEmpty(activeTopic) ? (
+							// && !isNewMessage(activeTopic)
 							<div className='messageArea-footer'>
 								<MessageFooter value={messageDescription} onSubmitMessage={onSubmitMessage} onMessageChange={onMessageChange} />
 							</div>
