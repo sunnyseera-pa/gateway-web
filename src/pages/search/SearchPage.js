@@ -915,7 +915,7 @@ class SearchPage extends React.Component {
 			if (!_.isEmpty(foundNode)) {
 				// find if the node already exists in the selectedV2 - if so we are unchecking / removing
 				const exists = [...this.state.selectedV2].some(selected => selected.id === foundNode.id);
-				if(!exists) {
+				if (!exists || (exists && foundNode.checked != checkValue)) {
 					// 4. set check value
 					foundNode.checked = checkValue;
 					// 5. increment highest parent count

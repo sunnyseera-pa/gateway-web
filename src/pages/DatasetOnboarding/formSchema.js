@@ -372,7 +372,7 @@ export const formSchema = {
 					validations: [
 						{
 							type: 'isMultiFieldURL',
-							message: 'Please enter a valid URL',
+							message: 'Please enter a valid URL. Must include http(s)://',
 						},
 					],
 				},
@@ -410,7 +410,7 @@ export const formSchema = {
 					validations: [
 						{
 							type: 'isURLValid',
-							message: 'Please enter a valid URL',
+							message: 'Please enter a valid URL. Must include http(s)://',
 						},
 					],
 				},
@@ -858,7 +858,7 @@ export const formSchema = {
 					validations: [
 						{
 							type: 'isMultiFieldURL',
-							message: 'Please enter a valid URL',
+							message: 'Please enter a valid URL. Must include http(s)://',
 						},
 					],
 				},
@@ -894,7 +894,7 @@ export const formSchema = {
 					validations: [
 						{
 							type: 'isMultiFieldURLRequired',
-							message: 'Please enter a valid URL',
+							message: 'Please enter a valid URL. Must include http(s)://',
 						},
 					],
 				},
@@ -940,39 +940,39 @@ export const formSchema = {
 							},
 							{
 								text: 'LESS THAN 1 WEEK',
-								value: 'lessThan1Week',
+								value: 'LESS 1 WEEK',
 							},
 							{
 								text: '1-2 WEEKS',
-								value: '12Weeks',
+								value: '1-2 WEEKS',
 							},
 							{
 								text: '2-4 WEEKS',
-								value: '24Weeks',
+								value: '2-4 WEEKS',
 							},
 							{
 								text: '1-2 MONTHS',
-								value: '12Months',
+								value: '1-2 MONTHS',
 							},
 							{
 								text: '2-6 MONTHS',
-								value: '26Months',
+								value: '2-6 MONTHS',
 							},
 							{
 								text: '6 MONTHS PLUS',
-								value: '6MonthsPlus',
+								value: 'MORE 6 MONTHS',
 							},
 							{
 								text: 'VARIABLE',
-								value: 'variable',
+								value: 'VARIABLE',
 							},
 							{
 								text: 'NOT APPLICABLE',
-								value: 'notApplicable',
+								value: 'NOT APPLICABLE',
 							},
 							{
 								text: 'OTHER',
-								value: 'other',
+								value: 'OTHER',
 							},
 						],
 					},
@@ -1595,7 +1595,7 @@ export const formSchema = {
 					validations: [
 						{
 							type: 'isMultiFieldURL',
-							message: 'Please enter a valid URL',
+							message: 'Please enter a valid URL. Must include http(s)://',
 						},
 					],
 				},

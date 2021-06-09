@@ -44,6 +44,7 @@ import Uploads from './components/Uploads/Uploads';
 import UpdateRequestModal from './components/UpdateRequestModal/UpdateRequestModal';
 import MissingFieldsModal from './components/MissingFieldsModal/MissingFieldsModal';
 import ConfirmSubmissionModal from './components/ConfirmSubmissionModal/ConfirmSubmissionModal';
+import SubmitAmendmentModal from './components/SubmitAmendmentModal/SubmitAmendmentModal';
 import DeleteDraftModal from './components/DeleteDraftModal/DeleteDraftModal';
 import DuplicateApplicationModal from './components/DuplicateApplicationModal/DuplicateApplicationModal';
 import SelectDatasetModal from './components/SelectDatasetModal/SelectDatasetModal';
@@ -138,9 +139,11 @@ class DataAccessRequest extends Component {
 			showEmailModal: false,
 			showMissingFieldsModal: false,
 			showConfirmSubmissionModal: false,
+			showSubmitAmendmentModal: false,
 			showDeleteDraftModal: false,
 			showDuplicateApplicationModal: false,
 			showSelectDatasetModal: false,
+			applicationType: ''
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -243,6 +246,7 @@ class DataAccessRequest extends Component {
 						workflow,
 						files,
 						isCloneable,
+						applicationType
 					},
 				},
 			} = response;
@@ -262,6 +266,7 @@ class DataAccessRequest extends Component {
 				workflow,
 				files,
 				isCloneable,
+				applicationType
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -289,6 +294,7 @@ class DataAccessRequest extends Component {
 						workflow,
 						files,
 						isCloneable,
+						applicationType
 					},
 				},
 			} = response;
@@ -308,6 +314,7 @@ class DataAccessRequest extends Component {
 				workflow,
 				files,
 				isCloneable,
+				applicationType
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -357,6 +364,7 @@ class DataAccessRequest extends Component {
 			files,
 			isCloneable,
 			versions = [],
+			applicationType
 		} = context;
 		let {
 			datasetfields: { publisher },
@@ -457,6 +465,7 @@ class DataAccessRequest extends Component {
 			files,
 			isCloneable,
 			versions,
+			applicationType
 		});
 	};
 
@@ -594,6 +603,11 @@ class DataAccessRequest extends Component {
 	};
 
 	onSubmitClick = () => {
+
+		// test applicationType from state
+		console.log(this.state.applicationType);
+		
+
 		let invalidQuestions = DarValidation.getQuestionPanelInvalidQuestions(
 			Winterfell,
 			this.state.jsonSchema.questionSets,
@@ -605,7 +619,8 @@ class DataAccessRequest extends Component {
 		let isValid = Object.keys(errors).length ? false : true;
 
 		if (isValid) {
-			this.setState({ showConfirmSubmissionModal: true });
+			// if 'amendment' show new amendment modal
+			this.state.applicationType === "amendment" ? this.setState({ showSubmitAmendmentModal: true }) : this.setState({ showConfirmSubmissionModal: true });
 		} else {
 			let activePage = _.get(_.keys({ ...errors }), 0);
 			let activePanel = _.get(_.keys({ ...errors }[activePage]), 0);
@@ -1488,6 +1503,14 @@ class DataAccessRequest extends Component {
 		});
 	};
 
+	toggleSubmitAmendmentModal = () => {
+		this.setState(prevState => {
+			return {
+				showSubmitAmendmentModal: !prevState.showSubmitAmendmentModal,
+			};
+		});
+	};
+
 	toggleDeleteDraftModal = () => {
 		this.setState(prevState => {
 			return {
@@ -1947,6 +1970,11 @@ class DataAccessRequest extends Component {
 				<ConfirmSubmissionModal
 					open={this.state.showConfirmSubmissionModal}
 					close={this.toggleConfirmSubmissionModal}
+					confirm={this.onFormSubmit}
+				/>
+				<SubmitAmendmentModal
+					open={this.state.showSubmitAmendmentModal}
+					close={this.toggleSubmitAmendmentModal}
 					confirm={this.onFormSubmit}
 				/>
 				<DeleteDraftModal open={this.state.showDeleteDraftModal} close={this.toggleDeleteDraftModal} confirm={this.onDeleteDraft} />
