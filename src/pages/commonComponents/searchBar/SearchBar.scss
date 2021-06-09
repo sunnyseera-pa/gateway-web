@@ -283,8 +283,6 @@ body.modal-open {
 
 .notificationsBell {
 	background-size: 40px, 40px;
-	background: $gray-300;
-	@include rounded(70px);
 	width: 40px;
 }
 
