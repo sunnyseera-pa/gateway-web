@@ -40,6 +40,15 @@ body.modal-open {
 	padding: 0px 16px;
 }
 
+// Internet Explorer
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+	.navBarNotificationSpacing {
+		padding: 0px 16px;
+		margin: auto;
+		width: 30%;
+	}
+}
+
 @media (min-width: 1286px) {
 	.navBarLogoSpacing {
 		vertical-align: middle;
@@ -55,10 +64,13 @@ body.modal-open {
 
 	.navBarBellNotificationSpacing {
 		padding: 0px 16px 0px 0px;
+		margin: auto !important;
 	}
 
 	.navBarSearchBarSpacing {
 		text-align: left;
+		margin: auto;
+		min-width: 150px;
 	}
 
 	.searchBarInputGrey {
@@ -119,11 +131,14 @@ body.modal-open {
 		align-items: center;
 		align-self: stretch;
 		height: 100%;
+		margin: auto;
 	}
 
 	.navBarSearchBarSpacing {
 		width: 50%;
 		text-align: left;
+		margin: auto;
+		min-width: 150px;
 	}
 
 	.searchBarInputGrey {
@@ -186,6 +201,8 @@ body.modal-open {
 	.navBarSearchBarSpacing {
 		width: 100%;
 		text-align: left;
+		margin: auto;
+		min-width: 150px;
 	}
 
 	.navBarSearchIconHolderAlt {
@@ -242,7 +259,7 @@ body.modal-open {
 	display: flex;
 	flex-flow: row nowrap;
 	align-items: center;
-	justify-content: flex-end;
+	justify-content: space-between;
 	width: 100%;
 	height: 100%;
 }
@@ -268,6 +285,7 @@ body.modal-open {
 	background-size: 40px, 40px;
 	background: $gray-300;
 	@include rounded(70px);
+	width: 40px;
 }
 
 .notificationsBellBadge {
@@ -469,6 +487,7 @@ body.modal-open {
 
 .navBarAvatarSpacing {
 	padding: 0px 8px;
+	margin: auto;
 }
 
 .dropdown-sub-menu {
