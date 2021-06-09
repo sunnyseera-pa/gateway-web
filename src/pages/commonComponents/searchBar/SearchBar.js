@@ -405,7 +405,7 @@ class SearchBar extends React.Component {
 										<Container>
 											<Row>
 												<Col className='pl-0 pr-0'>
-													<AddNewEntity />
+													<AddNewEntity loggedIn={userState[0].loggedIn} />
 												</Col>
 											</Row>
 										</Container>
