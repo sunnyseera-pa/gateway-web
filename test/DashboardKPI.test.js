@@ -11,6 +11,7 @@ describe('<DashboardKPI /> rendering', () => {
 				kpiText={dashboardKPIData.kpiText}
 				kpiValue={dashboardKPIData.kpiValue}
 				percentageFlag={dashboardKPIData.percentageFlag}
+				testId='dashboard-gateway-uptime-percent'
 			/>
 		);
 	});
@@ -21,19 +22,9 @@ describe('<DashboardKPI /> rendering', () => {
 				kpiText={dashboardKPIData.kpiText}
 				kpiValue={dashboardKPIData.kpiValue}
 				percentageFlag={dashboardKPIData.percentageFlag}
+				testId='dashboard-gateway-uptime-percent'
 			/>
 		);
-		expect(wrapper.find('[data-testid="kpiText"]').text().trim()).toEqual('uptime this month');
-	});
-
-	it('will render with "97%"', () => {
-		wrapper = shallow(
-			<DashboardKPI
-				kpiText={dashboardKPIData.kpiText}
-				kpiValue={dashboardKPIData.kpiValue}
-				percentageFlag={dashboardKPIData.percentageFlag}
-			/>
-		);
-		expect(wrapper.find('[data-testid="kpiValue"]').text().trim()).toEqual('97%');
+		expect(wrapper.find('[data-test-id="kpiText"]').text().trim()).toEqual('uptime this month');
 	});
 });

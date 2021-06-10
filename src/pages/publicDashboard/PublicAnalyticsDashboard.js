@@ -85,8 +85,6 @@ class PublicAnalyticsDashboard extends React.Component {
 		initGA('UA-166025838-1');
 		await Promise.all([this.getUnmetDemand(), this.getTopSearches()]);
 
-		this.setState({ isLoading: false });
-
 		await Promise.all([
 			this.getTotalGAUsers(),
 			this.getGAUsers(
@@ -100,7 +98,7 @@ class PublicAnalyticsDashboard extends React.Component {
 			this.getTopDatasets(this.state.selectedOption),
 		]);
 
-		this.setState({ uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100 });
+		this.setState({ uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100, isLoading: false });
 	}
 
 	getUnmetDemand(selectedOption) {
