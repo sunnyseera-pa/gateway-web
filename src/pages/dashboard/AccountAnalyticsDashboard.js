@@ -298,7 +298,12 @@ class AccountAnalyticsDashboard extends React.Component {
 								/>
 							</Col>
 							<Col sm={3} lg={3} className='kpiClass'>
-								<DashboardKPI kpiText='' kpiValue='' />
+								<DashboardKPI
+									kpiText='uptime in current month'
+									kpiValue={uptime.toFixed(2) % 1 === 0 ? Math.trunc(uptime.toFixed(2)) : uptime.toFixed(2)}
+									percentageFlag={true}
+									testId='dashboard-gateway-uptime-percent'
+								/>
 							</Col>
 						</Row>
 
@@ -351,12 +356,7 @@ class AccountAnalyticsDashboard extends React.Component {
 								/>
 							</Col>
 							<Col sm={3} lg={3} className='kpiClass'>
-								<DashboardKPI
-									kpiText='uptime this month'
-									kpiValue={uptime.toFixed(2) % 1 === 0 ? Math.trunc(uptime.toFixed(2)) : uptime.toFixed(2)}
-									percentageFlag={true}
-									testId='dashboard-gateway-uptime-percent'
-								/>
+								<DashboardKPI kpiText='' kpiValue='' />
 							</Col>
 						</Row>
 

@@ -1,18 +1,12 @@
 import React from 'react';
 import DashboardKPI from '../src/pages/dashboard/DARComponents/DashboardKPI';
-import { dashboardKPIData } from './mocks/dataMock';
 
 let wrapper;
 
 describe('<DashboardKPI /> rendering', () => {
 	it('renders without crashing', () => {
 		wrapper = shallow(
-			<DashboardKPI
-				kpiText={dashboardKPIData.kpiText}
-				kpiValue={dashboardKPIData.kpiValue}
-				percentageFlag={dashboardKPIData.percentageFlag}
-				testId='dashboard-gateway-uptime-percent'
-			/>
+			<DashboardKPI kpiText='uptime in current month' kpiValue={99.86} percentageFlag={true} testId='dashboard-gateway-uptime-percent' />
 		);
 	});
 

@@ -9,7 +9,7 @@ class DashboardKPI extends Component {
 	render() {
 		const { kpiText, kpiValue, percentageFlag, testId } = this.props;
 
-		let overallStats = ['total datasets', 'datasets with technical metadata', 'unique registered users'];
+		let overallStats = ['total datasets', 'datasets with technical metadata', 'unique registered users', 'uptime in current month'];
 
 		return (
 			<span>
