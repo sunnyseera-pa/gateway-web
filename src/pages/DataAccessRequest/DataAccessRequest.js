@@ -44,7 +44,9 @@ import Uploads from './components/Uploads/Uploads';
 import UpdateRequestModal from './components/UpdateRequestModal/UpdateRequestModal';
 import MissingFieldsModal from './components/MissingFieldsModal/MissingFieldsModal';
 import ConfirmSubmissionModal from './components/ConfirmSubmissionModal/ConfirmSubmissionModal';
+import SubmitAmendmentModal from './components/SubmitAmendmentModal/SubmitAmendmentModal';
 import DeleteDraftModal from './components/DeleteDraftModal/DeleteDraftModal';
+import AmendApplicationModal from './components/AmendApplicationModal/AmendApplicationModal';
 import DuplicateApplicationModal from './components/DuplicateApplicationModal/DuplicateApplicationModal';
 import SelectDatasetModal from './components/SelectDatasetModal/SelectDatasetModal';
 import VersionSelector from '../commonComponents/versionSelector/VersionSelector';
@@ -138,9 +140,12 @@ class DataAccessRequest extends Component {
 			showEmailModal: false,
 			showMissingFieldsModal: false,
 			showConfirmSubmissionModal: false,
+			showSubmitAmendmentModal: false,
 			showDeleteDraftModal: false,
+			showAmendApplicationModal: false,
 			showDuplicateApplicationModal: false,
 			showSelectDatasetModal: false,
+			applicationType: ''
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -243,6 +248,8 @@ class DataAccessRequest extends Component {
 						workflow,
 						files,
 						isCloneable,
+						applicationType,
+						versions
 					},
 				},
 			} = response;
@@ -262,6 +269,8 @@ class DataAccessRequest extends Component {
 				workflow,
 				files,
 				isCloneable,
+				applicationType,
+				versions
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -289,6 +298,7 @@ class DataAccessRequest extends Component {
 						workflow,
 						files,
 						isCloneable,
+						applicationType
 					},
 				},
 			} = response;
@@ -308,6 +318,7 @@ class DataAccessRequest extends Component {
 				workflow,
 				files,
 				isCloneable,
+				applicationType
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -357,6 +368,7 @@ class DataAccessRequest extends Component {
 			files,
 			isCloneable,
 			versions = [],
+			applicationType
 		} = context;
 		let {
 			datasetfields: { publisher },
@@ -408,6 +420,9 @@ class DataAccessRequest extends Component {
 		}
 		// 6. Hide show submit application
 		if (applicationStatus === DarHelper.darStatus.inProgress) {
+			if(applicationType === DarHelper.darApplicationTypes.amendment) {
+				submitButtonText = 'Submit amendment';
+			}
 			showSubmit = true;
 		} else if (applicationStatus === DarHelper.darStatus.inReview || applicationStatus === DarHelper.darStatus.submitted) {
 			if (activeParty === 'applicant' && answeredAmendments > 0) {
@@ -457,6 +472,7 @@ class DataAccessRequest extends Component {
 			files,
 			isCloneable,
 			versions,
+			applicationType
 		});
 	};
 
@@ -605,7 +621,8 @@ class DataAccessRequest extends Component {
 		let isValid = Object.keys(errors).length ? false : true;
 
 		if (isValid) {
-			this.setState({ showConfirmSubmissionModal: true });
+			// if 'amendment' show new amendment modal
+			this.state.applicationType === DarHelper.darApplicationTypes.amendment ? this.setState({ showSubmitAmendmentModal: true }) : this.setState({ showConfirmSubmissionModal: true });
 		} else {
 			let activePage = _.get(_.keys({ ...errors }), 0);
 			let activePanel = _.get(_.keys({ ...errors }[activePage]), 0);
@@ -1488,6 +1505,22 @@ class DataAccessRequest extends Component {
 		});
 	};
 
+	toggleSubmitAmendmentModal = () => {
+		this.setState(prevState => {
+			return {
+				showSubmitAmendmentModal: !prevState.showSubmitAmendmentModal,
+			};
+		});
+	};
+
+	toggleAmendApplicationModal = () => {
+		this.setState(prevState => {
+			return {
+				showAmendApplicationModal: !prevState.showAmendApplicationModal,
+			};
+		});
+	};
+
 	toggleDeleteDraftModal = () => {
 		this.setState(prevState => {
 			return {
@@ -1523,6 +1556,21 @@ class DataAccessRequest extends Component {
 			console.error(err.message);
 		}
 	};
+
+	onAmendApplication = async () => {
+		try {
+			let { _id } = this.state;
+			const { data: { data: { _id: newId }} } = await axios.post(`${baseURL}/api/v1/data-access-request/${_id}/amend`, {});
+
+			this.toggleAmendApplicationModal();
+			this.setState({ activePanelId: 'about' });
+
+			this.props.history.push({ pathname: `/data-access-request/${newId}` });
+		} catch (err) {
+			console.error(err.message);
+		}
+	};
+
 	toggleSelectDatasetModal = () => {
 		this.setState(prevState => {
 			return {
@@ -1807,6 +1855,7 @@ class DataAccessRequest extends Component {
 									onDeleteDraftClick={this.toggleDeleteDraftModal}
 									applicationStatus={applicationStatus}
 									onDuplicateClick={this.toggleDuplicateApplicationModal}
+									onShowAmendApplicationModal={this.toggleAmendApplicationModal}
 								/>
 							) : (
 								<CustodianActionButtons
@@ -1949,7 +1998,14 @@ class DataAccessRequest extends Component {
 					close={this.toggleConfirmSubmissionModal}
 					confirm={this.onFormSubmit}
 				/>
+				<SubmitAmendmentModal
+					open={this.state.showSubmitAmendmentModal}
+					close={this.toggleSubmitAmendmentModal}
+					confirm={this.onFormSubmit}
+				/>
 				<DeleteDraftModal open={this.state.showDeleteDraftModal} close={this.toggleDeleteDraftModal} confirm={this.onDeleteDraft} />
+
+				<AmendApplicationModal open={this.state.showAmendApplicationModal} close={this.toggleAmendApplicationModal} confirm={this.onAmendApplication} />
 
 				<DuplicateApplicationModal
 					isOpen={this.state.showDuplicateApplicationModal}
