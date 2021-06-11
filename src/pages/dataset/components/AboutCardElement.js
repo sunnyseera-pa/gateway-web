@@ -61,7 +61,7 @@ class AboutCardElement extends React.Component {
 						<Col sm={8} className='gray800-14 v2Value'>
 							{typeof description === 'object' ? (
 								description.map((item, index) => (
-									<Linkify properties={{target: '_blank'}} className='overflowWrap'>
+									<Linkify key={`description-${index}`} properties={{target: '_blank'}} className='overflowWrap'>
 										{' '}
 										{index !== 0 ? ', ' : ''} {item}
 									</Linkify>
