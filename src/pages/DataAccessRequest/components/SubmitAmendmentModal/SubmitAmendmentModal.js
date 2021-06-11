@@ -4,12 +4,17 @@ import { Modal } from 'react-bootstrap';
 import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
 import './SubmitAmendmentModal.scss';
 
-const SubmitAmendmentModal = ({ open, close }) => {
-	const onSaveChanges = () => {
-		close();
+const SubmitAmendmentModal = ({ open, close, onHandleSubmit }) => {
+	const onSubmit = () => {
+		const valid = true;
+
+		if (valid) {
+			close();
+			onHandleSubmit({ description: textValue });
+		}
 	};
 	const [textValue, setTextValue] = useState('');
-	
+
 	return (
 		<Fragment>
 			<Modal show={open} onHide={close} size='lg' aria-labelledby='contained-modal-title-vcenter' centered className='amendmentModal'>
@@ -28,6 +33,7 @@ const SubmitAmendmentModal = ({ open, close }) => {
 				<div className='amendmentModal-body'>
 					<div className='amendmentModal-body--group'>
 						<label className='gray800-14'>Description</label>
+						<label className='gray800-14'>(${textValue.length}/1500))</label>
 						<textarea
 							className={`form-control`}
 							name='amendDesc'
@@ -42,7 +48,7 @@ const SubmitAmendmentModal = ({ open, close }) => {
 						<button className='button-secondary' onClick={() => close()}>
 							No, nevermind
 						</button>
-						<button className='button-primary' onClick={() => console.log(textValue)}>
+						<button className='button-primary' onClick={() => onSubmit()}>
 							Submit amendment
 						</button>
 					</div>
