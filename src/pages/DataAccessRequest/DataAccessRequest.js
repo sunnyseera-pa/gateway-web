@@ -48,6 +48,8 @@ import SubmitAmendmentModal from './components/SubmitAmendmentModal/SubmitAmendm
 import DeleteDraftModal from './components/DeleteDraftModal/DeleteDraftModal';
 import AmendApplicationModal from './components/AmendApplicationModal/AmendApplicationModal';
 import DuplicateApplicationModal from './components/DuplicateApplicationModal/DuplicateApplicationModal';
+import MinorVersionBlockedModal from './components/MinorVersionBlockedModal/MinorVersionBlockedModal';
+import ActionNotAllowedModal from './components/ActionNotAllowedModal/ActionNotAllowedModal';
 import SelectDatasetModal from './components/SelectDatasetModal/SelectDatasetModal';
 import VersionSelector from '../commonComponents/versionSelector/VersionSelector';
 
@@ -98,6 +100,8 @@ class DataAccessRequest extends Component {
 			showActionModal: false,
 			showWorkflowReviewModal: false,
 			showWorkflowReviewDecisionModal: false,
+			showMinorVersionBlockedModal: false,
+			showAmendNotAllowedModal: false,
 			workflowReviewDecisionType: false,
 			showActivePhaseModal: false,
 			showContributorModal: false,
@@ -146,6 +150,7 @@ class DataAccessRequest extends Component {
 			showDuplicateApplicationModal: false,
 			showSelectDatasetModal: false,
 			applicationType: '',
+			isLatestMinorVersion: true
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -250,6 +255,7 @@ class DataAccessRequest extends Component {
 						isCloneable,
 						applicationType,
 						versions,
+						isLatestMinorVersion
 					},
 				},
 			} = response;
@@ -271,6 +277,7 @@ class DataAccessRequest extends Component {
 				isCloneable,
 				applicationType,
 				versions,
+				isLatestMinorVersion
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -299,6 +306,7 @@ class DataAccessRequest extends Component {
 						files,
 						isCloneable,
 						applicationType,
+						isLatestMinorVersion
 					},
 				},
 			} = response;
@@ -319,6 +327,7 @@ class DataAccessRequest extends Component {
 				files,
 				isCloneable,
 				applicationType,
+				isLatestMinorVersion
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -369,6 +378,7 @@ class DataAccessRequest extends Component {
 			isCloneable,
 			versions = [],
 			applicationType,
+			isLatestMinorVersion
 		} = context;
 		let {
 			datasetfields: { publisher },
@@ -424,11 +434,12 @@ class DataAccessRequest extends Component {
 				submitButtonText = 'Submit amendment';
 			}
 			showSubmit = true;
-		} else if (applicationStatus === DarHelper.darStatus.inReview || applicationStatus === DarHelper.darStatus.submitted) {
-			if (activeParty === 'applicant' && answeredAmendments > 0) {
-				showSubmit = true;
-				submitButtonText = 'Submit updates';
-			}
+		} else if (
+			activeParty === 'applicant' &&
+			(applicationStatus === DarHelper.darStatus.inReview || applicationStatus === DarHelper.darStatus.submitted)
+		) {
+			showSubmit = true;
+			submitButtonText = 'Submit updates';
 		}
 
 		// 7. Set initial panel as selected and scroll to top of view port
@@ -473,6 +484,7 @@ class DataAccessRequest extends Component {
 			isCloneable,
 			versions,
 			applicationType,
+			isLatestMinorVersion
 		});
 	};
 
@@ -622,7 +634,9 @@ class DataAccessRequest extends Component {
 
 		if (isValid) {
 			// if 'amendment' show new amendment modal
-			this.state.applicationType === DarHelper.darApplicationTypes.amendment
+			this.state.applicationType === DarHelper.darApplicationTypes.amendment &&
+			this.state.unansweredAmendments === 0 &&
+			this.state.answeredAmendments === 0
 				? this.setState({ showSubmitAmendmentModal: true })
 				: this.setState({ showConfirmSubmissionModal: true });
 		} else {
@@ -1142,7 +1156,11 @@ class DataAccessRequest extends Component {
 	};
 
 	onCustodianAction = value => {
-		value.toUpperCase() === 'ASSIGNWORKFLOW' ? this.toggleAssignWorkflowModal() : this.toggleActionModal(value);
+		if (this.state.isLatestMinorVersion) {
+			value.toUpperCase() === 'ASSIGNWORKFLOW' ? this.toggleAssignWorkflowModal() : this.toggleActionModal(value);
+		} else {
+			this.toggleMinorVersionBlockedModal();
+		}
 	};
 
 	completeActivePhase = async () => {
@@ -1290,12 +1308,42 @@ class DataAccessRequest extends Component {
 	};
 
 	toggleWorkflowReviewDecisionModal = (type = false) => {
+		if (this.state.isLatestMinorVersion) {
+			this.setState(prevState => {
+				return {
+					showWorkflowReviewDecisionModal: !prevState.showWorkflowReviewDecisionModal,
+					workflowReviewDecisionType: type,
+				};
+			});
+		} else {
+			this.toggleMinorVersionBlockedModal();
+		}
+	};
+
+	toggleMinorVersionBlockedModal = () => {
 		this.setState(prevState => {
 			return {
-				showWorkflowReviewDecisionModal: !prevState.showWorkflowReviewDecisionModal,
-				workflowReviewDecisionType: type,
+				showMinorVersionBlockedModal: !prevState.showMinorVersionBlockedModal,
 			};
 		});
+	};
+
+	toggleAmendNotAllowedModal = () => {
+		this.setState(prevState => {
+			return {
+				showAmendNotAllowedModal: !prevState.showAmendNotAllowedModal,
+			};
+		});
+	};
+
+	goToLatestVersion = () => {
+		this.setState(prevState => {
+			return {
+				showMinorVersionBlockedModal: !prevState.showMinorVersionBlockedModal,
+			};
+		});
+
+		this.props.history.push({ pathname: `/data-access-request/${this.state._id}` });
 	};
 
 	updateContributors = contributors => {
@@ -1531,11 +1579,15 @@ class DataAccessRequest extends Component {
 	};
 
 	toggleAmendApplicationModal = () => {
-		this.setState(prevState => {
-			return {
-				showAmendApplicationModal: !prevState.showAmendApplicationModal,
-			};
-		});
+		if (this.state.applicationStatus === DarHelper.darStatus.inReview) {
+			this.toggleAmendNotAllowedModal();
+		} else {
+			this.setState(prevState => {
+				return {
+					showAmendApplicationModal: !prevState.showAmendApplicationModal,
+				};
+			});
+		}
 	};
 
 	toggleDeleteDraftModal = () => {
@@ -1942,6 +1994,20 @@ class DataAccessRequest extends Component {
 					workflow={this.state.workflow}
 					projectName={projectName}
 					dataSets={selectedDatasets}
+				/>
+
+				<MinorVersionBlockedModal
+					open={this.state.showMinorVersionBlockedModal}
+					close={this.toggleMinorVersionBlockedModal}
+					confirm={this.goToLatestVersion}
+				/>
+
+				<ActionNotAllowedModal
+					open={this.state.showAmendNotAllowedModal}
+					close={this.toggleAmendNotAllowedModal}
+					confirm={this.toggleDrawer}
+					headerText='Application in review cannot be amended'
+					bodyText='This application is in review so cannot be amended. However, updates can be requested by the custodian.'
 				/>
 
 				<ContributorModal
