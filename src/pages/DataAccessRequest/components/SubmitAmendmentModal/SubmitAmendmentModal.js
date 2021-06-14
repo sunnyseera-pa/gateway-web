@@ -5,15 +5,50 @@ import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.s
 import './SubmitAmendmentModal.scss';
 
 const SubmitAmendmentModal = ({ open, close, onHandleSubmit }) => {
-	const onSubmit = () => {
-		const valid = true;
+	const [count, setCount] = useState(0);
+	const [formState, setFormState] = useState({ amendDesc: '', invalid: false, invalidMessage: '', submitted: false });
 
-		if (valid) {
+	const onSubmit = (e) => {
+		e.preventDefault();
+		setFormState({ ...formState, submitted: true });
+		const { amendDesc } = formState;
+
+		const isInvalid = isFormInvalid();
+		
+		if (!isInvalid) {
+			onHandleSubmit(amendDesc);
+			setFormState({ amendDesc: '', invalid: false, invalidMessage: '', submitted: false });
+			setCount(0);
 			close();
-			onHandleSubmit({ description: textValue });
 		}
 	};
-	const [textValue, setTextValue] = useState('');
+
+	const handleChange = event => {
+		let { name, value } = event.currentTarget;
+		setCount(value.length);
+		setFormState({
+			...formState,
+			[name]: value,
+			invalid: value.length > 1500 || _.isEmpty(value),
+			invalidMessage: value.length > 1500 ? 'Description can not exceed 1500 characters' : _.isEmpty(value) ? 'This cannot be empty' : '',
+		});
+	};
+
+	const isFormInvalid = () => {
+		let { amendDesc } = formState;
+		setFormState({
+			...formState,
+			submitted: true,
+			invalid: amendDesc.length > 1500 || _.isEmpty(amendDesc),
+			invalidMessage:
+			amendDesc.length > 1500
+					? 'Description can not exceed 1500 characters'
+					: _.isEmpty(amendDesc)
+					? 'Description must not be blank'
+					: '',
+		});
+		return amendDesc.length > 1500 || _.isEmpty(amendDesc);
+	};
 
 	return (
 		<Fragment>
@@ -21,7 +56,7 @@ const SubmitAmendmentModal = ({ open, close, onHandleSubmit }) => {
 				<div className='amendmentModal-header'>
 					<div className='amendmentModal-header--wrap'>
 						<div className='amendmentModal-head'>
-							<h1 className='black-20-semibold'>Submit amendment</h1>
+							<span className='black-20-semibold'>Submit amendment</span>
 							<CloseButtonSvg className='amendmentModal-head--close' onClick={() => close()} />
 						</div>
 						<p>
@@ -32,14 +67,16 @@ const SubmitAmendmentModal = ({ open, close, onHandleSubmit }) => {
 
 				<div className='amendmentModal-body'>
 					<div className='amendmentModal-body--group'>
-						<label className='gray800-14'>Description</label>
-						<label className='gray800-14'>(${textValue.length}/1500))</label>
+						<label htmlFor='amendDesc'>
+							<span className='gray800-14'>Description</span> <span className='gray700-13'>({count}/1500)</span>
+						</label>
 						<textarea
-							className={`form-control`}
+							className={`form-control ${formState.invalid && formState.submitted ? `is-invalid` : ''}`}
 							name='amendDesc'
-							onChange={e => setTextValue(e.target.value)}
-							value={textValue}
+							onChange={handleChange}
+							value={formState.amendDesc}
 							rows='8'></textarea>
+						<div className='invalid-feedback'>{formState.invalidMessage}</div>
 					</div>
 				</div>
 
@@ -48,7 +85,7 @@ const SubmitAmendmentModal = ({ open, close, onHandleSubmit }) => {
 						<button className='button-secondary' onClick={() => close()}>
 							No, nevermind
 						</button>
-						<button className='button-primary' onClick={() => onSubmit()}>
+						<button className='button-primary' onClick={(e) => onSubmit(e)}>
 							Submit amendment
 						</button>
 					</div>

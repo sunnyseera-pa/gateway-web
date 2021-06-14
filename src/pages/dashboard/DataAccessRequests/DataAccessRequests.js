@@ -18,7 +18,7 @@ import VersionSelector from '../../commonComponents/versionSelector/VersionSelec
 import './DataAccessRequests.scss';
 
 class DataAccessRequestsNew extends React.Component {
-	durationLookups = ['inProgress', 'submitted'];
+	durationLookups = ['inProgress', 'submitted', 'inReview'];
 	finalDurationLookups = ['rejected', 'approved', 'approved with conditions'];
 
 	state = {
@@ -247,7 +247,7 @@ class DataAccessRequestsNew extends React.Component {
 	};
 
 	renderDuration = (accessRequest, team = {}) => {
-		let { applicationStatus = '', createdAt, dateSubmitted, decisionDuration = 0 } = accessRequest;
+		let { applicationStatus = '', createdAt, dateSubmitted, decisionDuration = 0, applicationType = DarHelperUtil.darApplicationTypes.initial } = accessRequest;
 		let diff = 0;
 		if (this.durationLookups.includes(applicationStatus)) {
 			if (applicationStatus === DarHelperUtil.darStatus.inProgress) {
@@ -258,6 +258,11 @@ class DataAccessRequestsNew extends React.Component {
 			if (applicationStatus === DarHelperUtil.darStatus.submitted) {
 				diff = this.calculateTimeDifference(dateSubmitted);
 				return <TimeDuration text={`${diff} days since submission`} />;
+			}
+
+			if (applicationStatus === DarHelperUtil.darStatus.inReview && applicationType === DarHelperUtil.darApplicationTypes.amendment) {
+				diff = this.calculateTimeDifference(dateSubmitted);
+				return <TimeDuration text={`${diff} days since resubmission`} />;
 			}
 		}
 		if (this.finalDurationLookups.includes(applicationStatus) && team) {
@@ -413,7 +418,8 @@ class DataAccessRequestsNew extends React.Component {
 								_id,
 								decisionDate,
 								amendmentStatus = '',
-								versions = []
+								versions = [],
+								applicationType = 'initial',
 							} = request;
 
 							const selectedVersion = versions.find(v => v.isCurrent).displayTitle;
@@ -426,17 +432,46 @@ class DataAccessRequestsNew extends React.Component {
 												<div className='header-version-title'>
 													<h1>{projectName}</h1>
 													{versions.length > 1 ? (
-														<VersionSelector selectedVersion={selectedVersion} versionList={versions} displayType='chevron' onToggleClick={this.navigateToLocation} />
+														<VersionSelector
+															selectedVersion={selectedVersion}
+															versionList={versions}
+															displayType='chevron'
+															onToggleClick={this.navigateToLocation}
+														/>
 													) : (
 														<span className='gray800-14 mb-2'>Version 1.0</span>
 													)}
 												</div>
 												<div className='header-version-status'>
 													{this.renderDuration(request, team)}
-													<SLA
-														classProperty={DarHelperUtil.darStatusColours[request.applicationStatus]}
-														text={DarHelperUtil.darSLAText[request.applicationStatus]}
-													/>
+													{
+														(applicationType =
+															DarHelperUtil.darApplicationTypes.amendment &&
+															applicationStatus !== DarHelperUtil.darStatus.approved &&
+															applicationStatus !== DarHelperUtil.darStatus['approved with conditions'] &&
+															applicationStatus !== DarHelperUtil.darStatus.rejected ? (
+																<>
+																	<SLA
+																		classProperty={DarHelperUtil.darStatusColours[applicationStatus]}
+																		text={
+																			applicationStatus === DarHelperUtil.darStatus.inProgress
+																				? 'Pre-submission amendment'
+																				: 'Amendment in review'
+																		}
+																	/>
+																	<SLA
+																		classProperty={DarHelperUtil.darStatusColours['approved']}
+																		text={DarHelperUtil.darSLAText['approved']}
+																	/>
+																</>
+															) : (
+																<SLA
+																	classProperty={DarHelperUtil.darStatusColours[applicationStatus]}
+																	text={DarHelperUtil.darSLAText[applicationStatus]}
+																	applicationType={applicationType}
+																/>
+															))
+													}
 												</div>
 											</div>
 											<div className='body'>
