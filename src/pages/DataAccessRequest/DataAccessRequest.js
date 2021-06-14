@@ -255,7 +255,8 @@ class DataAccessRequest extends Component {
 						isCloneable,
 						applicationType,
 						versions,
-						isLatestMinorVersion
+						isLatestMinorVersion,
+						formType,
 					},
 				},
 			} = response;
@@ -277,7 +278,8 @@ class DataAccessRequest extends Component {
 				isCloneable,
 				applicationType,
 				versions,
-				isLatestMinorVersion
+				isLatestMinorVersion,
+				formType
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -306,7 +308,8 @@ class DataAccessRequest extends Component {
 						files,
 						isCloneable,
 						applicationType,
-						isLatestMinorVersion
+						isLatestMinorVersion,
+						formType,
 					},
 				},
 			} = response;
@@ -327,7 +330,8 @@ class DataAccessRequest extends Component {
 				files,
 				isCloneable,
 				applicationType,
-				isLatestMinorVersion
+				isLatestMinorVersion,
+				formType,
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -378,7 +382,8 @@ class DataAccessRequest extends Component {
 			isCloneable,
 			versions = [],
 			applicationType,
-			isLatestMinorVersion
+			isLatestMinorVersion,
+			formType,
 		} = context;
 		let {
 			datasetfields: { publisher },
@@ -421,7 +426,7 @@ class DataAccessRequest extends Component {
 		// 4. Set messaging and modal context
 		let topicContext = DarHelper.createTopicContext(aboutApplication.selectedDatasets);
 		let modalContext = DarHelper.createModalContext(aboutApplication.selectedDatasets);
-		let allowsMultipleDatasets = topicContext.requiresModal || false;
+		let allowsMultipleDatasets = formType === '5 safe';
 
 		// 5. If multiple datasets are allowed, append 'before you begin' section
 		if (allowsMultipleDatasets) {
