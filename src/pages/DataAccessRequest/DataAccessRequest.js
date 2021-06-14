@@ -145,7 +145,7 @@ class DataAccessRequest extends Component {
 			showAmendApplicationModal: false,
 			showDuplicateApplicationModal: false,
 			showSelectDatasetModal: false,
-			applicationType: ''
+			applicationType: '',
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -249,7 +249,7 @@ class DataAccessRequest extends Component {
 						files,
 						isCloneable,
 						applicationType,
-						versions
+						versions,
 					},
 				},
 			} = response;
@@ -270,7 +270,7 @@ class DataAccessRequest extends Component {
 				files,
 				isCloneable,
 				applicationType,
-				versions
+				versions,
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -298,7 +298,7 @@ class DataAccessRequest extends Component {
 						workflow,
 						files,
 						isCloneable,
-						applicationType
+						applicationType,
 					},
 				},
 			} = response;
@@ -318,7 +318,7 @@ class DataAccessRequest extends Component {
 				workflow,
 				files,
 				isCloneable,
-				applicationType
+				applicationType,
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -368,7 +368,7 @@ class DataAccessRequest extends Component {
 			files,
 			isCloneable,
 			versions = [],
-			applicationType
+			applicationType,
 		} = context;
 		let {
 			datasetfields: { publisher },
@@ -420,7 +420,7 @@ class DataAccessRequest extends Component {
 		}
 		// 6. Hide show submit application
 		if (applicationStatus === DarHelper.darStatus.inProgress) {
-			if(applicationType === DarHelper.darApplicationTypes.amendment) {
+			if (applicationType === DarHelper.darApplicationTypes.amendment) {
 				submitButtonText = 'Submit amendment';
 			}
 			showSubmit = true;
@@ -472,7 +472,7 @@ class DataAccessRequest extends Component {
 			files,
 			isCloneable,
 			versions,
-			applicationType
+			applicationType,
 		});
 	};
 
@@ -622,7 +622,9 @@ class DataAccessRequest extends Component {
 
 		if (isValid) {
 			// if 'amendment' show new amendment modal
-			this.state.applicationType === DarHelper.darApplicationTypes.amendment ? this.setState({ showSubmitAmendmentModal: true }) : this.setState({ showConfirmSubmissionModal: true });
+			this.state.applicationType === DarHelper.darApplicationTypes.amendment
+				? this.setState({ showSubmitAmendmentModal: true })
+				: this.setState({ showConfirmSubmissionModal: true });
 		} else {
 			let activePage = _.get(_.keys({ ...errors }), 0);
 			let activePanel = _.get(_.keys({ ...errors }[activePage]), 0);
@@ -637,22 +639,37 @@ class DataAccessRequest extends Component {
 	 * @desc Submitting data access request
 	 * @params  Object{questionAnswers}
 	 */
-	onFormSubmit = async () => {
+	onFormSubmit = async ({ type, description } = {}) => {
 		try {
 			let { _id } = this.state;
-			// 1. POST
-			await axios.post(`${baseURL}/api/v1/data-access-request/${_id}`, {});
+			let data = {};
+			let alert = {};
+
+			switch (type) {
+				case DarHelper.darApplicationTypes.amendment:
+					data.description = description;
+					alert = {
+						tab: 'inReview',
+						message: `You have successfully submitted amendments to '${this.state.projectName || this.state.datasets[0].name}' application`,
+						publisher: 'user',
+					};
+					break;
+				default:
+					alert = {
+						tab: this.state.applicationStatus === 'inProgress' ? 'submitted' : 'inReview',
+						message:
+							this.state.applicationStatus === 'inProgress'
+								? 'Your application was submitted successfully'
+								: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
+						publisher: 'user',
+					};
+					break;
+			}
+
+			await axios.post(`${baseURL}/api/v1/data-access-request/${_id}`, { ...data });
+
 			const lastSaved = DarHelper.saveTime();
 			this.setState({ lastSaved });
-
-			let alert = {
-				tab: this.state.applicationStatus === 'inProgress' ? 'submitted' : 'inReview',
-				message:
-					this.state.applicationStatus === 'inProgress'
-						? 'Your application was submitted successfully'
-						: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
-				publisher: 'user',
-			};
 
 			this.props.history.push({
 				pathname: '/account',
@@ -1560,7 +1577,11 @@ class DataAccessRequest extends Component {
 	onAmendApplication = async () => {
 		try {
 			let { _id } = this.state;
-			const { data: { data: { _id: newId }} } = await axios.post(`${baseURL}/api/v1/data-access-request/${_id}/amend`, {});
+			const {
+				data: {
+					data: { _id: newId },
+				},
+			} = await axios.post(`${baseURL}/api/v1/data-access-request/${_id}/amend`, {});
 
 			this.toggleAmendApplicationModal();
 			this.setState({ activePanelId: 'about' });
@@ -1668,7 +1689,7 @@ class DataAccessRequest extends Component {
 			roles,
 			showEmailModal,
 			alert,
-			versions = []
+			versions = [],
 		} = this.state;
 		const { userState } = this.props;
 
@@ -2001,11 +2022,17 @@ class DataAccessRequest extends Component {
 				<SubmitAmendmentModal
 					open={this.state.showSubmitAmendmentModal}
 					close={this.toggleSubmitAmendmentModal}
-					confirm={this.onFormSubmit}
+					onHandleSubmit={amendDescription => {
+						this.onFormSubmit({ type: DarHelper.darApplicationTypes.amendment, description: amendDescription });
+					}}
 				/>
 				<DeleteDraftModal open={this.state.showDeleteDraftModal} close={this.toggleDeleteDraftModal} confirm={this.onDeleteDraft} />
 
-				<AmendApplicationModal open={this.state.showAmendApplicationModal} close={this.toggleAmendApplicationModal} confirm={this.onAmendApplication} />
+				<AmendApplicationModal
+					open={this.state.showAmendApplicationModal}
+					close={this.toggleAmendApplicationModal}
+					confirm={this.onAmendApplication}
+				/>
 
 				<DuplicateApplicationModal
 					isOpen={this.state.showDuplicateApplicationModal}
