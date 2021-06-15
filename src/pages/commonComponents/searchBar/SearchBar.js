@@ -373,7 +373,7 @@ class SearchBar extends React.Component {
 									<div className='navBarSearchBarSpacing'>
 										<Container>
 											<Row className='searchBarRow'>
-												<Col className='pr-0'>
+												<Col>
 													<span className='searchBarInputGrey'>
 														<span className='searchInputIconGrey'>
 															<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />
@@ -405,7 +405,7 @@ class SearchBar extends React.Component {
 										<Container>
 											<Row>
 												<Col className='pl-0 pr-0'>
-													<AddNewEntity />
+													<AddNewEntity loggedIn={userState[0].loggedIn} />
 												</Col>
 											</Row>
 										</Container>
@@ -428,7 +428,7 @@ class SearchBar extends React.Component {
 																	width={20}
 																	height={20}
 																	id='notificationsBell'
-																	className={this.state.dropdownOpen ? 'notificationsBell' : null}
+																	className='notificationsBell'
 																	style={{ cursor: 'pointer' }}
 																/>
 																{/* <NotificationsBellSvg width={50} height={50} id="notificationsBell" className={this.state.dropdownOpen ? "notificationsBell" : null} style={{ cursor: 'pointer' }} /> */}
@@ -1121,7 +1121,7 @@ class SearchBar extends React.Component {
 																		width={20}
 																		height={20}
 																		id='notificationsBell'
-																		className={this.state.dropdownOpen ? 'notificationsBell' : null}
+																		className='notificationsBell'
 																		style={{ cursor: 'pointer' }}
 																	/>
 																	{/* <NotificationsBellSvg width={50} height={50} id="notificationsBell" className={this.state.dropdownOpen ? "notificationsBell" : null} style={{ cursor: 'pointer' }} /> */}
