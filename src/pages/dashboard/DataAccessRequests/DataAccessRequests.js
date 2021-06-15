@@ -412,7 +412,7 @@ class DataAccessRequestsNew extends React.Component {
 												<div className='header-version-status'>
 													{this.renderDuration(request, team)}
 													{
-														(applicationType =
+														(applicationType ===
 															DarHelperUtil.darApplicationTypes.amendment &&
 															applicationStatus !== DarHelperUtil.darStatus.approved &&
 															applicationStatus !== DarHelperUtil.darStatus['approved with conditions'] &&
