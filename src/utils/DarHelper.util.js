@@ -58,6 +58,15 @@ let darStatus = {
 	rejected: 'rejected',
 };
 
+let darApplicationTypes = {
+	inProgress: 'inProgress',
+	initial: 'initial',
+	resubmission: 'resubmission',
+	amendment: 'amendment',
+	extension: 'extension',
+	renewal: 'renewal',
+};
+
 let darSLAText = {
 	inProgress: 'Pre-submission',
 	submitted: 'Submitted',
@@ -553,6 +562,7 @@ export default {
 	darSLAText: darSLAText,
 	darCommentTitle: darCommentTitle,
 	darStaticPageIds: darStaticPageIds,
+	darApplicationTypes: darApplicationTypes,
 	actionKeys: actionKeys,
 	amendmentModes: amendmentModes,
 	flagIcons: flagIcons,

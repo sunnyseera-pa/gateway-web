@@ -51,13 +51,6 @@
       }
 
       &-title {
-        @media (min-width: $bp-large) {
-          width: 55%;
-        }
-        @media (min-width: $bp-largest) {
-          width: 65%;
-        }
-
         h1 {
           font-size: 18px;
           line-height: 22px;
