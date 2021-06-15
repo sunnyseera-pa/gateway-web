@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
-import { History } from 'react-router';
-import { Container, Row, Col, Modal, Tabs, Tab, Alert, Tooltip, Button } from 'react-bootstrap';
+import { Container, Row, Col, Modal, Alert, Tooltip, Button } from 'react-bootstrap';
 import Winterfell from 'winterfell';
+import queryString from 'query-string';
 import _ from 'lodash';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
@@ -47,6 +47,7 @@ import ConfirmSubmissionModal from './components/ConfirmSubmissionModal/ConfirmS
 import DeleteDraftModal from './components/DeleteDraftModal/DeleteDraftModal';
 import DuplicateApplicationModal from './components/DuplicateApplicationModal/DuplicateApplicationModal';
 import SelectDatasetModal from './components/SelectDatasetModal/SelectDatasetModal';
+import VersionSelector from '../commonComponents/versionSelector/VersionSelector';
 
 class DataAccessRequest extends Component {
 	constructor(props) {
@@ -174,6 +175,7 @@ class DataAccessRequest extends Component {
 			//	b) Message Panel - route will contain only the 'publisherId' with historic state passed from the message panel component which includes datasetId(s)
 			// 	c/d) Data Access Request User Area / Direct Link - route will contain a data access request 'accessId' which specifically links all associated data to one application
 			const { datasetId, accessId, publisherId } = this.props.match.params;
+			const { version } = queryString.parse(window.location.search);
 			let countedQuestionAnswers = {},
 				totalQuestions = '';
 
@@ -194,7 +196,7 @@ class DataAccessRequest extends Component {
 				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered`;
 			} else if (accessId) {
 				// c/d) Data Access Request/Direct Link (To be extended for readonly mode)
-				await this.loadDataAccessRequest(accessId);
+				await this.loadDataAccessRequest(accessId, version);
 				// Populate the question/answers count if still in progress, otherwise display project status and date last updated
 				const { applicationStatus, updatedAt } = this.state;
 				if (applicationStatus === 'inProgress') {
@@ -208,6 +210,7 @@ class DataAccessRequest extends Component {
 			// Update state to display question answer count
 			this.setState({
 				totalQuestions,
+				versionNumber: version,
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -271,7 +274,7 @@ class DataAccessRequest extends Component {
 	loadSingleDatasetMode = async datasetId => {
 		try {
 			// 1. Make API call to find and return the json schema for this dataset's application along with any existing answers
-			let response = await axios.get(`${baseURL}/api/v1/data-access-request/dataset/${datasetId}`);
+			let response = await axios.get(`${baseURL}/api/v1/data-access-request/datasets/${datasetId}`);
 			const {
 				data: {
 					data: {
@@ -280,7 +283,7 @@ class DataAccessRequest extends Component {
 						_id,
 						applicationStatus,
 						aboutApplication = {},
-						dataset,
+						datasets,
 						mainApplicant,
 						userId,
 						authorIds,
@@ -300,7 +303,7 @@ class DataAccessRequest extends Component {
 				_id,
 				applicationStatus,
 				aboutApplication,
-				datasets: [dataset],
+				datasets,
 				mainApplicant,
 				userId,
 				authorIds,
@@ -310,21 +313,18 @@ class DataAccessRequest extends Component {
 				isCloneable,
 				formType,
 			});
-
-			// for local test uses formSchema.json
-			//  this.setState({jsonSchema: {...formSchema}, questionAnswers: {fullname: {"id":5385077600698822,"orcid":"12345678","name":"Paul McCafferty","bio":"Developer @ PA","email":"p*************y@p**************m"}, orcid:"12345678", email:"p*************y@p**************m"}, activePanelId: 'applicant', isLoading: false, applicationStatus: 'inProgress'});
 		} catch (err) {
 			this.setState({ isLoading: false });
 			console.error(err.message);
 		}
 	};
 
-	loadDataAccessRequest = async accessId => {
+	loadDataAccessRequest = async (accessId, version) => {
 		try {
 			// 1. Make API call to find and return the application form schema and answers matching this Id
-			let response = await axios.get(`${baseURL}/api/v1/data-access-request/${accessId}`);
+			const response = await axios.get(`${baseURL}/api/v1/data-access-request/${accessId}${version ? `?version=${version}` : ''}`);
 			// 2. Destructure backend response for this context containing details of DAR including question set and current progress
-			let {
+			const {
 				data: { data },
 			} = response;
 			// 3. Set up the DAR
@@ -340,7 +340,7 @@ class DataAccessRequest extends Component {
 		let {
 			jsonSchema,
 			activeParty = '',
-			questionAnswers,
+			questionAnswers = {},
 			_id,
 			hasRecommended,
 			amendmentIterations = [],
@@ -360,7 +360,8 @@ class DataAccessRequest extends Component {
 			workflow,
 			files,
 			isCloneable,
-			formType
+			formType,
+			versions = [],
 		} = context;
 		let {
 			datasetfields: { publisher },
@@ -405,7 +406,7 @@ class DataAccessRequest extends Component {
 		let modalContext = DarHelper.createModalContext(aboutApplication.selectedDatasets);
 		let allowsMultipleDatasets = formType === '5 safe';
 
-		// 5. If multiple datasets are allowed, append 'about this application' section
+		// 5. If multiple datasets are allowed, append 'before you begin' section
 		if (allowsMultipleDatasets) {
 			// we need to inject About and File sections if first time running
 			jsonSchema = this.injectStaticContent(jsonSchema, inReviewMode, reviewSections);
@@ -460,6 +461,7 @@ class DataAccessRequest extends Component {
 			workflowAssigned: !_.isEmpty(workflow) ? true : false,
 			files,
 			isCloneable,
+			versions,
 		});
 	};
 
@@ -632,7 +634,7 @@ class DataAccessRequest extends Component {
 			this.setState({ lastSaved });
 
 			let alert = {
-				tab: 'submitted',
+				tab: this.state.applicationStatus === 'inProgress' ? 'submitted' : 'inReview',
 				message:
 					this.state.applicationStatus === 'inProgress'
 						? 'Your application was submitted successfully'
@@ -1340,11 +1342,12 @@ class DataAccessRequest extends Component {
 		if (_.isEmpty(appIdToCloneInto) && _.isEmpty(selectedDatasets)) {
 			return;
 		}
-	
+
+		const { versionNumber } = this.state;
 		let datasetIds = [];
 		let datasetTitles = [];
 		let publisher = '';
-	
+
 		if (!_.isEmpty(appIdToCloneInto)) {
 			this.toggleDuplicateApplicationModal();
 		} else if (!_.isEmpty(selectedDatasets)) {
@@ -1355,9 +1358,9 @@ class DataAccessRequest extends Component {
 				datasetTitles.push(dataset.name);
 			});
 		}
-	
+
 		axios
-			.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/clone`, {
+			.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/clone${versionNumber ? `?version=${versionNumber}` : ''}`, {
 				datasetIds,
 				datasetTitles,
 				publisher,
@@ -1366,7 +1369,7 @@ class DataAccessRequest extends Component {
 			.then(res => {
 				let message = '';
 				let projectName = this.state.projectName || this.state.datasets[0].name;
-	
+
 				if (_.isEmpty(appIdToCloneInto)) {
 					message = `You have successfully duplicated your application '${projectName}' into a new application`;
 				} else {
@@ -1374,14 +1377,14 @@ class DataAccessRequest extends Component {
 					projectNameCloneInto = _.isNil(projectNameCloneInto) ? 'your selected application' : `'${projectNameCloneInto}'`;
 					message = `You have successfully duplicated your application '${projectName}' into ${projectNameCloneInto}`;
 				}
-	
+
 				let alert = {
 					message: message,
 					publisher: 'user',
 				};
-				this.setState({ alert: alert });
+				this.setState({ alert, activePanelId: 'about' });
 				setTimeout(() => this.setState({ alert: {} }), 10000);
-	
+
 				this.props.history.push({ pathname: `/data-access-request/${res.data.accessRecord._id}` });
 			});
 	};
@@ -1410,16 +1413,16 @@ class DataAccessRequest extends Component {
 		let fullAmendments = {};
 		let updateRequestModal = this.state.updateRequestModal;
 		let { pages, questionPanels, questionSets } = { ...this.state.jsonSchema };
+		let { questionAnswers } = { ...this.state };
 		// Get the last amendmentIteration in the array
 		let amendmentsIterations = _.last([...this.state.amendmentIterations]);
 		if (!_.isEmpty(amendmentsIterations)) {
 			// get the questionAnswers object {role: {}, lastName: {}}
-			let { questionAnswers } = { ...amendmentsIterations };
+			let { questionAnswers: updates } = { ...amendmentsIterations };
 			// get all the questionIds into a iterable array from questionAnswers
-			if (!_.isEmpty(questionAnswers)) {
+			if (!_.isEmpty(updates)) {
 				// set up default variables
 				let questionSetId,
-					answer,
 					section,
 					pageId,
 					page,
@@ -1427,10 +1430,11 @@ class DataAccessRequest extends Component {
 					question = '';
 				// reduce over questionanswers object using lodash
 				fullAmendments = _.reduce(
-					questionAnswers,
+					updates,
 					(obj, value, key) => {
 						// currentItem {questionSetId, answer}
-						({ questionSetId, answer } = questionAnswers[key]);
+						({ questionSetId } = updates[key]);
+						const answer = questionAnswers[key];
 						// find the active questionPanel ie questionPanels: [{navHeader, pageId, panelId, questionSets:[]}]
 						let activeQuestionPanel = [...questionPanels].find(panel => panel.panelId === questionSetId);
 						// Get the section {navHeader: panelHeader: 'Applicant', pageId: 'safePeople'}
@@ -1621,8 +1625,11 @@ class DataAccessRequest extends Component {
 			roles,
 			showEmailModal,
 			alert,
+			versions = []
 		} = this.state;
-		const { userState, location } = this.props;
+		const { userState } = this.props;
+
+		const selectedVersion = !_.isEmpty(versions) ? versions.find(v => v.isCurrent).displayTitle : '';
 
 		Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
 		Winterfell.addInputType('datePickerCustom', DatePickerCustom);
@@ -1666,6 +1673,11 @@ class DataAccessRequest extends Component {
 						) : (
 							<span className='white-16-semibold pr-5'>
 								{datasets[0].name} | {datasets[0].datasetfields.publisher}
+							</span>
+						)}
+						{versions.length > 1 && (
+							<span className='white-16-semibold pr-5' style={{ display: 'inline-block' }}>
+								<VersionSelector selectedVersion={selectedVersion} versionList={versions} displayType='smallTriangle' />
 							</span>
 						)}
 					</Col>

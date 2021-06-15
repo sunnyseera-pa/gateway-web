@@ -706,6 +706,7 @@ input[type='radio']:disabled {
 #dsptLink {
 	color: $purple !important;
 	text-decoration: underline !important;
+	display: inline-block !important;
 }
 
 .panConfirm {
@@ -864,4 +865,8 @@ input[type='checkbox']:after {
 	color: red !important;
 	text-decoration: underline;
 	outline: none !important;
+}
+
+.form-group > .question-wrap > textarea {
+    min-height: 155px;
 }
