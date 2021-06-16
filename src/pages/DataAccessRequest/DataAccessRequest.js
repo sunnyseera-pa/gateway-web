@@ -668,16 +668,16 @@ class DataAccessRequest extends Component {
 				case DarHelper.darApplicationTypes.amendment:
 					data.description = description;
 					alert = {
-						tab: 'inReview',
+						tab: 'submitted',
 						message: `You have successfully submitted amendments to '${this.state.projectName || this.state.datasets[0].name}' application`,
 						publisher: 'user',
 					};
 					break;
 				default:
 					alert = {
-						tab: this.state.applicationStatus === 'inProgress' ? 'submitted' : 'inReview',
+						tab: this.state.applicationStatus === DarHelper.darStatus.inProgress ? 'submitted' : 'inReview',
 						message:
-							this.state.applicationStatus === 'inProgress'
+							this.state.applicationStatus === DarHelper.darStatus.inProgress
 								? 'Your application was submitted successfully'
 								: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
 						publisher: 'user',

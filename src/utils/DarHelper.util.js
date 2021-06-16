@@ -76,6 +76,12 @@ let darSLAText = {
 	rejected: 'Rejected',
 };
 
+let darAmendmentSLAText = {
+	inProgress: 'Pre-submission amendment',
+	submitted: 'Submitted amendment',
+	inReview: 'Amendment in review'
+}
+
 let darStatusColours = {
 	inProgress: 'gray',
 	submitted: 'indigo',
@@ -560,6 +566,7 @@ export default {
 	darStatus: darStatus,
 	darStatusColours: darStatusColours,
 	darSLAText: darSLAText,
+	darAmendmentSLAText: darAmendmentSLAText,
 	darCommentTitle: darCommentTitle,
 	darStaticPageIds: darStaticPageIds,
 	darApplicationTypes: darApplicationTypes,
