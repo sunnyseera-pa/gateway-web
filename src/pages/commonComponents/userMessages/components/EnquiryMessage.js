@@ -40,9 +40,9 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 		'safedata-otherdatasetsintentiontolinkdata': '',
 		safedataotherdatasetslinkadditionaldatasetslinkagedetails: '',
 		datasetsInterestedIn: '',
+		safedatadatafieldsdatarequiredjustification: '',
 		'safeproject-projectdetails-startdate': '',
 		safedatastorageandprocessingaccessmethodphysicallocationorganisationname: '',
-		safedatadatafieldsdatarequiredjustification: '',
 		safepeopleprimaryapplicantorcid: '',
 		funding: '',
 		safeprojectprojectdetailspublicbenefitimpact: '',
@@ -434,6 +434,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 								<label htmlFor={`safeproject-projectdetails-startdate`} className='form-label'>
 									Proposed project start date (optional)
 								</label>
+								<br />
 								<DatePicker
 									name={`safeproject-projectdetails-startdate`}
 									data-test-id={`safeproject-projectdetails-startdate`}
