@@ -2,8 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { isEmpty, has, isString } from 'lodash';
 import * as Yup from 'yup';
 import { Formik, Field, Form } from 'formik';
-import DatePicker from 'react-datepicker';
-import moment from 'moment';
 import TypeaheadDataset from '../../../DataAccessRequest/components/TypeaheadDataset/TypeaheadDataset';
 
 export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmit }) => {
