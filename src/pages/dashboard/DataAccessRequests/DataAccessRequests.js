@@ -355,7 +355,7 @@ class DataAccessRequestsNew extends React.Component {
 
 		return (
 			<Fragment>
-				<Fragment>{!_.isEmpty(alert) ? this.generateAlert() : ''}</Fragment>
+				<Fragment>{!_.isEmpty(alert) && !_.isNil(alert.message) ? this.generateAlert() : ''}</Fragment>
 				<Row>
 					<Col xs={1}></Col>
 					<div className='col-sm-10'>

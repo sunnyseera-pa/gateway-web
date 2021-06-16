@@ -392,7 +392,21 @@ class DataAccessRequest extends Component {
 		if (datasets[0].publisher) {
 			({ _id: publisherId, workflowEnabled } = datasets[0].publisher);
 		}
-		// 2. If about application is empty, this is a new data access request so set up state based on passed context
+		// 2. If user is custodian and the form is not in review, redirect the user to the DAR team dashboard
+		if(userType === DarHelper.userTypes.CUSTODIAN && applicationStatus === DarHelper.darStatus.submitted) {
+			const alert = {
+				publisher,
+				nav: `dataaccessrequests&team=${publisher}`,
+				tab: 'submitted'
+			};
+			this.props.history.push({
+				pathname: `/account`,
+				search: '?tab=dataaccessrequests',
+				state: { alert },
+			});
+		}
+
+		// 3. If about application is empty, this is a new data access request so set up state based on passed context
 		if (_.isEmpty(aboutApplication)) {
 			aboutApplication.selectedDatasets = datasets.map(dataset => {
 				let { _id: dataset_id, publisher: publisherObj, datasetid, name, description } = dataset;
@@ -413,22 +427,22 @@ class DataAccessRequest extends Component {
 		} else {
 			let { isNationalCoreStudies = false } = aboutApplication;
 			if (isNationalCoreStudies) {
-				// 3. Fetch NCS projects list
+				// 4. Fetch NCS projects list
 				this.getNationalCoreStudiesProjects();
 			}
 		}
 
-		// 4. Set messaging and modal context
+		// 5. Set messaging and modal context
 		let topicContext = DarHelper.createTopicContext(aboutApplication.selectedDatasets);
 		let modalContext = DarHelper.createModalContext(aboutApplication.selectedDatasets);
 		let allowsMultipleDatasets = topicContext.requiresModal || false;
 
-		// 5. If multiple datasets are allowed, append 'before you begin' section
+		// 6. If multiple datasets are allowed, append 'before you begin' section
 		if (allowsMultipleDatasets) {
 			// we need to inject About and File sections if first time running
 			jsonSchema = this.injectStaticContent(jsonSchema, inReviewMode, reviewSections);
 		}
-		// 6. Hide show submit application
+		// 7. Hide show submit application
 		if (applicationStatus === DarHelper.darStatus.inProgress) {
 			if (applicationType === DarHelper.darApplicationTypes.amendment) {
 				submitButtonText = 'Submit amendment';
@@ -442,11 +456,11 @@ class DataAccessRequest extends Component {
 			submitButtonText = 'Submit updates';
 		}
 
-		// 7. Set initial panel as selected and scroll to top of view port
+		// 8. Set initial panel as selected and scroll to top of view port
 		let initialPanel = jsonSchema.formPanels[0].panelId;
 		window.scrollTo(0, 0);
 
-		// 8. Set state
+		// 9. Set state
 		this.setState({
 			jsonSchema: { ...jsonSchema, ...classSchema },
 			activeParty,
