@@ -30,6 +30,7 @@ import { tabTypes } from './Team/teamUtil';
 import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
 import './Dashboard.scss';
+import ActivityLog from '../DataAccessRequest/components/ActivityLog/ActivityLog';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -96,6 +97,7 @@ class Account extends Component {
 		isSubmitting: false,
 		teamManagementInternalTab: 'Notifications',
 		accountUpdated: false,
+		dataaccessrequest: {},
 	};
 
 	constructor(props) {
@@ -357,13 +359,13 @@ class Account extends Component {
 				break;
 			default:
 				const team = userState[0].teams.reduce((obj, team) => {
-					if(team._id === teamSelector) {
-						obj = {...team};
+					if (team._id === teamSelector) {
+						obj = { ...team };
 					}
 					return obj;
 				}, {});
-				if(_.isEmpty(team)) {
-					this.setState({team: 'user'});
+				if (_.isEmpty(team)) {
+					this.setState({ team: 'user' });
 					renderItem = <Fragment>{userState[0].name}</Fragment>;
 				} else {
 					renderItem = <Fragment>{team.name}</Fragment>;
@@ -420,6 +422,7 @@ class Account extends Component {
 				alert: !_.isEmpty(alert) ? alert : {},
 				activeAccordion,
 				datasetAccordion,
+				dataaccessrequest: {},
 			});
 			// 7. push state
 			this.props.history.push({ pathname: window.location.pathname, search: `?tab=${tab.tabId}`, state: { team: tab.team } });
@@ -459,6 +462,10 @@ class Account extends Component {
 		this.setState({ innertab: '' });
 	};
 
+	setDataAccessRequest = (dar = {}) => {
+		this.setState({ dataaccessrequest: dar });
+	};
+
 	render() {
 		const {
 			searchString,
@@ -478,6 +485,7 @@ class Account extends Component {
 			isSubmitting,
 			teamManagementTab,
 			accountUpdated,
+			dataaccessrequest,
 		} = this.state;
 
 		return (
@@ -714,7 +722,15 @@ class Account extends Component {
 
 								{tabId === 'courses' ? <AccountCourses userState={userState} /> : ''}
 
-								{tabId === 'dataaccessrequests' ? <DataAccessRequests userState={userState} team={team} alert={alert} /> : ''}
+								{tabId === 'dataaccessrequests' ? (
+									_.isEmpty(dataaccessrequest) ? (
+										<DataAccessRequests setDataAccessRequest={this.setDataAccessRequest} userState={userState} team={team} alert={alert} />
+									) : (
+										<ActivityLog dataaccessrequest={dataaccessrequest} userState={userState} team={team} />
+									)
+								) : (
+									''
+								)}
 
 								{tabId === 'collections' ? <AccountCollections userState={userState} /> : ''}
 
@@ -725,7 +741,23 @@ class Account extends Component {
 						{team !== 'user' ? (
 							<>
 								{allowAccessRequestManagement && this.userHasRole(team, ['manager', 'reviewer']) && (
-									<>{tabId === 'dataaccessrequests' ? <DataAccessRequests userState={userState} team={team} alert={alert} /> : ''}</>
+									<>
+										{' '}
+										{tabId === 'dataaccessrequests' ? (
+											_.isEmpty(dataaccessrequest) ? (
+												<DataAccessRequests
+													setDataAccessRequest={this.setDataAccessRequest}
+													userState={userState}
+													team={team}
+													alert={alert}
+												/>
+											) : (
+												<ActivityLog dataaccessrequest={dataaccessrequest} userState={userState} team={team} />
+											)
+										) : (
+											''
+										)}
+									</>
 								)}
 
 								{(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') && (

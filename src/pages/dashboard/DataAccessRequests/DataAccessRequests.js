@@ -220,7 +220,13 @@ class DataAccessRequestsNew extends React.Component {
 	};
 
 	renderDuration = (accessRequest, team = {}) => {
-		let { applicationStatus = '', createdAt, dateSubmitted, decisionDuration = 0, applicationType = DarHelperUtil.darApplicationTypes.initial } = accessRequest;
+		let {
+			applicationStatus = '',
+			createdAt,
+			dateSubmitted,
+			decisionDuration = 0,
+			applicationType = DarHelperUtil.darApplicationTypes.initial,
+		} = accessRequest;
 		let diff = 0;
 		if (this.durationLookups.includes(applicationStatus)) {
 			if (applicationStatus === DarHelperUtil.darStatus.inProgress) {
@@ -246,7 +252,7 @@ class DataAccessRequestsNew extends React.Component {
 		return '';
 	};
 
-	navigateToLocation = (e, applicationId, applicationStatus) => {
+	navigateToLocation = (e, projectId) => {
 		e.stopPropagation();
 		// 1. split the id up into two parts
 		let [id, uniqueId] = e.currentTarget.id.split('_');
@@ -272,26 +278,16 @@ class DataAccessRequestsNew extends React.Component {
 					}
 				}
 				break;
-			case 'startReview':
-				this.startWorkflowReview(applicationId);
-				break;
 			default:
-				if (applicationStatus !== DarHelperUtil.darStatus.submitted || this.state.team === 'user') {
-					window.location.href = `/data-access-request/${applicationId}`;
-				}
+				// select the latest version of an application given the projectId
+				let latestVersonOfTheApplication = this.state.screenData
+					.filter(application => application.projectId === projectId)
+					.reduce(function (prevApplication, currentApplication) {
+						return prevApplication.majorVersion > currentApplication.majorVersion ? prevApplication : currentApplication;
+					});
+				this.props.setDataAccessRequest(latestVersonOfTheApplication);
 				break;
 		}
-	};
-
-	startWorkflowReview = async applicationId => {
-		await axios
-			.put(`${baseURL}/api/v1/data-access-request/${applicationId}/startreview`)
-			.then(() => {
-				window.location.href = `/data-access-request/${applicationId}`;
-			})
-			.catch(err => {
-				console.error(err.message);
-			});
 	};
 
 	renderAverageSubmission = () => {
@@ -387,12 +383,13 @@ class DataAccessRequestsNew extends React.Component {
 								amendmentStatus = '',
 								versions = [],
 								applicationType = 'initial',
+								projectId,
 							} = request;
 
 							const selectedVersion = versions.find(v => v.isCurrent).displayTitle;
 
 							return (
-								<Row key={`request_${i}`} onClick={e => this.navigateToLocation(e, _id, applicationStatus)}>
+								<Row key={`request_${i}`} onClick={e => this.navigateToLocation(e, projectId)}>
 									<div className='col-md-12'>
 										<div className='layoutCard'>
 											<div className='header-version'>
@@ -463,6 +460,7 @@ class DataAccessRequestsNew extends React.Component {
 													navigateToLocation={this.navigateToLocation}
 													applicationId={_id}
 													amendmentStatus={amendmentStatus}
+													isStartReviewEnabled={false}
 												/>
 											</div>
 											{this.renderComment(
