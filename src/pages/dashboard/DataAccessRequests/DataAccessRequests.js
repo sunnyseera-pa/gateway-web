@@ -453,11 +453,7 @@ class DataAccessRequestsNew extends React.Component {
 																<>
 																	<SLA
 																		classProperty={DarHelperUtil.darStatusColours[applicationStatus]}
-																		text={
-																			applicationStatus === DarHelperUtil.darStatus.inProgress
-																				? 'Pre-submission amendment'
-																				: 'Amendment in review'
-																		}
+																		text={DarHelperUtil.darAmendmentSLAText[applicationStatus]}
 																	/>
 																	<SLA
 																		classProperty={DarHelperUtil.darStatusColours['approved']}
@@ -468,7 +464,6 @@ class DataAccessRequestsNew extends React.Component {
 																<SLA
 																	classProperty={DarHelperUtil.darStatusColours[applicationStatus]}
 																	text={DarHelperUtil.darSLAText[applicationStatus]}
-																	applicationType={applicationType}
 																/>
 															))
 													}
