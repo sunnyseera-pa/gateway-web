@@ -10,7 +10,7 @@ import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import NotFound from '../commonComponents/NotFound';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
-import Creators from '../commonComponents/Creators';
+import Uploader from '../commonComponents/Uploader';
 import SVGIcon from '../../images/SVGIcon';
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
@@ -372,13 +372,37 @@ export const ProjectDetail = props => {
 															{moment(projectData.updatedon).format('DD MMM YYYY')}
 														</Col>
 													</Row>
-													{projectData.uploader ? (
+													<Row className='mt-3'>
+														<Col sm={2}>
+															<span className='gray800-14'>Uploaders</span>
+														</Col>
+														<Col sm={10} className='gray800-14 overflowWrap'>
+															{projectData.persons.map(uploader => (
+																<span key={uploader.id}>
+																	<Uploader key={uploader.id} uploader={uploader} />
+																</span>
+															))}
+														</Col>
+													</Row>
+													{projectData.authorsNew ? (
 														<Row className='mt-2'>
-															<Col sm={2} className='gray800-14'>
-																Uploader
+															<Col sm={2}>
+																<span className='gray800-14'>Collaborators</span>
 															</Col>
 															<Col sm={10} className='gray800-14 overflowWrap'>
-																{projectData.uploader}
+																{projectData.authorsNew}
+															</Col>
+														</Row>
+													) : (
+														''
+													)}
+													{projectData.leadResearcher ? (
+														<Row className='mt-2'>
+															<Col sm={2}>
+																<span className='gray800-14'>Lead researcher</span>
+															</Col>
+															<Col sm={10} className='gray800-14 overflowWrap'>
+																{projectData.leadResearcher}
 															</Col>
 														</Row>
 													) : (
@@ -429,23 +453,6 @@ export const ProjectDetail = props => {
 																})
 															)}
 														</Col>
-													</Row>
-												</div>
-											</Col>
-										</Row>
-
-										<Row className='mt-2'>
-											<Col sm={12} className='mb-5'>
-												<div className='rectangle'>
-													<Row className='gray800-14-bold'>
-														<Col sm={12}>Collaborators</Col>
-													</Row>
-													<Row className='mt-3'>
-														{projectData.persons.map(author => (
-															<Col sm={6} key={author.id}>
-																<Creators key={author.id} author={author} />
-															</Col>
-														))}
 													</Row>
 												</div>
 											</Col>
