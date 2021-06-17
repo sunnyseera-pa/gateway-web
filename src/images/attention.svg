@@ -2,14 +2,14 @@
 <svg width="16px" height="16px" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <title>icon / attention</title>
     <defs>
-        <path d="M8,0 C3.6,0 0,3.6 0,8 C0,12.4 3.6,16 8,16 C12.4,16 16,12.4 16,8 C16,3.6 12.4,0 8,0 Z M8,12 C7.4,12 7,11.6 7,11 C7,10.4 7.4,10 8,10 C8.6,10 9,10.4 9,11 C9,11.6 8.6,12 8,12 Z M9,9 L7,9 L7,4 L9,4 L9,9 Z" id="path-1"></path>
+        <path d="M8,0 C3.6,0 0,3.6 0,8 C0,12.4 3.6,16 8,16 C12.4,16 16,12.4 16,8 C16,3.6 12.4,0 8,0 Z M8,12 C7.4,12 7,11.6 7,11 C7,10.4 7.4,10 8,10 C8.6,10 9,10.4 9,11 C9,11.6 8.6,12 8,12 Z M9,9 L7,9 L7,4 L9,4 L9,9 Z" id="attention"></path>
     </defs>
     <g id="icon-/-attention-16" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <mask id="mask-2" fill="white">
-            <use xlink:href="#path-1"></use>
+        <mask id="mask-attention" fill="white">
+            <use xlink:href="#attention"></use>
         </mask>
-        <use id="Shape" fill="#111111" fill-rule="nonzero" xlink:href="#path-1"></use>
-        <g id="colour/purple" mask="url(#mask-2)" fill="#dc3645">
+        <use id="Shape" fill="#111111" fill-rule="nonzero" xlink:href="#attention"></use>
+        <g id="colour/purple" mask="url(#mask-attention)" fill="#dc3645">
             <rect id="Rectangle" x="0" y="0" width="16" height="16"></rect>
         </g>
     </g>
