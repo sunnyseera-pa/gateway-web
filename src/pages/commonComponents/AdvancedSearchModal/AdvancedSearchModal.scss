@@ -29,7 +29,7 @@
 		max-width: 100%;
 	}
 }
-.button.close {
-	display: flex !important;
-	align-self: flex-start !important;
+
+.modal-header > .close {
+    align-self: end;
 }
