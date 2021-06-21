@@ -1,0 +1,35 @@
+@import '../../../css/variables';
+@import '../../../css/typography';
+
+.modal.show .modal-dialog {
+	transform: translate(0, 25%) !important;
+}
+
+.advanced-search {
+	&-modal-header,
+	&-body {
+		display: flex;
+	}
+
+	&-body {
+		flex-direction: row;
+		justify-content: space-between;
+
+		&-left {
+			flex-direction: column;
+		}
+	}
+
+	&-learn-more {
+		position: absolute;
+		bottom: 0;
+		display: block;
+	}
+	&-image {
+		max-width: 100%;
+	}
+}
+.button.close {
+	display: flex !important;
+	align-self: flex-start !important;
+}
