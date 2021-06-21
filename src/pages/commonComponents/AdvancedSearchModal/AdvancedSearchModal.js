@@ -123,7 +123,7 @@ const AdvancedSearchModal = ({ open, closed, userProps }) => {
 				<Modal.Header closeButton>
 					<div>
 						<div className='advanced-search-modal-header ml-3'>
-							<CDStar fill='#f98e2b' height='20' width='20' />
+							<CDStar fill='#f98e2b' height='20' width='20' className='mr-2'/>
 							<h5 className='black-20'> Advanced Search</h5>
 						</div>
 						<p className='gray800-14 ml-3'>
@@ -136,7 +136,7 @@ const AdvancedSearchModal = ({ open, closed, userProps }) => {
 						<Col sm={6}>
 							<div className='advanced-search-body-left'>
 								<h3 className='black-20 flex-form'>
-									Cohort Discovery <div className='node-beta ml-2'>BETA</div>
+									Cohort Discovery <div className='beta-title ml-2'>BETA</div>
 								</h3>
 								<p className='gray800-14'>
 									Search based on characteristics such as disease, age, and location. Queries are made on the actual dataset, not just
