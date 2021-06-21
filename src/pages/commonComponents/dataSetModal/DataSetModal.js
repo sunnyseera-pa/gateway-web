@@ -25,8 +25,13 @@ const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginMod
 	const { loggedIn: isLoggedIn } = userState;
 	const [screenData, setScreenData] = useState({});
 	const [non5SafesData, setNon5SafesData] = useState('');
-	let history = useHistory();
-
+	const showNon5SafesData = () => 
+		(!_.isEmpty(non5SafesData) && typeof non5SafesData !== 'undefined') ? (
+			<div dangerouslySetInnerHTML={{ __html: non5SafesData }} />
+		) : (
+			''
+		);
+	;
 	const initScreenData = () => {
 		if (typeof context !== 'undefined' && !_.isEmpty(context) && !_.isEmpty(context.datasets)) {
 			({ datasets, title, subTitle, contactPoint, dataRequestModalContent, showActionButtons = true } = context);
@@ -45,17 +50,15 @@ const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginMod
 			// 4. do normal operation
 			closed(showEnquiry);
 		}
-	}
+	};
 
 	useEffect(() => {
 		if (open) initScreenData();
 
 		let url = env === local ? 'https://uatbeta.healthdatagateway.org' : cmsURL;
-		axios
-		.get(url + '/Non5SafesModalContent', { withCredentials: false })
-			.then(res => {
-				setNon5SafesData(res.data)
-			});
+		axios.get(url + '/Non5SafesModalContent', { withCredentials: false }).then(res => {
+			setNon5SafesData(res.data);
+		});
 	}, [open, context]);
 
 	return (
@@ -79,19 +82,27 @@ const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginMod
 					{!_.isEmpty(screenData.dataRequestModalContent) && typeof screenData.dataRequestModalContent.body !== 'undefined' ? (
 						<ReactMarkdown source={screenData.dataRequestModalContent.body} />
 					) : (
-						''
+						showNon5SafesData()
 					)}
 				</div>
 
 				<div className='appModal-footer'>
 					{screenData.showActionButtons ? (
 						<div className='appModal-footer--wrap'>
-							{ is5Safes ?
-							<button className='button-secondary mr-2' onClick={() => {isLoggedIn ? onCloseModal('SUBMIT_APPLICATION') : showLoginModal()}}>
-								Request access
-							</button> 
-							: null}
-							<button className='btn btn-primary addButton' onClick={() => {isLoggedIn ? onCloseModal('ENQUIRY') : showLoginModal()}}>
+							{is5Safes ? (
+								<button
+									className='button-secondary mr-2'
+									onClick={() => {
+										isLoggedIn ? onCloseModal('SUBMIT_APPLICATION') : showLoginModal();
+									}}>
+									Request access
+								</button>
+							) : null}
+							<button
+								className='btn btn-primary addButton'
+								onClick={() => {
+									isLoggedIn ? onCloseModal('ENQUIRY') : showLoginModal();
+								}}>
 								Make an enquiry
 							</button>
 						</div>
