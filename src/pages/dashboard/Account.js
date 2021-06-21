@@ -86,7 +86,6 @@ class Account extends Component {
 		showDrawer: false,
 		showModal: false,
 		activeAccordion: -1,
-		datasetAccordion: -1,
 		context: {},
 		profileComplete: true,
 		allowWorkflow: true,
@@ -375,7 +374,6 @@ class Account extends Component {
 	toggleNav = (tabId = '') => {
 		let {
 			activeAccordion,
-			datasetAccordion,
 			alert,
 			userState: [user],
 		} = { ...this.state };
@@ -413,7 +411,6 @@ class Account extends Component {
 				activeKey: tab.tabId,
 				alert: !_.isEmpty(alert) ? alert : {},
 				activeAccordion,
-				datasetAccordion,
 			});
 			// 6. push state
 			this.props.history.push({ pathname: window.location.pathname, search: `?tab=${tab.tabId}`, state: { team: tab.team } });
@@ -422,10 +419,6 @@ class Account extends Component {
 
 	accordionClick = () => {
 		this.setState({ activeAccordion: '0' });
-	};
-
-	datasetAccordionClick = () => {
-		this.setState({ datasetAccordion: '0' });
 	};
 
 	userHasRole(teamId, role) {
@@ -465,7 +458,6 @@ class Account extends Component {
 			team,
 			alert,
 			activeAccordion,
-			datasetAccordion,
 			allowWorkflow,
 			allowAccessRequestManagement,
 			savedTeamNotificationSuccess,
