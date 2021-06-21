@@ -2030,7 +2030,7 @@ class SearchPage extends React.Component {
 										collectionCount <= 0 ? (
 											<NoResults type='collections' search={search} />
 										) : (
-											<Row className='mt-5'>
+											<Row className='mt-2'>
 												{collectionData.map(collection => {
 													return (
 														<Col sm={12} md={12} lg={6} style={{ 'text-align': '-webkit-center' }}>
