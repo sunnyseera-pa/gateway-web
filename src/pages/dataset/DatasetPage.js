@@ -30,7 +30,7 @@ import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import DataSetHelper from '../../utils/DataSetHelper.util';
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
-// import CommunicateDataCustodianModal from '../commonComponents/communicateDataCustodianModal/CommunicateDataCustodianModal';
+import CommunicateDataCustodianModal from '../commonComponents/communicateDataCustodianModal/CommunicateDataCustodianModal';
 import 'react-tabs/style/react-tabs.css';
 import './Dataset.scss';
 import DataUtitlityFramework from './components/DataUtilityFramework';
@@ -567,59 +567,41 @@ class DatasetDetail extends Component {
 		});
 	};
 
-	toggleModal = (showEnquiry = false, context = {}) => {
+	toggleModal = action => {
 		this.setState(prevState => {
-			return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
+			return { showModal: !prevState.showModal };
 		});
 
-		if (showEnquiry) {
+		if (action === 'SUBMIT_APPLICATION') {
+			this.toggleCustodianModal();
+		} else if (action === 'ENQUIRY') {
 			this.topicContext = {
 				...this.topicContext,
 				allowNewMessage: true,
 			};
-		} else {
-			this.topicContext = {
-				...this.topicContext,
-				allowNewMessage: false,
-			};
+			this.toggleDrawer();
 		}
 	};
 
-	// toggleModal = action => {
-	// 	this.setState(prevState => {
-	// 		return { showModal: !prevState.showModal };
-	// 	});
+	toggleCustodianModal = (action = '') => {
+		this.setState(prevState => {
+			return { showCustodianModal: !prevState.showCustodianModal };
+		});
 
-	// 	if (action === 'SUBMIT_APPLICATION') {
-	// 		this.toggleCustodianModal();
-	// 	} else if (action === 'ENQUIRY') {
-	// 		this.topicContext = {
-	// 			...this.topicContext,
-	// 			allowNewMessage: true,
-	// 		};
-	// 		this.toggleDrawer();
-	// 	}
-	// };
-
-	// toggleCustodianModal = (action = '') => {
-	// 	this.setState(prevState => {
-	// 		return { showCustodianModal: !prevState.showCustodianModal };
-	// 	});
-
-	// 	if (action === 'ENQUIRY') {
-	// 		console.log('Show message drawer');
-	// 		this.topicContext = {
-	// 			...this.topicContext,
-	// 			allowNewMessage: true,
-	// 		};
-	// 		this.toggleDrawer();
-	// 	} else if (action === 'SUBMIT_APPLICATION') {
-	// 		console.log('Take user to application');
-	// 		const { publisher } = this.topicContext.datasets[0];
-	// 		Event('Buttons', 'Click', 'Request Access');
-	// 		this.props.history.push({ pathname: `/data-access-request/publisher/${publisher}` }, { datasets: this.topicContext.datasets });
-	// 	}
-	// };
+		if (action === 'ENQUIRY') {
+			console.log('Show message drawer');
+			this.topicContext = {
+				...this.topicContext,
+				allowNewMessage: true,
+			};
+			this.toggleDrawer();
+		} else if (action === 'SUBMIT_APPLICATION') {
+			console.log('Take user to application');
+			const { publisher } = this.topicContext.datasets[0];
+			Event('Buttons', 'Click', 'Request Access');
+			this.props.history.push({ pathname: `/data-access-request/publisher/${publisher}` }, { datasets: this.topicContext.datasets });
+		}
+	};
 
 	showAllPhenotypes = () => {
 		this.setState({ showAllPhenotype: true });
@@ -643,8 +625,7 @@ class DatasetDetail extends Component {
 			discoursePostCount,
 			showDrawer,
 			showModal,
-			requiresModal,
-			allowsMessaging,
+			showCustodianModal,
 			showAllPhenotype,
 			showAllLinkedDatasets,
 			collections,
@@ -847,42 +828,13 @@ class DatasetDetail extends Component {
 
 										{this.state.isLatestVersion && !this.state.isDatasetArchived && (
 											<Col sm={6} className='text-right'>
-												{!userState[0].loggedIn ? (
-													<button className='btn button-tertiary dark-14 float-right' onClick={() => this.showLoginModal(data.name)}>
-														Request access
-													</button>
-												) : requiresModal ? (
-													<button
-														className='btn btn-primary addButton pointer float-right'
-														onClick={() => {
-															this.toggleModal();
-														}}>
-														How to request access
-													</button>
-												) : (
-													<Fragment>
-														<Link
-															className={`btn button-tertiary dark-14  ${allowsMessaging ? 'mr-2' : 'float-right'}`}
-															to={{
-																pathname: `/data-access-request/dataset/${data.datasetid}`,
-															}}
-															onClick={() => Event('Buttons', 'Click', 'Request Access')}>
-															Request access
-														</Link>
-														{allowsMessaging ? (
-															<button className='btn button-primary addButton pointer' onClick={() => this.toggleDrawer()}>
-																Send a message to the custodian
-															</button>
-														) : null}
-													</Fragment>
-												)}
-												{/* <button
+												<button
 													className='btn btn-primary addButton pointer float-right'
 													onClick={() => {
 														this.toggleModal();
 													}}>
 													How to request access
-												</button> */}
+												</button>
 											</Col>
 										)}
 									</Row>
@@ -1391,9 +1343,18 @@ class DatasetDetail extends Component {
 						<ResourcePageButtons data={data} userState={userState} />
 					</ActionBar>
 
-					<DataSetModal open={showModal} closed={this.toggleModal} context={this.topicContext} userState={userState[0]} />
+					<DataSetModal
+						open={showModal}
+						closed={this.toggleModal}
+						context={this.topicContext}
+						userState={userState[0]}
+						showLoginModal={() => {
+							this.showLoginModal(this.state.data.name);
+						}}
+						is5Safes={data.is5Safes}
+					/>
 
-					{/* <CommunicateDataCustodianModal open={showCustodianModal} closed={this.toggleCustodianModal} /> */}
+					<CommunicateDataCustodianModal open={showCustodianModal} closed={this.toggleCustodianModal} />
 				</Fragment>
 			</Sentry.ErrorBoundary>
 		);
