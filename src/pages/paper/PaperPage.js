@@ -442,7 +442,7 @@ export const PaperDetail = props => {
 															<Col sm={2}>
 																<span className='gray800-14'>Authors</span>
 															</Col>
-															<Col sm={10} className='gray800-14 overflowWrap'>
+															<Col sm={10} className='gray800-14 overflowWrap' data-test-id='paper-authors'>
 																{paperData.authorsNew}
 															</Col>
 														</Row>
