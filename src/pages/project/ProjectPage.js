@@ -261,7 +261,7 @@ export const ProjectDetail = props => {
 						<Row className=''>
 							<Col sm={1} lg={1} />
 							<Col sm={10} lg={10}>
-								<Alert variant='warning' className='mt-3'>
+								<Alert variant='warning' className='mt-3' data-test-id='project-pending-banner'>
 									Your project is pending review. Only you can see this page.
 								</Alert>
 							</Col>
@@ -276,7 +276,7 @@ export const ProjectDetail = props => {
 						<Col sm={10} lg={10}>
 							<div className='rectangle'>
 								<Row>
-									<Col className='line-height-normal'>
+									<Col data-test-id='project-name' className='line-height-normal'>
 										<span className='black-16'>{projectData.name}</span>
 									</Col>
 								</Row>
@@ -321,7 +321,7 @@ export const ProjectDetail = props => {
 														<Col sm={12}>Description</Col>
 													</Row>
 													<Row className='mt-3'>
-														<Col sm={12} className='gray800-14 hdruk-section-body'>
+														<Col sm={12} className='gray800-14 hdruk-section-body' data-test-id='project-description'>
 															<ReactMarkdown source={projectData.description} />
 														</Col>
 													</Row>
@@ -337,7 +337,7 @@ export const ProjectDetail = props => {
 															<Col sm={12}>Results/Insights</Col>
 														</Row>
 														<Row className='mt-3'>
-															<Col sm={12} className='gray800-14 hdruk-section-body'>
+															<Col sm={12} className='gray800-14 hdruk-section-body' data-test-id='project-results'>
 																<ReactMarkdown source={projectData.resultsInsights} />
 															</Col>
 														</Row>
@@ -358,7 +358,7 @@ export const ProjectDetail = props => {
 														<Col sm={2} className='gray800-14'>
 															URL
 														</Col>
-														<Col sm={10} className='gray800-14'>
+														<Col sm={10} data-test-id='link' className='gray800-14'>
 															<a href={projectData.link} rel='noopener noreferrer' target='_blank' className='purple-14 text-break'>
 																{projectData.link}
 															</a>
@@ -389,7 +389,7 @@ export const ProjectDetail = props => {
 															<Col sm={2}>
 																<span className='gray800-14'>Collaborators</span>
 															</Col>
-															<Col sm={10} className='gray800-14 overflowWrap'>
+															<Col sm={10} className='gray800-14 overflowWrap' data-test-id='project-authors'>
 																{projectData.authorsNew}
 															</Col>
 														</Row>
@@ -401,7 +401,7 @@ export const ProjectDetail = props => {
 															<Col sm={2}>
 																<span className='gray800-14'>Lead researcher</span>
 															</Col>
-															<Col sm={10} className='gray800-14 overflowWrap'>
+															<Col sm={10} className='gray800-14 overflowWrap' data-test-id='project-leadResearcher'>
 																{projectData.leadResearcher}
 															</Col>
 														</Row>
@@ -412,7 +412,7 @@ export const ProjectDetail = props => {
 														<Col sm={2} className='gray800-14'>
 															Type
 														</Col>
-														<Col sm={10} className='gray800-14'>
+														<Col sm={10} className='gray800-14' data-test-id='project-type'>
 															<a href={'/search?search=&tab=Projects&projectcategories=' + projectData.categories.category}>
 																<div className='badge-tag'>{projectData.categories.category}</div>
 															</a>
@@ -426,9 +426,9 @@ export const ProjectDetail = props => {
 															{!projectData.tags.features || projectData.tags.features.length <= 0 ? (
 																<span className='gray800-14-opacity'>Not specified</span>
 															) : (
-																projectData.tags.features.map(keyword => {
+																projectData.tags.features.map((keyword, i) => {
 																	return (
-																		<a href={'/search?search=&tab=Projects&projectfeatures=' + keyword}>
+																		<a href={'/search?search=&tab=Projects&projectfeatures=' + keyword} data-test-id={`keywords-${i}`}>
 																			<div className='badge-tag'>{keyword}</div>
 																		</a>
 																	);
@@ -444,9 +444,9 @@ export const ProjectDetail = props => {
 															{!projectData.tags.topics || projectData.tags.topics.length <= 0 ? (
 																<span className='gray800-14-opacity'>Not specified</span>
 															) : (
-																projectData.tags.topics.map(domain => {
+																projectData.tags.topics.map((domain, i) => {
 																	return (
-																		<a href={'/search?search=&tab=Projects&projecttopics=' + domain}>
+																		<a href={'/search?search=&tab=Projects&projecttopics=' + domain} data-test-id={`domain-${i}`}>
 																			<div className='badge-tag'>{domain}</div>
 																		</a>
 																	);

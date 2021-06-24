@@ -371,6 +371,7 @@ const AddEditToolForm = props => {
 												</p>
 												<Form.Control
 													id='authorsNew'
+													data-test-id='authors'
 													name='authorsNew'
 													type='text'
 													className='addFormInput gray700-13'
@@ -567,7 +568,7 @@ const AddEditToolForm = props => {
 													/>
 												</Form.Group>
 
-												<Form.Group>
+												<Form.Group data-test-id='uploaders'>
 													<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Uploaders</p>
 													<p className='gray700-13 margin-bottom-0'>Uploaders are Gateway members with editing rights on this tool.</p>
 													<Typeahead

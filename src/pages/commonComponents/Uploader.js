@@ -8,10 +8,10 @@ const Uploader = props => {
 	return (
 		<Fragment>
 			<div className='mb-1 mr-2 uploader-container'>
-				<a data-testid='href' href={'/person/' + uploader.id}>
+				<a href={'/person/' + uploader.id}>
 					<span className='uploader-chip'>
 						<PersonPlaceholderSvg className='uploader-avatar' />
-						{uploader.firstname} {uploader.lastname}
+						<div data-test-id={`uploader-${uploader.id}`}>{uploader.firstname} {uploader.lastname}</div>
 					</span>
 				</a>
 			</div>
