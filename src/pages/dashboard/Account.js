@@ -8,6 +8,7 @@ import ActionBar from '../commonComponents/actionbar/ActionBar';
 import AccountTools from './AccountTools';
 import AccountProjects from './AccountProjects';
 import AccountDatasets from './AccountDatasets';
+import AccountAdvancedSearch from './AccountAdvancedSearch';
 import AccountPapers from './AccountPapers';
 import AccountCourses from './AccountCourses';
 import AccountCollections from './AccountCollections';
@@ -86,6 +87,7 @@ class Account extends Component {
 		showDrawer: false,
 		showModal: false,
 		activeAccordion: -1,
+		datasetAccordion: -1,
 		context: {},
 		profileComplete: true,
 		allowWorkflow: true,
@@ -374,6 +376,7 @@ class Account extends Component {
 	toggleNav = (tabId = '') => {
 		let {
 			activeAccordion,
+			datasetAccordion,
 			alert,
 			userState: [user],
 		} = { ...this.state };
@@ -394,6 +397,11 @@ class Account extends Component {
 				activeAccordion = '0';
 			}
 
+			// 5. checks if the current nav is datasets or advanced search, keeps datasets tab expanded
+			if (tab.tabId === 'datasets' || tab.tabId === 'datasetsAdvancedSearch') {
+				datasetAccordion = '0';
+			}
+
 			if (!_.isEmpty(tab.team)) {
 				localStorage.setItem('HDR_TEAM', tab.team);
 				if (tab.team !== 'user' && tab.team !== 'admin') {
@@ -404,21 +412,26 @@ class Account extends Component {
 					}
 				}
 			} else if (localStorage.getItem('HDR_TEAM') == '') localStorage.setItem('HDR_TEAM', 'user');
-			// 5. set state
+			// 6. set state
 			this.setState({
 				tabId: tab.tabId,
 				team: tab.team,
 				activeKey: tab.tabId,
 				alert: !_.isEmpty(alert) ? alert : {},
 				activeAccordion,
+				datasetAccordion,
 			});
-			// 6. push state
+			// 7. push state
 			this.props.history.push({ pathname: window.location.pathname, search: `?tab=${tab.tabId}`, state: { team: tab.team } });
 		}
 	};
 
 	accordionClick = () => {
 		this.setState({ activeAccordion: '0' });
+	};
+
+	datasetAccordionClick = () => {
+		this.setState({ datasetAccordion: '0' });
 	};
 
 	userHasRole(teamId, role) {
@@ -458,6 +471,7 @@ class Account extends Component {
 			team,
 			alert,
 			activeAccordion,
+			datasetAccordion,
 			allowWorkflow,
 			allowAccessRequestManagement,
 			savedTeamNotificationSuccess,
@@ -532,6 +546,30 @@ class Account extends Component {
 											<SVGIcon name='newestprojecticon' fill={'#b3b8bd'} className='accountSvgs' />
 											<span className='navLinkItem'>Projects</span>
 										</Nav.Link>
+									</div>
+
+									<div
+										data-test-id='datasets'
+										className={`${tabId === 'datasets' || tabId === 'datasetsAdvancedSearch' ? 'activeCard' : 'accountNav'}`}>
+										<Accordion activeKey={datasetAccordion} onSelect={this.datasetAccordionClick}>
+											<Fragment>
+												<Accordion.Toggle variant='link' className='verticalNavBar gray700-13 navLinkButton' eventKey='0'>
+													<SVGIcon name='dataseticon' fill={'#b3b8bd'} className='accountSvgs' />
+													<span className='navLinkItem'>Datasets</span>
+												</Accordion.Toggle>
+												<Accordion.Collapse eventKey='0'>
+													<div>
+														<Nav.Link
+															data-test-id='advanced-search'
+															onClick={e => this.toggleNav('datasetsAdvancedSearch')}
+															bsPrefix='nav-block'
+															className={`gray700-13 ${tabId === 'datasetsAdvancedSearch' ? 'nav-item-active' : ''}`}>
+															<span className='subLinkItem'>Advanced search</span>
+														</Nav.Link>
+													</div>
+												</Accordion.Collapse>
+											</Fragment>
+										</Accordion>
 									</div>
 
 									<div className={`${tabId === 'papers' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('papers')}>
@@ -669,6 +707,8 @@ class Account extends Component {
 								{tabId === 'reviews' ? <ReviewTools userState={userState} /> : ''}
 
 								{tabId === 'projects' ? <AccountProjects userState={userState} /> : ''}
+
+								{tabId === 'datasetsAdvancedSearch' ? <AccountAdvancedSearch userState={userState} /> : ''}
 
 								{tabId === 'papers' ? <AccountPapers userState={userState} /> : ''}
 
