@@ -116,7 +116,7 @@ const AccountCollections = props => {
 
 	const archiveCollection = id => {
 		axios
-			.put(baseURL + '/api/v1/collections/status' + id, {
+			.put(baseURL + '/api/v1/collections/status/' + id, {
 				activeflag: 'archive',
 			})
 			.then(res => {
