@@ -209,6 +209,7 @@ const AddEditProjectForm = props => {
 									<Form.Control
 										id='link'
 										name='link'
+										data-test-id='link'
 										type='text'
 										className={formik.touched.link && formik.errors.link ? 'emptyFormInput addFormInput' : 'addFormInput'}
 										onChange={formik.handleChange}
@@ -232,7 +233,7 @@ const AddEditProjectForm = props => {
 									{formik.touched.name && formik.errors.name ? <div className='errorMessages'>{formik.errors.name}</div> : null}
 								</Form.Group>
 
-								<Form.Group>
+								<Form.Group data-test-id='type'>
 									<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Type</p>
 									<p className='gray700-13 margin-bottom-0'>Select from existing or enter a new one.</p>
 									<Typeahead
@@ -276,6 +277,7 @@ const AddEditProjectForm = props => {
 										as='textarea'
 										id='description'
 										name='description'
+										data-test-id='description'
 										type='text'
 										className={
 											formik.touched.description && formik.errors.description
@@ -327,8 +329,9 @@ const AddEditProjectForm = props => {
 									<span className='gray800-14'>Lead researcher (optional)</span>
 									<p className='gray700-13 margin-bottom-0'>Please add the name of the lead researcher on this project</p>
 									<Form.Control
-										id='leadResearcher'
+										id='leadResearcher-item-0'
 										name='leadResearcher'
+										data-test-id='leadResearcher'
 										type='text'
 										className='addFormInput gray700-13'
 										onChange={formik.handleChange}
@@ -344,6 +347,7 @@ const AddEditProjectForm = props => {
 									<Form.Control
 										id='authorsNew'
 										name='authorsNew'
+										data-test-id='authors'
 										type='text'
 										className='addFormInput gray700-13'
 										onChange={formik.handleChange}
@@ -351,7 +355,7 @@ const AddEditProjectForm = props => {
 									/>
 								</Form.Group>
 
-								<Form.Group>
+								<Form.Group data-test-id='keywords'>
 									<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Keywords (optional)</p>
 									<p className='gray700-13 margin-bottom-0'>
 										Technological paradigms or other keywords. Eg. Rule-based, clustering, supervised machine learning
@@ -374,7 +378,7 @@ const AddEditProjectForm = props => {
 									/>
 								</Form.Group>
 
-								<Form.Group>
+								<Form.Group data-test-id='domain'>
 									<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Domain (optional)</p>
 									<p className='gray700-13 margin-bottom-0'>E.g. Biogenomics, Nutrition, Blockchain</p>
 									<Typeahead
@@ -395,7 +399,7 @@ const AddEditProjectForm = props => {
 									/>
 								</Form.Group>
 
-								<Form.Group>
+								<Form.Group data-test-id='uploaders'>
 									<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Uploaders</p>
 									<p className='gray700-13 margin-bottom-0'>Uploaders are Gateway members with editing rights on this project.</p>
 									<Typeahead
@@ -527,7 +531,12 @@ const AddEditProjectForm = props => {
 						+ Add resource
 					</Button>
 
-					<Button variant='primary' className='publishButton white-14-semibold mr-2' type='submit' onClick={formik.handleSubmit}>
+					<Button
+						data-test-id='add-project-publish'
+						variant='primary'
+						className='publishButton white-14-semibold mr-2'
+						type='submit'
+						onClick={formik.handleSubmit}>
 						{props.isEdit ? 'Update' : 'Publish'}
 					</Button>
 				</div>
