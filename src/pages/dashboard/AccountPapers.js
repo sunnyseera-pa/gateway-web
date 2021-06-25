@@ -237,9 +237,9 @@ export const AccountPapers = props => {
 												''
 											) : (
 												<Row className='subHeader mt-3 gray800-14-bold'>
-													<Col xs={2}>UpdLast activityated</Col>
+													<Col xs={2}>Last activity</Col>
 													<Col xs={5}>Name</Col>
-													<Col xs={2}>Author</Col>
+													<Col xs={2}>Uploader(s)</Col>
 													<Col xs={3}></Col>
 												</Row>
 											)}
