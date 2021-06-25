@@ -44,8 +44,12 @@ import Uploads from './components/Uploads/Uploads';
 import UpdateRequestModal from './components/UpdateRequestModal/UpdateRequestModal';
 import MissingFieldsModal from './components/MissingFieldsModal/MissingFieldsModal';
 import ConfirmSubmissionModal from './components/ConfirmSubmissionModal/ConfirmSubmissionModal';
+import SubmitAmendmentModal from './components/SubmitAmendmentModal/SubmitAmendmentModal';
 import DeleteDraftModal from './components/DeleteDraftModal/DeleteDraftModal';
+import AmendApplicationModal from './components/AmendApplicationModal/AmendApplicationModal';
 import DuplicateApplicationModal from './components/DuplicateApplicationModal/DuplicateApplicationModal';
+import MinorVersionBlockedModal from './components/MinorVersionBlockedModal/MinorVersionBlockedModal';
+import ActionNotAllowedModal from './components/ActionNotAllowedModal/ActionNotAllowedModal';
 import SelectDatasetModal from './components/SelectDatasetModal/SelectDatasetModal';
 import VersionSelector from '../commonComponents/versionSelector/VersionSelector';
 
@@ -97,6 +101,8 @@ class DataAccessRequest extends Component {
 			showActionModal: false,
 			showWorkflowReviewModal: false,
 			showWorkflowReviewDecisionModal: false,
+			showMinorVersionBlockedModal: false,
+			showAmendNotAllowedModal: false,
 			workflowReviewDecisionType: false,
 			showActivePhaseModal: false,
 			showContributorModal: false,
@@ -139,7 +145,9 @@ class DataAccessRequest extends Component {
 			showEmailModal: false,
 			showMissingFieldsModal: false,
 			showConfirmSubmissionModal: false,
+			showSubmitAmendmentModal: false,
 			showDeleteDraftModal: false,
+			showAmendApplicationModal: false,
 			showDuplicateApplicationModal: false,
 			showSelectDatasetModal: false,
 			actionTabSettings: {
@@ -151,6 +159,8 @@ class DataAccessRequest extends Component {
 			messageCounts: 0,
 			noteCounts: 0,
 			isShared: false,
+			applicationType: '',
+			isLatestMinorVersion: true,
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -254,6 +264,10 @@ class DataAccessRequest extends Component {
 						files,
 						isCloneable,
 						isShared,
+						applicationType,
+						versions,
+						isLatestMinorVersion,
+						formType,
 					},
 				},
 			} = response;
@@ -274,6 +288,10 @@ class DataAccessRequest extends Component {
 				files,
 				isCloneable,
 				isShared,
+				applicationType,
+				versions,
+				isLatestMinorVersion,
+				formType,
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -302,6 +320,9 @@ class DataAccessRequest extends Component {
 						files,
 						isCloneable,
 						isShared,
+						applicationType,
+						isLatestMinorVersion,
+						formType,
 					},
 				},
 			} = response;
@@ -322,6 +343,9 @@ class DataAccessRequest extends Component {
 				files,
 				isCloneable,
 				isShared,
+				applicationType,
+				isLatestMinorVersion,
+				formType,
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -350,7 +374,7 @@ class DataAccessRequest extends Component {
 		let {
 			jsonSchema,
 			activeParty = '',
-			questionAnswers,
+			questionAnswers = {},
 			_id,
 			hasRecommended,
 			amendmentIterations = [],
@@ -371,8 +395,10 @@ class DataAccessRequest extends Component {
 			files,
 			isCloneable,
 			isShared,
-			version = 'Version 1.0',
 			versions = [],
+			applicationType,
+			isLatestMinorVersion,
+			formType,
 		} = context;
 		let {
 			datasetfields: { publisher },
@@ -386,7 +412,21 @@ class DataAccessRequest extends Component {
 		if (datasets[0].publisher) {
 			({ _id: publisherId, workflowEnabled } = datasets[0].publisher);
 		}
-		// 2. If about application is empty, this is a new data access request so set up state based on passed context
+		// 2. If user is custodian and the form is not in review, redirect the user to the DAR team dashboard
+		if (userType === DarHelper.userTypes.CUSTODIAN && applicationStatus === DarHelper.darStatus.submitted) {
+			const alert = {
+				publisher,
+				nav: `dataaccessrequests&team=${publisher}`,
+				tab: 'submitted',
+			};
+			this.props.history.push({
+				pathname: `/account`,
+				search: '?tab=dataaccessrequests',
+				state: { alert },
+			});
+		}
+
+		// 3. If about application is empty, this is a new data access request so set up state based on passed context
 		if (_.isEmpty(aboutApplication)) {
 			aboutApplication.selectedDatasets = datasets.map(dataset => {
 				let { _id: dataset_id, publisher: publisherObj, datasetid, name, description } = dataset;
@@ -407,36 +447,40 @@ class DataAccessRequest extends Component {
 		} else {
 			let { isNationalCoreStudies = false } = aboutApplication;
 			if (isNationalCoreStudies) {
-				// 3. Fetch NCS projects list
+				// 4. Fetch NCS projects list
 				this.getNationalCoreStudiesProjects();
 			}
 		}
 
-		// 4. Set messaging and modal context
+		// 5. Set messaging and modal context
 		let topicContext = DarHelper.createTopicContext(aboutApplication.selectedDatasets);
 		let modalContext = DarHelper.createModalContext(aboutApplication.selectedDatasets);
-		let allowsMultipleDatasets = topicContext.requiresModal || false;
+		let allowsMultipleDatasets = formType === '5 safe';
 
-		// 5. If multiple datasets are allowed, append 'about this application' section
+		// 6. If multiple datasets are allowed, append 'before you begin' section
 		if (allowsMultipleDatasets) {
 			// we need to inject About and File sections if first time running
 			jsonSchema = this.injectStaticContent(jsonSchema, inReviewMode, reviewSections);
 		}
-		// 6. Hide show submit application
+		// 7. Hide show submit application
 		if (applicationStatus === DarHelper.darStatus.inProgress) {
-			showSubmit = true;
-		} else if (applicationStatus === DarHelper.darStatus.inReview || applicationStatus === DarHelper.darStatus.submitted) {
-			if (activeParty === 'applicant' && answeredAmendments > 0) {
-				showSubmit = true;
-				submitButtonText = 'Submit updates';
+			if (applicationType === DarHelper.darApplicationTypes.amendment) {
+				submitButtonText = 'Submit amendment';
 			}
+			showSubmit = true;
+		} else if (
+			activeParty === 'applicant' &&
+			(applicationStatus === DarHelper.darStatus.inReview || applicationStatus === DarHelper.darStatus.submitted)
+		) {
+			showSubmit = true;
+			submitButtonText = 'Submit updates';
 		}
 
-		// 7. Set initial panel as selected and scroll to top of view port
+		// 8. Set initial panel as selected and scroll to top of view port
 		let initialPanel = jsonSchema.formPanels[0].panelId;
 		window.scrollTo(0, 0);
 
-		// 8. Set state
+		// 9. Set state
 		this.setState({
 			jsonSchema: { ...jsonSchema, ...classSchema },
 			activeParty,
@@ -473,8 +517,9 @@ class DataAccessRequest extends Component {
 			files,
 			isCloneable,
 			isShared,
-			version,
 			versions,
+			applicationType,
+			isLatestMinorVersion,
 		});
 	};
 
@@ -623,7 +668,12 @@ class DataAccessRequest extends Component {
 		let isValid = Object.keys(errors).length ? false : true;
 
 		if (isValid) {
-			this.setState({ showConfirmSubmissionModal: true });
+			// if 'amendment' show new amendment modal
+			this.state.applicationType === DarHelper.darApplicationTypes.amendment &&
+			this.state.unansweredAmendments === 0 &&
+			this.state.answeredAmendments === 0
+				? this.setState({ showSubmitAmendmentModal: true })
+				: this.setState({ showConfirmSubmissionModal: true });
 		} else {
 			let activePage = _.get(_.keys({ ...errors }), 0);
 			let activePanel = _.get(_.keys({ ...errors }[activePage]), 0);
@@ -638,22 +688,37 @@ class DataAccessRequest extends Component {
 	 * @desc Submitting data access request
 	 * @params  Object{questionAnswers}
 	 */
-	onFormSubmit = async () => {
+	onFormSubmit = async ({ type, description } = {}) => {
 		try {
 			let { _id } = this.state;
-			// 1. POST
-			await axios.post(`${baseURL}/api/v1/data-access-request/${_id}`, {});
+			let data = {};
+			let alert = {};
+
+			switch (type) {
+				case DarHelper.darApplicationTypes.amendment:
+					data.description = description;
+					alert = {
+						tab: 'submitted',
+						message: `You have successfully submitted amendments to '${this.state.projectName || this.state.datasets[0].name}' application`,
+						publisher: 'user',
+					};
+					break;
+				default:
+					alert = {
+						tab: this.state.applicationStatus === DarHelper.darStatus.inProgress ? 'submitted' : 'inReview',
+						message:
+							this.state.applicationStatus === DarHelper.darStatus.inProgress
+								? 'Your application was submitted successfully'
+								: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
+						publisher: 'user',
+					};
+					break;
+			}
+
+			await axios.post(`${baseURL}/api/v1/data-access-request/${_id}`, { ...data });
+
 			const lastSaved = DarHelper.saveTime();
 			this.setState({ lastSaved });
-
-			let alert = {
-				tab: 'submitted',
-				message:
-					this.state.applicationStatus === 'inProgress'
-						? 'Your application was submitted successfully'
-						: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
-				publisher: 'user',
-			};
 
 			this.props.history.push({
 				pathname: '/account',
@@ -1180,7 +1245,11 @@ class DataAccessRequest extends Component {
 	};
 
 	onCustodianAction = value => {
-		value.toUpperCase() === 'ASSIGNWORKFLOW' ? this.toggleAssignWorkflowModal() : this.toggleActionModal(value);
+		if (this.state.isLatestMinorVersion) {
+			value.toUpperCase() === 'ASSIGNWORKFLOW' ? this.toggleAssignWorkflowModal() : this.toggleActionModal(value);
+		} else {
+			this.toggleMinorVersionBlockedModal();
+		}
 	};
 
 	completeActivePhase = async () => {
@@ -1328,12 +1397,42 @@ class DataAccessRequest extends Component {
 	};
 
 	toggleWorkflowReviewDecisionModal = (type = false) => {
+		if (this.state.isLatestMinorVersion) {
+			this.setState(prevState => {
+				return {
+					showWorkflowReviewDecisionModal: !prevState.showWorkflowReviewDecisionModal,
+					workflowReviewDecisionType: type,
+				};
+			});
+		} else {
+			this.toggleMinorVersionBlockedModal();
+		}
+	};
+
+	toggleMinorVersionBlockedModal = () => {
 		this.setState(prevState => {
 			return {
-				showWorkflowReviewDecisionModal: !prevState.showWorkflowReviewDecisionModal,
-				workflowReviewDecisionType: type,
+				showMinorVersionBlockedModal: !prevState.showMinorVersionBlockedModal,
 			};
 		});
+	};
+
+	toggleAmendNotAllowedModal = () => {
+		this.setState(prevState => {
+			return {
+				showAmendNotAllowedModal: !prevState.showAmendNotAllowedModal,
+			};
+		});
+	};
+
+	goToLatestVersion = () => {
+		this.setState(prevState => {
+			return {
+				showMinorVersionBlockedModal: !prevState.showMinorVersionBlockedModal,
+			};
+		});
+
+		this.props.history.push({ pathname: `/data-access-request/${this.state._id}` });
 	};
 
 	updateContributors = contributors => {
@@ -1480,16 +1579,16 @@ class DataAccessRequest extends Component {
 		let fullAmendments = {};
 		let updateRequestModal = this.state.updateRequestModal;
 		let { pages, questionPanels, questionSets } = { ...this.state.jsonSchema };
+		let { questionAnswers } = { ...this.state };
 		// Get the last amendmentIteration in the array
 		let amendmentsIterations = _.last([...this.state.amendmentIterations]);
 		if (!_.isEmpty(amendmentsIterations)) {
 			// get the questionAnswers object {role: {}, lastName: {}}
-			let { questionAnswers } = { ...amendmentsIterations };
+			let { questionAnswers: updates } = { ...amendmentsIterations };
 			// get all the questionIds into a iterable array from questionAnswers
-			if (!_.isEmpty(questionAnswers)) {
+			if (!_.isEmpty(updates)) {
 				// set up default variables
 				let questionSetId,
-					answer,
 					section,
 					pageId,
 					page,
@@ -1497,10 +1596,11 @@ class DataAccessRequest extends Component {
 					question = '';
 				// reduce over questionanswers object using lodash
 				fullAmendments = _.reduce(
-					questionAnswers,
+					updates,
 					(obj, value, key) => {
 						// currentItem {questionSetId, answer}
-						({ questionSetId, answer } = questionAnswers[key]);
+						({ questionSetId } = updates[key]);
+						const answer = questionAnswers[key];
 						// find the active questionPanel ie questionPanels: [{navHeader, pageId, panelId, questionSets:[]}]
 						let activeQuestionPanel = [...questionPanels].find(panel => panel.panelId === questionSetId);
 						// Get the section {navHeader: panelHeader: 'Applicant', pageId: 'safePeople'}
@@ -1559,6 +1659,26 @@ class DataAccessRequest extends Component {
 		});
 	};
 
+	toggleSubmitAmendmentModal = () => {
+		this.setState(prevState => {
+			return {
+				showSubmitAmendmentModal: !prevState.showSubmitAmendmentModal,
+			};
+		});
+	};
+
+	toggleAmendApplicationModal = () => {
+		if (this.state.applicationStatus === DarHelper.darStatus.inReview) {
+			this.toggleAmendNotAllowedModal();
+		} else {
+			this.setState(prevState => {
+				return {
+					showAmendApplicationModal: !prevState.showAmendApplicationModal,
+				};
+			});
+		}
+	};
+
 	toggleDeleteDraftModal = () => {
 		this.setState(prevState => {
 			return {
@@ -1594,6 +1714,25 @@ class DataAccessRequest extends Component {
 			console.error(err.message);
 		}
 	};
+
+	onAmendApplication = async () => {
+		try {
+			let { _id } = this.state;
+			const {
+				data: {
+					data: { _id: newId },
+				},
+			} = await axios.post(`${baseURL}/api/v1/data-access-request/${_id}/amend`, {});
+
+			this.toggleAmendApplicationModal();
+			this.setState({ activePanelId: 'about' });
+
+			this.props.history.push({ pathname: `/data-access-request/${newId}` });
+		} catch (err) {
+			console.error(err.message);
+		}
+	};
+
 	toggleSelectDatasetModal = () => {
 		this.setState(prevState => {
 			return {
@@ -1695,11 +1834,12 @@ class DataAccessRequest extends Component {
 			roles,
 			showEmailModal,
 			alert,
-			versions,
-			version,
+			versions = [],
 			messageDescription,
 		} = this.state;
-		const { userState, location } = this.props;
+		const { userState } = this.props;
+
+		const selectedVersion = !_.isEmpty(versions) ? versions.find(v => v.isCurrent).displayTitle : '';
 
 		Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
 		Winterfell.addInputType('datePickerCustom', DatePickerCustom);
@@ -1747,7 +1887,7 @@ class DataAccessRequest extends Component {
 						)}
 						{versions.length > 1 && (
 							<span className='white-16-semibold pr-5' style={{ display: 'inline-block' }}>
-								<VersionSelector selectedVersion={version} versionList={versions} displayType='smallTriangle' />
+								<VersionSelector selectedVersion={selectedVersion} versionList={versions} displayType='smallTriangle' />
 							</span>
 						)}
 					</Col>
@@ -1893,6 +2033,7 @@ class DataAccessRequest extends Component {
 									onDeleteDraftClick={this.toggleDeleteDraftModal}
 									applicationStatus={applicationStatus}
 									onDuplicateClick={this.toggleDuplicateApplicationModal}
+									onShowAmendApplicationModal={this.toggleAmendApplicationModal}
 								/>
 							) : (
 								<CustodianActionButtons
@@ -1959,6 +2100,20 @@ class DataAccessRequest extends Component {
 					workflow={this.state.workflow}
 					projectName={projectName}
 					dataSets={selectedDatasets}
+				/>
+
+				<MinorVersionBlockedModal
+					open={this.state.showMinorVersionBlockedModal}
+					close={this.toggleMinorVersionBlockedModal}
+					confirm={this.goToLatestVersion}
+				/>
+
+				<ActionNotAllowedModal
+					open={this.state.showAmendNotAllowedModal}
+					close={this.toggleAmendNotAllowedModal}
+					confirm={this.toggleDrawer}
+					headerText='Application in review cannot be amended'
+					bodyText='This application is in review so cannot be amended. However, updates can be requested by the custodian.'
 				/>
 
 				<ContributorModal
@@ -2036,7 +2191,20 @@ class DataAccessRequest extends Component {
 					close={this.toggleConfirmSubmissionModal}
 					confirm={this.onFormSubmit}
 				/>
+				<SubmitAmendmentModal
+					open={this.state.showSubmitAmendmentModal}
+					close={this.toggleSubmitAmendmentModal}
+					onHandleSubmit={amendDescription => {
+						this.onFormSubmit({ type: DarHelper.darApplicationTypes.amendment, description: amendDescription });
+					}}
+				/>
 				<DeleteDraftModal open={this.state.showDeleteDraftModal} close={this.toggleDeleteDraftModal} confirm={this.onDeleteDraft} />
+
+				<AmendApplicationModal
+					open={this.state.showAmendApplicationModal}
+					close={this.toggleAmendApplicationModal}
+					confirm={this.onAmendApplication}
+				/>
 
 				<DuplicateApplicationModal
 					isOpen={this.state.showDuplicateApplicationModal}

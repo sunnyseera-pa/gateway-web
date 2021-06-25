@@ -19,7 +19,7 @@ let staticContent = {
 	aboutPageNav: {
 		pageId: 'about',
 		active: true,
-		title: 'About this application',
+		title: 'Before you begin',
 		description:
 			'Preparation is key to a successful data access request. You need to be able to demonstrate how you will ensure safe use of patient data and the potential for public benefit. The steps below are intended to help you get off to a good start.',
 	},
@@ -58,6 +58,15 @@ let darStatus = {
 	rejected: 'rejected',
 };
 
+let darApplicationTypes = {
+	inProgress: 'inProgress',
+	initial: 'initial',
+	resubmission: 'resubmission',
+	amendment: 'amendment',
+	extension: 'extension',
+	renewal: 'renewal',
+};
+
 let darSLAText = {
 	inProgress: 'Pre-submission',
 	submitted: 'Submitted',
@@ -66,6 +75,12 @@ let darSLAText = {
 	'approved with conditions': 'Approved',
 	rejected: 'Rejected',
 };
+
+let darAmendmentSLAText = {
+	inProgress: 'Pre-submission amendment',
+	submitted: 'Amendment submitted',
+	inReview: 'Amendment in review'
+}
 
 let darStatusColours = {
 	inProgress: 'gray',
@@ -553,8 +568,10 @@ export default {
 	darStatus: darStatus,
 	darStatusColours: darStatusColours,
 	darSLAText: darSLAText,
+	darAmendmentSLAText: darAmendmentSLAText,
 	darCommentTitle: darCommentTitle,
 	darStaticPageIds: darStaticPageIds,
+	darApplicationTypes: darApplicationTypes,
 	actionKeys: actionKeys,
 	amendmentModes: amendmentModes,
 	flagIcons: flagIcons,

@@ -30,7 +30,7 @@ const SortDropdown = ({ handleSort, sort, dropdownItems, isCollectionsSearch }) 
 							className={
 								sorting === item ? 'sort-dropdown-item sort-dropdown-item-selected sortingDropdown' : 'sort-dropdown-item sortingDropdown'
 							}>
-							<Col xs={10} className='p-0'>
+							<Col xs={12} className='p-0'>
 								<Dropdown.Item eventKey={item} className='gray800-14'>
 									{(() => {
 										if (item === 'popularity') return 'Number of views (highest to lowest)';
@@ -42,7 +42,7 @@ const SortDropdown = ({ handleSort, sort, dropdownItems, isCollectionsSearch }) 
 									})()}
 								</Dropdown.Item>
 							</Col>
-							<Col xs={1} className='p-0 mr-3'>
+							<div className='p-0 sortingCheckmark'>
 								{sorting === item ? (
 									<SVGIcon
 										name='check'
@@ -58,7 +58,7 @@ const SortDropdown = ({ handleSort, sort, dropdownItems, isCollectionsSearch }) 
 										stroke='none'
 									/>
 								) : null}
-							</Col>
+							</div>
 						</Row>
 					);
 				})}

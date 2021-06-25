@@ -838,44 +838,70 @@ input[type='checkbox']:after {
 	content: '';
 }
 
-.makeADecisionDropdown {
+.actionMenuDropdown {
 	position: relative;
 	left: -87px !important;
-	width: 320px !important;
+	width: max-content !important;
 	max-height: 314px !important;
 	box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03) !important;
 	background-color: $white !important;
-	padding: 12px 16px 12px 16px !important;
-
-	.option {
-		padding: 4px 0;
-	}
+	padding: 20px 16px !important;
 }
 
-.makeADecisionHeader {
+.actionMenuHeader {
 	position: sticky;
 	top: 0;
 	background-color: $white;
 	z-index: 1;
-	padding-left: 16px;
-	padding-right: 16px;
+	padding: 0 0 8px 0;
 }
 
-.review-phase {
-	margin-bottom: 20px;
+.actionMenuSection {
 	position: relative;
 
-	.option {
-		padding: 4px 0;
+	.description {
+		padding: 0 0 4px 0;
+		display: block;
+		line-height: 14px;
 	}
+
+	.detailedDescription {
+		padding: 4px 0 0 0;
+		display: block;
+		line-height: 13px;
+	}
+
+	.option {
+		padding: 8px 0;
+
+		.title {
+			padding: 0 0 4px 0;
+			display: block;
+			line-height: 14px;
+		}
+
+		.description {
+			padding: 4px 0 0 0;
+			display: block;
+			line-height: 13px;
+		}
+	}
+
+	.option:last-child {
+		padding: 8px 0 0 0;
+	}
+}
+
+.actionMenuSection:not(:first-child) {
+	padding-top: 32px;
 
 	&:after {
 		position: absolute;
-		bottom: -8px;
-		left: -15px;
+		top: 16px;
+		left: -16px;
 		height: 1px;
 		background: $gray-pale;
-		width: 316px;
+		width: calc(100% + 32px);
 		z-index: 1000;
 		content: '';
 	}

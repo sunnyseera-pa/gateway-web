@@ -18,7 +18,7 @@ import VersionSelector from '../../commonComponents/versionSelector/VersionSelec
 import './DataAccessRequests.scss';
 
 class DataAccessRequestsNew extends React.Component {
-	durationLookups = ['inProgress', 'submitted'];
+	durationLookups = ['inProgress', 'submitted', 'inReview'];
 	finalDurationLookups = ['rejected', 'approved', 'approved with conditions'];
 
 	state = {
@@ -247,7 +247,7 @@ class DataAccessRequestsNew extends React.Component {
 	};
 
 	renderDuration = (accessRequest, team = {}) => {
-		let { applicationStatus = '', createdAt, dateSubmitted, decisionDuration = 0 } = accessRequest;
+		let { applicationStatus = '', createdAt, dateSubmitted, decisionDuration = 0, applicationType = DarHelperUtil.darApplicationTypes.initial } = accessRequest;
 		let diff = 0;
 		if (this.durationLookups.includes(applicationStatus)) {
 			if (applicationStatus === DarHelperUtil.darStatus.inProgress) {
@@ -258,6 +258,11 @@ class DataAccessRequestsNew extends React.Component {
 			if (applicationStatus === DarHelperUtil.darStatus.submitted) {
 				diff = this.calculateTimeDifference(dateSubmitted);
 				return <TimeDuration text={`${diff} days since submission`} />;
+			}
+
+			if (applicationStatus === DarHelperUtil.darStatus.inReview && applicationType === DarHelperUtil.darApplicationTypes.amendment) {
+				diff = this.calculateTimeDifference(dateSubmitted);
+				return <TimeDuration text={`${diff} days since resubmission`} />;
 			}
 		}
 		if (this.finalDurationLookups.includes(applicationStatus) && team) {
@@ -350,7 +355,7 @@ class DataAccessRequestsNew extends React.Component {
 
 		return (
 			<Fragment>
-				<Fragment>{!_.isEmpty(alert) ? this.generateAlert() : ''}</Fragment>
+				<Fragment>{!_.isEmpty(alert) && !_.isNil(alert.message) ? this.generateAlert() : ''}</Fragment>
 				<Row>
 					<Col xs={1}></Col>
 					<div className='col-sm-10'>
@@ -414,9 +419,11 @@ class DataAccessRequestsNew extends React.Component {
 								decisionDate,
 								amendmentStatus = '',
 								versions = [],
+								applicationType = 'initial',
 							} = request;
 
-							const selectedVersion = _.isEmpty(versions) ? 'Version 1.0' : versions[0].displayTitle;
+							const selectedVersion = versions.find(v => v.isCurrent).displayTitle;
+
 							return (
 								<Row key={`request_${i}`} onClick={e => this.navigateToLocation(e, _id, applicationStatus)}>
 									<div className='col-md-12'>
@@ -437,10 +444,29 @@ class DataAccessRequestsNew extends React.Component {
 												</div>
 												<div className='header-version-status'>
 													{this.renderDuration(request, team)}
-													<SLA
-														classProperty={DarHelperUtil.darStatusColours[request.applicationStatus]}
-														text={DarHelperUtil.darSLAText[request.applicationStatus]}
-													/>
+													{
+														(applicationType ===
+															DarHelperUtil.darApplicationTypes.amendment &&
+															applicationStatus !== DarHelperUtil.darStatus.approved &&
+															applicationStatus !== DarHelperUtil.darStatus['approved with conditions'] &&
+															applicationStatus !== DarHelperUtil.darStatus.rejected ? (
+																<>
+																	<SLA
+																		classProperty={DarHelperUtil.darStatusColours[applicationStatus]}
+																		text={DarHelperUtil.darAmendmentSLAText[applicationStatus]}
+																	/>
+																	<SLA
+																		classProperty={DarHelperUtil.darStatusColours['approved']}
+																		text={DarHelperUtil.darSLAText['approved']}
+																	/>
+																</>
+															) : (
+																<SLA
+																	classProperty={DarHelperUtil.darStatusColours[applicationStatus]}
+																	text={DarHelperUtil.darSLAText[applicationStatus]}
+																/>
+															))
+													}
 												</div>
 											</div>
 											<div className='body'>

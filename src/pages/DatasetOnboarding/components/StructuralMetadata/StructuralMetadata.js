@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import _ from 'lodash';
+import { isEmpty, some, find } from 'lodash';
 import axios from 'axios';
 import { ReactComponent as UploadSVG } from '../../../../images/upload.svg';
 import readXlsxFile from 'read-excel-file';
@@ -21,7 +21,7 @@ const StructuralMetadata = ({
 	const maxSize = 10485760;
 	const [newStructuralMetaData, setNewStructuralMetaData] = useState(structuralMetadata);
 	const [newStructuralMetaDataErrors, setNewStructuralMetaDataErrors] = useState(structuralMetadataErrors);
-	const [showOverrideWarning, setShowOverrideWarning] = useState(!_.isEmpty(structuralMetadata) ? true : false);
+	const [showOverrideWarning, setShowOverrideWarning] = useState(!isEmpty(structuralMetadata) ? true : false);
 	const [showSuccessfullyUploaded, setShowSuccessfullyUploaded] = useState(false);
 
 	const schema = {
@@ -92,20 +92,44 @@ const StructuralMetadata = ({
 					} else if (errors.length > 0) {
 						setNewStructuralMetaDataErrors(errors);
 					} else {
-						setNewStructuralMetaDataErrors([]);
+						let listOfDuplicateRows = [];
+						rows.forEach((row, index) => {
+							let foundDuplicates = rows.filter(x => x.tableName === row.tableName && x.columnName === row.columnName);
 
-						percentageCompleted.structural = 100;
+							if (foundDuplicates.length > 1) {
+								foundDuplicates.every(duplicate => {
+									if (
+										!listOfDuplicateRows.find(x => x === duplicate.tableName && x.columnName === duplicate.columnName && x.index === index)
+									) {
+										listOfDuplicateRows.push({ ...duplicate, index });
+										return false;
+									}
+									return true;
+								});
+							}
+						});
 
-						let params = {
-							rows: JSON.stringify(rows),
-							key: 'structuralMetadata',
-							percentageCompleted,
-						};
-						axios.patch(`${baseURL}/api/v1/dataset-onboarding/${currentVersionId}`, params);
+						if (!isEmpty(listOfDuplicateRows)) {
+							listOfDuplicateRows.forEach(duplicate => {
+								errors.push({ column: 'Column Name', error: 'duplicate', row: duplicate.index + 1, value: duplicate.columnName });
+							});
+							setNewStructuralMetaDataErrors(errors);
+						} else {
+							setNewStructuralMetaDataErrors([]);
+
+							percentageCompleted.structural = 100;
+
+							let params = {
+								rows: JSON.stringify(rows),
+								key: 'structuralMetadata',
+								percentageCompleted,
+							};
+							axios.patch(`${baseURL}/api/v1/dataset-onboarding/${currentVersionId}`, params);
+							setShowSuccessfullyUploaded(true);
+						}
 					}
 					setNewStructuralMetaData(rows);
 					setShowOverrideWarning(true);
-					setShowSuccessfullyUploaded(true);
 				})
 				.catch(err => {
 					setNewStructuralMetaDataErrors([{ error: 'errorLoading' }]);
@@ -153,6 +177,13 @@ const StructuralMetadata = ({
 				return (
 					<>
 						Error in row {errors.row}: "{errors.column}" too long at {errors.value.length} characters (only 255 characters are allowed)
+						<br />
+					</>
+				);
+			} else if (errors.error === 'duplicate') {
+				return (
+					<>
+						Error in row {errors.row}: "{errors.value}" is a duplicate column name
 						<br />
 					</>
 				);
@@ -310,25 +341,25 @@ const StructuralMetadata = ({
 
 							return (
 								<tr className='gray800-14'>
-									<td className={_.some(filtered, ['column', 'Table Name']) ? 'invalid-info table-cell' : 'table-cell'}>
-										{_.some(filtered, ['column', 'Table Name']) ? _.find(filtered, ['column', 'Table Name']).value : data.tableName}
+									<td className={some(filtered, ['column', 'Table Name']) ? 'invalid-info table-cell' : 'table-cell'}>
+										{some(filtered, ['column', 'Table Name']) ? find(filtered, ['column', 'Table Name']).value : data.tableName}
 									</td>
-									<td className={_.some(filtered, ['column', 'Table Description']) ? 'invalid-info table-cell' : 'table-cell'}>
-										{_.some(filtered, ['column', 'Table Description'])
-											? _.find(filtered, ['column', 'Table Description']).value
+									<td className={some(filtered, ['column', 'Table Description']) ? 'invalid-info table-cell' : 'table-cell'}>
+										{some(filtered, ['column', 'Table Description'])
+											? find(filtered, ['column', 'Table Description']).value
 											: data.tableDescription}
 									</td>
-									<td className={_.some(filtered, ['column', 'Column Name']) ? 'invalid-info table-cell' : 'table-cell'}>
-										{_.some(filtered, ['column', 'Column Name']) ? _.find(filtered, ['column', 'Column Name']).value : data.columnName}
+									<td className={some(filtered, ['column', 'Column Name']) ? 'invalid-info table-cell' : 'table-cell'}>
+										{some(filtered, ['column', 'Column Name']) ? find(filtered, ['column', 'Column Name']).value : data.columnName}
 									</td>
-									<td className={_.some(filtered, ['column', 'Column Description']) ? 'invalid-info table-cell' : 'table-cell'}>
-										{_.some(filtered, ['column', 'Column Description'])
-											? _.find(filtered, ['column', 'Column Description']).value
+									<td className={some(filtered, ['column', 'Column Description']) ? 'invalid-info table-cell' : 'table-cell'}>
+										{some(filtered, ['column', 'Column Description'])
+											? find(filtered, ['column', 'Column Description']).value
 											: data.columnDescription}
 									</td>
-									<td className={_.some(filtered, ['column', 'Data Type']) ? 'invalid-info table-cell' : 'table-cell'}>{data.dataType}</td>
-									<td className={_.some(filtered, ['column', 'Sensitive']) ? 'invalid-info table-cell' : 'table-cell'}>
-										{_.some(filtered, ['column', 'Sensitive']) ? _.find(filtered, ['column', 'Sensitive']).value : String(data.sensitive)}
+									<td className={some(filtered, ['column', 'Data Type']) ? 'invalid-info table-cell' : 'table-cell'}>{data.dataType}</td>
+									<td className={some(filtered, ['column', 'Sensitive']) ? 'invalid-info table-cell' : 'table-cell'}>
+										{some(filtered, ['column', 'Sensitive']) ? find(filtered, ['column', 'Sensitive']).value : String(data.sensitive)}
 									</td>
 								</tr>
 							);
