@@ -98,7 +98,7 @@ class AddToCollection extends Component {
 			relatedObjects: dat.relatedObjects,
 		};
 
-		axios.put(baseURL + '/api/v1/collections/edit', values).then(() => {
+		axios.put(baseURL + `/api/v1/collections/edit/${dat.id}`, values).then(() => {
 			this.doCollectionsCall();
 		});
 	}
