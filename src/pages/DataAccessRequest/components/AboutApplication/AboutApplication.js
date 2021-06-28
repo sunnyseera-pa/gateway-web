@@ -1,11 +1,13 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
-import { Accordion, Card, Overlay, OverlayTrigger } from 'react-bootstrap';
+import { Accordion, Card, OverlayTrigger } from 'react-bootstrap';
 import DarHelper from '../../../../utils/DarHelper.util';
 import SVGIcon from '../../../../images/SVGIcon';
 import { ReactComponent as InfoSVG } from '../../../../images/info.svg';
 import TypeaheadDataset from '../TypeaheadDataset/TypeaheadDataset';
+import AlertBox from '../AlertBox/AlertBox';
+import moment from 'moment';
 
 const AboutApplication = props => {
 	let {
@@ -40,8 +42,13 @@ const AboutApplication = props => {
 		toggleMrcModal,
 		toggleContributorModal,
 		context,
+		areDatasetsAmended = false,
+		datasetsAmendedBy= '',
+		datasetsAmendedDate= ''
 	} = props;
 
+	const datasetsAmendedMessage = `${datasetsAmendedBy} submitted an amendment on ${moment(datasetsAmendedDate).format('Do MMM YYYY')}`;
+	
 	return (
 		<div className='aboutAccordion'>
 			<Accordion defaultActiveKey='0' activeKey={activeAccordionCard.toString()}>
@@ -105,6 +112,7 @@ const AboutApplication = props => {
 									)}
 								</div>
 							</div>
+							{ areDatasetsAmended && <AlertBox text={datasetsAmendedMessage} status='WARNING'/>}
 						</Card.Body>
 					</Accordion.Collapse>
 				</Card>
