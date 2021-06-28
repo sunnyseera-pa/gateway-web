@@ -384,6 +384,8 @@ class DataAccessRequest extends Component {
 			applicationType,
 			isLatestMinorVersion,
 			formType,
+			areDatasetsAmended = false,
+			dateSubmitted = ''
 		} = context;
 		let {
 			datasetfields: { publisher },
@@ -445,7 +447,7 @@ class DataAccessRequest extends Component {
 		// 6. If multiple datasets are allowed, append 'before you begin' section
 		if (allowsMultipleDatasets) {
 			// we need to inject About and File sections if first time running
-			jsonSchema = this.injectStaticContent(jsonSchema, inReviewMode, reviewSections);
+			jsonSchema = this.injectStaticContent(jsonSchema, inReviewMode, reviewSections, userType, areDatasetsAmended);
 		}
 		// 7. Hide show submit application
 		if (applicationStatus === DarHelper.darStatus.inProgress) {
@@ -503,7 +505,10 @@ class DataAccessRequest extends Component {
 			isCloneable,
 			versions,
 			applicationType,
-			isLatestMinorVersion
+			isLatestMinorVersion,
+			areDatasetsAmended,
+			datasetsAmendedBy: `${firstname} ${lastname}`,
+			datasetsAmendedDate: dateSubmitted
 		});
 	};
 
@@ -512,7 +517,7 @@ class DataAccessRequest extends Component {
 	 * @desc Function to inject static 'about' and 'files' pages and panels into schema
 	 * @returns {jsonSchmea} object
 	 */
-	injectStaticContent(jsonSchema = {}, inReviewMode = false, reviewSections = []) {
+	injectStaticContent(jsonSchema = {}, inReviewMode = false, reviewSections = [], userType, areDatasetsAmended) {
 		let { pages, formPanels } = { ...jsonSchema };
 		// formPanel {pageId: 'safePeople', panelId:'applicant'}
 		let formPanel = {};
@@ -528,6 +533,11 @@ class DataAccessRequest extends Component {
 			jsonSchema.formPanels.unshift(DarHelper.staticContent.aboutPanel);
 			jsonSchema.formPanels.push(DarHelper.staticContent.filesPanel);
 		}
+		// if amendment has been made to datasets mark about application navigation with warning
+		if(userType === DarHelper.userTypes.CUSTODIAN && areDatasetsAmended) {
+			jsonSchema.pages[0].flag = 'WARNING';
+		}
+
 		// if activePanel, find active formPanel from formPanels, find pageId index from pages array
 		if (!_.isEmpty(this.state.activePanelId)) {
 			formPanel = [...formPanels].find(p => p.panelId === this.state.activePanelId);
@@ -612,7 +622,7 @@ class DataAccessRequest extends Component {
 				} = response;
 				let { applicationStatus } = this.state;
 				// 4. remove blank values from schema updates - omit values if they are blank, important for jsonSchema
-				if (!_.isNil(jsonSchema)) jsonSchema = this.injectStaticContent(jsonSchema, false, this.state.reviewSections);
+				if (!_.isNil(jsonSchema)) jsonSchema = this.injectStaticContent(jsonSchema, false, this.state.reviewSections, this.state.userType, this.state.areDatasetsAmended);
 
 				let schemaUpdates = _.omitBy(
 					{
@@ -886,7 +896,7 @@ class DataAccessRequest extends Component {
 			accessRecord: { jsonSchema, questionAnswers },
 		} = response.data;
 		// add in static content to schema (includes about application, file upload panels etc.)
-		jsonSchema = this.injectStaticContent(jsonSchema, this.state.inReviewMode, this.state.reviewSections);
+		jsonSchema = this.injectStaticContent(jsonSchema, this.state.inReviewMode, this.state.reviewSections, this.state.userType, this.state.areDatasetsAmended);
 		// return the updated schema to allow it to be spread into state later
 		return { jsonSchema, questionAnswers };
 	};
@@ -963,7 +973,7 @@ class DataAccessRequest extends Component {
 		let {
 			accessRecord: { jsonSchema, questionAnswers = null, answeredAmendments, unansweredAmendments, amendmentIterations },
 		} = response.data;
-		jsonSchema = this.injectStaticContent(jsonSchema, this.state.inReviewMode, this.state.reviewSections);
+		jsonSchema = this.injectStaticContent(jsonSchema, this.state.inReviewMode, this.state.reviewSections, this.state.userType, this.state.areDatasetsAmended);
 
 		let stateObj = _.omitBy(
 			{
@@ -1712,6 +1722,9 @@ class DataAccessRequest extends Component {
 					toggleModal={this.toggleModal}
 					toggleMrcModal={this.toggleMrcModal}
 					toggleContributorModal={this.toggleContributorModal}
+					areDatasetsAmended={this.state.areDatasetsAmended}
+					datasetsAmendedBy={this.state.datasetsAmendedBy}
+					datasetsAmendedDate={this.state.datasetsAmendedDate}
 				/>
 			);
 		} else if (activePanelId === 'files') {
