@@ -97,7 +97,7 @@ const AboutApplication = props => {
 								</div>
 								{_.isEmpty(selectedDatasets) ? <div className='errorMessages'>You must select at least one dataset</div> : null}
 								<div className='panConfirm d-flex justify-content-end'>
-									{userType.toUpperCase() === 'APPLICANT' ? (
+									{userType.toUpperCase() === 'APPLICANT' && !readOnly && (
 										<button
 											type='input'
 											className={`button-primary ${allowedNavigation ? '' : 'disabled'}`}
@@ -107,8 +107,6 @@ const AboutApplication = props => {
 											}}>
 											Confirm
 										</button>
-									) : (
-										''
 									)}
 								</div>
 							</div>
@@ -201,7 +199,7 @@ const AboutApplication = props => {
 									</Fragment>
 								) : null}
 								<div className='panConfirm d-flex justify-content-end'>
-									{userType.toUpperCase() === 'APPLICANT' ? (
+									{userType.toUpperCase() === 'APPLICANT' && !readOnly && (
 										<button
 											type='input'
 											className={`button-primary ${allowedNavigation ? '' : 'disabled'}`}
@@ -209,8 +207,6 @@ const AboutApplication = props => {
 											onClick={e => onNextStep(allowedNavigation)}>
 											Confirm
 										</button>
-									) : (
-										''
 									)}
 								</div>
 							</div>
@@ -241,12 +237,10 @@ const AboutApplication = props => {
 									some of their details automatically. You can do this later too.
 								</div>
 								<div className='dar-form-check-group'>
-									{userType.toUpperCase() !== 'CUSTODIAN' ? (
+									{userType.toUpperCase() !== 'CUSTODIAN' && !readOnly && (
 										<button className='button-secondary' type='button' onClick={e => toggleContributorModal()}>
 											Add contributors
 										</button>
-									) : (
-										''
 									)}
 									<input
 										type='checkbox'
@@ -335,12 +329,10 @@ const AboutApplication = props => {
 									provide information on how to complete the data access application form.
 								</div>
 								<div className='dar-form-check-group'>
-									{userType.toUpperCase() !== 'CUSTODIAN' ? (
+									{userType.toUpperCase() !== 'CUSTODIAN' && (
 										<button className='button-secondary' type='button' onClick={e => toggleDrawer()}>
 											Send message
 										</button>
-									) : (
-										''
 									)}
 									<input
 										type='checkbox'
