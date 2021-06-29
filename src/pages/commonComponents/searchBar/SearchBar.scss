@@ -50,6 +50,15 @@ body.modal-open {
 	}
 }
 
+// Internet Explorer
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+	.navBarNotificationSpacing {
+		padding: 0px 16px;
+		margin: auto;
+		width: 30%;
+	}
+}
+
 @media (min-width: 1286px) {
 	.navBarLogoSpacing {
 		vertical-align: middle;
