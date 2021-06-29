@@ -18,18 +18,15 @@ const CustodianActionButtons = ({
 	onUpdateRequest,
 	onWorkflowReviewDecisionClick,
 }) => {
-
 	const showRecommendationDropdown =
 		applicationStatus === DarHelper.darStatus.inReview &&
-		((inReviewMode && !hasRecommended) || roles.includes('manager'));
+		((inReviewMode && !hasRecommended) || roles.includes('manager')) &&
+		!parseInt(unansweredAmendments) > 0;
 
 	const showReviewOptions = inReviewMode && !hasRecommended && workflowAssigned;
 
 	const showAssignWorkflow =
-		applicationStatus === DarHelper.darStatus.inReview &&
-		roles.includes('manager') &&
-		workflowEnabled &&
-		!workflowAssigned;
+		applicationStatus === DarHelper.darStatus.inReview && roles.includes('manager') && workflowEnabled && !workflowAssigned;
 
 	const showSendUpdateRequest =
 		applicationStatus === DarHelper.darStatus.inReview &&
