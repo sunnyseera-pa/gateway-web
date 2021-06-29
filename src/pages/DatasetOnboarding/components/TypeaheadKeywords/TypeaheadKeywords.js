@@ -31,12 +31,18 @@ class TypeaheadKeywords extends React.Component {
 
 	getData() {
 		axios
-			.get(baseURL + '/api/v1/search/filter/feature/dataset')
+			.get(baseURL + '/api/v2/filters/dataset')
 			.then(res => {
+				let keywordOptions = res.data.data
+					.filter(obj => {
+						return obj.label === 'Keywords';
+					})[0]
+					.filters.map(filter => {
+						return filter.value;
+					});
+
 				this.setState({
-					options: res.data.data[0].sort(function (a, b) {
-						return a.toUpperCase() < b.toUpperCase() ? -1 : a.toUpperCase() > b.toUpperCase() ? 1 : 0;
-					}),
+					options: keywordOptions,
 				});
 			})
 			.catch(err => {
