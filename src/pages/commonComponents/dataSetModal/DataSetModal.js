@@ -90,7 +90,7 @@ const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginMod
 									onClick={() => {
 										isLoggedIn ? onCloseModal('SUBMIT_APPLICATION') : showLoginModal();
 									}}>
-									Submit Application
+									Submit application
 								</button>
 							) : null}
 							<button
