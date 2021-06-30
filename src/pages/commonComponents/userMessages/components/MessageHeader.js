@@ -56,7 +56,7 @@ const MessageHeader = ({ userState, topic, modalRequired, onRequestAccess, onSho
 							How to request access
 						</button>
 						{(topic.is5Safes) || (topic.createdDate === "New message" && is5Safes)? (
-							<button className='btn btn-primary ml-2 addButton' onClick={e => onRequestAccess(e)}>
+							<button className='button-secondary ml-2' onClick={e => onRequestAccess(e)}>
 								Submit application
 							</button>
 						) : null}
