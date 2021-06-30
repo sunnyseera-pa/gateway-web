@@ -78,6 +78,38 @@
 		}
 	}
 
+	&-non-5safes {
+		&-header {
+			display: flex;
+			flex-flow: column nowrap;
+			padding: 22px 6px 0px 22px;
+
+			&--wrap {
+				border-bottom: 1px solid $gray-light;
+
+				p {
+					margin-bottom: 0;
+					color: $gray-800;
+					font-size: 14px;
+				}
+			}
+		}
+		&-body {
+			padding: 22px 6px 0px 22px;
+			height: 9rem;
+			overflow-y: auto;
+
+			&--item {
+				padding: 16px;
+				border-bottom: 1px solid $gray-light;
+
+				h2 {
+					margin-bottom: 10px;
+				}
+			}
+		}
+	}
+
 	&-footer {
 		display: flex;
 		flex-flow: row nowrap;
