@@ -380,7 +380,7 @@ class SearchBar extends React.Component {
 														</span>
 														<span>
 															<input
-																data-testid='searchbar'
+																data-test-id='searchbar'
 																type='text'
 																placeholder=''
 																id='searchInputSpanGrey'
@@ -390,7 +390,7 @@ class SearchBar extends React.Component {
 															/>
 														</span>
 														{this.props.searchString !== '' && this.props.searchString !== undefined ? (
-															<span className='searchInputClearGrey' data-testid='searchbar-clear-btn'>
+															<span className='searchInputClearGrey' data-test-id='searchbar-clear-btn'>
 																<span style={{ cursor: 'pointer' }} onClick={this.props.onClearMethod}>
 																	<ClearButtonSvg />
 																</span>
@@ -1006,7 +1006,7 @@ class SearchBar extends React.Component {
 												</span>
 												<span>
 													<input
-														data-testid='searchbar'
+														data-test-id='searchbar'
 														type='text'
 														placeholder=''
 														id='searchInputSpanGrey'
@@ -1016,7 +1016,7 @@ class SearchBar extends React.Component {
 													/>
 												</span>
 												{this.props.searchString !== '' && this.props.searchString !== undefined ? (
-													<span className='searchInputClearGrey' data-testid='searchbar-clear-btn'>
+													<span className='searchInputClearGrey' data-test-id='searchbar-clear-btn'>
 														<span style={{ cursor: 'pointer' }} onClick={this.props.onClearMethod}>
 															<ClearButtonSvg />
 														</span>
