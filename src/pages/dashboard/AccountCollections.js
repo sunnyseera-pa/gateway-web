@@ -257,6 +257,8 @@ const AccountCollections = props => {
 																			action={deleteCollection}
 																			actionType='delete'
 																			entity='collection'
+																			bodyText={`Are you sure that you want to delete your collection? It cannot be recovered once you delete it.
+																			If you do not want your collection to be searchable on the Gateway, you can private your collection through the edit functionality.`}
 																		/>
 																	</DropdownButton>
 																</Col>
