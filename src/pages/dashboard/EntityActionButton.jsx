@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from 'react';
-import { Button, Modal, Dropdown } from 'react-bootstrap';
+import { Modal, Dropdown } from 'react-bootstrap';
+import { ReactComponent as CloseButtonSvg } from '../../images/close-alt.svg';
 import './Dashboard.scss';
 import _ from 'lodash';
 
@@ -36,21 +37,28 @@ export const EntityActionButton = props => {
 				{title}
 			</Dropdown.Item>
 
-			<Modal show={show} onHide={handleClose}>
-				<Modal.Header closeButton>
+			<Modal show={show} onHide={handleClose} size='md' centered>
+				<Modal.Header>
 					<Modal.Title>
-						{title} this {!_.isEmpty(props.entity) ? props.entity : 'entity'}?
+						{title} {!_.isEmpty(props.entity) ? props.entity : 'entity'}?
 					</Modal.Title>
+					<CloseButtonSvg className='modal-close pointer' onClick={handleClose} width='20px' height='20px' fill='#475DA7' />
 				</Modal.Header>
 				<Modal.Body>
-					This {!_.isEmpty(props.entity) ? props.entity : 'entity'} will be {pastTense} from the directory.
+					{props.bodyText ? (
+						<p>{props.bodyText}</p>
+					) : (
+						<p>
+							This {!_.isEmpty(props.entity) ? props.entity : 'entity'} will be {pastTense} from the directory.
+						</p>
+					)}
 				</Modal.Body>
 				<Modal.Footer>
-				<button className='button-secondary' onClick={handleClose}>
+					<button className='button-secondary' onClick={handleClose}>
 						No, nevermind
 					</button>
 					<button className='button-primary' onClick={performAction}>
-						Yes, {title.toLowerCase()}
+						{title} {!_.isEmpty(props.entity) ? props.entity : 'entity'}
 					</button>
 				</Modal.Footer>
 			</Modal>
