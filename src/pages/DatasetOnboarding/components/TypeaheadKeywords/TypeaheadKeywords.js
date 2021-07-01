@@ -31,16 +31,15 @@ class TypeaheadKeywords extends React.Component {
 
 	getData() {
 		axios
-			.get(baseURL + '/api/v1/search/filter/feature/dataset')
+			.get(baseURL + '/api/v2/filters/dataset?fields=keys.features')
 			.then(res => {
+				let keywordOptions = res.data.data.keys.features;
 				this.setState({
-					options: res.data.data[0].sort(function (a, b) {
-						return a.toUpperCase() < b.toUpperCase() ? -1 : a.toUpperCase() > b.toUpperCase() ? 1 : 0;
-					}),
+					options: keywordOptions,
 				});
 			})
 			.catch(err => {
-				alert('Failed to fetch users');
+				alert('Failed to fetch keywords');
 			});
 	}
 
