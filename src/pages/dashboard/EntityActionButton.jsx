@@ -46,12 +46,12 @@ export const EntityActionButton = props => {
 					This {!_.isEmpty(props.entity) ? props.entity : 'entity'} will be {pastTense} from the directory.
 				</Modal.Body>
 				<Modal.Footer>
-					<Button variant='secondary' onClick={handleClose}>
+				<button className='button-secondary' onClick={handleClose}>
 						No, nevermind
-					</Button>
-					<Button variant='primary' onClick={performAction}>
+					</button>
+					<button className='button-primary' onClick={performAction}>
 						Yes, {title.toLowerCase()}
-					</Button>
+					</button>
 				</Modal.Footer>
 			</Modal>
 		</Fragment>
