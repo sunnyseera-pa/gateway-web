@@ -379,37 +379,18 @@ class RelatedObject extends React.Component {
 												<span className='gray800-14'>Author not listed</span>
 											) : (
 												data.persons.map((person, index) => {
-													if (index > 0) {
-														if (activeLink === true) {
-															return (
-																<div key={`perosn-${index}`}>
-																	<span className='reviewTitleGap gray800-14'>·</span>
-																	<a className='gray800-14' href={'/person/' + person.id}>
-																		{person.firstname} {person.lastname}
-																	</a>
-																</div>
-															);
-														} else {
-															return (
-																<span className='gray800-14' key={`perosn-${index}`}>
-																	, {person.firstname} {person.lastname}
-																</span>
-															);
-														}
+													if (activeLink === true) {
+														return (
+															<a className='gray800-14' href={'/person/' + person.id} key={`perosn-${index}`}>
+																{person.firstname} {person.lastname}{data.persons.length === index + 1 ? '' : ', '}
+															</a>
+														);
 													} else {
-														if (activeLink === true) {
-															return (
-																<a className='gray800-14' href={'/person/' + person.id} key={`perosn-${index}`}>
-																	{person.firstname} {person.lastname}
-																</a>
-															);
-														} else {
-															return (
-																<span className='gray800-14' key={`perosn-${index}`}>
-																	{person.firstname} {person.lastname}
-																</span>
-															);
-														}
+														return (
+															<span className='gray800-14' key={`perosn-${index}`}>
+																{person.firstname} {person.lastname}{data.persons.length === index + 1 ? '' : ', '}
+															</span>
+														);
 													}
 												})
 											)}
