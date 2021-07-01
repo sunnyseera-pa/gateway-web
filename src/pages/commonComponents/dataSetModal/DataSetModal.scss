@@ -96,7 +96,7 @@
 		}
 		&-body {
 			padding: 22px 22px 0px 22px;
-			height: 9rem;
+			height: max-content;
 			overflow-y: auto;
 
 			&--item {
