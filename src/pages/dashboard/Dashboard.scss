@@ -443,3 +443,8 @@ textarea {
 		padding-right: 15px;
 	}
 }
+
+button.dropdown-toggle.btn.btn-outline-secondary::after {
+	position: relative;
+    top: 4.5px;
+}
