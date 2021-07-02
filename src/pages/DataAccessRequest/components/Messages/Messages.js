@@ -1,5 +1,6 @@
 import React, { Fragment, useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import moment from 'moment';
 import isEmpty from 'lodash';
 import ShareFormModal from './ShareFormModal';
 import Loading from '../../../commonComponents/Loading';
@@ -8,22 +9,23 @@ import { baseURL } from '../../../../configs/url.config';
 
 const Messages = ({
 	applicationId,
-	activeMessages,
 	settings,
 	applicationShared,
 	toggleDrawer,
 	setMessageDescription,
 	userState,
 	userType,
+	updateCount,
+	publisher,
 }) => {
 	const [showShareFormModal, setShowShareFormModal] = useState(false);
 	const [currentMessage, setCurrentMessage] = useState('');
 	const [messageThread, setMessageThread] = useState([]);
-	const [applicationIsShared, setApplicationIsShared] = useState(applicationShared);
+	const [applicationIsShared, setApplicationIsShared] = useState(applicationShared || false);
 	const [isloading, setIsloading] = useState(true);
-	// const [userState, setUserState] = useState(userState);
 
 	const messagesEndRef = useRef(null);
+	let btnRef = useRef();
 
 	useEffect(() => {
 		setIsloading(true);
@@ -35,7 +37,7 @@ const Messages = ({
 	}, [messageThread]);
 
 	const scrollToBottom = () => {
-		messagesEndRef.current.scrollIntoView(false);
+		//messagesEndRef.current.scrollIntoView(false);
 	};
 
 	const onShowShareFormModal = () => {
@@ -52,39 +54,43 @@ const Messages = ({
 		} else {
 			sendMessage(message);
 		}
-		// sendMessage(); //delete this
 	};
 
 	const messageWithoutSharing = () => {
-		// 1. Set share flag to false
-		//await axios.put(baseURL + '/api/v1/setFlagFalse/');
-		// 2. Show side drawer with message populated
 		setShowShareFormModal(false);
 		setMessageDescription(currentMessage);
 		toggleDrawer();
 		setCurrentMessage('');
 	};
 
-	const messageAndShare = () => {
-		// 1. Set share flag to true
-		//await axios.put(baseURL + '/api/v1/setFlagFalse/');
-		// 2. Show message in messages tab
+	const messageAndShare = async () => {
+		let response = await axios.put(`${baseURL}/api/v1/data-access-request/${applicationId}/share`);
 		setApplicationIsShared(true);
 		setShowShareFormModal(false);
 		sendMessage();
 	};
 
 	const sendMessage = async message => {
+		if (btnRef.current) {
+			btnRef.current.setAttribute('disabled', 'disabled');
+		}
 		// TODO: Post message to API
-		const { questionId } = settings;
+		const { questionId, questionSetId } = settings;
 		let response = await axios.post(`${baseURL}/api/v1/data-access-request/${applicationId}/messages`, {
 			questionId,
 			messageType: 'DAR_Message',
 			messageBody: message,
 		});
 
-		setMessageThread([...messageThread, { name: userState[0].name, date: '01/01/2021', content: currentMessage, userType: userType }]);
+		setMessageThread([
+			...messageThread,
+			{ name: userState[0].name, date: moment(Date.now()).format('D MMM YYYY HH:mm'), content: currentMessage, userType: userType },
+		]);
 		setCurrentMessage('');
+		if (btnRef.current) {
+			btnRef.current.removeAttribute('disabled');
+		}
+		updateCount(questionId, questionSetId, 'message');
 	};
 
 	const retrieveMessageThread = async () => {
@@ -102,9 +108,10 @@ const Messages = ({
 			return (
 				<Fragment>
 					<div className='info-msg no-messages'>
-						Use messages to clarify questions regarding certain parts of the application. The custodian will receive an email.{' '}
+						Use messages to clarify questions regarding certain parts of the application. The custodian will receive an email. <br />
+						<br />
+						There are no messages relating to this question.
 					</div>
-					<div className='info-msg no-messages pb-0'>There are no messages relating to this question.</div>
 				</Fragment>
 			);
 		} else {
@@ -117,7 +124,11 @@ const Messages = ({
 								userType.toUpperCase() === msg.userType.toUpperCase() ? 'message-bubble-sent' : 'message-bubble-received'
 							} message-bubble`}>
 							<div className='message-metadata'>
-								<span>{msg.name} </span>
+								<span>
+									{msg.name}
+									{userType.toUpperCase() !== msg.userType.toUpperCase() ? <>{publisher ? ` (${publisher})` : ''}</> : ''}
+								</span>
+								&nbsp;
 								<span>{msg.date}</span>
 							</div>
 							{msg.content}
@@ -162,7 +173,7 @@ const Messages = ({
 						}}
 					/>
 				</div>
-				<button className='button-secondary messages-button' type='submit'>
+				<button ref={btnRef} className='button-secondary messages-button' type='submit'>
 					Send
 				</button>
 			</form>

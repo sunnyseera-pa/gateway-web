@@ -156,8 +156,8 @@ class DataAccessRequest extends Component {
 				questionId: '',
 			},
 			messageDescription: '',
-			messageCounts: 0,
-			noteCounts: 0,
+			messagesCount: 0,
+			notesCount: 0,
 			isShared: false,
 			applicationType: '',
 			isLatestMinorVersion: true,
@@ -913,11 +913,11 @@ class DataAccessRequest extends Component {
 	 * @desc 	Event raised from Winterfell for secondary question events
 	 * @params {event, questionSetId, questionId, key}
 	 */
-	onQuestionAction = async (e = '', questionSetId = '', questionId = '', key = '', counts = { messages: 0, notes: 0 }) => {
+	onQuestionAction = async (e = '', questionSetId = '', questionId = '', key = '', counts = { messagesCount: 0, notesCount: 0 }) => {
 		let mode, stateObj;
 		//TODO EXPAND ACTION KEYS HELPER WITH MSGS AND NOTES
 		//TEST KEY TYPE
-		this.setState({ messageCounts: counts.messages, noteCounts: counts.notes });
+		this.setState({ messagesCount: counts.messagesCount, notesCount: counts.notesCount });
 		//SET ACTIVE TAB FOR GUIANDCE MSGS OR NOTES
 		//call api with question set id and question id to get msgs and notes..
 		switch (key) {
@@ -1075,6 +1075,29 @@ class DataAccessRequest extends Component {
 		this.removeActiveQuestionClass();
 		// reset guidance state
 		this.setState({ activeGuidance: '' });
+	};
+
+	updateCount = (questionId, questionSetId, messageType) => {
+		//Get the question that the count needs to be updated on
+		let { jsonSchema } = this.state;
+		let questionSetsArray = DarHelper.findQuestionSet(questionSetId, jsonSchema);
+		let question = DarHelper.findQuestion(questionId, questionSetsArray);
+		//If question has no previous counts add in the defaults
+		if (!question.counts) {
+			question.counts = { messagesCount: 0, notesCount: 0 };
+		}
+		//Update the count based on the messageType
+		if (messageType === 'message') {
+			question.counts.messagesCount = question.counts.messagesCount + 1;
+		} else if (messageType === 'note') {
+			question.counts.notesCount = question.counts.notesCount + 1;
+		}
+		//Update state
+		this.setState({
+			jsonSchema,
+			messagesCount: question.counts.messagesCount,
+			notesCount: question.counts.notesCount,
+		});
 	};
 
 	onHandleDataSetChange = (value = []) => {
@@ -1998,9 +2021,12 @@ class DataAccessRequest extends Component {
 									toggleDrawer={this.toggleDrawer}
 									setMessageDescription={this.setMessageDescription}
 									userType={userType}
-									messageCounts={this.state.messageCounts}
-									noteCounts={this.state.noteCounts}
-									isShared={this.state.isShared}></QuestionActionTabs>
+									messagesCount={this.state.messagesCount}
+									notesCount={this.state.notesCount}
+									isShared={this.state.isShared}
+									updateCount={this.updateCount}
+									publisher={datasets[0].datasetv2.summary.publisher.name}
+								/>
 							</div>
 						</div>
 					)}
