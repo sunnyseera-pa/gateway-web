@@ -73,7 +73,8 @@
 .message-bubble {
 	padding: 10px;
 	border-radius: 5px;
-	max-width: 384px;
+	max-width: 90%;
+	width: 90%;
 	overflow-wrap: break-word;
 }
 
@@ -103,7 +104,7 @@
 	color: $gray-700;
 	display: flex;
 	justify-content: center;
-	padding: 2px 15px 2px 15px;
+	padding: 24px;
 	text-align: center;
 	align-items: center;
 }
@@ -112,7 +113,7 @@
 	color: $gray-700;
 	display: flex;
 	justify-content: center;
-	padding: 2px 15px 2px 15px;
+	padding: 24px;
 	text-align: center;
 	align-items: center;
 	background-color: $background;

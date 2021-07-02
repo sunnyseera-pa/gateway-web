@@ -6,13 +6,14 @@ import axios from 'axios';
 import Loading from '../../../commonComponents/Loading';
 import { baseURL } from '../../../../configs/url.config';
 
-const Notes = ({ applicationId, settings, userState, userType }) => {
+const Notes = ({ applicationId, settings, userState, userType, updateCount }) => {
 	const [currentNote, setCurrentNote] = useState('');
 	const [notesThread, setNotesThread] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 
 	const noteType = userType.toUpperCase() === 'APPLICANT' ? 'DAR_Notes_Applicant' : 'DAR_Notes_Custodian';
 	const notesEndRef = useRef(null);
+	let btnRef = useRef();
 
 	useEffect(() => {
 		setIsLoading(true);
@@ -35,8 +36,11 @@ const Notes = ({ applicationId, settings, userState, userType }) => {
 	};
 
 	const addNote = async () => {
+		if (btnRef.current) {
+			btnRef.current.setAttribute('disabled', 'disabled');
+		}
 		// TODO: Post message to API
-		const { questionId } = settings;
+		const { questionId, questionSetId } = settings;
 		await axios.post(`${baseURL}/api/v1/data-access-request/${applicationId}/messages`, {
 			questionId,
 			messageType: noteType,
@@ -44,6 +48,10 @@ const Notes = ({ applicationId, settings, userState, userType }) => {
 		});
 		setNotesThread([...notesThread, { name: userState[0].name, date: '01/01/2021', content: currentNote, userType: userType }]);
 		setCurrentNote('');
+		if (btnRef.current) {
+			btnRef.current.removeAttribute('disabled');
+		}
+		updateCount(questionId, questionSetId, 'note');
 	};
 
 	const retrieveNotesThread = async () => {
@@ -63,8 +71,10 @@ const Notes = ({ applicationId, settings, userState, userType }) => {
 						{userType.toUpperCase() === 'APPLICANT'
 							? 'Use notes to organise your thoughts and share ideas with your collaborators before sending the application.'
 							: 'Use notes to organise your thoughts and share ideas with other reviewers during the review process.'}
+						<br />
+						<br />
+						There are no notes relating to this question.
 					</div>
-					<div className='info-msg no-messages pb-0'>There are no notes relating to this question.</div>
 				</Fragment>
 			);
 		} else {
@@ -131,7 +141,7 @@ const Notes = ({ applicationId, settings, userState, userType }) => {
 						}}
 					/>
 				</div>
-				<button className='button-secondary messages-button' type='submit'>
+				<button ref={btnRef} className='button-secondary messages-button' type='submit'>
 					Add
 				</button>
 			</form>

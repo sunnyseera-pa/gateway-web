@@ -78,6 +78,14 @@
 	padding: 0 5px;
 }
 
+.toolTipHidden {
+	position: relative;
+	display: inline-block;
+	padding: 0 5px;
+	visibility: hidden;
+	opacity: 0;
+}
+
 .toolTip .toolTipText {
 	visibility: hidden;
 	position: absolute;
@@ -93,7 +101,27 @@
 	transition: opacity 0.4s;
 }
 
+.toolTipHidden .toolTipText {
+	visibility: hidden;
+	position: absolute;
+	width: 120px;
+	background-color: #222;
+	font-size: 12px;
+	color: #fff;
+	text-align: center;
+	padding: 5px 0;
+	border-radius: 6px;
+	z-index: 1;
+	opacity: 0;
+	transition: opacity 0.4s;
+}
+
 .toolTip i:hover + .toolTipText {
+	visibility: visible;
+	opacity: 1;
+}
+
+.toolTipHidden i:hover + .toolTipText {
 	visibility: visible;
 	opacity: 1;
 }
@@ -274,10 +302,11 @@ span.toolTipText:after {
 }
 
 .darTab {
-	padding: 15px 0;
+	padding: 15px 0 0 0;
 	background-color: $white;
 	max-height: calc(100vh - 169px);
 	margin-left: 1px;
+	font-size: 14px;
 	header {
 		padding: 0 24px 15px 24px;
 		display: flex;
@@ -306,10 +335,29 @@ span.toolTipText:after {
 		padding: 24px;
 	}
 	&-guidance {
-		height: 40vh;
+		height: 57vh;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		@include font-source(14px, $gray-700, $font-weight-semibold);
+	}
+	&-messages {
+		overflow-y: auto;
+		height: 55vh;
+		display: flex;
+		align-items: flex-start;
+		justify-content: center;
+		margin-bottom: 4px;
+		@include font-source(14px, $gray-700, $font-weight-semibold);
+	}
+	&-notes {
+		background-color: $background;
+		overflow-y: auto;
+		height: 55vh;
+		display: flex;
+		align-items: flex-start;
+		justify-content: center;
+		//margin-bottom: 4px;
 		@include font-source(14px, $gray-700, $font-weight-semibold);
 	}
 }
@@ -410,10 +458,6 @@ span.toolTipText:after {
 
 .rbt-input-multi.form-control[disabled] {
 	background: #eee !important;
-}
-
-.rbt-token-disabled {
-	background: #fff !important;
 }
 
 input[type='text']:disabled {
@@ -732,11 +776,11 @@ input[type='radio']:disabled {
 	position: absolute;
 	top: -8px;
 	right: 25px;
-	visibility: hidden;
+	//visibility: hidden;
 	cursor: pointer;
 	min-width: 32px;
 	height: 32px;
-	opacity: 0;
+	//opacity: 0;
 	transition: visibility 0.55s linear, opacity 0.35s ease-in-out;
 
 	& > i {
@@ -757,10 +801,14 @@ input[type='radio']:disabled {
 	&:hover {
 		background: #f6f7f8;
 		> .action-control {
-			visibility: visible;
-			opacity: 1;
+			//isibility: visible;
+			//opacity: 1;
 			background: $white;
 			box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03);
+			> .toolTipHidden {
+				visibility: visible;
+				opacity: 1;
+			}
 		}
 	}
 }
@@ -878,7 +926,7 @@ input[type='checkbox']:after {
 
 .actionMenuSection:not(:first-child) {
 	padding-top: 32px;
-	
+
 	&:after {
 		position: absolute;
 		top: 16px;
@@ -899,4 +947,74 @@ input[type='checkbox']:after {
 
 .form-group > .question-wrap > textarea {
 	min-height: 155px;
+}
+
+.action-notifications {
+	display: flex;
+	flex-flow: row;
+	align-items: center;
+	justify-content: center;
+	padding: 8px 0px;
+	position: absolute;
+	top: -8px;
+	right: 25px;
+	cursor: pointer;
+	min-width: 32px;
+	height: 32px;
+	opacity: 0;
+	transition: visibility 0.55s linear, opacity 0.35s ease-in-out;
+
+	& > i {
+		padding: 0 5px;
+	}
+	opacity: 1;
+	background: $white;
+	box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03);
+}
+
+.actionCount {
+	position: absolute;
+	top: -8px;
+	left: 12px;
+	border-radius: 5px;
+	background-color: #e5f7f1;
+	font-size: 12px;
+	text-align: center;
+	padding: 0px 5px;
+	color: #53575a;
+}
+
+.action-tabs {
+	display: flex;
+	justify-content: center;
+}
+
+.tab-count {
+	position: relative;
+	top: -15px;
+	left: -5px;
+	border-radius: 5px;
+	background-color: #e5f7f1;
+	font-size: 12px;
+	text-align: center;
+	padding: 1px 5px;
+	color: #53575a;
+}
+
+.tab-is-active {
+	color: #475da7;
+}
+
+.nav-tabs {
+}
+
+.tab-content {
+	border-top: solid 1px #e7e9ed;
+	border-right: solid 1px #e7e9ed;
+}
+
+.messages-form {
+	border-top: solid 1px #e7e9ed;
+	border-bottom: solid 1px #e7e9ed;
+	padding: 15px 0;
 }

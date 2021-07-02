@@ -79,8 +79,8 @@ let darSLAText = {
 let darAmendmentSLAText = {
 	inProgress: 'Pre-submission amendment',
 	submitted: 'Amendment submitted',
-	inReview: 'Amendment in review'
-}
+	inReview: 'Amendment in review',
+};
 
 let darStatusColours = {
 	inProgress: 'gray',

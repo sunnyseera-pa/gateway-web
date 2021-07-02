@@ -12,6 +12,7 @@ import DatePickerCustom from './components/DatePickerCustom/DatepickerCustom';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import Loading from '../commonComponents/Loading';
+import QuestionActionTabs from './components/QuestionActionTabs';
 import NavItem from './components/NavItem/NavItem';
 import NavDropdown from './components/NavDropdown/NavDropdown';
 import WorkflowReviewStepsModal from '../commonComponents/workflowReviewStepsModal/WorkflowReviewStepsModal';
@@ -39,7 +40,6 @@ import ContributorModal from './components/ContributorModal/ContributorModal';
 import AssignWorkflowModal from './components/AssignWorkflowModal/AssignWorkflowModal';
 import SLA from '../commonComponents/sla/SLA';
 import AboutApplication from './components/AboutApplication/AboutApplication';
-import Guidance from './components/Guidance/Guidance';
 import Uploads from './components/Uploads/Uploads';
 import UpdateRequestModal from './components/UpdateRequestModal/UpdateRequestModal';
 import MissingFieldsModal from './components/MissingFieldsModal/MissingFieldsModal';
@@ -59,6 +59,7 @@ class DataAccessRequest extends Component {
 		this.onFormSubmit = this.onFormSubmit.bind(this);
 		this.onFormUpdate = this.onFormUpdate.bind(this);
 		this.onHandleDataSetChange = this.onHandleDataSetChange.bind(this);
+		this.onHandleActionTabChange = this.onHandleActionTabChange.bind(this);
 		this.searchBar = React.createRef();
 
 		this.state = {
@@ -149,8 +150,17 @@ class DataAccessRequest extends Component {
 			showAmendApplicationModal: false,
 			showDuplicateApplicationModal: false,
 			showSelectDatasetModal: false,
+			actionTabSettings: {
+				key: '',
+				questionSetId: '',
+				questionId: '',
+			},
+			messageDescription: '',
+			messagesCount: 0,
+			notesCount: 0,
+			isShared: false,
 			applicationType: '',
-			isLatestMinorVersion: true
+			isLatestMinorVersion: true,
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -253,6 +263,7 @@ class DataAccessRequest extends Component {
 						workflow,
 						files,
 						isCloneable,
+						isShared,
 						applicationType,
 						versions,
 						isLatestMinorVersion,
@@ -276,10 +287,11 @@ class DataAccessRequest extends Component {
 				workflow,
 				files,
 				isCloneable,
+				isShared,
 				applicationType,
 				versions,
 				isLatestMinorVersion,
-				formType
+				formType,
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -307,6 +319,7 @@ class DataAccessRequest extends Component {
 						workflow,
 						files,
 						isCloneable,
+						isShared,
 						applicationType,
 						isLatestMinorVersion,
 						formType,
@@ -329,6 +342,7 @@ class DataAccessRequest extends Component {
 				workflow,
 				files,
 				isCloneable,
+				isShared,
 				applicationType,
 				isLatestMinorVersion,
 				formType,
@@ -380,12 +394,11 @@ class DataAccessRequest extends Component {
 			workflow,
 			files,
 			isCloneable,
+			isShared,
 			versions = [],
 			applicationType,
 			isLatestMinorVersion,
 			formType,
-			areDatasetsAmended = false,
-			dateSubmitted = ''
 		} = context;
 		let {
 			datasetfields: { publisher },
@@ -400,11 +413,11 @@ class DataAccessRequest extends Component {
 			({ _id: publisherId, workflowEnabled } = datasets[0].publisher);
 		}
 		// 2. If user is custodian and the form is not in review, redirect the user to the DAR team dashboard
-		if(userType === DarHelper.userTypes.CUSTODIAN && applicationStatus === DarHelper.darStatus.submitted) {
+		if (userType === DarHelper.userTypes.CUSTODIAN && applicationStatus === DarHelper.darStatus.submitted) {
 			const alert = {
 				publisher,
 				nav: `dataaccessrequests&team=${publisher}`,
-				tab: 'submitted'
+				tab: 'submitted',
 			};
 			this.props.history.push({
 				pathname: `/account`,
@@ -447,7 +460,7 @@ class DataAccessRequest extends Component {
 		// 6. If multiple datasets are allowed, append 'before you begin' section
 		if (allowsMultipleDatasets) {
 			// we need to inject About and File sections if first time running
-			jsonSchema = this.injectStaticContent(jsonSchema, inReviewMode, reviewSections, userType, areDatasetsAmended);
+			jsonSchema = this.injectStaticContent(jsonSchema, inReviewMode, reviewSections);
 		}
 		// 7. Hide show submit application
 		if (applicationStatus === DarHelper.darStatus.inProgress) {
@@ -503,12 +516,10 @@ class DataAccessRequest extends Component {
 			workflowAssigned: !_.isEmpty(workflow) ? true : false,
 			files,
 			isCloneable,
+			isShared,
 			versions,
 			applicationType,
 			isLatestMinorVersion,
-			areDatasetsAmended,
-			datasetsAmendedBy: `${firstname} ${lastname}`,
-			datasetsAmendedDate: dateSubmitted
 		});
 	};
 
@@ -517,7 +528,7 @@ class DataAccessRequest extends Component {
 	 * @desc Function to inject static 'about' and 'files' pages and panels into schema
 	 * @returns {jsonSchmea} object
 	 */
-	injectStaticContent(jsonSchema = {}, inReviewMode = false, reviewSections = [], userType, areDatasetsAmended) {
+	injectStaticContent(jsonSchema = {}, inReviewMode = false, reviewSections = []) {
 		let { pages, formPanels } = { ...jsonSchema };
 		// formPanel {pageId: 'safePeople', panelId:'applicant'}
 		let formPanel = {};
@@ -533,11 +544,6 @@ class DataAccessRequest extends Component {
 			jsonSchema.formPanels.unshift(DarHelper.staticContent.aboutPanel);
 			jsonSchema.formPanels.push(DarHelper.staticContent.filesPanel);
 		}
-		// if amendment has been made to datasets mark about application navigation with warning
-		if(userType === DarHelper.userTypes.CUSTODIAN && areDatasetsAmended) {
-			jsonSchema.pages[0].flag = 'WARNING';
-		}
-
 		// if activePanel, find active formPanel from formPanels, find pageId index from pages array
 		if (!_.isEmpty(this.state.activePanelId)) {
 			formPanel = [...formPanels].find(p => p.panelId === this.state.activePanelId);
@@ -622,7 +628,7 @@ class DataAccessRequest extends Component {
 				} = response;
 				let { applicationStatus } = this.state;
 				// 4. remove blank values from schema updates - omit values if they are blank, important for jsonSchema
-				if (!_.isNil(jsonSchema)) jsonSchema = this.injectStaticContent(jsonSchema, false, this.state.reviewSections, this.state.userType, this.state.areDatasetsAmended);
+				if (!_.isNil(jsonSchema)) jsonSchema = this.injectStaticContent(jsonSchema, false, this.state.reviewSections);
 
 				let schemaUpdates = _.omitBy(
 					{
@@ -828,6 +834,7 @@ class DataAccessRequest extends Component {
 				validationErrors,
 				reviewWarning,
 				activeGuidance: '',
+				actionTabSettings: { key: '', questionSetId: '', questionId: '' },
 			});
 		}
 	};
@@ -896,7 +903,7 @@ class DataAccessRequest extends Component {
 			accessRecord: { jsonSchema, questionAnswers },
 		} = response.data;
 		// add in static content to schema (includes about application, file upload panels etc.)
-		jsonSchema = this.injectStaticContent(jsonSchema, this.state.inReviewMode, this.state.reviewSections, this.state.userType, this.state.areDatasetsAmended);
+		jsonSchema = this.injectStaticContent(jsonSchema, this.state.inReviewMode, this.state.reviewSections);
 		// return the updated schema to allow it to be spread into state later
 		return { jsonSchema, questionAnswers };
 	};
@@ -906,8 +913,13 @@ class DataAccessRequest extends Component {
 	 * @desc 	Event raised from Winterfell for secondary question events
 	 * @params {event, questionSetId, questionId, key}
 	 */
-	onQuestionAction = async (e = '', questionSetId = '', questionId = '', key = '') => {
+	onQuestionAction = async (e = '', questionSetId = '', questionId = '', key = '', counts = { messagesCount: 0, notesCount: 0 }) => {
 		let mode, stateObj;
+		//TODO EXPAND ACTION KEYS HELPER WITH MSGS AND NOTES
+		//TEST KEY TYPE
+		this.setState({ messagesCount: counts.messagesCount, notesCount: counts.notesCount });
+		//SET ACTIVE TAB FOR GUIANDCE MSGS OR NOTES
+		//call api with question set id and question id to get msgs and notes..
 		switch (key) {
 			case DarHelper.actionKeys.GUIDANCE:
 				const activeGuidance = this.getActiveQuestionGuidance(questionId);
@@ -916,6 +928,27 @@ class DataAccessRequest extends Component {
 					this.addActiveQuestionClass(e);
 				}
 				this.setState({ activeGuidance });
+				//CALL FUNC TO SET ACTIVE TAB
+				this.setState({ activeGuidance, actionTabSettings: { key, questionSetId, questionId } });
+				break;
+			case DarHelper.actionKeys.MESSAGES:
+				// call api with question set id and question id to get msgs
+				if (!_.isEmpty(e)) {
+					this.removeActiveQuestionClass();
+					this.addActiveQuestionClass(e);
+				}
+
+				//CALL FUNC TO SET ACTIVE TAB
+				this.setState({ actionTabSettings: { key, questionSetId, questionId } });
+				break;
+			case DarHelper.actionKeys.NOTES:
+				// call api with question set id and question id to get notes
+				if (!_.isEmpty(e)) {
+					this.removeActiveQuestionClass();
+					this.addActiveQuestionClass(e);
+				}
+				//CALL FUNC TO SET ACTIVE TAB
+				this.setState({ actionTabSettings: { key, questionSetId, questionId } });
 				break;
 			case DarHelper.actionKeys.REQUESTAMENDMENT:
 				mode = DarHelper.amendmentModes.ADDED;
@@ -964,6 +997,33 @@ class DataAccessRequest extends Component {
 		}
 	}
 
+	onHandleActionTabChange(settings) {
+		const { key, questionId } = settings;
+		const activeGuidance = this.getActiveQuestionGuidance(questionId);
+		switch (key) {
+			case DarHelper.actionKeys.GUIDANCE:
+				console.log('guidance is ', key);
+				console.log('questionID is ', questionId);
+				// const activeGuidance = this.getActiveQuestionGuidance(questionId);
+				console.log('active guidance is ', activeGuidance);
+
+				this.setState({ activeGuidance, actionTabSettings: settings });
+				break;
+			case DarHelper.actionKeys.MESSAGES:
+				// call api for messages
+				console.log('call message api');
+				this.setState({ actionTabSettings: settings });
+				break;
+			case DarHelper.actionKeys.NOTES:
+				// call api for notes
+				console.log('call notes api');
+				this.setState({ actionTabSettings: settings });
+				break;
+			default:
+				break;
+		}
+	}
+
 	postQuestionAction = async (questionSetId, questionId, mode) => {
 		let response = await axios.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/amendments`, {
 			questionSetId,
@@ -973,7 +1033,7 @@ class DataAccessRequest extends Component {
 		let {
 			accessRecord: { jsonSchema, questionAnswers = null, answeredAmendments, unansweredAmendments, amendmentIterations },
 		} = response.data;
-		jsonSchema = this.injectStaticContent(jsonSchema, this.state.inReviewMode, this.state.reviewSections, this.state.userType, this.state.areDatasetsAmended);
+		jsonSchema = this.injectStaticContent(jsonSchema, this.state.inReviewMode, this.state.reviewSections);
 
 		let stateObj = _.omitBy(
 			{
@@ -1015,6 +1075,29 @@ class DataAccessRequest extends Component {
 		this.removeActiveQuestionClass();
 		// reset guidance state
 		this.setState({ activeGuidance: '' });
+	};
+
+	updateCount = (questionId, questionSetId, messageType) => {
+		//Get the question that the count needs to be updated on
+		let { jsonSchema } = this.state;
+		let questionSetsArray = DarHelper.findQuestionSet(questionSetId, jsonSchema);
+		let question = DarHelper.findQuestion(questionId, questionSetsArray);
+		//If question has no previous counts add in the defaults
+		if (!question.counts) {
+			question.counts = { messagesCount: 0, notesCount: 0 };
+		}
+		//Update the count based on the messageType
+		if (messageType === 'message') {
+			question.counts.messagesCount = question.counts.messagesCount + 1;
+		} else if (messageType === 'note') {
+			question.counts.notesCount = question.counts.notesCount + 1;
+		}
+		//Update state
+		this.setState({
+			jsonSchema,
+			messagesCount: question.counts.messagesCount,
+			notesCount: question.counts.notesCount,
+		});
 	};
 
 	onHandleDataSetChange = (value = []) => {
@@ -1722,9 +1805,6 @@ class DataAccessRequest extends Component {
 					toggleModal={this.toggleModal}
 					toggleMrcModal={this.toggleMrcModal}
 					toggleContributorModal={this.toggleContributorModal}
-					areDatasetsAmended={this.state.areDatasetsAmended}
-					datasetsAmendedBy={this.state.datasetsAmendedBy}
-					datasetsAmendedDate={this.state.datasetsAmendedDate}
 				/>
 			);
 		} else if (activePanelId === 'files') {
@@ -1746,6 +1826,10 @@ class DataAccessRequest extends Component {
 				/>
 			);
 		}
+	};
+
+	setMessageDescription = messageDescription => {
+		this.setState({ messageDescription: messageDescription });
 	};
 
 	render() {
@@ -1774,6 +1858,7 @@ class DataAccessRequest extends Component {
 			showEmailModal,
 			alert,
 			versions = [],
+			messageDescription,
 		} = this.state;
 		const { userState } = this.props;
 
@@ -1927,7 +2012,21 @@ class DataAccessRequest extends Component {
 					{isWideForm ? null : (
 						<div id='darRightCol' className='scrollable-sticky-column'>
 							<div className='darTab'>
-								<Guidance activeGuidance={activeGuidance} resetGuidance={this.resetGuidance} />
+								<QuestionActionTabs
+									applicationId={this.state._id}
+									userState={userState}
+									settings={this.state.actionTabSettings}
+									activeGuidance={activeGuidance}
+									onHandleActionTabChange={this.onHandleActionTabChange}
+									toggleDrawer={this.toggleDrawer}
+									setMessageDescription={this.setMessageDescription}
+									userType={userType}
+									messagesCount={this.state.messagesCount}
+									notesCount={this.state.notesCount}
+									isShared={this.state.isShared}
+									updateCount={this.updateCount}
+									publisher={datasets[0].datasetv2.summary.publisher.name}
+								/>
 							</div>
 						</div>
 					)}
@@ -1991,6 +2090,7 @@ class DataAccessRequest extends Component {
 						toggleModal={this.toggleModal}
 						drawerIsOpen={this.state.showDrawer}
 						topicContext={this.state.topicContext}
+						msgDescription={messageDescription}
 					/>
 				</SideDrawer>
 
