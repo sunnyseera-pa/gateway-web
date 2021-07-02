@@ -55,6 +55,10 @@ class DatePickerCustom extends React.Component {
 				onFocus={this.handleFocus}
 				onChangeRaw={this.handleChangeRaw}
 				isClearable
+				peekNextMonth
+				showMonthDropdown
+				showYearDropdown
+				dropdownMode='select'
 			/>
 		);
 	}
