@@ -255,12 +255,6 @@ const __dataSetState = {
 	detailsData: [],
 };
 
-const _dashboardKPI = {
-	kpiText: 'uptime this month',
-	kpiValue: 97,
-	percentageFlag: true,
-};
-
 const _userState = {
 	userState: [
 		{
@@ -5189,7 +5183,6 @@ module.exports = {
 	dataSetState: __dataSetState,
 	creatorsData: __creatorsData,
 	unsubscribeState: __unsubscribeState,
-	dashboardKPIData: _dashboardKPI,
 	userStateData: _userState,
 	accountCollectionsData: _accountCollections,
 	accountToolsData: _accountTools,

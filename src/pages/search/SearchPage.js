@@ -21,6 +21,8 @@ import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import SortDropdown from './components/SortDropdown';
+import { ReactComponent as CDStar } from '../../images/cd-star.svg';
+import AdvancedSearchModal from '../commonComponents/AdvancedSearchModal/AdvancedSearchModal';
 import './Search.scss';
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
@@ -87,6 +89,7 @@ class SearchPage extends React.Component {
 		isResultsLoading: true,
 		showDrawer: false,
 		showModal: false,
+		showAdvancedSearchModal: false,
 		showError: false,
 		context: {},
 		userState: [
@@ -120,6 +123,12 @@ class SearchPage extends React.Component {
 		this.setState({ showError: false });
 	};
 
+	toggleAdvancedSearchModal = () => {
+		this.setState(prevState => {
+			return { showAdvancedSearchModal: !prevState.showAdvancedSearchModal };
+		});
+	};
+
 	async componentDidMount() {
 		initGA('UA-166025838-1');
 		PageView();
@@ -139,13 +148,17 @@ class SearchPage extends React.Component {
 					window.location.reload();
 				});
 			}
-			// 6 if openUserMessages is true open the user messages
+			// 6. if openUserMessages is true open the user messages
 			else if (this.state.userState[0].loggedIn && queryParams.openUserMessages === 'true') {
 				this.toggleDrawer();
 			}
-			// 7. set the selectedFilter states from queryParams ** does not return anything **
+			// 7. if openAdvancedSearch is true open the user messages
+			else if (queryParams.openAdvancedSearch === 'true') {
+				this.toggleAdvancedSearchModal();
+			}
+			// 8. set the selectedFilter states from queryParams ** does not return anything **
 			await this.updateFilterStates(queryParams);
-			// 8. call search API
+			// 9. call search API
 			this.doSearchCall();
 		} else {
 			this.setState({ data: [], search: '', isLoading: true });
@@ -1038,6 +1051,7 @@ class SearchPage extends React.Component {
 
 			showDrawer,
 			showModal,
+			showAdvancedSearchModal,
 			context,
 
 			key,
@@ -1852,6 +1866,16 @@ class SearchPage extends React.Component {
 									) : (
 										''
 									)}
+									<div className='advanced-search-link-container'>
+										<CDStar fill='#f98e2b' height='20' width='20' />
+										<a
+											className='textUnderline gray800-14 cursorPointer'
+											onClick={() => {
+												this.toggleAdvancedSearchModal();
+											}}>
+											Advanced Search
+										</a>
+									</div>
 								</Col>
 							) : (
 								<Col sm={12} md={12} lg={3} />
@@ -2016,7 +2040,7 @@ class SearchPage extends React.Component {
 										collectionCount <= 0 ? (
 											<NoResults type='collections' search={search} />
 										) : (
-											<Row className='mt-5'>
+											<Row className='mt-2'>
 												{collectionData.map(collection => {
 													return (
 														<Col sm={12} md={12} lg={6} style={{ 'text-align': '-webkit-center' }}>
@@ -2142,6 +2166,13 @@ class SearchPage extends React.Component {
 							drawerIsOpen={this.state.showDrawer}
 						/>
 					</SideDrawer>
+
+					<AdvancedSearchModal
+						open={showAdvancedSearchModal}
+						context={context}
+						closed={this.toggleAdvancedSearchModal}
+						userProps={userState[0]}
+					/>
 
 					<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
 				</div>

@@ -2,8 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { isEmpty, has, isString } from 'lodash';
 import * as Yup from 'yup';
 import { Formik, Field, Form } from 'formik';
-import DatePicker from 'react-datepicker';
-import moment from 'moment';
 import TypeaheadDataset from '../../../DataAccessRequest/components/TypeaheadDataset/TypeaheadDataset';
 
 export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmit }) => {
@@ -21,9 +19,6 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 		safedataotherdatasetslinkadditionaldatasetslinkagedetails: { title: 'Names of the linked datasets' },
 		datasetsInterestedIn: { title: 'Do you know which parts of the dataset you are interested in?' },
 		safedatadatafieldsdatarequiredjustification: { title: 'Parts of the dataset interesed in' },
-		'safeproject-projectdetails-startdate': { title: 'Proposed project start date' },
-		safedatastorageandprocessingaccessmethodphysicallocationorganisationname: { title: 'ICO number' },
-		safepeopleprimaryapplicantorcid: { title: 'ORCID' },
 		funding: { title: 'Funding' },
 		safeprojectprojectdetailspublicbenefitimpact: { title: 'Research benefits' },
 	};
@@ -40,10 +35,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 		'safedata-otherdatasetsintentiontolinkdata': '',
 		safedataotherdatasetslinkadditionaldatasetslinkagedetails: '',
 		datasetsInterestedIn: '',
-		'safeproject-projectdetails-startdate': '',
-		safedatastorageandprocessingaccessmethodphysicallocationorganisationname: '',
 		safedatadatafieldsdatarequiredjustification: '',
-		safepeopleprimaryapplicantorcid: '',
 		funding: '',
 		safeprojectprojectdetailspublicbenefitimpact: '',
 	};
@@ -72,7 +64,6 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 		}),
 		funding: Yup.string().trim().required('Required'),
 		safeprojectprojectdetailspublicbenefitimpact: Yup.string().trim().required('Required'),
-		safedatastorageandprocessingaccessmethodphysicallocationorganisationname: Yup.string().trim().required('Required'),
 	});
 
 	/**
@@ -295,7 +286,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 							</div>
 
 							{/* DATASETS  REQUESTED */}
-							<div className='form-group gray800-14'>
+							<div className='form-group gray800-14' data-test-id='datasetsRequested'>
 								<label htmlFor={`datasetsRequested`} className='form-label gray800-14'>
 									Datasets being requested *
 								</label>
@@ -317,7 +308,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 									Do you have any datasets you would like to link with this one? *
 								</label>
 								<div className='form-check'>
-									<Field type='radio' name='safedata-otherdatasetsintentiontolinkdata' value='Yes' />
+									<Field type='radio' name='safedata-otherdatasetsintentiontolinkdata' value='Yes' data-test-id='linked-datasets-yes' />
 									<label
 										className={`
                         form-check-label 
@@ -327,7 +318,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 									</label>
 								</div>
 								<div className='form-check'>
-									<Field type='radio' name='safedata-otherdatasetsintentiontolinkdata' value='No' />
+									<Field type='radio' name='safedata-otherdatasetsintentiontolinkdata' value='No' data-test-id='linked-datasets-no' />
 									<label
 										className={`
                         form-check-label 
@@ -369,7 +360,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 									Do you know which parts of the dataset you are interested in? *
 								</label>
 								<div className='form-check'>
-									<Field type='radio' name='datasetsInterestedIn' value='Yes' />
+									<Field type='radio' name='datasetsInterestedIn' value='Yes' data-test-id='dataset-parts-yes' />
 									<label
 										className={`
                         form-check-label 
@@ -379,7 +370,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 									</label>
 								</div>
 								<div className='form-check'>
-									<Field type='radio' name='datasetsInterestedIn' value='No' />
+									<Field type='radio' name='datasetsInterestedIn' value='No' data-test-id='dataset-parts-no' />
 									<label
 										className={`
                         form-check-label 
@@ -429,62 +420,6 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 								{hasErrors(touched, errors, 'funding') ? <div className='errorMessages'>{errors.funding}</div> : null}
 							</div>
 
-							{/* PROPOSED PROJECT START DATE */}
-							<div className='form-group gray800-14'>
-								<label htmlFor={`safeproject-projectdetails-startdate`} className='form-label'>
-									Proposed project start date (optional)
-								</label>
-								<DatePicker
-									name={`safeproject-projectdetails-startdate`}
-									data-test-id={`safeproject-projectdetails-startdate`}
-									dateFormat='dd/MM/yyyy'
-									selected={values['safeproject-projectdetails-startdate'] ? new Date(values['safeproject-projectdetails-startdate']) : ''}
-									onChange={date => {
-										values['safeproject-projectdetails-startdate'] = moment(date).format('DD MMM YYYY');
-										setFieldValue();
-									}}
-								/>
-								{hasErrors(touched, errors, 'safeproject-projectdetails-startdate') ? (
-									<div className='errorMessages'>{errors['safeproject-projectdetails-startdate']}</div>
-								) : null}
-							</div>
-
-							{/* ICO NUMBER */}
-							<div className='form-group gray800-14'>
-								<label htmlFor={`safedatastorageandprocessingaccessmethodphysicallocationorganisationname`} className='form-label'>
-									ICO number *
-								</label>
-								<Field
-									type='text'
-									name={`safedatastorageandprocessingaccessmethodphysicallocationorganisationname`}
-									data-test-id={`safedatastorageandprocessingaccessmethodphysicallocationorganisationname`}
-									className={`form-control gray800-14 ${
-										hasErrors(touched, errors, 'safedatastorageandprocessingaccessmethodphysicallocationorganisationname')
-											? 'is-invalid'
-											: ''
-									}`}
-								/>
-								{hasErrors(touched, errors, 'safedatastorageandprocessingaccessmethodphysicallocationorganisationname') ? (
-									<div className='errorMessages'>{errors['safedatastorageandprocessingaccessmethodphysicallocationorganisationname']}</div>
-								) : null}
-							</div>
-
-							{/* ORCID */}
-							<div className='form-group gray800-14'>
-								<label htmlFor={`safepeopleprimaryapplicantorcid`} className='form-label'>
-									ORCID (optional)
-								</label>
-								<Field
-									type='text'
-									name={`safepeopleprimaryapplicantorcid`}
-									data-test-id={`safepeopleprimaryapplicantorcid`}
-									className={`form-control gray800-14 ${hasErrors(touched, errors, 'safepeopleprimaryapplicantorcid') ? 'is-invalid' : ''}`}
-								/>
-								{hasErrors(touched, errors, 'safepeopleprimaryapplicantorcid') ? (
-									<div className='errorMessages'>{errors['safepeopleprimaryapplicantorcid']}</div>
-								) : null}
-							</div>
-
 							{/* RESEARCH BENEFITS */}
 							<div className='form-group gray800-14'>
 								<label htmlFor={`safeprojectprojectdetailspublicbenefitimpact`} className='form-label'>
@@ -508,7 +443,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 
 							{/* SUBMIT */}
 							<div className='d-flex flex-row-reverse p-2'>
-								<button className='button-secondary' type='submit'>
+								<button data-test-id='send-first-message-btn' className='button-secondary' type='submit'>
 									Send message
 								</button>
 							</div>

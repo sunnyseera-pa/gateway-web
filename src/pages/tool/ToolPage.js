@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
-import { Row, Col, Tabs, Tab, Container, Alert, Button } from 'react-bootstrap';
+import { Row, Col, Tabs, Tab, Container, Alert } from 'react-bootstrap';
 import NotFound from '../commonComponents/NotFound';
+import Uploader from '../commonComponents/Uploader';
 import Loading from '../commonComponents/Loading';
 import Reviews from '../commonComponents/reviews/Reviews';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
-import Creators from '../commonComponents/Creators';
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import 'react-tabs/style/react-tabs.css';
 import { baseURL } from '../../configs/url.config';
@@ -460,18 +460,30 @@ export const ToolDetail = props => {
 															{moment(toolData.updatedon).format('DD MMM YYYY')}
 														</Col>
 													</Row>
-													{toolData.uploader ? (
+													{toolData.authorsNew ? (
 														<Row className='mt-2'>
-															<Col sm={2} className='gray800-14'>
-																Uploader
+															<Col sm={2}>
+																<span className='gray800-14'>Authors</span>
 															</Col>
-															<Col sm={10} className='gray800-14 overflowWrap'>
-																{toolData.uploader}
+															<Col sm={10} className='gray800-14 overflowWrap' data-test-id='tool-authors'>
+																{toolData.authorsNew}
 															</Col>
 														</Row>
 													) : (
 														''
 													)}
+													<Row className='mt-3'>
+														<Col sm={2}>
+															<span className='gray800-14'>Uploaders</span>
+														</Col>
+														<Col sm={10} className='gray800-14 overflowWrap'>
+															{toolData.persons.map(uploader => (
+																<span key={uploader.id}>
+																	<Uploader key={uploader.id} uploader={uploader} />
+																</span>
+															))}
+														</Col>
+													</Row>
 													<Row className='mt-2'>
 														<Col sm={2} className='gray800-14'>
 															Type
@@ -544,22 +556,6 @@ export const ToolDetail = props => {
 																})
 															)}
 														</Col>
-													</Row>
-												</div>
-											</Col>
-										</Row>
-										<Row className='mt-2'>
-											<Col sm={12} className='mb-5'>
-												<div className='rectangle'>
-													<Row className='gray800-14-bold'>
-														<Col sm={12}>Authors</Col>
-													</Row>
-													<Row className='mt-3'>
-														{toolData.persons.map(author => (
-															<Col sm={6} key={author.id}>
-																<Creators key={author.id} author={author} />
-															</Col>
-														))}
 													</Row>
 												</div>
 											</Col>

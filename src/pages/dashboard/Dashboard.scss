@@ -88,7 +88,8 @@
 }
 
 .accountNav {
-	a, button {
+	a,
+	button {
 		display: flex;
 		align-items: center;
 	}
@@ -205,6 +206,12 @@ textarea {
 	font-family: inherit;
 	font-size: inherit !important;
 	color: inherit !important;
+}
+
+#dateDropdown {
+	background-color: $white !important;
+	border-color: $gray-400 !important;
+	min-width: 160px;
 }
 
 #metadataButton {
@@ -430,11 +437,14 @@ textarea {
 		align-items: center;
 	}
 
-	&-switch  {
+	&-switch {
 		display: flex;
 		align-items: center;
 		padding-right: 15px;
 	}
 }
 
-
+button.dropdown-toggle.btn.btn-outline-secondary::after {
+	position: relative;
+    top: 4.5px;
+}
