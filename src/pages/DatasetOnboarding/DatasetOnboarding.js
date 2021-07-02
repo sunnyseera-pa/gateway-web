@@ -256,6 +256,7 @@ class DatasetOnboarding extends Component {
 		let showCreateNewVersion = false;
 		let showArchive = false;
 		let showUnArchive = false;
+		let showDeleteDraft = false;
 
 		publisher = dataset.datasetv2.summary.publisher.identifier;
 
@@ -270,6 +271,7 @@ class DatasetOnboarding extends Component {
 
 		if (applicationStatus === DatasetOnboardingHelper.datasetStatus.draft) {
 			showSubmit = true;
+			showDeleteDraft = true;
 			//if (isLatestVersion) showArchive = true;
 		} else if (applicationStatus === DatasetOnboardingHelper.datasetStatus.rejected) {
 			if (isLatestVersion) showCreateNewVersion = true;
@@ -316,6 +318,7 @@ class DatasetOnboarding extends Component {
 			showCreateNewVersion,
 			showArchive,
 			showUnArchive,
+			showDeleteDraft,
 			inReviewMode,
 			reviewSections,
 		});
@@ -844,6 +847,10 @@ class DatasetOnboarding extends Component {
 		this.toggleActionModal('UNARCHIVE');
 	};
 
+	toggleDeleteDraftModal = () => {
+		this.toggleActionModal('DELETEDRAFT');
+	};
+
 	toggleActionModal = (type = '') => {
 		let actionModalConfig = {};
 		// 1. get basic modal config
@@ -967,6 +974,30 @@ class DatasetOnboarding extends Component {
 				} catch (err) {
 					console.log(err);
 				}
+				break;
+			case 'DELETEDRAFT':
+				try {
+					let id = this.state._id;
+					let draftDatasetName;
+
+					await axios.delete(`${baseURL}/api/v1/dataset-onboarding/delete/${id}`).then(res => {
+						draftDatasetName = res.data.data;
+					});
+
+					let alert = {
+						tab: 'active',
+						message: `You have deleted ${draftDatasetName} draft dataset`,
+					};
+
+					this.props.history.push({
+						pathname: '/account',
+						search: '?tab=datasets',
+						state: { alert, team: this.state.publisher },
+					});
+				} catch (err) {
+					console.log(err);
+				}
+
 				break;
 			default:
 				this.toggleActionModal();
@@ -1473,6 +1504,8 @@ class DatasetOnboarding extends Component {
 									showCreateNewVersion={this.state.showCreateNewVersion}
 									showArchive={this.state.showArchive}
 									showUnArchive={this.state.showUnArchive}
+									showDeleteDraft={this.state.showDeleteDraft}
+									onShowDeleteDraftModal={this.toggleDeleteDraftModal}
 								/>
 							) : (
 								<CustodianActionButtons
