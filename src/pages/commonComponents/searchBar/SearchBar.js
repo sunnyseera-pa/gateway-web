@@ -843,9 +843,7 @@ class SearchBar extends React.Component {
 																						<Col xs={10}>
 																							<div className='notificationDate'>{messageDateString + '\n'}</div>
 																							<div className='notificationInfoHolder'>
-																								<a href={`/account?tab=datasets&team=${dat.publisherName}`} class='notificationInfo'>
-																									{dat.messageDescription}
-																								</a>
+																								<span class='notificationInfo'>{dat.messageDescription}</span>
 																							</div>
 																						</Col>
 																						<Col xs={2}>
