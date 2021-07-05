@@ -48,6 +48,10 @@ class DatePickerCustom extends React.Component {
 				name={this.props.name || 'startdate'}
 				selected={this.state.date}
 				dateFormat='dd/MM/yyyy'
+				peekNextMonth
+				showMonthDropdown
+				showYearDropdown
+				dropdownMode='select'
 				onChange={this.handleChange}
 				onBlur={this.handleBlur}
 				onFocus={this.handleFocus}
