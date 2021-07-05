@@ -2,13 +2,12 @@ import React, { Fragment, useState, useEffect } from 'react';
 import axios from 'axios';
 import { baseURL } from '../../../../configs/url.config';
 import DarHelperUtil from '../../../../utils/DarHelper.util';
-import VersionSelector from '../../../commonComponents/versionSelector/VersionSelector';
+//import VersionSelector from '../../../commonComponents/versionSelector/VersionSelector';
 import SLA from '../../../commonComponents/sla/SLA';
 import { Row, Col } from 'react-bootstrap';
 import AccessActivity from '../../../dashboard/DataAccessRequests/AccessActivity/AccessActivity';
 import WorkflowReviewStepsModal from '../../../commonComponents/workflowReviewStepsModal/WorkflowReviewStepsModal';
 import _ from 'lodash';
-import { version } from 'react';
 
 const ActivityLog = ({ dataaccessrequest, team }) => {
 	const [showWorkflowReviewModal, setShowWorkflowReviewModal] = useState(false);
@@ -96,7 +95,7 @@ const ActivityLog = ({ dataaccessrequest, team }) => {
 		applicationType = 'initial',
 	} = dataaccessrequest;
 
-	const selectedVersion = versions.find(v => v.isCurrent).displayTitle;
+	const selectedVersion = versions.find(v => v.isCurrent)?.displayTitle;
 
 	return (
 		<>
