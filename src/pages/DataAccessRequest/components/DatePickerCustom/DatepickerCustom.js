@@ -54,7 +54,7 @@ class DatePickerCustom extends React.Component {
 				onBlur={this.handleBlur}
 				onFocus={this.handleFocus}
 				onChangeRaw={this.handleChangeRaw}
-				isClearable
+				isClearable={!this.props.readOnly}
 				peekNextMonth
 				showMonthDropdown
 				showYearDropdown
