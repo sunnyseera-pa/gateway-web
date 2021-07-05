@@ -255,7 +255,7 @@ class DataAccessRequestsNew extends React.Component {
 	navigateToLocation = (e, projectId) => {
 		e.stopPropagation();
 		// 1. split the id up into two parts
-		let [id, uniqueId] = e.currentTarget.id.split('_');
+		const [id, uniqueId] = e.currentTarget.id.split('_');
 		// 2. test the Id we have clicked on
 		switch (id) {
 			case 'versionSelector':
@@ -280,12 +280,12 @@ class DataAccessRequestsNew extends React.Component {
 				break;
 			default:
 				// select the latest version of an application given the projectId
-				let latestVersonOfTheApplication = this.state.screenData
+				const latestApplicationVersion = this.state.screenData
 					.filter(application => application.projectId === projectId)
 					.reduce(function (prevApplication, currentApplication) {
 						return prevApplication.majorVersion > currentApplication.majorVersion ? prevApplication : currentApplication;
 					});
-				this.props.setDataAccessRequest(latestVersonOfTheApplication);
+				this.props.setDataAccessRequest(latestApplicationVersion);
 				break;
 		}
 	};
