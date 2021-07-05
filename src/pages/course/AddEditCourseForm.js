@@ -7,7 +7,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import { Form, Button, Row, Col, InputGroup, DropdownButton, Dropdown, Container } from 'react-bootstrap';
 import { SlideDown } from 'react-slidedown';
-import DatePickerCustom from '../DataAccessRequest/components/DatePickerCustom/DatepickerCustom'
+import DatePicker from 'react-datepicker';
 
 import RelatedResources from '../commonComponents/relatedResources/RelatedResources';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
@@ -464,8 +464,13 @@ const AddEditCourseForm = props => {
 
 																						{!formik.values.courseOptions[index].flexibleDates ? (
 																							<>
-																								<DatePickerCustom
+																								<DatePicker
 																									name={`courseOptions[${index}].startDate`}
+																									dateFormat='dd/MM/yyyy'
+																									peekNextMonth
+																									showMonthDropdown
+																									showYearDropdown
+																									dropdownMode='select'
 																									selected={
 																										formik.values.courseOptions[index].startDate
 																											? new Date(formik.values.courseOptions[index].startDate)
