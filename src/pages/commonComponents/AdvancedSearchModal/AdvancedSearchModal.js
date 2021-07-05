@@ -40,9 +40,7 @@ const AdvancedSearchModal = ({ open, closed, userProps }) => {
 			//if user is from open athens but not authorised and not banned, assign them an advanced search role
 			let authorised = false;
 			await axios
-				.patch(baseURL + '/api/v1/users/advancedSearch/roles/' + userState.id, {
-					advancedSearchRoles: [GENERAL_ACCESS],
-				})
+				.patch(baseURL + '/api/v1/users/advancedSearch/roles/' + userState.id)
 				.then(res => {
 					authorised = true;
 					let newUserState = userState;
@@ -123,7 +121,7 @@ const AdvancedSearchModal = ({ open, closed, userProps }) => {
 				<Modal.Header closeButton>
 					<div>
 						<div className='advanced-search-modal-header ml-3'>
-							<CDStar fill='#f98e2b' height='20' width='20' className='mr-2'/>
+							<CDStar fill='#f98e2b' height='20' width='20' className='mr-2' />
 							<h5 className='black-20'> Advanced Search</h5>
 						</div>
 						<p className='gray800-14 ml-3'>
