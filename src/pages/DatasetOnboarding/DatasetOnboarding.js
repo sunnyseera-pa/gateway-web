@@ -979,7 +979,8 @@ class DatasetOnboarding extends Component {
 				try {
 					let id = this.state._id;
 					let draftDatasetName;
-					await axios.delete(baseURL + `/api/v1/dataset-onboarding/delete/${id}`).then(res => {
+
+					await axios.delete(`${baseURL}/api/v1/dataset-onboarding/delete/${id}`).then(res => {
 						draftDatasetName = res.data.data;
 					});
 
