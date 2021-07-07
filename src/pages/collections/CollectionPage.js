@@ -92,7 +92,7 @@ export const CollectionPage = props => {
 	const updateCounter = (id, counter) => {
 		axios.post(baseURL + '/api/v1/collectioncounter/update', { id, counter });
 	};
-	
+
 	const getObjectData = async () => {
 		await axios.get(baseURL + '/api/v1/collections/relatedobjects/' + props.match.params.collectionID).then(async res => {
 			setObjectData(res.data.data);
