@@ -190,7 +190,8 @@ class DataAccessRequestsNew extends React.Component {
 				<Col>
 					<Alert variant={'warning'} className='col-sm-12 main-alert'>
 						<i class='fas fa-exclamation-circle ' />
-						The applicant has not completed these applications yet. The applicant may give you access in order to clarify some questions.
+						&nbsp;The applicant has not completed these applications yet. The applicant may give you access in order to clarify some
+						questions.
 					</Alert>
 				</Col>
 			</Row>
@@ -247,7 +248,13 @@ class DataAccessRequestsNew extends React.Component {
 	};
 
 	renderDuration = (accessRequest, team = {}) => {
-		let { applicationStatus = '', createdAt, dateSubmitted, decisionDuration = 0, applicationType = DarHelperUtil.darApplicationTypes.initial } = accessRequest;
+		let {
+			applicationStatus = '',
+			createdAt,
+			dateSubmitted,
+			decisionDuration = 0,
+			applicationType = DarHelperUtil.darApplicationTypes.initial,
+		} = accessRequest;
 		let diff = 0;
 		if (this.durationLookups.includes(applicationStatus)) {
 			if (applicationStatus === DarHelperUtil.darStatus.inProgress) {
@@ -423,7 +430,7 @@ class DataAccessRequestsNew extends React.Component {
 							} = request;
 
 							const selectedVersion = versions.find(v => v.isCurrent)?.displayTitle;
-							
+
 							return (
 								<Row key={`request_${i}`} onClick={e => this.navigateToLocation(e, _id, applicationStatus)}>
 									<div className='col-md-12'>
@@ -444,29 +451,23 @@ class DataAccessRequestsNew extends React.Component {
 												</div>
 												<div className='header-version-status'>
 													{this.renderDuration(request, team)}
-													{
-														(applicationType ===
-															DarHelperUtil.darApplicationTypes.amendment &&
-															applicationStatus !== DarHelperUtil.darStatus.approved &&
-															applicationStatus !== DarHelperUtil.darStatus['approved with conditions'] &&
-															applicationStatus !== DarHelperUtil.darStatus.rejected ? (
-																<>
-																	<SLA
-																		classProperty={DarHelperUtil.darStatusColours[applicationStatus]}
-																		text={DarHelperUtil.darAmendmentSLAText[applicationStatus]}
-																	/>
-																	<SLA
-																		classProperty={DarHelperUtil.darStatusColours['approved']}
-																		text={DarHelperUtil.darSLAText['approved']}
-																	/>
-																</>
-															) : (
-																<SLA
-																	classProperty={DarHelperUtil.darStatusColours[applicationStatus]}
-																	text={DarHelperUtil.darSLAText[applicationStatus]}
-																/>
-															))
-													}
+													{applicationType === DarHelperUtil.darApplicationTypes.amendment &&
+													applicationStatus !== DarHelperUtil.darStatus.approved &&
+													applicationStatus !== DarHelperUtil.darStatus['approved with conditions'] &&
+													applicationStatus !== DarHelperUtil.darStatus.rejected ? (
+														<>
+															<SLA
+																classProperty={DarHelperUtil.darStatusColours[applicationStatus]}
+																text={DarHelperUtil.darAmendmentSLAText[applicationStatus]}
+															/>
+															<SLA classProperty={DarHelperUtil.darStatusColours['approved']} text={DarHelperUtil.darSLAText['approved']} />
+														</>
+													) : (
+														<SLA
+															classProperty={DarHelperUtil.darStatusColours[applicationStatus]}
+															text={DarHelperUtil.darSLAText[applicationStatus]}
+														/>
+													)}
 												</div>
 											</div>
 											<div className='body'>

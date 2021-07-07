@@ -25,7 +25,7 @@ const Notes = ({ applicationId, settings, userState, userType, updateCount }) =>
 	}, [notesThread]);
 
 	const scrollToBottom = () => {
-		notesEndRef.current.scrollIntoView(false);
+		notesEndRef.current.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'start' });
 	};
 
 	const handleSendNote = note => {

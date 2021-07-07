@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import moment from 'moment';
-import isEmpty from 'lodash';
+import { isEmpty, isBoolean } from 'lodash';
 import ShareFormModal from './ShareFormModal';
 import Loading from '../../../commonComponents/Loading';
 import './Messages.scss';
@@ -10,7 +10,7 @@ import { baseURL } from '../../../../configs/url.config';
 const Messages = ({
 	applicationId,
 	settings,
-	applicationShared,
+	applicationShared = false,
 	toggleDrawer,
 	setMessageDescription,
 	userState,
@@ -21,7 +21,7 @@ const Messages = ({
 	const [showShareFormModal, setShowShareFormModal] = useState(false);
 	const [currentMessage, setCurrentMessage] = useState('');
 	const [messageThread, setMessageThread] = useState([]);
-	const [applicationIsShared, setApplicationIsShared] = useState(applicationShared || false);
+	const [applicationIsShared, setApplicationIsShared] = useState(applicationShared);
 	const [isloading, setIsloading] = useState(true);
 
 	const messagesEndRef = useRef(null);
@@ -37,7 +37,7 @@ const Messages = ({
 	}, [messageThread]);
 
 	const scrollToBottom = () => {
-		//messagesEndRef.current.scrollIntoView(false);
+		messagesEndRef.current.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'start' });
 	};
 
 	const onShowShareFormModal = () => {
@@ -48,8 +48,7 @@ const Messages = ({
 		if (!message) {
 			return;
 		}
-		// if application NOT shared show modal
-		if (!applicationIsShared) {
+		if (!isBoolean(applicationIsShared) || !applicationIsShared) {
 			onShowShareFormModal();
 		} else {
 			sendMessage(message);
@@ -64,10 +63,10 @@ const Messages = ({
 	};
 
 	const messageAndShare = async () => {
-		let response = await axios.put(`${baseURL}/api/v1/data-access-request/${applicationId}/share`);
+		await axios.put(`${baseURL}/api/v1/data-access-request/${applicationId}/share`);
 		setApplicationIsShared(true);
 		setShowShareFormModal(false);
-		sendMessage();
+		sendMessage(currentMessage);
 	};
 
 	const sendMessage = async message => {
@@ -76,7 +75,7 @@ const Messages = ({
 		}
 		// TODO: Post message to API
 		const { questionId, questionSetId } = settings;
-		let response = await axios.post(`${baseURL}/api/v1/data-access-request/${applicationId}/messages`, {
+		await axios.post(`${baseURL}/api/v1/data-access-request/${applicationId}/messages`, {
 			questionId,
 			messageType: 'DAR_Message',
 			messageBody: message,
@@ -126,7 +125,7 @@ const Messages = ({
 							<div className='message-metadata'>
 								<span>
 									{msg.name}
-									{userType.toUpperCase() !== msg.userType.toUpperCase() ? <>{publisher ? ` (${publisher})` : ''}</> : ''}
+									{msg.userType === 'custodian' ? <>{publisher ? ` (${publisher})` : ''}</> : ''}
 								</span>
 								&nbsp;
 								<span>{msg.date}</span>
