@@ -4,14 +4,14 @@
     <title>Oval</title>
     <desc>Created with Sketch.</desc>
     <defs>
-        <circle id="radio" cx="456" cy="946" r="6"></circle>
+        <circle id="path-1" cx="456" cy="946" r="6"></circle>
     </defs>
     <g id="Specs" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="Style-guide" transform="translate(-449.000000, -940.000000)">
-            <mask id="mask-radio" fill="white">
-                <use xlink:href="#radio"></use>
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
             </mask>
-            <use id="Oval" fill="#2c8267" xlink:href="#radio"></use>
+            <use id="Oval" fill="#2c8267" xlink:href="#path-1"></use>
         </g>
     </g>
 </svg>

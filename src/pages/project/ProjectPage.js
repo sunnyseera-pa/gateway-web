@@ -10,7 +10,7 @@ import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import NotFound from '../commonComponents/NotFound';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
-import Uploader from '../commonComponents/Uploader';
+import Creators from '../commonComponents/Creators';
 import SVGIcon from '../../images/SVGIcon';
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
@@ -261,7 +261,7 @@ export const ProjectDetail = props => {
 						<Row className=''>
 							<Col sm={1} lg={1} />
 							<Col sm={10} lg={10}>
-								<Alert variant='warning' className='mt-3' data-test-id='project-pending-banner'>
+								<Alert variant='warning' className='mt-3'>
 									Your project is pending review. Only you can see this page.
 								</Alert>
 							</Col>
@@ -276,7 +276,7 @@ export const ProjectDetail = props => {
 						<Col sm={10} lg={10}>
 							<div className='rectangle'>
 								<Row>
-									<Col data-test-id='project-name' className='line-height-normal'>
+									<Col className='line-height-normal'>
 										<span className='black-16'>{projectData.name}</span>
 									</Col>
 								</Row>
@@ -321,7 +321,7 @@ export const ProjectDetail = props => {
 														<Col sm={12}>Description</Col>
 													</Row>
 													<Row className='mt-3'>
-														<Col sm={12} className='gray800-14 hdruk-section-body' data-test-id='project-description'>
+														<Col sm={12} className='gray800-14 hdruk-section-body'>
 															<ReactMarkdown source={projectData.description} />
 														</Col>
 													</Row>
@@ -337,7 +337,7 @@ export const ProjectDetail = props => {
 															<Col sm={12}>Results/Insights</Col>
 														</Row>
 														<Row className='mt-3'>
-															<Col sm={12} className='gray800-14 hdruk-section-body' data-test-id='project-results'>
+															<Col sm={12} className='gray800-14 hdruk-section-body'>
 																<ReactMarkdown source={projectData.resultsInsights} />
 															</Col>
 														</Row>
@@ -358,7 +358,7 @@ export const ProjectDetail = props => {
 														<Col sm={2} className='gray800-14'>
 															URL
 														</Col>
-														<Col sm={10} data-test-id='link' className='gray800-14'>
+														<Col sm={10} className='gray800-14'>
 															<a href={projectData.link} rel='noopener noreferrer' target='_blank' className='purple-14 text-break'>
 																{projectData.link}
 															</a>
@@ -372,37 +372,13 @@ export const ProjectDetail = props => {
 															{moment(projectData.updatedon).format('DD MMM YYYY')}
 														</Col>
 													</Row>
-													<Row className='mt-3'>
-														<Col sm={2}>
-															<span className='gray800-14'>Uploaders</span>
-														</Col>
-														<Col sm={10} className='gray800-14 overflowWrap'>
-															{projectData.persons.map(uploader => (
-																<span key={uploader.id}>
-																	<Uploader key={uploader.id} uploader={uploader} />
-																</span>
-															))}
-														</Col>
-													</Row>
-													{projectData.authorsNew ? (
+													{projectData.uploader ? (
 														<Row className='mt-2'>
-															<Col sm={2}>
-																<span className='gray800-14'>Collaborators</span>
+															<Col sm={2} className='gray800-14'>
+																Uploader
 															</Col>
-															<Col sm={10} className='gray800-14 overflowWrap' data-test-id='project-authors'>
-																{projectData.authorsNew}
-															</Col>
-														</Row>
-													) : (
-														''
-													)}
-													{projectData.leadResearcher ? (
-														<Row className='mt-2'>
-															<Col sm={2}>
-																<span className='gray800-14'>Lead researcher</span>
-															</Col>
-															<Col sm={10} className='gray800-14 overflowWrap' data-test-id='project-leadResearcher'>
-																{projectData.leadResearcher}
+															<Col sm={10} className='gray800-14 overflowWrap'>
+																{projectData.uploader}
 															</Col>
 														</Row>
 													) : (
@@ -412,7 +388,7 @@ export const ProjectDetail = props => {
 														<Col sm={2} className='gray800-14'>
 															Type
 														</Col>
-														<Col sm={10} className='gray800-14' data-test-id='project-type'>
+														<Col sm={10} className='gray800-14'>
 															<a href={'/search?search=&tab=Projects&projectcategories=' + projectData.categories.category}>
 																<div className='badge-tag'>{projectData.categories.category}</div>
 															</a>
@@ -426,9 +402,9 @@ export const ProjectDetail = props => {
 															{!projectData.tags.features || projectData.tags.features.length <= 0 ? (
 																<span className='gray800-14-opacity'>Not specified</span>
 															) : (
-																projectData.tags.features.map((keyword, i) => {
+																projectData.tags.features.map(keyword => {
 																	return (
-																		<a href={'/search?search=&tab=Projects&projectfeatures=' + keyword} data-test-id={`keywords-${i}`}>
+																		<a href={'/search?search=&tab=Projects&projectfeatures=' + keyword}>
 																			<div className='badge-tag'>{keyword}</div>
 																		</a>
 																	);
@@ -444,15 +420,32 @@ export const ProjectDetail = props => {
 															{!projectData.tags.topics || projectData.tags.topics.length <= 0 ? (
 																<span className='gray800-14-opacity'>Not specified</span>
 															) : (
-																projectData.tags.topics.map((domain, i) => {
+																projectData.tags.topics.map(domain => {
 																	return (
-																		<a href={'/search?search=&tab=Projects&projecttopics=' + domain} data-test-id={`domain-${i}`}>
+																		<a href={'/search?search=&tab=Projects&projecttopics=' + domain}>
 																			<div className='badge-tag'>{domain}</div>
 																		</a>
 																	);
 																})
 															)}
 														</Col>
+													</Row>
+												</div>
+											</Col>
+										</Row>
+
+										<Row className='mt-2'>
+											<Col sm={12} className='mb-5'>
+												<div className='rectangle'>
+													<Row className='gray800-14-bold'>
+														<Col sm={12}>Collaborators</Col>
+													</Row>
+													<Row className='mt-3'>
+														{projectData.persons.map(author => (
+															<Col sm={6} key={author.id}>
+																<Creators key={author.id} author={author} />
+															</Col>
+														))}
 													</Row>
 												</div>
 											</Col>
