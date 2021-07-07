@@ -4,7 +4,7 @@ import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
 import { Row, Col, Tabs, Tab, Container, Alert, Button } from 'react-bootstrap';
 import NotFound from '../commonComponents/NotFound';
-import Creators from '../commonComponents/Creators';
+import Uploader from '../commonComponents/Uploader';
 import Loading from '../commonComponents/Loading';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
@@ -437,18 +437,30 @@ export const PaperDetail = props => {
 															<span className='gray800-14'>{moment(paperData.updatedon).format('DD MMMM YYYY')}</span>
 														</Col>
 													</Row>
-													{paperData.uploader ? (
+													{paperData.authorsNew ? (
 														<Row className='mt-2'>
-															<Col sm={2} className='gray800-14'>
-																Uploader
+															<Col sm={2}>
+																<span className='gray800-14'>Authors</span>
 															</Col>
-															<Col sm={10} className='gray800-14 overflowWrap'>
-																{paperData.uploader}
+															<Col sm={10} className='gray800-14 overflowWrap' data-test-id='paper-authors'>
+																{paperData.authorsNew}
 															</Col>
 														</Row>
 													) : (
 														''
 													)}
+													<Row className='mt-3'>
+														<Col sm={2}>
+															<span className='gray800-14'>Uploaders</span>
+														</Col>
+														<Col sm={10} className='gray800-14 overflowWrap'>
+															{paperData.persons.map(uploader => (
+																<span key={uploader.id}>
+																	<Uploader key={uploader.id} uploader={uploader} />
+																</span>
+															))}
+														</Col>
+													</Row>
 													<Row className='mt-2'>
 														<Col sm={2}>
 															<span className='gray800-14'>Keywords</span>
@@ -539,25 +551,6 @@ export const PaperDetail = props => {
 										) : (
 											''
 										)}
-
-										<Row className='mt-2'>
-											<Col className='mb-5'>
-												<div className='rectangle'>
-													<Row>
-														<Col>
-															<span className='gray800-14-bold'>Authors</span>
-														</Col>
-													</Row>
-													<Row className='mt-3'>
-														{paperData.persons.map(author => (
-															<Col sm={6} key={author.id}>
-																<Creators key={author.id} author={author} />
-															</Col>
-														))}
-													</Row>
-												</div>
-											</Col>
-										</Row>
 									</Tab>
 
 									<Tab eventKey='Collaboration' title={`Discussion (${discoursePostCount})`}>

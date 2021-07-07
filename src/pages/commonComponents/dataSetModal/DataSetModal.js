@@ -1,21 +1,20 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-// import axios from 'axios';
+import axios from 'axios';
 import _ from 'lodash';
 import ReactMarkdown from 'react-markdown';
 import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg';
-import { Event } from '../../../tracking';
 import DataSetHelper from '../../../utils/DataSetHelper.util';
 
 import './DataSetModal.scss';
 
-// const baseURL = require('../BaseURL');
-// const cmsURL = baseURL.getCMSURL();
-// const env = baseURL.getURLEnv();
-// const local = 'local';
+const baseURL = require('../BaseURL');
+const cmsURL = baseURL.getCMSURL();
+const env = baseURL.getURLEnv();
+const local = 'local';
 
-const DataSetModal = ({ open, closed, context, userState }) => {
+const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginModal }) => {
 	let datasets = [],
 		title = '',
 		subTitle = '',
@@ -35,25 +34,6 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 		}
 	};
 
-	// TODO: Needs removed when Make an Enquiry journey is switched on
-	const onRequestAccess = e => {
-		// 1. stop default click
-		e.preventDefault();
-		// 2. close modal and do not show enquiry - false
-		closed(false);
-		// 3. check user loggedIn status if not make user login
-		if (!isLoggedIn) {
-			// 3a. Show the loginPanel
-			DataSetHelper.showLoginPanel(window, _.isEmpty(title) ? screenData.subTitle : title);
-		} else {
-			// 3. log google analytics event (Category-Action-Label)
-			Event('Buttons', 'Click', 'Request Access');
-			// 4. redirect to access request
-			const { publisher } = context.datasets[0];
-			history.push({ pathname: `/data-access-request/publisher/${publisher}` }, { datasets: context.datasets });
-		}
-	};
-
 	const onCloseModal = (showEnquiry = false) => {
 		// 1. if user is not loggedIn and wants to make enquiry make them sign in
 		if (!isLoggedIn && showEnquiry) {
@@ -65,17 +45,15 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 			// 4. do normal operation
 			closed(showEnquiry);
 		}
-	}
+	};
 
 	useEffect(() => {
 		if (open) initScreenData();
 
-		// let url = env === local ? 'https://uatbeta.healthdatagateway.org' : cmsURL;
-		// axios
-		// .get(url + '/Non5SafesModalContent', { withCredentials: false })
-		// 	.then(res => {
-		// 		setNon5SafesData(res.data)
-		// 	});
+		let url = env === local ? 'https://uatbeta.healthdatagateway.org' : cmsURL;
+		axios.get(url + '/Non5SafesModalContent', { withCredentials: false }).then(res => {
+			setNon5SafesData(res.data);
+		});
 	}, [open, context]);
 
 	return (
@@ -99,7 +77,7 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 					{!_.isEmpty(screenData.dataRequestModalContent) && typeof screenData.dataRequestModalContent.body !== 'undefined' ? (
 						<ReactMarkdown source={screenData.dataRequestModalContent.body} />
 					) : (
-						''
+						showNon5SafesData()
 					)}
 				</div>
 
@@ -123,12 +101,6 @@ const DataSetModal = ({ open, closed, context, userState }) => {
 								}}>
 								Make an enquiry
 							</button>
-							<button className='button-secondary mr-2' onClick={e => onRequestAccess(e)}>
-								Request access
-							</button> 
-							<button className='btn btn-primary addButton' onClick={() => onCloseModal(true)}>
-								Send a message to the custodian
-							</button> 
 						</div>
 					) : null}
 				</div>
