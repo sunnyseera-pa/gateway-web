@@ -1534,7 +1534,7 @@ button a {
 }
 
 .textUnderline {
-	text-decoration: underline !important;
+	text-decoration: underline;
 }
 
 .collectionCheckSvg {
@@ -1658,8 +1658,4 @@ button a {
 	position: relative;
 	margin: 0 14px 0 14px;
 	padding-top: 10px;
-}
-
-.cursorPointer {
-	cursor: pointer;
 }

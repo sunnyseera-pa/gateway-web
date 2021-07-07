@@ -85,6 +85,8 @@ class PublicAnalyticsDashboard extends React.Component {
 		initGA('UA-166025838-1');
 		await Promise.all([this.getUnmetDemand(), this.getTopSearches()]);
 
+		this.setState({ isLoading: false });
+
 		await Promise.all([
 			this.getTotalGAUsers(),
 			this.getGAUsers(
@@ -98,7 +100,7 @@ class PublicAnalyticsDashboard extends React.Component {
 			this.getTopDatasets(this.state.selectedOption),
 		]);
 
-		this.setState({ uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100, isLoading: false });
+		this.setState({ uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100 });
 	}
 
 	getUnmetDemand(selectedOption) {
@@ -304,7 +306,7 @@ class PublicAnalyticsDashboard extends React.Component {
 								<Col sm={12} lg={12}>
 									<Row>
 										<Col sm={8} lg={8}>
-											<span className='black-20-semibold'>Dashboard</span>
+											<span className='black-20'>Dashboard</span>
 										</Col>
 										<Col sm={4} lg={4}>
 											<span className='gray700-13 floatRight' data-test-id='dashboard-metrics-last-updated'>
@@ -313,54 +315,12 @@ class PublicAnalyticsDashboard extends React.Component {
 										</Col>
 									</Row>
 									<Row>
-										<Col sm={12} lg={12}>
+										<Col sm={8} lg={8}>
 											<span className='gray700-13'>
 												A collection of statistics, metrics and analytics; giving an overview of the sites data and performance
 											</span>
 										</Col>
-									</Row>
-								</Col>
-							</Row>
-
-							<Row className='kpiContainer'>
-								<Col sm={3} lg={3} className='kpiClass'>
-									<DashboardKPI kpiText='total datasets' kpiValue={statsDataType.dataset} testId='dashboard-dataset-count' />
-								</Col>
-								<Col sm={3} lg={3} className='kpiClass'>
-									<DashboardKPI
-										kpiText='datasets with technical metadata'
-										kpiValue={datasetsWithTechMetaData.toFixed(0)}
-										percentageFlag={true}
-										testId='dashboard-dataset-metadata-percent'
-									/>
-								</Col>
-								<Col sm={3} lg={3} className='kpiClass'>
-									<DashboardKPI
-										kpiText='unique registered users'
-										kpiValue={uniqueUsers.toFixed(0)}
-										percentageFlag={true}
-										testId='dashboard-users-registered-percent'
-									/>
-								</Col>
-								<Col sm={3} lg={3} className='kpiClass'>
-									<DashboardKPI
-										kpiText='uptime in current month'
-										kpiValue={uptime.toFixed(2) % 1 === 0 ? Math.trunc(uptime.toFixed(2)) : uptime.toFixed(2)}
-										percentageFlag={true}
-										testId='dashboard-gateway-uptime-percent'
-									/>
-								</Col>
-							</Row>
-
-							<Row className='accountHeader mt-2'>
-								<Col sm={12} lg={12}>
-									<Row>
-										<Col sm={7} lg={8}>
-											<span className='black-16-semibold'>Monthly</span>
-											<br />
-											<span className='gray700-13'>View the site’s data and performance on a monthly basis</span>
-										</Col>
-										<Col sm={5} lg={4}>
+										<Col sm={4} lg={4}>
 											<div className='select_option'>
 												<DropdownButton
 													variant='light'
@@ -383,8 +343,30 @@ class PublicAnalyticsDashboard extends React.Component {
 
 							<Row className='kpiContainer'>
 								<Col sm={3} lg={3} className='kpiClass'>
+									<DashboardKPI kpiText='total datasets' kpiValue={statsDataType.dataset} testId='dashboard-dataset-count' />
+								</Col>
+								<Col sm={3} lg={3} className='kpiClass'>
+									<DashboardKPI
+										kpiText='datasets with technical metadata'
+										kpiValue={datasetsWithTechMetaData.toFixed(0)}
+										percentageFlag={true}
+										testId='dashboard-dataset-metadata-percent'
+									/>
+								</Col>
+								<Col sm={3} lg={3} className='kpiClass'>
 									<DashboardKPI kpiText='users this month' kpiValue={gaUsers} testId='dashboard-users-monthly-count' />
 								</Col>
+								<Col sm={3} lg={3} className='kpiClass'>
+									<DashboardKPI
+										kpiText='unique registered users'
+										kpiValue={uniqueUsers.toFixed(0)}
+										percentageFlag={true}
+										testId='dashboard-users-registered-percent'
+									/>
+								</Col>
+							</Row>
+
+							<Row className='kpiContainer'>
 								<Col sm={3} lg={3} className='kpiClass'>
 									<DashboardKPI
 										kpiText='searches with results this month'
@@ -394,10 +376,14 @@ class PublicAnalyticsDashboard extends React.Component {
 									/>
 								</Col>
 								<Col sm={3} lg={3} className='kpiClass'>
+									<DashboardKPI kpiText='new access requests' kpiValue={accessRequests} testId='dashboard-data-access-requests-count' />
+								</Col>
+								<Col sm={3} lg={3} className='kpiClass'>
 									<DashboardKPI
-										kpiText='data access requests this month'
-										kpiValue={accessRequests}
-										testId='dashboard-data-access-requests-count'
+										kpiText='uptime this month'
+										kpiValue={uptime.toFixed(2) % 1 === 0 ? Math.trunc(uptime.toFixed(2)) : uptime.toFixed(2)}
+										percentageFlag={true}
+										testId='dashboard-gateway-uptime-percent'
 									/>
 								</Col>
 								<Col sm={3} lg={3} className='kpiClass'>

@@ -155,7 +155,7 @@ class RelatedObject extends React.Component {
 		}
 
 		return (
-			<Row className='resource-card-row' data-test-id='related-object-card' key={this.props.key}>
+			<Row className='resource-card-row' key={this.props.key}>
 				<Col>
 					<div
 						className={rectangleClassName}
@@ -824,11 +824,7 @@ class RelatedObject extends React.Component {
 									<Row className='noMargin'>
 										<Col sm={10} lg={10} className='pad-left-24'>
 											{activeLink === true ? (
-												<a
-													data-test-id='dataset-card-name'
-													className='purple-bold-16'
-													style={{ cursor: 'pointer' }}
-													href={'/dataset/' + data.pid}>
+												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/dataset/' + data.pid}>
 													{data.name}
 												</a>
 											) : (
