@@ -8,19 +8,19 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 	const formRef = useRef();
 	const [selectedDatasets, setSelectedDatasets] = useState([]);
 	const valueMapper = {
-		safepeopleprimaryapplicantfullname: { title: 'Name' },
+		safepeopleprimaryapplicantfullname: { title: 'Applicant name' },
 		safepeopleprimaryapplicantorganisationname: { title: 'Organisation' },
 		safepeopleprimaryapplicantemail: { title: 'Email' },
 		safepeopleprimaryapplicanttelephone: { title: 'Contact number' },
 		safeprojectprojectdetailstitle: { title: 'Project title' },
-		safeprojectprojectdetailsaimsobjectivesrationale: { title: 'Research aim or question' },
-		datasetsRequested: { title: 'Datasets of interest' },
-		'safedata-otherdatasetsintentiontolinkdata': { title: 'Are there other datasets you would like to link with the ones listed above?' },
-		safedataotherdatasetslinkadditionaldatasetslinkagedetails: { title: 'Name or description of the linked datasets' },
+		safeprojectprojectdetailsaimsobjectivesrationale: { title: 'Project aim' },
+		datasetsRequested: { title: 'Datasets being requested' },
+		'safedata-otherdatasetsintentiontolinkdata': { title: 'Do you have any datasets you would like to link with this one?' },
+		safedataotherdatasetslinkadditionaldatasetslinkagedetails: { title: 'Names of the linked datasets' },
 		datasetsInterestedIn: { title: 'Do you know which parts of the dataset you are interested in?' },
-		safedatadatafieldsdatarequiredjustification: { title: 'Parts of the dataset interested in' },
+		safedatadatafieldsdatarequiredjustification: { title: 'Parts of the dataset interesed in' },
 		funding: { title: 'Funding' },
-		safeprojectprojectdetailspublicbenefitimpact: { title: 'Potential research benefits' },
+		safeprojectprojectdetailspublicbenefitimpact: { title: 'Research benefits' },
 	};
 
 	// Funding do not map as per zeplin design
@@ -166,7 +166,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 	return (
 		<div className='enquiry-message-container'>
 			<div className='gray700-13 text-center' data-test-id='formIntroText'>
-				Please provide details about your project and the data you are interested in.
+				After submitting the information below you will be able to message the data custodian freely.
 			</div>
 			<Formik
 				enableReinitialize
@@ -183,7 +183,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 							{/* APPLICANT NAME */}
 							<div className='form-group gray800-14'>
 								<label htmlFor={`safepeopleprimaryapplicantfullname`} className='form-label'>
-									Name *
+									Applicant Name *
 								</label>
 								<Field
 									type='text'
@@ -269,7 +269,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 							{/* PROJECT AIM */}
 							<div className='form-group gray800-14'>
 								<label htmlFor={`safeprojectprojectdetailsaimsobjectivesrationale`} className='form-label'>
-									Research aim or question *
+									Project aim *
 									<span className='gray700-13'>Please briefly explain the purpose of your research and why you require this dataset</span>
 								</label>
 								<Field
@@ -288,7 +288,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 							{/* DATASETS  REQUESTED */}
 							<div className='form-group gray800-14' data-test-id='datasetsRequested'>
 								<label htmlFor={`datasetsRequested`} className='form-label gray800-14'>
-									Datasets of interest *
+									Datasets being requested *
 								</label>
 								<TypeaheadDataset
 									selectedDatasets={topic.tags}
@@ -305,7 +305,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 							{/* DATASETS LINK WITH RADIO */}
 							<div className='form-group'>
 								<label htmlFor={`safedata-otherdatasetsintentiontolinkdata`} className='form-label gray800-14'>
-									Are there other datasets you would like to link with the ones listed above? *
+									Do you have any datasets you would like to link with this one? *
 								</label>
 								<div className='form-check'>
 									<Field type='radio' name='safedata-otherdatasetsintentiontolinkdata' value='Yes' data-test-id='linked-datasets-yes' />
@@ -336,7 +336,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 							{values && values['safedata-otherdatasetsintentiontolinkdata'] === 'Yes' ? (
 								<div className='form-group gray800-14'>
 									<label htmlFor={`safedataotherdatasetslinkadditionaldatasetslinkagedetails`} className='form-label'>
-										Please provide the name or description of these datasets *
+										Please identify the names of the datasets *
 									</label>
 									<Field
 										as='textarea'
@@ -409,10 +409,7 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 							{/* FUNDING */}
 							<div className='form-group gray800-14'>
 								<label htmlFor={`funding`} className='form-label'>
-									Funding *
-									<span className='gray700-13'>
-										Please provide information on the status of funding for your project including who is expected to fund the research
-									</span>
+									Funding *<span className='gray700-13'>Please provide information on whether your project is funded</span>
 								</label>
 								<Field
 									as='textarea'
@@ -426,9 +423,9 @@ export const EnquiryMessage = ({ topic, onDatasetsRequested, onFirstMessageSubmi
 							{/* RESEARCH BENEFITS */}
 							<div className='form-group gray800-14'>
 								<label htmlFor={`safeprojectprojectdetailspublicbenefitimpact`} className='form-label'>
-									Potential research benefits *
+									Research benefits *
 									<span className='gray700-13'>
-										Please provide a short explanation of how your research would benefit the health and care system
+										Please provide evidence of how your research will benefit the health and social care system
 									</span>
 								</label>
 								<Field
