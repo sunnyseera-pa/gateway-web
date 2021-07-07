@@ -40,7 +40,7 @@ const DatasetAboutCard = ({ v2data, section, showEmpty, requiresModal, toggleMod
 									''
 								) : (
 									<AboutCardElement
-										label={'Latest dataset release date'}
+										label={'Lastest datset release date'}
 										description={v2data.provenance.temporal.distributionReleaseDate}
 										tooltip={'Date of the latest release of the dataset.'}
 									/>
