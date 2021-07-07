@@ -240,7 +240,6 @@ class DataAccessRequest extends Component {
 						workflow,
 						files,
 						isCloneable,
-						formType,
 					},
 				},
 			} = response;
@@ -260,7 +259,6 @@ class DataAccessRequest extends Component {
 				workflow,
 				files,
 				isCloneable,
-				formType
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -288,7 +286,6 @@ class DataAccessRequest extends Component {
 						workflow,
 						files,
 						isCloneable,
-						formType,
 					},
 				},
 			} = response;
@@ -308,7 +305,6 @@ class DataAccessRequest extends Component {
 				workflow,
 				files,
 				isCloneable,
-				formType,
 			});
 
 			// for local test uses formSchema.json
@@ -360,7 +356,6 @@ class DataAccessRequest extends Component {
 			workflow,
 			files,
 			isCloneable,
-			formType
 		} = context;
 		let {
 			datasetfields: { publisher },
@@ -403,7 +398,7 @@ class DataAccessRequest extends Component {
 		// 4. Set messaging and modal context
 		let topicContext = DarHelper.createTopicContext(aboutApplication.selectedDatasets);
 		let modalContext = DarHelper.createModalContext(aboutApplication.selectedDatasets);
-		let allowsMultipleDatasets = formType === '5 safe';
+		let allowsMultipleDatasets = topicContext.requiresModal || false;
 
 		// 5. If multiple datasets are allowed, append 'about this application' section
 		if (allowsMultipleDatasets) {

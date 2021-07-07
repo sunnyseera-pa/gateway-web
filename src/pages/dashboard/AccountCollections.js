@@ -72,7 +72,8 @@ const AccountCollections = props => {
 
 	const unarchiveCollection = id => {
 		axios
-			.put(baseURL + '/api/v1/collections/status/' + id, {
+			.put(baseURL + '/api/v1/collections/status', {
+				id: id,
 				activeflag: 'active',
 			})
 			.then(res => {
@@ -116,7 +117,8 @@ const AccountCollections = props => {
 
 	const archiveCollection = id => {
 		axios
-			.put(baseURL + '/api/v1/collections/status/' + id, {
+			.put(baseURL + '/api/v1/collections/status', {
+				id: id,
 				activeflag: 'archive',
 			})
 			.then(res => {

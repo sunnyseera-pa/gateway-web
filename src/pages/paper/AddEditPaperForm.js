@@ -1,22 +1,21 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, Fragment } from 'react';
 import axios from 'axios';
 import { Formik, useFormik, FieldArray } from 'formik';
 import * as Yup from 'yup';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { Form, Button, Row, Col, Container } from 'react-bootstrap';
 import moment from 'moment';
-import { isNil, isEmpty } from 'lodash';
 import RelatedResources from '../commonComponents/relatedResources/RelatedResources';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
-import RemoveUploaderModal from '../commonComponents/RemoveUploaderModal';
-import RemoveUploaderErrorModal from '../commonComponents/RemoveUploaderErrorModal';
 import { isPDFLink, removeArrayItem } from '../../utils/GeneralHelper.util';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
 import { ReactComponent as InfoSVG } from '../../images/info.svg';
 import './Paper.scss';
-const baseURL = require('../commonComponents/BaseURL').getURL();
+import _ from 'lodash';
+
+var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const initialValues = {
 	document_links: {
@@ -35,17 +34,6 @@ const validateSchema = Yup.object().shape({
 });
 
 const AddEditPaperForm = props => {
-	const [isPreprintToolTipShown, setPreprintToolTipIsShown] = useState(false);
-	const [uploadersList, setUploadersList] = useState([]);
-	const [uploaderToBeRemoved, setUploaderToBeRemoved] = useState({});
-	const [showRemoveUploaderModal, setShowRemoveUploaderModal] = useState(false);
-	const [showRemoveUploaderErrorModal, setShowRemoveUploaderErrorModal] = useState(false);
-	const [removingOriginalUploader, setRemovingOriginalUploader] = useState(false);
-	const originalUploader = props.isEdit ? props.data.uploader : props.userState[0].id;
-	useEffect(() => {
-		buildListOfUploaders();
-	}, []);
-
 	// Pass the useFormik() hook initial form values and a submit function that will
 	// be called when the form is submitted
 	const formik = useFormik({
@@ -64,11 +52,11 @@ const AddEditPaperForm = props => {
 						pdf: [],
 						html: [],
 				  },
-			authorsNew: props.data.authorsNew || '',
 			journal: props.data.journal || '',
 			journalYear: props.data.journalYear || '',
 			description: props.data.description || '',
 			resultsInsights: props.data.resultsInsights || '',
+			authors: props.data.authors || [props.userState[0].id],
 			tags: props.data.tags || {
 				features: [],
 				topics: [],
@@ -84,6 +72,7 @@ const AddEditPaperForm = props => {
 				doi: Yup.array().of(Yup.string().min(5, 'This cannot be empty').required('This cannot be empty')),
 			}),
 			resultsInsights: Yup.string().max(3000, 'Maximum of 3,000 characters'),
+			authors: Yup.string().required('This cannot be empty'),
 			isPreprint: Yup.bool(),
 			journal: Yup.string().when('isPreprint', {
 				is: false,
@@ -104,7 +93,7 @@ const AddEditPaperForm = props => {
 					removeArrayItem(values.document_links.doi, values.document_links.doi[i]);
 				}
 			}
-			values.authors = uploadersList.map(uploader => uploader.id);
+
 			if (props.isEdit) {
 				axios.put(baseURL + '/api/v1/papers/' + props.data.id, values).then(res => {
 					window.location.href = window.location.search + '/paper/' + props.data.id + '/?paperEdited=true';
@@ -117,49 +106,33 @@ const AddEditPaperForm = props => {
 		},
 	});
 
-	const buildListOfUploaders = () => {
-		let listOfUploaders = [];
+	var listOfAuthors = [];
 
-		if (props.isEdit) {
-			props.data.authors.forEach(uploader => {
-				props.combinedUsers.forEach(user => {
-					if (user.id === uploader) {
-						if (props.userState[0].id === user.id) {
-							listOfUploaders.push({ id: user.id, name: user.name + ' (You)' });
-							if (!user.name.includes('(You)')) {
-								user.name = user.name + ' (You)';
-							}
-						} else {
-							listOfUploaders.push({ id: user.id, name: user.name });
-						}
-					}
-				});
-			});
-		} else {
+	if (props.isEdit) {
+		props.data.authors.forEach(author => {
 			props.combinedUsers.forEach(user => {
-				if (user.id === props.userState[0].id) {
-					listOfUploaders.push({ id: user.id, name: user.name + ' (You)' });
-					if (!user.name.includes('(You)')) {
-						user.name = user.name + ' (You)';
+				if (user.id === author) {
+					if (props.userState[0].id === user.id) {
+						listOfAuthors.push({ id: user.id, name: user.name + ' (You)' });
+						if (!user.name.includes('(You)')) {
+							user.name = user.name + ' (You)';
+						}
+					} else {
+						listOfAuthors.push({ id: user.id, name: user.name });
 					}
 				}
 			});
-		}
-		setUploadersList(listOfUploaders);
-	};
-
-	const cancelUploaderRemoval = () => {
-		setUploaderToBeRemoved({});
-		setRemovingOriginalUploader(false);
-		setShowRemoveUploaderModal(false);
-		setShowRemoveUploaderErrorModal(false);
-	};
-
-	const confirmUploaderRemoval = () => {
-		setUploadersList(uploadersList.filter(uploader => uploader.id !== uploaderToBeRemoved.id));
-		setUploaderToBeRemoved({});
-		setShowRemoveUploaderModal(false);
-	};
+		});
+	} else {
+		props.combinedUsers.forEach(user => {
+			if (user.id === props.userState[0].id) {
+				listOfAuthors.push({ id: user.id, name: user.name + ' (You)' });
+				if (!user.name.includes('(You)')) {
+					user.name = user.name + ' (You)';
+				}
+			}
+		});
+	}
 
 	function updateReason(id, reason, type, pid) {
 		let inRelatedObject = false;
@@ -195,24 +168,12 @@ const AddEditPaperForm = props => {
 		document.getElementById('resultsInsightsCount').innerHTML = e.target.value.length;
 	}
 
+	const [isShown, setIsShown] = useState(false);
+
 	const relatedResourcesRef = React.useRef();
 	return (
 		<div>
 			<Container>
-				<RemoveUploaderModal
-					open={showRemoveUploaderModal}
-					cancelUploaderRemoval={cancelUploaderRemoval}
-					confirmUploaderRemoval={confirmUploaderRemoval}
-					entityType={'paper'}
-					userState={props.userState}
-					uploaderToBeRemoved={uploaderToBeRemoved}></RemoveUploaderModal>
-
-				<RemoveUploaderErrorModal
-					open={showRemoveUploaderErrorModal}
-					cancelUploaderRemoval={cancelUploaderRemoval}
-					entityType={'paper'}
-					uploaderToBeRemoved={uploaderToBeRemoved}
-					removingOriginalUploader={removingOriginalUploader}></RemoveUploaderErrorModal>
 				<Formik
 					initialValues={initialValues}
 					validationSchema={validateSchema}
@@ -341,19 +302,30 @@ const AddEditPaperForm = props => {
 												</Row>
 
 												<Form.Group>
-													<span className='gray800-14'>Authors (optional)</span>
-													<p className='gray700-13 margin-bottom-0'>
-														Please add the names of the people who authored this paper, using a comma to separate the names
-													</p>
-													<Form.Control
-														id='authorsNew'
-														data-test-id='authors'
-														name='authorsNew'
-														type='text'
-														className='addFormInput gray700-13'
-														onChange={formik.handleChange}
-														value={formik.values.authorsNew}
+													<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Authors on the Gateway</p>
+													<p className='gray700-13 margin-bottom-0'>Add any authors or collaborators who have an account on this site</p>
+													<Typeahead
+														id='authors'
+														labelKey={authors => `${authors.name}`}
+														defaultSelected={listOfAuthors}
+														multiple
+														className={
+															formik.touched.authors && formik.errors.authors
+																? 'emptyFormInputTypeAhead addFormInputTypeAhead'
+																: 'addFormInputTypeAhead'
+														}
+														options={props.combinedUsers}
+														onChange={selected => {
+															var tempSelected = [];
+															selected.forEach(selectedItem => {
+																tempSelected.push(selectedItem.id);
+															});
+															formik.values.authors = tempSelected;
+														}}
 													/>
+													{formik.touched.authors && formik.errors.authors ? (
+														<div className='errorMessages'>{formik.errors.authors}</div>
+													) : null}
 												</Form.Group>
 
 												<Row className='mt-2'>
@@ -375,13 +347,10 @@ const AddEditPaperForm = props => {
 																<Col sm={11} lg={11} id='preprintCheckCol'>
 																	<span className='gray800-14'>This article is a preprint</span>
 
-																	<span
-																		className='purple-13'
-																		onMouseEnter={() => setPreprintToolTipIsShown(true)}
-																		onMouseLeave={() => setPreprintToolTipIsShown(false)}>
+																	<span className='purple-13' onMouseEnter={() => setIsShown(true)} onMouseLeave={() => setIsShown(false)}>
 																		<InfoSVG className='paperFormSVG' />
 																	</span>
-																	{isPreprintToolTipShown && (
+																	{isShown && (
 																		<div className='preprintFormToolTip'>
 																			<span className='white-13-semibold'>
 																				A preprint is a complete scientific manuscript that an author uploads on a public server for free
@@ -555,56 +524,6 @@ const AddEditPaperForm = props => {
 														}}
 													/>
 												</Form.Group>
-
-												<Form.Group data-test-id='uploaders'>
-													<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Uploaders</p>
-													<p className='gray700-13 margin-bottom-0'>Uploaders are Gateway members with editing rights on this paper.</p>
-													<Typeahead
-														id='authors'
-														labelKey={authors => `${authors.name}`}
-														defaultSelected={uploadersList}
-														multiple
-														className={
-															formik.touched.authors && formik.errors.authors
-																? 'emptyFormInputTypeAhead addFormInputTypeAhead'
-																: 'addFormInputTypeAhead'
-														}
-														options={props.combinedUsers}
-														selected={uploadersList}
-														onChange={selectedOptions => {
-															// 1. Check if removing any uploader
-															const removedUploader = uploadersList.filter(
-																uploader => !selectedOptions.map(selectedOpt => selectedOpt.id).includes(uploader.id)
-															)[0];
-															if (!isEmpty(removedUploader)) {
-																// 2. Check if removing original uploader
-																if (removedUploader.id === originalUploader) {
-																	setRemovingOriginalUploader(true);
-																	setShowRemoveUploaderErrorModal(true);
-																}
-																// 3. Check if removing last uploader
-																else if (isEmpty(selectedOptions)) {
-																	setUploaderToBeRemoved(removedUploader);
-																	setShowRemoveUploaderErrorModal(true);
-																} else {
-																	// 4. If removing a regular uploader show regular remove uploader modal
-																	setUploaderToBeRemoved(removedUploader);
-																	setShowRemoveUploaderModal(true);
-																}
-															} else {
-																// 5. If not removing uploader, user is adding uploader
-																const addedUploader = selectedOptions
-																	.filter(selectedOpt => !uploadersList.map(uploader => uploader.id).includes(selectedOpt.id))
-																	.map(newUploader => {
-																		return { id: newUploader.id, name: newUploader.name };
-																	})[0];
-																if (!isEmpty(addedUploader)) {
-																	setUploadersList([...uploadersList, addedUploader]);
-																}
-															}
-														}}
-													/>
-												</Form.Group>
 											</div>
 
 											<div className='rectangle mt-2'>
@@ -621,7 +540,7 @@ const AddEditPaperForm = props => {
 											) : (
 												<div className='rectangle'>
 													{props.relatedObjects.map(object => {
-														if (!isNil(object.objectId)) {
+														if (!_.isNil(object.objectId)) {
 															return (
 																<RelatedObject
 																	showRelationshipQuestion={true}

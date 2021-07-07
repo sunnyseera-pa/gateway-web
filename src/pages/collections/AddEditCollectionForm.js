@@ -46,7 +46,7 @@ const AddEditCollectionForm = props => {
 			values.collectionCreator = props.userState[0];
 
 			if (props.isEdit) {
-				axios.put(baseURL + '/api/v1/collections/edit/' + props.data.id, values).then(res => {
+				axios.put(baseURL + '/api/v1/collections/edit', values).then(res => {
 					window.location.href = windowUrl + '/collection/' + props.data.id + '/?collectionEdited=true';
 				});
 			} else {
