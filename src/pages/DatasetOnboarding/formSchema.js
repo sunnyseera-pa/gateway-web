@@ -405,11 +405,11 @@ export const formSchema = {
 					guidance:
 						'- The **geographical area** covered by the dataset.\n- Please enter a link to entries in a well-maintained gazetteer such as <https://www.geonames.org/>',
 					input: {
-						type: 'textInput',
+						type: 'multiField',
 					},
 					validations: [
 						{
-							type: 'isURLValid',
+							type: 'isMultiFieldURL',
 							message: 'Please enter a valid URL. Must include http(s)://',
 						},
 					],
