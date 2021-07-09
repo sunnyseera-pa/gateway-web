@@ -806,6 +806,11 @@ class DatasetDetail extends Component {
 												<SVGIcon name='dataseticon' fill={'#113328'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 												<span>Dataset</span>
 											</span>
+											{ data.is5Safes ?
+											<span className='badge-project'>
+												<SVGIcon name='cohorticon' fill={'#472505'} className='badgeSvg mr-2' width="22" height="22" viewBox='0 0 10 10'/>
+												<span>Cohort Discovery</span>
+											</span> : ''}
 											{!data.tags.features || data.tags.features.length <= 0
 												? ''
 												: data.tags.features.map((keyword, index) => {

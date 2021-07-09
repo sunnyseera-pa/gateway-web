@@ -832,6 +832,11 @@ class RelatedObject extends React.Component {
 												<SVGIcon name='dataseticon' fill={'#113328'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 												<span>Dataset</span>
 											</span>
+											{ activeLink ?
+											<span className='badge-project'>
+												<SVGIcon name='cohorticon' fill={'#472505'} className='badgeSvg mr-2' width="22" height="22" viewBox='0 0 10 10'/>
+												<span>Cohort Discovery</span>
+											</span> : ''}
 											{(() => {
 												if (phenotypesSeached.length > 0) {
 													if (activeLink === true) {
