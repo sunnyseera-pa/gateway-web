@@ -402,6 +402,7 @@ export const formSchema = {
 				{
 					questionId: 'properties/coverage/spatial',
 					question: 'Spatial',
+					text: 'The geographic coverage covered by the dataset',
 					guidance:
 						'- The **geographical area** covered by the dataset.\n- Please enter a link to entries in a well-maintained gazetteer such as <https://www.geonames.org/>',
 					input: {
