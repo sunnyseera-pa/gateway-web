@@ -203,6 +203,25 @@ let configActionModal = (type = '') => {
 					},
 				};
 				break;
+			case 'VALIDATIONERRORSADMIN':
+				config = {
+					title: 'Mandatory fields missing',
+					subTitle: `Are you sure that you want to submit this version of this dataset for review? There are mandatory fields missing. You cannot edit this form whilst it is pending.`,
+					description: false,
+					buttons: {
+						cancel: {
+							label: 'No, nevermind',
+							action: 'cancel',
+							class: 'button-secondary mr-2',
+						},
+						confirmSubmission: {
+							label: 'Confirm submission',
+							action: 'confirmSubmission',
+							class: 'btn btn-primary addButton',
+						},
+					},
+				};
+				break;
 			case 'SUBMITFORREVIEW':
 				config = {
 					title: 'Sumbit version for review?',
