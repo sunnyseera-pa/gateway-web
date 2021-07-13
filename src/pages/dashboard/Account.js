@@ -355,13 +355,13 @@ class Account extends Component {
 				break;
 			default:
 				const team = userState[0].teams.reduce((obj, team) => {
-					if(team._id === teamSelector) {
-						obj = {...team};
+					if (team._id === teamSelector) {
+						obj = { ...team };
 					}
 					return obj;
 				}, {});
-				if(_.isEmpty(team)) {
-					this.setState({team: 'user'});
+				if (_.isEmpty(team)) {
+					this.setState({ team: 'user' });
 					renderItem = <Fragment>{userState[0].name}</Fragment>;
 				} else {
 					renderItem = <Fragment>{team.name}</Fragment>;
@@ -728,7 +728,7 @@ class Account extends Component {
 						drawerIsOpen={this.state.showDrawer}
 					/>
 				</SideDrawer>
-				{tabId === 'teamManagement' && teamManagementTab == tabTypes.Notifications && (
+				{tabId === 'teamManagement' && teamManagementTab === tabTypes.Notifications && (
 					<ActionBar userState={userState}>
 						<div>
 							<button
