@@ -37,6 +37,7 @@ import DataQuality from './components/DataQuality';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import DatasetAboutCard from './components/DatasetAboutCard';
+import CohortDiscoveryBanner from './components/CohortDiscoveryBanner';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
@@ -1201,6 +1202,7 @@ class DatasetDetail extends Component {
 										<Tab eventKey='TechDetails' title={`Technical details`}>
 											{dataClassOpen === -1 ? (
 												<Fragment>
+													<CohortDiscoveryBanner userProps={userState[0]}/>
 													<Col sm={12} lg={12} className='subHeader gray800-14-bold pad-bottom-24 pad-top-24'>
 														<span className='black-16-semibold mr-3'>Data Classes</span>
 														<span onMouseEnter={this.handleMouseHover} onMouseLeave={this.handleMouseHover}>
