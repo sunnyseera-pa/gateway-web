@@ -17,6 +17,7 @@ import { ReactComponent as MetadataSilver } from '../../images/silverNew.svg';
 import { ReactComponent as MetadataGold } from '../../images/goldNew.svg';
 import { ReactComponent as MetadataPlatinum } from '../../images/platinumNew.svg';
 import { ReactComponent as MetadataNotRated } from '../../images/notRatedNew.svg';
+import { ReactComponent as GoldStar } from '../../images/cd-star.svg';
 import { PageView, initGA } from '../../tracking';
 import { Event } from '../../tracking';
 import Linkify from 'react-linkify';
@@ -1194,7 +1195,7 @@ class DatasetDetail extends Component {
 											)}
 										</Tab>
 
-										<Tab eventKey='TechDetails' title={`Technical details`}>
+										<Tab eventKey='TechDetails' title={!this.state ? `Technical details` : <span style={{ display: 'flex' }}><GoldStar fill={'#f98e2b'} height='20' width='20' className='mr-2'/> Technical details</span>}>
 											{dataClassOpen === -1 ? (
 												<Fragment>
 													<Col sm={12} lg={12} className='subHeader gray800-14-bold pad-bottom-24 pad-top-24'>
