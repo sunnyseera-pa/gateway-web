@@ -503,7 +503,7 @@ class DatasetOnboarding extends Component {
 
 		if (isValid) {
 			this.toggleActionModal('SUBMITFORREVIEW');
-		} else if ('user' === 'adminDataset') {
+		} else if (this.userRoleIsAdmin(this.state.publisher)) {
 			this.toggleActionModal('VALIDATIONERRORSADMIN');
 		} else {
 			let activePage = _.get(_.keys({ ...errors }), 0);
@@ -1066,6 +1066,21 @@ class DatasetOnboarding extends Component {
 
 		return foundTeam[0]._id; */
 	}
+
+	userHasRole = (teamId, role) => {
+		const team = this.props.userState[0].teams.filter(t => {
+			return t._id === teamId;
+		})[0];
+		return team && team.roles.includes(role);
+	};
+
+	userRoleIsAdmin = teamId => {
+		debugger;
+		const team = this.props.userState[0].teams.filter(t => {
+			return t._id === teamId;
+		})[0];
+		return team && team.isAdmin;
+	};
 
 	/* renderTooltip = props => (
 		<Tooltip className='tool-tip' style={{ width: '240px' }}>
