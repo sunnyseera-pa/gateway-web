@@ -102,6 +102,7 @@ class DatasetDetail extends Component {
 		publisherLogoURL: '',
 		isLatestVersion: true,
 		isDatasetArchived: false,
+		isCohortDiscovery: false,
 	};
 
 	topicContext = {};
@@ -148,7 +149,6 @@ class DatasetDetail extends Component {
 				this.setState({
 					data: res.data.data,
 					v2data: res.data.data.datasetv2,
-					isLoading: false,
 					isLatestVersion: res.data.isLatestVersion,
 					isDatasetArchived: res.data.isDatasetArchived,
 				});
@@ -210,9 +210,15 @@ class DatasetDetail extends Component {
 						},
 					});
 				}
-
-				this.setState({ isLoading: false });
 			}
+		});
+
+		await axios.get(baseURL + '/api/v2/cohortProfiling?pids=' + this.props.match.params.datasetID + '&fields=variables.name').then(res => {
+			let newIsCohortDiscoveryState = res.data.cohortProfiling.length > 0 ? true : false;
+			this.setState({
+				isCohortDiscovery: newIsCohortDiscoveryState,
+				isLoading: false
+			});
 		});
 	};
 
@@ -807,11 +813,21 @@ class DatasetDetail extends Component {
 												<SVGIcon name='dataseticon' fill={'#113328'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 												<span>Dataset</span>
 											</span>
-											{ data.is5Safes ?
-											<span className='badge-project'>
-												<SVGIcon name='cohorticon' fill={'#472505'} className='badgeSvg mr-2' width="22" height="22" viewBox='0 0 10 10'/>
-												<span>Cohort Discovery</span>
-											</span> : ''}
+											{this.state.isCohortDiscovery ? (
+												<span className='badge-project'>
+													<SVGIcon
+														name='cohorticon'
+														fill={'#472505'}
+														className='badgeSvg mr-2'
+														width='22'
+														height='22'
+														viewBox='0 0 10 10'
+													/>
+													<span>Cohort Discovery</span>
+												</span>
+											) : (
+												''
+											)}
 											{!data.tags.features || data.tags.features.length <= 0
 												? ''
 												: data.tags.features.map((keyword, index) => {

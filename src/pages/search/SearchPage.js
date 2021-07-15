@@ -1954,6 +1954,7 @@ class SearchPage extends React.Component {
 														updateOnFilterBadge={this.updateOnFilterBadge}
 														datasetPublisher={datasetPublisher}
 														datasetLogo={datasetLogo}
+														datasetPid={dataset.pid}
 													/>
 												);
 											})

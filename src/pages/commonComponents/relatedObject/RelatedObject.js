@@ -26,6 +26,7 @@ class RelatedObject extends React.Component {
 		isLoading: true,
 		didDelete: false,
 		inCollection: false,
+		isCohortDiscovery: false,
 		publisherLogoURL: '',
 	};
 
@@ -52,9 +53,20 @@ class RelatedObject extends React.Component {
 		}
 	}
 
+	displayCohortDiscoveryLozange(pid) {
+		axios.get(baseURL + '/api/v2/cohortProfiling?pids=' + pid + '&fields=variables.name').then(res => {
+			let newIsCohortDiscoveryState = res.data.cohortProfiling.length > 0 ? true : false;
+			this.setState({
+				isCohortDiscovery: newIsCohortDiscoveryState,
+			});
+		});
+	}
 	async componentDidMount() {
 		if (this.props.datasetPublisher) {
 			await this.updatePublisherLogo(this.props.datasetPublisher);
+		}
+		if (this.props.datasetPid) {
+			await this.displayCohortDiscoveryLozange(this.props.datasetPid);
 		}
 	}
 
@@ -197,13 +209,15 @@ class RelatedObject extends React.Component {
 													if (activeLink === true) {
 														return (
 															<a className='gray800-14' href={'/person/' + person.id} key={`perosn-${index}`}>
-																{person.firstname} {person.lastname}{data.persons.length === index + 1 ? '' : ', '}
+																{person.firstname} {person.lastname}
+																{data.persons.length === index + 1 ? '' : ', '}
 															</a>
 														);
 													} else {
 														return (
 															<span className='gray800-14' key={`perosn-${index}`}>
-																{person.firstname} {person.lastname}{data.persons.length === index + 1 ? '' : ', '}
+																{person.firstname} {person.lastname}
+																{data.persons.length === index + 1 ? '' : ', '}
 															</span>
 														);
 													}
@@ -363,13 +377,15 @@ class RelatedObject extends React.Component {
 													if (activeLink === true) {
 														return (
 															<a className='gray800-14' href={'/person/' + person.id} key={`perosn-${index}`}>
-																{person.firstname} {person.lastname}{data.persons.length === index + 1 ? '' : ', '}
+																{person.firstname} {person.lastname}
+																{data.persons.length === index + 1 ? '' : ', '}
 															</a>
 														);
 													} else {
 														return (
 															<span className='gray800-14' key={`perosn-${index}`}>
-																{person.firstname} {person.lastname}{data.persons.length === index + 1 ? '' : ', '}
+																{person.firstname} {person.lastname}
+																{data.persons.length === index + 1 ? '' : ', '}
 															</span>
 														);
 													}
@@ -494,13 +510,15 @@ class RelatedObject extends React.Component {
 													if (activeLink === true) {
 														return (
 															<a className='gray800-14' href={'/person/' + person.id} key={`perosn-${index}`}>
-																{person.firstname} {person.lastname}{data.persons.length === index + 1 ? '' : ', '}
+																{person.firstname} {person.lastname}
+																{data.persons.length === index + 1 ? '' : ', '}
 															</a>
 														);
 													} else {
 														return (
 															<span className='gray800-14' key={`perosn-${index}`}>
-																{person.firstname} {person.lastname}{data.persons.length === index + 1 ? '' : ', '}
+																{person.firstname} {person.lastname}
+																{data.persons.length === index + 1 ? '' : ', '}
 															</span>
 														);
 													}
@@ -832,11 +850,21 @@ class RelatedObject extends React.Component {
 												<SVGIcon name='dataseticon' fill={'#113328'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 												<span>Dataset</span>
 											</span>
-											{ activeLink ?
-											<span className='badge-project'>
-												<SVGIcon name='cohorticon' fill={'#472505'} className='badgeSvg mr-2' width="22" height="22" viewBox='0 0 10 10'/>
-												<span>Cohort Discovery</span>
-											</span> : ''}
+											{this.state.isCohortDiscovery ? (
+												<span className='badge-project'>
+													<SVGIcon
+														name='cohorticon'
+														fill={'#472505'}
+														className='badgeSvg mr-2'
+														width='22'
+														height='22'
+														viewBox='0 0 10 10'
+													/>
+													<span>Cohort Discovery</span>
+												</span>
+											) : (
+												''
+											)}
 											{(() => {
 												if (phenotypesSeached.length > 0) {
 													if (activeLink === true) {
