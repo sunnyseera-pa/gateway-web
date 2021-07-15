@@ -102,6 +102,7 @@ class DatasetDetail extends Component {
 		publisherLogoURL: '',
 		isLatestVersion: true,
 		isDatasetArchived: false,
+		isCohortDiscovery: false,
 	};
 
 	topicContext = {};
@@ -148,7 +149,6 @@ class DatasetDetail extends Component {
 				this.setState({
 					data: res.data.data,
 					v2data: res.data.data.datasetv2,
-					isLoading: false,
 					isLatestVersion: res.data.isLatestVersion,
 					isDatasetArchived: res.data.isDatasetArchived,
 				});
@@ -210,9 +210,15 @@ class DatasetDetail extends Component {
 						},
 					});
 				}
-
-				this.setState({ isLoading: false });
 			}
+		});
+
+		await axios.get(baseURL + '/api/v2/cohortProfiling?pids=' + this.props.match.params.datasetID + '&fields=variables.name').then(res => {
+			let newIsCohortDiscoveryState = res.data.cohortProfiling.length > 0 ? true : false;
+			this.setState({
+				isCohortDiscovery: newIsCohortDiscoveryState,
+				isLoading: false,
+			});
 		});
 	};
 
@@ -1198,7 +1204,7 @@ class DatasetDetail extends Component {
 										<Tab eventKey='TechDetails' title={`Technical details`}>
 											{dataClassOpen === -1 ? (
 												<Fragment>
-													<CohortDiscoveryBanner userProps={userState[0]}/>
+													{this.state.isCohortDiscovery ? <CohortDiscoveryBanner userProps={userState[0]} /> : ''}
 													<Col sm={12} lg={12} className='subHeader gray800-14-bold pad-bottom-24 pad-top-24'>
 														<span className='black-16-semibold mr-3'>Data Classes</span>
 														<span onMouseEnter={this.handleMouseHover} onMouseLeave={this.handleMouseHover}>
