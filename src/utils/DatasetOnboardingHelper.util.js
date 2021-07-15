@@ -191,7 +191,7 @@ let configActionModal = (type = '') => {
 			case 'VALIDATIONERRORS':
 				config = {
 					title: 'Mandatory fields missing',
-					subTitle: 'You cannot submit this dataset for review until you have completed all the mandatory questions.',
+					subTitle: 'You cannot submit this application for review until you have completed all the mandatory questions.',
 					description: false,
 					buttons: {
 						confirmSubmission: {
