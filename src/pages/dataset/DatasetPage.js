@@ -102,6 +102,7 @@ class DatasetDetail extends Component {
 		publisherLogoURL: '',
 		isLatestVersion: true,
 		isDatasetArchived: false,
+		isCohortDiscovery: false,
 	};
 
 	topicContext = {};
@@ -148,7 +149,6 @@ class DatasetDetail extends Component {
 				this.setState({
 					data: res.data.data,
 					v2data: res.data.data.datasetv2,
-					isLoading: false,
 					isLatestVersion: res.data.isLatestVersion,
 					isDatasetArchived: res.data.isDatasetArchived,
 				});
@@ -210,9 +210,15 @@ class DatasetDetail extends Component {
 						},
 					});
 				}
-
-				this.setState({ isLoading: false });
 			}
+		});
+
+		await axios.get(baseURL + '/api/v2/cohortProfiling?pids=' + this.props.match.params.datasetID + '&fields=variables.name,tableName,variables.completeness').then(res => {
+			let newIsCohortDiscoveryState = res.data.cohortProfiling.length > 0 ? true : false;
+			this.setState({
+				isCohortDiscovery: newIsCohortDiscoveryState,
+				isLoading: false,
+			});
 		});
 	};
 
@@ -1195,7 +1201,7 @@ class DatasetDetail extends Component {
 											)}
 										</Tab>
 
-										<Tab eventKey='TechDetails' title={!this.state ? `Technical details` : <span style={{ display: 'flex' }}><GoldStar fill={'#f98e2b'} height='16' width='16' viewBox="0 0 21 21" className='mr-2' /> Technical details</span>}>
+										<Tab eventKey='TechDetails' title={this.state.isCohortDiscovery ? <span style={{ display: 'flex' }}><GoldStar fill={'#f98e2b'} height='16' width='16' viewBox="0 0 21 21" className='mr-2' /> Technical details</span> : `Technical details`}>
 											{dataClassOpen === -1 ? (
 												<Fragment>
 													<Col sm={12} lg={12} className='subHeader gray800-14-bold pad-bottom-24 pad-top-24'>
@@ -1226,6 +1232,7 @@ class DatasetDetail extends Component {
 																		key={`techMetadata-${index}`}
 																		technicalMetadata={techMetadata}
 																		index={index}
+																		isCohortDiscovery={this.state.isCohortDiscovery}
 																		doUpdateDataClassOpen={this.doUpdateDataClassOpen}
 																	/>
 																))
