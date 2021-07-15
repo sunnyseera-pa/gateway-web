@@ -1195,7 +1195,7 @@ class DatasetDetail extends Component {
 											)}
 										</Tab>
 
-										<Tab eventKey='TechDetails' title={!this.state ? `Technical details` : <span style={{ display: 'flex' }}><GoldStar fill={'#f98e2b'} height='20' width='20' className='mr-2'/> Technical details</span>}>
+										<Tab eventKey='TechDetails' title={!this.state ? `Technical details` : <span style={{ display: 'flex' }}><GoldStar fill={'#f98e2b'} height='16' width='16' viewBox="0 0 21 21" className='mr-2' /> Technical details</span>}>
 											{dataClassOpen === -1 ? (
 												<Fragment>
 													<Col sm={12} lg={12} className='subHeader gray800-14-bold pad-bottom-24 pad-top-24'>
