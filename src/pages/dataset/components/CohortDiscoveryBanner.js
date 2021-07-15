@@ -31,7 +31,6 @@ const CohortDiscoveryBanner = ({ userProps }) => {
 	};
 
 	const authorisedForAdvancedSearch = async () => {
-		console.log(userState);
 		if (userState.advancedSearchRoles.includes(BANNED)) {
 			return false;
 		} else if (userState.advancedSearchRoles.includes(GENERAL_ACCESS)) {
@@ -90,7 +89,6 @@ const CohortDiscoveryBanner = ({ userProps }) => {
 	};
 
 	const showLoginModal = () => {
-		console.log(userState);
 		// 1. add class to body to stop background scroll
 		document.body.classList.add('modal-open');
 
@@ -110,13 +108,13 @@ const CohortDiscoveryBanner = ({ userProps }) => {
 	};
 	return (
 		<>
-			<Row className='mt-1 mb-1'>
+			<Row className='mt-1 mb-3'>
 				<Col sm={12} lg={12}>
 					<div className='rectangle'>
 						<Row className='gray800-14-bold'>
 							<Col sm={11} lg={11} className='gray800-14'>
 								<div className='black-16-semibold mr-3'>
-									<GoldStar fill={'#f98e2b'} height='20' width='20' className='mr-2' />
+									<GoldStar fill={'#f98e2b'} height='16' width='16' viewBox="0 0 21 21" className='mr-2' />
 									Explore this dataset with cohort discovery
 									<span className='beta-title ml-2'>BETA</span>
 								</div>

@@ -217,7 +217,7 @@ class DatasetDetail extends Component {
 			let newIsCohortDiscoveryState = res.data.cohortProfiling.length > 0 ? true : false;
 			this.setState({
 				isCohortDiscovery: newIsCohortDiscoveryState,
-				isLoading: false
+				isLoading: false,
 			});
 		});
 	};
@@ -813,21 +813,6 @@ class DatasetDetail extends Component {
 												<SVGIcon name='dataseticon' fill={'#113328'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 												<span>Dataset</span>
 											</span>
-											{this.state.isCohortDiscovery ? (
-												<span className='badge-project'>
-													<SVGIcon
-														name='cohorticon'
-														fill={'#472505'}
-														className='badgeSvg mr-2'
-														width='22'
-														height='22'
-														viewBox='0 0 10 10'
-													/>
-													<span>Cohort Discovery</span>
-												</span>
-											) : (
-												''
-											)}
 											{!data.tags.features || data.tags.features.length <= 0
 												? ''
 												: data.tags.features.map((keyword, index) => {
@@ -850,6 +835,7 @@ class DatasetDetail extends Component {
 										{this.state.isLatestVersion && !this.state.isDatasetArchived && (
 											<Col sm={6} className='text-right'>
 												<button
+													data-test-id='dataset-request-access-btn'
 													className='btn btn-primary addButton pointer float-right'
 													onClick={() => {
 														this.toggleModal();
@@ -1218,7 +1204,7 @@ class DatasetDetail extends Component {
 										<Tab eventKey='TechDetails' title={`Technical details`}>
 											{dataClassOpen === -1 ? (
 												<Fragment>
-													<CohortDiscoveryBanner userProps={userState[0]}/>
+													{this.state.isCohortDiscovery ? <CohortDiscoveryBanner userProps={userState[0]} /> : ''}
 													<Col sm={12} lg={12} className='subHeader gray800-14-bold pad-bottom-24 pad-top-24'>
 														<span className='black-16-semibold mr-3'>Data Classes</span>
 														<span onMouseEnter={this.handleMouseHover} onMouseLeave={this.handleMouseHover}>
