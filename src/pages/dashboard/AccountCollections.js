@@ -72,8 +72,7 @@ const AccountCollections = props => {
 
 	const unarchiveCollection = id => {
 		axios
-			.put(baseURL + '/api/v1/collections/status', {
-				id: id,
+			.put(baseURL + '/api/v1/collections/status/' + id, {
 				activeflag: 'active',
 			})
 			.then(res => {
@@ -117,8 +116,7 @@ const AccountCollections = props => {
 
 	const archiveCollection = id => {
 		axios
-			.put(baseURL + '/api/v1/collections/status', {
-				id: id,
+			.put(baseURL + '/api/v1/collections/status/' + id, {
 				activeflag: 'archive',
 			})
 			.then(res => {
@@ -259,6 +257,8 @@ const AccountCollections = props => {
 																			action={deleteCollection}
 																			actionType='delete'
 																			entity='collection'
+																			bodyText={`Are you sure that you want to delete your collection? It cannot be recovered once you delete it.
+																			If you do not want your collection to be searchable on the Gateway, you can private your collection through the edit functionality.`}
 																		/>
 																	</DropdownButton>
 																</Col>

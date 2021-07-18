@@ -11,12 +11,6 @@ export const UserDropdownItems = isAdmin => {
 				My Account
 			</Dropdown.Item>
 			<Dropdown.Item
-				href='/account?tab=datasetsAdvancedSearch&team=user'
-				className='black-14 user-dropdown-item'
-				data-test-id='optDatasets'>
-				Datasets
-			</Dropdown.Item>
-			<Dropdown.Item
 				href='/account?tab=dataaccessrequests&team=user'
 				className='black-14 user-dropdown-item'
 				data-test-id='optDataAccessRequests'>

@@ -155,7 +155,7 @@ class RelatedObject extends React.Component {
 		}
 
 		return (
-			<Row className='resource-card-row' key={this.props.key}>
+			<Row className='resource-card-row' data-test-id='related-object-card' key={this.props.key}>
 				<Col>
 					<div
 						className={rectangleClassName}
@@ -194,37 +194,18 @@ class RelatedObject extends React.Component {
 												<span className='gray800-14'>Author not listed</span>
 											) : (
 												data.persons.map((person, index) => {
-													if (index > 0) {
-														if (activeLink === true) {
-															return (
-																<div key={`person-${index}`}>
-																	<span className='reviewTitleGap gray800-14'>·</span>
-																	<a className='gray800-14' href={'/person/' + person.id}>
-																		{person.firstname} {person.lastname}
-																	</a>
-																</div>
-															);
-														} else {
-															return (
-																<span className='gray800-14' key={`person-${index}`}>
-																	, {person.firstname} {person.lastname}{' '}
-																</span>
-															);
-														}
+													if (activeLink === true) {
+														return (
+															<a className='gray800-14' href={'/person/' + person.id} key={`perosn-${index}`}>
+																{person.firstname} {person.lastname}{data.persons.length === index + 1 ? '' : ', '}
+															</a>
+														);
 													} else {
-														if (activeLink === true) {
-															return (
-																<a className='gray800-14' href={'/person/' + person.id} key={`person-${index}`}>
-																	{person.firstname} {person.lastname}
-																</a>
-															);
-														} else {
-															return (
-																<span className='gray800-14' key={`person-${index}`}>
-																	{person.firstname} {person.lastname}
-																</span>
-															);
-														}
+														return (
+															<span className='gray800-14' key={`perosn-${index}`}>
+																{person.firstname} {person.lastname}{data.persons.length === index + 1 ? '' : ', '}
+															</span>
+														);
 													}
 												})
 											)}
@@ -379,37 +360,18 @@ class RelatedObject extends React.Component {
 												<span className='gray800-14'>Author not listed</span>
 											) : (
 												data.persons.map((person, index) => {
-													if (index > 0) {
-														if (activeLink === true) {
-															return (
-																<div key={`perosn-${index}`}>
-																	<span className='reviewTitleGap gray800-14'>·</span>
-																	<a className='gray800-14' href={'/person/' + person.id}>
-																		{person.firstname} {person.lastname}
-																	</a>
-																</div>
-															);
-														} else {
-															return (
-																<span className='gray800-14' key={`perosn-${index}`}>
-																	, {person.firstname} {person.lastname}
-																</span>
-															);
-														}
+													if (activeLink === true) {
+														return (
+															<a className='gray800-14' href={'/person/' + person.id} key={`perosn-${index}`}>
+																{person.firstname} {person.lastname}{data.persons.length === index + 1 ? '' : ', '}
+															</a>
+														);
 													} else {
-														if (activeLink === true) {
-															return (
-																<a className='gray800-14' href={'/person/' + person.id} key={`perosn-${index}`}>
-																	{person.firstname} {person.lastname}
-																</a>
-															);
-														} else {
-															return (
-																<span className='gray800-14' key={`perosn-${index}`}>
-																	{person.firstname} {person.lastname}
-																</span>
-															);
-														}
+														return (
+															<span className='gray800-14' key={`perosn-${index}`}>
+																{person.firstname} {person.lastname}{data.persons.length === index + 1 ? '' : ', '}
+															</span>
+														);
 													}
 												})
 											)}
@@ -529,37 +491,18 @@ class RelatedObject extends React.Component {
 												<span className='gray800-14'>Author not listed</span>
 											) : (
 												data.persons.map((person, index) => {
-													if (index > 0) {
-														if (activeLink === true) {
-															return (
-																<div key={`dataPerson-${index}`}>
-																	<span className='reviewTitleGap gray800-14'>·</span>
-																	<a className='gray800-14' href={'/person/' + person.id}>
-																		{person.firstname} {person.lastname}
-																	</a>
-																</div>
-															);
-														} else {
-															return (
-																<span className='gray800-14' key={`dataPerson-${index}`}>
-																	, {person.firstname} {person.lastname}
-																</span>
-															);
-														}
+													if (activeLink === true) {
+														return (
+															<a className='gray800-14' href={'/person/' + person.id} key={`perosn-${index}`}>
+																{person.firstname} {person.lastname}{data.persons.length === index + 1 ? '' : ', '}
+															</a>
+														);
 													} else {
-														if (activeLink === true) {
-															return (
-																<a className='gray800-14' href={'/person/' + person.id} key={`dataPerson-${index}`}>
-																	{person.firstname} {person.lastname}
-																</a>
-															);
-														} else {
-															return (
-																<span className='gray800-14' key={`dataPerson-${index}`}>
-																	{person.firstname} {person.lastname}
-																</span>
-															);
-														}
+														return (
+															<span className='gray800-14' key={`perosn-${index}`}>
+																{person.firstname} {person.lastname}{data.persons.length === index + 1 ? '' : ', '}
+															</span>
+														);
 													}
 												})
 											)}
@@ -824,7 +767,11 @@ class RelatedObject extends React.Component {
 									<Row className='noMargin'>
 										<Col sm={10} lg={10} className='pad-left-24'>
 											{activeLink === true ? (
-												<a className='purple-bold-16' style={{ cursor: 'pointer' }} href={'/dataset/' + data.pid}>
+												<a
+													data-test-id='dataset-card-name'
+													className='purple-bold-16'
+													style={{ cursor: 'pointer' }}
+													href={'/dataset/' + data.pid}>
 													{data.name}
 												</a>
 											) : (
