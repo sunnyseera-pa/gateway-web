@@ -37,7 +37,7 @@ class TechnicalMetadata extends React.Component {
 									{technicalMetadata ? (
 										<span className='centerSpan'>
 											{this.props.isCohortDiscovery ?<GoldStar fill={'#f98e2b'} height='16' width='16' viewBox="0 0 21 21" className='mr-2' /> : ''}
-											{technicalMetadata.label}
+											{this.props.isCohortDiscovery ? technicalMetadata.tableName : technicalMetadata.label}
 										</span>
 									) : (
 										''

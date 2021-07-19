@@ -38,6 +38,7 @@ import DataQuality from './components/DataQuality';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import DatasetAboutCard from './components/DatasetAboutCard';
+import CohortProfilingPage from './components/CohortProfilingPage';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
@@ -102,6 +103,7 @@ class DatasetDetail extends Component {
 		publisherLogoURL: '',
 		isLatestVersion: true,
 		isDatasetArchived: false,
+		cohortProfiling: [],
 		isCohortDiscovery: false,
 	};
 
@@ -216,6 +218,7 @@ class DatasetDetail extends Component {
 		await axios.get(baseURL + '/api/v2/cohortProfiling?pids=' + this.props.match.params.datasetID + '&fields=variables.name,tableName,variables.completeness').then(res => {
 			let newIsCohortDiscoveryState = res.data.cohortProfiling.length > 0 ? true : false;
 			this.setState({
+				cohortProfiling: res.data.cohortProfiling,
 				isCohortDiscovery: newIsCohortDiscoveryState,
 				isLoading: false,
 			});
@@ -646,6 +649,7 @@ class DatasetDetail extends Component {
 			emptyFieldsCount,
 			linkedDatasets,
 			publisherLogoURL,
+			cohortProfiling,
 		} = this.state;
 
 		let publisherLogo = !isEmpty(v2data) && !isEmpty(v2data.summary.publisher.logo) ? v2data.summary.publisher.logo : publisherLogoURL;
@@ -1232,13 +1236,24 @@ class DatasetDetail extends Component {
 																		key={`techMetadata-${index}`}
 																		technicalMetadata={techMetadata}
 																		index={index}
-																		isCohortDiscovery={this.state.isCohortDiscovery}
 																		doUpdateDataClassOpen={this.doUpdateDataClassOpen}
 																	/>
 																))
 															) : (
 																<NotFound word='technical details' />
 															)}
+															{this.state.cohortProfiling && this.state.cohortProfiling.length > 0 ? (
+																this.state.cohortProfiling.map((cohortProfile, index) => (
+																	<CohortProfilingPage
+																		key={`cohortProfile-${index}`}
+																		cohortProfiling={cohortProfile}
+																		index={index + technicalMetadata.length}
+																		datasetID={this.props.match.params.datasetID}
+																		isCohortDiscovery={this.state.isCohortDiscovery}
+																		doUpdateDataClassOpen={this.doUpdateDataClassOpen}
+																	/>
+																))
+															) : ''}
 														</Col>
 													</Row>
 												</Fragment>

@@ -119,14 +119,6 @@ class TechnicalMetadataVariables extends React.Component {
 								? techMetadataVariables.description.substr(0, 60) + (techMetadataVariables.description.length > 60 ? '...' : '')
 								: ''}
 						</span>
-						{techMetadataVariables ? (
-							<span className='gray800-14-opacity centerSpan' style={{ float: 'right' }}>
-								99.3% complete
-								<GoldStar fill={'#f98e2b'} height='20' width='20' className='ml-1' />
-							</span>
-						) : (
-							''
-						)}
 					</Col>
 
 					<Col sm={1} lg={1}>
