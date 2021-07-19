@@ -51,7 +51,6 @@ class TechnicalDetailsPage extends React.Component {
 														{technicalMetadata ? (
 															<span className='centerSpan'>
 																{technicalMetadata.label}
-																{technicalMetadata ? <GoldStar fill={'#f98e2b'} height='20' width='20' className='ml-1' /> : ''}
 															</span>
 														) : (
 															''

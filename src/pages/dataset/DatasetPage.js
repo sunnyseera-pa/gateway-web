@@ -23,6 +23,7 @@ import { Event } from '../../tracking';
 import Linkify from 'react-linkify';
 import DatasetSchema from './DatasetSchema';
 import TechnicalMetadata from './components/TechnicalMetadata';
+import CohortMetadata from './components/CohortMetadata';
 import TechnicalDetailsPage from './components/TechnicalDetailsPage';
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
@@ -112,6 +113,7 @@ class DatasetDetail extends Component {
 	constructor(props) {
 		super(props);
 		this.doUpdateDataClassOpen = this.doUpdateDataClassOpen.bind(this);
+		this.doUpdateCohortDataClassOpen = this.doUpdateCohortDataClassOpen.bind(this);
 		this.state.userState = props.userState;
 		this.handleMouseHover = this.handleMouseHover.bind(this);
 		this.handleMouseHoverShield = this.handleMouseHoverShield.bind(this);
@@ -215,14 +217,21 @@ class DatasetDetail extends Component {
 			}
 		});
 
-		await axios.get(baseURL + '/api/v2/cohortProfiling?pids=' + this.props.match.params.datasetID + '&fields=variables.name,tableName,variables.completeness').then(res => {
-			let newIsCohortDiscoveryState = res.data.cohortProfiling.length > 0 ? true : false;
-			this.setState({
-				cohortProfiling: res.data.cohortProfiling,
-				isCohortDiscovery: newIsCohortDiscoveryState,
-				isLoading: false,
+		await axios
+			.get(
+				baseURL +
+					'/api/v2/cohortProfiling?pids=' +
+					this.props.match.params.datasetID +
+					'&fields=variables.name,tableName,variables.completeness'
+			)
+			.then(res => {
+				let newIsCohortDiscoveryState = res.data.cohortProfiling.length > 0 ? true : false;
+				this.setState({
+					cohortProfiling: res.data.cohortProfiling,
+					isCohortDiscovery: newIsCohortDiscoveryState,
+					isLoading: false,
+				});
 			});
-		});
 	};
 
 	getTechnicalMetadata() {
@@ -446,6 +455,13 @@ class DatasetDetail extends Component {
 	doUpdateDataClassOpen(index) {
 		this.setState({
 			dataClassOpen: index,
+		});
+	}
+
+	doUpdateCohortDataClassOpen(index, key) {
+		console.log(index);
+		this.setState({
+			dataClassOpen: (index),
 		});
 	}
 
@@ -1205,7 +1221,17 @@ class DatasetDetail extends Component {
 											)}
 										</Tab>
 
-										<Tab eventKey='TechDetails' title={this.state.isCohortDiscovery ? <span style={{ display: 'flex' }}><GoldStar fill={'#f98e2b'} height='16' width='16' viewBox="0 0 21 21" className='mr-2' /> Technical details</span> : `Technical details`}>
+										<Tab
+											eventKey='TechDetails'
+											title={
+												this.state.isCohortDiscovery ? (
+													<span style={{ display: 'flex' }}>
+														<GoldStar fill={'#f98e2b'} height='16' width='16' viewBox='0 0 21 21' className='mr-2' /> Technical details
+													</span>
+												) : (
+													`Technical details`
+												)
+											}>
 											{dataClassOpen === -1 ? (
 												<Fragment>
 													<Col sm={12} lg={12} className='subHeader gray800-14-bold pad-bottom-24 pad-top-24'>
@@ -1242,30 +1268,46 @@ class DatasetDetail extends Component {
 															) : (
 																<NotFound word='technical details' />
 															)}
-															{this.state.cohortProfiling && this.state.cohortProfiling.length > 0 ? (
-																this.state.cohortProfiling.map((cohortProfile, index) => (
-																	<CohortProfilingPage
-																		key={`cohortProfile-${index}`}
-																		cohortProfiling={cohortProfile}
-																		index={index + technicalMetadata.length}
-																		datasetID={this.props.match.params.datasetID}
-																		isCohortDiscovery={this.state.isCohortDiscovery}
-																		doUpdateDataClassOpen={this.doUpdateDataClassOpen}
-																	/>
-																))
-															) : ''}
+															{this.state.cohortProfiling && this.state.cohortProfiling.length > 0
+																? this.state.cohortProfiling.map((cohortProfile, index) => (
+																		<CohortMetadata
+																			key={`cohortProfile-${index}`}
+																			cohortProfiling={cohortProfile}
+																			index={index + technicalMetadata.length}
+																			datasetID={this.props.match.params.datasetID}
+																			isCohortDiscovery={true}
+																			doUpdateCohortDataClassOpen={this.doUpdateCohortDataClassOpen}
+																		/>
+																  ))
+																: ''}
 														</Col>
 													</Row>
 												</Fragment>
 											) : (
-												<Row style={{ width: '-webkit-fill-available' }}>
-													<Col sm={12} lg={12}>
-														<TechnicalDetailsPage
-															technicalMetadata={technicalMetadata[dataClassOpen]}
-															doUpdateDataClassOpen={this.doUpdateDataClassOpen}
-														/>
-													</Col>
-												</Row>
+												<>
+													{' '}
+													{dataClassOpen < technicalMetadata.length ? (
+														<Row style={{ width: '-webkit-fill-available' }}>
+															<Col sm={12} lg={12}>
+																<TechnicalDetailsPage
+																	technicalMetadata={technicalMetadata[dataClassOpen]}
+																	doUpdateDataClassOpen={this.doUpdateDataClassOpen}
+																/>
+															</Col>
+														</Row>
+													) : (
+														<Row style={{ width: '-webkit-fill-available' }}>
+															<Col sm={12} lg={12}>
+																<CohortProfilingPage
+																	datasetID={this.props.match.params.datasetID}
+																	cohortProfile={cohortProfiling[dataClassOpen - technicalMetadata.length]}
+																	isCohortDiscovery={true}
+																	doUpdateCohortDataClassOpen={this.doUpdateCohortDataClassOpen}
+																/>
+															</Col>
+														</Row>
+													)}
+												</>
 											)}
 										</Tab>
 

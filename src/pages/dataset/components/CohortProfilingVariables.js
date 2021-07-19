@@ -129,7 +129,7 @@ class CohortProfilingVariables extends React.Component {
 					))}
 					<Row>
 						<Col sm={12} lg={12}>
-							<button className='button-tertiary' type='button' onClick={() => this.toggleRows()}>
+							<button className='button-tertiary show-all-button mt-3' type='button' onClick={() => this.toggleRows()}>
 								Show all {this.state.cohortProfilingData.values.length} rows
 							</button>
 						</Col>
@@ -168,7 +168,7 @@ class CohortProfilingVariables extends React.Component {
 	}
 
 	render() {
-		const { open, flagClosed, cohortProfilingVariables, cohortProfilingData, searchString, searchLimit } = this.state;
+		const { open, flagClosed, cohortProfilingVariables, cohortProfilingData, searchString } = this.state;
 
 		let svgClassName = '';
 		if (flagClosed === false) {
@@ -228,34 +228,38 @@ class CohortProfilingVariables extends React.Component {
 								</Col>
 							</Row>
 							<Row className='pad-top-16'>
-								<span className='gray800-14-opacity pad-right-24 margin-left-15'>Max length</span>
-								<span className='gray800-14 pad-right-8'>{cohortProfilingData.maxLength ? cohortProfilingData.maxLength : '-'}</span>
-								<span className='gray800-14-opacity pad-right-24 margin-left-15'>Number of rows</span>
-								<span className='gray800-14 pad-right-8'>{cohortProfilingData.numRows ? cohortProfilingData.numRows : '-'}</span>
-								<span className='gray800-14-opacity pad-right-24 margin-left-15'>Completeness</span>
-								<span className='gray800-14 pad-right-8'>{cohortProfilingData.completeness ? cohortProfilingData.completeness : '-'}</span>
+								<Col sm={2} lg={2} className='gray800-14-opacity pad-right-24 margin-left-15'>Max length</Col>
+								<Col sm={9} lg={9} className='gray800-14 pad-right-8'>{cohortProfilingData.maxLength ? cohortProfilingData.maxLength : '-'}</Col>
+							</Row>
+							<Row>
+								<Col sm={2} lg={2} className='gray800-14-opacity pad-right-24 margin-left-15'>Number of rows</Col>
+								<Col sm={9} lg={9} className='gray800-14 pad-right-8'>{cohortProfilingData.numRows ? cohortProfilingData.numRows : '-'}</Col>
+							</Row>
+							<Row>
+								<Col sm={2} lg={2} className='gray800-14-opacity pad-right-24 margin-left-15'>Completeness</Col>
+								<Col sm={9} lg={9} className='gray800-14 pad-right-8'>{cohortProfilingData.completeness ? cohortProfilingData.completeness : '-'}</Col>
 							</Row>
 							<Row>
 								<Col sm={3} lg={3} className='gray800-14 pad-top-8'>
-									<button className='button-secondary' type='button' onClick={() => this.sortVariableData('value')}>
+									<button className='sort-button' type='button' onClick={() => this.sortVariableData('value')}>
 										Value
 									</button>
 								</Col>
 								<Col sm={9} lg={9} className='gray800-14 pad-top-8'>
-									<button className='button-secondary' type='button' onClick={() => this.sortVariableData('frequency')}>
+									<button className='sort-button' type='button' onClick={() => this.sortVariableData('frequency')}>
 										Frequency
 									</button>
 								</Col>
 							</Row>
 							<Row>
 								<Col sm={12} lg={12} className='gray800-14 pad-top-8'>
-									<span className='collectionsSearchBar form-control'>
-										<span className='collectionsSearchIcon'>
+									<span className='variableSearchBar form-control'>
+										<span className='variableSearchIcon'>
 											<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />
 										</span>
 										<span>
 											<input
-												id='cohortProfilingSearch'
+												id='variableSearchBarInput'
 												type='text'
 												placeholder='Search value'
 												onChange={event => this.onSearch(event)}

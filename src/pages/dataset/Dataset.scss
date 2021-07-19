@@ -375,9 +375,46 @@
 .centerSpan {
 	display: flex;
 	align-items: center;
-} 
+}
 
 .frequency-bar {
 	background-color: $teal;
-	content: "";
+	content: '';
+}
+
+.variableSearchBar {
+	display: inline-block;
+	border-radius: 4px;
+	border: solid 2px #e2e2e2 !important;
+	padding: 5px;
+	width: 100%;
+}
+
+#variableSearchBarInput {
+	display: inline-block;
+	width: 90%;
+	font-size: 16px;
+	color: $gray-800;
+	outline: none;
+	border: 0;
+}
+
+.variableSearchIcon {
+	float: left;
+	min-width: 40px;
+	padding: 2px 0px 0px 4px;
+}
+
+.show-all-button {
+	width: 100%;
+}
+
+.sort-button, .sort-button:focus {
+	border: 0;
+    background-color: transparent;
+	outline: 0; 
+}
+
+.variable-details {
+	display: block;
 }

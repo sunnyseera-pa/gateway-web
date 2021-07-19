@@ -16,7 +16,7 @@ class CohortProfilingPage extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state.cohortProfiling = props.cohortProfiling;
+		this.state.cohortProfiling = props.cohortProfile;
 	}
 
 	updateAllOpen = allOpen => {
@@ -34,6 +34,7 @@ class CohortProfilingPage extends React.Component {
 		if (flagClosed === false) {
 			svgClassName = 'flipSVG';
 		}
+		console.log(this.props)
 
 		return (
 			<div className='ml-3'>
@@ -51,7 +52,7 @@ class CohortProfilingPage extends React.Component {
 														{cohortProfiling ? (
 															<span className='centerSpan'>
 																{cohortProfiling.tableName}
-																{this.state.isCohortDiscovery ? <GoldStar fill={'#f98e2b'} height='20' width='20' className='ml-1' /> : ''}
+																<GoldStar fill={'#f98e2b'} height='20' width='20' className='ml-1' />
 															</span>
 														) : (
 															''
@@ -61,7 +62,7 @@ class CohortProfilingPage extends React.Component {
 											</Col>
 
 											<Col sm={3} lg={1} className='closeDataClass'>
-												<span className='floatRight pointer' onClick={() => this.props.doUpdateDataClassOpen(-1)}>
+												<span className='floatRight pointer' onClick={() => this.props.doUpdateCohortDataClassOpen(-1)}>
 													<CloseButtonSvg width='19px' height='19px' fill='#475DA7' />
 												</span>
 											</Col>
@@ -77,9 +78,7 @@ class CohortProfilingPage extends React.Component {
 											<Col sm={12} lg={12} className='pad-left-0'>
 												<span className='pad-top-24 pad-bottom-16  black-16-semibold mr-3'>Variables</span>
 
-												<span className='purple-14 floatRight pointer' onClick={() => this.updateAllOpen(allOpen)}>
-													{allOpen ? 'Close all' : 'Expand all'}
-												</span>
+												
 											</Col>
 										</Row>
 									</div>
