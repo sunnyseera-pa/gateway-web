@@ -113,7 +113,7 @@ class CohortProfilingVariables extends React.Component {
 			return (
 				<>
 					{this.state.cohortProfilingData.values.slice(0, 1).map(value => (
-						<Row>
+						<Row className='variable-row'>
 							<Col sm={3} lg={3} className='gray800-14 pad-top-8'>
 								{value.value}
 							</Col>
@@ -140,7 +140,7 @@ class CohortProfilingVariables extends React.Component {
 			return (
 				<>
 					{this.state.cohortProfilingData.values.map(value => (
-						<Row>
+						<Row className='variable-row'>
 							<Col sm={3} lg={3} className='gray800-14 pad-top-8'>
 								{value.value}
 							</Col>
@@ -227,27 +227,63 @@ class CohortProfilingVariables extends React.Component {
 									{cohortProfilingVariables ? cohortProfilingVariables.description : ''}
 								</Col>
 							</Row>
-							<Row className='pad-top-16'>
-								<Col sm={2} lg={2} className='gray800-14-opacity pad-right-24 margin-left-15'>Max length</Col>
-								<Col sm={9} lg={9} className='gray800-14 pad-right-8'>{cohortProfilingData.maxLength ? cohortProfilingData.maxLength : '-'}</Col>
+							<Row className='pad-top-16 mb-2'>
+								<Col sm={2} lg={2} className='gray800-14-opacity pad-right-24 margin-left-15'>
+									Data Type
+								</Col>
+								<Col sm={9} lg={9} className='gray800-14 pad-right-8'>
+									{cohortProfilingData.dataType ? cohortProfilingData.maxLength : '-'}
+								</Col>
 							</Row>
-							<Row>
-								<Col sm={2} lg={2} className='gray800-14-opacity pad-right-24 margin-left-15'>Number of rows</Col>
-								<Col sm={9} lg={9} className='gray800-14 pad-right-8'>{cohortProfilingData.numRows ? cohortProfilingData.numRows : '-'}</Col>
+							<Row className='mb-2'>
+								<Col sm={2} lg={2} className='gray800-14-opacity pad-right-24 margin-left-15'>
+									Max length
+								</Col>
+								<Col sm={9} lg={9} className='gray800-14 pad-right-8'>
+									{cohortProfilingData.maxLength ? cohortProfilingData.maxLength : '-'}
+								</Col>
 							</Row>
-							<Row>
-								<Col sm={2} lg={2} className='gray800-14-opacity pad-right-24 margin-left-15'>Completeness</Col>
-								<Col sm={9} lg={9} className='gray800-14 pad-right-8'>{cohortProfilingData.completeness ? cohortProfilingData.completeness : '-'}</Col>
+							<Row className='mb-2'>
+								<Col sm={2} lg={2} className='gray800-14-opacity pad-right-24 margin-left-15'>
+									Number of rows
+								</Col>
+								<Col sm={9} lg={9} className='gray800-14 pad-right-8'>
+									{cohortProfilingData.numRows ? cohortProfilingData.numRows : '-'}
+								</Col>
 							</Row>
-							<Row>
-								<Col sm={3} lg={3} className='gray800-14 pad-top-8'>
+							<Row className='mb-2'>
+								<Col sm={2} lg={2} className='gray800-14-opacity pad-right-24 margin-left-15'>
+									Completeness
+								</Col>
+								<Col sm={9} lg={9} className='gray800-14 pad-right-8'>
+									{cohortProfilingData.completeness ? `${cohortProfilingData.completeness}%` : '-'}
+								</Col>
+							</Row>
+							<Row className='sorting-buttons-container'>
+								<Col sm={3} lg={3} className='gray800-14 pad-top-8 pad-bottom-8'>
 									<button className='sort-button' type='button' onClick={() => this.sortVariableData('value')}>
-										Value
+										Value{' '}
+										<span>
+											<SVGIcon
+												name='chevronbottom'
+												fill={'#475da7'}
+												className={flagClosed === true ? 'svg-24 variableArrow' : 'svg-24 flipSVG variableArrow'}
+											/>
+										</span>
 									</button>
 								</Col>
-								<Col sm={9} lg={9} className='gray800-14 pad-top-8'>
+								<Col sm={9} lg={9} className='gray800-14 pad-top-8 pad-bottom-8'>
 									<button className='sort-button' type='button' onClick={() => this.sortVariableData('frequency')}>
-										Frequency
+										Frequency{' '}
+										{
+											<span>
+												<SVGIcon
+													name='chevronbottom'
+													fill={'#475da7'}
+													className={flagClosed === true ? 'svg-24 variableArrow' : 'svg-24 flipSVG variableArrow'}
+												/>
+											</span>
+										}
 									</button>
 								</Col>
 							</Row>

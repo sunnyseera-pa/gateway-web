@@ -1268,7 +1268,7 @@ class DatasetDetail extends Component {
 															) : (
 																<NotFound word='technical details' />
 															)}
-															{this.state.cohortProfiling && this.state.cohortProfiling.length > 0
+															{this.state.cohortProfiling && this.state.cohortProfiling.length > 0 && technicalMetadata.length > 0 
 																? this.state.cohortProfiling.map((cohortProfile, index) => (
 																		<CohortMetadata
 																			key={`cohortProfile-${index}`}

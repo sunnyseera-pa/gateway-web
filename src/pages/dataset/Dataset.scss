@@ -380,6 +380,8 @@
 .frequency-bar {
 	background-color: $teal;
 	content: '';
+	height: 40%;
+    margin-top: 1%;
 }
 
 .variableSearchBar {
@@ -388,6 +390,7 @@
 	border: solid 2px #e2e2e2 !important;
 	padding: 5px;
 	width: 100%;
+	background-color: #f6f7f8;
 }
 
 #variableSearchBarInput {
@@ -417,4 +420,13 @@
 
 .variable-details {
 	display: block;
+}
+
+.variable-row {
+	border-bottom: 1px solid #e7e9ed;
+}
+
+.sorting-buttons-container {
+	border-top: 1px solid #e7e9ed;
+	border-bottom: 1px solid #e7e9ed;
 }

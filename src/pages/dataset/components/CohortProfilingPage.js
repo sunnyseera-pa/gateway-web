@@ -34,7 +34,6 @@ class CohortProfilingPage extends React.Component {
 		if (flagClosed === false) {
 			svgClassName = 'flipSVG';
 		}
-		console.log(this.props)
 
 		return (
 			<div className='ml-3'>
