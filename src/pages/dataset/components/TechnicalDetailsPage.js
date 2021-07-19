@@ -1,7 +1,8 @@
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
+import SVGIcon from '../../../images/SVGIcon';
 import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg';
-import { ReactComponent as GoldStar } from '../../../images/cd-star.svg';
+
 import { ReactComponent as TableSvg } from '../../../images/table.svg';
 import TechnicalMetadataVariables from './TechnicalMetadataVariables';
 import '../Dataset.scss';
@@ -47,15 +48,7 @@ class TechnicalDetailsPage extends React.Component {
 											<Col sm={9} lg={11}>
 												<Row>
 													<TableSvg className='margin-top-2' />
-													<span className='pad-left-8 black-18'>
-														{technicalMetadata ? (
-															<span className='centerSpan'>
-																{technicalMetadata.label}
-															</span>
-														) : (
-															''
-														)}
-													</span>
+													<span className='pad-left-8 black-18'>{technicalMetadata ? technicalMetadata.label : ''}</span>
 												</Row>
 											</Col>
 

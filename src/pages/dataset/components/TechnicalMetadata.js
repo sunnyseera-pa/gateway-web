@@ -2,7 +2,6 @@ import React from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { ReactComponent as TableSvg } from '../../../images/table.svg';
 import { ReactComponent as ChevronRightSvg } from '../../../images/chevron-right.svg';
-import { ReactComponent as GoldStar } from '../../../images/cd-star.svg';
 import '../Dataset.scss';
 
 class TechnicalMetadata extends React.Component {
@@ -34,14 +33,7 @@ class TechnicalMetadata extends React.Component {
 								<TableSvg className='margin-top-2' />
 
 								<span className='pad-left-8 black-18 pointer' onClick={() => this.props.doUpdateDataClassOpen(this.state.index)}>
-									{technicalMetadata ? (
-										<span className='centerSpan'>
-											{this.props.isCohortDiscovery ?<GoldStar fill={'#f98e2b'} height='16' width='16' viewBox="0 0 21 21" className='mr-2' /> : ''}
-											{this.props.isCohortDiscovery ? technicalMetadata.tableName : technicalMetadata.label}
-										</span>
-									) : (
-										''
-									)}
+									{technicalMetadata ? technicalMetadata.label : ''}
 								</span>
 							</Row>
 							<Row className='mt-2'>
