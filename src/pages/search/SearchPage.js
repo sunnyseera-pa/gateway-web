@@ -130,7 +130,7 @@ class SearchPage extends React.Component {
 	};
 
 	async componentDidMount() {
-		PageView();
+		initGA('UA-166025838-1');
 		// 1. call filters - this will need parameterised when tools, projects etc move to v2
 		await this.getFilters();
 		// 2. fires on first time in or page is refreshed/url loaded / has search location
@@ -180,7 +180,7 @@ class SearchPage extends React.Component {
 			this.setState({ isResultsLoading: true }, () => {
 				this.clearFilterStates();
 			});
-			initGA('UA-166025838-1');
+			PageView();
 		}
 	};
 
