@@ -368,14 +368,14 @@ const DatasetAboutCard = ({ v2data, section, showEmpty, requiresModal, toggleMod
 												How to request access
 											</span>
 										) : (
-											<Link
+											<span
 												className='purple-14 pointer float-right'
-												to={{
-													pathname: `/data-access-request/dataset/${datasetid}`,
-												}}
-												onClick={() => Event('Buttons', 'Click', 'Request Access')}>
+												onClick={() => {
+													Event('Buttons', 'Click', 'Request Access');
+													toggleModal();
+												}}>
 												Request access
-											</Link>
+											</span>
 										)}
 									</Col>
 								</Row>
