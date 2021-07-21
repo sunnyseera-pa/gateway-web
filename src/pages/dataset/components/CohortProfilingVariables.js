@@ -27,9 +27,6 @@ class CohortProfilingVariables extends React.Component {
 		this.updateFlag = this.updateFlag.bind(this);
 	}
 
-	async componentDidMount(prevProps) {}
-	componentDidUpdate(prevProps) {}
-
 	onSearch = e => {
 		this.setState({ searchString: e.target.value });
 	};
@@ -109,7 +106,7 @@ class CohortProfilingVariables extends React.Component {
 	}
 
 	showAllRows() {
-		if (has(this.state.cohortProfilingData, 'values') && this.state.cohortProfilingData.values.length > 2 && !this.state.showAll) {
+		if (has(this.state.cohortProfilingData, 'values') && this.state.cohortProfilingData.values.length > 10 && !this.state.showAll) {
 			return (
 				<>
 					{this.state.cohortProfilingData.values.slice(0, 1).map(value => (
@@ -168,7 +165,7 @@ class CohortProfilingVariables extends React.Component {
 	}
 
 	render() {
-		const { open, flagClosed, cohortProfilingVariables, cohortProfilingData, searchString } = this.state;
+		const { open, flagClosed, cohortProfilingVariables, cohortProfilingData, searchString, sortType } = this.state;
 
 		let svgClassName = '';
 		if (flagClosed === false) {
@@ -264,11 +261,12 @@ class CohortProfilingVariables extends React.Component {
 									<button className='sort-button' type='button' onClick={() => this.sortVariableData('value')}>
 										Value{' '}
 										<span>
-											<SVGIcon
-												name='chevronbottom'
-												fill={'#475da7'}
-												className={flagClosed === true ? 'svg-24 variableArrow' : 'svg-24 flipSVG variableArrow'}
-											/>
+											{sortType === 'value' ? <SVGIcon name='chevronbottom' viewBox="0 0 25 25" fill={'#475da7'} className={'svg-24'} /> : ''}
+											{sortType === '-value' ? (
+												<SVGIcon name='chevronbottom' viewBox="0 0 25 25" fill={'#475da7'} className={'svg-24 flipSVG'} />
+											) : (
+												''
+											)}
 										</span>
 									</button>
 								</Col>
@@ -277,11 +275,16 @@ class CohortProfilingVariables extends React.Component {
 										Frequency{' '}
 										{
 											<span>
-												<SVGIcon
-													name='chevronbottom'
-													fill={'#475da7'}
-													className={flagClosed === true ? 'svg-24 variableArrow' : 'svg-24 flipSVG variableArrow'}
-												/>
+												{sortType === '-frequency' ? (
+													<SVGIcon name='chevronbottom' viewBox="0 0 25 25" fill={'#475da7'} className={'svg-24'} />
+												) : (
+													''
+												)}
+												{sortType === 'frequency' ? (
+													<SVGIcon name='chevronbottom' viewBox="0 0 25 25" fill={'#475da7'} className={'svg-24 flipSVG'} />
+												) : (
+													''
+												)}
 											</span>
 										}
 									</button>
