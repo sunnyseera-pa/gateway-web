@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { Col, Row, Table } from 'react-bootstrap';
 import '../Dataset.scss';
 import AboutCardElement from './AboutCardElement';
