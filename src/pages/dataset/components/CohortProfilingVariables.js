@@ -18,7 +18,7 @@ class CohortProfilingVariables extends React.Component {
 		isLoading: false,
 		searchString: '',
 		sortType: '-frequency',
-		showAll: false,
+		showAllRows: false,
 	};
 
 	constructor(props) {
@@ -106,7 +106,7 @@ class CohortProfilingVariables extends React.Component {
 	}
 
 	showAllRows() {
-		if (has(this.state.cohortProfilingData, 'values') && this.state.cohortProfilingData.values.length > 10 && !this.state.showAll) {
+		if (has(this.state.cohortProfilingData, 'values') && this.state.cohortProfilingData.values.length > 10 && !this.state.showAllRows) {
 			return (
 				<>
 					{this.state.cohortProfilingData.values.slice(0, 1).map(value => (
@@ -157,7 +157,7 @@ class CohortProfilingVariables extends React.Component {
 	}
 
 	toggleRows() {
-		this.setState({ showAll: true });
+		this.setState({ showAllRows: true });
 		this.showAllRows();
 	}
 	updateFlag() {
