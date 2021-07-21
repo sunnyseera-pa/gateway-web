@@ -9,9 +9,6 @@ import '../Dataset.scss';
 class CohortProfilingPage extends React.Component {
 	state = {
 		cohortProfiling: null,
-		flagClosed: true,
-		customType: false,
-		allOpen: false,
 	};
 
 	constructor(props) {
@@ -19,21 +16,8 @@ class CohortProfilingPage extends React.Component {
 		this.state.cohortProfiling = props.cohortProfile;
 	}
 
-	updateAllOpen = allOpen => {
-		if (allOpen === false) {
-			this.setState({ allOpen: true });
-		} else if (allOpen === true) {
-			this.setState({ allOpen: false });
-		}
-	};
-
 	render() {
-		const { flagClosed, customType, cohortProfiling, allOpen } = this.state;
-
-		var svgClassName = '';
-		if (flagClosed === false) {
-			svgClassName = 'flipSVG';
-		}
+		const { cohortProfiling } = this.state;
 
 		return (
 			<div className='ml-3'>
@@ -61,7 +45,7 @@ class CohortProfilingPage extends React.Component {
 											</Col>
 
 											<Col sm={3} lg={1} className='closeDataClass'>
-												<span className='floatRight pointer' onClick={() => this.props.doUpdateCohortDataClassOpen(-1)}>
+												<span className='floatRight pointer' onClick={() => this.props.doUpdateDataClassOpen(-1)}>
 													<CloseButtonSvg width='19px' height='19px' fill='#475DA7' />
 												</span>
 											</Col>

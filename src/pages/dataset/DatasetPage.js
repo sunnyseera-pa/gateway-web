@@ -113,7 +113,6 @@ class DatasetDetail extends Component {
 	constructor(props) {
 		super(props);
 		this.doUpdateDataClassOpen = this.doUpdateDataClassOpen.bind(this);
-		this.doUpdateCohortDataClassOpen = this.doUpdateCohortDataClassOpen.bind(this);
 		this.state.userState = props.userState;
 		this.handleMouseHover = this.handleMouseHover.bind(this);
 		this.handleMouseHoverShield = this.handleMouseHoverShield.bind(this);
@@ -455,13 +454,6 @@ class DatasetDetail extends Component {
 	doUpdateDataClassOpen(index) {
 		this.setState({
 			dataClassOpen: index,
-		});
-	}
-
-	doUpdateCohortDataClassOpen(index, key) {
-		console.log(index);
-		this.setState({
-			dataClassOpen: (index),
 		});
 	}
 
@@ -1275,8 +1267,7 @@ class DatasetDetail extends Component {
 																			cohortProfiling={cohortProfile}
 																			index={index + technicalMetadata.length}
 																			datasetID={this.props.match.params.datasetID}
-																			isCohortDiscovery={true}
-																			doUpdateCohortDataClassOpen={this.doUpdateCohortDataClassOpen}
+																			doUpdateDataClassOpen={this.doUpdateDataClassOpen}
 																		/>
 																  ))
 																: ''}
@@ -1301,8 +1292,7 @@ class DatasetDetail extends Component {
 																<CohortProfilingPage
 																	datasetID={this.props.match.params.datasetID}
 																	cohortProfile={cohortProfiling[dataClassOpen - technicalMetadata.length]}
-																	isCohortDiscovery={true}
-																	doUpdateCohortDataClassOpen={this.doUpdateCohortDataClassOpen}
+																	doUpdateDataClassOpen={this.doUpdateDataClassOpen}
 																/>
 															</Col>
 														</Row>

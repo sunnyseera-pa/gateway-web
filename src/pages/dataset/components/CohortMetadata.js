@@ -33,7 +33,7 @@ class CohortMetadata extends React.Component {
 							<Row>
 								<TableSvg className='margin-top-2' />
 
-								<span className='pad-left-8 black-18 pointer' onClick={() => this.props.doUpdateCohortDataClassOpen(this.state.index)}>
+								<span className='pad-left-8 black-18 pointer' onClick={() => this.props.doUpdateDataClassOpen(this.state.index)}>
 									{cohortProfiling ? (
 										<span className='centerSpan'>
 											<GoldStar fill={'#f98e2b'} height='16' width='16' viewBox="0 0 21 21" className='mr-2' />
@@ -53,7 +53,7 @@ class CohortMetadata extends React.Component {
 							</Row>
 						</Col>
 						<Col sm={1} lg={1} className='alignSelfCenter'>
-							<span onClick={() => this.props.doUpdateCohortDataClassOpen(this.state.index)}>
+							<span onClick={() => this.props.doUpdateDataClassOpen(this.state.index)}>
 								<ChevronRightSvg fill={'#475da7'} className='dataClassArrow pointer' />
 							</span>
 						</Col>
