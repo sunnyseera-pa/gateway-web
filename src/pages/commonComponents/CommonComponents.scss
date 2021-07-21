@@ -3,7 +3,7 @@
 .login-modal {
 	background: rgba(0, 0, 0, 0.5);
 	z-index: 9999 !important;
-	
+
 	.modal-dialog {
 		margin: 10% auto 0 auto;
 	}
@@ -171,4 +171,24 @@
 	margin-right: auto;
 	width: 200px;
 	z-index: 9999;
+}
+
+.uploader-container {
+	display: inline-block;
+}
+
+.uploader-chip {
+	display: flex;
+	align-items: center;
+	background-color: #e5f7f1;
+	padding: 2px 12px;
+	border-radius: 16px;
+	margin-bottom: 4px;
+	color: $gray-800;
+	white-space: nowrap;
+}
+
+.uploader-avatar {
+	margin-right: 8px;
+	padding: 1px 0px;
 }

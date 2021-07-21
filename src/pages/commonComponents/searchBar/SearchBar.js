@@ -380,7 +380,7 @@ class SearchBar extends React.Component {
 														</span>
 														<span>
 															<input
-																data-testid='searchbar'
+																data-test-id='searchbar'
 																type='text'
 																placeholder=''
 																id='searchInputSpanGrey'
@@ -390,7 +390,7 @@ class SearchBar extends React.Component {
 															/>
 														</span>
 														{this.props.searchString !== '' && this.props.searchString !== undefined ? (
-															<span className='searchInputClearGrey' data-testid='searchbar-clear-btn'>
+															<span className='searchInputClearGrey' data-test-id='searchbar-clear-btn'>
 																<span style={{ cursor: 'pointer' }} onClick={this.props.onClearMethod}>
 																	<ClearButtonSvg />
 																</span>
@@ -836,6 +836,39 @@ class SearchBar extends React.Component {
 																					<Dropdown.Divider style={{ margin: '0px' }} />
 																				</Fragment>
 																			);
+																		} else if (dat.messageType === 'draft dataset deleted') {
+																			return (
+																				<Fragment key={`message-${index}`}>
+																					<Row className={dat.isRead === 'true' || clearMessage ? 'notificationReadBackground' : ''}>
+																						<Col xs={10}>
+																							<div className='notificationDate'>{messageDateString + '\n'}</div>
+																							<div className='notificationInfoHolder'>
+																								<span class='notificationInfo'>{dat.messageDescription}</span>
+																							</div>
+																						</Col>
+																						<Col xs={2}>
+																							{dat.isRead === 'false' && !clearMessage ? (
+																								<SVGIcon
+																									name='newnotificationicon'
+																									width={20}
+																									height={20}
+																									visble='true'
+																									style={{
+																										float: 'right',
+																										fill: '#3db28c',
+																										paddingRight: '0px',
+																										marginRight: '10px',
+																										marginTop: '5px',
+																									}}
+																									fill={'#3db28c'}
+																									stroke='none'
+																								/>
+																							) : null}
+																						</Col>
+																					</Row>
+																					<Dropdown.Divider style={{ margin: '0px' }} />
+																				</Fragment>
+																			);
 																		} else {
 																			return (
 																				<Fragment key={`message-${index}`}>
@@ -1006,7 +1039,7 @@ class SearchBar extends React.Component {
 												</span>
 												<span>
 													<input
-														data-testid='searchbar'
+														data-test-id='searchbar'
 														type='text'
 														placeholder=''
 														id='searchInputSpanGrey'
@@ -1016,7 +1049,7 @@ class SearchBar extends React.Component {
 													/>
 												</span>
 												{this.props.searchString !== '' && this.props.searchString !== undefined ? (
-													<span className='searchInputClearGrey' data-testid='searchbar-clear-btn'>
+													<span className='searchInputClearGrey' data-test-id='searchbar-clear-btn'>
 														<span style={{ cursor: 'pointer' }} onClick={this.props.onClearMethod}>
 															<ClearButtonSvg />
 														</span>

@@ -23,7 +23,19 @@ let completionList = {
 };
 
 export const DatasetCard = props => {
-	let { id, publisher, title, version, isDraft, datasetStatus, completion = {}, timeStamps = {}, rejectionText, listOfVersions } = props;
+	let {
+		id,
+		publisher,
+		title,
+		version,
+		isDraft,
+		datasetStatus,
+		completion = {},
+		timeStamps = {},
+		rejectionText,
+		rejectionAuthor,
+		listOfVersions,
+	} = props;
 	const [flagClosed, setFlagClosed] = useState(true);
 
 	return (
@@ -158,7 +170,7 @@ export const DatasetCard = props => {
 						<CommentItem
 							text={rejectionText}
 							title={'Reason for rejection'}
-							subtitle={`Paul McCafferty`}
+							subtitle={rejectionAuthor || 'HDR Admin'}
 							decisionDate={moment(timeStamps.rejected).format('D MMMM YYYY HH:mm')}
 						/>
 					) : (

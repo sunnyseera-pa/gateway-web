@@ -263,6 +263,7 @@ const AccountDatasets = props => {
 															timeStamps={dataset.timestamps}
 															completion={dataset.percentageCompleted}
 															rejectionText={dataset.applicationStatusDesc}
+															rejectionAuthor={dataset.applicationStatusAuthor}
 															listOfVersions={dataset.listOfVersions}
 														/>
 													);
