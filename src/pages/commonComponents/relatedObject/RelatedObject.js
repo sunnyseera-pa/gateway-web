@@ -41,6 +41,7 @@ class RelatedObject extends React.Component {
 			this.state.inCollection = props.inCollection;
 		}
 		if (props.data) {
+			this.state.isCohortDiscovery = props.data.isCohortDiscovery || false;
 			this.state.data = props.data || [];
 			this.state.isLoading = false;
 		} else if (props.objectId) {
@@ -49,24 +50,13 @@ class RelatedObject extends React.Component {
 			this.getRelatedObjectFromDb(props.objectId, props.objectType);
 		} else {
 			this.state.relatedObject = props.relatedObject;
-			this.getRelatedObjectFromDb(this.state.relatedObject.objectId, this.state.relatedObject.objectType);
+		this.getRelatedObjectFromDb(this.state.relatedObject.objectId, this.state.relatedObject.objectType);
 		}
 	}
 
-	displayCohortDiscoveryLozange(pid) {
-		axios.get(baseURL + '/api/v2/cohortProfiling?pids=' + pid + '&fields=variables.name').then(res => {
-			let newIsCohortDiscoveryState = res.data.cohortProfiling.length > 0 ? true : false;
-			this.setState({
-				isCohortDiscovery: newIsCohortDiscoveryState,
-			});
-		});
-	}
 	async componentDidMount() {
 		if (this.props.datasetPublisher) {
 			await this.updatePublisherLogo(this.props.datasetPublisher);
-		}
-		if (this.props.datasetPid) {
-			await this.displayCohortDiscoveryLozange(this.props.datasetPid);
 		}
 	}
 
@@ -100,6 +90,7 @@ class RelatedObject extends React.Component {
 			axios.get(baseURL + '/api/v1/relatedobject/' + id).then(res => {
 				this.setState({
 					data: res.data.data[0],
+					isCohortDiscovery: res.data.data[0].isCohortDiscovery || false,
 					isLoading: false,
 				});
 			});

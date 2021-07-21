@@ -149,6 +149,8 @@ class DatasetDetail extends Component {
 				this.setState({
 					data: res.data.data,
 					v2data: res.data.data.datasetv2,
+					isCohortDiscovery: res.data.data.isCohortDiscovery,
+					isLoading: false,
 					isLatestVersion: res.data.isLatestVersion,
 					isDatasetArchived: res.data.isDatasetArchived,
 				});
@@ -210,15 +212,8 @@ class DatasetDetail extends Component {
 						},
 					});
 				}
+				this.setState({ isLoading: false });
 			}
-		});
-
-		await axios.get(baseURL + '/api/v2/cohortProfiling?pids=' + this.props.match.params.datasetID + '&fields=variables.name').then(res => {
-			let newIsCohortDiscoveryState = res.data.cohortProfiling.length > 0 ? true : false;
-			this.setState({
-				isCohortDiscovery: newIsCohortDiscoveryState,
-				isLoading: false,
-			});
 		});
 	};
 
