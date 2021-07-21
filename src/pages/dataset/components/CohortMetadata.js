@@ -7,10 +7,7 @@ import '../Dataset.scss';
 
 class CohortMetadata extends React.Component {
 	state = {
-		cohortMetadata: null,
 		index: null,
-		onDetailsPage: false,
-		isLoading: true,
 	};
 
 	constructor(props) {
