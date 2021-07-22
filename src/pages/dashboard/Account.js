@@ -139,6 +139,7 @@ class Account extends Component {
 	}
 
 	async componentDidMount() {
+		window.currentComponent = this;
 		if (window.location.search) {
 			let tab = '';
 			let values = queryString.parse(window.location.search);
@@ -264,12 +265,13 @@ class Account extends Component {
 		return tab;
 	};
 
-	toggleDrawer = () => {
+	toggleDrawer = (selectedTopicId) => {
+		debugger;
 		this.setState(prevState => {
 			if (prevState.showDrawer === true) {
 				this.searchBar.current.getNumberOfUnreadMessages();
 			}
-			return { showDrawer: !prevState.showDrawer };
+			return { showDrawer: !prevState.showDrawer, selectedTopicId };
 		});
 	};
 
@@ -842,6 +844,7 @@ class Account extends Component {
 						closed={this.toggleDrawer}
 						toggleModal={this.toggleModal}
 						drawerIsOpen={this.state.showDrawer}
+						selectedTopicId={this.state.selectedTopicId}
 					/>
 				</SideDrawer>
 				{tabId === 'teamManagement' && teamManagementTab == tabTypes.Notifications && (
