@@ -266,7 +266,6 @@ class Account extends Component {
 	};
 
 	toggleDrawer = (selectedTopicId) => {
-		debugger;
 		this.setState(prevState => {
 			if (prevState.showDrawer === true) {
 				this.searchBar.current.getNumberOfUnreadMessages();
