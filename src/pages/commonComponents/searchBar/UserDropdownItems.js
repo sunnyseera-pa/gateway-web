@@ -32,9 +32,14 @@ export const UserDropdownItems = isAdmin => {
 				Collections
 			</Dropdown.Item>
 			{isAdmin && (
-				<Dropdown.Item href='/account?tab=usersroles&team=user' className='black-14 user-dropdown-item' data-test-id='optUsersRoles'>
-					Users and roles
-				</Dropdown.Item>
+				<>
+					<Dropdown.Item href='/account?tab=usersroles&team=user' className='black-14 user-dropdown-item' data-test-id='optUsersRoles'>
+						Users and roles
+					</Dropdown.Item>
+					<Dropdown.Item href='/account?tab=teams&team=user' className='black-14 user-dropdown-item' data-test-id='optTeams'>
+						Teams
+					</Dropdown.Item>
+				</>
 			)}
 		</Fragment>
 	);
