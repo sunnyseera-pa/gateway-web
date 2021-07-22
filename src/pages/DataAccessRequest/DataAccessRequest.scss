@@ -151,19 +151,19 @@ span.toolTipText:after {
 	font-size: 16px;
 
 	display: grid;
-	grid-template-columns: 190px 1fr;
+	grid-template-columns: 205px 1fr;
 	box-sizing: border-box;
 
 	&-active {
 		cursor: pointer !important;
 		opacity: 1 !important;
-		margin-left: 30px;
+		margin-left: 26px;
 		margin-top: 0px;
 		margin-bottom: 0px;
 		font-size: 16px;
 		font-weight: 700;
 		display: grid;
-		grid-template-columns: 185px 1fr;
+		grid-template-columns: 210px 1fr;
 		box-sizing: border-box;
 	}
 }
@@ -200,6 +200,7 @@ span.toolTipText:after {
 		margin-top: -3px;
 		margin-left: 3px;
 	}
+	padding-left: 10px;
 }
 
 .dar-nav-item + .dar-nav-item {
@@ -684,6 +685,12 @@ input[type='radio']:disabled {
 			width: 90%;
 			white-space: pre-line;
 		}
+
+		p {
+			@include font-source(13px, $gray-700, $font-weight-semibold);
+			margin-bottom: 5px;
+			width: 90%;
+		}
 	}
 }
 
@@ -805,7 +812,7 @@ input[type='radio']:disabled {
 	&:hover {
 		background: #f6f7f8;
 		> .action-control {
-			//isibility: visible;
+			//visibility: visible;
 			//opacity: 1;
 			background: $white;
 			box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03);
