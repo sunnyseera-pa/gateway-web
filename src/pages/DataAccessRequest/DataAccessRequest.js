@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
-import { History } from 'react-router';
-import { Container, Row, Col, Modal, Tabs, Tab, Alert, Tooltip, Button } from 'react-bootstrap';
+import { Container, Row, Col, Modal, Alert, Tooltip, Button } from 'react-bootstrap';
 import Winterfell from 'winterfell';
+import queryString from 'query-string';
 import _ from 'lodash';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
@@ -44,9 +44,14 @@ import Uploads from './components/Uploads/Uploads';
 import UpdateRequestModal from './components/UpdateRequestModal/UpdateRequestModal';
 import MissingFieldsModal from './components/MissingFieldsModal/MissingFieldsModal';
 import ConfirmSubmissionModal from './components/ConfirmSubmissionModal/ConfirmSubmissionModal';
+import SubmitAmendmentModal from './components/SubmitAmendmentModal/SubmitAmendmentModal';
 import DeleteDraftModal from './components/DeleteDraftModal/DeleteDraftModal';
+import AmendApplicationModal from './components/AmendApplicationModal/AmendApplicationModal';
 import DuplicateApplicationModal from './components/DuplicateApplicationModal/DuplicateApplicationModal';
+import MinorVersionBlockedModal from './components/MinorVersionBlockedModal/MinorVersionBlockedModal';
+import ActionNotAllowedModal from './components/ActionNotAllowedModal/ActionNotAllowedModal';
 import SelectDatasetModal from './components/SelectDatasetModal/SelectDatasetModal';
+import VersionSelector from '../commonComponents/versionSelector/VersionSelector';
 
 class DataAccessRequest extends Component {
 	constructor(props) {
@@ -95,6 +100,8 @@ class DataAccessRequest extends Component {
 			showActionModal: false,
 			showWorkflowReviewModal: false,
 			showWorkflowReviewDecisionModal: false,
+			showMinorVersionBlockedModal: false,
+			showAmendNotAllowedModal: false,
 			workflowReviewDecisionType: false,
 			showActivePhaseModal: false,
 			showContributorModal: false,
@@ -137,9 +144,13 @@ class DataAccessRequest extends Component {
 			showEmailModal: false,
 			showMissingFieldsModal: false,
 			showConfirmSubmissionModal: false,
+			showSubmitAmendmentModal: false,
 			showDeleteDraftModal: false,
+			showAmendApplicationModal: false,
 			showDuplicateApplicationModal: false,
 			showSelectDatasetModal: false,
+			applicationType: '',
+			isLatestMinorVersion: true
 		};
 
 		this.onChangeDebounced = _.debounce(this.onChangeDebounced, 300);
@@ -174,6 +185,7 @@ class DataAccessRequest extends Component {
 			//	b) Message Panel - route will contain only the 'publisherId' with historic state passed from the message panel component which includes datasetId(s)
 			// 	c/d) Data Access Request User Area / Direct Link - route will contain a data access request 'accessId' which specifically links all associated data to one application
 			const { datasetId, accessId, publisherId } = this.props.match.params;
+			const { version } = queryString.parse(window.location.search);
 			let countedQuestionAnswers = {},
 				totalQuestions = '';
 
@@ -194,7 +206,7 @@ class DataAccessRequest extends Component {
 				totalQuestions = `${countedQuestionAnswers.totalAnsweredQuestions}/${countedQuestionAnswers.totalQuestions}  questions answered`;
 			} else if (accessId) {
 				// c/d) Data Access Request/Direct Link (To be extended for readonly mode)
-				await this.loadDataAccessRequest(accessId);
+				await this.loadDataAccessRequest(accessId, version);
 				// Populate the question/answers count if still in progress, otherwise display project status and date last updated
 				const { applicationStatus, updatedAt } = this.state;
 				if (applicationStatus === 'inProgress') {
@@ -208,6 +220,7 @@ class DataAccessRequest extends Component {
 			// Update state to display question answer count
 			this.setState({
 				totalQuestions,
+				versionNumber: version,
 			});
 		} catch (err) {
 			this.setState({ isLoading: false });
@@ -240,6 +253,9 @@ class DataAccessRequest extends Component {
 						workflow,
 						files,
 						isCloneable,
+						applicationType,
+						versions,
+						isLatestMinorVersion,
 						formType,
 					},
 				},
@@ -260,6 +276,9 @@ class DataAccessRequest extends Component {
 				workflow,
 				files,
 				isCloneable,
+				applicationType,
+				versions,
+				isLatestMinorVersion,
 				formType
 			});
 		} catch (err) {
@@ -271,7 +290,7 @@ class DataAccessRequest extends Component {
 	loadSingleDatasetMode = async datasetId => {
 		try {
 			// 1. Make API call to find and return the json schema for this dataset's application along with any existing answers
-			let response = await axios.get(`${baseURL}/api/v1/data-access-request/dataset/${datasetId}`);
+			let response = await axios.get(`${baseURL}/api/v1/data-access-request/datasets/${datasetId}`);
 			const {
 				data: {
 					data: {
@@ -280,7 +299,7 @@ class DataAccessRequest extends Component {
 						_id,
 						applicationStatus,
 						aboutApplication = {},
-						dataset,
+						datasets,
 						mainApplicant,
 						userId,
 						authorIds,
@@ -288,6 +307,8 @@ class DataAccessRequest extends Component {
 						workflow,
 						files,
 						isCloneable,
+						applicationType,
+						isLatestMinorVersion,
 						formType,
 					},
 				},
@@ -300,7 +321,7 @@ class DataAccessRequest extends Component {
 				_id,
 				applicationStatus,
 				aboutApplication,
-				datasets: [dataset],
+				datasets,
 				mainApplicant,
 				userId,
 				authorIds,
@@ -308,23 +329,22 @@ class DataAccessRequest extends Component {
 				workflow,
 				files,
 				isCloneable,
+				applicationType,
+				isLatestMinorVersion,
 				formType,
 			});
-
-			// for local test uses formSchema.json
-			//  this.setState({jsonSchema: {...formSchema}, questionAnswers: {fullname: {"id":5385077600698822,"orcid":"12345678","name":"Paul McCafferty","bio":"Developer @ PA","email":"p*************y@p**************m"}, orcid:"12345678", email:"p*************y@p**************m"}, activePanelId: 'applicant', isLoading: false, applicationStatus: 'inProgress'});
 		} catch (err) {
 			this.setState({ isLoading: false });
 			console.error(err.message);
 		}
 	};
 
-	loadDataAccessRequest = async accessId => {
+	loadDataAccessRequest = async (accessId, version) => {
 		try {
 			// 1. Make API call to find and return the application form schema and answers matching this Id
-			let response = await axios.get(`${baseURL}/api/v1/data-access-request/${accessId}`);
+			const response = await axios.get(`${baseURL}/api/v1/data-access-request/${accessId}${version ? `?version=${version}` : ''}`);
 			// 2. Destructure backend response for this context containing details of DAR including question set and current progress
-			let {
+			const {
 				data: { data },
 			} = response;
 			// 3. Set up the DAR
@@ -340,7 +360,7 @@ class DataAccessRequest extends Component {
 		let {
 			jsonSchema,
 			activeParty = '',
-			questionAnswers,
+			questionAnswers = {},
 			_id,
 			hasRecommended,
 			amendmentIterations = [],
@@ -360,7 +380,12 @@ class DataAccessRequest extends Component {
 			workflow,
 			files,
 			isCloneable,
-			formType
+			versions = [],
+			applicationType,
+			isLatestMinorVersion,
+			formType,
+			areDatasetsAmended = false,
+			dateSubmitted = ''
 		} = context;
 		let {
 			datasetfields: { publisher },
@@ -374,7 +399,21 @@ class DataAccessRequest extends Component {
 		if (datasets[0].publisher) {
 			({ _id: publisherId, workflowEnabled } = datasets[0].publisher);
 		}
-		// 2. If about application is empty, this is a new data access request so set up state based on passed context
+		// 2. If user is custodian and the form is not in review, redirect the user to the DAR team dashboard
+		if(userType === DarHelper.userTypes.CUSTODIAN && applicationStatus === DarHelper.darStatus.submitted) {
+			const alert = {
+				publisher,
+				nav: `dataaccessrequests&team=${publisher}`,
+				tab: 'submitted'
+			};
+			this.props.history.push({
+				pathname: `/account`,
+				search: '?tab=dataaccessrequests',
+				state: { alert },
+			});
+		}
+
+		// 3. If about application is empty, this is a new data access request so set up state based on passed context
 		if (_.isEmpty(aboutApplication)) {
 			aboutApplication.selectedDatasets = datasets.map(dataset => {
 				let { _id: dataset_id, publisher: publisherObj, datasetid, name, description } = dataset;
@@ -395,36 +434,40 @@ class DataAccessRequest extends Component {
 		} else {
 			let { isNationalCoreStudies = false } = aboutApplication;
 			if (isNationalCoreStudies) {
-				// 3. Fetch NCS projects list
+				// 4. Fetch NCS projects list
 				this.getNationalCoreStudiesProjects();
 			}
 		}
 
-		// 4. Set messaging and modal context
+		// 5. Set messaging and modal context
 		let topicContext = DarHelper.createTopicContext(aboutApplication.selectedDatasets);
 		let modalContext = DarHelper.createModalContext(aboutApplication.selectedDatasets);
 		let allowsMultipleDatasets = formType === '5 safe';
 
-		// 5. If multiple datasets are allowed, append 'about this application' section
+		// 6. If multiple datasets are allowed, append 'before you begin' section
 		if (allowsMultipleDatasets) {
 			// we need to inject About and File sections if first time running
-			jsonSchema = this.injectStaticContent(jsonSchema, inReviewMode, reviewSections);
+			jsonSchema = this.injectStaticContent(jsonSchema, inReviewMode, reviewSections, userType, areDatasetsAmended);
 		}
-		// 6. Hide show submit application
+		// 7. Hide show submit application
 		if (applicationStatus === DarHelper.darStatus.inProgress) {
-			showSubmit = true;
-		} else if (applicationStatus === DarHelper.darStatus.inReview || applicationStatus === DarHelper.darStatus.submitted) {
-			if (activeParty === 'applicant' && answeredAmendments > 0) {
-				showSubmit = true;
-				submitButtonText = 'Submit updates';
+			if (applicationType === DarHelper.darApplicationTypes.amendment) {
+				submitButtonText = 'Submit amendment';
 			}
+			showSubmit = true;
+		} else if (
+			activeParty === 'applicant' &&
+			(applicationStatus === DarHelper.darStatus.inReview || applicationStatus === DarHelper.darStatus.submitted)
+		) {
+			showSubmit = true;
+			submitButtonText = 'Submit updates';
 		}
 
-		// 7. Set initial panel as selected and scroll to top of view port
+		// 8. Set initial panel as selected and scroll to top of view port
 		let initialPanel = jsonSchema.formPanels[0].panelId;
 		window.scrollTo(0, 0);
 
-		// 8. Set state
+		// 9. Set state
 		this.setState({
 			jsonSchema: { ...jsonSchema, ...classSchema },
 			activeParty,
@@ -460,6 +503,12 @@ class DataAccessRequest extends Component {
 			workflowAssigned: !_.isEmpty(workflow) ? true : false,
 			files,
 			isCloneable,
+			versions,
+			applicationType,
+			isLatestMinorVersion,
+			areDatasetsAmended,
+			datasetsAmendedBy: `${firstname} ${lastname}`,
+			datasetsAmendedDate: dateSubmitted
 		});
 	};
 
@@ -468,7 +517,7 @@ class DataAccessRequest extends Component {
 	 * @desc Function to inject static 'about' and 'files' pages and panels into schema
 	 * @returns {jsonSchmea} object
 	 */
-	injectStaticContent(jsonSchema = {}, inReviewMode = false, reviewSections = []) {
+	injectStaticContent(jsonSchema = {}, inReviewMode = false, reviewSections = [], userType, areDatasetsAmended) {
 		let { pages, formPanels } = { ...jsonSchema };
 		// formPanel {pageId: 'safePeople', panelId:'applicant'}
 		let formPanel = {};
@@ -484,6 +533,11 @@ class DataAccessRequest extends Component {
 			jsonSchema.formPanels.unshift(DarHelper.staticContent.aboutPanel);
 			jsonSchema.formPanels.push(DarHelper.staticContent.filesPanel);
 		}
+		// if amendment has been made to datasets mark about application navigation with warning
+		if(userType === DarHelper.userTypes.CUSTODIAN && areDatasetsAmended) {
+			jsonSchema.pages[0].flag = 'WARNING';
+		}
+
 		// if activePanel, find active formPanel from formPanels, find pageId index from pages array
 		if (!_.isEmpty(this.state.activePanelId)) {
 			formPanel = [...formPanels].find(p => p.panelId === this.state.activePanelId);
@@ -568,7 +622,7 @@ class DataAccessRequest extends Component {
 				} = response;
 				let { applicationStatus } = this.state;
 				// 4. remove blank values from schema updates - omit values if they are blank, important for jsonSchema
-				if (!_.isNil(jsonSchema)) jsonSchema = this.injectStaticContent(jsonSchema, false, this.state.reviewSections);
+				if (!_.isNil(jsonSchema)) jsonSchema = this.injectStaticContent(jsonSchema, false, this.state.reviewSections, this.state.userType, this.state.areDatasetsAmended);
 
 				let schemaUpdates = _.omitBy(
 					{
@@ -608,7 +662,12 @@ class DataAccessRequest extends Component {
 		let isValid = Object.keys(errors).length ? false : true;
 
 		if (isValid) {
-			this.setState({ showConfirmSubmissionModal: true });
+			// if 'amendment' show new amendment modal
+			this.state.applicationType === DarHelper.darApplicationTypes.amendment &&
+			this.state.unansweredAmendments === 0 &&
+			this.state.answeredAmendments === 0
+				? this.setState({ showSubmitAmendmentModal: true })
+				: this.setState({ showConfirmSubmissionModal: true });
 		} else {
 			let activePage = _.get(_.keys({ ...errors }), 0);
 			let activePanel = _.get(_.keys({ ...errors }[activePage]), 0);
@@ -623,22 +682,37 @@ class DataAccessRequest extends Component {
 	 * @desc Submitting data access request
 	 * @params  Object{questionAnswers}
 	 */
-	onFormSubmit = async () => {
+	onFormSubmit = async ({ type, description } = {}) => {
 		try {
 			let { _id } = this.state;
-			// 1. POST
-			await axios.post(`${baseURL}/api/v1/data-access-request/${_id}`, {});
+			let data = {};
+			let alert = {};
+
+			switch (type) {
+				case DarHelper.darApplicationTypes.amendment:
+					data.description = description;
+					alert = {
+						tab: 'submitted',
+						message: `You have successfully submitted amendments to '${this.state.projectName || this.state.datasets[0].name}' application`,
+						publisher: 'user',
+					};
+					break;
+				default:
+					alert = {
+						tab: this.state.applicationStatus === DarHelper.darStatus.inProgress ? 'submitted' : 'inReview',
+						message:
+							this.state.applicationStatus === DarHelper.darStatus.inProgress
+								? 'Your application was submitted successfully'
+								: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
+						publisher: 'user',
+					};
+					break;
+			}
+
+			await axios.post(`${baseURL}/api/v1/data-access-request/${_id}`, { ...data });
+
 			const lastSaved = DarHelper.saveTime();
 			this.setState({ lastSaved });
-
-			let alert = {
-				tab: 'submitted',
-				message:
-					this.state.applicationStatus === 'inProgress'
-						? 'Your application was submitted successfully'
-						: `You have successfully saved updates to '${this.state.projectName || this.state.datasets[0].name}' application`,
-				publisher: 'user',
-			};
 
 			this.props.history.push({
 				pathname: '/account',
@@ -822,7 +896,7 @@ class DataAccessRequest extends Component {
 			accessRecord: { jsonSchema, questionAnswers },
 		} = response.data;
 		// add in static content to schema (includes about application, file upload panels etc.)
-		jsonSchema = this.injectStaticContent(jsonSchema, this.state.inReviewMode, this.state.reviewSections);
+		jsonSchema = this.injectStaticContent(jsonSchema, this.state.inReviewMode, this.state.reviewSections, this.state.userType, this.state.areDatasetsAmended);
 		// return the updated schema to allow it to be spread into state later
 		return { jsonSchema, questionAnswers };
 	};
@@ -899,7 +973,7 @@ class DataAccessRequest extends Component {
 		let {
 			accessRecord: { jsonSchema, questionAnswers = null, answeredAmendments, unansweredAmendments, amendmentIterations },
 		} = response.data;
-		jsonSchema = this.injectStaticContent(jsonSchema, this.state.inReviewMode, this.state.reviewSections);
+		jsonSchema = this.injectStaticContent(jsonSchema, this.state.inReviewMode, this.state.reviewSections, this.state.userType, this.state.areDatasetsAmended);
 
 		let stateObj = _.omitBy(
 			{
@@ -1111,7 +1185,11 @@ class DataAccessRequest extends Component {
 	};
 
 	onCustodianAction = value => {
-		value.toUpperCase() === 'ASSIGNWORKFLOW' ? this.toggleAssignWorkflowModal() : this.toggleActionModal(value);
+		if (this.state.isLatestMinorVersion) {
+			value.toUpperCase() === 'ASSIGNWORKFLOW' ? this.toggleAssignWorkflowModal() : this.toggleActionModal(value);
+		} else {
+			this.toggleMinorVersionBlockedModal();
+		}
 	};
 
 	completeActivePhase = async () => {
@@ -1259,12 +1337,42 @@ class DataAccessRequest extends Component {
 	};
 
 	toggleWorkflowReviewDecisionModal = (type = false) => {
+		if (this.state.isLatestMinorVersion) {
+			this.setState(prevState => {
+				return {
+					showWorkflowReviewDecisionModal: !prevState.showWorkflowReviewDecisionModal,
+					workflowReviewDecisionType: type,
+				};
+			});
+		} else {
+			this.toggleMinorVersionBlockedModal();
+		}
+	};
+
+	toggleMinorVersionBlockedModal = () => {
 		this.setState(prevState => {
 			return {
-				showWorkflowReviewDecisionModal: !prevState.showWorkflowReviewDecisionModal,
-				workflowReviewDecisionType: type,
+				showMinorVersionBlockedModal: !prevState.showMinorVersionBlockedModal,
 			};
 		});
+	};
+
+	toggleAmendNotAllowedModal = () => {
+		this.setState(prevState => {
+			return {
+				showAmendNotAllowedModal: !prevState.showAmendNotAllowedModal,
+			};
+		});
+	};
+
+	goToLatestVersion = () => {
+		this.setState(prevState => {
+			return {
+				showMinorVersionBlockedModal: !prevState.showMinorVersionBlockedModal,
+			};
+		});
+
+		this.props.history.push({ pathname: `/data-access-request/${this.state._id}` });
 	};
 
 	updateContributors = contributors => {
@@ -1340,11 +1448,12 @@ class DataAccessRequest extends Component {
 		if (_.isEmpty(appIdToCloneInto) && _.isEmpty(selectedDatasets)) {
 			return;
 		}
-	
+
+		const { versionNumber } = this.state;
 		let datasetIds = [];
 		let datasetTitles = [];
 		let publisher = '';
-	
+
 		if (!_.isEmpty(appIdToCloneInto)) {
 			this.toggleDuplicateApplicationModal();
 		} else if (!_.isEmpty(selectedDatasets)) {
@@ -1355,9 +1464,9 @@ class DataAccessRequest extends Component {
 				datasetTitles.push(dataset.name);
 			});
 		}
-	
+
 		axios
-			.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/clone`, {
+			.post(`${baseURL}/api/v1/data-access-request/${this.state._id}/clone${versionNumber ? `?version=${versionNumber}` : ''}`, {
 				datasetIds,
 				datasetTitles,
 				publisher,
@@ -1366,7 +1475,7 @@ class DataAccessRequest extends Component {
 			.then(res => {
 				let message = '';
 				let projectName = this.state.projectName || this.state.datasets[0].name;
-	
+
 				if (_.isEmpty(appIdToCloneInto)) {
 					message = `You have successfully duplicated your application '${projectName}' into a new application`;
 				} else {
@@ -1374,14 +1483,14 @@ class DataAccessRequest extends Component {
 					projectNameCloneInto = _.isNil(projectNameCloneInto) ? 'your selected application' : `'${projectNameCloneInto}'`;
 					message = `You have successfully duplicated your application '${projectName}' into ${projectNameCloneInto}`;
 				}
-	
+
 				let alert = {
 					message: message,
 					publisher: 'user',
 				};
-				this.setState({ alert: alert });
+				this.setState({ alert, activePanelId: 'about' });
 				setTimeout(() => this.setState({ alert: {} }), 10000);
-	
+
 				this.props.history.push({ pathname: `/data-access-request/${res.data.accessRecord._id}` });
 			});
 	};
@@ -1410,16 +1519,16 @@ class DataAccessRequest extends Component {
 		let fullAmendments = {};
 		let updateRequestModal = this.state.updateRequestModal;
 		let { pages, questionPanels, questionSets } = { ...this.state.jsonSchema };
+		let { questionAnswers } = { ...this.state };
 		// Get the last amendmentIteration in the array
 		let amendmentsIterations = _.last([...this.state.amendmentIterations]);
 		if (!_.isEmpty(amendmentsIterations)) {
 			// get the questionAnswers object {role: {}, lastName: {}}
-			let { questionAnswers } = { ...amendmentsIterations };
+			let { questionAnswers: updates } = { ...amendmentsIterations };
 			// get all the questionIds into a iterable array from questionAnswers
-			if (!_.isEmpty(questionAnswers)) {
+			if (!_.isEmpty(updates)) {
 				// set up default variables
 				let questionSetId,
-					answer,
 					section,
 					pageId,
 					page,
@@ -1427,10 +1536,11 @@ class DataAccessRequest extends Component {
 					question = '';
 				// reduce over questionanswers object using lodash
 				fullAmendments = _.reduce(
-					questionAnswers,
+					updates,
 					(obj, value, key) => {
 						// currentItem {questionSetId, answer}
-						({ questionSetId, answer } = questionAnswers[key]);
+						({ questionSetId } = updates[key]);
+						const answer = questionAnswers[key];
 						// find the active questionPanel ie questionPanels: [{navHeader, pageId, panelId, questionSets:[]}]
 						let activeQuestionPanel = [...questionPanels].find(panel => panel.panelId === questionSetId);
 						// Get the section {navHeader: panelHeader: 'Applicant', pageId: 'safePeople'}
@@ -1489,6 +1599,26 @@ class DataAccessRequest extends Component {
 		});
 	};
 
+	toggleSubmitAmendmentModal = () => {
+		this.setState(prevState => {
+			return {
+				showSubmitAmendmentModal: !prevState.showSubmitAmendmentModal,
+			};
+		});
+	};
+
+	toggleAmendApplicationModal = () => {
+		if (this.state.applicationStatus === DarHelper.darStatus.inReview) {
+			this.toggleAmendNotAllowedModal();
+		} else {
+			this.setState(prevState => {
+				return {
+					showAmendApplicationModal: !prevState.showAmendApplicationModal,
+				};
+			});
+		}
+	};
+
 	toggleDeleteDraftModal = () => {
 		this.setState(prevState => {
 			return {
@@ -1524,6 +1654,25 @@ class DataAccessRequest extends Component {
 			console.error(err.message);
 		}
 	};
+
+	onAmendApplication = async () => {
+		try {
+			let { _id } = this.state;
+			const {
+				data: {
+					data: { _id: newId },
+				},
+			} = await axios.post(`${baseURL}/api/v1/data-access-request/${_id}/amend`, {});
+
+			this.toggleAmendApplicationModal();
+			this.setState({ activePanelId: 'about' });
+
+			this.props.history.push({ pathname: `/data-access-request/${newId}` });
+		} catch (err) {
+			console.error(err.message);
+		}
+	};
+
 	toggleSelectDatasetModal = () => {
 		this.setState(prevState => {
 			return {
@@ -1573,6 +1722,9 @@ class DataAccessRequest extends Component {
 					toggleModal={this.toggleModal}
 					toggleMrcModal={this.toggleMrcModal}
 					toggleContributorModal={this.toggleContributorModal}
+					areDatasetsAmended={this.state.areDatasetsAmended}
+					datasetsAmendedBy={this.state.datasetsAmendedBy}
+					datasetsAmendedDate={this.state.datasetsAmendedDate}
 				/>
 			);
 		} else if (activePanelId === 'files') {
@@ -1621,8 +1773,11 @@ class DataAccessRequest extends Component {
 			roles,
 			showEmailModal,
 			alert,
+			versions = [],
 		} = this.state;
-		const { userState, location } = this.props;
+		const { userState } = this.props;
+
+		const selectedVersion = !_.isEmpty(versions) ? versions.find(v => v.isCurrent).displayTitle : '';
 
 		Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
 		Winterfell.addInputType('datePickerCustom', DatePickerCustom);
@@ -1666,6 +1821,11 @@ class DataAccessRequest extends Component {
 						) : (
 							<span className='white-16-semibold pr-5'>
 								{datasets[0].name} | {datasets[0].datasetfields.publisher}
+							</span>
+						)}
+						{versions.length > 1 && (
+							<span className='white-16-semibold pr-5' style={{ display: 'inline-block' }}>
+								<VersionSelector selectedVersion={selectedVersion} versionList={versions} displayType='smallTriangle' />
 							</span>
 						)}
 					</Col>
@@ -1800,6 +1960,7 @@ class DataAccessRequest extends Component {
 									onDeleteDraftClick={this.toggleDeleteDraftModal}
 									applicationStatus={applicationStatus}
 									onDuplicateClick={this.toggleDuplicateApplicationModal}
+									onShowAmendApplicationModal={this.toggleAmendApplicationModal}
 								/>
 							) : (
 								<CustodianActionButtons
@@ -1865,6 +2026,20 @@ class DataAccessRequest extends Component {
 					workflow={this.state.workflow}
 					projectName={projectName}
 					dataSets={selectedDatasets}
+				/>
+
+				<MinorVersionBlockedModal
+					open={this.state.showMinorVersionBlockedModal}
+					close={this.toggleMinorVersionBlockedModal}
+					confirm={this.goToLatestVersion}
+				/>
+
+				<ActionNotAllowedModal
+					open={this.state.showAmendNotAllowedModal}
+					close={this.toggleAmendNotAllowedModal}
+					confirm={this.toggleDrawer}
+					headerText='Application in review cannot be amended'
+					bodyText='This application is in review so cannot be amended. However, updates can be requested by the custodian.'
 				/>
 
 				<ContributorModal
@@ -1942,7 +2117,20 @@ class DataAccessRequest extends Component {
 					close={this.toggleConfirmSubmissionModal}
 					confirm={this.onFormSubmit}
 				/>
+				<SubmitAmendmentModal
+					open={this.state.showSubmitAmendmentModal}
+					close={this.toggleSubmitAmendmentModal}
+					onHandleSubmit={amendDescription => {
+						this.onFormSubmit({ type: DarHelper.darApplicationTypes.amendment, description: amendDescription });
+					}}
+				/>
 				<DeleteDraftModal open={this.state.showDeleteDraftModal} close={this.toggleDeleteDraftModal} confirm={this.onDeleteDraft} />
+
+				<AmendApplicationModal
+					open={this.state.showAmendApplicationModal}
+					close={this.toggleAmendApplicationModal}
+					confirm={this.onAmendApplication}
+				/>
 
 				<DuplicateApplicationModal
 					isOpen={this.state.showDuplicateApplicationModal}

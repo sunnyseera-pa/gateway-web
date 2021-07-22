@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-let getQuestionPanelInvalidQuestions = (Winterfell, questionSets, questionAnswers) => {
+let getQuestionPanelInvalidQuestions = (Winterfell, questionSets, questionAnswers = {}) => {
     return Winterfell.validation.default.getQuestionPanelInvalidQuestions(questionSets, questionAnswers);
 }
 

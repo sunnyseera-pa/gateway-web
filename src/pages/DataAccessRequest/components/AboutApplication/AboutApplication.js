@@ -1,11 +1,13 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
-import { Accordion, Card, Overlay, OverlayTrigger } from 'react-bootstrap';
+import { Accordion, Card, OverlayTrigger } from 'react-bootstrap';
 import DarHelper from '../../../../utils/DarHelper.util';
 import SVGIcon from '../../../../images/SVGIcon';
 import { ReactComponent as InfoSVG } from '../../../../images/info.svg';
 import TypeaheadDataset from '../TypeaheadDataset/TypeaheadDataset';
+import AlertBox from '../AlertBox/AlertBox';
+import moment from 'moment';
 
 const AboutApplication = props => {
 	let {
@@ -40,8 +42,13 @@ const AboutApplication = props => {
 		toggleMrcModal,
 		toggleContributorModal,
 		context,
+		areDatasetsAmended = false,
+		datasetsAmendedBy= '',
+		datasetsAmendedDate= ''
 	} = props;
 
+	const datasetsAmendedMessage = `${datasetsAmendedBy} submitted an amendment on ${moment(datasetsAmendedDate).format('Do MMM YYYY')}`;
+	
 	return (
 		<div className='aboutAccordion'>
 			<Accordion defaultActiveKey='0' activeKey={activeAccordionCard.toString()}>
@@ -90,7 +97,7 @@ const AboutApplication = props => {
 								</div>
 								{_.isEmpty(selectedDatasets) ? <div className='errorMessages'>You must select at least one dataset</div> : null}
 								<div className='panConfirm d-flex justify-content-end'>
-									{userType.toUpperCase() === 'APPLICANT' ? (
+									{userType.toUpperCase() === 'APPLICANT' && !readOnly && (
 										<button
 											type='input'
 											className={`button-primary ${allowedNavigation ? '' : 'disabled'}`}
@@ -100,11 +107,10 @@ const AboutApplication = props => {
 											}}>
 											Confirm
 										</button>
-									) : (
-										''
 									)}
 								</div>
 							</div>
+							{ areDatasetsAmended && <AlertBox text={datasetsAmendedMessage} status='WARNING'/>}
 						</Card.Body>
 					</Accordion.Collapse>
 				</Card>
@@ -193,7 +199,7 @@ const AboutApplication = props => {
 									</Fragment>
 								) : null}
 								<div className='panConfirm d-flex justify-content-end'>
-									{userType.toUpperCase() === 'APPLICANT' ? (
+									{userType.toUpperCase() === 'APPLICANT' && !readOnly && (
 										<button
 											type='input'
 											className={`button-primary ${allowedNavigation ? '' : 'disabled'}`}
@@ -201,8 +207,6 @@ const AboutApplication = props => {
 											onClick={e => onNextStep(allowedNavigation)}>
 											Confirm
 										</button>
-									) : (
-										''
 									)}
 								</div>
 							</div>
@@ -233,12 +237,10 @@ const AboutApplication = props => {
 									some of their details automatically. You can do this later too.
 								</div>
 								<div className='dar-form-check-group'>
-									{userType.toUpperCase() !== 'CUSTODIAN' ? (
+									{userType.toUpperCase() !== 'CUSTODIAN' && !readOnly && (
 										<button className='button-secondary' type='button' onClick={e => toggleContributorModal()}>
 											Add contributors
 										</button>
-									) : (
-										''
 									)}
 									<input
 										type='checkbox'
@@ -327,12 +329,10 @@ const AboutApplication = props => {
 									provide information on how to complete the data access application form.
 								</div>
 								<div className='dar-form-check-group'>
-									{userType.toUpperCase() !== 'CUSTODIAN' ? (
+									{userType.toUpperCase() !== 'CUSTODIAN' && (
 										<button className='button-secondary' type='button' onClick={e => toggleDrawer()}>
 											Send message
 										</button>
-									) : (
-										''
 									)}
 									<input
 										type='checkbox'
