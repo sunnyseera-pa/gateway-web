@@ -1,4 +1,3 @@
-
 [![LICENCE](https://img.shields.io/github/license/HDRUK/gateway-web)](https://github.com/HDRUK/gateway-web/blob/master/LICENSE)
 [![Support](https://img.shields.io/badge/Supported%20By-HDR%20UK-blue)](https://hdruk.ac.uk)
 
@@ -11,18 +10,23 @@ This is a React Application, which provides the Front End to the Gateway. It use
 To set up the API on your local do the following steps
 
 #### Step 1
+
 Clone the WEB repository.
 
 `git clone https://github.com/HDRUK/gateway-web`
 
-#### Step 2 
+#### Step 2
+
 Run the npm install and add axios module via command line.
+
 ```
 npm install
 npm i -S axios
+
 ```
 
 #### Step 3
+
 Start the WEB via command line.
 
 `start npm`
