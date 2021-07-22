@@ -1,24 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import moment from 'moment';
 import { Form, Button, Row, Col, Container } from 'react-bootstrap';
+import { isNil, isEmpty } from 'lodash';
 import RelatedResources from '../commonComponents/relatedResources/RelatedResources';
 import RelatedObject from '../commonComponents/relatedObject/RelatedObject';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import SVGIcon from '../../images/SVGIcon';
-import _ from 'lodash';
-import { isEditMode } from '../../utils/GeneralHelper.util';
+import RemoveUploaderModal from '../commonComponents/RemoveUploaderModal';
+import RemoveUploaderErrorModal from '../commonComponents/RemoveUploaderErrorModal';
 
-var baseURL = require('../commonComponents/BaseURL').getURL();
+const baseURL = require('../commonComponents/BaseURL').getURL();
 
 const AddEditProjectForm = props => {
-	let isEdit = isEditMode(window.location.pathname);
-	//Fix for projects were features are set to null
-	if (isEdit && props.data && props.data.tags.features === null) props.data.tags.features = [];
+	const [uploadersList, setUploadersList] = useState([]);
+	const [uploaderToBeRemoved, setUploaderToBeRemoved] = useState({});
+	const [showRemoveUploaderModal, setShowRemoveUploaderModal] = useState(false);
+	const [showRemoveUploaderErrorModal, setShowRemoveUploaderErrorModal] = useState(false);
+	const [removingOriginalUploader, setRemovingOriginalUploader] = useState(false);
+	const originalUploader = props.isEdit ? props.data.uploaderId : props.userState[0].id;
+	useEffect(() => {
+		buildListOfUploaders();
+	}, []);
+	//Fix for projects where features are set to null
+	if (props.isEdit && props.data && props.data.tags.features === null) props.data.tags.features = [];
 
 	// Pass the useFormik() hook initial form values and a submit function that will
 	// be called when the form is submitted
@@ -30,6 +39,8 @@ const AddEditProjectForm = props => {
 			link: props.data.link || '',
 			description: props.data.description || '',
 			resultsInsights: props.data.resultsInsights || '',
+			leadResearcher: props.data.leadResearcher || '',
+			authorsNew: props.data.authorsNew || '',
 			authors: props.data.authors || [props.userState[0].id],
 			categories: props.data.categories || {
 				category: '',
@@ -49,14 +60,14 @@ const AddEditProjectForm = props => {
 			categories: Yup.object().shape({
 				category: Yup.string().required('This cannot be empty'),
 			}),
-			authors: Yup.string().required('This cannot be empty'),
 		}),
 
 		onSubmit: values => {
 			//add via same post as add tool form - type set as 'project'
 			values.relatedObjects = props.relatedObjects;
 			values.toolCreator = props.userState[0];
-			if (isEdit) {
+			values.authors = uploadersList.map(uploader => uploader.id);
+			if (props.isEdit) {
 				axios.put(baseURL + '/api/v1/projects/' + props.data.id, values).then(res => {
 					window.location.href = window.location.search + '/project/' + props.data.id + '/?projectEdited=true';
 				});
@@ -68,33 +79,49 @@ const AddEditProjectForm = props => {
 		},
 	});
 
-	var listOfAuthors = [];
+	const buildListOfUploaders = () => {
+		let listOfUploaders = [];
 
-	if (isEdit) {
-		props.data.authors.forEach(author => {
-			props.combinedUsers.forEach(user => {
-				if (user.id === author) {
-					if (props.userState[0].id === user.id) {
-						listOfAuthors.push({ id: user.id, name: user.name + ' (You)' });
-						if (!user.name.includes('(You)')) {
-							user.name = user.name + ' (You)';
+		if (props.isEdit) {
+			props.data.authors.forEach(uploader => {
+				props.combinedUsers.forEach(user => {
+					if (user.id === uploader) {
+						if (props.userState[0].id === user.id) {
+							listOfUploaders.push({ id: user.id, name: user.name + ' (You)' });
+							if (!user.name.includes('(You)')) {
+								user.name = user.name + ' (You)';
+							}
+						} else {
+							listOfUploaders.push({ id: user.id, name: user.name });
 						}
-					} else {
-						listOfAuthors.push({ id: user.id, name: user.name });
+					}
+				});
+			});
+		} else {
+			props.combinedUsers.forEach(user => {
+				if (user.id === props.userState[0].id) {
+					listOfUploaders.push({ id: user.id, name: user.name + ' (You)' });
+					if (!user.name.includes('(You)')) {
+						user.name = user.name + ' (You)';
 					}
 				}
 			});
-		});
-	} else {
-		props.combinedUsers.forEach(user => {
-			if (user.id === props.userState[0].id) {
-				listOfAuthors.push({ id: user.id, name: user.name + ' (You)' });
-				if (!user.name.includes('(You)')) {
-					user.name = user.name + ' (You)';
-				}
-			}
-		});
-	}
+		}
+		setUploadersList(listOfUploaders);
+	};
+
+	const cancelUploaderRemoval = () => {
+		setUploaderToBeRemoved({});
+		setRemovingOriginalUploader(false);
+		setShowRemoveUploaderModal(false);
+		setShowRemoveUploaderErrorModal(false);
+	};
+
+	const confirmUploaderRemoval = () => {
+		setUploadersList(uploadersList.filter(uploader => uploader.id !== uploaderToBeRemoved.id));
+		setUploaderToBeRemoved({});
+		setShowRemoveUploaderModal(false);
+	};
 
 	function updateReason(id, reason, type, pid) {
 		let inRelatedObject = false;
@@ -134,13 +161,29 @@ const AddEditProjectForm = props => {
 	return (
 		<div>
 			<Container>
+				<RemoveUploaderModal
+					open={showRemoveUploaderModal}
+					cancelUploaderRemoval={cancelUploaderRemoval}
+					confirmUploaderRemoval={confirmUploaderRemoval}
+					entityType={'project'}
+					userState={props.userState}
+					uploaderToBeRemoved={uploaderToBeRemoved}></RemoveUploaderModal>
+
+				<RemoveUploaderErrorModal
+					open={showRemoveUploaderErrorModal}
+					cancelUploaderRemoval={cancelUploaderRemoval}
+					entityType={'project'}
+					uploaderToBeRemoved={uploaderToBeRemoved}
+					removingOriginalUploader={removingOriginalUploader}></RemoveUploaderErrorModal>
 				<Row className='margin-top-32'>
 					<Col sm={1} lg={1} />
 					<Col sm={10} lg={10}>
 						<div className='rectangle'>
 							<Row>
 								<Col sm={10} lg={10}>
-									<p className='black-20 margin-bottom-0 pad-bottom-8'>{isEdit ? 'Edit your project' : 'Add a new research project'}</p>
+									<p className='black-20 margin-bottom-0 pad-bottom-8'>
+										{props.isEdit ? 'Edit your project' : 'Add a new research project'}
+									</p>
 								</Col>
 								<Col sm={2} lg={2} className='text-right'>
 									<span className='badge-project'>
@@ -166,6 +209,7 @@ const AddEditProjectForm = props => {
 									<Form.Control
 										id='link'
 										name='link'
+										data-test-id='link'
 										type='text'
 										className={formik.touched.link && formik.errors.link ? 'emptyFormInput addFormInput' : 'addFormInput'}
 										onChange={formik.handleChange}
@@ -189,7 +233,7 @@ const AddEditProjectForm = props => {
 									{formik.touched.name && formik.errors.name ? <div className='errorMessages'>{formik.errors.name}</div> : null}
 								</Form.Group>
 
-								<Form.Group>
+								<Form.Group data-test-id='type'>
 									<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Type</p>
 									<p className='gray700-13 margin-bottom-0'>Select from existing or enter a new one.</p>
 									<Typeahead
@@ -233,6 +277,7 @@ const AddEditProjectForm = props => {
 										as='textarea'
 										id='description'
 										name='description'
+										data-test-id='description'
 										type='text'
 										className={
 											formik.touched.description && formik.errors.description
@@ -281,30 +326,36 @@ const AddEditProjectForm = props => {
 								</Form.Group>
 
 								<Form.Group>
-									<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Collaborators</p>
-									<p className='gray700-13 margin-bottom-0'>Their name will appear on the project page, and will be able to make edits.</p>
-									<Typeahead
-										id='authors'
-										labelKey={authors => `${authors.name}`}
-										defaultSelected={listOfAuthors}
-										multiple
-										options={props.combinedUsers}
-										className={
-											formik.touched.authors && formik.errors.authors
-												? 'emptyFormInputTypeAhead addFormInputTypeAhead'
-												: 'addFormInputTypeAhead'
-										}
-										onChange={selected => {
-											var tempSelected = [];
-											selected.forEach(selectedItem => {
-												tempSelected.push(selectedItem.id);
-											});
-											formik.values.authors = tempSelected;
-										}}
+									<span className='gray800-14'>Lead researcher (optional)</span>
+									<p className='gray700-13 margin-bottom-0'>Please add the name of the lead researcher on this project</p>
+									<Form.Control
+										id='leadResearcher-item-0'
+										name='leadResearcher'
+										data-test-id='leadResearcher'
+										type='text'
+										className='addFormInput gray700-13'
+										onChange={formik.handleChange}
+										value={formik.values.leadResearcher}
 									/>
 								</Form.Group>
 
 								<Form.Group>
+									<span className='gray800-14'>Collaborators (optional)</span>
+									<p className='gray700-13 margin-bottom-0'>
+										Please add the names of the people who collaborated on this project, using a comma to separate the names
+									</p>
+									<Form.Control
+										id='authorsNew'
+										name='authorsNew'
+										data-test-id='authors'
+										type='text'
+										className='addFormInput gray700-13'
+										onChange={formik.handleChange}
+										value={formik.values.authorsNew}
+									/>
+								</Form.Group>
+
+								<Form.Group data-test-id='keywords'>
 									<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Keywords (optional)</p>
 									<p className='gray700-13 margin-bottom-0'>
 										Technological paradigms or other keywords. Eg. Rule-based, clustering, supervised machine learning
@@ -327,7 +378,7 @@ const AddEditProjectForm = props => {
 									/>
 								</Form.Group>
 
-								<Form.Group>
+								<Form.Group data-test-id='domain'>
 									<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Domain (optional)</p>
 									<p className='gray700-13 margin-bottom-0'>E.g. Biogenomics, Nutrition, Blockchain</p>
 									<Typeahead
@@ -347,6 +398,56 @@ const AddEditProjectForm = props => {
 										}}
 									/>
 								</Form.Group>
+
+								<Form.Group data-test-id='uploaders'>
+									<p className='gray800-14 margin-bottom-0 pad-bottom-4'>Uploaders</p>
+									<p className='gray700-13 margin-bottom-0'>Uploaders are Gateway members with editing rights on this project.</p>
+									<Typeahead
+										id='authors'
+										labelKey={authors => `${authors.name}`}
+										defaultSelected={uploadersList}
+										multiple
+										className={
+											formik.touched.authors && formik.errors.authors
+												? 'emptyFormInputTypeAhead addFormInputTypeAhead'
+												: 'addFormInputTypeAhead'
+										}
+										options={props.combinedUsers}
+										selected={uploadersList}
+										onChange={selectedOptions => {
+											// 1. Check if removing any uploader
+											const removedUploader = uploadersList.filter(
+												uploader => !selectedOptions.map(selectedOpt => selectedOpt.id).includes(uploader.id)
+											)[0];
+											if (!isEmpty(removedUploader)) {
+												// 2. Check if removing original uploader
+												if (removedUploader.id === originalUploader) {
+													setRemovingOriginalUploader(true);
+													setShowRemoveUploaderErrorModal(true);
+												}
+												// 3. Check if removing last uploader
+												else if (isEmpty(selectedOptions)) {
+													setUploaderToBeRemoved(removedUploader);
+													setShowRemoveUploaderErrorModal(true);
+												} else {
+													// 4. If removing a regular uploader show regular remove uploader modal
+													setUploaderToBeRemoved(removedUploader);
+													setShowRemoveUploaderModal(true);
+												}
+											} else {
+												// 5. If not removing uploader, user is adding uploader
+												const addedUploader = selectedOptions
+													.filter(selectedOpt => !uploadersList.map(uploader => uploader.id).includes(selectedOpt.id))
+													.map(newUploader => {
+														return { id: newUploader.id, name: newUploader.name };
+													})[0];
+												if (!isEmpty(addedUploader)) {
+													setUploadersList([...uploadersList, addedUploader]);
+												}
+											}
+										}}
+									/>
+								</Form.Group>
 							</div>
 
 							<div className='rectangle mt-2'>
@@ -363,7 +464,7 @@ const AddEditProjectForm = props => {
 							) : (
 								<div className='rectangle'>
 									{props.relatedObjects.map(object => {
-										if (!_.isNil(object.objectId)) {
+										if (!isNil(object.objectId)) {
 											return (
 												<RelatedObject
 													showRelationshipQuestion={true}
@@ -430,8 +531,13 @@ const AddEditProjectForm = props => {
 						+ Add resource
 					</Button>
 
-					<Button variant='primary' className='publishButton white-14-semibold mr-2' type='submit' onClick={formik.handleSubmit}>
-						{isEdit ? 'Update' : 'Publish'}
+					<Button
+						data-test-id='add-project-publish'
+						variant='primary'
+						className='publishButton white-14-semibold mr-2'
+						type='submit'
+						onClick={formik.handleSubmit}>
+						{props.isEdit ? 'Update' : 'Publish'}
 					</Button>
 				</div>
 			</ActionBar>

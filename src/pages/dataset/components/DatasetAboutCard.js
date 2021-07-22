@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { Col, Row, Table } from 'react-bootstrap';
 import '../Dataset.scss';
 import AboutCardElement from './AboutCardElement';
@@ -40,7 +39,7 @@ const DatasetAboutCard = ({ v2data, section, showEmpty, requiresModal, toggleMod
 									''
 								) : (
 									<AboutCardElement
-										label={'Lastest datset release date'}
+										label={'Latest dataset release date'}
 										description={v2data.provenance.temporal.distributionReleaseDate}
 										tooltip={'Date of the latest release of the dataset.'}
 									/>
@@ -368,14 +367,14 @@ const DatasetAboutCard = ({ v2data, section, showEmpty, requiresModal, toggleMod
 												How to request access
 											</span>
 										) : (
-											<Link
+											<span
 												className='purple-14 pointer float-right'
-												to={{
-													pathname: `/data-access-request/dataset/${datasetid}`,
-												}}
-												onClick={() => Event('Buttons', 'Click', 'Request Access')}>
+												onClick={() => {
+													Event('Buttons', 'Click', 'Request Access');
+													toggleModal();
+												}}>
 												Request access
-											</Link>
+											</span>
 										)}
 									</Col>
 								</Row>
