@@ -26,6 +26,7 @@ import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import { tabTypes } from './Team/teamUtil';
+import ApplicantActionsButtons from '../DataAccessRequest/components/ActivityLog/ApplicantActionsButtons';
 
 import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
@@ -466,6 +467,33 @@ class Account extends Component {
 		this.setState({ dataaccessrequest: dar });
 	};
 
+	navigateToLocation = (e, applicationId) => {
+		e.stopPropagation();
+
+		let [id] = e.currentTarget.id.split('_');
+
+		console.log(applicationId);
+
+		switch (id) {
+			case 'startReview':
+				this.startWorkflowReview(applicationId);
+				break;
+			default:
+				break;
+		}
+	};
+
+	startWorkflowReview = async applicationId => {
+		await axios
+			.put(`${baseURL}/api/v1/data-access-request/${applicationId}/startreview`)
+			.then(() => {
+				window.location.href = `/data-access-request/${applicationId}`;
+			})
+			.catch(err => {
+				console.error(err.message);
+			});
+	};
+
 	render() {
 		const {
 			searchString,
@@ -791,6 +819,22 @@ class Account extends Component {
 						)}
 					</div>
 				</div>
+
+				{_.isEmpty(dataaccessrequest) ? (
+					''
+				) : (
+					<ActionBar userState={userState}>
+						<div className='action-bar'>
+							<div className='action-bar-actions'>
+								<ApplicantActionsButtons
+									team={team}
+									latestVersion={this.state.dataaccessrequest}
+									onClickStartReview={this.navigateToLocation}
+								/>
+							</div>
+						</div>
+					</ActionBar>
+				)}
 
 				<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
 					<UserMessages
