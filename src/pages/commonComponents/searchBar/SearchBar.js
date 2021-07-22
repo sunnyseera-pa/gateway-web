@@ -20,7 +20,7 @@ import { cmsURL } from '../../../configs/url.config';
 import { ReactComponent as ChevronBottom } from '../../../images/chevron-bottom.svg';
 import UserDropdownItems from './UserDropdownItems';
 import UserDropdownTeams from './UserDropdownTeams';
-import UatBanner from '../../commonComponents/uatBanner/UatBanner';
+import UatBanner from '../uatBanner/UatBanner';
 
 import CmsDropdown from './CmsDropdown';
 
