@@ -413,7 +413,6 @@ class Account extends Component {
 				activeKey: tab.tabId,
 				alert: !_.isEmpty(alert) ? alert : {},
 				activeAccordion,
-				datasetAccordion,
 				dataaccessrequest: {},
 			});
 			// 6. push state
