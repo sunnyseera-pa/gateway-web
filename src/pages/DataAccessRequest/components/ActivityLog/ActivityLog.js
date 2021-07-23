@@ -287,7 +287,11 @@ const ActivityLog = ({ userState, dataaccessrequest, team, navigateToLocation })
 																			''
 																		)}
 																		{log.eventType === 'applicationRejected' ? <ApplicationRejected className='versionCreated' /> : ''}
-																		{log.eventType === 'finalDecisionRequired' ? <ActionRequired className='versionCreated' /> : ''}
+																		{log.eventType === 'finalDecisionRequired' || log.eventType === 'deadlinePassed' ? (
+																			<ActionRequired className='versionCreated' />
+																		) : (
+																			''
+																		)}
 																		{log.eventType === 'reviewProcessStarted' ||
 																		log.eventType === 'workflowAssigned' ||
 																		log.eventType === 'reviewPhaseStarted' ||
