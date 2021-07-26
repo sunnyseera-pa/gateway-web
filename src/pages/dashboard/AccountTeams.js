@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
 import { Row, Col, Button, Pagination } from 'react-bootstrap';
 import axios from 'axios';
 import Loading from '../commonComponents/Loading';
@@ -18,7 +17,7 @@ const AccountTeams = () => {
 	const [teamsCount, setTeamsCount] = useState(0);
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [teamManagersIds, setTeamManagersIds] = useState();
-	const [activeTabKey, setActiveTab] = useState(tabTypes.Teams);
+	const [activeTabKey] = useState(tabTypes.Teams);
 
 	const handlePaginatedItems = () => {
 		// Returns the related resources that have the same object type as the current active tab and performs a chunk on them to ensure each page returns 24 results
