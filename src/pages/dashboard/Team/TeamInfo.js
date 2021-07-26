@@ -1,7 +1,6 @@
 import React from 'react';
 import { Row, Col, DropdownButton, Dropdown } from 'react-bootstrap';
 import moment from 'moment';
-import { EntityActionButton } from '../EntityActionButton.jsx';
 
 const TeamInfo = ({ updatedAt, publisherName, teamManagers, membersCount }) => {
 	return (
@@ -16,7 +15,7 @@ const TeamInfo = ({ updatedAt, publisherName, teamManagers, membersCount }) => {
 				<Col sm={3} lg={3} className='pt-2 gray800-14'>
 					{teamManagers &&
 						teamManagers.length > 0 &&
-						teamManagers.map((teamManager, index) => {
+						teamManagers.map(teamManager => {
 							return <div>{teamManager.firstname + ' ' + teamManager.lastname + ', '}</div>;
 						})}
 				</Col>
@@ -28,7 +27,6 @@ const TeamInfo = ({ updatedAt, publisherName, teamManagers, membersCount }) => {
 						<Dropdown.Item href={''} className='black-14'>
 							Edit
 						</Dropdown.Item>
-						{/* <EntityActionButton id={paper.id} action={archivePaper} entity='paper' actionType='archive' /> */}
 					</DropdownButton>
 				</Col>
 			</Row>
