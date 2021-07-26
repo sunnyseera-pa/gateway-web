@@ -3,6 +3,7 @@ import { Row, Col, DropdownButton, Dropdown } from 'react-bootstrap';
 import moment from 'moment';
 
 const TeamInfo = ({ updatedAt, publisherName, teamManagers, membersCount }) => {
+	let teamManagerNames = '';
 	return (
 		<Row className='entryBox gray800-14'>
 			<Col sm={12} lg={2}>
@@ -15,8 +16,13 @@ const TeamInfo = ({ updatedAt, publisherName, teamManagers, membersCount }) => {
 				{teamManagers &&
 					teamManagers.length > 0 &&
 					teamManagers.map(teamManager => {
-						return <div>{teamManager.firstname + ' ' + teamManager.lastname + ', '}</div>;
+						teamManagerNames += teamManager.firstname + ' ' + teamManager.lastname + ', ';
 					})}
+				<p className='gray800-14'>
+					{teamManagerNames
+						? teamManagerNames.substr(0, 35) + (teamManagerNames.length > 35 ? '...' : '')
+						: ''}
+				</p>
 			</Col>
 			<Col sm={12} lg={2}>
 				{membersCount}
