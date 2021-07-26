@@ -703,7 +703,7 @@ class Account extends Component {
 								{(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') && (
 									<>{tabId === 'datasets' ? <AccountDatasets userState={userState} team={team} alert={alert} /> : ''}</>
 								)}
-								{(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') && (
+								{team === 'admin' && (
 									<>
 										{tabId === 'teams' ? (
 											<AccountTeams userState={userState} onTeamsTabChange={this.onTeamsTabChange} team={team} alert={alert} />
