@@ -22,9 +22,6 @@
 	margin-bottom: 10px;
 }
 
-.activity-log-time {
-}
-
 .activity-log-text {
 	margin-left: 24px;
 }
@@ -70,15 +67,7 @@
 .activity-log-detail-link {
 	color: #475da7;
 }
-.activity-log-detail-row-answer {
-}
 
-// .status-duration {
-// 	align-self: flex-start;
-// }
-
-// .status-sla {
-// 	align-self: center;
 .activity-log-time {
 	margin-left: 16px;
 	font-size: 13px;
@@ -101,9 +90,8 @@
 	margin-top: 7px;
 }
 
-.layoutCardUpdates {
+.layoutCardVersionUpdated {
 	margin-bottom: -5px !important;
-
 	position: relative !important;
 }
 
@@ -115,7 +103,7 @@
 		border-bottom: 1px solid #e7e9ed;
 		flex-grow: 1;
 	}
-	.text {
+	.version {
 		margin-left: 2px;
 		margin-right: 2px;
 		color: #848e97;

@@ -129,6 +129,26 @@ const flagPanelIcons = {
 	DANGER: 'fas fa-circle danger',
 };
 
+const activityLogEvents = {
+	APPLICATION_SUBMITTED: 'applicationSubmitted',
+	REVIEW_PROCESS_STARTED: 'reviewProcessStarted',
+	UPDATES_SUBMITTED: 'updatesSubmitted',
+	AMENDMENT_SUBMITTED: 'amendmentSubmitted',
+	APPLICATION_APPROVED: 'applicationApproved',
+	APPLICATION_APPROVED_WITH_CONDITIONS: 'applicationApprovedWithConditions',
+	APPLICATION_REJECTED: 'applicationRejected',
+	COLLABORATOR_ADDEDD: 'collaboratorAdded',
+	COLLABORATOR_REMOVED: 'collaboratorRemoved',
+	UPDATE_REQUESTED: 'updateRequested',
+	UPDATE_SUBMITTED: 'updateSubmitted',
+	WORKFLOW_ASSIGNED: 'workflowAssigned',
+	REVIEW_PHASE_STARTED: 'reviewPhaseStarted',
+	RECOMMENDATION_WITH_ISSUE: 'reccomendationWithIssue',
+	RECOMMENDATION_WITH_NO_ISSUE: 'reccomendationWithNoIssue',
+	FINAL_DECISION_REQUIRED: 'finalDecisionRequired',
+	DEADLINE_PASSED: 'deadlinePassed',
+};
+
 /**
  * [generateStatusCounts - Used in DataAccessRequest Dashboard for status counts]
  *
@@ -570,4 +590,5 @@ export default {
 	userTypes: userTypes,
 	amendmentStatuses: amendmentStatuses,
 	removeStaticPages: removeStaticPages,
+	activityLogEvents: activityLogEvents,
 };
