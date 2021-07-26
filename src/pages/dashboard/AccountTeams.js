@@ -148,7 +148,6 @@ const AccountTeams = ({ onTeamsTabChange }) => {
 						</Col>
 					</Row>
 				</div>
-				{/*CLOSE col-sm-10 */}
 				<Col xs={1}></Col>
 			</Row>
 		</Fragment>

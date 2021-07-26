@@ -22,7 +22,7 @@ const TeamInfo = ({ updatedAt, publisherName, teamManagers, membersCount }) => {
 				<Col sm={2} lg={2} className='pt-2 gray800-14'>
 					{membersCount}
 				</Col>
-				<Col sm={2} lg={2}>
+				<Col sm={2} lg={2} className='pt-2'>
 					<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
 						<Dropdown.Item href={''} className='black-14'>
 							Edit
