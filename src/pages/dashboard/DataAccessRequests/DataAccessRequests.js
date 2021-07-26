@@ -182,9 +182,6 @@ class DataAccessRequestsNew extends React.Component {
 	};
 
 	generatePreSubmissionWarning = () => {
-		let {
-			alert: { message = '' },
-		} = this.state;
 		return (
 			<Row className='mt-3'>
 				<Col>
