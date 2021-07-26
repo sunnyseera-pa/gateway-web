@@ -29,6 +29,7 @@ import { tabTypes } from './Team/teamUtil';
 import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
 import './Dashboard.scss';
+import AccountTeams from './AccountTeams';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -355,13 +356,13 @@ class Account extends Component {
 				break;
 			default:
 				const team = userState[0].teams.reduce((obj, team) => {
-					if(team._id === teamSelector) {
-						obj = {...team};
+					if (team._id === teamSelector) {
+						obj = { ...team };
 					}
 					return obj;
 				}, {});
-				if(_.isEmpty(team)) {
-					this.setState({team: 'user'});
+				if (_.isEmpty(team)) {
+					this.setState({ team: 'user' });
 					renderItem = <Fragment>{userState[0].name}</Fragment>;
 				} else {
 					renderItem = <Fragment>{team.name}</Fragment>;
@@ -442,6 +443,10 @@ class Account extends Component {
 		this.setState({ teamManagementTab: teamManagementTab });
 	};
 
+	onTeamsTabChange = teamsTab => {
+		this.setState({ teamsTab: teamsTab });
+	};
+
 	onClearInnerTab = () => {
 		this.setState({ innertab: '' });
 	};
@@ -463,8 +468,10 @@ class Account extends Component {
 			savedTeamNotificationSuccess,
 			isSubmitting,
 			teamManagementTab,
+			teamsTab,
 			accountUpdated,
 		} = this.state;
+
 
 		return (
 			<Fragment>
@@ -587,6 +594,12 @@ class Account extends Component {
 											<span style={{ 'margin-left': '11px' }}>Datasets</span>
 										</Nav.Link>
 									</div>
+									<div className={`${tabId === 'teams' ? 'activeCard' : 'accountNav'}`} onClick={e => this.toggleNav('teams')}>
+										<Nav.Link className='verticalNavBar gray700-13'>
+											<span className='grey-circle-border'><SVGIcon name='plusChunky' fill={'#b3b8bd'} viewBox='1 -4 22 22' className='accountSvgs' /></span>
+											<span style={{ 'margin-left': '11px' }}>Teams</span>
+										</Nav.Link>
+									</div>
 								</Fragment>
 							) : (
 								''
@@ -690,6 +703,15 @@ class Account extends Component {
 
 								{(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') && (
 									<>{tabId === 'datasets' ? <AccountDatasets userState={userState} team={team} alert={alert} /> : ''}</>
+								)}
+								{(this.userHasRole(team, ['manager', 'metadata_editor']) || team === 'admin') && (
+									<>
+										{tabId === 'teams' ? (
+											<AccountTeams userState={userState} onTeamsTabChange={this.onTeamsTabChange} team={team} alert={alert} />
+										) : (
+											''
+										)}
+									</>
 								)}
 
 								{allowWorkflow && this.userHasRole(team, 'manager') && (

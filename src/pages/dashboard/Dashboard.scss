@@ -446,5 +446,11 @@ textarea {
 
 button.dropdown-toggle.btn.btn-outline-secondary::after {
 	position: relative;
-    top: 4.5px;
+	top: 4.5px;
+}
+
+.grey-circle-border {
+	padding: 5px;
+	border: solid 2px #b3b8bd;
+	border-radius: 50%;
 }

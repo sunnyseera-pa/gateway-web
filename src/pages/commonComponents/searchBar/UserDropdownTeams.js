@@ -51,9 +51,14 @@ const UserDropdownTeams = props => {
 					</Dropdown.Toggle>
 					<Dropdown.Menu as={CustomSubMenu}>
 						{team.type === 'admin' ? (
-							<Dropdown.Item href={`/account?tab=datasets&team=${team._id}`} className='black-14 user-dropdown-item'>
-								Datasets
-							</Dropdown.Item>
+							<>
+								<Dropdown.Item href={`/account?tab=datasets&team=${team._id}`} className='black-14 user-dropdown-item'>
+									Datasets
+								</Dropdown.Item>
+								<Dropdown.Item href={`/account?tab=teams&team=${team._id}`} className='black-14 user-dropdown-item'>
+									Teams
+								</Dropdown.Item>
+							</>
 						) : (
 							<Fragment>
 								<Dropdown.Item href={`/account?tab=teamManagement&team=${team._id}`} className='black-14 user-dropdown-item'>
