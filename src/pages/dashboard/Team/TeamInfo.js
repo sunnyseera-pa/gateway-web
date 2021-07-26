@@ -25,7 +25,7 @@ const TeamInfo = ({ updatedAt, publisherName, teamManagers, membersCount }) => {
 				</p>
 			</Col>
 			<Col sm={12} lg={2}>
-				{membersCount}
+				<p>{membersCount}</p>
 			</Col>
 			<Col sm={12} lg={2}>
 				<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
