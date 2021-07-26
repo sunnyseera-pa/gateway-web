@@ -3,7 +3,7 @@ import { Fragment } from 'react';
 
 import DarHelperUtil from '../../../../utils/DarHelper.util';
 
-const ApplicantActionsButtons = ({ team, latestVersion, onClickAddNewEvent, onClickDownloadLog, onClickStartReview }) => {
+const ActivityLogActionButtons = ({ team, latestVersion, onClickAddNewEvent, onClickDownloadLog, onClickStartReview }) => {
 	return (
 		<Fragment>
 			<button className={`button-secondary`} onClick={() => onClickDownloadLog()}>
@@ -46,4 +46,4 @@ const ApplicantActionsButtons = ({ team, latestVersion, onClickAddNewEvent, onCl
 	);
 };
 
-export default ApplicantActionsButtons;
+export default ActivityLogActionButtons;

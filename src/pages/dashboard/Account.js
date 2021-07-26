@@ -26,7 +26,7 @@ import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import { tabTypes } from './Team/teamUtil';
-import ApplicantActionsButtons from '../DataAccessRequest/components/ActivityLog/ApplicantActionsButtons';
+import ActivityLogActionButtons from '../DataAccessRequest/components/ActivityLog/ActivityLogActionButtons';
 
 import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
@@ -265,7 +265,7 @@ class Account extends Component {
 		return tab;
 	};
 
-	toggleDrawer = (selectedTopicId) => {
+	toggleDrawer = selectedTopicId => {
 		this.setState(prevState => {
 			if (prevState.showDrawer === true) {
 				this.searchBar.current.getNumberOfUnreadMessages();
@@ -821,13 +821,11 @@ class Account extends Component {
 					</div>
 				</div>
 
-				{_.isEmpty(dataaccessrequest) ? (
-					''
-				) : (
+				{!_.isEmpty(dataaccessrequest) && (
 					<ActionBar userState={userState}>
 						<div className='action-bar'>
 							<div className='action-bar-actions'>
-								<ApplicantActionsButtons
+								<ActivityLogActionButtons
 									team={team}
 									latestVersion={this.state.dataaccessrequest}
 									onClickStartReview={this.navigateToLocation}
