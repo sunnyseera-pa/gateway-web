@@ -1,17 +1,22 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Row, Col, Button } from 'react-bootstrap';
+import { Row, Col, Button, Pagination } from 'react-bootstrap';
 import axios from 'axios';
 import Loading from '../commonComponents/Loading';
 import { baseURL } from '../../configs/url.config';
 import { tabTypes } from './Team/teamUtil';
 import './Dashboard.scss';
 import TeamInfo from './Team/TeamInfo';
+import _ from 'lodash';
+
+const maxResult = 40;
 
 const AccountTeams = ({ onTeamsTabChange }) => {
 	// state
 	const [isLoading, setLoading] = useState(false);
 	const [teams, setTeams] = useState();
+	const [teamsCount, setTeamsCount] = useState(0);
+	const [activeIndex, setActiveIndex] = useState(0);
 	const [teamManagersIds, setTeamManagersIds] = useState();
 	const [activeTabKey, setActiveTab] = useState(tabTypes.Teams);
 	let history = useHistory();
@@ -20,6 +25,17 @@ const AccountTeams = ({ onTeamsTabChange }) => {
 	const onTabChange = key => {
 		onTeamsTabChange(key);
 		setActiveTab(key);
+	};
+
+	const handlePaginatedItems = () => {
+		// Returns the related resources that have the same object type as the current active tab and performs a chunk on them to ensure each page returns 24 results
+		let paginatedItems = _.chunk(teams, maxResult);
+		// If there are items to show based on search results, display them on the currently active page
+		if (paginatedItems.length > 0) {
+			return paginatedItems[activeIndex];
+		} else {
+			return [];
+		}
 	};
 
 	const getTeams = () => {
@@ -39,6 +55,7 @@ const AccountTeams = ({ onTeamsTabChange }) => {
 					}
 				});
 				setTeams(teams);
+				setTeamsCount(teams.length);
 				setTeamManagersIds(teamManagersIds);
 				setLoading(false);
 			})
@@ -47,6 +64,20 @@ const AccountTeams = ({ onTeamsTabChange }) => {
 				console.error(err.message);
 			});
 	};
+
+    let paginationItems = [];
+	for (let i = 1; i <= Math.ceil(teamsCount / maxResult); i++) {
+		paginationItems.push(
+			<Pagination.Item
+				key={i}
+				active={i === activeIndex + 1}
+				onClick={e => {
+					setActiveIndex(i - 1)
+				}}>
+				{i}
+			</Pagination.Item>
+		);
+	}
 	// lifecycle hook
 	useEffect(() => {
 		// only call get teams on tab change
@@ -101,7 +132,7 @@ const AccountTeams = ({ onTeamsTabChange }) => {
 						<Col sm={12} lg={12}>
 							{teams &&
 								teams.length > 0 &&
-								teams.map(team => {
+								handlePaginatedItems().map(team => {
 									return (
 										<TeamInfo
 											updatedAt={team.updatedAt}
@@ -111,6 +142,9 @@ const AccountTeams = ({ onTeamsTabChange }) => {
 										/>
 									);
 								})}
+							<div className='text-center entityDashboardPagination'>
+								{teamsCount > maxResult ? <Pagination>{paginationItems}</Pagination> : ''}
+							</div>
 						</Col>
 					</Row>
 				</div>
