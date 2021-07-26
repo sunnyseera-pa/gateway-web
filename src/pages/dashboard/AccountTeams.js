@@ -11,7 +11,7 @@ import _ from 'lodash';
 
 const maxResult = 40;
 
-const AccountTeams = ({ onTeamsTabChange }) => {
+const AccountTeams = () => {
 	// state
 	const [isLoading, setLoading] = useState(false);
 	const [teams, setTeams] = useState();
@@ -19,13 +19,6 @@ const AccountTeams = ({ onTeamsTabChange }) => {
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [teamManagersIds, setTeamManagersIds] = useState();
 	const [activeTabKey, setActiveTab] = useState(tabTypes.Teams);
-	let history = useHistory();
-
-	// functions
-	const onTabChange = key => {
-		onTeamsTabChange(key);
-		setActiveTab(key);
-	};
 
 	const handlePaginatedItems = () => {
 		// Returns the related resources that have the same object type as the current active tab and performs a chunk on them to ensure each page returns 24 results
@@ -116,17 +109,18 @@ const AccountTeams = ({ onTeamsTabChange }) => {
 								variant='primary'
 								href=''
 								className='addButton'
-								onClick={() => Event('Buttons', 'Click', 'Add a new team')}>
+								// TODO - Add Teams onClick={}
+                                >
 								+ Add a new team
 							</Button>
 						</Col>
 					</Row>
 					<Row className='subHeader mt-3 gray800-14-bold'>
-						<Col xs={2}>Updated</Col>
-						<Col xs={3}>Data custodian</Col>
-						<Col xs={3}>Team manager(s)</Col>
-						<Col xs={2}>Members</Col>
-						<Col xs={2}></Col>
+						<Col sm={2}>Updated</Col>
+						<Col sm={3}>Data custodian</Col>
+						<Col sm={3}>Team manager(s)</Col>
+						<Col sm={2}>Members</Col>
+						<Col sm={2}></Col>
 					</Row>
 					<Row>
 						<Col sm={12} lg={12}>
