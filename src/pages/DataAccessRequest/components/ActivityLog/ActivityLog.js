@@ -11,7 +11,7 @@ import _ from 'lodash';
 import './ActivityLog.scss';
 import ActivityLogVersionCard from './ActivityLogVersionCard';
 
-const ActivityLog = ({ dataaccessrequest, team, navigateToLocation }) => {
+const ActivityLog = ({ dataaccessrequest, team, onClickStartReview }) => {
 	const [showWorkflowReviewModal, setShowWorkflowReviewModal] = useState(false);
 	const [activityLogs, setActivityLogs] = useState([]);
 
@@ -116,10 +116,10 @@ const ActivityLog = ({ dataaccessrequest, team, navigateToLocation }) => {
 									isReviewer={isReviewer}
 									stepName={stepName}
 									remainingActioners={remainingActioners}
-									navigateToLocation={navigateToLocation}
-									applicationId={_id}
+									navigateToLocation={onClickStartReview}
+									latestVersion={dataaccessrequest}
 									amendmentStatus={amendmentStatus}
-									isStartReviewEnabled={false}
+									isStartReviewEnabled={true}
 								/>
 							</div>
 						</div>

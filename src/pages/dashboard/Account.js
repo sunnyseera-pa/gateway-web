@@ -755,7 +755,12 @@ class Account extends Component {
 									_.isEmpty(dataaccessrequest) ? (
 										<DataAccessRequests setDataAccessRequest={this.setDataAccessRequest} userState={userState} team={team} alert={alert} />
 									) : (
-										<ActivityLog dataaccessrequest={dataaccessrequest} userState={userState} team={team} />
+										<ActivityLog
+											onClickStartReview={this.navigateToLocation}
+											dataaccessrequest={dataaccessrequest}
+											userState={userState}
+											team={team}
+										/>
 									)
 								) : (
 									''
@@ -781,7 +786,12 @@ class Account extends Component {
 													alert={alert}
 												/>
 											) : (
-												<ActivityLog dataaccessrequest={dataaccessrequest} userState={userState} team={team} />
+												<ActivityLog
+													onClickStartReview={this.navigateToLocation}
+													dataaccessrequest={dataaccessrequest}
+													userState={userState}
+													team={team}
+												/>
 											)
 										) : (
 											''
