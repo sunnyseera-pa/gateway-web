@@ -60,7 +60,7 @@ export const AccountMembers = props => {
 	const renderRoles = roles => {
 		if (!isEmpty(roles)) {
 			let sortedRoles = roles.sort();
-			return sortedRoles.map(role => `${upperFirst(role)}${roles.length > 1  && roles.indexOf(role) !== roles.length - 1 ? ', ' : ' '}`);
+			return sortedRoles.map(role => `${upperFirst(role)}${roles.length > 1 && roles.indexOf(role) !== roles.length - 1 ? ', ' : ' '}`);
 		}
 		return '';
 	}
@@ -128,7 +128,7 @@ export const AccountMembers = props => {
 								{members.length <= 0 ? (
 									''
 								) : (
-									<div className='subHeader mt-3 gray800-14-bold'>
+									<div className='subHeaderFlex mt-3 gray800-14-bold'>
 										<Col xs={5}>Name</Col>
 										<Col xs={4}>Role</Col>
 										<Col xs={3}></Col>
@@ -141,7 +141,7 @@ export const AccountMembers = props => {
 								) : (
 									members.map(m => {
 										return (
-											<div className='entryBox padding-left-20'>
+											<div className='entryBoxFlex padding-left-20'>
 												<Col sm={12} lg={5}>
 													<a href={'/person/' + m.id} className='purple-14'>
 														{m.firstname} {m.lastname}
