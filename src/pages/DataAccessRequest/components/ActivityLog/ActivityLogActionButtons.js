@@ -33,14 +33,10 @@ const ActivityLogActionButtons = ({ team, latestVersion, onClickAddNewEvent, onC
 					);
 				})}
 
-			{team === 'user' ||
-			latestVersion.applicationStatus === DarHelperUtil.darStatus.inReview ||
-			latestVersion.applicationStatus === DarHelperUtil.darStatus.inProgress ? (
+			{(team === 'user' || latestVersion.applicationStatus === DarHelperUtil.darStatus.inReview) && (
 				<a href={latestVersion.versions[0].link}>
 					<button className={`button-primary`}>View application form</button>
 				</a>
-			) : (
-				''
 			)}
 		</Fragment>
 	);
