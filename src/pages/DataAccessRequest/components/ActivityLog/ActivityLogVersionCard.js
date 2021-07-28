@@ -30,8 +30,8 @@ const ActivityLogVersionCard = ({ version, team }) => {
 	} = version;
 
 	const groupedByDateEvents = _.groupBy(events, e => moment(e.timestamp).format('D MMMM YYYY'));
-	const keys = Object.keys(groupedByDateEvents);
-	const values = Object.values(groupedByDateEvents);
+	const logCreationDates = Object.keys(groupedByDateEvents);
+	const logsByLogCreationDate = Object.values(groupedByDateEvents);
 
 	return (
 		<div className='col-md-12'>
@@ -61,11 +61,11 @@ const ActivityLogVersionCard = ({ version, team }) => {
 				</div>
 
 				<div className='version-log-body'>
-					{keys.map((key, index) => {
-						const logs = values[index];
+					{logCreationDates.map((logCreationDate, index) => {
+						const logs = logsByLogCreationDate[index];
 						return (
 							<div className='activity-log-item'>
-								<div className='activity-log-key'> {isToday(new Date(key)) ? 'Today' : key}</div>
+								<div className='activity-log-key'> {isToday(new Date(logCreationDate)) ? 'Today' : logCreationDate}</div>
 								{logs.map((log, index) => {
 									return (
 										<div>
