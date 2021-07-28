@@ -408,34 +408,28 @@ class DataAccessRequestsNew extends React.Component {
 												</div>
 												<div className='header-version-status'>
 													{this.renderDuration(request, team)}
-													{
-														(applicationType ===
-															DarHelperUtil.darApplicationTypes.amendment &&
-															applicationStatus !== DarHelperUtil.darStatus.approved &&
-															applicationStatus !== DarHelperUtil.darStatus['approved with conditions'] &&
-															applicationStatus !== DarHelperUtil.darStatus.rejected ? (
-																<>
-																	<SLA
-																		classProperty={DarHelperUtil.darStatusColours[applicationStatus]}
-																		text={
-																			applicationStatus === DarHelperUtil.darStatus.inProgress
-																				? 'Pre-submission amendment'
-																				: 'Amendment in review'
-																		}
-																	/>
-																	<SLA
-																		classProperty={DarHelperUtil.darStatusColours['approved']}
-																		text={DarHelperUtil.darSLAText['approved']}
-																	/>
-																</>
-															) : (
-																<SLA
-																	classProperty={DarHelperUtil.darStatusColours[applicationStatus]}
-																	text={DarHelperUtil.darSLAText[applicationStatus]}
-																	applicationType={applicationType}
-																/>
-															))
-													}
+													{applicationType === DarHelperUtil.darApplicationTypes.amendment &&
+													applicationStatus !== DarHelperUtil.darStatus.approved &&
+													applicationStatus !== DarHelperUtil.darStatus['approved with conditions'] &&
+													applicationStatus !== DarHelperUtil.darStatus.rejected ? (
+														<>
+															<SLA
+																classProperty={DarHelperUtil.darStatusColours[applicationStatus]}
+																text={
+																	applicationStatus === DarHelperUtil.darStatus.inProgress
+																		? 'Pre-submission amendment'
+																		: 'Amendment in review'
+																}
+															/>
+															<SLA classProperty={DarHelperUtil.darStatusColours['approved']} text={DarHelperUtil.darSLAText['approved']} />
+														</>
+													) : (
+														<SLA
+															classProperty={DarHelperUtil.darStatusColours[applicationStatus]}
+															text={DarHelperUtil.darSLAText[applicationStatus]}
+															applicationType={applicationType}
+														/>
+													)}
 												</div>
 											</div>
 											<div className='body'>
@@ -458,7 +452,6 @@ class DataAccessRequestsNew extends React.Component {
 													stepName={stepName}
 													remainingActioners={remainingActioners}
 													navigateToLocation={this.navigateToLocation}
-													applicationId={_id}
 													amendmentStatus={amendmentStatus}
 													isStartReviewEnabled={false}
 												/>

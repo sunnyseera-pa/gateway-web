@@ -25,6 +25,7 @@ import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 import { tabTypes } from './Team/teamUtil';
+import ActivityLogActionButtons from '../DataAccessRequest/components/ActivityLog/ActivityLogActionButtons';
 
 import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.svg';
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
@@ -136,6 +137,7 @@ class Account extends Component {
 	}
 
 	async componentDidMount() {
+		window.currentComponent = this;
 		if (window.location.search) {
 			let tab = '';
 			let values = queryString.parse(window.location.search);
@@ -261,12 +263,12 @@ class Account extends Component {
 		return tab;
 	};
 
-	toggleDrawer = () => {
+	toggleDrawer = selectedTopicId => {
 		this.setState(prevState => {
 			if (prevState.showDrawer === true) {
 				this.searchBar.current.getNumberOfUnreadMessages();
 			}
-			return { showDrawer: !prevState.showDrawer };
+			return { showDrawer: !prevState.showDrawer, selectedTopicId };
 		});
 	};
 
@@ -451,6 +453,33 @@ class Account extends Component {
 
 	setDataAccessRequest = (dar = {}) => {
 		this.setState({ dataaccessrequest: dar });
+	};
+
+	navigateToLocation = (e, applicationId) => {
+		e.stopPropagation();
+
+		let [id] = e.currentTarget.id.split('_');
+
+		console.log(applicationId);
+
+		switch (id) {
+			case 'startReview':
+				this.startWorkflowReview(applicationId);
+				break;
+			default:
+				break;
+		}
+	};
+
+	startWorkflowReview = async applicationId => {
+		await axios
+			.put(`${baseURL}/api/v1/data-access-request/${applicationId}/startreview`)
+			.then(() => {
+				window.location.href = `/data-access-request/${applicationId}`;
+			})
+			.catch(err => {
+				console.error(err.message);
+			});
 	};
 
 	render() {
@@ -686,7 +715,12 @@ class Account extends Component {
 									_.isEmpty(dataaccessrequest) ? (
 										<DataAccessRequests setDataAccessRequest={this.setDataAccessRequest} userState={userState} team={team} alert={alert} />
 									) : (
-										<ActivityLog dataaccessrequest={dataaccessrequest} userState={userState} team={team} />
+										<ActivityLog
+											onClickStartReview={this.navigateToLocation}
+											dataaccessrequest={dataaccessrequest}
+											userState={userState}
+											team={team}
+										/>
 									)
 								) : (
 									''
@@ -712,7 +746,12 @@ class Account extends Component {
 													alert={alert}
 												/>
 											) : (
-												<ActivityLog dataaccessrequest={dataaccessrequest} userState={userState} team={team} />
+												<ActivityLog
+													onClickStartReview={this.navigateToLocation}
+													dataaccessrequest={dataaccessrequest}
+													userState={userState}
+													team={team}
+												/>
 											)
 										) : (
 											''
@@ -752,12 +791,27 @@ class Account extends Component {
 					</div>
 				</div>
 
+				{!_.isEmpty(dataaccessrequest) && (
+					<ActionBar userState={userState}>
+						<div className='action-bar'>
+							<div className='action-bar-actions'>
+								<ActivityLogActionButtons
+									team={team}
+									latestVersion={this.state.dataaccessrequest}
+									onClickStartReview={this.navigateToLocation}
+								/>
+							</div>
+						</div>
+					</ActionBar>
+				)}
+
 				<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
 					<UserMessages
 						userState={userState[0]}
 						closed={this.toggleDrawer}
 						toggleModal={this.toggleModal}
 						drawerIsOpen={this.state.showDrawer}
+						selectedTopicId={this.state.selectedTopicId}
 					/>
 				</SideDrawer>
 				{tabId === 'teamManagement' && teamManagementTab == tabTypes.Notifications && (

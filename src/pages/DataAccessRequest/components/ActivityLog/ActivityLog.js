@@ -8,14 +8,19 @@ import { Row, Col } from 'react-bootstrap';
 import AccessActivity from '../../../dashboard/DataAccessRequests/AccessActivity/AccessActivity';
 import WorkflowReviewStepsModal from '../../../commonComponents/workflowReviewStepsModal/WorkflowReviewStepsModal';
 import _ from 'lodash';
+import './ActivityLog.scss';
+import ActivityLogVersionCard from './ActivityLogVersionCard';
 
-const ActivityLog = ({ dataaccessrequest, team }) => {
+const ActivityLog = ({ dataaccessrequest, team, onClickStartReview }) => {
 	const [showWorkflowReviewModal, setShowWorkflowReviewModal] = useState(false);
 	const [activityLogs, setActivityLogs] = useState([]);
 
 	useEffect(() => {
 		const getActivityLogs = async () => {
-			const versionIds = (dataaccessrequest.versions || []).map(version => version._id);
+			const versionIds = (Object.values(dataaccessrequest.versionTree) || []).map(version => {
+				return version.iterationId ? version.iterationId : version.applicationId;
+			});
+
 			const type = 'data_request';
 
 			const response = await axios.post(`${baseURL}/api/v2/activitylog`, {
@@ -29,46 +34,12 @@ const ActivityLog = ({ dataaccessrequest, team }) => {
 		getActivityLogs();
 	}, [dataaccessrequest]);
 
-	const createMarkup = (htmlString) => {
-		return { __html: htmlString };
-	}
-
 	const toggleWorkflowReviewModal = e => {
 		setShowWorkflowReviewModal(prevState => {
 			return {
 				showWorkflowReviewModal: !prevState.showWorkflowReviewModal,
 			};
 		});
-	};
-
-	const startWorkflowReview = async applicationId => {
-		await axios
-			.put(`${baseURL}/api/v1/data-access-request/${applicationId}/startreview`)
-			.then(() => {
-				window.location.href = `/data-access-request/${applicationId}`;
-			})
-			.catch(err => {
-				console.error(err.message);
-			});
-	};
-
-	const navigateToLocation = (e, applicationId) => {
-		e.stopPropagation();
-
-		let [id] = e.currentTarget.id.split('_');
-
-		switch (id) {
-			case 'workflow':
-				if (!_.isEmpty(dataaccessrequest.workflow)) {
-					toggleWorkflowReviewModal();
-				}
-				break;
-			case 'startReview':
-				startWorkflowReview(applicationId);
-				break;
-			default:
-				break;
-		}
 	};
 
 	let {
@@ -91,11 +62,8 @@ const ActivityLog = ({ dataaccessrequest, team }) => {
 		remainingActioners = [],
 		_id,
 		amendmentStatus = '',
-		versions = [],
 		applicationType = 'initial',
 	} = dataaccessrequest;
-
-	const selectedVersion = versions.find(v => v.isCurrent)?.displayTitle;
 
 	return (
 		<>
@@ -109,29 +77,24 @@ const ActivityLog = ({ dataaccessrequest, team }) => {
 									<h1>{projectName}</h1>
 								</div>
 								<div className='header-version-status'>
-									{
-										(applicationType =
-											DarHelperUtil.darApplicationTypes.amendment &&
-											applicationStatus !== DarHelperUtil.darStatus.approved &&
-											applicationStatus !== DarHelperUtil.darStatus['approved with conditions'] &&
-											applicationStatus !== DarHelperUtil.darStatus.rejected ? (
-												<>
-													<SLA
-														classProperty={DarHelperUtil.darStatusColours[applicationStatus]}
-														text={
-															applicationStatus === DarHelperUtil.darStatus.inProgress ? 'Pre-submission amendment' : 'Amendment in review'
-														}
-													/>
-													<SLA classProperty={DarHelperUtil.darStatusColours['approved']} text={DarHelperUtil.darSLAText['approved']} />
-												</>
-											) : (
-												<SLA
-													classProperty={DarHelperUtil.darStatusColours[applicationStatus]}
-													text={DarHelperUtil.darSLAText[applicationStatus]}
-													applicationType={applicationType}
-												/>
-											))
-									}
+									{applicationType === DarHelperUtil.darApplicationTypes.amendment &&
+									applicationStatus !== DarHelperUtil.darStatus.approved &&
+									applicationStatus !== DarHelperUtil.darStatus['approved with conditions'] &&
+									applicationStatus !== DarHelperUtil.darStatus.rejected ? (
+										<>
+											<SLA
+												classProperty={DarHelperUtil.darStatusColours[applicationStatus]}
+												text={applicationStatus === DarHelperUtil.darStatus.inProgress ? 'Pre-submission amendment' : 'Amendment in review'}
+											/>
+											<SLA classProperty={DarHelperUtil.darStatusColours['approved']} text={DarHelperUtil.darSLAText['approved']} />
+										</>
+									) : (
+										<SLA
+											classProperty={DarHelperUtil.darStatusColours[applicationStatus]}
+											text={DarHelperUtil.darSLAText[applicationStatus]}
+											applicationType={applicationType}
+										/>
+									)}
 								</div>
 							</div>
 							<div className='body'>
@@ -153,8 +116,8 @@ const ActivityLog = ({ dataaccessrequest, team }) => {
 									isReviewer={isReviewer}
 									stepName={stepName}
 									remainingActioners={remainingActioners}
-									navigateToLocation={navigateToLocation}
-									applicationId={_id}
+									navigateToLocation={onClickStartReview}
+									latestVersion={dataaccessrequest}
 									amendmentStatus={amendmentStatus}
 									isStartReviewEnabled={true}
 								/>
@@ -162,43 +125,14 @@ const ActivityLog = ({ dataaccessrequest, team }) => {
 						</div>
 					</div>
 				</Col>
-
 				<Col xs={1}></Col>
 			</Row>
 			<Row>
-				{/* This is a loose integration designed to prove the API is responding as expected only
-				
-					Note:- Assume that presubmission messages from designs will appear in the last version in the array here
-					Advise taking the below and refactoring into an individual activity log version card to group events
-					then using additional sub-components for each event type based on UI design/requirements 
-				*/}
 				<Col xs={1}></Col>
 				<Col>
-					<div className='col-md-12'>
-						<div className='layoutCard'></div>
-						{activityLogs.map(version => {
-							const {
-								version: versionNumber,
-								meta: { dateSubmitted, daysSinceSubmission, applicationType, applicationStatus, timeWithApplicants },
-								events = [],
-							} = version;
-							return (
-								<div>
-									<p>{versionNumber}</p>
-									<p>Date Submitted {dateSubmitted}</p>
-									<p>Days Since Submission {daysSinceSubmission}</p>
-									<p>Application Type {applicationType}</p>
-									<p>Application Status {applicationStatus}</p>
-									<p>Time With Applicants {timeWithApplicants}</p>
-									<p>
-										{events.map(event => {
-											return <p dangerouslySetInnerHTML={createMarkup(event.html)}></p>;
-										})}
-									</p>
-								</div>
-							);
-						})}
-					</div>
+					{activityLogs.map(version => {
+						return <ActivityLogVersionCard version={version} team={team} />;
+					})}
 				</Col>
 				<Col xs={1}></Col>
 			</Row>
