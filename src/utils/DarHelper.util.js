@@ -147,6 +147,7 @@ const activityLogEvents = {
 	RECOMMENDATION_WITH_NO_ISSUE: 'reccomendationWithNoIssue',
 	FINAL_DECISION_REQUIRED: 'finalDecisionRequired',
 	DEADLINE_PASSED: 'deadlinePassed',
+	PRESUBMISSION_MESSAGE: 'presubmissionMessage',
 };
 
 /**

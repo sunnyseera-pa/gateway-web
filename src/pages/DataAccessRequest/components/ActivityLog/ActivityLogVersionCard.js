@@ -7,6 +7,7 @@ import { ReactComponent as Workflow } from '../../../../images/Workflows.svg';
 import { ReactComponent as Collaborators } from '../../../../images/Collaborators.svg';
 import { ReactComponent as UpdateRequested } from '../../../../images/Updates_requested.svg';
 import { ReactComponent as ActionRequired } from '../../../../images/Action_required.svg';
+import { ReactComponent as Message } from '../../../../images/Messages.svg';
 import SVGIcon from '../../../../images/SVGIcon';
 import { SlideDown } from 'react-slidedown';
 import _ from 'lodash';
@@ -40,12 +41,17 @@ const ActivityLogVersionCard = ({ version, team }) => {
 					<div className='header-version-title'>
 						<div className='header-version-number'>
 							<h1>
-								{applicationType === DarHelperUtil.darApplicationTypes.initial
-									? versionNumber
-									: versionNumber + ' | ' + _.startCase(applicationType)}
+								{applicationType && applicationType !== DarHelperUtil.darApplicationTypes.initial
+									? versionNumber + ' | ' + _.startCase(applicationType)
+									: versionNumber}
 							</h1>
 						</div>
-						<div className='time'>Submitted {dateSubmitted}</div>
+
+						{applicationType ? (
+							<div className='time'>Submitted {dateSubmitted}</div>
+						) : (
+							<div className='time'>First message sent {moment(events.lastItem.timestamp).format('D MMMM YYYY')}</div>
+						)}
 					</div>
 					<div className='header-version-status activity-log-version-status'>
 						{renderDuration(applicationStatus, dateSubmitted, applicationType, version, team, timeWithApplicants)}
@@ -83,6 +89,9 @@ const ActivityLogVersionCard = ({ version, team }) => {
 													)}
 													{log.eventType === DarHelperUtil.activityLogEvents.APPLICATION_REJECTED && (
 														<ApplicationRejected className='versionCreated' />
+													)}
+													{log.eventType === DarHelperUtil.activityLogEvents.PRESUBMISSION_MESSAGE && (
+														<Message className='versionCreated' />
 													)}
 													{(log.eventType === DarHelperUtil.activityLogEvents.FINAL_DECISION_REQUIRED ||
 														log.eventType === DarHelperUtil.activityLogEvents.DEADLINE_PASSED) && (
