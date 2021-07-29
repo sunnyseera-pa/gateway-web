@@ -358,7 +358,7 @@ span.toolTipText:after {
 	}
 	&-messages {
 		overflow-y: auto;
-		height: 55vh;
+		height: 50vh;
 		display: flex;
 		align-items: flex-start;
 		justify-content: center;
@@ -368,11 +368,10 @@ span.toolTipText:after {
 	&-notes {
 		background-color: $background;
 		overflow-y: auto;
-		height: 55vh;
+		height: 50vh;
 		display: flex;
 		align-items: flex-start;
 		justify-content: center;
-		//margin-bottom: 4px;
 		@include font-source(14px, $gray-700, $font-weight-semibold);
 	}
 }
@@ -673,7 +672,6 @@ input[type='radio']:disabled {
 }
 
 .dar-form {
-	// padding: 0 10px;
 	h3 {
 		padding: 0 25px;
 		white-space: pre-line;
@@ -699,7 +697,6 @@ input[type='radio']:disabled {
 	.form-group {
 		position: relative;
 		margin-bottom: 2px;
-		// padding: 5px 16px 0 16px;
 		transition: all 0.2s ease-in-out;
 		box-sizing: border-box;
 
@@ -811,11 +808,9 @@ input[type='radio']:disabled {
 	position: absolute;
 	top: -8px;
 	right: 25px;
-	//visibility: hidden;
 	cursor: pointer;
 	min-width: 32px;
 	height: 32px;
-	//opacity: 0;
 	transition: visibility 0.55s linear, opacity 0.35s ease-in-out;
 
 	& > i {
@@ -836,8 +831,6 @@ input[type='radio']:disabled {
 	&:hover {
 		background: #f6f7f8;
 		> .action-control {
-			//visibility: visible;
-			//opacity: 1;
 			background: $white;
 			box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03);
 			> .toolTipHidden {
