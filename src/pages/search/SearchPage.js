@@ -2076,7 +2076,18 @@ class SearchPage extends React.Component {
 							<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
 						</>
 					) : (
-						<AboutPage />
+							<>
+								<AboutPage />
+								<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
+								<UserMessages
+									userState={userState[0]}
+									closed={this.toggleDrawer}
+									toggleModal={this.toggleModal}
+									drawerIsOpen={this.state.showDrawer}
+								/>
+								</SideDrawer>	
+							</>
+							
 					)}
 				</div>
 			</Sentry.ErrorBoundary>
