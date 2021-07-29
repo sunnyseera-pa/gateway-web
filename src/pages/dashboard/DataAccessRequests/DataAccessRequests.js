@@ -394,7 +394,7 @@ class DataAccessRequestsNew extends React.Component {
 							</Col>
 						</div>
 
-						{team !== 'user' && key === 'inProgress' ? this.generatePreSubmissionWarning() : ''}
+						{team !== 'user' && this.state.key === 'inProgress' ? this.generatePreSubmissionWarning() : ''}
 
 						{screenData.map((request, i) => {
 							let {
