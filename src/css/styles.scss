@@ -14,7 +14,7 @@ body {
 	padding: 0;
 	background-color: $background;
 	height: 100vh;
-	-webkit-text-size-adjust: 100%; //fix for iOS
+	-webkit-text-size-adjust: 100%; //fix for i OS
 }
 
 a {
@@ -1534,7 +1534,7 @@ button a {
 }
 
 .textUnderline {
-	text-decoration: underline;
+	text-decoration: underline !important;
 }
 
 .collectionCheckSvg {
@@ -1658,4 +1658,8 @@ button a {
 	position: relative;
 	margin: 0 14px 0 14px;
 	padding-top: 10px;
+}
+
+.cursorPointer {
+	cursor: pointer;
 }
