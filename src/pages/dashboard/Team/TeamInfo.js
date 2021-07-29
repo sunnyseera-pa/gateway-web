@@ -29,7 +29,7 @@ const TeamInfo = ({ updatedAt, publisherName, teamManagers, membersCount }) => {
 			</Col>
 			<Col sm={12} lg={2}>
 				<DropdownButton variant='outline-secondary' alignRight title='Actions' className='floatRight'>
-					<Dropdown.Item href={''} className='black-14'>
+					<Dropdown.Item onClick={() => alert('hellop')} className='black-14'>
 						Edit
 					</Dropdown.Item>
 				</DropdownButton>
