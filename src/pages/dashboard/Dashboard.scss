@@ -430,7 +430,7 @@ textarea {
 .tm {
 	&-wrapper {
 		margin: 1.2rem 0;
-	}
+	}	
 
 	&-notification {
 		display: flex;
@@ -446,5 +446,12 @@ textarea {
 
 button.dropdown-toggle.btn.btn-outline-secondary::after {
 	position: relative;
-    top: 4.5px;
+	top: 4.5px;
+}
+
+.grey-circle-border {
+	padding: 2px;
+	border: solid 2px #b3b8bd;
+	border-radius: 50%;
+	display: inline-flex;
 }
