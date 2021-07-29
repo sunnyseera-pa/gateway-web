@@ -68,10 +68,22 @@
 	}
 }
 
+#darContainer {
+	margin-bottom: 100px;
+}
+
 .toolTip {
 	position: relative;
 	display: inline-block;
 	padding: 0 5px;
+}
+
+.toolTipHidden {
+	position: relative;
+	display: inline-block;
+	padding: 0 5px;
+	visibility: hidden;
+	opacity: 0;
 }
 
 .toolTip .toolTipText {
@@ -89,7 +101,27 @@
 	transition: opacity 0.4s;
 }
 
+.toolTipHidden .toolTipText {
+	visibility: hidden;
+	position: absolute;
+	width: 120px;
+	background-color: #222;
+	font-size: 12px;
+	color: #fff;
+	text-align: center;
+	padding: 5px 0;
+	border-radius: 6px;
+	z-index: 1;
+	opacity: 0;
+	transition: opacity 0.4s;
+}
+
 .toolTip i:hover + .toolTipText {
+	visibility: visible;
+	opacity: 1;
+}
+
+.toolTipHidden i:hover + .toolTipText {
 	visibility: visible;
 	opacity: 1;
 }
@@ -158,7 +190,7 @@ span.toolTipText:after {
 
 .dar-nav-item {
 	display: grid;
-	grid-template-columns: 180px 1fr;
+	grid-template-columns: 170px 1fr;
 	span {
 		i {
 			font-size: 8px;
@@ -183,6 +215,10 @@ span.toolTipText:after {
 	border-left: 4px solid $teal;
 	padding-top: 8px;
 	padding-bottom: 8px;
+}
+
+.active-border > div {
+	margin-left: -4px;
 }
 
 .active-grey-border {
@@ -281,10 +317,11 @@ span.toolTipText:after {
 }
 
 .darTab {
-	padding: 15px 0;
+	padding: 15px 0 0 0;
 	background-color: $white;
 	max-height: calc(100vh - 169px);
 	margin-left: 1px;
+	font-size: 14px;
 	header {
 		padding: 0 24px 15px 24px;
 		display: flex;
@@ -313,9 +350,27 @@ span.toolTipText:after {
 		padding: 24px;
 	}
 	&-guidance {
-		height: 40vh;
+		height: 57vh;
 		display: flex;
 		align-items: center;
+		justify-content: center;
+		@include font-source(14px, $gray-700, $font-weight-semibold);
+	}
+	&-messages {
+		overflow-y: auto;
+		height: 50vh;
+		display: flex;
+		align-items: flex-start;
+		justify-content: center;
+		margin-bottom: 4px;
+		@include font-source(14px, $gray-700, $font-weight-semibold);
+	}
+	&-notes {
+		background-color: $background;
+		overflow-y: auto;
+		height: 50vh;
+		display: flex;
+		align-items: flex-start;
 		justify-content: center;
 		@include font-source(14px, $gray-700, $font-weight-semibold);
 	}
@@ -417,6 +472,10 @@ span.toolTipText:after {
 
 .rbt-input-multi.form-control[disabled] {
 	background: #eee !important;
+}
+
+.rbt-token-disabled {
+	background: #fff !important;
 }
 
 input[type='text']:disabled {
@@ -532,7 +591,8 @@ input[type='radio']:disabled {
 	&-status {
 		display: inline-block;
 	}
-	ß &--questions {
+
+	&--questions {
 		@include font-source(14px, $gray-800, $font-weight-semibold);
 		p {
 			margin-bottom: 0;
@@ -612,7 +672,6 @@ input[type='radio']:disabled {
 }
 
 .dar-form {
-	// padding: 0 10px;
 	h3 {
 		padding: 0 25px;
 		white-space: pre-line;
@@ -638,7 +697,6 @@ input[type='radio']:disabled {
 	.form-group {
 		position: relative;
 		margin-bottom: 2px;
-		// padding: 5px 16px 0 16px;
 		transition: all 0.2s ease-in-out;
 		box-sizing: border-box;
 
@@ -646,6 +704,7 @@ input[type='radio']:disabled {
 			@include font-source(14px, $gray-800, $font-weight-semibold);
 			margin-bottom: 5px;
 			width: 90%;
+			white-space: pre-line;
 		}
 
 		p {
@@ -749,11 +808,9 @@ input[type='radio']:disabled {
 	position: absolute;
 	top: -8px;
 	right: 25px;
-	visibility: hidden;
 	cursor: pointer;
 	min-width: 32px;
 	height: 32px;
-	opacity: 0;
 	transition: visibility 0.55s linear, opacity 0.35s ease-in-out;
 
 	& > i {
@@ -774,10 +831,12 @@ input[type='radio']:disabled {
 	&:hover {
 		background: #f6f7f8;
 		> .action-control {
-			visibility: visible;
-			opacity: 1;
 			background: $white;
 			box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03);
+			> .toolTipHidden {
+				visibility: visible;
+				opacity: 1;
+			}
 		}
 	}
 }
@@ -902,15 +961,15 @@ input[type='checkbox']:after {
 }
 
 .listOfVersionsButton::after {
-    display: inline-block;
-    width: 0;
-    height: 0;
-    margin-left: 0.255em;
-    vertical-align: 0.255em;
-    content: "";
-    border-top: 0.3em solid;
-    border-right: 0.3em solid transparent;
-    border-left: 0.3em solid transparent;
+	display: inline-block;
+	width: 0;
+	height: 0;
+	margin-left: 0.255em;
+	vertical-align: 0.255em;
+	content: '';
+	border-top: 0.3em solid;
+	border-right: 0.3em solid transparent;
+	border-left: 0.3em solid transparent;
 }
 
 .listOfVersionsDropdown {

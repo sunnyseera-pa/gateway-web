@@ -1,18 +1,10 @@
 import React, { Fragment } from 'react';
-import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
 
-const Guidance = ({activeGuidance, resetGuidance}) => {
+const Guidance = ({ activeGuidance }) => {
 	return (
-    <Fragment>
-    {activeGuidance ? (
+		<Fragment>
+			{activeGuidance ? (
 				<Fragment>
-					<header>
-						<div>
-							<i className='far fa-question-circle mr-2' />
-							<p className='gray800-14-bold'>Guidance</p>
-						</div>
-						<CloseButtonSvg width='16px' height='16px' fill='#475da' onClick={resetGuidance} />
-					</header>
 					<main className='gray800-14'>
 						<span>{activeGuidance}</span>
 					</main>
@@ -20,7 +12,7 @@ const Guidance = ({activeGuidance, resetGuidance}) => {
 			) : (
 				<div className='darTab-guidance'>Click on a question guidance to view details</div>
 			)}
-    </Fragment>
+		</Fragment>
 	);
 };
 
