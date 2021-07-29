@@ -938,10 +938,7 @@ class DataAccessRequest extends Component {
 	 */
 	onQuestionAction = async (e = '', questionSetId = '', questionId = '', key = '', counts = { messagesCount: 0, notesCount: 0 }) => {
 		let mode, stateObj;
-		//TODO EXPAND ACTION KEYS HELPER WITH MSGS AND NOTES
-		//TEST KEY TYPE
 		this.setState({ messagesCount: counts.messagesCount, notesCount: counts.notesCount });
-		//SET ACTIVE TAB FOR GUIANDCE MSGS OR NOTES
 		//call api with question set id and question id to get msgs and notes..
 		switch (key) {
 			case DarHelper.actionKeys.GUIDANCE:
@@ -950,8 +947,6 @@ class DataAccessRequest extends Component {
 					this.removeActiveQuestionClass();
 					this.addActiveQuestionClass(e);
 				}
-				this.setState({ activeGuidance });
-				//CALL FUNC TO SET ACTIVE TAB
 				this.setState({ activeGuidance, actionTabSettings: { key, questionSetId, questionId } });
 				break;
 			case DarHelper.actionKeys.MESSAGES:
@@ -961,7 +956,6 @@ class DataAccessRequest extends Component {
 					this.addActiveQuestionClass(e);
 				}
 
-				//CALL FUNC TO SET ACTIVE TAB
 				this.setState({ actionTabSettings: { key, questionSetId, questionId } });
 				break;
 			case DarHelper.actionKeys.NOTES:
@@ -970,7 +964,6 @@ class DataAccessRequest extends Component {
 					this.removeActiveQuestionClass();
 					this.addActiveQuestionClass(e);
 				}
-				//CALL FUNC TO SET ACTIVE TAB
 				this.setState({ actionTabSettings: { key, questionSetId, questionId } });
 				break;
 			case DarHelper.actionKeys.REQUESTAMENDMENT:
@@ -1025,21 +1018,14 @@ class DataAccessRequest extends Component {
 		const activeGuidance = this.getActiveQuestionGuidance(questionId);
 		switch (key) {
 			case DarHelper.actionKeys.GUIDANCE:
-				console.log('guidance is ', key);
-				console.log('questionID is ', questionId);
-				// const activeGuidance = this.getActiveQuestionGuidance(questionId);
-				console.log('active guidance is ', activeGuidance);
-
 				this.setState({ activeGuidance, actionTabSettings: settings });
 				break;
 			case DarHelper.actionKeys.MESSAGES:
 				// call api for messages
-				console.log('call message api');
 				this.setState({ actionTabSettings: settings });
 				break;
 			case DarHelper.actionKeys.NOTES:
 				// call api for notes
-				console.log('call notes api');
 				this.setState({ actionTabSettings: settings });
 				break;
 			default:
@@ -1109,8 +1095,9 @@ class DataAccessRequest extends Component {
 	updateCount = (questionId, questionSetId, messageType) => {
 		//Get the question that the count needs to be updated on
 		let { jsonSchema } = this.state;
-		let questionSetsArray = DarHelper.findQuestionSet(questionSetId, jsonSchema);
-		let question = DarHelper.findQuestion(questionId, questionSetsArray);
+		let questionSet = DarHelper.findQuestionSet(questionSetId, jsonSchema);
+		let question = DarHelper.findQuestion(questionId, questionSet.questions);
+
 		//If question has no previous counts add in the defaults
 		if (!question.counts) {
 			question.counts = { messagesCount: 0, notesCount: 0 };
