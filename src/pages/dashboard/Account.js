@@ -31,6 +31,7 @@ import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.s
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
 import './Dashboard.scss';
 import ActivityLog from '../DataAccessRequest/components/ActivityLog/ActivityLog';
+import AddNewEventModal from '../DataAccessRequest/components/ActivityLog/AddNewEventModal';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -97,6 +98,7 @@ class Account extends Component {
 		teamManagementInternalTab: 'Notifications',
 		accountUpdated: false,
 		dataaccessrequest: {},
+		showAddNewEventModal: false,
 	};
 
 	constructor(props) {
@@ -482,6 +484,14 @@ class Account extends Component {
 			});
 	};
 
+	toggleAddNewEventModal = () => {
+		this.setState(prevState => {
+			return {
+				showAddNewEventModal: !prevState.showAddNewEventModal,
+			};
+		});
+	};
+
 	render() {
 		const {
 			searchString,
@@ -501,6 +511,7 @@ class Account extends Component {
 			teamManagementTab,
 			accountUpdated,
 			dataaccessrequest,
+			showAddNewEventModal,
 		} = this.state;
 
 		return (
@@ -799,6 +810,7 @@ class Account extends Component {
 									team={team}
 									latestVersion={this.state.dataaccessrequest}
 									onClickStartReview={this.navigateToLocation}
+									onClickAddNewEvent={this.toggleAddNewEventModal}
 								/>
 							</div>
 						</div>
@@ -835,6 +847,9 @@ class Account extends Component {
 					</ActionBar>
 				)}
 				<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
+				{!_.isEmpty(dataaccessrequest) && (
+					<AddNewEventModal dataAccessRequest={dataaccessrequest} isOpened={showAddNewEventModal} close={this.toggleAddNewEventModal} />
+				)}
 			</Fragment>
 		);
 	}

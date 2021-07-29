@@ -1,0 +1,69 @@
+.addNewEventModal {
+	box-sizing: border-box;
+	font-size: 14px;
+	color: #3c3c3b;
+
+	.modal-dialog {
+		max-width: 620px;
+		transform: translate(0%, 50%) !important;
+	}
+
+	&-header {
+		margin: 32px 64px 0 32px;
+	}
+
+	&-close {
+		position: absolute;
+		top: 24px;
+		right: 24px;
+		width: 17px;
+		height: 17px;
+		color: #111111;
+	}
+
+	&-body {
+		margin: 24px 32px 0px 32px;
+		display: flex;
+		flex-direction: column;
+	}
+}
+
+.datePicker {
+	width: 100%;
+}
+
+.react-datepicker__input-container {
+	&::selection {
+		outline-color: #3db28c !important ;
+	}
+}
+
+.react-datepicker-wrapper {
+	max-width: 100% !important;
+}
+
+.react-datepicker__input-container {
+	max-width: 100% !important;
+}
+
+.react-datepicker__input-container input {
+	max-width: 100% !important;
+	font-size: 14px !important;
+	padding-top: 10px !important;
+	padding-bottom: 10px !important;
+}
+
+.custom-dropdown {
+	max-width: 100% !important;
+	font-size: 14px !important;
+}
+
+.custom-dropdown button {
+	font-size: 14px !important;
+}
+
+.custom-dropdown dropdown {
+	padding-top: 10px !important;
+	padding-bottom: 10px !important;
+	border-radius: 4px !important;
+}
