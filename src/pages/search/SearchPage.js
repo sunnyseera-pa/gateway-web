@@ -2077,15 +2077,15 @@ class SearchPage extends React.Component {
 						</>
 					) : (
 							<>
-							<AboutPage />
-							<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
+								<AboutPage />
+								<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
 								<UserMessages
 									userState={userState[0]}
 									closed={this.toggleDrawer}
 									toggleModal={this.toggleModal}
 									drawerIsOpen={this.state.showDrawer}
 								/>
-							</SideDrawer>	
+								</SideDrawer>	
 							</>
 							
 					)}
