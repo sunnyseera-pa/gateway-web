@@ -1,0 +1,97 @@
+@import '../../../css/variables';
+@import '../../../css/typography';
+
+.versionDropdown {
+	width: fit-content;
+
+	a {
+		text-decoration: none !important;
+	}
+
+	.selected {
+		background-color: $white;
+
+		&-up::after {
+			display: inline-block;
+			width: 22px;
+			height: 18px;
+			margin-left: 0.255em;
+			content: '';
+			background-image: url(../../../images/chevron-bottom.svg);
+		}
+
+		&-down::after {
+			display: inline-block;
+			width: 22px;
+			height: 18px;
+			margin-left: 0.255em;
+			content: '';
+			background-image: url(../../../images/chevron-bottom.svg);
+			transform: rotateX(180deg) translateY(-6px);
+			-ms-transform: rotateX(180deg) translateY(-6px);
+		}
+	}
+
+	.menu {
+		width: fit-content;
+		box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.09), -3px -3px 4px 0 rgba(0, 0, 0, 0.03) !important;
+		background-color: $white !important;
+		overflow: hidden;
+		margin-bottom: 16px !important;
+		padding-top: 12px !important;
+		padding-bottom: 12px !important;
+		top: 10px !important;
+		left: 0px !important;
+	}
+
+	.menu-item {
+		display: flex;
+		flex-flow: row;
+		justify-content: space-between;
+		padding-left: 8px;
+		padding-right: 8px;
+		padding-top: 0;
+		padding-bottom: 0;
+		height: 32px;
+		line-height: 32px;
+
+		&-check {
+			width: 16px;
+		}
+	}
+
+	.menu:focus {
+		box-shadow: none !important;
+	}
+
+	.listOfVersionsButton {
+		display: inline-block !important;
+		padding: 2px 10px 3px 10px;
+		border-radius: 16px !important;
+		font-family: museo-sans-rounded !important;
+		font-size: 14px !important;
+		line-height: 20px !important;
+		font-weight: 300 !important;
+		margin-right: 4px !important;
+		margin-bottom: 4px !important;
+		background-color: $white;
+		color: $purple !important;
+		min-width: 100px;
+	}
+	
+	.listOfVersionsButton:focus {
+		box-shadow: none !important;
+	}
+	
+	.listOfVersionsButton::after {
+		display: inline-block;
+		width: 0;
+		height: 0;
+		margin-left: 0.255em;
+		vertical-align: 0.255em;
+		content: "";
+		border-top: 0.3em solid;
+		border-right: 0.3em solid transparent;
+		border-left: 0.3em solid transparent;
+	}
+}

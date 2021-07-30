@@ -11,7 +11,7 @@ import MessageFooter from './components/MessageFooter';
 import { EnquiryMessage } from './components/EnquiryMessage';
 import './UserMessages.scss';
 
-const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOpen = false, is5Safes }) => {
+const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOpen = false, is5Safes, msgDescription }) => {
 	const defaultMessage =
 		'Use messages to clarify questions with the data custodian before starting your application to request access to the data. Provide a brief description of your project and what datasets you are interested in.';
 
@@ -31,7 +31,8 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 			dataRequestModalContent = {},
 		} = topicContext);
 
-	const [messageDescription, setMessageDescription] = useState('');
+	const [messageDescription, setMessageDescription] = useState(msgDescription);
+
 	const [topics, setTopics] = useState([]);
 	const [activeTopic, setActiveTopic] = useState({});
 	const [modalRequired, setRequiresModal] = useState(requiresModal);
@@ -346,6 +347,10 @@ const UserMessages = ({ userState, topicContext, closed, toggleModal, drawerIsOp
 		// 1. GET Topics for current user
 		if (drawerIsOpen) getUserTopics();
 	}, [drawerIsOpen, topicContext]);
+
+	useEffect(() => {
+		setMessageDescription(msgDescription);
+	}, [msgDescription]);
 
 	return (
 		<Fragment>

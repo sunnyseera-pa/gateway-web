@@ -355,13 +355,13 @@ class Account extends Component {
 				break;
 			default:
 				const team = userState[0].teams.reduce((obj, team) => {
-					if(team._id === teamSelector) {
-						obj = {...team};
+					if (team._id === teamSelector) {
+						obj = { ...team };
 					}
 					return obj;
 				}, {});
-				if(_.isEmpty(team)) {
-					this.setState({team: 'user'});
+				if (_.isEmpty(team)) {
+					this.setState({ team: 'user' });
 					renderItem = <Fragment>{userState[0].name}</Fragment>;
 				} else {
 					renderItem = <Fragment>{team.name}</Fragment>;

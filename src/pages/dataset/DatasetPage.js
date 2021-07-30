@@ -40,6 +40,7 @@ import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import DatasetAboutCard from './components/DatasetAboutCard';
 import CohortProfilingPage from './components/CohortProfilingPage';
+import CohortDiscoveryBanner from './components/CohortDiscoveryBanner';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 var cmsURL = require('../commonComponents/BaseURL').getCMSURL();
@@ -152,6 +153,8 @@ class DatasetDetail extends Component {
 				this.setState({
 					data: res.data.data,
 					v2data: res.data.data.datasetv2,
+					isCohortDiscovery: res.data.data.isCohortDiscovery,
+					isLoading: false,
 					isLatestVersion: res.data.isLatestVersion,
 					isDatasetArchived: res.data.isDatasetArchived,
 				});
@@ -213,6 +216,7 @@ class DatasetDetail extends Component {
 						},
 					});
 				}
+				this.setState({ isLoading: false });
 			}
 		});
 
@@ -825,6 +829,21 @@ class DatasetDetail extends Component {
 												<SVGIcon name='dataseticon' fill={'#113328'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 												<span>Dataset</span>
 											</span>
+											{this.state.isCohortDiscovery ? (
+												<span className='badge-project'>
+													<SVGIcon
+														name='cohorticon'
+														fill={'#472505'}
+														className='badgeSvg mr-2'
+														width='22'
+														height='22'
+														viewBox='0 0 10 10'
+													/>
+													<span>Cohort Discovery</span>
+												</span>
+											) : (
+												''
+											)}
 											{!data.tags.features || data.tags.features.length <= 0
 												? ''
 												: data.tags.features.map((keyword, index) => {
@@ -1226,6 +1245,7 @@ class DatasetDetail extends Component {
 											}>
 											{dataClassOpen === -1 ? (
 												<Fragment>
+													{this.state.isCohortDiscovery ? <CohortDiscoveryBanner userProps={userState[0]} /> : ''}
 													<Col sm={12} lg={12} className='subHeader gray800-14-bold pad-bottom-24 pad-top-24'>
 														<span className='black-16-semibold mr-3'>Data Classes</span>
 														<span onMouseEnter={this.handleMouseHover} onMouseLeave={this.handleMouseHover}>

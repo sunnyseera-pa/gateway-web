@@ -20,7 +20,7 @@ let staticContent = {
 	aboutPageNav: {
 		pageId: 'about',
 		active: true,
-		title: 'About this application',
+		title: 'Before you begin',
 		description:
 			'Preparation is key to a successful data access request. You need to be able to demonstrate how you will ensure safe use of patient data and the potential for public benefit. The steps below are intended to help you get off to a good start.',
 	},
@@ -336,26 +336,6 @@ let configActionModal = (type = '') => {
 						confirmApprovalConditions: {
 							label: 'Confirm approval with conditions',
 							action: 'confirmApprovalConditions',
-							class: 'btn btn-primary addButton',
-						},
-					},
-				};
-				break;
-			case 'DELETEDRAFT':
-				config = {
-					title: 'Delete draft',
-					subTitle:
-						'Are you sure you want to delete this draft dataset? You will no longer be able to view this form and will lose any answers provided. All team members will be notified.',
-					description: false,
-					buttons: {
-						cancel: {
-							label: 'No, nevermind',
-							action: 'cancel',
-							class: 'button-secondary mr-2',
-						},
-						confirmDelete: {
-							label: 'Delete draft',
-							action: 'deleteDraft',
 							class: 'btn btn-primary addButton',
 						},
 					},
