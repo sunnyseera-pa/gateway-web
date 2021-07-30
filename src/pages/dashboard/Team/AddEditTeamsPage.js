@@ -9,7 +9,8 @@ import '../Dashboard.scss';
 import _ from 'lodash';
 
 var baseURL = require('../../commonComponents/BaseURL').getURL();
-const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView }) => {
+let windowUrl = window.location.origin;
+const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView, editViewMemberOf, editViewOrgName, editViewTeamManagers }) => {
 	// state
 	const [isLoading, setLoading] = useState(false);
 	const [combinedTeamManagers, setCombinedTeamManagers] = useState({});
@@ -30,7 +31,7 @@ const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView }) => {
 			.then(res => {
 				let userArray = [];
 				res.data.data.map(user => {
-                    userArray.push({"id" : user.id, "name": user.name});
+					userArray.push({ id: user.id, name: user.name });
 				});
 				setCombinedTeamManagers(userArray);
 			})
@@ -43,9 +44,9 @@ const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView }) => {
 	// be called when the form is submitted
 	const formik = useFormik({
 		initialValues: {
-			name: '',
-			memberOf: '',
-			teamManagers: [],
+			name: editTeamsView && editViewOrgName ? editViewOrgName : '',
+			memberOf: editTeamsView && editViewMemberOf ? editViewMemberOf : '',
+			teamManagers: editTeamsView && editViewTeamManagers ? editViewTeamManagers : [],
 			contactPoint: '',
 		},
 
@@ -60,9 +61,10 @@ const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView }) => {
 			console.log(values);
 			if (editTeamsView) {
 			} else {
-				// axios.post(baseURL + '/api/v1/collections/add', values).then(res => {
-				// 	window.location.href = windowUrl + '/collection/' + res.data.id + '/?collectionAdded=true';
-				// });
+				axios.post(baseURL + '/api/teams/add', values).then(res => {
+				    console.log('res', res)
+					window.location.href = windowUrl + '/account?tab=teams';
+				});
 			}
 		},
 	});
@@ -188,6 +190,7 @@ const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView }) => {
 											labelKey={combinedTeamManagers => `${combinedTeamManagers.name}`}
 											defaultSelected={formik.values.teamManagers}
 											multiple
+                                            disabled={editTeamsView}
 											options={combinedTeamManagers}
 											className={
 												formik.touched.teamManagers && formik.errors.teamManagers

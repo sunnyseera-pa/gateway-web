@@ -20,6 +20,9 @@ const AccountTeams = () => {
 	const [teamManagersIds, setTeamManagersIds] = useState();
 	const [viewTeams, setViewTeams] = useState(true);
 	const [editTeamsView, setEditTeamsView] = useState(false);
+	const [editViewMemberOf, setEditViewMemberOf] = useState('');
+	const [editViewOrgName, setEditViewOrgName] = useState('');
+	const [editViewTeamManagers, setEditViewTeamManagers] = useState([]);
 	const [activeTabKey] = useState(tabTypes.Teams);
 
 	const handlePaginatedItems = () => {
@@ -63,6 +66,20 @@ const AccountTeams = () => {
 	const createOrEditTeam = e => {
 		e.preventDefault();
 		setViewTeams(false);
+	};
+
+	const editTeam = (publisherName, teamManagers) => {
+		const splitPublisherName = publisherName.split(' > ');
+		setEditViewMemberOf(splitPublisherName[0]);
+		setEditViewOrgName(splitPublisherName[1]);
+
+		const teamManagerNames = teamManagers.map(teamManager => {
+			return teamManager.firstname + ' ' + teamManager.lastname;
+		})
+		setEditViewTeamManagers(teamManagerNames);
+		
+		setViewTeams(false);
+		setEditTeamsView(true);
 	};
 
 	const cancelCreateOrEditTeam = () => {
@@ -143,6 +160,7 @@ const AccountTeams = () => {
 												publisherName={team.publisher.name}
 												teamManagers={team.users.filter(user => teamManagersIds.includes(user._id))}
 												membersCount={team.membersCount}
+												editTeam={editTeam}
 											/>
 										);
 									})}
@@ -155,7 +173,13 @@ const AccountTeams = () => {
 					<Col xs={1}></Col>
 				</Row>
 			) : (
-				<AddEditTeamsPage cancelAddEdit={cancelCreateOrEditTeam} editTeamsView={editTeamsView} />
+				<AddEditTeamsPage
+					cancelAddEdit={cancelCreateOrEditTeam}
+					editTeamsView={editTeamsView}
+					editViewMemberOf={editViewMemberOf}
+					editViewOrgName={editViewOrgName}
+					editViewTeamManagers={editViewTeamManagers}
+				/>
 			)}
 		</Fragment>
 	);
