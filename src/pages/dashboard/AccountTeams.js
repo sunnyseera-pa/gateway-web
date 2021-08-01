@@ -1,9 +1,10 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { Row, Col, Button, Pagination } from 'react-bootstrap';
+import { Row, Col, Button, Pagination, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import Loading from '../commonComponents/Loading';
 import { baseURL } from '../../configs/url.config';
 import { tabTypes } from './Team/teamUtil';
+import SVGIcon from '../../images/SVGIcon';
 import './Dashboard.scss';
 import TeamInfo from './Team/TeamInfo';
 import _ from 'lodash';
@@ -23,6 +24,7 @@ const AccountTeams = () => {
 	const [editViewMemberOf, setEditViewMemberOf] = useState('');
 	const [editViewOrgName, setEditViewOrgName] = useState('');
 	const [editViewTeamManagers, setEditViewTeamManagers] = useState([]);
+	const [alert, setAlert] = useState();
 	const [activeTabKey] = useState(tabTypes.Teams);
 
 	const handlePaginatedItems = () => {
@@ -75,11 +77,15 @@ const AccountTeams = () => {
 
 		const teamManagerNames = teamManagers.map(teamManager => {
 			return teamManager.firstname + ' ' + teamManager.lastname;
-		})
+		});
 		setEditViewTeamManagers(teamManagerNames);
-		
+
 		setViewTeams(false);
 		setEditTeamsView(true);
+	};
+
+	const setAlertFunction = alert => {
+		setAlert(alert);
 	};
 
 	const cancelCreateOrEditTeam = () => {
@@ -122,6 +128,13 @@ const AccountTeams = () => {
 				<Row>
 					<Col xs={1}></Col>
 					<div className='col-sm-10'>
+						{!_.isEmpty(alert) && (
+							<Row className='teams-alert'>
+								<Alert variant={'success'} className='main-alert teams-alert'>
+									<SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert.message}
+								</Alert>
+							</Row>
+						)}
 						<Row className='accountHeader'>
 							<Col sm={12} md={8}>
 								<Row>
@@ -179,6 +192,7 @@ const AccountTeams = () => {
 					editViewMemberOf={editViewMemberOf}
 					editViewOrgName={editViewOrgName}
 					editViewTeamManagers={editViewTeamManagers}
+					setAlertFunction={setAlertFunction}
 				/>
 			)}
 		</Fragment>

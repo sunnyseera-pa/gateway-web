@@ -1,6 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { Row, Col, Form, Dropdown, DropdownButton } from 'react-bootstrap';
 import { Typeahead } from 'react-bootstrap-typeahead';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import * as Yup from 'yup';
 import Loading from '../../commonComponents/Loading';
@@ -10,10 +11,11 @@ import _ from 'lodash';
 
 var baseURL = require('../../commonComponents/BaseURL').getURL();
 let windowUrl = window.location.origin;
-const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView, editViewMemberOf, editViewOrgName, editViewTeamManagers }) => {
+const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView, editViewMemberOf, editViewOrgName, editViewTeamManagers, setAlertFunction }) => {
 	// state
 	const [isLoading, setLoading] = useState(false);
 	const [combinedTeamManagers, setCombinedTeamManagers] = useState({});
+	let history = useHistory();
 
 	const memberOfSelect = ['ALLIANCE', 'HUBS', 'OTHER', 'NCS'];
 
@@ -62,8 +64,12 @@ const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView, editViewMemberOf, edit
 			if (editTeamsView) {
 			} else {
 				axios.post(baseURL + '/api/teams/add', values).then(res => {
-				    console.log('res', res)
-					window.location.href = windowUrl + '/account?tab=teams';
+					console.log('res', res);
+					let alert = {
+						message: "You have added the data custodian team '" + `${values.name}` + "'",
+					};
+					setAlertFunction(alert);
+					cancelAddEdit();
 				});
 			}
 		},
@@ -190,7 +196,7 @@ const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView, editViewMemberOf, edit
 											labelKey={combinedTeamManagers => `${combinedTeamManagers.name}`}
 											defaultSelected={formik.values.teamManagers}
 											multiple
-                                            disabled={editTeamsView}
+											disabled={editTeamsView}
 											options={combinedTeamManagers}
 											className={
 												formik.touched.teamManagers && formik.errors.teamManagers
