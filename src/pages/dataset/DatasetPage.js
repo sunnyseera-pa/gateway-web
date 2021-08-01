@@ -223,7 +223,7 @@ class DatasetDetail extends Component {
 		await axios
 			.get(
 				baseURL +
-					'/api/v2/cohortProfiling?pids=' +
+					'/api/v1/cohortProfiling?pids=' +
 					this.props.match.params.datasetID +
 					'&fields=variables.name,tableName,variables.completeness'
 			)
@@ -1280,7 +1280,7 @@ class DatasetDetail extends Component {
 															) : (
 																<NotFound word='technical details' />
 															)}
-															{this.state.cohortProfiling && this.state.cohortProfiling.length > 0 && technicalMetadata.length > 0 
+															{this.state.cohortProfiling && this.state.cohortProfiling.length > 0 && technicalMetadata.length === 0 
 																? this.state.cohortProfiling.map((cohortProfile, index) => (
 																		<CohortMetadata
 																			key={`cohortProfile-${index}`}

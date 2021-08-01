@@ -38,7 +38,7 @@ class CohortProfilingVariables extends React.Component {
 			await axios
 				.get(
 					baseURL +
-						'/api/v2/cohortProfiling/' +
+						'/api/v1/cohortProfiling/' +
 						this.props.datasetID +
 						'/' +
 						this.props.tableName +
@@ -50,6 +50,9 @@ class CohortProfilingVariables extends React.Component {
 						cohortProfilingData: res.data.cohortProfiling[0],
 						isLoading: false,
 					});
+				})
+				.catch(err => {
+					console.error(err);
 				});
 		}
 	}
@@ -60,7 +63,7 @@ class CohortProfilingVariables extends React.Component {
 			await axios
 				.get(
 					baseURL +
-						'/api/v2/cohortProfiling/' +
+						'/api/v1/cohortProfiling/' +
 						this.props.datasetID +
 						'/' +
 						this.props.tableName +
@@ -87,7 +90,7 @@ class CohortProfilingVariables extends React.Component {
 		await axios
 			.get(
 				baseURL +
-					'/api/v2/cohortProfiling/' +
+					'/api/v1/cohortProfiling/' +
 					this.props.datasetID +
 					'/' +
 					this.props.tableName +
@@ -261,9 +264,13 @@ class CohortProfilingVariables extends React.Component {
 									<button className='sort-button' type='button' onClick={() => this.sortVariableData('value')}>
 										Value{' '}
 										<span>
-											{sortType === 'value' ? <SVGIcon name='chevronbottom' viewBox="0 0 25 25" fill={'#475da7'} className={'svg-24'} /> : ''}
+											{sortType === 'value' ? (
+												<SVGIcon name='chevronbottom' viewBox='0 0 25 25' fill={'#475da7'} className={'svg-24'} />
+											) : (
+												''
+											)}
 											{sortType === '-value' ? (
-												<SVGIcon name='chevronbottom' viewBox="0 0 25 25" fill={'#475da7'} className={'svg-24 flipSVG'} />
+												<SVGIcon name='chevronbottom' viewBox='0 0 25 25' fill={'#475da7'} className={'svg-24 flipSVG'} />
 											) : (
 												''
 											)}
@@ -276,12 +283,12 @@ class CohortProfilingVariables extends React.Component {
 										{
 											<span>
 												{sortType === '-frequency' ? (
-													<SVGIcon name='chevronbottom' viewBox="0 0 25 25" fill={'#475da7'} className={'svg-24'} />
+													<SVGIcon name='chevronbottom' viewBox='0 0 25 25' fill={'#475da7'} className={'svg-24'} />
 												) : (
 													''
 												)}
 												{sortType === 'frequency' ? (
-													<SVGIcon name='chevronbottom' viewBox="0 0 25 25" fill={'#475da7'} className={'svg-24 flipSVG'} />
+													<SVGIcon name='chevronbottom' viewBox='0 0 25 25' fill={'#475da7'} className={'svg-24 flipSVG'} />
 												) : (
 													''
 												)}
