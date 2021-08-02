@@ -105,7 +105,7 @@ const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView, editViewMemberOf, edit
 							</Row>
 						</Col>
 					</Row>
-					<Row className='entryBox px-1'>
+					<Row className='entryBox px-1 pt-0 addEditTeamBorder'>
 						<Col sm={12} lg={12}>
 							<Row className='mt-3'>
 								<Col sm={12} lg={12}>

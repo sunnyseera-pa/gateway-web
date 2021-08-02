@@ -15,8 +15,8 @@ const TeamInfo = ({ updatedAt, publisherName, teamManagers, membersCount, editTe
 			<Col sm={12} lg={3}>
 				{teamManagers &&
 					teamManagers.length > 0 &&
-					teamManagers.map(teamManager => {
-						teamManagerNames += teamManager.firstname + ' ' + teamManager.lastname + ', ';
+					teamManagers.map((teamManager, index) => {
+						teamManagerNames += teamManager.firstname + ' ' + teamManager.lastname + (teamManagers.length === index + 1 ? '' : ', ');
 					})}
 				<p className='gray800-14'>
 					{teamManagerNames
