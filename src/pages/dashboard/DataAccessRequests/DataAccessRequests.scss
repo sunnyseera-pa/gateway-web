@@ -40,10 +40,9 @@
       cursor: pointer;
     }
 
-    .header {
+    .header-version {
       display: flex;
       flex-flow: column nowrap;
-      margin-bottom: 10px;
       padding: 25px 25px 0 25px;
   
       @media (min-width: $bp-large) {
@@ -52,13 +51,6 @@
       }
 
       &-title {
-        @media (min-width: $bp-large) {
-          width: 55%;
-        }
-        @media (min-width: $bp-largest) {
-          width: 65%;
-        }
-
         h1 {
           font-size: 18px;
           line-height: 22px;

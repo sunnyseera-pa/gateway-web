@@ -20,7 +20,7 @@ import { cmsURL } from '../../../configs/url.config';
 import { ReactComponent as ChevronBottom } from '../../../images/chevron-bottom.svg';
 import UserDropdownItems from './UserDropdownItems';
 import UserDropdownTeams from './UserDropdownTeams';
-import UatBanner from '../../commonComponents/uatBanner/UatBanner';
+import UatBanner from '../uatBanner/UatBanner';
 
 import CmsDropdown from './CmsDropdown';
 
@@ -630,6 +630,41 @@ class SearchBar extends React.Component {
 																					<Dropdown.Divider style={{ margin: '0px' }} />
 																				</Fragment>
 																			);
+																		} else if (dat.messageType === 'data access message sent') {
+																			return (
+																				<Fragment key={`message-${index}`}>
+																					<Row className={dat.isRead === 'true' || clearMessage ? 'notificationReadBackground' : ''}>
+																						<Col xs={10}>
+																							<div className='notificationDate'>{messageDateString + '\n'}</div>
+																							<div className='notificationInfoHolder'>
+																								<a href={`/data-access-request/${dat.messageDataRequestID}`} class='notificationInfo'>
+																									{dat.messageDescription}
+																								</a>
+																							</div>
+																						</Col>
+																						<Col xs={2}>
+																							{dat.isRead === 'false' && !clearMessage ? (
+																								<SVGIcon
+																									name='newnotificationicon'
+																									width={20}
+																									height={20}
+																									visble='true'
+																									style={{
+																										float: 'right',
+																										fill: '#3db28c',
+																										paddingRight: '0px',
+																										marginRight: '10px',
+																										marginTop: '5px',
+																									}}
+																									fill={'#3db28c'}
+																									stroke='none'
+																								/>
+																							) : null}
+																						</Col>
+																					</Row>
+																					<Dropdown.Divider style={{ margin: '0px' }} />
+																				</Fragment>
+																			);
 																		} else if (dat.messageType === 'team unlinked') {
 																			return (
 																				<Fragment key={`message-${index}`}>
@@ -811,6 +846,39 @@ class SearchBar extends React.Component {
 																								<a href={`/account?tab=datasets&team=${dat.datasetID}`} class='notificationInfo'>
 																									{dat.messageDescription}
 																								</a>
+																							</div>
+																						</Col>
+																						<Col xs={2}>
+																							{dat.isRead === 'false' && !clearMessage ? (
+																								<SVGIcon
+																									name='newnotificationicon'
+																									width={20}
+																									height={20}
+																									visble='true'
+																									style={{
+																										float: 'right',
+																										fill: '#3db28c',
+																										paddingRight: '0px',
+																										marginRight: '10px',
+																										marginTop: '5px',
+																									}}
+																									fill={'#3db28c'}
+																									stroke='none'
+																								/>
+																							) : null}
+																						</Col>
+																					</Row>
+																					<Dropdown.Divider style={{ margin: '0px' }} />
+																				</Fragment>
+																			);
+																		} else if (dat.messageType === 'draft dataset deleted') {
+																			return (
+																				<Fragment key={`message-${index}`}>
+																					<Row className={dat.isRead === 'true' || clearMessage ? 'notificationReadBackground' : ''}>
+																						<Col xs={10}>
+																							<div className='notificationDate'>{messageDateString + '\n'}</div>
+																							<div className='notificationInfoHolder'>
+																								<span class='notificationInfo'>{dat.messageDescription}</span>
 																							</div>
 																						</Col>
 																						<Col xs={2}>

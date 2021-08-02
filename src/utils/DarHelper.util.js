@@ -19,7 +19,7 @@ let staticContent = {
 	aboutPageNav: {
 		pageId: 'about',
 		active: true,
-		title: 'About this application',
+		title: 'Before you begin',
 		description:
 			'Preparation is key to a successful data access request. You need to be able to demonstrate how you will ensure safe use of patient data and the potential for public benefit. The steps below are intended to help you get off to a good start.',
 	},
@@ -58,6 +58,15 @@ let darStatus = {
 	rejected: 'rejected',
 };
 
+let darApplicationTypes = {
+	inProgress: 'inProgress',
+	initial: 'initial',
+	resubmission: 'resubmission',
+	amendment: 'amendment',
+	extension: 'extension',
+	renewal: 'renewal',
+};
+
 let darSLAText = {
 	inProgress: 'Pre-submission',
 	submitted: 'Submitted',
@@ -65,6 +74,12 @@ let darSLAText = {
 	approved: 'Approved',
 	'approved with conditions': 'Approved',
 	rejected: 'Rejected',
+};
+
+let darAmendmentSLAText = {
+	inProgress: 'Pre-submission amendment',
+	submitted: 'Amendment submitted',
+	inReview: 'Amendment in review',
 };
 
 let darStatusColours = {
@@ -100,6 +115,8 @@ let actionKeys = {
 	REQUESTAMENDMENT: 'requestAmendment',
 	CANCELREQUEST: 'cancelRequest',
 	REVERTTOPREVIOUSANSWER: 'revertToPreviousAnswer',
+	MESSAGES: 'messages',
+	NOTES: 'notes',
 };
 
 const amendmentModes = {
@@ -249,14 +266,30 @@ let autoComplete = (questionId, uniqueId, questionAnswers) => {
 	return { ...questionAnswers, ...questionList };
 };
 
-let findQuestion = (questionId = '', questionSet = []) => {
-	if (!_.isEmpty(questionId) && !_.isEmpty(questionSet)) {
-		let { questions } = questionSet;
-		if (!_.isEmpty(questions)) {
-			return questions.find(q => q.questionId === questionId);
+let findQuestion = (questionId = '', questionsArr = []) => {
+	// 1. Define child object to allow recursive calls
+	let child;
+	// 2. Exit from function if no children are present
+	if (!questionsArr) return {};
+	// 3. Iterate through questions in the current level to locate question by Id
+	for (const questionObj of questionsArr) {
+		// 4. Return the question if it is located
+		if (questionObj.questionId === questionId) return questionObj;
+		// 5. Recursively call the find question function on child elements to find question Id
+		if (typeof questionObj.input === 'object' && typeof questionObj.input.options !== 'undefined') {
+			questionObj.input.options
+				.filter(option => {
+					return typeof option.conditionalQuestions !== 'undefined' && option.conditionalQuestions.length > 0;
+				})
+				.forEach(option => {
+					if (!child) {
+						child = findQuestion(questionId, option.conditionalQuestions);
+					}
+				});
 		}
+		// 6. Return the child question
+		if (child) return child;
 	}
-	return {};
 };
 
 let findQuestionSet = (questionSetId = '', schema = {}) => {
@@ -551,8 +584,10 @@ export default {
 	darStatus: darStatus,
 	darStatusColours: darStatusColours,
 	darSLAText: darSLAText,
+	darAmendmentSLAText: darAmendmentSLAText,
 	darCommentTitle: darCommentTitle,
 	darStaticPageIds: darStaticPageIds,
+	darApplicationTypes: darApplicationTypes,
 	actionKeys: actionKeys,
 	amendmentModes: amendmentModes,
 	flagIcons: flagIcons,
