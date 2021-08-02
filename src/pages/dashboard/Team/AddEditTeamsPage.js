@@ -60,11 +60,9 @@ const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView, editViewMemberOf, edit
 		}),
 
 		onSubmit: values => {
-			console.log(values);
 			if (editTeamsView) {
 			} else {
 				axios.post(baseURL + '/api/teams/add', values).then(res => {
-					console.log('res', res);
 					let alert = {
 						message: "You have added the data custodian team '" + `${values.name}` + "'",
 					};
@@ -193,7 +191,7 @@ const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView, editViewMemberOf, edit
 										<Typeahead
 											id='teamManagers'
 											name='teamManagers'
-											labelKey={combinedTeamManagers => `${combinedTeamManagers.name}`}
+											labelKey={editTeamsView ? combinedTeamManagers => `${combinedTeamManagers}` : combinedTeamManagers => `${combinedTeamManagers.name}`}
 											defaultSelected={formik.values.teamManagers}
 											multiple
 											disabled={editTeamsView}
@@ -207,7 +205,6 @@ const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView, editViewMemberOf, edit
 											onChange={selected => {
 												var tempSelected = [];
 												selected.forEach(selectedItem => {
-													console.log('selectedItem', selectedItem);
 													tempSelected.push(selectedItem);
 												});
 												formik.values.teamManagers = tempSelected;

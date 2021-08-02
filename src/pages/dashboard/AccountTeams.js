@@ -48,7 +48,6 @@ const AccountTeams = () => {
 				teams.map((team, index) => {
 					if (team.members.length > 0) {
 						let teamManagers = team.members.filter(member => member.roles.includes('manager'));
-						console.log('teamManagers', teamManagers);
 						teamManagers.map(memberId => {
 							teamManagersIds.push(memberId.memberid);
 						});
@@ -65,8 +64,9 @@ const AccountTeams = () => {
 			});
 	};
 
-	const createOrEditTeam = e => {
+	const createTeam = e => {
 		e.preventDefault();
+		setEditTeamsView(false);
 		setViewTeams(false);
 	};
 
@@ -150,7 +150,7 @@ const AccountTeams = () => {
 									variant='primary'
 									href=''
 									className='addButton'
-									onClick={(() => Event('Buttons', 'Click', 'Add a new team'), createOrEditTeam)}>
+									onClick={(() => Event('Buttons', 'Click', 'Add a new team'), createTeam)}>
 									+ Add a new team
 								</Button>
 							</Col>
