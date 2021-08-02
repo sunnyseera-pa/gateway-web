@@ -1,7 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { Row, Col, Form, Dropdown, DropdownButton } from 'react-bootstrap';
 import { Typeahead } from 'react-bootstrap-typeahead';
-import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import * as Yup from 'yup';
 import Loading from '../../commonComponents/Loading';
@@ -10,12 +9,10 @@ import '../Dashboard.scss';
 import _ from 'lodash';
 
 var baseURL = require('../../commonComponents/BaseURL').getURL();
-let windowUrl = window.location.origin;
 const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView, editViewMemberOf, editViewOrgName, editViewTeamManagers, setAlertFunction }) => {
 	// state
 	const [isLoading, setLoading] = useState(false);
 	const [combinedTeamManagers, setCombinedTeamManagers] = useState({});
-	let history = useHistory();
 
 	const memberOfSelect = ['ALLIANCE', 'HUBS', 'OTHER', 'NCS'];
 
@@ -24,8 +21,6 @@ const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView, editViewMemberOf, edit
 			formik.setFieldValue('memberOf', key);
 		}
 	};
-
-	const getTeamData = () => {};
 
 	const getTeamManagerData = () => {
 		axios
@@ -60,13 +55,16 @@ const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView, editViewMemberOf, edit
 		}),
 
 		onSubmit: values => {
+			setLoading(true);
 			if (editTeamsView) {
+				// TODO: Edit functionality
 			} else {
 				axios.post(baseURL + '/api/v1/teams/add', values).then(res => {
 					let alert = {
 						message: "You have added the data custodian team '" + `${values.name}` + "'",
 					};
 					setAlertFunction(alert);
+					setLoading(false);
 					cancelAddEdit();
 				});
 			}
@@ -90,6 +88,9 @@ const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView, editViewMemberOf, edit
 		);
 	}
 
+	console.log(formik.errors);
+	console.log(formik.touched);
+
 	return (
 		<Fragment>
 			<Row>
@@ -98,10 +99,12 @@ const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView, editViewMemberOf, edit
 					<Row className='accountHeader'>
 						<Col sm={12} md={12}>
 							<Row>
-								<span className='black-20'>Add team details</span>
+								<span className='black-20'>{editTeamsView ? 'Edit ' : 'Add '} team details</span>
 							</Row>
 							<Row>
-								<span className='gray700-13 '>Add the details of the data custodian team you wish to add to the Gateway</span>
+								<span className='gray700-13 '>
+									{editTeamsView ? 'Edit ' : 'Add '} the details of the data custodian team you wish to add to the Gateway
+								</span>
 							</Row>
 						</Col>
 					</Row>
@@ -170,7 +173,7 @@ const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView, editViewMemberOf, edit
 												</Dropdown.Item>
 											))}
 										</DropdownButton>
-										{formik.touched.name && formik.errors.name ? <div className='errorMessages'>{formik.errors.name}</div> : null}
+										{formik.touched.memberOf && formik.errors.memberOf ? <div className='errorMessages'>{formik.errors.memberOf}</div> : null}
 									</Form.Group>
 								</Col>
 							</Row>
@@ -191,7 +194,11 @@ const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView, editViewMemberOf, edit
 										<Typeahead
 											id='teamManagers'
 											name='teamManagers'
-											labelKey={editTeamsView ? combinedTeamManagers => `${combinedTeamManagers}` : combinedTeamManagers => `${combinedTeamManagers.name}`}
+											labelKey={
+												editTeamsView
+													? combinedTeamManagers => `${combinedTeamManagers}`
+													: combinedTeamManagers => `${combinedTeamManagers.name}`
+											}
 											defaultSelected={formik.values.teamManagers}
 											multiple
 											disabled={editTeamsView}
@@ -201,7 +208,7 @@ const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView, editViewMemberOf, edit
 													? 'emptyFormInput  sectorTypeahead addFormInput margin-bottom-8 margin-top-8'
 													: 'sectorTypeahead addFormInput margin-bottom-8 margin-top-8'
 											}
-											onBlur={formik.handleBlur}
+											onBlur={() => formik.setFieldTouched('teamManagers', true)}
 											onChange={selected => {
 												var tempSelected = [];
 												selected.forEach(selectedItem => {

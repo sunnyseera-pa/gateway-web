@@ -85,6 +85,7 @@ const AccountTeams = () => {
 	};
 
 	const setAlertFunction = alert => {
+		getTeams();
 		setAlert(alert);
 	};
 
