@@ -2,35 +2,48 @@ import React from 'react';
 import { Modal, Button, Form, Row, Col, Dropdown, DropdownButton } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
 import { ReactComponent as CloseButtonSvg } from '../../../../images/close-alt.svg';
+import { ReactComponent as Calendar } from '../../../../images/calendaricon.svg';
 import 'react-datepicker/dist/react-datepicker.css';
 import './AddNewEventModal.scss';
 import DatePicker from 'react-datepicker';
-var baseURL = require('../../../commonComponents/BaseURL').getURL();
 
-const AddNewEventModal = ({ dataAccessRequest, isOpened, close, onClickAddEvent }) => {
+const AddNewEventModal = ({ dataaccessrequest, isOpened, close, onClickAddEvent }) => {
+	const versionTree = Object.values(dataaccessrequest.versionTree);
+	const latestVersion = versionTree[versionTree.lastIndex];
+
 	const formik = useFormik({
 		initialValues: {
-			eventTitle: '',
-			applicationVersion: dataAccessRequest.versions[0].detailedTitle,
-			eventDate: new Date(),
+			description: '',
+			selectedVersionTitle: latestVersion.detailedTitle,
+			timestamp: new Date(),
 		},
 
 		validationSchema: Yup.object({
-			eventTitle: Yup.string().required('This cannot be empty'),
+			timestamp: Yup.date().required('This cannot be empty').nullable(),
+			description: Yup.string().required('This cannot be empty'),
 		}),
 
 		onSubmit: values => {
-			axios.put(baseURL + '/api/v1/person', values).then(res => {
-				window.location.href = '/account?tab=youraccount&accountUpdated=true';
-			});
+			const selectedVersion = versionTree.find(version => version.detailedTitle === values.selectedVersionTitle);
+			const newEvent = {
+				description: values.description,
+				timestamp: values.timestamp,
+				versionId: selectedVersion.iterationId ? selectedVersion.iterationId : selectedVersion.applicationId,
+			};
+			onClickAddEvent(newEvent);
+			formik.resetForm();
 		},
 	});
 
+	const onCloseModal = () => {
+		formik.resetForm();
+		close();
+	};
+
 	return (
-		<Modal show={isOpened} onHide={close} className='addNewEventModal'>
-			<CloseButtonSvg className='addNewEventModal-close' onClick={close} />
+		<Modal show={isOpened} onHide={onCloseModal} className='addNewEventModal'>
+			<CloseButtonSvg className='addNewEventModal-close' onClick={onCloseModal} />
 			<div className='addNewEventModal-header'>
 				<h1 className='black-20-semibold'>Add new event</h1>
 				<div className='addNewEventModal-subtitle'>
@@ -40,75 +53,98 @@ const AddNewEventModal = ({ dataAccessRequest, isOpened, close, onClickAddEvent 
 
 			<div className='addNewEventModal-body'>
 				<Form onSubmit={formik.handleSubmit}>
-					<Row className='mr-0 ml-0 mt-2 mb-2'>
-						<Form.Label className='gray800-14'>Event title</Form.Label>
-						<Form.Control
-							id='eventTitle'
-							name='eventTitle'
-							type='text'
-							className={formik.touched.firstname && formik.errors.firstname ? 'emptyFormInput addFormInput' : 'addFormInput'}
-							onChange={formik.handleChange}
-							value={formik.values.eventTitle}
-							onBlur={formik.handleBlur}
-							data-test-id='event-title'
-						/>
+					<Form.Group>
+						<Row className='ml-0 mr-0 mb-3'>
+							<Form.Label className='mb-0 gray800-14'>Description</Form.Label>
+							<Form.Control
+								data-test-id='description'
+								id='description'
+								name='description'
+								type='text'
+								className={formik.touched.description && formik.errors.description ? 'emptyFormInput addFormInput' : 'addFormInput'}
+								onChange={formik.handleChange}
+								value={formik.values.description}
+								onBlur={formik.handleBlur}
+								autocomplete='off'
+							/>
+
+							{formik.touched.description && formik.errors.description ? (
+								<div className='errorMessages' data-test-id='description-validation'>
+									{formik.errors.description}
+								</div>
+							) : null}
+						</Row>
+					</Form.Group>
+					<Row className='ml-0 mr-0 mb-3'>
+						<Col className='pl-0 pr-0 mr-1'>
+							<Form.Group>
+								<Form.Label className='mb-0 gray800-14'>Date and time</Form.Label>
+								<div>
+									<DatePicker
+										id='timestamp'
+										name='timestamp'
+										timeFormat='HH:mm'
+										timeCaption='time'
+										showMonthDropdown
+										showYearDropdown
+										dateFormat='d MMMM yyyy, h:mm aa'
+										className={formik.touched.timestamp && formik.errors.timestamp ? 'emptyFormInput addFormInput' : 'addFormInput'}
+										showTimeSelect
+										selected={formik.values.timestamp}
+										onChange={timestamp => {
+											formik.values.timestamp = timestamp;
+											formik.setFieldValue();
+										}}
+										onBlur={formik.handleBlur}
+										autocomplete='off'
+									/>
+									<Calendar className='datePickerCalendar' />
+								</div>
+								{formik.touched.timestamp && formik.errors.timestamp ? (
+									<div className='errorMessages' data-test-id='timestamp-validation'>
+										{formik.errors.timestamp}
+									</div>
+								) : null}
+							</Form.Group>
+						</Col>
+						<Col className='pl-0 pr-0 ml-1'>
+							<Form.Label className='mb-0 gray800-14'>Application version</Form.Label>
+							<DropdownButton
+								variant='white'
+								className={'custom-dropdown'}
+								value={formik.values.selectedVersionTitle}
+								title={formik.values.selectedVersionTitle}
+								onSelect={selected => {
+									formik.setFieldValue('selectedVersionTitle', selected);
+								}}
+								id='selectedVersionTitle'>
+								{versionTree
+									.map((version, i) => (
+										<Dropdown.Item
+											className='gray800-14 width-100'
+											key={version.detailedTitle}
+											eventKey={version.detailedTitle}
+											data-test-id={`selectedVersionTitle-option-${i}`}>
+											{version.detailedTitle}
+										</Dropdown.Item>
+									))
+									.reverse()}
+							</DropdownButton>
+						</Col>
 					</Row>
-					<Row className='mr-0 ml-0 mt-2 mb-2'>
-						<Form.Label className='gray800-14'>Date and time</Form.Label>
-						<DatePicker
-							name={`eventDate`}
-							timeFormat='HH:mm'
-							timeCaption='time'
-							showMonthDropdown
-							showYearDropdown
-							dateFormat='d MMMM yyyy, h:mm aa'
-							className='addEventModalDatePicker'
-							showTimeSelect
-							selected={formik.values.eventDate}
-							onChange={eventDate => {
-								formik.values.eventDate = eventDate;
-								formik.setFieldValue();
-							}}
-							onBlur={formik.handleBlur}
-						/>
-					</Row>
-					<Row className='mr-0 ml-0 mt-2 mb-2'>
-						<Form.Label className='gray800-14'>Application version</Form.Label>
-						<DropdownButton
-							variant='white'
-							title={formik.values.applicationVersion}
-							className={'custom-dropdown'}
-							onChange={selected => {
-								formik.setFieldValue('sector', selected.target.value);
-							}}
-							value={formik.values.applicationVersion}
-							onBlur={() => formik.setFieldTouched('applicationVersion', true)}
-							touched={formik.touched.applicationVersion}
-							// onSelect={selected => handleSectorSelect(selected)}
-							id='application-version'>
-							{dataAccessRequest.versions.map((version, i) => (
-								<Dropdown.Item
-									className='gray800-14 width-100'
-									key={version._id}
-									eventKey={version._id}
-									data-test-id={`application-version-option-${i}`}>
-									{version.detailedTitle}
-								</Dropdown.Item>
-							))}
-						</DropdownButton>
+					<Row className='pl-0 pr-0 mt-2'>
+						<div className='addNewEventModal-footer'>
+							<div className='addNewEventModal-footer--wrap'>
+								<Button variant='white' className='techDetailButton mr-2' onClick={onCloseModal}>
+									No, nevermind
+								</Button>
+								<Button variant='primary' type='submit' className='white-14-semibold' data-test-id='add-event'>
+									Add Event
+								</Button>
+							</div>
+						</div>
 					</Row>
 				</Form>
-			</div>
-
-			<div className='workflowModal-footer'>
-				<div className='workflowModal-footer--wrap'>
-					<Button variant='white' className='techDetailButton mr-2' onClick={close}>
-						No, nevermind
-					</Button>
-					<Button variant='primary' className='white-14-semibold' onClick={onClickAddEvent}>
-						Add Event
-					</Button>
-				</div>
 			</div>
 		</Modal>
 	);

@@ -31,7 +31,6 @@ import { ReactComponent as ChevronRightSvg } from '../../images/chevron-bottom.s
 import { ReactComponent as CheckSVG } from '../../images/check.svg';
 import './Dashboard.scss';
 import ActivityLog from '../DataAccessRequest/components/ActivityLog/ActivityLog';
-import AddNewEventModal from '../DataAccessRequest/components/ActivityLog/AddNewEventModal';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
 
@@ -98,13 +97,14 @@ class Account extends Component {
 		teamManagementInternalTab: 'Notifications',
 		accountUpdated: false,
 		dataaccessrequest: {},
-		showAddNewEventModal: false,
 	};
 
 	constructor(props) {
 		super(props);
 		this.state.userState = props.userState;
 		this.searchBar = React.createRef();
+		this.activityLog = React.createRef();
+
 		// 1. used for DAR custodian update status of application
 		if (_.has(props, 'location.state.alert')) {
 			this.state.alert = props.location.state.alert;
@@ -484,12 +484,9 @@ class Account extends Component {
 			});
 	};
 
-	toggleAddNewEventModal = () => {
-		this.setState(prevState => {
-			return {
-				showAddNewEventModal: !prevState.showAddNewEventModal,
-			};
-		});
+	loadActivityLogNotifications = () => {
+		this.searchBar.current.getNumberOfUnreadNotifications();
+		this.searchBar.current.doMessagesCall();
 	};
 
 	render() {
@@ -511,7 +508,6 @@ class Account extends Component {
 			teamManagementTab,
 			accountUpdated,
 			dataaccessrequest,
-			showAddNewEventModal,
 		} = this.state;
 
 		return (
@@ -731,6 +727,8 @@ class Account extends Component {
 											dataaccessrequest={dataaccessrequest}
 											userState={userState}
 											team={team}
+											ref={this.activityLog}
+											onUpdateLogs={this.loadActivityLogNotifications}
 										/>
 									)
 								) : (
@@ -762,6 +760,8 @@ class Account extends Component {
 													dataaccessrequest={dataaccessrequest}
 													userState={userState}
 													team={team}
+													ref={this.activityLog}
+													onUpdateLogs={this.loadActivityLogNotifications}
 												/>
 											)
 										) : (
@@ -810,7 +810,7 @@ class Account extends Component {
 									team={team}
 									latestVersion={this.state.dataaccessrequest}
 									onClickStartReview={this.navigateToLocation}
-									onClickAddNewEvent={this.toggleAddNewEventModal}
+									onClickAddNewEvent={() => this.activityLog.current.showAddNewEventModal()}
 								/>
 							</div>
 						</div>
@@ -847,9 +847,6 @@ class Account extends Component {
 					</ActionBar>
 				)}
 				<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
-				{!_.isEmpty(dataaccessrequest) && (
-					<AddNewEventModal dataAccessRequest={dataaccessrequest} isOpened={showAddNewEventModal} close={this.toggleAddNewEventModal} />
-				)}
 			</Fragment>
 		);
 	}
