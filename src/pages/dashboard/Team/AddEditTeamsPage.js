@@ -88,9 +88,6 @@ const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView, editViewMemberOf, edit
 		);
 	}
 
-	console.log(formik.errors);
-	console.log(formik.touched);
-
 	return (
 		<Fragment>
 			<Row>

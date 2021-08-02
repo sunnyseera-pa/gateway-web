@@ -64,8 +64,7 @@ const AccountTeams = () => {
 			});
 	};
 
-	const createTeam = e => {
-		e.preventDefault();
+	const createTeam = () => {
 		setEditTeamsView(false);
 		setViewTeams(false);
 	};
@@ -151,7 +150,7 @@ const AccountTeams = () => {
 									variant='primary'
 									href=''
 									className='addButton'
-									onClick={(() => Event('Buttons', 'Click', 'Add a new team'), createTeam)}>
+									onClick={() => createTeam()}>
 									+ Add a new team
 								</Button>
 							</Col>
