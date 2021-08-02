@@ -415,7 +415,7 @@ class SearchBar extends React.Component {
 											return (
 												<Fragment key='userNotifications'>
 													<div className='navBarNotificationSpacing' onClick={this.props.doToggleDrawer} data-test-id='imgMessageBadge'>
-														<NotificationBadge count={this.state.messageCount} style={{ backgroundColor: '#29235c' }} />
+													<NotificationBadge count={this.state.messageCount} style={{ backgroundColor: '#29235c' }} className='messagesBadge'/>
 														<SVGIcon name='chat' fill={'#475da7'} width={20} height={20} id='notificationsBell' className={'pointer'} />
 													</div>
 													<div className='navBarBellNotificationSpacing' data-test-id='imgNotificationBadge'>
