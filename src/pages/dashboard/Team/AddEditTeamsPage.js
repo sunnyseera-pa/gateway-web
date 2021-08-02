@@ -62,7 +62,7 @@ const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView, editViewMemberOf, edit
 		onSubmit: values => {
 			if (editTeamsView) {
 			} else {
-				axios.post(baseURL + '/api/teams/add', values).then(res => {
+				axios.post(baseURL + '/api/v1/teams/add', values).then(res => {
 					let alert = {
 						message: "You have added the data custodian team '" + `${values.name}` + "'",
 					};
