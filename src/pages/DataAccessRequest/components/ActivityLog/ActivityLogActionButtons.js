@@ -27,7 +27,7 @@ const ActivityLogActionButtons = ({ team, latestVersion, onClickAddNewEvent, onC
 								onClick={e => {
 									onClickStartReview(e, submittedVersion.applicationId);
 								}}>
-								Start Review: {submittedVersion.displayTitle}
+								Start review: {submittedVersion.displayTitle}
 							</button>
 						)
 					);

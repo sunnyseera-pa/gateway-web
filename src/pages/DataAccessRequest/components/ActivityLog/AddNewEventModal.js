@@ -139,7 +139,7 @@ const AddNewEventModal = ({ dataaccessrequest, isOpened, close, onClickAddEvent 
 									No, nevermind
 								</Button>
 								<Button variant='primary' type='submit' className='white-14-semibold' data-test-id='add-event'>
-									Add Event
+									Add event
 								</Button>
 							</div>
 						</div>

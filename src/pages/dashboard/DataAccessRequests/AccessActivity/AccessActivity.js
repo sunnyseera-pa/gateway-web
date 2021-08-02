@@ -122,7 +122,7 @@ const AccessActivity = ({
 														onClick={e => {
 															navigateToLocation(e, submittedVersion.applicationId);
 														}}>
-														Start Review: {submittedVersion.displayTitle}
+														Start review: {submittedVersion.displayTitle}
 													</button>
 												)
 											);
