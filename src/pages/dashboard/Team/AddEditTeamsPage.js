@@ -48,7 +48,7 @@ const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView, editViewMemberOf, edit
 		},
 
 		validationSchema: Yup.object({
-			name: Yup.string().required('This cannot be empty'),
+			name: Yup.string().required('Please enter an organisation name'),
 			memberOf: Yup.string().required('Please select a membership'),
 			teamManagers: Yup.string().required('Please select a team manager'),
 			contactPoint: Yup.string().email('Please enter a valid email'),
