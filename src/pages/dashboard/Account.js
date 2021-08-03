@@ -103,6 +103,8 @@ class Account extends Component {
 		super(props);
 		this.state.userState = props.userState;
 		this.searchBar = React.createRef();
+		this.activityLog = React.createRef();
+
 		// 1. used for DAR custodian update status of application
 		if (_.has(props, 'location.state.alert')) {
 			this.state.alert = props.location.state.alert;
@@ -482,6 +484,11 @@ class Account extends Component {
 			});
 	};
 
+	loadActivityLogNotifications = () => {
+		this.searchBar.current.getNumberOfUnreadNotifications();
+		this.searchBar.current.doMessagesCall();
+	};
+
 	render() {
 		const {
 			searchString,
@@ -720,6 +727,8 @@ class Account extends Component {
 											dataaccessrequest={dataaccessrequest}
 											userState={userState}
 											team={team}
+											ref={this.activityLog}
+											onUpdateLogs={this.loadActivityLogNotifications}
 										/>
 									)
 								) : (
@@ -751,6 +760,8 @@ class Account extends Component {
 													dataaccessrequest={dataaccessrequest}
 													userState={userState}
 													team={team}
+													ref={this.activityLog}
+													onUpdateLogs={this.loadActivityLogNotifications}
 												/>
 											)
 										) : (
@@ -799,6 +810,7 @@ class Account extends Component {
 									team={team}
 									latestVersion={this.state.dataaccessrequest}
 									onClickStartReview={this.navigateToLocation}
+									onClickAddNewEvent={() => this.activityLog.current.showAddNewEventModal()}
 								/>
 							</div>
 						</div>

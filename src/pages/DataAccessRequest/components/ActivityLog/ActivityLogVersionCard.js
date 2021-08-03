@@ -7,6 +7,7 @@ import { ReactComponent as Workflow } from '../../../../images/Workflows.svg';
 import { ReactComponent as Collaborators } from '../../../../images/Collaborators.svg';
 import { ReactComponent as UpdateRequested } from '../../../../images/Updates_requested.svg';
 import { ReactComponent as ActionRequired } from '../../../../images/Action_required.svg';
+import { ReactComponent as ManualEvent } from '../../../../images/Manual_input.svg';
 import { ReactComponent as Message } from '../../../../images/Messages.svg';
 import SVGIcon from '../../../../images/SVGIcon';
 import { SlideDown } from 'react-slidedown';
@@ -16,7 +17,7 @@ import SLA from '../../../commonComponents/sla/SLA';
 import { ReactComponent as Clock } from '../../../../images/clock.svg';
 import './ActivityLog.scss';
 
-const ActivityLogVersionCard = ({ version, team }) => {
+const ActivityLogVersionCard = ({ version, team, onDeleteEventClick }) => {
 	const [activityLogIds, setActivityLogIds] = useState([]);
 
 	const toggleLogDetails = id => {
@@ -87,6 +88,7 @@ const ActivityLogVersionCard = ({ version, team }) => {
 														log.eventType === DarHelperUtil.activityLogEvents.APPLICATION_SUBMITTED) && (
 														<VersionCreated className='versionCreated' />
 													)}
+													{log.eventType === DarHelperUtil.activityLogEvents.MANUAL_EVENT && <ManualEvent className='versionCreated' />}
 													{log.eventType === DarHelperUtil.activityLogEvents.APPLICATION_REJECTED && (
 														<ApplicationRejected className='versionCreated' />
 													)}
@@ -125,6 +127,13 @@ const ActivityLogVersionCard = ({ version, team }) => {
 															fill={'#3c4e8c'}
 															className={!activityLogIds.includes(log._id) ? '' : 'flip180'}
 														/>
+													</div>
+												)}
+												{log.eventType === DarHelperUtil.activityLogEvents.MANUAL_EVENT && team !== 'user' && (
+													<div className='activity-log-delete-event'>
+														<button className={`btn-link btn-link-delete `} onClick={e => onDeleteEventClick(log._id)}>
+															Delete event
+														</button>
 													</div>
 												)}
 											</div>

@@ -148,6 +148,7 @@ const activityLogEvents = {
 	FINAL_DECISION_REQUIRED: 'finalDecisionRequired',
 	DEADLINE_PASSED: 'deadlinePassed',
 	PRESUBMISSION_MESSAGE: 'presubmissionMessage',
+	MANUAL_EVENT: 'manualEvent',
 };
 
 /**
