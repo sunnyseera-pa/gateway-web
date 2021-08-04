@@ -1221,9 +1221,9 @@ class SearchPage extends React.Component {
 					</div>
 					<div className='container'>
 						<Container>
-							<Row className='filters'>
+							<Row className='filters filter-save'>
 								<Col className='title'>Showing # results of 'query'</Col>
-								<Col>
+								<Col className='saved-buttons'>
 									<Button variant='outline-success' className='saved'>
 										Save
 									</Button>
