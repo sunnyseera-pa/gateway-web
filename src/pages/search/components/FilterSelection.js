@@ -12,7 +12,7 @@ const FilterSelection = ({ selectedCount, selectedItems, onHandleClearSelection,
 		<Fragment>
 			<div className={savedSearches ? 'filters saved-filters' : 'filters'}>
 				<div className='filters-header'>
-					<div className={savedSearches ? 'filters-title gray800-15' : 'filters-title gray500-13'}>
+					<div className={savedSearches ? 'filters-title black-16-semibold' : 'filters-title gray500-13'}>
 						Filters applied
 						<div className='filters-title__count'>
 							<FilterCount count={selectedCount} />
