@@ -3,7 +3,7 @@ import axios from 'axios';
 import { PageView, initGA } from '../../tracking';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
-import { Container, Row, Col, Tabs, Tab, Pagination } from 'react-bootstrap';
+import { Container, Row, Col, Tabs, Tab, Pagination, Button } from 'react-bootstrap';
 import moment from 'moment';
 import _ from 'lodash';
 import { toTitleCase } from '../../utils/GeneralHelper.util';
@@ -23,7 +23,6 @@ import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import SortDropdown from './components/SortDropdown';
 import { ReactComponent as CDStar } from '../../images/cd-star.svg';
 import AdvancedSearchModal from '../commonComponents/AdvancedSearchModal/AdvancedSearchModal';
-import DataUtilityWizardFilters from './dataUtilityWizard/FiltersPanel';
 import './Search.scss';
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
@@ -1221,7 +1220,29 @@ class SearchPage extends React.Component {
 						</div>
 					</div>
 					<div>
-						<DataUtilityWizardFilters />
+						<Container>
+							<Row>
+								Data utility
+								<Col className='title'>Showing # results of 'query'</Col>
+								<Col>
+									<Button variant='outline-success' className='saved'>
+										Save
+									</Button>
+									<Button variant='light' className='saved-preference'>
+										Saved preference
+									</Button>
+									[add some kind of conditioning for showing dropdown]
+									<SortDropdown
+										handleSort={this.handleSort}
+										sort={toolSort === '' ? (search === '' ? 'latest' : 'relevance') : toolSort}
+										dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+									/>
+								</Col>
+							</Row>
+							<Row>
+								<FilterSelection selectedCount selectedItems onHandelClearAll onHandleClearSelection savedSearches={true} />
+							</Row>
+						</Container>
 					</div>
 					<Container>
 						<Row>

@@ -2,20 +2,19 @@ import React, { Fragment } from 'react';
 import FilterChip from './FilterChip';
 import { FilterCount } from './FilterCount';
 
-const FilterSelection = ({ selectedCount, selectedItems, onHandleClearSelection, onHandelClearAll }) => {
-
-	const clearSelection = (e) => {
+const FilterSelection = ({ selectedCount, selectedItems, onHandleClearSelection, onHandelClearAll, savedSearches }) => {
+	const clearSelection = e => {
 		e.preventDefault();
 		onHandelClearAll();
-	}
+	};
 
 	return (
 		<Fragment>
-			<div className='filters'>
+			<div className={savedSearches ? 'filters saved-filters' : 'filters'}>
 				<div className='filters-header'>
 					<div className='filters-title gray500-13'>
 						Filters applied
-						<div className="filters-title__count">
+						<div className='filters-title__count'>
 							<FilterCount count={selectedCount} />
 						</div>
 					</div>
@@ -25,8 +24,9 @@ const FilterSelection = ({ selectedCount, selectedItems, onHandleClearSelection,
 				</div>
 				<div className='filters-body'>
 					{selectedItems.length > 0 &&
-						selectedItems.map(selectedItem => <FilterChip key={selectedItem.id} filterItem={selectedItem} onHandleClearSelection={onHandleClearSelection} />)
-					}
+						selectedItems.map(selectedItem => (
+							<FilterChip key={selectedItem.id} filterItem={selectedItem} onHandleClearSelection={onHandleClearSelection} />
+						))}
 				</div>
 			</div>
 		</Fragment>

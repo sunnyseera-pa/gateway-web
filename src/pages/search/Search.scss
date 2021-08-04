@@ -468,3 +468,39 @@
 	justify-content: center;
 	margin-top: 10px;
 }
+
+.saved {
+	color: #29235c !important;
+	border-color: #3db28c !important;
+	width: 62px;
+	height: 40px;
+	padding: 12px 16px 11px;
+	border-radius: 4px;
+	border: solid 2px var(--teal);
+}
+
+.saved:hover {
+	background: #3db28c !important;
+}
+
+.saved-preference {
+	color: #29235c !important;
+	border: none !important;
+	width: 154px;
+	height: 40px;
+	margin: 15px 8px;
+	padding: 12px 18.5px 11px;
+	background-color: var(--gray-200);
+}
+
+.saved-preference:hover {
+	border: none !important;
+}
+
+.title {
+	margin-top: 2.5vh;
+}
+
+.saved-filters {
+	width: 100% !important;
+}
