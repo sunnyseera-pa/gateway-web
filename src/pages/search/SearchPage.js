@@ -1219,10 +1219,9 @@ class SearchPage extends React.Component {
 							</Tabs>
 						</div>
 					</div>
-					<div>
+					<div className='container'>
 						<Container>
-							<Row>
-								Data utility
+							<Row className='filters'>
 								<Col className='title'>Showing # results of 'query'</Col>
 								<Col>
 									<Button variant='outline-success' className='saved'>
@@ -1231,16 +1230,22 @@ class SearchPage extends React.Component {
 									<Button variant='light' className='saved-preference'>
 										Saved preference
 									</Button>
-									[add some kind of conditioning for showing dropdown]
 									<SortDropdown
 										handleSort={this.handleSort}
 										sort={toolSort === '' ? (search === '' ? 'latest' : 'relevance') : toolSort}
 										dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+										savedSearch={true}
 									/>
 								</Col>
 							</Row>
 							<Row>
-								<FilterSelection selectedCount selectedItems onHandelClearAll onHandleClearSelection savedSearches={true} />
+								<FilterSelection
+									selectedCount={selectedV2.length}
+									selectedItems={selectedV2}
+									onHandleClearSelection={this.handleClearSelection}
+									onHandelClearAll={this.handleClearAll}
+									savedSearches={true}
+								/>
 							</Row>
 						</Container>
 					</div>
