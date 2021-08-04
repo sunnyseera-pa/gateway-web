@@ -23,6 +23,7 @@ import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import SortDropdown from './components/SortDropdown';
 import { ReactComponent as CDStar } from '../../images/cd-star.svg';
 import AdvancedSearchModal from '../commonComponents/AdvancedSearchModal/AdvancedSearchModal';
+import DataUtilityWizardFilters from './dataUtilityWizard/FiltersPanel';
 import './Search.scss';
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
@@ -1219,7 +1220,9 @@ class SearchPage extends React.Component {
 							</Tabs>
 						</div>
 					</div>
-
+					<div>
+						<DataUtilityWizardFilters />
+					</div>
 					<Container>
 						<Row>
 							{key !== 'People' ? (
