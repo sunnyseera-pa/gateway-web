@@ -23,7 +23,7 @@ const AdvancedSearchModalBody = ({
 							{headerText} {isBeta ? <div className='beta-title ml-2'>BETA</div> : ''}
 						</h3>
 						<p className='gray800-14'>{bodyText}</p>
-						<a className='textUnderline gray800-14 cursorPointer' href={learnMoreLink} target='_blank'>
+						<a className='textUnderline gray800-14 cursorPointer' href={learnMoreLink} target='_blank' rel="noopener noreferrer">
 							Learn more
 						</a>
 						{loggedIn || doesNotRequireSignIn ? (

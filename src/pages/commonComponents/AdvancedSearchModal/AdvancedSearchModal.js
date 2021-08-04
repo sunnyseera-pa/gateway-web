@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Col, Image } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import { ReactComponent as CDStar } from '../../../images/cd-star.svg';
 import './AdvancedSearchModal.scss';
 import AdvancedSearchRequestAccessModal from '../../dashboard/AdvancedSearchRequestAccessModal';
