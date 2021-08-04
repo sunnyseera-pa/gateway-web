@@ -102,6 +102,7 @@ class SearchPage extends React.Component {
 		],
 		filtersV2: [],
 		selectedV2: [],
+		savedSearchPanel: true,
 	};
 
 	constructor(props) {
@@ -1249,7 +1250,7 @@ class SearchPage extends React.Component {
 								<Col sm={12} md={12} lg={3} className='mt-4 mb-5'>
 									{key === 'Datasets' ? (
 										<Fragment>
-											<div className='filterHolder'>
+											<div className={this.state.savedSearchPanel ? 'filterHolder saved-filterHolder' : 'filterHolder'}>
 												{selectedV2.length > 0 && (
 													<FilterSelection
 														selectedCount={selectedV2.length}
@@ -1272,7 +1273,7 @@ class SearchPage extends React.Component {
 
 									{key === 'Tools' ? (
 										<>
-											<div className='filterHolder'>
+											<div className={this.state.savedSearchPanel ? 'filterHolder saved-filterHolder' : 'filterHolder'}>
 												{toolCategoriesSelected.length !== 0 ||
 												toolProgrammingLanguageSelected.length !== 0 ||
 												toolFeaturesSelected.length !== 0 ||
@@ -1390,7 +1391,7 @@ class SearchPage extends React.Component {
 
 									{key === 'Projects' ? (
 										<>
-											<div className='filterHolder'>
+											<div className={this.state.savedSearchPanel ? 'filterHolder saved-filterHolder' : 'filterHolder'}>
 												{projectCategoriesSelected.length !== 0 ||
 												projectFeaturesSelected.length !== 0 ||
 												projectTopicsSelected.length !== 0 ? (
@@ -1485,7 +1486,7 @@ class SearchPage extends React.Component {
 
 									{key === 'Collections' ? (
 										<>
-											<div className='filterHolder'>
+											<div className={this.state.savedSearchPanel ? 'filterHolder saved-filterHolder' : 'filterHolder'}>
 												{collectionKeywordsSelected.length !== 0 || collectionPublisherSelected.length !== 0 ? (
 													<div className='filterCard mb-2'>
 														<Row>
@@ -1565,7 +1566,7 @@ class SearchPage extends React.Component {
 
 									{key === 'Papers' ? (
 										<>
-											<div className='filterHolder'>
+											<div className={this.state.savedSearchPanel ? 'filterHolder saved-filterHolder' : 'filterHolder'}>
 												{paperFeaturesSelected.length !== 0 || paperTopicsSelected.length !== 0 ? (
 													<div className='filterCard mb-2'>
 														<Row>
@@ -1636,7 +1637,7 @@ class SearchPage extends React.Component {
 
 									{key === 'Courses' ? (
 										<>
-											<div className='filterHolder'>
+											<div className={this.state.savedSearchPanel ? 'filterHolder saved-filterHolder' : 'filterHolder'}>
 												{courseStartDatesSelected.length !== 0 ||
 												courseProviderSelected.length !== 0 ||
 												courseLocationSelected.length !== 0 ||
