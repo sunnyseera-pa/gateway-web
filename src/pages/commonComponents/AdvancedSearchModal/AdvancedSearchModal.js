@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Modal, Col, Image } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import { ReactComponent as CDStar } from '../../../images/cd-star.svg';
 import './AdvancedSearchModal.scss';
 import AdvancedSearchRequestAccessModal from '../../dashboard/AdvancedSearchRequestAccessModal';
 import AdvancedSearchTermsandConditionsModal from '../../dashboard/AdvancedSearchTAndCsModal';
 import _ from 'lodash';
 import axios from 'axios';
+import AdvancedSearchModalBody from './AdvancedSearchModalBody';
+import cohortDiscoveryImage from '../../../images/cohort-discovery.jpg'; 
+import dataUtilityImage from '../../../images/data-utility.png'; 
 const baseURL = require('../BaseURL').getURL();
 const GENERAL_ACCESS = 'GENERAL_ACCESS';
 const BANNED = 'BANNED';
@@ -109,6 +112,11 @@ const AdvancedSearchModal = ({ open, closed, userProps }) => {
 			}
 		};
 	};
+
+	const dataUtilityWizardJourney = () => {
+		// TODO - Data Utility functionality 
+	}
+
 	return (
 		<>
 			<Modal
@@ -129,39 +137,28 @@ const AdvancedSearchModal = ({ open, closed, userProps }) => {
 						</p>
 					</div>
 				</Modal.Header>
-				<Modal.Body>
-					<div className='advanced-search-body'>
-						<Col sm={6}>
-							<div className='advanced-search-body-left'>
-								<h3 className='black-20 flex-form'>
-									Cohort Discovery <div className='beta-title ml-2'>BETA</div>
-								</h3>
-								<p className='gray800-14'>
-									Search based on characteristics such as disease, age, and location. Queries are made on the actual dataset, not just
-									metadata. Available on a limited number of datasets for now, with more added every month.
-								</p>
-								<a
-									className='textUnderline gray800-14 cursorPointer'
-									href='https://www.healthdatagateway.org/about/cohort-discovery'
-									target='_blank'>
-									Learn more
-								</a>
-								{userState.loggedIn ? (
-									<button type='button' className='button-secondary mr-2 advanced-search-learn-more' onClick={() => accessRQuest()}>
-										Search using cohort discovery
-									</button>
-								) : (
-									<a className='textUnderline gray800-14 cursorPointer advanced-search-learn-more' onClick={() => showLoginModal()}>
-										You must be signed in to use cohort discovery
-									</a>
-								)}
-							</div>
-						</Col>
-						<Col sm={6}>
-							<Image className='advanced-search-image' src={require('../../../images/cohort-discovery.jpg')} />
-						</Col>
-					</div>
-				</Modal.Body>
+				<AdvancedSearchModalBody
+					headerText='Cohort Discovery'
+					isBeta
+					bodyText='Search based on characteristics such as disease, age, and location. Queries are made on the actual dataset, not just metadata. Available on a limited number of datasets for now, with more added every month.'
+					learnMoreLink='https://www.healthdatagateway.org/about/cohort-discovery'
+					loggedIn={userState.loggedIn}
+					buttonText='Search using cohort discovery'
+					signedOutText=''
+					showLoginModal={showLoginModal}
+					buttonClick={accessRQuest}
+					imageSrc={cohortDiscoveryImage}
+				/>
+				<AdvancedSearchModalBody
+					headerText='Data utility wizard'
+					isBeta
+					bodyText='A tool to help refine your search to only datasets that meet your data utility requirements.'
+					learnMoreLink=''
+					doesNotRequireSignIn
+					buttonClick={dataUtilityWizardJourney}
+					buttonText='Search using data utility wizard'
+					imageSrc={dataUtilityImage}
+				/>
 				<Modal.Footer>
 					<div className='gray800-14 btn-light entryBox' style={{ textAlign: 'center' }}>
 						Other advanced search options coming soon
