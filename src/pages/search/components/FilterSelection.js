@@ -12,13 +12,15 @@ const FilterSelection = ({ selectedCount, selectedItems, onHandleClearSelection,
 		<Fragment>
 			<div className={savedSearches ? 'filters saved-filters' : 'filters'}>
 				<div className='filters-header'>
-					<div className='filters-title gray500-13'>
+					<div className={savedSearches ? 'filters-title gray800-15' : 'filters-title gray500-13'}>
 						Filters applied
 						<div className='filters-title__count'>
 							<FilterCount count={selectedCount} />
 						</div>
 					</div>
-					<div className='purple-13 filters-title__clear' onClick={e => clearSelection(e)}>
+					<div
+						className={savedSearches ? 'purple-14 filters-title__clear' : 'purple-13 filters-title__clear'}
+						onClick={e => clearSelection(e)}>
 						Clear all
 					</div>
 				</div>
