@@ -2,11 +2,11 @@ import React, { Fragment } from 'react';
 import FilterChip from './FilterChip';
 import { FilterCount } from './FilterCount';
 
-const FilterSelection = ({ selectedCount, selectedItems, onHandleClearSelection, onHandelClearAll }) => {
+const FilterSelection = ({ selectedCount, selectedItems, onHandleClearSelection, onHandleClearAll }) => {
 
 	const clearSelection = (e) => {
 		e.preventDefault();
-		onHandelClearAll();
+		onHandleClearAll();
 	}
 
 	return (
