@@ -484,11 +484,13 @@
 
 .saved-preference {
 	color: #29235c !important;
+	background-color: #f3f3f3 !important;
 	border: none !important;
 	width: 154px;
 	height: 40px;
 	margin: 15px 8px;
 	padding: 12px 18.5px 11px;
+	cursor: pointer;
 }
 
 .saved-preference:hover {

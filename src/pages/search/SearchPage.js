@@ -1252,7 +1252,7 @@ class SearchPage extends React.Component {
 									{key === 'Datasets' ? (
 										<Fragment>
 											<div className={this.state.savedSearchPanel ? 'filterHolder saved-filterHolder' : 'filterHolder'}>
-												{selectedV2.length > 0 && (
+												{selectedV2.length > 0 && !this.state.savedSearchPanel && (
 													<FilterSelection
 														selectedCount={selectedV2.length}
 														selectedItems={selectedV2}
