@@ -360,12 +360,8 @@ const DatasetAboutCard = ({ v2data, section, showEmpty, toggleModal, showLoginMo
 										<span
 											className='purple-14 pointer float-right'
 											onClick={() => {
-												if (!loggedIn) {
-													showLoginModal();
-												} else {
-													toggleModal();
-													Event('Buttons', 'Click', 'Request Access');
-												}
+												toggleModal();
+												Event('Buttons', 'Click', 'Request Access');
 											}}>
 											How to request access
 										</span>

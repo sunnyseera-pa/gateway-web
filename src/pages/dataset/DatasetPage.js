@@ -846,12 +846,8 @@ class DatasetDetail extends Component {
 													data-test-id='dataset-request-access-btn'
 													className='btn btn-primary addButton pointer float-right'
 													onClick={() => {
-														if (!userState[0].loggedIn) {
-															this.showLoginModal(this.state.data.name);
-														} else {
-															this.toggleModal();
-															Event('Buttons', 'Click', 'Request Access');
-														}
+														this.toggleModal();
+														Event('Buttons', 'Click', 'Request Access');
 													}}>
 													How to request access
 												</button>
