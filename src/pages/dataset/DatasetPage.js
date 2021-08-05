@@ -83,7 +83,6 @@ class DatasetDetail extends Component {
 		showModal: false,
 		showCustodianModal: false,
 		showError: false,
-		requiresModal: false,
 		allowsMessaging: false,
 		allowNewMessage: false,
 		dataRequestModalContent: {},
@@ -539,7 +538,6 @@ class DatasetDetail extends Component {
 					},
 				} = response;
 				const stateObj = {
-					requiresModal: !isEmpty(dataRequestModalContent) ? true : false,
 					allowNewMessage: allowsMessaging && isEmpty(dataRequestModalContent) ? true : false,
 					allowsMessaging,
 					dataRequestModalContent,
@@ -849,7 +847,12 @@ class DatasetDetail extends Component {
 													data-test-id='dataset-request-access-btn'
 													className='btn btn-primary addButton pointer float-right'
 													onClick={() => {
-														this.toggleModal();
+														if (!userState[0].loggedIn) {
+															this.showLoginModal(this.state.data.name);
+														} else {
+															this.toggleModal();
+															Event('Buttons', 'Click', 'Request Access');
+														}
 													}}>
 													How to request access
 												</button>
@@ -925,10 +928,9 @@ class DatasetDetail extends Component {
 													section='Data access request'
 													v2data={v2data}
 													showEmpty={showEmpty}
-													requiresModal={this.state.requiresModal}
 													toggleModal={this.toggleModal}
 													showLoginModal={() => {
-														this.showLoginModal(this.state.data.name);
+														this.showLoginModal(data.name);
 													}}
 													datasetid={this.state.data.datasetid}
 													loggedIn={this.state.userState[0].loggedIn}

@@ -1238,7 +1238,7 @@ class SearchPage extends React.Component {
 									selectedCount={selectedV2.length}
 									selectedItems={selectedV2}
 									onHandleClearSelection={this.handleClearSelection}
-									onHandelClearAll={this.handleClearAll}
+									onHandleClearAll={this.handleClearAll}
 									savedSearches={true}
 								/>
 							</Row>
@@ -1256,7 +1256,7 @@ class SearchPage extends React.Component {
 														selectedCount={selectedV2.length}
 														selectedItems={selectedV2}
 														onHandleClearSelection={this.handleClearSelection}
-														onHandelClearAll={this.handleClearAll}
+														onHandleClearAll={this.handleClearAll}
 													/>
 												)}
 												<Filter
