@@ -134,7 +134,7 @@ class SearchPage extends React.Component {
 		initGA('UA-166025838-1');
 		PageView();
 		// 1. call filters - this will need parameterised when tools, projects etc move to v2
-		await this.getFilters();
+		await this.getGlobals();
 		// 2. fires on first time in or page is refreshed/url loaded / has search location
 		if (!!window.location.search) {
 			// 3. splits location search into object { search: search, tab: Datasets}
@@ -660,12 +660,39 @@ class SearchPage extends React.Component {
 	/**
 	 * GetFilters
 	 *
+	 * @desc Get all required global data for page
+	 */
+	getGlobals = async () => {
+		try {
+			const response = await axios.get(`${baseURL}/api/v1/global?localeId=en-gb&entry.name=dataUtility`);
+			const {
+				data: {
+					data: {
+						entry: { items: dataUtilityFilters = [] },
+					},
+				},
+			} = response;
+			if (!_.isEmpty(dataUtilityFilters)) {
+				const dataUtilityWizardSteps = dataUtilityFilters.filter(item => item.includeInWizard);
+				this.setState({ dataUtilityFilters, dataUtilityWizardSteps }, () => {
+					this.getFilters();
+				});
+				
+			}
+		} catch (error) {
+			console.error(error.message);
+		}
+	};
+
+	/**
+	 * GetFilters
+	 *
 	 * @desc Get all the filters for dataset
 	 */
 	getFilters = async () => {
 		try {
-			let response = await axios.get(`${baseURL}/api/v2/filters/dataset`);
-			let {
+			const response = await axios.get(`${baseURL}/api/v2/filters/dataset`);
+			const {
 				data: { data },
 			} = response;
 			if (!_.isEmpty(data)) {
