@@ -21,7 +21,7 @@ const FilterSelection = ({ selectedCount, selectedItems, onHandleClearSelection,
 					<div
 						className={savedSearches ? 'purple-14 filters-title__clear' : 'purple-13 filters-title__clear'}
 						onClick={e => clearSelection(e)}>
-						Clear all
+						{savedSearches ? 'Clear Filters' : 'Clear All'}
 					</div>
 				</div>
 				<div className='filters-body'>

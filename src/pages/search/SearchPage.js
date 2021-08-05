@@ -1229,10 +1229,11 @@ class SearchPage extends React.Component {
 										Save
 									</Button>
 									<Button variant='light' className='saved-preference'>
-										Saved preference
+										Saved preferences
 									</Button>
 								</Col>
 							</Row>
+
 							<Row>
 								<FilterSelection
 									selectedCount={selectedV2.length}
