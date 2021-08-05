@@ -13,12 +13,16 @@ import ActivityLogVersionCard from './ActivityLogVersionCard';
 import SVGIcon from '../../../../images/SVGIcon';
 import DeleteManualEventModal from './DeleteManualEventModal';
 import AddNewEventModal from './AddNewEventModal';
+import moment from 'moment';
 
 const ActivityLog = React.forwardRef(({ dataaccessrequest, team, onClickStartReview, onUpdateLogs }, ref) => {
 	React.useImperativeHandle(ref, () => ({
 		showAddNewEventModal() {
 			toggleAddNewEventModal();
 		},
+
+		getLogsAsArray,
+		getExportFileName,
 	}));
 
 	const [showWorkflowReviewModal, setShowWorkflowReviewModal] = useState(false);
@@ -100,6 +104,30 @@ const ActivityLog = React.forwardRef(({ dataaccessrequest, team, onClickStartRev
 	const updateVersion = updatedVersion => {
 		const updatedVersionIndex = activityLogs.findIndex(version => version.versionNumber === updatedVersion.versionNumber);
 		activityLogs.splice(updatedVersionIndex, 1, updatedVersion);
+	};
+
+	const getLogsAsArray = () => {
+		let formattedLogs = [];
+		activityLogs.forEach(activityLog => {
+			activityLog.events.forEach(event => {
+				formattedLogs.push({
+					version: event.version,
+					date_submitted: activityLog.meta.dateSubmitted,
+					days_since_submission: activityLog.meta.daysSinceSubmission,
+					time_with_applicants: activityLog.meta.timeWithApplicants,
+					application_status: DarHelperUtil.darSLAText[activityLog.meta.applicationStatus],
+					activity_date: moment(event.timestamp).format('D MMMM YYYY HH:mm'),
+					activity: event.plainText,
+					activity_details: event.detailedText,
+				});
+			});
+		});
+
+		return formattedLogs;
+	};
+
+	const getExportFileName = () => {
+		return `${dataaccessrequest.aboutApplication.projectName}-activityLog-${moment().format('DDMMYYYYHHmmss')}.csv`;
 	};
 
 	let {
