@@ -34,16 +34,16 @@ const DataSetModal = ({ open, closed, context, userState, is5Safes, showLoginMod
 		}
 	};
 
-	const onCloseModal = (showEnquiry = false) => {
+	const onCloseModal = (action) => {
 		// 1. if user is not loggedIn and wants to make enquiry make them sign in
-		if (!isLoggedIn && showEnquiry) {
+		if (!isLoggedIn && action !== 'CLOSE') {
 			// 2. close modal and do not show enquiry - false;
 			closed(false);
 			// 3. Show the loginPanel
 			DataSetHelper.showLoginPanel(window, _.isEmpty(title) ? screenData.subTitle : title);
 		} else {
 			// 4. do normal operation
-			closed(showEnquiry);
+			closed(action);
 		}
 	};
 

@@ -5,7 +5,7 @@ import AboutCardElement from './AboutCardElement';
 import { isEmpty } from 'lodash';
 import { Event } from '../../../tracking';
 
-const DatasetAboutCard = ({ v2data, section, showEmpty, toggleModal, showLoginModal, loggedIn }) => {
+const DatasetAboutCard = ({ v2data, section, showEmpty, toggleModal }) => {
 	let temporalCoverage = '';
 
 	if (!isEmpty(v2data.provenance.temporal.startDate) && !isEmpty(v2data.provenance.temporal.endDate)) {
