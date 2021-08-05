@@ -3,7 +3,7 @@ import axios from 'axios';
 import { PageView, initGA } from '../../tracking';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
-import { Container, Row, Col, Tabs, Tab, Pagination } from 'react-bootstrap';
+import { Container, Row, Col, Tabs, Tab, Pagination, Button } from 'react-bootstrap';
 import moment from 'moment';
 import _ from 'lodash';
 import { toTitleCase } from '../../utils/GeneralHelper.util';
@@ -102,6 +102,7 @@ class SearchPage extends React.Component {
 		],
 		filtersV2: [],
 		selectedV2: [],
+		savedSearchPanel: true,
 	};
 
 	constructor(props) {
@@ -1219,14 +1220,37 @@ class SearchPage extends React.Component {
 							</Tabs>
 						</div>
 					</div>
-
+					<div className='container'>
+						<Container>
+							<Row className='filters filter-save'>
+								<Col className='title'>Showing # results of 'query'</Col>
+								<Col className='saved-buttons'>
+									<Button variant='outline-success' className='saved'>
+										Save
+									</Button>
+									<Button variant='light' className='saved-preference'>
+										Saved preference
+									</Button>
+								</Col>
+							</Row>
+							<Row>
+								<FilterSelection
+									selectedCount={selectedV2.length}
+									selectedItems={selectedV2}
+									onHandleClearSelection={this.handleClearSelection}
+									onHandelClearAll={this.handleClearAll}
+									savedSearches={true}
+								/>
+							</Row>
+						</Container>
+					</div>
 					<Container>
 						<Row>
 							{key !== 'People' ? (
 								<Col sm={12} md={12} lg={3} className='mt-4 mb-5'>
 									{key === 'Datasets' ? (
 										<Fragment>
-											<div className='filterHolder'>
+											<div className={this.state.savedSearchPanel ? 'filterHolder saved-filterHolder' : 'filterHolder'}>
 												{selectedV2.length > 0 && (
 													<FilterSelection
 														selectedCount={selectedV2.length}
@@ -1249,7 +1273,7 @@ class SearchPage extends React.Component {
 
 									{key === 'Tools' ? (
 										<>
-											<div className='filterHolder'>
+											<div className={this.state.savedSearchPanel ? 'filterHolder saved-filterHolder' : 'filterHolder'}>
 												{toolCategoriesSelected.length !== 0 ||
 												toolProgrammingLanguageSelected.length !== 0 ||
 												toolFeaturesSelected.length !== 0 ||
@@ -1367,7 +1391,7 @@ class SearchPage extends React.Component {
 
 									{key === 'Projects' ? (
 										<>
-											<div className='filterHolder'>
+											<div className={this.state.savedSearchPanel ? 'filterHolder saved-filterHolder' : 'filterHolder'}>
 												{projectCategoriesSelected.length !== 0 ||
 												projectFeaturesSelected.length !== 0 ||
 												projectTopicsSelected.length !== 0 ? (
@@ -1462,7 +1486,7 @@ class SearchPage extends React.Component {
 
 									{key === 'Collections' ? (
 										<>
-											<div className='filterHolder'>
+											<div className={this.state.savedSearchPanel ? 'filterHolder saved-filterHolder' : 'filterHolder'}>
 												{collectionKeywordsSelected.length !== 0 || collectionPublisherSelected.length !== 0 ? (
 													<div className='filterCard mb-2'>
 														<Row>
@@ -1542,7 +1566,7 @@ class SearchPage extends React.Component {
 
 									{key === 'Papers' ? (
 										<>
-											<div className='filterHolder'>
+											<div className={this.state.savedSearchPanel ? 'filterHolder saved-filterHolder' : 'filterHolder'}>
 												{paperFeaturesSelected.length !== 0 || paperTopicsSelected.length !== 0 ? (
 													<div className='filterCard mb-2'>
 														<Row>
@@ -1613,7 +1637,7 @@ class SearchPage extends React.Component {
 
 									{key === 'Courses' ? (
 										<>
-											<div className='filterHolder'>
+											<div className={this.state.savedSearchPanel ? 'filterHolder saved-filterHolder' : 'filterHolder'}>
 												{courseStartDatesSelected.length !== 0 ||
 												courseProviderSelected.length !== 0 ||
 												courseLocationSelected.length !== 0 ||
@@ -1893,6 +1917,7 @@ class SearchPage extends React.Component {
 														handleSort={this.handleSort}
 														sort={toolSort === '' ? (search === '' ? 'latest' : 'relevance') : toolSort}
 														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+														savedSearch={true}
 													/>
 												) : (
 													''
@@ -1903,6 +1928,7 @@ class SearchPage extends React.Component {
 														handleSort={this.handleSort}
 														sort={datasetSort === '' ? (search === '' ? 'metadata' : 'relevance') : datasetSort}
 														dropdownItems={['relevance', 'popularity', 'metadata', 'latest', 'resources']}
+														savedSearch={true}
 													/>
 												) : (
 													''
@@ -1913,6 +1939,7 @@ class SearchPage extends React.Component {
 														handleSort={this.handleSort}
 														sort={projectSort === '' ? (search === '' ? 'latest' : 'relevance') : projectSort}
 														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+														savedSearch={true}
 													/>
 												) : (
 													''
@@ -1923,6 +1950,7 @@ class SearchPage extends React.Component {
 														handleSort={this.handleSort}
 														sort={collectionSort === '' ? (search === '' ? 'latest' : 'relevance') : collectionSort}
 														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+														savedSearch={true}
 													/>
 												) : (
 													''
@@ -1933,6 +1961,7 @@ class SearchPage extends React.Component {
 														handleSort={this.handleSort}
 														sort={paperSort === '' ? (search === '' ? 'latest' : 'relevance') : paperSort}
 														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+														savedSearch={true}
 													/>
 												) : (
 													''
@@ -1943,6 +1972,7 @@ class SearchPage extends React.Component {
 														handleSort={this.handleSort}
 														sort={personSort === '' ? (search === '' ? 'latest' : 'relevance') : personSort}
 														dropdownItems={['relevance', 'popularity', 'latest']}
+														savedSearch={true}
 													/>
 												) : (
 													''
