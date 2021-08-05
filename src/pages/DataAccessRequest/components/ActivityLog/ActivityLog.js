@@ -127,7 +127,7 @@ const ActivityLog = React.forwardRef(({ dataaccessrequest, team, onClickStartRev
 	};
 
 	const getExportFileName = () => {
-		return `${dataaccessrequest.aboutApplication.projectName}-activityLog-${moment().format('DDMMYYYYHHmmss')}.csv`;
+		return `${dataaccessrequest.projectName}-activityLog-${moment().format('DDMMYYYYHHmmss')}.csv`;
 	};
 
 	let {
