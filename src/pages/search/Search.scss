@@ -526,3 +526,11 @@
 .saved-filterHolder {
 	margin-top: 10px;
 }
+
+.saved-search-arrow {
+	background: none;
+	border: none;
+}
+.saved-search-arrow:focus {
+	outline: none;
+}

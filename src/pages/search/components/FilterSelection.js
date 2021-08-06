@@ -1,12 +1,15 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import FilterChip from './FilterChip';
 import { FilterCount } from './FilterCount';
+import SVGIcon from '../../../images/SVGIcon';
 
-const FilterSelection = ({ selectedCount, selectedItems, onHandleClearSelection, onHandelClearAll, savedSearches }) => {
+const FilterSelection = ({ selectedCount, selectedItems, onHandleClearSelection, onHandelClearAll, savedSearches, node }) => {
 	const clearSelection = e => {
 		e.preventDefault();
 		onHandelClearAll();
 	};
+
+	const [closed, setClosed] = useState(false);
 
 	return (
 		<Fragment>
@@ -23,13 +26,19 @@ const FilterSelection = ({ selectedCount, selectedItems, onHandleClearSelection,
 						onClick={e => clearSelection(e)}>
 						{savedSearches ? 'Clear Filters' : 'Clear All'}
 					</div>
+
+					<button className='saved-search-arrow' onClick={() => (!closed ? setClosed(true) : setClosed(false))}>
+						<SVGIcon width='20px' height='20px' name='chevronbottom' fill={'#475da7'} className={closed ? 'flip180' : ''} />
+					</button>
 				</div>
-				<div className='filters-body'>
-					{selectedItems.length > 0 &&
-						selectedItems.map(selectedItem => (
-							<FilterChip key={selectedItem.id} filterItem={selectedItem} onHandleClearSelection={onHandleClearSelection} />
-						))}
-				</div>
+				{closed ? (
+					<div className='filters-body'>
+						{selectedItems.length > 0 &&
+							selectedItems.map(selectedItem => (
+								<FilterChip key={selectedItem.id} filterItem={selectedItem} onHandleClearSelection={onHandleClearSelection} />
+							))}
+					</div>
+				) : null}
 			</div>
 		</Fragment>
 	);
