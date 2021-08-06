@@ -1947,16 +1947,6 @@ class SearchPage extends React.Component {
 												) : (
 													''
 												)}
-												
-												{key === 'Collections' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={collectionSort === '' ? (search === '' ? 'latest' : 'relevance') : collectionSort}
-														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-													/>
-												) : (
-													''
-												)}
 											</Col>
 										</Row>
 									)}
