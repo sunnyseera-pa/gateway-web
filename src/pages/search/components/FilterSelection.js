@@ -22,11 +22,10 @@ const FilterSelection = ({ selectedCount, selectedItems, onHandleClearSelection,
 						</div>
 					</div>
 					<div
-						className={savedSearches ? 'purple-14 filters-title__clear' : 'purple-13 filters-title__clear'}
+						className={savedSearches ? 'purple-14 saved-filters-title filters-title__clear' : 'purple-13 filters-title__clear'}
 						onClick={e => clearSelection(e)}>
 						{savedSearches ? 'Clear Filters' : 'Clear All'}
 					</div>
-
 					<button className='saved-search-arrow' onClick={() => (!closed ? setClosed(true) : setClosed(false))}>
 						<SVGIcon width='20px' height='20px' name='chevronbottom' fill={'#475da7'} className={closed ? 'flip180' : ''} />
 					</button>

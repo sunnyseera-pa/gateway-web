@@ -1233,7 +1233,6 @@ class SearchPage extends React.Component {
 									</Button>
 								</Col>
 							</Row>
-
 							<Row>
 								<FilterSelection
 									selectedCount={selectedV2.length}
