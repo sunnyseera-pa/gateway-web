@@ -9,7 +9,7 @@ const FilterSelection = ({ selectedCount, selectedItems, onHandleClearSelection,
 		onHandelClearAll();
 	};
 
-	const [closed, setClosed] = useState(false);
+	const [closed, setClosed] = useState(true);
 
 	return (
 		<Fragment>

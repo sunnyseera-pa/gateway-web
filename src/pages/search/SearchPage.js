@@ -1911,13 +1911,12 @@ class SearchPage extends React.Component {
 										''
 									) : (
 										<Row>
-											<Col className='text-right'>
+											<Col className={this.state.savedSearchPanel ? 'text-right save-dropdown' : 'text-right'}>
 												{key === 'Tools' ? (
 													<SortDropdown
 														handleSort={this.handleSort}
 														sort={toolSort === '' ? (search === '' ? 'latest' : 'relevance') : toolSort}
 														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-														savedSearch={true}
 													/>
 												) : (
 													''
@@ -1928,7 +1927,6 @@ class SearchPage extends React.Component {
 														handleSort={this.handleSort}
 														sort={datasetSort === '' ? (search === '' ? 'metadata' : 'relevance') : datasetSort}
 														dropdownItems={['relevance', 'popularity', 'metadata', 'latest', 'resources']}
-														savedSearch={true}
 													/>
 												) : (
 													''
@@ -1939,7 +1937,6 @@ class SearchPage extends React.Component {
 														handleSort={this.handleSort}
 														sort={projectSort === '' ? (search === '' ? 'latest' : 'relevance') : projectSort}
 														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-														savedSearch={true}
 													/>
 												) : (
 													''
@@ -1950,7 +1947,6 @@ class SearchPage extends React.Component {
 														handleSort={this.handleSort}
 														sort={collectionSort === '' ? (search === '' ? 'latest' : 'relevance') : collectionSort}
 														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-														savedSearch={true}
 													/>
 												) : (
 													''
@@ -1961,7 +1957,6 @@ class SearchPage extends React.Component {
 														handleSort={this.handleSort}
 														sort={paperSort === '' ? (search === '' ? 'latest' : 'relevance') : paperSort}
 														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-														savedSearch={true}
 													/>
 												) : (
 													''
@@ -1972,7 +1967,6 @@ class SearchPage extends React.Component {
 														handleSort={this.handleSort}
 														sort={personSort === '' ? (search === '' ? 'latest' : 'relevance') : personSort}
 														dropdownItems={['relevance', 'popularity', 'latest']}
-														savedSearch={true}
 													/>
 												) : (
 													''
