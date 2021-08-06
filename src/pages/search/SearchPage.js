@@ -192,6 +192,22 @@ class SearchPage extends React.Component {
 	};
 
 	/**
+	 * FindImpliedFilterNode
+	 *
+	 * @desc 		Finds a relevant node item by cross referencing all filters with a selection of implied values
+	 * @param		{array} filters
+	 * @param		{string} label
+	 * @return	{object} object of {label, value...}
+	 */
+	findImpliedFilterNode = (filters = [], impliedValues) => {
+		if (!_.isEmpty(filters)) {
+			const formattedValues = impliedValues.split('::').map(value => value.toLowerCase()).join(','); 
+			return [...filters].find(node => node.value.toLowerCase() === formattedValues) || {};
+		}
+		return {};
+	};
+
+	/**
 	 * UpdateFilterStates
 	 *
 	 * @desc Sets selectedStates for filters including search string
@@ -213,31 +229,46 @@ class SearchPage extends React.Component {
 						let parentNode = this.findParentNode(filtersV2, key);
 						if (!_.isNil(parentNode)) {
 							let { filters } = parentNode;
-							// 6. loop over query values
-							queryValues.forEach(node => {
-								// 7. get the selected values
-								let foundNode = this.findNode(filters, node);
+							// 6. Determine whether to perform regular filter selection or implied filter selection
+							const isImpliedFilter = filters.some(filter => _.has(filter, 'impliedValues'));
+							let nodes = [];
+							if (isImpliedFilter) {
+								// find node by implied values
+								let foundNode = this.findImpliedFilterNode(filters, queryParams[key]);
 								if (!_.isEmpty(foundNode)) {
-									// 8. set check value
-									foundNode.checked = !foundNode.checked;
-									// 9. increment highest parent count
-									parentNode.selectedCount += 1;
-									// 10. prep new selected Item for selected showing
-									let selectedNode = {
-										parentKey: key,
-										id: foundNode.id,
-										label: foundNode.label,
-									};
-									// 11. fn for handling the *selected showing* returns new state
-									let selected = this.handleSelected(selectedNode, foundNode.checked);
-									// 12. update selectedV2 array with our new returned value
-									selectedV2 = [...selectedV2, ...selected];
+									nodes.push(foundNode);
 								}
+							} else {
+								// loop over query values
+								queryValues.forEach(node => {
+									// get the selected values
+									let foundNode = this.findNode(filters, node);
+									if (!_.isEmpty(foundNode)) {
+										nodes.push(foundNode);
+									}
+								});
+							}
+							nodes.forEach(node => {
+								// 7. set check value
+								node.checked = !node.checked;
+								// 8. increment highest parent count
+								parentNode.selectedCount += 1;
+								// 9. prep new selected Item for selected showing
+								let selectedNode = {
+									parentKey: key,
+									id: node.id,
+									label: node.label,
+									value: node.value,
+								};
+								// 10. fn for handling the *selected showing* returns new state
+								let selected = this.handleSelected(selectedNode, node.checked);
+								// 11. update selectedV2 array with our new returned value
+								selectedV2 = [...selectedV2, ...selected];
 							});
 						}
 					}
 				}
-				// 13. set the state of filters and selected options
+				// 12. set the state of filters and selected options
 				this.setState({ filtersV2, selectedV2 });
 			}
 		}
@@ -617,12 +648,19 @@ class SearchPage extends React.Component {
 
 	setHighlightedFilters = (filters = {}, tree) => {
 		for (let key in filters) {
-			// 2. find parent obj - recursive
-			let parentNode = this.findParentNode(tree, key);
-			// 3. if parentNode exists
+			// Find parent obj - recursive
+			const parentNode = this.findParentNode(tree, key);
+			// If parentNode exists
 			if (!_.isEmpty(parentNode) && typeof parentNode.highlighted !== 'undefined') {
-				let lowerCasedFilters = filters[key].map(value => value.toLowerCase());
-				parentNode.highlighted = _.uniq(lowerCasedFilters);
+				parentNode.highlighted = [];
+				const lowerCasedFilters = filters[key].map(value => value.toLowerCase());
+				// Highlight any filter items which include any of the returned filter values
+				parentNode.filters.forEach(filter => {
+					const filterValues = filter.value.split(',');
+					if (filterValues.some(item => lowerCasedFilters.includes(item.toLowerCase())) && !parentNode.highlighted.includes(filter.label)) {
+						parentNode.highlighted.push(filter.label.toLowerCase());
+					}
+				});
 			}
 		}
 		return tree;
@@ -674,10 +712,8 @@ class SearchPage extends React.Component {
 			} = response;
 			if (!_.isEmpty(dataUtilityFilters)) {
 				const dataUtilityWizardSteps = dataUtilityFilters.filter(item => item.includeInWizard);
-				this.setState({ dataUtilityFilters, dataUtilityWizardSteps }, () => {
-					this.getFilters();
-				});
-				
+				await this.getFilters(dataUtilityFilters);
+				this.setState({ dataUtilityFilters, dataUtilityWizardSteps });
 			}
 		} catch (error) {
 			console.error(error.message);
@@ -689,19 +725,89 @@ class SearchPage extends React.Component {
 	 *
 	 * @desc Get all the filters for dataset
 	 */
-	getFilters = async () => {
+	getFilters = async filterDictionary => {
 		try {
 			const response = await axios.get(`${baseURL}/api/v2/filters/dataset`);
 			const {
-				data: { data },
+				data: { data: filterData },
 			} = response;
-			if (!_.isEmpty(data)) {
-				this.setState({ filtersV2: data });
+			if (!_.isEmpty(filterData)) {
+				const filtersV2 = this.mapFiltersToDictionary(filterData, filterDictionary);
+				this.setState({ filtersV2 });
 			}
 		} catch (error) {
 			console.error(error.message);
 		}
 	};
+
+	/**
+	 * MapFiltersToDictionary
+	 *
+	 * @desc Accepts v2 format filter data and cross references with a data dictionary to rename, reformat, and order values
+	 */
+	mapFiltersToDictionary = (filterData, filterDictionary) => {
+		filterDictionary.forEach(dictionaryEntry => {
+			this.mutateFilter(filterData, dictionaryEntry);
+		});
+		return filterData;
+	};
+
+	/**
+	 * MutateFilter
+	 *
+	 * @desc Performs the mutation of filter data for a provided dictionary entry containing allowed values, order etc.
+	 */
+	mutateFilter(filterData, dictionaryEntry) {
+		// Iterate through each filter node to look for the filter by key
+		filterData.forEach((dimension, index, arr) => {
+			if (_.isEqual(dimension.key, dictionaryEntry.key)) {
+				// Update filter to match dictionary definition
+				arr[index] = {
+					...dimension,
+					filters: this.mapFilterValues(dimension.filters, dictionaryEntry.entries),
+				};
+			} else {
+				// If the current node has children, recursively call this function again passing in the node's children
+				if (_.has(dimension, 'filters')) {
+					this.mutateFilter(dimension.filters, dictionaryEntry);
+				}
+			}
+		});
+	}
+
+	/**
+	 * MapFilterValues
+	 *
+	 * @desc Combines and ranks filter values for a given filter dimension using provided dictionary entries
+	 */
+	mapFilterValues(filterValues, dictionaryEntries) {
+		const mappedFilterValues = dictionaryEntries.map(entry => {
+			const { label, definition } = entry;
+			return {
+				...entry,
+				value: this.getImpliedFilterValues(filterValues, entry),
+				checked: false,
+				label: label ? label : definition,
+			};
+		});
+
+		return _.sortBy(mappedFilterValues, 'displayOrder');
+	}
+
+	/**
+	 * GetImpliedFilterValues
+	 *
+	 * @desc Merges multiple implied filter values into a single filter
+	 */
+	getImpliedFilterValues(filterValues, dictionaryEntry) {
+		return filterValues
+			.filter(filterValue => {
+				const lowercaseValues = dictionaryEntry.impliedValues.map(value => value.toLowerCase());
+				return lowercaseValues.includes(filterValue.value.toLowerCase());
+			})
+			.map(filterValue => filterValue.value)
+			.join(',');
+	}
 
 	/**
 	 * PerformSearch
@@ -713,8 +819,9 @@ class SearchPage extends React.Component {
 		let searchUrl = '';
 		if (searchObj) {
 			for (let key of Object.keys(searchObj)) {
-				let values = searchObj[key];
-				searchUrl += `&${key}=${encodeURIComponent(values.toString().split(',').join('::'))}`;
+				const values = searchObj[key].toString().split(',');
+				const uniqueValues = [...new Set(values)];
+				searchUrl += `&${key}=${encodeURIComponent(uniqueValues.join('::'))}`;
 			}
 		}
 		return searchUrl;
@@ -728,16 +835,17 @@ class SearchPage extends React.Component {
 	 * @return {object} New Filters Object
 	 */
 	buildSearchObj = arr => {
-		// 1. reduce over array of selected values [{id, label, parentkey}, {}...]
-		return [...arr].reduce((obj, { parentKey, label, alias }) => {
+		// 1. reduce over array of selected values [{id, value, parentkey}, {}...]
+		return [...arr].reduce((obj, { parentKey, value, alias }) => {
 			// we need to use alias here if it is defiend to use as override so names do not conflict with other tabs
 			let queryParam = alias ? alias : parentKey;
 
 			// 2. group by key { 'publisher': [] }
 			if (!obj[queryParam]) obj[queryParam] = [];
 
-			// 3. if key exists push in label value
-			obj[queryParam].push(label);
+			// 3. if key exists and entry is not already included, push in filter value
+			obj[queryParam].push(value);
+
 			// 4. return obj iteration
 			return obj;
 		}, {});
@@ -922,9 +1030,8 @@ class SearchPage extends React.Component {
 						foundNode.checked = false;
 						// 5. increment highest parent count
 						--parentNode.selectedCount;
-						// 7. fn for handling the *selected showing* returns new state
+						// 6. fn for handling the *selected showing* returns new state
 						selectedV2 = [...selectedV2].filter(node => node.id != foundNode.id);
-						// searchObj = this.buildSearchObj(selectedV2);
 					}
 				});
 				// 9. set state
@@ -966,6 +1073,7 @@ class SearchPage extends React.Component {
 						parentKey: alias || key,
 						id: foundNode.id,
 						label: foundNode.label,
+						value: foundNode.value,
 					};
 					// 7. fn for handling the *selected showing* returns new state
 					const selectedV2 = this.handleSelected(selectedNode, checkValue);
