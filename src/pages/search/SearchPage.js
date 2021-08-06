@@ -1192,6 +1192,70 @@ class SearchPage extends React.Component {
 			);
 		}
 
+		const dropdownMenu = (
+			<Col className={this.state.savedSearchPanel ? 'text-right save-dropdown' : 'text-right'}>
+				{key === 'Tools' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={toolSort === '' ? (search === '' ? 'latest' : 'relevance') : toolSort}
+						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+					/>
+				) : (
+					''
+				)}
+
+				{key === 'Datasets' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={datasetSort === '' ? (search === '' ? 'metadata' : 'relevance') : datasetSort}
+						dropdownItems={['relevance', 'popularity', 'metadata', 'latest', 'resources']}
+					/>
+				) : (
+					''
+				)}
+
+				{key === 'Projects' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={projectSort === '' ? (search === '' ? 'latest' : 'relevance') : projectSort}
+						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+					/>
+				) : (
+					''
+				)}
+
+				{key === 'Collections' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={collectionSort === '' ? (search === '' ? 'latest' : 'relevance') : collectionSort}
+						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+					/>
+				) : (
+					''
+				)}
+
+				{key === 'Papers' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={paperSort === '' ? (search === '' ? 'latest' : 'relevance') : paperSort}
+						dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
+					/>
+				) : (
+					''
+				)}
+
+				{key === 'People' ? (
+					<SortDropdown
+						handleSort={this.handleSort}
+						sort={personSort === '' ? (search === '' ? 'latest' : 'relevance') : personSort}
+						dropdownItems={['relevance', 'popularity', 'latest']}
+					/>
+				) : (
+					''
+				)}
+			</Col>
+		);
+
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
 				<div>
@@ -1231,6 +1295,7 @@ class SearchPage extends React.Component {
 									<Button variant='light' className='saved-preference'>
 										Saved preferences
 									</Button>
+									{dropdownMenu}
 								</Col>
 							</Row>
 							<Row>
@@ -1907,74 +1972,7 @@ class SearchPage extends React.Component {
 
 							{!isResultsLoading ? (
 								<Col sm={12} md={12} lg={9} className='mt-4 mb-5'>
-									{!showSort ? (
-										''
-									) : (
-										<Row>
-											<Col className={this.state.savedSearchPanel ? 'text-right save-dropdown' : 'text-right'}>
-												{key === 'Tools' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={toolSort === '' ? (search === '' ? 'latest' : 'relevance') : toolSort}
-														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'Datasets' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={datasetSort === '' ? (search === '' ? 'metadata' : 'relevance') : datasetSort}
-														dropdownItems={['relevance', 'popularity', 'metadata', 'latest', 'resources']}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'Projects' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={projectSort === '' ? (search === '' ? 'latest' : 'relevance') : projectSort}
-														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'Collections' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={collectionSort === '' ? (search === '' ? 'latest' : 'relevance') : collectionSort}
-														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'Papers' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={paperSort === '' ? (search === '' ? 'latest' : 'relevance') : paperSort}
-														dropdownItems={['relevance', 'popularity', 'latest', 'resources']}
-													/>
-												) : (
-													''
-												)}
-
-												{key === 'People' ? (
-													<SortDropdown
-														handleSort={this.handleSort}
-														sort={personSort === '' ? (search === '' ? 'latest' : 'relevance') : personSort}
-														dropdownItems={['relevance', 'popularity', 'latest']}
-													/>
-												) : (
-													''
-												)}
-											</Col>
-										</Row>
-									)}
-
+									{!showSort ? '' : <Fragment>{!this.state.savedSearchPanel && <Row>{dropdownMenu}</Row>}</Fragment>}
 									{key === 'Datasets' ? (
 										datasetCount <= 0 ? (
 											<NoResults type='datasets' search={search} />
