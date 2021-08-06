@@ -3,12 +3,12 @@ import { Dropdown, Row, Col } from 'react-bootstrap';
 import SVGIcon from '../../../images/SVGIcon';
 import '../Search.scss';
 
-const SortDropdown = ({ handleSort, sort, dropdownItems, isCollectionsSearch }) => {
+const SortDropdown = ({ handleSort, sort, dropdownItems, isCollectionsSearch, savedSearch }) => {
 	//by default sorted by relevance
 	const sorting = sort === '' ? 'relevance' : sort;
 
 	return (
-		<Dropdown className='sorting-dropdown' alignRight onSelect={handleSort}>
+		<Dropdown className={savedSearch ? 'sorting-dropdown save-dropdown' : 'sorting-dropdown'} alignRight onSelect={handleSort}>
 			<Dropdown.Toggle
 				variant='info'
 				id='dropdown-menu-align-right'
@@ -24,9 +24,9 @@ const SortDropdown = ({ handleSort, sort, dropdownItems, isCollectionsSearch }) 
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			</Dropdown.Toggle>
 			<Dropdown.Menu>
-				{dropdownItems.map(item => {
+				{dropdownItems.map((item, index) => {
 					return (
-						<Row
+						<Row key={`ddl-item-${index}`}
 							className={
 								sorting === item ? 'sort-dropdown-item sort-dropdown-item-selected sortingDropdown' : 'sort-dropdown-item sortingDropdown'
 							}>
