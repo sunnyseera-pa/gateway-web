@@ -138,7 +138,18 @@ class DataAccessRequestsNew extends React.Component {
 		let statusKey = DarHelperUtil.darStatus[key];
 		let { data } = this.state;
 
-		if (statusKey === 'all') this.setState({ key, screenData: data, allCount: data.length });
+		if (statusKey === 'all') {
+			let screenData = [...data].reduce((arr, item) => {
+				if (item.applicationStatus !== DarHelperUtil.darStatus.inProgress || this.state.team === 'user') {
+					arr.push({
+						...item,
+					});
+				}
+				return arr;
+			}, []);
+
+			this.setState({ key, screenData, allCount: screenData.length });
+		}
 
 		if (statusKey !== 'all') {
 			let screenData = [...data].reduce((arr, item) => {
@@ -166,6 +177,20 @@ class DataAccessRequestsNew extends React.Component {
 					</Alert>
 				</Col>
 				<Col xs={1}></Col>
+			</Row>
+		);
+	};
+
+	generatePreSubmissionWarning = () => {
+		return (
+			<Row className='mt-3'>
+				<Col>
+					<Alert variant={'warning'} className='col-sm-12 main-alert'>
+						<i class='fas fa-exclamation-circle ' />
+						&nbsp;The applicant has not completed these applications yet. The applicant may give you access in order to clarify some
+						questions.
+					</Alert>
+				</Col>
 			</Row>
 		);
 	};
@@ -324,7 +349,7 @@ class DataAccessRequestsNew extends React.Component {
 
 		return (
 			<Fragment>
-				<Fragment>{!_.isEmpty(alert) ? this.generateAlert() : ''}</Fragment>
+				<Fragment>{!_.isEmpty(alert) && !_.isNil(alert.message) ? this.generateAlert() : ''}</Fragment>
 				<Row>
 					<Col xs={1}></Col>
 					<div className='col-sm-10'>
@@ -346,7 +371,11 @@ class DataAccessRequestsNew extends React.Component {
 							<Col sm={12} lg={12}>
 								<Tabs className='dataAccessTabs gray700-13' activeKey={this.state.key} onSelect={this.onTabChange}>
 									<Tab eventKey='all' title={'All (' + allCount + ')'}></Tab>
-									{team === 'user' ? <Tab eventKey='inProgress' title={'Pre-submission (' + preSubmissionCount + ')'}></Tab> : ''}
+									{preSubmissionCount > 0 || team === 'user' ? (
+										<Tab eventKey='inProgress' title={'Pre-submission (' + preSubmissionCount + ')'}></Tab>
+									) : (
+										''
+									)}
 									{canViewSubmitted ? <Tab eventKey='submitted' title={'Submitted (' + submittedCount + ')'}></Tab> : ''}
 									<Tab eventKey='inReview' title={'In review (' + inReviewCount + ')'}></Tab>
 									<Tab eventKey='approved' title={'Approved (' + approvedCount + ')'}></Tab>
@@ -354,6 +383,8 @@ class DataAccessRequestsNew extends React.Component {
 								</Tabs>
 							</Col>
 						</div>
+
+						{team !== 'user' && this.state.key === 'inProgress' ? this.generatePreSubmissionWarning() : ''}
 
 						{screenData.map((request, i) => {
 							let {
@@ -386,7 +417,7 @@ class DataAccessRequestsNew extends React.Component {
 								projectId,
 							} = request;
 
-							const selectedVersion = versions.find(v => v.isCurrent).displayTitle;
+							const selectedVersion = versions.find(v => v.isCurrent)?.displayTitle;
 
 							return (
 								<Row key={`request_${i}`} onClick={e => this.navigateToLocation(e, projectId)}>
@@ -415,11 +446,7 @@ class DataAccessRequestsNew extends React.Component {
 														<>
 															<SLA
 																classProperty={DarHelperUtil.darStatusColours[applicationStatus]}
-																text={
-																	applicationStatus === DarHelperUtil.darStatus.inProgress
-																		? 'Pre-submission amendment'
-																		: 'Amendment in review'
-																}
+																text={DarHelperUtil.darAmendmentSLAText[applicationStatus]}
 															/>
 															<SLA classProperty={DarHelperUtil.darStatusColours['approved']} text={DarHelperUtil.darSLAText['approved']} />
 														</>
@@ -427,7 +454,6 @@ class DataAccessRequestsNew extends React.Component {
 														<SLA
 															classProperty={DarHelperUtil.darStatusColours[applicationStatus]}
 															text={DarHelperUtil.darSLAText[applicationStatus]}
-															applicationType={applicationType}
 														/>
 													)}
 												</div>

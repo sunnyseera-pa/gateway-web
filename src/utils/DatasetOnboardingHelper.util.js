@@ -340,26 +340,6 @@ let configActionModal = (type = '') => {
 						},
 					},
 				};
-				break;
-			case 'DELETEDRAFT':
-				config = {
-					title: 'Delete draft',
-					subTitle:
-						'Are you sure you want to delete this draft dataset? You will no longer be able to view this form and will lose any answers provided. All team members will be notified.',
-					description: false,
-					buttons: {
-						cancel: {
-							label: 'No, nevermind',
-							action: 'cancel',
-							class: 'button-secondary mr-2',
-						},
-						confirmDelete: {
-							label: 'Delete draft',
-							action: 'deleteDraft',
-							class: 'btn btn-primary addButton',
-						},
-					},
-				};
 		}
 	}
 

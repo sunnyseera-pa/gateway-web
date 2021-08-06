@@ -446,5 +446,43 @@ textarea {
 
 button.dropdown-toggle.btn.btn-outline-secondary::after {
 	position: relative;
-    top: 4.5px;
+	top: 4.5px;
+}
+
+.datasetHeader {
+	display: flex;
+	flex-flow: column nowrap;
+	margin-bottom: 10px;
+	padding: 25px 25px 0 25px;
+
+	@media (min-width: $bp-large) {
+		flex-flow: row wrap;
+		justify-content: space-between;
+	}
+
+	&-title {
+		@media (min-width: $bp-large) {
+			width: 55%;
+		}
+		@media (min-width: $bp-largest) {
+			width: 65%;
+		}
+
+		h1 {
+			font-size: 18px;
+			line-height: 22px;
+		}
+	}
+
+	&-status {
+		display: flex;
+		flex-flow: row;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.sla {
+		margin-right: 0;
+		margin-bottom: 0;
+	}
 }
