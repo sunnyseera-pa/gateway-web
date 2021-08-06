@@ -112,13 +112,13 @@ const ActivityLog = React.forwardRef(({ dataaccessrequest, team, onClickStartRev
 			activityLog.events.forEach(event => {
 				formattedLogs.push({
 					version: event.version,
-					date_submitted: activityLog.meta.dateSubmitted,
-					days_since_submission: activityLog.meta.daysSinceSubmission,
-					time_with_applicants: activityLog.meta.timeWithApplicants,
-					application_status: DarHelperUtil.darSLAText[activityLog.meta.applicationStatus],
-					activity_date: moment(event.timestamp).format('D MMMM YYYY HH:mm'),
+					'date submitted': activityLog.meta.dateSubmitted,
+					'days since submission': activityLog.meta.daysSinceSubmission,
+					'time with applicants': activityLog.meta.timeWithApplicants,
+					'application status': DarHelperUtil.darSLAText[activityLog.meta.applicationStatus],
+					'activity date': moment(event.timestamp).format('D MMMM YYYY HH:mm'),
 					activity: event.plainText,
-					activity_details: event.detailedText,
+					'activity details': event.detailedText,
 				});
 			});
 		});
