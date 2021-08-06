@@ -1,14 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Fragment } from 'react';
-
 import DarHelperUtil from '../../../../utils/DarHelper.util';
+import { CSVLink } from 'react-csv';
 
-const ActivityLogActionButtons = ({ team, latestVersion, onClickAddNewEvent, onClickDownloadLog, onClickStartReview }) => {
+const ActivityLogActionButtons = ({ team, latestVersion, onClickAddNewEvent, activityLog, onClickStartReview }) => {
+	const [activityLogs, setActivityLogs] = useState([]);
+	const [exportFileName, setExportFileName] = useState('');
+
+	const onClickDownloadActivityLog = () => {
+		setActivityLogs(activityLog.current.getLogsAsArray());
+		setExportFileName(activityLog.current.getExportFileName());
+	};
+
 	return (
 		<Fragment>
-			<button className={`button-secondary`} onClick={() => onClickDownloadLog()}>
-				Download activity log
-			</button>
+			<CSVLink data={activityLogs} filename={exportFileName}>
+				<button className={`button-secondary`} onClick={onClickDownloadActivityLog}>
+					Download activity log
+				</button>
+			</CSVLink>
 
 			{team !== 'user' && (
 				<button className={`button-secondary`} onClick={() => onClickAddNewEvent()}>

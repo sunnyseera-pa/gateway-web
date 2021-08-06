@@ -810,6 +810,7 @@ class Account extends Component {
 									team={team}
 									latestVersion={this.state.dataaccessrequest}
 									onClickStartReview={this.navigateToLocation}
+									activityLog={this.activityLog}
 									onClickAddNewEvent={() => this.activityLog.current.showAddNewEventModal()}
 								/>
 							</div>
