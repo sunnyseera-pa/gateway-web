@@ -1295,7 +1295,7 @@ class SearchPage extends React.Component {
 									{key === 'Courses' ? <>{courseCount} </> : ''}
 									{key === 'Papers' ? <>{paperCount} </> : ''}
 									{key === 'People' ? <>{personCount} </> : ''}
-									results of 'query'
+									results for 'query'
 								</Col>
 								<Col className='saved-buttons'>
 									<Button variant='outline-success' className='saved button-teal'>
