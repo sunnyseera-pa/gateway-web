@@ -14,7 +14,7 @@ const SaveModal = ({ show, onHide }) => {
 				<label className='black-14'>Title</label>
 				<input type='text' className='save-modal-input' />
 			</Modal.Body>
-			<Modal.Footer>
+			<Modal.Footer className='saved-modal-footer'>
 				<Button variant='outline-primary saved-no'>No, nevermind</Button>
 				<Button>Save</Button>
 			</Modal.Footer>
