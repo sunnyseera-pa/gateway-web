@@ -1193,7 +1193,14 @@ class SearchPage extends React.Component {
 		}
 
 		const dropdownMenu = (
-			<Col className={this.state.savedSearchPanel ? 'text-right save-dropdown' : 'text-right'}>
+			<Col
+				className={
+					this.state.savedSearchPanel
+						? key === 'Tools' || key === 'Projects' || key === 'Collections' || key === 'Courses' || key === 'Papers' || key === 'People'
+							? 'text-right save-dropdown saved-dropdown-small'
+							: 'text-right save-dropdown'
+						: 'text-right'
+				}>
 				{key === 'Tools' ? (
 					<SortDropdown
 						handleSort={this.handleSort}
@@ -1297,7 +1304,7 @@ class SearchPage extends React.Component {
 									{key === 'People' ? <>{personCount} </> : ''}
 									results for 'query'
 								</Col>
-								<Col className='saved-buttons'>
+								<Col className={key === 'Datasets' ? 'saved buttons' : 'saved-buttons saved-buttons-small'}>
 									<Button variant='outline-success' className='saved button-teal'>
 										Save
 									</Button>
