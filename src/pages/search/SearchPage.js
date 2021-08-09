@@ -1289,7 +1289,7 @@ class SearchPage extends React.Component {
 							<Row className='filters filter-save'>
 								<Col className='title'>Showing # results of 'query'</Col>
 								<Col className='saved-buttons'>
-									<Button variant='outline-success' className='saved'>
+									<Button variant='outline-success' className='saved button-teal'>
 										Save
 									</Button>
 									<Button variant='light' className='saved-preference tertiary'>
