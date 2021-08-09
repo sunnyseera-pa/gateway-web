@@ -132,10 +132,6 @@ class SearchPage extends React.Component {
 		});
 	};
 
-	toggleSaveModal = () => {
-		window.alert('saved!');
-	};
-
 	async componentDidMount() {
 		initGA('UA-166025838-1');
 		PageView();
@@ -1295,9 +1291,10 @@ class SearchPage extends React.Component {
 							<Row className='filters filter-save'>
 								<Col className='title'>Showing # results of 'query'</Col>
 								<Col className='saved-buttons'>
-									<Button variant='outline-success' className='saved button-teal' onClick={this.toggleSaveModal}>
+									<Button variant='outline-success' className='saved button-teal' onClick={() => this.setState({ showSavedModal: true })}>
 										Save
 									</Button>
+									{this.state.showSavedModal ? <SaveModal /> : null}
 									<Button variant='light' className='saved-preference button-tertiary'>
 										Saved preferences
 									</Button>
@@ -2193,8 +2190,6 @@ class SearchPage extends React.Component {
 					/>
 
 					<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
-
-					<SaveModal />
 				</div>
 			</Sentry.ErrorBoundary>
 		);
