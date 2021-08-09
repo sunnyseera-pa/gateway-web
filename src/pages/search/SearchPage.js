@@ -1292,7 +1292,7 @@ class SearchPage extends React.Component {
 									<Button variant='outline-success' className='saved button-teal'>
 										Save
 									</Button>
-									<Button variant='light' className='saved-preference tertiary'>
+									<Button variant='light' className='saved-preference button-tertiary'>
 										Saved preferences
 									</Button>
 									{dropdownMenu}
