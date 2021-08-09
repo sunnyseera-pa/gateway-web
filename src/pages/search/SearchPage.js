@@ -23,6 +23,7 @@ import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import SortDropdown from './components/SortDropdown';
 import { ReactComponent as CDStar } from '../../images/cd-star.svg';
 import AdvancedSearchModal from '../commonComponents/AdvancedSearchModal/AdvancedSearchModal';
+import SaveModal from '../commonComponents/saveModal/SaveModal';
 import './Search.scss';
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
@@ -90,6 +91,7 @@ class SearchPage extends React.Component {
 		showDrawer: false,
 		showModal: false,
 		showAdvancedSearchModal: false,
+		showSavedModal: false,
 		showError: false,
 		context: {},
 		userState: [
@@ -128,6 +130,10 @@ class SearchPage extends React.Component {
 		this.setState(prevState => {
 			return { showAdvancedSearchModal: !prevState.showAdvancedSearchModal };
 		});
+	};
+
+	toggleSaveModal = () => {
+		window.alert('saved!');
 	};
 
 	async componentDidMount() {
@@ -1289,10 +1295,10 @@ class SearchPage extends React.Component {
 							<Row className='filters filter-save'>
 								<Col className='title'>Showing # results of 'query'</Col>
 								<Col className='saved-buttons'>
-									<Button variant='outline-success' className='saved'>
+									<Button variant='outline-success' className='saved button-teal' onClick={this.toggleSaveModal}>
 										Save
 									</Button>
-									<Button variant='light' className='saved-preference tertiary'>
+									<Button variant='light' className='saved-preference button-tertiary'>
 										Saved preferences
 									</Button>
 									{dropdownMenu}
@@ -2187,6 +2193,8 @@ class SearchPage extends React.Component {
 					/>
 
 					<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
+
+					<SaveModal />
 				</div>
 			</Sentry.ErrorBoundary>
 		);
