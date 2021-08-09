@@ -1304,7 +1304,14 @@ class SearchPage extends React.Component {
 									{key === 'People' ? <>{personCount} </> : ''}
 									results for 'query'
 								</Col>
-								<Col className={key === 'Datasets' ? 'saved-buttons' : 'saved-buttons saved-buttons-small'}>
+								<Col
+									className={
+										key === 'Datasets'
+											? 'saved-buttons'
+											: key === 'Courses'
+											? 'saved-buttons saved-buttons-courses'
+											: 'saved-buttons saved-buttons-small'
+									}>
 									<Button variant='outline-success' className='saved button-teal'>
 										Save
 									</Button>
