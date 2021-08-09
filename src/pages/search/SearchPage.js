@@ -1294,7 +1294,7 @@ class SearchPage extends React.Component {
 									<Button variant='outline-success' className='saved button-teal' onClick={() => this.setState({ showSavedModal: true })}>
 										Save
 									</Button>
-									{this.state.showSavedModal && <SaveModal show={this.state.showSavedModal} hide={() => !this.state.showModal} />}
+									{this.state.showSavedModal && <SaveModal show={this.state.showSavedModal} onHide={() => !this.state.showModal} />}
 									<Button variant='light' className='saved-preference button-tertiary'>
 										Saved preferences
 									</Button>

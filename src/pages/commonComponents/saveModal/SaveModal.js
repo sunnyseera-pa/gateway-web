@@ -3,10 +3,10 @@ import { Modal, Button } from 'react-bootstrap';
 
 import './SaveModal.scss';
 
-const SaveModal = ({ show, hide }) => {
+const SaveModal = ({ show, onHide }) => {
 	return (
 		<Fragment>
-			<Modal show={show} hide={hide}>
+			<Modal show={show} onHide={onHide}>
 				<Modal.Header closeButton>Saved search preference</Modal.Header>
 				<Modal.Body>
 					<p>Are you sure you want to save this search preference? If yes, please provide a title for this search.</p>
