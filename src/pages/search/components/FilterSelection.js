@@ -3,7 +3,7 @@ import FilterChip from './FilterChip';
 import { FilterCount } from './FilterCount';
 import SVGIcon from '../../../images/SVGIcon';
 
-const FilterSelection = ({ selectedCount, selectedItems, onHandleClearSelection, onHandelClearAll, savedSearches, node }) => {
+const FilterSelection = ({ selectedCount, selectedItems, onHandleClearSelection, onHandelClearAll, savedSearches }) => {
 	const clearSelection = e => {
 		e.preventDefault();
 		onHandelClearAll();
