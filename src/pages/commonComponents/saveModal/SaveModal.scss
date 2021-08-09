@@ -1,0 +1,18 @@
+@import '../../../css/variables';
+
+.save-modal-input {
+	width: 100%;
+}
+
+.save-modal {
+	padding: 16px 16px 32px 32px;
+}
+
+.saved-no {
+	border-color: $teal !important;
+	color: $indigo;
+}
+
+.saved-no:hover {
+	background: $teal !important;
+}

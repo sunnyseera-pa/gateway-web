@@ -1,24 +1,24 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
 import './SaveModal.scss';
 
 const SaveModal = ({ show, onHide }) => {
 	return (
-		<Fragment>
-			<Modal show={show} onHide={onHide}>
-				<Modal.Header closeButton>Saved search preference</Modal.Header>
-				<Modal.Body>
-					<p>Are you sure you want to save this search preference? If yes, please provide a title for this search.</p>
-					<label>Title</label>
-					<input type='text' />
-				</Modal.Body>
-				<Modal.Footer>
-					<Button>No, nevermind</Button>
-					<Button>Save</Button>
-				</Modal.Footer>
-			</Modal>
-		</Fragment>
+		<Modal show={show} onHide={onHide} className='save-modal'>
+			<Modal.Header closeButton>
+				<h5 className='black-20-semibold'>Saved search preference</h5>
+			</Modal.Header>
+			<Modal.Body>
+				<p className='black-14'>Are you sure you want to save this search preference? If yes, please provide a title for this search.</p>
+				<label className='black-14'>Title</label>
+				<input type='text' className='save-modal-input' />
+			</Modal.Body>
+			<Modal.Footer>
+				<Button variant='outline-primary saved-no'>No, nevermind</Button>
+				<Button>Save</Button>
+			</Modal.Footer>
+		</Modal>
 	);
 };
 
