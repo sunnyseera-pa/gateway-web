@@ -1287,7 +1287,16 @@ class SearchPage extends React.Component {
 					<div className='container'>
 						<Container>
 							<Row className='filters filter-save'>
-								<Col className='title'>Showing # results of 'query'</Col>
+								<Col className='title'>
+									Showing {key === 'Datasets' ? <>{datasetCount} </> : ''}
+									{key === 'Tools' ? <>{toolCount} </> : ''}
+									{key === 'Projects' ? <>{projectCount} </> : ''}
+									{key === 'Collections' ? <>{collectionCount} </> : ''}
+									{key === 'Courses' ? <>{courseCount} </> : ''}
+									{key === 'Papers' ? <>{paperCount} </> : ''}
+									{key === 'People' ? <>{personCount} </> : ''}
+									results of 'query'
+								</Col>
 								<Col className='saved-buttons'>
 									<Button variant='outline-success' className='saved button-teal'>
 										Save
