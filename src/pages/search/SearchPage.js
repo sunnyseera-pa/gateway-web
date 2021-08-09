@@ -3,7 +3,7 @@ import axios from 'axios';
 import { PageView, initGA } from '../../tracking';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
-import { Container, Row, Col, Tabs, Tab, Pagination, Button } from 'react-bootstrap';
+import { Container, Row, Col, Tabs, Tab, Pagination, Button, CloseButton } from 'react-bootstrap';
 import moment from 'moment';
 import _ from 'lodash';
 import { toTitleCase } from '../../utils/GeneralHelper.util';
@@ -1292,7 +1292,7 @@ class SearchPage extends React.Component {
 									<Button variant='outline-success' className='saved'>
 										Save
 									</Button>
-									<Button variant='light' className='saved-preference'>
+									<Button variant='light' className='saved-preference tertiary'>
 										Saved preferences
 									</Button>
 									{dropdownMenu}

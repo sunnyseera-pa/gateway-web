@@ -484,7 +484,6 @@
 
 .saved-preference {
 	color: #29235c !important;
-	background-color: #f3f3f3 !important;
 	border: none !important;
 	width: 154px;
 	height: 40px;
@@ -510,8 +509,8 @@
 .save-dropdown {
 	margin-top: -55px;
 	height: 100%;
-	width: 55%;
-	margin-left: 210px;
+	width: 55% !important;
+	margin-left: 215px;
 }
 
 .saved-buttons {
