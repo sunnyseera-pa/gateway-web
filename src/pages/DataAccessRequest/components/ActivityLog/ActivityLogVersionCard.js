@@ -11,7 +11,7 @@ import { ReactComponent as ManualEvent } from '../../../../images/Manual_input.s
 import { ReactComponent as Message } from '../../../../images/Messages.svg';
 import SVGIcon from '../../../../images/SVGIcon';
 import { SlideDown } from 'react-slidedown';
-import _ from 'lodash';
+import { groupBy, isEmpty, startCase } from 'lodash';
 import DarHelperUtil from '../../../../utils/DarHelper.util';
 import SLA from '../../../commonComponents/sla/SLA';
 import { ReactComponent as Clock } from '../../../../images/clock.svg';
@@ -31,7 +31,7 @@ const ActivityLogVersionCard = ({ version, team, onDeleteEventClick }) => {
 		events = [],
 	} = version;
 
-	const groupedByDateEvents = _.groupBy(events, e => moment(e.timestamp).format('D MMMM YYYY'));
+	const groupedByDateEvents = groupBy(events, e => moment(e.timestamp).format('D MMMM YYYY'));
 	const logCreationDates = Object.keys(groupedByDateEvents);
 	const logsByLogCreationDate = Object.values(groupedByDateEvents);
 
@@ -43,7 +43,7 @@ const ActivityLogVersionCard = ({ version, team, onDeleteEventClick }) => {
 						<div className='header-version-number'>
 							<h1>
 								{applicationType && applicationType !== DarHelperUtil.darApplicationTypes.initial
-									? versionNumber + ' | ' + _.startCase(applicationType)
+									? versionNumber + ' | ' + startCase(applicationType)
 									: versionNumber}
 							</h1>
 						</div>
@@ -55,7 +55,7 @@ const ActivityLogVersionCard = ({ version, team, onDeleteEventClick }) => {
 						)}
 					</div>
 					<div className='header-version-status activity-log-version-status'>
-						{renderDuration(applicationStatus, dateSubmitted, applicationType, version, team, timeWithApplicants)}
+						{renderDuration(applicationStatus, dateSubmitted, applicationType, version, timeWithApplicants)}
 
 						{
 							<SLA
@@ -172,52 +172,55 @@ const isToday = someDate => {
 	);
 };
 
-const renderDuration = (applicationStatus, dateSubmitted, applicationType, version, team = {}, timeWithApplicants) => {
-	const durationLookups = ['inProgress', 'submitted', 'inReview'];
-	const finalDurationLookups = ['rejected', 'approved', 'approved with conditions'];
-	let { createdAt, decisionDuration = 0 } = version;
+const renderDuration = (applicationStatus, dateSubmitted, applicationType, version, timeWithApplicants) => {
+	const { createdAt, decisionDuration = 0 } = version;
 	let diff = 0;
-	if (durationLookups.includes(applicationStatus)) {
-		if (applicationStatus === DarHelperUtil.darStatus.inProgress) {
-			diff = calculateTimeDifference(createdAt);
-			return (
-				<div className='time'>
-					<Clock />
-					<b>{diff} days</b>&nbsp;since start | {timeWithApplicants} spent with applicants{' '}
-				</div>
-			);
-		}
-		if (applicationStatus === DarHelperUtil.darStatus.submitted) {
-			diff = calculateTimeDifference(dateSubmitted);
-			return (
-				<div className='time'>
-					<Clock />
-					<b>{diff} days </b>&nbsp;since submission | {timeWithApplicants} spent with applicants{' '}
-				</div>
-			);
-		}
+	let sinceText = '';
 
-		if (applicationStatus === DarHelperUtil.darStatus.inReview && applicationType === DarHelperUtil.darApplicationTypes.amendment) {
+	if (applicationType.toLowerCase() === DarHelperUtil.darApplicationTypes.update.toLowerCase()) {
+		const {
+			meta: { dateSubmitted: dateUpdateSubmitted, dateReturned: dateUpdateReturned, dateCreated: dateUpdateCreated },
+		} = version;
+
+		if (dateUpdateSubmitted) {
+			diff = calculateTimeDifference(dateUpdateSubmitted);
+			sinceText = 'since update submission';
+		} else if (dateUpdateReturned) {
+			diff = calculateTimeDifference(dateUpdateReturned);
+			sinceText = 'since returned';
+		} else {
+			diff = calculateTimeDifference(dateUpdateCreated);
+			sinceText = 'since start';
+		}
+	} else {
+		if (applicationStatus === DarHelperUtil.darStatus.inProgress) {
+			sinceText = 'since start';
+			diff = calculateTimeDifference(createdAt);
+		} else if (applicationStatus === DarHelperUtil.darStatus.submitted || applicationStatus === DarHelperUtil.darStatus.inReview) {
+			sinceText = applicationType === DarHelperUtil.darApplicationTypes.initial ? 'since submission' : 'since resubmission';
 			diff = calculateTimeDifference(dateSubmitted);
-			return (
-				<div className='time'>
-					<Clock />
-					<b>{diff} days</b>&nbsp;since resubmission | {timeWithApplicants} spent with applicants{' '}
-				</div>
-			);
+		} else if (
+			applicationStatus === DarHelperUtil.darStatus.approved ||
+			applicationStatus === DarHelperUtil.darStatus['approved with conditions'] ||
+			applicationStatus === DarHelperUtil.darStatus.rejected
+		) {
+			if (!isEmpty(decisionDuration.toString())) {
+				sinceText = 'total';
+				diff = decisionDuration;
+			}
 		}
 	}
-	if (finalDurationLookups.includes(applicationStatus) && team) {
-		if (!_.isEmpty(decisionDuration.toString())) {
-			return (
-				<div className='time'>
-					<Clock />
-					<b>{decisionDuration} days </b>&nbsp;total | {timeWithApplicants} spent with applicants{' '}
-				</div>
-			);
-		}
+
+	if (!isEmpty(sinceText)) {
+		return (
+			<div className='time'>
+				<Clock />
+				<b>{diff} days</b>&nbsp;{sinceText} | {timeWithApplicants} spent with applicants{' '}
+			</div>
+		);
+	} else {
+		return '';
 	}
-	return '';
 };
 
 const calculateTimeDifference = startTime => {

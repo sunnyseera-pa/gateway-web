@@ -244,37 +244,39 @@ class DataAccessRequestsNew extends React.Component {
 		return '';
 	};
 
-	renderDuration = (accessRequest, team = {}) => {
-		let {
+	renderDuration = (accessRequest) => {
+		const {
 			applicationStatus = '',
 			createdAt,
 			dateSubmitted,
-			decisionDuration = 0,
+			decisionDuration = '',
 			applicationType = DarHelperUtil.darApplicationTypes.initial,
 		} = accessRequest;
 		let diff = 0;
-		if (this.durationLookups.includes(applicationStatus)) {
-			if (applicationStatus === DarHelperUtil.darStatus.inProgress) {
-				diff = this.calculateTimeDifference(createdAt);
-				return <TimeDuration text={`${diff} days since start`} />;
-			}
+		let sinceText = '';
 
-			if (applicationStatus === DarHelperUtil.darStatus.submitted) {
-				diff = this.calculateTimeDifference(dateSubmitted);
-				return <TimeDuration text={`${diff} days since submission`} />;
-			}
-
-			if (applicationStatus === DarHelperUtil.darStatus.inReview && applicationType === DarHelperUtil.darApplicationTypes.amendment) {
-				diff = this.calculateTimeDifference(dateSubmitted);
-				return <TimeDuration text={`${diff} days since resubmission`} />;
-			}
-		}
-		if (this.finalDurationLookups.includes(applicationStatus) && team) {
+		if (applicationStatus === DarHelperUtil.darStatus.inProgress) {
+			sinceText = 'since start';
+			diff = this.calculateTimeDifference(createdAt);
+		} else if (applicationStatus === DarHelperUtil.darStatus.submitted || applicationStatus === DarHelperUtil.darStatus.inReview) {
+			sinceText = applicationType === DarHelperUtil.darApplicationTypes.initial ? 'since submission' : 'since resubmission';
+			diff = this.calculateTimeDifference(dateSubmitted);
+		} else if (
+			applicationStatus === DarHelperUtil.darStatus.approved ||
+			applicationStatus === DarHelperUtil.darStatus['approved with conditions'] ||
+			applicationStatus === DarHelperUtil.darStatus.rejected
+		) {
 			if (!_.isEmpty(decisionDuration.toString())) {
-				return <TimeDuration text={`${decisionDuration} days total`} />;
+				sinceText = 'total';
+				diff = decisionDuration;
 			}
 		}
-		return '';
+
+		if (!_.isEmpty(sinceText)) {
+			return <TimeDuration text={`${diff} days ${sinceText}`} />;
+		} else {
+			return '';
+		}
 	};
 
 	navigateToLocation = (e, projectId) => {
@@ -438,7 +440,7 @@ class DataAccessRequestsNew extends React.Component {
 													)}
 												</div>
 												<div className='header-version-status'>
-													{this.renderDuration(request, team)}
+													{this.renderDuration(request)}
 													{applicationType === DarHelperUtil.darApplicationTypes.amendment &&
 													applicationStatus !== DarHelperUtil.darStatus.approved &&
 													applicationStatus !== DarHelperUtil.darStatus['approved with conditions'] &&
