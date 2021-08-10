@@ -65,6 +65,7 @@ let darApplicationTypes = {
 	amendment: 'amendment',
 	extension: 'extension',
 	renewal: 'renewal',
+	update: 'update',
 };
 
 let darSLAText = {
