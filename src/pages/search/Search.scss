@@ -551,3 +551,10 @@
 .container-saved-preference-banner {
 	margin-top: -20px;
 }
+
+.saved-disabled {
+	background-color: $teal !important;
+	border-color: $teal !important;
+	text-align: center !important;
+	cursor: default !important;
+}

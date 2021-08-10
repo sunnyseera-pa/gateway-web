@@ -1303,9 +1303,9 @@ class SearchPage extends React.Component {
 							<Row className='filters filter-save'>
 								<Col className='title'>Showing # results of 'query'</Col>
 								<Col className='saved-buttons'>
-									{!this.state.savedSearchSuccess ? (
-										<Button variant='success' className='saved button-teal' disabled>
-											<SVGIcon width='20px' height='20px' name='tick' fill={'#475da7'} /> Saved
+									{this.state.savedSearchSuccess ? (
+										<Button variant='success' className='saved-disabled button-teal button-teal' disabled>
+											<SVGIcon width='15px' height='15px' name='tick' fill={'#fff'} /> Saved
 										</Button>
 									) : (
 										<Button variant='outline-success' className='saved button-teal' onClick={() => this.setState({ showSavedModal: true })}>
