@@ -5,21 +5,25 @@ import './SaveModal.scss';
 
 var baseURL = require('../../commonComponents/BaseURL').getURL();
 
-const SaveModal = ({ show, onHide }) => {
+const SaveModal = ({ show, onHide, showAlert }) => {
 	const [title, setTitle] = useState('');
 	const [data, setData] = useState(null);
 	const [error, setError] = useState(false);
+	const [close, setClose] = useState(null);
+	const [savedAlert, setSavedAlert] = useState(null);
 
 	const handleSubmit = () => {
 		const data = {
 			title: title,
 		};
 		axios
-			.post(baseURL + '/api/v1/[to-do]', { data })
+			.post(baseURL + '/api/v1/search-preferences', { data })
 			.then(res => {
 				setData(res.data);
 				setTitle('');
 				console.log('works');
+				setClose(onHide);
+				setSavedAlert(!showAlert);
 			})
 			.catch(err => {
 				setError(true);

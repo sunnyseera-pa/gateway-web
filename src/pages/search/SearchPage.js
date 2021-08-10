@@ -105,6 +105,7 @@ class SearchPage extends React.Component {
 		filtersV2: [],
 		selectedV2: [],
 		savedSearchPanel: true,
+		savedSearchSuccess: false,
 	};
 
 	constructor(props) {
@@ -1292,13 +1293,23 @@ class SearchPage extends React.Component {
 					</div>
 					<div className='container'>
 						<Container>
+							{this.state.savedSearchSuccess ? 'no' : 'yes'}
 							<Row className='filters filter-save'>
 								<Col className='title'>Showing # results of 'query'</Col>
 								<Col className='saved-buttons'>
-									<Button variant='outline-success' className='saved button-teal' onClick={() => this.setState({ showSavedModal: true })}>
-										Save
-									</Button>
-									{this.state.showSavedModal && <SaveModal show={this.state.showSavedModal} onHide={this.hideSavedModal} />}
+									{this.state.savedSearchSuccess ? (
+										<Button variant='outline-success' className='saved button-teal' disabled>
+											Saved
+										</Button>
+									) : (
+										<Button variant='outline-success' className='saved button-teal' onClick={() => this.setState({ showSavedModal: true })}>
+											Save
+										</Button>
+									)}
+
+									{this.state.showSavedModal && (
+										<SaveModal show={this.state.showSavedModal} onHide={this.hideSavedModal} showAlert={this.state.savedSearchSuccess} />
+									)}
 									<Button variant='light' className='saved-preference button-tertiary'>
 										Saved preferences
 									</Button>
