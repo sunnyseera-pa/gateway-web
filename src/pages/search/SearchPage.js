@@ -126,6 +126,10 @@ class SearchPage extends React.Component {
 		this.setState({ showError: false });
 	};
 
+	hideSavedModal = () => {
+		this.setState({ showSavedModal: false });
+	};
+
 	toggleAdvancedSearchModal = () => {
 		this.setState(prevState => {
 			return { showAdvancedSearchModal: !prevState.showAdvancedSearchModal };
@@ -1294,7 +1298,7 @@ class SearchPage extends React.Component {
 									<Button variant='outline-success' className='saved button-teal' onClick={() => this.setState({ showSavedModal: true })}>
 										Save
 									</Button>
-									{this.state.showSavedModal && <SaveModal show={this.state.showSavedModal} onHide={() => !this.state.showModal} />}
+									{this.state.showSavedModal && <SaveModal show={this.state.showSavedModal} onHide={this.hideSavedModal} />}
 									<Button variant='light' className='saved-preference button-tertiary'>
 										Saved preferences
 									</Button>

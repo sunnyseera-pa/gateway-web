@@ -23,3 +23,8 @@
 .saved-modal-footer {
 	margin-right: -15px;
 }
+
+.save-modal-input:focus {
+	outline: none !important;
+	border-color: $teal;
+}

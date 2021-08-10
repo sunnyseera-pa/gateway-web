@@ -1,6 +1,6 @@
 import React from 'react';
+import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
-
 import './SaveModal.scss';
 
 const SaveModal = ({ show, onHide }) => {
@@ -15,7 +15,9 @@ const SaveModal = ({ show, onHide }) => {
 				<input type='text' className='save-modal-input' />
 			</Modal.Body>
 			<Modal.Footer className='saved-modal-footer'>
-				<Button variant='outline-primary saved-no'>No, nevermind</Button>
+				<Button variant='outline-primary saved-no' onClick={onHide}>
+					No, nevermind
+				</Button>
 				<Button>Save</Button>
 			</Modal.Footer>
 		</Modal>
