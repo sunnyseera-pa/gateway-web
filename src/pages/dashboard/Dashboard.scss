@@ -430,7 +430,7 @@ textarea {
 .tm {
 	&-wrapper {
 		margin: 1.2rem 0;
-	}	
+	}
 
 	&-notification {
 		display: flex;
@@ -454,4 +454,16 @@ button.dropdown-toggle.btn.btn-outline-secondary::after {
 	border: solid 2px #b3b8bd;
 	border-radius: 50%;
 	display: inline-flex;
+}
+
+.teams-alert {
+	width: 100%;
+}
+
+.memberOfValue {
+	margin-left: -20px;
+}
+
+.addEditTeamBorder {
+	border-top: 1px solid $gray-pale;
 }

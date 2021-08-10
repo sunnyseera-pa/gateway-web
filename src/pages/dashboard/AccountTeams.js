@@ -1,12 +1,14 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { Row, Col, Button, Pagination } from 'react-bootstrap';
+import { Row, Col, Button, Pagination, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import Loading from '../commonComponents/Loading';
 import { baseURL } from '../../configs/url.config';
 import { tabTypes } from './Team/teamUtil';
+import SVGIcon from '../../images/SVGIcon';
 import './Dashboard.scss';
 import TeamInfo from './Team/TeamInfo';
 import _ from 'lodash';
+import AddEditTeamsPage from './Team/AddEditTeamsPage';
 
 const maxResult = 40;
 
@@ -17,6 +19,12 @@ const AccountTeams = () => {
 	const [teamsCount, setTeamsCount] = useState(0);
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [teamManagersIds, setTeamManagersIds] = useState();
+	const [viewTeams, setViewTeams] = useState(true);
+	const [editTeamsView, setEditTeamsView] = useState(false);
+	const [editViewMemberOf, setEditViewMemberOf] = useState('');
+	const [editViewOrgName, setEditViewOrgName] = useState('');
+	const [editViewTeamManagers, setEditViewTeamManagers] = useState([]);
+	const [alert, setAlert] = useState();
 	const [activeTabKey] = useState(tabTypes.Teams);
 
 	const handlePaginatedItems = () => {
@@ -39,11 +47,10 @@ const AccountTeams = () => {
 				let teamManagersIds = [];
 				teams.map((team, index) => {
 					if (team.members.length > 0) {
-						team.members
-							.filter(member => member.roles.includes('manager'))
-							.map(memberId => {
-								teamManagersIds.push(memberId.memberid);
-							});
+						let teamManagers = team.members.filter(member => member.roles.includes('manager'));
+						teamManagers.map(memberId => {
+							teamManagersIds.push(memberId.memberid);
+						});
 					}
 				});
 				setTeams(teams);
@@ -57,14 +64,41 @@ const AccountTeams = () => {
 			});
 	};
 
-    let paginationItems = [];
+	const createTeam = () => {
+		setEditTeamsView(false);
+		setViewTeams(false);
+	};
+
+	const editTeam = (publisherName, teamManagers) => {
+		const splitPublisherName = publisherName.split(' > ');
+		setEditViewMemberOf(splitPublisherName[0]);
+		setEditViewOrgName(splitPublisherName[1]);
+
+		const teamManagerNames = teamManagers.map(teamManager => {
+			return teamManager.firstname + ' ' + teamManager.lastname;
+		});
+		setEditViewTeamManagers(teamManagerNames);
+
+		setViewTeams(false);
+		setEditTeamsView(true);
+	};
+
+	const setAlertFunction = alert => {
+		getTeams();
+		setAlert(alert);
+	};
+
+	const cancelCreateOrEditTeam = () => {
+		setViewTeams(true);
+	};
+	let paginationItems = [];
 	for (let i = 1; i <= Math.ceil(teamsCount / maxResult); i++) {
 		paginationItems.push(
 			<Pagination.Item
 				key={i}
 				active={i === activeIndex + 1}
 				onClick={e => {
-					setActiveIndex(i - 1)
+					setActiveIndex(i - 1);
 				}}>
 				{i}
 			</Pagination.Item>
@@ -90,59 +124,77 @@ const AccountTeams = () => {
 
 	return (
 		<Fragment>
-			<Row>
-				<Col xs={1}></Col>
-				<div className='col-sm-10'>
-					<Row className='accountHeader'>
-						<Col sm={12} md={8}>
-							<Row>
-								<span className='black-20'>Teams</span>
+			{viewTeams ? (
+				<Row>
+					<Col xs={1}></Col>
+					<div className='col-sm-10'>
+						{!_.isEmpty(alert) && (
+							<Row className='teams-alert'>
+								<Alert variant={'success'} className='main-alert teams-alert'>
+									<SVGIcon name='check' width={24} height={24} fill={'#2C8267'} /> {alert.message}
+								</Alert>
 							</Row>
-							<Row>
-								<span className='gray700-13 '>Organise and manage team members and the teams email notifications.</span>
-							</Row>
-						</Col>
-						<Col sm={12} md={4} style={{ textAlign: 'right' }}>
-							<Button
-								data-test-id='add-team-btn'
-								variant='primary'
-								href=''
-								className='addButton'
-								// TODO - Add Teams onClick={}
-                                >
-								+ Add a new team
-							</Button>
-						</Col>
-					</Row>
-					<Row className='subHeader mt-3 gray800-14-bold'>
-						<Col sm={2}>Updated</Col>
-						<Col sm={3}>Data custodian</Col>
-						<Col sm={3}>Team manager(s)</Col>
-						<Col sm={2}>Members</Col>
-						<Col sm={2}></Col>
-					</Row>
-					<Row>
-						<Col sm={12} lg={12}>
-							{teams &&
-								teams.length > 0 &&
-								handlePaginatedItems().map(team => {
-									return (
-										<TeamInfo
-											updatedAt={team.updatedAt}
-											publisherName={team.publisher.name}
-											teamManagers={team.users.filter(user => teamManagersIds.includes(user._id))}
-											membersCount={team.membersCount}
-										/>
-									);
-								})}
-							<div className='text-center entityDashboardPagination'>
-								{teamsCount > maxResult ? <Pagination>{paginationItems}</Pagination> : ''}
-							</div>
-						</Col>
-					</Row>
-				</div>
-				<Col xs={1}></Col>
-			</Row>
+						)}
+						<Row className='accountHeader'>
+							<Col sm={12} md={8}>
+								<Row>
+									<span className='black-20'>Teams</span>
+								</Row>
+								<Row>
+									<span className='gray700-13 '>Organise and manage team members and the teams email notifications.</span>
+								</Row>
+							</Col>
+							<Col sm={12} md={4} style={{ textAlign: 'right' }}>
+								<Button
+									data-test-id='add-team-btn'
+									variant='primary'
+									href=''
+									className='addButton'
+									onClick={() => createTeam()}>
+									+ Add a new team
+								</Button>
+							</Col>
+						</Row>
+						<Row className='subHeader mt-3 gray800-14-bold'>
+							<Col sm={2}>Updated</Col>
+							<Col sm={3}>Data custodian</Col>
+							<Col sm={3}>Team manager(s)</Col>
+							<Col sm={2}>Members</Col>
+							<Col sm={2}></Col>
+						</Row>
+						<Row>
+							<Col sm={12} lg={12}>
+								{teams &&
+									teams.length > 0 &&
+									handlePaginatedItems().map(team => {
+										return (
+											<TeamInfo
+												updatedAt={team.updatedAt}
+												publisherName={team.publisher.name}
+												teamManagers={team.users.filter(user => teamManagersIds.includes(user._id))}
+												membersCount={team.membersCount}
+												editTeam={editTeam}
+											/>
+										);
+									})}
+								<div className='text-center entityDashboardPagination'>
+									{teamsCount > maxResult ? <Pagination>{paginationItems}</Pagination> : ''}
+								</div>
+							</Col>
+						</Row>
+					</div>
+					<Col xs={1}></Col>
+				</Row>
+			) : (
+				<AddEditTeamsPage
+					cancelAddEdit={cancelCreateOrEditTeam}
+					editTeamsView={editTeamsView}
+					editViewMemberOf={editViewMemberOf}
+					editViewOrgName={editViewOrgName}
+					editViewTeamManagers={editViewTeamManagers}
+					setAlertFunction={setAlertFunction}
+				/>
+			)}
 		</Fragment>
 	);
 };
