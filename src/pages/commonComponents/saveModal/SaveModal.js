@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import { Modal, Button } from 'react-bootstrap';
 import './SaveModal.scss';
 
@@ -11,6 +13,7 @@ const SaveModal = ({ show, onHide, showAlert }) => {
 	const [error, setError] = useState(false);
 	const [close, setClose] = useState(null);
 	const [savedAlert, setSavedAlert] = useState(null);
+	const [validation, setValidation] = useState({});
 
 	const handleSubmit = () => {
 		const data = {
@@ -39,7 +42,7 @@ const SaveModal = ({ show, onHide, showAlert }) => {
 			<Modal.Body>
 				<p className='black-14'>Are you sure you want to save this search preference? If yes, please provide a title for this search.</p>
 				<label className='black-14'>Title</label>
-				<input type='text' className='save-modal-input' value={title} onChange={e => setTitle(e.target.value)} />
+				<input type='text' className='save-modal-input' value={title} onChange={e => setTitle(e.target.value)} required />
 			</Modal.Body>
 			<Modal.Footer className='saved-modal-footer'>
 				<Button variant='outline-primary saved-no' onClick={onHide}>
