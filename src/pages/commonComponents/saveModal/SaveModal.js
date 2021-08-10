@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
 import './SaveModal.scss';
 
+var baseURL = require('../../commonComponents/BaseURL').getURL();
+
 const SaveModal = ({ show, onHide }) => {
 	const [title, setTitle] = useState('');
 	const [data, setData] = useState(null);
@@ -13,13 +15,15 @@ const SaveModal = ({ show, onHide }) => {
 			title: title,
 		};
 		axios
-			.post('https://link-here.com', data)
+			.post(baseURL + '/api/v1/[to-do]', { data })
 			.then(res => {
 				setData(res.data);
 				setTitle('');
+				console.log('works');
 			})
 			.catch(err => {
 				setError(true);
+				console.log(err);
 			});
 	};
 
