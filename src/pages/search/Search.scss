@@ -539,3 +539,15 @@
 .saved-filters-title {
 	margin-right: 800px;
 }
+
+.saved-preference-banner {
+	border-color: $purple !important;
+	background-color: #cdd7f7 !important;
+	color: $indigo !important;
+	font-weight: $font-weight-semibold !important;
+	margin-top: 32px;
+}
+
+.container-saved-preference-banner {
+	margin-top: -20px;
+}

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { PageView, initGA } from '../../tracking';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
-import { Container, Row, Col, Tabs, Tab, Pagination, Button } from 'react-bootstrap';
+import { Container, Row, Col, Tabs, Tab, Pagination, Button, Alert } from 'react-bootstrap';
 import moment from 'moment';
 import _ from 'lodash';
 import { toTitleCase } from '../../utils/GeneralHelper.util';
@@ -24,6 +24,7 @@ import SortDropdown from './components/SortDropdown';
 import { ReactComponent as CDStar } from '../../images/cd-star.svg';
 import AdvancedSearchModal from '../commonComponents/AdvancedSearchModal/AdvancedSearchModal';
 import SaveModal from '../commonComponents/saveModal/SaveModal';
+import SVGIcon from '../../images/SVGIcon';
 import './Search.scss';
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
@@ -105,7 +106,7 @@ class SearchPage extends React.Component {
 		filtersV2: [],
 		selectedV2: [],
 		savedSearchPanel: true,
-		savedSearchSuccess: false,
+		savedSearchSuccess: true,
 	};
 
 	constructor(props) {
@@ -1291,22 +1292,26 @@ class SearchPage extends React.Component {
 							</Tabs>
 						</div>
 					</div>
+
 					<div className='container'>
-						<Container>
-							{this.state.savedSearchSuccess ? 'no' : 'yes'}
+						{this.state.savedSearchSuccess && (
+							<Alert variant='primary' className='blue-banner saved-preference-banner'>
+								Saved preference: "[search query goes here]"
+							</Alert>
+						)}
+						<Container className={this.state.savedSearchSuccess && 'container-saved-preference-banner'}>
 							<Row className='filters filter-save'>
 								<Col className='title'>Showing # results of 'query'</Col>
 								<Col className='saved-buttons'>
-									{this.state.savedSearchSuccess ? (
-										<Button variant='outline-success' className='saved button-teal' disabled>
-											Saved
+									{!this.state.savedSearchSuccess ? (
+										<Button variant='success' className='saved button-teal' disabled>
+											<SVGIcon width='20px' height='20px' name='tick' fill={'#475da7'} /> Saved
 										</Button>
 									) : (
 										<Button variant='outline-success' className='saved button-teal' onClick={() => this.setState({ showSavedModal: true })}>
 											Save
 										</Button>
 									)}
-
 									{this.state.showSavedModal && (
 										<SaveModal show={this.state.showSavedModal} onHide={this.hideSavedModal} showAlert={this.state.savedSearchSuccess} />
 									)}
