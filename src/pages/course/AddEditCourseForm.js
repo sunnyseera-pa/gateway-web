@@ -467,6 +467,10 @@ const AddEditCourseForm = props => {
 																								<DatePicker
 																									name={`courseOptions[${index}].startDate`}
 																									dateFormat='dd/MM/yyyy'
+																									peekNextMonth
+																									showMonthDropdown
+																									showYearDropdown
+																									dropdownMode='select'
 																									selected={
 																										formik.values.courseOptions[index].startDate
 																											? new Date(formik.values.courseOptions[index].startDate)

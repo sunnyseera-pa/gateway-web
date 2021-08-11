@@ -402,14 +402,15 @@ export const formSchema = {
 				{
 					questionId: 'properties/coverage/spatial',
 					question: 'Spatial',
+					text: 'The geographic area covered by the dataset',
 					guidance:
 						'- The **geographical area** covered by the dataset.\n- Please enter a link to entries in a well-maintained gazetteer such as <https://www.geonames.org/>',
 					input: {
-						type: 'textInput',
+						type: 'multiField',
 					},
 					validations: [
 						{
-							type: 'isURLValid',
+							type: 'isMultiFieldURL',
 							message: 'Please enter a valid URL. Must include http(s)://',
 						},
 					],
