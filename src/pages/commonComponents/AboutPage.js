@@ -33,18 +33,23 @@ class AboutPage extends React.Component {
 				console.error(error.message);
 			});
 
-		const response = await axios.get('https://icoda-research.org/icoda-gateway/', { withCredentials: false }).catch(error => {
-			this.setState({ errorMessage: error.message });
-			console.error('There was an error!', error);
-		});
-		this.setState({
-			wpData: response.data,
-		});
+		await axios
+			.get('https://icoda-research.org/icoda-gateway/', { withCredentials: false })
+			.then(res => {
+				this.setState({
+					wpData: res.data,
+				});
+			})
+			.catch(error => {
+				this.setState({ errorMessage: error.message });
+				console.error('There was an error!', error);
+			});
+
 		console.log('response ', this.wpData);
 	}
 
 	render() {
-		const { isAvailable } = this.state;
+		const { isAvailable, wpData } = this.state;
 		console.log(this.wpData);
 		return (
 			<div className='searchTabsHolder'>
@@ -63,8 +68,7 @@ class AboutPage extends React.Component {
 				{isAvailable ? (
 					<div className='collection-rectangle about-page-body'>
 						<div className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16 col-lg-12 col-sm-12' />
-						{/*<div dangerouslySetInnerHTML='https://icoda-research.org/icoda-gateway/' />*/}
-						<div dangerouslySetInnerHTML={{ __html: this.wpData }} />
+						<div dangerouslySetInnerHTML={{ __html: wpData }} />
 					</div>
 				) : (
 					<div className='collection-rectangle about-page-body'>
