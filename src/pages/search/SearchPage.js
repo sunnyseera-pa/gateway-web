@@ -24,6 +24,7 @@ import SortDropdown from './components/SortDropdown';
 import { ReactComponent as CDStar } from '../../images/cd-star.svg';
 import AdvancedSearchModal from '../commonComponents/AdvancedSearchModal/AdvancedSearchModal';
 import SaveModal from '../commonComponents/saveModal/SaveModal';
+import LoginModal from '../commonComponents/LoginModal';
 import SVGIcon from '../../images/SVGIcon';
 import './Search.scss';
 
@@ -107,6 +108,7 @@ class SearchPage extends React.Component {
 		selectedV2: [],
 		savedSearchPanel: true,
 		savedSearchSuccess: true,
+		showLoggedInModal: false,
 	};
 
 	constructor(props) {
@@ -1331,13 +1333,21 @@ class SearchPage extends React.Component {
 											<SVGIcon width='15px' height='15px' name='tick' fill={'#fff'} /> Saved
 										</Button>
 									) : (
-										<Button variant='outline-success' className='saved button-teal' onClick={() => this.setState({ showSavedModal: true })}>
+										<Button
+											variant='outline-success'
+											className='saved button-teal'
+											onClick={
+												userState.loggedIn
+													? () => this.setState({ showLoggedInModal: true })
+													: () => this.setState({ showSavedModal: true })
+											}>
 											Save
 										</Button>
 									)}
 									{this.state.showSavedModal && (
 										<SaveModal show={this.state.showSavedModal} onHide={this.hideSavedModal} showAlert={this.state.savedSearchSuccess} />
 									)}
+									{this.state.showLoggedInModal && <LoginModal />}
 									<Button variant='light' className='saved-preference button-tertiary'>
 										Saved preferences
 									</Button>
