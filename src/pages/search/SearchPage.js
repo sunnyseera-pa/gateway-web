@@ -1201,7 +1201,14 @@ class SearchPage extends React.Component {
 		}
 
 		const dropdownMenu = (
-			<Col className={this.state.savedSearchPanel ? 'text-right save-dropdown' : 'text-right'}>
+			<Col
+				className={
+					this.state.savedSearchPanel
+						? key === 'Tools' || key === 'Projects' || key === 'Collections' || key === 'Courses' || key === 'Papers' || key === 'People'
+							? 'text-right save-dropdown saved-dropdown-small'
+							: 'text-right save-dropdown'
+						: 'text-right'
+				}>
 				{key === 'Tools' ? (
 					<SortDropdown
 						handleSort={this.handleSort}
@@ -1301,8 +1308,24 @@ class SearchPage extends React.Component {
 						)}
 						<Container className={this.state.savedSearchSuccess && 'container-saved-preference-banner'}>
 							<Row className='filters filter-save'>
-								<Col className='title'>Showing # results of 'query'</Col>
-								<Col className='saved-buttons'>
+								<Col className='title'>
+									Showing {key === 'Datasets' ? <>{datasetCount} </> : ''}
+									{key === 'Tools' ? <>{toolCount} </> : ''}
+									{key === 'Projects' ? <>{projectCount} </> : ''}
+									{key === 'Collections' ? <>{collectionCount} </> : ''}
+									{key === 'Courses' ? <>{courseCount} </> : ''}
+									{key === 'Papers' ? <>{paperCount} </> : ''}
+									{key === 'People' ? <>{personCount} </> : ''}
+									results for 'query'
+								</Col>
+								<Col
+									className={
+										key === 'Datasets'
+											? 'saved-buttons'
+											: key === 'Courses'
+											? 'saved-buttons saved-buttons-courses'
+											: 'saved-buttons saved-buttons-small'
+									}>
 									{!this.state.savedSearchSuccess ? (
 										<Button variant='success' className='saved-disabled button-teal button-teal' disabled>
 											<SVGIcon width='15px' height='15px' name='tick' fill={'#fff'} /> Saved
