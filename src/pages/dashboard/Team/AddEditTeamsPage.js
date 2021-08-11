@@ -9,7 +9,15 @@ import '../Dashboard.scss';
 import _ from 'lodash';
 
 var baseURL = require('../../commonComponents/BaseURL').getURL();
-const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView, editViewMemberOf, editViewOrgName, editViewTeamManagers, setAlertFunction }) => {
+const AddEditTeamsPage = ({
+	cancelAddEdit,
+	editTeamsView,
+	editViewID,
+	editViewMemberOf,
+	editViewOrgName,
+	editViewTeamManagers,
+	setAlertFunction,
+}) => {
 	// state
 	const [isLoading, setLoading] = useState(false);
 	const [combinedTeamManagers, setCombinedTeamManagers] = useState({});
@@ -57,7 +65,14 @@ const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView, editViewMemberOf, edit
 		onSubmit: values => {
 			setLoading(true);
 			if (editTeamsView) {
-				// TODO: Edit functionality
+				axios.put(baseURL + `/api/v1/teams/${editViewID}`, values).then(res => {
+					let alert = {
+						message: "You have editted the data custodian team '" + `${editViewMemberOf} > ${editViewOrgName}` + "'",
+					};
+					setAlertFunction(alert);
+					setLoading(false);
+					cancelAddEdit();
+				});
 			} else {
 				axios.post(baseURL + '/api/v1/teams/add', values).then(res => {
 					let alert = {
@@ -170,7 +185,9 @@ const AddEditTeamsPage = ({ cancelAddEdit, editTeamsView, editViewMemberOf, edit
 												</Dropdown.Item>
 											))}
 										</DropdownButton>
-										{formik.touched.memberOf && formik.errors.memberOf ? <div className='errorMessages'>{formik.errors.memberOf}</div> : null}
+										{formik.touched.memberOf && formik.errors.memberOf ? (
+											<div className='errorMessages'>{formik.errors.memberOf}</div>
+										) : null}
 									</Form.Group>
 								</Col>
 							</Row>

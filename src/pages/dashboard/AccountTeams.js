@@ -21,6 +21,7 @@ const AccountTeams = () => {
 	const [teamManagersIds, setTeamManagersIds] = useState();
 	const [viewTeams, setViewTeams] = useState(true);
 	const [editTeamsView, setEditTeamsView] = useState(false);
+	const [editViewID, setEditViewID] = useState(false);
 	const [editViewMemberOf, setEditViewMemberOf] = useState('');
 	const [editViewOrgName, setEditViewOrgName] = useState('');
 	const [editViewTeamManagers, setEditViewTeamManagers] = useState([]);
@@ -69,10 +70,10 @@ const AccountTeams = () => {
 		setViewTeams(false);
 	};
 
-	const editTeam = (publisherName, teamManagers) => {
-		const splitPublisherName = publisherName.split(' > ');
-		setEditViewMemberOf(splitPublisherName[0]);
-		setEditViewOrgName(splitPublisherName[1]);
+	const editTeam = (publisher, teamManagers) => {
+		setEditViewID(publisher._id);
+		setEditViewMemberOf(publisher.publisherDetails.memberOf);
+		setEditViewOrgName(publisher.publisherDetails.name);
 
 		const teamManagerNames = teamManagers.map(teamManager => {
 			return teamManager.firstname + ' ' + teamManager.lastname;
@@ -145,12 +146,7 @@ const AccountTeams = () => {
 								</Row>
 							</Col>
 							<Col sm={12} md={4} style={{ textAlign: 'right' }}>
-								<Button
-									data-test-id='add-team-btn'
-									variant='primary'
-									href=''
-									className='addButton'
-									onClick={() => createTeam()}>
+								<Button data-test-id='add-team-btn' variant='primary' href='' className='addButton' onClick={() => createTeam()}>
 									+ Add a new team
 								</Button>
 							</Col>
@@ -170,7 +166,7 @@ const AccountTeams = () => {
 										return (
 											<TeamInfo
 												updatedAt={team.updatedAt}
-												publisherName={team.publisher.name}
+												publisher={team.publisher}
 												teamManagers={team.users.filter(user => teamManagersIds.includes(user._id))}
 												membersCount={team.membersCount}
 												editTeam={editTeam}
@@ -189,6 +185,7 @@ const AccountTeams = () => {
 				<AddEditTeamsPage
 					cancelAddEdit={cancelCreateOrEditTeam}
 					editTeamsView={editTeamsView}
+					editViewID={editViewID}
 					editViewMemberOf={editViewMemberOf}
 					editViewOrgName={editViewOrgName}
 					editViewTeamManagers={editViewTeamManagers}
