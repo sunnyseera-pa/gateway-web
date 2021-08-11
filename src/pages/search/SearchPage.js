@@ -1338,8 +1338,8 @@ class SearchPage extends React.Component {
 											className='saved button-teal'
 											onClick={
 												userState.loggedIn
-													? () => this.setState({ showSavedModal: true })
-													: () => this.setState({ showLoggedInModal: true })
+													? () => this.setState({ showLoggedInModal: true })
+													: () => this.setState({ showSavedModal: true })
 											}>
 											Save
 										</Button>
