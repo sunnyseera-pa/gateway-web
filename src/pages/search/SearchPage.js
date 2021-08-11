@@ -23,6 +23,7 @@ import ErrorModal from '../commonComponents/errorModal/ErrorModal';
 import SortDropdown from './components/SortDropdown';
 import { ReactComponent as CDStar } from '../../images/cd-star.svg';
 import AdvancedSearchModal from '../commonComponents/AdvancedSearchModal/AdvancedSearchModal';
+import SavedPreferencesModal from '../commonComponents/savedPreferencesModal/SavedPreferencesModal';
 import './Search.scss';
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
@@ -90,6 +91,7 @@ class SearchPage extends React.Component {
 		showDrawer: false,
 		showModal: false,
 		showAdvancedSearchModal: false,
+		showSavedPreferencesModal: false,
 		showError: false,
 		context: {},
 		userState: [
@@ -122,6 +124,10 @@ class SearchPage extends React.Component {
 
 	hideModal = () => {
 		this.setState({ showError: false });
+	};
+
+	hideSavedPreferencesModal = () => {
+		this.setState({ showSavedPreferencesModal: false });
 	};
 
 	toggleAdvancedSearchModal = () => {
@@ -1315,9 +1321,15 @@ class SearchPage extends React.Component {
 									<Button variant='outline-success' className='saved button-teal'>
 										Save
 									</Button>
-									<Button variant='light' className='saved-preference button-tertiary'>
+									<Button
+										variant='light'
+										className='saved-preference button-tertiary'
+										onClick={() => this.setState({ showSavedPreferencesModal: true })}>
 										Saved preferences
 									</Button>
+									{this.state.showSavedPreferencesModal && (
+										<SavedPreferencesModal show={this.state.showSavedPreferencesModal} onHide={this.hideSavedPreferencesModal} />
+									)}
 									{dropdownMenu}
 								</Col>
 							</Row>
