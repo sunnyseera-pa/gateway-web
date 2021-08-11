@@ -108,7 +108,7 @@ class SearchPage extends React.Component {
 		selectedV2: [],
 		savedSearchPanel: true,
 		savedSearchSuccess: true,
-		showLoggedInModal: false,
+		showLoggedInModal: true,
 	};
 
 	constructor(props) {
@@ -1338,8 +1338,8 @@ class SearchPage extends React.Component {
 											className='saved button-teal'
 											onClick={
 												userState.loggedIn
-													? () => this.setState({ showLoggedInModal: true })
-													: () => this.setState({ showSavedModal: true })
+													? () => this.setState({ showSavedModal: true })
+													: () => this.setState({ showLoggedInModal: true })
 											}>
 											Save
 										</Button>
@@ -1347,7 +1347,7 @@ class SearchPage extends React.Component {
 									{this.state.showSavedModal && (
 										<SaveModal show={this.state.showSavedModal} onHide={this.hideSavedModal} showAlert={this.state.savedSearchSuccess} />
 									)}
-									{this.state.showLoggedInModal && <LoginModal />}
+									{this.state.showLoggedInModal && userState[0].loggedIn === false && <LoginModal userState={userState} />}
 									<Button variant='light' className='saved-preference button-tertiary'>
 										Saved preferences
 									</Button>
