@@ -1,0 +1,13 @@
+@import '../../../css/variables';
+
+.saved-preference-modal {
+	color: $indigo !important;
+	border: none !important;
+	cursor: pointer;
+	background: $gray-200 !important;
+}
+
+.saved-preference-modal-footer {
+	justify-content: left !important;
+	margin-left: -17px;
+}
