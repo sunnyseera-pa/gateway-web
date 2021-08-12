@@ -114,6 +114,7 @@ class SearchPage extends React.Component {
 		this.state.userState = props.userState;
 		this.state.search = !_.isEmpty(search) ? search : props.location.search;
 		this.searchBar = React.createRef();
+		this.updateFilterStates = this.updateFilterStates.bind(this);
 	}
 
 	showModal = () => {
@@ -202,6 +203,7 @@ class SearchPage extends React.Component {
 	findImpliedFilterNode = (filters = [], impliedValues) => {
 		if (!_.isEmpty(filters)) {
 			const formattedValues = impliedValues.split('::').map(value => value.toLowerCase()).join(','); 
+			console.log([...filters])
 			return [...filters].find(node => node.value.toLowerCase() === formattedValues) || {};
 		}
 		return {};
@@ -248,6 +250,7 @@ class SearchPage extends React.Component {
 									}
 								});
 							}
+							console.log('nodes',nodes)
 							nodes.forEach(node => {
 								// 7. set check value
 								node.checked = !node.checked;
@@ -2327,6 +2330,9 @@ class SearchPage extends React.Component {
 						context={context}
 						closed={this.toggleAdvancedSearchModal}
 						userProps={userState[0]}
+						dataUtilityWizardSteps={this.state.dataUtilityWizardSteps}
+						updateFilterStates={this.updateFilterStates}
+						datasetCount={datasetCount}
 					/>
 
 					<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />

@@ -1,0 +1,28 @@
+@import '../../../css/variables';
+@import '../../../css/typography';
+
+.modal.show .modal-dialog {
+	transform: translate(0, 10%) !important;
+}
+
+.data-utility-wizard {
+	&-modal-header,
+	&-body {
+		display: flex;
+	}
+
+	&-body {
+		flex-direction: row;
+		justify-content: space-between;
+	}
+
+}
+
+.modal-header > .close {
+    align-self: end;
+}
+
+.radio-buttons-container {
+    display: flex;
+    flex-direction: column;
+}
