@@ -1,8 +1,18 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Modal, Button, Row, Container } from 'react-bootstrap';
 import './SavedPreferencesModal.scss';
 
+var baseURL = require('../../commonComponents/BaseURL').getURL();
+
 const SavedPreferencesModal = ({ show, onHide }) => {
+	const [data, setData] = useState(null);
+
+	axios
+		.get(baseURL + '/api/v1/search-preferences')
+		.then(res => console.log(res.data))
+		.catch(err => console.log(err));
+
 	return (
 		<Modal show={show} onHide={onHide} className='save-modal'>
 			<Modal.Header closeButton>
