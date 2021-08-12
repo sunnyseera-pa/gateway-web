@@ -1345,7 +1345,14 @@ class SearchPage extends React.Component {
 										</Button>
 									)}
 									{this.state.showSavedModal && (
-										<SaveModal show={this.state.showSavedModal} onHide={this.hideSavedModal} showAlert={this.state.savedSearchSuccess} />
+										<SaveModal
+											show={this.state.showSavedModal}
+											onHide={this.hideSavedModal}
+											showAlert={this.state.savedSearchSuccess}
+											search={this.state.search}
+											filters={this.state.allFilters}
+											sort={this.state.datasetSort}
+										/>
 									)}
 									{this.state.showLoggedInModal && userState[0].loggedIn === false && <LoginModal userState={userState} />}
 									<Button variant='light' className='saved-preference button-tertiary'>
