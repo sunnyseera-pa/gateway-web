@@ -5,6 +5,7 @@ import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg'
 
 import { ReactComponent as TableSvg } from '../../../images/table.svg';
 import TechnicalMetadataVariables from './TechnicalMetadataVariables';
+import CohortProfilingVariables from './CohortProfilingVariables';
 import '../Dataset.scss';
 
 class TechnicalDetailsPage extends React.Component {
@@ -48,7 +49,10 @@ class TechnicalDetailsPage extends React.Component {
 											<Col sm={9} lg={11}>
 												<Row>
 													<TableSvg className='margin-top-2' />
-													<span className='pad-left-8 black-18'>{technicalMetadata ? technicalMetadata.label : ''}</span>
+													<span className='pad-left-8 black-18'>
+														{technicalMetadata && technicalMetadata.label ? technicalMetadata.label : ''}
+														{technicalMetadata && technicalMetadata.tableName ? technicalMetadata.tableName : ''}
+													</span>
 												</Row>
 											</Col>
 
@@ -78,9 +82,12 @@ class TechnicalDetailsPage extends React.Component {
 								</Col>
 							</Row>
 
-							{technicalMetadata.elements.map(element => (
-								<TechnicalMetadataVariables techMetadataVariables={element} open={allOpen} />
-							))}
+							{technicalMetadata &&
+								technicalMetadata.label &&
+								technicalMetadata.elements.map(element => <TechnicalMetadataVariables techMetadataVariables={element} open={allOpen} />)}
+							{technicalMetadata &&
+								technicalMetadata.tableName &&
+								technicalMetadata.variables.map(element => <CohortProfilingVariables cohortProfilingVariables={element} tableName={technicalMetadata.tableName} datasetID={this.props.datasetID}/>)}
 							<div className='height-16' />
 						</div>
 					</Col>

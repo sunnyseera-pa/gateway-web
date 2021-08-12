@@ -23,7 +23,6 @@ import { Event } from '../../tracking';
 import Linkify from 'react-linkify';
 import DatasetSchema from './DatasetSchema';
 import TechnicalMetadata from './components/TechnicalMetadata';
-import CohortMetadata from './components/CohortMetadata';
 import TechnicalDetailsPage from './components/TechnicalDetailsPage';
 import DiscourseTopic from '../discourse/DiscourseTopic';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
@@ -39,7 +38,6 @@ import DataQuality from './components/DataQuality';
 import ActionBar from '../commonComponents/actionbar/ActionBar';
 import ResourcePageButtons from '../commonComponents/resourcePageButtons/ResourcePageButtons';
 import DatasetAboutCard from './components/DatasetAboutCard';
-import CohortProfilingPage from './components/CohortProfilingPage';
 import CohortDiscoveryBanner from './components/CohortDiscoveryBanner';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -246,7 +244,7 @@ class DatasetDetail extends Component {
 					},
 				} = res.data;
 				this.setState({
-					technicalMetadata,
+					technicalMetadata: [...this.state.cohortProfiling, ...technicalMetadata],
 				});
 			}
 		});
@@ -1280,44 +1278,19 @@ class DatasetDetail extends Component {
 															) : (
 																<NotFound word='technical details' />
 															)}
-															{this.state.cohortProfiling && this.state.cohortProfiling.length > 0 && technicalMetadata.length === 0 
-																? this.state.cohortProfiling.map((cohortProfile, index) => (
-																		<CohortMetadata
-																			key={`cohortProfile-${index}`}
-																			cohortProfiling={cohortProfile}
-																			index={index + technicalMetadata.length}
-																			datasetID={this.props.match.params.datasetID}
-																			doUpdateDataClassOpen={this.doUpdateDataClassOpen}
-																		/>
-																  ))
-																: ''}
 														</Col>
 													</Row>
 												</Fragment>
 											) : (
-												<>
-													{' '}
-													{dataClassOpen < technicalMetadata.length ? (
-														<Row style={{ width: '-webkit-fill-available' }}>
-															<Col sm={12} lg={12}>
-																<TechnicalDetailsPage
-																	technicalMetadata={technicalMetadata[dataClassOpen]}
-																	doUpdateDataClassOpen={this.doUpdateDataClassOpen}
-																/>
-															</Col>
-														</Row>
-													) : (
-														<Row style={{ width: '-webkit-fill-available' }}>
-															<Col sm={12} lg={12}>
-																<CohortProfilingPage
-																	datasetID={this.props.match.params.datasetID}
-																	cohortProfile={cohortProfiling[dataClassOpen - technicalMetadata.length]}
-																	doUpdateDataClassOpen={this.doUpdateDataClassOpen}
-																/>
-															</Col>
-														</Row>
-													)}
-												</>
+												<Row style={{ width: '-webkit-fill-available' }}>
+													<Col sm={12} lg={12}>
+														<TechnicalDetailsPage
+															datasetID={this.props.match.params.datasetID}
+															technicalMetadata={technicalMetadata[dataClassOpen]}
+															doUpdateDataClassOpen={this.doUpdateDataClassOpen}
+														/>
+													</Col>
+												</Row>
 											)}
 										</Tab>
 
