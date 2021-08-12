@@ -10,7 +10,7 @@ var baseURL = require('../../commonComponents/BaseURL').getURL();
 
 const SaveModal = ({ ...props }) => {
 	const [name, setName] = useState('');
-	const [data, setData] = useState(null);
+	const [filterCriteria, setfilterCriteria] = useState(null);
 	const [error, setError] = useState(false);
 	const [close, setClose] = useState(null);
 	const [savedAlert, setSavedAlert] = useState(null);
@@ -33,10 +33,9 @@ const SaveModal = ({ ...props }) => {
 
 		onSubmit: values => {
 			axios
-				.post(baseURL + '/api/v1/search-preferences', { name: name, filterCriteria: { data } })
+				.post(baseURL + '/api/v1/search-preferences', values)
 				.then(res => {
-					setData(res.data);
-					setName('');
+					setfilterCriteria(res.data);
 					console.log('works');
 					setClose(props.onHide);
 					setSavedAlert(!props.showAlert);
@@ -57,7 +56,7 @@ const SaveModal = ({ ...props }) => {
 				<p className='black-14'>Are you sure you want to save this search preference? If yes, please provide a title for this search.</p>
 				<label className='black-14'>Title</label>
 				<input type='text' className='save-modal-input' value={name} name={name} onChange={e => setName(e.target.value)} />
-				{formik.touched.name && formik.errors.name ? <div className='errorMessages'>{formik.errors.name}</div> : null}
+				{formik.errors.name ? <div className='errorMessages'>{formik.errors.name}</div> : null}
 			</Modal.Body>
 			<Modal.Footer className='saved-modal-footer'>
 				<Button variant='outline-primary saved-no' onClick={props.onHide}>
