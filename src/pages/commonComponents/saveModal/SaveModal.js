@@ -33,7 +33,7 @@ const SaveModal = ({ ...props }) => {
 
 		onSubmit: values => {
 			axios
-				.post(baseURL + '/api/v1/search-preferences', { name, data })
+				.post(baseURL + '/api/v1/search-preferences', { name: name, filterCriteria: { data } })
 				.then(res => {
 					setData(res.data);
 					setName('');
