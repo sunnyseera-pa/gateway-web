@@ -4,18 +4,23 @@ import { ReactComponent as CDStar } from '../../../images/cd-star.svg';
 import SVGIcon from '../../../images/SVGIcon';
 import './DataUtilityWizard.scss';
 import { useHistory } from 'react-router-dom';
-import data from './items.json';
 import _ from 'lodash';
 
-const DataUtilityWizardModal = ({ open, closed, userProps, dataUtilityWizardSteps, updateFilterStates, datasetCount }) => {
-	const [userState, setUserState] = useState(userProps);
-	const [question1Answer, setQuestion1Answer] = useState('');
-	const [question2Answer, setQuestion2Answer] = useState('');
-	const [question3Answer, setQuestion3Answer] = useState('');
-	const [question4Answer, setQuestion4Answer] = useState('');
-	const [question5Answer, setQuestion5Answer] = useState('');
+const DataUtilityWizardModal = ({
+	open,
+	closed,
+	dataUtilityWizardSteps,
+	updateFilterStates,
+	datasetCount,
+	doSearchCall,
+	selectedItems,
+    handleClearSelection,
+    resetTreeChecked,
+    findParentNode,
+    filtersV2,
+    handleClearSection
+}) => {
 	const [stepCounter, setStepCounter] = useState(1);
-	const [stepsLength, setStepsLength] = useState(dataUtilityWizardSteps.length);
 	const [searchValue, setSearchValue] = useState('');
 	const [selectedValue, setSelectedValue] = useState('');
 	const handleClose = action => closed(action);
@@ -26,6 +31,7 @@ const DataUtilityWizardModal = ({ open, closed, userProps, dataUtilityWizardStep
 	};
 
 	const changeFilter = async (stepKey, impliedValues) => {
+        let filterSet = false;
 		// if (e.target.checked) {
 		// 	selected = e.target.value;
 		// }
@@ -35,29 +41,40 @@ const DataUtilityWizardModal = ({ open, closed, userProps, dataUtilityWizardStep
 			impliedValues[i] = impliedValues[i].charAt(0).toUpperCase() + impliedValues[i].substr(1);
 		}
 
+		if (selectedItems) {
+            console.log('stepKey' ,stepKey);
+			selectedItems.map(item => {
+				if (item.parentKey === stepKey) {
+                    let parentNode = findParentNode(filtersV2, stepKey);
+                    handleClearSection(item);
+                    // handleClearSelection(item, true);
+                }
+			});
+		}
 		let formattedImpliedValues = impliedValues.join('::');
-		let searchObject = {
-			search: '',
-			tab: 'Datasets',
-		};
+		let searchObject = {};
 		searchObject[stepKey] = formattedImpliedValues;
 
-		history.push(searchObject);
-		console.log('searchObject', searchObject);
+		// history.push(searchObject);
+		// console.log('searchObject', searchObject);
 		await updateFilterStates(searchObject);
+		doSearchCall();
 	};
 	const onSearch = e => {
 		setSearchValue(e.target.value);
-		// if (props.doUpdateCollectionsSearchString) {
-		// 	props.doUpdateCollectionsSearchString(e.target.value);
-		// }
+	};
+
+	const searchCall = e => {
+		if (e.key === 'Enter') {
+			doSearchCall();
+		}
 	};
 
 	const goNext = () => {
 		setStepCounter(stepCounter => stepCounter + 1);
 	};
 	const dataUtilityWizardJourney = () => {
-		if (stepCounter !== stepsLength) {
+		if (stepCounter !== dataUtilityWizardSteps.length) {
 			return (
 				<div className='data-utility-wizard-modal-body ml-3'>
 					{dataUtilityWizardSteps.map((step, index) => {
@@ -102,7 +119,7 @@ const DataUtilityWizardModal = ({ open, closed, userProps, dataUtilityWizardStep
 							placeholder=''
 							onChange={onSearch}
 							value={searchValue}
-							// onKeyDown={props.doCollectionsSearchMethod}
+							onKeyDown={searchCall}
 						/>
 					</span>
 				</span>
@@ -133,7 +150,7 @@ const DataUtilityWizardModal = ({ open, closed, userProps, dataUtilityWizardStep
 			<Modal.Body>{dataUtilityWizardJourney()}</Modal.Body>
 			<Modal.Footer>
 				<div className='gray800-14' style={{ textAlign: 'center' }}>
-					<button className='button-secondary' onClick={goNext}>
+					<button className='button-secondary' onClick={handleClose}>
 						View {datasetCount} dataset matches
 					</button>
 					<button className='button-primary ml-3' onClick={goNext}>

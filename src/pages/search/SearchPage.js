@@ -115,6 +115,7 @@ class SearchPage extends React.Component {
 		this.state.search = !_.isEmpty(search) ? search : props.location.search;
 		this.searchBar = React.createRef();
 		this.updateFilterStates = this.updateFilterStates.bind(this);
+		this.doSearchCall = this.doSearchCall.bind(this);
 	}
 
 	showModal = () => {
@@ -202,9 +203,13 @@ class SearchPage extends React.Component {
 	 */
 	findImpliedFilterNode = (filters = [], impliedValues) => {
 		if (!_.isEmpty(filters)) {
-			const formattedValues = impliedValues.split('::').map(value => value.toLowerCase()).join(','); 
-			console.log([...filters])
-			return [...filters].find(node => node.value.toLowerCase() === formattedValues) || {};
+			const formattedValues = impliedValues
+				.split('::')
+				.map(value => value.toLowerCase())
+				.join(',');
+			// return [...filters].find(node => node.value.toLowerCase() === formattedValues) || {};
+			console.log([...filters].find(node => node.impliedValues.toString().toLowerCase() === formattedValues))
+			return [...filters].find(node => node.impliedValues.toString().toLowerCase() === formattedValues) || {};
 		}
 		return {};
 	};
@@ -250,7 +255,6 @@ class SearchPage extends React.Component {
 									}
 								});
 							}
-							console.log('nodes',nodes)
 							nodes.forEach(node => {
 								// 7. set check value
 								node.checked = !node.checked;
@@ -860,7 +864,7 @@ class SearchPage extends React.Component {
 	 * @desc function to handle filters applied functionality
 	 * @param {string | object} selectedNode
 	 */
-	handleClearSelection = selectedNode => {
+	handleClearSelection = (selectedNode, fromDataUtilityWizard) => {
 		let selectedV2, filtersV2, parentNode;
 		if (!_.isEmpty(selectedNode)) {
 			// 1. take label and parentId values from the node
@@ -880,7 +884,13 @@ class SearchPage extends React.Component {
 					// 7. set checked value
 					foundNode.checked = false;
 					// 8. remove from selectedV2 array
-					selectedV2 = this.handleSelected(selectedNode, false);
+					if (fromDataUtilityWizard) {
+						selectedV2 = [...this.state.selectedV2];
+						selectedV2 = selectedV2.filter(node => node.id !== selectedNode.id);
+					} else {
+						selectedV2 = this.handleSelected(selectedNode, false);
+					}
+					console.log('selectedV2', selectedV2);
 					// 9. set state
 					this.setState({ filtersV2, selectedV2, isResultsLoading: true }, () => {
 						// 10. callback wait for state to update
@@ -944,6 +954,7 @@ class SearchPage extends React.Component {
 		let results = [];
 		if (!_.isEmpty(selected)) {
 			if (checked) {
+				console.log('checked');
 				results = [...selectedV2, selected];
 			} else {
 				// id important to filter by as labels are not unique
@@ -1009,6 +1020,7 @@ class SearchPage extends React.Component {
 	 * @param {object} node
 	 */
 	handleClearSection = node => {
+		console.log('handleClearSection node', node);
 		let selectedV2, filtersV2, parentNode, selectedNodeFilters;
 		let { key, filters } = node;
 		selectedV2 = [...this.state.selectedV2];
@@ -1024,6 +1036,7 @@ class SearchPage extends React.Component {
 			// 2. find parent obj - recursive
 			parentNode = this.findParentNode(filtersV2, key);
 			if (!_.isEmpty(parentNode)) {
+				// console.log('')
 				let { filters } = parentNode;
 				// 3. loop over selected nodes
 				selectedNodeFilters.forEach(node => {
@@ -2332,7 +2345,14 @@ class SearchPage extends React.Component {
 						userProps={userState[0]}
 						dataUtilityWizardSteps={this.state.dataUtilityWizardSteps}
 						updateFilterStates={this.updateFilterStates}
+						doSearchCall={this.doSearchCall}
+						handleClearSelection={this.handleClearSelection}
 						datasetCount={datasetCount}
+						selectedItems={selectedV2}
+						resetTreeChecked={this.resetTreeChecked}
+						findParentNode={this.findParentNode}
+    					filtersV2={filtersV2}
+						handleClearSection={this.handleClearSection}
 					/>
 
 					<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />

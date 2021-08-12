@@ -15,7 +15,21 @@ const GENERAL_ACCESS = 'GENERAL_ACCESS';
 const BANNED = 'BANNED';
 const urlEnv = require('../BaseURL').getURLEnv();
 
-const AdvancedSearchModal = ({ open, closed, userProps, dataUtilityWizardSteps, updateFilterStates, datasetCount }) => {
+const AdvancedSearchModal = ({
+	open,
+	closed,
+	userProps,
+	dataUtilityWizardSteps,
+	updateFilterStates,
+	datasetCount,
+	doSearchCall,
+	selectedItems,
+	handleClearSelection,
+	resetTreeChecked,
+	findParentNode,
+    filtersV2,
+	handleClearSection
+}) => {
 	const [userState, setUserState] = useState(userProps);
 	const [showRequestAccessModal, setShowRequestAccessModal] = useState(false);
 	const [showTermsandConditionsModal, setShowTermsAndConditionsModal] = useState(false);
@@ -189,7 +203,14 @@ const AdvancedSearchModal = ({ open, closed, userProps, dataUtilityWizardSteps, 
 				closed={() => toggleDataUtilityWizardModal()}
 				dataUtilityWizardSteps={dataUtilityWizardSteps}
 				updateFilterStates={updateFilterStates}
+				doSearchCall={doSearchCall}
 				datasetCount={datasetCount}
+				selectedItems={selectedItems}
+				handleClearSelection={handleClearSelection}
+				resetTreeChecked={resetTreeChecked}
+				findParentNode={findParentNode}
+    			filtersV2={filtersV2}
+				handleClearSection={handleClearSection}
 			/>
 		</>
 	);
