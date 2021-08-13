@@ -139,6 +139,7 @@ class SearchPage extends React.Component {
 			return { showAdvancedSearchModal: !prevState.showAdvancedSearchModal };
 		});
 	};
+
 	showLoginModal = () => {
 		// 1. add class to body to stop background scroll
 		document.body.classList.add('modal-open');
@@ -1350,11 +1351,12 @@ class SearchPage extends React.Component {
 										<Button variant='success' className='saved-disabled button-teal button-teal' disabled>
 											<SVGIcon width='15px' height='15px' name='tick' fill={'#fff'} /> Saved
 										</Button>
+									) : this.state.userState[0].loggedIn === false ? (
+										<Button variant='outline-success' className='saved button-teal' onClick={() => this.showLoginModal()}>
+											Save
+										</Button>
 									) : (
-										<Button
-											variant='outline-success'
-											className='saved button-teal'
-											onClick={userState.loggedIn ? () => this.setState({ showSavedModal: true }) : () => this.showLoginModal()}>
+										<Button variant='outline-success' className='saved button-teal' onClick={() => this.setState({ showSavedModal: true })}>
 											Save
 										</Button>
 									)}
