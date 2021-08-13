@@ -63,7 +63,7 @@ class AboutPage extends React.Component {
 				{isAvailable ? (
 					<div className='collection-rectangle about-page-body'>
 						<div className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16 col-lg-12 col-sm-12' />
-						<div dangerouslySetInnerHTML={{ __html: wpData }} />
+						<div className='wpData' dangerouslySetInnerHTML={{ __html: wpData }} />
 					</div>
 				) : (
 					<div className='collection-rectangle about-page-body'>
