@@ -30,6 +30,7 @@ import Footer from './pages/commonComponents/Footer';
 import LoginErrorPage from './pages/commonComponents/LoginErrorPage';
 import ErrorModal from './pages/commonComponents/errorModal/ErrorModal';
 import AboutPage from './pages/commonComponents/AboutPage';
+import CookiePage from './pages/commonComponents/CookiePage';
 
 import { withTranslation } from 'react-i18next';
 import { GuardedRoute } from './pages/commonComponents/GuardedRoute';
@@ -37,6 +38,7 @@ import AdvancedSearchTAndCs from './pages/dashboard/AdvancedSearchTAndCs';
 
 const DataAccessRequestTranslated = withTranslation('common')(DataAccessRequest);
 const AboutPageTranslated = withTranslation('common')(AboutPage);
+const CookiePageTranslated = withTranslation('common')(CookiePage);
 
 var baseURL = require('./pages/commonComponents/BaseURL').getURL();
 let actionBar, footer;
@@ -189,7 +191,6 @@ class HDRRouter extends Component {
 						) : (
 							''
 						)}
-
 						<Route path='/about' render={props => <AboutPageTranslated {...props} userState={userState} />} />
 						<Route path='/search' render={props => <SearchPage {...props} userState={userState} />} />
 						<Route path='/loginerror' render={props => <LoginErrorPage {...props} userState={userState} />} />
@@ -223,6 +224,7 @@ class HDRRouter extends Component {
 						<GuardedRoute path='/course/edit/:courseID' component={AddEditCoursePage} userState={userState} />
 						<Route path='/course/:courseID' render={props => <CoursePage {...props} userState={userState} />} />
 						<Route path='/advanced-search-terms/' render={props => <AdvancedSearchTAndCs {...props} userState={userState} />} />
+						<Route path='/cookies' render={props => <CookiePageTranslated {...props} userState={userState} />} />
 						<Redirect to='/search?aboutPage=true&search=' />
 					</Switch>
 				</div>
