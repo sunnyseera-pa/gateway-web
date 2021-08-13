@@ -138,10 +138,6 @@ const AdvancedSearchModal = ({
 		};
 	};
 
-	const dataUtilityWizardJourney = () => {
-		setShowDataUtilityWizardModal(true);
-	};
-
 	return (
 		<>
 			<Modal

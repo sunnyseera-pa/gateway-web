@@ -208,7 +208,6 @@ class SearchPage extends React.Component {
 				.map(value => value.toLowerCase())
 				.join(',');
 			// return [...filters].find(node => node.value.toLowerCase() === formattedValues) || {};
-			console.log([...filters].find(node => node.impliedValues.toString().toLowerCase() === formattedValues))
 			return [...filters].find(node => node.impliedValues.toString().toLowerCase() === formattedValues) || {};
 		}
 		return {};
@@ -270,7 +269,7 @@ class SearchPage extends React.Component {
 								// 10. fn for handling the *selected showing* returns new state
 								let selected = this.handleSelected(selectedNode, node.checked);
 								// 11. update selectedV2 array with our new returned value
-								selectedV2 = [...selectedV2, ...selected];
+								selectedV2 = [...selected];
 							});
 						}
 					}
@@ -890,7 +889,6 @@ class SearchPage extends React.Component {
 					} else {
 						selectedV2 = this.handleSelected(selectedNode, false);
 					}
-					console.log('selectedV2', selectedV2);
 					// 9. set state
 					this.setState({ filtersV2, selectedV2, isResultsLoading: true }, () => {
 						// 10. callback wait for state to update
@@ -954,7 +952,6 @@ class SearchPage extends React.Component {
 		let results = [];
 		if (!_.isEmpty(selected)) {
 			if (checked) {
-				console.log('checked');
 				results = [...selectedV2, selected];
 			} else {
 				// id important to filter by as labels are not unique
@@ -1020,7 +1017,6 @@ class SearchPage extends React.Component {
 	 * @param {object} node
 	 */
 	handleClearSection = node => {
-		console.log('handleClearSection node', node);
 		let selectedV2, filtersV2, parentNode, selectedNodeFilters;
 		let { key, filters } = node;
 		selectedV2 = [...this.state.selectedV2];
@@ -1036,7 +1032,6 @@ class SearchPage extends React.Component {
 			// 2. find parent obj - recursive
 			parentNode = this.findParentNode(filtersV2, key);
 			if (!_.isEmpty(parentNode)) {
-				// console.log('')
 				let { filters } = parentNode;
 				// 3. loop over selected nodes
 				selectedNodeFilters.forEach(node => {

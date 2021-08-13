@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, InputGroup, FormText } from 'react-bootstrap';
+import queryString from 'query-string';
 import { ReactComponent as CDStar } from '../../../images/cd-star.svg';
 import SVGIcon from '../../../images/SVGIcon';
 import './DataUtilityWizard.scss';
@@ -14,41 +15,76 @@ const DataUtilityWizardModal = ({
 	datasetCount,
 	doSearchCall,
 	selectedItems,
-    handleClearSelection,
-    resetTreeChecked,
-    findParentNode,
-    filtersV2,
-    handleClearSection
+	handleClearSelection,
+	resetTreeChecked,
+	findParentNode,
+	filtersV2,
+	handleClearSection,
 }) => {
 	const [stepCounter, setStepCounter] = useState(1);
 	const [searchValue, setSearchValue] = useState('');
 	const [selectedValue, setSelectedValue] = useState('');
+	const [step1Value, setStep1Value] = useState('');
+	const [step2Value, setStep2Value] = useState('');
+	const [step3Value, setStep3Value] = useState('');
+	const [step4Value, setStep4Value] = useState('');
+	const [step5Value, setStep5Value] = useState('');
+
+	useEffect(() => {
+		resetSteps(); //children function of interest
+	}, [open]);
+
 	const handleClose = action => closed(action);
 	let history = useHistory();
 
-	const setQuestionAnswer = label => {
-		// console.log('label', label);
+	const resetSteps = () => {
+		setStepCounter(1);
 	};
 
-	const changeFilter = async (stepKey, impliedValues) => {
-        let filterSet = false;
-		// if (e.target.checked) {
-		// 	selected = e.target.value;
-		// }
+	const checkIfChecked = label => {
+		console.log(label === step1Value)
+		switch (stepCounter) {
+			case 1:
+				return label === step1Value;
+			case 2:
+				return label === step2Value;
+			case 3:
+				return label === step3Value;
+			case 4:
+				return label === step4Value;
+			case 5:
+				return label === step5Value;
+		}
+	};
 
-		// impliedValues = impliedValues.map(function(val){ return val.toUpperCase(); })
+	const changeFilter = async (stepKey, impliedValues, label) => {
+		switch (stepCounter) {
+			case 1:
+				setStep1Value(label);
+				break;
+			case 2:
+				setStep2Value(label);
+				break;
+			case 3:
+				setStep3Value(label);
+				break;
+			case 4:
+				setStep4Value(label);
+				break;
+			case 5:
+				setStep5Value(label);
+				break;
+		}
+
 		for (var i = 0; i < impliedValues.length; i++) {
 			impliedValues[i] = impliedValues[i].charAt(0).toUpperCase() + impliedValues[i].substr(1);
 		}
 
 		if (selectedItems) {
-            console.log('stepKey' ,stepKey);
 			selectedItems.map(item => {
 				if (item.parentKey === stepKey) {
-                    let parentNode = findParentNode(filtersV2, stepKey);
-                    handleClearSection(item);
-                    // handleClearSelection(item, true);
-                }
+					handleClearSelection(item, true);
+				}
 			});
 		}
 		let formattedImpliedValues = impliedValues.join('::');
@@ -56,7 +92,6 @@ const DataUtilityWizardModal = ({
 		searchObject[stepKey] = formattedImpliedValues;
 
 		// history.push(searchObject);
-		// console.log('searchObject', searchObject);
 		await updateFilterStates(searchObject);
 		doSearchCall();
 	};
@@ -64,14 +99,22 @@ const DataUtilityWizardModal = ({
 		setSearchValue(e.target.value);
 	};
 
-	const searchCall = e => {
-		if (e.key === 'Enter') {
-			doSearchCall();
-		}
-	};
-
 	const goNext = () => {
 		setStepCounter(stepCounter => stepCounter + 1);
+	};
+
+	const goBack = () => {
+		setStepCounter(stepCounter => stepCounter - 1);
+	};
+
+	const doSearch = e => {
+		// Fires on enter on searchbar
+		if (e.key === 'Enter') {
+			const queryParams = queryString.parse(window.location.search);
+			const newQueries = { ...queryParams, search: searchValue };
+			history.push({ search: queryString.stringify(newQueries) });
+			doSearchCall(true);
+		}
 	};
 	const dataUtilityWizardJourney = () => {
 		if (stepCounter !== dataUtilityWizardSteps.length) {
@@ -81,6 +124,9 @@ const DataUtilityWizardModal = ({
 						if (step && step.includeInWizard && step.wizardStepOrder === stepCounter) {
 							return (
 								<>
+									<p className='gray800-14'>
+										Question {stepCounter} of {dataUtilityWizardSteps.length}
+									</p>
 									<h5 className='black-20'>{step.wizardStepTitle}</h5>
 									<p className='gray800-14'>{step.wizardStepDescription}</p>
 									<div className='radio-buttons-container'>
@@ -92,7 +138,8 @@ const DataUtilityWizardModal = ({
 															aria-label='Radio button for following text input'
 															name={'radioButtonSet' + stepCounter}
 															value={entry.impliedValues}
-															onChange={() => changeFilter(step.key, entry.impliedValues)}
+															onChange={() => changeFilter(step.key, entry.impliedValues, entry.label)}
+															checked={checkIfChecked(entry.label)}
 														/>
 													</InputGroup.Prepend>
 													<FormText className='ml-3'>{entry.label}</FormText>
@@ -113,14 +160,7 @@ const DataUtilityWizardModal = ({
 						<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />
 					</span>
 					<span>
-						<input
-							id='collectionsSearchBarInput'
-							type='text'
-							placeholder=''
-							onChange={onSearch}
-							value={searchValue}
-							onKeyDown={searchCall}
-						/>
+						<input id='collectionsSearchBarInput' type='text' placeholder='' onChange={onSearch} value={searchValue} onKeyDown={doSearch} />
 					</span>
 				</span>
 			);
@@ -149,14 +189,19 @@ const DataUtilityWizardModal = ({
 			</Modal.Header>
 			<Modal.Body>{dataUtilityWizardJourney()}</Modal.Body>
 			<Modal.Footer>
-				<div className='gray800-14' style={{ textAlign: 'center' }}>
-					<button className='button-secondary' onClick={handleClose}>
-						View {datasetCount} dataset matches
+				{stepCounter > 1 ? (
+					<button className='button-tertiary ml-3' style={{ marginRight: 'auto' }} onClick={goBack}>
+						Back
 					</button>
-					<button className='button-primary ml-3' onClick={goNext}>
-						Next
-					</button>
-				</div>
+				) : (
+					''
+				)}
+				<button className='button-secondary' onClick={handleClose}>
+					View {datasetCount} dataset matches
+				</button>
+				<button className='button-primary ml-3' onClick={goNext}>
+					Next
+				</button>
 			</Modal.Footer>
 		</Modal>
 	);
