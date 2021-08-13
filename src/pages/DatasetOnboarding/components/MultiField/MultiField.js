@@ -1,12 +1,11 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-import _ from 'lodash';
+import { cloneDeep, remove, isArray } from 'lodash';
 
 class MultiField extends React.Component {
 	constructor(props) {
 		super(props);
-
 		this.state = {
 			value: this.updateValue(props.value),
 			readOnly: props.readOnly || false,
@@ -29,13 +28,11 @@ class MultiField extends React.Component {
 	};
 
 	handleChange(newValue, idx) {
-		//if (!_.isEmpty(newValue)) {
 		const newValues = this.state.value.map((value, sidx) => {
 			if (idx !== sidx) return value;
 			return newValue;
 		});
 		this.setState({ value: newValues }, this.props.onChange.bind(null, newValues));
-		//}
 	}
 
 	handleFocus() {
@@ -46,8 +43,9 @@ class MultiField extends React.Component {
 	}
 
 	updateValue(value) {
-		let clonedValue = _.cloneDeep(value);
-		let updatedValue = _.remove(clonedValue, function (n) {
+		if (!isArray(value)) value = [value];
+		let clonedValue = cloneDeep(value);
+		let updatedValue = remove(clonedValue, function (n) {
 			return n !== '';
 		});
 		if (updatedValue.length === 0) updatedValue = [''];
