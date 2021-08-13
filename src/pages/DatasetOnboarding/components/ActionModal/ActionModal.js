@@ -57,9 +57,6 @@ const ActionModal = ({ open, close, context, datasetVersionAction }) => {
 					setFormState({ statusDesc: '', invalid: false, invalidMessage: '', submitted: false });
 					setCount(0);
 					break;
-				case 'DELETEDRAFT':
-					datasetVersionAction({ type });
-					break;
 				default:
 					setFormState({ statusDesc: '', invalid: false, invalidMessage: '', submitted: false });
 					setCount(0);

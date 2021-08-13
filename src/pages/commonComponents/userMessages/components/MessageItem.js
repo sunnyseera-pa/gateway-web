@@ -18,7 +18,7 @@ const Message = ({ messageDescription, createdBy, createdDate }) => {
 					<div className='black-14-bold'>{getName()}</div>
 					<div className='gray500-13'>{moment(createdDate).format('DD MMM HH:mm')}</div>
 				</div>
-				<span data-test-id='message-item'> {messageDescription.trim()} </span>
+				<span> {messageDescription.trim()} </span>
 			</div>
 		</Fragment>
 	);

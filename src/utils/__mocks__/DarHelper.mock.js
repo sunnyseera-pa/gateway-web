@@ -20,14 +20,14 @@ export const formSchema = {
 		{
 			pageId: 'about',
 			active: false,
-			title: 'About this application',
+			title: 'Before you begin',
 			description:
 				'Preparation is key to a successful data access request. You need to be able to demonstrate how you will ensure safe use of patient data and the potential for public benefit. The steps below are intended to help you get off to a good start.'
 		},
 		{
 			pageId: 'about',
 			active: false,
-			title: 'About this application',
+			title: 'Before you begin',
 			description:
 				'Preparation is key to a successful data access request. You need to be able to demonstrate how you will ensure safe use of patient data and the potential for public benefit. The steps below are intended to help you get off to a good start.'
 		},
@@ -2004,7 +2004,7 @@ export const uniquePages = [
   {
     pageId: 'about',
     active: false,
-    title: 'About this application',
+    title: 'Before you begin',
     description:
       'Preparation is key to a successful data access request. You need to be able to demonstrate how you will ensure safe use of patient data and the potential for public benefit. The steps below are intended to help you get off to a good start.'
   },
@@ -2227,7 +2227,7 @@ export const uniqueSchema = {
 		{
 			pageId: 'about',
 			active: false,
-			title: 'About this application',
+			title: 'Before you begin',
 			description:
 				'Preparation is key to a successful data access request. You need to be able to demonstrate how you will ensure safe use of patient data and the potential for public benefit. The steps below are intended to help you get off to a good start.'
 		},

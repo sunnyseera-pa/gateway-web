@@ -929,6 +929,7 @@ class DatasetOnboarding extends Component {
 					applicationStatus: this.applicationState[type],
 					applicationStatusDesc: statusDesc,
 				};
+
 				// 1. Update action status
 				await axios.put(`${baseURL}/api/v1/dataset-onboarding/${_id}`, body);
 

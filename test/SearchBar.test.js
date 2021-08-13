@@ -13,12 +13,12 @@ beforeEach(() => {
 describe('<SearchBar /> rendering', () => {
 	it('renders Search bar with blank value', () => {
 		wrapper = shallow(<SearchBar {...props} />);
-		expect(wrapper.find('[data-test-id="searchbar"]').text()).toEqual('');
+		expect(wrapper.find('[data-testid="searchbar"]').text()).toEqual('');
 	});
 
 	it('renders Search bar with `no clear button` by default', () => {
 		wrapper = shallow(<SearchBar {...props} />);
-		const input = wrapper.find('[data-test-id="searchbar-clear-btn"]');
+		const input = wrapper.find('[data-testid="searchbar-clear-btn"]');
 		expect(input.exists()).toBeFalsy();
 	});
 
@@ -28,7 +28,7 @@ describe('<SearchBar /> rendering', () => {
 			searchString: 'test',
 		});
 		wrapper.update();
-		const input = wrapper.find('[data-test-id="searchbar-clear-btn"]');
+		const input = wrapper.find('[data-testid="searchbar-clear-btn"]');
 		expect(input.exists()).toBeTruthy();
 	});
 });
@@ -40,7 +40,7 @@ describe('<SearchBar /> interactions', () => {
 			target: { value: 'epilepsy' },
 		};
 		wrapper = shallow(<SearchBar {...props} doUpdateSearchString={updateSearchString} />);
-		wrapper.find('[data-test-id="searchbar"]').simulate('change', mockEvent);
+		wrapper.find('[data-testid="searchbar"]').simulate('change', mockEvent);
 		expect(wrapper.state('textValue')).toEqual('epilepsy');
 	});
 });
