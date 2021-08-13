@@ -8,7 +8,6 @@ import './SaveModal.scss';
 var baseURL = require('../../commonComponents/BaseURL').getURL();
 
 const SaveModal = ({ ...props }) => {
-	const [error, setError] = useState(false);
 	const [close, setClose] = useState(null);
 
 	const formik = useFormik({
@@ -32,8 +31,7 @@ const SaveModal = ({ ...props }) => {
 				.post(baseURL + '/api/v1/search-preferences', values)
 				.then(setClose(props.onHide))
 				.catch(err => {
-					setError(true);
-					console.log(err);
+					return err;
 				});
 		},
 	});
