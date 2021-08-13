@@ -16,7 +16,11 @@
 	align-items: center;
 	justify-content: center;
 }
-
+footer.footer,
+form.search,
+header.header.clear {
+	display: none;
+}
 .cookie-page-button {
 	background-color: #e1e7ec;
 	padding-top: 16px;

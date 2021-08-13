@@ -20,6 +20,7 @@ class CookiePage extends React.Component {
 		showDrawer: false,
 		showModal: false,
 		context: {},
+		wpData: undefined,
 	};
 
 	constructor(props) {
@@ -43,6 +44,19 @@ class CookiePage extends React.Component {
 				});
 				console.error(error.message);
 			});
+
+		await axios
+			.get('https://icoda-research.org/icoda-gateway/', { withCredentials: false })
+			.then(res => {
+				this.setState({
+					wpData: res.data,
+				});
+				console.log('response ', res.data);
+			})
+			.catch(error => {
+				this.setState({ errorMessage: error.message });
+				console.error('There was an error!', error);
+			});
 	}
 	toggleDrawer = () => {
 		this.setState(prevState => {
@@ -59,7 +73,7 @@ class CookiePage extends React.Component {
 		});
 	};
 	render() {
-		const { isAvailable, userState, showDrawer, showModal, context, isLoading } = this.state;
+		const { isAvailable, userState, showDrawer, showModal, context, isLoading, wpData } = this.state;
 		if (isLoading) {
 			return (
 				<Container>
@@ -90,15 +104,7 @@ class CookiePage extends React.Component {
 				</div>
 				<div className='collection-rectangle cookie-page-body'>
 					<div className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16 col-lg-12 col-sm-12' />
-					<Iframe
-						url='https://icoda-research.org/icoda-gateway/'
-						width='100%'
-						height='10px'
-						id='aboutIframe'
-						frameBorder='0'
-						display='initial'
-						position='relative'
-					/>
+					<div dangerouslySetInnerHTML={{ __html: wpData }} />
 				</div>
 
 				<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
