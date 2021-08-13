@@ -1,10 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import { Row, Col, Button } from 'react-bootstrap';
-import Iframe from 'react-iframe';
 import DefaultAboutPage from './DefaultAboutPage';
 import './AboutPage.scss';
-import WPAPI from 'wpapi';
 
 class AboutPage extends React.Component {
 	state = {

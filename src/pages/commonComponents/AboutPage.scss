@@ -44,6 +44,11 @@
 	padding-left: 20%;
 	padding-right: 20%;
 }
+footer.footer,
+form.search,
+header.header.clear {
+	display: none;
+}
 
 @media (max-width: 1024px) {
 	.about-page-body {
