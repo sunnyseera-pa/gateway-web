@@ -207,6 +207,7 @@ class SearchPage extends React.Component {
 				.split('::')
 				.map(value => value.toLowerCase())
 				.join(',');
+			// TODO - node.value needs to be passed through to the front end for this to work correctly
 			// return [...filters].find(node => node.value.toLowerCase() === formattedValues) || {};
 			return [...filters].find(node => node.impliedValues.toString().toLowerCase() === formattedValues) || {};
 		}
@@ -2344,10 +2345,6 @@ class SearchPage extends React.Component {
 						handleClearSelection={this.handleClearSelection}
 						datasetCount={datasetCount}
 						selectedItems={selectedV2}
-						resetTreeChecked={this.resetTreeChecked}
-						findParentNode={this.findParentNode}
-    					filtersV2={filtersV2}
-						handleClearSection={this.handleClearSection}
 					/>
 
 					<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />

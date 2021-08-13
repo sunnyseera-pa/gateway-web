@@ -199,14 +199,10 @@ const AdvancedSearchModal = ({
 				closed={() => toggleDataUtilityWizardModal()}
 				dataUtilityWizardSteps={dataUtilityWizardSteps}
 				updateFilterStates={updateFilterStates}
-				doSearchCall={doSearchCall}
 				datasetCount={datasetCount}
+				doSearchCall={doSearchCall}
 				selectedItems={selectedItems}
 				handleClearSelection={handleClearSelection}
-				resetTreeChecked={resetTreeChecked}
-				findParentNode={findParentNode}
-    			filtersV2={filtersV2}
-				handleClearSection={handleClearSection}
 			/>
 		</>
 	);

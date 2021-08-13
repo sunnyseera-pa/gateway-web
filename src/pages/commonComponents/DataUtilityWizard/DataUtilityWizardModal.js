@@ -16,33 +16,24 @@ const DataUtilityWizardModal = ({
 	doSearchCall,
 	selectedItems,
 	handleClearSelection,
-	resetTreeChecked,
-	findParentNode,
-	filtersV2,
-	handleClearSection,
 }) => {
 	const [stepCounter, setStepCounter] = useState(1);
 	const [searchValue, setSearchValue] = useState('');
-	const [selectedValue, setSelectedValue] = useState('');
 	const [step1Value, setStep1Value] = useState('');
 	const [step2Value, setStep2Value] = useState('');
 	const [step3Value, setStep3Value] = useState('');
 	const [step4Value, setStep4Value] = useState('');
-	const [step5Value, setStep5Value] = useState('');
 
 	useEffect(() => {
-		resetSteps(); //children function of interest
+		// Whenever the data utility wizard is opened, the steps are reset to the first one
+		resetSteps();
 	}, [open]);
 
 	const handleClose = action => closed(action);
 	let history = useHistory();
 
-	const resetSteps = () => {
-		setStepCounter(1);
-	};
-
 	const checkIfChecked = label => {
-		console.log(label === step1Value)
+		// Checks which value has been selected previously
 		switch (stepCounter) {
 			case 1:
 				return label === step1Value;
@@ -52,12 +43,11 @@ const DataUtilityWizardModal = ({
 				return label === step3Value;
 			case 4:
 				return label === step4Value;
-			case 5:
-				return label === step5Value;
 		}
 	};
 
 	const changeFilter = async (stepKey, impliedValues, label) => {
+		// Setting the changed value in state
 		switch (stepCounter) {
 			case 1:
 				setStep1Value(label);
@@ -71,32 +61,37 @@ const DataUtilityWizardModal = ({
 			case 4:
 				setStep4Value(label);
 				break;
-			case 5:
-				setStep5Value(label);
-				break;
 		}
 
-		for (var i = 0; i < impliedValues.length; i++) {
-			impliedValues[i] = impliedValues[i].charAt(0).toUpperCase() + impliedValues[i].substr(1);
-		}
-
+		// Checks if the current step has any selected buttons and clears them on change
 		if (selectedItems) {
 			selectedItems.map(item => {
 				if (item.parentKey === stepKey) {
+					// TODO: Clearing labels from wizard is working properly
 					handleClearSelection(item, true);
 				}
 			});
+		}
+
+		// Formats the implied values to be accepted by the updateFilterStates function
+		// e.g: [x, y, z] ---> X::Y::Z
+		for (var i = 0; i < impliedValues.length; i++) {
+			impliedValues[i] = impliedValues[i].charAt(0).toUpperCase() + impliedValues[i].substr(1);
 		}
 		let formattedImpliedValues = impliedValues.join('::');
 		let searchObject = {};
 		searchObject[stepKey] = formattedImpliedValues;
 
-		// history.push(searchObject);
+		// Passes filters into the updateFilterStates function
 		await updateFilterStates(searchObject);
 		doSearchCall();
 	};
 	const onSearch = e => {
 		setSearchValue(e.target.value);
+	};
+
+	const resetSteps = () => {
+		setStepCounter(1);
 	};
 
 	const goNext = () => {
