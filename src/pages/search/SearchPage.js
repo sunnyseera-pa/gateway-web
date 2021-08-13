@@ -107,7 +107,7 @@ class SearchPage extends React.Component {
 		filtersV2: [],
 		selectedV2: [],
 		savedSearchPanel: true,
-		savedSearchSuccess: true,
+		showAlert: false,
 		showLoggedInModal: true,
 	};
 
@@ -1322,12 +1322,12 @@ class SearchPage extends React.Component {
 					</div>
 
 					<div className='container'>
-						{this.state.savedSearchSuccess && (
+						{this.state.showAlert && (
 							<Alert variant='primary' className='blue-banner saved-preference-banner'>
 								Saved preference: "[search query goes here]"
 							</Alert>
 						)}
-						<Container className={this.state.savedSearchSuccess && 'container-saved-preference-banner'}>
+						<Container className={this.state.showAlert && 'container-saved-preference-banner'}>
 							<Row className='filters filter-save'>
 								<Col className='title'>
 									Showing {key === 'Datasets' ? <>{datasetCount} </> : ''}
@@ -1347,7 +1347,7 @@ class SearchPage extends React.Component {
 											? 'saved-buttons saved-buttons-courses'
 											: 'saved-buttons saved-buttons-small'
 									}>
-									{!this.state.savedSearchSuccess ? (
+									{this.state.showAlert ? (
 										<Button variant='success' className='saved-disabled button-teal button-teal' disabled>
 											<SVGIcon width='15px' height='15px' name='tick' fill={'#fff'} /> Saved
 										</Button>
@@ -1365,7 +1365,7 @@ class SearchPage extends React.Component {
 										<SaveModal
 											show={this.state.showSavedModal}
 											onHide={this.hideSavedModal}
-											showAlert={this.state.savedSearchSuccess}
+											showAlert={this.state.showAlert}
 											search={this.state.search}
 											filters={this.state.allFilters}
 											sort={this.state.filtersV2}

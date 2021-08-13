@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -9,8 +9,8 @@ var baseURL = require('../../commonComponents/BaseURL').getURL();
 
 const SaveModal = ({ ...props }) => {
 	const [close, setClose] = useState(null);
+	const [showAlert, setShowAlert] = useState(true);
 
-	console.log(props);
 	const formik = useFormik({
 		initialValues: {
 			name: '',
@@ -33,6 +33,7 @@ const SaveModal = ({ ...props }) => {
 				.then(res => {
 					console.log(res.data);
 					setClose(props.onHide);
+					setShowAlert(props.showAlert);
 				})
 				.catch(err => {
 					return err;
