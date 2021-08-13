@@ -232,6 +232,11 @@ class DatasetDetail extends Component {
 					isCohortDiscovery: newIsCohortDiscoveryState,
 					isLoading: false,
 				});
+				if (this.state.technicalMetadata.length === 0) {
+					this.setState({
+						technicalMetadata: this.state.cohortProfiling,
+					});
+				}
 			});
 	};
 
