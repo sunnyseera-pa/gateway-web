@@ -1352,7 +1352,7 @@ class SearchPage extends React.Component {
 											showAlert={this.state.savedSearchSuccess}
 											search={this.state.search}
 											filters={this.state.allFilters}
-											sort={this.state.datasetSort}
+											sort={this.state.filtersV2}
 											loggedIn={this.state.userState}
 										/>
 									)}
