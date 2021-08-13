@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Row, Col, Button } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import DefaultAboutPage from './DefaultAboutPage';
 import './AboutPage.scss';
 
@@ -13,7 +13,6 @@ class AboutPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state.userState = props.userState;
-		this.fetchPosts = this.fetchPosts;
 	}
 
 	async componentDidMount() {
@@ -42,13 +41,11 @@ class AboutPage extends React.Component {
 				this.setState({ errorMessage: error.message });
 				console.error('There was an error!', error);
 			});
-
-		console.log('response ', this.wpData);
 	}
 
 	render() {
 		const { isAvailable, wpData } = this.state;
-		console.log(this.wpData);
+
 		return (
 			<div className='searchTabsHolder'>
 				<div className='about-page-header'>
