@@ -1352,6 +1352,7 @@ class SearchPage extends React.Component {
 											search={this.state.search}
 											filters={this.state.allFilters}
 											sort={this.state.datasetSort}
+											loggedIn={this.state.userState.loggedIn}
 										/>
 									)}
 									{this.state.showLoggedInModal && userState[0].loggedIn === false && <LoginModal userState={userState} />}

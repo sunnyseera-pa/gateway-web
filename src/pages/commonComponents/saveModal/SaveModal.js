@@ -2,19 +2,14 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Form } from 'react-bootstrap';
 import './SaveModal.scss';
-import { propTypes } from 'react-bootstrap/esm/Image';
 
 var baseURL = require('../../commonComponents/BaseURL').getURL();
 
 const SaveModal = ({ ...props }) => {
-	const [name, setName] = useState('');
-	const [filterCriteria, setfilterCriteria] = useState(null);
 	const [error, setError] = useState(false);
 	const [close, setClose] = useState(null);
-	const [savedAlert, setSavedAlert] = useState(null);
-	const [validation, setValidation] = useState({});
 
 	const formik = useFormik({
 		initialValues: {
@@ -24,6 +19,7 @@ const SaveModal = ({ ...props }) => {
 				filters: props.filters || [],
 				tab: 'Datasets',
 				sort: props.sort || '',
+				loggedIn: props.loggedIn || '',
 			},
 		},
 
@@ -34,12 +30,7 @@ const SaveModal = ({ ...props }) => {
 		onSubmit: values => {
 			axios
 				.post(baseURL + '/api/v1/search-preferences', values)
-				.then(res => {
-					setfilterCriteria(res.data);
-					console.log('works');
-					setClose(props.onHide);
-					setSavedAlert(!props.showAlert);
-				})
+				.then(setClose(props.onHide))
 				.catch(err => {
 					setError(true);
 					console.log(err);
@@ -55,14 +46,23 @@ const SaveModal = ({ ...props }) => {
 			<Modal.Body>
 				<p className='black-14'>Are you sure you want to save this search preference? If yes, please provide a title for this search.</p>
 				<label className='black-14'>Title</label>
-				<input type='text' className='save-modal-input' value={name} name={name} onChange={e => setName(e.target.value)} />
-				{formik.errors.name ? <div className='errorMessages'>{formik.errors.name}</div> : null}
+				<Form.Control
+					data-test-id='saved-preference-name'
+					id='name'
+					name='name'
+					type='text'
+					className={formik.touched.name && formik.errors.name && 'save-modal-input'}
+					onChange={formik.handleChange}
+					value={formik.values.name}
+					onBlur={formik.handleBlur}
+				/>
+				{formik.touched.name && formik.errors.name ? <div className='errorMessages'>{formik.errors.name}</div> : null}
 			</Modal.Body>
 			<Modal.Footer className='saved-modal-footer'>
 				<Button variant='outline-primary saved-no' onClick={props.onHide}>
 					No, nevermind
 				</Button>
-				<Button type='submit' save onClick={formik.handleSubmit}>
+				<Button type='submit' onClick={formik.handleSubmit}>
 					Save
 				</Button>
 			</Modal.Footer>
@@ -71,49 +71,3 @@ const SaveModal = ({ ...props }) => {
 };
 
 export default SaveModal;
-
-/*
-axios
-		.get(baseURL + '/api/v1/search-preferences')
-		.then(res => console.log(res))
-
-		.catch(err => {
-			console.log(err);
-		});
-
-	axios
-		.post(baseURL + '/api/v1/search-preferences', {
-			name: setName,
-			filterCriteria: {
-				searchTerm: props.search,
-				filters: props.filter,
-				tab: 'Datasets',
-				sort: props.sort,
-			},
-		})
-		.then(res => {
-			console.log(res.data);
-		})
-		.catch(err => {
-			console.log(err);
-		});
- */
-
-/*	const data = {
-			name: name,
-		};
-		axios
-			.post(baseURL + '/api/v1/search-preferences', { data })
-			.then(res => {
-				setData(res.data);
-				setName('');
-				console.log('works');
-				setClose(props.onHide);
-				setSavedAlert(!props.showAlert);
-			})
-			.catch(err => {
-				setError(true);
-				console.log(err);
-			});
-	};
-*/
