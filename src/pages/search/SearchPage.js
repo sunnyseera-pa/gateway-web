@@ -1344,6 +1344,7 @@ class SearchPage extends React.Component {
 											Save
 										</Button>
 									)}
+
 									{this.state.showSavedModal && (
 										<SaveModal
 											show={this.state.showSavedModal}
@@ -1352,7 +1353,7 @@ class SearchPage extends React.Component {
 											search={this.state.search}
 											filters={this.state.allFilters}
 											sort={this.state.datasetSort}
-											loggedIn={this.state.userState.loggedIn}
+											loggedIn={this.state.userState}
 										/>
 									)}
 									{this.state.showLoggedInModal && userState[0].loggedIn === false && <LoginModal userState={userState} />}

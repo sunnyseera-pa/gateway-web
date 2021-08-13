@@ -10,6 +10,7 @@ var baseURL = require('../../commonComponents/BaseURL').getURL();
 const SaveModal = ({ ...props }) => {
 	const [close, setClose] = useState(null);
 
+	console.log(props);
 	const formik = useFormik({
 		initialValues: {
 			name: '',
@@ -29,7 +30,10 @@ const SaveModal = ({ ...props }) => {
 		onSubmit: values => {
 			axios
 				.post(baseURL + '/api/v1/search-preferences', values)
-				.then(setClose(props.onHide))
+				.then(res => {
+					console.log(res.data);
+					setClose(props.onHide);
+				})
 				.catch(err => {
 					return err;
 				});
