@@ -1,6 +1,11 @@
 @import '../../../css/variables';
 
-.saved-preference-modal {
+.save-modal-preferences {
+	width: 65% !important;
+	max-width: none !important;
+}
+
+.saved-preferences-cancel {
 	color: $indigo !important;
 	border: none !important;
 	cursor: pointer;
@@ -10,4 +15,25 @@
 .saved-preference-modal-footer {
 	justify-content: left !important;
 	margin-left: -17px;
+}
+
+.delete-view-buttons {
+	margin-left: 38.5vw !important;
+}
+
+.delete-button {
+	width: 80px !important;
+	margin-right: 8px;
+}
+
+.saved-card-click {
+	cursor: pointer;
+}
+
+.save-tabsBackground {
+	border-top: 1px solid $gray-200;
+}
+
+.save-searchTabsHolder {
+	margin: 0 auto;
 }

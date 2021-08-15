@@ -1,20 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Modal, Button, Row, Container } from 'react-bootstrap';
+import { Modal, Button, Row, Container, Tab, Tabs } from 'react-bootstrap';
 import './SavedPreferencesModal.scss';
 
 var baseURL = require('../../commonComponents/BaseURL').getURL();
 
 const SavedPreferencesModal = ({ show, onHide }) => {
-	const [data, setData] = useState(null);
+	const [data, setData] = useState([]);
+	const [showButtons, setShowButtons] = useState(false);
 
-	axios
-		.get(baseURL + '/api/v1/search-preferences')
-		.then(res => console.log(res.data))
-		.catch(err => console.log(err));
+	useEffect(() => {
+		axios
+			.get(baseURL + '/api/v1/search-preferences')
+			.then(res => {
+				setData(res.data.data);
+
+				console.log(res.data.data);
+			})
+			.catch(err => console.log(err));
+	}, []);
 
 	return (
-		<Modal show={show} onHide={onHide} className='save-modal'>
+		<Modal show={show} onHide={onHide} dialogClassName='save-modal-preferences '>
 			<Modal.Header closeButton>
 				<Container>
 					{' '}
@@ -27,18 +34,71 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 							resources search results page and select 'save'.
 						</p>
 					</Row>
+					<Row>
+						<div className='searchTabsHolder save-searchTabsHolder'>
+							<Tabs className='save-tabsBackground gray700-13' activeKey='' onSelect=''>
+								<Tab eventKey='Datasets' title='Datasets' className='saved-tab' />
+								<Tab eventKey='Tools' title='Tools' className='saved-tab' />
+								<Tab eventKey='Projects' title='Projects' className='saved-tab' />
+								<Tab eventKey='Collections' title='Collections' className='saved-tab' />
+								<Tab eventKey='Courses' title='Courses' className='saved-tab' />
+								<Tab eventKey='Papers' title='Papers ' className='saved-tab' />
+								<Tab eventKey='People' title='People' className='saved-tab' />
+							</Tabs>
+						</div>
+					</Row>
 				</Container>
 			</Modal.Header>
-			<Modal.Body>
-				<p className='black-14'>Body</p>
+			<Modal.Body style={{ 'max-height': 'calc(100vh - 450px)', 'overflow-y': 'auto', 'background-color': '#f6f7f8' }}>
+				{data
+					.filter(a => a.name)
+					.map(a => (
+						<div className='filters saved-card-click' onClick={() => setShowButtons(true)}>
+							<h5 className='black-20-semibold'>{a.name}</h5>
+							<p className='black-14'>
+								Search term:{' '}
+								{a.filterCriteria && a.filterCriteria.searchTerm === '' ? (
+									'N/A'
+								) : (
+									<p className='black-14-bold'>{a.filterCriteria.searchTerm}</p>
+								)}
+							</p>
+							<p className='black-14'>Filters: a.filterCriteria.filters</p>
+						</div>
+					))}
 			</Modal.Body>
 			<Modal.Footer className='saved-preference-modal-footer'>
-				<Button onClick={onHide} className='saved-preference-modal button-tertiary'>
+				<Button onClick={onHide} className='saved-preferences-cancel button-tertiary'>
 					Cancel
 				</Button>
+				{showButtons && (
+					<Row className='delete-view-buttons'>
+						<Button variant='outline-success' className='saved delete-button button-teal'>
+							Delete
+						</Button>
+						<Button>View matches</Button>
+					</Row>
+				)}
 			</Modal.Footer>
 		</Modal>
 	);
 };
 
 export default SavedPreferencesModal;
+/*
+{data
+							.filter(b => b.name)
+							.map(b => (
+								<a
+									href={
+										baseURL +
+										'/search?search=' +
+										b.filterCriteria.filterType +
+										'=' +
+										b.filterCriteria.filtersApplied +
+										'&tab=' +
+										b.filterCriteria.tab
+									}>
+									<Button>View matches</Button>
+								</a>
+							))} */
