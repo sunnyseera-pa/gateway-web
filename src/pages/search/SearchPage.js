@@ -1240,7 +1240,9 @@ class SearchPage extends React.Component {
 				className={
 					this.state.savedSearchPanel
 						? key === 'Tools' || key === 'Projects' || key === 'Collections' || key === 'Courses' || key === 'Papers' || key === 'People'
-							? 'text-right save-dropdown saved-dropdown-small'
+							? this.state.saveSuccess
+								? 'text-right save-dropdown saved-dropdown-small'
+								: 'text-right save-dropdown '
 							: 'text-right save-dropdown save-dropdown-search'
 						: 'text-right'
 				}>
