@@ -109,7 +109,7 @@ class SearchPage extends React.Component {
 		savedSearchPanel: true,
 		saveSuccess: false,
 		showLoggedInModal: true,
-		showSaveName: '',
+		showSavedName: '',
 	};
 
 	constructor(props) {
@@ -1333,7 +1333,7 @@ class SearchPage extends React.Component {
 					<div className='container'>
 						{this.state.saveSuccess && (
 							<Alert variant='primary' className='blue-banner saved-preference-banner'>
-								Saved preference: {this.state.showSaveName}
+								Saved preference: {this.state.showSavedName}
 							</Alert>
 						)}
 						<Container className={this.state.saveSuccess && 'container-saved-preference-banner'}>
