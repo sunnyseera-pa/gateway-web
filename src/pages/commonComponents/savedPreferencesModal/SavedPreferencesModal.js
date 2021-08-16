@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Modal, Button, Row, Container, Tab, Tabs } from 'react-bootstrap';
 import './SavedPreferencesModal.scss';
-
+import _ from 'lodash';
 var baseURL = require('../../commonComponents/BaseURL').getURL();
 
 const SavedPreferencesModal = ({ show, onHide }) => {
@@ -16,6 +16,17 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 				setData(res.data.data);
 
 				console.log(res.data.data);
+
+				console.log(
+					res.data.data
+						.filter(b => b.name)
+						.map(a => a.filterCriteria.sort)
+						.filter(a => a)
+						.flat()
+						.map(c => c.highlighted)
+						.filter(a => a)
+						.filter(b => b.length > 0)
+				);
 			})
 			.catch(err => console.log(err));
 	}, []);
@@ -63,7 +74,7 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 									<p className='black-14-bold'>{a.filterCriteria.searchTerm}</p>
 								)}
 							</p>
-							<p className='black-14'>Filters: a.filterCriteria.filters</p>
+							<p className='black-14'>Filters: </p>
 						</div>
 					))}
 			</Modal.Body>
