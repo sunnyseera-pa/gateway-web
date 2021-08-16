@@ -85,3 +85,20 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 };
 
 export default SavedPreferencesModal;
+/*
+{data
+							.filter(b => b.name)
+							.map(b => (
+								<a
+									href={
+										baseURL +
+										'/search?search=' +
+										b.filterCriteria.filterType +
+										'=' +
+										b.filterCriteria.filtersApplied +
+										'&tab=' +
+										b.filterCriteria.tab
+									}>
+									<Button>View matches</Button>
+								</a>
+							))} */
