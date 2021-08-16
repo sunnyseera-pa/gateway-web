@@ -27,6 +27,14 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 						.filter(a => a)
 						.filter(b => b.length > 0)
 				);
+
+				const filterData = res.data.data
+					.filter(a => a.name)
+					.map(a => a.filterCriteria)
+					.map(b => b.sort)
+					.filter(b => b.length > 0);
+
+				console.log(filterData);
 			})
 			.catch(err => console.log(err));
 	}, []);
@@ -76,6 +84,11 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 							</p>
 							<p className='black-14'>Filters: </p>
 						</div>
+						/**data
+						.filter(a => a.name)
+						.map(a => a.filterCriteria)
+						.map(b => b.sort)
+						.filter(b => b.length > 0) */
 					))}
 			</Modal.Body>
 			<Modal.Footer className='saved-preference-modal-footer'>
