@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 import SimpleSearchBar from '../searchBar/SimpleSearchBar';
 import RelatedObject from '../relatedObject/RelatedObject';
+import NotFound from '../../commonComponents/NotFound';
 import './RelatedResourcesModal.scss';
 
 class RelatedResourcesModal extends React.Component {
@@ -18,6 +19,7 @@ class RelatedResourcesModal extends React.Component {
 		],
 		key: '',
 		summary: [],
+		myEntitiesSummary: [],
 		datasetIndex: 0,
 		toolIndex: 0,
 		projectIndex: 0,
@@ -34,6 +36,8 @@ class RelatedResourcesModal extends React.Component {
 			persons: 0,
 			courses: 0,
 		},
+		isAddEditCohort: false,
+		// isAddEditCohort: true,
 	};
 
 	constructor(props) {
@@ -64,8 +68,68 @@ class RelatedResourcesModal extends React.Component {
 		this.props.doSearchMethod(e, type, page);
 	};
 
+	clearIndexesOnSearch = e => {
+		if (e.key === 'Enter') {
+			this.setState({
+				datasetIndex: 0,
+				toolIndex: 0,
+				projectIndex: 0,
+				paperIndex: 0,
+				personIndex: 0,
+				courseIndex: 0,
+			});
+		}
+	};
+
+	getRelatedResourceModalSubheadings = (
+		entityIndex,
+		index,
+		myEntitiesCount,
+		entityCount,
+		firstMyEntityIndex,
+		firstAllEntityIndex,
+		type
+	) => {
+		type = type.toLowerCase();
+
+		let subHeadings;
+		if (entityIndex === 0 && index === 0 && myEntitiesCount === 0 && firstAllEntityIndex === 0) {
+			subHeadings = (
+				<div>
+					<div className='margin-top-32'>
+						<span className='resultsSubHeading'>
+							My {type} ({myEntitiesCount})
+						</span>
+					</div>{' '}
+					<Row className='noMargin noResultsModalSearchCard'>
+						<NotFound word={type} relatedResourceModal={true} />
+					</Row>{' '}
+					<div className='margin-top-16'>
+						<span className='resultsSubHeading'>All {type}</span>
+					</div>
+				</div>
+			);
+		} else if (entityIndex === 0 && index === 0 && firstMyEntityIndex == 0) {
+			subHeadings = (
+				<div className='margin-top-32'>
+					<span className='resultsSubHeading'>
+						My {type} ({myEntitiesCount})
+					</span>
+				</div>
+			);
+		} else if ((index !== 0 || (index === 0 && myEntitiesCount === 0)) && index === firstAllEntityIndex) {
+			subHeadings = (
+				<div className='margin-top-32'>
+					{' '}
+					<span className='resultsSubHeading'>All {type}</span>{' '}
+				</div>
+			);
+		}
+		return subHeadings;
+	};
+
 	render() {
-		const { userState, datasetIndex, toolIndex, projectIndex, paperIndex, personIndex, courseIndex } = this.state;
+		const { userState, datasetIndex, toolIndex, projectIndex, paperIndex, personIndex, courseIndex, isAddEditCohort } = this.state;
 		let { key } = this.state;
 
 		let datasetCount = this.props.summary.datasetCount || 0;
@@ -76,7 +140,7 @@ class RelatedResourcesModal extends React.Component {
 		let courseCount = this.props.summary.courseCount || 0;
 
 		if (key === '' || typeof key === 'undefined') {
-			if (datasetCount > 0) {
+			if (!isAddEditCohort && datasetCount > 0) {
 				key = 'Datasets';
 			} else if (toolCount > 0) {
 				key = 'Tools';
@@ -87,9 +151,9 @@ class RelatedResourcesModal extends React.Component {
 			} else if (personCount > 0) {
 				key = 'People';
 			} else if (courseCount > 0) {
-				key = 'Course';
+				key = 'Courses';
 			} else {
-				key = 'Datasets';
+				isAddEditCohort ? (key = 'Tools') : (key = 'Datasets');
 			}
 		}
 
@@ -247,6 +311,17 @@ class RelatedResourcesModal extends React.Component {
 			});
 		}
 
+		// Index of the first tool user is an author of
+		let firstMyToolIndex = this.props.toolData.map(tool => tool.myEntity).indexOf(true);
+		//Index if the first tool user is not an author of
+		let firstAllToolIndex = this.props.toolData.map(tool => tool.myEntity).indexOf(false);
+		let firstMyProjectIndex = this.props.projectData.map(project => project.myEntity).indexOf(true);
+		let firstAllProjectIndex = this.props.projectData.map(project => project.myEntity).indexOf(false);
+		let firstMyPaperIndex = this.props.paperData.map(paper => paper.myEntity).indexOf(true);
+		let firstAllPaperIndex = this.props.paperData.map(paper => paper.myEntity).indexOf(false);
+		let firstMyCourseIndex = this.props.courseData.map(course => course.myEntity).indexOf(true);
+		let firstAllCourseIndex = this.props.courseData.map(course => course.myEntity).indexOf(false);
+
 		return (
 			<Fragment>
 				<div class='related-search-wrap'>
@@ -256,6 +331,7 @@ class RelatedResourcesModal extends React.Component {
 							doSearchMethod={this.props.doSearchMethod}
 							doUpdateSearchString={this.props.doUpdateSearchString}
 							userState={this.props.userState}
+							doClearIndexesOnSearch={this.clearIndexesOnSearch}
 						/>
 						{typeof this.props.summary.datasetCount !== 'undefined' ? (
 							<div className='searchTabsHolder'>
@@ -265,19 +341,23 @@ class RelatedResourcesModal extends React.Component {
 										className='tabsBackground-shadow-bottom gray700-13'
 										activeKey={key}
 										onSelect={this.handleSelect}>
-										<Tab
-											eventKey='Datasets'
-											title={
-												'Datasets (' +
-												(!this.props.summary.datasetCount ? '0' : this.props.summary.datasetCount - this.state.selected.datasets) +
-												')'
-											}
-										/>
+										{!isAddEditCohort && (
+											<Tab
+												eventKey='Datasets'
+												title={
+													'Datasets (' +
+													(!this.props.summary.datasetCount ? '0' : this.props.summary.datasetCount - this.state.selected.datasets) +
+													')'
+												}
+											/>
+										)}
 										<Tab
 											eventKey='Tools'
 											title={
 												'Tools (' +
-												(!this.props.summary.toolCount ? '0' : this.props.summary.toolCount - this.state.selected.tools - editingObjectTool) +
+												(!this.props.summary.toolCount
+													? '0'
+													: this.props.summary.toolCount - this.state.selected.tools - editingObjectTool) +
 												')'
 											}
 										/>
@@ -292,20 +372,28 @@ class RelatedResourcesModal extends React.Component {
 											}
 										/>
 										<Tab
-											eventKey='Course'
+											eventKey='Courses'
 											title={
-												'Courses (' + (!this.props.summary.courseCount ? '0' : this.props.summary.courseCount - this.state.selected.courses) + ')'
+												'Courses (' +
+												(!this.props.summary.courseCount ? '0' : this.props.summary.courseCount - this.state.selected.courses) +
+												')'
 											}
 										/>
 										<Tab
 											data-test-id='related-papers'
 											eventKey='Papers'
-											title={'Papers (' + (!this.props.summary.paperCount ? '0' : this.props.summary.paperCount - this.state.selected.papers) + ')'}
+											title={
+												'Papers (' +
+												(!this.props.summary.paperCount ? '0' : this.props.summary.paperCount - this.state.selected.papers) +
+												')'
+											}
 										/>
 										<Tab
 											eventKey='People'
 											title={
-												'People (' + (!this.props.summary.personCount ? '0' : this.props.summary.personCount - this.state.selected.persons) + ')'
+												'People (' +
+												(!this.props.summary.personCount ? '0' : this.props.summary.personCount - this.state.selected.persons) +
+												')'
 											}
 										/>
 									</Tabs>
@@ -358,7 +446,17 @@ class RelatedResourcesModal extends React.Component {
 								{key === 'Tools'
 									? !this.props.toolData
 										? ''
-										: this.props.toolData.map(tool => {
+										: this.props.toolData.map((tool, index) => {
+												let modalSubHeadings = this.getRelatedResourceModalSubheadings(
+													toolIndex,
+													index,
+													this.props.myEntitiesSummary.myToolsCount,
+													toolCount,
+													firstMyToolIndex,
+													firstAllToolIndex,
+													key
+												);
+
 												if (
 													this.state.relatedObjectIds.includes(tool.id) ||
 													this.state.relatedObjectIds.includes(JSON.stringify(tool.id)) ||
@@ -367,13 +465,16 @@ class RelatedResourcesModal extends React.Component {
 													return '';
 												} else {
 													return (
-														<RelatedObject
-															key={tool.id}
-															data={tool}
-															activeLink={false}
-															doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects}
-															tempRelatedObjectIds={this.props.tempRelatedObjectIds}
-														/>
+														<div>
+															{modalSubHeadings}
+															<RelatedObject
+																key={tool.id}
+																data={tool}
+																activeLink={false}
+																doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects}
+																tempRelatedObjectIds={this.props.tempRelatedObjectIds}
+															/>
+														</div>
 													);
 												}
 										  })
@@ -382,7 +483,17 @@ class RelatedResourcesModal extends React.Component {
 								{key === 'Projects'
 									? !this.props.projectData
 										? ''
-										: this.props.projectData.map(project => {
+										: this.props.projectData.map((project, index) => {
+												let modalSubHeadings = this.getRelatedResourceModalSubheadings(
+													projectIndex,
+													index,
+													this.props.myEntitiesSummary.myProjectsCount,
+													projectCount,
+													firstMyProjectIndex,
+													firstAllProjectIndex,
+													key
+												);
+
 												if (
 													this.state.relatedObjectIds.includes(project.id) ||
 													this.state.relatedObjectIds.includes(JSON.stringify(project.id)) ||
@@ -391,13 +502,16 @@ class RelatedResourcesModal extends React.Component {
 													return '';
 												} else {
 													return (
-														<RelatedObject
-															key={project.id}
-															data={project}
-															activeLink={false}
-															doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects}
-															tempRelatedObjectIds={this.props.tempRelatedObjectIds}
-														/>
+														<div>
+															{modalSubHeadings}
+															<RelatedObject
+																key={project.id}
+																data={project}
+																activeLink={false}
+																doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects}
+																tempRelatedObjectIds={this.props.tempRelatedObjectIds}
+															/>
+														</div>
 													);
 												}
 										  })
@@ -406,7 +520,17 @@ class RelatedResourcesModal extends React.Component {
 								{key === 'Papers'
 									? !this.props.paperData
 										? ''
-										: this.props.paperData.map(paper => {
+										: this.props.paperData.map((paper, index) => {
+												let modalSubHeadings = this.getRelatedResourceModalSubheadings(
+													paperIndex,
+													index,
+													this.props.myEntitiesSummary.myPapersCount,
+													paperCount,
+													firstMyPaperIndex,
+													firstAllPaperIndex,
+													key
+												);
+
 												if (
 													this.state.relatedObjectIds.includes(paper.id) ||
 													this.state.relatedObjectIds.includes(JSON.stringify(paper.id)) ||
@@ -415,13 +539,16 @@ class RelatedResourcesModal extends React.Component {
 													return '';
 												} else {
 													return (
-														<RelatedObject
-															key={paper.id}
-															data={paper}
-															activeLink={false}
-															doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects}
-															tempRelatedObjectIds={this.props.tempRelatedObjectIds}
-														/>
+														<div>
+															{modalSubHeadings}
+															<RelatedObject
+																key={paper.id}
+																data={paper}
+																activeLink={false}
+																doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects}
+																tempRelatedObjectIds={this.props.tempRelatedObjectIds}
+															/>
+														</div>
 													);
 												}
 										  })
@@ -450,10 +577,20 @@ class RelatedResourcesModal extends React.Component {
 										  })
 									: ''}
 
-								{key === 'Course'
+								{key === 'Courses'
 									? !this.props.courseData
 										? ''
-										: this.props.courseData.map(course => {
+										: this.props.courseData.map((course, index) => {
+												let modalSubHeadings = this.getRelatedResourceModalSubheadings(
+													courseIndex,
+													index,
+													this.props.myEntitiesSummary.myCoursesCount,
+													courseCount,
+													firstMyCourseIndex,
+													firstAllCourseIndex,
+													key
+												);
+
 												if (
 													this.state.relatedObjectIds.includes(course.id) ||
 													this.state.relatedObjectIds.includes(JSON.stringify(course.id))
@@ -461,13 +598,16 @@ class RelatedResourcesModal extends React.Component {
 													return '';
 												} else {
 													return (
-														<RelatedObject
-															key={course.id}
-															data={course}
-															activeLink={false}
-															doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects}
-															tempRelatedObjectIds={this.props.tempRelatedObjectIds}
-														/>
+														<div>
+															{modalSubHeadings}
+															<RelatedObject
+																key={course.id}
+																data={course}
+																activeLink={false}
+																doAddToTempRelatedObjects={this.props.doAddToTempRelatedObjects}
+																tempRelatedObjectIds={this.props.tempRelatedObjectIds}
+															/>
+														</div>
 													);
 												}
 										  })
@@ -484,7 +624,7 @@ class RelatedResourcesModal extends React.Component {
 
 									{key === 'People' && personCount > maxResult ? <Pagination>{personPaginationItems}</Pagination> : ''}
 
-									{key === 'Course' && courseCount > maxResult ? <Pagination>{coursePaginationItems}</Pagination> : ''}
+									{key === 'Courses' && courseCount > maxResult ? <Pagination>{coursePaginationItems}</Pagination> : ''}
 								</div>
 							</Col>
 							<Col sm={2} lg={2} />

@@ -38,6 +38,7 @@ class AddEditProjectPage extends React.Component {
 		paperData: [],
 		courseData: [],
 		summary: [],
+		myEntitiesSummary: [],
 		tempRelatedObjectIds: [],
 		relatedObjectIds: [],
 		relatedObjects: [],
@@ -151,6 +152,7 @@ class AddEditProjectPage extends React.Component {
 						paperData: res.data.paperResults || [],
 						courseData: res.data.courseResults || [],
 						summary: res.data.summary || [],
+						myEntitiesSummary: res.data.myEntitiesSummary || [],
 						isLoading: false,
 					});
 				});
@@ -240,6 +242,7 @@ class AddEditProjectPage extends React.Component {
 			paperData,
 			courseData,
 			summary,
+			myEntitiesSummary,
 			relatedObjects,
 			didDelete,
 			showDrawer,
@@ -282,6 +285,7 @@ class AddEditProjectPage extends React.Component {
 					paperData={paperData}
 					courseData={courseData}
 					summary={summary}
+					myEntitiesSummary={myEntitiesSummary}
 					doAddToTempRelatedObjects={this.addToTempRelatedObjects}
 					tempRelatedObjectIds={this.state.tempRelatedObjectIds}
 					doClearRelatedObjects={this.clearRelatedObjects}
