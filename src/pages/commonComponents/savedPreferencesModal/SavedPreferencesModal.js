@@ -19,7 +19,7 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 
 				console.log(
 					res.data.data
-						.filter(b => b.name)
+						.filter(a => a.name)
 						.map(a => a.filterCriteria.sort)
 						.filter(a => a)
 						.flat()
