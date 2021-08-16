@@ -13,9 +13,19 @@ const ApplicantActionButtons = ({
 	showCreateNewVersion,
 	showArchive,
 	showUnArchive,
+	showDeleteDraft,
+	onShowDeleteDraftModal,
 }) => {
 	return (
 		<Fragment>
+			{showDeleteDraft ? (
+				<a onClick={e => onShowDeleteDraftModal()}>
+					{' '}
+					<span class='rejected-red-semibold-14 deleteDraftDataset cursorPointer'>Delete draft</span>{' '}
+				</a>
+			) : (
+				''
+			)}
 			{showArchive ? (
 				<button className={`button-tertiary ${allowedNavigation ? '' : 'disabled'}`} onClick={e => onShowArchiveModal()}>
 					Archive
