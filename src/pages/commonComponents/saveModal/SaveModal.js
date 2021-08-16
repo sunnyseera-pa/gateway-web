@@ -31,8 +31,6 @@ const SaveModal = ({ ...props }) => {
 			axios
 				.post(baseURL + '/api/v1/search-preferences', values)
 				.then(res => {
-					console.log(res.data.response.name);
-
 					setClose(props.onHide);
 					props.saveName(res.data.response.name);
 					setSaveSuccess(props.saveSuccess);
