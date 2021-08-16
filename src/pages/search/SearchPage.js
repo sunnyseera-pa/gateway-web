@@ -107,8 +107,9 @@ class SearchPage extends React.Component {
 		filtersV2: [],
 		selectedV2: [],
 		savedSearchPanel: true,
-		showAlert: false,
+		saveSuccess: false,
 		showLoggedInModal: true,
+		showSaveName: '',
 	};
 
 	constructor(props) {
@@ -132,6 +133,14 @@ class SearchPage extends React.Component {
 
 	hideSavedModal = () => {
 		this.setState({ showSavedModal: false });
+	};
+
+	showSuccessMessage = () => {
+		this.setState({ saveSuccess: true });
+	};
+
+	showSavedName = () => {
+		this.setState({ showSavedName: '' });
 	};
 
 	toggleAdvancedSearchModal = () => {
@@ -1322,12 +1331,12 @@ class SearchPage extends React.Component {
 					</div>
 
 					<div className='container'>
-						{this.state.showAlert && (
+						{this.state.saveSuccess && (
 							<Alert variant='primary' className='blue-banner saved-preference-banner'>
-								Saved preference: "[search query goes here]"
+								Saved preference: {this.state.showSaveName}
 							</Alert>
 						)}
-						<Container className={this.state.showAlert && 'container-saved-preference-banner'}>
+						<Container className={this.state.saveSuccess && 'container-saved-preference-banner'}>
 							<Row className='filters filter-save'>
 								<Col className='title'>
 									Showing {key === 'Datasets' ? <>{datasetCount} </> : ''}
@@ -1337,7 +1346,7 @@ class SearchPage extends React.Component {
 									{key === 'Courses' ? <>{courseCount} </> : ''}
 									{key === 'Papers' ? <>{paperCount} </> : ''}
 									{key === 'People' ? <>{personCount} </> : ''}
-									results for 'query'
+									results for {this.state.search}
 								</Col>
 								<Col
 									className={
@@ -1347,7 +1356,7 @@ class SearchPage extends React.Component {
 											? 'saved-buttons saved-buttons-courses'
 											: 'saved-buttons saved-buttons-small'
 									}>
-									{this.state.showAlert ? (
+									{this.state.saveSuccess ? (
 										<Button variant='success' className='saved-disabled button-teal button-teal' disabled>
 											<SVGIcon width='15px' height='15px' name='tick' fill={'#fff'} /> Saved
 										</Button>
@@ -1365,7 +1374,8 @@ class SearchPage extends React.Component {
 										<SaveModal
 											show={this.state.showSavedModal}
 											onHide={this.hideSavedModal}
-											showAlert={this.state.showAlert}
+											saveSuccess={this.showSuccessMessage}
+											saveName={this.showSavedName}
 											search={this.state.search}
 											filters={this.state.allFilters}
 											sort={this.state.filtersV2}
