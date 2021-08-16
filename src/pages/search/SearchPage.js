@@ -102,6 +102,8 @@ class SearchPage extends React.Component {
 		],
 		filtersV2: [],
 		selectedV2: [],
+		filtersV2Tools: [],
+		selectedV2Tools: [],
 		savedSearchPanel: true,
 	};
 
@@ -137,6 +139,15 @@ class SearchPage extends React.Component {
 		await this.getGlobals();
 		// 2. fires on first time in or page is refreshed/url loaded / has search location
 		if (!!window.location.search) {
+			console.log(window.location);
+
+			const urlParams = new URLSearchParams(window.location.search);
+			const tab = urlParams.get('tab');
+			if (tab) {
+				this.setState({ key: tab });
+			}
+			await this.getGlobals();
+
 			// 3. splits location search into object { search: search, tab: Datasets}
 			let queryParams = queryString.parse(window.location.search);
 			// 4. if values has loginReferrer set location href to it.
@@ -201,10 +212,81 @@ class SearchPage extends React.Component {
 	 */
 	findImpliedFilterNode = (filters = [], impliedValues) => {
 		if (!_.isEmpty(filters)) {
-			const formattedValues = impliedValues.split('::').map(value => value.toLowerCase()).join(','); 
+			const formattedValues = impliedValues
+				.split('::')
+				.map(value => value.toLowerCase())
+				.join(',');
 			return [...filters].find(node => node.value.toLowerCase() === formattedValues) || {};
 		}
 		return {};
+	};
+
+	/**
+	 * @desc      Turns keys into array for looping ['publisher', 'phenotype']
+	 * @param {*} filtersV2
+	 * @param {*} selectedV2
+	 * @param {*} queryParams
+	 */
+	setSelectedFiltersFromQueryParams = async (filtersV2, selectedV2, queryParams, tab) => {
+		if (!_.isEmpty(Object.keys(queryParams))) {
+			// 3. loop over queryKeys
+			for (const key of Object.keys(queryParams)) {
+				if (!_.isNil(queryParams[key])) {
+					// 4. convert queryString into array of values
+					let queryValues = queryParams[key].split('::');
+					// 5. check if key exists in our tree, return {} or undefined
+					let parentNode = this.findParentNode(filtersV2, key);
+					if (!_.isNil(parentNode)) {
+						let { filters } = parentNode;
+						// 6. Determine whether to perform regular filter selection or implied filter selection
+						const isImpliedFilter = filters.some(filter => _.has(filter, 'impliedValues'));
+						let nodes = [];
+						if (isImpliedFilter) {
+							// find node by implied values
+							let foundNode = this.findImpliedFilterNode(filters, queryParams[key]);
+							if (!_.isEmpty(foundNode)) {
+								nodes.push(foundNode);
+							}
+						} else {
+							// loop over query values
+							queryValues.forEach(node => {
+								// get the selected values
+								let foundNode = this.findNode(filters, node);
+								if (!_.isEmpty(foundNode)) {
+									nodes.push(foundNode);
+								}
+							});
+						}
+						nodes.forEach(node => {
+							// 7. set check value
+							node.checked = !node.checked;
+							// 8. increment highest parent count
+							parentNode.selectedCount += 1;
+							// 9. prep new selected Item for selected showing
+							let selectedNode = {
+								parentKey: key,
+								id: node.id,
+								label: node.label,
+								value: node.value,
+							};
+							// 10. fn for handling the *selected showing* returns new state
+							let selected = this.handleSelected(selectedNode, node.checked);
+							// 11. update selectedV2 array with our new returned value
+							selectedV2 = [...selectedV2, ...selected];
+						});
+					}
+				}
+			}
+			// 12. set the state of filters and selected options
+			switch (tab) {
+				case 'dataset':
+					this.setState({ filtersV2, selectedV2 });
+					break;
+				case 'tool':
+					this.setState({ filtersV2Tool: filtersV2, selectedV2Tools: selectedV2 });
+					break;
+			}
+		}
 	};
 
 	/**
@@ -213,65 +295,19 @@ class SearchPage extends React.Component {
 	 * @desc Sets selectedStates for filters including search string
 	 */
 	async updateFilterStates(queryParams) {
-		let filtersV2, selectedV2;
 		if (!_.isEmpty(this.state.filtersV2)) {
-			// 1. take copy of filters data
-			filtersV2 = [...this.state.filtersV2];
-			selectedV2 = [...this.state.selectedV2];
-			// 2. turns keys into array for looping ['publisher', 'phenotype']
-			if (!_.isEmpty(Object.keys(queryParams))) {
-				// 3. loop over queryKeys
-				for (const key of Object.keys(queryParams)) {
-					if (!_.isNil(queryParams[key])) {
-						// 4. convert queryString into array of values
-						let queryValues = queryParams[key].split('::');
-						// 5. check if key exists in our tree, return {} or undefined
-						let parentNode = this.findParentNode(filtersV2, key);
-						if (!_.isNil(parentNode)) {
-							let { filters } = parentNode;
-							// 6. Determine whether to perform regular filter selection or implied filter selection
-							const isImpliedFilter = filters.some(filter => _.has(filter, 'impliedValues'));
-							let nodes = [];
-							if (isImpliedFilter) {
-								// find node by implied values
-								let foundNode = this.findImpliedFilterNode(filters, queryParams[key]);
-								if (!_.isEmpty(foundNode)) {
-									nodes.push(foundNode);
-								}
-							} else {
-								// loop over query values
-								queryValues.forEach(node => {
-									// get the selected values
-									let foundNode = this.findNode(filters, node);
-									if (!_.isEmpty(foundNode)) {
-										nodes.push(foundNode);
-									}
-								});
-							}
-							nodes.forEach(node => {
-								// 7. set check value
-								node.checked = !node.checked;
-								// 8. increment highest parent count
-								parentNode.selectedCount += 1;
-								// 9. prep new selected Item for selected showing
-								let selectedNode = {
-									parentKey: key,
-									id: node.id,
-									label: node.label,
-									value: node.value,
-								};
-								// 10. fn for handling the *selected showing* returns new state
-								let selected = this.handleSelected(selectedNode, node.checked);
-								// 11. update selectedV2 array with our new returned value
-								selectedV2 = [...selectedV2, ...selected];
-							});
-						}
-					}
-				}
-				// 12. set the state of filters and selected options
-				this.setState({ filtersV2, selectedV2 });
-			}
+			const filtersV2 = [...this.state.filtersV2];
+			const selectedV2 = [...this.state.selectedV2];
+			this.setSelectedFiltersFromQueryParams(filtersV2, selectedV2, queryParams, 'dataset');
+			console.log(this.state);
 		}
+		if (!_.isEmpty(this.state.filtersV2Tools)) {
+			const filtersV2Tools = [...this.state.filtersV2Tools];
+			const selectedV2Tools = [...this.state.selectedV2Tools];
+			this.setSelectedFiltersFromQueryParams(filtersV2Tools, selectedV2Tools, queryParams, 'tool');
+			console.log(this.state);
+		}
+
 		// 14. original filters setting of data remove if entity moves to V2 for correct filter
 		queryParams.search ? this.setState({ search: queryParams.search }) : this.setState({ search: '' });
 		// V1 Tools
@@ -366,17 +402,21 @@ class SearchPage extends React.Component {
 	clearFilterStates() {
 		// 1. v2 take copy of data
 		let filtersV2Data = [...this.state.filtersV2];
+		let filtersV2ToolsData = [...this.state.filtersV2Tools];
 		// 2. v2 resets the filters UI tree back to default
 		let filtersV2 = this.resetTreeChecked(filtersV2Data);
+		let filtersV2Tools = this.resetTreeChecked(filtersV2ToolsData);
 
 		this.setState(
 			prevState => ({
 				filtersV2,
 				selectedV2: [],
-				toolCategoriesSelected: [],
-				toolProgrammingLanguageSelected: [],
-				toolFeaturesSelected: [],
-				toolTopicsSelected: [],
+				filtersV2Tools,
+				selectedV2Tools: [],
+				// toolCategoriesSelected: [],
+				// toolProgrammingLanguageSelected: [],
+				// toolFeaturesSelected: [],
+				// toolTopicsSelected: [],
 				projectCategoriesSelected: [],
 				projectFeaturesSelected: [],
 				projectTopicsSelected: [],
@@ -462,6 +502,7 @@ class SearchPage extends React.Component {
 	doSearchCall(skipHistory) {
 		let searchURL = '';
 		let filtersV2 = [];
+		let filtersV2Tools = [];
 		let {
 			userState,
 			toolCategoriesSelected = [],
@@ -501,18 +542,19 @@ class SearchPage extends React.Component {
 			collectionSort = '',
 		} = this.state;
 		// 1. build search object from list of selected fitlers v2 only
-		const searchObj = this.buildSearchObj(this.state.selectedV2);
+		let searchObj = { ...this.buildSearchObj(this.state.selectedV2), ...this.buildSearchObj(this.state.selectedV2Tools) };
+
 		// 2. dynamically build the searchUrl v2 only
 		searchURL = this.buildSearchUrl(searchObj);
 		// 3. build up V1 Tools / early filters, no change from original implementation
-		if (toolCategoriesSelected.length > 0)
-			searchURL += '&toolcategories=' + encodeURIComponent(toolCategoriesSelected.toString().split(',').join('::'));
-		if (toolProgrammingLanguageSelected.length > 0)
-			searchURL += '&toolprogrammingLanguage=' + encodeURIComponent(toolProgrammingLanguageSelected.toString().split(',').join('::'));
-		if (toolFeaturesSelected.length > 0)
-			searchURL += '&toolfeatures=' + encodeURIComponent(toolFeaturesSelected.toString().split(',').join('::'));
-		if (toolTopicsSelected.length > 0)
-			searchURL += '&tooltopics=' + encodeURIComponent(toolTopicsSelected.toString().split(',').join('::'));
+		// if (toolCategoriesSelected.length > 0)
+		// 	searchURL += '&toolcategories=' + encodeURIComponent(toolCategoriesSelected.toString().split(',').join('::'));
+		// if (toolProgrammingLanguageSelected.length > 0)
+		// 	searchURL += '&toolprogrammingLanguage=' + encodeURIComponent(toolProgrammingLanguageSelected.toString().split(',').join('::'));
+		// if (toolFeaturesSelected.length > 0)
+		// 	searchURL += '&toolfeatures=' + encodeURIComponent(toolFeaturesSelected.toString().split(',').join('::'));
+		// if (toolTopicsSelected.length > 0)
+		// 	searchURL += '&tooltopics=' + encodeURIComponent(toolTopicsSelected.toString().split(',').join('::'));
 		// V1 Projects
 		if (projectCategoriesSelected.length > 0)
 			searchURL += '&projectcategories=' + encodeURIComponent(projectCategoriesSelected.toString().split(',').join('::'));
@@ -594,6 +636,10 @@ class SearchPage extends React.Component {
 						let filtersV2State = this.state.filtersV2 || [];
 						filtersV2 = this.setHighlightedFilters(filters, [...filtersV2State]);
 						this.setState({ filtersV2 });
+					} else if (entityType === 'tool') {
+						let filtersV2ToolState = this.state.filtersV2Tools || [];
+						filtersV2Tools = this.setHighlightedFilters(filters, [...filtersV2ToolState]);
+						this.setState({ filtersV2Tools });
 					} else {
 						this.setState({ ...filters });
 					}
@@ -636,7 +682,7 @@ class SearchPage extends React.Component {
 		const {
 			data: { filters = {}, allFilters = [], filterOptions = [] },
 		} = response;
-		if (tab === 'dataset') {
+		if (tab === 'dataset' || tab === 'tool') {
 			return filters;
 		} else {
 			return {
@@ -674,7 +720,9 @@ class SearchPage extends React.Component {
 		let values = queryString.parse(window.location.search);
 		values.tab = key;
 		this.props.history.push(window.location.pathname + '?' + queryString.stringify(values));
-		this.setState({ key: key, isResultsLoading: true }, () => {
+
+		this.setState({ key, isResultsLoading: true }, () => {
+			this.getFilters();
 			this.doSearchCall();
 		});
 	};
@@ -712,8 +760,8 @@ class SearchPage extends React.Component {
 			} = response;
 			if (!_.isEmpty(dataUtilityFilters)) {
 				const dataUtilityWizardSteps = dataUtilityFilters.filter(item => item.includeInWizard);
-				await this.getFilters(dataUtilityFilters);
 				this.setState({ dataUtilityFilters, dataUtilityWizardSteps });
+				await this.getFilters();
 			}
 		} catch (error) {
 			console.error(error.message);
@@ -725,18 +773,37 @@ class SearchPage extends React.Component {
 	 *
 	 * @desc Get all the filters for dataset
 	 */
-	getFilters = async filterDictionary => {
-		try {
-			const response = await axios.get(`${baseURL}/api/v2/filters/dataset`);
-			const {
-				data: { data: filterData },
-			} = response;
-			if (!_.isEmpty(filterData)) {
-				const filtersV2 = this.mapFiltersToDictionary(filterData, filterDictionary);
-				this.setState({ filtersV2 });
+	getFilters = async () => {
+		let key = typeMapper[`${this.state.key}`];
+
+		if (this.shouldGetFilters(key)) {
+			try {
+				const response = await axios.get(`${baseURL}/api/v2/filters/${key}`);
+				const {
+					data: { data: filterData },
+				} = response;
+				if (!_.isEmpty(filterData) && key === 'dataset') {
+					const filtersV2 = this.mapFiltersToDictionary(filterData, this.state.dataUtilityFilters);
+					this.setState({ filtersV2 });
+				} else if (key === 'tool') {
+					const filtersV2Tools = this.mapFiltersToDictionary(filterData, this.state.dataUtilityFilters);
+
+					this.setState({ filtersV2Tools });
+				}
+			} catch (error) {
+				console.error(error.message);
 			}
-		} catch (error) {
-			console.error(error.message);
+		}
+	};
+
+	shouldGetFilters = key => {
+		switch (key) {
+			case 'dataset':
+				return _.isEmpty(this.state.filtersV2);
+			case 'tool':
+				return _.isEmpty(this.state.filtersV2Tools);
+			default:
+				return false;
 		}
 	};
 
@@ -863,7 +930,7 @@ class SearchPage extends React.Component {
 			// 1. take label and parentId values from the node
 			let { parentKey, label } = selectedNode;
 			// 2. copy state data *avoid mutation*
-			filtersV2 = [...this.state.filtersV2];
+			filtersV2 = this.getFilterStateByKey(this.state.key);
 			// 3. find parentNode in the tree
 			parentNode = this.findParentNode(filtersV2, parentKey);
 			if (!_.isEmpty(parentNode)) {
@@ -879,10 +946,20 @@ class SearchPage extends React.Component {
 					// 8. remove from selectedV2 array
 					selectedV2 = this.handleSelected(selectedNode, false);
 					// 9. set state
-					this.setState({ filtersV2, selectedV2, isResultsLoading: true }, () => {
-						// 10. callback wait for state to update
-						this.doSearchCall();
-					});
+					switch (this.state.key) {
+						case 'Datasets':
+							this.setState({ filtersV2, selectedV2, isResultsLoading: true }, () => {
+								// 10. callback wait for state to update
+								this.doSearchCall();
+							});
+							break;
+						case 'Tools':
+							this.setState({ filtersV2Tools: filtersV2, selectedV2Tools: selectedV2, isResultsLoading: true }, () => {
+								// 10. callback wait for state to update
+								this.doSearchCall();
+							});
+							break;
+					}
 				}
 			}
 		}
@@ -918,13 +995,22 @@ class SearchPage extends React.Component {
 	 */
 	handleClearAll = () => {
 		// 1. take copy of data
-		let filtersV2Data = [...this.state.filtersV2];
+		let filtersV2Data = this.getFilterStateByKey(this.state.key);
 		// 2. resets the filters UI tree back to default
 		let filtersV2 = this.resetTreeChecked(filtersV2Data);
 		// 3. set state and call search
-		this.setState({ filtersV2, selectedV2: [], isResultsLoading: true }, () => {
-			this.doSearchCall();
-		});
+		switch (this.state.key) {
+			case 'Datasets':
+				this.setState({ filtersV2, selectedV2: [], isResultsLoading: true }, () => {
+					this.doSearchCall();
+				});
+				break;
+			case 'Tools':
+				this.setState({ filtersV2Tools: filtersV2, selectedV2Tools: [], isResultsLoading: true }, () => {
+					this.doSearchCall();
+				});
+				break;
+		}
 	};
 
 	/**
@@ -937,7 +1023,7 @@ class SearchPage extends React.Component {
 	 * @return	{array} array of selected items
 	 */
 	handleSelected = (selected = {}, checked = false) => {
-		let selectedV2 = [...this.state.selectedV2];
+		let selectedV2 = this.getSelectedFiltersStateByKey(this.state.key);
 		let results = [];
 		if (!_.isEmpty(selected)) {
 			if (checked) {
@@ -1008,7 +1094,7 @@ class SearchPage extends React.Component {
 	handleClearSection = node => {
 		let selectedV2, filtersV2, parentNode, selectedNodeFilters;
 		let { key, filters } = node;
-		selectedV2 = [...this.state.selectedV2];
+		selectedV2 = this.getSelectedFiltersStateByKey(this.state.key);
 		// 1. find the filters
 		if (!_.isEmpty(filters)) {
 			selectedNodeFilters = filters
@@ -1017,7 +1103,7 @@ class SearchPage extends React.Component {
 					return { ...node, checked: false };
 				});
 			// 1. copy state - stop mutation
-			filtersV2 = [...this.state.filtersV2];
+			filtersV2 = this.getFilterStateByKey(this.state.key);
 			// 2. find parent obj - recursive
 			parentNode = this.findParentNode(filtersV2, key);
 			if (!_.isEmpty(parentNode)) {
@@ -1035,10 +1121,47 @@ class SearchPage extends React.Component {
 					}
 				});
 				// 9. set state
-				this.setState({ filtersV2, selectedV2, isResultsLoading: true }, () => {
-					this.doSearchCall();
-				});
+				switch (this.state.key) {
+					case 'Datasets':
+						this.setState({ filtersV2, selectedV2, isResultsLoading: true }, () => {
+							this.doSearchCall();
+						});
+						break;
+					case 'Tools':
+						this.setState({ filtersV2Tools: filtersV2, selectedV2Tools: selectedV2, isResultsLoading: true }, () => {
+							this.doSearchCall();
+						});
+						break;
+				}
 			}
+		}
+	};
+
+	/**
+	 * Get the filters in state for the particular tab
+	 */
+	getFilterStateByKey = key => {
+		switch (key) {
+			case 'Datasets':
+				return [...this.state.filtersV2];
+			case 'Tools':
+				return [...this.state.filtersV2Tools];
+			default:
+				return [];
+		}
+	};
+
+	/**
+	 * Get the selected filters in state for the particular tab
+	 */
+	getSelectedFiltersStateByKey = key => {
+		switch (key) {
+			case 'Datasets':
+				return [...this.state.selectedV2];
+			case 'Tools':
+				return [...this.state.selectedV2Tools];
+			default:
+				return [];
 		}
 	};
 
@@ -1052,7 +1175,7 @@ class SearchPage extends React.Component {
 	 */
 	handleInputChange = (node, parentKey, checkValue) => {
 		// 1. copy state - stop mutation
-		let filtersV2 = [...this.state.filtersV2];
+		let filtersV2 = this.getFilterStateByKey(this.state.key);
 		// 2. find parent obj - recursive
 		let parentNode = this.findParentNode(filtersV2, parentKey);
 		if (!_.isEmpty(parentNode)) {
@@ -1062,7 +1185,7 @@ class SearchPage extends React.Component {
 			let foundNode = this.findNode(filters, node.label);
 			if (!_.isEmpty(foundNode)) {
 				// find if the node already exists in the selectedV2 - if so we are unchecking / removing
-				const exists = [...this.state.selectedV2].some(selected => selected.id === foundNode.id);
+				const exists = this.getSelectedFiltersStateByKey(this.state.key).some(selected => selected.id === foundNode.id);
 				if (!exists || (exists && foundNode.checked != checkValue)) {
 					// 4. set check value
 					foundNode.checked = checkValue;
@@ -1078,10 +1201,18 @@ class SearchPage extends React.Component {
 					// 7. fn for handling the *selected showing* returns new state
 					const selectedV2 = this.handleSelected(selectedNode, checkValue);
 					// 8. set state
-					this.setState({ filtersV2, selectedV2, isResultsLoading: true }, () => {
-						// callback once state has updated
-						this.doSearchCall();
-					});
+					switch (this.state.key) {
+						case 'Datasets':
+							this.setState({ filtersV2, selectedV2, isResultsLoading: true }, () => {
+								this.doSearchCall();
+							});
+							break;
+						case 'Tools':
+							this.setState({ filtersV2Tools: filtersV2, selectedV2Tools: selectedV2, isResultsLoading: true }, () => {
+								this.doSearchCall();
+							});
+							break;
+					}
 				}
 			}
 		}
@@ -1097,14 +1228,21 @@ class SearchPage extends React.Component {
 		let parentNode;
 		if (!_.isEmpty(node)) {
 			// 1. copy state - stop mutation
-			let filtersV2 = [...this.state.filtersV2];
+			let filtersV2 = this.getFilterStateByKey(this.state.key);
 			// 2. find parent obj - recursive
 			let { key } = node;
 			// 3. return parent node of toggled
 			parentNode = this.findParentNode(filtersV2, key);
 			if (!_.isEmpty(parentNode)) {
 				parentNode.closed = !parentNode.closed;
-				this.setState({ filtersV2 });
+				switch (this.state.key) {
+					case 'Datasets':
+						this.setState({ filtersV2 });
+						break;
+					case 'Tools':
+						this.setState({ filtersV2Tools: filtersV2 });
+						break;
+				}
 			}
 		}
 	};
@@ -1185,6 +1323,8 @@ class SearchPage extends React.Component {
 			filtersV2,
 			selectedV2,
 
+			filtersV2Tools,
+			selectedV2Tools,
 			showDrawer,
 			showModal,
 			showAdvancedSearchModal,
@@ -1369,13 +1509,28 @@ class SearchPage extends React.Component {
 								</Col>
 							</Row>
 							<Row>
-								<FilterSelection
-									selectedCount={selectedV2.length}
-									selectedItems={selectedV2}
-									onHandleClearSelection={this.handleClearSelection}
-									onHandleClearAll={this.handleClearAll}
-									savedSearches={true}
-								/>
+								{this.state.key === 'Datasets' ? (
+									<FilterSelection
+										selectedCount={selectedV2.length}
+										selectedItems={selectedV2}
+										onHandleClearSelection={this.handleClearSelection}
+										onHandleClearAll={this.handleClearAll}
+										savedSearches={true}
+									/>
+								) : (
+									''
+								)}
+								{this.state.key === 'Tools' ? (
+									<FilterSelection
+										selectedCount={selectedV2Tools.length}
+										selectedItems={selectedV2Tools}
+										onHandleClearSelection={this.handleClearSelection}
+										onHandleClearAll={this.handleClearAll}
+										savedSearches={true}
+									/>
+								) : (
+									''
+								)}
 							</Row>
 						</Container>
 					</div>
@@ -1407,119 +1562,24 @@ class SearchPage extends React.Component {
 									)}
 
 									{key === 'Tools' ? (
-										<>
-											<div className={this.state.savedSearchPanel ? 'filterHolder saved-filterHolder' : 'filterHolder'}>
-												{toolCategoriesSelected.length !== 0 ||
-												toolProgrammingLanguageSelected.length !== 0 ||
-												toolFeaturesSelected.length !== 0 ||
-												toolTopicsSelected.length !== 0 ? (
-													<div className='filterCard mb-2'>
-														<Row>
-															<Col className='mb-2'>
-																<div className='inlineBlock'>
-																	<div className='gray500-13'>Showing:</div>
-																</div>
-																<div className='floatRight'>
-																	<div className='purple-13 pointer' onClick={() => this.clearFilter('All')}>
-																		Clear all
-																	</div>
-																</div>
-															</Col>
-														</Row>
-
-														{!toolCategoriesSelected || toolCategoriesSelected.length <= 0
-															? ''
-															: toolCategoriesSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'toolCategoriesSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!toolProgrammingLanguageSelected || toolProgrammingLanguageSelected.length <= 0
-															? ''
-															: toolProgrammingLanguageSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'toolProgrammingLanguageSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!toolFeaturesSelected || toolFeaturesSelected.length <= 0
-															? ''
-															: toolFeaturesSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'toolFeaturesSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!toolTopicsSelected || toolTopicsSelected.length <= 0
-															? ''
-															: toolTopicsSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'toolTopicsSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-													</div>
-												) : (
-													''
+										<Fragment>
+											<div className='filterHolder'>
+												{selectedV2Tools.length > 0 && (
+													<FilterSelection
+														selectedCount={selectedV2Tools.length}
+														selectedItems={selectedV2Tools}
+														onHandleClearSelection={this.handleClearSelection}
+														onHandleClearAll={this.handleClearAll}
+													/>
 												)}
-												<Filters
-													data={filterOptions.toolCategoriesFilterOptions}
-													allFilters={allFilters.toolCategoryFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={toolCategoriesSelected}
-													title='Type'
-												/>
-												<Filters
-													data={filterOptions.programmingLanguageFilterOptions}
-													allFilters={allFilters.toolLanguageFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={toolProgrammingLanguageSelected}
-													title='Programming language'
-												/>
-												<Filters
-													data={filterOptions.featuresFilterOptions}
-													allFilters={allFilters.toolFeatureFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={toolFeaturesSelected}
-													title='Keywords'
-												/>
-												<Filters
-													data={filterOptions.toolTopicsFilterOptions}
-													allFilters={allFilters.toolTopicFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={toolTopicsSelected}
-													title='Domain'
+												<Filter
+													data={filtersV2Tools}
+													onHandleInputChange={this.handleInputChange}
+													onHandleClearSection={this.handleClearSection}
+													onHandleToggle={this.handleToggle}
 												/>
 											</div>
-										</>
+										</Fragment>
 									) : (
 										''
 									)}
