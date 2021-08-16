@@ -44,7 +44,7 @@ const SaveModal = ({ ...props }) => {
 	});
 
 	return (
-		<Modal show={props.show} onHide={props.onHide} className='save-modal'>
+		<Modal show={props.show} onHide={props.onSaveHide} className='save-modal'>
 			<Modal.Header closeButton>
 				<h5 className='black-20-semibold'>Saved search preference</h5>
 			</Modal.Header>
@@ -64,7 +64,7 @@ const SaveModal = ({ ...props }) => {
 				{formik.touched.name && formik.errors.name ? <div className='errorMessages'>{formik.errors.name}</div> : null}
 			</Modal.Body>
 			<Modal.Footer className='saved-modal-footer'>
-				<Button variant='outline-primary saved-no' onClick={props.onHide}>
+				<Button variant='outline-primary saved-no' onClick={props.onSaveHide}>
 					No, nevermind
 				</Button>
 				<Button type='submit' onClick={formik.handleSubmit}>
