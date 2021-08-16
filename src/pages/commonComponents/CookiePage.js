@@ -104,7 +104,7 @@ class CookiePage extends React.Component {
 				</div>
 				<div className='collection-rectangle cookie-page-body'>
 					<div className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16 col-lg-12 col-sm-12' />
-					<div dangerouslySetInnerHTML={{ __html: wpData }} />
+					<div className='wpData' dangerouslySetInnerHTML={{ __html: wpData }} />
 				</div>
 
 				<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
