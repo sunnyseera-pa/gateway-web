@@ -139,8 +139,8 @@ class SearchPage extends React.Component {
 		this.setState({ saveSuccess: true });
 	};
 
-	showSavedName = () => {
-		this.setState({ showSavedName: '' });
+	showSavedName = data => {
+		this.setState({ showSavedName: data });
 	};
 
 	toggleAdvancedSearchModal = () => {

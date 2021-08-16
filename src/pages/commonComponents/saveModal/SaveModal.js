@@ -33,9 +33,9 @@ const SaveModal = ({ ...props }) => {
 				.post(baseURL + '/api/v1/search-preferences', values)
 				.then(res => {
 					console.log(res.data.response.name);
-					props.saveName(res.data.response.name);
 					setClose(props.onHide);
 					setSaveSuccess(props.saveSuccess);
+					this.props.saveName(res.data.response.name);
 				})
 				.catch(err => {
 					return err;
