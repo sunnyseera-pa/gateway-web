@@ -133,7 +133,6 @@ class SearchPage extends React.Component {
 
 	hideSavedModal = () => {
 		this.setState({ showSavedModal: false });
-		this.setState({ saveSuccess: false });
 	};
 
 	showSuccessMessage = () => {
