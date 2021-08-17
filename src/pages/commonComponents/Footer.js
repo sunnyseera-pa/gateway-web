@@ -2,7 +2,6 @@ import React from 'react';
 import axios from 'axios';
 import Loading from './Loading';
 import './CommonComponents.scss';
-import { Link } from 'react-router-dom';
 
 const baseURL = require('./BaseURL');
 const cmsURL = baseURL.getCMSURL();

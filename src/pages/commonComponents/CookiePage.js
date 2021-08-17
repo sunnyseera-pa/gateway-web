@@ -1,7 +1,6 @@
 import React from 'react';
 import axios from 'axios';
 import { Button } from 'react-bootstrap';
-import Iframe from 'react-iframe';
 import './CookiePage.scss';
 import { Container } from 'react-bootstrap';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
@@ -14,7 +13,6 @@ var baseURL = require('../commonComponents/BaseURL').getURL();
 
 class CookiePage extends React.Component {
 	state = {
-		isAvailable: true,
 		userState: [],
 		isLoading: true,
 		showDrawer: false,
@@ -34,14 +32,10 @@ class CookiePage extends React.Component {
 			.head('', { withCredentials: false })
 			.then(res => {
 				this.setState({
-					isAvailable: true,
 					isLoading: false,
 				});
 			})
 			.catch(error => {
-				this.setState({
-					isAvailable: false,
-				});
 				console.error(error.message);
 			});
 
@@ -51,7 +45,6 @@ class CookiePage extends React.Component {
 				this.setState({
 					wpData: res.data,
 				});
-				console.log('response ', res.data);
 			})
 			.catch(error => {
 				this.setState({ errorMessage: error.message });
@@ -73,7 +66,7 @@ class CookiePage extends React.Component {
 		});
 	};
 	render() {
-		const { isAvailable, userState, showDrawer, showModal, context, isLoading, wpData } = this.state;
+		const { userState, showDrawer, showModal, context, isLoading, wpData } = this.state;
 		if (isLoading) {
 			return (
 				<Container>
