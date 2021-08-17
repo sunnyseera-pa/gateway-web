@@ -24,7 +24,6 @@ import SortDropdown from './components/SortDropdown';
 import { ReactComponent as CDStar } from '../../images/cd-star.svg';
 import AdvancedSearchModal from '../commonComponents/AdvancedSearchModal/AdvancedSearchModal';
 import SaveModal from '../commonComponents/saveModal/SaveModal';
-import LoginModal from '../commonComponents/LoginModal';
 import SVGIcon from '../../images/SVGIcon';
 import './Search.scss';
 
