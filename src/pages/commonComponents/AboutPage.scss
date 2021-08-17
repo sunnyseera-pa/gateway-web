@@ -50,6 +50,11 @@
 	display: none;
 }
 
+.lazyload,
+.lazyloading {
+	opacity: 1 !important;
+}
+
 @media (max-width: 1024px) {
 	.about-page-body {
 		padding-left: 20px;
