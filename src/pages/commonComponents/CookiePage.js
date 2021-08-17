@@ -9,8 +9,6 @@ import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
 
-var baseURL = require('../commonComponents/BaseURL').getURL();
-
 class CookiePage extends React.Component {
 	state = {
 		userState: [],
@@ -36,7 +34,8 @@ class CookiePage extends React.Component {
 				});
 			})
 			.catch(error => {
-				console.error(error.message);
+				this.setState({ errorMessage: error.message });
+				console.error('There was an error!', error);
 			});
 
 		await axios
