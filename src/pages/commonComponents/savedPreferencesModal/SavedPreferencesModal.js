@@ -34,7 +34,8 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 					.map(b => b.sort)
 					.filter(b => b.length > 0);
 
-				console.log(filterData);
+				const object = Object.assign(...filterData.map(a => a));
+				console.log(object.map(a => a.highlighted));
 			})
 			.catch(err => console.log(err));
 	}, []);
