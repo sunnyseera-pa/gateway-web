@@ -18,7 +18,6 @@ class CookiePage extends React.Component {
 		context: {},
 		wpData: undefined,
 		searchString: '',
-		errorMessage: '',
 	};
 
 	constructor(props) {
@@ -36,8 +35,7 @@ class CookiePage extends React.Component {
 				});
 			})
 			.catch(error => {
-				this.setState({ errorMessage: error.message });
-				console.error('There was an error!', error);
+				console.error(error.message);
 			});
 
 		await axios
@@ -48,7 +46,6 @@ class CookiePage extends React.Component {
 				});
 			})
 			.catch(error => {
-				this.setState({ errorMessage: error.message });
 				console.error('There was an error!', error);
 			});
 	}
