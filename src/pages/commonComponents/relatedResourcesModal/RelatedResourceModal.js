@@ -36,8 +36,7 @@ class RelatedResourcesModal extends React.Component {
 			persons: 0,
 			courses: 0,
 		},
-		isAddEditCohort: false,
-		// isAddEditCohort: true,
+		displayTabs: [],
 	};
 
 	constructor(props) {
@@ -45,6 +44,7 @@ class RelatedResourcesModal extends React.Component {
 		this.state.userState = props.userState;
 		this.state.relatedObjects = props.relatedObjects;
 		this.state.relatedObjectIds = [];
+		this.state.displayTabs = props.displayTabs;
 	}
 
 	handleSelect = key => {
@@ -129,32 +129,45 @@ class RelatedResourcesModal extends React.Component {
 	};
 
 	render() {
-		const { userState, datasetIndex, toolIndex, projectIndex, paperIndex, personIndex, courseIndex, isAddEditCohort } = this.state;
+		const { userState, datasetIndex, toolIndex, projectIndex, paperIndex, personIndex, courseIndex, displayTabs } = this.state;
 		let { key } = this.state;
 
 		let datasetCount = this.props.summary.datasetCount || 0;
 		let toolCount = this.props.summary.toolCount || 0;
 		let projectCount = this.props.summary.projectCount || 0;
+		let courseCount = this.props.summary.courseCount || 0;
 		let paperCount = this.props.summary.paperCount || 0;
 		let personCount = this.props.summary.personCount || 0;
-		let courseCount = this.props.summary.courseCount || 0;
+
+		const getActiveTabOnLoad = () => {
+			let tabCounts = [
+				{ key: 'Datasets', count: datasetCount },
+				{ key: 'Tools', count: toolCount },
+				{ key: 'Projects', count: projectCount },
+				{ key: 'Papers', count: paperCount },
+				{ key: 'People', count: personCount },
+				{ key: 'Courses', count: courseCount },
+			];
+
+			let tempKey = '';
+
+			for (const currentTab of displayTabs) {
+				let tabCount = tabCounts.find(tab => tab.key === currentTab);
+				if (tabCount.count > 0) {
+					tempKey = currentTab;
+					break;
+				}
+			}
+
+			key = tempKey;
+
+			if (key === '' || typeof key === 'undefined') {
+				key = displayTabs[0].key;
+			}
+		};
 
 		if (key === '' || typeof key === 'undefined') {
-			if (!isAddEditCohort && datasetCount > 0) {
-				key = 'Datasets';
-			} else if (toolCount > 0) {
-				key = 'Tools';
-			} else if (projectCount > 0) {
-				key = 'Projects';
-			} else if (paperCount > 0) {
-				key = 'Papers';
-			} else if (personCount > 0) {
-				key = 'People';
-			} else if (courseCount > 0) {
-				key = 'Courses';
-			} else {
-				isAddEditCohort ? (key = 'Tools') : (key = 'Datasets');
-			}
+			getActiveTabOnLoad();
 		}
 
 		let datasetPaginationItems = [];
@@ -341,7 +354,7 @@ class RelatedResourcesModal extends React.Component {
 										className='tabsBackground-shadow-bottom gray700-13'
 										activeKey={key}
 										onSelect={this.handleSelect}>
-										{!isAddEditCohort && (
+										{displayTabs.includes('Datasets') && (
 											<Tab
 												eventKey='Datasets'
 												title={
@@ -351,51 +364,66 @@ class RelatedResourcesModal extends React.Component {
 												}
 											/>
 										)}
-										<Tab
-											eventKey='Tools'
-											title={
-												'Tools (' +
-												(!this.props.summary.toolCount
-													? '0'
-													: this.props.summary.toolCount - this.state.selected.tools - editingObjectTool) +
-												')'
-											}
-										/>
-										<Tab
-											eventKey='Projects'
-											title={
-												'Projects (' +
-												(!this.props.summary.projectCount
-													? '0'
-													: this.props.summary.projectCount - this.state.selected.projects - editingObjectProject) +
-												')'
-											}
-										/>
-										<Tab
-											eventKey='Courses'
-											title={
-												'Courses (' +
-												(!this.props.summary.courseCount ? '0' : this.props.summary.courseCount - this.state.selected.courses) +
-												')'
-											}
-										/>
-										<Tab
-											data-test-id='related-papers'
-											eventKey='Papers'
-											title={
-												'Papers (' +
-												(!this.props.summary.paperCount ? '0' : this.props.summary.paperCount - this.state.selected.papers) +
-												')'
-											}
-										/>
-										<Tab
-											eventKey='People'
-											title={
-												'People (' +
-												(!this.props.summary.personCount ? '0' : this.props.summary.personCount - this.state.selected.persons) +
-												')'
-											}
-										/>
+
+										{displayTabs.includes('Tools') && (
+											<Tab
+												eventKey='Tools'
+												title={
+													'Tools (' +
+													(!this.props.summary.toolCount
+														? '0'
+														: this.props.summary.toolCount - this.state.selected.tools - editingObjectTool) +
+													')'
+												}
+											/>
+										)}
+
+										{displayTabs.includes('Projects') && (
+											<Tab
+												eventKey='Projects'
+												title={
+													'Projects (' +
+													(!this.props.summary.projectCount
+														? '0'
+														: this.props.summary.projectCount - this.state.selected.projects - editingObjectProject) +
+													')'
+												}
+											/>
+										)}
+
+										{displayTabs.includes('Courses') && (
+											<Tab
+												eventKey='Courses'
+												title={
+													'Courses (' +
+													(!this.props.summary.courseCount ? '0' : this.props.summary.courseCount - this.state.selected.courses) +
+													')'
+												}
+											/>
+										)}
+
+										{displayTabs.includes('Papers') && (
+											<Tab
+												data-test-id='related-papers'
+												eventKey='Papers'
+												title={
+													'Papers (' +
+													(!this.props.summary.paperCount ? '0' : this.props.summary.paperCount - this.state.selected.papers) +
+													')'
+												}
+											/>
+										)}
+
+										{displayTabs.includes('People') && (
+											<Tab
+												eventKey='People'
+												title={
+													'People (' +
+													(!this.props.summary.personCount ? '0' : this.props.summary.personCount - this.state.selected.persons) +
+													')'
+												}
+											/>
+										)}
 									</Tabs>
 								</div>
 							</div>

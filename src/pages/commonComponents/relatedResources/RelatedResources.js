@@ -61,6 +61,7 @@ const RelatedResources = React.forwardRef((props, ref) => {
 						doAddToTempRelatedObjects={props.doAddToTempRelatedObjects}
 						tempRelatedObjectIds={props.tempRelatedObjectIds}
 						relatedObjects={props.relatedObjects}
+						displayTabs={props.displayTabs}
 					/>
 				</Modal.Body>
 				<Modal.Footer>

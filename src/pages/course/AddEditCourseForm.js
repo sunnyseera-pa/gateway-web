@@ -1011,6 +1011,7 @@ const AddEditCourseForm = props => {
 															relatedObjects={props.relatedObjects}
 															doClearRelatedObjects={props.doClearRelatedObjects}
 															doAddToRelatedObjects={props.doAddToRelatedObjects}
+															displayTabs={props.displayTabs}
 														/>
 													</Col>
 													<Col sm={1} lg={10} />

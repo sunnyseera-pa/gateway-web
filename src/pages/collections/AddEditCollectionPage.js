@@ -277,6 +277,7 @@ class AddEditCollectionPage extends React.Component {
 					publicFlag={publicFlag}
 					updatePublicFlag={this.updatePublicFlag}
 					isEdit={isEdit}
+					displayTabs={['Datasets', 'Tools', 'Projects', 'Courses', 'Papers', 'People']}
 				/>
 
 				<SideDrawer open={showDrawer} closed={this.toggleDrawer}>

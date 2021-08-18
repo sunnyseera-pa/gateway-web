@@ -33,6 +33,7 @@ class AddEditPaperPage extends React.Component {
 		datasetData: [],
 		toolData: [],
 		projectData: [],
+		paperData: [],
 		personData: [],
 		courseData: [],
 		summary: [],
@@ -365,6 +366,7 @@ class AddEditPaperPage extends React.Component {
 					relatedObjects={relatedObjects}
 					didDelete={didDelete}
 					updateDeleteFlag={this.updateDeleteFlag}
+					displayTabs={['Datasets', 'Tools', 'Projects', 'Courses', 'Papers', 'People']}
 				/>
 
 				<SideDrawer open={showDrawer} closed={this.toggleDrawer}>

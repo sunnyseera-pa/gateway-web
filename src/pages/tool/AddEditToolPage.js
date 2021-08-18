@@ -497,6 +497,7 @@ class AddEditToolPage extends React.Component {
 					relatedObjects={relatedObjects}
 					didDelete={didDelete}
 					updateDeleteFlag={this.updateDeleteFlag}
+					displayTabs={['Datasets', 'Tools', 'Projects', 'Courses', 'Papers', 'People']}
 				/>
 				<SideDrawer open={showDrawer} closed={this.toggleDrawer}>
 					<UserMessages

@@ -15,7 +15,7 @@ import RemoveUploaderModal from '../commonComponents/RemoveUploaderModal';
 import RemoveUploaderErrorModal from '../commonComponents/RemoveUploaderErrorModal';
 
 const baseURL = require('../commonComponents/BaseURL').getURL();
- 
+
 const AddEditProjectForm = props => {
 	const [uploadersList, setUploadersList] = useState([]);
 	const [uploaderToBeRemoved, setUploaderToBeRemoved] = useState({});
@@ -506,6 +506,7 @@ const AddEditProjectForm = props => {
 											relatedObjects={props.relatedObjects}
 											doClearRelatedObjects={props.doClearRelatedObjects}
 											doAddToRelatedObjects={props.doAddToRelatedObjects}
+											displayTabs={props.displayTabs}
 										/>
 									</Col>
 									<Col sm={1} lg={10} />
