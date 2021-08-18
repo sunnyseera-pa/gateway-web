@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import axios from 'axios';
 import { Button } from 'react-bootstrap';
 import './CookiePage.scss';
@@ -18,6 +18,7 @@ class CookiePage extends React.Component {
 		context: {},
 		wpData: undefined,
 		searchString: '',
+		errorMessage: '',
 	};
 
 	constructor(props) {
