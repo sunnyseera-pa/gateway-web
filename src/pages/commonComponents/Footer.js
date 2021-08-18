@@ -126,7 +126,7 @@ class Footer extends React.Component {
 			'            </div>\n' +
 			'            <div class="col-md-6 col-sm-12 text-right text-sm-left">\n' +
 			'              <div class="legal-menu">\n' +
-			'                <ul id="menu-legal-menu" class="menu nav" itemscope itemtype="http://www.schema.org/SiteNavigationElement"><li  id="menu-item-44" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-44 nav-item"><a itemprop="url" href="https://icoda-research.org/cookies/" class="nav-link"><span itemprop="name">Cookies</span></a></li>\n' +
+			'                <ul id="menu-legal-menu" class="menu nav" itemscope itemtype="http://www.schema.org/SiteNavigationElement"><li  id="menu-item-44" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-44 nav-item"><a itemprop="url" href="/cookies" class="nav-link"><span itemprop="name">Cookies</span></a></li>\n' +
 			'<li  id="menu-item-45" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-45 nav-item"><a itemprop="url" href="https://icoda-research.org/terms-conditions/" class="nav-link"><span itemprop="name">Terms &#038; Conditions</span></a></li>\n' +
 			'<li  id="menu-item-47" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-privacy-policy menu-item-47 nav-item"><a itemprop="url" href="https://icoda-research.org/privacy-policy/" class="nav-link"><span itemprop="name">Privacy Policy</span></a></li>\n' +
 			'</ul>              </div>\n' +

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { Button } from 'react-bootstrap';
 import './CookiePage.scss';
@@ -17,6 +17,7 @@ class CookiePage extends React.Component {
 		showModal: false,
 		context: {},
 		wpData: undefined,
+		searchString: '',
 	};
 
 	constructor(props) {
@@ -64,8 +65,15 @@ class CookiePage extends React.Component {
 			return { showModal: !prevState.showModal, context, showDrawer: showEnquiry };
 		});
 	};
+	doSearch = e => {
+		//fires on enter on searchbar
+		if (e.key === 'Enter') window.location.href = '/search?search=' + this.state.searchString;
+	};
+	updateSearchString = searchString => {
+		this.setState({ searchString: searchString });
+	};
 	render() {
-		const { userState, showDrawer, showModal, context, isLoading, wpData } = this.state;
+		const { userState, showDrawer, showModal, context, isLoading, wpData, searchString } = this.state;
 		if (isLoading) {
 			return (
 				<Container>
@@ -77,10 +85,11 @@ class CookiePage extends React.Component {
 			<div className='searchTabsHolder'>
 				<SearchBar
 					ref={this.searchBar}
+					searchString={searchString}
 					doSearchMethod={this.doSearch}
 					doUpdateSearchString={this.updateSearchString}
-					doToggleDrawer={this.toggleDrawer}
 					userState={userState}
+					doToggleDrawer={this.toggleDrawer}
 				/>
 				<div className='cookie-page-header'>
 					<div className='cookie-page-header-title'>ICODA Gateway</div>
