@@ -14,7 +14,7 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 			.get(baseURL + '/api/v1/search-preferences')
 			.then(res => {
 				setData(res.data.data);
-				console.log(res.data.data);
+				//console.log(res.data.data);
 			})
 			.catch(err => console.log(err));
 	}, []);
@@ -22,13 +22,15 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 	const filterData = data
 		.filter(a => a.name)
 		.map(a => a.filterCriteria.sort)
+		.map(a => a)
 		.filter(b => b.length > 0)
 		.map(b =>
 			b.reduce(c => {
 				return c;
 			})
 		)
-		.map(a => a.highlighted);
+		.map(a => a.highlighted)
+		.map(([filter]) => ({ filter }));
 
 	console.log(filterData);
 
@@ -75,60 +77,9 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 									<p className='black-14-bold'>{a.filterCriteria.searchTerm}</p>
 								)}
 							</p>
-							<p className='black-14'>
-								Filters:{' '}
-								{_.map(b => b.filterCriteria.sort)
-									.filter(b => b.length > 0)
-									.map(c =>
-										c.reduce(d => {
-											return d;
-										})
-									)
-									.map(a => a.highlighted)}
-							</p>
+
+							<p className='black-14'>Filters: {a.filterData === undefined ? 'none' : a.filterData.map(b => b.filter)}</p>
 						</div>
-						/*
-						const filterData = data
-		.filter(a => a.name)
-		.map(a => a.filterCriteria.sort)
-		.filter(b => b.length > 0)
-		.map(b =>
-			b.reduce(c => {
-				return c;
-			})
-		)
-		.map(a => a.highlighted);
-
-	console.log(filterData);
-						 */
-
-						/*
-	{a &&
-									a.filterCriteria &&
-									a.filterCriteria.sort &&
-									a.filterCriteria.sort
-										.map(a => a)
-										.filter(b => b.length > 0)
-										.map(arr =>
-											arr.reduce((acc, cur) => {
-												acc[cur.key] = cur.value;
-												return acc;
-											})
-										)
-										.map(a => a.highlighted)} */
-
-						/*
-						{a.filterCriteria.sort
-									.map(a => a)
-									.filter(b => b.length)
-									.map(arr =>
-										arr.reduce((acc, cur) => {
-											acc[cur.key] = cur.value;
-											return acc;
-										})
-									)
-									.map(a => a.highlighted)}
-						 */
 					))}
 			</Modal.Body>
 			<Modal.Footer className='saved-preference-modal-footer'>
@@ -166,3 +117,46 @@ export default SavedPreferencesModal;
 									<Button>View matches</Button>
 								</a>
 							))} */
+
+/*
+						const filterData = data
+		.filter(a => a.name)
+		.map(a => a.filterCriteria.sort)
+		.filter(b => b.length > 0)
+		.map(b =>
+			b.reduce(c => {
+				return c;
+			})
+		)
+		.map(a => a.highlighted);
+
+	console.log(filterData);
+						 */
+
+/*
+	{a &&
+									a.filterCriteria &&
+									a.filterCriteria.sort &&
+									a.filterCriteria.sort
+										.map(a => a)
+										.filter(b => b.length > 0)
+										.map(arr =>
+											arr.reduce((acc, cur) => {
+												acc[cur.key] = cur.value;
+												return acc;
+											})
+										)
+										.map(a => a.highlighted)} */
+
+/*
+						{a.filterCriteria.sort
+									.map(a => a)
+									.filter(b => b.length)
+									.map(arr =>
+										arr.reduce((acc, cur) => {
+											acc[cur.key] = cur.value;
+											return acc;
+										})
+									)
+									.map(a => a.highlighted)}
+						 */
