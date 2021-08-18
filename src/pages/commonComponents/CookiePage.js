@@ -41,7 +41,7 @@ class CookiePage extends React.Component {
 			});
 
 		await axios
-			.get('https://icoda-research.org/icoda-gateway/', { withCredentials: false })
+			.get('https://icoda-research.org/gateway-cookie-poliy/', { withCredentials: false })
 			.then(res => {
 				this.setState({
 					wpData: res.data,
