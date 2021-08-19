@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Modal, Button, Row, Container, Tab, Tabs } from 'react-bootstrap';
 import './SavedPreferencesModal.scss';
-import _ from 'lodash';
+
 var baseURL = require('../../commonComponents/BaseURL').getURL();
 
 const SavedPreferencesModal = ({ show, onHide }) => {
@@ -14,7 +14,6 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 			.get(baseURL + '/api/v1/search-preferences')
 			.then(res => {
 				setData(res.data.data);
-				//console.log(res.data.data);
 			})
 			.catch(err => console.log(err));
 	}, []);
@@ -30,7 +29,7 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 			})
 		)
 		.map(a => a.highlighted)
-		.map(([filter]) => ({ filter }));
+		.map(([filter]) => (filter == undefined ? { filter: '' } : { filter }));
 
 	console.log(filterData);
 
@@ -78,7 +77,20 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 								)}
 							</p>
 
-							<p className='black-14'>Filters: {a.filterData === undefined ? 'none' : a.filterData.map(b => b.filter)}</p>
+							<p className='black-14'>
+								Filters:{' '}
+								{a.filterCriteria.sort
+									.map(a => a)
+									.filter(b => b.length > 0)
+									.map(b =>
+										b.reduce(c => {
+											return c;
+										})
+									)
+									.map(a => a.highlighted)
+									.map(([filter]) => (filter == undefined ? { filter: '' } : { filter }))
+									.map(a => a.filter)}
+							</p>
 						</div>
 					))}
 			</Modal.Body>
@@ -117,46 +129,3 @@ export default SavedPreferencesModal;
 									<Button>View matches</Button>
 								</a>
 							))} */
-
-/*
-						const filterData = data
-		.filter(a => a.name)
-		.map(a => a.filterCriteria.sort)
-		.filter(b => b.length > 0)
-		.map(b =>
-			b.reduce(c => {
-				return c;
-			})
-		)
-		.map(a => a.highlighted);
-
-	console.log(filterData);
-						 */
-
-/*
-	{a &&
-									a.filterCriteria &&
-									a.filterCriteria.sort &&
-									a.filterCriteria.sort
-										.map(a => a)
-										.filter(b => b.length > 0)
-										.map(arr =>
-											arr.reduce((acc, cur) => {
-												acc[cur.key] = cur.value;
-												return acc;
-											})
-										)
-										.map(a => a.highlighted)} */
-
-/*
-						{a.filterCriteria.sort
-									.map(a => a)
-									.filter(b => b.length)
-									.map(arr =>
-										arr.reduce((acc, cur) => {
-											acc[cur.key] = cur.value;
-											return acc;
-										})
-									)
-									.map(a => a.highlighted)}
-						 */
