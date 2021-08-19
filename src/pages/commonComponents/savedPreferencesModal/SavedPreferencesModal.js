@@ -18,20 +18,21 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 			.catch(err => console.log(err));
 	}, []);
 
-	const filterData = data
-		.filter(a => a.name)
-		.map(a => a.filterCriteria.sort)
-		.map(a => a)
-		.filter(b => b.length > 0)
-		.map(b =>
-			b.reduce(c => {
-				return c;
-			})
-		)
-		.map(a => a.highlighted)
-		.map(([filter]) => (filter == undefined ? { filter: '' } : { filter }));
-
-	console.log(filterData);
+	console.log(
+		data
+			.filter(a => a.filterCriteria)
+			.filter(a => a.name)
+			.map(a => a.filterCriteria.sort)
+			.map(a => (a === '' ? [{ highlighted: [''] }] : a))
+			.filter(b => b)
+			.map(b =>
+				b.reduce(c => {
+					return c;
+				})
+			)
+			.map(a => a.highlighted)
+			.map(([filter]) => (filter == undefined ? { filter: '' } : { filter }))
+	);
 
 	return (
 		<Modal show={show} onHide={onHide} dialogClassName='save-modal-preferences '>
@@ -64,6 +65,7 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 			</Modal.Header>
 			<Modal.Body style={{ 'max-height': 'calc(100vh - 450px)', 'overflow-y': 'auto', 'background-color': '#f6f7f8' }}>
 				{data
+					.filter(a => a.filterCriteria)
 					.filter(a => a.name)
 					.map(a => (
 						<div className='filters saved-card-click' onClick={() => setShowButtons(true)}>
@@ -81,7 +83,8 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 								Filters:{' '}
 								{a.filterCriteria.sort
 									.map(a => a)
-									.filter(b => b.length > 0)
+									.map(a => (a === '' ? [{ highlighted: [''] }] : a))
+									.filter(b => b)
 									.map(b =>
 										b.reduce(c => {
 											return c;
