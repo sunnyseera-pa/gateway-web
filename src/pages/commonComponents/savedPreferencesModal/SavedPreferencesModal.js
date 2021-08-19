@@ -10,14 +10,15 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 	const [showButtons, setShowButtons] = useState(false);
 
 	useEffect(() => {
-		axios.get(baseURL + '/api/v1/search-preferences').then(res => {
-				setData(res.data.data);
-				console.log(res.data.data.filter(a => a.filterCriteria))
-			})
-			.catch(err => console.log(err));
+		const getData = async () => {
+			const res = await axios.get(baseURL + '/api/v1/search-preferences')
+			console.log(res.data.data)
+		}
+	
+		getData()
 	}, []);
 
-	console.log(
+	const filterData =
 		data
 			.filter(a => a.filterCriteria)
 			.filter(a => a.name)
@@ -31,9 +32,7 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 			)
 			.map(a => a.highlighted)
 			.map(([filter]) => (filter == undefined ? { filter: '' } : { filter }))
-	);
-
-	const dataTest = data.filter(a => a.filterCriteria).filter(a => a.name)
+	
 	return (
 		<Modal show={show} onHide={onHide} dialogClassName='save-modal-preferences '>
 			<Modal.Header closeButton>
@@ -64,22 +63,24 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 				</Container>
 			</Modal.Header>
 			<Modal.Body style={{ 'max-height': 'calc(100vh - 450px)', 'overflow-y': 'auto', 'background-color': '#f6f7f8' }}>
-				{dataTest
+				{data
+				.filter(a => a.filterCriteria)
+				.filter(a => a.name)
 					.map(a => (
 						<div className='filters saved-card-click' onClick={() => setShowButtons(true)}>
 							<h5 className='black-20-semibold'>{a.name}</h5>
 							<p className='black-14'>
 								Search term:{' '}
-								{a.filterCriteria && a.filterCriteria.searchTerm === '' ? (
+								{a.filterCriteria && a.filterCriteria.searchTerm === ''  ? (
 									'N/A'
 								) : (
 									<p className='black-14-bold'>{a.filterCriteria.searchTerm}</p>
 								)}
 							</p>
+								
 
-							{/*data[a].filterCriteria &&
-								data[a].filterCriteria.sort
-									.map(a => a)
+							{a.filterCriteria
+									.map(a => a.filterCriteria.sort)
 									.map(a => (a === '' ? [{ highlighted: [''] }] : a))
 									.filter(b => b)
 									.map(b =>
@@ -89,7 +90,7 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 									)
 									.map(a => a.highlighted)
 									.map(([filter]) => (filter == undefined ? { filter: '' } : { filter }))
-									.map(a => <p className='black-14'>Filters: {a.filter} </p>)*/}
+									.map(a => <p className='black-14'>Filters: {a.filter} </p>)}
 						</div>
 					))}
 			</Modal.Body>
