@@ -1076,7 +1076,6 @@ class DatasetOnboarding extends Component {
 	};
 
 	userRoleIsAdmin = teamId => {
-		debugger;
 		const team = this.props.userState[0].teams.filter(t => {
 			return t._id === teamId;
 		})[0];
