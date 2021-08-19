@@ -109,7 +109,7 @@ class RelatedResourcesModal extends React.Component {
 						</span>
 					</div>{' '}
 					<Row className='noMargin noResultsModalSearchCard'>
-						<NotFound word={type} relatedResourceModal={true} />
+						<NotFound text={`No ${type} found under your name.`} />
 					</Row>{' '}
 					<div className='margin-top-16'>
 						<span className='resultsSubHeading'>All {type}</span>

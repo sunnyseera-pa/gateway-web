@@ -12,7 +12,6 @@ class NotFound extends React.Component {
 				<Col>
 					<div className='gray800-14' style={{ textAlign: 'center' }} data-testid='notFound'>
 						{this.props.text ? this.props.text : `No ${this.props.word || 'results'} found`}{' '}
-						{this.props.relatedResourceModal && 'under your name.'}
 					</div>
 				</Col>
 			</Row>
