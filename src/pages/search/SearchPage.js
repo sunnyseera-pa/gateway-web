@@ -1343,7 +1343,19 @@ class SearchPage extends React.Component {
 							</Alert>
 						) : (
 							<Alert variant='primary' className='blue-banner saved-preference-banner'>
-								Default alert
+								<Row>
+									<Col>
+										<h5 className='dark-14'>Data utility wizard applied: Customer filters</h5>
+									</Col>
+								</Row>
+								<Row>
+									<Col md={9}>
+										You can continue to customise your filters below or edit alongside the search term in the data utility wizard.
+									</Col>
+									<Col md={3} className='data-utility-banner'>
+										Edit in data utility wizard
+									</Col>
+								</Row>
 							</Alert>
 						)}
 						<Container className={this.state.saveSuccess && 'container-saved-preference-banner'}>
