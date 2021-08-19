@@ -99,7 +99,7 @@ class RelatedResourcesModal extends React.Component {
 	) => {
 		type = type.toLowerCase();
 
-		let subHeadings;
+		let subHeadings = '';
 		if (entityIndex === 0 && index === 0 && myEntitiesCount === 0 && firstAllEntityIndex === 0) {
 			subHeadings = (
 				<div>
@@ -530,7 +530,7 @@ class RelatedResourcesModal extends React.Component {
 													this.state.relatedObjectIds.includes(JSON.stringify(tool.id)) ||
 													tool.id === this.props.toolid
 												) {
-													return '';
+													return <div> {modalSubHeadings} </div>;
 												} else {
 													return (
 														<div>
@@ -568,7 +568,7 @@ class RelatedResourcesModal extends React.Component {
 													this.state.relatedObjectIds.includes(JSON.stringify(project.id)) ||
 													project.id === this.props.projectid
 												) {
-													return '';
+													return <div> {modalSubHeadings} </div>;
 												} else {
 													return (
 														<div>
@@ -606,7 +606,7 @@ class RelatedResourcesModal extends React.Component {
 													this.state.relatedObjectIds.includes(JSON.stringify(paper.id)) ||
 													paper.id === this.props.paperid
 												) {
-													return '';
+													return <div> {modalSubHeadings} </div>;
 												} else {
 													return (
 														<div>
@@ -666,7 +666,7 @@ class RelatedResourcesModal extends React.Component {
 													this.state.relatedObjectIds.includes(course.id) ||
 													this.state.relatedObjectIds.includes(JSON.stringify(course.id))
 												) {
-													return '';
+													return <div> {modalSubHeadings} </div>;
 												} else {
 													return (
 														<div>
