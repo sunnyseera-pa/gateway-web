@@ -136,7 +136,7 @@ class RelatedResourcesModal extends React.Component {
 	};
 
 	render() {
-		const { userState, datasetIndex, toolIndex, projectIndex, paperIndex, personIndex, courseIndex, displayTabs } = this.state;
+		const { userState, datasetIndex, toolIndex, projectIndex, paperIndex, personIndex, courseIndex, displayTabs, mySelected } = this.state;
 		let { key } = this.state;
 
 		let datasetCount = this.props.summary.datasetCount || 0;
@@ -274,10 +274,10 @@ class RelatedResourcesModal extends React.Component {
 		this.state.selected.persons = 0;
 		this.state.selected.courses = 0;
 
-		this.state.mySelected.tools = 0;
-		this.state.mySelected.projects = 0;
-		this.state.mySelected.papers = 0;
-		this.state.mySelected.courses = 0;
+		mySelected.tools = 0;
+		mySelected.projects = 0;
+		mySelected.papers = 0;
+		mySelected.courses = 0;
 
 		if (this.props.relatedObjects) {
 			this.props.relatedObjects.map(object => {
