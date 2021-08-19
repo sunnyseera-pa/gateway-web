@@ -295,7 +295,7 @@ class RelatedResourcesModal extends React.Component {
 							if (object.objectId === tool.id || object.objectId === JSON.stringify(tool.id)) {
 								this.state.selected.tools++;
 								if (authors.includes(userState[0].id)) {
-									this.state.mySelected.tools++;
+									mySelected.tools++;
 								}
 							}
 						});
@@ -310,7 +310,7 @@ class RelatedResourcesModal extends React.Component {
 							if (object.objectId === project.id || object.objectId === JSON.stringify(project.id)) {
 								this.state.selected.projects++;
 								if (authors.includes(userState[0].id)) {
-									this.state.mySelected.projects++;
+									mySelected.projects++;
 								}
 							}
 						});
@@ -325,7 +325,7 @@ class RelatedResourcesModal extends React.Component {
 							if (object.objectId === paper.id || object.objectId === JSON.stringify(paper.id)) {
 								this.state.selected.papers++;
 								if (authors.includes(userState[0].id)) {
-									this.state.mySelected.papers++;
+									mySelected.papers++;
 								}
 							}
 						});
@@ -354,7 +354,7 @@ class RelatedResourcesModal extends React.Component {
 							if (object.objectId === course.id || object.objectId === JSON.stringify(course.id)) {
 								this.state.selected.courses++;
 								if (course.creator === userState[0].id) {
-									this.state.mySelected.courses++;
+									mySelected.courses++;
 								}
 							}
 						});
