@@ -12,6 +12,7 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 	useEffect(() => {
 		const getData = async () => {
 			const res = await axios.get(baseURL + '/api/v1/search-preferences')
+			setData (res.data.data)
 			console.log(res.data.data)
 		}
 	
