@@ -10,10 +10,9 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 	const [showButtons, setShowButtons] = useState(false);
 
 	useEffect(() => {
-		axios
-			.get(baseURL + '/api/v1/search-preferences')
-			.then(res => {
+		axios.get(baseURL + '/api/v1/search-preferences').then(res => {
 				setData(res.data.data);
+				console.log(res.data.data.filter(a => a.filterCriteria))
 			})
 			.catch(err => console.log(err));
 	}, []);
@@ -34,6 +33,7 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 			.map(([filter]) => (filter == undefined ? { filter: '' } : { filter }))
 	);
 
+	const dataTest = data.filter(a => a.filterCriteria).filter(a => a.name)
 	return (
 		<Modal show={show} onHide={onHide} dialogClassName='save-modal-preferences '>
 			<Modal.Header closeButton>
@@ -64,9 +64,7 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 				</Container>
 			</Modal.Header>
 			<Modal.Body style={{ 'max-height': 'calc(100vh - 450px)', 'overflow-y': 'auto', 'background-color': '#f6f7f8' }}>
-				{data
-					.filter(a => a.filterCriteria)
-					.filter(a => a.name)
+				{dataTest
 					.map(a => (
 						<div className='filters saved-card-click' onClick={() => setShowButtons(true)}>
 							<h5 className='black-20-semibold'>{a.name}</h5>
@@ -79,9 +77,8 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 								)}
 							</p>
 
-							<p className='black-14'>
-								Filters:{' '}
-								{a.filterCriteria.sort
+							{/*data[a].filterCriteria &&
+								data[a].filterCriteria.sort
 									.map(a => a)
 									.map(a => (a === '' ? [{ highlighted: [''] }] : a))
 									.filter(b => b)
@@ -92,8 +89,7 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 									)
 									.map(a => a.highlighted)
 									.map(([filter]) => (filter == undefined ? { filter: '' } : { filter }))
-									.map(a => a.filter)}
-							</p>
+									.map(a => <p className='black-14'>Filters: {a.filter} </p>)*/}
 						</div>
 					))}
 			</Modal.Body>
