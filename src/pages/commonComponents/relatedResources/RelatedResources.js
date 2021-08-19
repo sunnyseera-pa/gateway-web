@@ -57,9 +57,11 @@ const RelatedResources = React.forwardRef((props, ref) => {
 						paperData={props.paperData}
 						courseData={props.courseData}
 						summary={props.summary}
+						myEntitiesSummary={props.myEntitiesSummary}
 						doAddToTempRelatedObjects={props.doAddToTempRelatedObjects}
 						tempRelatedObjectIds={props.tempRelatedObjectIds}
 						relatedObjects={props.relatedObjects}
+						displayTabs={props.displayTabs}
 					/>
 				</Modal.Body>
 				<Modal.Footer>
