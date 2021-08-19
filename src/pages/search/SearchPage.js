@@ -1337,9 +1337,13 @@ class SearchPage extends React.Component {
 					</div>
 
 					<div className='container'>
-						{this.state.saveSuccess && !this.state.showSavedModal && (
+						{this.state.saveSuccess && !this.state.showSavedModal ? (
 							<Alert variant='primary' className='blue-banner saved-preference-banner'>
 								Saved preference: {this.state.showSavedName}
+							</Alert>
+						) : (
+							<Alert variant='primary' className='blue-banner saved-preference-banner'>
+								Default alert
 							</Alert>
 						)}
 						<Container className={this.state.saveSuccess && 'container-saved-preference-banner'}>
