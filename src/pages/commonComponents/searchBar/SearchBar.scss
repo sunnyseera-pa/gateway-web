@@ -106,8 +106,11 @@ body.modal-open {
 
 	.desktopLoginMenu {
 		width: 375px;
-		top: 27px !important;
+		top: 26px !important;
 		left: 15px !important;
+		overflow-x: hidden;
+		overflow-y: scroll;
+		max-height: 400px;
 	}
 
 	.desktopNotificationMenu {
