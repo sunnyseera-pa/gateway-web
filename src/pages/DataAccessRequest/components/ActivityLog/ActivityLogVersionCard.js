@@ -9,6 +9,7 @@ import { ReactComponent as UpdateRequested } from '../../../../images/Updates_re
 import { ReactComponent as ActionRequired } from '../../../../images/Action_required.svg';
 import { ReactComponent as ManualEvent } from '../../../../images/Manual_input.svg';
 import { ReactComponent as Message } from '../../../../images/Messages.svg';
+import { ReactComponent as Notes } from '../../../../images/Notes.svg';
 import SVGIcon from '../../../../images/SVGIcon';
 import { SlideDown } from 'react-slidedown';
 import { groupBy, isEmpty, startCase } from 'lodash';
@@ -92,9 +93,9 @@ const ActivityLogVersionCard = ({ version, team, onDeleteEventClick }) => {
 													{log.eventType === DarHelperUtil.activityLogEvents.APPLICATION_REJECTED && (
 														<ApplicationRejected className='versionCreated' />
 													)}
-													{log.eventType === DarHelperUtil.activityLogEvents.PRESUBMISSION_MESSAGE && (
-														<Message className='versionCreated' />
-													)}
+													{(log.eventType === DarHelperUtil.activityLogEvents.PRESUBMISSION_MESSAGE ||
+														log.eventType === DarHelperUtil.activityLogEvents.CONTEXTUAL_MESSAGE) && <Message className='versionCreated' />}
+													{log.eventType === DarHelperUtil.activityLogEvents.NOTE && <Notes className='versionCreated' />}
 													{(log.eventType === DarHelperUtil.activityLogEvents.FINAL_DECISION_REQUIRED ||
 														log.eventType === DarHelperUtil.activityLogEvents.DEADLINE_PASSED) && (
 														<ActionRequired className='versionCreated' />

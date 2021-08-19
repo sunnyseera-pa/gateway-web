@@ -158,6 +158,8 @@ const activityLogEvents = {
 	DEADLINE_PASSED: 'deadlinePassed',
 	PRESUBMISSION_MESSAGE: 'presubmissionMessage',
 	MANUAL_EVENT: 'manualEvent',
+	CONTEXTUAL_MESSAGE: 'contextualMessage',
+	NOTE: 'note',
 };
 
 /**
