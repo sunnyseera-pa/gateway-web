@@ -36,6 +36,12 @@ class RelatedResourcesModal extends React.Component {
 			persons: 0,
 			courses: 0,
 		},
+		mySelected: {
+			tools: 0,
+			projects: 0,
+			papers: 0,
+			courses: 0,
+		},
 		displayTabs: [],
 	};
 
@@ -85,6 +91,7 @@ class RelatedResourcesModal extends React.Component {
 		entityIndex,
 		index,
 		myEntitiesCount,
+		mySelectedEntitesCount,
 		entityCount,
 		firstMyEntityIndex,
 		firstAllEntityIndex,
@@ -113,7 +120,7 @@ class RelatedResourcesModal extends React.Component {
 			subHeadings = (
 				<div className='margin-top-32'>
 					<span className='resultsSubHeading'>
-						My {type} ({myEntitiesCount})
+						My {type} ({myEntitiesCount - mySelectedEntitesCount})
 					</span>
 				</div>
 			);
@@ -267,6 +274,11 @@ class RelatedResourcesModal extends React.Component {
 		this.state.selected.persons = 0;
 		this.state.selected.courses = 0;
 
+		this.state.mySelected.tools = 0;
+		this.state.mySelected.projects = 0;
+		this.state.mySelected.papers = 0;
+		this.state.mySelected.courses = 0;
+
 		if (this.props.relatedObjects) {
 			this.props.relatedObjects.map(object => {
 				this.state.relatedObjectIds.push(object.objectId);
@@ -275,22 +287,46 @@ class RelatedResourcesModal extends React.Component {
 				switch (object.objectType) {
 					case 'tool':
 						this.props.toolData.map(tool => {
+							let authors = [];
+							tool.persons.map(person => {
+								authors.push(person.id);
+							});
+
 							if (object.objectId === tool.id || object.objectId === JSON.stringify(tool.id)) {
 								this.state.selected.tools++;
+								if (authors.includes(userState[0].id)) {
+									this.state.mySelected.tools++;
+								}
 							}
 						});
 						break;
 					case 'project':
 						this.props.projectData.map(project => {
+							let authors = [];
+							project.persons.map(person => {
+								authors.push(person.id);
+							});
+
 							if (object.objectId === project.id || object.objectId === JSON.stringify(project.id)) {
 								this.state.selected.projects++;
+								if (authors.includes(userState[0].id)) {
+									this.state.mySelected.projects++;
+								}
 							}
 						});
 						break;
 					case 'paper':
 						this.props.paperData.map(paper => {
+							let authors = [];
+							paper.persons.map(person => {
+								authors.push(person.id);
+							});
+
 							if (object.objectId === paper.id || object.objectId === JSON.stringify(paper.id)) {
 								this.state.selected.papers++;
+								if (authors.includes(userState[0].id)) {
+									this.state.mySelected.papers++;
+								}
 							}
 						});
 						break;
@@ -317,6 +353,9 @@ class RelatedResourcesModal extends React.Component {
 						this.props.courseData.map(course => {
 							if (object.objectId === course.id || object.objectId === JSON.stringify(course.id)) {
 								this.state.selected.courses++;
+								if (course.creator === userState[0].id) {
+									this.state.mySelected.courses++;
+								}
 							}
 						});
 						break;
@@ -479,6 +518,7 @@ class RelatedResourcesModal extends React.Component {
 													toolIndex,
 													index,
 													this.props.myEntitiesSummary.myToolsCount,
+													this.state.mySelected.tools,
 													toolCount,
 													firstMyToolIndex,
 													firstAllToolIndex,
@@ -516,6 +556,7 @@ class RelatedResourcesModal extends React.Component {
 													projectIndex,
 													index,
 													this.props.myEntitiesSummary.myProjectsCount,
+													this.state.mySelected.projects,
 													projectCount,
 													firstMyProjectIndex,
 													firstAllProjectIndex,
@@ -553,6 +594,7 @@ class RelatedResourcesModal extends React.Component {
 													paperIndex,
 													index,
 													this.props.myEntitiesSummary.myPapersCount,
+													this.state.mySelected.papers,
 													paperCount,
 													firstMyPaperIndex,
 													firstAllPaperIndex,
@@ -613,6 +655,7 @@ class RelatedResourcesModal extends React.Component {
 													courseIndex,
 													index,
 													this.props.myEntitiesSummary.myCoursesCount,
+													this.state.mySelected.courses,
 													courseCount,
 													firstMyCourseIndex,
 													firstAllCourseIndex,
