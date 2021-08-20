@@ -25,7 +25,6 @@ class TechnicalMetadata extends React.Component {
 	render() {
 		const { technicalMetadata } = this.state;
 
-		console.log('technicalMetadata', technicalMetadata);
 		return (
 			<div>
 				<div>
@@ -35,14 +34,13 @@ class TechnicalMetadata extends React.Component {
 								<TableSvg className='margin-top-2' />
 
 								<span className='pad-left-8 black-18 pointer' onClick={() => this.props.doUpdateDataClassOpen(this.state.index)}>
-									{technicalMetadata && technicalMetadata.label ? technicalMetadata.label : ''}
-									{technicalMetadata && technicalMetadata.tableName ? (
+									{technicalMetadata && technicalMetadata.hasProfilingData ? (
 										<span className='centerSpan'>
 											<GoldStar fill={'#f98e2b'} height='20' width='20' className='ml-1' />
-											{technicalMetadata.tableName}
+											{technicalMetadata.label}
 										</span>
 									) : (
-										''
+										<span className='centerSpan'>{technicalMetadata.label}</span>
 									)}
 								</span>
 							</Row>

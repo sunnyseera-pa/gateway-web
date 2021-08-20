@@ -104,7 +104,7 @@ class DatasetDetail extends Component {
 		isLatestVersion: true,
 		isDatasetArchived: false,
 		cohortProfiling: [],
-		isCohortDiscovery: false,
+		datasetHasCohortProfiling: false,
 	};
 
 	topicContext = {};
@@ -156,7 +156,7 @@ class DatasetDetail extends Component {
 					isLatestVersion: res.data.isLatestVersion,
 					isDatasetArchived: res.data.isDatasetArchived,
 				});
-				this.getTechnicalMetadata();
+				await this.getTechnicalMetadata();
 				this.getCollections();
 				if (!isEmpty(res.data.data.datasetv2)) {
 					this.updateV2Flags(res.data.data.datasetv2);
@@ -217,41 +217,70 @@ class DatasetDetail extends Component {
 				this.setState({ isLoading: false });
 			}
 		});
+	};
 
+	async getTechnicalMetadata() {
+		let tablesWithProfilingData = [];
+		let cohortProfilingTechnicalMetadata = {};
 		await axios
 			.get(
 				baseURL +
-					'/api/v1/cohortProfiling?pids=' +
+					'/api/v1/cohortProfiling?pid=' +
 					this.props.match.params.datasetID +
-					'&fields=variables.name,tableName,variables.completeness'
+					'&fields=dataClasses.dataElements.field,dataClasses.name,dataClasses.dataElements.completeness'
 			)
 			.then(res => {
-				let newIsCohortDiscoveryState = res.data.cohortProfiling.length > 0 ? true : false;
-				this.setState({
-					cohortProfiling: res.data.cohortProfiling,
-					isCohortDiscovery: newIsCohortDiscoveryState,
-					isLoading: false,
-				});
-				if (this.state.technicalMetadata.length === 0) {
-					this.setState({
-						technicalMetadata: this.state.cohortProfiling,
+				const datasetHasCohortProfiling = res.data.cohortProfiling.length > 0;
+
+				if (datasetHasCohortProfiling) {
+					cohortProfilingTechnicalMetadata = res.data.cohortProfiling[0];
+					tablesWithProfilingData = cohortProfilingTechnicalMetadata.dataClasses.map(dataClass => {
+						return dataClass.name;
 					});
 				}
-			});
-	};
-
-	getTechnicalMetadata() {
-		axios.get(baseURL + '/api/v1/datasets/' + this.state.data.datasetid).then(res => {
-			if (res.data) {
-				const {
-					data: {
-						datasetfields: { technicaldetails: technicalMetadata = [] },
-					},
-				} = res.data;
 				this.setState({
-					technicalMetadata: [...this.state.cohortProfiling, ...technicalMetadata],
+					datasetHasCohortProfiling,
 				});
-			}
+			});
+
+		if (this.state.data) {
+			const {
+				datasetfields: { technicaldetails: technicalMetadata = [] },
+			} = this.state.data;
+			const technicalMetadataWithProfiling = technicalMetadata.map(dataClass => {
+				// If cohortProfilingTechnicalMetadata exists then at least some dataClasses will have profiling data
+				// 1. Find the dataClasses that have profiling data
+				const dataClassProfilingData = tablesWithProfilingData.includes(dataClass.label);
+				return {
+					...dataClass,
+					elements:
+						!isEmpty(cohortProfilingTechnicalMetadata) && dataClassProfilingData
+							? this.appendCohortProfilingCompletenessToDataElements(dataClass, cohortProfilingTechnicalMetadata)
+							: dataClass.elements,
+					hasProfilingData: dataClassProfilingData,
+				};
+			});
+			this.setState({
+				technicalMetadata: [...technicalMetadataWithProfiling],
+				isLoading: false,
+			});
+		}
+	}
+
+	appendCohortProfilingCompletenessToDataElements(dataClass, cohortProfilingTechnicalMetadata) {
+		return dataClass.elements.map(element => {
+			// 2. Find which of their data elements have profiling data
+			const currentElement = cohortProfilingTechnicalMetadata.dataClasses
+				.find(table => {
+					return table.name === dataClass.label;
+				})
+				.dataElements.find(dataElement => {
+					return dataElement.field === element.label;
+				});
+			// 3. Find the completeness % for those data elements and include it in the return object
+			const completenessForCurrentElement = has(currentElement, 'completeness') ? currentElement.completeness : undefined;
+
+			return { ...element, completeness: completenessForCurrentElement };
 		});
 	}
 
@@ -832,7 +861,7 @@ class DatasetDetail extends Component {
 												<SVGIcon name='dataseticon' fill={'#113328'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 												<span>Dataset</span>
 											</span>
-											{this.state.isCohortDiscovery ? (
+											{this.state.datasetHasCohortProfiling ? (
 												<span className='badge-project'>
 													<SVGIcon
 														name='cohorticon'
@@ -1238,7 +1267,7 @@ class DatasetDetail extends Component {
 										<Tab
 											eventKey='TechDetails'
 											title={
-												this.state.isCohortDiscovery ? (
+												this.state.datasetHasCohortProfiling ? (
 													<span style={{ display: 'flex' }}>
 														<GoldStar fill={'#f98e2b'} height='16' width='16' viewBox='0 0 21 21' className='mr-2' /> Technical details
 													</span>
@@ -1248,7 +1277,7 @@ class DatasetDetail extends Component {
 											}>
 											{dataClassOpen === -1 ? (
 												<Fragment>
-													{this.state.isCohortDiscovery ? <CohortDiscoveryBanner userProps={userState[0]} /> : ''}
+													{this.state.datasetHasCohortProfiling ? <CohortDiscoveryBanner userProps={userState[0]} /> : ''}
 													<Col sm={12} lg={12} className='subHeader gray800-14-bold pad-bottom-24 pad-top-24'>
 														<span className='black-16-semibold mr-3'>Data Classes</span>
 														<span onMouseEnter={this.handleMouseHover} onMouseLeave={this.handleMouseHover}>
