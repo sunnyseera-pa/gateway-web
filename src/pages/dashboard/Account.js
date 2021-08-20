@@ -728,7 +728,7 @@ class Account extends Component {
 						drawerIsOpen={this.state.showDrawer}
 					/>
 				</SideDrawer>
-				{tabId === 'teamManagement' && teamManagementTab == tabTypes.Notifications && (
+				{tabId === 'teamManagement' && teamManagementTab === tabTypes.Notifications && (
 					<ActionBar userState={userState}>
 						<div>
 							<button

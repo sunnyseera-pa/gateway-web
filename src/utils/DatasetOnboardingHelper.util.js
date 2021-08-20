@@ -191,12 +191,32 @@ let configActionModal = (type = '') => {
 			case 'VALIDATIONERRORS':
 				config = {
 					title: 'Mandatory fields missing',
-					subTitle: 'You cannot submit this dataset for review until you have completed all the mandatory questions.',
+					subTitle: `You cannot submit this dataset for review until you have completed all the mandatory questions. If you need to submit this dataset without the mandatory answers, please raise a support ticket at the following link:`,
+					link: 'https://hdruk.atlassian.net/servicedesk/customer/portal/1',
 					description: false,
 					buttons: {
 						confirmSubmission: {
 							label: 'Ok',
 							action: 'cancel',
+							class: 'btn btn-primary addButton',
+						},
+					},
+				};
+				break;
+			case 'VALIDATIONERRORSADMIN':
+				config = {
+					title: 'Mandatory fields missing',
+					subTitle: `Are you sure that you want to submit this version of this dataset for review? There are mandatory fields missing. You cannot edit this form whilst it is pending.`,
+					description: false,
+					buttons: {
+						cancel: {
+							label: 'No, nevermind',
+							action: 'cancel',
+							class: 'button-secondary mr-2',
+						},
+						confirmSubmission: {
+							label: 'Confirm submission',
+							action: 'confirmSubmission',
 							class: 'btn btn-primary addButton',
 						},
 					},
@@ -336,6 +356,25 @@ let configActionModal = (type = '') => {
 						confirmApprovalConditions: {
 							label: 'Confirm approval with conditions',
 							action: 'confirmApprovalConditions',
+							class: 'btn btn-primary addButton',
+						},
+					},
+				};
+			case 'DELETEDRAFT':
+				config = {
+					title: 'Delete draft',
+					subTitle:
+						'Are you sure you want to delete this draft dataset? You will no longer be able to view this form and will lose any answers provided. All team members will be notified.',
+					description: false,
+					buttons: {
+						cancel: {
+							label: 'No, nevermind',
+							action: 'cancel',
+							class: 'button-secondary mr-2',
+						},
+						confirmDelete: {
+							label: 'Delete draft',
+							action: 'deleteDraft',
 							class: 'btn btn-primary addButton',
 						},
 					},
