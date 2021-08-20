@@ -109,6 +109,7 @@ class SearchPage extends React.Component {
 		saveSuccess: false,
 		showLoggedInModal: true,
 		showSavedName: '',
+		getTabName: '',
 	};
 
 	constructor(props) {
@@ -145,6 +146,12 @@ class SearchPage extends React.Component {
 
 	showSavedName = data => {
 		this.setState({ showSavedName: data });
+	};
+
+	getTab = () => {
+		const urlParams = new URLSearchParams(window.location.href);
+		const tabName = urlParams.get('tab');
+		this.setState({ getTabName: tabName });
 	};
 
 	toggleAdvancedSearchModal = () => {
@@ -1387,6 +1394,7 @@ class SearchPage extends React.Component {
 											filters={this.state.allFilters}
 											sort={this.state.filtersV2}
 											loggedIn={this.state.userState}
+											tab={this.getTab}
 										/>
 									)}
 

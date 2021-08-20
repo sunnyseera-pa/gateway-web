@@ -17,7 +17,7 @@ const SaveModal = ({ ...props }) => {
 			filterCriteria: {
 				searchTerm: props.search || '',
 				filters: props.filters || [],
-				tab: 'Datasets',
+				tab: props.tab || '',
 				sort: props.sort || '',
 				loggedIn: props.loggedIn || '',
 			},
