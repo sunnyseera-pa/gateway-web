@@ -1337,15 +1337,11 @@ class SearchPage extends React.Component {
 					</div>
 
 					<div className='container'>
-						{this.state.saveSuccess && !this.state.showSavedModal ? (
-							<Alert variant='primary' className='blue-banner saved-preference-banner'>
-								Saved preference: {this.state.showSavedName}
-							</Alert>
-						) : (
+						{!this.state.saveSuccess && (filtersV2.length = selectedV2.length) && (
 							<Alert variant='primary' className='blue-banner saved-preference-banner'>
 								<Row>
 									<Col>
-										<h5 className='dark-14'>Data utility wizard applied: Customer filters</h5>
+										<h5 className='indigo-bold-14'>Data utility wizard applied: Customer filters</h5>
 									</Col>
 								</Row>
 								<Row>
@@ -1356,6 +1352,11 @@ class SearchPage extends React.Component {
 										Edit in data utility wizard
 									</Col>
 								</Row>
+							</Alert>
+						)}
+						{this.state.saveSuccess && !this.state.showSavedModal && (
+							<Alert variant='primary' className='blue-banner saved-preference-banner'>
+								Saved preference: {this.state.showSavedName}
 							</Alert>
 						)}
 						<Container className={this.state.saveSuccess && 'container-saved-preference-banner'}>
