@@ -34,13 +34,14 @@ const SaveModal = ({ ...props }) => {
 					setClose(props.onHide);
 					props.saveName(res.data.response.name);
 					setSaveSuccess(props.saveSuccess);
+					console.log(res);
 				})
 				.catch(err => {
 					return err;
 				});
 		},
 	});
-
+	console.log(props);
 	return (
 		<Modal show={props.show} onHide={props.onSaveHide} className='save-modal'>
 			<Modal.Header closeButton>
