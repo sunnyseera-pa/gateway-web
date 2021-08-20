@@ -59,7 +59,8 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 									<p className='black-14-bold'>{a.filterCriteria.searchTerm}</p>
 								)}
 							</p>
-							{/*a.filterCriteria &&
+							{a.filterCriteria &&
+								a.filterCriteria.sort &&
 								a.filterCriteria.sort
 									.map(a => (a === '' ? [{ highlighted: [''] }] : a))
 									.filter(b => b)
@@ -70,7 +71,7 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 									)
 									.map(a => a.highlighted)
 									.map(([filter]) => (filter == undefined ? { filter: '' } : { filter }))
-									.map(a => a.filter)*/}
+									.map(a => a.filter)}
 						</div>
 					))}
 			</Modal.Body>
