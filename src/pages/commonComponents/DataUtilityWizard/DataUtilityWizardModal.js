@@ -6,6 +6,8 @@ import SVGIcon from '../../../images/SVGIcon';
 import './DataUtilityWizard.scss';
 import { useHistory } from 'react-router-dom';
 import _ from 'lodash';
+import { Typeahead } from 'react-bootstrap-typeahead';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 const DataUtilityWizardModal = ({
 	open,
@@ -16,17 +18,31 @@ const DataUtilityWizardModal = ({
 	doSearchCall,
 	selectedItems,
 	handleClearSelection,
+	wizardSearchValue,
 }) => {
 	const [stepCounter, setStepCounter] = useState(1);
-	const [searchValue, setSearchValue] = useState('');
+	const [searchValue, setSearchValue] = useState([]);
 	const [step1Value, setStep1Value] = useState('');
 	const [step2Value, setStep2Value] = useState('');
 	const [step3Value, setStep3Value] = useState('');
 	const [step4Value, setStep4Value] = useState('');
+	let [options, setOptions] = useState([]);
+
+	// let options = [
+	//  {
+	//      label: 'Alabama',
+	//      population: 4780127,
+	//      capital: 'Montgomery',
+	//      region: 'South',
+	//  },
+	//  { label: 'Alaska', population: 710249, capital: 'Juneau', region: 'West' },
+	//  { label: 'Arizona', population: 6392307, capital: 'Phoenix', region: 'West' },
+	// ];
 
 	useEffect(() => {
 		// Whenever the data utility wizard is opened, the steps are reset to the first one
 		resetSteps();
+		wizardSearchValue ? setSearchValue([wizardSearchValue]) : setSearchValue([]);
 	}, [open]);
 
 	const handleClose = action => closed(action);
@@ -86,9 +102,6 @@ const DataUtilityWizardModal = ({
 		await updateFilterStates(searchObject);
 		doSearchCall();
 	};
-	const onSearch = e => {
-		setSearchValue(e.target.value);
-	};
 
 	const resetSteps = () => {
 		setStepCounter(1);
@@ -102,28 +115,25 @@ const DataUtilityWizardModal = ({
 		setStepCounter(stepCounter => stepCounter - 1);
 	};
 
-	const doSearch = e => {
-		// Fires on enter on searchbar
-		if (e.key === 'Enter') {
-			const queryParams = queryString.parse(window.location.search);
-			const newQueries = { ...queryParams, search: searchValue };
-			history.push({ search: queryString.stringify(newQueries) });
-			doSearchCall(true);
-		}
+	const handleChange = selectedValue => {
+		const search = _.isEmpty(selectedValue) ? '' : selectedValue[0];
+		setSearchValue(selectedValue);
+		doSearchCall(search);
 	};
+
 	const dataUtilityWizardJourney = () => {
-		if (stepCounter !== dataUtilityWizardSteps.length) {
-			return (
-				<div className='data-utility-wizard-modal-body ml-3'>
-					{dataUtilityWizardSteps.map((step, index) => {
-						if (step && step.includeInWizard && step.wizardStepOrder === stepCounter) {
-							return (
-								<>
-									<p className='gray800-14'>
-										Question {stepCounter} of {dataUtilityWizardSteps.length}
-									</p>
-									<h5 className='black-20'>{step.wizardStepTitle}</h5>
-									<p className='gray800-14'>{step.wizardStepDescription}</p>
+		return (
+			<div className='data-utility-wizard-modal-body ml-3'>
+				{dataUtilityWizardSteps.map((step, index) => {
+					if (step && step.includeInWizard && step.wizardStepOrder === stepCounter) {
+						return (
+							<>
+								<p className='gray800-14'>
+									Question {stepCounter} of {dataUtilityWizardSteps.length}
+								</p>
+								<h5 className='black-20'>{step.wizardStepTitle}</h5>
+								<p className='gray800-14'>{step.wizardStepDescription}</p>
+								{step.wizardStepType === 'radio' && (
 									<div className='radio-buttons-container'>
 										{step.entries.map(entry => {
 											return (
@@ -142,24 +152,34 @@ const DataUtilityWizardModal = ({
 											);
 										})}
 									</div>
-								</>
-							);
-						}
-					})}
-				</div>
-			);
-		} else {
-			return (
-				<span className='collectionsSearchBar form-control'>
-					<span className='collectionsSearchIcon'>
-						<SVGIcon name='searchicon' width={20} height={20} fill={'#2c8267'} stroke='none' type='submit' />
-					</span>
-					<span>
-						<input id='collectionsSearchBarInput' type='text' placeholder='' onChange={onSearch} value={searchValue} onKeyDown={doSearch} />
-					</span>
-				</span>
-			);
-		}
+								)}
+
+								{step.wizardStepType === 'search' && (
+									<div className='ds-search'>
+										<div className='ds-search-icon'>
+											<SVGIcon name='searchicon' width={20} height={20} fill={'#475da7'} />
+										</div>
+										<div className='ds-search-input'>
+											<Typeahead
+												multiple
+												id={'typeaheadDataUtilityWizard'}
+												onChange={e => {
+													handleChange(e);
+												}}
+												options={options}
+												defaultSelected={searchValue}
+												selected={searchValue}
+												onInputChange={text => setOptions([text])}
+											/>
+										</div>
+									</div>
+								)}
+							</>
+						);
+					}
+				})}
+			</div>
+		);
 	};
 
 	return (

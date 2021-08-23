@@ -25,10 +25,7 @@ const AdvancedSearchModal = ({
 	doSearchCall,
 	selectedItems,
 	handleClearSelection,
-	resetTreeChecked,
-	findParentNode,
-    filtersV2,
-	handleClearSection
+	wizardSearchValue,
 }) => {
 	const [userState, setUserState] = useState(userProps);
 	const [showRequestAccessModal, setShowRequestAccessModal] = useState(false);
@@ -203,6 +200,7 @@ const AdvancedSearchModal = ({
 				doSearchCall={doSearchCall}
 				selectedItems={selectedItems}
 				handleClearSelection={handleClearSelection}
+				wizardSearchValue={wizardSearchValue}
 			/>
 		</>
 	);

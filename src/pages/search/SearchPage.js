@@ -193,6 +193,11 @@ class SearchPage extends React.Component {
 		});
 	};
 
+	doSearchFromWizard = searchFromWizard => {
+		// this.setState({ search });
+		this.doSearchCall(undefined, searchFromWizard);
+	};
+
 	/**
 	 * FindImpliedFilterNode
 	 *
@@ -466,7 +471,7 @@ class SearchPage extends React.Component {
 		});
 	};
 
-	doSearchCall(skipHistory) {
+	doSearchCall(skipHistory, searchFromWizard) {
 		let searchURL = '';
 		let filtersV2 = [];
 		let {
@@ -586,14 +591,22 @@ class SearchPage extends React.Component {
 		if (!skipHistory) {
 			if (this.state.key) searchURL += '&tab=' + this.state.key;
 
-			this.props.history.push(`${window.location.pathname}?search=${encodeURIComponent(this.state.search)}` + searchURL);
+			this.props.history.push(
+				`${window.location.pathname}?search=${encodeURIComponent(
+					typeof searchFromWizard !== 'undefined' ? searchFromWizard : this.state.search
+				)}` + searchURL
+			);
 		}
 
 		if (this.state.key !== 'People') {
 			// remove once full migration to v2 filters for all other entities 'Tools, Projects, Courses and Papers'
 			const entityType = typeMapper[`${this.state.key}`];
 			axios
-				.get(`${baseURL}/api/v1/search/filter?search=${encodeURIComponent(this.state.search)}${searchURL}`)
+				.get(
+					`${baseURL}/api/v1/search/filter?search=${encodeURIComponent(
+						typeof searchFromWizard !== 'undefined' ? searchFromWizard : this.state.search
+					)}${searchURL}`
+				)
 				.then(res => {
 					let filters = this.getFilterState(entityType, res);
 					// test the type and set relevant state
@@ -611,7 +624,11 @@ class SearchPage extends React.Component {
 		}
 		// search call brings back search results and now filters highlighting for v2
 		axios
-			.get(`${baseURL}/api/v1/search?search=${encodeURIComponent(this.state.search)}${searchURL}`)
+			.get(
+				`${baseURL}/api/v1/search?search=${encodeURIComponent(
+					typeof searchFromWizard !== 'undefined' ? searchFromWizard : this.state.search
+				)}${searchURL}`
+			)
 			.then(res => {
 				// get the correct entity type from our mapper via the selected tab ie..'Dataset, Tools'
 				const entityType = typeMapper[`${this.state.key}`];
@@ -621,12 +638,23 @@ class SearchPage extends React.Component {
 					summary = [],
 				} = res.data;
 
-				this.setState({
-					[`${entityType}Data`]: data,
-					isLoading: false,
-					isResultsLoading: false,
-					summary,
-				});
+				if (typeof searchFromWizard !== 'undefined') {
+					this.setState({
+						[`${entityType}Data`]: data,
+						isLoading: false,
+						isResultsLoading: false,
+						summary,
+						search: searchFromWizard,
+					});
+				} else {
+					this.setState({
+						[`${entityType}Data`]: data,
+						isLoading: false,
+						isResultsLoading: false,
+						summary,
+					});
+				}
+
 				window.scrollTo(0, 0);
 			})
 			.catch(err => {
@@ -884,12 +912,9 @@ class SearchPage extends React.Component {
 					// 7. set checked value
 					foundNode.checked = false;
 					// 8. remove from selectedV2 array
-					if (fromDataUtilityWizard) {
-						selectedV2 = [...this.state.selectedV2];
-						selectedV2 = selectedV2.filter(node => node.id !== selectedNode.id);
-					} else {
-						selectedV2 = this.handleSelected(selectedNode, false);
-					}
+
+					selectedV2 = this.handleSelected(selectedNode, false);
+
 					// 9. set state
 					this.setState({ filtersV2, selectedV2, isResultsLoading: true }, () => {
 						// 10. callback wait for state to update
@@ -2341,10 +2366,11 @@ class SearchPage extends React.Component {
 						userProps={userState[0]}
 						dataUtilityWizardSteps={this.state.dataUtilityWizardSteps}
 						updateFilterStates={this.updateFilterStates}
-						doSearchCall={this.doSearchCall}
+						doSearchCall={this.doSearchFromWizard}
 						handleClearSelection={this.handleClearSelection}
 						datasetCount={datasetCount}
 						selectedItems={selectedV2}
+						wizardSearchValue={search}
 					/>
 
 					<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
