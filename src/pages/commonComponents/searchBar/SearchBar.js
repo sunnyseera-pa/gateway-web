@@ -121,7 +121,7 @@ class SearchBar extends React.Component {
 	handleScroll = () => {
 		const { prevScrollpos } = this.state;
 		const currentScrollPos = window.pageYOffset;
-		var visible = this.state.visible;
+		let visible;
 
 		if (window.innerWidth < 769) {
 			visible = true;
