@@ -56,11 +56,6 @@ class UnmetDemand extends React.Component {
 	render() {
 		const { flagClosed, data } = this.state;
 
-		var svgClassName = '';
-		if (flagClosed === false) {
-			svgClassName = 'flipSVG';
-		}
-
 		return (
 			<div>
 				<div>
@@ -90,10 +85,14 @@ class UnmetDemand extends React.Component {
 										</span>
 									</Col>
 									<Col sm={2} lg={2} className='gray800-14'>
-										<span style={{ float: 'left' }} data-test-id='unmetDemand-search-count'>{!data || !data.count ? 'number of searches' : data.count}</span>
+										<span style={{ float: 'left' }} data-test-id='unmetDemand-search-count'>
+											{!data || !data.count ? 'number of searches' : data.count}
+										</span>
 									</Col>
 									<Col sm={2} lg={2} className='gray800-14'>
-										<span style={{ float: 'left' }} data-test-id='unmetDemand-search-results'>{this.getNumberOfResults(data)}</span>
+										<span style={{ float: 'left' }} data-test-id='unmetDemand-search-results'>
+											{this.getNumberOfResults(data)}
+										</span>
 									</Col>
 								</Row>
 							</Accordion.Toggle>
