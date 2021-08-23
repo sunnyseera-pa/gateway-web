@@ -24,7 +24,6 @@ class PublicAnalyticsDashboard extends React.Component {
 		data: [],
 		topSearches: [],
 		statsDataType: [],
-		statsDataTime: [],
 		totalGAUsers: 0,
 		gaUsers: 0,
 		searchesWithResults: 0,
@@ -141,7 +140,6 @@ class PublicAnalyticsDashboard extends React.Component {
 			axios.get(baseURL + '/api/v1/stats').then(res => {
 				this.setState({
 					statsDataType: res.data.data.typecounts,
-					statsDataTime: res.data.data.daycounts,
 				});
 				resolve();
 			});
