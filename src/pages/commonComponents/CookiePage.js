@@ -1,13 +1,13 @@
 import React from 'react';
 import axios from 'axios';
 import { Button } from 'react-bootstrap';
-import './CookiePage.scss';
 import { Container } from 'react-bootstrap';
 import SearchBar from '../commonComponents/searchBar/SearchBar';
 import Loading from '../commonComponents/Loading';
 import SideDrawer from '../commonComponents/sidedrawer/SideDrawer';
 import UserMessages from '../commonComponents/userMessages/UserMessages';
 import DataSetModal from '../commonComponents/dataSetModal/DataSetModal';
+import './AboutPage.scss';
 
 class CookiePage extends React.Component {
 	state = {
@@ -89,10 +89,10 @@ class CookiePage extends React.Component {
 					userState={userState}
 					doToggleDrawer={this.toggleDrawer}
 				/>
-				<div className='cookie-page-header'>
-					<div className='cookie-page-header-title'>ICODA Gateway</div>
+				<div className='about-page-header'>
+					<div className='about-page-header-title'>ICODA Gateway</div>
 				</div>
-				<div className='cookie-page-button text-center'>
+				<div className='about-page-button text-center'>
 					<Button
 						className='addButton'
 						onClick={e => {
@@ -101,7 +101,7 @@ class CookiePage extends React.Component {
 						Search for datasets
 					</Button>
 				</div>
-				<div className='collection-rectangle cookie-page-body'>
+				<div className='collection-rectangle about-page-body'>
 					<div className='pad-left-24 pad-right-24 pad-top-24 pad-bottom-16 col-lg-12 col-sm-12' />
 					<div className='wpData' dangerouslySetInnerHTML={{ __html: wpData }} />
 				</div>

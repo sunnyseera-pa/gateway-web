@@ -45,6 +45,7 @@ class AboutPage extends React.Component {
 
 	render() {
 		const { isAvailable, wpData } = this.state;
+		console.log(wpData);
 
 		return (
 			<div className='searchTabsHolder'>
