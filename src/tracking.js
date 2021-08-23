@@ -1,6 +1,6 @@
 import ReactGA from 'react-ga';
 
-var disableGA = false;
+var disableGA = true;
 
 export const initGA = trackingID => {
 	// Disable tracking if the opt-out cookie exists.
@@ -19,6 +19,14 @@ export const initGA = trackingID => {
 export const PageView = () => {
 	if (disableGA === false) {
 		ReactGA.pageview(window.location.pathname + window.location.search);
+	}
+};
+
+export const VirtualPageView = pageTitle => {
+	let dataLayer = window.dataLayer;
+
+	if (dataLayer) {
+		dataLayer.push({ 'gtm.newHistoryState': pageTitle, event: 'virtual-page-view' });
 	}
 };
 

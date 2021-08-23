@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import axios from 'axios';
-import { PageView, initGA } from '../../tracking';
+import { PageView, initGA, VirtualPageView } from '../../tracking';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
 import { Container, Row, Col, Tabs, Tab, Pagination } from 'react-bootstrap';
@@ -632,6 +632,7 @@ class SearchPage extends React.Component {
 	};
 
 	handleSelect = key => {
+		VirtualPageView(`${key} results tab`);
 		let values = queryString.parse(window.location.search);
 		values.tab = key;
 		this.props.history.push(window.location.pathname + '?' + queryString.stringify(values));
