@@ -31,6 +31,7 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 				.map(b => b.highlighted)
 				.filter(a => a)
 				.flat()
+				.map(a => a)
 		)
 	);
 
@@ -83,21 +84,10 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 										{a.filterCriteria.sort
 											.map(b => b.highlighted)
 											.filter(a => a)
-											.flat()}
-
-										{/*a.filterCriteria &&
-								a.filterCriteria.sort &&
-								a.filterCriteria.sort
-									.map(a => (a === '' ? [{ highlighted: [''] }] : a))
-									.filter(b => b)
-									.map(b =>
-										b.reduce(c => {
-											return c;
-										})
-									)
-									.map(a => a.highlighted)
-									.map(([filter]) => (filter == undefined ? { filter: '' } : { filter }))
-									.map(a => a.filter)*/}
+											.flat()
+											.map(a => (
+												<div className='filters-chip saved-filter-chip'>{a}</div>
+											))}
 									</div>
 								))}
 						</Modal.Body>
@@ -140,50 +130,3 @@ export default SavedPreferencesModal;
 									<Button>View matches</Button>
 								</a>
 							))} */
-
-/*
-
-	const filterData = data
-		.filter(a => a.name)
-		.map(a => a.filterCriteria.sort)
-		.map(a => (a === '' ? [{ highlighted: [''] }] : a))
-		.filter(b => b)
-		.map(b =>
-			b.reduce(c => {
-				return c;
-			})
-		)
-		.map(a => a.highlighted)
-		.map(([filter]) => (filter == undefined ? { filter: '' } : { filter }));
-
-	console.log(filterData);
- */
-
-/*{data
-					.filter(a => a.name)
-					.map(a => (
-						<div className='filters saved-card-click' onClick={() => setShowButtons(true)}>
-							<h5 className='black-20-semibold'>{a.name}</h5>
-							<p className='black-14'>
-								Search term:{' '}
-								{a.filterCriteria && a.filterCriteria.searchTerm === '' ? (
-									'N/A'
-								) : (
-									<p className='black-14-bold'>{a.filterCriteria.searchTerm}</p>
-								)}
-							</p>
-							{/*a.filterCriteria &&
-								a.filterCriteria.sort &&
-								a.filterCriteria.sort
-									.map(a => (a === '' ? [{ highlighted: [''] }] : a))
-									.filter(b => b)
-									.map(b =>
-										b.reduce(c => {
-											return c;
-										})
-									)
-									.map(a => a.highlighted)
-									.map(([filter]) => (filter == undefined ? { filter: '' } : { filter }))
-									.map(a => a.filter)}
-									</div>
-									))} */
