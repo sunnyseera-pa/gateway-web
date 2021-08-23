@@ -42,7 +42,7 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 				</Container>
 			</Modal.Header>
 
-			<Tabs defaultActiveKey={'Datasets'} className='save-tabsBackground gray700-13'>
+			<Tabs defaultActiveKey={'Datasets'} className='save-tabsBackground saved-preferences-tabs gray700-13'>
 				{tabs.map(tabName => (
 					<Tab
 						eventKey={tabName}
