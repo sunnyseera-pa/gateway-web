@@ -55,17 +55,19 @@ const ActivityLogVersionCard = ({ version, team, onDeleteEventClick }) => {
 							<div className='time'>First message sent {moment(events.lastItem.timestamp).format('D MMMM YYYY')}</div>
 						)}
 					</div>
-					<div className='header-version-status activity-log-version-status'>
-						{renderDuration(applicationStatus, dateSubmitted, applicationType, version, timeWithApplicants)}
+					{applicationType && (
+						<div className='header-version-status activity-log-version-status'>
+							{renderDuration(applicationStatus, dateSubmitted, applicationType, version, timeWithApplicants)}
 
-						{
-							<SLA
-								classProperty={DarHelperUtil.darStatusColours[applicationStatus]}
-								text={DarHelperUtil.darSLAText[applicationStatus]}
-								applicationType={applicationType}
-							/>
-						}
-					</div>
+							{
+								<SLA
+									classProperty={DarHelperUtil.darStatusColours[applicationStatus]}
+									text={DarHelperUtil.darSLAText[applicationStatus]}
+									applicationType={applicationType}
+								/>
+							}
+						</div>
+					)}
 				</div>
 
 				<div className='version-log-body'>
