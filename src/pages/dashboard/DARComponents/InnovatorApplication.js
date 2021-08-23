@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import axios from 'axios';
-import { Row, Col, Container } from 'react-bootstrap/';
+import { Col, Container } from 'react-bootstrap/';
 import Loading from '../../commonComponents/Loading';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';

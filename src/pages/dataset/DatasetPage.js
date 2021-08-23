@@ -53,10 +53,6 @@ class DatasetDetail extends Component {
 		collections: [],
 		dataClassOpen: -1,
 		relatedObjects: [],
-		datarequest: [],
-		DBData: [],
-		activeKey: false,
-		selectedItem: 'tab-1',
 		isLoading: true,
 		userState: [
 			{
@@ -83,9 +79,6 @@ class DatasetDetail extends Component {
 		showModal: false,
 		showCustodianModal: false,
 		showError: false,
-		allowsMessaging: false,
-		allowNewMessage: false,
-		dataRequestModalContent: {},
 		showAllPhenotype: false,
 		showAllLinkedDatasets: false,
 		showEmpty: false,

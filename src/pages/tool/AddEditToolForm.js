@@ -176,7 +176,6 @@ const AddEditToolForm = props => {
 	}
 
 	function descriptionCount(e) {
-		var input = e.target.value;
 		document.getElementById('currentCount').innerHTML = e.target.value.length;
 	}
 

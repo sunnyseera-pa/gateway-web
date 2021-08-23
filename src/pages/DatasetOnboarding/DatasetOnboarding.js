@@ -1,5 +1,5 @@
 import React, { Component, Fragment, useState } from 'react';
-import { OverlayTrigger, Tooltip, Container, Row, Col, Alert } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip, Container, Row, Col } from 'react-bootstrap';
 import Winterfell from 'winterfell';
 import _ from 'lodash';
 import axios from 'axios';
@@ -542,8 +542,9 @@ class DatasetOnboarding extends Component {
 		// 1. If in the about panel, we go to the next step.  Otherwise next panel.
 		if (this.state.activePanelId === 'beforeYouBegin') {
 			// 2. Set new state
+			let currentActiveAccordionCard = this.state.activeAccordionCard;
 			this.setState({
-				activeAccordionCard: ++this.state.activeAccordionCard,
+				activeAccordionCard: ++currentActiveAccordionCard,
 			});
 
 			// 3. If we have reached the end of the about accordion, reset active accordion so all are closed
@@ -648,7 +649,7 @@ class DatasetOnboarding extends Component {
 	 * @param   {string}  questionId     [questionId]
 	 */
 	onQuestionClick = async (questionSetId = '', questionId = '') => {
-		let questionSet, jsonSchema, questionAnswers, data, schema;
+		let questionSet, jsonSchema, questionAnswers, schema;
 
 		questionSet = DatasetOnboardingHelperUtil.findQuestionSet(questionSetId, { ...this.state.jsonSchema });
 
@@ -1214,7 +1215,6 @@ class DatasetOnboarding extends Component {
 			activeflag,
 			listOfDatasets,
 			showDrawer,
-			showCreateNewVersionModal,
 			showActionModal,
 			actionModalConfig,
 			isWideForm,
@@ -1226,7 +1226,7 @@ class DatasetOnboarding extends Component {
 			completion,
 			dataset,
 		} = this.state;
-		const { userState, location } = this.props;
+		const { userState } = this.props;
 
 		Winterfell.addInputType('typeaheadCustom', TypeaheadCustom);
 		Winterfell.addInputType('typeaheadCustomKeyValue', TypeaheadCustomKeyValue);
@@ -1410,7 +1410,6 @@ class DatasetOnboarding extends Component {
 
 											{(() => {
 												let isSubPanel = false;
-												const baseClasses = 'dar-nav-item text-size-small ';
 												[...this.state.jsonSchema.questionPanels].map((item2, index) => {
 													if (item.pageId === item2.pageId && item2.navHeader) {
 														console.log(item.pageId + ' === ' + item2.pageId + ' && ' + item2.navHeader);

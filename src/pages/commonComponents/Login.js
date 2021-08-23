@@ -1,6 +1,5 @@
 import React from 'react';
 import { Row, Col, Image } from 'react-bootstrap';
-import Loading from './Loading';
 import './CommonComponents.scss';
 
 var baseURL = require('./BaseURL').getURL();

@@ -121,7 +121,7 @@ class SearchBar extends React.Component {
 	handleScroll = () => {
 		const { prevScrollpos } = this.state;
 		const currentScrollPos = window.pageYOffset;
-		var visible = this.state.visible;
+		let visible;
 
 		if (window.innerWidth < 769) {
 			visible = true;
@@ -299,21 +299,6 @@ class SearchBar extends React.Component {
 		if (isLoading) {
 			return <></>;
 		}
-
-		const monthNames = [
-			'January',
-			'February',
-			'March',
-			'April',
-			'May',
-			'June',
-			'July',
-			'August',
-			'September',
-			'October',
-			'November',
-			'December',
-		];
 
 		let communityLink = 'https://discourse-dev.healthresearch.tools/';
 		if (window.location.href.includes('.www.')) communityLink = 'https://discourse.healthdatagateway.org/';
