@@ -20,13 +20,13 @@ const CohortProfilingGraph = ({ variableValues, handleToggleRows, showAllRows, r
 	const renderBarInGraph = value => {
 		return (
 			<Row className='variable-row'>
-				<Col sm={3} lg={3} className='gray800-14 pad-top-8'>
+				<Col sm={3} lg={3} className='gray800-14 pad-top-8 pad-bottom-8 overflowWrap'>
 					{value.value}
 				</Col>
-				<Col sm={1} lg={1} className='gray800-14 pad-top-8'>
+				<Col sm={1} lg={1} className='gray800-14 pad-top-8 pad-bottom-8'>
 					{value.frequency}
 				</Col>
-				<Col sm={8} lg={8} className='gray800-14 pad-top-8'>
+				<Col sm={8} lg={8} className='gray800-14 pad-top-8 pad-bottom-8'>
 					<div className='frequency-bar' style={{ width: `${value.frequencyAsPercentage * 100}%` }}>
 						&nbsp;
 					</div>

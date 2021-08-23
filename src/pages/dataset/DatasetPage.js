@@ -105,6 +105,7 @@ class DatasetDetail extends Component {
 		isDatasetArchived: false,
 		cohortProfiling: [],
 		datasetHasCohortProfiling: false,
+		isCohortDiscovery: false,
 	};
 
 	topicContext = {};
@@ -861,7 +862,7 @@ class DatasetDetail extends Component {
 												<SVGIcon name='dataseticon' fill={'#113328'} className='badgeSvg mr-2' viewBox='-2 -2 22 22' />
 												<span>Dataset</span>
 											</span>
-											{this.state.datasetHasCohortProfiling ? (
+											{this.state.isCohortDiscovery ? (
 												<span className='badge-project'>
 													<SVGIcon
 														name='cohorticon'
@@ -1277,7 +1278,7 @@ class DatasetDetail extends Component {
 											}>
 											{dataClassOpen === -1 ? (
 												<Fragment>
-													{this.state.datasetHasCohortProfiling ? <CohortDiscoveryBanner userProps={userState[0]} /> : ''}
+													{this.state.isCohortDiscovery ? <CohortDiscoveryBanner userProps={userState[0]} /> : ''}
 													<Col sm={12} lg={12} className='subHeader gray800-14-bold pad-bottom-24 pad-top-24'>
 														<span className='black-16-semibold mr-3'>Data Classes</span>
 														<span onMouseEnter={this.handleMouseHover} onMouseLeave={this.handleMouseHover}>

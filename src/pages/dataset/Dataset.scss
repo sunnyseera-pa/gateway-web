@@ -380,8 +380,7 @@
 .frequency-bar {
 	background-color: $teal;
 	content: '';
-	height: 40%;
-    margin-top: 1%;
+	height: 20px;
 }
 
 .variableSearchBar {
@@ -412,12 +411,14 @@
 	width: 100%;
 }
 
-.sort-button, .sort-button:focus {
+.sort-button,
+.sort-button:focus {
+	padding: 0px;
 	border: 0;
-    background-color: transparent;
-	outline: 0; 
+	background-color: transparent;
+	outline: 0;
 	display: flex;
-    align-items: center;
+	align-items: center;
 }
 
 .variable-details {
@@ -426,6 +427,7 @@
 
 .variable-row {
 	border-bottom: 1px solid #e7e9ed;
+	align-items: center;
 }
 
 .sorting-buttons-container {

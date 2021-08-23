@@ -158,7 +158,7 @@ const CohortProfilingVariables = props => {
 					</span>
 					{cohortProfilingVariables ? (
 						<span className='gray800-14-opacity centerSpan' style={{ float: 'right' }}>
-							{cohortProfilingVariables.completeness}% complete
+							{(cohortProfilingVariables.completeness * 100).toFixed(2)}% complete
 							<GoldStar fill={'#f98e2b'} height='20' width='20' className='ml-1' />
 						</span>
 					) : (
@@ -214,7 +214,7 @@ const CohortProfilingVariables = props => {
 								Completeness
 							</Col>
 							<Col sm={9} lg={9} className='gray800-14 pad-right-8'>
-								{cohortProfilingData.completeness ? `${cohortProfilingData.completeness}%` : '0%'}
+								{cohortProfilingData.completeness ? `${(cohortProfilingData.completeness * 100).toFixed(2)}%` : '0%'}
 							</Col>
 						</Row>
 						<Row className='sorting-buttons-container'>
