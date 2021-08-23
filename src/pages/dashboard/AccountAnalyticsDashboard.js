@@ -16,7 +16,6 @@ let isMounted = false;
 class AccountAnalyticsDashboard extends React.Component {
 	// initialize our state
 	state = {
-		userState: [],
 		key: 'Datasets',
 		data: [],
 		topSearches: [],
@@ -36,7 +35,6 @@ class AccountAnalyticsDashboard extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state.userState = props.userState;
 		this.state.selectedOption = this.state.dates[0];
 	}
 
