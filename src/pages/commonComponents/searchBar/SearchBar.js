@@ -166,7 +166,6 @@ class SearchBar extends React.Component {
 				this.setState({
 					newData: res.data.newData,
 					isLoading: false,
-					isRead: res.data.isRead,
 				});
 			}
 		});
