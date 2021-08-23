@@ -25,7 +25,6 @@ class CompleteRegistration extends Component {
 		searchString: '',
 		id: '',
 		userdata: [],
-		userState: [],
 		isLoading: true,
 		showDrawer: false,
 		userState: [
