@@ -6,7 +6,6 @@
 }
 .searchTabsHolder {
 	font-family: 'museo-sans-rounded', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
-	font-weight: 400 !important;
 	-webkit-font-smoothing: auto !important;
 }
 
@@ -77,6 +76,26 @@
 	font-size: 16px !important;
 }
 
+footer .social {
+	width: 64px !important;
+	height: 64px !important;
+}
+#root svg {
+	vertical-align: 0 !important;
+}
+.btn {
+	padding: 0.5rem 0.75rem !important;
+	line-height: 1.25 !important;
+	border-radius: 0.25rem !important;
+	font-weight: 900 !important;
+	transition: all 0.15s ease-in-out !important;
+	-webkit-font-smoothing: antialiased !important;
+}
+
+button,
+input {
+	line-height: inherit !important;
+}
 @media (max-width: 1024px) {
 	.about-page-body {
 		padding-left: 20px;
