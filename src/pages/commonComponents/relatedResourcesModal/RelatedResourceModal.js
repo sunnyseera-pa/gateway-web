@@ -65,7 +65,7 @@ class RelatedResourcesModal extends React.Component {
 	};
 
 	render() {
-		const { userState, datasetIndex, toolIndex, projectIndex, paperIndex, personIndex, courseIndex } = this.state;
+		const { userState, datasetIndex, toolIndex, projectIndex, paperIndex, personIndex, courseIndex, selected } = this.state;
 		let { key } = this.state;
 
 		let datasetCount = this.props.summary.datasetCount || 0;
@@ -183,12 +183,12 @@ class RelatedResourcesModal extends React.Component {
 			editingObjectTool = 1;
 		}
 
-		this.state.selected.datasets = 0;
-		this.state.selected.tools = 0;
-		this.state.selected.projects = 0;
-		this.state.selected.papers = 0;
-		this.state.selected.persons = 0;
-		this.state.selected.courses = 0;
+		selected.datasets = 0;
+		selected.tools = 0;
+		selected.projects = 0;
+		selected.papers = 0;
+		selected.persons = 0;
+		selected.courses = 0;
 
 		if (this.props.relatedObjects) {
 			this.props.relatedObjects.map(object => {
@@ -199,28 +199,28 @@ class RelatedResourcesModal extends React.Component {
 					case 'tool':
 						this.props.toolData.map(tool => {
 							if (object.objectId === tool.id || object.objectId === JSON.stringify(tool.id)) {
-								this.state.selected.tools++;
+								selected.tools++;
 							}
 						});
 						break;
 					case 'project':
 						this.props.projectData.map(project => {
 							if (object.objectId === project.id || object.objectId === JSON.stringify(project.id)) {
-								this.state.selected.projects++;
+								selected.projects++;
 							}
 						});
 						break;
 					case 'paper':
 						this.props.paperData.map(paper => {
 							if (object.objectId === paper.id || object.objectId === JSON.stringify(paper.id)) {
-								this.state.selected.papers++;
+								selected.papers++;
 							}
 						});
 						break;
 					case 'person':
 						this.props.personData.map(person => {
 							if (object.objectId === person.id || object.objectId === JSON.stringify(person.id)) {
-								this.state.selected.persons++;
+								selected.persons++;
 							}
 						});
 						break;
@@ -232,14 +232,14 @@ class RelatedResourcesModal extends React.Component {
 								object.pid === dataset.pid ||
 								object.pid === JSON.stringify(dataset.pid)
 							) {
-								this.state.selected.datasets++;
+								selected.datasets++;
 							}
 						});
 						break;
 					case 'course':
 						this.props.courseData.map(course => {
 							if (object.objectId === course.id || object.objectId === JSON.stringify(course.id)) {
-								this.state.selected.courses++;
+								selected.courses++;
 							}
 						});
 						break;
@@ -268,16 +268,14 @@ class RelatedResourcesModal extends React.Component {
 										<Tab
 											eventKey='Datasets'
 											title={
-												'Datasets (' +
-												(!this.props.summary.datasetCount ? '0' : this.props.summary.datasetCount - this.state.selected.datasets) +
-												')'
+												'Datasets (' + (!this.props.summary.datasetCount ? '0' : this.props.summary.datasetCount - selected.datasets) + ')'
 											}
 										/>
 										<Tab
 											eventKey='Tools'
 											title={
 												'Tools (' +
-												(!this.props.summary.toolCount ? '0' : this.props.summary.toolCount - this.state.selected.tools - editingObjectTool) +
+												(!this.props.summary.toolCount ? '0' : this.props.summary.toolCount - selected.tools - editingObjectTool) +
 												')'
 											}
 										/>
@@ -287,26 +285,24 @@ class RelatedResourcesModal extends React.Component {
 												'Projects (' +
 												(!this.props.summary.projectCount
 													? '0'
-													: this.props.summary.projectCount - this.state.selected.projects - editingObjectProject) +
+													: this.props.summary.projectCount - selected.projects - editingObjectProject) +
 												')'
 											}
 										/>
 										<Tab
 											eventKey='Course'
 											title={
-												'Courses (' + (!this.props.summary.courseCount ? '0' : this.props.summary.courseCount - this.state.selected.courses) + ')'
+												'Courses (' + (!this.props.summary.courseCount ? '0' : this.props.summary.courseCount - selected.courses) + ')'
 											}
 										/>
 										<Tab
 											data-test-id='related-papers'
 											eventKey='Papers'
-											title={'Papers (' + (!this.props.summary.paperCount ? '0' : this.props.summary.paperCount - this.state.selected.papers) + ')'}
+											title={'Papers (' + (!this.props.summary.paperCount ? '0' : this.props.summary.paperCount - selected.papers) + ')'}
 										/>
 										<Tab
 											eventKey='People'
-											title={
-												'People (' + (!this.props.summary.personCount ? '0' : this.props.summary.personCount - this.state.selected.persons) + ')'
-											}
+											title={'People (' + (!this.props.summary.personCount ? '0' : this.props.summary.personCount - selected.persons) + ')'}
 										/>
 									</Tabs>
 								</div>
