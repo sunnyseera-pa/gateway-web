@@ -131,7 +131,15 @@ const DataUtilityWizardModal = ({
 								<p className='gray800-14'>
 									Question {stepCounter} of {dataUtilityWizardSteps.length}
 								</p>
-								<h5 className='black-20'>{step.wizardStepTitle}</h5>
+								<div className='data-utility-wizard-title'>
+									<div>{step.wizardStepTitle}</div>
+
+									{_.times(dataUtilityWizardSteps.length, index => {
+										if (stepCounter - 1 === index) return <div className='RectangleCurrent'></div>;
+										if (stepCounter - 1 > index) return <div className='RectangleSelected'></div>;
+										if (stepCounter - 1 < index) return <div className='RectangleUnselected'></div>;
+									})}
+								</div>
 								<p className='gray800-14'>{step.wizardStepDescription}</p>
 								{step.wizardStepType === 'radio' && (
 									<div className='radio-buttons-container'>
@@ -190,34 +198,35 @@ const DataUtilityWizardModal = ({
 			size='lg'
 			aria-labelledby='contained-modal-title-vcenter'
 			centered>
-			<Modal.Header closeButton>
-				<div>
-					<div className='data-utility-wizard-modal-header ml-3'>
-						<CDStar fill='#f98e2b' height='20' width='20' className='mr-2' />
-						<h5 className='black-20'> Data Utility Wizard</h5>
-					</div>
-					<p className='gray800-14 ml-3'>
+			<div className='data-utility-wizard-header'>
+				<div className='data-utility-wizard-header--wrap'>
+					<h5 className='black-20'> Data Utility Wizard</h5>
+
+					<div>
 						Use this tool to find the datasets you require through 6 key data utility filters: allowable uses, time lag, length of follow
 						up, data model, provenance and search terms.
-					</p>
+					</div>
 				</div>
-			</Modal.Header>
+			</div>
+
 			<Modal.Body>{dataUtilityWizardJourney()}</Modal.Body>
-			<Modal.Footer>
-				{stepCounter > 1 ? (
-					<button className='button-tertiary ml-3' style={{ marginRight: 'auto' }} onClick={goBack}>
-						Back
+			<div className='data-utility-wizard-footer'>
+				<div className='data-utility-wizard-footer--wrap'>
+					{stepCounter > 1 ? (
+						<button className='button-tertiary' style={{ marginRight: 'auto' }} onClick={goBack}>
+							Back
+						</button>
+					) : (
+						''
+					)}
+					<button className='button-secondary' onClick={handleClose}>
+						View {datasetCount} dataset matches
 					</button>
-				) : (
-					''
-				)}
-				<button className='button-secondary' onClick={handleClose}>
-					View {datasetCount} dataset matches
-				</button>
-				<button className='button-primary ml-3' onClick={goNext}>
-					Next
-				</button>
-			</Modal.Footer>
+					<button className='button-primary ml-3' onClick={goNext}>
+						Next
+					</button>
+				</div>
+			</div>
 		</Modal>
 	);
 };
