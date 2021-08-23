@@ -164,7 +164,6 @@ class RelatedObject extends React.Component {
 							!this.props.showRelationshipAnswer &&
 							this.props.doAddToTempRelatedObjects(data.type === 'dataset' ? data.datasetid : data.id, data.type, data.pid)
 						}>
-						<span>YHE</span>
 						{data.activeflag === 'review' ? (
 							<Row>
 								<Col sm={12} lg={12}>
