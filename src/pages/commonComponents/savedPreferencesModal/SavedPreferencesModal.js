@@ -16,7 +16,8 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 		});
 	}, []);
 
-	console.log(data.filterCriteria);
+	const tabs = ['Datasets', 'Tools', 'Projects', 'Collections', 'Courses', 'Papers', 'People'];
+
 	return (
 		<Modal show={show} onHide={onHide} dialogClassName='save-modal-preferences '>
 			<Modal.Header closeButton>
@@ -30,36 +31,36 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 							resources search results page and select 'save'.
 						</p>
 					</Row>
-					<Row>
-						<div className='searchTabsHolder save-searchTabsHolder'>
-							<Tabs className='save-tabsBackground gray700-13' activeKey='' onSelect=''>
-								<Tab eventKey='Datasets' title='Datasets' className='saved-tab' />
-								<Tab eventKey='Tools' title='Tools' className='saved-tab' />
-								<Tab eventKey='Projects' title='Projects' className='saved-tab' />
-								<Tab eventKey='Collections' title='Collections' className='saved-tab' />
-								<Tab eventKey='Courses' title='Courses' className='saved-tab' />
-								<Tab eventKey='Papers' title='Papers ' className='saved-tab' />
-								<Tab eventKey='People' title='People' className='saved-tab' />
-							</Tabs>
-						</div>
-					</Row>
 				</Container>
 			</Modal.Header>
-			<Modal.Body style={{ 'max-height': 'calc(100vh - 450px)', 'overflow-y': 'auto', 'background-color': '#f6f7f8' }}>
-				{data
-					.filter(a => a.name)
-					.map(a => (
-						<div className='filters saved-card-click' onClick={() => setShowButtons(true)}>
-							<h5 className='black-20-semibold'>{a.name}</h5>
-							<p className='black-14'>
-								Search term:{' '}
-								{a.filterCriteria && a.filterCriteria.searchTerm === '' ? (
-									'N/A'
-								) : (
-									<p className='black-14-bold'>{a.filterCriteria.searchTerm}</p>
-								)}
-							</p>
-							{a.filterCriteria &&
+
+			<Tabs defaultActiveKey={1} className='save-tabsBackground gray700-13'>
+				{tabs.map((a, index) => (
+					<Tab eventKey={a} title={a}>
+						data
+					</Tab>
+				))}
+			</Tabs>
+
+			<Tabs defaultActiveKey={1} className='save-tabsBackground gray700-13'>
+				<Tab eventKey={1} title='Datasets'>
+					<Modal.Body style={{ 'max-height': 'calc(100vh - 450px)', 'overflow-y': 'auto', 'background-color': '#f6f7f8' }}>
+						{data
+							.filter(a => a.name)
+							.filter(a => a.filterCriteria.tab === 'Datasets')
+							.map(a => (
+								<div className='filters saved-card-click' onClick={() => setShowButtons(true)}>
+									<h5 className='black-20-semibold'>{a.name}</h5>
+									<p className='black-14'>
+										Search term:{' '}
+										{a.filterCriteria && a.filterCriteria.searchTerm === '' ? (
+											'N/A'
+										) : (
+											<p className='black-14-bold'>{a.filterCriteria.searchTerm}</p>
+										)}
+									</p>
+									<p> {a.filterCriteria && a.filterCriteria.tab}</p>
+									{/*a.filterCriteria &&
 								a.filterCriteria.sort &&
 								a.filterCriteria.sort
 									.map(a => (a === '' ? [{ highlighted: [''] }] : a))
@@ -71,10 +72,139 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 									)
 									.map(a => a.highlighted)
 									.map(([filter]) => (filter == undefined ? { filter: '' } : { filter }))
-									.map(a => a.filter)}
-						</div>
-					))}
-			</Modal.Body>
+									.map(a => a.filter)*/}
+								</div>
+							))}
+					</Modal.Body>
+				</Tab>
+				<Tab eventKey={2} title='Tools'>
+					<Modal.Body style={{ 'max-height': 'calc(100vh - 450px)', 'overflow-y': 'auto', 'background-color': '#f6f7f8' }}>
+						{data
+							.filter(a => a.name)
+							.filter(a => a.filterCriteria.tab === 'Tools')
+							.map(a => (
+								<div className='filters saved-card-click' onClick={() => setShowButtons(true)}>
+									<h5 className='black-20-semibold'>{a.name}</h5>
+									<p className='black-14'>
+										Search term:{' '}
+										{a.filterCriteria && a.filterCriteria.searchTerm === '' ? (
+											'N/A'
+										) : (
+											<p className='black-14-bold'>{a.filterCriteria.searchTerm}</p>
+										)}
+									</p>
+									<p> {a.filterCriteria && a.filterCriteria.tab}</p>
+								</div>
+							))}
+					</Modal.Body>
+				</Tab>
+				<Tab eventKey={3} title='Projects'>
+					<Modal.Body style={{ 'max-height': 'calc(100vh - 450px)', 'overflow-y': 'auto', 'background-color': '#f6f7f8' }}>
+						{data
+							.filter(a => a.name)
+							.filter(a => a.filterCriteria.tab === 'Projects')
+							.map(a => (
+								<div className='filters saved-card-click' onClick={() => setShowButtons(true)}>
+									<h5 className='black-20-semibold'>{a.name}</h5>
+									<p className='black-14'>
+										Search term:{' '}
+										{a.filterCriteria && a.filterCriteria.searchTerm === '' ? (
+											'N/A'
+										) : (
+											<p className='black-14-bold'>{a.filterCriteria.searchTerm}</p>
+										)}
+									</p>
+									<p> {a.filterCriteria && a.filterCriteria.tab}</p>
+								</div>
+							))}
+					</Modal.Body>
+				</Tab>
+				<Tab eventKey={4} title='Collections'>
+					<Modal.Body style={{ 'max-height': 'calc(100vh - 450px)', 'overflow-y': 'auto', 'background-color': '#f6f7f8' }}>
+						{data
+							.filter(a => a.name)
+							.filter(a => a.filterCriteria.tab === 'Collections')
+							.map(a => (
+								<div className='filters saved-card-click' onClick={() => setShowButtons(true)}>
+									<h5 className='black-20-semibold'>{a.name}</h5>
+									<p className='black-14'>
+										Search term:{' '}
+										{a.filterCriteria && a.filterCriteria.searchTerm === '' ? (
+											'N/A'
+										) : (
+											<p className='black-14-bold'>{a.filterCriteria.searchTerm}</p>
+										)}
+									</p>
+									<p> {a.filterCriteria && a.filterCriteria.tab}</p>
+								</div>
+							))}
+					</Modal.Body>
+				</Tab>
+				<Tab eventKey={5} title='Courses'>
+					<Modal.Body style={{ 'max-height': 'calc(100vh - 450px)', 'overflow-y': 'auto', 'background-color': '#f6f7f8' }}>
+						{data
+							.filter(a => a.name)
+							.filter(a => a.filterCriteria.tab === 'Courses')
+							.map(a => (
+								<div className='filters saved-card-click' onClick={() => setShowButtons(true)}>
+									<h5 className='black-20-semibold'>{a.name}</h5>
+									<p className='black-14'>
+										Search term:{' '}
+										{a.filterCriteria && a.filterCriteria.searchTerm === '' ? (
+											'N/A'
+										) : (
+											<p className='black-14-bold'>{a.filterCriteria.searchTerm}</p>
+										)}
+									</p>
+									<p> {a.filterCriteria && a.filterCriteria.tab}</p>
+								</div>
+							))}
+					</Modal.Body>
+				</Tab>
+				<Tab eventKey={6} title='Papers'>
+					<Modal.Body style={{ 'max-height': 'calc(100vh - 450px)', 'overflow-y': 'auto', 'background-color': '#f6f7f8' }}>
+						{data
+							.filter(a => a.name)
+							.filter(a => a.filterCriteria.tab === 'Papers')
+							.map(a => (
+								<div className='filters saved-card-click' onClick={() => setShowButtons(true)}>
+									<h5 className='black-20-semibold'>{a.name}</h5>
+									<p className='black-14'>
+										Search term:{' '}
+										{a.filterCriteria && a.filterCriteria.searchTerm === '' ? (
+											'N/A'
+										) : (
+											<p className='black-14-bold'>{a.filterCriteria.searchTerm}</p>
+										)}
+									</p>
+									<p> {a.filterCriteria && a.filterCriteria.tab}</p>
+								</div>
+							))}
+					</Modal.Body>
+				</Tab>
+				<Tab eventKey={7} title='People'>
+					<Modal.Body style={{ 'max-height': 'calc(100vh - 450px)', 'overflow-y': 'auto', 'background-color': '#f6f7f8' }}>
+						{data
+							.filter(a => a.name)
+							.filter(a => a.filterCriteria.tab === 'People')
+							.map(a => (
+								<div className='filters saved-card-click' onClick={() => setShowButtons(true)}>
+									<h5 className='black-20-semibold'>{a.name}</h5>
+									<p className='black-14'>
+										Search term:{' '}
+										{a.filterCriteria && a.filterCriteria.searchTerm === '' ? (
+											'N/A'
+										) : (
+											<p className='black-14-bold'>{a.filterCriteria.searchTerm}</p>
+										)}
+									</p>
+									<p> {a.filterCriteria && a.filterCriteria.tab}</p>
+								</div>
+							))}
+					</Modal.Body>
+				</Tab>
+			</Tabs>
+
 			<Modal.Footer className='saved-preference-modal-footer'>
 				<Button onClick={onHide} className='saved-preferences-cancel button-tertiary'>
 					Cancel
@@ -128,3 +258,32 @@ export default SavedPreferencesModal;
 
 	console.log(filterData);
  */
+
+/*{data
+					.filter(a => a.name)
+					.map(a => (
+						<div className='filters saved-card-click' onClick={() => setShowButtons(true)}>
+							<h5 className='black-20-semibold'>{a.name}</h5>
+							<p className='black-14'>
+								Search term:{' '}
+								{a.filterCriteria && a.filterCriteria.searchTerm === '' ? (
+									'N/A'
+								) : (
+									<p className='black-14-bold'>{a.filterCriteria.searchTerm}</p>
+								)}
+							</p>
+							{/*a.filterCriteria &&
+								a.filterCriteria.sort &&
+								a.filterCriteria.sort
+									.map(a => (a === '' ? [{ highlighted: [''] }] : a))
+									.filter(b => b)
+									.map(b =>
+										b.reduce(c => {
+											return c;
+										})
+									)
+									.map(a => a.highlighted)
+									.map(([filter]) => (filter == undefined ? { filter: '' } : { filter }))
+									.map(a => a.filter)}
+									</div>
+									))} */
