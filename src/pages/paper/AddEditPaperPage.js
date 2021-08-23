@@ -295,9 +295,6 @@ class AddEditPaperPage extends React.Component {
 			isEdit,
 			combinedTopic,
 			combinedFeatures,
-			combinedLanguages,
-			combinedCategories,
-			combinedLicenses,
 			combinedUsers,
 			isLoading,
 			userState,
@@ -339,9 +336,6 @@ class AddEditPaperPage extends React.Component {
 					isEdit={isEdit}
 					combinedTopic={combinedTopic}
 					combinedFeatures={combinedFeatures}
-					combinedLanguages={combinedLanguages}
-					combinedCategories={combinedCategories}
-					combinedLicenses={combinedLicenses}
 					combinedUsers={combinedUsers}
 					userState={userState}
 					searchString={searchString}
