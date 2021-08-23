@@ -300,21 +300,6 @@ class SearchBar extends React.Component {
 			return <></>;
 		}
 
-		const monthNames = [
-			'January',
-			'February',
-			'March',
-			'April',
-			'May',
-			'June',
-			'July',
-			'August',
-			'September',
-			'October',
-			'November',
-			'December',
-		];
-
 		let communityLink = 'https://discourse-dev.healthresearch.tools/';
 		if (window.location.href.includes('.www.')) communityLink = 'https://discourse.healthdatagateway.org/';
 		let showUatBanner = false;

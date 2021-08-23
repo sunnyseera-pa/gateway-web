@@ -565,7 +565,7 @@ let removeQuestionReferences = (questionSetId, questionId, schema) => {
 
 let removeQuestionAnswers = (questionId = '', questionAnswers = {}) => {
 	if (!_.isEmpty(questionId) && !_.isEmpty(questionAnswers)) {
-		let [first, id] = questionId.split('_');
+		let [id] = questionId.split('_');
 		if (typeof id != 'undefined') {
 			Object.keys(questionAnswers).forEach(key => {
 				if (key.includes(id)) {

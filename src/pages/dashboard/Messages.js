@@ -55,7 +55,7 @@ class YourAccount extends React.Component {
 	}
 
 	render() {
-		const { newData, oldData, isLoading } = this.state;
+		const { newData, isLoading } = this.state;
 
 		if (isLoading) {
 			return <Loading />;

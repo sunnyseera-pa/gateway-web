@@ -2,9 +2,6 @@ import React from 'react';
 import SVGIcon from '../../../images/SVGIcon';
 import './SearchBar.scss';
 
-let baseURL = require('../BaseURL').getURL();
-let cmsURL = require('../BaseURL').getCMSURL();
-
 class SimpleSearchBar extends React.Component {
 	state = {
 		textValue: '',
@@ -31,8 +28,6 @@ class SimpleSearchBar extends React.Component {
 	};
 
 	render() {
-		const { userState } = this.state;
-
 		return (
 			<div className='searchBarBackground'>
 				<div>
