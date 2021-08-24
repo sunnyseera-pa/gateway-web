@@ -8,6 +8,7 @@ var baseURL = require('../../commonComponents/BaseURL').getURL();
 const SavedPreferencesModal = ({ show, onHide }) => {
 	const [data, setData] = useState([]);
 	const [showButtons, setShowButtons] = useState(false);
+	const [dataLink, setDataLink] = useState(false);
 
 	useEffect(() => {
 		axios.get(baseURL + '/api/v1/search-preferences').then(res => {
@@ -61,7 +62,12 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 							{data
 								.filter(a => a.filterCriteria.tab === tabName)
 								.map(a => (
-									<div className='filters saved-card-click' onClick={() => setShowButtons(true)}>
+									<div
+										className='filters saved-card-click'
+										onClick={() => {
+											setShowButtons(true);
+											setDataLink(a);
+										}}>
 										<h5 className='black-20-semibold'>{a.name}</h5>
 										<p className='black-14'>
 											Search term:{' '}
@@ -95,8 +101,20 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 						<Button variant='outline-success' className='saved delete-button button-teal'>
 							Delete
 						</Button>
-
-						<Button>View matches</Button>
+						<a
+							href={
+								baseURL +
+								'/search?search=' +
+								dataLink.filterCriteria.searchTerm +
+								'&' +
+								dataLink.filterCriteria.label +
+								'=' +
+								dataLink.filterCriteria.sort.highlighted +
+								'&tab=' +
+								dataLink.filterCriteria.tab
+							}>
+							<Button>View matches</Button>
+						</a>
 					</Row>
 				)}
 			</Modal.Footer>
@@ -105,37 +123,3 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 };
 
 export default SavedPreferencesModal;
-/*
-{data
-							.filter(b => b.name)
-							.map(b => (
-								<a
-									href={
-										baseURL +
-										'/search?search=' +
-										b.filterCriteria.filterType +
-										'=' +
-										b.filterCriteria.filtersApplied +
-										'&tab=' +
-										b.filterCriteria.tab
-									}>
-									<Button>View matches</Button>
-								</a>
-							))} */
-
-/*
-<a
-	href={
-		baseURL +
-		'/search?search=' +
-		a.search +
-		'&' +
-		a.filterCriteria.label +
-		'=' +
-		a.filterCriteria.sort.highlighted +
-		'&tab=' +
-		a.tab
-	}>
-	<Button>View matches</Button>
-</a>
- */
