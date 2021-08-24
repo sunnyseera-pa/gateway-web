@@ -12,6 +12,7 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 	useEffect(() => {
 		axios.get(baseURL + '/api/v1/search-preferences').then(res => {
 			setData(res.data.data);
+			console.log(res.data.data);
 		});
 	}, []);
 
@@ -24,16 +25,6 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 	const coursesTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'Courses').length;
 	const papersTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'Papers').length;
 	const peopleTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'People').length;
-
-	console.log(
-		data.map(a =>
-			a.filterCriteria.sort
-				.map(b => b.highlighted)
-				.filter(a => a)
-				.flat()
-				.map(a => a)
-		)
-	);
 
 	return (
 		<Modal show={show} onHide={onHide} dialogClassName='save-modal-preferences'>
@@ -80,7 +71,7 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 												<p className='black-14-bold'>{a.filterCriteria.searchTerm}</p>
 											)}
 										</p>
-										<p> {a.filterCriteria && a.filterCriteria.tab}</p>
+										<p>Filters applied: </p>
 										{a.filterCriteria.sort
 											.map(b => b.highlighted)
 											.filter(a => a)
@@ -104,6 +95,7 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 						<Button variant='outline-success' className='saved delete-button button-teal'>
 							Delete
 						</Button>
+
 						<Button>View matches</Button>
 					</Row>
 				)}
@@ -130,3 +122,20 @@ export default SavedPreferencesModal;
 									<Button>View matches</Button>
 								</a>
 							))} */
+
+/*
+<a
+	href={
+		baseURL +
+		'/search?search=' +
+		a.search +
+		'&' +
+		a.filterCriteria.label +
+		'=' +
+		a.filterCriteria.sort.highlighted +
+		'&tab=' +
+		a.tab
+	}>
+	<Button>View matches</Button>
+</a>
+ */
