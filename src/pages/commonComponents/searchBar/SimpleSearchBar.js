@@ -4,7 +4,6 @@ import './SearchBar.scss';
 
 class SimpleSearchBar extends React.Component {
 	state = {
-		textValue: '',
 		userState: [
 			{
 				loggedIn: false,
@@ -21,7 +20,6 @@ class SimpleSearchBar extends React.Component {
 	}
 
 	changeText = e => {
-		this.setState({ textValue: e.target.value });
 		if (this.props.doUpdateSearchString) {
 			this.props.doUpdateSearchString(e.target.value);
 		}

@@ -11,7 +11,6 @@ var baseURL = require('../../commonComponents/BaseURL').getURL();
 class InnovatorApplication extends React.Component {
 	state = {
 		data: {},
-		name: '',
 		dataset: '',
 		isLoading: true,
 	};

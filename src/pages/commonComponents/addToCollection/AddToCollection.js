@@ -58,7 +58,9 @@ class AddToCollection extends Component {
 	doCollectionsCall() {
 		if (this.state.userState[0].loggedIn === true) {
 			axios.get(baseURL + '/api/v1/accounts/collections?id=' + this.state.userState[0].id + '').then(res => {
-				this.setState({ collectionsData: res.data.data, isLoading: false });
+				this.setState({
+					collectionsData: res.data.data,
+				});
 			});
 		}
 	}

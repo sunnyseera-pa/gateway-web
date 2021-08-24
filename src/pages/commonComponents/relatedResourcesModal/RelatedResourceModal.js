@@ -17,7 +17,6 @@ class RelatedResourcesModal extends React.Component {
 			},
 		],
 		key: '',
-		summary: [],
 		datasetIndex: 0,
 		toolIndex: 0,
 		projectIndex: 0,
@@ -25,7 +24,6 @@ class RelatedResourcesModal extends React.Component {
 		personIndex: 0,
 		courseIndex: 0,
 		relatedObjectIds: [],
-		relatedObjects: [],
 		selected: {
 			datasets: 0,
 			tools: 0,
@@ -39,7 +37,6 @@ class RelatedResourcesModal extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state.userState = props.userState;
-		this.state.relatedObjects = props.relatedObjects;
 		this.state.relatedObjectIds = [];
 	}
 

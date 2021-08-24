@@ -24,7 +24,6 @@ class RelatedObject extends React.Component {
 		activeLink: true,
 		onSearchPage: false,
 		isLoading: true,
-		didDelete: false,
 		inCollection: false,
 		isCohortDiscovery: false,
 		publisherLogoURL: '',
@@ -34,9 +33,6 @@ class RelatedObject extends React.Component {
 		super(props);
 		this.state.activeLink = props.activeLink;
 		this.state.onSearchPage = props.onSearchPage;
-		if (props.didDelete) {
-			this.state.didDelete = props.didDelete;
-		}
 		if (props.inCollection) {
 			this.state.inCollection = props.inCollection;
 		}
@@ -50,7 +46,7 @@ class RelatedObject extends React.Component {
 			this.getRelatedObjectFromDb(props.objectId, props.objectType);
 		} else {
 			this.state.relatedObject = props.relatedObject;
-		this.getRelatedObjectFromDb(this.state.relatedObject.objectId, this.state.relatedObject.objectType);
+			this.getRelatedObjectFromDb(this.state.relatedObject.objectId, this.state.relatedObject.objectType);
 		}
 	}
 

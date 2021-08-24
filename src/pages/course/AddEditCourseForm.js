@@ -17,6 +17,9 @@ import SVGIcon from '../../images/SVGIcon';
 import { ReactComponent as CloseButtonSvg } from '../../images/close-alt.svg';
 import './Course.scss';
 
+const baseURL = require('../commonComponents/BaseURL').getURL();
+let windowUrl = window.location.origin;
+
 class Fees {
 	constructor() {
 		this.feeDescription = '';
@@ -51,8 +54,6 @@ const initialValues = {
 		},
 	],
 };
-
-var baseURL = require('../commonComponents/BaseURL').getURL();
 
 const AddEditCourseForm = props => {
 	const courseOptions = {
@@ -135,11 +136,11 @@ const AddEditCourseForm = props => {
 			values.relatedObjects = props.relatedObjects;
 			if (props.isEdit) {
 				axios.put(baseURL + '/api/v1/course/' + props.data.id, values).then(res => {
-					window.location.href = window.location.search + '/course/' + props.data.id + '/?courseEdited=true';
+					window.location.href = windowUrl + '/course/' + props.data.id + '/?courseEdited=true';
 				});
 			} else {
 				axios.post(baseURL + '/api/v1/course', values).then(res => {
-					window.location.href = window.location.search + '/course/' + res.data.response.id + '/?courseAdded=true';
+					window.location.href = windowUrl + '/course/' + res.data.response.id + '/?courseAdded=true';
 				});
 			}
 		},

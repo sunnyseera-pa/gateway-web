@@ -12,7 +12,6 @@ class TypeaheadDataset extends React.Component {
 		this.state = {
 			value: props.selectedDatasets,
 			options: [],
-			id: props.id,
 			readOnly: props.readOnly || false,
 		};
 	}
