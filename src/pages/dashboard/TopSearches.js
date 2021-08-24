@@ -13,10 +13,6 @@ class TopSearches extends React.Component {
 		this.state.data = props.data;
 	}
 
-	componentDidMount() {
-		this.setState({ state: this.state });
-	}
-
 	render() {
 		const { data } = this.state;
 		return (

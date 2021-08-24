@@ -24,10 +24,6 @@ class UnmetDemand extends React.Component {
 		}
 	}
 
-	componentDidMount() {
-		this.setState({ state: this.state });
-	}
-
 	getNumberOfResults(data) {
 		let numResults;
 		switch (data.entity) {

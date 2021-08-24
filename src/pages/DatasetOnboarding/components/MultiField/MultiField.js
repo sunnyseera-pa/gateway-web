@@ -8,7 +8,6 @@ class MultiField extends React.Component {
 		super(props);
 		this.state = {
 			value: this.updateValue(props.value),
-			readOnly: props.readOnly || false,
 		};
 	}
 
