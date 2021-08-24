@@ -136,6 +136,25 @@ class SearchPage extends React.Component {
 		});
 	};
 
+	showLoginModal = () => {
+		// 1. add class to body to stop background scroll
+		document.body.classList.add('modal-open');
+
+		document.getElementById('myModal').style.display = 'block';
+		document.getElementById('loginWayFinder').style.display = 'none';
+		document.getElementById('loginButtons').style.display = 'block';
+		document.getElementById('loginModalTitle').innerHTML = 'Sign in or create a new account';
+		document.getElementById('modalRequestSection').style.display = 'none';
+
+		window.onclick = function (event) {
+			if (event.target === document.getElementById('myModal')) {
+				// 2. remove class modal-open from body
+				document.body.classList.remove('modal-open');
+				document.getElementById('myModal').style.display = 'none';
+			}
+		};
+	};
+
 	async componentDidMount() {
 		initGA('UA-166025838-1');
 		PageView();
@@ -1324,7 +1343,11 @@ class SearchPage extends React.Component {
 									<Button
 										variant='light'
 										className='saved-preference button-tertiary'
-										onClick={() => this.setState({ showSavedPreferencesModal: true })}>
+										onClick={
+											this.state.userState[0].loggedIn === false
+												? () => this.showLoginModal()
+												: () => this.setState({ showSavedPreferencesModal: true })
+										}>
 										Saved preferences
 									</Button>
 									{this.state.showSavedPreferencesModal && (
