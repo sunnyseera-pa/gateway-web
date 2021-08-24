@@ -1,8 +1,12 @@
 @import '../../../css/variables';
 @import '../../../css/typography';
 
-.modal.show .modal-dialog {
-	transform: translate(0, 10%) !important;
+.advanced-search-modal {
+	box-sizing: border-box;
+
+	.modal-dialog {
+		max-width: 940px !important;
+	}
 }
 
 .advanced-search {
@@ -39,12 +43,12 @@
 }
 
 .beta-title {
-    background: #3db28c;
-    padding: 4px 7px;
-    color: #fff;
-    font-size: 14px;
-    border-radius: 3px;
+	background: #3db28c;
+	padding: 4px 7px;
+	color: #fff;
+	font-size: 14px;
+	border-radius: 3px;
 }
 .modal-header > .close {
-    align-self: end;
+	align-self: end;
 }

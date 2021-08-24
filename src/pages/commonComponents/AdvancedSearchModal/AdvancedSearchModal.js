@@ -200,7 +200,7 @@ const AdvancedSearchModal = ({
 				doSearchCall={doSearchCall}
 				selectedItems={selectedItems}
 				handleClearSelection={handleClearSelection}
-				wizardSearchValue={wizardSearchValue}
+				searchValue={wizardSearchValue}
 			/>
 		</>
 	);

@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, InputGroup, FormText } from 'react-bootstrap';
-import queryString from 'query-string';
-import { ReactComponent as CDStar } from '../../../images/cd-star.svg';
+import { ReactComponent as CloseButtonSvg } from '../../../images/close-alt.svg';
 import SVGIcon from '../../../images/SVGIcon';
 import './DataUtilityWizard.scss';
-import { useHistory } from 'react-router-dom';
 import _ from 'lodash';
 import { Typeahead } from 'react-bootstrap-typeahead';
-import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 const DataUtilityWizardModal = ({
 	open,
@@ -18,77 +15,16 @@ const DataUtilityWizardModal = ({
 	doSearchCall,
 	selectedItems,
 	handleClearSelection,
-	wizardSearchValue,
+	searchValue,
 }) => {
 	const [stepCounter, setStepCounter] = useState(1);
-	const [searchValue, setSearchValue] = useState([]);
-	const [step1Value, setStep1Value] = useState('');
-	const [step2Value, setStep2Value] = useState('');
-	const [step3Value, setStep3Value] = useState('');
-	const [step4Value, setStep4Value] = useState('');
-	let [options, setOptions] = useState([]);
-
-	// let options = [
-	//  {
-	//      label: 'Alabama',
-	//      population: 4780127,
-	//      capital: 'Montgomery',
-	//      region: 'South',
-	//  },
-	//  { label: 'Alaska', population: 710249, capital: 'Juneau', region: 'West' },
-	//  { label: 'Arizona', population: 6392307, capital: 'Phoenix', region: 'West' },
-	// ];
+	let [typeaheadOption, setTypeaheadOption] = useState([]);
 
 	useEffect(() => {
-		// Whenever the data utility wizard is opened, the steps are reset to the first one
-		resetSteps();
-		wizardSearchValue ? setSearchValue([wizardSearchValue]) : setSearchValue([]);
+		setStepCounter(1);
 	}, [open]);
 
-	const handleClose = action => closed(action);
-	let history = useHistory();
-
-	const checkIfChecked = label => {
-		// Checks which value has been selected previously
-		switch (stepCounter) {
-			case 1:
-				return label === step1Value;
-			case 2:
-				return label === step2Value;
-			case 3:
-				return label === step3Value;
-			case 4:
-				return label === step4Value;
-		}
-	};
-
-	const changeFilter = async (stepKey, impliedValues, label) => {
-		// Setting the changed value in state
-		switch (stepCounter) {
-			case 1:
-				setStep1Value(label);
-				break;
-			case 2:
-				setStep2Value(label);
-				break;
-			case 3:
-				setStep3Value(label);
-				break;
-			case 4:
-				setStep4Value(label);
-				break;
-		}
-
-		// Checks if the current step has any selected buttons and clears them on change
-		if (selectedItems) {
-			selectedItems.map(item => {
-				if (item.parentKey === stepKey) {
-					// TODO: Clearing labels from wizard is working properly
-					handleClearSelection(item, true);
-				}
-			});
-		}
-
+	const changeFilter = async (stepKey, impliedValues) => {
 		// Formats the implied values to be accepted by the updateFilterStates function
 		// e.g: [x, y, z] ---> X::Y::Z
 		for (var i = 0; i < impliedValues.length; i++) {
@@ -100,47 +36,31 @@ const DataUtilityWizardModal = ({
 
 		// Passes filters into the updateFilterStates function
 		await updateFilterStates(searchObject);
-		doSearchCall();
-	};
-
-	const resetSteps = () => {
-		setStepCounter(1);
-	};
-
-	const goNext = () => {
-		setStepCounter(stepCounter => stepCounter + 1);
-	};
-
-	const goBack = () => {
-		setStepCounter(stepCounter => stepCounter - 1);
-	};
-
-	const handleChange = selectedValue => {
-		const search = _.isEmpty(selectedValue) ? '' : selectedValue[0];
-		setSearchValue(selectedValue);
-		doSearchCall(search);
+		// // Checks if the current step has any selected buttons and clears them on change
+		const currentStepSelection = selectedItems.find(item => item.parentKey === stepKey);
+		currentStepSelection ? handleClearSelection(currentStepSelection) : doSearchCall();
 	};
 
 	const dataUtilityWizardJourney = () => {
 		return (
-			<div className='data-utility-wizard-modal-body ml-3'>
-				{dataUtilityWizardSteps.map((step, index) => {
+			<div className='data-utility-wizard-modal-body'>
+				{dataUtilityWizardSteps.map(step => {
 					if (step && step.includeInWizard && step.wizardStepOrder === stepCounter) {
 						return (
 							<>
-								<p className='gray800-14'>
+								<p className='gray800-14 mb-1'>
 									Question {stepCounter} of {dataUtilityWizardSteps.length}
 								</p>
 								<div className='data-utility-wizard-title'>
-									<div>{step.wizardStepTitle}</div>
+									<h5 className='black-20 mb-0 mr-1'> {step.wizardStepTitle}</h5>
 
 									{_.times(dataUtilityWizardSteps.length, index => {
-										if (stepCounter - 1 === index) return <div className='RectangleCurrent'></div>;
-										if (stepCounter - 1 > index) return <div className='RectangleSelected'></div>;
-										if (stepCounter - 1 < index) return <div className='RectangleUnselected'></div>;
+										if (stepCounter - 1 === index) return <div className='current-question'></div>;
+										if (stepCounter - 1 > index) return <div className='previous-question'></div>;
+										if (stepCounter - 1 < index) return <div className='next-question'></div>;
 									})}
 								</div>
-								<p className='gray800-14'>{step.wizardStepDescription}</p>
+								<p className='gray800-14 mt-4'>{step.wizardStepDescription}</p>
 								{step.wizardStepType === 'radio' && (
 									<div className='radio-buttons-container'>
 										{step.entries.map(entry => {
@@ -152,7 +72,7 @@ const DataUtilityWizardModal = ({
 															name={'radioButtonSet' + stepCounter}
 															value={entry.impliedValues}
 															onChange={() => changeFilter(step.key, entry.impliedValues, entry.label)}
-															checked={checkIfChecked(entry.label)}
+															checked={entry.label === selectedItems.find(item => item.parentKey === step.key)?.label}
 														/>
 													</InputGroup.Prepend>
 													<FormText className='ml-3'>{entry.label}</FormText>
@@ -165,19 +85,19 @@ const DataUtilityWizardModal = ({
 								{step.wizardStepType === 'search' && (
 									<div className='ds-search'>
 										<div className='ds-search-icon'>
-											<SVGIcon name='searchicon' width={20} height={20} fill={'#475da7'} />
+											<SVGIcon name='searchicon' width={16} height={16} fill={'#2c8267'} />
 										</div>
 										<div className='ds-search-input'>
 											<Typeahead
-												multiple
 												id={'typeaheadDataUtilityWizard'}
-												onChange={e => {
-													handleChange(e);
+												onChange={input => {
+													doSearchCall(false, input);
 												}}
-												options={options}
+												clearButton
+												options={typeaheadOption}
 												defaultSelected={searchValue}
 												selected={searchValue}
-												onInputChange={text => setOptions([text])}
+												onInputChange={input => setTypeaheadOption([input])}
 											/>
 										</div>
 									</div>
@@ -193,38 +113,44 @@ const DataUtilityWizardModal = ({
 	return (
 		<Modal
 			show={open}
-			onHide={handleClose}
+			onHide={closed}
 			className='data-utility-wizard-modal'
 			size='lg'
 			aria-labelledby='contained-modal-title-vcenter'
 			centered>
 			<div className='data-utility-wizard-header'>
+				<CloseButtonSvg className='data-utility-wizard-modal-close' onClick={closed} />
 				<div className='data-utility-wizard-header--wrap'>
 					<h5 className='black-20'> Data Utility Wizard</h5>
 
-					<div>
+					<div className='Use-this-tool-to-fin'>
 						Use this tool to find the datasets you require through 6 key data utility filters: allowable uses, time lag, length of follow
 						up, data model, provenance and search terms.
 					</div>
 				</div>
 			</div>
 
-			<Modal.Body>{dataUtilityWizardJourney()}</Modal.Body>
+			<div className='data-utility-wizard-body'>
+				<div className='data-utility-wizard-body--wrap'>{dataUtilityWizardJourney()}</div>
+			</div>
 			<div className='data-utility-wizard-footer'>
 				<div className='data-utility-wizard-footer--wrap'>
-					{stepCounter > 1 ? (
-						<button className='button-tertiary' style={{ marginRight: 'auto' }} onClick={goBack}>
+					{stepCounter > 1 && (
+						<button
+							className='button-tertiary'
+							style={{ marginRight: 'auto' }}
+							onClick={() => setStepCounter(stepCounter => stepCounter - 1)}>
 							Back
 						</button>
-					) : (
-						''
 					)}
-					<button className='button-secondary' onClick={handleClose}>
+					<button className='button-secondary' style={{ marginLeft: 'auto' }} onClick={closed}>
 						View {datasetCount} dataset matches
 					</button>
-					<button className='button-primary ml-3' onClick={goNext}>
-						Next
-					</button>
+					{stepCounter < dataUtilityWizardSteps.length && (
+						<button className='button-primary ml-3' onClick={() => setStepCounter(stepCounter => stepCounter + 1)}>
+							Next
+						</button>
+					)}
 				</div>
 			</div>
 		</Modal>
