@@ -39,7 +39,6 @@ class AddEditProjectPage extends React.Component {
 		courseData: [],
 		summary: [],
 		tempRelatedObjectIds: [],
-		relatedObjectIds: [],
 		relatedObjects: [],
 		didDelete: false,
 		isEdit: isEditMode(window.location.pathname),
