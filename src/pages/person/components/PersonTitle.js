@@ -13,8 +13,6 @@ class PersonTitle extends Component {
 	// initialize our state
 	state = {
 		data: this.props.data || [],
-		id: this.props.data.id,
-		counter: this.props.data.counter || 1,
 	};
 
 	componentDidMount(props) {
