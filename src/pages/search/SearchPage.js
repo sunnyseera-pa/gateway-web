@@ -1338,7 +1338,7 @@ class SearchPage extends React.Component {
 
 					<div className='container'>
 						{/*selectedV2.length = selectedV2 */}
-						{!this.state.saveSuccess && (filtersV2.length = selectedV2.length) && (
+						{!this.state.saveSuccess && filtersV2.length != selectedV2.length && (
 							<Alert variant='primary' className='blue-banner saved-preference-banner'>
 								<Row>
 									<Col>
