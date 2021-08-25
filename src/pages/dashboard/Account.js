@@ -137,7 +137,7 @@ class Account extends Component {
 		if (window.location.search) {
 			let tab = '';
 			let values = queryString.parse(window.location.search);
-			if (values.tab !== this.state.tabId || typeof values.tab !== 'undefined' || typeof values.tab !== null) {
+			if (values.tab !== this.state.tabId || !_.isUndefined(values.tab) || !_.isNull(values.tab)) {
 				tab = this.checkRedirect(values);
 				this.setState({
 					tabId: tab,
