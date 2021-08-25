@@ -435,7 +435,7 @@ let modifyQuestionIds = (questionSet, existingUniqueId) => {
 		// 2. ensure we copy the original question deep
 		let question = _.cloneDeep(qValue);
 		// 3. if there is a questionId update
-		if (typeof question.questionId !== undefined) {
+		if (!_.isUndefined(question.questionId)) {
 			question.questionId = `${qValue.questionId}_${uniqueId}`;
 		}
 		// 4. if qObj has input and input.options meaning potential nest, loop over nested options
@@ -479,7 +479,7 @@ let modifyNestedQuestionIds = (questionsArr, uniqueId) => {
 			// 2. for each option in conditional questions loop
 			questionObj.conditionalQuestions.forEach(option => {
 				// 3. test if option has a questionId and if so modify
-				if (typeof option.questionId !== undefined) {
+				if (!_.isUndefined(option.questionId)) {
 					option['questionId'] = `${option.questionId}_${uniqueId}`;
 				}
 				// 4. test the input for options and if options defined means it is another recursive loop call

@@ -56,7 +56,8 @@ class AccountAnalyticsDashboard extends React.Component {
 			this.getTopDatasets(this.state.selectedOption),
 		]);
 
-		if (isMounted) this.setState({ uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100, isLoading: false });
+		let uniqueUsers = (this.state.statsDataType.person / this.state.totalGAUsers) * 100;
+		if (isMounted) this.setState({ uniqueUsers: uniqueUsers, isLoading: false });
 	}
 
 	componentWillUnmount() {
@@ -75,7 +76,8 @@ class AccountAnalyticsDashboard extends React.Component {
 		if (eventKey === null) {
 			eventKey = 0;
 		}
-		this.setState({ selectedOption: this.state.dates[eventKey] });
+		let selectedDate = this.state.dates[eventKey];
+		this.setState({ selectedOption: selectedDate });
 		await Promise.all([this.getUnmetDemand(this.state.dates[eventKey]), this.getTopSearches(this.state.dates[eventKey])]);
 
 		this.setState({ isLoading: false });
@@ -92,7 +94,8 @@ class AccountAnalyticsDashboard extends React.Component {
 			this.getDatasetsWithTechMetadata(),
 			this.getTopDatasets(this.state.dates[eventKey]),
 		]);
-		this.setState({ uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100 });
+		let uniqueUsers = (this.state.statsDataType.person / this.state.totalGAUsers) * 100;
+		this.setState({ uniqueUsers: uniqueUsers });
 	}
 
 	getUnmetDemand(selectedOption) {

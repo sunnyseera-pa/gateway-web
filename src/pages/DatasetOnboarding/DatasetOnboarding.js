@@ -244,12 +244,7 @@ class DatasetOnboarding extends Component {
 			reviewSections = [],
 		} = context;
 
-		let {
-			name,
-			datasetVersion,
-			activeflag,
-			datasetfields: { publisher },
-		} = dataset;
+		let { name, datasetVersion, activeflag } = dataset;
 
 		let showSubmit = false;
 		let submitButtonText = 'Submit for review';
@@ -258,7 +253,7 @@ class DatasetOnboarding extends Component {
 		let showUnArchive = false;
 		let showDeleteDraft = false;
 
-		publisher = dataset.datasetv2.summary.publisher.identifier;
+		let publisher = dataset.datasetv2.summary.publisher.identifier;
 
 		this.setState({ roles: this.getUserRoles() });
 		if (this.state.roles.includes('admin') && applicationStatus === DatasetOnboardingHelper.datasetStatus.inReview) userType = 'ADMIN';
@@ -621,8 +616,9 @@ class DatasetOnboarding extends Component {
 			else percentageCompleted.updatedCompletion.structural = 0;
 
 			// reset guidance - due to on change of panel
+			let jsonSchema = this.state.jsonSchema;
 			this.setState({
-				jsonSchema: { ...this.state.jsonSchema, pages: newFormState },
+				jsonSchema: { ...jsonSchema, pages: newFormState },
 				activePanelId: panelId,
 				isWideForm: panelId === 'beforeYouBegin',
 				isTableForm: panelId === 'structural',
