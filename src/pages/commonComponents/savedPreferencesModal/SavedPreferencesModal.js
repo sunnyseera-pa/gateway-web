@@ -13,7 +13,6 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 	useEffect(() => {
 		axios.get(baseURL + '/api/v1/search-preferences').then(res => {
 			setData(res.data.data);
-			console.log(res.data.data);
 		});
 	}, []);
 
@@ -26,8 +25,6 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 	const coursesTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'Courses').length;
 	const papersTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'Papers').length;
 	const peopleTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'People').length;
-
-	console.log(data.map(a => a.filterCriteria.sort.filter(a => a.highlighted).map(a => a.label + '=' + a.highlighted)));
 
 	return (
 		<Modal show={show} onHide={onHide} dialogClassName='save-modal-preferences'>
