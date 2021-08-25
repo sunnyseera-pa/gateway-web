@@ -73,7 +73,7 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 											{a.filterCriteria && a.filterCriteria.searchTerm === '' ? (
 												'N/A'
 											) : (
-												<p className='black-14-bold'>{a.filterCriteria.searchTerm}</p>
+												<p className='black-14-bold save-searchterm'>{a.filterCriteria.searchTerm}</p>
 											)}
 										</p>
 										<p>Filters applied: </p>
