@@ -16,8 +16,9 @@ class MultiField extends React.Component {
 	}
 
 	handleAddShareholder = () => {
+		let value = this.state.value.concat(['']);
 		this.setState({
-			value: this.state.value.concat(['']),
+			value: value,
 		});
 	};
 
