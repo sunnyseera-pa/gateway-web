@@ -912,7 +912,7 @@ class SearchBar extends React.Component {
 												<Col xs={8}>
 													<div id='mobileSearchBarHidden' style={{ display: 'block' }}>
 														<div className='navBarLogoSpacing'>
-															<a href={cmsURL}>
+															<a href={'/search?search=&tab=Datasets&aboutPage=true'}>
 																<ColourLogoSvg className='ml-4 mt-3' />
 															</a>
 														</div>
@@ -1150,7 +1150,7 @@ class SearchBar extends React.Component {
 											<Col xs={10}>
 												<div id='mobileSearchBarHidden' style={{ display: 'block' }}>
 													<div className='navBarLogoSpacing'>
-														<a href={cmsURL}>
+														<a href={'/search?search=&tab=Datasets&aboutPage=true'}>
 															<ColourLogoSvg className='ml-4 mt-3' />
 														</a>
 													</div>
