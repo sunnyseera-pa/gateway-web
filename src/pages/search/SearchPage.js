@@ -104,6 +104,8 @@ class SearchPage extends React.Component {
 		selectedV2: [],
 		filtersV2Tools: [],
 		selectedV2Tools: [],
+		filtersV2Projects: [],
+		selectedV2Projects: [],
 		savedSearchPanel: true,
 	};
 
@@ -136,7 +138,8 @@ class SearchPage extends React.Component {
 		initGA('UA-166025838-1');
 		PageView();
 		// 1. call filters - this will need parameterised when tools, projects etc move to v2
-		await this.getGlobals();
+		// await this.getGlobals();
+
 		// 2. fires on first time in or page is refreshed/url loaded / has search location
 		if (!!window.location.search) {
 			console.log(window.location);
@@ -285,6 +288,9 @@ class SearchPage extends React.Component {
 				case 'tool':
 					this.setState({ filtersV2Tool: filtersV2, selectedV2Tools: selectedV2 });
 					break;
+				case 'project':
+					this.setState({ filtersV2Project: filtersV2, selectedV2Projects: selectedV2 });
+					break;
 			}
 		}
 	};
@@ -299,40 +305,19 @@ class SearchPage extends React.Component {
 			const filtersV2 = [...this.state.filtersV2];
 			const selectedV2 = [...this.state.selectedV2];
 			this.setSelectedFiltersFromQueryParams(filtersV2, selectedV2, queryParams, 'dataset');
-			console.log(this.state);
 		}
 		if (!_.isEmpty(this.state.filtersV2Tools)) {
 			const filtersV2Tools = [...this.state.filtersV2Tools];
 			const selectedV2Tools = [...this.state.selectedV2Tools];
 			this.setSelectedFiltersFromQueryParams(filtersV2Tools, selectedV2Tools, queryParams, 'tool');
-			console.log(this.state);
 		}
-
+		if (!_.isEmpty(this.state.filtersV2Projects)) {
+			const filtersV2Projects = [...this.state.filtersV2Projects];
+			const selectedV2Projects = [...this.state.selectedV2Projects];
+			this.setSelectedFiltersFromQueryParams(filtersV2Projects, selectedV2Projects, queryParams, 'project');
+		}
 		// 14. original filters setting of data remove if entity moves to V2 for correct filter
 		queryParams.search ? this.setState({ search: queryParams.search }) : this.setState({ search: '' });
-		// V1 Tools
-		queryParams.toolcategories
-			? this.setState({ toolCategoriesSelected: queryParams.toolcategories.split('::') })
-			: this.setState({ toolCategoriesSelected: [] });
-		queryParams.toolprogrammingLanguage
-			? this.setState({ toolProgrammingLanguageSelected: queryParams.toolprogrammingLanguage.split('::') })
-			: this.setState({ toolProgrammingLanguageSelected: [] });
-		queryParams.toolfeatures
-			? this.setState({ toolFeaturesSelected: queryParams.toolfeatures.split('::') })
-			: this.setState({ toolFeaturesSelected: [] });
-		queryParams.tooltopics
-			? this.setState({ toolTopicsSelected: queryParams.tooltopics.split('::') })
-			: this.setState({ toolTopicsSelected: [] });
-		// V1 Projects
-		queryParams.projectcategories
-			? this.setState({ projectCategoriesSelected: queryParams.projectcategories.split('::') })
-			: this.setState({ projectCategoriesSelected: [] });
-		queryParams.projectfeatures
-			? this.setState({ projectFeaturesSelected: queryParams.projectfeatures.split('::') })
-			: this.setState({ projectFeaturesSelected: [] });
-		queryParams.projecttopics
-			? this.setState({ projectTopicsSelected: queryParams.projecttopics.split('::') })
-			: this.setState({ projectTopicsSelected: [] });
 		// V1 Papers
 		queryParams.paperfeatures
 			? this.setState({ paperFeaturesSelected: queryParams.paperfeatures.split('::') })
@@ -401,11 +386,13 @@ class SearchPage extends React.Component {
 
 	clearFilterStates() {
 		// 1. v2 take copy of data
-		let filtersV2Data = [...this.state.filtersV2];
-		let filtersV2ToolsData = [...this.state.filtersV2Tools];
+		let filtersV2Data = !_.isNil(this.state.filtersV2) ? [...this.state.filtersV2] : [];
+		let filtersV2ToolsData = !_.isNil(this.state.filtersV2Tools) ? [...this.state.filtersV2Tools] : [];
+		let filtersV2ProjectsData = !_.isNil(this.state.filtersV2Projects) ? [...this.state.filtersV2Projects] : [];
 		// 2. v2 resets the filters UI tree back to default
 		let filtersV2 = this.resetTreeChecked(filtersV2Data);
 		let filtersV2Tools = this.resetTreeChecked(filtersV2ToolsData);
+		let filtersV2Projects = this.resetTreeChecked(filtersV2ProjectsData);
 
 		this.setState(
 			prevState => ({
@@ -413,13 +400,8 @@ class SearchPage extends React.Component {
 				selectedV2: [],
 				filtersV2Tools,
 				selectedV2Tools: [],
-				// toolCategoriesSelected: [],
-				// toolProgrammingLanguageSelected: [],
-				// toolFeaturesSelected: [],
-				// toolTopicsSelected: [],
-				projectCategoriesSelected: [],
-				projectFeaturesSelected: [],
-				projectTopicsSelected: [],
+				filtersV2Projects,
+				selectedV2Projects: [],
 				paperFeaturesSelected: [],
 				paperTopicsSelected: [],
 				courseStartDatesSelected: [],
@@ -503,15 +485,9 @@ class SearchPage extends React.Component {
 		let searchURL = '';
 		let filtersV2 = [];
 		let filtersV2Tools = [];
+		let filtersV2Projects = [];
 		let {
 			userState,
-			toolCategoriesSelected = [],
-			toolProgrammingLanguageSelected = [],
-			toolFeaturesSelected = [],
-			toolTopicsSelected = [],
-			projectCategoriesSelected = [],
-			projectFeaturesSelected = [],
-			projectTopicsSelected = [],
 			paperFeaturesSelected = [],
 			paperTopicsSelected = [],
 			courseStartDatesSelected = [],
@@ -542,27 +518,14 @@ class SearchPage extends React.Component {
 			collectionSort = '',
 		} = this.state;
 		// 1. build search object from list of selected fitlers v2 only
-		let searchObj = { ...this.buildSearchObj(this.state.selectedV2), ...this.buildSearchObj(this.state.selectedV2Tools) };
-
+		let searchObj = {
+			...this.buildSearchObj(this.state.selectedV2),
+			...this.buildSearchObj(this.state.selectedV2Tools),
+			...this.buildSearchObj(this.state.selectedV2Projects),
+		};
 		// 2. dynamically build the searchUrl v2 only
 		searchURL = this.buildSearchUrl(searchObj);
-		// 3. build up V1 Tools / early filters, no change from original implementation
-		// if (toolCategoriesSelected.length > 0)
-		// 	searchURL += '&toolcategories=' + encodeURIComponent(toolCategoriesSelected.toString().split(',').join('::'));
-		// if (toolProgrammingLanguageSelected.length > 0)
-		// 	searchURL += '&toolprogrammingLanguage=' + encodeURIComponent(toolProgrammingLanguageSelected.toString().split(',').join('::'));
-		// if (toolFeaturesSelected.length > 0)
-		// 	searchURL += '&toolfeatures=' + encodeURIComponent(toolFeaturesSelected.toString().split(',').join('::'));
-		// if (toolTopicsSelected.length > 0)
-		// 	searchURL += '&tooltopics=' + encodeURIComponent(toolTopicsSelected.toString().split(',').join('::'));
-		// V1 Projects
-		if (projectCategoriesSelected.length > 0)
-			searchURL += '&projectcategories=' + encodeURIComponent(projectCategoriesSelected.toString().split(',').join('::'));
-		if (projectFeaturesSelected.length > 0)
-			searchURL += '&projectfeatures=' + encodeURIComponent(projectFeaturesSelected.toString().split(',').join('::'));
-		if (projectTopicsSelected.length > 0)
-			searchURL += '&projecttopics=' + encodeURIComponent(projectTopicsSelected.toString().split(',').join('::'));
-		// V1 Papers
+		// 3. build up V1 Papers / early filters, no change from original implementation
 		if (paperFeaturesSelected.length > 0)
 			searchURL += '&paperfeatures=' + encodeURIComponent(paperFeaturesSelected.toString().split(',').join('::'));
 		if (paperTopicsSelected.length > 0)
@@ -617,13 +580,11 @@ class SearchPage extends React.Component {
 			else if (values.showLogin === 'true' && document.referrer !== '')
 				searchURL += '&loginReferrer=' + encodeURIComponent(document.referrer);
 		}
-
 		if (!skipHistory) {
 			if (this.state.key) searchURL += '&tab=' + this.state.key;
 
 			this.props.history.push(`${window.location.pathname}?search=${encodeURIComponent(this.state.search)}` + searchURL);
 		}
-
 		if (this.state.key !== 'People') {
 			// remove once full migration to v2 filters for all other entities 'Tools, Projects, Courses and Papers'
 			const entityType = typeMapper[`${this.state.key}`];
@@ -640,6 +601,10 @@ class SearchPage extends React.Component {
 						let filtersV2ToolState = this.state.filtersV2Tools || [];
 						filtersV2Tools = this.setHighlightedFilters(filters, [...filtersV2ToolState]);
 						this.setState({ filtersV2Tools });
+					} else if (entityType === 'project') {
+						let filtersV2ProjectState = this.state.filtersV2Projects || [];
+						filtersV2Projects = this.setHighlightedFilters(filters, [...filtersV2ProjectState]);
+						this.setState({ filtersV2Projects });
 					} else {
 						this.setState({ ...filters });
 					}
@@ -682,7 +647,7 @@ class SearchPage extends React.Component {
 		const {
 			data: { filters = {}, allFilters = [], filterOptions = [] },
 		} = response;
-		if (tab === 'dataset' || tab === 'tool') {
+		if (tab === 'dataset' || tab === 'tool' || tab === 'project') {
 			return filters;
 		} else {
 			return {
@@ -768,31 +733,36 @@ class SearchPage extends React.Component {
 		}
 	};
 
-	/**
-	 * GetFilters
-	 *
-	 * @desc Get all the filters for dataset
-	 */
 	getFilters = async () => {
-		let key = typeMapper[`${this.state.key}`];
-
-		if (this.shouldGetFilters(key)) {
-			try {
-				const response = await axios.get(`${baseURL}/api/v2/filters/${key}`);
-				const {
-					data: { data: filterData },
-				} = response;
-				if (!_.isEmpty(filterData) && key === 'dataset') {
-					const filtersV2 = this.mapFiltersToDictionary(filterData, this.state.dataUtilityFilters);
-					this.setState({ filtersV2 });
-				} else if (key === 'tool') {
-					const filtersV2Tools = this.mapFiltersToDictionary(filterData, this.state.dataUtilityFilters);
-
-					this.setState({ filtersV2Tools });
-				}
-			} catch (error) {
-				console.error(error.message);
+		try {
+			const response = await axios.get(`${baseURL}/api/v2/filters/dataset`);
+			const {
+				data: { data: filterData },
+			} = response;
+			if (!_.isEmpty(filterData) && _.isEmpty(this.state.filtersV2)) {
+				const filtersV2 = this.mapFiltersToDictionary(filterData, this.state.dataUtilityFilters);
+				this.setState({ filtersV2 });
 			}
+
+			const responseTools = await axios.get(`${baseURL}/api/v2/filters/tool`);
+			const {
+				data: { data: filterDataTools },
+			} = responseTools;
+			if (!_.isEmpty(filterDataTools) && _.isEmpty(this.state.filtersV2Tools)) {
+				const filtersV2Tools = this.mapFiltersToDictionary(filterDataTools, this.state.dataUtilityFilters);
+				this.setState({ filtersV2Tools });
+			}
+
+			const responseProjects = await axios.get(`${baseURL}/api/v2/filters/project`);
+			const {
+				data: { data: filterDataProjects },
+			} = responseProjects;
+			if (!_.isEmpty(filterDataProjects) && _.isEmpty(this.state.filtersV2Projects)) {
+				const filtersV2Projects = this.mapFiltersToDictionary(filterDataProjects, this.state.dataUtilityFilters);
+				this.setState({ filtersV2Projects });
+			}
+		} catch (error) {
+			console.error(error.message);
 		}
 	};
 
@@ -802,6 +772,8 @@ class SearchPage extends React.Component {
 				return _.isEmpty(this.state.filtersV2);
 			case 'tool':
 				return _.isEmpty(this.state.filtersV2Tools);
+			case 'project':
+				return _.isEmpty(this.state.filtersV2Projects);
 			default:
 				return false;
 		}
@@ -949,13 +921,16 @@ class SearchPage extends React.Component {
 					switch (this.state.key) {
 						case 'Datasets':
 							this.setState({ filtersV2, selectedV2, isResultsLoading: true }, () => {
-								// 10. callback wait for state to update
 								this.doSearchCall();
 							});
 							break;
 						case 'Tools':
 							this.setState({ filtersV2Tools: filtersV2, selectedV2Tools: selectedV2, isResultsLoading: true }, () => {
-								// 10. callback wait for state to update
+								this.doSearchCall();
+							});
+							break;
+						case 'Projects':
+							this.setState({ filtersV2Projects: filtersV2, selectedV2Projects: selectedV2, isResultsLoading: true }, () => {
 								this.doSearchCall();
 							});
 							break;
@@ -1007,6 +982,11 @@ class SearchPage extends React.Component {
 				break;
 			case 'Tools':
 				this.setState({ filtersV2Tools: filtersV2, selectedV2Tools: [], isResultsLoading: true }, () => {
+					this.doSearchCall();
+				});
+				break;
+			case 'Projects':
+				this.setState({ filtersV2Projects: filtersV2, selectedV2Projects: [], isResultsLoading: true }, () => {
 					this.doSearchCall();
 				});
 				break;
@@ -1121,18 +1101,11 @@ class SearchPage extends React.Component {
 					}
 				});
 				// 9. set state
-				switch (this.state.key) {
-					case 'Datasets':
-						this.setState({ filtersV2, selectedV2, isResultsLoading: true }, () => {
-							this.doSearchCall();
-						});
-						break;
-					case 'Tools':
-						this.setState({ filtersV2Tools: filtersV2, selectedV2Tools: selectedV2, isResultsLoading: true }, () => {
-							this.doSearchCall();
-						});
-						break;
-				}
+				this.setFilterStateByKey(this.state.key, filtersV2);
+				this.setSelectedFiltersStateByKey(this.state.key, selectedV2);
+				this.setState({ isResultsLoading: true }, () => {
+					this.doSearchCall();
+				});
 			}
 		}
 	};
@@ -1146,6 +1119,8 @@ class SearchPage extends React.Component {
 				return [...this.state.filtersV2];
 			case 'Tools':
 				return [...this.state.filtersV2Tools];
+			case 'Projects':
+				return [...this.state.filtersV2Projects];
 			default:
 				return [];
 		}
@@ -1160,8 +1135,40 @@ class SearchPage extends React.Component {
 				return [...this.state.selectedV2];
 			case 'Tools':
 				return [...this.state.selectedV2Tools];
+			case 'Projects':
+				return [...this.state.selectedV2Projects];
 			default:
 				return [];
+		}
+	};
+
+	setSelectedFiltersStateByKey = (key, selectedV2) => {
+		switch (key) {
+			case 'Datasets':
+				this.setState({ selectedV2 });
+				break;
+			case 'Tools':
+				this.setState({ selectedV2Tools: selectedV2 });
+				break;
+			case 'Projects':
+				this.setState({ selectedV2Projects: selectedV2 });
+				break;
+		}
+	};
+	/**
+	 * Get the filters in state for the particular tab
+	 */
+	setFilterStateByKey = (key, filtersV2) => {
+		switch (key) {
+			case 'Datasets':
+				this.setState({ filtersV2 });
+				break;
+			case 'Tools':
+				this.setState({ filtersV2Tools: filtersV2 });
+				break;
+			case 'Projects':
+				this.setState({ filtersV2Projects: filtersV2 });
+				break;
 		}
 	};
 
@@ -1212,6 +1219,11 @@ class SearchPage extends React.Component {
 								this.doSearchCall();
 							});
 							break;
+						case 'Projects':
+							this.setState({ filtersV2Projects: filtersV2, selectedV2Projects: selectedV2, isResultsLoading: true }, () => {
+								this.doSearchCall();
+							});
+							break;
 					}
 				}
 			}
@@ -1241,6 +1253,9 @@ class SearchPage extends React.Component {
 						break;
 					case 'Tools':
 						this.setState({ filtersV2Tools: filtersV2 });
+						break;
+					case 'Projects':
+						this.setState({ filtersV2Projects: filtersV2 });
 						break;
 				}
 			}
@@ -1279,15 +1294,6 @@ class SearchPage extends React.Component {
 			isLoading,
 			isResultsLoading,
 
-			toolProgrammingLanguageSelected,
-			toolTopicsSelected,
-			toolCategoriesSelected,
-			toolFeaturesSelected,
-
-			projectTopicsSelected,
-			projectFeaturesSelected,
-			projectCategoriesSelected,
-
 			paperFeaturesSelected,
 			paperTopicsSelected,
 
@@ -1322,6 +1328,10 @@ class SearchPage extends React.Component {
 
 			filtersV2,
 			selectedV2,
+			filtersV2Tools,
+			selectedV2Tools,
+			filtersV2Projects,
+			selectedV2Projects,
 
 			filtersV2Tools,
 			selectedV2Tools,
@@ -1531,6 +1541,17 @@ class SearchPage extends React.Component {
 								) : (
 									''
 								)}
+								{this.state.key === 'Projects' ? (
+									<FilterSelection
+										selectedCount={selectedV2Projects.length}
+										selectedItems={selectedV2Projects}
+										onHandleClearSelection={this.handleClearSelection}
+										onHandleClearAll={this.handleClearAll}
+										savedSearches={true}
+									/>
+								) : (
+									''
+								)}
 							</Row>
 						</Container>
 					</div>
@@ -1585,96 +1606,24 @@ class SearchPage extends React.Component {
 									)}
 
 									{key === 'Projects' ? (
-										<>
-											<div className={this.state.savedSearchPanel ? 'filterHolder saved-filterHolder' : 'filterHolder'}>
-												{projectCategoriesSelected.length !== 0 ||
-												projectFeaturesSelected.length !== 0 ||
-												projectTopicsSelected.length !== 0 ? (
-													<div className='filterCard mb-2'>
-														<Row>
-															<Col className='mb-2'>
-																<div className='inlineBlock'>
-																	<div className='gray500-13'>Showing:</div>
-																</div>
-																<div className='floatRight'>
-																	<div className='purple-13 pointer' onClick={() => this.clearFilter('All')}>
-																		Clear all
-																	</div>
-																</div>
-															</Col>
-														</Row>
-
-														{!projectCategoriesSelected || projectCategoriesSelected.length <= 0
-															? ''
-															: projectCategoriesSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'projectCategoriesSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!projectFeaturesSelected || projectFeaturesSelected.length <= 0
-															? ''
-															: projectFeaturesSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'projectFeaturesSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-
-														{!projectTopicsSelected || projectTopicsSelected.length <= 0
-															? ''
-															: projectTopicsSelected.map(selected => {
-																	return (
-																		<div className='badge-tag'>
-																			{selected.substr(0, 80)} {selected.length > 80 ? '...' : ''}{' '}
-																			<span
-																				className='gray800-14-opacity pointer'
-																				onClick={() => this.clearFilter(selected, 'projectTopicsSelected')}>
-																				X
-																			</span>
-																		</div>
-																	);
-															  })}
-													</div>
-												) : (
-													''
+										<Fragment>
+											<div className='filterHolder'>
+												{selectedV2Projects.length > 0 && (
+													<FilterSelection
+														selectedCount={selectedV2Projects.length}
+														selectedItems={selectedV2Projects}
+														onHandleClearSelection={this.handleClearSelection}
+														onHandleClearAll={this.handleClearAll}
+													/>
 												)}
-												<Filters
-													data={filterOptions.projectCategoriesFilterOptions}
-													allFilters={allFilters.projectCategoryFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={projectCategoriesSelected}
-													title='Type'
-												/>
-												<Filters
-													data={filterOptions.projectFeaturesFilterOptions}
-													allFilters={allFilters.projectFeatureFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={projectFeaturesSelected}
-													title='Keywords'
-												/>
-												<Filters
-													data={filterOptions.projectTopicsFilterOptions}
-													allFilters={allFilters.projectTopicFilter}
-													updateOnFilter={this.updateOnFilter}
-													selected={projectTopicsSelected}
-													title='Domain'
+												<Filter
+													data={filtersV2Projects}
+													onHandleInputChange={this.handleInputChange}
+													onHandleClearSection={this.handleClearSection}
+													onHandleToggle={this.handleToggle}
 												/>
 											</div>
-										</>
+										</Fragment>
 									) : (
 										''
 									)}
