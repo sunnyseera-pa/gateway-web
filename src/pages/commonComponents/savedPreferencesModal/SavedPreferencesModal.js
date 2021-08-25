@@ -103,18 +103,7 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 						<Button variant='outline-success' className='saved delete-button button-teal'>
 							Delete
 						</Button>
-						<a
-							href={
-								baseURL +
-								'/search?search=' +
-								dataLink.filterCriteria.searchTerm +
-								'&' +
-								dataLink.filterCriteria.label +
-								'=' +
-								dataLink.filterCriteria.sort.highlighted +
-								'&tab=' +
-								dataLink.filterCriteria.tab
-							}>
+						<a href={'http://localhost:3000' + dataLink.filterCriteria.url}>
 							<Button>View matches</Button>
 						</a>
 					</Row>
