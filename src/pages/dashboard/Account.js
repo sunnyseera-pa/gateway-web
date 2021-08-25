@@ -166,7 +166,7 @@ class Account extends Component {
 		if (window.location.search) {
 			let values = queryString.parse(window.location.search);
 			let team = 'user';
-			if (values.tab !== this.state.tabId || typeof values.tab !== 'undefined' || typeof values.tab !== null) {
+			if (values.tab !== this.state.tabId || !_.isUndefined(values.tab) || !_.isNull(values.tab)) {
 				if (values.tab !== 'youraccount' && this.state.accountUpdated) {
 					this.setState({ accountUpdated: false });
 				}
