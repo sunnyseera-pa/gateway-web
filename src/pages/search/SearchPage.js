@@ -40,9 +40,6 @@ const typeMapper = {
 };
 
 class SearchPage extends React.Component {
-	// what tab in and see if datasetSort has something and save prefernce to that sort
-
-	//pass back to search page and then set components (v2filtersSelected) - rewrite state back
 	state = {
 		search: '',
 		datasetSort: '',
@@ -114,6 +111,7 @@ class SearchPage extends React.Component {
 		saveSuccess: false,
 		showLoggedInModal: true,
 		showSavedName: '',
+		perferencesSort: '',
 	};
 
 	constructor(props) {
@@ -1313,11 +1311,30 @@ class SearchPage extends React.Component {
 				)}
 			</Col>
 		);
+
 		const urlParams = new URLSearchParams(window.location.href);
 		const tabName = urlParams.get('tab');
 
 		const urlPath = window.location.href;
 		const savedPerferenceURL = urlPath.replace(/https?:\/\/[^\/]+/g, '');
+
+		const perferencesSort = () => {
+			if (tabName === 'dataset') {
+				this.setState({ perferencesSort: this.state.datasetSort });
+			} else if (tabName === 'tool') {
+				this.setState({ perferencesSort: this.state.toolSort });
+			} else if (tabName === 'project') {
+				this.setState({ perferencesSort: this.state.projectSort });
+			} else if (tabName === 'paper') {
+				this.setState({ perferencesSort: this.state.paperSort });
+			} else if (tabName === 'person') {
+				this.setState({ perferencesSort: this.state.personSort });
+			} else if (tabName === 'course') {
+				this.setState({ perferencesSort: this.state.courseSort });
+			} else if (tabName === 'collection') {
+				this.setState({ perferencesSort: this.state.collectionSort });
+			}
+		};
 
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
@@ -1397,7 +1414,7 @@ class SearchPage extends React.Component {
 											saveName={this.showSavedName}
 											search={this.state.search}
 											filters={this.state.selectedV2}
-											sort={this.state.filtersV2}
+											sort={this.perferencesSort}
 											loggedIn={this.state.userState}
 											tab={tabName}
 											url={savedPerferenceURL}

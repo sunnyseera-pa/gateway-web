@@ -13,6 +13,7 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 	useEffect(() => {
 		axios.get(baseURL + '/api/v1/search-preferences').then(res => {
 			setData(res.data.data);
+			console.log(res.data.data);
 		});
 	}, []);
 
@@ -77,13 +78,13 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 											)}
 										</p>
 										<p>Filters applied: </p>
-										{a.filterCriteria.sort
+										{/*a.filterCriteria.sort
 											.map(b => b.highlighted)
 											.filter(a => a)
 											.flat()
 											.map(a => (
 												<div className='filters-chip saved-filter-chip'>{a}</div>
-											))}
+											))*/}
 									</div>
 								))}
 						</Modal.Body>
