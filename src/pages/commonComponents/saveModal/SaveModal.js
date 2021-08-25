@@ -35,7 +35,6 @@ const SaveModal = ({ ...props }) => {
 					setClose(props.onHide);
 					props.saveName(res.data.response.name);
 					setSaveSuccess(props.saveSuccess);
-					console.log(res);
 				})
 				.catch(err => {
 					return err;
