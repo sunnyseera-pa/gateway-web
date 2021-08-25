@@ -96,11 +96,8 @@ class SearchPage extends React.Component {
 		showDrawer: false,
 		showModal: false,
 		showAdvancedSearchModal: false,
-<<<<<<< HEAD
 		showSavedPreferencesModal: false,
-=======
 		showSavedModal: false,
->>>>>>> IG-2174
 		showError: false,
 		context: {},
 		userState: [
@@ -138,10 +135,9 @@ class SearchPage extends React.Component {
 		this.setState({ showError: false });
 	};
 
-<<<<<<< HEAD
 	hideSavedPreferencesModal = () => {
 		this.setState({ showSavedPreferencesModal: false });
-=======
+	};
 	hideSavedModal = () => {
 		this.setState({ showSavedModal: false });
 	};
@@ -157,7 +153,6 @@ class SearchPage extends React.Component {
 
 	showSavedName = data => {
 		this.setState({ showSavedName: data });
->>>>>>> IG-2174
 	};
 
 	toggleAdvancedSearchModal = () => {
@@ -184,7 +179,6 @@ class SearchPage extends React.Component {
 			}
 		};
 	};
-
 	async componentDidMount() {
 		initGA('UA-166025838-1');
 		PageView();
@@ -1252,15 +1246,10 @@ class SearchPage extends React.Component {
 				className={
 					this.state.savedSearchPanel
 						? key === 'Tools' || key === 'Projects' || key === 'Collections' || key === 'Courses' || key === 'Papers' || key === 'People'
-<<<<<<< HEAD
-							? 'text-right save-dropdown saved-dropdown-small'
-							: 'text-right save-dropdown'
-=======
 							? this.state.saveSuccess
 								? 'text-right save-dropdown saved-dropdown-small'
 								: 'text-right save-dropdown '
 							: 'text-right save-dropdown save-dropdown-search'
->>>>>>> IG-2174
 						: 'text-right'
 				}>
 				{key === 'Tools' ? (
@@ -1375,11 +1364,7 @@ class SearchPage extends React.Component {
 									{key === 'Courses' ? <>{courseCount} </> : ''}
 									{key === 'Papers' ? <>{paperCount} </> : ''}
 									{key === 'People' ? <>{personCount} </> : ''}
-<<<<<<< HEAD
-									results for 'query'
-=======
 									results for {this.state.search}
->>>>>>> IG-2174
 								</Col>
 								<Col
 									className={
@@ -1389,19 +1374,6 @@ class SearchPage extends React.Component {
 											? 'saved-buttons saved-buttons-courses'
 											: 'saved-buttons saved-buttons-small'
 									}>
-<<<<<<< HEAD
-									<Button variant='outline-success' className='saved button-teal'>
-										Save
-									</Button>
-									<Button
-										variant='light'
-										className='saved-preference button-tertiary'
-										onClick={
-											this.state.userState[0].loggedIn === false
-												? () => this.showLoginModal()
-												: () => this.setState({ showSavedPreferencesModal: true })
-										}>
-=======
 									{this.state.saveSuccess ? (
 										<Button variant='success' className='saved-disabled button-teal button-teal' disabled>
 											<SVGIcon width='15px' height='15px' name='tick' fill={'#fff'} /> Saved
@@ -1432,8 +1404,15 @@ class SearchPage extends React.Component {
 										/>
 									)}
 
-									<Button variant='light' className='saved-preference button-tertiary'>
->>>>>>> IG-2174
+									<Button
+										variant='light'
+										className='saved-preference button-tertiary'
+										onClick={
+											this.state.userState[0].loggedIn === false
+												? () => this.showLoginModal()
+												: () => this.setState({ showSavedPreferencesModal: true })
+										}>
+										{' '}
 										Saved preferences
 									</Button>
 									{this.state.showSavedPreferencesModal && (
