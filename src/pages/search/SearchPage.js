@@ -114,6 +114,8 @@ class SearchPage extends React.Component {
 		this.state.userState = props.userState;
 		this.state.search = !_.isEmpty(search) ? search : props.location.search;
 		this.searchBar = React.createRef();
+		this.updateFilterStates = this.updateFilterStates.bind(this);
+		this.doSearchCall = this.doSearchCall.bind(this);
 	}
 
 	showModal = () => {
@@ -201,8 +203,13 @@ class SearchPage extends React.Component {
 	 */
 	findImpliedFilterNode = (filters = [], impliedValues) => {
 		if (!_.isEmpty(filters)) {
-			const formattedValues = impliedValues.split('::').map(value => value.toLowerCase()).join(','); 
-			return [...filters].find(node => node.value.toLowerCase() === formattedValues) || {};
+			const formattedValues = impliedValues
+				.split('::')
+				.map(value => value.toLowerCase())
+				.join(',');
+			// TODO - node.value needs to be passed through to the front end for this to work correctly
+			// return [...filters].find(node => node.value.toLowerCase() === formattedValues) || {};
+			return [...filters].find(node => node.impliedValues.toString().toLowerCase() === formattedValues) || {};
 		}
 		return {};
 	};
@@ -263,7 +270,7 @@ class SearchPage extends React.Component {
 								// 10. fn for handling the *selected showing* returns new state
 								let selected = this.handleSelected(selectedNode, node.checked);
 								// 11. update selectedV2 array with our new returned value
-								selectedV2 = [...selectedV2, ...selected];
+								selectedV2 = [...selected];
 							});
 						}
 					}
@@ -459,7 +466,7 @@ class SearchPage extends React.Component {
 		});
 	};
 
-	doSearchCall(skipHistory) {
+	doSearchCall(skipHistory, textSearch = '') {
 		let searchURL = '';
 		let filtersV2 = [];
 		let {
@@ -579,14 +586,16 @@ class SearchPage extends React.Component {
 		if (!skipHistory) {
 			if (this.state.key) searchURL += '&tab=' + this.state.key;
 
-			this.props.history.push(`${window.location.pathname}?search=${encodeURIComponent(this.state.search)}` + searchURL);
+			this.props.history.push(
+				`${window.location.pathname}?search=${encodeURIComponent(textSearch ? textSearch : this.state.search)}` + searchURL
+			);
 		}
 
 		if (this.state.key !== 'People') {
 			// remove once full migration to v2 filters for all other entities 'Tools, Projects, Courses and Papers'
 			const entityType = typeMapper[`${this.state.key}`];
 			axios
-				.get(`${baseURL}/api/v1/search/filter?search=${encodeURIComponent(this.state.search)}${searchURL}`)
+				.get(`${baseURL}/api/v1/search/filter?search=${encodeURIComponent(textSearch ? textSearch : this.state.search)}${searchURL}`)
 				.then(res => {
 					let filters = this.getFilterState(entityType, res);
 					// test the type and set relevant state
@@ -604,7 +613,7 @@ class SearchPage extends React.Component {
 		}
 		// search call brings back search results and now filters highlighting for v2
 		axios
-			.get(`${baseURL}/api/v1/search?search=${encodeURIComponent(this.state.search)}${searchURL}`)
+			.get(`${baseURL}/api/v1/search?search=${encodeURIComponent(textSearch ? textSearch : this.state.search)}${searchURL}`)
 			.then(res => {
 				// get the correct entity type from our mapper via the selected tab ie..'Dataset, Tools'
 				const entityType = typeMapper[`${this.state.key}`];
@@ -614,12 +623,16 @@ class SearchPage extends React.Component {
 					summary = [],
 				} = res.data;
 
-				this.setState({
-					[`${entityType}Data`]: data,
-					isLoading: false,
-					isResultsLoading: false,
-					summary,
+				this.setState(prevState => {
+					return {
+						[`${entityType}Data`]: data,
+						isLoading: false,
+						isResultsLoading: false,
+						summary,
+						search: textSearch ? textSearch : prevState.search,
+					};
 				});
+
 				window.scrollTo(0, 0);
 			})
 			.catch(err => {
@@ -2327,6 +2340,13 @@ class SearchPage extends React.Component {
 						context={context}
 						closed={this.toggleAdvancedSearchModal}
 						userProps={userState[0]}
+						dataUtilityWizardSteps={this.state.dataUtilityWizardSteps}
+						updateFilterStates={this.updateFilterStates}
+						doSearchCall={this.doSearchCall}
+						handleClearSelection={this.handleClearSelection}
+						datasetCount={datasetCount}
+						selectedItems={selectedV2}
+						wizardSearchValue={search}
 					/>
 
 					<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
