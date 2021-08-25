@@ -41,7 +41,6 @@ const SaveModal = ({ ...props }) => {
 				});
 		},
 	});
-	console.log(props);
 	return (
 		<Modal show={props.show} onHide={props.onSaveHide} className='save-modal'>
 			<Modal.Header closeButton>
