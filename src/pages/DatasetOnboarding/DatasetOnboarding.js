@@ -621,8 +621,9 @@ class DatasetOnboarding extends Component {
 			else percentageCompleted.updatedCompletion.structural = 0;
 
 			// reset guidance - due to on change of panel
+			let jsonSchema = this.state.jsonSchema;
 			this.setState({
-				jsonSchema: { ...this.state.jsonSchema, pages: newFormState },
+				jsonSchema: { ...jsonSchema, pages: newFormState },
 				activePanelId: panelId,
 				isWideForm: panelId === 'beforeYouBegin',
 				isTableForm: panelId === 'structural',
