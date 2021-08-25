@@ -3,7 +3,7 @@ import axios from 'axios';
 import { PageView, initGA } from '../../tracking';
 import queryString from 'query-string';
 import * as Sentry from '@sentry/react';
-import { Container, Row, Col, Tabs, Tab, Pagination, Button } from 'react-bootstrap';
+import { Container, Row, Col, Tabs, Tab, Pagination, Button, Alert } from 'react-bootstrap';
 import moment from 'moment';
 import _ from 'lodash';
 import { toTitleCase } from '../../utils/GeneralHelper.util';
@@ -24,6 +24,8 @@ import SortDropdown from './components/SortDropdown';
 import { ReactComponent as CDStar } from '../../images/cd-star.svg';
 import AdvancedSearchModal from '../commonComponents/AdvancedSearchModal/AdvancedSearchModal';
 import SavedPreferencesModal from '../commonComponents/savedPreferencesModal/SavedPreferencesModal';
+import SaveModal from '../commonComponents/saveModal/SaveModal';
+import SVGIcon from '../../images/SVGIcon';
 import './Search.scss';
 
 let baseURL = require('../commonComponents/BaseURL').getURL();
@@ -38,6 +40,9 @@ const typeMapper = {
 };
 
 class SearchPage extends React.Component {
+	// what tab in and see if datasetSort has something and save prefernce to that sort
+
+	//pass back to search page and then set components (v2filtersSelected) - rewrite state back
 	state = {
 		search: '',
 		datasetSort: '',
@@ -91,7 +96,11 @@ class SearchPage extends React.Component {
 		showDrawer: false,
 		showModal: false,
 		showAdvancedSearchModal: false,
+<<<<<<< HEAD
 		showSavedPreferencesModal: false,
+=======
+		showSavedModal: false,
+>>>>>>> IG-2174
 		showError: false,
 		context: {},
 		userState: [
@@ -105,6 +114,9 @@ class SearchPage extends React.Component {
 		filtersV2: [],
 		selectedV2: [],
 		savedSearchPanel: true,
+		saveSuccess: false,
+		showLoggedInModal: true,
+		showSavedName: '',
 	};
 
 	constructor(props) {
@@ -126,8 +138,26 @@ class SearchPage extends React.Component {
 		this.setState({ showError: false });
 	};
 
+<<<<<<< HEAD
 	hideSavedPreferencesModal = () => {
 		this.setState({ showSavedPreferencesModal: false });
+=======
+	hideSavedModal = () => {
+		this.setState({ showSavedModal: false });
+	};
+
+	hideNoSaveSearchModal = () => {
+		this.setState({ showSavedModal: false });
+		this.setState({ saveSuccess: false });
+	};
+
+	showSuccessMessage = () => {
+		this.setState({ saveSuccess: true });
+	};
+
+	showSavedName = data => {
+		this.setState({ showSavedName: data });
+>>>>>>> IG-2174
 	};
 
 	toggleAdvancedSearchModal = () => {
@@ -1222,8 +1252,15 @@ class SearchPage extends React.Component {
 				className={
 					this.state.savedSearchPanel
 						? key === 'Tools' || key === 'Projects' || key === 'Collections' || key === 'Courses' || key === 'Papers' || key === 'People'
+<<<<<<< HEAD
 							? 'text-right save-dropdown saved-dropdown-small'
 							: 'text-right save-dropdown'
+=======
+							? this.state.saveSuccess
+								? 'text-right save-dropdown saved-dropdown-small'
+								: 'text-right save-dropdown '
+							: 'text-right save-dropdown save-dropdown-search'
+>>>>>>> IG-2174
 						: 'text-right'
 				}>
 				{key === 'Tools' ? (
@@ -1287,6 +1324,11 @@ class SearchPage extends React.Component {
 				)}
 			</Col>
 		);
+		const urlParams = new URLSearchParams(window.location.href);
+		const tabName = urlParams.get('tab');
+
+		const urlPath = window.location.href;
+		const savedPerferenceURL = urlPath.replace(/https?:\/\/[^\/]+/g, '');
 
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
@@ -1316,8 +1358,14 @@ class SearchPage extends React.Component {
 							</Tabs>
 						</div>
 					</div>
+
 					<div className='container'>
-						<Container>
+						{this.state.saveSuccess && !this.state.showSavedModal && (
+							<Alert variant='primary' className='blue-banner saved-preference-banner'>
+								Saved preference: {this.state.showSavedName}
+							</Alert>
+						)}
+						<Container className={this.state.saveSuccess && 'container-saved-preference-banner'}>
 							<Row className='filters filter-save'>
 								<Col className='title'>
 									Showing {key === 'Datasets' ? <>{datasetCount} </> : ''}
@@ -1327,7 +1375,11 @@ class SearchPage extends React.Component {
 									{key === 'Courses' ? <>{courseCount} </> : ''}
 									{key === 'Papers' ? <>{paperCount} </> : ''}
 									{key === 'People' ? <>{personCount} </> : ''}
+<<<<<<< HEAD
 									results for 'query'
+=======
+									results for {this.state.search}
+>>>>>>> IG-2174
 								</Col>
 								<Col
 									className={
@@ -1337,6 +1389,7 @@ class SearchPage extends React.Component {
 											? 'saved-buttons saved-buttons-courses'
 											: 'saved-buttons saved-buttons-small'
 									}>
+<<<<<<< HEAD
 									<Button variant='outline-success' className='saved button-teal'>
 										Save
 									</Button>
@@ -1348,6 +1401,39 @@ class SearchPage extends React.Component {
 												? () => this.showLoginModal()
 												: () => this.setState({ showSavedPreferencesModal: true })
 										}>
+=======
+									{this.state.saveSuccess ? (
+										<Button variant='success' className='saved-disabled button-teal button-teal' disabled>
+											<SVGIcon width='15px' height='15px' name='tick' fill={'#fff'} /> Saved
+										</Button>
+									) : this.state.userState[0].loggedIn === false ? (
+										<Button variant='outline-success' className='saved button-teal' onClick={() => this.showLoginModal()}>
+											Save
+										</Button>
+									) : (
+										<Button variant='outline-success' className='saved button-teal' onClick={() => this.setState({ showSavedModal: true })}>
+											Save
+										</Button>
+									)}
+
+									{this.state.showSavedModal && (
+										<SaveModal
+											show={this.state.showSavedModal}
+											onHide={this.hideSavedModal}
+											onSaveHide={this.hideNoSaveSearchModal}
+											saveSuccess={this.showSuccessMessage}
+											saveName={this.showSavedName}
+											search={this.state.search}
+											filters={this.state.selectedV2}
+											sort={this.state.filtersV2}
+											loggedIn={this.state.userState}
+											tab={tabName}
+											url={savedPerferenceURL}
+										/>
+									)}
+
+									<Button variant='light' className='saved-preference button-tertiary'>
+>>>>>>> IG-2174
 										Saved preferences
 									</Button>
 									{this.state.showSavedPreferencesModal && (

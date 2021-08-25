@@ -476,6 +476,7 @@
 	height: 40px;
 	padding: 12px 16px 11px;
 	border-radius: 4px;
+	margin-left: 20px;
 }
 
 .saved:hover {
@@ -509,8 +510,8 @@
 .save-dropdown {
 	margin-top: -55px;
 	height: 100%;
-	width: 55% !important;
-	margin-left: 215px;
+	width: 58% !important;
+	margin-left: 228px;
 }
 
 .saved-buttons {
@@ -541,7 +542,15 @@
 }
 
 .saved-dropdown-small {
+<<<<<<< HEAD
 	margin-left: 180px;
+=======
+	margin-left: 235px;
+}
+
+.save-dropdown-search {
+	margin-left: 228px !important;
+>>>>>>> IG-2174
 }
 
 .saved-buttons-small {
@@ -551,3 +560,26 @@
 .saved-buttons-courses {
 	margin-left: 580px;
 }
+<<<<<<< HEAD
+=======
+
+.saved-preference-banner {
+	border-color: $purple !important;
+	background-color: #cdd7f7 !important;
+	color: $indigo !important;
+	font-weight: $font-weight-semibold !important;
+	margin-top: 32px;
+}
+
+.container-saved-preference-banner {
+	margin-top: -20px;
+}
+
+.saved-disabled {
+	background-color: $teal !important;
+	border-color: $teal !important;
+	text-align: center !important;
+	cursor: default !important;
+	margin-left: -10px;
+}
+>>>>>>> IG-2174
