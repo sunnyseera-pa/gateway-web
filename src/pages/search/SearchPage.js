@@ -1309,6 +1309,9 @@ class SearchPage extends React.Component {
 		const urlParams = new URLSearchParams(window.location.href);
 		const tabName = urlParams.get('tab');
 
+		const urlPath = window.location.href;
+		const savedPerferenceURL = urlPath.replace(/https?:\/\/[^\/]+/g, '');
+
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
 				<div>
@@ -1390,6 +1393,7 @@ class SearchPage extends React.Component {
 											sort={this.state.filtersV2}
 											loggedIn={this.state.userState}
 											tab={tabName}
+											url= {savedPerferenceURL}
 										/>
 									)}
 
