@@ -476,6 +476,7 @@
 	height: 40px;
 	padding: 12px 16px 11px;
 	border-radius: 4px;
+	margin-left: 20px;
 }
 
 .saved:hover {
@@ -510,7 +511,7 @@
 	margin-top: -55px;
 	height: 100%;
 	width: 58% !important;
-	margin-left: 215px;
+	margin-left: 228px;
 }
 
 .saved-buttons {
@@ -573,4 +574,5 @@
 	border-color: $teal !important;
 	text-align: center !important;
 	cursor: default !important;
+	margin-left: -10px;
 }
