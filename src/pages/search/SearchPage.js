@@ -1333,8 +1333,6 @@ class SearchPage extends React.Component {
 			filtersV2Projects,
 			selectedV2Projects,
 
-			filtersV2Tools,
-			selectedV2Tools,
 			showDrawer,
 			showModal,
 			showAdvancedSearchModal,
