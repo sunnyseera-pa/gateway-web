@@ -83,11 +83,11 @@ const DataUtilityWizardModal = ({
 								)}
 
 								{step.wizardStepType === 'search' && (
-									<div className='ds-search'>
-										<div className='ds-search-icon'>
+									<div className='data-utility-wizard-modal-search'>
+										<div className='data-utility-wizard-modal-search-icon'>
 											<SVGIcon name='searchicon' width={16} height={16} fill={'#2c8267'} />
 										</div>
-										<div className='ds-search-input'>
+										<div className='data-utility-wizard-modal-search-input'>
 											<Typeahead
 												id={'typeaheadDataUtilityWizard'}
 												onChange={input => {

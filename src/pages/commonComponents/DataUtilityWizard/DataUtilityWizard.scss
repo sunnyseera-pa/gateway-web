@@ -107,3 +107,25 @@
 	height: 17px;
 	color: #111111;
 }
+
+.data-utility-wizard-modal-search {
+	position: relative;
+	border-radius: 4px;
+	border: solid 2px #d0d3d4;
+	height: min-content !important;
+	min-height: 40px;
+}
+
+.data-utility-wizard-modal-search:focus-within {
+	border: solid 2px #3db28c !important;
+}
+
+.data-utility-wizard-modal-search-icon {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+}
+
+.data-utility-wizard-modal-search .data-utility-wizard-modal-search-input {
+	padding-left: 30px !important;
+}
