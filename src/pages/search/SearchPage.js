@@ -39,6 +39,9 @@ const typeMapper = {
 };
 
 class SearchPage extends React.Component {
+	// what tab in and see if datasetSort has something and save prefernce to that sort
+
+	//pass back to search page and then set components (v2filtersSelected) - rewrite state back
 	state = {
 		search: '',
 		datasetSort: '',
@@ -1389,11 +1392,11 @@ class SearchPage extends React.Component {
 											saveSuccess={this.showSuccessMessage}
 											saveName={this.showSavedName}
 											search={this.state.search}
-											filters={this.state.allFilters}
+											filters={this.state.selectedV2}
 											sort={this.state.filtersV2}
 											loggedIn={this.state.userState}
 											tab={tabName}
-											url= {savedPerferenceURL}
+											url={savedPerferenceURL}
 										/>
 									)}
 
