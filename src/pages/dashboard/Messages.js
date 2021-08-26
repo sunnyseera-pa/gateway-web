@@ -18,7 +18,6 @@ class YourAccount extends React.Component {
 	// initialize our state
 	state = {
 		newData: [],
-		oldData: [],
 		userState: [],
 		isLoading: true,
 	};

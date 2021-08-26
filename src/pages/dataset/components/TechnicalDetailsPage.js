@@ -9,7 +9,6 @@ import '../Dataset.scss';
 class TechnicalDetailsPage extends React.Component {
 	state = {
 		technicalMetadata: null,
-		customType: false,
 		allOpen: false,
 	};
 
@@ -28,7 +27,6 @@ class TechnicalDetailsPage extends React.Component {
 
 	render() {
 		const { technicalMetadata, allOpen } = this.state;
-
 		return (
 			<div className='ml-3'>
 				<Row>
