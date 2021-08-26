@@ -3,20 +3,8 @@ import SVGIcon from '../../../images/SVGIcon';
 import './SearchBar.scss';
 
 class SimpleSearchBar extends React.Component {
-	state = {
-		userState: [
-			{
-				loggedIn: false,
-				role: 'Reader',
-				id: null,
-				name: null,
-			},
-		],
-	};
-
 	constructor(props) {
 		super(props);
-		this.state.userState = props.userState;
 	}
 
 	changeText = e => {

@@ -85,34 +85,21 @@ class DatasetOnboarding extends Component {
 
 		this.state = {
 			_id: '',
-			activeParty: '',
 			activePanelId: '',
 			activeGuidance: '',
 			amendmentIterations: [],
-			fullAmendments: {},
 			jsonSchema: {},
 			questionAnswers: {},
 			structuralMetadataErrors: [],
 			structuralMetadata: [],
 			listOfDatasets: [],
-			hasRecommended: false,
 			applicationStatus: '',
 			searchString: '',
-			key: 'beforeYouBegin',
 			totalQuestions: '',
 			validationErrors: {},
 			lastSaved: '',
 			lookup: [],
 			isLoading: true,
-			formSubmitted: false,
-			datasets: [
-				{
-					name: '',
-					datasetfields: {
-						publisher: '',
-					},
-				},
-			],
 			name: '',
 			datasetVersion: '',
 			activeflag: '',
@@ -120,7 +107,6 @@ class DatasetOnboarding extends Component {
 			showDrawer: false,
 			showActionModal: false,
 			actionModalConfig: {},
-			showCreateNewVersionModal: false,
 
 			readOnly: false,
 			userType: '',
@@ -128,11 +114,9 @@ class DatasetOnboarding extends Component {
 			unansweredAmendments: 0,
 			isWideForm: false,
 			isTableForm: false,
-			allowsMultipleDatasets: false,
 			activeAccordionCard: 0,
 			allowedNavigation: true,
 			topicContext: {},
-			authorIds: [],
 			reviewSections: [],
 			roles: [],
 			inReviewMode: false,
@@ -225,12 +209,10 @@ class DatasetOnboarding extends Component {
 		// 1. Destructure DAR context containing questions and any application progress
 		let {
 			jsonSchema,
-			activeParty = '',
 			questionAnswers = {},
 			structuralMetadata = [],
 			listOfDatasets = [],
 			_id,
-			hasRecommended,
 			amendmentIterations = [],
 			applicationStatus,
 			dataset,
@@ -238,8 +220,6 @@ class DatasetOnboarding extends Component {
 			userType = 'EDITOR',
 			unansweredAmendments = 0,
 			answeredAmendments = 0,
-			userId,
-			authorIds,
 			inReviewMode = false,
 			reviewSections = [],
 		} = context;
@@ -285,13 +265,11 @@ class DatasetOnboarding extends Component {
 		// 9. Set state
 		this.setState({
 			jsonSchema: { ...jsonSchema, ...classSchema },
-			activeParty,
 			dataset,
 			questionAnswers,
 			structuralMetadata,
 			listOfDatasets,
 			_id,
-			hasRecommended,
 			amendmentIterations,
 			applicationStatus,
 			activePanelId: initialPanel,
@@ -306,8 +284,6 @@ class DatasetOnboarding extends Component {
 			answeredAmendments,
 			unansweredAmendments,
 			userType,
-			userId,
-			authorIds,
 			showSubmit,
 			submitButtonText,
 			showCreateNewVersion,
@@ -574,7 +550,6 @@ class DatasetOnboarding extends Component {
 	 */
 	updateNavigation = (newForm, validationErrors = {}) => {
 		if (this.state.allowedNavigation) {
-			let reviewWarning = false;
 			// reset scroll to 0, 0
 			window.scrollTo(0, 0);
 			let panelId = '';
@@ -582,7 +557,6 @@ class DatasetOnboarding extends Component {
 			const pages = [...this.state.jsonSchema.pages];
 			// get the index of new form
 			const newPageindex = pages.findIndex(page => page.pageId === newForm.pageId);
-			reviewWarning = !pages[newPageindex].inReview && this.state.inReviewMode;
 			// reset the current state of active to false for all pages
 			const newFormState = [...this.state.jsonSchema.pages].map(item => {
 				return { ...item, active: false };
@@ -624,7 +598,6 @@ class DatasetOnboarding extends Component {
 				isTableForm: panelId === 'structural',
 				totalQuestions: totalQuestions,
 				validationErrors,
-				reviewWarning,
 				activeGuidance: '',
 				completion: percentageCompleted.updatedCompletion,
 			});
