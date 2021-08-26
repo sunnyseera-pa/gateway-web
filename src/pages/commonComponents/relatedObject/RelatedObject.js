@@ -489,27 +489,23 @@ class RelatedObject extends React.Component {
 											) : (
 												<span className='black-bold-16'> {data.name}</span>
 											)}
-											<br />
-											{!data.persons || data.persons <= 0 ? (
-												<span className='gray800-14'>Author not listed</span>
+
+											<div className='gray800-14' style={{ marginTop: '2px' }}>
+												{data.authorsNew}
+											</div>
+
+											<div className='gray800-14' style={{ marginTop: '10px' }}>
+												{data.journal} {data.journalYear}
+											</div>
+										</Col>
+										<Col sm={2} lg={2} className='pad-right-24'>
+											{this.props.showRelationshipQuestion ? (
+												<Button variant='medium' className='soft-black-14' onClick={this.removeButton}>
+													<SVGIcon name='closeicon' fill={'#979797'} className='buttonSvg mr-2' />
+													Remove
+												</Button>
 											) : (
-												data.persons.map((person, index) => {
-													if (activeLink === true) {
-														return (
-															<a className='gray800-14' href={'/person/' + person.id} key={`perosn-${index}`}>
-																{person.firstname} {person.lastname}
-																{data.persons.length === index + 1 ? '' : ', '}
-															</a>
-														);
-													} else {
-														return (
-															<span className='gray800-14' key={`perosn-${index}`}>
-																{person.firstname} {person.lastname}
-																{data.persons.length === index + 1 ? '' : ', '}
-															</span>
-														);
-													}
-												})
+												''
 											)}
 										</Col>
 										<Col sm={2} lg={2} className='pad-right-24'>
