@@ -1495,7 +1495,7 @@ class SearchPage extends React.Component {
 					</div>
 
 					<div className='container'>
-						{!this.state.saveSuccess && filtersV2.length != selectedV2.length && (
+						{!this.state.saveSuccess && this.updateFilterStates.length != selectedV2.length && (
 							<Alert variant='primary' className='blue-banner saved-preference-banner'>
 								<Row>
 									<Col>
@@ -1507,7 +1507,9 @@ class SearchPage extends React.Component {
 										You can continue to customise your filters below or edit alongside the search term in the data utility wizard.
 									</Col>
 									<Col md={3} className='data-utility-banner'>
-										<p onClick={() => this.openDataUtilityWizard()}>Edit in data utility wizard</p>
+										<p className='data-utility-link' onClick={() => this.openDataUtilityWizard()}>
+											Edit in data utility wizard
+										</p>
 									</Col>
 								</Row>
 							</Alert>
