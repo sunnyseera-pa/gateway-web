@@ -839,9 +839,9 @@ class SearchBar extends React.Component {
 											<Dropdown.Item className='black-14' href={communityLink}>
 												Community
 											</Dropdown.Item>
-											<Dropdown.Item className='black-14' href={'/dashboard'}>
+											{/*<Dropdown.Item className='black-14' href={'/dashboard'}>
 												Dashboard
-											</Dropdown.Item>
+											</Dropdown.Item>*/}
 											<Dropdown.Divider />
 											{(() => {
 												if (userState[0].loggedIn === true) {
@@ -912,7 +912,7 @@ class SearchBar extends React.Component {
 												<Col xs={8}>
 													<div id='mobileSearchBarHidden' style={{ display: 'block' }}>
 														<div className='navBarLogoSpacing'>
-															<a href={cmsURL}>
+															<a href={'/'}>
 																<ColourLogoSvg className='ml-4 mt-3' />
 															</a>
 														</div>
@@ -1150,7 +1150,7 @@ class SearchBar extends React.Component {
 											<Col xs={10}>
 												<div id='mobileSearchBarHidden' style={{ display: 'block' }}>
 													<div className='navBarLogoSpacing'>
-														<a href={cmsURL}>
+														<a href={'/'}>
 															<ColourLogoSvg className='ml-4 mt-3' />
 														</a>
 													</div>
