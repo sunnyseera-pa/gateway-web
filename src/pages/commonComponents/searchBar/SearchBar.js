@@ -839,9 +839,9 @@ class SearchBar extends React.Component {
 											<Dropdown.Item className='black-14' href={communityLink}>
 												Community
 											</Dropdown.Item>
-											<Dropdown.Item className='black-14' href={'/dashboard'}>
+											{/*<Dropdown.Item className='black-14' href={'/dashboard'}>
 												Dashboard
-											</Dropdown.Item>
+											</Dropdown.Item>*/}
 											<Dropdown.Divider />
 											{(() => {
 												if (userState[0].loggedIn === true) {
