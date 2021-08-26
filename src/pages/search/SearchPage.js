@@ -1495,25 +1495,27 @@ class SearchPage extends React.Component {
 					</div>
 
 					<div className='container'>
-						{!this.state.saveSuccess && this.updateFilterStates.length == selectedV2.length && (
-							<Alert variant='primary' className='blue-banner saved-preference-banner'>
-								<Row>
-									<Col>
-										<h5 className='indigo-bold-14'>Data utility wizard applied: Customer filters</h5>
-									</Col>
-								</Row>
-								<Row>
-									<Col md={9}>
-										You can continue to customise your filters below or edit alongside the search term in the data utility wizard.
-									</Col>
-									<Col md={3} className='data-utility-banner'>
-										<p className='data-utility-link' onClick={() => this.openDataUtilityWizard()}>
-											Edit in data utility wizard
-										</p>
-									</Col>
-								</Row>
-							</Alert>
-						)}
+						{!this.state.saveSuccess &&
+							this.updateFilterStates.length !== selectedV2.length &&
+							this.wizardSearchValue !== this.state.search && (
+								<Alert variant='primary' className='blue-banner saved-preference-banner'>
+									<Row>
+										<Col>
+											<h5 className='indigo-bold-14'>Data utility wizard applied: Customer filters</h5>
+										</Col>
+									</Row>
+									<Row>
+										<Col md={9}>
+											You can continue to customise your filters below or edit alongside the search term in the data utility wizard.
+										</Col>
+										<Col md={3} className='data-utility-banner'>
+											<p className='data-utility-link' onClick={() => this.openDataUtilityWizard()}>
+												Edit in data utility wizard
+											</p>
+										</Col>
+									</Row>
+								</Alert>
+							)}
 
 						{this.state.saveSuccess && !this.state.showSavedModal && (
 							<Alert variant='primary' className='blue-banner saved-preference-banner'>
