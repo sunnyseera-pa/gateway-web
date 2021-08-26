@@ -429,14 +429,6 @@ export const PaperDetail = props => {
 															</Row>
 														</Fragment>
 													)}
-													<Row className='mt-2'>
-														<Col sm={2}>
-															<span className='gray800-14'>Last update</span>
-														</Col>
-														<Col sm={10}>
-															<span className='gray800-14'>{moment(paperData.updatedon).format('DD MMMM YYYY')}</span>
-														</Col>
-													</Row>
 													{paperData.authorsNew ? (
 														<Row className='mt-2'>
 															<Col sm={2}>
