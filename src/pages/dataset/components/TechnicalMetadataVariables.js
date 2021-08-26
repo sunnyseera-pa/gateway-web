@@ -20,8 +20,9 @@ class TechnicalMetadataVariables extends React.Component {
 
 	componentDidUpdate(prevProps) {
 		if (prevProps.open !== this.props.open) {
+			let open = this.props.open;
 			this.setState({
-				open: this.props.open,
+				open: open,
 			});
 			if (this.props.open) {
 				this.setState({
