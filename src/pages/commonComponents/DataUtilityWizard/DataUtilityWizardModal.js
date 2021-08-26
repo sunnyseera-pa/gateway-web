@@ -16,12 +16,13 @@ const DataUtilityWizardModal = ({
 	selectedItems,
 	handleClearSelection,
 	searchValue,
+	banner,
 }) => {
 	const [stepCounter, setStepCounter] = useState(1);
 	let [typeaheadOption, setTypeaheadOption] = useState([]);
 
 	useEffect(() => {
-		setStepCounter(1);
+		banner ? setStepCounter(6) : setStepCounter(1);
 	}, [open]);
 
 	const changeFilter = async (stepKey, impliedValues) => {

@@ -164,6 +164,7 @@ class SearchPage extends React.Component {
 	toggleDataUtilityWizardModal = () => {
 		this.setState({ showDataUtilityWizardModal: false });
 	};
+
 	showLoginModal = () => {
 		// 1. add class to body to stop background scroll
 		document.body.classList.add('modal-open');
@@ -2465,16 +2466,18 @@ class SearchPage extends React.Component {
 						selectedItems={selectedV2}
 						wizardSearchValue={search}
 					/>
+
 					<DataUtilityWizardModal
 						open={this.state.showDataUtilityWizardModal}
 						closed={() => this.toggleDataUtilityWizardModal()}
-						dataUtilityWizardSteps={this.props.dataUtilityWizardSteps}
-						updateFilterStates={this.props.updateFilterStates}
-						datasetCount={this.props.datasetCount}
-						doSearchCall={this.props.doSearchCall}
-						selectedItems={this.props.selectedItems}
-						handleClearSelection={this.props.handleClearSelection}
-						searchValue={this.props.wizardSearchValue}
+						dataUtilityWizardSteps={this.state.dataUtilityWizardSteps}
+						updateFilterStates={this.updateFilterStates}
+						datasetCount={datasetCount}
+						doSearchCall={this.doSearchCall}
+						selectedItems={selectedV2}
+						handleClearSelection={this.handleClearSelection}
+						searchValue={this.state.search}
+						banner={true}
 					/>
 
 					<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
