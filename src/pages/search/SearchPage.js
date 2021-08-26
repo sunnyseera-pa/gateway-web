@@ -221,9 +221,13 @@ class SearchPage extends React.Component {
 				.split('::')
 				.map(value => value.toLowerCase())
 				.join(',');
-			// TODO - node.value needs to be passed through to the front end for this to work correctly
-			// return [...filters].find(node => node.value.toLowerCase() === formattedValues) || {};
-			return [...filters].find(node => node.impliedValues.toString().toLowerCase() === formattedValues) || {};
+			// TODO - align input from data utility wizard and url so that if function is not needed
+			let returnValue = [...filters].find(node => node.value.toLowerCase() === formattedValues) || {};
+			if (!_.isEmpty(returnValue)) {
+				return returnValue;
+			} else {
+				return [...filters].find(node => node.impliedValues.toString().toLowerCase() === formattedValues) || {};
+			}
 		}
 		return {};
 	};
@@ -279,7 +283,8 @@ class SearchPage extends React.Component {
 							// 10. fn for handling the *selected showing* returns new state
 							let selected = this.handleSelected(selectedNode, node.checked);
 							// 11. update selectedV2 array with our new returned value
-							selectedV2 = [...selectedV2, ...selected];
+							const uniqueValues = [...new Set([...selectedV2, ...selected])];
+							selectedV2 = uniqueValues;
 						});
 					}
 				}
