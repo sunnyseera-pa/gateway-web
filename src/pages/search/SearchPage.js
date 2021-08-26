@@ -24,6 +24,7 @@ import SortDropdown from './components/SortDropdown';
 import { ReactComponent as CDStar } from '../../images/cd-star.svg';
 import AdvancedSearchModal from '../commonComponents/AdvancedSearchModal/AdvancedSearchModal';
 import SaveModal from '../commonComponents/saveModal/SaveModal';
+import DataUtilityWizardModal from '../commonComponents/DataUtilityWizard/DataUtilityWizardModal';
 import SVGIcon from '../../images/SVGIcon';
 import './Search.scss';
 
@@ -109,6 +110,7 @@ class SearchPage extends React.Component {
 		saveSuccess: false,
 		showLoggedInModal: true,
 		showSavedName: '',
+		showDataUtilityWizardModal: false,
 	};
 
 	constructor(props) {
@@ -155,6 +157,13 @@ class SearchPage extends React.Component {
 		});
 	};
 
+	openDataUtilityWizard = () => {
+		this.setState({ showDataUtilityWizardModal: true });
+	};
+
+	toggleDataUtilityWizardModal = () => {
+		this.setState({ showDataUtilityWizardModal: false });
+	};
 	showLoginModal = () => {
 		// 1. add class to body to stop background scroll
 		document.body.classList.add('modal-open');
@@ -1485,7 +1494,6 @@ class SearchPage extends React.Component {
 					</div>
 
 					<div className='container'>
-						{/*selectedV2.length = selectedV2 */}
 						{!this.state.saveSuccess && filtersV2.length != selectedV2.length && (
 							<Alert variant='primary' className='blue-banner saved-preference-banner'>
 								<Row>
@@ -1498,11 +1506,12 @@ class SearchPage extends React.Component {
 										You can continue to customise your filters below or edit alongside the search term in the data utility wizard.
 									</Col>
 									<Col md={3} className='data-utility-banner'>
-										Edit in data utility wizard
+										<p onClick={() => this.openDataUtilityWizard()}>Edit in data utility wizard</p>
 									</Col>
 								</Row>
 							</Alert>
 						)}
+
 						{this.state.saveSuccess && !this.state.showSavedModal && (
 							<Alert variant='primary' className='blue-banner saved-preference-banner'>
 								Saved preference: {this.state.showSavedName}
@@ -2455,6 +2464,17 @@ class SearchPage extends React.Component {
 						datasetCount={datasetCount}
 						selectedItems={selectedV2}
 						wizardSearchValue={search}
+					/>
+					<DataUtilityWizardModal
+						open={this.state.showDataUtilityWizardModal}
+						closed={() => this.toggleDataUtilityWizardModal()}
+						dataUtilityWizardSteps={this.props.dataUtilityWizardSteps}
+						updateFilterStates={this.props.updateFilterStates}
+						datasetCount={this.props.datasetCount}
+						doSearchCall={this.props.doSearchCall}
+						selectedItems={this.props.selectedItems}
+						handleClearSelection={this.props.handleClearSelection}
+						searchValue={this.props.wizardSearchValue}
 					/>
 
 					<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
