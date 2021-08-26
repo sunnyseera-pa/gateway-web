@@ -27,6 +27,8 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 	const papersTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'Papers').length;
 	const peopleTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'People').length;
 
+	console.log(data.filterCriteria);
+
 	return (
 		<Modal show={show} onHide={onHide} dialogClassName='save-modal-preferences'>
 			<Modal.Header closeButton>
@@ -78,13 +80,10 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 											)}
 										</p>
 										<p>Filters applied: </p>
-										{/*a.filterCriteria.sort
-											.map(b => b.highlighted)
-											.filter(a => a)
-											.flat()
-											.map(a => (
-												<div className='filters-chip saved-filter-chip'>{a}</div>
-											))*/}
+
+										{a.filterCriteria.filters.map(a => (
+											<div className='filters-chip saved-filter-chip'>{a.label}</div>
+										))}
 									</div>
 								))}
 						</Modal.Body>

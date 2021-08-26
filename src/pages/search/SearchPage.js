@@ -1315,9 +1315,6 @@ class SearchPage extends React.Component {
 		const urlParams = new URLSearchParams(window.location.href);
 		const tabName = urlParams.get('tab');
 
-		const urlPath = window.location.href;
-		const savedPerferenceURL = urlPath.replace(/https?:\/\/[^\/]+/g, '');
-
 		const perferencesSort = () => {
 			if (tabName === 'dataset') {
 				this.setState({ perferencesSort: this.state.datasetSort });
@@ -1417,7 +1414,6 @@ class SearchPage extends React.Component {
 											sort={this.perferencesSort}
 											loggedIn={this.state.userState}
 											tab={tabName}
-											url={savedPerferenceURL}
 										/>
 									)}
 
