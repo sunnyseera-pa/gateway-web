@@ -80,12 +80,10 @@ class SearchBar extends React.Component {
 			},
 		],
 		dropdownOpen: false,
-		clearMessages: false,
 		count: 0,
 		messageCount: 0,
 		prevScrollpos: window.pageYOffset,
 		visible: true,
-		showToast: true,
 		isHovering: false,
 		isLoading: true,
 	};
@@ -245,7 +243,6 @@ class SearchBar extends React.Component {
 	checkRedirectToast() {
 		if (window.localStorage.getItem('redirectMsg') != null) {
 			//rerender the Search bar so Toast notification will appear
-			this.setState({ showToast: true });
 			//Display Toast Notification based on local storage variable
 			NotificationManager.warning(window.localStorage.getItem('redirectMsg'), 'Page not found', 10000);
 			window.localStorage.removeItem('redirectMsg');
