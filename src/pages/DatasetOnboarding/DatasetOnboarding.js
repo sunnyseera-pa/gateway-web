@@ -550,7 +550,6 @@ class DatasetOnboarding extends Component {
 	 */
 	updateNavigation = (newForm, validationErrors = {}) => {
 		if (this.state.allowedNavigation) {
-			let reviewWarning = false;
 			// reset scroll to 0, 0
 			window.scrollTo(0, 0);
 			let panelId = '';
@@ -558,7 +557,6 @@ class DatasetOnboarding extends Component {
 			const pages = [...this.state.jsonSchema.pages];
 			// get the index of new form
 			const newPageindex = pages.findIndex(page => page.pageId === newForm.pageId);
-			reviewWarning = !pages[newPageindex].inReview && this.state.inReviewMode;
 			// reset the current state of active to false for all pages
 			const newFormState = [...this.state.jsonSchema.pages].map(item => {
 				return { ...item, active: false };
