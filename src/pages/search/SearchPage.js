@@ -281,10 +281,9 @@ class SearchPage extends React.Component {
 								value: node.value,
 							};
 							// 10. fn for handling the *selected showing* returns new state
-							let selected = this.handleSelected(selectedNode, node.checked);
+							let selected = this.handleSelected(selectedNode, node.checked, tab);
 							// 11. update selectedV2 array with our new returned value
-							const uniqueValues = [...new Set([...selectedV2, ...selected])];
-							selectedV2 = uniqueValues;
+							selectedV2 = [...new Set([...selectedV2, ...selected])];
 						});
 					}
 				}
@@ -1017,8 +1016,8 @@ class SearchPage extends React.Component {
 	 * @param 	{boolena} checked
 	 * @return	{array} array of selected items
 	 */
-	handleSelected = (selected = {}, checked = false) => {
-		let selectedV2 = this.getSelectedFiltersStateByKey(this.state.key);
+	handleSelected = (selected = {}, checked = false, tab = this.state.key) => {
+		let selectedV2 = this.getSelectedFiltersStateByKey(tab);
 		let results = [];
 		if (!_.isEmpty(selected)) {
 			if (checked) {
