@@ -13,6 +13,7 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 	useEffect(() => {
 		axios.get(baseURL + '/api/v1/search-preferences').then(res => {
 			setData(res.data.data);
+			console.log(res.data.data);
 		});
 	}, []);
 
@@ -26,7 +27,9 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 	const papersTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'Papers').length;
 	const peopleTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'People').length;
 
-	console.log(data.filterCriteria);
+	const viewMatches = () => {
+		window.location.href = dataLink.filterCriteria.url;
+	};
 
 	return (
 		<Modal show={show} onHide={onHide} dialogClassName='save-modal-preferences'>
@@ -61,27 +64,27 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 						}>
 						<Modal.Body style={{ 'max-height': 'calc(100vh - 450px)', 'overflow-y': 'auto', 'background-color': '#f6f7f8' }}>
 							{data
-								.filter(a => a.filterCriteria.tab === tabName)
-								.map(a => (
+								.filter(tabNames => tabNames.filterCriteria.tab === tabName)
+								.map(savedData => (
 									<div
 										className='filters saved-card-click'
 										onClick={() => {
 											setShowButtons(true);
-											setDataLink(a);
+											setDataLink(savedData);
 										}}>
-										<h5 className='black-20-semibold'>{a.name}</h5>
+										<h5 className='black-20-semibold'>{savedData.name}</h5>
 										<p className='black-14'>
 											Search term:{' '}
-											{a.filterCriteria && a.filterCriteria.searchTerm === '' ? (
+											{savedData.filterCriteria && savedData.filterCriteria.searchTerm === '' ? (
 												'N/A'
 											) : (
-												<p className='black-14-bold save-searchterm'>{a.filterCriteria.searchTerm}</p>
+												<p className='black-14-bold save-searchterm'>{savedData.filterCriteria.searchTerm}</p>
 											)}
 										</p>
 										<p>Filters applied: </p>
 
-										{a.filterCriteria.filters.map(a => (
-											<div className='filters-chip saved-filter-chip'>{a.label}</div>
+										{savedData.filterCriteria.filters.map(savedDataFilter => (
+											<div className='filters-chip saved-filter-chip'>{savedDataFilter.label}</div>
 										))}
 									</div>
 								))}
@@ -99,9 +102,7 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 						<Button variant='outline-success' className='saved delete-button button-teal'>
 							Delete
 						</Button>
-						<a href={'http://localhost:3000' + dataLink.filterCriteria.url}>
-							<Button>View matches</Button>
-						</a>
+						<Button onClick={() => viewMatches()}>View matches</Button>
 					</Row>
 				)}
 			</Modal.Footer>

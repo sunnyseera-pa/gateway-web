@@ -1425,6 +1425,7 @@ class SearchPage extends React.Component {
 											filters={this.state.selectedV2}
 											sort={this.state.perferencesSort}
 											loggedIn={this.state.userState}
+											url={window.location.href}
 											tab={tabName}
 										/>
 									)}
