@@ -158,7 +158,7 @@ class RelatedObject extends React.Component {
 		}
 
 		return (
-			<Row className='resource-card-row' key={this.props.key}>
+			<Row className='resource-card-row'>
 				<Col>
 					<div
 						className={rectangleClassName}
@@ -199,14 +199,14 @@ class RelatedObject extends React.Component {
 												data.persons.map((person, index) => {
 													if (activeLink === true) {
 														return (
-															<a className='gray800-14' href={'/person/' + person.id} key={`perosn-${index}`}>
+															<a className='gray800-14' href={'/person/' + person.id} key={`person-${index}`}>
 																{person.firstname} {person.lastname}
 																{data.persons.length === index + 1 ? '' : ', '}
 															</a>
 														);
 													} else {
 														return (
-															<span className='gray800-14' key={`perosn-${index}`}>
+															<span className='gray800-14' key={`person-${index}`}>
 																{person.firstname} {person.lastname}
 																{data.persons.length === index + 1 ? '' : ', '}
 															</span>
@@ -367,14 +367,14 @@ class RelatedObject extends React.Component {
 												data.persons.map((person, index) => {
 													if (activeLink === true) {
 														return (
-															<a className='gray800-14' href={'/person/' + person.id} key={`perosn-${index}`}>
+															<a className='gray800-14' href={'/person/' + person.id} key={`person-${index}`}>
 																{person.firstname} {person.lastname}
 																{data.persons.length === index + 1 ? '' : ', '}
 															</a>
 														);
 													} else {
 														return (
-															<span className='gray800-14' key={`perosn-${index}`}>
+															<span className='gray800-14' key={`person-${index}`}>
 																{person.firstname} {person.lastname}
 																{data.persons.length === index + 1 ? '' : ', '}
 															</span>
@@ -500,14 +500,14 @@ class RelatedObject extends React.Component {
 												data.persons.map((person, index) => {
 													if (activeLink === true) {
 														return (
-															<a className='gray800-14' href={'/person/' + person.id} key={`perosn-${index}`}>
+															<a className='gray800-14' href={'/person/' + person.id} key={`person-${index}`}>
 																{person.firstname} {person.lastname}
 																{data.persons.length === index + 1 ? '' : ', '}
 															</a>
 														);
 													} else {
 														return (
-															<span className='gray800-14' key={`perosn-${index}`}>
+															<span className='gray800-14' key={`person-${index}`}>
 																{person.firstname} {person.lastname}
 																{data.persons.length === index + 1 ? '' : ', '}
 															</span>
@@ -916,11 +916,12 @@ class RelatedObject extends React.Component {
 
 											{!data.tags.features || data.tags.features.length <= 0
 												? ''
-												: data.tags.features.map(feature => {
+												: data.tags.features.map((feature, index) => {
 														if (activeLink === true) {
 															if (onSearchPage === true) {
 																return (
 																	<span
+																		key={`feature-${index}`}
 																		className='pointer'
 																		onClick={event =>
 																			this.updateOnFilterBadge('datasetfeatures', { label: feature, parentKey: 'datasetfeatures' })
