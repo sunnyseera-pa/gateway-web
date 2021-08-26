@@ -5,7 +5,7 @@ import './SavedPreferencesModal.scss';
 
 var baseURL = require('../../commonComponents/BaseURL').getURL();
 
-const SavedPreferencesModal = ({ show, onHide, viewMatchesLink, savedFilters, ...props }) => {
+const SavedPreferencesModal = ({ show, onHide, viewSaved }) => {
 	const [data, setData] = useState([]);
 	const [showButtons, setShowButtons] = useState(false);
 	const [dataLink, setDataLink] = useState(data);
@@ -17,11 +17,14 @@ const SavedPreferencesModal = ({ show, onHide, viewMatchesLink, savedFilters, ..
 		});
 	}, []);
 
-	//props.savedFilters = data.map(a => a.filtersCriteria.filter);
-
-	const testData = () => {
-		console.log(dataLink);
-		savedFilters(dataLink);
+	const viewSavedSearch = () => {
+		console.log(dataLink.filterCriteria.searchTerm);
+		viewSaved({
+			search: dataLink.filterCriteria.searchTerm,
+			filters: dataLink.filterCriteria.filters,
+			sort: dataLink.filterCriteria.sort,
+			tab: dataLink.filterCriteria.tab,
+		});
 	};
 
 	const tabs = ['Datasets', 'Tools', 'Projects', 'Collections', 'Courses', 'Papers', 'People'];
@@ -33,10 +36,6 @@ const SavedPreferencesModal = ({ show, onHide, viewMatchesLink, savedFilters, ..
 	const coursesTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'Courses').length;
 	const papersTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'Papers').length;
 	const peopleTotal = data.filter(a => a.name).filter(a => a.filterCriteria.tab === 'People').length;
-
-	const viewMatches = () => {
-		window.location.href = dataLink.filterCriteria.url;
-	};
 
 	return (
 		<Modal show={show} onHide={onHide} dialogClassName='save-modal-preferences'>
@@ -109,7 +108,7 @@ const SavedPreferencesModal = ({ show, onHide, viewMatchesLink, savedFilters, ..
 						<Button variant='outline-success' className='saved delete-button button-teal'>
 							Delete
 						</Button>
-						<Button onClick={() => testData()}>View matches</Button>
+						<Button onClick={() => viewSavedSearch()}>View matches</Button>
 					</Row>
 				)}
 			</Modal.Footer>

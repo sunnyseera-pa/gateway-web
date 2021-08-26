@@ -433,6 +433,53 @@ class SearchPage extends React.Component {
 		);
 	}
 
+	clearFilterStates2() {
+		// 1. v2 take copy of data
+		let filtersV2Data = [...this.state.filtersV2];
+		// 2. v2 resets the filters UI tree back to default
+		let filtersV2 = this.resetTreeChecked(filtersV2Data);
+
+		this.setState(prevState => ({
+			filtersV2,
+			selectedV2: [],
+			toolCategoriesSelected: [],
+			toolProgrammingLanguageSelected: [],
+			toolFeaturesSelected: [],
+			toolTopicsSelected: [],
+			projectCategoriesSelected: [],
+			projectFeaturesSelected: [],
+			projectTopicsSelected: [],
+			paperFeaturesSelected: [],
+			paperTopicsSelected: [],
+			courseStartDatesSelected: [],
+			courseProviderSelected: [],
+			courseLocationSelected: [],
+			courseStudyModeSelected: [],
+			courseAwardSelected: [],
+			courseEntryLevelSelected: [],
+			courseDomainsSelected: [],
+			courseKeywordsSelected: [],
+			courseFrameworkSelected: [],
+			coursePrioritySelected: [],
+			collectionKeywordsSelected: [],
+			collectionPublisherSelected: [],
+			datasetIndex: 0,
+			toolIndex: 0,
+			projectIndex: 0,
+			paperIndex: 0,
+			personIndex: 0,
+			courseIndex: 0,
+			collectionIndex: 0,
+			datasetSort: '',
+			toolSort: '',
+			projectSort: '',
+			paperSort: '',
+			personSort: '',
+			courseSort: '',
+			collectionSort: '',
+		}));
+	}
+
 	updateOnFilterBadge = (filterGroup, filter) => {
 		// 1. test type of filter if v2 it will be an object
 		if (typeof filter === 'object' && !_.isEmpty(filter)) {
@@ -1038,14 +1085,75 @@ class SearchPage extends React.Component {
 		});
 	};
 
-	saveFiltersUpdate = () => {
-		this.setState({ savedFilters: this.savedFilters });
-	};
-
-	viewMatches = () => {
+	saveFiltersUpdate = viewSaved => {
 		this.setState({ showSavedPreferencesModal: false });
-		this.saveFilters();
-		this.doSearchCall();
+		// 1. v2 take copy of data
+		let filtersV2Data = [...this.state.filtersV2];
+		// 2. v2 resets the filters UI tree back to default
+		let filtersV2 = this.resetTreeChecked(filtersV2Data);
+
+		this.setState(
+			prevState => ({
+				filtersV2,
+				selectedV2: [],
+				toolCategoriesSelected: [],
+				toolProgrammingLanguageSelected: [],
+				toolFeaturesSelected: [],
+				toolTopicsSelected: [],
+				projectCategoriesSelected: [],
+				projectFeaturesSelected: [],
+				projectTopicsSelected: [],
+				paperFeaturesSelected: [],
+				paperTopicsSelected: [],
+				courseStartDatesSelected: [],
+				courseProviderSelected: [],
+				courseLocationSelected: [],
+				courseStudyModeSelected: [],
+				courseAwardSelected: [],
+				courseEntryLevelSelected: [],
+				courseDomainsSelected: [],
+				courseKeywordsSelected: [],
+				courseFrameworkSelected: [],
+				coursePrioritySelected: [],
+				collectionKeywordsSelected: [],
+				collectionPublisherSelected: [],
+				datasetIndex: 0,
+				toolIndex: 0,
+				projectIndex: 0,
+				paperIndex: 0,
+				personIndex: 0,
+				courseIndex: 0,
+				collectionIndex: 0,
+				datasetSort: '',
+				toolSort: '',
+				projectSort: '',
+				paperSort: '',
+				personSort: '',
+				courseSort: '',
+				collectionSort: '',
+			}),
+			() => {
+				let sort = '';
+				if (viewSaved.tab === 'Datasets') {
+					this.setState({ datasetSort: viewSaved.sort });
+				} else if (viewSaved.tab === 'Tools') {
+					this.setState({ toolSort: viewSaved.sort });
+				} else if (viewSaved.tab === 'Projects') {
+					this.setState({ projectSort: viewSaved.sort });
+				} else if (viewSaved.tab === 'People') {
+					this.setState({ personSort: viewSaved.sort });
+				} else if (viewSaved.tab === 'Collections') {
+					this.setState({ collectionSort: viewSaved.sort });
+				}
+
+				this.setState({ search: viewSaved.search, key: viewSaved.tab, selectedV2: viewSaved.filters }, () => {
+					this.doSearchCall();
+				});
+			}
+		);
+		/*this.setState({ isResultsLoading: true }, () => {
+			this.clearFilterStates2();
+		});*/
 	};
 
 	render() {
@@ -1324,37 +1432,19 @@ class SearchPage extends React.Component {
 			</Col>
 		);
 
-		const urlParams = new URLSearchParams(window.location.href);
-		const tabName = urlParams.get('tab');
-
-		if (tabName === 'dataset') {
-			this.setState(prevState => {
-				return { perferencesSort: !prevState.datasetSort };
-			});
-		} else if (tabName === 'tool') {
-			this.setState(prevState => {
-				return { perferencesSort: !prevState.toolSort };
-			});
-		} else if (tabName === 'project') {
-			this.setState(prevState => {
-				return { perferencesSort: !prevState.projectSort };
-			});
-		} else if (tabName === 'paper') {
-			this.setState(prevState => {
-				return { perferencesSort: !prevState.paperSort };
-			});
-		} else if (tabName === 'person') {
-			this.setState(prevState => {
-				return { perferencesSort: !prevState.personSort };
-			});
-		} else if (tabName === 'course') {
-			this.setState(prevState => {
-				return { perferencesSort: !prevState.courseSort };
-			});
-		} else if (tabName === 'collection') {
-			this.setState(prevState => {
-				return { perferencesSort: !prevState.collectionSort };
-			});
+		let perferenceSort = '';
+		if (key === 'Datasets') {
+			perferenceSort = datasetSort;
+		} else if (key === 'Tools') {
+			perferenceSort = toolSort;
+		} else if (key === 'Projects') {
+			perferenceSort = projectSort;
+		} else if (key === 'Paper') {
+			perferenceSort = paperSort;
+		} else if (key === 'People') {
+			perferenceSort = personSort;
+		} else if (key === 'Collection') {
+			perferenceSort = collectionSort;
 		}
 
 		return (
@@ -1435,9 +1525,9 @@ class SearchPage extends React.Component {
 											saveName={this.showSavedName}
 											search={this.state.search}
 											filters={this.state.selectedV2}
-											sort={this.state.perferencesSort}
+											sort={perferenceSort}
 											loggedIn={this.state.userState}
-											tab={tabName}
+											tab={this.state.key}
 										/>
 									)}
 
@@ -1457,9 +1547,10 @@ class SearchPage extends React.Component {
 											show={this.state.showSavedPreferencesModal}
 											onHide={this.hideSavedPreferencesModal}
 											viewMatchesLink={this.viewMatches}
-											savedFilters={this.saveFiltersUpdate}
+											viewSaved={this.saveFiltersUpdate}
 										/>
 									)}
+
 									{dropdownMenu}
 								</Col>
 							</Row>
