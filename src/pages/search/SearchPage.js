@@ -1315,23 +1315,35 @@ class SearchPage extends React.Component {
 		const urlParams = new URLSearchParams(window.location.href);
 		const tabName = urlParams.get('tab');
 
-		const perferencesSort = () => {
-			if (tabName === 'dataset') {
-				this.setState({ perferencesSort: this.state.datasetSort });
-			} else if (tabName === 'tool') {
-				this.setState({ perferencesSort: this.state.toolSort });
-			} else if (tabName === 'project') {
-				this.setState({ perferencesSort: this.state.projectSort });
-			} else if (tabName === 'paper') {
-				this.setState({ perferencesSort: this.state.paperSort });
-			} else if (tabName === 'person') {
-				this.setState({ perferencesSort: this.state.personSort });
-			} else if (tabName === 'course') {
-				this.setState({ perferencesSort: this.state.courseSort });
-			} else if (tabName === 'collection') {
-				this.setState({ perferencesSort: this.state.collectionSort });
-			}
-		};
+		if (tabName === 'dataset') {
+			this.setState(prevState => {
+				return { perferencesSort: !prevState.datasetSort };
+			});
+		} else if (tabName === 'tool') {
+			this.setState(prevState => {
+				return { perferencesSort: !prevState.toolSort };
+			});
+		} else if (tabName === 'project') {
+			this.setState(prevState => {
+				return { perferencesSort: !prevState.projectSort };
+			});
+		} else if (tabName === 'paper') {
+			this.setState(prevState => {
+				return { perferencesSort: !prevState.paperSort };
+			});
+		} else if (tabName === 'person') {
+			this.setState(prevState => {
+				return { perferencesSort: !prevState.personSort };
+			});
+		} else if (tabName === 'course') {
+			this.setState(prevState => {
+				return { perferencesSort: !prevState.courseSort };
+			});
+		} else if (tabName === 'collection') {
+			this.setState(prevState => {
+				return { perferencesSort: !prevState.collectionSort };
+			});
+		}
 
 		return (
 			<Sentry.ErrorBoundary fallback={<ErrorModal show={this.showModal} handleClose={this.hideModal} />}>
@@ -1411,7 +1423,7 @@ class SearchPage extends React.Component {
 											saveName={this.showSavedName}
 											search={this.state.search}
 											filters={this.state.selectedV2}
-											sort={this.perferencesSort}
+											sort={this.state.perferencesSort}
 											loggedIn={this.state.userState}
 											tab={tabName}
 										/>

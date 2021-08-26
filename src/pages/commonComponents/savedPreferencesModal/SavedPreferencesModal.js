@@ -13,7 +13,6 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 	useEffect(() => {
 		axios.get(baseURL + '/api/v1/search-preferences').then(res => {
 			setData(res.data.data);
-			console.log(res.data.data);
 		});
 	}, []);
 
