@@ -112,6 +112,7 @@ class SearchPage extends React.Component {
 		showLoggedInModal: true,
 		showSavedName: '',
 		perferencesSort: '',
+		savedFilters: [],
 	};
 
 	constructor(props) {
@@ -136,6 +137,7 @@ class SearchPage extends React.Component {
 	hideSavedPreferencesModal = () => {
 		this.setState({ showSavedPreferencesModal: false });
 	};
+
 	hideSavedModal = () => {
 		this.setState({ showSavedModal: false });
 	};
@@ -1036,6 +1038,16 @@ class SearchPage extends React.Component {
 		});
 	};
 
+	saveFiltersUpdate = () => {
+		this.setState({ savedFilters: this.savedFilters });
+	};
+
+	viewMatches = () => {
+		this.setState({ showSavedPreferencesModal: false });
+		this.saveFilters();
+		this.doSearchCall();
+	};
+
 	render() {
 		let {
 			summary,
@@ -1425,7 +1437,6 @@ class SearchPage extends React.Component {
 											filters={this.state.selectedV2}
 											sort={this.state.perferencesSort}
 											loggedIn={this.state.userState}
-											url={window.location.href}
 											tab={tabName}
 										/>
 									)}
@@ -1442,7 +1453,12 @@ class SearchPage extends React.Component {
 										Saved preferences
 									</Button>
 									{this.state.showSavedPreferencesModal && (
-										<SavedPreferencesModal show={this.state.showSavedPreferencesModal} onHide={this.hideSavedPreferencesModal} />
+										<SavedPreferencesModal
+											show={this.state.showSavedPreferencesModal}
+											onHide={this.hideSavedPreferencesModal}
+											viewMatchesLink={this.viewMatches}
+											savedFilters={this.saveFiltersUpdate}
+										/>
 									)}
 									{dropdownMenu}
 								</Col>

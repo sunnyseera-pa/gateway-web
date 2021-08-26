@@ -20,7 +20,6 @@ const SaveModal = ({ ...props }) => {
 				tab: props.tab || '',
 				sort: props.sort || '',
 				loggedIn: props.loggedIn || '',
-				url: props.url || '',
 			},
 		},
 

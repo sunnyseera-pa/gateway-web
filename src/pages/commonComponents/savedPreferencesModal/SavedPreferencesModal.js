@@ -5,10 +5,10 @@ import './SavedPreferencesModal.scss';
 
 var baseURL = require('../../commonComponents/BaseURL').getURL();
 
-const SavedPreferencesModal = ({ show, onHide }) => {
+const SavedPreferencesModal = ({ show, onHide, viewMatchesLink, savedFilters, ...props }) => {
 	const [data, setData] = useState([]);
 	const [showButtons, setShowButtons] = useState(false);
-	const [dataLink, setDataLink] = useState(false);
+	const [dataLink, setDataLink] = useState(data);
 
 	useEffect(() => {
 		axios.get(baseURL + '/api/v1/search-preferences').then(res => {
@@ -16,6 +16,13 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 			console.log(res.data.data);
 		});
 	}, []);
+
+	//props.savedFilters = data.map(a => a.filtersCriteria.filter);
+
+	const testData = () => {
+		console.log(dataLink);
+		savedFilters(dataLink);
+	};
 
 	const tabs = ['Datasets', 'Tools', 'Projects', 'Collections', 'Courses', 'Papers', 'People'];
 
@@ -102,7 +109,7 @@ const SavedPreferencesModal = ({ show, onHide }) => {
 						<Button variant='outline-success' className='saved delete-button button-teal'>
 							Delete
 						</Button>
-						<Button onClick={() => viewMatches()}>View matches</Button>
+						<Button onClick={() => testData()}>View matches</Button>
 					</Row>
 				)}
 			</Modal.Footer>
