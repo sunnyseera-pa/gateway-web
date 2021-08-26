@@ -209,12 +209,10 @@ class DatasetOnboarding extends Component {
 		// 1. Destructure DAR context containing questions and any application progress
 		let {
 			jsonSchema,
-			activeParty = '',
 			questionAnswers = {},
 			structuralMetadata = [],
 			listOfDatasets = [],
 			_id,
-			hasRecommended,
 			amendmentIterations = [],
 			applicationStatus,
 			dataset,
@@ -222,8 +220,6 @@ class DatasetOnboarding extends Component {
 			userType = 'EDITOR',
 			unansweredAmendments = 0,
 			answeredAmendments = 0,
-			userId,
-			authorIds,
 			inReviewMode = false,
 			reviewSections = [],
 		} = context;
