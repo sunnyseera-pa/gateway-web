@@ -111,6 +111,8 @@ class SearchPage extends React.Component {
 		showLoggedInModal: true,
 		showSavedName: '',
 		showDataUtilityWizardModal: false,
+		showDataUtilityBanner: false,
+		activeDataUtilityWizardStep: 1,
 	};
 
 	constructor(props) {
@@ -124,6 +126,8 @@ class SearchPage extends React.Component {
 		this.searchBar = React.createRef();
 		this.updateFilterStates = this.updateFilterStates.bind(this);
 		this.doSearchCall = this.doSearchCall.bind(this);
+		this.openDataUtilityWizard = this.openDataUtilityWizard.bind(this);
+		this.toggleDataUtilityBanner = this.toggleDataUtilityBanner.bind(this);
 	}
 
 	showModal = () => {
@@ -157,9 +161,13 @@ class SearchPage extends React.Component {
 		});
 	};
 
-	openDataUtilityWizard = () => {
-		this.setState({ showDataUtilityWizardModal: true });
-	};
+	openDataUtilityWizard(activeStep) {
+		this.setState({ showDataUtilityWizardModal: true, activeDataUtilityWizardStep: activeStep });
+	}
+
+	toggleDataUtilityBanner(show) {
+		this.setState({ showDataUtilityBanner: show });
+	}
 
 	toggleDataUtilityWizardModal = () => {
 		this.setState({ showDataUtilityWizardModal: false });
@@ -559,6 +567,9 @@ class SearchPage extends React.Component {
 			courseSort = '',
 			collectionSort = '',
 		} = this.state;
+
+		this.toggleDataUtilityBanner(false);
+
 		// 1. build search object from list of selected fitlers v2 only
 		const searchObj = this.buildSearchObj(this.state.selectedV2);
 		// 2. dynamically build the searchUrl v2 only
@@ -1254,6 +1265,7 @@ class SearchPage extends React.Component {
 			showModal,
 			showAdvancedSearchModal,
 			context,
+			activeDataUtilityWizardStep,
 
 			key,
 		} = this.state;
@@ -1495,27 +1507,25 @@ class SearchPage extends React.Component {
 					</div>
 
 					<div className='container'>
-						{!this.state.saveSuccess &&
-							this.updateFilterStates.length !== selectedV2.length &&
-							this.wizardSearchValue !== this.state.search && (
-								<Alert variant='primary' className='blue-banner saved-preference-banner'>
-									<Row>
-										<Col>
-											<h5 className='indigo-bold-14'>Data utility wizard applied: Customer filters</h5>
-										</Col>
-									</Row>
-									<Row>
-										<Col md={9}>
-											You can continue to customise your filters below or edit alongside the search term in the data utility wizard.
-										</Col>
-										<Col md={3} className='data-utility-banner'>
-											<p className='data-utility-link' onClick={() => this.openDataUtilityWizard()}>
-												Edit in data utility wizard
-											</p>
-										</Col>
-									</Row>
-								</Alert>
-							)}
+						{this.state.showDataUtilityBanner && (
+							<Alert variant='primary' className='blue-banner saved-preference-banner'>
+								<Row>
+									<Col>
+										<h5 className='indigo-bold-14'>Data utility wizard applied: Customer filters</h5>
+									</Col>
+								</Row>
+								<Row>
+									<Col md={9}>
+										You can continue to customise your filters below or edit alongside the search term in the data utility wizard.
+									</Col>
+									<Col md={3} className='data-utility-banner'>
+										<p className='data-utility-link' onClick={() => this.openDataUtilityWizard(6)}>
+											Edit in data utility wizard
+										</p>
+									</Col>
+								</Row>
+							</Alert>
+						)}
 
 						{this.state.saveSuccess && !this.state.showSavedModal && (
 							<Alert variant='primary' className='blue-banner saved-preference-banner'>
@@ -2459,21 +2469,16 @@ class SearchPage extends React.Component {
 
 					<AdvancedSearchModal
 						open={showAdvancedSearchModal}
-						context={context}
 						closed={this.toggleAdvancedSearchModal}
 						userProps={userState[0]}
-						dataUtilityWizardSteps={this.state.dataUtilityWizardSteps}
-						updateFilterStates={this.updateFilterStates}
-						doSearchCall={this.doSearchCall}
-						handleClearSelection={this.handleClearSelection}
-						datasetCount={datasetCount}
-						selectedItems={selectedV2}
-						wizardSearchValue={search}
+						startDataUtilityWizardJourney={this.openDataUtilityWizard}
 					/>
 
 					<DataUtilityWizardModal
 						open={this.state.showDataUtilityWizardModal}
-						closed={() => this.toggleDataUtilityWizardModal()}
+						closed={() => {
+							this.toggleDataUtilityWizardModal();
+						}}
 						dataUtilityWizardSteps={this.state.dataUtilityWizardSteps}
 						updateFilterStates={this.updateFilterStates}
 						datasetCount={datasetCount}
@@ -2481,7 +2486,8 @@ class SearchPage extends React.Component {
 						selectedItems={selectedV2}
 						handleClearSelection={this.handleClearSelection}
 						searchValue={this.state.search}
-						banner={true}
+						activeStep={activeDataUtilityWizardStep}
+						onWizardComplete={this.toggleDataUtilityBanner}
 					/>
 
 					<DataSetModal open={showModal} context={context} closed={this.toggleModal} userState={userState[0]} />
