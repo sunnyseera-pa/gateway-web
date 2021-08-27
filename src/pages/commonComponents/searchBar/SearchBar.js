@@ -120,7 +120,7 @@ class SearchBar extends React.Component {
 
 	componentDidUpdate(prevProps) {
 		if (prevProps.search !== this.props.search) {
-			this.setState({ textValue: this.props.search });
+			this.setState(() => ({ textValue: this.props.search }));
 		}
 	}
 
