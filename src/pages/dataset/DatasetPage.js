@@ -694,7 +694,6 @@ class DatasetDetail extends Component {
 			emptyFieldsCount,
 			linkedDatasets,
 			publisherLogoURL,
-			cohortProfiling,
 		} = this.state;
 
 		let publisherLogo = !isEmpty(v2data) && !isEmpty(v2data.summary.publisher.logo) ? v2data.summary.publisher.logo : publisherLogoURL;

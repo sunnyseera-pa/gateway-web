@@ -11,7 +11,6 @@ class TechnicalDetailsPage extends React.Component {
 	state = {
 		technicalMetadata: null,
 		flagClosed: true,
-		customType: false,
 		allOpen: false,
 	};
 
