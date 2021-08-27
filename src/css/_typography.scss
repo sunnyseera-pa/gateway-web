@@ -216,3 +216,7 @@ h6 {
 .dark-red-semibold-20 {
 	@include font-source(20px, $dark-red, $font-weight-semibold);
 }
+
+.rejected-red-semibold-14 {
+	@include font-source(14px, $red-rejected, $font-weight-semibold);
+}

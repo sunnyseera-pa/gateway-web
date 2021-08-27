@@ -11,7 +11,6 @@ class TypaheadUser extends React.Component {
 		this.state = {
 			value: [],
 			options: [],
-			id: props.id,
 			readOnly: props.readOnly || false,
 			className: `addFormInputTypeAhead ${!_.isEmpty(props.className) ? props.className : ''}`,
 		};

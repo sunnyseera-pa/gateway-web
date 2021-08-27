@@ -137,7 +137,7 @@ class Account extends Component {
 		if (window.location.search) {
 			let tab = '';
 			let values = queryString.parse(window.location.search);
-			if (values.tab !== this.state.tabId || typeof values.tab !== 'undefined' || typeof values.tab !== null) {
+			if (values.tab !== this.state.tabId || !_.isUndefined(values.tab) || !_.isNull(values.tab)) {
 				tab = this.checkRedirect(values);
 				this.setState({
 					tabId: tab,
@@ -166,7 +166,7 @@ class Account extends Component {
 		if (window.location.search) {
 			let values = queryString.parse(window.location.search);
 			let team = 'user';
-			if (values.tab !== this.state.tabId || typeof values.tab !== 'undefined' || typeof values.tab !== null) {
+			if (values.tab !== this.state.tabId || !_.isUndefined(values.tab) || !_.isNull(values.tab)) {
 				if (values.tab !== 'youraccount' && this.state.accountUpdated) {
 					this.setState({ accountUpdated: false });
 				}
@@ -728,7 +728,7 @@ class Account extends Component {
 						drawerIsOpen={this.state.showDrawer}
 					/>
 				</SideDrawer>
-				{tabId === 'teamManagement' && teamManagementTab == tabTypes.Notifications && (
+				{tabId === 'teamManagement' && teamManagementTab === tabTypes.Notifications && (
 					<ActionBar userState={userState}>
 						<div>
 							<button

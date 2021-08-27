@@ -80,12 +80,10 @@ class SearchBar extends React.Component {
 			},
 		],
 		dropdownOpen: false,
-		clearMessages: false,
 		count: 0,
 		messageCount: 0,
 		prevScrollpos: window.pageYOffset,
 		visible: true,
-		showToast: true,
 		isHovering: false,
 		isLoading: true,
 	};
@@ -121,7 +119,7 @@ class SearchBar extends React.Component {
 	handleScroll = () => {
 		const { prevScrollpos } = this.state;
 		const currentScrollPos = window.pageYOffset;
-		var visible = this.state.visible;
+		let visible;
 
 		if (window.innerWidth < 769) {
 			visible = true;
@@ -166,7 +164,6 @@ class SearchBar extends React.Component {
 				this.setState({
 					newData: res.data.newData,
 					isLoading: false,
-					isRead: res.data.isRead,
 				});
 			}
 		});
@@ -246,7 +243,6 @@ class SearchBar extends React.Component {
 	checkRedirectToast() {
 		if (window.localStorage.getItem('redirectMsg') != null) {
 			//rerender the Search bar so Toast notification will appear
-			this.setState({ showToast: true });
 			//Display Toast Notification based on local storage variable
 			NotificationManager.warning(window.localStorage.getItem('redirectMsg'), 'Page not found', 10000);
 			window.localStorage.removeItem('redirectMsg');
@@ -299,21 +295,6 @@ class SearchBar extends React.Component {
 		if (isLoading) {
 			return <></>;
 		}
-
-		const monthNames = [
-			'January',
-			'February',
-			'March',
-			'April',
-			'May',
-			'June',
-			'July',
-			'August',
-			'September',
-			'October',
-			'November',
-			'December',
-		];
 
 		let communityLink = 'https://discourse-dev.healthresearch.tools/';
 		if (window.location.href.includes('.www.')) communityLink = 'https://discourse.healthdatagateway.org/';
@@ -415,7 +396,11 @@ class SearchBar extends React.Component {
 											return (
 												<Fragment key='userNotifications'>
 													<div className='navBarNotificationSpacing' onClick={this.props.doToggleDrawer} data-test-id='imgMessageBadge'>
-														<NotificationBadge count={this.state.messageCount} style={{ backgroundColor: '#29235c' }} />
+														<NotificationBadge
+															count={this.state.messageCount}
+															style={{ backgroundColor: '#29235c' }}
+															className='messagesBadge'
+														/>
 														<SVGIcon name='chat' fill={'#475da7'} width={20} height={20} id='notificationsBell' className={'pointer'} />
 													</div>
 													<div className='navBarBellNotificationSpacing' data-test-id='imgNotificationBadge'>

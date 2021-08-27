@@ -9,15 +9,12 @@ class TechnicalMetadata extends React.Component {
 	state = {
 		technicalMetadata: null,
 		index: null,
-		onDetailsPage: false,
-		isLoading: true,
 	};
 
 	constructor(props) {
 		super(props);
 		this.state.technicalMetadata = props.technicalMetadata;
 		this.state.index = props.index;
-		this.state.onDetailsPage = props.onDetailsPage;
 	}
 
 	componentDidMount() {}
