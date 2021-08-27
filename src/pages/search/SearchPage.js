@@ -433,53 +433,6 @@ class SearchPage extends React.Component {
 		);
 	}
 
-	clearFilterStates2() {
-		// 1. v2 take copy of data
-		let filtersV2Data = [...this.state.filtersV2];
-		// 2. v2 resets the filters UI tree back to default
-		let filtersV2 = this.resetTreeChecked(filtersV2Data);
-
-		this.setState(prevState => ({
-			filtersV2,
-			selectedV2: [],
-			toolCategoriesSelected: [],
-			toolProgrammingLanguageSelected: [],
-			toolFeaturesSelected: [],
-			toolTopicsSelected: [],
-			projectCategoriesSelected: [],
-			projectFeaturesSelected: [],
-			projectTopicsSelected: [],
-			paperFeaturesSelected: [],
-			paperTopicsSelected: [],
-			courseStartDatesSelected: [],
-			courseProviderSelected: [],
-			courseLocationSelected: [],
-			courseStudyModeSelected: [],
-			courseAwardSelected: [],
-			courseEntryLevelSelected: [],
-			courseDomainsSelected: [],
-			courseKeywordsSelected: [],
-			courseFrameworkSelected: [],
-			coursePrioritySelected: [],
-			collectionKeywordsSelected: [],
-			collectionPublisherSelected: [],
-			datasetIndex: 0,
-			toolIndex: 0,
-			projectIndex: 0,
-			paperIndex: 0,
-			personIndex: 0,
-			courseIndex: 0,
-			collectionIndex: 0,
-			datasetSort: '',
-			toolSort: '',
-			projectSort: '',
-			paperSort: '',
-			personSort: '',
-			courseSort: '',
-			collectionSort: '',
-		}));
-	}
-
 	updateOnFilterBadge = (filterGroup, filter) => {
 		// 1. test type of filter if v2 it will be an object
 		if (typeof filter === 'object' && !_.isEmpty(filter)) {
@@ -1151,9 +1104,6 @@ class SearchPage extends React.Component {
 				});
 			}
 		);
-		/*this.setState({ isResultsLoading: true }, () => {
-			this.clearFilterStates2();
-		});*/
 	};
 
 	render() {
