@@ -1492,7 +1492,7 @@ class SearchPage extends React.Component {
 									{key === 'Courses' ? <>{courseCount} </> : ''}
 									{key === 'Papers' ? <>{paperCount} </> : ''}
 									{key === 'People' ? <>{personCount} </> : ''}
-									results for {this.state.search}
+									results {this.state.search != '' && 'for'} {this.state.search}
 								</Col>
 								<Col
 									className={
