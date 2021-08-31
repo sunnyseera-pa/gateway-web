@@ -86,16 +86,6 @@ const AccountTeamManagement = ({
 		return '';
 	};
 
-	const getTeamId = team => {
-		const { teams } = userState[0];
-		if (!isEmpty(teams)) {
-			return teams.filter(t => {
-				return t.name.toUpperCase() === team.toUpperCase();
-			})[0]._id;
-		}
-		return null;
-	};
-
 	const hasTeamNotificationOptIns = () => {
 		if (!isEmpty(teamGatewayNotifications)) {
 			return teamGatewayNotifications.some(notification => notification.optIn === true);
@@ -115,6 +105,13 @@ const AccountTeamManagement = ({
 			return t._id === teamId;
 		})[0];
 		return team && team.roles.includes(role);
+	};
+
+	const userRoleIsAdmin = teamId => {
+		const team = userState[0].teams.filter(t => {
+			return t._id === teamId;
+		})[0];
+		return team && team.isAdmin;
 	};
 
 	const getTotalGatewayTeamEmails = (data = []) => {
@@ -401,9 +398,14 @@ const AccountTeamManagement = ({
 			localStorage.setItem('HDR_TEAM', team);
 		}
 
-		if (!isEmpty(innertab) && innertab === tabTypes.Notifications) {
-			onTabChange(innertab);
-			onClearInnerTab();
+		if (!userRoleIsAdmin(team)) {
+			if (!isEmpty(innertab) && innertab === tabTypes.Notifications) {
+				onTabChange(innertab);
+				onClearInnerTab();
+			}
+		} else {
+			setActiveTab(tabTypes.Members);
+			onTeamManagementTabChange(tabTypes.Members);
 		}
 
 		// get and set teamId
@@ -413,7 +415,7 @@ const AccountTeamManagement = ({
 
 		// only call get teamNotifications on tab change
 		if (activeTabKey === tabTypes.Notifications) getTeamNotifications(teamId);
-	}, [activeTabKey]);
+	}, [activeTabKey, team]);
 
 	if (isLoading) {
 		return (
@@ -445,9 +447,11 @@ const AccountTeamManagement = ({
 					<div className='tabsBackground'>
 						<Col sm={12} lg={12}>
 							<Tabs className='dataAccessTabs gray700-14' activeKey={activeTabKey} onSelect={onTabChange}>
-								{Object.keys(tabTypes).map((keyName, i) => (
-									<Tab key={i} eventKey={`${tabTypes[keyName]}`} title={`${upperFirst(tabTypes[keyName])}`}></Tab>
-								))}
+								{!userRoleIsAdmin(teamId)
+									? Object.keys(tabTypes).map((keyName, i) => (
+											<Tab key={i} eventKey={`${tabTypes[keyName]}`} title={`${upperFirst(tabTypes[keyName])}`}></Tab>
+									  ))
+									: ''}
 							</Tabs>
 						</Col>
 					</div>

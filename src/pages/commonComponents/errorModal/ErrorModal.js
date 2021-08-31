@@ -30,7 +30,7 @@ const ErrorModal = ({ show, handleClose }) => {
 				<div className='gray800-14' style={{ textAlign: 'center' }}>
 					This issue has been automatically reported to our team!
 					<br />
-					If this issue continues, please contact support by clicking <a href={cmsURL + '/HDRUKGatewaySupportPortal'}>here.</a>
+					If this issue continues, please contact support by clicking <a href={`${cmsURL}/HDRUKGatewaySupportPortal`}>here.</a>
 				</div>
 			</Modal.Body>
 			<Modal.Footer>

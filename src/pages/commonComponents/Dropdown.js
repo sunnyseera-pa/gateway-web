@@ -30,7 +30,7 @@ function Dropdown({ title, items, multiSelect = false }) {
 
 	return (
 		<div className='dd-wrapper'>
-			<div tabIndex={0} className='dd-header' role='button' onKeyPress={() => toggle(!open)} onClick={() => toggle(!open)}>
+			<div tabIndex={0} className='dd-header' role='button' onKeyPress={() => toggle()} onClick={() => toggle()}>
 				<div className='dd-header__title'>
 					<p className='dd-header__title--bold'>{title}</p>
 				</div>
