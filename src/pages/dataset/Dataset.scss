@@ -371,3 +371,66 @@
 .observationDescription {
 	width: 32%;
 }
+
+.centerSpan {
+	display: flex;
+	align-items: center;
+}
+
+.frequency-bar {
+	background-color: $teal;
+	content: '';
+	height: 20px;
+}
+
+.variableSearchBar {
+	display: inline-block;
+	border-radius: 4px;
+	border: solid 2px #e2e2e2 !important;
+	padding: 5px;
+	width: 100%;
+	background-color: #f6f7f8;
+}
+
+#variableSearchBarInput {
+	display: inline-block;
+	width: 90%;
+	font-size: 16px;
+	color: $gray-800;
+	outline: none;
+	border: 0;
+}
+
+.variableSearchIcon {
+	float: left;
+	min-width: 40px;
+	padding: 2px 0px 0px 4px;
+}
+
+.show-all-button {
+	width: 100%;
+}
+
+.sort-button,
+.sort-button:focus {
+	padding: 0px;
+	border: 0;
+	background-color: transparent;
+	outline: 0;
+	display: flex;
+	align-items: center;
+}
+
+.variable-details {
+	display: block;
+}
+
+.variable-row {
+	border-bottom: 1px solid #e7e9ed;
+	align-items: center;
+}
+
+.sorting-buttons-container {
+	border-top: 1px solid #e7e9ed;
+	border-bottom: 1px solid #e7e9ed;
+}

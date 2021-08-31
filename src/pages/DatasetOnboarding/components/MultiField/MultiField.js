@@ -8,7 +8,6 @@ class MultiField extends React.Component {
 		super(props);
 		this.state = {
 			value: this.updateValue(props.value),
-			readOnly: props.readOnly || false,
 		};
 	}
 
@@ -17,8 +16,9 @@ class MultiField extends React.Component {
 	}
 
 	handleAddShareholder = () => {
+		let value = this.state.value.concat(['']);
 		this.setState({
-			value: this.state.value.concat(['']),
+			value: value,
 		});
 	};
 

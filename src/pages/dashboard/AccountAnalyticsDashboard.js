@@ -1,13 +1,13 @@
-import React, { useState, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import UnmetDemand from './DARComponents/UnmetDemand';
 import TopSearches from './TopSearches';
 import TopDatasets from './TopDatasets';
-import { Row, Col, Button, Modal, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
+import { Row, Col, Tabs, Tab, DropdownButton, Dropdown } from 'react-bootstrap';
 import DashboardKPI from './DARComponents/DashboardKPI';
 import Loading from '../commonComponents/Loading';
-import { Event, initGA } from '../../tracking';
+import { initGA } from '../../tracking';
 import './Dashboard.scss';
 
 var baseURL = require('../commonComponents/BaseURL').getURL();
@@ -16,12 +16,10 @@ let isMounted = false;
 class AccountAnalyticsDashboard extends React.Component {
 	// initialize our state
 	state = {
-		userState: [],
 		key: 'Datasets',
 		data: [],
 		topSearches: [],
 		statsDataType: [],
-		statsDataTime: [],
 		totalGAUsers: 0,
 		gaUsers: 0,
 		searchesWithResults: 0,
@@ -37,7 +35,6 @@ class AccountAnalyticsDashboard extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state.userState = props.userState;
 		this.state.selectedOption = this.state.dates[0];
 	}
 
@@ -59,7 +56,8 @@ class AccountAnalyticsDashboard extends React.Component {
 			this.getTopDatasets(this.state.selectedOption),
 		]);
 
-		if (isMounted) this.setState({ uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100, isLoading: false });
+		let uniqueUsers = (this.state.statsDataType.person / this.state.totalGAUsers) * 100;
+		if (isMounted) this.setState({ uniqueUsers: uniqueUsers, isLoading: false });
 	}
 
 	componentWillUnmount() {
@@ -78,7 +76,8 @@ class AccountAnalyticsDashboard extends React.Component {
 		if (eventKey === null) {
 			eventKey = 0;
 		}
-		this.setState({ selectedOption: this.state.dates[eventKey] });
+		let selectedDate = this.state.dates[eventKey];
+		this.setState({ selectedOption: selectedDate });
 		await Promise.all([this.getUnmetDemand(this.state.dates[eventKey]), this.getTopSearches(this.state.dates[eventKey])]);
 
 		this.setState({ isLoading: false });
@@ -95,7 +94,8 @@ class AccountAnalyticsDashboard extends React.Component {
 			this.getDatasetsWithTechMetadata(),
 			this.getTopDatasets(this.state.dates[eventKey]),
 		]);
-		this.setState({ uniqueUsers: (this.state.statsDataType.person / this.state.totalGAUsers) * 100 });
+		let uniqueUsers = (this.state.statsDataType.person / this.state.totalGAUsers) * 100;
+		this.setState({ uniqueUsers: uniqueUsers });
 	}
 
 	getUnmetDemand(selectedOption) {
@@ -138,7 +138,6 @@ class AccountAnalyticsDashboard extends React.Component {
 			axios.get(baseURL + '/api/v1/stats').then(res => {
 				this.setState({
 					statsDataType: res.data.data.typecounts,
-					statsDataTime: res.data.data.daycounts,
 				});
 				resolve();
 			});

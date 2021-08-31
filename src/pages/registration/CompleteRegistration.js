@@ -13,7 +13,8 @@ import { Event, initGA } from '../../tracking';
 import 'react-tabs/style/react-tabs.css';
 import SVGIcon from '../../images/SVGIcon';
 
-var baseURL = require('../commonComponents/BaseURL').getURL();
+const baseURL = require('../commonComponents/BaseURL').getURL();
+let windowUrl = window.location.origin;
 
 class CompleteRegistration extends Component {
 	constructor(props) {
@@ -23,9 +24,7 @@ class CompleteRegistration extends Component {
 
 	state = {
 		searchString: '',
-		id: '',
 		userdata: [],
-		userState: [],
 		isLoading: true,
 		showDrawer: false,
 		userState: [
@@ -324,7 +323,7 @@ const YourAccountForm = props => {
 
 			axios.post(baseURL + '/api/v1/auth/register', values).then(res => {
 				Event('User related', 'Account change', 'New user registered');
-				const url = `${window.location.search}${res.data.data}`;
+				const url = `${windowUrl}${res.data.data}`;
 				window.location.href = `${url}${url.includes('?') ? '&' : '?'}registrationCompleted=true`;
 			});
 		},

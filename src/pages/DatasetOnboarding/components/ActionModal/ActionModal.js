@@ -108,7 +108,7 @@ const ActionModal = ({ open, close, context, datasetVersionAction }) => {
 						<p>
 							{subTitle}
 							{!_.isEmpty(link) && (
-								<a href={link} target='_blank' class='purple-blue-14'>
+								<a href={link} target='_blank' rel='noopener noreferrer' class='purple-blue-14'>
 									{' '}
 									{link}
 								</a>

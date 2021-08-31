@@ -36,7 +36,8 @@ class TypaheadMultiUser extends React.Component {
 			this.setState({ value });
 		}
 		if (this.props.typeaheadClass !== prevProps.typeaheadClass) {
-			this.setState({ typeaheadClass: `addFormInputTypeAhead ${this.props.typeaheadClass}` });
+			let typeaheadClass = this.props.typeaheadClass;
+			this.setState({ typeaheadClass: `addFormInputTypeAhead ${typeaheadClass}` });
 		}
 	}
 
